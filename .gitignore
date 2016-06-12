@@ -1,0 +1,5 @@
+# Files to ignore when commiting.
+
+.DS_Store
+*~
+\#*\#
