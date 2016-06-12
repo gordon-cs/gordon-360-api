@@ -1,0 +1,197 @@
+# Copy and paste this into editor.swagger.io to edit the documentation.
+
+swagger: '2.0'
+
+#Document metadata
+info:
+  version: "1.0.0"
+  title: Gordon College CCT API
+
+# The API Paths
+paths:
+  # Activity path endpoint
+  /activities:
+    # GET HTTP operation for the Activity endpoint
+    get:
+      # Description of the http verb/noun. Markdown is supported
+      description: |
+        Gets `Activity` objects.
+        Optional query param of **size** determines
+        size of returned array
+      # This is an array of GET operation parameters:
+      parameters:
+        # A parameter that is in query and is not required
+        -
+          name: size
+          in: query
+          description: Size of array
+          required: false
+          type: number
+          format: double
+      # Expected responses for this operation:
+      responses:
+        # Response code
+        200:
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            title: ArrayOfActivities
+            type: array
+            items:
+              type: object
+              properties:
+                data:
+                  $ref: '#/definitions/Activity'
+  
+  /activities/{activity_id}: 
+    get:
+      description: Gets the `Activity` object with the ID requested.
+      parameters:
+        # A paraeter that is in path and required
+        -
+          name: activity_id
+          in: path
+          description: ID of the activity
+          required: true
+          type: number
+          
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/Activity'
+  /memberships:
+    get:
+      description: |
+        Gets `Membership` objects.
+        Optional query param of **size** determines
+        size of returned array.
+      parameters:
+        -
+          name: size
+          in: query
+          description: Size of array
+          required: false
+          type: number
+          format: double
+          
+      responses:
+        200:
+          description: Successful response
+          schema: 
+            title: ArrayofMemberships
+            type: array
+            items:
+              type: object
+              properties:
+                data:
+                  $ref: '#/definitions/Membership'
+  /memberships/{membership_id}: 
+    get:
+      description: Gets the `Membership` object with the ID requested.
+      parameters:
+        -
+          name: membership_id
+          in: path
+          description: ID of the membership
+          required: true
+          type: number
+          
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/Membership'
+  /supervisors:
+    get:
+      description: | 
+        Gets `Supervisor` objects.
+        Optional query param of **size** determines
+        size of returned array.
+      parameters:
+        -
+          name: size
+          in: query
+          required: false
+          description: Size of the array
+          type: number
+          format: double
+      responses:
+        200:
+          description: Successful response
+          schema: 
+            title: ArrayOfSupervisors
+            type: array
+            items:
+              type: object
+              properties:
+                data: 
+                  $ref: '#/definitions/Supervisor'
+                  
+  /supervisors/{supervisor_id}:
+    get:
+      description: Get `Supervisor` object with specified ID.
+      parameters:
+        - 
+          name: supervisor_id
+          in: path
+          required: true
+          description: Supervisor ID
+          type: number
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/Supervisor'
+   
+   
+
+# Object definitions. Avoids redundancy. We refer to these definitions up top
+definitions:
+  Activity:
+    type: object
+    properties:
+      id:
+        type: integer
+      activity_name:
+        type: string
+      activity_advisor:
+        type: string
+      activity_description:
+        type: string
+      
+  Membership:
+    type: object
+    properties:
+      id:
+        type: integer
+      student_id:
+        type: integer
+      activity_id:
+        type: integer
+      membership_type:
+        type: string
+      membership_start_date:
+        type: string
+      membership_end_date:
+        type: string     
+  
+  Supervisor:
+    type: object
+    properties:
+      id:
+        type: integer
+      staff_id:
+        type: integer
+      activity_id:
+        type: integer
