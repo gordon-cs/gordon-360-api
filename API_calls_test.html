@@ -1,0 +1,141 @@
+<!DOCTTYPE html>
+<html>
+	<head>
+		<title>API Request Test</title>
+	</head>
+	<body>
+		<!-- All Activities -->
+		<!-- Get -->
+		<button type="button"
+			onclick="getActivities(null)">
+				Get All Activities
+		</button>
+		</br>
+		<!-- Post -->
+		<button type="button"
+			onclick="postActivity(null, document.getElementById('activitiesJSON').innerHTML)">
+				Post All Activities
+		</button>
+		<input id="activitiesJSON" placeholder="activites json">
+		</br>
+		</br>
+
+		<!-- Single Activity -->
+		<!-- Get -->
+		<button type="button"
+			onclick="getActivity(document.getElementById('activityGetID').innerHTML">
+				Get Activity
+		</button>
+		<input id="activityGetID" placeholder="activity id">
+		</br>
+		<!-- Post -->
+		<button type="button"
+			onclick="postActivity(document.getElementById('activitiesPostID').innerHTML),
+			document.getElementById('activitiesJSON').innerHTML)">
+				Post Activity
+		</button>
+		<input id="activityPostID" placeholder="activity id">
+		<input id="activityJSON" placeholder="activity json">
+		</br>
+		</br>
+
+		<!-- All Memberships -->
+		<!-- Get -->
+		<button type="button"
+			onclick="getMembership(null)">
+				Get All Memberships
+		</button>
+		</br>
+		<!-- Post -->
+		<button type="button"
+			onclick="postMembership(document.getElementByID('membershipsJSON').innerHTML)">
+				Post All Memberships
+		</button>
+		<input id="membershipsJSON" placeholder="memberships json">
+		</br>
+		</br>
+
+		<!-- Single Membership -->
+		<!-- Get -->
+		<button type="button"
+			onclick="getMembership(document.getElementByID('membershipGetID').innerHTML)">
+				Get Membership
+		</button>
+		<input id="membershipGetID" placeholder="membership id">
+		</br>
+		<!-- Post -->
+		<button type="button"
+			onclick="postMembership(document.getElementByID('membershipPostID').innerHTML,
+			document.getElementByID('membershipJSON').innerHTML)">
+				Post Membership
+		</button>
+		<input id="membershipPostID" placeholder="membership id">
+		<input id="membershipJSON" placeholder="membership json">
+
+		</br>
+		</br>
+		<!-- Test Get Request -->
+		<button type="button" onclick="sendGetRequest($testUrl)">Test Get</button>
+		<p id="p1"></p>
+	</body>
+
+	<script>
+		$testUrl = "http://ipinfo.io/json";
+		// Base API Url
+		$apiUrl = "http://ccttrain.gordon.edu/api"
+		// Acitivity Url
+		$activityUrl = $apiUrl + "/activities";
+		// Membershup Url
+		$membershipUrl = $apiUrl + "/memberships";
+
+		// Gets single acitivty
+		// Param null for all activities
+		var getActivity = function(activityID) {
+			sendGetRequest($activityUrl + "/" + activityID);
+		}
+		
+		// Gets single membership
+		// Param null for all memberships
+		var getMembership = function(membershipID) {
+			sendGetRequest($membershipUrl + "/" + mempershipID);
+		}
+		
+		// Post single activity
+		// Param null for all activities
+		var postAcivity = function(activityID, data) {
+			sendPostRequest($activityUrl + "/" + activityID, data);
+		}
+
+		// Post single membership
+		// Param null for all memberships
+		var postMembership = function(membershipID, data) {
+			sendPostRequest($membershipUrl + "/" + membershipID, data);
+		}
+
+		// Get Request
+		// Returns JSON response
+		var sendGetRequest = function(url) {
+			var xhr = new XMLHttpRequest();
+			xhr.onreadystatechange = function() {
+				if (xhr.readyState == 4 && xhr.status == 200)
+				    var response = JSON.parse(xhr.responseText);
+					document.getElementById("p1").innerHTML = xhr.responseText;
+					return response;
+			}
+			xhr.open("GET", url, true);
+			xhr.send();
+		}
+
+		// Post Request
+		var sendPostRequest = function(url, data) {
+			var xhr = new XMLHttpRequest();
+			xhr.onreadystatechange = function() {
+				if (xhr.readyState == 4 && xhr.status == 200)
+					document.getElementById("p1").innerHTML = xhr.responseText;
+			}
+			xhr.open("POST", url, true);
+			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			xhr.send(data);
+		}
+	</script>
+</html>
