@@ -15,34 +15,32 @@
 			<h4>Activities</h4>
 			<!-- Get -->
 			<div class="row">
-				<div class="six columns">
-					<button type="button"
-						onclick="getActivities()">
-							Get All Activities
-					</button>
-				</div>
+				<button type="button" class="three columns"
+					onclick="getActivities()">
+						Get All Activities
+				</button>
 			</div>
 
 			<!-- Single Activity -->
 			<!-- Get -->
 			<div class="row">
-				<button type="button"
+				<button type="button" class="three columns"
 					onclick="getActivity(document.getElementById('activityGetId').value)">
 						Get Activity
 				</button>
-				<input id="activityGetId" placeholder="activity id">
+				<input class="three columns" id="activityGetId" placeholder="Activity ID">
 			</div>
 			<!-- Post -->
 			<div class="row">
-				<button type="button"
+				<button type="button" class="three columns"
 					onclick="postActivity(document.getElementById('activityPostName').value,
 					document.getElementById('activityPostAdvisor').value,
 					document.getElementById('activityPostDescription').value)">
 						Post Activity
 				</button>
-				<input id="activityPostName" placeholder="activity name">
-				<input id="activityPostAdvisor" placeholder="activity advisor">
-				<input id="activityPostDescription" placeholder="activity description">
+				<input class="three columns" id="activityPostName" placeholder="Activity Name">
+				<input class="three columns" id="activityPostAdvisor" placeholder="Activity Advisor">
+				<input class="three columns" id="activityPostDescription" placeholder="Activity Description">
 			</div>
 		</div>
 
@@ -51,7 +49,7 @@
 			<h4>Memberships</h4>
 			<!-- Get -->
 			<div class="row">
-				<button type="button"
+				<button type="button" class="three columns"
 					onclick="getMemberships()">
 						Get All Memberships
 				</button>
@@ -60,32 +58,33 @@
 			<!-- Single Membership -->
 			<!-- Get -->
 			<div class="row">
-				<button type="button"
+				<button type="button" class="three columns"
 					onclick="getMembership(document.getElementById('membershipGetId').value)">
 						Get Membership
 				</button>
-				<input id="membershipGetId" placeholder="membership id">
+				<input class="three columns" id="membershipGetId" placeholder="Membership ID">
 				</br>
 			</div>
 			<!-- Post -->
 			<div class="row">
-				<button type="button"
+				<button type="button" class="three columns"
 					onclick="postMembership(document.getElementById('membershipPostStudentId').value,
 					document.getElementById('membershipPostActivityId').value,
 					document.getElementById('membershipPostLevel').value)">
 						Post Membership
 				</button>
-				<input id="membershipPostStudentId" placeholder="student id">
-				<input id="membershipPostActivityId" placeholder="activity id">
-				<input id="membershipPostLevel" placeholder="membership level">
+				<input class="three columns" id="membershipPostStudentId" placeholder="Student ID">
+				<input class="three columns" id="membershipPostActivityId" placeholder="Activity ID">
+				<input class="three columns" id="membershipPostLevel" placeholder="Membership Level">
 			</div>
 		</div>
 
 		<!-- Test Get Request -->
 		<div class="container">
 			<h4>Tests</h4>
-			<button type="button" onclick="sendGetRequest($testUrl)">Test Get</button>
-			<button type="button" onclick="sendGetRequest($apiUrl)">Test2 Get</button>
+			<div class="row">
+				<button type="button" onclick="test()" class="three columns">Test Get</button>
+			</div>
 		</div>
 		<div class="container">
 			<p id="p1"></p>

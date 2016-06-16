@@ -7,30 +7,39 @@ $activityUrl = $apiUrl + "/activities";
 // Membershup Url
 $membershipUrl = $apiUrl + "/memberships";
 
+// Displays Text On Page
+function show(text) {
+    document.getElementById("p1").innerHTML = text;
+}
+
+function test() {
+    sendGetRequest($testUrl);
+}
+
 // Get All Activities
-var getActivities = function() {
+function getActivities() {
     sendGetRequest($activityUrl);
 }
 
 // Get All Memberships
-var getMemberships = function() {
+function getMemberships() {
     sendGetRequest($membershipUrl);
 }
 
 // Get Single Acitivty
-var getActivity = function(activityId) {
+function getActivity(activityId) {
     alert ($activityUrl + "/" + activityId);
     sendGetRequest($activityUrl + "/" + activityId);
 }
 
 // Get Single Membership
-var getMembership = function(membershipId) {
+function getMembership(membershipId) {
     alert($membershipUrl + "/" + membershipId);
     sendGetRequest($membershipUrl + "/" + membershipId);
 }
 
 // Post Single Activity
-var postActivity = function(activityName, activityAdvisor, activityDescription) {
+function postActivity(activityName, activityAdvisor, activityDescription) {
     var activity = {
         "activity_name": activityName,
         "activity_advisor": activityAdvisor,
@@ -41,7 +50,7 @@ var postActivity = function(activityName, activityAdvisor, activityDescription) 
 }
 
 // Post Aingle Membership
-var postMembership = function(studentId, activityId, membershipLevel) {
+function postMembership(studentId, activityId, membershipLevel) {
     var membership = {
         "student_id": studentId,
         "activity_id": activityId,
@@ -52,25 +61,22 @@ var postMembership = function(studentId, activityId, membershipLevel) {
 }
 
 // Get Request
-// Returns JSON response
-var sendGetRequest = function(url) {
+function sendGetRequest(url) {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 200)
-            var response = JSON.parse(xhr.responseText);
-            document.getElementById("p1").innerHTML = xhr.responseText;
-            return response;
+            show(xhr.responseText);
     }
     xhr.open("GET", url, true);
     xhr.send();
 }
 
 // Post Request
-var sendPostRequest = function(url, data) {
+function sendPostRequest(url, data) {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 200)
-            document.getElementById("p1").innerHTML = xhr.responseText;
+            show(xhr.responseText);
     }
     xhr.open("POST", url, true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
