@@ -40,7 +40,7 @@ namespace cct_api.controllers
             return CreatedAtRoute("GetMembership", new { controller = "Memberships", id = mbrshp.membership_id}, mbrshp);
         }
 
-        [HttpPutAttribute("{id:int}")]
+        [HttpPutAttribute("{id}")]
         public IActionResult Update(string id, [FromBodyAttribute] Membership mbrshp)
         {
             if (mbrshp == null || mbrshp.membership_id != id)
@@ -56,6 +56,12 @@ namespace cct_api.controllers
 
             Memberships.Update(mbrshp);
             return new NoContentResult();
+        }
+
+        [HttpDeleteAttribute("{id}")]
+        public void Delete(string id)
+        {
+            Memberships.Remove(id);
         }
     }
 }

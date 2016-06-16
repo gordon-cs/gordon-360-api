@@ -57,5 +57,12 @@ namespace cct_api.controllers
             Activities.Update(activ);
             return new NoContentResult();
         }
+
+
+        [HttpDeleteAttribute("{id}")]
+        public void Delete(string id)
+        {
+            Activities.Remove(id);
+        }
     }
 }
