@@ -24,19 +24,23 @@
 		<!-- Single Activity -->
 		<!-- Get -->
 		<button type="button"
-			onclick="getActivity(document.getElementById('activityGetID').value)">
+			onclick="getActivity(document.getElementById('activityGetId').value)">
 				Get Activity
 		</button>
-		<input id="activityGetID" placeholder="activity id">
+		<input id="activityGetId" placeholder="activity id">
 		</br>
 		<!-- Post -->
 		<button type="button"
-			onclick="postActivity(document.getElementById('activitiesPostID').value,
-			document.getElementById('activitiesJSON').value)">
+			onclick="postActivity(document.getElementById('activityPostName').value,
+			document.getElementById('activityPostAdvisor').value,
+			document.getElementById('activityPostDescription').value)">
 				Post Activity
 		</button>
-		<input id="activityPostID" placeholder="activity id">
-		<input id="activityJSON" placeholder="activity json">
+		<input id="activityPostName" placeholder="activity name">
+		</br>
+		<input id="activityPostAdvisor" placeholder="activity advisor">
+		</br>
+		<input id="activityPostDescription" placeholder="activity description">
 		</br>
 		</br>
 
@@ -49,7 +53,7 @@
 		</br>
 		<!-- Post -->
 		<button type="button"
-			onclick="postMembership(document.getElementByID('membershipsJSON').value)">
+			onclick="postMembership(document.getElementById('membershipsJSON').value)">
 				Post All Memberships
 		</button>
 		<input id="membershipsJSON" placeholder="memberships json">
@@ -59,19 +63,23 @@
 		<!-- Single Membership -->
 		<!-- Get -->
 		<button type="button"
-			onclick="getMembership(document.getElementByID('membershipGetID').value)">
+			onclick="getMembership(document.getElementById('membershipGetId').value)">
 				Get Membership
 		</button>
-		<input id="membershipGetID" placeholder="membership id">
+		<input id="membershipGetId" placeholder="membership id">
 		</br>
 		<!-- Post -->
 		<button type="button"
-			onclick="postMembership(document.getElementByID('membershipPostID').value,
-			document.getElementByID('membershipJSON').value)">
+			onclick="postMembership(document.getElementById('membershipPostStudentId').value,
+			document.getElementById('membershipPostActivityId').value,
+			document.getElementById('membershipPostLevel').value)">
 				Post Membership
 		</button>
-		<input id="membershipPostID" placeholder="membership id">
-		<input id="membershipJSON" placeholder="membership json">
+		<input id="membershipPostStudentId" placeholder="student id">
+		</br>
+		<input id="membershipPostActivityId" placeholder="activity id">
+		</br>
+		<input id="membershipPostLevel" placeholder="membership level">
 
 		</br>
 		</br>
@@ -103,24 +111,37 @@
 		}
 
 		// Get Single Acitivty
-		var getActivity = function(activityID) {
-			alert ($activityUrl + "/" + activityID);
-			sendGetRequest($activityUrl + "/" + activityID);
+		var getActivity = function(activityId) {
+			alert ($activityUrl + "/" + activityId);
+			sendGetRequest($activityUrl + "/" + activityId);
 		}
 
 		// Get Single Membership
-		var getMembership = function(membershipID) {
-			sendGetRequest($membershipUrl + "/" + membershipID);
+		var getMembership = function(membershipId) {
+			alert($membershipUrl + "/" + membershipId);
+			sendGetRequest($membershipUrl + "/" + membershipId);
 		}
 
 		// Post Single Activity
-		var postActivity = function(activityID, data) {
-			sendPostRequest($activityUrl + "/" + activityID, data);
+		var postActivity = function(activityName, activityAdvisor, activityDescription) {
+			var activity = {
+				"activity_name": activityName,
+				"activity_advisor": activityAdvisor,
+				"activity_description": activityDescription
+			}
+			alert(JSON.stringify(activity));
+			sendPostRequest($activityUrl, activity);
 		}
 
 		// Post Aingle Membership
-		var postMembership = function(membershipID, data) {
-			sendPostRequest($membershipUrl + "/" + membershipID, data);
+		var postMembership = function(studentId, activityId, membershipLevel) {
+			var membership = {
+				"student_id": studentId,
+				"activity_id": activityId,
+				"membership_level": membershipLevel
+			}
+			alert(JSON.stringify(membership));
+			sendPostRequest($membershipUrl, membership);
 		}
 
 		// Get Request
