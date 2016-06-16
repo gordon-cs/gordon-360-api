@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>API Request Test</title>
+
+		<script src="api-calls.js"></script>
+
+		<link rel="stylesheet" href="css/skeleton.css">
+		<link rel="stylesheet" href="css/normalize.css">
+	</head>
+	<body>
+		<!-- All Activities -->
+		<div class="container">
+			<h4>Activities</h4>
+			<!-- Get -->
+			<div class="row">
+				<div class="six columns">
+					<button type="button"
+						onclick="getActivities()">
+							Get All Activities
+					</button>
+				</div>
+			</div>
+
+			<!-- Single Activity -->
+			<!-- Get -->
+			<div class="row">
+				<button type="button"
+					onclick="getActivity(document.getElementById('activityGetId').value)">
+						Get Activity
+				</button>
+				<input id="activityGetId" placeholder="activity id">
+			</div>
+			<!-- Post -->
+			<div class="row">
+				<button type="button"
+					onclick="postActivity(document.getElementById('activityPostName').value,
+					document.getElementById('activityPostAdvisor').value,
+					document.getElementById('activityPostDescription').value)">
+						Post Activity
+				</button>
+				<input id="activityPostName" placeholder="activity name">
+				<input id="activityPostAdvisor" placeholder="activity advisor">
+				<input id="activityPostDescription" placeholder="activity description">
+			</div>
+		</div>
+
+		<!-- All Memberships -->
+		<div class="container">
+			<h4>Memberships</h4>
+			<!-- Get -->
+			<div class="row">
+				<button type="button"
+					onclick="getMemberships()">
+						Get All Memberships
+				</button>
+			</div>
+
+			<!-- Single Membership -->
+			<!-- Get -->
+			<div class="row">
+				<button type="button"
+					onclick="getMembership(document.getElementById('membershipGetId').value)">
+						Get Membership
+				</button>
+				<input id="membershipGetId" placeholder="membership id">
+				</br>
+			</div>
+			<!-- Post -->
+			<div class="row">
+				<button type="button"
+					onclick="postMembership(document.getElementById('membershipPostStudentId').value,
+					document.getElementById('membershipPostActivityId').value,
+					document.getElementById('membershipPostLevel').value)">
+						Post Membership
+				</button>
+				<input id="membershipPostStudentId" placeholder="student id">
+				<input id="membershipPostActivityId" placeholder="activity id">
+				<input id="membershipPostLevel" placeholder="membership level">
+			</div>
+		</div>
+
+		<!-- Test Get Request -->
+		<div class="container">
+			<h4>Tests</h4>
+			<button type="button" onclick="sendGetRequest($testUrl)">Test Get</button>
+			<button type="button" onclick="sendGetRequest($apiUrl)">Test2 Get</button>
+		</div>
+		<div class="container">
+			<p id="p1"></p>
+		</div>
+	</body>
+</html>
