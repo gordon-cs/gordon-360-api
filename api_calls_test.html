@@ -14,7 +14,7 @@
 		</br>
 		<!-- Post -->
 		<button type="button"
-			onclick="postActivity(null, document.getElementById('activitiesJSON').innerHTML)">
+			onclick="postActivity(null, document.getElementById('activitiesJSON').value)">
 				Post All Activities
 		</button>
 		<input id="activitiesJSON" placeholder="activites json">
@@ -24,15 +24,15 @@
 		<!-- Single Activity -->
 		<!-- Get -->
 		<button type="button"
-			onclick="getActivity(document.getElementById('activityGetID').innerHTML)">
+			onclick="getActivity(document.getElementById('activityGetID').value)">
 				Get Activity
 		</button>
 		<input id="activityGetID" placeholder="activity id">
 		</br>
 		<!-- Post -->
 		<button type="button"
-			onclick="postActivity(document.getElementById('activitiesPostID').innerHTML,
-			document.getElementById('activitiesJSON').innerHTML)">
+			onclick="postActivity(document.getElementById('activitiesPostID').value,
+			document.getElementById('activitiesJSON').value)">
 				Post Activity
 		</button>
 		<input id="activityPostID" placeholder="activity id">
@@ -49,7 +49,7 @@
 		</br>
 		<!-- Post -->
 		<button type="button"
-			onclick="postMembership(document.getElementByID('membershipsJSON').innerHTML)">
+			onclick="postMembership(document.getElementByID('membershipsJSON').value)">
 				Post All Memberships
 		</button>
 		<input id="membershipsJSON" placeholder="memberships json">
@@ -59,15 +59,15 @@
 		<!-- Single Membership -->
 		<!-- Get -->
 		<button type="button"
-			onclick="getMembership(document.getElementByID('membershipGetID').innerHTML)">
+			onclick="getMembership(document.getElementByID('membershipGetID').value)">
 				Get Membership
 		</button>
 		<input id="membershipGetID" placeholder="membership id">
 		</br>
 		<!-- Post -->
 		<button type="button"
-			onclick="postMembership(document.getElementByID('membershipPostID').innerHTML,
-			document.getElementByID('membershipJSON').innerHTML)">
+			onclick="postMembership(document.getElementByID('membershipPostID').value,
+			document.getElementByID('membershipJSON').value)">
 				Post Membership
 		</button>
 		<input id="membershipPostID" placeholder="membership id">
@@ -77,8 +77,9 @@
 		</br>
 		<!-- Test Get Request -->
 		<button type="button" onclick="sendGetRequest($testUrl)">Test Get</button>
-		<button type="button" onclick="sendGetRequest($test2Url)">Test2 Get</button>
+		<button type="button" onclick="sendGetRequest($apiUrl)">Test2 Get</button>
 		<p id="p1"></p>
+		<input id="demo">
 	</body>
 
 	<script>
@@ -91,34 +92,33 @@
 		// Membershup Url
 		$membershipUrl = $apiUrl + "/memberships";
 
+		// Get All Activities
 		var getActivities = function() {
 			sendGetRequest($activityUrl);
 		}
 
+		// Get All Memberships
 		var getMemberships = function() {
 			sendGetRequest($membershipUrl);
 		}
 
-		// Gets single acitivty
-		// Param null for all activities
+		// Get Single Acitivty
 		var getActivity = function(activityID) {
+			alert ($activityUrl + "/" + activityID);
 			sendGetRequest($activityUrl + "/" + activityID);
 		}
 
-		// Gets single membership
-		// Param null for all memberships
+		// Get Single Membership
 		var getMembership = function(membershipID) {
 			sendGetRequest($membershipUrl + "/" + membershipID);
 		}
 
-		// Post single activity
-		// Param null for all activities
-		var postAcivity = function(activityID, data) {
+		// Post Single Activity
+		var postActivity = function(activityID, data) {
 			sendPostRequest($activityUrl + "/" + activityID, data);
 		}
 
-		// Post single membership
-		// Param null for all memberships
+		// Post Aingle Membership
 		var postMembership = function(membershipID, data) {
 			sendPostRequest($membershipUrl + "/" + membershipID, data);
 		}
@@ -129,9 +129,9 @@
 			var xhr = new XMLHttpRequest();
 			xhr.onreadystatechange = function() {
 				if (xhr.readyState == 4 && xhr.status == 200)
-				    //var response = JSON.parse(xhr.responseText);
+				    var response = JSON.parse(xhr.responseText);
 					document.getElementById("p1").innerHTML = xhr.responseText;
-					//return response;
+					return response;
 			}
 			xhr.open("GET", url, true);
 			xhr.send();
