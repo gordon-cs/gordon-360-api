@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="UTF-8"> 
+		<meta charset="UTF-8">
 		<title>API Request Test</title>
 	</head>
 	<body>
@@ -31,7 +31,7 @@
 		</br>
 		<!-- Post -->
 		<button type="button"
-			onclick="postActivity(document.getElementById('activitiesPostID').innerHTML),
+			onclick="postActivity(document.getElementById('activitiesPostID').innerHTML,
 			document.getElementById('activitiesJSON').innerHTML)">
 				Post Activity
 		</button>
@@ -90,7 +90,7 @@
 		$activityUrl = $apiUrl + "/activities";
 		// Membershup Url
 		$membershipUrl = $apiUrl + "/memberships";
-		
+
 		var getActivities = function() {
 			sendGetRequest($activityUrl);
 		}
@@ -100,13 +100,13 @@
 		var getActivity = function(activityID) {
 			sendGetRequest($activityUrl + "/" + activityID);
 		}
-		
+
 		// Gets single membership
 		// Param null for all memberships
 		var getMembership = function(membershipID) {
 			sendGetRequest($membershipUrl + "/" + mempershipID);
 		}
-		
+
 		// Post single activity
 		// Param null for all activities
 		var postAcivity = function(activityID, data) {
