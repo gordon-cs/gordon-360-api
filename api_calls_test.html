@@ -43,7 +43,7 @@
 		<!-- All Memberships -->
 		<!-- Get -->
 		<button type="button"
-			onclick="getMembership(null)">
+			onclick="getMemberships()">
 				Get All Memberships
 		</button>
 		</br>
@@ -95,6 +95,10 @@
 			sendGetRequest($activityUrl);
 		}
 
+		var getMemberships = function() {
+			sendGetRequest($membershipUrl);
+		}
+
 		// Gets single acitivty
 		// Param null for all activities
 		var getActivity = function(activityID) {
@@ -104,7 +108,7 @@
 		// Gets single membership
 		// Param null for all memberships
 		var getMembership = function(membershipID) {
-			sendGetRequest($membershipUrl + "/" + mempershipID);
+			sendGetRequest($membershipUrl + "/" + membershipID);
 		}
 
 		// Post single activity
