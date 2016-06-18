@@ -1,8 +1,14 @@
 {
   "dependencies": {
     "Microsoft.NETCore.App": {
-      "version": "1.0.0-rc2-3002702"
+      "version": "1.0.0-rc2-3002702",
+      "type": "platform"
     },
+    "Microsoft.EntityFrameworkCore.Tools": {
+      "version": "1.0.0-preview1-*",
+      "type": "build"
+    },
+    "Microsoft.EntityFrameworkCore.SqlServer":"1.0.0-rc2-*",
     "Microsoft.AspNetCore.Mvc": "1.0.0-rc2-final",
     "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0-rc2-final",
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-rc2-final",
@@ -21,6 +27,14 @@
     "Microsoft.AspNetCore.Server.IISIntegration.Tools": {
       "version": "1.0.0-preview1-final",
       "imports": "portable-net45+win8+dnxcore50"
+    },
+    "Microsoft.EntityFrameworkCore.Tools": {
+      "version": "1.0.0-preview1-*",
+      "imports": [
+        "dnxcore50",
+        "portable-net45+win8",
+        "portable-net45+win8+dnxcore50"
+      ]
     }
   },
 
@@ -43,12 +57,7 @@
     "gcServer": true
   },
 
-  "runtimes": {
-    "win8-x64":{},
-    "win7-x64":{},
-    "osx.10.10-x64":{},
-    "osx.10.11-x64":{}
-  },
+  
 
   "publishOptions": {
     "include": [

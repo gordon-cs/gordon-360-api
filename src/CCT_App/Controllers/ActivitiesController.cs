@@ -41,7 +41,7 @@ namespace cct_api.controllers
         }
 
         [HttpPostAttribute]
-        public IActionResult Create( [FromBodyAttribute] [BindAttribute("activity_name","activity_description","activity_advisor")] Activity activ)
+        public IActionResult Create([FromBodyAttribute] Activity activ)
         {
             if (!ModelState.IsValid)
             {
@@ -58,7 +58,7 @@ namespace cct_api.controllers
         }
 
         [HttpPutAttribute("{id}")]
-        public IActionResult Update(string id,  [FromBodyAttribute] [BindAttribute("activity_name","activity_description","activity_advisor")] Activity activ)
+        public IActionResult Update(string id,  [FromBodyAttribute] Activity activ)
         {
             if(!ModelState.IsValid)
             {

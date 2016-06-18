@@ -14,6 +14,7 @@ namespace cct_api.controllers
         {
             Memberships = memberships;
         }
+
         [HttpGetAttribute]
         public IEnumerable<Membership> GetAll()
         {
@@ -21,7 +22,7 @@ namespace cct_api.controllers
         }
 
         [HttpGetAttribute("{id}", Name="membership")]
-        public IActionResult GetById(string id)
+        public IActionResult GetById([FromRouteAttribute] string id)
         {
             if (!ModelState.IsValid)
             {
@@ -63,7 +64,7 @@ namespace cct_api.controllers
             {
                 return BadRequest(ModelState);
             }
-            if (mbrshp == null || mbrshp.membership_id != id)
+            if (mbrshp == null || mbrshp.membership_id != id || id == null)
             {
                 return BadRequest();
             }

@@ -2,33 +2,28 @@ using Xunit;
 using cct_api.controllers;
 using cct_api.models;
 using Moq;
-using System.Diagnostics;
-using System.Collections.Generic;
 
-namespace Tests.ControllerTests
+namespace UnitTests.MemershipsControllerTest
 {
-/* Create a new class for each controller you want to test. */
-
-
-    /********************************************
-     * Class for the Activities Controller Test
-     ********************************************
+     /********************************************
+     * Class for the Memberships Controller Unit Tests
+     *********************************************
      */ 
-     
-    public class ActivitiesControllerTest
-    {
+
+     public class Test
+     {
         /* TESTS FOR THE GET METHODS */
 
         [FactAttribute]
         public void Get_By_ID_Returns_Correctly_Given_Valid_ID()
         {
             // Arrange
-            var mockRepository = new Mock<IActivityRepository>();
-            var controller = new ActivitiesController(mockRepository.Object);
+            var mockRepository = new Mock<IMembershipRepository>();
+            var controller = new MembershipsController(mockRepository.Object);
             string id = "valid_id";
             mockRepository
                 .Setup(repo => repo.Find("valid_id"))
-                .Returns(new Activity());
+                .Returns(new Membership());
 
 
 
@@ -42,13 +37,13 @@ namespace Tests.ControllerTests
         public void Get_By_ID_Returns_Not_Found_Given_Non_Existent_ID()
         {
             // Arrange
-            var mockRepository = new Mock<IActivityRepository>();
-            var controller = new ActivitiesController(mockRepository.Object);
+            var mockRepository = new Mock<IMembershipRepository>();
+            var controller = new MembershipsController(mockRepository.Object);
             string id = "id-that-doesn't-exist";
-            Activity nullActivity = null;
+            Membership nullMembership = null;
             mockRepository
                 .Setup(repo => repo.Find("id-that-doesn't-exist"))
-                .Returns(nullActivity);
+                .Returns(nullMembership);
 
 
             //Act
@@ -62,8 +57,8 @@ namespace Tests.ControllerTests
         public void Get_By_ID_Returns_Bad_Request_Given_Invalid_Model_State()
         {
             // Arrange
-            var mockRepository = new Mock<IActivityRepository>();
-            var controller = new ActivitiesController(mockRepository.Object);
+            var mockRepository = new Mock<IMembershipRepository>();
+            var controller = new MembershipsController(mockRepository.Object);
             controller.ModelState.AddModelError("Errro","Some Errror occured");
             string id = "1";
 
@@ -77,8 +72,8 @@ namespace Tests.ControllerTests
         public void Get_By_ID_Returns_Bad_Request_Given_Null_ID()
         {
             // Arrange
-            var mockRepository = new Mock<IActivityRepository>();
-            var controller = new ActivitiesController(mockRepository.Object);
+            var mockRepository = new Mock<IMembershipRepository>();
+            var controller = new MembershipsController(mockRepository.Object);
             string nullId = null;
 
 
@@ -92,9 +87,9 @@ namespace Tests.ControllerTests
         public void GetAll_Returns_Correctly()    
         {
             // Arrange
-            var mockRepository = new Mock<IActivityRepository>(); 
-            var controller = new ActivitiesController(mockRepository.Object);
-            var array = new Activity[10];
+            var mockRepository = new Mock<IMembershipRepository>(); 
+            var controller = new MembershipsController(mockRepository.Object);
+            var array = new Membership[10];
             mockRepository            
                 .Setup(repo => repo.GetAll())
                 .Returns(array);
@@ -104,21 +99,21 @@ namespace Tests.ControllerTests
 
 
             // Assert
-            Assert.IsType<Activity[]>(result);
+            Assert.IsType<Membership[]>(result);
 
         }   
 
         /* TESTS FOR THE CREATE METHOD */
         [FactAttribute]
-        public void Create_Returns_BadRequest_Given_Null_Activity()
+        public void Create_Returns_BadRequest_Given_Null_Membership()
         {
             //Arrange
-            var mockRepository = new Mock<IActivityRepository>();
-            var controller = new ActivitiesController(mockRepository.Object);
-            Activity activity = null;
+            var mockRepository = new Mock<IMembershipRepository>();
+            var controller = new MembershipsController(mockRepository.Object);
+            Membership membership = null;
 
             //Act
-            var result = controller.Create(activity);
+            var result = controller.Create(membership);
             
             //Assert
             var viewResult = Assert.IsType<Microsoft.AspNetCore.Mvc.BadRequestResult>(result);
@@ -128,13 +123,13 @@ namespace Tests.ControllerTests
         public void Create_Returns_Bad_Request_Given_InValid_Model_State()
         {
             // Arrange
-            var mockRepository = new Mock<IActivityRepository>();
-            var controller = new ActivitiesController(mockRepository.Object);
+            var mockRepository = new Mock<IMembershipRepository>();
+            var controller = new MembershipsController(mockRepository.Object);
             controller.ModelState.AddModelError("Error","An error occured");
-            var testActivity = new Activity();
+            var testMembership = new Membership();
 
             // Act
-            var result = controller.Create(testActivity);
+            var result = controller.Create(testMembership);
 
             //Assert
             var viewResult = Assert.IsType<Microsoft.AspNetCore.Mvc.BadRequestObjectResult>(result);
@@ -145,12 +140,12 @@ namespace Tests.ControllerTests
         public void Create_Returns_Object_Given_Non_Null_Object_And_Valid_Model_State()
         {
             // Arrange
-            var mockRepository = new Mock<IActivityRepository>();
-            var controller = new ActivitiesController(mockRepository.Object);
-            var testActivity = new Activity();
+            var mockRepository = new Mock<IMembershipRepository>();
+            var controller = new MembershipsController(mockRepository.Object);
+            var testMembership = new Membership();
             
             // Act
-            var result = controller.Create(testActivity);
+            var result = controller.Create(testMembership);
 
             //Assert
             var viewResult = Assert.IsType<Microsoft.AspNetCore.Mvc.CreatedAtRouteResult>(result);
@@ -162,15 +157,15 @@ namespace Tests.ControllerTests
         public void Update_Returns_Bad_Request_Given_Invalid_Model_State()
         {
             // Arrange
-            var mockRepository = new Mock<IActivityRepository>();
-            var controller = new ActivitiesController(mockRepository.Object);
+            var mockRepository = new Mock<IMembershipRepository>();
+            var controller = new MembershipsController(mockRepository.Object);
             controller.ModelState.AddModelError("Error","An error occured");
-            var testActivity = new Activity{
-                activity_id = "1"
+            var testMembership = new Membership{
+                membership_id = "1"
             };
             // Act
             // It doesn't matter what's passed in here, model state is invalid.
-            var result = controller.Update("1", testActivity);
+            var result = controller.Update("1", testMembership);
 
             //Assert
             var viewResult = Assert.IsType<Microsoft.AspNetCore.Mvc.BadRequestObjectResult>(result);
@@ -181,12 +176,12 @@ namespace Tests.ControllerTests
         public void Update_Returns_Bad_Request_Given_No_Provided_ID()
         {
             // Arrange
-            var mockRepository = new Mock<IActivityRepository>();
-            var controller = new ActivitiesController(mockRepository.Object);
-            var testActivity = new Activity();
+            var mockRepository = new Mock<IMembershipRepository>();
+            var controller = new MembershipsController(mockRepository.Object);
+            var testMembership = new Membership();
 
             // Act
-            var result = controller.Update(null, testActivity);
+            var result = controller.Update(null, testMembership);
 
             //Assert
             var viewResult = Assert.IsType<Microsoft.AspNetCore.Mvc.BadRequestResult>(result);
@@ -197,15 +192,15 @@ namespace Tests.ControllerTests
         public void Update_Returns_Bad_Request_Given_Model_With_ID_Mismatch()
         {
             // Arrange
-            var mockRepository = new Mock<IActivityRepository>();
-            var controller = new ActivitiesController(mockRepository.Object);
-            var testActivity = new Activity{
-                activity_id = "2" // ID Mismatch!!
+            var mockRepository = new Mock<IMembershipRepository>();
+            var controller = new MembershipsController(mockRepository.Object);
+            var testMembership = new Membership{
+                membership_id = "2" // ID Mismatch!!
             };
 
             // Act
             // Try to update Object with ID of 1, with Object with ID of 2, should not work.
-            var result = controller.Update("1", testActivity);
+            var result = controller.Update("1", testMembership);
 
             //Assert
             var viewResult = Assert.IsType<Microsoft.AspNetCore.Mvc.BadRequestResult>(result);
@@ -216,12 +211,12 @@ namespace Tests.ControllerTests
         public void Update_Returns_Bad_Request_Given_Null_object()
         {
             // Arrange
-            var mockRepository = new Mock<IActivityRepository>();
-            var controller = new ActivitiesController(mockRepository.Object);
-            Activity testActivity = null;
+            var mockRepository = new Mock<IMembershipRepository>();
+            var controller = new MembershipsController(mockRepository.Object);
+            Membership testMembership = null;
             
             // Act
-            var result = controller.Update("1", testActivity);
+            var result = controller.Update("1", testMembership);
 
             //Assert
             var viewResult = Assert.IsType<Microsoft.AspNetCore.Mvc.BadRequestResult>(result);
@@ -235,8 +230,8 @@ namespace Tests.ControllerTests
         public void Delete_Returns_Bad_Request_Given_Invalid_Model()
         {
             // Arrange
-            var mockRepository = new Mock<IActivityRepository>();
-            var controller = new ActivitiesController(mockRepository.Object);
+            var mockRepository = new Mock<IMembershipRepository>();
+            var controller = new MembershipsController(mockRepository.Object);
             controller.ModelState.AddModelError("Error","An error occured");
     
             // Act
@@ -251,8 +246,8 @@ namespace Tests.ControllerTests
         public void Delete_Returns_Bad_Request_Given_Null_ID()
         {
             // Arrange
-            var mockRepository = new Mock<IActivityRepository>();
-            var controller = new ActivitiesController(mockRepository.Object);
+            var mockRepository = new Mock<IMembershipRepository>();
+            var controller = new MembershipsController(mockRepository.Object);
             string nullID = null;            
             
             // Act
@@ -267,10 +262,14 @@ namespace Tests.ControllerTests
         public void Delete_Returns_Bad_Request_Given_Wrong_ID()
         {
             // Arrange
-            var mockRepository = new Mock<IActivityRepository>();
-            var controller = new ActivitiesController(mockRepository.Object);
-            string id = "id-that-doesn't-exist";            
-            
+            var mockRepository = new Mock<IMembershipRepository>();
+            var controller = new MembershipsController(mockRepository.Object);
+            string id = "id-that-doesn't-exist";  
+            Membership nullMembership = null;          
+            mockRepository
+                .Setup(repo => repo.Remove(id))
+                .Returns(nullMembership);
+
             // Act
             var result = controller.Delete(id);
 
@@ -283,16 +282,16 @@ namespace Tests.ControllerTests
         public void Delete_Returns_No_Content_Given_Valid_ID()
         {
             // Arrange
-            var mockRepository = new Mock<IActivityRepository>();
-            var activity = new Activity
+            var mockRepository = new Mock<IMembershipRepository>();
+            var membership = new Membership
             {
-                activity_id = "valid_id"
+                membership_id = "valid_id"
             };
             mockRepository
                 .Setup(x => x.Remove("valid_id"))
-                .Returns(activity);
+                .Returns(membership);
 
-            var controller = new ActivitiesController(mockRepository.Object);
+            var controller = new MembershipsController(mockRepository.Object);
 
             // Act
             var result = controller.Delete("valid_id");
@@ -302,12 +301,6 @@ namespace Tests.ControllerTests
 
         }      
 
-
-    /********************************************
-     * Class for the Memberships Controller Test
-     ********************************************
-     */ 
-
-
-    }
+     }
 }
+
