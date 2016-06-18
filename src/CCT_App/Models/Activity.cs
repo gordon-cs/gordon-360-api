@@ -4,8 +4,6 @@ namespace cct_api.models
 {
     public class Activity
     {   
-        [Required]
-        [StringLengthAttribute(10, MinimumLength = 1)]
         public string activity_id { get; set; }
         [Required]
         [StringLengthAttribute(10, MinimumLength = 1)]

@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using System;
 using Microsoft.AspNetCore.Mvc;
 using cct_api.models;
 
 namespace cct_api.controllers
 {
-    [Route("api/[controller]", Name="GetActivity" )]
+    [Route("api/[controller]" )]
     public class ActivitiesController : Controller
     {
         public IActivityRepository Activities;
@@ -14,14 +15,14 @@ namespace cct_api.controllers
             Activities = activities;
         }
 
-        [RouteAttribute("")]
+        [HttpGetAttribute]
         public IEnumerable<Activity> GetAll()
         {
             return Activities.GetAll();
         }
 
-        [HttpGetAttribute("{id}")]
-        public IActionResult GetById(string id)
+        [HttpGetAttribute("{id}", Name="activity")]
+        public IActionResult GetById([FromRouteAttribute] string id)
         {
             if (!ModelState.IsValid)
             {
@@ -40,7 +41,7 @@ namespace cct_api.controllers
         }
 
         [HttpPostAttribute]
-        public IActionResult Create([FromBody] Activity activ)
+        public IActionResult Create( [FromBodyAttribute] [BindAttribute("activity_name","activity_description","activity_advisor")] Activity activ)
         {
             if (!ModelState.IsValid)
             {
@@ -48,15 +49,16 @@ namespace cct_api.controllers
             }
             if (activ == null)
             {
-                return BadRequest(activ);
+                return BadRequest();
             }
-
+            // Set the activity_id before inserting
+            activ.activity_id = Guid.NewGuid().ToString();
             Activities.Add(activ);
-            return CreatedAtRoute("GetActivity", new { controller = "Activities", id = activ.activity_id}, activ);
+            return CreatedAtRoute("activity", new { controller = "activities", id = activ.activity_id}, activ);
         }
 
-        [HttpPutAttribute("{id")]
-        public IActionResult Update(string id, [FromBodyAttribute] Activity activ)
+        [HttpPutAttribute("{id}")]
+        public IActionResult Update(string id,  [FromBodyAttribute] [BindAttribute("activity_name","activity_description","activity_advisor")] Activity activ)
         {
             if(!ModelState.IsValid)
             {
@@ -64,7 +66,7 @@ namespace cct_api.controllers
             }
             if (activ == null || activ.activity_id != id || id == null)
             {
-                return BadRequest(activ);
+                return BadRequest();
             }
 
             var activity = Activities.Find(id);

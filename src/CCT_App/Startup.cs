@@ -50,6 +50,7 @@ namespace cct_api
                 .AllowAnyMethod()
                 .AllowAnyHeader());
             app.UseMvc();
+            app.UseDefaultFiles();
             app.UseStaticFiles();
             
             

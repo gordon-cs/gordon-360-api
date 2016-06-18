@@ -121,7 +121,7 @@ namespace Tests.ControllerTests
             var result = controller.Create(activity);
             
             //Assert
-            var viewResult = Assert.IsType<Microsoft.AspNetCore.Mvc.BadRequestObjectResult>(result);
+            var viewResult = Assert.IsType<Microsoft.AspNetCore.Mvc.BadRequestResult>(result);
 
         }
         [FactAttribute]
@@ -189,7 +189,7 @@ namespace Tests.ControllerTests
             var result = controller.Update(null, testActivity);
 
             //Assert
-            var viewResult = Assert.IsType<Microsoft.AspNetCore.Mvc.BadRequestObjectResult>(result);
+            var viewResult = Assert.IsType<Microsoft.AspNetCore.Mvc.BadRequestResult>(result);
 
         }
 
@@ -208,7 +208,7 @@ namespace Tests.ControllerTests
             var result = controller.Update("1", testActivity);
 
             //Assert
-            var viewResult = Assert.IsType<Microsoft.AspNetCore.Mvc.BadRequestObjectResult>(result);
+            var viewResult = Assert.IsType<Microsoft.AspNetCore.Mvc.BadRequestResult>(result);
 
         }
 
@@ -224,7 +224,7 @@ namespace Tests.ControllerTests
             var result = controller.Update("1", testActivity);
 
             //Assert
-            var viewResult = Assert.IsType<Microsoft.AspNetCore.Mvc.BadRequestObjectResult>(result);
+            var viewResult = Assert.IsType<Microsoft.AspNetCore.Mvc.BadRequestResult>(result);
 
         }
 
