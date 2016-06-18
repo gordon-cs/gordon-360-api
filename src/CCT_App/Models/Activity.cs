@@ -4,13 +4,17 @@ namespace cct_api.models
 {
     public class Activity
     {   
-        [RequiredAttribute]    
+        [Required]
+        [StringLengthAttribute(10, MinimumLength = 1)]
         public string activity_id { get; set; }
-        [RequiredAttribute]
+        [Required]
+        [StringLengthAttribute(10, MinimumLength = 1)]
         public string activity_name { get; set; }
-        [RequiredAttribute]
+        [Required]
+        [StringLengthAttribute(10, MinimumLength = 1)]
         public string activity_advisor { get; set; }
-        [RequiredAttribute]
+        [Required]
+        [StringLengthAttribute(10, MinimumLength = 1)]
         public string activity_description { get; set; }
     }
 }

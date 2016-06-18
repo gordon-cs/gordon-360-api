@@ -11,35 +11,7 @@ namespace cct_api.models
             new ConcurrentDictionary<string, Activity>();
 
         public ActivityRepository()
-        {
-            Add(new Activity { 
-                activity_id = "activity_id_1",
-                activity_description = "A test activity",
-                activity_name = "Frisbee Golf",
-                activity_advisor = "Mr. John" 
-                });
-
-            Add(new Activity { 
-                activity_id = "activity_id_2",
-                activity_description = "A second test activity",
-                activity_name = "Go Club",
-                activity_advisor = "Mr. Smith" 
-                });
-            
-            Add(new Activity { 
-                activity_id = "activity_id_3",
-                activity_description = "A third test activity",
-                activity_name = "Fun club",
-                activity_advisor = "Mrs. Hi" 
-                });
-
-            Add(new Activity { 
-                activity_id = "activity_id_4",
-                activity_description = "A fourth test activity",
-                activity_name = "Club",
-                activity_advisor = "Miss. Yo" 
-                });
-        }
+        {}
 
         public IEnumerable<Activity> GetAll()
         {

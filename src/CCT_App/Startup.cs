@@ -29,8 +29,10 @@ namespace cct_api
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
+            services.AddCors();
+            services.AddLocalization();  
             services.AddMvc();
-            services.AddCors();            
+                     
             // Add our repository type.
             services.AddSingleton<IActivityRepository, ActivityRepository>();
             services.AddSingleton<IMembershipRepository, MembershipRepository>();

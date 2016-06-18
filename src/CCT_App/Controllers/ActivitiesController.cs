@@ -4,14 +4,16 @@ using cct_api.models;
 
 namespace cct_api.controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]", Name="GetActivity" )]
     public class ActivitiesController : Controller
     {
         public IActivityRepository Activities;
+
         public ActivitiesController(IActivityRepository activities)
         {
             Activities = activities;
         }
+
         [RouteAttribute("")]
         public IEnumerable<Activity> GetAll()
         {
@@ -21,6 +23,14 @@ namespace cct_api.controllers
         [HttpGetAttribute("{id}")]
         public IActionResult GetById(string id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(id);
+            }
+            if (id == null)
+            {
+                return BadRequest(id);
+            }
             var activity = Activities.Find(id);
             if (activity == null)
             {
@@ -30,22 +40,31 @@ namespace cct_api.controllers
         }
 
         [HttpPostAttribute]
-        public IActionResult Create([FromBodyAttribute] Activity activ)
+        public IActionResult Create([FromBody] Activity activ)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             if (activ == null)
             {
-                return BadRequest();
+                return BadRequest(activ);
             }
+
             Activities.Add(activ);
-            return CreatedAtRoute("GetActivity", new { controller = "Activity", id = activ.activity_id}, activ);
+            return CreatedAtRoute("GetActivity", new { controller = "Activities", id = activ.activity_id}, activ);
         }
 
-        [HttpPutAttribute("{id:int}")]
+        [HttpPutAttribute("{id")]
         public IActionResult Update(string id, [FromBodyAttribute] Activity activ)
         {
-            if (activ == null || activ.activity_id != id)
+            if(!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
+            }
+            if (activ == null || activ.activity_id != id || id == null)
+            {
+                return BadRequest(activ);
             }
 
             var activity = Activities.Find(id);
@@ -58,11 +77,24 @@ namespace cct_api.controllers
             return new NoContentResult();
         }
 
-
         [HttpDeleteAttribute("{id}")]
-        public void Delete(string id)
+        public IActionResult Delete(string id)
         {
-            Activities.Remove(id);
+            if(!ModelState.IsValid || id == null)
+            {
+                return BadRequest(id);
+            }
+            var result = Activities.Remove(id);
+            // No activity with that id was found
+            if (result == null)
+            {
+                return NotFound(id);
+            }
+            // Activity was found and deleted
+            else
+            {
+                return new NoContentResult();
+            }
         }
     }
 }
