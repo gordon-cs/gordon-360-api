@@ -1,5 +1,3 @@
-$testUrl = "http://ipinfo.io/json";
-$test2Url = "http://ccttrain.gordon.edu";
 // Base API Url
 //$apiUrl = "http://localhost:5000/api"
 $apiUrl = "http://ccttrain.gordon.edu/api";
@@ -12,70 +10,55 @@ $loginUrl = $apiUrl + "/authentication";
 
 $username = null;
 
-// Show table of data
+// Show Table of Data
 function populateTable(data) {
     data = JSON.parse(data);
-
     document.getElementById("tableBody").innerHTML = "";
+    var tableHead = document.getElementById("tableHead");
     var tableBody = document.getElementById("tableBody");
-
-    if (data.length == undefined) {
-        tableHeaderRow = document.createElement("tr");
-        for (var key in data) {
-            var tableHeader = document.createElement("th");
-            tableHeader.appendChild(document.createTextNode(key));
-            tableHeaderRow.appendChild(tableHeader);
-        }
-        tableBody.appendChild(tableHeaderRow);
+    // Add the Header Row to the Table
+    function addHeader(item) {
         var tableRow = document.createElement("tr");
-        for (var key in data) {
-            if (data.hasOwnProperty(key)) {
-                var item = data[key];
-
-                var tableItem = document.createElement("td");
-                tableItem.appendChild(document.createTextNode(item));
-
-                tableRow.appendChild(tableItem);
-            }
+        for (var key in item) {
+            var tableItem = document.createElement("th");
+            tableItem.appendChild(document.createTextNode(key));
+            tableRow.appendChild(tableItem);
         }
         tableBody.appendChild(tableRow);
     }
-    else {
-        tableHeaderRow = document.createElement("tr");
-        for (var key in data[0]) {
-            var tableHeader = document.createElement("th");
-            tableHeader.appendChild(document.createTextNode(key));
-            tableHeaderRow.appendChild(tableHeader);
+    // Add a Single Row to the Table
+    function addItem(item) {
+        var tableRow = document.createElement("tr");
+        for (var key in item) {
+            var value = item[key];
+            var tableItem = document.createElement("td");
+            tableItem.appendChild(document.createTextNode(value));
+            tableRow.appendChild(tableItem);
         }
-        tableBody.appendChild(tableHeaderRow);
+        tableBody.appendChild(tableRow);
+    }
+    // Function Called With a Single JSON Object
+    if (data.length == undefined) {
+        addHeader(data);
+        addItem(data);
+    }
+    // Function Called With an array of JSON Objects
+    else if (data.length > 0) {
+        addHeader(data[0]);
         for (var i = 0; i < data.length; i ++) {
-            var tableRow = document.createElement("tr");
-            for (var key in data[i]) {
-                if (data[i].hasOwnProperty(key)) {
-                    var item = data[i][key];
-
-                    var tableItem = document.createElement("td");
-                    tableItem.appendChild(document.createTextNode(item));
-
-                    tableRow.appendChild(tableItem);
-                }
-            }
-            tableBody.appendChild(tableRow);
+            addItem(data[i]);
         }
     }
-}
-
-// Test Get Request
-function test() {
-    sendGetRequest($testUrl);
+    // Function Called with Nothing
+    else {
+        addItem({"null": null});
+    }
 }
 
 // Login
 function login(username) {
     $username = username;
-
     sendPostRequest($loginUrl, username);
-
     document.getElementById("username").style.display = "none";
     document.getElementById("loginButton").style.display = "none";
     document.getElementById("name").innerHTML = "Hello, " + username;
