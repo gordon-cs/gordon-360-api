@@ -1,24 +1,102 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>Sample Log In Page</title>
-  </head>
-  <body>
-    <div class="wrapper">
-      <div>
-	<h1>Log in</h1>
-      </div>
-      <div>
-	<form action="">
-	  <label for="email-field">Email Address</label>
-	  <input type="email" id="email-field" name="email">
-	  <label><a href="">Forgot password?</a></label>
-	  <label for="password-field">Password</label>
-	  <input type="password" id="password-field" name="password">
-	  <button name="sign-in-button" type="submit">Sign In</button>
-	</form>
-      </div>
-    </div>
-  </body>
-  
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>API Request Test</title>
+
+		<script src="api-calls.js"></script>
+
+		<link rel="stylesheet" href="css/skeleton.css">
+		<link rel="stylesheet" href="css/normalize.css">
+	</head>
+	<body>
+		</br>
+		<div class="container">
+			<div class="row">
+				<input class="three colummns" id="username" placeholder="username">
+				<button type="button" id="loginButton"
+					onclick="login(document.getElementById('username').value)">
+						Login
+				</button>
+				<p id="name"></p>
+			</div>
+		</div>
+		<!-- Activities -->
+		<div class="container">
+			<!-- All Activities -->
+			<h4>Activities</h4>
+			<!-- Get -->
+			<div class="row">
+				<button type="button" class="three columns"
+					onclick="getActivities()">
+						Get All Activities
+				</button>
+			</div>
+
+			<!-- Single Activity -->
+			<!-- Get -->
+			<div class="row">
+				<button type="button" class="three columns"
+					onclick="getActivity(document.getElementById('activityGetId').value)">
+						Get Activity
+				</button>
+				<input class="three columns" id="activityGetId" placeholder="Activity ID">
+			</div>
+			<!-- Post -->
+			<div class="row">
+				<button type="button" class="three columns"
+					onclick="postActivity(document.getElementById('activityPostName').value,
+					document.getElementById('activityPostAdvisor').value,
+					document.getElementById('activityPostDescription').value)">
+						Post Activity
+				</button>
+				<input class="three columns" id="activityPostName" placeholder="Activity Name">
+				<input class="three columns" id="activityPostAdvisor" placeholder="Activity Advisor">
+				<input class="three columns" id="activityPostDescription" placeholder="Activity Description">
+			</div>
+		</div>
+
+		<!-- All Memberships -->
+		<div class="container">
+			<h4>Memberships</h4>
+			<!-- Get -->
+			<div class="row">
+				<button type="button" class="three columns"
+					onclick="getMemberships()">
+						Get All Memberships
+				</button>
+			</div>
+
+			<!-- Single Membership -->
+			<!-- Get -->
+			<div class="row">
+				<button type="button" class="three columns"
+					onclick="getMembership(document.getElementById('membershipGetId').value)">
+						Get Membership
+				</button>
+				<input class="three columns" id="membershipGetId" placeholder="Membership ID">
+				</br>
+			</div>
+			<!-- Post -->
+			<div class="row">
+				<button type="button" class="three columns"
+					onclick="postMembership(document.getElementById('membershipPostStudentId').value,
+					document.getElementById('membershipPostActivityId').value,
+					document.getElementById('membershipPostLevel').value)">
+						Post Membership
+				</button>
+				<input class="three columns" id="membershipPostStudentId" placeholder="Student ID">
+				<input class="three columns" id="membershipPostActivityId" placeholder="Activity ID">
+				<input class="three columns" id="membershipPostLevel" placeholder="Membership Level">
+			</div>
+		</div>
+
+		<!-- Table -->
+		<div class="container">
+			<table id="table" border="1" style="width:100%">
+				<tbody id="tableBody">
+				<tbody>
+			</table>
+		</div>
+	</body>
 </html>
