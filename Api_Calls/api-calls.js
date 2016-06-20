@@ -6,14 +6,35 @@ $apiUrl = "http://ccttrain.gordon.edu/api";
 $activityUrl = $apiUrl + "/activities";
 // Membershup Url
 $membershipUrl = $apiUrl + "/memberships";
+// Login
+$loginUrl = $apiUrl + "/authentication";
+
+$username = null;
 
 // Displays Text On Page
 function show(text) {
     document.getElementById("p1").innerHTML = text;
 }
 
+// Test Get Request
 function test() {
     sendGetRequest($testUrl);
+}
+
+// Login
+function login(username) {
+    $username = username;
+    document.getElementById("username").style.display = "none";
+    document.getElementById("loginButton").style.display = "none";
+    document.getElementById("name").innerHTML = "Hello, " + username;
+
+    /*var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200)
+            show(xhr.responseText);
+    }
+    xhr.open("GET", url, true);
+    xhr.send(username);*/
 }
 
 // Get All Activities
@@ -39,14 +60,15 @@ function getMembership(membershipId) {
 }
 
 // Post Single Activity
-function postActivity(activityName, activityAdvisor, activityDescription) {
+function postActivity(activityId, activityName, activityAdvisor, activityDescription) {
     var activity = {
+        "activity_id": activityId,
         "activity_name": activityName,
         "activity_advisor": activityAdvisor,
         "activity_description": activityDescription
     }
     alert(JSON.stringify(activity));
-    sendPostRequest($activityUrl, activity);
+    sendPostRequest($activityUrl, JSON.stringify(activity));
 }
 
 // Post Aingle Membership
@@ -79,6 +101,6 @@ function sendPostRequest(url, data) {
             show(xhr.responseText);
     }
     xhr.open("POST", url, true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.send(data);
 }
