@@ -5,22 +5,23 @@ using cct_api.models;
 
 namespace cct_api.controllers
 {
+    // All urls of the form "api/controllername" get routed to this class.
     [Route("api/[controller]" )]
     public class ActivitiesController : Controller
     {
         public IActivityRepository Activities;
-
+        // Constructor for the controller
         public ActivitiesController(IActivityRepository activities)
         {
             Activities = activities;
         }
-
+        // A url of the form GET /api/activities gets routed here.
         [HttpGetAttribute]
         public IEnumerable<Activity> GetAll()
         {
             return Activities.GetAll();
         }
-
+        // A url of the form GET /api/activities/:id gets routed here.
         [HttpGetAttribute("{id}", Name="activity")]
         public IActionResult GetById([FromRouteAttribute] string id)
         {
@@ -40,6 +41,7 @@ namespace cct_api.controllers
             return new ObjectResult(activity);
         }
 
+        // A post request to api/activies gets routed here. Post request must have content-type of application/json
         [HttpPostAttribute]
         public IActionResult Create([FromBodyAttribute] Activity activ)
         {
@@ -57,6 +59,7 @@ namespace cct_api.controllers
             return CreatedAtRoute("activity", new { controller = "activities", id = activ.activity_id}, activ);
         }
 
+        // Put requests to api/activities/:id get routed here.
         [HttpPutAttribute("{id}")]
         public IActionResult Update(string id,  [FromBodyAttribute] Activity activ)
         {
@@ -79,6 +82,7 @@ namespace cct_api.controllers
             return new NoContentResult();
         }
 
+        // Delete requests to api/activitites/:id get routed here.
         [HttpDeleteAttribute("{id}")]
         public IActionResult Delete(string id)
         {
