@@ -1,7 +1,8 @@
 $testUrl = "http://ipinfo.io/json";
 $test2Url = "http://ccttrain.gordon.edu";
 // Base API Url
-$apiUrl = "http://ccttrain.gordon.edu/api";
+$apiUrl = "http://localhost:5000/api"
+//$apiUrl = "http://ccttrain.gordon.edu/api";
 // Acitivity Url
 $activityUrl = $apiUrl + "/activities";
 // Membershup Url
@@ -24,17 +25,12 @@ function test() {
 // Login
 function login(username) {
     $username = username;
+
+    sendPostRequest($loginUrl, username);
+
     document.getElementById("username").style.display = "none";
     document.getElementById("loginButton").style.display = "none";
     document.getElementById("name").innerHTML = "Hello, " + username;
-
-    /*var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4 && xhr.status == 200)
-            show(xhr.responseText);
-    }
-    xhr.open("GET", url, true);
-    xhr.send(username);*/
 }
 
 // Get All Activities
@@ -60,9 +56,8 @@ function getMembership(membershipId) {
 }
 
 // Post Single Activity
-function postActivity(activityId, activityName, activityAdvisor, activityDescription) {
+function postActivity(activityName, activityAdvisor, activityDescription) {
     var activity = {
-        "activity_id": activityId,
         "activity_name": activityName,
         "activity_advisor": activityAdvisor,
         "activity_description": activityDescription
@@ -79,7 +74,7 @@ function postMembership(studentId, activityId, membershipLevel) {
         "membership_level": membershipLevel
     }
     alert(JSON.stringify(membership));
-    sendPostRequest($membershipUrl, membership);
+    sendPostRequest($membershipUrl, JSON.stringify(membership));
 }
 
 // Get Request
@@ -101,6 +96,6 @@ function sendPostRequest(url, data) {
             show(xhr.responseText);
     }
     xhr.open("POST", url, true);
-    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.setRequestHeader("Content-type", "application/json");
     xhr.send(data);
 }
