@@ -1,5 +1,3 @@
-$testUrl = "http://ipinfo.io/json";
-$test2Url = "http://ccttrain.gordon.edu";
 // Base API Url
 //$apiUrl = "http://localhost:5000/api"
 $apiUrl = "http://ccttrain.gordon.edu/api";
@@ -63,11 +61,6 @@ function populateTable(data) {
             tableBody.appendChild(tableRow);
         }
     }
-}
-
-// Test Get Request
-function test() {
-    sendGetRequest($testUrl);
 }
 
 // Login
