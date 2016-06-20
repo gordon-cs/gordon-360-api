@@ -1,8 +1,8 @@
 $testUrl = "http://ipinfo.io/json";
 $test2Url = "http://ccttrain.gordon.edu";
 // Base API Url
-$apiUrl = "http://localhost:5000/api"
-//$apiUrl = "http://ccttrain.gordon.edu/api";
+//$apiUrl = "http://localhost:5000/api"
+$apiUrl = "http://ccttrain.gordon.edu/api";
 // Acitivity Url
 $activityUrl = $apiUrl + "/activities";
 // Membershup Url
@@ -12,9 +12,57 @@ $loginUrl = $apiUrl + "/authentication";
 
 $username = null;
 
-// Displays Text On Page
-function show(text) {
-    document.getElementById("p1").innerHTML = text;
+// Show table of data
+function populateTable(data) {
+    data = JSON.parse(data);
+
+    document.getElementById("tableBody").innerHTML = "";
+    var tableBody = document.getElementById("tableBody");
+
+    if (data.length == undefined) {
+        tableHeaderRow = document.createElement("tr");
+        for (var key in data) {
+            var tableHeader = document.createElement("th");
+            tableHeader.appendChild(document.createTextNode(key));
+            tableHeaderRow.appendChild(tableHeader);
+        }
+        tableBody.appendChild(tableHeaderRow);
+        var tableRow = document.createElement("tr");
+        for (var key in data) {
+            if (data.hasOwnProperty(key)) {
+                var item = data[key];
+
+                var tableItem = document.createElement("td");
+                tableItem.appendChild(document.createTextNode(item));
+
+                tableRow.appendChild(tableItem);
+            }
+        }
+        tableBody.appendChild(tableRow);
+    }
+    else {
+        tableHeaderRow = document.createElement("tr");
+        for (var key in data[0]) {
+            var tableHeader = document.createElement("th");
+            tableHeader.appendChild(document.createTextNode(key));
+            tableHeaderRow.appendChild(tableHeader);
+        }
+        tableBody.appendChild(tableHeaderRow);
+        for (var i = 0; i < data.length; i ++) {
+            var tableRow = document.createElement("tr");
+            for (var key in data[i]) {
+                if (data[i].hasOwnProperty(key)) {
+                    var item = data[i][key];
+
+                    var tableItem = document.createElement("td");
+                    tableItem.appendChild(document.createTextNode(item));
+
+                    tableRow.appendChild(tableItem);
+                }
+            }
+            tableBody.appendChild(tableRow);
+        }
+    }
 }
 
 // Test Get Request
@@ -45,14 +93,14 @@ function getMemberships() {
 
 // Get Single Acitivty
 function getActivity(activityId) {
-    alert ($activityUrl + "/" + activityId);
     sendGetRequest($activityUrl + "/" + activityId);
+    document.getElementById("activityGetId").value = "";
 }
 
 // Get Single Membership
 function getMembership(membershipId) {
-    alert($membershipUrl + "/" + membershipId);
     sendGetRequest($membershipUrl + "/" + membershipId);
+    document.getElementById("membershipGetId").value = "";
 }
 
 // Post Single Activity
@@ -62,19 +110,23 @@ function postActivity(activityName, activityAdvisor, activityDescription) {
         "activity_advisor": activityAdvisor,
         "activity_description": activityDescription
     }
-    alert(JSON.stringify(activity));
     sendPostRequest($activityUrl, JSON.stringify(activity));
+    document.getElementById("activityPostName").value = "";
+    document.getElementById("activityPostAdvisor").value = "";
+    document.getElementById("activityPostDescription").value = "";
 }
 
-// Post Aingle Membership
+// Post Single Membership
 function postMembership(studentId, activityId, membershipLevel) {
     var membership = {
         "student_id": studentId,
         "activity_id": activityId,
         "membership_level": membershipLevel
     }
-    alert(JSON.stringify(membership));
     sendPostRequest($membershipUrl, JSON.stringify(membership));
+    document.getElementById("membershipPostStudentId").value = "";
+    document.getElementById("membershipPostActivityId").value = "";
+    document.getElementById("membershipPostLevel").value = "";
 }
 
 // Get Request
@@ -82,7 +134,8 @@ function sendGetRequest(url) {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 200)
-            show(xhr.responseText);
+            //show(xhr.responseText);
+            populateTable(xhr.responseText);
     }
     xhr.open("GET", url, true);
     xhr.send();
