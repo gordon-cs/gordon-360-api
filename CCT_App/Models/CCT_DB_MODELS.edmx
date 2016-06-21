@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="CCTModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="CCTModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="JNZB_ACTIVITIES">
           <Key>
             <PropertyRef Name="ENTRY_ID" />
@@ -31,7 +31,7 @@
           <Property Name="MEMBERSHIP_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ACT_CDE" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="SESSION_CDE" Type="varchar" MaxLength="10" Nullable="false" />
-          <Property Name="STUDENT_ID" Type="int" Nullable="false" />
+          <Property Name="ID_NUM" Type="int" Nullable="false" />
           <Property Name="PART_LVL" Type="varchar" MaxLength="30" Nullable="false" />
           <Property Name="BEGIN_DTE" Type="smalldatetime" Nullable="false" />
           <Property Name="END_DTE" Type="smalldatetime" />
@@ -51,16 +51,6 @@
           <Property Name="JOB_NAME" Type="varchar" MaxLength="10" />
           <Property Name="JOB_TIME" Type="datetime" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6013: The table/view 'CCT.dbo.ACCOUNT' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
-        <EntityType Name="ACCOUNT">
-          <Property Name="gordon_id" Type="varchar" MaxLength="10" />
-          <Property Name="firstname" Type="varchar" MaxLength="50" />
-          <Property Name="lastname" Type="varchar" MaxLength="50" />
-          <Property Name="email" Type="varchar" MaxLength="50" />
-          <Property Name="AD_Username" Type="varchar" MaxLength="50" />
-          <Property Name="account_type" Type="varchar" MaxLength="20" />
-        </EntityType>-->
         <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.ACT_CLUB_DEF' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ACT_CLUB_DEF">
@@ -82,14 +72,6 @@ warning 6002: The table/view 'CCT.dbo.CM_SESSION_MSTR' does not have a primary k
           <Property Name="SESS_END_DTE" Type="datetime" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6013: The table/view 'CCT.dbo.Faculty' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
-        <EntityType Name="Faculty">
-          <Property Name="faculty_id" Type="varchar" MaxLength="10" />
-          <Property Name="faculty_name" Type="varchar" MaxLength="101" />
-          <Property Name="faculty_email" Type="varchar" MaxLength="50" />
-          <Property Name="user_name" Type="varchar" MaxLength="50" />
-        </EntityType>-->
-        <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.PART_DEF' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="PART_DEF">
           <Key>
@@ -99,22 +81,6 @@ warning 6002: The table/view 'CCT.dbo.PART_DEF' does not have a primary key defi
           <Property Name="PART_CDE" Type="char" MaxLength="5" Nullable="false" />
           <Property Name="PART_DESC" Type="char" MaxLength="45" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6013: The table/view 'CCT.dbo.Staff' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
-        <EntityType Name="Staff">
-          <Property Name="staff_id" Type="varchar" MaxLength="10" />
-          <Property Name="staff_name" Type="varchar" MaxLength="101" />
-          <Property Name="staff_email" Type="varchar" MaxLength="50" />
-          <Property Name="user_name" Type="varchar" MaxLength="50" />
-        </EntityType>-->
-        <!--Errors Found During Generation:
-warning 6013: The table/view 'CCT.dbo.Student' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
-        <EntityType Name="Student">
-          <Property Name="student_id" Type="varchar" MaxLength="10" />
-          <Property Name="student_name" Type="varchar" MaxLength="101" />
-          <Property Name="student_email" Type="varchar" MaxLength="50" />
-          <Property Name="user_name" Type="varchar" MaxLength="50" />
-        </EntityType>-->
         <Function Name="ACTIVE_CLUBS_PER_SESS_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="SESS_CDE" Type="char" Mode="In" />
         </Function>
@@ -143,8 +109,7 @@ warning 6013: The table/view 'CCT.dbo.Student' does not have a primary key defin
     FROM [dbo].[PART_DEF] AS [PART_DEF]</DefiningQuery>
           </EntitySet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="CCTModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -174,7 +139,6 @@ warning 6013: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="MEMBERSHIP_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ACT_CDE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="SESSION_CDE" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="STUDENT_ID" Type="Int32" Nullable="false" />
           <Property Name="PART_LVL" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="BEGIN_DTE" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="END_DTE" Type="DateTime" Precision="0" />
@@ -182,6 +146,7 @@ warning 6013: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="USER_NAME" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="JOB_NAME" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="JOB_TIME" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ID_NUM" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="SUPERVISOR">
           <Key>
@@ -226,7 +191,7 @@ warning 6013: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="CM_SESSION_MSTR" EntityType="Self.CM_SESSION_MSTR" />
           <EntitySet Name="PART_DEF" EntityType="Self.PART_DEF" />
           <FunctionImport Name="ACTIVE_CLUBS_PER_SESS_ID" ReturnType="Collection(CCTModel.ACTIVE_CLUBS_PER_SESS_ID_Result)">
-            <Parameter Name="SESS_CDE" Mode="In" Type="String" />
+          <Parameter Name="SESS_CDE" Mode="In" Type="String" />
           </FunctionImport>
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
@@ -262,10 +227,10 @@ warning 6013: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="Memberships">
             <EntityTypeMapping TypeName="CCTModel.Membership">
               <MappingFragment StoreEntitySet="Membership">
+                <ScalarProperty Name="ID_NUM" ColumnName="ID_NUM" />
                 <ScalarProperty Name="MEMBERSHIP_ID" ColumnName="MEMBERSHIP_ID" />
                 <ScalarProperty Name="ACT_CDE" ColumnName="ACT_CDE" />
                 <ScalarProperty Name="SESSION_CDE" ColumnName="SESSION_CDE" />
-                <ScalarProperty Name="STUDENT_ID" ColumnName="STUDENT_ID" />
                 <ScalarProperty Name="PART_LVL" ColumnName="PART_LVL" />
                 <ScalarProperty Name="BEGIN_DTE" ColumnName="BEGIN_DTE" />
                 <ScalarProperty Name="END_DTE" ColumnName="END_DTE" />

@@ -45,6 +45,7 @@ namespace CCT_App.Controllers
             }
             membership.MEMBERSHIP_ID = cct_db_context.Memberships.Count();
             cct_db_context.Memberships.Add(membership);
+            cct_db_context.SaveChanges();
 
             var routeName = Request.RequestUri.ToString(); 
             var routeValue = membership.MEMBERSHIP_ID.ToString();
