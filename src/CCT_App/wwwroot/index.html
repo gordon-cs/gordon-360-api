@@ -80,14 +80,20 @@
 			<!-- Post -->
 			<div class="row">
 				<button type="button" class="three columns"
-					onclick="postMembership(document.getElementById('membershipPostStudentId').value,
-					document.getElementById('membershipPostActivityId').value,
-					document.getElementById('membershipPostLevel').value)">
+					onclick="postMembership(
+						document.getElementById('membershipPostStudentId').value,
+						document.getElementById('membershipPostActivityId').value,
+						document.getElementById('membershipPostLevel').value,
+						document.getElementById('membershipPostSessionId').value,
+						document.getElementById('membershipPostComments').value
+					)">
 						Post Membership
 				</button>
 				<input class="three columns" id="membershipPostStudentId" placeholder="Student ID">
 				<input class="three columns" id="membershipPostActivityId" placeholder="Activity ID">
 				<input class="three columns" id="membershipPostLevel" placeholder="Membership Level">
+				<input class="three columns" id="membershipPostSessionId" placeholder="Session ID">
+				<input class="three columns" id="membershipPostComments" placeholder="Comments (optional)">
 			</div>
 		</div>
 

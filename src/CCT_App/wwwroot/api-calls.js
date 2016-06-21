@@ -49,9 +49,9 @@ function populateTable(data) {
             addItem(data[i]);
         }
     }
-    // Function Called with Nothing
+    // Function Called with Empty Array
     else {
-        addItem({"null": null});
+        addItem({"Response": "Nothing Found"});
     }
 }
 
@@ -76,40 +76,64 @@ function getMemberships() {
 
 // Get Single Acitivty
 function getActivity(activityId) {
-    sendGetRequest($activityUrl + "/" + activityId);
-    document.getElementById("activityGetId").value = "";
+    if (activityId == "") {
+        alert("Please enter all fields!");
+    }
+    else {
+        sendGetRequest($activityUrl + "/" + activityId);
+        document.getElementById("activityGetId").value = "";
+    }
 }
 
 // Get Single Membership
 function getMembership(membershipId) {
-    sendGetRequest($membershipUrl + "/" + membershipId);
-    document.getElementById("membershipGetId").value = "";
+    if (membershipId == "") {
+        alert("Please enter all fields!");
+    }
+    else {
+        sendGetRequest($membershipUrl + "/" + membershipId);
+        document.getElementById("membershipGetId").value = "";
+    }
 }
 
 // Post Single Activity
 function postActivity(activityName, activityAdvisor, activityDescription) {
-    var activity = {
-        "activity_name": activityName,
-        "activity_advisor": activityAdvisor,
-        "activity_description": activityDescription
+    if (activityName == "" || activityAdvisor == "" || activityDescription == "") {
+        alert("Please enter all fields!");
     }
-    sendPostRequest($activityUrl, JSON.stringify(activity));
-    document.getElementById("activityPostName").value = "";
-    document.getElementById("activityPostAdvisor").value = "";
-    document.getElementById("activityPostDescription").value = "";
+    else {
+        var activity = {
+            "activity_name": activityName,
+            "activity_advisor": activityAdvisor,
+            "activity_description": activityDescription
+        }
+        sendPostRequest($activityUrl, JSON.stringify(activity));
+        document.getElementById("activityPostName").value = "";
+        document.getElementById("activityPostAdvisor").value = "";
+        document.getElementById("activityPostDescription").value = "";
+    }
 }
 
 // Post Single Membership
-function postMembership(studentId, activityId, membershipLevel) {
-    var membership = {
-        "student_id": studentId,
-        "activity_id": activityId,
-        "membership_level": membershipLevel
+function postMembership(studentId, activityId, membershipLevel, sessionId, comments) {
+    if (studentId == "" || activityId == "" || membershiplevel == "" || sessionId == "") {
+        alert("Please enter all fields! (comments optional)");
     }
-    sendPostRequest($membershipUrl, JSON.stringify(membership));
-    document.getElementById("membershipPostStudentId").value = "";
-    document.getElementById("membershipPostActivityId").value = "";
-    document.getElementById("membershipPostLevel").value = "";
+    else {
+        var membership = {
+            "student_id": studentId,
+            "activity_id": activityId,
+            "membership_level": membershipLevel,
+            "session_id": sessionId,
+            "comments": comments
+        }
+        sendPostRequest($membershipUrl, JSON.stringify(membership));
+        document.getElementById("membershipPostStudentId").value = "";
+        document.getElementById("membershipPostActivityId").value = "";
+        document.getElementById("membershipPostLevel").value = "";
+        document.getElementById("membershipPostSessionId").value = "";
+        document.getElementById("membershipPostComments").value = "";
+    }
 }
 
 // Get Request
@@ -117,7 +141,6 @@ function sendGetRequest(url) {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 200)
-            //show(xhr.responseText);
             populateTable(xhr.responseText);
     }
     xhr.open("GET", url, true);
