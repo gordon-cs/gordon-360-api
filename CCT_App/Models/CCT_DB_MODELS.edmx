@@ -1,0 +1,348 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="CCTModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="JNZB_ACTIVITIES">
+          <Key>
+            <PropertyRef Name="ENTRY_ID" />
+          </Key>
+          <Property Name="ENTRY_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SESS_CDE" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="ACT_CDE" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="ID_NUM" Type="int" Nullable="false" />
+          <Property Name="PART_CDE" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="MEMBERSHIP_STS" Type="bit" Nullable="false" />
+          <Property Name="TRACK_MTG_ATTEND" Type="bit" Nullable="false" />
+          <Property Name="BEGIN_DTE" Type="smalldatetime" Nullable="false" />
+          <Property Name="END_DTE" Type="smalldatetime" Nullable="false" />
+          <Property Name="COMMENT_TXT" Type="varchar" MaxLength="45" />
+          <Property Name="INCL_PROFILE_RPT" Type="bit" Nullable="false" />
+          <Property Name="USER_NAME" Type="varchar" MaxLength="20" />
+          <Property Name="USER_JOB" Type="varchar" MaxLength="20" />
+          <Property Name="JOB_TIME" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Membership">
+          <Key>
+            <PropertyRef Name="MEMBERSHIP_ID" />
+          </Key>
+          <Property Name="MEMBERSHIP_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ACT_CDE" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="SESSION_CDE" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="STUDENT_ID" Type="int" Nullable="false" />
+          <Property Name="PART_LVL" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="BEGIN_DTE" Type="smalldatetime" Nullable="false" />
+          <Property Name="END_DTE" Type="smalldatetime" />
+          <Property Name="DESCRIPTION" Type="varchar(max)" />
+          <Property Name="USER_NAME" Type="varchar" MaxLength="20" />
+          <Property Name="JOB_NAME" Type="varchar" MaxLength="10" />
+          <Property Name="JOB_TIME" Type="varchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="SUPERVISOR">
+          <Key>
+            <PropertyRef Name="SUP_ID" />
+          </Key>
+          <Property Name="SUP_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ID_NUM" Type="int" Nullable="false" />
+          <Property Name="ACT_CDE" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="USER_NAME" Type="varchar" MaxLength="10" />
+          <Property Name="JOB_NAME" Type="varchar" MaxLength="10" />
+          <Property Name="JOB_TIME" Type="datetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6013: The table/view 'CCT.dbo.ACCOUNT' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="ACCOUNT">
+          <Property Name="gordon_id" Type="varchar" MaxLength="10" />
+          <Property Name="firstname" Type="varchar" MaxLength="50" />
+          <Property Name="lastname" Type="varchar" MaxLength="50" />
+          <Property Name="email" Type="varchar" MaxLength="50" />
+          <Property Name="AD_Username" Type="varchar" MaxLength="50" />
+          <Property Name="account_type" Type="varchar" MaxLength="20" />
+        </EntityType>-->
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'CCT.dbo.ACT_CLUB_DEF' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ACT_CLUB_DEF">
+          <Key>
+            <PropertyRef Name="ACT_CDE" />
+          </Key>
+          <Property Name="ACT_CDE" Type="char" MaxLength="8" Nullable="false" />
+          <Property Name="ACT_DESC" Type="char" MaxLength="45" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'CCT.dbo.CM_SESSION_MSTR' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="CM_SESSION_MSTR">
+          <Key>
+            <PropertyRef Name="SESS_CDE" />
+          </Key>
+          <Property Name="SESS_CDE" Type="char" MaxLength="8" Nullable="false" />
+          <Property Name="SESS_DESC" Type="varchar" MaxLength="60" />
+          <Property Name="SESS_BEGN_DTE" Type="datetime" />
+          <Property Name="SESS_END_DTE" Type="datetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6013: The table/view 'CCT.dbo.Faculty' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="Faculty">
+          <Property Name="faculty_id" Type="varchar" MaxLength="10" />
+          <Property Name="faculty_name" Type="varchar" MaxLength="101" />
+          <Property Name="faculty_email" Type="varchar" MaxLength="50" />
+          <Property Name="user_name" Type="varchar" MaxLength="50" />
+        </EntityType>-->
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'CCT.dbo.PART_DEF' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="PART_DEF">
+          <Key>
+            <PropertyRef Name="PART_CDE" />
+            <PropertyRef Name="PART_DESC" />
+          </Key>
+          <Property Name="PART_CDE" Type="char" MaxLength="5" Nullable="false" />
+          <Property Name="PART_DESC" Type="char" MaxLength="45" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6013: The table/view 'CCT.dbo.Staff' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="Staff">
+          <Property Name="staff_id" Type="varchar" MaxLength="10" />
+          <Property Name="staff_name" Type="varchar" MaxLength="101" />
+          <Property Name="staff_email" Type="varchar" MaxLength="50" />
+          <Property Name="user_name" Type="varchar" MaxLength="50" />
+        </EntityType>-->
+        <!--Errors Found During Generation:
+warning 6013: The table/view 'CCT.dbo.Student' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="Student">
+          <Property Name="student_id" Type="varchar" MaxLength="10" />
+          <Property Name="student_name" Type="varchar" MaxLength="101" />
+          <Property Name="student_email" Type="varchar" MaxLength="50" />
+          <Property Name="user_name" Type="varchar" MaxLength="50" />
+        </EntityType>-->
+        <Function Name="ACTIVE_CLUBS_PER_SESS_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="SESS_CDE" Type="char" Mode="In" />
+        </Function>
+        <EntityContainer Name="CCTModelStoreContainer">
+          <EntitySet Name="JNZB_ACTIVITIES" EntityType="Self.JNZB_ACTIVITIES" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Membership" EntityType="Self.Membership" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SUPERVISOR" EntityType="Self.SUPERVISOR" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ACT_CLUB_DEF" EntityType="Self.ACT_CLUB_DEF" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ACT_CLUB_DEF].[ACT_CDE] AS [ACT_CDE], 
+    [ACT_CLUB_DEF].[ACT_DESC] AS [ACT_DESC]
+    FROM [dbo].[ACT_CLUB_DEF] AS [ACT_CLUB_DEF]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="CM_SESSION_MSTR" EntityType="Self.CM_SESSION_MSTR" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [CM_SESSION_MSTR].[SESS_CDE] AS [SESS_CDE], 
+    [CM_SESSION_MSTR].[SESS_DESC] AS [SESS_DESC], 
+    [CM_SESSION_MSTR].[SESS_BEGN_DTE] AS [SESS_BEGN_DTE], 
+    [CM_SESSION_MSTR].[SESS_END_DTE] AS [SESS_END_DTE]
+    FROM [dbo].[CM_SESSION_MSTR] AS [CM_SESSION_MSTR]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="PART_DEF" EntityType="Self.PART_DEF" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [PART_DEF].[PART_CDE] AS [PART_CDE], 
+    [PART_DEF].[PART_DESC] AS [PART_DESC]
+    FROM [dbo].[PART_DEF] AS [PART_DEF]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="CCTModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="JNZB_ACTIVITIES">
+          <Key>
+            <PropertyRef Name="ENTRY_ID" />
+          </Key>
+          <Property Name="ENTRY_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SESS_CDE" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ACT_CDE" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ID_NUM" Type="Int32" Nullable="false" />
+          <Property Name="PART_CDE" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="MEMBERSHIP_STS" Type="Boolean" Nullable="false" />
+          <Property Name="TRACK_MTG_ATTEND" Type="Boolean" Nullable="false" />
+          <Property Name="BEGIN_DTE" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="END_DTE" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="COMMENT_TXT" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="INCL_PROFILE_RPT" Type="Boolean" Nullable="false" />
+          <Property Name="USER_NAME" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="USER_JOB" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="JOB_TIME" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Membership">
+          <Key>
+            <PropertyRef Name="MEMBERSHIP_ID" />
+          </Key>
+          <Property Name="MEMBERSHIP_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ACT_CDE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="SESSION_CDE" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="STUDENT_ID" Type="Int32" Nullable="false" />
+          <Property Name="PART_LVL" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="BEGIN_DTE" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="END_DTE" Type="DateTime" Precision="0" />
+          <Property Name="DESCRIPTION" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="USER_NAME" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="JOB_NAME" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="JOB_TIME" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="SUPERVISOR">
+          <Key>
+            <PropertyRef Name="SUP_ID" />
+          </Key>
+          <Property Name="SUP_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID_NUM" Type="Int32" Nullable="false" />
+          <Property Name="ACT_CDE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="USER_NAME" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="JOB_NAME" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="JOB_TIME" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="ACT_CLUB_DEF">
+          <Key>
+            <PropertyRef Name="ACT_CDE" />
+          </Key>
+          <Property Name="ACT_CDE" Type="String" MaxLength="8" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="ACT_DESC" Type="String" MaxLength="45" FixedLength="true" Unicode="false" />
+        </EntityType>
+        <EntityType Name="CM_SESSION_MSTR">
+          <Key>
+            <PropertyRef Name="SESS_CDE" />
+          </Key>
+          <Property Name="SESS_CDE" Type="String" MaxLength="8" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="SESS_DESC" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="SESS_BEGN_DTE" Type="DateTime" Precision="3" />
+          <Property Name="SESS_END_DTE" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="PART_DEF">
+          <Key>
+            <PropertyRef Name="PART_CDE" />
+            <PropertyRef Name="PART_DESC" />
+          </Key>
+          <Property Name="PART_CDE" Type="String" MaxLength="5" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="PART_DESC" Type="String" MaxLength="45" FixedLength="true" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="CCTEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="JNZB_ACTIVITIES" EntityType="Self.JNZB_ACTIVITIES" />
+          <EntitySet Name="Memberships" EntityType="Self.Membership" />
+          <EntitySet Name="SUPERVISORs" EntityType="Self.SUPERVISOR" />
+          <EntitySet Name="ACT_CLUB_DEF" EntityType="Self.ACT_CLUB_DEF" />
+          <EntitySet Name="CM_SESSION_MSTR" EntityType="Self.CM_SESSION_MSTR" />
+          <EntitySet Name="PART_DEF" EntityType="Self.PART_DEF" />
+          <FunctionImport Name="ACTIVE_CLUBS_PER_SESS_ID" ReturnType="Collection(CCTModel.ACTIVE_CLUBS_PER_SESS_ID_Result)">
+            <Parameter Name="SESS_CDE" Mode="In" Type="String" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
+          <Property Type="String" Name="ACT_CDE" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="ACT_DESC" Nullable="true" MaxLength="45" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="CCTModelStoreContainer" CdmEntityContainer="CCTEntities">
+          <EntitySetMapping Name="JNZB_ACTIVITIES">
+            <EntityTypeMapping TypeName="CCTModel.JNZB_ACTIVITIES">
+              <MappingFragment StoreEntitySet="JNZB_ACTIVITIES">
+                <ScalarProperty Name="ENTRY_ID" ColumnName="ENTRY_ID" />
+                <ScalarProperty Name="SESS_CDE" ColumnName="SESS_CDE" />
+                <ScalarProperty Name="ACT_CDE" ColumnName="ACT_CDE" />
+                <ScalarProperty Name="ID_NUM" ColumnName="ID_NUM" />
+                <ScalarProperty Name="PART_CDE" ColumnName="PART_CDE" />
+                <ScalarProperty Name="MEMBERSHIP_STS" ColumnName="MEMBERSHIP_STS" />
+                <ScalarProperty Name="TRACK_MTG_ATTEND" ColumnName="TRACK_MTG_ATTEND" />
+                <ScalarProperty Name="BEGIN_DTE" ColumnName="BEGIN_DTE" />
+                <ScalarProperty Name="END_DTE" ColumnName="END_DTE" />
+                <ScalarProperty Name="COMMENT_TXT" ColumnName="COMMENT_TXT" />
+                <ScalarProperty Name="INCL_PROFILE_RPT" ColumnName="INCL_PROFILE_RPT" />
+                <ScalarProperty Name="USER_NAME" ColumnName="USER_NAME" />
+                <ScalarProperty Name="USER_JOB" ColumnName="USER_JOB" />
+                <ScalarProperty Name="JOB_TIME" ColumnName="JOB_TIME" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Memberships">
+            <EntityTypeMapping TypeName="CCTModel.Membership">
+              <MappingFragment StoreEntitySet="Membership">
+                <ScalarProperty Name="MEMBERSHIP_ID" ColumnName="MEMBERSHIP_ID" />
+                <ScalarProperty Name="ACT_CDE" ColumnName="ACT_CDE" />
+                <ScalarProperty Name="SESSION_CDE" ColumnName="SESSION_CDE" />
+                <ScalarProperty Name="STUDENT_ID" ColumnName="STUDENT_ID" />
+                <ScalarProperty Name="PART_LVL" ColumnName="PART_LVL" />
+                <ScalarProperty Name="BEGIN_DTE" ColumnName="BEGIN_DTE" />
+                <ScalarProperty Name="END_DTE" ColumnName="END_DTE" />
+                <ScalarProperty Name="DESCRIPTION" ColumnName="DESCRIPTION" />
+                <ScalarProperty Name="USER_NAME" ColumnName="USER_NAME" />
+                <ScalarProperty Name="JOB_NAME" ColumnName="JOB_NAME" />
+                <ScalarProperty Name="JOB_TIME" ColumnName="JOB_TIME" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SUPERVISORs">
+            <EntityTypeMapping TypeName="CCTModel.SUPERVISOR">
+              <MappingFragment StoreEntitySet="SUPERVISOR">
+                <ScalarProperty Name="SUP_ID" ColumnName="SUP_ID" />
+                <ScalarProperty Name="ID_NUM" ColumnName="ID_NUM" />
+                <ScalarProperty Name="ACT_CDE" ColumnName="ACT_CDE" />
+                <ScalarProperty Name="USER_NAME" ColumnName="USER_NAME" />
+                <ScalarProperty Name="JOB_NAME" ColumnName="JOB_NAME" />
+                <ScalarProperty Name="JOB_TIME" ColumnName="JOB_TIME" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ACT_CLUB_DEF">
+            <EntityTypeMapping TypeName="CCTModel.ACT_CLUB_DEF">
+              <MappingFragment StoreEntitySet="ACT_CLUB_DEF">
+                <ScalarProperty Name="ACT_CDE" ColumnName="ACT_CDE" />
+                <ScalarProperty Name="ACT_DESC" ColumnName="ACT_DESC" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CM_SESSION_MSTR">
+            <EntityTypeMapping TypeName="CCTModel.CM_SESSION_MSTR">
+              <MappingFragment StoreEntitySet="CM_SESSION_MSTR">
+                <ScalarProperty Name="SESS_CDE" ColumnName="SESS_CDE" />
+                <ScalarProperty Name="SESS_DESC" ColumnName="SESS_DESC" />
+                <ScalarProperty Name="SESS_BEGN_DTE" ColumnName="SESS_BEGN_DTE" />
+                <ScalarProperty Name="SESS_END_DTE" ColumnName="SESS_END_DTE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PART_DEF">
+            <EntityTypeMapping TypeName="CCTModel.PART_DEF">
+              <MappingFragment StoreEntitySet="PART_DEF">
+                <ScalarProperty Name="PART_CDE" ColumnName="PART_CDE" />
+                <ScalarProperty Name="PART_DESC" ColumnName="PART_DESC" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="ACTIVE_CLUBS_PER_SESS_ID" FunctionName="CCTModel.Store.ACTIVE_CLUBS_PER_SESS_ID">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="CCTModel.ACTIVE_CLUBS_PER_SESS_ID_Result">
+                <ScalarProperty Name="ACT_CDE" ColumnName="ACT_CDE" />
+                <ScalarProperty Name="ACT_DESC" ColumnName="ACT_DESC" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
