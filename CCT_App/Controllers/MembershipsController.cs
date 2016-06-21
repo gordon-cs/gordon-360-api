@@ -5,13 +5,14 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using CCT_App.Models;
+
 namespace CCT_App.Controllers
 {
     [RoutePrefix("api/memberships")]
     public class MembershipsController : ApiController
     {
+
         private CCTEntities cct_db_context = new CCTEntities();
-        private string invalidModelStateMsg = "Model State is invalid!";
 
         // GET api/<controller>
         [HttpGet]
@@ -23,26 +24,31 @@ namespace CCT_App.Controllers
         // GET api/<controller>/5
         [HttpGet]
         [Route("{id}")]
-        public HttpResponseMessage Get(int id)
+        public IHttpActionResult Get(int id)
         {
             if(!ModelState.IsValid)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, invalidModelStateMsg);
+                return BadRequest();
             }
             var result =  cct_db_context.Memberships.Find(id);
-            return Request.CreateResponse(HttpStatusCode.OK, result);
+            return Ok(result);
         }
 
         // POST api/<controller>
         [HttpPost]
-        public HttpResponseMessage Post([FromBody]Membership membership)
+        [Route(Name="memberships")]
+        public IHttpActionResult Post([FromBody] Membership membership)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
             membership.MEMBERSHIP_ID = cct_db_context.Memberships.Count();
             cct_db_context.Memberships.Add(membership);
 
-            var msg = Request.CreateResponse(HttpStatusCode.Created);
-            msg.Headers.Location = new Uri(Request.RequestUri + membership.MEMBERSHIP_ID.ToString());
-            return msg;
+            var routeName = Request.RequestUri.ToString(); 
+            var routeValue = membership.MEMBERSHIP_ID.ToString();
+            return CreatedAtRoute<Membership>("memberships", membership.MEMBERSHIP_ID, membership);
 
         }
 

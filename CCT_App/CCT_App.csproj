@@ -166,6 +166,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\ActivitiesController.cs" />
+    <Compile Include="Controllers\MembershipsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -199,6 +200,8 @@
     <Compile Include="Models\Membership.cs">
       <DependentUpon>CCT_DB_MODELS.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Metadata.cs" />
+    <Compile Include="Models\ModelPartialClasses.cs" />
     <Compile Include="Models\PART_DEF.cs">
       <DependentUpon>CCT_DB_MODELS.tt</DependentUpon>
     </Compile>

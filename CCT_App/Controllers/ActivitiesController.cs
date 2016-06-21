@@ -24,9 +24,14 @@ namespace CCT_App.Controllers
         // GET api/<controller>/5
         [HttpGet]
         [Route("{id}")]
-        public ACT_CLUB_DEF Get(string id)
+        public IHttpActionResult Get(string id)
         {
-            return cct_db_context.ACT_CLUB_DEF.Find(id);
+            if(!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            var result = cct_db_context.ACT_CLUB_DEF.Find(id);
+            return Ok(result);
         }
 
         // POST api/<controller>
