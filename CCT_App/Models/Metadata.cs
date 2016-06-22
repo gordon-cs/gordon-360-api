@@ -17,15 +17,14 @@ namespace CCT_App.Models
     
         public class Membership_Metadata
         {
-            [Key]
-            [Required]
+            
             public int MEMBERSHIP_ID { get; set; }
-            [ForeignKey("PART_DEF")]
-            [Required]
+            [Required(ErrorMessage = "An Activity Code NUMBER IS REQUIRED")]
             public string ACT_CDE { get; set; }
-            [ForeignKey("CM_SESSION_MSTR")]
             [Required]
             public string SESSION_CDE { get; set; }
+            [Required]
+            public int ID_NUM { get; set; }
             [Required]
             [MinLength(3)]
             public string PART_LVL { get; set; }
@@ -36,18 +35,15 @@ namespace CCT_App.Models
             public string USER_NAME { get; set; }
             public string JOB_NAME { get; set; }
             public string JOB_TIME { get; set; }
-            [Required]
-            public int ID_NUM { get; set; }
+            
     }
 
         public class SUPERVISOR_Metadata
         {
-            [Key]
             [Required]
             public int SUP_ID { get; set; }
             [Required]
             public int ID_NUM { get; set; }
-            [ForeignKey("PART_DEF")]
             [Required]
             public string ACT_CDE { get; set; }
             public string USER_NAME { get; set; }
@@ -57,27 +53,23 @@ namespace CCT_App.Models
 
         public class JNZB_ACTIVITIES_Metadata
         {
-            [Key]
             [Required]
             public int ENTRY_ID { get; set; }
-            [ForeignKey("CM_SESSION_MSTR")]
             [Required]
             public string SESS_CDE { get; set; }
-            [ForeignKey("PART_DEF")]
             [Required]
             public string ACT_CDE { get; set; }
             [Required]
             public int ID_NUM { get; set; }
-            public string PART_CDE { get; set; }
-            [ForeignKey("Membership")]
             [Required]
+            public string PART_CDE { get; set; }
+            
             public bool MEMBERSHIP_STS { get; set; }
             public bool TRACK_MTG_ATTEND { get; set; }
             [Required]
             public System.DateTime BEGIN_DTE { get; set; }
             public System.DateTime END_DTE { get; set; }
             public string COMMENT_TXT { get; set; }
-            [Required]
             public bool INCL_PROFILE_RPT { get; set; }
             public string USER_NAME { get; set; }
             public string USER_JOB { get; set; }

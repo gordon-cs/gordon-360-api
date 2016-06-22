@@ -5,47 +5,71 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using CCT_App.Models;
+using System.Data.Entity.Core.Objects;
 
-namespace CCT_App.Controllers
+namespace CCT_App.Controllers.Api
 {
     [RoutePrefix("api/memberships")]
     public class MembershipsController : ApiController
     {
 
-        private CCTEntities cct_db_context = new CCTEntities();
+        private CCTEntities database = new CCTEntities();
 
         // GET api/<controller>
         [HttpGet]
+        [Route("")]
         public IEnumerable<Membership> Get()
         {
-            return cct_db_context.Memberships;
+            return database.Memberships;
         }
 
         // GET api/<controller>/5
         [HttpGet]
         [Route("{id}")]
-        public IHttpActionResult Get(int id)
+        public IHttpActionResult GetMembership(int id)
         {
             if(!ModelState.IsValid)
             {
                 return BadRequest();
             }
-            var result =  cct_db_context.Memberships.Find(id);
+
+            var result =  database.Memberships.Find(id);
+
+            if( result == null)
+            {
+                return NotFound();
+            }
+
             return Ok(result);
         }
 
         // POST api/<controller>
         [HttpPost]
-        [Route(Name="memberships")]
+        [Route("", Name="memberships")]
         public IHttpActionResult Post([FromBody] Membership membership)
         {
             if(!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
-            membership.MEMBERSHIP_ID = cct_db_context.Memberships.Count();
-            cct_db_context.Memberships.Add(membership);
-            cct_db_context.SaveChanges();
+            ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> valid_activity_codes = database.ACTIVE_CLUBS_PER_SESS_ID(membership.SESSION_CDE);
+            bool offered = false;
+            string potential_activity = membership.ACT_CDE.Trim();
+            foreach (ACTIVE_CLUBS_PER_SESS_ID_Result activity in valid_activity_codes)
+            {
+                if(potential_activity.Equals(activity.ACT_CDE.Trim()))
+                {
+                    offered = true;
+                }
+            }
+
+            if (!offered)
+            {
+                return NotFound();
+            }
+
+            database.Memberships.Add(membership);
+            database.SaveChanges();
 
             var routeName = Request.RequestUri.ToString(); 
             var routeValue = membership.MEMBERSHIP_ID.ToString();
@@ -54,11 +78,15 @@ namespace CCT_App.Controllers
         }
 
         // PUT api/<controller>/5
+        [HttpPut]
+        [Route("")]
         public void Put(int id, [FromBody]string value)
         {
         }
 
         // DELETE api/<controller>/5
+        [HttpDelete]
+        [Route("{id}")]
         public void Delete(int id)
         {
         }
