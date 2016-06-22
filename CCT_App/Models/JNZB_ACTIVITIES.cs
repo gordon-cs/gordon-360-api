@@ -17,7 +17,7 @@ namespace CCT_App.Models
         public int ENTRY_ID { get; set; }
         public string SESS_CDE { get; set; }
         public string ACT_CDE { get; set; }
-        public int ID_NUM { get; set; }
+        public string ID_NUM { get; set; }
         public string PART_CDE { get; set; }
         public bool MEMBERSHIP_STS { get; set; }
         public bool TRACK_MTG_ATTEND { get; set; }

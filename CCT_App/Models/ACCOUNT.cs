@@ -12,13 +12,13 @@ namespace CCT_App.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class SUPERVISOR
+    public partial class ACCOUNT
     {
-        public int SUP_ID { get; set; }
-        public string ID_NUM { get; set; }
-        public string ACT_CDE { get; set; }
-        public string USER_NAME { get; set; }
-        public string JOB_NAME { get; set; }
-        public Nullable<System.DateTime> JOB_TIME { get; set; }
+        public string gordon_id { get; set; }
+        public string firstname { get; set; }
+        public string lastname { get; set; }
+        public string email { get; set; }
+        public string AD_Username { get; set; }
+        public string account_type { get; set; }
     }
 }

@@ -134,6 +134,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiControllers\SessionsController.cs" />
+    <Compile Include="ApiControllers\StudentsController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -171,43 +172,55 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\ACCOUNT.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ACTIVE_CLUBS_PER_SESS_ID_Result.cs">
-      <DependentUpon>CCT_DB_MODELS.tt</DependentUpon>
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ACT_CLUB_DEF.cs">
-      <DependentUpon>CCT_DB_MODELS.tt</DependentUpon>
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\CCT_DB_MODELS.Context.cs">
+    <Compile Include="Models\CCT_DB_Models.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>CCT_DB_MODELS.Context.tt</DependentUpon>
+      <DependentUpon>CCT_DB_Models.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\CCT_DB_MODELS.cs">
+    <Compile Include="Models\CCT_DB_Models.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>CCT_DB_MODELS.tt</DependentUpon>
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\CCT_DB_MODELS.Designer.cs">
+    <Compile Include="Models\CCT_DB_Models.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>CCT_DB_MODELS.edmx</DependentUpon>
+      <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\CM_SESSION_MSTR.cs">
-      <DependentUpon>CCT_DB_MODELS.tt</DependentUpon>
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Faculty.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\JNZB_ACTIVITIES.cs">
-      <DependentUpon>CCT_DB_MODELS.tt</DependentUpon>
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Membership.cs">
-      <DependentUpon>CCT_DB_MODELS.tt</DependentUpon>
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Metadata.cs" />
     <Compile Include="Models\ModelPartialClasses.cs" />
     <Compile Include="Models\PART_DEF.cs">
-      <DependentUpon>CCT_DB_MODELS.tt</DependentUpon>
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Staff.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Student.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SUPERVISOR.cs">
-      <DependentUpon>CCT_DB_MODELS.tt</DependentUpon>
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="MvcControllers\HomeController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -219,16 +232,6 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Models\CCT_DB_MODELS.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>CCT_DB_MODELS.edmx</DependentUpon>
-      <LastGenOutput>CCT_DB_MODELS.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\CCT_DB_MODELS.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>CCT_DB_MODELS.edmx</DependentUpon>
-      <LastGenOutput>CCT_DB_MODELS.cs</LastGenOutput>
-    </Content>
     <Content Include="Areas\HelpPage\Views\Web.config" />
     <Content Include="Areas\HelpPage\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\ResourceModel.cshtml" />
@@ -248,18 +251,28 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\CollectionModelDescription.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
-    <EntityDeploy Include="Models\CCT_DB_MODELS.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>CCT_DB_MODELS.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\CCT_DB_MODELS.edmx.diagram">
-      <DependentUpon>CCT_DB_MODELS.edmx</DependentUpon>
-    </Content>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <EntityDeploy Include="Models\CCT_DB_Models.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>CCT_DB_Models.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\CCT_DB_Models.edmx.diagram">
+      <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
+    <Content Include="Models\CCT_DB_Models.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
+      <LastGenOutput>CCT_DB_Models.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\CCT_DB_Models.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
+      <LastGenOutput>CCT_DB_Models.cs</LastGenOutput>
+    </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-1.9.1.js" />

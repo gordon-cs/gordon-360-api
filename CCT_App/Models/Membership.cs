@@ -17,6 +17,7 @@ namespace CCT_App.Models
         public int MEMBERSHIP_ID { get; set; }
         public string ACT_CDE { get; set; }
         public string SESSION_CDE { get; set; }
+        public string ID_NUM { get; set; }
         public string PART_LVL { get; set; }
         public System.DateTime BEGIN_DTE { get; set; }
         public Nullable<System.DateTime> END_DTE { get; set; }
@@ -24,6 +25,5 @@ namespace CCT_App.Models
         public string USER_NAME { get; set; }
         public string JOB_NAME { get; set; }
         public string JOB_TIME { get; set; }
-        public int ID_NUM { get; set; }
     }
 }
