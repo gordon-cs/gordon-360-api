@@ -133,6 +133,7 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApiControllers\RolesController.cs" />
     <Compile Include="ApiControllers\SessionsController.cs" />
     <Compile Include="ApiControllers\StudentsController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />

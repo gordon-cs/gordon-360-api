@@ -35,7 +35,7 @@ namespace CCT_App.Controllers.Api
                 return BadRequest();
             }
 
-            var result = database.CM_SESSION_MSTR.Find(id);
+            var result = database.CM_SESSION_MSTR.FirstOrDefault(s => s.SESS_CDE.Trim() == id);
 
             if (result == null)
             {

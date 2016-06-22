@@ -10,7 +10,7 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using CCT_App.Models;
 
-namespace CCT_App.ApiControllers
+namespace CCT_App.Controllers.Api
 {
     [RoutePrefix("api/students")]
     public class StudentsController : ApiController
