@@ -15,6 +15,11 @@ namespace CCT_App.Controllers.Api
 
         private CCTEntities database = new CCTEntities();
 
+        public MembershipsController(CCTEntities dbContext)
+        {
+            database = dbContext;
+        }
+
         // GET api/<controller>
         [HttpGet]
         [Route("")]

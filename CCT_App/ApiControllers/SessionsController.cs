@@ -19,6 +19,10 @@ namespace CCT_App.Controllers.Api
 
         private CCTEntities database = new CCTEntities();
 
+        public SessionsController(CCTEntities dbContext)
+        {
+            database = dbContext;
+        }
         // GET: api/Sessions
         [HttpGet]
         [Route("")]

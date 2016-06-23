@@ -13,14 +13,18 @@ namespace CCT_App.Controllers.Api
     public class ActivitiesController : ApiController
     {
 
-        private CCTEntities cct_db_context = new CCTEntities();
+        private CCTEntities database = new CCTEntities();
 
+        public ActivitiesController(CCTEntities dbContext)
+        {
+            database = dbContext;
+        }
         // GET api/<controller>
         [HttpGet]
         [Route("")]
         public IEnumerable<ACT_CLUB_DEF> Get()
         {
-            return cct_db_context.ACT_CLUB_DEF;
+            return database.ACT_CLUB_DEF;
         }
 
         // GET api/<controller>/5
@@ -32,7 +36,7 @@ namespace CCT_App.Controllers.Api
             {
                 return BadRequest();
             }
-            var result = cct_db_context.ACT_CLUB_DEF.Find(id);
+            var result = database.ACT_CLUB_DEF.Find(id);
             return Ok(result);
         }
 
@@ -45,8 +49,8 @@ namespace CCT_App.Controllers.Api
             {
                 return BadRequest(ModelState);
             }
-            var current_session = cct_db_context.CM_SESSION_MSTR.Max(i => i.SESS_CDE);
-            ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> valid_activity_codes = cct_db_context.ACTIVE_CLUBS_PER_SESS_ID(current_session);
+            var current_session = database.CM_SESSION_MSTR.Max(i => i.SESS_CDE);
+            ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> valid_activity_codes = database.ACTIVE_CLUBS_PER_SESS_ID(current_session);
             bool offered = false;
             foreach (ACTIVE_CLUBS_PER_SESS_ID_Result activity in valid_activity_codes)
             {
@@ -61,7 +65,7 @@ namespace CCT_App.Controllers.Api
                 return NotFound();
             }
 
-            var supervisor = cct_db_context.SUPERVISORs.Where(s => s.ACT_CDE == id && s.SESSION_CDE == current_session).ToList().ElementAtOrDefault(0);
+            var supervisor = database.SUPERVISORs.Where(s => s.ACT_CDE == id && s.SESSION_CDE == current_session).ToList().ElementAtOrDefault(0);
 
             return Ok(supervisor);
             

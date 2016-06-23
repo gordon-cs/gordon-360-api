@@ -15,14 +15,19 @@ namespace CCT_App.ApiControllers
     [RoutePrefix("api/supervisors")]
     public class SupervisorsController : ApiController
     {
-        private CCTEntities db = new CCTEntities();
+        private CCTEntities database = new CCTEntities();
 
+
+        public SupervisorsController(CCTEntities dbContext)
+        {
+            database = dbContext;
+        }
         // GET: api/Supervisors
         [HttpGet]
         [Route("")]
         public IQueryable<SUPERVISOR> GetSUPERVISORs()
         {
-            return db.SUPERVISORs;
+            return database.SUPERVISORs;
         }
 
         // GET: api/Supervisors/5
@@ -36,7 +41,7 @@ namespace CCT_App.ApiControllers
                 return BadRequest(ModelState);
             }
 
-            SUPERVISOR sUPERVISOR = db.SUPERVISORs.Find(id);
+            SUPERVISOR sUPERVISOR = database.SUPERVISORs.Find(id);
 
             if (sUPERVISOR == null)
             {
@@ -62,11 +67,11 @@ namespace CCT_App.ApiControllers
                 return BadRequest();
             }
 
-            db.Entry(supervisor).State = EntityState.Modified;
+            database.Entry(supervisor).State = EntityState.Modified;
 
             try
             {
-                db.SaveChanges();
+                database.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -94,8 +99,8 @@ namespace CCT_App.ApiControllers
                 return BadRequest(ModelState);
             }
 
-            db.SUPERVISORs.Add(sUPERVISOR);
-            db.SaveChanges();
+            database.SUPERVISORs.Add(sUPERVISOR);
+            database.SaveChanges();
 
             return CreatedAtRoute("DefaultApi", new { id = sUPERVISOR.SUP_ID }, sUPERVISOR);
         }
@@ -106,14 +111,14 @@ namespace CCT_App.ApiControllers
         [Route("{id}")]
         public IHttpActionResult DeleteSUPERVISOR(int id)
         {
-            SUPERVISOR sUPERVISOR = db.SUPERVISORs.Find(id);
+            SUPERVISOR sUPERVISOR = database.SUPERVISORs.Find(id);
             if (sUPERVISOR == null)
             {
                 return NotFound();
             }
 
-            db.SUPERVISORs.Remove(sUPERVISOR);
-            db.SaveChanges();
+            database.SUPERVISORs.Remove(sUPERVISOR);
+            database.SaveChanges();
 
             return Ok(sUPERVISOR);
         }
@@ -122,14 +127,14 @@ namespace CCT_App.ApiControllers
         {
             if (disposing)
             {
-                db.Dispose();
+                database.Dispose();
             }
             base.Dispose(disposing);
         }
 
         private bool SUPERVISORExists(int id)
         {
-            return db.SUPERVISORs.Count(e => e.SUP_ID == id) > 0;
+            return database.SUPERVISORs.Count(e => e.SUP_ID == id) > 0;
         }
     }
 }

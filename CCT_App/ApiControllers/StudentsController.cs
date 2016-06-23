@@ -15,14 +15,19 @@ namespace CCT_App.Controllers.Api
     [RoutePrefix("api/students")]
     public class StudentsController : ApiController
     {
-        private CCTEntities db = new CCTEntities();
+        private CCTEntities database = new CCTEntities();
+
+        public StudentsController(CCTEntities dbContext)
+        {
+            database = dbContext;
+        }
 
         // GET: api/Students
         [Route("")]
         [HttpGet]
         public IQueryable<Student> GetStudents()
         {
-            return db.Students;
+            return database.Students;
         }
 
         // GET: api/Students/5
@@ -35,7 +40,7 @@ namespace CCT_App.Controllers.Api
             {
                 return BadRequest(ModelState);
             }
-            var student = db.Students.Find(id);
+            var student = database.Students.Find(id);
             if (student == null)
             {
                 return NotFound();
@@ -57,7 +62,7 @@ namespace CCT_App.Controllers.Api
 
             try
             {
-                memberships = db.Memberships.Where(mem => mem.ID_NUM == id).ToList();
+                memberships = database.Memberships.Where(mem => mem.ID_NUM == id).ToList();
             }
             catch (ArgumentNullException e)
             {
@@ -82,11 +87,11 @@ namespace CCT_App.Controllers.Api
                 return BadRequest();
             }
 
-            db.Entry(student).State = EntityState.Modified;
+            database.Entry(student).State = EntityState.Modified;
 
             try
             {
-                db.SaveChanges();
+                database.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -112,11 +117,11 @@ namespace CCT_App.Controllers.Api
                 return BadRequest(ModelState);
             }
 
-            db.Students.Add(student);
+            database.Students.Add(student);
 
             try
             {
-                db.SaveChanges();
+                database.SaveChanges();
             }
             catch (DbUpdateException)
             {
@@ -137,14 +142,14 @@ namespace CCT_App.Controllers.Api
         [ResponseType(typeof(Student))]
         public IHttpActionResult DeleteStudent(string id)
         {
-            Student student = db.Students.Find(id);
+            Student student = database.Students.Find(id);
             if (student == null)
             {
                 return NotFound();
             }
 
-            db.Students.Remove(student);
-            db.SaveChanges();
+            database.Students.Remove(student);
+            database.SaveChanges();
 
             return Ok(student);
         }
@@ -153,14 +158,14 @@ namespace CCT_App.Controllers.Api
         {
             if (disposing)
             {
-                db.Dispose();
+                database.Dispose();
             }
             base.Dispose(disposing);
         }
 
         private bool StudentExists(string id)
         {
-            return db.Students.Count(e => e.student_id == id) > 0;
+            return database.Students.Count(e => e.student_id == id) > 0;
         }
     }
 }

@@ -15,14 +15,18 @@ namespace CCT_App.Controllers.Api
     [RoutePrefix("api/roles")]
     public class RolesController : ApiController
     {
-        private CCTEntities db = new CCTEntities();
+        private CCTEntities database = new CCTEntities();
 
+        public RolesController(CCTEntities dbContext)
+        {
+            database = dbContext;
+        }
         // GET: api/roles
         [HttpGet]
         [Route("")]
         public IQueryable<PART_DEF> GetRoles()
         {
-            return db.PART_DEF;
+            return database.PART_DEF;
         }
 
         // GET: api/PART_DEF/5
@@ -35,7 +39,7 @@ namespace CCT_App.Controllers.Api
             {
                 return BadRequest(ModelState);
             }
-            var role = db.PART_DEF.FirstOrDefault(r => r.PART_CDE.Trim() == id);
+            var role = database.PART_DEF.FirstOrDefault(r => r.PART_CDE.Trim() == id);
             
             if (role == null)
             {
