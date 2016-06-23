@@ -3,9 +3,6 @@
 ## From Github https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 
-# Documentation Generation
-CCT_App/Areas/HelpPage
-
 # User-specific files
 *.suo
 *.user
