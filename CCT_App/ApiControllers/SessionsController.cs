@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using CCT_App.Models;
+using System.Data.Entity.Core.Objects;
 
 namespace CCT_App.Controllers.Api
 {
@@ -45,6 +46,22 @@ namespace CCT_App.Controllers.Api
             return Ok(result);
         }
 
+        
+        // GET: api/sessions/id/activities
+        [HttpGet]
+        [Route("{id}/activities")]
+        public IHttpActionResult GetActivitiesForSession(string id)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> valid_activity_codes = database.ACTIVE_CLUBS_PER_SESS_ID(id);
+
+            return Ok(valid_activity_codes);
+
+        }
      
     }
 }

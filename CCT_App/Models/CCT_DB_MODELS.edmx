@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="CCT_App.Models.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="CCT_App.Models.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="JNZB_ACTIVITIES">
           <Key>
             <PropertyRef Name="ENTRY_ID" />
@@ -46,6 +46,7 @@
           </Key>
           <Property Name="SUP_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ID_NUM" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="SESSION_CDE" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="ACT_CDE" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="USER_NAME" Type="varchar" MaxLength="10" />
           <Property Name="JOB_NAME" Type="varchar" MaxLength="10" />
@@ -189,8 +190,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     FROM [dbo].[Student] AS [Student]</DefiningQuery>
           </EntitySet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="CCT_App.Models" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -239,6 +239,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="USER_NAME" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="JOB_NAME" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="JOB_TIME" Type="DateTime" Precision="3" />
+          <Property Name="SESSION_CDE" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="ACCOUNT">
           <Key>
@@ -314,7 +315,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="Staffs" EntityType="Self.Staff" />
           <EntitySet Name="Students" EntityType="Self.Student" />
           <FunctionImport Name="ACTIVE_CLUBS_PER_SESS_ID" ReturnType="Collection(CCT_App.Models.ACTIVE_CLUBS_PER_SESS_ID_Result)">
-            <Parameter Name="SESS_CDE" Mode="In" Type="String" />
+          <Parameter Name="SESS_CDE" Mode="In" Type="String" />
           </FunctionImport>
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
@@ -367,6 +368,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="SUPERVISORs">
             <EntityTypeMapping TypeName="CCT_App.Models.SUPERVISOR">
               <MappingFragment StoreEntitySet="SUPERVISOR">
+                <ScalarProperty Name="SESSION_CDE" ColumnName="SESSION_CDE" />
                 <ScalarProperty Name="SUP_ID" ColumnName="SUP_ID" />
                 <ScalarProperty Name="ID_NUM" ColumnName="ID_NUM" />
                 <ScalarProperty Name="ACT_CDE" ColumnName="ACT_CDE" />

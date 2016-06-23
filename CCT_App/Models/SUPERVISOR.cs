@@ -20,5 +20,6 @@ namespace CCT_App.Models
         public string USER_NAME { get; set; }
         public string JOB_NAME { get; set; }
         public Nullable<System.DateTime> JOB_TIME { get; set; }
+        public string SESSION_CDE { get; set; }
     }
 }
