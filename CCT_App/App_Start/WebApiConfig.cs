@@ -12,7 +12,7 @@ namespace CCT_App
         {
 
             // Web API configuration and services
-            EnableCrossSiteRequests(config);
+
             // Web API routes
             config.MapHttpAttributeRoutes();
 
@@ -23,13 +23,6 @@ namespace CCT_App
             );
         }
 
-        private static void EnableCrossSiteRequests(HttpConfiguration config)
-        {
-            var cors = new EnableCorsAttribute(
-            origins: "*",
-            headers: "*",
-            methods: "*");
-            config.EnableCors(cors);
-        }
+       
     }
 }
