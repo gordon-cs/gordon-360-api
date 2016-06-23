@@ -11,6 +11,9 @@ namespace CCT_App
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js"));
 
+            bundles.Add(new ScriptBundle("~/script/site").Include(
+                        "~/Scripts/api-calls.js"));
+
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
@@ -22,7 +25,10 @@ namespace CCT_App
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+                      "~/Content/site.css",
+                      "~/Content/skeleton.css",
+                      "~/Content/normalize.css",
+                      "~/Content/custom.css"));
         }
     }
 }
