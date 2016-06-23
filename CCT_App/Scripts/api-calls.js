@@ -1,5 +1,5 @@
 // Api Urls
-//$apiUrl = "http://localhost:5000/api"
+//$apiUrl = "http://localhost:49645/api"
 $apiUrl = "http://ccttrain.gordon.edu/api";
 $activityUrl = $apiUrl + "/activities";
 $membershipUrl = $apiUrl + "/memberships";
