@@ -19,6 +19,7 @@ namespace CCT_App.Controllers.Api
         {
             database = dbContext;
         }
+
         // GET api/<controller>
         [HttpGet]
         [Route("")]

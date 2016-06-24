@@ -31,7 +31,7 @@ namespace CCT_App.Controllers.Api
         // GET api/<controller>/5
         [HttpGet]
         [Route("{id}")]
-        public IHttpActionResult GetMembership(int id)
+        public IHttpActionResult Get(int id)
         {
             if(!ModelState.IsValid)
             {
@@ -50,7 +50,7 @@ namespace CCT_App.Controllers.Api
 
         // POST api/<controller>
         [HttpPost]
-        [Route("", Name="memberships")]
+        [Route("", Name="Memberships")]
         public IHttpActionResult Post([FromBody] Membership membership)
         {
             if(!ModelState.IsValid)
@@ -78,22 +78,24 @@ namespace CCT_App.Controllers.Api
 
             var routeName = Request.RequestUri.ToString(); 
             var routeValue = membership.MEMBERSHIP_ID.ToString();
-            return CreatedAtRoute<Membership>("memberships", membership.MEMBERSHIP_ID, membership);
+            return Created("memberships", membership);
 
         }
 
         // PUT api/<controller>/5
         [HttpPut]
         [Route("")]
-        public void Put(int id, [FromBody]string value)
+        public IHttpActionResult Put(int id, [FromBody]Membership membership)
         {
+            return Ok();
         }
 
         // DELETE api/<controller>/5
         [HttpDelete]
         [Route("{id}")]
-        public void Delete(int id)
+        public IHttpActionResult Delete(int id)
         {
+            return Ok();
         }
     }
 }
