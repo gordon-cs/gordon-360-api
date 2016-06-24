@@ -1,96 +1,119 @@
-﻿@{
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-		<div class="container">
-			<!-- Login -->
-			<div class="row">
-				<h2 class="seven columns">Co-Curricular Transcript</h2>
-				<input type="text" class="three columns" id="username" placeholder="username">
-				<button class="two columns button-blue" id="loginButton"
+	<div class="container">
+		<!-- Login -->
+		<div class="row">
+			<div class="col-sm-7">
+				<h1>Co-Curricular Transcript</h1>
+			</div>
+			<div class="col-sm-3">
+				<input type="text" class="form-control" id="username" placeholder="username">
+			</div>
+			<div class="col-sm-2">
+				<button type="button" class="form-control btn btn-blue" id="loginButton"
 					onclick="login(document.getElementById('username').value)">
 						Login
 				</button>
-				<p id="name"></p>
 			</div>
+			<p id="name"></p>
+		</div>
 
-			<!-- NavBar -->
-			<div class="row">
-				<nav class="navbar">
-					<div class="container">
-						<ul class="navbar-list">
-							<li class="navbar-item">
-								<a class="navbar-link" href="#activities">Activities</a>
-							</li>
-							<li class="navbar-item">
-								<a class="navbar-link" href="#memberships">Memberships</a>
-							</li>
-							<li class="navbar-item">
-								<a class="navbar-link" href="#roles">Roles</a>
-							</li>
-							<li class="navbar-item">
-								<a class="navbar-link" href="#students">Students</a>
-							</li>
-							<li class="navbar-item">
-								<a class="navbar-link" href="#sessions">Sessions</a>
-							</li>
-						</ul>
-					</div>
-				</nav>
-			</div>
+		<!-- NavBar -->
+		<div class="row">
+			<nav class="navbar navbar-blue" role="navigation">
+				<div class="collapse navbar-collapse">
+					<ul class="nav navbar-nav">
+						<li>
+							<a class="navbar-link" href="#activities">Activities</a>
+						</li>
+						<li>
+							<a class="navbar-link" href="#memberships">Memberships</a>
+						</li>
+						<li>
+							<a class="navbar-link" href="#roles">Roles</a>
+						</li>
+						<li>
+							<a class="navbar-link" href="#students">Students</a>
+						</li>
+						<li>
+							<a class="navbar-link" href="#sessions">Sessions</a>
+						</li>
+					</ul>
+				</div>
+			</nav>
+		</div>
 
-			<!-- Activities -->
-			<h4 id="activities">Activities</h4>
-			<!-- All Activities -->
-			<!-- Get -->
-			<div class="row">
-				<button class="three columns button-blue"
+		<!-- Activities -->
+		<h3 id="activities">Activities</h3>
+		<!-- All Activities -->
+		<!-- Get -->
+		<div class="row">
+			<div class="col-sm-3">
+				<button type="button" class="form-control btn btn-blue"
 					onclick="getActivities()">
 						Get All Activities
 				</button>
 			</div>
+		</div>
 
-			<!-- Single Activity -->
-			<!-- Get -->
-			<div class="row">
-				<button class="three columns button-blue"
+		<!-- Single Activity -->
+		<!-- Get -->
+		<div class="row">
+			<div class="col-sm-3">
+				<button type="button" class="form-control btn btn-blue"
 					onclick="getActivity(document.getElementById('activityGetId').value)">
 						Get Activity
 				</button>
-				<input type="text" class="three columns" id="activityGetId" placeholder="Activity ID">
 			</div>
+			<div class="col-sm-3">
+				<input type="text" class="form-control" id="activityGetId" placeholder="Activity ID">
+			</div>
+		</div>
 
-			<!-- Memberships -->
-			<h4 id="memberships">Memberships</h4>
-			<!-- All Memberships -->
-			<!-- Get -->
-			<div class="row">
-				<button class="three columns button-blue"
+		<!-- Memberships -->
+		<h3 id="memberships">Memberships</h3>
+		<!-- All Memberships -->
+		<!-- Get -->
+		<div class="row">
+			<div class="col-sm-3">
+				<button type="button" class="form-control btn btn-blue"
 					onclick="getMemberships()">
 						Get All Memberships
 				</button>
 			</div>
+		</div>
 
-			<!-- Single Membership -->
-			<!-- Get -->
-			<div class="row">
-				<button class="three columns button-blue"
+		<!-- Single Membership -->
+		<!-- Get -->
+		<div class="row">
+			<div class="col-sm-3">
+				<button type="button" class="form-control btn btn-blue"
 					onclick="getMembership(document.getElementById('membershipGetId').value)">
 						Get Membership
 				</button>
-				<input type="text" class="three columns" id="membershipGetId" placeholder="Membership ID">
 			</div>
-			<!-- Delete -->
-			<div class="row">
-				<button class="three columns button-blue"
+			<div class="col-sm-3">
+				<input type="text" class="form-control" id="membershipGetId" placeholder="Membership ID">
+			</div>
+		</div>
+		<!-- Delete -->
+		<div class="row">
+			<div class="col-sm-3">
+				<button type="button" class="form-control btn btn-blue"
 					onclick="deleteMembership(document.getElementById('membershipDeleteId').value)">
 						Delete Membership
 				</button>
-				<input type="text" class="three columns" id="membershipDeleteId" placeholder="Membership ID">
 			</div>
-			<!-- Post -->
-			<div class="row">
-				<button class="three columns button-blue"
+			<div class="col-sm-3">
+				<input type="text" class="form-control" id="membershipDeleteId" placeholder="Membership ID">
+			</div>
+		</div>
+		<!-- Post -->
+		<div class="row">
+			<div class="col-sm-3">
+				<button type="button" class="form-control btn btn-blue"
 					onclick="postMembership(
 						document.getElementById('membershipPostActivityCode').value,
 						document.getElementById('membershipPostSessionCode').value,
@@ -102,94 +125,135 @@
 					)">
 						Post Membership
 				</button>
-				<select class="three columns" id="membershipPostSessionCode"
+			</div>
+			<div class="col-sm-3">
+				<select class="form-control" id="membershipPostSessionCode"
 					onclick="populateActivities(document.getElementById('membershipPostSessionCode').value)">
 					<option>Session</option>
 			    </select>
-				<select class="three columns" id="membershipPostActivityCode">
+			</div>
+			<div class="col-sm-3">
+				<select class="form-control" id="membershipPostActivityCode">
 				    <option>Activity</option>
 			    </select>
-				<select class="three columns" id="membershipPostLevel">
+			</div>
+			<div class="col-sm-3">
+				<select class="form-control" id="membershipPostLevel">
 					<option>Membership Level</option>
 			    </select>
 			</div>
-			<div class="row">
-				<div class="three columns invisible">nothing</div>
-				<input type="text" class="three columns" id="membershipPostStudentId" placeholder="Student ID">
-				<input type="text" class="three columns" id="membershipPostComments" placeholder="Comments (optional)">
+		</div>
+		<div class="row">
+			<div class="col-sm-3 invisible"></div>
+			<div class="col-sm-3">
+				<input type="text" class="form-control" id="membershipPostStudentId" placeholder="Student ID">
 			</div>
-			<div class="row">
-				<div class="three columns invisible">nothing</div>
-				<input type="text" class="three columns" id="membershipPostBeginDate" placeholder="Begin Date">
-				<input type="text" class="three columns" id="membershipPostEndDate" placeholder="End Date">
+			<div class="col-sm-3">
+				<input type="text" class="form-control" id="membershipPostComments" placeholder="Comments (optional)">
 			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-3 invisible"></div>
+			<div class="col-sm-3">
+				<input type="text" class="form-control" id="membershipPostBeginDate" placeholder="Begin Date">
+			</div>
+			<div class="col-sm-3">
+				<input type="text" class="form-control" id="membershipPostEndDate" placeholder="End Date">
+			</div>
+		</div>
 
-			<!-- Roles -->
-			<h4 id="roles">Roles</h4>
-			<!-- Get All Roles -->
-			<div class="row">
-				<button class="three columns button-blue" onclick="getRoles()">Get All Roles</button>
+		<!-- Roles -->
+		<h3 id="roles">Roles</h3>
+		<!-- Get All Roles -->
+		<div class="row">
+			<div class="col-sm-3">
+				<button type="button" class="form-control btn btn-blue" onclick="getRoles()">Get All Roles</button>
 			</div>
-			<!-- Get Single Role -->
-			<div class="row">
-				<button class="three columns button-blue"
+		</div>
+		<!-- Get Single Role -->
+		<div class="row">
+			<div class="col-sm-3">
+				<button type="button" class="form-control btn btn-blue"
 					onclick="getRole(document.getElementById('roleGetId').value)">
 						Get Role
 				</button>
-				<input type="text" class="three columns" id="roleGetId" placeholder="Role ID">
 			</div>
+			<div class="col-sm-3">
+				<input type="text" class="form-control" id="roleGetId" placeholder="Role ID">
+			</div>
+		</div>
 
-			<!-- Students -->
-			<h4 id="students">Students</h4>
-			<!-- Get All Students -->
-			<div class="row">
-				<button class="three columns button-blue" onclick="getStudents()">Get All Student</button>
+		<!-- Students -->
+		<h3 id="students">Students</h3>
+		<!-- Get All Students -->
+		<div class="row">
+			<div class="col-sm-3">
+				<button type="button" class="form-control btn btn-blue" onclick="getStudents()">Get All Student</button>
 			</div>
-			<!-- Get Single Student -->
-			<div class="row">
-				<button class="three columns button-blue"
+		</div>
+		<!-- Get Single Student -->
+		<div class="row">
+			<div class="col-sm-3">
+				<button type="button" class="form-control btn btn-blue"
 					onclick="getStudent(document.getElementById('studentGetId').value)">
 						Get Student
 				</button>
-				<input type="text" class="three columns" id="studentGetId" placeholder="Student ID">
 			</div>
-			<!-- Get Memberships By Student -->
-			<div class="row">
-				<button class="three columns button-blue"
+			<div class="col-sm-3">
+				<input type="text" class="form-control" id="studentGetId" placeholder="Student ID">
+			</div>
+		</div>
+		<!-- Get Memberships By Student -->
+		<div class="row">
+			<div class="col-sm-3">
+				<button type="button" class="form-control btn btn-blue"
 					onclick="getMembershipsByStudent(document.getElementById('membershipsByStudentGetId').value)">
 						Memberships By Student
 				</button>
-				<input type="text" class="three columns" id="membershipsByStudentGetId" placeholder="Student ID">
 			</div>
+			<div class="col-sm-3">
+				<input type="text" class="form-control" id="membershipsByStudentGetId" placeholder="Student ID">
+			</div>
+		</div>
 
-			<!-- Session -->
-			<h4 id="sessions">Sessions</h4>
-			<!-- Get All Sessions -->
-			<div class="row">
-				<button class="three columns button-blue" onclick="getSessions()">Get All Session</button>
+		<!-- Session -->
+		<h3 id="sessions">Sessions</h3>
+		<!-- Get All Sessions -->
+		<div class="row">
+			<div class="col-sm-3">
+				<button type="button" class="form-control btn btn-blue" onclick="getSessions()">Get All Session</button>
 			</div>
-			<!-- Get Activities In Session -->
-			<div class="row">
-				<button class="three columns button-blue"
+		</div>
+		<!-- Get Activities In Session -->
+		<div class="row">
+			<div class="col-sm-3">
+				<button type="button" class="form-control btn btn-blue"
 					onclick="getActivitiesInSession(document.getElementById('activitiesInSessionGetId').value)">
 						Activities In Session
 				</button>
-				<input type="text" class="three columns" id="activitiesInSessionGetId" placeholder="Session ID">
 			</div>
-			<!-- Get Single Session -->
-			<div class="row">
-				<button class="three columns button-blue"
+			<div class="col-sm-3">
+				<input type="text" class="form-control" id="activitiesInSessionGetId" placeholder="Session ID">
+			</div>
+		</div>
+		<!-- Get Single Session -->
+		<div class="row">
+			<div class="col-sm-3">
+				<button type="button" class="form-control btn btn-blue"
 					onclick="getSession(document.getElementById('sessionGetId').value)">
 						Get Session
 				</button>
-				<input type="text" class="three columns" id="sessionGetId" placeholder="Session ID">
 			</div>
+			<div class="col-sm-3">
+				<input type="text" class="form-control" id="sessionGetId" placeholder="Session ID">
+			</div>
+		</div>
 
-			<!-- Table -->
-			<table id="table" class="u-full-width">
+		<!-- Table -->
+		<div class="col-sm-12">
+			<table id="table" class="table table-condensed">
 				<thead id="tableHead"></thead>
 				<tbody id="tableBody"></tbody>
 			</table>
 		</div>
-
-
+	</div>
