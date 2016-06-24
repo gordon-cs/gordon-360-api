@@ -9,12 +9,20 @@ using System.Data.Entity.Core.Objects;
 
 namespace CCT_App.Controllers.Api
 {
+    
     [RoutePrefix("api/activities")]
     public class ActivitiesController : ApiController
     {
 
         private CCTEntities cct_db_context = new CCTEntities();
 
+        /// <summary>
+        /// Get all activities available
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Server makes a call to get a lsit of all activities from the database
+        /// </remarks>
         // GET api/<controller>
         [HttpGet]
         [Route("")]
@@ -23,6 +31,10 @@ namespace CCT_App.Controllers.Api
             return cct_db_context.ACT_CLUB_DEF;
         }
 
+        /// <summary>Get a single activity based upon the string id entered in the URL</summary>
+        /// <param name="id">An identifier for a single activity</param>
+        /// <returns></returns>
+        /// <remarks>Get a single activity from the database</remarks>
         // GET api/<controller>/5
         [HttpGet]
         [Route("{id}")]
@@ -36,6 +48,14 @@ namespace CCT_App.Controllers.Api
             return Ok(result);
         }
 
+        /// <summary>
+        /// Get the supervisor for a specific activity
+        /// </summary>
+        /// <param name="id">The identifier for a specific activity</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Get the supervisor for a specified activity within the database
+        /// </remarks>
         //TODO: Logic for finding current session. 
         [HttpGet]
         [Route("{id}/supervisor")]

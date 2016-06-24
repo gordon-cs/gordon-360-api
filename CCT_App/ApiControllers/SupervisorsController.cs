@@ -17,6 +17,9 @@ namespace CCT_App.ApiControllers
     {
         private CCTEntities db = new CCTEntities();
 
+        /// <summary>Get all supervisors</summary>
+        /// <returns>All supervisors and their corresponding information</returns>
+        /// <remarks>Queries the database for all supervisors</remarks>
         // GET: api/Supervisors
         [HttpGet]
         [Route("")]
@@ -25,6 +28,10 @@ namespace CCT_App.ApiControllers
             return db.SUPERVISORs;
         }
 
+        /// <summary>Get a single supervisor</summary>
+        /// <param name="id">The ID of desired supervisor</param>
+        /// <returns>The supervisor object that has an ID matching the one specified in the URL</returns>
+        /// <remarks>Queries the database for a specific supervisor based on their Gordon ID</remarks>
         // GET: api/Supervisors/5
         [ResponseType(typeof(SUPERVISOR))]
         [HttpGet]
@@ -46,6 +53,11 @@ namespace CCT_App.ApiControllers
             return Ok(sUPERVISOR);
         }
 
+        /// <summary>Update an existing supervisor</summary>
+        /// <param name="id">The id for an existing supervisor</param>
+        /// <param name="supervisor">The supervisor object to be changed</param>
+        /// <returns>The changed supervisor object</returns>
+        /// <remarks>Queries the database to update one supervisor</remarks>
         // PUT: api/Supervisors/5
         [ResponseType(typeof(void))]
         [HttpPut]
@@ -83,6 +95,10 @@ namespace CCT_App.ApiControllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
+        /// <summary>Add a new supervisor</summary>
+        /// <param name="sUPERVISOR">The name of the new supervisor</param>
+        /// <returns>The new supervisor object</returns>
+        /// <remarks>Queries the database to add a new supervisor into the table</remarks>
         // POST: api/Supervisors
         [ResponseType(typeof(SUPERVISOR))]
         [HttpPost]
@@ -100,6 +116,10 @@ namespace CCT_App.ApiControllers
             return CreatedAtRoute("DefaultApi", new { id = sUPERVISOR.SUP_ID }, sUPERVISOR);
         }
 
+        /// <summary>Delete a supervisor</summary>
+        /// <param name="id">The ID of supervisor to be deleted</param>
+        /// <returns>The supervisor object that was deleted</returns>
+        /// <remarks>Queries the database to remove the row of the specified supervisor</remarks>
         // DELETE: api/Supervisors/5
         [ResponseType(typeof(SUPERVISOR))]
         [HttpDelete]

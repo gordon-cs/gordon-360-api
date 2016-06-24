@@ -15,6 +15,15 @@ namespace CCT_App.Controllers.Api
 
         private CCTEntities database = new CCTEntities();
 
+        /// <summary>
+        /// Get all memberships
+        /// </summary>
+        /// <returns>
+        /// A list of all memberships
+        /// </returns>
+        /// <remarks>
+        /// Server makes call to the database and returns all current memberships
+        /// </remarks>
         // GET api/<controller>
         [HttpGet]
         [Route("")]
@@ -23,6 +32,12 @@ namespace CCT_App.Controllers.Api
             return database.Memberships;
         }
 
+        /// <summary>
+        /// Get a single membership based on the id given
+        /// </summary>
+        /// <param name="id">The id of a membership within the database</param>
+        /// <remarks>Queries the database about the specified membership</remarks>
+        /// <returns>The information about one specific membership</returns>
         // GET api/<controller>/5
         [HttpGet]
         [Route("{id}")]
@@ -43,6 +58,10 @@ namespace CCT_App.Controllers.Api
             return Ok(result);
         }
 
+        /// <summary>Create a new membership item to be added to database</summary>
+        /// <param name="membership">The membership item containing all required and relevant information</param>
+        /// <returns></returns>
+        /// <remarks>Posts a new membership to the server to be added into the database</remarks>
         // POST api/<controller>
         [HttpPost]
         [Route("", Name="memberships")]
@@ -77,6 +96,10 @@ namespace CCT_App.Controllers.Api
 
         }
 
+        /// <summary>Update an existing membership item</summary>
+        /// <param name="id">The membership id of whichever one is to be changed</param>
+        /// <param name="value">The content within the membership that is to be changed and what it will change to</param>
+        /// <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         // PUT api/<controller>/5
         [HttpPut]
         [Route("")]
@@ -84,6 +107,9 @@ namespace CCT_App.Controllers.Api
         {
         }
 
+        /// <summary>Delete an existing membership</summary>
+        /// <param name="id">The identifier for the membership to be deleted</param>
+        /// <remarks>Calls the server to make a call and remove the given membership from the database</remarks>
         // DELETE api/<controller>/5
         [HttpDelete]
         [Route("{id}")]
