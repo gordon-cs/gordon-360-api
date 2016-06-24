@@ -1,14 +1,8 @@
 .invisible {
     visibility: hidden;
-    display: none;
 }
 select {
     -webkit-appearance: none;
-}
-button,
-select,
-input {
-    font-size: 80%;
 }
 button.btn-blue {
     color: #FFF;
@@ -25,7 +19,7 @@ input[type="text"]:focus,
 select:focus {
     border: 1px solid #064983;
 }
-
+/* Custom Nav Bar */
 nav.navbar-blue .navbar-brand {
     color: rgba(255, 255, 255, 1);
 }
@@ -64,28 +58,25 @@ nav.navbar-blue .navbar-toggle:hover .icon-bar,
 nav.navbar-blue .navbar-toggle:focus .icon-bar {
     background-color: #064983;
 }
-
-/* Media MIN Wdith */
-@media (min-width: 750px) {
-    .invisible {
-        display: inline;
-    }
+/* Media Widths */
+@media (min-width: 768px) {
     .row {
         margin-bottom: 20px;
         margin-top: 20px;
     }
 }
-@media (max-width: 750px) {
+@media (max-width: 767px) {
     .navbar {
         display: none;
     }
-}
-/* Media MIN and MAX width */
-@media (max-width: 750px) and (min-width: 550px) {
+    .invisible {
+        display: none;
+    }
     button,
     select,
     input,
-    table {
-        font-size: 60%;
+    h3 {
+        margin-top: 5px;
+        margin-bottom: 5px;
     }
 }
