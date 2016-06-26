@@ -26,21 +26,23 @@ namespace CCT_App.Controllers.Api
         // GET: api/Sessions
         [HttpGet]
         [Route("")]
-        public IQueryable<CM_SESSION_MSTR> GetCM_SESSION_MSTR()
+        public IEnumerable<CM_SESSION_MSTR> Get()
         {
-            return database.CM_SESSION_MSTR;
+            return database.CM_SESSION_MSTR.ToList();
         }
 
         // GET: api/Sessions/5
+        [HttpGet]
+        [Route("{id}")]
         [ResponseType(typeof(CM_SESSION_MSTR))]
-        public IHttpActionResult GetCM_SESSION_MSTR(string id)
+        public IHttpActionResult Get(string id)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
             {
                 return BadRequest();
             }
 
-            var result = database.CM_SESSION_MSTR.FirstOrDefault(s => s.SESS_CDE.Trim() == id);
+            var result = database.CM_SESSION_MSTR.Find(id);
 
             if (result == null)
             {
@@ -56,13 +58,13 @@ namespace CCT_App.Controllers.Api
         [Route("{id}/activities")]
         public IHttpActionResult GetActivitiesForSession(string id)
         {
-            if(!ModelState.IsValid)
+            if(!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
             {
                 return BadRequest(ModelState);
             }
 
             ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> valid_activity_codes = database.ACTIVE_CLUBS_PER_SESS_ID(id);
-
+            
             return Ok(valid_activity_codes);
 
         }

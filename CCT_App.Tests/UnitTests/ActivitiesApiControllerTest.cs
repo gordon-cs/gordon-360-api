@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CCT_App.Controllers.Api;
 using CCT_App.Models;
 using Xunit;
 using Moq;
-using System.Collections;
 using System.Data.Entity;
 using System.Web.Http.Results;
 
@@ -23,21 +20,30 @@ namespace CCT_App.Tests.UnitTests
         {
             //Arrange
             var mockRepository = new Mock<CCTEntities>();
-            var allActivities = new Mock<DbSet<ACT_CLUB_DEF>>();
-            allActivities.Object.Add(new ACT_CLUB_DEF { ACT_CDE = "TEST1" });
-            allActivities.Object.Add(new ACT_CLUB_DEF { ACT_CDE = "TEST2" });
-
+            var mockSet = new Mock<DbSet<ACT_CLUB_DEF>>();
             var controller = new ActivitiesController(mockRepository.Object);
+            var data = new List<ACT_CLUB_DEF>
+            {
+                new ACT_CLUB_DEF { ACT_CDE = "TEST1" },
+                new ACT_CLUB_DEF { ACT_CDE = "TEST2" }
+            }.AsQueryable();
 
-            
+           
+            mockSet.As<IQueryable<ACT_CLUB_DEF>>().Setup(x => x.Provider).Returns(data.Provider);
+            mockSet.As<IQueryable<ACT_CLUB_DEF>>().Setup(x => x.Expression).Returns(data.Expression);
+            mockSet.As<IQueryable<ACT_CLUB_DEF>>().Setup(x => x.ElementType).Returns(data.ElementType);
+            mockSet.As<IQueryable<ACT_CLUB_DEF>>().Setup(x => x.GetEnumerator()).Returns(data.GetEnumerator());
+
             mockRepository
-                .Setup(mockRepo => mockRepo.ACT_CLUB_DEF)
-                .Returns(allActivities.Object);
+                .Setup(repo => repo.ACT_CLUB_DEF)
+                .Returns(mockSet.Object);
+                          
             //Act
             var result = controller.Get();
+
             //Assert
-            Assert.Equal("2", result.Count().ToString());
-            Assert.IsType(typeof(DbSet<ACT_CLUB_DEF>), result);
+            Assert.Equal(2, result.Count());
+            Assert.IsType(typeof(List<ACT_CLUB_DEF>), result);
         }
         [Fact]
         public void Get_By_ID_Returns_Correctly_Given_Valid_ID()
@@ -48,7 +54,8 @@ namespace CCT_App.Tests.UnitTests
             string id = "valid_id";
             var activity = new ACT_CLUB_DEF { ACT_CDE="valid_id" };
             mockRepository
-                .SetReturnsDefault(activity);
+                .Setup(mockRepo => mockRepo.ACT_CLUB_DEF.Find(id))
+                .Returns(activity);
              
             //Act
             var result = controller.Get(id);
@@ -67,7 +74,9 @@ namespace CCT_App.Tests.UnitTests
             var mockRepository = new Mock<CCTEntities>();
             var controller = new ActivitiesController(mockRepository.Object);
             string id = "id-that-doesn't-exist";
-
+            mockRepository
+                .Setup(repo => repo.ACT_CLUB_DEF.Find(id))
+                .Returns((ACT_CLUB_DEF)null);
             //Act
             var result = controller.Get(id);
 
@@ -76,15 +85,15 @@ namespace CCT_App.Tests.UnitTests
         }
  
         [Fact]
-        public void Get_By_ID_Returns_Bad_Request_Given_Null_ID()
+        public void Get_By_ID_Returns_Bad_Request_Given_Empty_ID()
         {
             // Arrange
             var mockRepository = new Mock<CCTEntities>();
             var controller = new ActivitiesController(mockRepository.Object);
-            string nullId = null;
+            string emptyID = String.Empty;
 
             //Act
-            var result = controller.Get(nullId);
+            var result = controller.Get(emptyID);
 
             //Assert
             Assert.IsType(typeof(BadRequestResult),result);

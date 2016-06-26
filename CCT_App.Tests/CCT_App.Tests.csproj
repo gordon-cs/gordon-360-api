@@ -102,6 +102,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnitTests\ActivitiesApiControllerTest.cs" />
     <Compile Include="UnitTests\MemberhipsApiControllerTests.cs" />
+    <Compile Include="UnitTests\RolesApiControllerTest.cs" />
+    <Compile Include="UnitTests\SessionsApiControllerTest.cs" />
+    <Compile Include="UnitTests\StudentsApiControllerTest.cs" />
+    <Compile Include="UnitTests\SupervisorsApiControllerTest.cs" />
+    <Compile Include="UnitTests\UnitTestingTools.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

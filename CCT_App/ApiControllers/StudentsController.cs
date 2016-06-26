@@ -36,11 +36,12 @@ namespace CCT_App.Controllers.Api
         [ResponseType(typeof(Student))]
         public IHttpActionResult GetStudent(string id)
         {
-            if(!ModelState.IsValid)
+            if(!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
             {
                 return BadRequest(ModelState);
             }
             var student = database.Students.Find(id);
+
             if (student == null)
             {
                 return NotFound();
@@ -53,21 +54,16 @@ namespace CCT_App.Controllers.Api
         [HttpGet]
         public IHttpActionResult GetActivitiesForStudent(string id)
         {
-            if(!ModelState.IsValid)
+            if(!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
             {
                 return BadRequest(ModelState);
             }
 
-            List<Membership> memberships = null;
+            List<Membership> memberships = new List<Membership>();
 
-            try
-            {
-                memberships = database.Memberships.Where(mem => mem.ID_NUM == id).ToList();
-            }
-            catch (ArgumentNullException e)
-            {
-                return BadRequest(e.StackTrace);
-            }
+         
+            memberships = database.Memberships.Where(mem => mem.ID_NUM == id).ToList();
+         
 
             return Ok(memberships);
 
@@ -77,7 +73,7 @@ namespace CCT_App.Controllers.Api
         [ResponseType(typeof(void))]
         public IHttpActionResult PutStudent(string id, Student student)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || student == null || String.IsNullOrWhiteSpace(id))
             {
                 return BadRequest(ModelState);
             }
@@ -87,24 +83,17 @@ namespace CCT_App.Controllers.Api
                 return BadRequest();
             }
 
+            var original = database.Students.Find(id);
+
+            if (original == null)
+            {
+                return NotFound();
+            }
+
+            database.Students.Attach(student);
             database.Entry(student).State = EntityState.Modified;
-
-            try
-            {
-                database.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!StudentExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            database.SaveChanges();
+           
             return StatusCode(HttpStatusCode.NoContent);
         }
 
@@ -112,28 +101,12 @@ namespace CCT_App.Controllers.Api
         [ResponseType(typeof(Student))]
         public IHttpActionResult PostStudent(Student student)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || student == null)
             {
                 return BadRequest(ModelState);
             }
 
             database.Students.Add(student);
-
-            try
-            {
-                database.SaveChanges();
-            }
-            catch (DbUpdateException)
-            {
-                if (StudentExists(student.student_id))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
 
             return CreatedAtRoute("DefaultApi", new { id = student.student_id }, student);
         }
@@ -143,6 +116,7 @@ namespace CCT_App.Controllers.Api
         public IHttpActionResult DeleteStudent(string id)
         {
             Student student = database.Students.Find(id);
+
             if (student == null)
             {
                 return NotFound();
@@ -163,9 +137,6 @@ namespace CCT_App.Controllers.Api
             base.Dispose(disposing);
         }
 
-        private bool StudentExists(string id)
-        {
-            return database.Students.Count(e => e.student_id == id) > 0;
-        }
+  
     }
 }

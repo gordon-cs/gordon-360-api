@@ -24,22 +24,23 @@ namespace CCT_App.Controllers.Api
         // GET: api/roles
         [HttpGet]
         [Route("")]
-        public IQueryable<PART_DEF> GetRoles()
+
+        public IEnumerable<PART_DEF> Get()
         {
-            return database.PART_DEF;
+            return database.PART_DEF.ToList();
         }
 
         // GET: api/PART_DEF/5
         [HttpGet]
         [Route("{id}")]
         [ResponseType(typeof(PART_DEF))]
-        public IHttpActionResult GetRoles(string id)
+        public IHttpActionResult Get(string id)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
             {
-                return BadRequest(ModelState);
+                return BadRequest();
             }
-            var role = database.PART_DEF.FirstOrDefault(r => r.PART_CDE.Trim() == id);
+            var role = database.PART_DEF.Find(id);
             
             if (role == null)
             {

@@ -10,7 +10,7 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using CCT_App.Models;
 
-namespace CCT_App.ApiControllers
+namespace CCT_App.Controllers.Api
 {
     [RoutePrefix("api/supervisors")]
     public class SupervisorsController : ApiController
@@ -25,39 +25,39 @@ namespace CCT_App.ApiControllers
         // GET: api/Supervisors
         [HttpGet]
         [Route("")]
-        public IQueryable<SUPERVISOR> GetSUPERVISORs()
+        public IEnumerable<SUPERVISOR> Get()
         {
-            return database.SUPERVISORs;
+            return database.SUPERVISORs.ToList();
         }
 
         // GET: api/Supervisors/5
         [ResponseType(typeof(SUPERVISOR))]
         [HttpGet]
         [Route("{id}")]
-        public IHttpActionResult GetSUPERVISOR(int id)
+        public IHttpActionResult Get(int id)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest();
             }
 
-            SUPERVISOR sUPERVISOR = database.SUPERVISORs.Find(id);
+            SUPERVISOR supervisor = database.SUPERVISORs.Find(id);
 
-            if (sUPERVISOR == null)
+            if (supervisor == null)
             {
                 return NotFound();
             }
 
-            return Ok(sUPERVISOR);
+            return Ok(supervisor);
         }
 
         // PUT: api/Supervisors/5
         [ResponseType(typeof(void))]
         [HttpPut]
         [Route("{id}")]
-        public IHttpActionResult PutSUPERVISOR(int id, [FromBody] SUPERVISOR supervisor)
+        public IHttpActionResult Put(int id, [FromBody] SUPERVISOR supervisor)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || supervisor == null)
             {
                 return BadRequest(ModelState);
             }
@@ -92,35 +92,67 @@ namespace CCT_App.ApiControllers
         [ResponseType(typeof(SUPERVISOR))]
         [HttpPost]
         [Route("")]
-        public IHttpActionResult PostSUPERVISOR(SUPERVISOR sUPERVISOR)
+        public IHttpActionResult Post(SUPERVISOR supervisor)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || supervisor == null)
             {
-                return BadRequest(ModelState);
+                return BadRequest();
             }
 
-            database.SUPERVISORs.Add(sUPERVISOR);
+            ACCOUNT person = database.ACCOUNTs.Find(supervisor.ID_NUM);
+
+            if (person == null)
+            {
+                return NotFound();
+            }
+
+            CM_SESSION_MSTR session = database.CM_SESSION_MSTR.Find(supervisor.SESSION_CDE);
+
+            if (session == null)
+            {
+                return NotFound();
+            }
+            var potential_actvities = database.ACTIVE_CLUBS_PER_SESS_ID(supervisor.SESSION_CDE);
+
+            bool offered = false;
+
+            foreach( ACTIVE_CLUBS_PER_SESS_ID_Result activity in potential_actvities)
+            {
+                if(activity.ACT_CDE == supervisor.ACT_CDE)
+                {
+                    offered = true;
+                }
+            }
+
+            if (!offered)
+            {
+                return NotFound();
+            }
+
+            database.SUPERVISORs.Add(supervisor);
+
             database.SaveChanges();
 
-            return CreatedAtRoute("DefaultApi", new { id = sUPERVISOR.SUP_ID }, sUPERVISOR);
+            return Created("DefaultApi",  supervisor);
         }
 
         // DELETE: api/Supervisors/5
         [ResponseType(typeof(SUPERVISOR))]
         [HttpDelete]
         [Route("{id}")]
-        public IHttpActionResult DeleteSUPERVISOR(int id)
+        public IHttpActionResult Delete(int id)
         {
-            SUPERVISOR sUPERVISOR = database.SUPERVISORs.Find(id);
-            if (sUPERVISOR == null)
+            SUPERVISOR supervisor = database.SUPERVISORs.Find(id);
+
+            if (supervisor == null)
             {
                 return NotFound();
             }
 
-            database.SUPERVISORs.Remove(sUPERVISOR);
+            database.SUPERVISORs.Remove(supervisor);
             database.SaveChanges();
 
-            return Ok(sUPERVISOR);
+            return Ok();
         }
 
         protected override void Dispose(bool disposing)

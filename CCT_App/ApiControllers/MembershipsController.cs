@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Web.Http;
 using CCT_App.Models;
 using System.Data.Entity.Core.Objects;
+using System.Data.Entity;
 
 namespace CCT_App.Controllers.Api
 {
@@ -25,7 +26,7 @@ namespace CCT_App.Controllers.Api
         [Route("")]
         public IEnumerable<Membership> Get()
         {
-            return database.Memberships;
+            return database.Memberships.ToList();
         }
 
         // GET api/<controller>/5
@@ -53,13 +54,15 @@ namespace CCT_App.Controllers.Api
         [Route("", Name="Memberships")]
         public IHttpActionResult Post([FromBody] Membership membership)
         {
-            if(!ModelState.IsValid)
+            if(!ModelState.IsValid || membership == null)
             {
-                return BadRequest(ModelState);
+                return BadRequest();
             }
+
             ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> valid_activity_codes = database.ACTIVE_CLUBS_PER_SESS_ID(membership.SESSION_CDE);
             bool offered = false;
             string potential_activity = membership.ACT_CDE.Trim();
+
             foreach (ACTIVE_CLUBS_PER_SESS_ID_Result activity in valid_activity_codes)
             {
                 if(potential_activity.Equals(activity.ACT_CDE.Trim()))
@@ -76,8 +79,6 @@ namespace CCT_App.Controllers.Api
             database.Memberships.Add(membership);
             database.SaveChanges();
 
-            var routeName = Request.RequestUri.ToString(); 
-            var routeValue = membership.MEMBERSHIP_ID.ToString();
             return Created("memberships", membership);
 
         }
@@ -87,7 +88,22 @@ namespace CCT_App.Controllers.Api
         [Route("")]
         public IHttpActionResult Put(int id, [FromBody]Membership membership)
         {
-            return Ok();
+            if(!ModelState.IsValid || membership == null || id != membership.MEMBERSHIP_ID)
+            {
+                return BadRequest();
+            }
+            var original = database.Memberships.Find(id);
+
+            if(original == null)
+            {
+                return NotFound();
+            }
+
+            database.Memberships.Attach(membership);
+            database.Entry(membership).State = EntityState.Modified;
+            database.SaveChanges();
+
+            return Created("DefaultApi", membership);
         }
 
         // DELETE api/<controller>/5
@@ -95,6 +111,13 @@ namespace CCT_App.Controllers.Api
         [Route("{id}")]
         public IHttpActionResult Delete(int id)
         {
+            var toDelete = database.Memberships.Find(id);
+            if (toDelete == null)
+            {
+                return NotFound();
+            }
+
+            database.Memberships.Remove(toDelete);
             return Ok();
         }
     }

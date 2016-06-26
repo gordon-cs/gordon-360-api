@@ -25,7 +25,7 @@ namespace CCT_App.Controllers.Api
         [Route("")]
         public IEnumerable<ACT_CLUB_DEF> Get()
         {
-            return database.ACT_CLUB_DEF;
+            return database.ACT_CLUB_DEF.ToList();
         }
 
         // GET api/<controller>/5
@@ -33,11 +33,15 @@ namespace CCT_App.Controllers.Api
         [Route("{id}")]
         public IHttpActionResult Get(string id)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
             {
                 return BadRequest();
             }
             var result = database.ACT_CLUB_DEF.Find(id);
+            if ( result == null)
+            {
+                return NotFound();
+            }
             return Ok(result);
         }
 
@@ -46,9 +50,9 @@ namespace CCT_App.Controllers.Api
         [Route("{id}/supervisor")]
         public IHttpActionResult GetSupervisorForActivity(string id)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
             {
-                return BadRequest(ModelState);
+                return BadRequest();
             }
             var current_session = database.CM_SESSION_MSTR.Max(i => i.SESS_CDE);
             ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> valid_activity_codes = database.ACTIVE_CLUBS_PER_SESS_ID(current_session);
