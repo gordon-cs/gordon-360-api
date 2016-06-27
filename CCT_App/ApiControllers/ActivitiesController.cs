@@ -17,7 +17,7 @@ namespace CCT_App.Controllers.Api
         private CCTEntities cct_db_context = new CCTEntities();
 
         /// <summary>
-        /// Get all activities available
+        /// Get all available activities
         /// </summary>
         /// <returns></returns>
         /// <remarks>
