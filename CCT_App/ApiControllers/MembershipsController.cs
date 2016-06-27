@@ -60,6 +60,20 @@ namespace CCT_App.Controllers.Api
                 return BadRequest();
             }
 
+            var person_id = database.ACCOUNTs.Find(membership.ID_NUM.Trim());
+
+            if( person_id == null)
+            {
+                return NotFound();
+            }
+
+            var part_def = database.PART_DEF.Find(membership.PART_LVL.Trim());
+
+            if (part_def == null)
+            {
+                return NotFound();
+            }
+
             var valid_activity_codes = database.ACTIVE_CLUBS_PER_SESS_ID(membership.SESSION_CDE).ToList();
 
             bool offered = false;
