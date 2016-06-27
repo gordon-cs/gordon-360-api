@@ -25,9 +25,10 @@ namespace CCT_App.Controllers.Api
         [HttpGet]
         [Route("")]
 
-        public IEnumerable<PART_DEF> Get()
+        public IHttpActionResult Get()
         {
-            return database.PART_DEF.ToList();
+            var all = database.PART_DEF.ToList();
+            return Ok(all);
         }
 
         // GET: api/PART_DEF/5

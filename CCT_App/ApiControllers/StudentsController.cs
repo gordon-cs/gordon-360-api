@@ -25,7 +25,8 @@ namespace CCT_App.Controllers.Api
         // GET: api/Students
         [Route("")]
         [HttpGet]
-        public IQueryable<Student> GetStudents()
+        [ResponseType(typeof(IEnumerable<Student>))]
+        public IEnumerable<Student> Get()
         {
             return database.Students;
         }
@@ -33,8 +34,8 @@ namespace CCT_App.Controllers.Api
         // GET: api/Students/5
         [Route("{id}")]
         [HttpGet]
-        [ResponseType(typeof(Student))]
-        public IHttpActionResult GetStudent(string id)
+        [ResponseType(typeof(IHttpActionResult))]
+        public IHttpActionResult Get(string id)
         {
             if(!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
             {
@@ -49,7 +50,8 @@ namespace CCT_App.Controllers.Api
 
             return Ok(student);
         }
-
+        
+        [ResponseType(typeof(IHttpActionResult))]
         [Route("{id}/memberships")]
         [HttpGet]
         public IHttpActionResult GetActivitiesForStudent(string id)
@@ -70,8 +72,10 @@ namespace CCT_App.Controllers.Api
         }
 
         // PUT: api/Students/5
-        [ResponseType(typeof(void))]
-        public IHttpActionResult PutStudent(string id, Student student)
+        [ResponseType(typeof(IHttpActionResult))]
+        [HttpPut]
+        [Route("{id}")]
+        public IHttpActionResult Put(string id, [FromBody] Student student)
         {
             if (!ModelState.IsValid || student == null || String.IsNullOrWhiteSpace(id))
             {
@@ -90,7 +94,6 @@ namespace CCT_App.Controllers.Api
                 return NotFound();
             }
 
-            database.Students.Attach(student);
             database.Entry(student).State = EntityState.Modified;
             database.SaveChanges();
            
@@ -98,7 +101,9 @@ namespace CCT_App.Controllers.Api
         }
 
         // POST: api/Students
-        [ResponseType(typeof(Student))]
+        [ResponseType(typeof(IHttpActionResult))]
+        [HttpPost]
+        [Route("")]
         public IHttpActionResult PostStudent(Student student)
         {
             if (!ModelState.IsValid || student == null)

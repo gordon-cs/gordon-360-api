@@ -23,9 +23,10 @@ namespace CCT_App.Controllers.Api
         // GET api/<controller>
         [HttpGet]
         [Route("")]
-        public IEnumerable<ACT_CLUB_DEF> Get()
+        public IHttpActionResult Get()
         {
-            return database.ACT_CLUB_DEF.ToList();
+            var all = database.ACT_CLUB_DEF.ToList();
+            return Ok(all);
         }
 
         // GET api/<controller>/5

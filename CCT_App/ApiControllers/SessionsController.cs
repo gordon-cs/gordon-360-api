@@ -26,9 +26,10 @@ namespace CCT_App.Controllers.Api
         // GET: api/Sessions
         [HttpGet]
         [Route("")]
-        public IEnumerable<CM_SESSION_MSTR> Get()
+        public IHttpActionResult Get()
         {
-            return database.CM_SESSION_MSTR.ToList();
+            var all = database.CM_SESSION_MSTR.ToList();
+            return Ok(all);
         }
 
         // GET: api/Sessions/5

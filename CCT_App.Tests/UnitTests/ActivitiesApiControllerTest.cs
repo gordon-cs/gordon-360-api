@@ -19,31 +19,22 @@ namespace CCT_App.Tests.UnitTests
         public void Get_Returns_Everything()
         {
             //Arrange
-            var mockRepository = new Mock<CCTEntities>();
-            var mockSet = new Mock<DbSet<ACT_CLUB_DEF>>();
+            var mockRepository = new Mock<CCTEntities>() { DefaultValue = DefaultValue.Mock };
+            var mockSet = mockRepository.Object.ACT_CLUB_DEF;
             var controller = new ActivitiesController(mockRepository.Object);
-            var data = new List<ACT_CLUB_DEF>
-            {
-                new ACT_CLUB_DEF { ACT_CDE = "TEST1" },
-                new ACT_CLUB_DEF { ACT_CDE = "TEST2" }
-            }.AsQueryable();
-
-           
-            mockSet.As<IQueryable<ACT_CLUB_DEF>>().Setup(x => x.Provider).Returns(data.Provider);
-            mockSet.As<IQueryable<ACT_CLUB_DEF>>().Setup(x => x.Expression).Returns(data.Expression);
-            mockSet.As<IQueryable<ACT_CLUB_DEF>>().Setup(x => x.ElementType).Returns(data.ElementType);
-            mockSet.As<IQueryable<ACT_CLUB_DEF>>().Setup(x => x.GetEnumerator()).Returns(data.GetEnumerator());
 
             mockRepository
                 .Setup(repo => repo.ACT_CLUB_DEF)
-                .Returns(mockSet.Object);
+                .Returns(mockSet);
                           
             //Act
             var result = controller.Get();
+            var contentresult = result as OkNegotiatedContentResult<List<ACT_CLUB_DEF>>;
 
             //Assert
-            Assert.Equal(2, result.Count());
-            Assert.IsType(typeof(List<ACT_CLUB_DEF>), result);
+            Assert.IsType(typeof(OkNegotiatedContentResult<List<ACT_CLUB_DEF>>), result);
+            Assert.NotNull(contentresult);
+            Assert.NotNull(contentresult.Content);
         }
         [Fact]
         public void Get_By_ID_Returns_Correctly_Given_Valid_ID()
@@ -75,8 +66,7 @@ namespace CCT_App.Tests.UnitTests
             var controller = new ActivitiesController(mockRepository.Object);
             string id = "id-that-doesn't-exist";
             mockRepository
-                .Setup(repo => repo.ACT_CLUB_DEF.Find(id))
-                .Returns((ACT_CLUB_DEF)null);
+                .Setup(repo => repo.ACT_CLUB_DEF.Find(id));
             //Act
             var result = controller.Get(id);
 

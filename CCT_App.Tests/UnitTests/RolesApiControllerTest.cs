@@ -20,31 +20,21 @@ namespace CCT_App.Tests.UnitTests
         public void Get_Returns_Everything()
         {
             //Arrange
-            var mockRepository = new Mock<CCTEntities>();
-            var mockSet = new Mock<DbSet<PART_DEF>>();
+            var mockRepository = new Mock<CCTEntities> { DefaultValue = DefaultValue.Mock };
+            var mockSet = mockRepository.Object.PART_DEF;
             var controller = new RolesController(mockRepository.Object);
-            var data = new List<PART_DEF>
-            {
-                new PART_DEF { PART_CDE = "TEST1" },
-                new PART_DEF { PART_CDE = "TEST2" }
-            }.AsQueryable();
-
-            // Some more IQueryable Kung-Fu that I only understand 60% of
-            mockSet.As<IQueryable<PART_DEF>>().Setup(x => x.Provider).Returns(data.Provider);
-            mockSet.As<IQueryable<PART_DEF>>().Setup(x => x.Expression).Returns(data.Expression);
-            mockSet.As<IQueryable<PART_DEF>>().Setup(x => x.ElementType).Returns(data.ElementType);
-            mockSet.As<IQueryable<PART_DEF>>().Setup(x => x.GetEnumerator()).Returns(data.GetEnumerator());
 
             mockRepository
                 .Setup(mockRepo => mockRepo.PART_DEF)
-                .Returns(mockSet.Object);
+                .Returns(mockSet);
 
             //Act
             var result = controller.Get();
-
+            var contentresult = result as OkNegotiatedContentResult<List<PART_DEF>>;
             //Assert
-            Assert.Equal(2, result.Count());
-            Assert.IsType(typeof(List<PART_DEF>), result);
+            Assert.IsType(typeof(OkNegotiatedContentResult<List<PART_DEF>>), result);
+            Assert.NotNull(contentresult);
+            Assert.NotNull(contentresult.Content);
         }
 
         [Fact]
@@ -77,8 +67,8 @@ namespace CCT_App.Tests.UnitTests
             var controller = new RolesController(mockRepository.Object);
             string id = "id-that-doesn't-exist";
             mockRepository
-                .Setup(repo => repo.PART_DEF.Find(id))
-                .Returns((PART_DEF)null);
+                .Setup(repo => repo.PART_DEF.Find(id));
+
             //Act
             var result = controller.Get(id);
 

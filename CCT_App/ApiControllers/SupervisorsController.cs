@@ -25,9 +25,10 @@ namespace CCT_App.Controllers.Api
         // GET: api/Supervisors
         [HttpGet]
         [Route("")]
-        public IEnumerable<SUPERVISOR> Get()
+        public IHttpActionResult Get()
         {
-            return database.SUPERVISORs.ToList();
+            var all = database.SUPERVISORs.ToList();
+            return Ok(all);
         }
 
         // GET: api/Supervisors/5

@@ -19,32 +19,25 @@ namespace CCT_App.Tests.UnitTests
         {
             // Arrange
             // Fake database
-            var mockRepository = new Mock<CCTEntities>();
+            var mockRepository = new Mock<CCTEntities> { DefaultValue = DefaultValue.Mock };
             // Fake dbset that will return all our data
-            var mockSet = new Mock<DbSet<Membership>>();
+            var mockSet = mockRepository.Object.Memberships;
             var controller = new MembershipsController(mockRepository.Object);
-            var data = new List<Membership>()
-            {
-                new Membership { MEMBERSHIP_ID = 123 },
-                new Membership { MEMBERSHIP_ID = 321 }
-            }.AsQueryable();
-
-            // Some IQueryable Kung-Fu that I 60% understand. Seems like the only way to load the data into the fake dbset.
-            mockSet.As<IQueryable<Membership>>().Setup(x => x.Provider).Returns(data.Provider);
-            mockSet.As<IQueryable<Membership>>().Setup(x => x.Expression).Returns(data.Expression);
-            mockSet.As<IQueryable<Membership>>().Setup(x => x.ElementType).Returns(data.ElementType);
-            mockSet.As<IQueryable<Membership>>().Setup(x => x.GetEnumerator()).Returns(data.GetEnumerator());
+           
             
            // Tell fake database how to respond to the call that will be made.
             mockRepository
                 .Setup(mockRepo => mockRepo.Memberships)
-                .Returns(mockSet.Object);
+                .Returns(mockSet);
 
             //Act
             var result = controller.Get();
+            var contentresult = result as OkNegotiatedContentResult<List<Membership>>;
+
             //Assert
-            Assert.Equal(2, result.Count());
-            Assert.IsType(typeof(List<Membership>), result);
+            Assert.IsType(typeof(OkNegotiatedContentResult<List<Membership>>), result);
+            Assert.NotNull(contentresult);
+            Assert.NotNull(contentresult.Content);
         }
         [Fact]
         public void Get_By_ID_Returns_Correctly_Given_Valid_ID()
@@ -57,16 +50,16 @@ namespace CCT_App.Tests.UnitTests
             mockRepository
                 .Setup(repo => repo.Memberships.Find(id))
                 .Returns(membership);
-
+            
             //Act
             var result = controller.Get(id);
             var contentresult = result as OkNegotiatedContentResult<Membership>;
 
             //Assert
+            Assert.IsType(typeof(OkNegotiatedContentResult<Membership>), result);
             Assert.NotNull(contentresult);
             Assert.NotNull(contentresult.Content);
-            Assert.Equal(id, contentresult.Content.MEMBERSHIP_ID);
-            Assert.IsType(typeof(OkNegotiatedContentResult<Membership>), result);
+            
 
         }
         [Fact]
@@ -80,14 +73,13 @@ namespace CCT_App.Tests.UnitTests
             int id = 321;
             // Tell database how to respond to the call that will be made
             mockRepository
-                .Setup(repo => repo.Memberships.Find(id))
-                .Returns((Membership)null);
+                .Setup(repo => repo.Memberships.Find(id));
 
             //Act
             var result = controller.Get(id);
 
             //Assert
-            //Asser that a not Found result was returned
+            //Assert that a not Found result was returned
             Assert.IsType(typeof(NotFoundResult), result);
         }
 
@@ -110,16 +102,17 @@ namespace CCT_App.Tests.UnitTests
         }
 
         [Fact]
-        public void Create_Returns_Object_Given_Valid_Model()
+        public void Create_Returns_Not_Found_Given_Non_Available_Activity()
         {
             // Arrange
             var mockRepository = new Mock<CCTEntities>();
+            var membership = new Membership { SESSION_CDE = "TEST_SESS", ACT_CDE = "not_available_activity" };
             var mockResult = new Mock<ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result>>();
             var controller = new MembershipsController(mockRepository.Object);
             var data = new List<ACTIVE_CLUBS_PER_SESS_ID_Result>
             {
-                new ACTIVE_CLUBS_PER_SESS_ID_Result { ACT_CDE="TEST1" },
-                new ACTIVE_CLUBS_PER_SESS_ID_Result { ACT_CDE="TEST2" }
+                new ACTIVE_CLUBS_PER_SESS_ID_Result { ACT_CDE="available_activity" },
+                new ACTIVE_CLUBS_PER_SESS_ID_Result { ACT_CDE="available_activity_2" }
             }.AsQueryable();
 
             mockResult.As<IQueryable<ACTIVE_CLUBS_PER_SESS_ID_Result>>().Setup(x => x.Provider).Returns(data.Provider);
@@ -127,16 +120,44 @@ namespace CCT_App.Tests.UnitTests
             mockResult.As<IQueryable<ACTIVE_CLUBS_PER_SESS_ID_Result>>().Setup(x => x.ElementType).Returns(data.ElementType);
             mockResult.As<IQueryable<ACTIVE_CLUBS_PER_SESS_ID_Result>>().Setup(x => x.GetEnumerator()).Returns(data.GetEnumerator());
 
-            // The membership to be added has an activity code that matches one of the activities being offered.    
-            var membership = new Membership { ACT_CDE = "TEST1", SESSION_CDE = "TEST_SESS" };
+
+            mockRepository
+                .Setup(repo => repo.ACTIVE_CLUBS_PER_SESS_ID("TEST_SESS"))
+                .Returns(mockResult.Object);
+
+            // Act
+            var result = controller.Post(membership);
+
+            //Assert
+            Assert.IsType(typeof(NotFoundResult), result);
+        }
+        [Fact]
+        public void Create_Returns_Object_Given_Valid_Model()
+        {
+            // Arrange
+            var mockRepository = new Mock<CCTEntities>();
+            var membership = new Membership { SESSION_CDE = "TEST_SESS", ACT_CDE = "available_activity"  };
+            var mockResult = new Mock<ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result>>();
+            var controller = new MembershipsController(mockRepository.Object);
+            var data = new List<ACTIVE_CLUBS_PER_SESS_ID_Result>
+            {
+                new ACTIVE_CLUBS_PER_SESS_ID_Result { ACT_CDE="available_activity" },
+                new ACTIVE_CLUBS_PER_SESS_ID_Result { ACT_CDE="available_activity_2" }
+            }.AsQueryable();
+
+            mockResult.As<IQueryable<ACTIVE_CLUBS_PER_SESS_ID_Result>>().Setup(x => x.Provider).Returns(data.Provider);
+            mockResult.As<IQueryable<ACTIVE_CLUBS_PER_SESS_ID_Result>>().Setup(x => x.Expression).Returns(data.Expression);
+            mockResult.As<IQueryable<ACTIVE_CLUBS_PER_SESS_ID_Result>>().Setup(x => x.ElementType).Returns(data.ElementType);
+            mockResult.As<IQueryable<ACTIVE_CLUBS_PER_SESS_ID_Result>>().Setup(x => x.GetEnumerator()).Returns(data.GetEnumerator());
+
+
             mockRepository
                 .Setup(repo => repo.ACTIVE_CLUBS_PER_SESS_ID("TEST_SESS"))
                 .Returns(mockResult.Object);
             mockRepository
                 .Setup(repo => repo.Memberships.Add(membership))
                 .Returns(membership);
-            mockRepository
-                .Setup(repo => repo.SaveChanges());
+
             // Act
             var result = controller.Post(membership);
             var contentresult = result as CreatedNegotiatedContentResult<Membership>;
@@ -145,6 +166,7 @@ namespace CCT_App.Tests.UnitTests
             Assert.IsType(typeof(CreatedNegotiatedContentResult<Membership>), result);
             Assert.NotNull(contentresult);
             Assert.NotNull(contentresult.Content);
+            Assert.Equal(contentresult.Content, membership);
         }
 
         /* TESTS FOR THE UPDATE METHOD */
@@ -195,8 +217,7 @@ namespace CCT_App.Tests.UnitTests
             Membership membership = new Membership { MEMBERSHIP_ID = 123 };
             int id = 123;
             mockRepository
-                .Setup(repo => repo.Memberships.Find(id))
-                .Returns((Membership)null);
+                .Setup(repo => repo.Memberships.Find(id));
 
             // Act
             var result = controller.Put(id, membership);
@@ -240,8 +261,7 @@ namespace CCT_App.Tests.UnitTests
             var controller = new MembershipsController(mockRepository.Object);
             int id = 132;
             mockRepository
-                .Setup(x => x.Memberships.Find(id))
-                .Returns((Membership)null);
+                .Setup(x => x.Memberships.Find(id));
 
             // Act
             var result = controller.Delete(id);
@@ -266,9 +286,7 @@ namespace CCT_App.Tests.UnitTests
                 .Setup(x => x.Memberships.Find(id))
                 .Returns(membership);
             mockRepository
-                .Setup(x => x.Memberships.Remove(membership))
-                .Returns(membership);
-
+                .Setup(x => x.Memberships.Remove(membership));
             // Act
             var result = controller.Delete(id);
 

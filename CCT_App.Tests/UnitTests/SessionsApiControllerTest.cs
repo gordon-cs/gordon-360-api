@@ -19,29 +19,21 @@ namespace CCT_App.Tests.UnitTests
         public void Get_Returns_Everything()
         {
             //Arrange
-            var mockRepository = new Mock<CCTEntities>();
-            var mockSet = new Mock<DbSet<CM_SESSION_MSTR>>();
+            var mockRepository = new Mock<CCTEntities> { DefaultValue = DefaultValue.Mock };
+            var mockSet = mockRepository.Object.CM_SESSION_MSTR;
             var controller = new SessionsController(mockRepository.Object);
-            var data = new List<CM_SESSION_MSTR>()
-            {
-                new CM_SESSION_MSTR { SESS_CDE = "TEST" },
-                new CM_SESSION_MSTR { SESS_CDE = "TEST1" }
-            }.AsQueryable();
-
-            var en = data.GetEnumerator();
-            mockSet.As<IQueryable<CM_SESSION_MSTR>>().Setup(x => x.Provider).Returns(data.Provider);
-            mockSet.As<IQueryable<CM_SESSION_MSTR>>().Setup(x => x.Expression).Returns(data.Expression);
-            mockSet.As<IQueryable<CM_SESSION_MSTR>>().Setup(x => x.ElementType).Returns(data.ElementType);
-            mockSet.As<IQueryable<CM_SESSION_MSTR>>().Setup(x => x.GetEnumerator()).Returns(en);
-
+           
             mockRepository
                 .Setup(mockRepo => mockRepo.CM_SESSION_MSTR)
-                .Returns(mockSet.Object);
+                .Returns(mockSet);
             //Act
             var result = controller.Get();
+            var contentresult = result as OkNegotiatedContentResult<List<CM_SESSION_MSTR>>;
+
             //Assert
-            Assert.Equal(2, result.Count());
-            Assert.IsType(typeof(List<CM_SESSION_MSTR>), result);
+            Assert.IsType(typeof(OkNegotiatedContentResult<List<CM_SESSION_MSTR>>), result);
+            Assert.NotNull(contentresult);
+            Assert.NotNull(contentresult.Content);
         }
      
         [Fact]
@@ -74,8 +66,7 @@ namespace CCT_App.Tests.UnitTests
             var controller = new SessionsController(mockRepository.Object);
             string id = "id-that-doesn't-exist";
             mockRepository
-                .Setup(repo => repo.CM_SESSION_MSTR.Find(id))
-                .Returns((CM_SESSION_MSTR)null);
+                .Setup(repo => repo.CM_SESSION_MSTR.Find(id));
 
             //Act
             var result = controller.Get(id);
@@ -107,19 +98,30 @@ namespace CCT_App.Tests.UnitTests
             var mockResult = new Mock<ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result>>();
             var controller = new SessionsController(mockRepository.Object);
             string id = "session with no activities";
+            var data = new List<ACTIVE_CLUBS_PER_SESS_ID_Result>().AsQueryable();
+
+            mockResult.As<IQueryable<ACTIVE_CLUBS_PER_SESS_ID_Result>>().Setup(x => x.Provider).Returns(data.Provider);
+            mockResult.As<IQueryable<ACTIVE_CLUBS_PER_SESS_ID_Result>>().Setup(x => x.Expression).Returns(data.Expression);
+            mockResult.As<IQueryable<ACTIVE_CLUBS_PER_SESS_ID_Result>>().Setup(x => x.ElementType).Returns(data.ElementType);
+            mockResult.As<IQueryable<ACTIVE_CLUBS_PER_SESS_ID_Result>>().Setup(x => x.GetEnumerator()).Returns(data.GetEnumerator());
+
             mockRepository
                 .Setup(repo => repo.ACTIVE_CLUBS_PER_SESS_ID(id))
                 .Returns(mockResult.Object);
             //Act
             var result = controller.GetActivitiesForSession(id);
-            var contentresult = result as OkNegotiatedContentResult<ACTIVE_CLUBS_PER_SESS_ID_Result>;
+            var contentresult = result as OkNegotiatedContentResult<ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result>>;
 
             //Assert
-            Assert.IsType(typeof(OkNegotiatedContentResult<System.Data.Entity.Core.Objects.ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result>>), result);
-            Assert.Null(contentresult);
+            Assert.IsType(typeof(OkNegotiatedContentResult<ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result>>), result);
+            Assert.NotNull(contentresult);
+            Assert.NotNull(contentresult.Content);
+
+            
+
 
         }
-
+        [Fact]
         public void GetActivitiesForSession_Returns_OK_With_List_Of_Valid_Activities()
         {
             // Arrange
@@ -127,7 +129,6 @@ namespace CCT_App.Tests.UnitTests
             var mockResult = new Mock<ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result>>();
             var controller = new SessionsController(mockRepository.Object);
             var id = "session with 2 activities";
-            var session = new CM_SESSION_MSTR { SESS_CDE = id };
             var data = new List<ACTIVE_CLUBS_PER_SESS_ID_Result>
             {
                 new ACTIVE_CLUBS_PER_SESS_ID_Result { ACT_CDE="TEST1" },
@@ -145,12 +146,13 @@ namespace CCT_App.Tests.UnitTests
             
             // Act
             var result = controller.GetActivitiesForSession(id);
-            var contentresult = result as OkNegotiatedContentResult<ACTIVE_CLUBS_PER_SESS_ID_Result>;
+            var contentresult = result as OkNegotiatedContentResult<ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result>>;
 
             //Assert
-            Assert.IsType(typeof(OkNegotiatedContentResult<ACTIVE_CLUBS_PER_SESS_ID_Result>), result);
+            Assert.IsType(typeof(OkNegotiatedContentResult<ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result>>), result);
             Assert.NotNull(contentresult);
             Assert.NotNull(contentresult.Content);
+            
 
         }
 

@@ -24,9 +24,10 @@ namespace CCT_App.Controllers.Api
         // GET api/<controller>
         [HttpGet]
         [Route("")]
-        public IEnumerable<Membership> Get()
+        public IHttpActionResult Get()
         {
-            return database.Memberships.ToList();
+            var all = database.Memberships.ToList();
+            return Ok(all);
         }
 
         // GET api/<controller>/5
@@ -59,7 +60,8 @@ namespace CCT_App.Controllers.Api
                 return BadRequest();
             }
 
-            ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> valid_activity_codes = database.ACTIVE_CLUBS_PER_SESS_ID(membership.SESSION_CDE);
+            var valid_activity_codes = database.ACTIVE_CLUBS_PER_SESS_ID(membership.SESSION_CDE).ToList();
+
             bool offered = false;
             string potential_activity = membership.ACT_CDE.Trim();
 
@@ -118,6 +120,7 @@ namespace CCT_App.Controllers.Api
             }
 
             database.Memberships.Remove(toDelete);
+            database.SaveChanges();
             return Ok();
         }
     }

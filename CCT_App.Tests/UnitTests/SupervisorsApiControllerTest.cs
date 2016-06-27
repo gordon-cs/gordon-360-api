@@ -22,33 +22,27 @@ namespace CCT_App.Tests.UnitTests
         {
             // Arrange
             // Fake database
-            var mockRepository = new Mock<CCTEntities>();
+            var mockRepository = new Mock<CCTEntities> { DefaultValue = DefaultValue.Mock };
             // Fake dbset that will return all our data
-            var mockSet = new Mock<DbSet<SUPERVISOR>>();
+            var mockSet = mockRepository.Object.SUPERVISORs;
             var controller = new SupervisorsController(mockRepository.Object);
-            var data = new List<SUPERVISOR>()
-            {
-                new SUPERVISOR { SUP_ID = 123 },
-                new SUPERVISOR { SUP_ID = 321 }
-            }.AsQueryable();
-
-            // Some IQueryable Kung-Fu that I 60% understand. Seems like the only way to load the data into the fake dbset.
-            mockSet.As<IQueryable<SUPERVISOR>>().Setup(x => x.Provider).Returns(data.Provider);
-            mockSet.As<IQueryable<SUPERVISOR>>().Setup(x => x.Expression).Returns(data.Expression);
-            mockSet.As<IQueryable<SUPERVISOR>>().Setup(x => x.ElementType).Returns(data.ElementType);
-            mockSet.As<IQueryable<SUPERVISOR>>().Setup(x => x.GetEnumerator()).Returns(data.GetEnumerator());
+           
 
             // Tell fake database how to respond to the call that will be made.
             mockRepository
                 .Setup(mockRepo => mockRepo.SUPERVISORs)
-                .Returns(mockSet.Object);
+                .Returns(mockSet);
 
             //Act
             var result = controller.Get();
+            var contentresult = result as OkNegotiatedContentResult<List<SUPERVISOR>>;
+
             //Assert
-            Assert.Equal(2, result.Count());
-            Assert.IsType(typeof(List<SUPERVISOR>), result);
+            Assert.IsType(typeof(OkNegotiatedContentResult<List<SUPERVISOR>>), result);
+            Assert.NotNull(contentresult);
+            Assert.NotNull(contentresult.Content);
         }
+
         [Fact]
         public void Get_By_ID_Returns_Correctly_Given_Valid_ID()
         {
@@ -65,11 +59,11 @@ namespace CCT_App.Tests.UnitTests
             var result = controller.Get(id);
             var contentresult = result as OkNegotiatedContentResult<SUPERVISOR>;
 
+
             //Assert
-            Assert.NotNull(contentresult);
-            Assert.NotNull(contentresult.Content);
-            Assert.Equal(id, contentresult.Content.SUP_ID);
             Assert.IsType(typeof(OkNegotiatedContentResult<SUPERVISOR>), result);
+            Assert.NotNull(contentresult);
+            Assert.NotNull(contentresult.Content);            
 
         }
         [Fact]
@@ -83,8 +77,7 @@ namespace CCT_App.Tests.UnitTests
             int id = 321;
             // Tell database how to respond to the call that will be made
             mockRepository
-                .Setup(repo => repo.SUPERVISORs.Find(id))
-                .Returns((SUPERVISOR)null);
+                .Setup(repo => repo.SUPERVISORs.Find(id));
 
             //Act
             var result = controller.Get(id);
@@ -116,9 +109,10 @@ namespace CCT_App.Tests.UnitTests
         public void Create_Returns_Object_Given_Valid_Model()
         {
             // Arrange
-            var mockRepository = new Mock<CCTEntities>();
+            var mockRepository = new Mock<CCTEntities> { DefaultValue = DefaultValue.Mock };
             var mockResult = new Mock<ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result>>();
             var controller = new SupervisorsController(mockRepository.Object);
+            var supervisor = new SUPERVISOR { SESSION_CDE = "TEST_SESS", ACT_CDE = "TEST_ACT", ID_NUM = "TEST_IDNUM" };
             var data = new List<ACTIVE_CLUBS_PER_SESS_ID_Result>
             {
                 new ACTIVE_CLUBS_PER_SESS_ID_Result { ACT_CDE="TEST_ACT" },
@@ -130,7 +124,7 @@ namespace CCT_App.Tests.UnitTests
             mockResult.As<IQueryable<ACTIVE_CLUBS_PER_SESS_ID_Result>>().Setup(x => x.ElementType).Returns(data.ElementType);
             mockResult.As<IQueryable<ACTIVE_CLUBS_PER_SESS_ID_Result>>().Setup(x => x.GetEnumerator()).Returns(data.GetEnumerator());
 
-            var supervisor = new SUPERVISOR { SESSION_CDE = "TEST_SESS" , ACT_CDE = "TEST_ACT" , ID_NUM = "TEST_IDNUM" };
+            
             mockRepository
                 .Setup(repo => repo.ACCOUNTs.Find("TEST_IDNUM"))
                 .Returns(new ACCOUNT());
