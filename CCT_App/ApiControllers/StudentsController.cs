@@ -9,26 +9,34 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using CCT_App.Models;
+using CCT_App.Repositories;
+using CCT_App.Services;
 
 namespace CCT_App.Controllers.Api
 {
     [RoutePrefix("api/students")]
     public class StudentsController : ApiController
     {
-        private CCTEntities database = new CCTEntities();
+        private IStudentService _studentService;
 
-        public StudentsController(CCTEntities dbContext)
+        public StudentsController()
         {
-            database = dbContext;
+            var _unitOfWork = new UnitOfWork();
+            _studentService = new StudentService(_unitOfWork);
+        }
+        public StudentsController(IStudentService studentService)
+        {
+            _studentService = studentService;
         }
 
         // GET: api/Students
         [Route("")]
         [HttpGet]
-        [ResponseType(typeof(IEnumerable<Student>))]
-        public IEnumerable<Student> Get()
+        [ResponseType(typeof(IHttpActionResult))]
+        public IHttpActionResult Get()
         {
-            return database.Students;
+            var all = _studentService.GetAll();
+            return Ok(all);
         }
 
         // GET: api/Students/5
@@ -41,14 +49,15 @@ namespace CCT_App.Controllers.Api
             {
                 return BadRequest(ModelState);
             }
-            var student = database.Students.Find(id);
 
-            if (student == null)
+            var result = _studentService.Get(id);
+
+            if (result == null)
             {
                 return NotFound();
             }
 
-            return Ok(student);
+            return Ok(result);
         }
         
         [ResponseType(typeof(IHttpActionResult))]
@@ -61,13 +70,14 @@ namespace CCT_App.Controllers.Api
                 return BadRequest(ModelState);
             }
 
-            List<Membership> memberships = new List<Membership>();
+            var result = _studentService.GetActivitiesForStudent(id);
 
-         
-            memberships = database.Memberships.Where(mem => mem.ID_NUM == id).ToList();
-         
+            if (result == null)
+            {
+                return BadRequest();
+            }
 
-            return Ok(memberships);
+            return Ok(result);
 
         }
 
@@ -82,20 +92,12 @@ namespace CCT_App.Controllers.Api
                 return BadRequest(ModelState);
             }
 
-            if (id != student.student_id)
-            {
-                return BadRequest();
-            }
+            var result = _studentService.Update(id, student);
 
-            var original = database.Students.Find(id);
-
-            if (original == null)
+            if (result == null)
             {
                 return NotFound();
             }
-
-            database.Entry(student).State = EntityState.Modified;
-            database.SaveChanges();
            
             return StatusCode(HttpStatusCode.NoContent);
         }
@@ -111,7 +113,12 @@ namespace CCT_App.Controllers.Api
                 return BadRequest(ModelState);
             }
 
-            database.Students.Add(student);
+            var result = _studentService.Add(student);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
 
             return CreatedAtRoute("DefaultApi", new { id = student.student_id }, student);
         }
@@ -120,26 +127,15 @@ namespace CCT_App.Controllers.Api
         [ResponseType(typeof(Student))]
         public IHttpActionResult DeleteStudent(string id)
         {
-            Student student = database.Students.Find(id);
 
-            if (student == null)
+            var result = _studentService.Delete(id);
+
+            if (result == null)
             {
                 return NotFound();
             }
 
-            database.Students.Remove(student);
-            database.SaveChanges();
-
-            return Ok(student);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                database.Dispose();
-            }
-            base.Dispose(disposing);
+            return Ok(result);
         }
 
   

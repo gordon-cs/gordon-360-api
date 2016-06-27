@@ -9,17 +9,24 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using CCT_App.Models;
+using CCT_App.Services;
+using CCT_App.Repositories;
 
 namespace CCT_App.Controllers.Api
 {
     [RoutePrefix("api/roles")]
     public class RolesController : ApiController
     {
-        private CCTEntities database = new CCTEntities();
+        private IRoleService _roleService;
 
-        public RolesController(CCTEntities dbContext)
+        public RolesController()
         {
-            database = dbContext;
+            var _unitOfWork = new UnitOfWork();
+            _roleService = new RoleService(_unitOfWork);
+        }
+        public RolesController(IRoleService roleservice)
+        {
+            _roleService = roleservice; ;
         }
         // GET: api/roles
         [HttpGet]
@@ -27,7 +34,7 @@ namespace CCT_App.Controllers.Api
 
         public IHttpActionResult Get()
         {
-            var all = database.PART_DEF.ToList();
+            var all = _roleService.GetAll();
             return Ok(all);
         }
 
@@ -41,14 +48,14 @@ namespace CCT_App.Controllers.Api
             {
                 return BadRequest();
             }
-            var role = database.PART_DEF.Find(id);
+            var result = _roleService.Get(id);
             
-            if (role == null)
+            if (result == null)
             {
                 return NotFound();
             }
 
-            return Ok(role);
+            return Ok(result);
         }
 
         

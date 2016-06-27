@@ -9,30 +9,36 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using CCT_App.Models;
+using CCT_App.Repositories;
+using CCT_App.Services;
 
 namespace CCT_App.Controllers.Api
 {
     [RoutePrefix("api/supervisors")]
     public class SupervisorsController : ApiController
     {
-        private CCTEntities database = new CCTEntities();
+        private ISupervisorService _supervisorService;
 
-
-        public SupervisorsController(CCTEntities dbContext)
+        public SupervisorsController()
         {
-            database = dbContext;
+            var _unitOfWork = new UnitOfWork();
+            _supervisorService = new SupervisorService(_unitOfWork); 
+        }
+        public SupervisorsController(ISupervisorService supervisorService)
+        {
+            _supervisorService = supervisorService;
         }
         // GET: api/Supervisors
         [HttpGet]
         [Route("")]
         public IHttpActionResult Get()
         {
-            var all = database.SUPERVISORs.ToList();
+            var all = _supervisorService.GetAll();
             return Ok(all);
         }
 
         // GET: api/Supervisors/5
-        [ResponseType(typeof(SUPERVISOR))]
+        [ResponseType(typeof(IHttpActionResult))]
         [HttpGet]
         [Route("{id}")]
         public IHttpActionResult Get(int id)
@@ -42,18 +48,18 @@ namespace CCT_App.Controllers.Api
                 return BadRequest();
             }
 
-            SUPERVISOR supervisor = database.SUPERVISORs.Find(id);
+            var result = _supervisorService.Get(id);
 
-            if (supervisor == null)
+            if (result == null)
             {
                 return NotFound();
             }
 
-            return Ok(supervisor);
+            return Ok(result);
         }
 
         // PUT: api/Supervisors/5
-        [ResponseType(typeof(void))]
+        [ResponseType(typeof(IHttpActionResult))]
         [HttpPut]
         [Route("{id}")]
         public IHttpActionResult Put(int id, [FromBody] SUPERVISOR supervisor)
@@ -63,34 +69,18 @@ namespace CCT_App.Controllers.Api
                 return BadRequest(ModelState);
             }
 
-            if (id != supervisor.SUP_ID)
+            var result = _supervisorService.Update(id, supervisor);
+            
+            if (result == null)
             {
-                return BadRequest();
+                return NotFound();
             }
-
-            database.Entry(supervisor).State = EntityState.Modified;
-
-            try
-            {
-                database.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!SUPERVISORExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+           
             return StatusCode(HttpStatusCode.NoContent);
         }
 
         // POST: api/Supervisors
-        [ResponseType(typeof(SUPERVISOR))]
+        [ResponseType(typeof(IHttpActionResult))]
         [HttpPost]
         [Route("")]
         public IHttpActionResult Post(SUPERVISOR supervisor)
@@ -100,39 +90,12 @@ namespace CCT_App.Controllers.Api
                 return BadRequest();
             }
 
-            ACCOUNT person = database.ACCOUNTs.Find(supervisor.ID_NUM);
+            var result = _supervisorService.Add(supervisor);
 
-            if (person == null)
+            if (result == null )
             {
-                return NotFound();
+                return BadRequest();
             }
-
-            CM_SESSION_MSTR session = database.CM_SESSION_MSTR.Find(supervisor.SESSION_CDE);
-
-            if (session == null)
-            {
-                return NotFound();
-            }
-            var potential_actvities = database.ACTIVE_CLUBS_PER_SESS_ID(supervisor.SESSION_CDE);
-
-            bool offered = false;
-
-            foreach( ACTIVE_CLUBS_PER_SESS_ID_Result activity in potential_actvities)
-            {
-                if(activity.ACT_CDE == supervisor.ACT_CDE)
-                {
-                    offered = true;
-                }
-            }
-
-            if (!offered)
-            {
-                return NotFound();
-            }
-
-            database.SUPERVISORs.Add(supervisor);
-
-            database.SaveChanges();
 
             return Created("DefaultApi",  supervisor);
         }
@@ -143,31 +106,16 @@ namespace CCT_App.Controllers.Api
         [Route("{id}")]
         public IHttpActionResult Delete(int id)
         {
-            SUPERVISOR supervisor = database.SUPERVISORs.Find(id);
 
-            if (supervisor == null)
+            var result = _supervisorService.Delete(id);
+
+            if (result == null)
             {
                 return NotFound();
-            }
-
-            database.SUPERVISORs.Remove(supervisor);
-            database.SaveChanges();
+            }     
 
             return Ok();
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                database.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        private bool SUPERVISORExists(int id)
-        {
-            return database.SUPERVISORs.Count(e => e.SUP_ID == id) > 0;
-        }
     }
 }

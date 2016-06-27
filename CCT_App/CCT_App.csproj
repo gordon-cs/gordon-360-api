@@ -227,6 +227,21 @@
     </Compile>
     <Compile Include="MvcControllers\HomeController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\GenericRepository.cs" />
+    <Compile Include="Repositories\IRepository.cs" />
+    <Compile Include="Repositories\IUnitOfWork.cs" />
+    <Compile Include="Repositories\UnitOfWork.cs" />
+    <Compile Include="Services\AccountService.cs" />
+    <Compile Include="Services\ActivityService.cs" />
+    <Compile Include="Services\FacultyService.cs" />
+    <Compile Include="Services\JenzibarActivityService.cs" />
+    <Compile Include="Services\MembershipService.cs" />
+    <Compile Include="Services\RoleService.cs" />
+    <Compile Include="Services\ServiceInterfaces.cs" />
+    <Compile Include="Services\SessionService.cs" />
+    <Compile Include="Services\StaffService.cs" />
+    <Compile Include="Services\StudentService.cs" />
+    <Compile Include="Services\SupervisorService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />

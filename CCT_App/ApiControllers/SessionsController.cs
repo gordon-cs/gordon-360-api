@@ -9,6 +9,8 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using CCT_App.Models;
+using CCT_App.Repositories;
+using CCT_App.Services;
 using System.Data.Entity.Core.Objects;
 
 namespace CCT_App.Controllers.Api
@@ -17,18 +19,24 @@ namespace CCT_App.Controllers.Api
     public class SessionsController : ApiController
     {
 
-        private CCTEntities database = new CCTEntities();
+        private ISessionService _sessionService;
 
-        public SessionsController(CCTEntities dbContext)
+        public SessionsController()
         {
-            database = dbContext;
+            var _unitOfWork = new UnitOfWork();
+            _sessionService = new SessionService(_unitOfWork);
         }
+        public SessionsController(ISessionService sessionService)
+        {
+            _sessionService = sessionService;
+        }
+
         // GET: api/Sessions
         [HttpGet]
         [Route("")]
         public IHttpActionResult Get()
         {
-            var all = database.CM_SESSION_MSTR.ToList();
+            var all = _sessionService.GetAll();
             return Ok(all);
         }
 
@@ -43,7 +51,7 @@ namespace CCT_App.Controllers.Api
                 return BadRequest();
             }
 
-            var result = database.CM_SESSION_MSTR.Find(id);
+            var result = _sessionService.Get(id);
 
             if (result == null)
             {
@@ -64,9 +72,14 @@ namespace CCT_App.Controllers.Api
                 return BadRequest(ModelState);
             }
 
-            ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> valid_activity_codes = database.ACTIVE_CLUBS_PER_SESS_ID(id);
+            var result = _sessionService.GetActivitiesForSession(id);
             
-            return Ok(valid_activity_codes);
+            if(result == null)
+            {
+                return NotFound();
+            }    
+                    
+            return Ok(result);
 
         }
      

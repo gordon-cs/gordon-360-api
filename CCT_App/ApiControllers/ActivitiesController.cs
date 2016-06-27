@@ -6,18 +6,25 @@ using System.Net.Http;
 using System.Web.Http;
 using CCT_App.Models;
 using System.Data.Entity.Core.Objects;
+using CCT_App.Services;
+using CCT_App.Repositories;
 
 namespace CCT_App.Controllers.Api
 {
     [RoutePrefix("api/activities")]
     public class ActivitiesController : ApiController
     {
-
-        private CCTEntities database = new CCTEntities();
-
-        public ActivitiesController(CCTEntities dbContext)
+        private IActivityService _activityService;
+        
+        public ActivitiesController()
         {
-            database = dbContext;
+            var _unitOfWork = new UnitOfWork();
+            _activityService = new ActivityService(_unitOfWork);
+        }
+
+        public ActivitiesController(IActivityService activityService)
+        {
+            _activityService = activityService;
         }
 
         // GET api/<controller>
@@ -25,7 +32,7 @@ namespace CCT_App.Controllers.Api
         [Route("")]
         public IHttpActionResult Get()
         {
-            var all = database.ACT_CLUB_DEF.ToList();
+            var all = _activityService.GetAll();
             return Ok(all);
         }
 
@@ -34,11 +41,11 @@ namespace CCT_App.Controllers.Api
         [Route("{id}")]
         public IHttpActionResult Get(string id)
         {
-            if (!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
                 return BadRequest();
             }
-            var result = database.ACT_CLUB_DEF.Find(id);
+            var result = _activityService.Get(id);
             if ( result == null)
             {
                 return NotFound();
@@ -51,30 +58,19 @@ namespace CCT_App.Controllers.Api
         [Route("{id}/supervisor")]
         public IHttpActionResult GetSupervisorForActivity(string id)
         {
-            if (!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
+
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
                 return BadRequest();
             }
-            var current_session = database.CM_SESSION_MSTR.Max(i => i.SESS_CDE);
-            ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> valid_activity_codes = database.ACTIVE_CLUBS_PER_SESS_ID(current_session);
-            bool offered = false;
-            foreach (ACTIVE_CLUBS_PER_SESS_ID_Result activity in valid_activity_codes)
-            {
-                if (id.Equals(activity.ACT_CDE.Trim()))
-                {
-                    offered = true;
-                }
-            }
+            var result = _activityService.GetSupervisorForActivity(id);
 
-            if(!offered)
+            if (result == null)
             {
                 return NotFound();
             }
+            return Ok(result);
 
-            var supervisor = database.SUPERVISORs.Where(s => s.ACT_CDE == id && s.SESSION_CDE == current_session).ToList().ElementAtOrDefault(0);
-
-            return Ok(supervisor);
-            
         }
 
      

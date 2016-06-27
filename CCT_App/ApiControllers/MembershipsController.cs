@@ -7,6 +7,8 @@ using System.Web.Http;
 using CCT_App.Models;
 using System.Data.Entity.Core.Objects;
 using System.Data.Entity;
+using CCT_App.Services;
+using CCT_App.Repositories;
 
 namespace CCT_App.Controllers.Api
 {
@@ -14,11 +16,16 @@ namespace CCT_App.Controllers.Api
     public class MembershipsController : ApiController
     {
 
-        private CCTEntities database = new CCTEntities();
+        private IMembershipService _membershipService;
 
-        public MembershipsController(CCTEntities dbContext)
+        public MembershipsController()
         {
-            database = dbContext;
+            IUnitOfWork _unitOfWork = new UnitOfWork();
+            _membershipService = new MembershipService(_unitOfWork);
+        }
+        public MembershipsController(IMembershipService membershipService)
+        {
+            _membershipService = membershipService;
         }
 
         // GET api/<controller>
@@ -26,7 +33,7 @@ namespace CCT_App.Controllers.Api
         [Route("")]
         public IHttpActionResult Get()
         {
-            var all = database.Memberships.ToList();
+            var all = _membershipService.GetAll();
             return Ok(all);
         }
 
@@ -40,7 +47,7 @@ namespace CCT_App.Controllers.Api
                 return BadRequest();
             }
 
-            var result =  database.Memberships.Find(id);
+            var result =  _membershipService.Get(id);
 
             if( result == null)
             {
@@ -60,40 +67,12 @@ namespace CCT_App.Controllers.Api
                 return BadRequest();
             }
 
-            var person_id = database.ACCOUNTs.Find(membership.ID_NUM.Trim());
+            var result = _membershipService.Add(membership);
 
-            if( person_id == null)
+            if ( result == null)
             {
                 return NotFound();
             }
-
-            var part_def = database.PART_DEF.Find(membership.PART_LVL.Trim());
-
-            if (part_def == null)
-            {
-                return NotFound();
-            }
-
-            var valid_activity_codes = database.ACTIVE_CLUBS_PER_SESS_ID(membership.SESSION_CDE).ToList();
-
-            bool offered = false;
-            string potential_activity = membership.ACT_CDE.Trim();
-
-            foreach (ACTIVE_CLUBS_PER_SESS_ID_Result activity in valid_activity_codes)
-            {
-                if(potential_activity.Equals(activity.ACT_CDE.Trim()))
-                {
-                    offered = true;
-                }
-            }
-
-            if (!offered)
-            {
-                return NotFound();
-            }
-
-            database.Memberships.Add(membership);
-            database.SaveChanges();
 
             return Created("memberships", membership);
 
@@ -108,16 +87,13 @@ namespace CCT_App.Controllers.Api
             {
                 return BadRequest();
             }
-            var original = database.Memberships.Find(id);
 
-            if(original == null)
+            var result = _membershipService.Update(id, membership);
+
+            if (result == null)
             {
                 return NotFound();
             }
-
-            database.Memberships.Attach(membership);
-            database.Entry(membership).State = EntityState.Modified;
-            database.SaveChanges();
 
             return Created("DefaultApi", membership);
         }
@@ -127,14 +103,13 @@ namespace CCT_App.Controllers.Api
         [Route("{id}")]
         public IHttpActionResult Delete(int id)
         {
-            var toDelete = database.Memberships.Find(id);
-            if (toDelete == null)
+            var result = _membershipService.Delete(id);
+
+            if(result == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            database.Memberships.Remove(toDelete);
-            database.SaveChanges();
             return Ok();
         }
     }
