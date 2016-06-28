@@ -67,7 +67,7 @@ namespace CCT_App.Controllers.Api
             return Ok(result);
         }
 
-        
+
 
         /// <summary>Get any and all memberships that a specific student has been a part of</summary>
         /// <param name="id">The Gordon ID of whichever student memberships are wanted for</param>
@@ -78,18 +78,16 @@ namespace CCT_App.Controllers.Api
         [HttpGet]
         public IHttpActionResult GetActivitiesForStudent(string id)
         {
+
             if(!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
             {
                 return BadRequest();
             }
            var result = _studentService.GetActivitiesForStudent(id);
-            }
 
             return Ok(result);
-
         }
 
-        
-  
+
     }
 }

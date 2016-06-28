@@ -18,6 +18,7 @@ namespace CCT_App.Controllers.Api
 
         private IMembershipService _membershipService;
 
+
         public MembershipsController()
         {
             IUnitOfWork _unitOfWork = new UnitOfWork();

@@ -21,6 +21,7 @@ namespace CCT_App.Controllers.Api
 
         private ISessionService _sessionService;
 
+
         public SessionsController()
         {
             var _unitOfWork = new UnitOfWork();
@@ -83,15 +84,15 @@ namespace CCT_App.Controllers.Api
             }
 
             var result = _sessionService.GetActivitiesForSession(id);
-            
+
             if(result == null)
             {
                 return NotFound();
-            }    
-                    
+            }
+
             return Ok(result);
 
         }
-     
+
     }
 }

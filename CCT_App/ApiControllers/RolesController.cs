@@ -28,6 +28,7 @@ namespace CCT_App.Controllers.Api
         {
             _roleService = roleservice; ;
         }
+
         /// <summary>Get all the roles a person may have within an activity</summary>
         /// <returns>A list of all the roles and their coresponding acronyms</returns>
         /// <remarks>Queries the database for all the roles that are valid</remarks>
@@ -56,7 +57,7 @@ namespace CCT_App.Controllers.Api
                 return BadRequest();
             }
             var result = _roleService.Get(id);
-            
+
             if (result == null)
             {
                 return NotFound();
@@ -65,6 +66,6 @@ namespace CCT_App.Controllers.Api
             return Ok(result);
         }
 
-        
+
     }
 }

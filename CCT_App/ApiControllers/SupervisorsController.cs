@@ -20,15 +20,17 @@ namespace CCT_App.Controllers.Api
         private ISupervisorService _supervisorService;
 
 
+
         public SupervisorsController()
         {
             var _unitOfWork = new UnitOfWork();
-            _supervisorService = new SupervisorService(_unitOfWork); 
+            _supervisorService = new SupervisorService(_unitOfWork);
         }
         public SupervisorsController(ISupervisorService supervisorService)
         {
             _supervisorService = supervisorService;
         }
+
 
         /// <summary>Get all supervisors</summary>
         /// <returns>All supervisors and their corresponding information</returns>
@@ -84,12 +86,12 @@ namespace CCT_App.Controllers.Api
             }
 
             var result = _supervisorService.Update(id, supervisor);
-            
+
             if (result == null)
             {
                 return NotFound();
             }
-           
+
             return Ok(result);
         }
 
