@@ -12,18 +12,12 @@ namespace CCT_App.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Membership
+    public partial class Request
     {
-        public int MEMBERSHIP_ID { get; set; }
+        public int Request_ID { get; set; }
         public string ACT_CDE { get; set; }
-        public string SESSION_CDE { get; set; }
         public string ID_NUM { get; set; }
         public string PART_LVL { get; set; }
-        public System.DateTime BEGIN_DTE { get; set; }
-        public Nullable<System.DateTime> END_DTE { get; set; }
-        public string DESCRIPTION { get; set; }
-        public string USER_NAME { get; set; }
-        public string JOB_NAME { get; set; }
-        public Nullable<System.DateTime> JOB_TIME { get; set; }
+        public System.DateTime DATE_SENT { get; set; }
     }
 }

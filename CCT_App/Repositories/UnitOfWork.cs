@@ -20,6 +20,7 @@ namespace CCT_App.Repositories
         private IRepository<Staff> _StaffRepository;
         private IRepository<Student> _StudentRepository;
         private IRepository<SUPERVISOR> _SupervisorRepository;
+        private IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> _ActivityPerSessionRepository;
 
         private CCTEntities _context;
 
@@ -66,6 +67,14 @@ namespace CCT_App.Repositories
         public IRepository<SUPERVISOR> SupervisorRepository
         {
             get { return _SupervisorRepository ?? (_SupervisorRepository = new GenericRepository<SUPERVISOR>(_context)); }
+        }
+
+        IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> IUnitOfWork.ActivityPerSessionRepository
+        {
+            get
+            {
+                 return _ActivityPerSessionRepository ?? (_ActivityPerSessionRepository = new GenericRepository<ACTIVE_CLUBS_PER_SESS_ID_Result>(_context)); 
+            }
         }
 
         public bool Save()

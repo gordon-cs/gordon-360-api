@@ -122,9 +122,9 @@ namespace CCT_App.Repositories
         ///     Adds a given entity to the context
         /// </summary>
         /// <param name="entity">The entity to add to the context</param>
-        public void Add(T entity)
+        public T Add(T entity)
         {
-            _dbSet.Add(entity);
+            return _dbSet.Add(entity);
         }
 
         /// <summary>
@@ -156,6 +156,16 @@ namespace CCT_App.Repositories
         public void Attach(T entity)
         {
             _dbSet.Attach(entity);
+        }
+
+        /// <summary>
+        /// Executes a stored procedure
+        /// </summary>
+        /// <param name="query">Name of the stored procedure </param>
+        /// <param name="parameters">Parameters to pass to the stored procedure</param>
+        public IEnumerable<T> ExecWithStoredProcedure(string query, params object[] parameters)
+        {
+            return _context.Database.SqlQuery<T>(query, parameters);
         }
 
 

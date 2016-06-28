@@ -4,7 +4,8 @@ using System.Linq;
 using System.Web;
 using CCT_App.Models;
 using CCT_App.Repositories;
-
+using System.Data;
+using System.Data.SqlClient;
 
 namespace CCT_App.Services
 {
@@ -25,7 +26,10 @@ namespace CCT_App.Services
 
         public IEnumerable<ACTIVE_CLUBS_PER_SESS_ID_Result> GetActivitiesForSession(string id)
         {
-            throw new NotImplementedException();
+            var activitiesInSession = _unitOfWork.ActivityPerSessionRepository.ExecWithStoredProcedure
+                ("ACTIVE_CLUBS_PER_SESS_ID @SESS_CDE", 
+                new SqlParameter("SESS_CDE", SqlDbType.VarChar) { Value = id });
+            return activitiesInSession;
         }
 
         public IEnumerable<CM_SESSION_MSTR> GetAll()

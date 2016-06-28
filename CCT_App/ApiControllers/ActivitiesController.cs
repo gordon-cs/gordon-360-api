@@ -46,6 +46,7 @@ namespace CCT_App.Controllers.Api
                 return BadRequest();
             }
             var result = _activityService.Get(id);
+
             if ( result == null)
             {
                 return NotFound();

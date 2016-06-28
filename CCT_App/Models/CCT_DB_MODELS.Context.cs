@@ -28,7 +28,6 @@ namespace CCT_App.Models
         }
     
         public virtual DbSet<JNZB_ACTIVITIES> JNZB_ACTIVITIES { get; set; }
-        public virtual DbSet<Membership> Memberships { get; set; }
         public virtual DbSet<SUPERVISOR> SUPERVISORs { get; set; }
         public virtual DbSet<ACCOUNT> ACCOUNTs { get; set; }
         public virtual DbSet<ACT_CLUB_DEF> ACT_CLUB_DEF { get; set; }
@@ -37,6 +36,9 @@ namespace CCT_App.Models
         public virtual DbSet<PART_DEF> PART_DEF { get; set; }
         public virtual DbSet<Staff> Staffs { get; set; }
         public virtual DbSet<Student> Students { get; set; }
+        public virtual DbSet<Request> Request { get; set; }
+        public virtual DbSet<Activity_Info> Activity_Info { get; set; }
+        public virtual DbSet<Membership> Membership { get; set; }
     
         public virtual ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> ACTIVE_CLUBS_PER_SESS_ID(string sESS_CDE)
         {

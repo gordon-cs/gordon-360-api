@@ -17,12 +17,14 @@ namespace CCT_App.Services
         }
         public JNZB_ACTIVITIES Get(int id)
         {
-            throw new NotImplementedException();
+            var result = _unitOfWork.JenzibarActvityRepository.GetById(id);
+            return result;
         }
 
         public IEnumerable<JNZB_ACTIVITIES> GetAll()
         {
-            throw new NotImplementedException();
+            var result = _unitOfWork.JenzibarActvityRepository.GetAll();
+            return result;
         }
     
     }

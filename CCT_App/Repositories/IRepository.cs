@@ -74,7 +74,7 @@ namespace CCT_App.Repositories
         /// Adds a given entity to the context
         /// </summary>
         /// <param name="entity">The entity to add to the context</param>
-        void Add(T entity);
+        T Add(T entity);
 
         /// <summary>
         /// Deletes a given entity from the context
@@ -96,6 +96,13 @@ namespace CCT_App.Repositories
         /// <param name="entity">The entity to attach</param>
         void Attach(T entity);
 
+        /// <summary>
+        /// Executes a stored procedure
+        /// </summary>
+        /// <param name="query">Name of the stored procedure </param>
+        /// <param name="parameters">Parameters to pass to the stored procedure</param>
+        IEnumerable<T> ExecWithStoredProcedure(string query, params object[] parameters);
+        
 
 
     }

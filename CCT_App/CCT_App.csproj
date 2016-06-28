@@ -181,6 +181,9 @@
     <Compile Include="Models\ACTIVE_CLUBS_PER_SESS_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Activity_Info.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ACT_CLUB_DEF.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -214,6 +217,9 @@
     <Compile Include="Models\Metadata.cs" />
     <Compile Include="Models\ModelPartialClasses.cs" />
     <Compile Include="Models\PART_DEF.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Request.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Staff.cs">

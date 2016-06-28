@@ -28,7 +28,8 @@ namespace CCT_App.Services
 
         public Student Get(string id)
         {
-            throw new NotImplementedException();
+            var result = _unitOfWork.StudentRepository.GetById(id);
+            return result;
         }
 
         public IEnumerable<ACT_CLUB_DEF> GetActivitiesForStudent(string id)
@@ -38,7 +39,8 @@ namespace CCT_App.Services
 
         public IEnumerable<Student> GetAll()
         {
-            throw new NotImplementedException();
+            var result = _unitOfWork.StudentRepository.GetAll();
+            return result;
         }
 
         public Student Update(string id, Student student)

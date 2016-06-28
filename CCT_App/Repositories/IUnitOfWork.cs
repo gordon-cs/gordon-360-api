@@ -18,6 +18,7 @@ namespace CCT_App.Repositories
         IRepository<Staff> StaffRepository { get; }
         IRepository<Student> StudentRepository { get; }
         IRepository<SUPERVISOR> SupervisorRepository { get; }
+        IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> ActivityPerSessionRepository { get;  }
 
         bool Save();
 
