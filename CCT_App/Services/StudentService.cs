@@ -15,26 +15,22 @@ namespace CCT_App.Services
         {
             _unitOfWork = unitOfWork;
         }
-
-        public Student Add(Student student)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Student Delete(string id)
-        {
-            throw new NotImplementedException();
-        }
-
         public Student Get(string id)
         {
             var result = _unitOfWork.StudentRepository.GetById(id);
             return result;
         }
 
-        public IEnumerable<ACT_CLUB_DEF> GetActivitiesForStudent(string id)
+        public IEnumerable<Membership> GetActivitiesForStudent(string id)
         {
-            throw new NotImplementedException();
+            var studentExists = _unitOfWork.StudentRepository.Where(x => x.student_id == id).Count() > 0;
+            if(!studentExists)
+            {
+                return null;
+            }
+
+            var studentMemberships = _unitOfWork.MembershipRepository.Where(x => x.ID_NUM == id);
+            return studentMemberships.AsEnumerable();
         }
 
         public IEnumerable<Student> GetAll()
@@ -43,9 +39,5 @@ namespace CCT_App.Services
             return result;
         }
 
-        public Student Update(string id, Student student)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

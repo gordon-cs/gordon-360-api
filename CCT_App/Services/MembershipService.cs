@@ -55,7 +55,13 @@ namespace CCT_App.Services
 
         public Membership Delete(int id)
         {
-            throw new NotImplementedException();
+            var result = _unitOfWork.MembershipRepository.GetById(id);
+            if (result == null)
+            {
+                return null;
+            }
+            result = _unitOfWork.MembershipRepository.Delete(result);
+            return result;
         }
 
         public Membership Get(int id)
@@ -72,7 +78,26 @@ namespace CCT_App.Services
 
         public Membership Update(int id, Membership membership)
         {
-            throw new NotImplementedException();
+            var original = _unitOfWork.MembershipRepository.GetById(id);
+            if (original == null)
+            {
+                return null;
+            }
+
+            original.ACT_CDE = membership.ACT_CDE;
+            original.BEGIN_DTE = membership.BEGIN_DTE;
+            original.DESCRIPTION = membership.DESCRIPTION;
+            original.END_DTE = membership.END_DTE;
+            original.ID_NUM = membership.ID_NUM;
+            original.JOB_NAME = membership.JOB_NAME;
+            original.JOB_TIME = membership.JOB_TIME;
+            original.MEMBERSHIP_ID = membership.MEMBERSHIP_ID;
+            original.PART_LVL = membership.PART_LVL;
+            original.SESSION_CDE = membership.SESSION_CDE;
+            original.USER_NAME = membership.USER_NAME;
+
+            return original;
+
         }
     }
 }

@@ -18,12 +18,14 @@ namespace CCT_App.Services
 
         public Staff Get(string id)
         {
-            throw new NotImplementedException();
+            var result = _unitOfWork.StaffRepository.GetById(id);
+            return result;
         }
 
         public IEnumerable<Staff> GetAll()
         {
-            throw new NotImplementedException();
+            var all = _unitOfWork.StaffRepository.GetAll();
+            return all;
         }
     }
 }

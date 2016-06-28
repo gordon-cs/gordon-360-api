@@ -131,9 +131,9 @@ namespace CCT_App.Repositories
         ///     Deletes a given entity from the context
         /// </summary>
         /// <param name="entity">The entity to delete</param>
-        public void Delete(T entity)
+        public T Delete(T entity)
         {
-            _dbSet.Remove(entity);
+            return _dbSet.Remove(entity);
         }
 
         public void DeleteCollection(T entity, string collectionName, ICollection<object> collectionToRemove)

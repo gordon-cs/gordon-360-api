@@ -81,63 +81,7 @@ namespace CCT_App.Controllers.Api
 
         }
 
-        // PUT: api/Students/5
-        [ResponseType(typeof(IHttpActionResult))]
-        [HttpPut]
-        [Route("{id}")]
-        public IHttpActionResult Put(string id, [FromBody] Student student)
-        {
-            if (!ModelState.IsValid || student == null || String.IsNullOrWhiteSpace(id))
-            {
-                return BadRequest(ModelState);
-            }
-
-            var result = _studentService.Update(id, student);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-           
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        // POST: api/Students
-        [ResponseType(typeof(IHttpActionResult))]
-        [HttpPost]
-        [Route("")]
-        public IHttpActionResult PostStudent(Student student)
-        {
-            if (!ModelState.IsValid || student == null)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var result = _studentService.Add(student);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return CreatedAtRoute("DefaultApi", new { id = student.student_id }, student);
-        }
-
-        // DELETE: api/Students/5
-        [ResponseType(typeof(Student))]
-        public IHttpActionResult DeleteStudent(string id)
-        {
-
-            var result = _studentService.Delete(id);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(result);
-        }
-
+        
   
     }
 }

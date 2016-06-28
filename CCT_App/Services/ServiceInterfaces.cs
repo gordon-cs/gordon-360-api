@@ -63,10 +63,7 @@ namespace CCT_App.Services
     {
         Student Get(string id);
         IEnumerable<Student> GetAll();
-        IEnumerable<ACT_CLUB_DEF> GetActivitiesForStudent(string id);
-        Student Add(Student student);
-        Student Update(string id, Student student);
-        Student Delete(string id);
+        IEnumerable<Membership> GetActivitiesForStudent(string id);
     }
 
     public interface ISupervisorService

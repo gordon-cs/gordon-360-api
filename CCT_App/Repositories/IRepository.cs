@@ -80,7 +80,7 @@ namespace CCT_App.Repositories
         /// Deletes a given entity from the context
         /// </summary>
         /// <param name="entity">The entity to delete</param>
-        void Delete(T entity);
+        T Delete(T entity);
 
         /// <summary>
         /// Delete the child collection
