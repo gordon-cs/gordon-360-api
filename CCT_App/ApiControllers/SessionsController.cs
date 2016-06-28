@@ -31,6 +31,9 @@ namespace CCT_App.Controllers.Api
             _sessionService = sessionService;
         }
 
+        /// <summary>Get a list of all sessions</summary>
+        /// <returns>All sessions within the database</returns>
+        /// <remarks>Queries the database for all sessions, current and past</remarks>
         // GET: api/Sessions
         [HttpGet]
         [Route("")]
@@ -40,6 +43,10 @@ namespace CCT_App.Controllers.Api
             return Ok(all);
         }
 
+        /// <summary>Get one specific session specified by the id in the URL string</summary>
+        /// <param name="id">The identifier for one specific session</param>
+        /// <returns>The information about one specific session</returns>
+        /// <remarks>Queries the database regarding a specific session with the given identifier</remarks>
         // GET: api/Sessions/5
         [HttpGet]
         [Route("{id}")]
@@ -61,7 +68,10 @@ namespace CCT_App.Controllers.Api
             return Ok(result);
         }
 
-        
+        /// <summary>Gets the activities taking place during a given session</summary>
+        /// <param name="id">The session identifier</param>
+        /// <returns>A list of all activities that are active during the given session determined by the id parameter</returns>
+        /// <remarks>Queries the database to find which activities are active during the session desired</remarks>
         // GET: api/sessions/id/activities
         [HttpGet]
         [Route("{id}/activities")]

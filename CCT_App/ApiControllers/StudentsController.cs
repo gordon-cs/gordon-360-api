@@ -29,6 +29,9 @@ namespace CCT_App.Controllers.Api
             _studentService = studentService;
         }
 
+        /// <summary>Get a list of all students in the database</summary>
+        /// <returns>A list of student names, IDs, and emails</returns>
+        /// <remarks>Queries the database for every student record within the student table</remarks>
         // GET: api/Students
         [Route("")]
         [HttpGet]
@@ -39,6 +42,10 @@ namespace CCT_App.Controllers.Api
             return Ok(all);
         }
 
+        /// <summary>Get information about a single student</summary>
+        /// <param name="id">The Gordon ID of desired student</param>
+        /// <returns>The information about the specified student</returns>
+        /// <remarks>Queries the database for the specific student identified by their Gordon ID</remarks>
         // GET: api/Students/5
         [Route("{id}")]
         [HttpGet]
@@ -59,7 +66,13 @@ namespace CCT_App.Controllers.Api
 
             return Ok(result);
         }
+
         
+
+        /// <summary>Get any and all memberships that a specific student has been a part of</summary>
+        /// <param name="id">The Gordon ID of whichever student memberships are wanted for</param>
+        /// <returns>The membership information that the student is a part of</returns>
+        /// <remarks>Queries the database for membership information regarding the student id specified only</remarks>
         [ResponseType(typeof(IHttpActionResult))]
         [Route("{id}/memberships")]
         [HttpGet]
@@ -67,14 +80,9 @@ namespace CCT_App.Controllers.Api
         {
             if(!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
             {
-                return BadRequest(ModelState);
-            }
-
-            var result = _studentService.GetActivitiesForStudent(id);
-
-            if (result == null)
-            {
                 return BadRequest();
+            }
+           var result = _studentService.GetActivitiesForStudent(id);
             }
 
             return Ok(result);

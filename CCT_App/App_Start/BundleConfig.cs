@@ -21,8 +21,6 @@ namespace CCT_App
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css",
-                      "~/Content/skeleton.css",
-                      "~/Content/normalize.css",
                       "~/Content/custom.css"));
         }
     }

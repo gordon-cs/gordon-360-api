@@ -28,6 +28,9 @@ namespace CCT_App.Controllers.Api
         {
             _roleService = roleservice; ;
         }
+        /// <summary>Get all the roles a person may have within an activity</summary>
+        /// <returns>A list of all the roles and their coresponding acronyms</returns>
+        /// <remarks>Queries the database for all the roles that are valid</remarks>
         // GET: api/roles
         [HttpGet]
         [Route("")]
@@ -38,6 +41,10 @@ namespace CCT_App.Controllers.Api
             return Ok(all);
         }
 
+        /// <summary>Get a single role and the information about it</summary>
+        /// <param name="id">The identifier for a single role</param>
+        /// <returns>The information about the specified role</returns>
+        /// <remarks>Queries the database and returns information about one particular role</remarks>
         // GET: api/PART_DEF/5
         [HttpGet]
         [Route("{id}")]

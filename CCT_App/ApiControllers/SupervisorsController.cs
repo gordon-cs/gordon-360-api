@@ -19,6 +19,7 @@ namespace CCT_App.Controllers.Api
     {
         private ISupervisorService _supervisorService;
 
+
         public SupervisorsController()
         {
             var _unitOfWork = new UnitOfWork();
@@ -28,6 +29,10 @@ namespace CCT_App.Controllers.Api
         {
             _supervisorService = supervisorService;
         }
+
+        /// <summary>Get all supervisors</summary>
+        /// <returns>All supervisors and their corresponding information</returns>
+        /// <remarks>Queries the database for all supervisors</remarks>
         // GET: api/Supervisors
         [HttpGet]
         [Route("")]
@@ -37,6 +42,10 @@ namespace CCT_App.Controllers.Api
             return Ok(all);
         }
 
+        /// <summary>Get a single supervisor</summary>
+        /// <param name="id">The ID of desired supervisor</param>
+        /// <returns>The supervisor object that has an ID matching the one specified in the URL</returns>
+        /// <remarks>Queries the database for a specific supervisor based on their Gordon ID</remarks>
         // GET: api/Supervisors/5
         [ResponseType(typeof(IHttpActionResult))]
         [HttpGet]
@@ -58,6 +67,11 @@ namespace CCT_App.Controllers.Api
             return Ok(result);
         }
 
+        /// <summary>Update an existing supervisor</summary>
+        /// <param name="id">The id for an existing supervisor</param>
+        /// <param name="supervisor">The supervisor object to be changed</param>
+        /// <returns>The changed supervisor object</returns>
+        /// <remarks>Queries the database to update one supervisor</remarks>
         // PUT: api/Supervisors/5
         [ResponseType(typeof(IHttpActionResult))]
         [HttpPut]
@@ -79,6 +93,10 @@ namespace CCT_App.Controllers.Api
             return Ok(result);
         }
 
+        /// <summary>Add a new supervisor</summary>
+        /// <param name="sUPERVISOR">The name of the new supervisor</param>
+        /// <returns>The new supervisor object</returns>
+        /// <remarks>Queries the database to add a new supervisor into the table</remarks>
         // POST: api/Supervisors
         [ResponseType(typeof(IHttpActionResult))]
         [HttpPost]
@@ -100,6 +118,10 @@ namespace CCT_App.Controllers.Api
             return Created("DefaultApi",  supervisor);
         }
 
+        /// <summary>Delete a supervisor</summary>
+        /// <param name="id">The ID of supervisor to be deleted</param>
+        /// <returns>The supervisor object that was deleted</returns>
+        /// <remarks>Queries the database to remove the row of the specified supervisor</remarks>
         // DELETE: api/Supervisors/5
         [ResponseType(typeof(SUPERVISOR))]
         [HttpDelete]
