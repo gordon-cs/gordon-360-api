@@ -9,13 +9,25 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using CCT_App.Models;
+using CCT_App.Services;
+using CCT_App.Repositories;
 
 namespace CCT_App.Controllers.Api
 {
     [RoutePrefix("api/roles")]
     public class RolesController : ApiController
     {
-        private CCTEntities db = new CCTEntities();
+        private IRoleService _roleService;
+
+        public RolesController()
+        {
+            var _unitOfWork = new UnitOfWork();
+            _roleService = new RoleService(_unitOfWork);
+        }
+        public RolesController(IRoleService roleservice)
+        {
+            _roleService = roleservice; ;
+        }
 
         /// <summary>Get all the roles a person may have within an activity</summary>
         /// <returns>A list of all the roles and their coresponding acronyms</returns>
@@ -23,9 +35,11 @@ namespace CCT_App.Controllers.Api
         // GET: api/roles
         [HttpGet]
         [Route("")]
-        public IQueryable<PART_DEF> GetRoles()
+
+        public IHttpActionResult Get()
         {
-            return db.PART_DEF;
+            var all = _roleService.GetAll();
+            return Ok(all);
         }
 
         /// <summary>Get a single role and the information about it</summary>
@@ -36,22 +50,22 @@ namespace CCT_App.Controllers.Api
         [HttpGet]
         [Route("{id}")]
         [ResponseType(typeof(PART_DEF))]
-        public IHttpActionResult GetRoles(string id)
+        public IHttpActionResult Get(string id)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
             {
-                return BadRequest(ModelState);
+                return BadRequest();
             }
-            var role = db.PART_DEF.FirstOrDefault(r => r.PART_CDE.Trim() == id);
-            
-            if (role == null)
+            var result = _roleService.Get(id);
+
+            if (result == null)
             {
                 return NotFound();
             }
 
-            return Ok(role);
+            return Ok(result);
         }
 
-        
+
     }
 }

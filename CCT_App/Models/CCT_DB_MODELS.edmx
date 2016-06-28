@@ -5,6 +5,16 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="CCT_App.Models.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Activity_Info">
+          <Key>
+            <PropertyRef Name="ACT_CDE" />
+          </Key>
+          <Property Name="ACT_CDE" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="ACT_DESCR" Type="text" Nullable="false" />
+          <Property Name="MTG_DAY" Type="varchar" MaxLength="9" />
+          <Property Name="MTG_TIME" Type="time" Precision="7" />
+          <Property Name="ACT_IMAGE" Type="nvarchar" MaxLength="2083" />
+        </EntityType>
         <EntityType Name="JNZB_ACTIVITIES">
           <Key>
             <PropertyRef Name="ENTRY_ID" />
@@ -38,7 +48,17 @@
           <Property Name="DESCRIPTION" Type="varchar(max)" />
           <Property Name="USER_NAME" Type="varchar" MaxLength="20" />
           <Property Name="JOB_NAME" Type="varchar" MaxLength="10" />
-          <Property Name="JOB_TIME" Type="varchar" MaxLength="10" />
+          <Property Name="JOB_TIME" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Request">
+          <Key>
+            <PropertyRef Name="Request_ID" />
+          </Key>
+          <Property Name="Request_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ACT_CDE" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="ID_NUM" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="PART_LVL" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="DATE_SENT" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="SUPERVISOR">
           <Key>
@@ -132,8 +152,10 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Parameter Name="SESS_CDE" Type="char" Mode="In" />
         </Function>
         <EntityContainer Name="CCT_AppModelsStoreContainer">
+          <EntitySet Name="Activity_Info" EntityType="Self.Activity_Info" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="JNZB_ACTIVITIES" EntityType="Self.JNZB_ACTIVITIES" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Membership" EntityType="Self.Membership" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Request" EntityType="Self.Request" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SUPERVISOR" EntityType="Self.SUPERVISOR" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ACCOUNT" EntityType="Self.ACCOUNT" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -213,22 +235,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="USER_JOB" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="JOB_TIME" Type="DateTime" Precision="3" />
         </EntityType>
-        <EntityType Name="Membership">
-          <Key>
-            <PropertyRef Name="MEMBERSHIP_ID" />
-          </Key>
-          <Property Name="MEMBERSHIP_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ACT_CDE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="SESSION_CDE" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="ID_NUM" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="PART_LVL" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="BEGIN_DTE" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="END_DTE" Type="DateTime" Precision="0" />
-          <Property Name="DESCRIPTION" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="USER_NAME" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="JOB_NAME" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="JOB_TIME" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="SUPERVISOR">
           <Key>
             <PropertyRef Name="SUP_ID" />
@@ -305,7 +311,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         </EntityType>
         <EntityContainer Name="CCTEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="JNZB_ACTIVITIES" EntityType="Self.JNZB_ACTIVITIES" />
-          <EntitySet Name="Memberships" EntityType="Self.Membership" />
           <EntitySet Name="SUPERVISORs" EntityType="Self.SUPERVISOR" />
           <EntitySet Name="ACCOUNTs" EntityType="Self.ACCOUNT" />
           <EntitySet Name="ACT_CLUB_DEF" EntityType="Self.ACT_CLUB_DEF" />
@@ -317,11 +322,50 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImport Name="ACTIVE_CLUBS_PER_SESS_ID" ReturnType="Collection(CCT_App.Models.ACTIVE_CLUBS_PER_SESS_ID_Result)">
           <Parameter Name="SESS_CDE" Mode="In" Type="String" />
           </FunctionImport>
+          <EntitySet Name="Request" EntityType="CCT_App.Models.Request" />
+          <EntitySet Name="Activity_Info" EntityType="CCT_App.Models.Activity_Info" />
+          <EntitySet Name="Membership" EntityType="CCT_App.Models.Membership" />
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
           <Property Type="String" Name="ACT_CDE" Nullable="false" MaxLength="8" />
           <Property Type="String" Name="ACT_DESC" Nullable="true" MaxLength="45" />
         </ComplexType>
+        <EntityType Name="Request">
+          <Key>
+            <PropertyRef Name="Request_ID" />
+          </Key>
+          <Property Name="Request_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ACT_CDE" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="ID_NUM" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="PART_LVL" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DATE_SENT" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="Activity_Info">
+          <Key>
+            <PropertyRef Name="ACT_CDE" />
+          </Key>
+          <Property Name="ACT_CDE" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ACT_DESCR" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="MTG_DAY" Type="String" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="MTG_TIME" Type="Time" Precision="7" />
+          <Property Name="ACT_IMAGE" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Membership">
+          <Key>
+            <PropertyRef Name="MEMBERSHIP_ID" />
+          </Key>
+          <Property Name="MEMBERSHIP_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ACT_CDE" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="SESSION_CDE" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ID_NUM" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="PART_LVL" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="BEGIN_DTE" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="END_DTE" Type="DateTime" Precision="0" />
+          <Property Name="DESCRIPTION" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="USER_NAME" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="JOB_NAME" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="JOB_TIME" Type="DateTime" Precision="3" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -344,23 +388,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="INCL_PROFILE_RPT" ColumnName="INCL_PROFILE_RPT" />
                 <ScalarProperty Name="USER_NAME" ColumnName="USER_NAME" />
                 <ScalarProperty Name="USER_JOB" ColumnName="USER_JOB" />
-                <ScalarProperty Name="JOB_TIME" ColumnName="JOB_TIME" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Memberships">
-            <EntityTypeMapping TypeName="CCT_App.Models.Membership">
-              <MappingFragment StoreEntitySet="Membership">
-                <ScalarProperty Name="MEMBERSHIP_ID" ColumnName="MEMBERSHIP_ID" />
-                <ScalarProperty Name="ACT_CDE" ColumnName="ACT_CDE" />
-                <ScalarProperty Name="SESSION_CDE" ColumnName="SESSION_CDE" />
-                <ScalarProperty Name="ID_NUM" ColumnName="ID_NUM" />
-                <ScalarProperty Name="PART_LVL" ColumnName="PART_LVL" />
-                <ScalarProperty Name="BEGIN_DTE" ColumnName="BEGIN_DTE" />
-                <ScalarProperty Name="END_DTE" ColumnName="END_DTE" />
-                <ScalarProperty Name="DESCRIPTION" ColumnName="DESCRIPTION" />
-                <ScalarProperty Name="USER_NAME" ColumnName="USER_NAME" />
-                <ScalarProperty Name="JOB_NAME" ColumnName="JOB_NAME" />
                 <ScalarProperty Name="JOB_TIME" ColumnName="JOB_TIME" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -454,6 +481,45 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <EntitySetMapping Name="Request">
+            <EntityTypeMapping TypeName="CCT_App.Models.Request">
+              <MappingFragment StoreEntitySet="Request">
+                <ScalarProperty Name="DATE_SENT" ColumnName="DATE_SENT" />
+                <ScalarProperty Name="PART_LVL" ColumnName="PART_LVL" />
+                <ScalarProperty Name="ID_NUM" ColumnName="ID_NUM" />
+                <ScalarProperty Name="ACT_CDE" ColumnName="ACT_CDE" />
+                <ScalarProperty Name="Request_ID" ColumnName="Request_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_Info">
+            <EntityTypeMapping TypeName="CCT_App.Models.Activity_Info">
+              <MappingFragment StoreEntitySet="Activity_Info">
+                <ScalarProperty Name="ACT_IMAGE" ColumnName="ACT_IMAGE" />
+                <ScalarProperty Name="MTG_TIME" ColumnName="MTG_TIME" />
+                <ScalarProperty Name="MTG_DAY" ColumnName="MTG_DAY" />
+                <ScalarProperty Name="ACT_DESCR" ColumnName="ACT_DESCR" />
+                <ScalarProperty Name="ACT_CDE" ColumnName="ACT_CDE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Membership">
+            <EntityTypeMapping TypeName="CCT_App.Models.Membership">
+              <MappingFragment StoreEntitySet="Membership">
+                <ScalarProperty Name="JOB_TIME" ColumnName="JOB_TIME" />
+                <ScalarProperty Name="JOB_NAME" ColumnName="JOB_NAME" />
+                <ScalarProperty Name="USER_NAME" ColumnName="USER_NAME" />
+                <ScalarProperty Name="DESCRIPTION" ColumnName="DESCRIPTION" />
+                <ScalarProperty Name="END_DTE" ColumnName="END_DTE" />
+                <ScalarProperty Name="BEGIN_DTE" ColumnName="BEGIN_DTE" />
+                <ScalarProperty Name="PART_LVL" ColumnName="PART_LVL" />
+                <ScalarProperty Name="ID_NUM" ColumnName="ID_NUM" />
+                <ScalarProperty Name="SESSION_CDE" ColumnName="SESSION_CDE" />
+                <ScalarProperty Name="ACT_CDE" ColumnName="ACT_CDE" />
+                <ScalarProperty Name="MEMBERSHIP_ID" ColumnName="MEMBERSHIP_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
@@ -468,7 +534,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     <Options>
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
-        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
         <DesignerProperty Name="UseLegacyProvider" Value="false" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />

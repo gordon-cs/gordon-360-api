@@ -9,6 +9,8 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using CCT_App.Models;
+using CCT_App.Repositories;
+using CCT_App.Services;
 using System.Data.Entity.Core.Objects;
 
 namespace CCT_App.Controllers.Api
@@ -17,7 +19,18 @@ namespace CCT_App.Controllers.Api
     public class SessionsController : ApiController
     {
 
-        private CCTEntities database = new CCTEntities();
+        private ISessionService _sessionService;
+
+
+        public SessionsController()
+        {
+            var _unitOfWork = new UnitOfWork();
+            _sessionService = new SessionService(_unitOfWork);
+        }
+        public SessionsController(ISessionService sessionService)
+        {
+            _sessionService = sessionService;
+        }
 
         /// <summary>Get a list of all sessions</summary>
         /// <returns>All sessions within the database</returns>
@@ -25,9 +38,10 @@ namespace CCT_App.Controllers.Api
         // GET: api/Sessions
         [HttpGet]
         [Route("")]
-        public IQueryable<CM_SESSION_MSTR> GetCM_SESSION_MSTR()
+        public IHttpActionResult Get()
         {
-            return database.CM_SESSION_MSTR;
+            var all = _sessionService.GetAll();
+            return Ok(all);
         }
 
         /// <summary>Get one specific session specified by the id in the URL string</summary>
@@ -35,15 +49,17 @@ namespace CCT_App.Controllers.Api
         /// <returns>The information about one specific session</returns>
         /// <remarks>Queries the database regarding a specific session with the given identifier</remarks>
         // GET: api/Sessions/5
+        [HttpGet]
+        [Route("{id}")]
         [ResponseType(typeof(CM_SESSION_MSTR))]
-        public IHttpActionResult GetCM_SESSION_MSTR(string id)
+        public IHttpActionResult Get(string id)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
             {
                 return BadRequest();
             }
 
-            var result = database.CM_SESSION_MSTR.FirstOrDefault(s => s.SESS_CDE.Trim() == id);
+            var result = _sessionService.Get(id);
 
             if (result == null)
             {
@@ -62,16 +78,21 @@ namespace CCT_App.Controllers.Api
         [Route("{id}/activities")]
         public IHttpActionResult GetActivitiesForSession(string id)
         {
-            if(!ModelState.IsValid)
+            if(!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
             {
                 return BadRequest(ModelState);
             }
 
-            ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> valid_activity_codes = database.ACTIVE_CLUBS_PER_SESS_ID(id);
+            var result = _sessionService.GetActivitiesForSession(id);
 
-            return Ok(valid_activity_codes);
+            if(result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
 
         }
-     
+
     }
 }

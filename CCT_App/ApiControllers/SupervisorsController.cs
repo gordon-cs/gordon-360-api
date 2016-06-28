@@ -9,13 +9,28 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using CCT_App.Models;
+using CCT_App.Repositories;
+using CCT_App.Services;
 
-namespace CCT_App.ApiControllers
+namespace CCT_App.Controllers.Api
 {
     [RoutePrefix("api/supervisors")]
     public class SupervisorsController : ApiController
     {
-        private CCTEntities db = new CCTEntities();
+        private ISupervisorService _supervisorService;
+
+
+
+        public SupervisorsController()
+        {
+            var _unitOfWork = new UnitOfWork();
+            _supervisorService = new SupervisorService(_unitOfWork);
+        }
+        public SupervisorsController(ISupervisorService supervisorService)
+        {
+            _supervisorService = supervisorService;
+        }
+
 
         /// <summary>Get all supervisors</summary>
         /// <returns>All supervisors and their corresponding information</returns>
@@ -23,9 +38,10 @@ namespace CCT_App.ApiControllers
         // GET: api/Supervisors
         [HttpGet]
         [Route("")]
-        public IQueryable<SUPERVISOR> GetSUPERVISORs()
+        public IHttpActionResult Get()
         {
-            return db.SUPERVISORs;
+            var all = _supervisorService.GetAll();
+            return Ok(all);
         }
 
         /// <summary>Get a single supervisor</summary>
@@ -33,24 +49,24 @@ namespace CCT_App.ApiControllers
         /// <returns>The supervisor object that has an ID matching the one specified in the URL</returns>
         /// <remarks>Queries the database for a specific supervisor based on their Gordon ID</remarks>
         // GET: api/Supervisors/5
-        [ResponseType(typeof(SUPERVISOR))]
+        [ResponseType(typeof(IHttpActionResult))]
         [HttpGet]
         [Route("{id}")]
-        public IHttpActionResult GetSUPERVISOR(int id)
+        public IHttpActionResult Get(int id)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest();
             }
 
-            SUPERVISOR sUPERVISOR = db.SUPERVISORs.Find(id);
+            var result = _supervisorService.Get(id);
 
-            if (sUPERVISOR == null)
+            if (result == null)
             {
                 return NotFound();
             }
 
-            return Ok(sUPERVISOR);
+            return Ok(result);
         }
 
         /// <summary>Update an existing supervisor</summary>
@@ -59,40 +75,24 @@ namespace CCT_App.ApiControllers
         /// <returns>The changed supervisor object</returns>
         /// <remarks>Queries the database to update one supervisor</remarks>
         // PUT: api/Supervisors/5
-        [ResponseType(typeof(void))]
+        [ResponseType(typeof(IHttpActionResult))]
         [HttpPut]
         [Route("{id}")]
-        public IHttpActionResult PutSUPERVISOR(int id, [FromBody] SUPERVISOR supervisor)
+        public IHttpActionResult Put(int id, [FromBody] SUPERVISOR supervisor)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != supervisor.SUP_ID)
+            if (!ModelState.IsValid || supervisor == null || id != supervisor.SUP_ID)
             {
                 return BadRequest();
             }
 
-            db.Entry(supervisor).State = EntityState.Modified;
+            var result = _supervisorService.Update(id, supervisor);
 
-            try
+            if (result == null)
             {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!SUPERVISORExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
 
-            return StatusCode(HttpStatusCode.NoContent);
+            return Ok(result);
         }
 
         /// <summary>Add a new supervisor</summary>
@@ -100,20 +100,24 @@ namespace CCT_App.ApiControllers
         /// <returns>The new supervisor object</returns>
         /// <remarks>Queries the database to add a new supervisor into the table</remarks>
         // POST: api/Supervisors
-        [ResponseType(typeof(SUPERVISOR))]
+        [ResponseType(typeof(IHttpActionResult))]
         [HttpPost]
         [Route("")]
-        public IHttpActionResult PostSUPERVISOR(SUPERVISOR sUPERVISOR)
+        public IHttpActionResult Post(SUPERVISOR supervisor)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || supervisor == null)
             {
-                return BadRequest(ModelState);
+                return BadRequest();
             }
 
-            db.SUPERVISORs.Add(sUPERVISOR);
-            db.SaveChanges();
+            var result = _supervisorService.Add(supervisor);
 
-            return CreatedAtRoute("DefaultApi", new { id = sUPERVISOR.SUP_ID }, sUPERVISOR);
+            if (result == null )
+            {
+                return NotFound();
+            }
+
+            return Created("DefaultApi",  supervisor);
         }
 
         /// <summary>Delete a supervisor</summary>
@@ -124,32 +128,18 @@ namespace CCT_App.ApiControllers
         [ResponseType(typeof(SUPERVISOR))]
         [HttpDelete]
         [Route("{id}")]
-        public IHttpActionResult DeleteSUPERVISOR(int id)
+        public IHttpActionResult Delete(int id)
         {
-            SUPERVISOR sUPERVISOR = db.SUPERVISORs.Find(id);
-            if (sUPERVISOR == null)
+
+            var result = _supervisorService.Delete(id);
+
+            if (result == null)
             {
                 return NotFound();
             }
 
-            db.SUPERVISORs.Remove(sUPERVISOR);
-            db.SaveChanges();
-
-            return Ok(sUPERVISOR);
+            return Ok(result);
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        private bool SUPERVISORExists(int id)
-        {
-            return db.SUPERVISORs.Count(e => e.SUP_ID == id) > 0;
-        }
     }
 }

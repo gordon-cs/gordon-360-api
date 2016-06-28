@@ -6,6 +6,8 @@ using System.Net.Http;
 using System.Web.Http;
 using CCT_App.Models;
 using System.Data.Entity.Core.Objects;
+using CCT_App.Services;
+using CCT_App.Repositories;
 
 namespace CCT_App.Controllers.Api
 {
@@ -13,8 +15,18 @@ namespace CCT_App.Controllers.Api
     [RoutePrefix("api/activities")]
     public class ActivitiesController : ApiController
     {
+        private IActivityService _activityService;
+        
+        public ActivitiesController()
+        {
+            var _unitOfWork = new UnitOfWork();
+            _activityService = new ActivityService(_unitOfWork);
+        }
 
-        private CCTEntities cct_db_context = new CCTEntities();
+        public ActivitiesController(IActivityService activityService)
+        {
+            _activityService = activityService;
+        }
 
         /// <summary>
         /// Get all available activities
@@ -26,9 +38,10 @@ namespace CCT_App.Controllers.Api
         // GET api/<controller>
         [HttpGet]
         [Route("")]
-        public IEnumerable<ACT_CLUB_DEF> Get()
+        public IHttpActionResult Get()
         {
-            return cct_db_context.ACT_CLUB_DEF;
+            var all = _activityService.GetAll();
+            return Ok(all);
         }
 
         /// <summary>Get a single activity based upon the string id entered in the URL</summary>
@@ -40,11 +53,16 @@ namespace CCT_App.Controllers.Api
         [Route("{id}")]
         public IHttpActionResult Get(string id)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
                 return BadRequest();
             }
-            var result = cct_db_context.ACT_CLUB_DEF.Find(id);
+            var result = _activityService.Get(id);
+
+            if ( result == null)
+            {
+                return NotFound();
+            }
             return Ok(result);
         }
 
@@ -61,30 +79,19 @@ namespace CCT_App.Controllers.Api
         [Route("{id}/supervisor")]
         public IHttpActionResult GetSupervisorForActivity(string id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var current_session = cct_db_context.CM_SESSION_MSTR.Max(i => i.SESS_CDE);
-            ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> valid_activity_codes = cct_db_context.ACTIVE_CLUBS_PER_SESS_ID(current_session);
-            bool offered = false;
-            foreach (ACTIVE_CLUBS_PER_SESS_ID_Result activity in valid_activity_codes)
-            {
-                if (id.Equals(activity.ACT_CDE.Trim()))
-                {
-                    offered = true;
-                }
-            }
 
-            if(!offered)
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest();
+            }
+            var result = _activityService.GetSupervisorForActivity(id);
+
+            if (result == null)
             {
                 return NotFound();
             }
+            return Ok(result);
 
-            var supervisor = cct_db_context.SUPERVISORs.Where(s => s.ACT_CDE == id && s.SESSION_CDE == current_session).ToList().ElementAtOrDefault(0);
-
-            return Ok(supervisor);
-            
         }
 
      
