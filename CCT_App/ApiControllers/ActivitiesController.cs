@@ -11,6 +11,7 @@ using CCT_App.Repositories;
 
 namespace CCT_App.Controllers.Api
 {
+    
     [RoutePrefix("api/activities")]
     public class ActivitiesController : ApiController
     {
