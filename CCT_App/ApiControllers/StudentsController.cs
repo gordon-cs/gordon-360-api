@@ -47,7 +47,7 @@ namespace CCT_App.Controllers.Api
         {
             if(!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
             {
-                return BadRequest(ModelState);
+                return BadRequest();
             }
 
             var result = _studentService.Get(id);

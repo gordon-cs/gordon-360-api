@@ -83,7 +83,7 @@ namespace CCT_App.Controllers.Api
         [Route("")]
         public IHttpActionResult Put(int id, [FromBody]Membership membership)
         {
-            if(!ModelState.IsValid || membership == null || id != membership.MEMBERSHIP_ID)
+            if (!ModelState.IsValid || membership == null || id != membership.MEMBERSHIP_ID)
             {
                 return BadRequest();
             }
@@ -94,8 +94,7 @@ namespace CCT_App.Controllers.Api
             {
                 return NotFound();
             }
-
-            return Created("DefaultApi", membership);
+            return Ok(membership);
         }
 
         // DELETE api/<controller>/5
@@ -107,10 +106,10 @@ namespace CCT_App.Controllers.Api
 
             if(result == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            return Ok();
+            return Ok(result);
         }
     }
 }

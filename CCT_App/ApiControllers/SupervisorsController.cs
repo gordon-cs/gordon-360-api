@@ -64,9 +64,9 @@ namespace CCT_App.Controllers.Api
         [Route("{id}")]
         public IHttpActionResult Put(int id, [FromBody] SUPERVISOR supervisor)
         {
-            if (!ModelState.IsValid || supervisor == null)
+            if (!ModelState.IsValid || supervisor == null || id != supervisor.SUP_ID)
             {
-                return BadRequest(ModelState);
+                return BadRequest();
             }
 
             var result = _supervisorService.Update(id, supervisor);
@@ -76,7 +76,7 @@ namespace CCT_App.Controllers.Api
                 return NotFound();
             }
            
-            return StatusCode(HttpStatusCode.NoContent);
+            return Ok(result);
         }
 
         // POST: api/Supervisors
@@ -94,7 +94,7 @@ namespace CCT_App.Controllers.Api
 
             if (result == null )
             {
-                return BadRequest();
+                return NotFound();
             }
 
             return Created("DefaultApi",  supervisor);
@@ -112,9 +112,9 @@ namespace CCT_App.Controllers.Api
             if (result == null)
             {
                 return NotFound();
-            }     
+            }
 
-            return Ok();
+            return Ok(result);
         }
 
     }
