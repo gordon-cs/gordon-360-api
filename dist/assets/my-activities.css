@@ -1,0 +1,40 @@
+h3 {
+    font-size: 200%;
+    margin-top: 0px;
+    margin-bottom: 10px;
+}
+.activity-list {
+    list-style: none;
+}
+.activity-list-item {
+    background-color: white;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.activity-list-item:hover {
+    border: 1px solid #064983;
+}
+.activity-list-item-img  {
+    margin-left: 15px;
+    float: left;
+}
+.activity-list-item-info {
+    display: inline-block;
+    margin-left: 20px;
+    float: left;
+}
+.activity-list-item-info > p {
+    font-size: 150%;
+}
+.activity-list-group-title {
+    font-size: 150%;
+}
+.sort-list-header,
+.sort-list-item {
+    font-size: 150%;
+    display: inline;
+    margin-right: 5px;
+}
+.sort-list-item:hover {
+    color: #7EA5C8;
+}

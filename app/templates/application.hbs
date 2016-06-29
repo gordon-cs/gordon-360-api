@@ -1,0 +1,35 @@
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <h1 class="app-title">Gordon Experience</h1>
+        </div>
+    </div>
+    <div class="row">
+		<nav class="navbar navbar-blue" role="navigation">
+			<div class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li>
+                        {{#link-to 'index' class="button"}}
+                            All Activities
+                        {{/link-to}}
+					</li>
+					<li>
+                        {{#link-to 'my-activities' class="button"}}
+                            My Activities
+                        {{/link-to}}
+					</li>
+					<li>
+                        {{#link-to 'my-activities' class="button"}}
+                            Co-Curricular Transcript
+                        {{/link-to}}
+					</li>
+					<li>
+                        <input type="text" class="form-control nav-search" placeholder="Search">
+					</li>
+				</ul>
+			</div>
+		</nav>
+	</div>
+</div>
+
+{{outlet}}

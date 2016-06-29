@@ -1,0 +1,98 @@
+.page-title {
+    font-size: 200%;
+    margin-top: 0px;
+}
+.activity-list {
+}
+.activity-list > .activity-list-item {
+    display: inline-block;
+    background-color: white;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.activity-list > .activity-list-item:hover {
+    border: 1px solid #064983;
+    cursor: pointer;
+}
+.activity-list > .activity-list-item > .activity-list-item-img  {
+    margin-left: 15px;
+    margin-bottom: 20px;
+    float: left;
+}
+.activity-list > .activity-list-item > p {
+    margin-top: 5px;
+    color: black;
+}
+.activity-list > a:hover {
+    text-decoration: none;
+}
+.sort-list-header,
+.sort-list-item {
+    font-size: 150%;
+    display: inline;
+    margin-right: 5px;
+}
+.sort-list {
+    float: right;
+}
+.sort-list-item:hover {
+    color: #7EA5C8;
+    cursor: pointer;
+}
+@media (max-width: 767px) {
+    img {
+        width: 100px;
+        height: 100px;
+    }
+    .activity-list-item-row > div {
+        font-size: 150%;
+        margin-top: 15px;
+        margin-left: 150px;
+    }
+    .activity-list > .activity-list-item {
+        margin-right: 20px;
+        margin-left: 20px;
+    }
+}
+@media (min-width: 768px) {
+    img {
+        width: 80px;
+        height: 80px;
+    }
+    .activity-list > .activity-list-item > p {
+        font-size: 80%;
+    }
+    .activity-list > .activity-list-item {
+        margin-right: 30px;
+        margin-left: 30px;
+        height: 225px;
+    }
+}
+@media (min-width: 992px) {
+    img {
+        width: 115px;
+        height: 115px;
+    }
+    .activity-list > .activity-list-item > p {
+        font-size: 100%;
+    }
+    .activity-list > .activity-list-item {
+        margin-right: 40px;
+        margin-left: 40px;
+        height: 250px;
+    }
+}
+@media (min-width: 1200px) {
+    img {
+        width: 150px;
+        height: 150px;
+    }
+    .activity-list > .activity-list-item > p {
+        font-size: 150%;
+    }
+    .activity-list > .activity-list-item {
+        margin-right: 45px;
+        margin-left: 45px;
+        height: 350px;
+    }
+}

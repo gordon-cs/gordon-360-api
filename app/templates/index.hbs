@@ -1,0 +1,25 @@
+<link rel="stylesheet" href="assets/all-activities.css">
+
+<div class="container main-container">
+	<div class="row">
+		<div class="col-sm-6">
+			<h2 class="page-title">All Activities</h2>
+		</div>
+		<div class="col-sm-6">
+			<div class="sort-list">
+				<p class="sort-list-header">Sort By:</p>
+				<p class="sort-list-item">Title</p>
+				<p class="sort-list-item">Type</p>
+			</div>
+		</div>
+	</div>
+	<div class="activity-list row">
+		{{#each model as |activity|}}
+			{{#link-to 'specific-activity' activity.ACT_CDE class="well activity-list-item col-sm-2"}}
+				<img src="http://whoopdirt.com/wp-content/uploads/2016/06/Gordon_Logo-294_bigger.gif">
+				<p>{{activity.ACT_DESC}}</p>
+				<p>{{activity.ACT_CDE}}</p>
+			{{/link-to}}
+		{{/each}}
+	</div>
+</div>
