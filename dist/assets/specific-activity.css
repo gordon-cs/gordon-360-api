@@ -1,6 +1,11 @@
-h2 {
-    font-size: 300%;
+.activity-name {
+    font-size: 250%;
     margin-top: 0;
+}
+.activity-picture {
+    margin-top: 10px;
+    width: 300px;
+    height: 300px;
 }
 .activity-info {
     margin-top: 20px;

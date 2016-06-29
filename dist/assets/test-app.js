@@ -806,7 +806,7 @@ define("test-app/templates/specific-activity", ["exports"], function (exports) {
         var el2 = dom.createTextNode("\n    ");
         dom.appendChild(el1, el2);
         var el2 = dom.createElement("div");
-        dom.setAttribute(el2, "class", "col-sm-3");
+        dom.setAttribute(el2, "class", "col-sm-6 col-left");
         var el3 = dom.createTextNode("\n        ");
         dom.appendChild(el2, el3);
         var el3 = dom.createElement("div");
@@ -814,14 +814,14 @@ define("test-app/templates/specific-activity", ["exports"], function (exports) {
         var el4 = dom.createTextNode("\n            ");
         dom.appendChild(el3, el4);
         var el4 = dom.createElement("h2");
-        dom.setAttribute(el4, "id", "activityName");
+        dom.setAttribute(el4, "class", "activity-name");
         var el5 = dom.createComment("");
         dom.appendChild(el4, el5);
         dom.appendChild(el3, el4);
         var el4 = dom.createTextNode("\n            ");
         dom.appendChild(el3, el4);
         var el4 = dom.createElement("img");
-        dom.setAttribute(el4, "id", "activityPicture");
+        dom.setAttribute(el4, "class", "activity-picture");
         dom.setAttribute(el4, "src", "http://whoopdirt.com/wp-content/uploads/2016/06/Gordon_Logo-294_bigger.gif");
         dom.appendChild(el3, el4);
         var el4 = dom.createTextNode("\n        ");
@@ -833,7 +833,7 @@ define("test-app/templates/specific-activity", ["exports"], function (exports) {
         var el2 = dom.createTextNode("\n    ");
         dom.appendChild(el1, el2);
         var el2 = dom.createElement("div");
-        dom.setAttribute(el2, "class", "col-sm-9");
+        dom.setAttribute(el2, "class", "col-sm-6");
         var el3 = dom.createTextNode("\n        ");
         dom.appendChild(el2, el3);
         var el3 = dom.createElement("div");
@@ -856,7 +856,7 @@ define("test-app/templates/specific-activity", ["exports"], function (exports) {
         var el4 = dom.createTextNode("\n            ");
         dom.appendChild(el3, el4);
         var el4 = dom.createElement("div");
-        dom.setAttribute(el4, "class", "col-sm-3");
+        dom.setAttribute(el4, "class", "col-sm-4");
         var el5 = dom.createTextNode("\n                ");
         dom.appendChild(el4, el5);
         var el5 = dom.createElement("button");
@@ -908,7 +908,9 @@ define("test-app/templates/specific-activity", ["exports"], function (exports) {
         dom.appendChild(el5, el6);
         var el6 = dom.createElement("p");
         dom.setAttribute(el6, "class", "activity-info-item");
-        var el7 = dom.createTextNode("Description: ...");
+        var el7 = dom.createTextNode("Description: ");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createComment("");
         dom.appendChild(el6, el7);
         dom.appendChild(el5, el6);
         var el6 = dom.createTextNode("\n                ");
@@ -994,11 +996,13 @@ define("test-app/templates/specific-activity", ["exports"], function (exports) {
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var morphs = new Array(1);
-        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [2, 1, 1, 1]), 0, 0);
+        var element0 = dom.childAt(fragment, [2]);
+        var morphs = new Array(2);
+        morphs[0] = dom.createMorphAt(dom.childAt(element0, [1, 1, 1]), 0, 0);
+        morphs[1] = dom.createMorphAt(dom.childAt(element0, [3, 3, 3, 1, 1]), 1, 1);
         return morphs;
       },
-      statements: [["content", "model.ACT_DESC", ["loc", [null, [6, 34], [6, 52]]]]],
+      statements: [["content", "model.ACT_DESC", ["loc", [null, [6, 40], [6, 58]]]], ["content", "model.ACT_CDE", ["loc", [null, [28, 63], [28, 80]]]]],
       locals: [],
       templates: []
     };
@@ -1036,7 +1040,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("test-app/app")["default"].create({"name":"test-app","version":"0.0.0+dccb4b6e"});
+  require("test-app/app")["default"].create({"name":"test-app","version":"0.0.0+fdfde6ee"});
 }
 
 /* jshint ignore:end */
