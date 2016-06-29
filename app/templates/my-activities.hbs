@@ -1,1 +1,18 @@
-{{outlet}}
+<link rel="stylesheet" type="text/css" href="assets/my-activities.css">
+
+<div class="container main-container">
+	<div class="row">
+		<div class="col-sm-6">
+			<h2 class="page-title">My Memberships</h2>
+		</div>
+	</div>
+	<div class="activity-list col-sm-6">
+		{{#each model as |membership|}}
+			{{#link-to 'specific-activity' membership.ACT_CDE}}
+				<p>
+					{{membership.ACT_CDE}} {{membership.PART_LVL}} {{membership.BEGIN_DTE}} "{{membership.DESCRIPTION}}"
+				</p>
+			{{/link-to}}
+		{{/each}}
+	</div>
+</div>
