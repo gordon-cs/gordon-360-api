@@ -1187,7 +1187,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("test-app/app")["default"].create({"name":"test-app","version":"0.0.0+3e015a82"});
+  require("test-app/app")["default"].create({"name":"test-app","version":"0.0.0+f3d18cf9"});
 }
 
 /* jshint ignore:end */
