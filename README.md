@@ -1,4 +1,4 @@
-# project-overworked
+# project-no-more-overworking
 
 ### Create a Co-Curricular transcript for Gordon College
 
