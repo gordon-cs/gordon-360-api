@@ -1,9 +1,6 @@
 .invisible {
     visibility: hidden;
 }
-select {
-    -webkit-appearance: none;
-}
 .app-title {
     font-size: 450%;
     font-family: sans-serif;

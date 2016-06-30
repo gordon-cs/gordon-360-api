@@ -1,12 +1,12 @@
 import { moduleFor, test } from 'ember-qunit';
 
-moduleFor('service:activity-store', 'Unit | Service | activity store', {
+moduleFor('controller:add-membership', 'Unit | Controller | add membership', {
   // Specify the other units that are required for this test.
-  // needs: ['service:foo']
+  // needs: ['controller:foo']
 });
 
 // Replace this with your real tests.
 test('it exists', function(assert) {
-  let service = this.subject();
-  assert.ok(service);
+  let controller = this.subject();
+  assert.ok(controller);
 });

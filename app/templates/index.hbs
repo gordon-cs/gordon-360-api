@@ -14,6 +14,26 @@
 		</div>
 	</div>
 	<div class="activity-list row">
+		{{#link-to 'specific-activity' class="well activity-list-item col-sm-2"}}
+			<img src="http://whoopdirt.com/wp-content/uploads/2016/06/Gordon_Logo-294_bigger.gif" {{action 'click'}}>
+			<p>test</p>
+			<p>test</p>
+		{{/link-to}}
+		{{#link-to 'specific-activity' class="well activity-list-item col-sm-2"}}
+			<img src="http://whoopdirt.com/wp-content/uploads/2016/06/Gordon_Logo-294_bigger.gif">
+			<p>test</p>
+			<p>test</p>
+		{{/link-to}}
+		{{#link-to 'specific-activity' class="well activity-list-item col-sm-2"}}
+			<img src="http://whoopdirt.com/wp-content/uploads/2016/06/Gordon_Logo-294_bigger.gif">
+			<p>test</p>
+			<p>test</p>
+		{{/link-to}}
+		{{#link-to 'specific-activity' class="well activity-list-item col-sm-2"}}
+			<img src="http://whoopdirt.com/wp-content/uploads/2016/06/Gordon_Logo-294_bigger.gif">
+			<p>test</p>
+			<p>test</p>
+		{{/link-to}}
 		{{#each model as |activity|}}
 			{{#link-to 'specific-activity' activity.ACT_CDE class="well activity-list-item col-sm-2"}}
 				<img src="http://whoopdirt.com/wp-content/uploads/2016/06/Gordon_Logo-294_bigger.gif">

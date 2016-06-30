@@ -1,0 +1,28 @@
+<div class="container">
+    <h3 class="row">
+        Adding - {{model.activity.ACT_DESC}}
+    </h3>
+    <div class="form">
+        <select class="form-control" placeholder="Session" onchange={{action 'selectSession' value='target.value'}}>
+            <option>Session</option>
+            {{#each model.sessions as |session|}}
+                <option value={{session.SESS_CDE}}>
+                    {{session.SESS_DESC}}
+                </option>
+            {{/each}}
+        </select>
+        <select class="form-control" placeholder="Membership Level" {{action 'selectRole'}}>
+            <option>Role</option>
+            {{#each model.roles as |role|}}
+                <option value={{role.PART_CDE}}>
+                    {{role.PART_DESC}}
+                </option>
+            {{/each}}
+        </select>
+        {{input valueBinding="student-id" class="form-control" placeholder="Student ID"}}
+        {{input valueBinding="date-begin" class="form-control" placeholder="Begin Date"}}
+        {{input valueBinding="date-end" class="form-control" placeholder="End Date"}}
+        {{input valueBinding="comments" class="form-control" placeholder="Comment (optional)"}}
+        <button class="form-control btn btn-blue" {{action 'post'}}>Add</button>
+    </div>
+</div>
