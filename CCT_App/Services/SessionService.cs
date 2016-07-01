@@ -37,5 +37,20 @@ namespace CCT_App.Services
             var result = _unitOfWork.SessionRepository.GetAll();
             return result;
         }
+
+        public CM_SESSION_MSTR GetCurrentSession()
+        {
+
+            var currentDateTime = DateTime.Now;
+            var notNullQuery = _unitOfWork.SessionRepository.Where(x => x.SESS_BEGN_DTE.HasValue && x.SESS_END_DTE.HasValue);
+            var currentSession = notNullQuery.Where( x => 
+                (currentDateTime.CompareTo(x.SESS_BEGN_DTE.Value) > 0)
+                && 
+                (currentDateTime.CompareTo(x.SESS_END_DTE.Value) < 0) )
+                .OrderByDescending(x => x.SESS_BEGN_DTE.Value)
+                .AsEnumerable()
+                .LastOrDefault();
+            return currentSession;
+        }
     }
 }

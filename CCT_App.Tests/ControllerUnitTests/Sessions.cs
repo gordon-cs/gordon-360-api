@@ -117,6 +117,41 @@ namespace CCT_App.Tests.ControllerUnitTests
             Assert.NotNull(contentresult.Content);
         }
        
+        [Fact]
+        public void Get_Current_Session_Returns_Null_If_Current_Session_Was_Not_found()
+        {
+            // Arrange
+            var theservice = new Mock<ISessionService>();
+            var controller = new SessionsController(theservice.Object);
+            theservice
+                .Setup(x => x.GetCurrentSession());
+
+            // Act
+            var result = controller.GetCurrentSession();
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+        [Fact]
+        public void Get_Current_Session_Correctly_If_Session_Was_Found()
+        {
+            // Arrange
+            var theservice = new Mock<ISessionService>();
+            var controller = new SessionsController(theservice.Object);
+            theservice
+                .Setup(x => x.GetCurrentSession())
+                .Returns(new CM_SESSION_MSTR { });
+
+            // Act
+            var result = controller.GetCurrentSession();
+            var contentresult = result as OkNegotiatedContentResult<CM_SESSION_MSTR>;
+
+            // Assert
+            Assert.IsType<OkNegotiatedContentResult<CM_SESSION_MSTR>>(result);
+            Assert.NotNull(contentresult);
+            Assert.NotNull(contentresult.Content);
+        }
         /* TEST FOR MISC METHODS */
     }
 }

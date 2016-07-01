@@ -35,6 +35,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\CCT_App.XML</DocumentationFile>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -168,6 +169,7 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApiControllers\MembershipRequestController.cs" />
     <Compile Include="ApiControllers\RolesController.cs" />
     <Compile Include="ApiControllers\SessionsController.cs" />
     <Compile Include="ApiControllers\StudentsController.cs" />
@@ -175,10 +177,8 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-
     <Compile Include="App_Start\UnityConfig.cs" />
     <Compile Include="App_Start\SwaggerConfig.cs" />
-
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="ApiControllers\ActivitiesController.cs" />
     <Compile Include="ApiControllers\MembershipsController.cs" />
@@ -241,6 +241,18 @@
     <Compile Include="Models\SUPERVISOR.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModels\AccountViewModel.cs" />
+    <Compile Include="Models\ViewModels\ActivityInfoViewModel.cs" />
+    <Compile Include="Models\ViewModels\ActivityViewModel.cs" />
+    <Compile Include="Models\ViewModels\FacultyViewModel.cs" />
+    <Compile Include="Models\ViewModels\JenzibarActivitiesViewModel.cs" />
+    <Compile Include="Models\ViewModels\MembershipViewModel.cs" />
+    <Compile Include="Models\ViewModels\RequestViewModel.cs" />
+    <Compile Include="Models\ViewModels\ParticipationViewModel.cs" />
+    <Compile Include="Models\ViewModels\SessionViewModel.cs" />
+    <Compile Include="Models\ViewModels\StaffViewModel.cs" />
+    <Compile Include="Models\ViewModels\StudentViewModel.cs" />
+    <Compile Include="Models\ViewModels\SupervisorViewModel.cs" />
     <Compile Include="MvcControllers\HomeController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\GenericRepository.cs" />
@@ -249,8 +261,10 @@
     <Compile Include="Repositories\UnitOfWork.cs" />
     <Compile Include="Services\AccountService.cs" />
     <Compile Include="Services\ActivityService.cs" />
+    <Compile Include="Services\Constants.cs" />
     <Compile Include="Services\FacultyService.cs" />
     <Compile Include="Services\JenzibarActivityService.cs" />
+    <Compile Include="Services\MembershipRequestService.cs" />
     <Compile Include="Services\MembershipService.cs" />
     <Compile Include="Services\RoleService.cs" />
     <Compile Include="Services\ServiceInterfaces.cs" />

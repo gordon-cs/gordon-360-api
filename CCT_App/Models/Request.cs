@@ -14,10 +14,12 @@ namespace CCT_App.Models
     
     public partial class Request
     {
-        public int Request_ID { get; set; }
         public string ACT_CDE { get; set; }
         public string ID_NUM { get; set; }
         public string PART_LVL { get; set; }
         public System.DateTime DATE_SENT { get; set; }
+        public int REQUEST_ID { get; set; }
+        public string COMMENT_TXT { get; set; }
+        public string SESS_CDE { get; set; }
     }
 }

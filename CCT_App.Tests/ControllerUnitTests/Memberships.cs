@@ -9,6 +9,7 @@ using CCT_App.Controllers.Api;
 using CCT_App.Services;
 using CCT_App.Models;
 using System.Web.Http.Results;
+using CCT_App.Models.ViewModels;
 
 namespace CCT_App.Tests.ControllerUnitTests
 {
@@ -29,10 +30,10 @@ namespace CCT_App.Tests.ControllerUnitTests
 
             // Act
             var result = controller.Get();
-            var contentresult = result as OkNegotiatedContentResult<IEnumerable<Membership>>;
+            var contentresult = result as OkNegotiatedContentResult<IEnumerable<MembershipViewModel>>;
 
             // Assert
-            Assert.IsType<OkNegotiatedContentResult<IEnumerable<Membership>>>(result);
+            Assert.IsType<OkNegotiatedContentResult<IEnumerable<MembershipViewModel>>>(result);
             Assert.NotNull(contentresult);
             Assert.NotNull(contentresult.Content);
             Assert.Empty(contentresult.Content);
@@ -52,10 +53,10 @@ namespace CCT_App.Tests.ControllerUnitTests
 
             // Act
             var result = controller.Get();
-            var contentresult = result as OkNegotiatedContentResult<IEnumerable<Membership>>;
+            var contentresult = result as OkNegotiatedContentResult<IEnumerable<MembershipViewModel>>;
 
             // Assert
-            Assert.IsType<OkNegotiatedContentResult<IEnumerable<Membership>>>(result);
+            Assert.IsType<OkNegotiatedContentResult<IEnumerable<MembershipViewModel>>>(result);
             Assert.NotNull(contentresult);
             Assert.NotNull(contentresult.Content);
             Assert.NotEmpty(contentresult.Content);
@@ -94,10 +95,10 @@ namespace CCT_App.Tests.ControllerUnitTests
 
             // Act
             var result = controller.Get(id);
-            var contentresult = result as OkNegotiatedContentResult<Membership>;
+            var contentresult = result as OkNegotiatedContentResult<MembershipViewModel>;
 
             // Assert
-            Assert.IsType<OkNegotiatedContentResult<Membership>>(result);
+            Assert.IsType<OkNegotiatedContentResult<MembershipViewModel>>(result);
             Assert.NotNull(contentresult);
             Assert.NotNull(contentresult.Content);
         }

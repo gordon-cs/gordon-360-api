@@ -1,10 +1,10 @@
 // Api Urls
-//$apiUrl = "http://localhost:49645/api"
-$apiUrl = "https://ccttrain.gordon.edu/api";
+$apiUrl = "http://localhost:49645/api"
+//$apiUrl = "https://ccttrain.gordon.edu/api";
 $activityUrl = $apiUrl + "/activities";
 $membershipUrl = $apiUrl + "/memberships";
 $studentUrl = $apiUrl + "/students";
-$roleUrl = $apiUrl + "/roles";
+$roleUrl = $apiUrl + "/participations";
 $sessionUrl = $apiUrl + "/sessions";
 $loginUrl = $apiUrl + "/authentication";
 

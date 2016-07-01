@@ -14,19 +14,19 @@ using CCT_App.Repositories;
 
 namespace CCT_App.Controllers.Api
 {
-    [RoutePrefix("api/roles")]
+    [RoutePrefix("api/participations")]
     public class RolesController : ApiController
     {
-        private IRoleService _roleService;
+        private IParticipationService _participationService;
 
         public RolesController()
         {
             var _unitOfWork = new UnitOfWork();
-            _roleService = new RoleService(_unitOfWork);
+            _participationService = new ParticipationService(_unitOfWork);
         }
-        public RolesController(IRoleService roleservice)
+        public RolesController(IParticipationService roleservice)
         {
-            _roleService = roleservice; ;
+            _participationService = roleservice; ;
         }
 
         /// <summary>Get all the roles a person may have within an activity</summary>
@@ -38,7 +38,7 @@ namespace CCT_App.Controllers.Api
 
         public IHttpActionResult Get()
         {
-            var all = _roleService.GetAll();
+            var all = _participationService.GetAll();
             return Ok(all);
         }
 
@@ -56,7 +56,7 @@ namespace CCT_App.Controllers.Api
             {
                 return BadRequest();
             }
-            var result = _roleService.Get(id);
+            var result = _participationService.Get(id);
 
             if (result == null)
             {

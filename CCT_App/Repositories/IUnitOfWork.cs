@@ -14,10 +14,13 @@ namespace CCT_App.Repositories
         IRepository<Faculty> FacultyRepository { get; }
         IRepository<JNZB_ACTIVITIES> JenzibarActvityRepository { get; }
         IRepository<Membership> MembershipRepository { get; }
-        IRepository<PART_DEF> RoleRepository { get; }
+        IRepository<PART_DEF> ParticipationRepository { get; }
         IRepository<Staff> StaffRepository { get; }
         IRepository<Student> StudentRepository { get; }
         IRepository<SUPERVISOR> SupervisorRepository { get; }
+        IRepository<Request> MembershipRequestRepository { get; }
+
+        // Note -- Only use this repository to call SQL Stored Procedures
         IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> ActivityPerSessionRepository { get;  }
 
         bool Save();

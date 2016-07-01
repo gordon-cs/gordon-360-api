@@ -12,7 +12,7 @@ using System.Web.Http.Results;
 
 namespace CCT_App.Tests.ControllerUnitTests
 {
-    /*  Test for Roles Controller */
+    /*  Test for Participation Controller */
     public class Roles
     {
         /* TEST FOR GET METHODS */
@@ -21,7 +21,7 @@ namespace CCT_App.Tests.ControllerUnitTests
         {
 
             // Arrange
-            var theservice = new Mock<IRoleService>();
+            var theservice = new Mock<IParticipationService>();
             var controller = new RolesController(theservice.Object);
             theservice
                 .Setup(x => x.GetAll())
@@ -43,7 +43,7 @@ namespace CCT_App.Tests.ControllerUnitTests
         public void GetAll_Returns_With_Popluated_List()
         {
             // Arrange
-            var theservice = new Mock<IRoleService>();
+            var theservice = new Mock<IParticipationService>();
             var controller = new RolesController(theservice.Object);
             var data = new List<PART_DEF> { new PART_DEF { }, new PART_DEF { }, new PART_DEF { } };
             theservice
@@ -67,7 +67,7 @@ namespace CCT_App.Tests.ControllerUnitTests
         public void Get_Returns_Not_Found_Given_Non_Existent_Id()
         {
             // Arrange
-            var theservice = new Mock<IRoleService>();
+            var theservice = new Mock<IParticipationService>();
             var controller = new RolesController(theservice.Object);
             var id = "id";
             theservice
@@ -85,7 +85,7 @@ namespace CCT_App.Tests.ControllerUnitTests
         public void Get_Returns_Bad_Request_With_Empty_id()
         {
             // Arrange
-            var theservice = new Mock<IRoleService>();
+            var theservice = new Mock<IParticipationService>();
             var controller = new RolesController(theservice.Object);
             var id = string.Empty;
 
@@ -99,7 +99,7 @@ namespace CCT_App.Tests.ControllerUnitTests
         public void Get_Returns_Ok_With_Object_Model_Given_Valid_id()
         {
             // Arrange
-            var theservice = new Mock<IRoleService>();
+            var theservice = new Mock<IParticipationService>();
             var controller = new RolesController(theservice.Object);
             var data = new PART_DEF { };
             var id = "id";

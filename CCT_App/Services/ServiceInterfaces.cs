@@ -16,7 +16,9 @@ namespace CCT_App.Services
     {
         ACT_CLUB_DEF Get(string id);
         IEnumerable<ACT_CLUB_DEF> GetAll();
-        SUPERVISOR GetSupervisorForActivity(string id);
+        IEnumerable<SUPERVISOR> GetSupervisorsForActivity(string id);
+        IEnumerable<Membership> GetLeadersForActivity(string id);
+        IEnumerable<Membership> GetMembershipsForActivity(string id);
     }
 
     public interface ISessionService
@@ -24,6 +26,7 @@ namespace CCT_App.Services
         CM_SESSION_MSTR Get(string id);
         IEnumerable<CM_SESSION_MSTR> GetAll();
         IEnumerable<ACTIVE_CLUBS_PER_SESS_ID_Result> GetActivitiesForSession(string id);
+        CM_SESSION_MSTR GetCurrentSession();
     }
 
     public interface IFacultyService
@@ -47,7 +50,7 @@ namespace CCT_App.Services
         Membership Delete(int id);   
     }
 
-    public interface IRoleService
+    public interface IParticipationService
     {
         PART_DEF Get(string id);
         IEnumerable<PART_DEF> GetAll();
@@ -73,5 +76,14 @@ namespace CCT_App.Services
         SUPERVISOR Add(SUPERVISOR supervisor);
         SUPERVISOR Update(int id, SUPERVISOR supervisor);
         SUPERVISOR Delete(int id);
+    }
+
+    public interface IMembershipRequestService
+    {
+        Request Get(int id);
+        IEnumerable<Request> GetAll();
+        Request Add(Request membershipRequest);
+        Request Update(int id, Request membershipRequest);
+        Request Delete(int id);
     }
 }

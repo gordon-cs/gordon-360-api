@@ -94,5 +94,22 @@ namespace CCT_App.Controllers.Api
 
         }
 
+        /// <summary>
+        /// Gets the current active session
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("current")]
+        public IHttpActionResult GetCurrentSession()
+        {
+            var currentSession = _sessionService.GetCurrentSession();
+            if(currentSession == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(currentSession);
+        }
+
     }
 }

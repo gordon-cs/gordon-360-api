@@ -28,10 +28,23 @@ namespace CCT_App.Services
             return result;
         }
 
-        // TODO: Implement This method
-        public SUPERVISOR GetSupervisorForActivity(string id)
+        public IEnumerable<Membership> GetLeadersForActivity(string id)
         {
-            throw new NotImplementedException();
+            var query = _unitOfWork.MembershipRepository.Where(x => x.ACT_CDE == id);
+            var filterQuery = query.Where(x => Constants.LeaderParticipationCodes.Contains(x.PART_LVL));
+            return filterQuery.ToList();
+        }
+
+        public IEnumerable<Membership> GetMembershipsForActivity(string id)
+        {
+            var result = _unitOfWork.MembershipRepository.Where(x => x.ACT_CDE == id);
+            return result.ToList();
+        }
+
+        public IEnumerable<SUPERVISOR> GetSupervisorsForActivity(string id)
+        {
+            var result = _unitOfWork.SupervisorRepository.Where(x => x.ACT_CDE == id);
+            return result.ToList();
         }
     }
 }

@@ -9,6 +9,7 @@ using System.Data.Entity.Core.Objects;
 using System.Data.Entity;
 using CCT_App.Services;
 using CCT_App.Repositories;
+using CCT_App.Models.ViewModels;
 
 namespace CCT_App.Controllers.Api
 {
@@ -43,7 +44,9 @@ namespace CCT_App.Controllers.Api
         [Route("")]
         public IHttpActionResult Get()
         {
-            var all = _membershipService.GetAll();
+            
+            var result = _membershipService.GetAll();
+            var all = result.Select<Membership, MembershipViewModel>(x => x);
             return Ok(all);
         }
 
@@ -70,7 +73,8 @@ namespace CCT_App.Controllers.Api
                 return NotFound();
             }
 
-            return Ok(result);
+            MembershipViewModel membership = result;
+            return Ok(membership);
         }
 
         /// <summary>Create a new membership item to be added to database</summary>
@@ -100,7 +104,7 @@ namespace CCT_App.Controllers.Api
 
         /// <summary>Update an existing membership item</summary>
         /// <param name="id">The membership id of whichever one is to be changed</param>
-        /// <param name="value">The content within the membership that is to be changed and what it will change to</param>
+        /// <param name="membership">The content within the membership that is to be changed and what it will change to</param>
         /// <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         // PUT api/<controller>/5
         [HttpPut]
