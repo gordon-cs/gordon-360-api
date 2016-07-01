@@ -3,23 +3,23 @@
 <div class="container main-container">
     <div class="col-sm-6 col-left">
         <div class="row">
-            <h2 class = "activity-name">{{model.ACT_DESC}}</h2>
+            <h2 class = "activity-name">{{model.activity.ACT_DESC}}</h2>
             <img class = "activity-picture"
                 src="http://whoopdirt.com/wp-content/uploads/2016/06/Gordon_Logo-294_bigger.gif">
         </div>
     </div>
     <div class="col-sm-6">
         <div class="row">
-            <div class="col-sm-3">
-                {{#link-to 'add-membership' model.ACT_CDE}}
-                    <button type="button" class="btn btn-blue form-control">Follow</button>
-                {{/link-to}}
-            </div>
-            <div class="col-sm-4">
-                <button type="button" class="btn btn-blue form-control">Request Membership</button>
-            </div>
+            {{#if model.following}}
+                <button type="button" class="btn btn-blue form-control col-sm-6" {{action 'toggleFollow'}}>Unfollow</button>
+            {{else}}
+                <button type="button" class="btn btn-blue form-control col-sm-6" {{action 'toggleFollow'}}>Follow</button>
+            {{/if}}
+            {{#link-to 'add-membership' model.activity.ACT_CDE class=""}}
+                <button type="button" class="btn btn-blue form-control col-sm-6">Request Membership</button>
+            {{/link-to}}
         </div>
-        <div class="activity-info">
+        <div class="activity-info row">
             <div class="row">
                 <div class="col-sm-12">
                     <p class="activity-info-item">Leader: ...</p>
@@ -27,7 +27,7 @@
             </div>
             <div class="row">
                 <div class="col-sm-12">
-                    <p class="activity-info-item">Description: {{model.ACT_CDE}}</p>
+                    <p class="activity-info-item">Description: {{model.activity.ACT_CDE}}</p>
                 </div>
             </div>
             <div class="row">

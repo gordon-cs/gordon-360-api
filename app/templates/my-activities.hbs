@@ -10,7 +10,7 @@
 		{{#each model as |membership|}}
 			{{#link-to 'specific-activity' membership.ACT_CDE}}
 				<p>
-					{{membership.ACT_CDE}} {{membership.PART_LVL}} {{membership.BEGIN_DTE}} "{{membership.DESCRIPTION}}"
+					{{membership.ActivityCode}} {{membership.Participation}} {{membership.StartDate}} "{{membership.Description}}"
 				</p>
 			{{/link-to}}
 		{{/each}}

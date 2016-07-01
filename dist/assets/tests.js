@@ -16,6 +16,15 @@ define('test-app/tests/controllers/add-membership.jshint', ['exports'], function
     assert.ok(false, 'controllers/add-membership.js should pass jshint.\ncontrollers/add-membership.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/add-membership.js: line 3, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\n\n2 errors');
   });
 });
+define('test-app/tests/controllers/specific-activity.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | controllers/specific-activity.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(false, 'controllers/specific-activity.js should pass jshint.\ncontrollers/specific-activity.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/specific-activity.js: line 3, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/specific-activity.js: line 5, col 9, \'concise methods\' is available in ES6 (use \'esversion: 6\') or Mozilla JS extensions (use moz).\n\n3 errors');
+  });
+});
 define('test-app/tests/helpers/destroy-app', ['exports', 'ember'], function (exports, _ember) {
   exports['default'] = destroyApp;
 
@@ -147,7 +156,7 @@ define('test-app/tests/routes/index.jshint', ['exports'], function (exports) {
   QUnit.module('JSHint | routes/index.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'routes/index.js should pass jshint.\nroutes/index.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nroutes/index.js: line 3, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\nroutes/index.js: line 4, col 5, \'concise methods\' is available in ES6 (use \'esversion: 6\') or Mozilla JS extensions (use moz).\nroutes/index.js: line 7, col 5, \'concise methods\' is available in ES6 (use \'esversion: 6\') or Mozilla JS extensions (use moz).\n\n4 errors');
+    assert.ok(false, 'routes/index.js should pass jshint.\nroutes/index.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nroutes/index.js: line 3, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\nroutes/index.js: line 4, col 5, \'concise methods\' is available in ES6 (use \'esversion: 6\') or Mozilla JS extensions (use moz).\n\n3 errors');
   });
 });
 define('test-app/tests/routes/my-activities.jshint', ['exports'], function (exports) {
@@ -201,6 +210,28 @@ define('test-app/tests/unit/controllers/add-membership-test.jshint', ['exports']
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'unit/controllers/add-membership-test.js should pass jshint.');
+  });
+});
+define('test-app/tests/unit/controllers/specific-activity-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleFor)('controller:specific-activity', 'Unit | Controller | specific activity', {
+    // Specify the other units that are required for this test.
+    // needs: ['controller:foo']
+  });
+
+  // Replace this with your real tests.
+  (0, _emberQunit.test)('it exists', function (assert) {
+    var controller = this.subject();
+    assert.ok(controller);
+  });
+});
+define('test-app/tests/unit/controllers/specific-activity-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | unit/controllers/specific-activity-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/controllers/specific-activity-test.js should pass jshint.');
   });
 });
 define('test-app/tests/unit/routes/add-membership-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {

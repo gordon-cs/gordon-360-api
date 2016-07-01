@@ -1,0 +1,53 @@
+import Ember from 'ember';
+
+export default Ember.Controller.extend({
+    actions: {
+        toggleFollow() {
+            if (this.get('model').following) {
+                var activityCode = this.get('model').activity.ACT_CDE.trim();
+                var membershipID = this.get('model').membershipID;
+                Ember.$.ajax({
+                    type: "DELETE",
+                    url: "https://ccttrain.gordon.edu/api/memberships/" + membershipID,
+                    contentType: "application/json",
+                    success: function(data) {
+                        console.log(JSON.stringify(data));
+                    },
+                    error: function(errorThrown) {
+                        console.log(JSON.stringify(errorThrown));
+                    }
+                });
+            }
+            else {
+                var membership = {
+                    "ACT_CDE": this.get('model').activity.ACT_CDE.trim(),
+                    "SESSION_CDE": "201601",
+                    "ID_NUM": "50154997",
+                    "PART_LVL": "GUEST",
+                    "BEGIN_DTE": "1/1/2016",
+                    "END_DTE": "2/2/2016",
+                    "DESCRIPTION": "Basic Follower",
+                    "USER_NAME": null,
+                    "JOB_NAME": null,
+                    "JOB_TIME": null
+                };
+                var newMembershipID = null;
+                Ember.$.ajax({
+                    type: "POST",
+                    url: "https://ccttrain.gordon.edu/api/memberships",
+                    data: JSON.stringify(membership),
+                    contentType: "application/json",
+                    async: false,
+                    success: function(data) {
+                        newMembershipID = data.MEMBERSHIP_ID;
+                    },
+                    error: function(errorThrown) {
+                        alert(JSON.stringify(errorThrown));
+                    }
+                });
+                this.set('model.membershipID', newMembershipID);
+            }
+            this.set('model.following', !this.get('model').following);
+        }
+    }
+});

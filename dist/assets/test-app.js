@@ -72,6 +72,58 @@ define("test-app/controllers/add-membership", ["exports", "ember"], function (ex
         }
     });
 });
+define('test-app/controllers/specific-activity', ['exports', 'ember'], function (exports, _ember) {
+    exports['default'] = _ember['default'].Controller.extend({
+        actions: {
+            toggleFollow: function toggleFollow() {
+                if (this.get('model').following) {
+                    var activityCode = this.get('model').activity.ACT_CDE.trim();
+                    var membershipID = this.get('model').membershipID;
+                    _ember['default'].$.ajax({
+                        type: "DELETE",
+                        url: "https://ccttrain.gordon.edu/api/memberships/" + membershipID,
+                        contentType: "application/json",
+                        success: function success(data) {
+                            console.log(JSON.stringify(data));
+                        },
+                        error: function error(errorThrown) {
+                            console.log(JSON.stringify(errorThrown));
+                        }
+                    });
+                } else {
+                    var membership = {
+                        "ACT_CDE": this.get('model').activity.ACT_CDE.trim(),
+                        "SESSION_CDE": "201601",
+                        "ID_NUM": "50154997",
+                        "PART_LVL": "GUEST",
+                        "BEGIN_DTE": "1/1/2016",
+                        "END_DTE": "2/2/2016",
+                        "DESCRIPTION": "Basic Follower",
+                        "USER_NAME": null,
+                        "JOB_NAME": null,
+                        "JOB_TIME": null
+                    };
+                    var newMembershipID = null;
+                    _ember['default'].$.ajax({
+                        type: "POST",
+                        url: "https://ccttrain.gordon.edu/api/memberships",
+                        data: JSON.stringify(membership),
+                        contentType: "application/json",
+                        async: false,
+                        success: function success(data) {
+                            newMembershipID = data.MEMBERSHIP_ID;
+                        },
+                        error: function error(errorThrown) {
+                            alert(JSON.stringify(errorThrown));
+                        }
+                    });
+                    this.set('model.membershipID', newMembershipID);
+                }
+                this.set('model.following', !this.get('model').following);
+            }
+        }
+    });
+});
 define('test-app/helpers/pluralize', ['exports', 'ember-inflector/lib/helpers/pluralize'], function (exports, _emberInflectorLibHelpersPluralize) {
   exports['default'] = _emberInflectorLibHelpersPluralize['default'];
 });
@@ -284,24 +336,10 @@ define('test-app/routes/add-membership', ['exports', 'ember'], function (exports
         }
     });
 });
-define("test-app/routes/index", ["exports", "ember"], function (exports, _ember) {
-    exports["default"] = _ember["default"].Route.extend({
+define('test-app/routes/index', ['exports', 'ember'], function (exports, _ember) {
+    exports['default'] = _ember['default'].Route.extend({
         model: function model() {
-            //return Ember.$.getJSON('https://ccttrain.gordon.edu/api/activities');
-        },
-        activate: function activate() {
-            _ember["default"].$.ajax({
-                type: "POST",
-                dataType: "application/x-www-form-urlencoded",
-                url: 'https://ccttrain.gordon.edu/Home/Login',
-                data: "username=James.Kempf, password=August24",
-                success: function success() {
-                    alert("success");
-                },
-                error: function error(errorThrown) {
-                    alert(JSON.stringify(errorThrown));
-                }
-            });
+            return _ember['default'].$.getJSON('https://ccttrain.gordon.edu/api/activities');
         }
     });
 });
@@ -312,10 +350,39 @@ define('test-app/routes/my-activities', ['exports', 'ember'], function (exports,
 		}
 	});
 });
-define('test-app/routes/specific-activity', ['exports', 'ember'], function (exports, _ember) {
-    exports['default'] = _ember['default'].Route.extend({
+define("test-app/routes/specific-activity", ["exports", "ember"], function (exports, _ember) {
+    exports["default"] = _ember["default"].Route.extend({
         model: function model(param) {
-            return _ember['default'].$.getJSON('https://ccttrain.gordon.edu/api/activities/' + param.ACT_CDE);
+            var mdl = { "following": false };
+            _ember["default"].$.ajax({
+                type: "GET",
+                url: 'https://ccttrain.gordon.edu/api/activities/' + param.ACT_CDE,
+                async: false,
+                success: function success(data) {
+                    mdl.activity = data;
+                },
+                error: function error(errorThrown) {
+                    console.log(JSON.stringify(errorThrown));
+                }
+            });
+            _ember["default"].$.ajax({
+                type: "GET",
+                url: 'https://ccttrain.gordon.edu/api/students/50154997/memberships',
+                async: false,
+                success: function success(data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].ActivityCode === param.ACT_CDE && data[i].Participation === "GUEST") {
+                            mdl.following = true;
+                            mdl.membershipID = data[i].MembershipID;
+                        }
+                    }
+                },
+                error: function error(errorThrown) {
+                    console.log(JSON.stringify(errorTrown));
+                }
+            });
+            console.log(JSON.stringify(mdl));
+            return mdl;
         }
     });
 });
@@ -825,221 +892,6 @@ define("test-app/templates/application", ["exports"], function (exports) {
 define("test-app/templates/index", ["exports"], function (exports) {
   exports["default"] = Ember.HTMLBars.template((function () {
     var child0 = (function () {
-      return {
-        meta: {
-          "fragmentReason": false,
-          "revision": "Ember@2.6.1",
-          "loc": {
-            "source": null,
-            "start": {
-              "line": 17,
-              "column": 2
-            },
-            "end": {
-              "line": 21,
-              "column": 2
-            }
-          },
-          "moduleName": "test-app/templates/index.hbs"
-        },
-        isEmpty: false,
-        arity: 0,
-        cachedFragment: null,
-        hasRendered: false,
-        buildFragment: function buildFragment(dom) {
-          var el0 = dom.createDocumentFragment();
-          var el1 = dom.createTextNode("			");
-          dom.appendChild(el0, el1);
-          var el1 = dom.createElement("img");
-          dom.setAttribute(el1, "src", "http://whoopdirt.com/wp-content/uploads/2016/06/Gordon_Logo-294_bigger.gif");
-          dom.appendChild(el0, el1);
-          var el1 = dom.createTextNode("\n			");
-          dom.appendChild(el0, el1);
-          var el1 = dom.createElement("p");
-          var el2 = dom.createTextNode("test");
-          dom.appendChild(el1, el2);
-          dom.appendChild(el0, el1);
-          var el1 = dom.createTextNode("\n			");
-          dom.appendChild(el0, el1);
-          var el1 = dom.createElement("p");
-          var el2 = dom.createTextNode("test");
-          dom.appendChild(el1, el2);
-          dom.appendChild(el0, el1);
-          var el1 = dom.createTextNode("\n");
-          dom.appendChild(el0, el1);
-          return el0;
-        },
-        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-          var element0 = dom.childAt(fragment, [1]);
-          var morphs = new Array(1);
-          morphs[0] = dom.createElementMorph(element0);
-          return morphs;
-        },
-        statements: [["element", "action", ["click"], [], ["loc", [null, [18, 89], [18, 107]]]]],
-        locals: [],
-        templates: []
-      };
-    })();
-    var child1 = (function () {
-      return {
-        meta: {
-          "fragmentReason": false,
-          "revision": "Ember@2.6.1",
-          "loc": {
-            "source": null,
-            "start": {
-              "line": 22,
-              "column": 2
-            },
-            "end": {
-              "line": 26,
-              "column": 2
-            }
-          },
-          "moduleName": "test-app/templates/index.hbs"
-        },
-        isEmpty: false,
-        arity: 0,
-        cachedFragment: null,
-        hasRendered: false,
-        buildFragment: function buildFragment(dom) {
-          var el0 = dom.createDocumentFragment();
-          var el1 = dom.createTextNode("			");
-          dom.appendChild(el0, el1);
-          var el1 = dom.createElement("img");
-          dom.setAttribute(el1, "src", "http://whoopdirt.com/wp-content/uploads/2016/06/Gordon_Logo-294_bigger.gif");
-          dom.appendChild(el0, el1);
-          var el1 = dom.createTextNode("\n			");
-          dom.appendChild(el0, el1);
-          var el1 = dom.createElement("p");
-          var el2 = dom.createTextNode("test");
-          dom.appendChild(el1, el2);
-          dom.appendChild(el0, el1);
-          var el1 = dom.createTextNode("\n			");
-          dom.appendChild(el0, el1);
-          var el1 = dom.createElement("p");
-          var el2 = dom.createTextNode("test");
-          dom.appendChild(el1, el2);
-          dom.appendChild(el0, el1);
-          var el1 = dom.createTextNode("\n");
-          dom.appendChild(el0, el1);
-          return el0;
-        },
-        buildRenderNodes: function buildRenderNodes() {
-          return [];
-        },
-        statements: [],
-        locals: [],
-        templates: []
-      };
-    })();
-    var child2 = (function () {
-      return {
-        meta: {
-          "fragmentReason": false,
-          "revision": "Ember@2.6.1",
-          "loc": {
-            "source": null,
-            "start": {
-              "line": 27,
-              "column": 2
-            },
-            "end": {
-              "line": 31,
-              "column": 2
-            }
-          },
-          "moduleName": "test-app/templates/index.hbs"
-        },
-        isEmpty: false,
-        arity: 0,
-        cachedFragment: null,
-        hasRendered: false,
-        buildFragment: function buildFragment(dom) {
-          var el0 = dom.createDocumentFragment();
-          var el1 = dom.createTextNode("			");
-          dom.appendChild(el0, el1);
-          var el1 = dom.createElement("img");
-          dom.setAttribute(el1, "src", "http://whoopdirt.com/wp-content/uploads/2016/06/Gordon_Logo-294_bigger.gif");
-          dom.appendChild(el0, el1);
-          var el1 = dom.createTextNode("\n			");
-          dom.appendChild(el0, el1);
-          var el1 = dom.createElement("p");
-          var el2 = dom.createTextNode("test");
-          dom.appendChild(el1, el2);
-          dom.appendChild(el0, el1);
-          var el1 = dom.createTextNode("\n			");
-          dom.appendChild(el0, el1);
-          var el1 = dom.createElement("p");
-          var el2 = dom.createTextNode("test");
-          dom.appendChild(el1, el2);
-          dom.appendChild(el0, el1);
-          var el1 = dom.createTextNode("\n");
-          dom.appendChild(el0, el1);
-          return el0;
-        },
-        buildRenderNodes: function buildRenderNodes() {
-          return [];
-        },
-        statements: [],
-        locals: [],
-        templates: []
-      };
-    })();
-    var child3 = (function () {
-      return {
-        meta: {
-          "fragmentReason": false,
-          "revision": "Ember@2.6.1",
-          "loc": {
-            "source": null,
-            "start": {
-              "line": 32,
-              "column": 2
-            },
-            "end": {
-              "line": 36,
-              "column": 2
-            }
-          },
-          "moduleName": "test-app/templates/index.hbs"
-        },
-        isEmpty: false,
-        arity: 0,
-        cachedFragment: null,
-        hasRendered: false,
-        buildFragment: function buildFragment(dom) {
-          var el0 = dom.createDocumentFragment();
-          var el1 = dom.createTextNode("			");
-          dom.appendChild(el0, el1);
-          var el1 = dom.createElement("img");
-          dom.setAttribute(el1, "src", "http://whoopdirt.com/wp-content/uploads/2016/06/Gordon_Logo-294_bigger.gif");
-          dom.appendChild(el0, el1);
-          var el1 = dom.createTextNode("\n			");
-          dom.appendChild(el0, el1);
-          var el1 = dom.createElement("p");
-          var el2 = dom.createTextNode("test");
-          dom.appendChild(el1, el2);
-          dom.appendChild(el0, el1);
-          var el1 = dom.createTextNode("\n			");
-          dom.appendChild(el0, el1);
-          var el1 = dom.createElement("p");
-          var el2 = dom.createTextNode("test");
-          dom.appendChild(el1, el2);
-          dom.appendChild(el0, el1);
-          var el1 = dom.createTextNode("\n");
-          dom.appendChild(el0, el1);
-          return el0;
-        },
-        buildRenderNodes: function buildRenderNodes() {
-          return [];
-        },
-        statements: [],
-        locals: [],
-        templates: []
-      };
-    })();
-    var child4 = (function () {
       var child0 = (function () {
         return {
           meta: {
@@ -1048,11 +900,11 @@ define("test-app/templates/index", ["exports"], function (exports) {
             "loc": {
               "source": null,
               "start": {
-                "line": 38,
+                "line": 18,
                 "column": 3
               },
               "end": {
-                "line": 42,
+                "line": 22,
                 "column": 3
               }
             },
@@ -1091,7 +943,7 @@ define("test-app/templates/index", ["exports"], function (exports) {
             morphs[1] = dom.createMorphAt(dom.childAt(fragment, [5]), 0, 0);
             return morphs;
           },
-          statements: [["content", "activity.ACT_DESC", ["loc", [null, [40, 7], [40, 28]]]], ["content", "activity.ACT_CDE", ["loc", [null, [41, 7], [41, 27]]]]],
+          statements: [["content", "activity.ACT_DESC", ["loc", [null, [20, 7], [20, 28]]]], ["content", "activity.ACT_CDE", ["loc", [null, [21, 7], [21, 27]]]]],
           locals: [],
           templates: []
         };
@@ -1103,11 +955,11 @@ define("test-app/templates/index", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 37,
+              "line": 17,
               "column": 2
             },
             "end": {
-              "line": 43,
+              "line": 23,
               "column": 2
             }
           },
@@ -1130,7 +982,7 @@ define("test-app/templates/index", ["exports"], function (exports) {
           dom.insertBoundary(fragment, null);
           return morphs;
         },
-        statements: [["block", "link-to", ["specific-activity", ["get", "activity.ACT_CDE", ["loc", [null, [38, 34], [38, 50]]]]], ["class", "well activity-list-item col-sm-2"], 0, null, ["loc", [null, [38, 3], [42, 15]]]]],
+        statements: [["block", "link-to", ["specific-activity", ["get", "activity.ACT_CDE", ["loc", [null, [18, 34], [18, 50]]]]], ["class", "well activity-list-item col-sm-2"], 0, null, ["loc", [null, [18, 3], [22, 15]]]]],
         locals: ["activity"],
         templates: [child0]
       };
@@ -1149,7 +1001,7 @@ define("test-app/templates/index", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 46,
+            "line": 26,
             "column": 0
           }
         },
@@ -1233,14 +1085,6 @@ define("test-app/templates/index", ["exports"], function (exports) {
         dom.appendChild(el2, el3);
         var el3 = dom.createComment("");
         dom.appendChild(el2, el3);
-        var el3 = dom.createComment("");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createComment("");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createComment("");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createComment("");
-        dom.appendChild(el2, el3);
         var el3 = dom.createTextNode("	");
         dom.appendChild(el2, el3);
         dom.appendChild(el1, el2);
@@ -1252,18 +1096,13 @@ define("test-app/templates/index", ["exports"], function (exports) {
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var element1 = dom.childAt(fragment, [2, 3]);
-        var morphs = new Array(5);
-        morphs[0] = dom.createMorphAt(element1, 1, 1);
-        morphs[1] = dom.createMorphAt(element1, 2, 2);
-        morphs[2] = dom.createMorphAt(element1, 3, 3);
-        morphs[3] = dom.createMorphAt(element1, 4, 4);
-        morphs[4] = dom.createMorphAt(element1, 5, 5);
+        var morphs = new Array(1);
+        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [2, 3]), 1, 1);
         return morphs;
       },
-      statements: [["block", "link-to", ["specific-activity"], ["class", "well activity-list-item col-sm-2"], 0, null, ["loc", [null, [17, 2], [21, 14]]]], ["block", "link-to", ["specific-activity"], ["class", "well activity-list-item col-sm-2"], 1, null, ["loc", [null, [22, 2], [26, 14]]]], ["block", "link-to", ["specific-activity"], ["class", "well activity-list-item col-sm-2"], 2, null, ["loc", [null, [27, 2], [31, 14]]]], ["block", "link-to", ["specific-activity"], ["class", "well activity-list-item col-sm-2"], 3, null, ["loc", [null, [32, 2], [36, 14]]]], ["block", "each", [["get", "model", ["loc", [null, [37, 10], [37, 15]]]]], [], 4, null, ["loc", [null, [37, 2], [43, 11]]]]],
+      statements: [["block", "each", [["get", "model", ["loc", [null, [17, 10], [17, 15]]]]], [], 0, null, ["loc", [null, [17, 2], [23, 11]]]]],
       locals: [],
-      templates: [child0, child1, child2, child3, child4]
+      templates: [child0]
     };
   })());
 });
@@ -1329,7 +1168,7 @@ define("test-app/templates/my-activities", ["exports"], function (exports) {
             morphs[3] = dom.createMorphAt(element0, 7, 7);
             return morphs;
           },
-          statements: [["content", "membership.ACT_CDE", ["loc", [null, [13, 5], [13, 27]]]], ["content", "membership.PART_LVL", ["loc", [null, [13, 28], [13, 51]]]], ["content", "membership.BEGIN_DTE", ["loc", [null, [13, 52], [13, 76]]]], ["content", "membership.DESCRIPTION", ["loc", [null, [13, 78], [13, 104]]]]],
+          statements: [["content", "membership.ActivityCode", ["loc", [null, [13, 5], [13, 32]]]], ["content", "membership.Participation", ["loc", [null, [13, 33], [13, 61]]]], ["content", "membership.StartDate", ["loc", [null, [13, 62], [13, 86]]]], ["content", "membership.Description", ["loc", [null, [13, 88], [13, 114]]]]],
           locals: [],
           templates: []
         };
@@ -1387,8 +1226,8 @@ define("test-app/templates/my-activities", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 18,
-            "column": 6
+            "line": 19,
+            "column": 0
           }
         },
         "moduleName": "test-app/templates/my-activities.hbs"
@@ -1443,6 +1282,8 @@ define("test-app/templates/my-activities", ["exports"], function (exports) {
         var el2 = dom.createTextNode("\n");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
@@ -1466,12 +1307,12 @@ define("test-app/templates/specific-activity", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 14,
-              "column": 16
+              "line": 13,
+              "column": 12
             },
             "end": {
-              "line": 16,
-              "column": 16
+              "line": 15,
+              "column": 12
             }
           },
           "moduleName": "test-app/templates/specific-activity.hbs"
@@ -1482,12 +1323,106 @@ define("test-app/templates/specific-activity", ["exports"], function (exports) {
         hasRendered: false,
         buildFragment: function buildFragment(dom) {
           var el0 = dom.createDocumentFragment();
-          var el1 = dom.createTextNode("                    ");
+          var el1 = dom.createTextNode("                ");
           dom.appendChild(el0, el1);
           var el1 = dom.createElement("button");
           dom.setAttribute(el1, "type", "button");
-          dom.setAttribute(el1, "class", "btn btn-blue form-control");
+          dom.setAttribute(el1, "class", "btn btn-blue form-control col-sm-6");
+          var el2 = dom.createTextNode("Unfollow");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var element1 = dom.childAt(fragment, [1]);
+          var morphs = new Array(1);
+          morphs[0] = dom.createElementMorph(element1);
+          return morphs;
+        },
+        statements: [["element", "action", ["toggleFollow"], [], ["loc", [null, [14, 81], [14, 106]]]]],
+        locals: [],
+        templates: []
+      };
+    })();
+    var child1 = (function () {
+      return {
+        meta: {
+          "fragmentReason": false,
+          "revision": "Ember@2.6.1",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 15,
+              "column": 12
+            },
+            "end": {
+              "line": 17,
+              "column": 12
+            }
+          },
+          "moduleName": "test-app/templates/specific-activity.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("                ");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("button");
+          dom.setAttribute(el1, "type", "button");
+          dom.setAttribute(el1, "class", "btn btn-blue form-control col-sm-6");
           var el2 = dom.createTextNode("Follow");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var element0 = dom.childAt(fragment, [1]);
+          var morphs = new Array(1);
+          morphs[0] = dom.createElementMorph(element0);
+          return morphs;
+        },
+        statements: [["element", "action", ["toggleFollow"], [], ["loc", [null, [16, 81], [16, 106]]]]],
+        locals: [],
+        templates: []
+      };
+    })();
+    var child2 = (function () {
+      return {
+        meta: {
+          "fragmentReason": false,
+          "revision": "Ember@2.6.1",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 18,
+              "column": 12
+            },
+            "end": {
+              "line": 20,
+              "column": 12
+            }
+          },
+          "moduleName": "test-app/templates/specific-activity.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("                ");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("button");
+          dom.setAttribute(el1, "type", "button");
+          dom.setAttribute(el1, "class", "btn btn-blue form-control col-sm-6");
+          var el2 = dom.createTextNode("Request Membership");
           dom.appendChild(el1, el2);
           dom.appendChild(el0, el1);
           var el1 = dom.createTextNode("\n");
@@ -1571,39 +1506,19 @@ define("test-app/templates/specific-activity", ["exports"], function (exports) {
         dom.appendChild(el2, el3);
         var el3 = dom.createElement("div");
         dom.setAttribute(el3, "class", "row");
-        var el4 = dom.createTextNode("\n            ");
+        var el4 = dom.createTextNode("\n");
         dom.appendChild(el3, el4);
-        var el4 = dom.createElement("div");
-        dom.setAttribute(el4, "class", "col-sm-3");
-        var el5 = dom.createTextNode("\n");
-        dom.appendChild(el4, el5);
-        var el5 = dom.createComment("");
-        dom.appendChild(el4, el5);
-        var el5 = dom.createTextNode("            ");
-        dom.appendChild(el4, el5);
+        var el4 = dom.createComment("");
         dom.appendChild(el3, el4);
-        var el4 = dom.createTextNode("\n            ");
+        var el4 = dom.createComment("");
         dom.appendChild(el3, el4);
-        var el4 = dom.createElement("div");
-        dom.setAttribute(el4, "class", "col-sm-4");
-        var el5 = dom.createTextNode("\n                ");
-        dom.appendChild(el4, el5);
-        var el5 = dom.createElement("button");
-        dom.setAttribute(el5, "type", "button");
-        dom.setAttribute(el5, "class", "btn btn-blue form-control");
-        var el6 = dom.createTextNode("Request Membership");
-        dom.appendChild(el5, el6);
-        dom.appendChild(el4, el5);
-        var el5 = dom.createTextNode("\n            ");
-        dom.appendChild(el4, el5);
-        dom.appendChild(el3, el4);
-        var el4 = dom.createTextNode("\n        ");
+        var el4 = dom.createTextNode("        ");
         dom.appendChild(el3, el4);
         dom.appendChild(el2, el3);
         var el3 = dom.createTextNode("\n        ");
         dom.appendChild(el2, el3);
         var el3 = dom.createElement("div");
-        dom.setAttribute(el3, "class", "activity-info");
+        dom.setAttribute(el3, "class", "activity-info row");
         var el4 = dom.createTextNode("\n            ");
         dom.appendChild(el3, el4);
         var el4 = dom.createElement("div");
@@ -1725,17 +1640,19 @@ define("test-app/templates/specific-activity", ["exports"], function (exports) {
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var element0 = dom.childAt(fragment, [2]);
-        var element1 = dom.childAt(element0, [3]);
-        var morphs = new Array(3);
-        morphs[0] = dom.createMorphAt(dom.childAt(element0, [1, 1, 1]), 0, 0);
-        morphs[1] = dom.createMorphAt(dom.childAt(element1, [1, 1]), 1, 1);
-        morphs[2] = dom.createMorphAt(dom.childAt(element1, [3, 3, 1, 1]), 1, 1);
+        var element2 = dom.childAt(fragment, [2]);
+        var element3 = dom.childAt(element2, [3]);
+        var element4 = dom.childAt(element3, [1]);
+        var morphs = new Array(4);
+        morphs[0] = dom.createMorphAt(dom.childAt(element2, [1, 1, 1]), 0, 0);
+        morphs[1] = dom.createMorphAt(element4, 1, 1);
+        morphs[2] = dom.createMorphAt(element4, 2, 2);
+        morphs[3] = dom.createMorphAt(dom.childAt(element3, [3, 3, 1, 1]), 1, 1);
         return morphs;
       },
-      statements: [["content", "model.ACT_DESC", ["loc", [null, [6, 40], [6, 58]]]], ["block", "link-to", ["add-membership", ["get", "model.ACT_CDE", ["loc", [null, [14, 44], [14, 57]]]]], [], 0, null, ["loc", [null, [14, 16], [16, 28]]]], ["content", "model.ACT_CDE", ["loc", [null, [30, 63], [30, 80]]]]],
+      statements: [["content", "model.activity.ACT_DESC", ["loc", [null, [6, 40], [6, 67]]]], ["block", "if", [["get", "model.following", ["loc", [null, [13, 18], [13, 33]]]]], [], 0, 1, ["loc", [null, [13, 12], [17, 19]]]], ["block", "link-to", ["add-membership", ["get", "model.activity.ACT_CDE", ["loc", [null, [18, 40], [18, 62]]]]], ["class", ""], 2, null, ["loc", [null, [18, 12], [20, 24]]]], ["content", "model.activity.ACT_CDE", ["loc", [null, [30, 63], [30, 89]]]]],
       locals: [],
-      templates: [child0]
+      templates: [child0, child1, child2]
     };
   })());
 });
@@ -1771,7 +1688,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("test-app/app")["default"].create({"name":"test-app","version":"0.0.0+fd41dcbe"});
+  require("test-app/app")["default"].create({"name":"test-app","version":"0.0.0+1d2f6e9d"});
 }
 
 /* jshint ignore:end */
