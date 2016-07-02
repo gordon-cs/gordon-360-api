@@ -163,10 +163,12 @@ namespace CCT_App.Repositories
         /// </summary>
         /// <param name="query">Name of the stored procedure </param>
         /// <param name="parameters">Parameters to pass to the stored procedure</param>
-        public IEnumerable<T> ExecWithStoredProcedure(string query, params object[] parameters)
+        public IEnumerable<ACTIVE_CLUBS_PER_SESS_ID_Result> ExecWithStoredProcedure(string query, params object[] parameters)
         {
-            return _context.Database.SqlQuery<T>(query, parameters);
+            return _context.Database.SqlQuery<ACTIVE_CLUBS_PER_SESS_ID_Result>(query, parameters);
         }
+
+        
 
 
     }

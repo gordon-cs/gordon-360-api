@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 namespace CCT_App.Models.ViewModels
 {
     public class MembershipViewModel
@@ -6,19 +7,24 @@ namespace CCT_App.Models.ViewModels
         
         public int MembershipID { get; set; }
         public string ActivityCode { get; set; }
+        public string ActivityDescription { get; set; }
         public string SessionCode { get; set; }
+        public string SessionDescription { get; set; }
         public string IDNumber { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public string Participation { get; set; }
-        public string StartDate { get; set; }
-        public string EndDate { get; set; }
+        public string ParticipationDescription { get; set; }
+        public DateTime StartDate { get; set; }
+        public Nullable<DateTime> EndDate { get; set; }
         public string Description { get; set; }
 
         public static implicit operator MembershipViewModel(Membership m)
         {
-            string newEndDate = "";
+            Nullable<DateTime> newEndDate = null;
             if (m.END_DTE.HasValue)
             {
-                newEndDate = m.END_DTE.Value.ToString("D", CultureInfo.CurrentCulture);
+                newEndDate = m.END_DTE;
             }
             MembershipViewModel vm = new MembershipViewModel
             {
@@ -27,7 +33,7 @@ namespace CCT_App.Models.ViewModels
                 SessionCode = m.SESSION_CDE,
                 IDNumber = m.ID_NUM,
                 Participation = m.PART_LVL,
-                StartDate = m.BEGIN_DTE.ToString("D", CultureInfo.CurrentCulture),
+                StartDate = m.BEGIN_DTE,
                 EndDate = newEndDate,
                 Description = m.DESCRIPTION ?? ""
             };

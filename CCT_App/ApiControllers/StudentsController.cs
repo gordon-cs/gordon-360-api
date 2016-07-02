@@ -11,6 +11,7 @@ using System.Web.Http.Description;
 using CCT_App.Models;
 using CCT_App.Repositories;
 using CCT_App.Services;
+using CCT_App.Models.ViewModels;
 
 namespace CCT_App.Controllers.Api
 {
@@ -83,7 +84,11 @@ namespace CCT_App.Controllers.Api
             {
                 return BadRequest();
             }
-           var result = _studentService.GetActivitiesForStudent(id);
+            var list = _studentService.GetActivitiesForStudent(id);
+
+            var result = list.Select<Membership, MembershipViewModel>(x => x);
+
+            
 
             return Ok(result);
         }

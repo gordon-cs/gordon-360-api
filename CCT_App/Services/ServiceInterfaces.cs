@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CCT_App.Models;
+using CCT_App.Models.ViewModels;
 
 namespace CCT_App.Services
 {
@@ -18,7 +19,7 @@ namespace CCT_App.Services
         IEnumerable<ACT_CLUB_DEF> GetAll();
         IEnumerable<SUPERVISOR> GetSupervisorsForActivity(string id);
         IEnumerable<Membership> GetLeadersForActivity(string id);
-        IEnumerable<Membership> GetMembershipsForActivity(string id);
+        IEnumerable<MembershipViewModel> GetMembershipsForActivity(string id);
     }
 
     public interface ISessionService

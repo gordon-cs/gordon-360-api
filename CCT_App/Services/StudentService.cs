@@ -23,13 +23,13 @@ namespace CCT_App.Services
 
         public IEnumerable<Membership> GetActivitiesForStudent(string id)
         {
-            var studentExists = _unitOfWork.StudentRepository.Where(x => x.student_id == id).Count() > 0;
+            var studentExists = _unitOfWork.StudentRepository.Where(x => x.student_id.Trim() == id).Count() > 0;
             if(!studentExists)
             {
                 return null;
             }
 
-            var studentMemberships = _unitOfWork.MembershipRepository.Where(x => x.ID_NUM == id);
+            var studentMemberships = _unitOfWork.MembershipRepository.Where(x => x.ID_NUM.Trim() == id);
             return studentMemberships.AsEnumerable();
         }
 

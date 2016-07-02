@@ -261,6 +261,7 @@
     <Compile Include="Repositories\UnitOfWork.cs" />
     <Compile Include="Services\AccountService.cs" />
     <Compile Include="Services\ActivityService.cs" />
+    <Compile Include="Services\ComplexQueries\RawSqlQuery.cs" />
     <Compile Include="Services\Constants.cs" />
     <Compile Include="Services\FacultyService.cs" />
     <Compile Include="Services\JenzibarActivityService.cs" />

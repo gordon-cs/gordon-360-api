@@ -40,6 +40,7 @@ namespace CCT_App.Services
                 return null;
             }
             result = _unitOfWork.MembershipRequestRepository.Delete(result);
+            _unitOfWork.Save();
             return result;
         }
 
@@ -62,10 +63,10 @@ namespace CCT_App.Services
 
         private bool membershipRequestIsValid(Request membershipRequest)
         {
-            var personExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id == membershipRequest.ID_NUM).Count() > 0;
-            var activityExists = _unitOfWork.ActivityRepository.Where(x => x.ACT_CDE == membershipRequest.ACT_CDE).Count() > 0;
-            var participationExists = _unitOfWork.ParticipationRepository.Where(x => x.PART_CDE == membershipRequest.PART_LVL).Count() > 0;
-            var sessionExists = _unitOfWork.SessionRepository.Where(x => x.SESS_CDE == membershipRequest.SESS_CDE).Count() > 0;
+            var personExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id.Trim() == membershipRequest.ID_NUM).Count() > 0;
+            var activityExists = _unitOfWork.ActivityRepository.Where(x => x.ACT_CDE.Trim() == membershipRequest.ACT_CDE).Count() > 0;
+            var participationExists = _unitOfWork.ParticipationRepository.Where(x => x.PART_CDE.Trim() == membershipRequest.PART_LVL).Count() > 0;
+            var sessionExists = _unitOfWork.SessionRepository.Where(x => x.SESS_CDE.Trim() == membershipRequest.SESS_CDE).Count() > 0;
 
             if (!personExists || !activityExists || !participationExists || !sessionExists)
             {

@@ -43,6 +43,9 @@ namespace CCT_App.Services
                 return null;
             }
             result = _unitOfWork.MembershipRepository.Delete(result);
+
+            _unitOfWork.Save();
+
             return result;
         }
 
@@ -85,6 +88,8 @@ namespace CCT_App.Services
             original.SESSION_CDE = membership.SESSION_CDE;
             original.USER_NAME = membership.USER_NAME;
 
+            _unitOfWork.Save();
+
             return original;
 
         }
@@ -92,10 +97,10 @@ namespace CCT_App.Services
 
         private bool membershipIsValid(Membership membership)
         {
-            var personExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id == membership.ID_NUM).Count() > 0;
-            var participationExists = _unitOfWork.ParticipationRepository.Where(x => x.PART_CDE == membership.PART_LVL).Count() > 0;
-            var sessionExists = _unitOfWork.SessionRepository.Where(x => x.SESS_CDE == membership.SESSION_CDE).Count() > 0;
-            var activityExists = _unitOfWork.ActivityRepository.Where(x => x.ACT_CDE == membership.ACT_CDE).Count() > 0;
+            var personExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id.Trim() == membership.ID_NUM).Count() > 0;
+            var participationExists = _unitOfWork.ParticipationRepository.Where(x => x.PART_CDE.Trim() == membership.PART_LVL).Count() > 0;
+            var sessionExists = _unitOfWork.SessionRepository.Where(x => x.SESS_CDE.Trim() == membership.SESSION_CDE).Count() > 0;
+            var activityExists = _unitOfWork.ActivityRepository.Where(x => x.ACT_CDE.Trim() == membership.ACT_CDE).Count() > 0;
 
             if (!personExists || !participationExists || !sessionExists || !activityExists)
             {
@@ -107,7 +112,7 @@ namespace CCT_App.Services
             bool offered = false;
             foreach (var activityResult in activitiesThisSession)
             {
-                if (activityResult.ACT_CDE == membership.ACT_CDE)
+                if (activityResult.ACT_CDE.Trim() == membership.ACT_CDE)
                 {
                     offered = true;
                 }
