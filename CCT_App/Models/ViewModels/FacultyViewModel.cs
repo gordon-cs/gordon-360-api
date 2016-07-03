@@ -16,10 +16,10 @@ namespace CCT_App.Models.ViewModels
         {
             FacultyViewModel vm = new FacultyViewModel
             {
-                FacultyID = f.faculty_id,
-                FacultyName = f.faculty_name,
-                FacultyEmail = f.faculty_email,
-                UserName = f.user_name
+                FacultyID = f.faculty_id.Trim(),
+                FacultyName = f.faculty_name.Trim(),
+                FacultyEmail = f.faculty_email ?? "", // Some random records have null emails.
+                UserName = f.user_name.Trim()
             };
 
             return vm;

@@ -18,12 +18,12 @@ namespace CCT_App.Models.ViewModels
         {
             AccountViewModel vm = new AccountViewModel
             {
-                GordonID = a.gordon_id,
-                FirstName = a.firstname,
-                LastName = a.lastname,
-                Email = a.email,
-                ADUserName = a.AD_Username,
-                AccountType = a.account_type
+                GordonID = a.gordon_id.Trim(),
+                FirstName = a.firstname.Trim(),
+                LastName = a.lastname.Trim(),
+                Email = a.email ?? "", // Some random records have null for an email.
+                ADUserName = a.AD_Username.Trim(),
+                AccountType = a.account_type.Trim()
             };
 
             return vm;

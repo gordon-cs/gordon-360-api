@@ -9,16 +9,16 @@ namespace CCT_App.Services
 {
     public interface IAccountService
     {
-        ACCOUNT Get(string id);
-        IEnumerable<ACCOUNT> GetAll();
+        AccountViewModel Get(string id);
+        IEnumerable<AccountViewModel> GetAll();
     }
 
     public interface IActivityService
     {
-        ACT_CLUB_DEF Get(string id);
-        IEnumerable<ACT_CLUB_DEF> GetAll();
-        IEnumerable<SUPERVISOR> GetSupervisorsForActivity(string id);
-        IEnumerable<Membership> GetLeadersForActivity(string id);
+        ActivityViewModel Get(string id);
+        IEnumerable<ActivityViewModel> GetAll();
+        IEnumerable<SupervisorViewModel> GetSupervisorsForActivity(string id);
+        IEnumerable<MembershipViewModel> GetLeadersForActivity(string id);
         IEnumerable<MembershipViewModel> GetMembershipsForActivity(string id);
     }
 
@@ -26,14 +26,14 @@ namespace CCT_App.Services
     {
         CM_SESSION_MSTR Get(string id);
         IEnumerable<CM_SESSION_MSTR> GetAll();
-        IEnumerable<ACTIVE_CLUBS_PER_SESS_ID_Result> GetActivitiesForSession(string id);
+        IEnumerable<ACT_CLUB_DEF> GetActivitiesForSession(string id);
         CM_SESSION_MSTR GetCurrentSession();
     }
 
     public interface IFacultyService
     {
-        Faculty Get(string id);
-        IEnumerable<Faculty> GetAll();
+        FacultyViewModel Get(string id);
+        IEnumerable<FacultyViewModel> GetAll();
     }
 
     public interface IJenzibarActivityService
@@ -44,8 +44,8 @@ namespace CCT_App.Services
 
     public interface IMembershipService
     {
-        Membership Get(int id);
-        IEnumerable<Membership> GetAll();
+        MembershipViewModel Get(int id);
+        IEnumerable<MembershipViewModel> GetAll();
         Membership Add(Membership membership);
         Membership Update(int id, Membership membership);
         Membership Delete(int id);   
@@ -65,9 +65,9 @@ namespace CCT_App.Services
 
     public interface IStudentService
     {
-        Student Get(string id);
-        IEnumerable<Student> GetAll();
-        IEnumerable<Membership> GetActivitiesForStudent(string id);
+        StudentViewModel Get(string id);
+        IEnumerable<StudentViewModel> GetAll();
+        IEnumerable<MembershipViewModel> GetActivitiesForStudent(string id);
     }
 
     public interface ISupervisorService

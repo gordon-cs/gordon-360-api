@@ -3,12 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CCT_App.Models;
+using CCT_App.Models.ViewModels;
 using CCT_App.Repositories;
+using CCT_App.Services.ComplexQueries;
 using System.Data.SqlClient;
 using System.Data;
 
 namespace CCT_App.Services
 {
+    /// <summary>
+    /// Service Class that facilitates data transactions between the MembershipsController and the Membership database model.
+    /// </summary>
     public class MembershipService : IMembershipService
     {
         private IUnitOfWork _unitOfWork;
@@ -18,9 +23,15 @@ namespace CCT_App.Services
             _unitOfWork = unitOfWork;
         }
 
+        /// <summary>
+        /// Adds a new Membership record to storage. Since we can't establish foreign key constraints and relationships on the database side,
+        /// we do it here by using the membershipIsValid() method.
+        /// </summary>
+        /// <param name="membership">The membership to be added</param>
+        /// <returns></returns>
         public Membership Add(Membership membership)
         {
-
+            // membershipIsValid() returns a boolean value.
             var isValidMembership = membershipIsValid(membership);
             
             if(!isValidMembership)
@@ -28,18 +39,25 @@ namespace CCT_App.Services
                 return null;
             }
 
-            var addedMembership = _unitOfWork.MembershipRepository.Add(membership);
+            // The Add() method returns the added membership.
+            var payload = _unitOfWork.MembershipRepository.Add(membership);
             _unitOfWork.Save();
 
-            return addedMembership;
+            return payload;
 
         }
 
+        /// <summary>
+        /// Delete the membership whose id is specified by the parameter.
+        /// </summary>
+        /// <param name="id">The membership id</param>
+        /// <returns>The membership that was just deleted</returns>
         public Membership Delete(int id)
         {
             var result = _unitOfWork.MembershipRepository.GetById(id);
             if (result == null)
             {
+                // Controller checks for nulls and returns NotFound() when it sees one returned by a service.
                 return null;
             }
             result = _unitOfWork.MembershipRepository.Delete(result);
@@ -49,18 +67,42 @@ namespace CCT_App.Services
             return result;
         }
 
-        public Membership Get(int id)
+        /// <summary>
+        /// Fetch the membership whose id is specified by the parameter
+        /// </summary>
+        /// <param name="id">The membership id</param>
+        /// <returns>MembershipViewModel if found, null if not found</returns>
+        public MembershipViewModel Get(int id)
         {
-            var result = _unitOfWork.MembershipRepository.GetById(id);
+            var query = _unitOfWork.MembershipRepository.GetById(id);
+            if (query == null)
+            {
+                return null;
+            }
+
+            var rawsqlquery = Constants.getMembershipByIDQuery;
+            var result = RawSqlQuery<MembershipViewModel>.query(rawsqlquery, id).FirstOrDefault();
+
             return result;
         }
 
-        public IEnumerable<Membership> GetAll()
+        /// <summary>
+        /// Fetches all membership records from storage.
+        /// </summary>
+        /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+        public IEnumerable<MembershipViewModel> GetAll()
         {
-            var result = _unitOfWork.MembershipRepository.GetAll();
+            var rawsqlquery = Constants.getAllMembershipsQuery;
+            var result = RawSqlQuery<MembershipViewModel>.query(rawsqlquery);
             return result;
         }
 
+        /// <summary>
+        /// Updates the membership whose id is given as the first parameter to the contents of the second parameter.
+        /// </summary>
+        /// <param name="id">The membership id.</param>
+        /// <param name="membership">The updated membership.</param>
+        /// <returns>The newly modified membership.</returns>
         public Membership Update(int id, Membership membership)
         {
             var original = _unitOfWork.MembershipRepository.GetById(id);
@@ -94,7 +136,11 @@ namespace CCT_App.Services
 
         }
 
-
+        /// <summary>
+        /// Helper method to check for the validity of a membership.
+        /// </summary>
+        /// <param name="membership">The membership to validate</param>
+        /// <returns>True if the membership is valid. False if it isn't</returns>
         private bool membershipIsValid(Membership membership)
         {
             var personExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id.Trim() == membership.ID_NUM).Count() > 0;

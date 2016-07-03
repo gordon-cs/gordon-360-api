@@ -19,6 +19,7 @@ namespace CCT_App.Models.ViewModels
         public Nullable<DateTime> EndDate { get; set; }
         public string Description { get; set; }
 
+        
         public static implicit operator MembershipViewModel(Membership m)
         {
             Nullable<DateTime> newEndDate = null;
@@ -29,10 +30,10 @@ namespace CCT_App.Models.ViewModels
             MembershipViewModel vm = new MembershipViewModel
             {
                 MembershipID = m.MEMBERSHIP_ID,
-                ActivityCode = m.ACT_CDE,
-                SessionCode = m.SESSION_CDE,
-                IDNumber = m.ID_NUM,
-                Participation = m.PART_LVL,
+                ActivityCode = m.ACT_CDE.Trim(),
+                SessionCode = m.SESSION_CDE.Trim(),
+                IDNumber = m.ID_NUM.Trim(),
+                Participation = m.PART_LVL.Trim(),
                 StartDate = m.BEGIN_DTE,
                 EndDate = newEndDate,
                 Description = m.DESCRIPTION ?? ""

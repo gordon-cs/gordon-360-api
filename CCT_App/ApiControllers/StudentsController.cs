@@ -19,7 +19,7 @@ namespace CCT_App.Controllers.Api
     public class StudentsController : ApiController
     {
         private IStudentService _studentService;
-
+        
         public StudentsController()
         {
             var _unitOfWork = new UnitOfWork();
@@ -84,11 +84,12 @@ namespace CCT_App.Controllers.Api
             {
                 return BadRequest();
             }
-            var list = _studentService.GetActivitiesForStudent(id);
-
-            var result = list.Select<Membership, MembershipViewModel>(x => x);
-
+            var result = _studentService.GetActivitiesForStudent(id);
             
+            if( result == null)
+            {
+                return NotFound();
+            }
 
             return Ok(result);
         }

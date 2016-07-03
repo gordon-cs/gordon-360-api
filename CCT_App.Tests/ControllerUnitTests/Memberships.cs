@@ -26,7 +26,7 @@ namespace CCT_App.Tests.ControllerUnitTests
             var controller = new MembershipsController(theservice.Object);
             theservice
                 .Setup(x => x.GetAll())
-                .Returns(new List<Membership>());
+                .Returns(new List<MembershipViewModel>());
 
             // Act
             var result = controller.Get();
@@ -46,7 +46,7 @@ namespace CCT_App.Tests.ControllerUnitTests
             // Arrange
             var theservice = new Mock<IMembershipService>();
             var controller = new MembershipsController(theservice.Object);
-            var data = new List<Membership> { new Membership { }, new Membership { }, new Membership { } };
+            var data = new List<MembershipViewModel> { new MembershipViewModel { }, new MembershipViewModel { }, new MembershipViewModel { } };
             theservice
                 .Setup(x => x.GetAll())
                 .Returns(data);

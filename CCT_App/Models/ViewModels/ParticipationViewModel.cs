@@ -14,8 +14,8 @@ namespace CCT_App.Models.ViewModels
         {
             ParticipationViewModel vm = new ParticipationViewModel
             {
-                ParticipationCode = p.PART_CDE,
-                ParticipationDescription = p.PART_DESC
+                ParticipationCode = p.PART_CDE.Trim(),
+                ParticipationDescription = p.PART_DESC.Trim()
             };
 
             return vm;

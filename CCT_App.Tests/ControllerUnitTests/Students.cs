@@ -8,6 +8,7 @@ using Moq;
 using CCT_App.Controllers.Api;
 using CCT_App.Services;
 using CCT_App.Models;
+using CCT_App.Models.ViewModels;
 using System.Web.Http.Results;
 
 namespace CCT_App.Tests.ControllerUnitTests
@@ -25,14 +26,14 @@ namespace CCT_App.Tests.ControllerUnitTests
             var controller = new StudentsController(theservice.Object);
             theservice
                 .Setup(x => x.GetAll())
-                .Returns(new List<Student>());
+                .Returns(new List<StudentViewModel>());
 
             // Act
             var result = controller.Get();
-            var contentresult = result as OkNegotiatedContentResult<IEnumerable<Student>>;
+            var contentresult = result as OkNegotiatedContentResult<IEnumerable<StudentViewModel>>;
 
             // Assert
-            Assert.IsType<OkNegotiatedContentResult<IEnumerable<Student>>>(result);
+            Assert.IsType<OkNegotiatedContentResult<IEnumerable<StudentViewModel>>>(result);
             Assert.NotNull(contentresult);
             Assert.NotNull(contentresult.Content);
             Assert.Empty(contentresult.Content);
@@ -45,17 +46,17 @@ namespace CCT_App.Tests.ControllerUnitTests
             // Arrange
             var theservice = new Mock<IStudentService>();
             var controller = new StudentsController(theservice.Object);
-            var data = new List<Student> { new Student { }, new Student { }, new Student { } };
+            var data = new List<StudentViewModel> { new StudentViewModel { }, new StudentViewModel { }, new StudentViewModel { } };
             theservice
                 .Setup(x => x.GetAll())
                 .Returns(data);
 
             // Act
             var result = controller.Get();
-            var contentresult = result as OkNegotiatedContentResult<IEnumerable<Student>>;
+            var contentresult = result as OkNegotiatedContentResult<IEnumerable<StudentViewModel>>;
 
             // Assert
-            Assert.IsType<OkNegotiatedContentResult<IEnumerable<Student>>>(result);
+            Assert.IsType<OkNegotiatedContentResult<IEnumerable<StudentViewModel>>>(result);
             Assert.NotNull(contentresult);
             Assert.NotNull(contentresult.Content);
             Assert.NotEmpty(contentresult.Content);
@@ -101,7 +102,7 @@ namespace CCT_App.Tests.ControllerUnitTests
             // Arrange
             var theservice = new Mock<IStudentService>();
             var controller = new StudentsController(theservice.Object);
-            var data = new Student { };
+            var data = new StudentViewModel { };
             var id = "id";
             theservice
                 .Setup(x => x.Get(id))
@@ -112,7 +113,7 @@ namespace CCT_App.Tests.ControllerUnitTests
             var contentresult = result as OkNegotiatedContentResult<Student>;
 
             // Assert
-            Assert.IsType<OkNegotiatedContentResult<Student>>(result);
+            Assert.IsType<OkNegotiatedContentResult<StudentViewModel>>(result);
             Assert.NotNull(contentresult);
             Assert.NotNull(contentresult.Content);
         }

@@ -247,7 +247,7 @@
     <Compile Include="Models\ViewModels\FacultyViewModel.cs" />
     <Compile Include="Models\ViewModels\JenzibarActivitiesViewModel.cs" />
     <Compile Include="Models\ViewModels\MembershipViewModel.cs" />
-    <Compile Include="Models\ViewModels\RequestViewModel.cs" />
+    <Compile Include="Models\ViewModels\MembershipRequestViewModel.cs" />
     <Compile Include="Models\ViewModels\ParticipationViewModel.cs" />
     <Compile Include="Models\ViewModels\SessionViewModel.cs" />
     <Compile Include="Models\ViewModels\StaffViewModel.cs" />
@@ -275,6 +275,10 @@
     <Compile Include="Services\SupervisorService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\assets\ember-test-a69e195ce0b0c9ac8e500f78ef9f5479.js" />
+    <Content Include="Content\assets\ember-test-d41d8cd98f00b204e9800998ecf8427e.css" />
+    <Content Include="Content\assets\vendor-61f8b330f2f26a87ea82f5d3a4376dad.js" />
+    <Content Include="Content\assets\vendor-d41d8cd98f00b204e9800998ecf8427e.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\custom.css" />
@@ -292,6 +296,7 @@
     <Content Include="Models\CCT_DB_Models.edmx.diagram">
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
     </Content>
+    <None Include="Properties\PublishProfiles\CCTEmber.pubxml" />
     <None Include="Properties\PublishProfiles\CCT_App.pubxml" />
     <None Include="Properties\PublishProfiles\CCT_APP_PUBLISH.pubxml" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />

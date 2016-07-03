@@ -46,8 +46,7 @@ namespace CCT_App.Controllers.Api
         {
             
             var result = _membershipService.GetAll();
-            var all = result.Select<Membership, MembershipViewModel>(x => x);
-            return Ok(all);
+            return Ok(result);
         }
 
         /// <summary>

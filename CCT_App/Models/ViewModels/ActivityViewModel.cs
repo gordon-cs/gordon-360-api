@@ -14,8 +14,8 @@ namespace CCT_App.Models.ViewModels
         {
             ActivityViewModel vm = new ActivityViewModel
             {
-                ActivityCode = a.ACT_CDE,
-                ActivityDescription = a.ACT_DESC
+                ActivityCode = a.ACT_CDE.Trim(),
+                ActivityDescription = a.ACT_DESC.Trim()
             };
 
             return vm;

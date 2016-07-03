@@ -24,9 +24,9 @@ namespace CCT_App.Services
             return result;
         }
 
-        public IEnumerable<ACTIVE_CLUBS_PER_SESS_ID_Result> GetActivitiesForSession(string id)
+        public IEnumerable<ACT_CLUB_DEF> GetActivitiesForSession(string id)
         {
-            var activitiesInSession = _unitOfWork.ActivityPerSessionRepository.ExecWithStoredProcedure
+            var activitiesInSession = _unitOfWork.ActivityRepository.ExecWithStoredProcedure
                 ("ACTIVE_CLUBS_PER_SESS_ID @SESS_CDE", 
                 new SqlParameter("SESS_CDE", SqlDbType.VarChar) { Value = id });
             return activitiesInSession;
