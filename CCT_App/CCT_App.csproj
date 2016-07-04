@@ -267,7 +267,7 @@
     <Compile Include="Services\JenzibarActivityService.cs" />
     <Compile Include="Services\MembershipRequestService.cs" />
     <Compile Include="Services\MembershipService.cs" />
-    <Compile Include="Services\RoleService.cs" />
+    <Compile Include="Services\ParticipationService.cs" />
     <Compile Include="Services\ServiceInterfaces.cs" />
     <Compile Include="Services\SessionService.cs" />
     <Compile Include="Services\StaffService.cs" />

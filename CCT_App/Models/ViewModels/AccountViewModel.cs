@@ -22,7 +22,7 @@ namespace CCT_App.Models.ViewModels
                 FirstName = a.firstname.Trim(),
                 LastName = a.lastname.Trim(),
                 Email = a.email ?? "", // Some random records have null for an email.
-                ADUserName = a.AD_Username.Trim(),
+                ADUserName = a.AD_Username.Trim() ?? "",
                 AccountType = a.account_type.Trim()
             };
 

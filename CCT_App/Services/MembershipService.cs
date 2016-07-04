@@ -28,7 +28,7 @@ namespace CCT_App.Services
         /// we do it here by using the membershipIsValid() method.
         /// </summary>
         /// <param name="membership">The membership to be added</param>
-        /// <returns></returns>
+        /// <returns>The newly added Membership object</returns>
         public Membership Add(Membership membership)
         {
             // membershipIsValid() returns a boolean value.
@@ -83,6 +83,21 @@ namespace CCT_App.Services
             var rawsqlquery = Constants.getMembershipByIDQuery;
             var result = RawSqlQuery<MembershipViewModel>.query(rawsqlquery, id).FirstOrDefault();
 
+            if (result == null)
+            {
+                return null;
+            }
+            // Getting rid of database-inherited whitespace
+            result.ActivityCode = result.ActivityCode.Trim();
+            result.ActivityDescription = result.ActivityDescription.Trim();
+            result.SessionCode = result.SessionCode.Trim();
+            result.SessionDescription = result.SessionDescription.Trim();
+            result.IDNumber = result.IDNumber.Trim();
+            result.FirstName = result.FirstName.Trim();
+            result.LastName = result.LastName.Trim();
+            result.Participation = result.Participation.Trim();
+            result.ParticipationDescription = result.ParticipationDescription.Trim();
+
             return result;
         }
 
@@ -94,7 +109,22 @@ namespace CCT_App.Services
         {
             var rawsqlquery = Constants.getAllMembershipsQuery;
             var result = RawSqlQuery<MembershipViewModel>.query(rawsqlquery);
-            return result;
+            // Trimming database generated whitespace ._.
+            var trimmedResult = result.Select(x =>
+            {
+                var trim = x;
+                trim.ActivityCode = x.ActivityCode.Trim();
+                trim.ActivityDescription = x.ActivityDescription.Trim();
+                trim.SessionCode = x.SessionCode.Trim();
+                trim.SessionDescription = x.SessionDescription.Trim();
+                trim.IDNumber = x.IDNumber.Trim();
+                trim.FirstName = x.FirstName.Trim();
+                trim.LastName = x.LastName.Trim();
+                trim.Participation = x.Participation.Trim();
+                trim.ParticipationDescription = x.ParticipationDescription.Trim();
+                return trim;
+            });
+            return trimmedResult;
         }
 
         /// <summary>

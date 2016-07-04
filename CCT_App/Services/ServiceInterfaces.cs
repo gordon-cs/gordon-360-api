@@ -5,8 +5,13 @@ using System.Web;
 using CCT_App.Models;
 using CCT_App.Models.ViewModels;
 
+/// <summary>
+/// Namespace with all the Service Interfaces that are to be implemented. I don't think making this interface is required, the services can work find on their own.
+/// However, building the interfaces first does give a general sense of structure to their implementations. A certian cohesiveness :p.
+/// </summary>
 namespace CCT_App.Services
 {
+
     public interface IAccountService
     {
         AccountViewModel Get(string id);
@@ -24,10 +29,10 @@ namespace CCT_App.Services
 
     public interface ISessionService
     {
-        CM_SESSION_MSTR Get(string id);
-        IEnumerable<CM_SESSION_MSTR> GetAll();
-        IEnumerable<ACT_CLUB_DEF> GetActivitiesForSession(string id);
-        CM_SESSION_MSTR GetCurrentSession();
+        SessionViewModel Get(string id);
+        IEnumerable<SessionViewModel> GetAll();
+        IEnumerable<ActivityViewModel> GetActivitiesForSession(string id);
+        SessionViewModel GetCurrentSession();
     }
 
     public interface IFacultyService
@@ -53,14 +58,14 @@ namespace CCT_App.Services
 
     public interface IParticipationService
     {
-        PART_DEF Get(string id);
-        IEnumerable<PART_DEF> GetAll();
+        ParticipationViewModel Get(string id);
+        IEnumerable<ParticipationViewModel> GetAll();
     }
 
     public interface IStaffService
     {
-        Staff Get(string id);
-        IEnumerable<Staff> GetAll();
+        StaffViewModel Get(string id);
+        IEnumerable<StaffViewModel> GetAll();
     }
 
     public interface IStudentService
@@ -72,8 +77,8 @@ namespace CCT_App.Services
 
     public interface ISupervisorService
     {
-        SUPERVISOR Get(int id);
-        IEnumerable<SUPERVISOR> GetAll();
+        SupervisorViewModel Get(int id);
+        IEnumerable<SupervisorViewModel> GetAll();
         SUPERVISOR Add(SUPERVISOR supervisor);
         SUPERVISOR Update(int id, SUPERVISOR supervisor);
         SUPERVISOR Delete(int id);
@@ -81,8 +86,8 @@ namespace CCT_App.Services
 
     public interface IMembershipRequestService
     {
-        Request Get(int id);
-        IEnumerable<Request> GetAll();
+        MembershipRequestViewModel Get(int id);
+        IEnumerable<MembershipRequestViewModel> GetAll();
         Request Add(Request membershipRequest);
         Request Update(int id, Request membershipRequest);
         Request Delete(int id);

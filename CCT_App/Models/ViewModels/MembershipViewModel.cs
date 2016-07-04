@@ -22,11 +22,6 @@ namespace CCT_App.Models.ViewModels
         
         public static implicit operator MembershipViewModel(Membership m)
         {
-            Nullable<DateTime> newEndDate = null;
-            if (m.END_DTE.HasValue)
-            {
-                newEndDate = m.END_DTE;
-            }
             MembershipViewModel vm = new MembershipViewModel
             {
                 MembershipID = m.MEMBERSHIP_ID,
@@ -34,9 +29,9 @@ namespace CCT_App.Models.ViewModels
                 SessionCode = m.SESSION_CDE.Trim(),
                 IDNumber = m.ID_NUM.Trim(),
                 Participation = m.PART_LVL.Trim(),
-                StartDate = m.BEGIN_DTE,
-                EndDate = newEndDate,
-                Description = m.DESCRIPTION ?? ""
+                StartDate = m.BEGIN_DTE, 
+                EndDate = m.END_DTE,
+                Description = m.DESCRIPTION ?? "" // For Null descriptions
             };
 
             return vm;

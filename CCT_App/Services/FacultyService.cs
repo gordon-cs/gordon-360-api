@@ -24,7 +24,7 @@ namespace CCT_App.Services
         /// Fetches the faculty member whose gordon id is specified as the parameter.
         /// </summary>
         /// <param name="id">The gordon id</param>
-        /// <returns></returns>
+        /// <returns>If found returns FacultyViewModel, if not returns null</returns>
         public FacultyViewModel Get(string id)
         {
             var query = _unitOfWork.FacultyRepository.GetById(id);

@@ -59,11 +59,13 @@ namespace CCT_App.Services
                 var trim = x;
                 trim.ActivityCode = x.ActivityCode.Trim();
                 trim.ActivityDescription = x.ActivityDescription.Trim();
-                trim.SessionCode = x.SessionCode;
-                trim.SessionDescription = x.SessionDescription;
-                trim.IDNumber = x.IDNumber;
-                trim.FirstName = x.FirstName;
-                trim.LastName = x.LastName;
+                trim.SessionCode = x.SessionCode.Trim();
+                trim.SessionDescription = x.SessionDescription.Trim();
+                trim.IDNumber = x.IDNumber.Trim();
+                trim.FirstName = x.FirstName.Trim();
+                trim.LastName = x.LastName.Trim();
+                trim.Participation = x.Participation.Trim();
+                trim.ParticipationDescription = x.ParticipationDescription.Trim();
                 return trim;
             });
             //var query = _unitOfWork.MembershipRepository.Where(x => x.ACT_CDE.Trim() == id);
@@ -81,7 +83,21 @@ namespace CCT_App.Services
         {
             var rawsqlquery = Constants.getMembershipForActivityQuery;
             var result = RawSqlQuery<MembershipViewModel>.query(rawsqlquery, id);
-            return result;
+            var trimmedResult = result.Select(x =>
+            {
+                var trim = x;
+                trim.ActivityCode = x.ActivityCode.Trim();
+                trim.ActivityDescription = x.ActivityDescription.Trim();
+                trim.SessionCode = x.SessionCode.Trim();
+                trim.SessionDescription = x.SessionDescription.Trim();
+                trim.IDNumber = x.IDNumber.Trim();
+                trim.FirstName = x.FirstName.Trim();
+                trim.LastName = x.LastName.Trim();
+                trim.Participation = x.Participation.Trim();
+                trim.ParticipationDescription = x.ParticipationDescription.Trim();
+                return trim;
+            });
+            return trimmedResult;
         }
 
         /// <summary>
@@ -93,6 +109,7 @@ namespace CCT_App.Services
         {
             var rawsqlquery = Constants.getSupervisorsForActivityQuery;
             var result = RawSqlQuery<SupervisorViewModel>.query(rawsqlquery, id);
+            // No trimming here because we made the Supervisor Table, and we made sure to use varchar(n).
             return result;
         }
     }

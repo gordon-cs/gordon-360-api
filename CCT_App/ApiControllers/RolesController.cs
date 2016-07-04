@@ -15,16 +15,16 @@ using CCT_App.Repositories;
 namespace CCT_App.Controllers.Api
 {
     [RoutePrefix("api/participations")]
-    public class RolesController : ApiController
+    public class ParticipationsController : ApiController
     {
         private IParticipationService _participationService;
 
-        public RolesController()
+        public ParticipationsController()
         {
             var _unitOfWork = new UnitOfWork();
             _participationService = new ParticipationService(_unitOfWork);
         }
-        public RolesController(IParticipationService roleservice)
+        public ParticipationsController(IParticipationService roleservice)
         {
             _participationService = roleservice; ;
         }

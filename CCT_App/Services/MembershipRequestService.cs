@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CCT_App.Models;
+using CCT_App.Models.ViewModels;
 using CCT_App.Repositories;
+using CCT_App.Services.ComplexQueries;
 
 namespace CCT_App.Services
 {
+    /// <summary>
+    /// Service class to facilitate data transactions between the MembershipRequestController and the database
+    /// </summary>
     public class MembershipRequestService : IMembershipRequestService
     {
         private IUnitOfWork _unitOfWork;
@@ -16,6 +21,11 @@ namespace CCT_App.Services
             _unitOfWork = unitOfWork;
         }
 
+        /// <summary>
+        /// Generate a new request to join an activity at a participation level higher than 'Guest'
+        /// </summary>
+        /// <param name="membershipRequest">The membership request object</param>
+        /// <returns>The membership request object once it is added</returns>
         public Request Add(Request membershipRequest)
         {
             var isValidMembershipRequest = membershipRequestIsValid(membershipRequest);
@@ -32,6 +42,11 @@ namespace CCT_App.Services
 
         }
 
+        /// <summary>
+        /// Delete the membershipRequest object whose id is given in the parameters 
+        /// </summary>
+        /// <param name="id">The membership request id</param>
+        /// <returns>A copy of the deleted membership request</returns>
         public Request Delete(int id)
         {
             var result = _unitOfWork.MembershipRequestRepository.GetById(id);
@@ -43,24 +58,71 @@ namespace CCT_App.Services
             _unitOfWork.Save();
             return result;
         }
-
-        public Request Get(int id)
+        /// <summary>
+        /// Get the membership request object whose Id is specified in the parameters.
+        /// </summary>
+        /// <param name="id">The membership request id</param>
+        /// <returns>If found, returns MembershipRequestViewModel. If not found, returns null.</returns>
+        public MembershipRequestViewModel Get(int id)
         {
-            var result = _unitOfWork.MembershipRequestRepository.GetById(id);
+            var rawsqlquery = Constants.getMembershipRequestByIdQuery;
+            var result = RawSqlQuery<MembershipRequestViewModel>.query(rawsqlquery, id).FirstOrDefault();
+
+            if (result == null)
+            {
+                return null;
+            }
+
+            // Getting rid of database-inherited whitespace
+            result.ActivityCode = result.ActivityCode.Trim();
+            result.ActivityDescription = result.ActivityDescription.Trim();
+            result.SessionCode = result.SessionCode.Trim();
+            result.SessionDescription = result.SessionDescription.Trim();
+            result.IDNumber = result.IDNumber.Trim();
+            result.FirstName = result.FirstName.Trim();
+            result.LastName = result.LastName.Trim();
+            result.Participation = result.Participation.Trim();
+            result.ParticipationDescription = result.ParticipationDescription.Trim();
+
             return result;
         }
 
-        public IEnumerable<Request> GetAll()
+        /// <summary>
+        /// Fetchest all the membership request objects from the database.
+        /// </summary>
+        /// <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
+        public IEnumerable<MembershipRequestViewModel> GetAll()
         {
-            var results = _unitOfWork.MembershipRequestRepository.GetAll();
-            return results;
+            var rawsqlquery = Constants.getAllMembershipRequestsQuery;
+            var result = RawSqlQuery<MembershipRequestViewModel>.query(rawsqlquery);
+            var trimmedResult = result.Select(x =>
+            {
+                var trim = x;
+                trim.ActivityCode = x.ActivityCode.Trim();
+                trim.ActivityDescription = x.ActivityDescription.Trim();
+                trim.SessionCode = x.SessionCode.Trim();
+                trim.SessionDescription = x.SessionDescription.Trim();
+                trim.IDNumber = x.IDNumber.Trim();
+                trim.FirstName = x.FirstName.Trim();
+                trim.LastName = x.LastName.Trim();
+                trim.Participation = x.Participation.Trim();
+                trim.ParticipationDescription = x.ParticipationDescription.Trim();
+                return trim;
+            });
+            return trimmedResult;
         }
-
+        /// <summary>
+        /// Update an existing membership request object
+        /// </summary>
+        /// <param name="id">The membership request id</param>
+        /// <param name="membershipRequest">The newly modified membership request</param>
+        /// <returns></returns>
         public Request Update(int id, Request membershipRequest)
         {
             return null;
         }
 
+        // Helper method to help validate a membership request that comes in.
         private bool membershipRequestIsValid(Request membershipRequest)
         {
             var personExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id.Trim() == membershipRequest.ID_NUM).Count() > 0;

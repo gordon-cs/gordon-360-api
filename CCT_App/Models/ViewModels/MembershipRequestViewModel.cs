@@ -19,6 +19,7 @@ namespace CCT_App.Models.ViewModels
         public string CommentText { get; set; }
         public string SessionCode { get; set; }
         public string SessionDescription { get; set; }
+        public bool RequestApproved { get; set; }
 
         public static implicit operator MembershipRequestViewModel(Request req)
         {
@@ -29,8 +30,9 @@ namespace CCT_App.Models.ViewModels
                 Participation = req.PART_LVL.Trim(),
                 DateSent = req.DATE_SENT,
                 RequestID = req.REQUEST_ID,
-                CommentText = req.COMMENT_TXT,
-                SessionCode = req.SESS_CDE.Trim()
+                CommentText = req.COMMENT_TXT ?? "",// For null comments
+                SessionCode = req.SESS_CDE.Trim(),
+                RequestApproved = req.APPROVED
             };
 
             return vm;

@@ -19,7 +19,7 @@ namespace CCT_App.Models.ViewModels
                 FacultyID = f.faculty_id.Trim(),
                 FacultyName = f.faculty_name.Trim(),
                 FacultyEmail = f.faculty_email ?? "", // Some random records have null emails.
-                UserName = f.user_name.Trim()
+                UserName = f.user_name.Trim() ?? ""
             };
 
             return vm;

@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using CCT_App.Models;
+using CCT_App.Models.ViewModels;
 using CCT_App.Repositories;
 using System.Data;
 using System.Data.SqlClient;
 
 namespace CCT_App.Services
 {
+    /// <summary>
+    /// Service class to facilitate data transactions between the Controller and the database model.
+    /// </summary>
     public class SessionService : ISessionService
     {
         private IUnitOfWork _unitOfWork;
@@ -18,27 +21,49 @@ namespace CCT_App.Services
             _unitOfWork = unitOfWork;
         }
 
-        public CM_SESSION_MSTR Get(string id)
+        /// <summary>
+        /// Get the session record whose sesssion code matches the parameter.
+        /// </summary>
+        /// <param name="id">The session code.</param>
+        /// <returns>A SessionViewModel if found, null if not found.</returns>
+        public SessionViewModel Get(string id)
         {
-            var result = _unitOfWork.SessionRepository.GetById(id);
+            var query = _unitOfWork.SessionRepository.GetById(id);
+            SessionViewModel result = query;
             return result;
         }
 
-        public IEnumerable<ACT_CLUB_DEF> GetActivitiesForSession(string id)
+        /// <summary>
+        /// Fetches the Activities that are active during the session whose code is specified as parameter.
+        /// </summary>
+        /// <param name="id">The session code</param>
+        /// <returns>ActivityViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
+        public IEnumerable<ActivityViewModel> GetActivitiesForSession(string id)
         {
-            var activitiesInSession = _unitOfWork.ActivityRepository.ExecWithStoredProcedure
+            var query = _unitOfWork.ActivityRepository.ExecWithStoredProcedure
                 ("ACTIVE_CLUBS_PER_SESS_ID @SESS_CDE", 
                 new SqlParameter("SESS_CDE", SqlDbType.VarChar) { Value = id });
-            return activitiesInSession;
-        }
-
-        public IEnumerable<CM_SESSION_MSTR> GetAll()
-        {
-            var result = _unitOfWork.SessionRepository.GetAll();
+            var result = query.Select<ACT_CLUB_DEF, ActivityViewModel>(x => x);
             return result;
         }
 
-        public CM_SESSION_MSTR GetCurrentSession()
+
+        /// <summary>
+        /// Fetches all the session records from the database.
+        /// </summary>
+        /// <returns>A SessionViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
+        public IEnumerable<SessionViewModel> GetAll()
+        {
+            var query = _unitOfWork.SessionRepository.GetAll();
+            var result = query.Select<CM_SESSION_MSTR, SessionViewModel>(x => x);
+            return result;
+        }
+
+        /// <summary>
+        /// Service method that gets the current session we are in.
+        /// </summary>
+        /// <returns>SessionViewModel of the current session. If no session is found for our current date, returns null.</returns>
+        public SessionViewModel GetCurrentSession()
         {
 
             var currentDateTime = DateTime.Now;

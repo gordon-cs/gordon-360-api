@@ -9,6 +9,9 @@ using CCT_App.Services.ComplexQueries;
 
 namespace CCT_App.Services
 {
+    /// <summary>
+    /// Service Class to faciliatate data transactions between the controller and the database models.
+    /// </summary>
     public class StudentService : IStudentService
     {
         private IUnitOfWork _unitOfWork;
@@ -17,13 +20,25 @@ namespace CCT_App.Services
         {
             _unitOfWork = unitOfWork;
         }
+
+        /// <summary>
+        /// Fetches the student record whose id number matches the parameter.
+        /// </summary>
+        /// <param name="id">The student id</param>
+        /// <returns>A student view model if found, null if not found.</returns>
         public StudentViewModel Get(string id)
         {
             var query = _unitOfWork.StudentRepository.GetById(id);
-            StudentViewModel result = query;
+            StudentViewModel result = query; // Implicit conversion happening here, see ViewModels.
             return result;
         }
 
+
+        /// <summary>
+        /// Fetches all the membership information linked to the student whose id appears as a parameter.
+        /// </summary>
+        /// <param name="id">The student id.</param>
+        /// <returns>A MembershipViewModel IEnumerable. If nothing is found, an empty IEnumberable is returned.</returns>
         public IEnumerable<MembershipViewModel> GetActivitiesForStudent(string id)
         {
             var studentExists = _unitOfWork.StudentRepository.Where(x => x.student_id.Trim() == id).Count() > 0;
@@ -50,13 +65,16 @@ namespace CCT_App.Services
                 trim.FirstName = x.FirstName.Trim();
                 trim.LastName = x.LastName.Trim();
                 trim.IDNumber = x.IDNumber.Trim();
-                trim.Description = x.Description.Trim();
                 return trim;
             });
 
             return trimmedResult;
         }
 
+        /// <summary>
+        /// Fetches all the Student records from the database.
+        /// </summary>
+        /// <returns>StudentViweModel IEnumberable. If nothing is found, an empty IEnumberable is returned.</returns>
         public IEnumerable<StudentViewModel> GetAll()
         {
             var query = _unitOfWork.StudentRepository.GetAll();
