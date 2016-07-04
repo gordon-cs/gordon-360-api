@@ -4,7 +4,8 @@ export default Ember.Controller.extend({
     actions: {
         toggleFollow() {
             if (this.get('model').following) {
-                var activityCode = this.get('model').activity.ACT_CDE.trim();
+                console.log('Hello');
+                var activityCode = this.get('model').activity.ActivityCode.trim();
                 var membershipID = this.get('model').membershipID;
                 Ember.$.ajax({
                     type: "DELETE",
@@ -20,8 +21,8 @@ export default Ember.Controller.extend({
             }
             else {
                 var membership = {
-                    "ACT_CDE": this.get('model').activity.ACT_CDE.trim(),
-                    "SESSION_CDE": "201601",
+                    "ACT_CDE": this.get('model').activity.ActivityCode.trim(),
+                    "SESSION_CDE": "201501",
                     "ID_NUM": "50154997",
                     "PART_LVL": "GUEST",
                     "BEGIN_DTE": "1/1/2016",
@@ -39,7 +40,7 @@ export default Ember.Controller.extend({
                     contentType: "application/json",
                     async: false,
                     success: function(data) {
-                        newMembershipID = data.MEMBERSHIP_ID;
+                        newMembershipID = data.MembershipID;
                     },
                     error: function(errorThrown) {
                         alert(JSON.stringify(errorThrown));

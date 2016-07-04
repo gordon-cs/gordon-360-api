@@ -7,8 +7,8 @@ const Router = Ember.Router.extend({
 
 Router.map(function() {
   this.route('my-activities');
-  this.route('specific-activity', { path: '/specific-activity/:ACT_CDE' });
-  this.route('add-membership', { path: '/add-membership/:ACT_CDE' });
+  this.route('specific-activity', { path: '/specific-activity/:activity_code' });
+  this.route('add-membership', { path: '/add-membership/:activity_code' });
 });
 
 export default Router;

@@ -3,7 +3,7 @@
 <div class="container main-container">
     <div class="col-sm-6 col-left">
         <div class="row">
-            <h2 class = "activity-name">{{model.activity.ACT_DESC}}</h2>
+            <h2 class = "activity-name">{{model.activity.ActivityDescription}}</h2>
             <img class = "activity-picture"
                 src="http://whoopdirt.com/wp-content/uploads/2016/06/Gordon_Logo-294_bigger.gif">
         </div>
@@ -15,7 +15,7 @@
             {{else}}
                 <button type="button" class="btn btn-blue form-control col-sm-6" {{action 'toggleFollow'}}>Follow</button>
             {{/if}}
-            {{#link-to 'add-membership' model.activity.ACT_CDE class=""}}
+            {{#link-to 'add-membership' model.activity.ActivityCode class=""}}
                 <button type="button" class="btn btn-blue form-control col-sm-6">Request Membership</button>
             {{/link-to}}
         </div>
@@ -27,7 +27,7 @@
             </div>
             <div class="row">
                 <div class="col-sm-12">
-                    <p class="activity-info-item">Description: {{model.activity.ACT_CDE}}</p>
+                    <p class="activity-info-item">Description: {{model.activity.ActivityDescription}}</p>
                 </div>
             </div>
             <div class="row">

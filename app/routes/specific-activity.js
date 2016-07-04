@@ -5,7 +5,7 @@ export default Ember.Route.extend({
         var mdl = {"following": false};
         Ember.$.ajax({
             type: "GET",
-            url: 'https://ccttrain.gordon.edu/api/activities/' + param.ACT_CDE,
+            url: 'https://ccttrain.gordon.edu/api/activities/' + param.activity_code,
             async: false,
             success: function(data) {
                 mdl.activity = data;
@@ -20,7 +20,7 @@ export default Ember.Route.extend({
             async: false,
             success: function(data) {
                 for (var i = 0; i < data.length; i ++) {
-                    if (data[i].ActivityCode === param.ACT_CDE && data[i].Participation === "GUEST") {
+                    if (data[i].ActivityCode === param.activity_code && data[i].Participation === "GUEST") {
                         mdl.following = true;
                         mdl.membershipID = data[i].MembershipID;
                     }

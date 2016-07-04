@@ -77,7 +77,8 @@ define('test-app/controllers/specific-activity', ['exports', 'ember'], function 
         actions: {
             toggleFollow: function toggleFollow() {
                 if (this.get('model').following) {
-                    var activityCode = this.get('model').activity.ACT_CDE.trim();
+                    console.log('Hello');
+                    var activityCode = this.get('model').activity.ActivityCode.trim();
                     var membershipID = this.get('model').membershipID;
                     _ember['default'].$.ajax({
                         type: "DELETE",
@@ -92,8 +93,8 @@ define('test-app/controllers/specific-activity', ['exports', 'ember'], function 
                     });
                 } else {
                     var membership = {
-                        "ACT_CDE": this.get('model').activity.ACT_CDE.trim(),
-                        "SESSION_CDE": "201601",
+                        "ACT_CDE": this.get('model').activity.ActivityCode.trim(),
+                        "SESSION_CDE": "201501",
                         "ID_NUM": "50154997",
                         "PART_LVL": "GUEST",
                         "BEGIN_DTE": "1/1/2016",
@@ -111,7 +112,7 @@ define('test-app/controllers/specific-activity', ['exports', 'ember'], function 
                         contentType: "application/json",
                         async: false,
                         success: function success(data) {
-                            newMembershipID = data.MEMBERSHIP_ID;
+                            newMembershipID = data.MembershipID;
                         },
                         error: function error(errorThrown) {
                             alert(JSON.stringify(errorThrown));
@@ -298,8 +299,8 @@ define('test-app/router', ['exports', 'ember', 'test-app/config/environment'], f
 
   Router.map(function () {
     this.route('my-activities');
-    this.route('specific-activity', { path: '/specific-activity/:ACT_CDE' });
-    this.route('add-membership', { path: '/add-membership/:ACT_CDE' });
+    this.route('specific-activity', { path: '/specific-activity/:activity_code' });
+    this.route('add-membership', { path: '/add-membership/:activity_code' });
   });
 
   exports['default'] = Router;
@@ -310,7 +311,7 @@ define('test-app/routes/add-membership', ['exports', 'ember'], function (exports
             var response = {};
             _ember['default'].$.ajax({
                 dataType: "json",
-                url: 'https://ccttrain.gordon.edu/api/activities/' + param.ACT_CDE,
+                url: 'https://ccttrain.gordon.edu/api/activities/' + param.activity_code,
                 async: false,
                 success: function success(data) {
                     response.activity = data;
@@ -326,7 +327,7 @@ define('test-app/routes/add-membership', ['exports', 'ember'], function (exports
             });
             _ember['default'].$.ajax({
                 dataType: "json",
-                url: 'https://ccttrain.gordon.edu/api/roles',
+                url: 'https://ccttrain.gordon.edu/api/participations',
                 async: false,
                 success: function success(data) {
                     response.roles = data;
@@ -356,7 +357,7 @@ define("test-app/routes/specific-activity", ["exports", "ember"], function (expo
             var mdl = { "following": false };
             _ember["default"].$.ajax({
                 type: "GET",
-                url: 'https://ccttrain.gordon.edu/api/activities/' + param.ACT_CDE,
+                url: 'https://ccttrain.gordon.edu/api/activities/' + param.activity_code,
                 async: false,
                 success: function success(data) {
                     mdl.activity = data;
@@ -371,7 +372,7 @@ define("test-app/routes/specific-activity", ["exports", "ember"], function (expo
                 async: false,
                 success: function success(data) {
                     for (var i = 0; i < data.length; i++) {
-                        if (data[i].ActivityCode === param.ACT_CDE && data[i].Participation === "GUEST") {
+                        if (data[i].ActivityCode === param.activity_code && data[i].Participation === "GUEST") {
                             mdl.following = true;
                             mdl.membershipID = data[i].MembershipID;
                         }
@@ -441,7 +442,7 @@ define("test-app/templates/add-membership", ["exports"], function (exports) {
           morphs[1] = dom.createMorphAt(element1, 1, 1);
           return morphs;
         },
-        statements: [["attribute", "value", ["get", "session.SESS_CDE", ["loc", [null, [9, 32], [9, 48]]]]], ["content", "session.SESS_DESC", ["loc", [null, [10, 20], [10, 41]]]]],
+        statements: [["attribute", "value", ["get", "session.SessionCode", ["loc", [null, [9, 32], [9, 51]]]]], ["content", "session.SessionDescription", ["loc", [null, [10, 20], [10, 50]]]]],
         locals: ["session"],
         templates: []
       };
@@ -491,7 +492,7 @@ define("test-app/templates/add-membership", ["exports"], function (exports) {
           morphs[1] = dom.createMorphAt(element0, 1, 1);
           return morphs;
         },
-        statements: [["attribute", "value", ["get", "role.PART_CDE", ["loc", [null, [17, 32], [17, 45]]]]], ["content", "role.PART_DESC", ["loc", [null, [18, 20], [18, 38]]]]],
+        statements: [["attribute", "value", ["get", "role.ParticipationCode", ["loc", [null, [17, 32], [17, 54]]]]], ["content", "role.ParticipationDescription", ["loc", [null, [18, 20], [18, 53]]]]],
         locals: ["role"],
         templates: []
       };
@@ -626,7 +627,7 @@ define("test-app/templates/add-membership", ["exports"], function (exports) {
         morphs[9] = dom.createElementMorph(element6);
         return morphs;
       },
-      statements: [["content", "model.activity.ACT_DESC", ["loc", [null, [3, 17], [3, 44]]]], ["attribute", "onchange", ["subexpr", "action", ["selectSession"], ["value", "target.value"], ["loc", [null, [6, 68], [6, 115]]]]], ["block", "each", [["get", "model.sessions", ["loc", [null, [8, 20], [8, 34]]]]], [], 0, null, ["loc", [null, [8, 12], [12, 21]]]], ["element", "action", ["selectRole"], [], ["loc", [null, [14, 68], [14, 91]]]], ["block", "each", [["get", "model.roles", ["loc", [null, [16, 20], [16, 31]]]]], [], 1, null, ["loc", [null, [16, 12], [20, 21]]]], ["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "student-id", []]], [], []], "class", "form-control", "placeholder", "Student ID"], ["loc", [null, [22, 8], [22, 89]]]], ["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "date-begin", []]], [], []], "class", "form-control", "placeholder", "Begin Date"], ["loc", [null, [23, 8], [23, 89]]]], ["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "date-end", []]], [], []], "class", "form-control", "placeholder", "End Date"], ["loc", [null, [24, 8], [24, 85]]]], ["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "comments", []]], [], []], "class", "form-control", "placeholder", "Comment (optional)"], ["loc", [null, [25, 8], [25, 95]]]], ["element", "action", ["post"], [], ["loc", [null, [26, 50], [26, 67]]]]],
+      statements: [["content", "model.activity.ActivityDescription", ["loc", [null, [3, 17], [3, 55]]]], ["attribute", "onchange", ["subexpr", "action", ["selectSession"], ["value", "target.value"], ["loc", [null, [6, 68], [6, 115]]]]], ["block", "each", [["get", "model.sessions", ["loc", [null, [8, 20], [8, 34]]]]], [], 0, null, ["loc", [null, [8, 12], [12, 21]]]], ["element", "action", ["selectRole"], [], ["loc", [null, [14, 68], [14, 91]]]], ["block", "each", [["get", "model.roles", ["loc", [null, [16, 20], [16, 31]]]]], [], 1, null, ["loc", [null, [16, 12], [20, 21]]]], ["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "student-id", []]], [], []], "class", "form-control", "placeholder", "Student ID"], ["loc", [null, [22, 8], [22, 89]]]], ["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "date-begin", []]], [], []], "class", "form-control", "placeholder", "Begin Date"], ["loc", [null, [23, 8], [23, 89]]]], ["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "date-end", []]], [], []], "class", "form-control", "placeholder", "End Date"], ["loc", [null, [24, 8], [24, 85]]]], ["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "comments", []]], [], []], "class", "form-control", "placeholder", "Comment (optional)"], ["loc", [null, [25, 8], [25, 95]]]], ["element", "action", ["post"], [], ["loc", [null, [26, 50], [26, 67]]]]],
       locals: [],
       templates: [child0, child1]
     };
@@ -943,7 +944,7 @@ define("test-app/templates/index", ["exports"], function (exports) {
             morphs[1] = dom.createMorphAt(dom.childAt(fragment, [5]), 0, 0);
             return morphs;
           },
-          statements: [["content", "activity.ACT_DESC", ["loc", [null, [20, 7], [20, 28]]]], ["content", "activity.ACT_CDE", ["loc", [null, [21, 7], [21, 27]]]]],
+          statements: [["content", "activity.ActivityDescription", ["loc", [null, [20, 7], [20, 39]]]], ["content", "activity.ActivityCode", ["loc", [null, [21, 7], [21, 32]]]]],
           locals: [],
           templates: []
         };
@@ -982,7 +983,7 @@ define("test-app/templates/index", ["exports"], function (exports) {
           dom.insertBoundary(fragment, null);
           return morphs;
         },
-        statements: [["block", "link-to", ["specific-activity", ["get", "activity.ACT_CDE", ["loc", [null, [18, 34], [18, 50]]]]], ["class", "well activity-list-item col-sm-2"], 0, null, ["loc", [null, [18, 3], [22, 15]]]]],
+        statements: [["block", "link-to", ["specific-activity", ["get", "activity.ActivityCode", ["loc", [null, [18, 34], [18, 55]]]]], ["class", "well activity-list-item col-sm-2"], 0, null, ["loc", [null, [18, 3], [22, 15]]]]],
         locals: ["activity"],
         templates: [child0]
       };
@@ -1148,11 +1149,11 @@ define("test-app/templates/my-activities", ["exports"], function (exports) {
             dom.appendChild(el1, el2);
             var el2 = dom.createComment("");
             dom.appendChild(el1, el2);
-            var el2 = dom.createTextNode(" \"");
+            var el2 = dom.createTextNode(" ");
             dom.appendChild(el1, el2);
             var el2 = dom.createComment("");
             dom.appendChild(el1, el2);
-            var el2 = dom.createTextNode("\"\n				");
+            var el2 = dom.createTextNode("\n				");
             dom.appendChild(el1, el2);
             dom.appendChild(el0, el1);
             var el1 = dom.createTextNode("\n");
@@ -1168,7 +1169,7 @@ define("test-app/templates/my-activities", ["exports"], function (exports) {
             morphs[3] = dom.createMorphAt(element0, 7, 7);
             return morphs;
           },
-          statements: [["content", "membership.ActivityCode", ["loc", [null, [13, 5], [13, 32]]]], ["content", "membership.Participation", ["loc", [null, [13, 33], [13, 61]]]], ["content", "membership.StartDate", ["loc", [null, [13, 62], [13, 86]]]], ["content", "membership.Description", ["loc", [null, [13, 88], [13, 114]]]]],
+          statements: [["content", "membership.ActivityCode", ["loc", [null, [13, 5], [13, 32]]]], ["content", "membership.Participation", ["loc", [null, [13, 33], [13, 61]]]], ["content", "membership.StartDate", ["loc", [null, [13, 62], [13, 86]]]], ["content", "membership.Description", ["loc", [null, [13, 87], [13, 113]]]]],
           locals: [],
           templates: []
         };
@@ -1207,7 +1208,7 @@ define("test-app/templates/my-activities", ["exports"], function (exports) {
           dom.insertBoundary(fragment, null);
           return morphs;
         },
-        statements: [["block", "link-to", ["specific-activity", ["get", "membership.ACT_CDE", ["loc", [null, [11, 34], [11, 52]]]]], [], 0, null, ["loc", [null, [11, 3], [15, 15]]]]],
+        statements: [["block", "link-to", ["specific-activity", ["get", "membership.ActivityCode", ["loc", [null, [11, 34], [11, 57]]]]], [], 0, null, ["loc", [null, [11, 3], [15, 15]]]]],
         locals: ["membership"],
         templates: [child0]
       };
@@ -1650,7 +1651,7 @@ define("test-app/templates/specific-activity", ["exports"], function (exports) {
         morphs[3] = dom.createMorphAt(dom.childAt(element3, [3, 3, 1, 1]), 1, 1);
         return morphs;
       },
-      statements: [["content", "model.activity.ACT_DESC", ["loc", [null, [6, 40], [6, 67]]]], ["block", "if", [["get", "model.following", ["loc", [null, [13, 18], [13, 33]]]]], [], 0, 1, ["loc", [null, [13, 12], [17, 19]]]], ["block", "link-to", ["add-membership", ["get", "model.activity.ACT_CDE", ["loc", [null, [18, 40], [18, 62]]]]], ["class", ""], 2, null, ["loc", [null, [18, 12], [20, 24]]]], ["content", "model.activity.ACT_CDE", ["loc", [null, [30, 63], [30, 89]]]]],
+      statements: [["content", "model.activity.ActivityDescription", ["loc", [null, [6, 40], [6, 78]]]], ["block", "if", [["get", "model.following", ["loc", [null, [13, 18], [13, 33]]]]], [], 0, 1, ["loc", [null, [13, 12], [17, 19]]]], ["block", "link-to", ["add-membership", ["get", "model.activity.ActivityCode", ["loc", [null, [18, 40], [18, 67]]]]], ["class", ""], 2, null, ["loc", [null, [18, 12], [20, 24]]]], ["content", "model.activity.ActivityDescription", ["loc", [null, [30, 63], [30, 101]]]]],
       locals: [],
       templates: [child0, child1, child2]
     };
@@ -1688,7 +1689,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("test-app/app")["default"].create({"name":"test-app","version":"0.0.0+1d2f6e9d"});
+  require("test-app/app")["default"].create({"name":"test-app","version":"0.0.0+d5339825"});
 }
 
 /* jshint ignore:end */

@@ -15,10 +15,10 @@
 	</div>
 	<div class="activity-list row">
 		{{#each model as |activity|}}
-			{{#link-to 'specific-activity' activity.ACT_CDE class="well activity-list-item col-sm-2"}}
+			{{#link-to 'specific-activity' activity.ActivityCode class="well activity-list-item col-sm-2"}}
 				<img src="http://whoopdirt.com/wp-content/uploads/2016/06/Gordon_Logo-294_bigger.gif">
-				<p>{{activity.ACT_DESC}}</p>
-				<p>{{activity.ACT_CDE}}</p>
+				<p>{{activity.ActivityDescription}}</p>
+				<p>{{activity.ActivityCode}}</p>
 			{{/link-to}}
 		{{/each}}
 	</div>

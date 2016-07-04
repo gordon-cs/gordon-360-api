@@ -8,9 +8,9 @@
 	</div>
 	<div class="activity-list col-sm-6">
 		{{#each model as |membership|}}
-			{{#link-to 'specific-activity' membership.ACT_CDE}}
+			{{#link-to 'specific-activity' membership.ActivityCode}}
 				<p>
-					{{membership.ActivityCode}} {{membership.Participation}} {{membership.StartDate}} "{{membership.Description}}"
+					{{membership.ActivityCode}} {{membership.Participation}} {{membership.StartDate}} {{membership.Description}}
 				</p>
 			{{/link-to}}
 		{{/each}}

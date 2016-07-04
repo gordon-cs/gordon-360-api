@@ -1,21 +1,21 @@
 <div class="container">
     <h3 class="row">
-        Adding - {{model.activity.ACT_DESC}}
+        Adding - {{model.activity.ActivityDescription}}
     </h3>
     <div class="form">
         <select class="form-control" placeholder="Session" onchange={{action 'selectSession' value='target.value'}}>
             <option>Session</option>
             {{#each model.sessions as |session|}}
-                <option value={{session.SESS_CDE}}>
-                    {{session.SESS_DESC}}
+                <option value={{session.SessionCode}}>
+                    {{session.SessionDescription}}
                 </option>
             {{/each}}
         </select>
         <select class="form-control" placeholder="Membership Level" {{action 'selectRole'}}>
             <option>Role</option>
             {{#each model.roles as |role|}}
-                <option value={{role.PART_CDE}}>
-                    {{role.PART_DESC}}
+                <option value={{role.ParticipationCode}}>
+                    {{role.ParticipationDescription}}
                 </option>
             {{/each}}
         </select>
