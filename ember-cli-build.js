@@ -1,4 +1,4 @@
-/*jshint node:true*/
+/*jshint node:true ,esversion: 6*/
 /* global require, module */
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 

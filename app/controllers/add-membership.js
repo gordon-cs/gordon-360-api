@@ -3,12 +3,12 @@ import Ember from 'ember';
 export default Ember.Controller.extend({
     actions: {
 
-        selectSession: function(session) {
+        //selectSession: function(session) {
 
-        },
-        selectRole: function(role) {
+        //},
+        //selectRole: function(role) {
 
-        },
+        //},
         post: function() {
             //var a = this.get('student-id');
             //var b = this.get('student-id');

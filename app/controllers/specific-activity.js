@@ -3,10 +3,9 @@ import Ember from 'ember';
 export default Ember.Controller.extend({
     actions: {
         toggleFollow() {
+            var activityCode = this.get('model').activity.ActivityCode.trim();
+            var membershipID = this.get('model').membershipID;
             if (this.get('model').following) {
-                console.log('Hello');
-                var activityCode = this.get('model').activity.ActivityCode.trim();
-                var membershipID = this.get('model').membershipID;
                 Ember.$.ajax({
                     type: "DELETE",
                     url: "https://ccttrain.gordon.edu/api/memberships/" + membershipID,
@@ -21,7 +20,7 @@ export default Ember.Controller.extend({
             }
             else {
                 var membership = {
-                    "ACT_CDE": this.get('model').activity.ActivityCode.trim(),
+                    "ACT_CDE": activityCode,
                     "SESSION_CDE": "201501",
                     "ID_NUM": "50154997",
                     "PART_LVL": "GUEST",

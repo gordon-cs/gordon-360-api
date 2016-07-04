@@ -36,8 +36,12 @@ define("test-app/controllers/add-membership", ["exports", "ember"], function (ex
     exports["default"] = _ember["default"].Controller.extend({
         actions: {
 
-            selectSession: function selectSession(session) {},
-            selectRole: function selectRole(role) {},
+            //selectSession: function(session) {
+
+            //},
+            //selectRole: function(role) {
+
+            //},
             post: function post() {
                 //var a = this.get('student-id');
                 //var b = this.get('student-id');
@@ -76,10 +80,9 @@ define('test-app/controllers/specific-activity', ['exports', 'ember'], function 
     exports['default'] = _ember['default'].Controller.extend({
         actions: {
             toggleFollow: function toggleFollow() {
+                var activityCode = this.get('model').activity.ActivityCode.trim();
+                var membershipID = this.get('model').membershipID;
                 if (this.get('model').following) {
-                    console.log('Hello');
-                    var activityCode = this.get('model').activity.ActivityCode.trim();
-                    var membershipID = this.get('model').membershipID;
                     _ember['default'].$.ajax({
                         type: "DELETE",
                         url: "https://ccttrain.gordon.edu/api/memberships/" + membershipID,
@@ -93,7 +96,7 @@ define('test-app/controllers/specific-activity', ['exports', 'ember'], function 
                     });
                 } else {
                     var membership = {
-                        "ACT_CDE": this.get('model').activity.ActivityCode.trim(),
+                        "ACT_CDE": activityCode,
                         "SESSION_CDE": "201501",
                         "ID_NUM": "50154997",
                         "PART_LVL": "GUEST",
@@ -379,7 +382,7 @@ define("test-app/routes/specific-activity", ["exports", "ember"], function (expo
                     }
                 },
                 error: function error(errorThrown) {
-                    console.log(JSON.stringify(errorTrown));
+                    console.log(JSON.stringify(errorThrown));
                 }
             });
             console.log(JSON.stringify(mdl));
@@ -1689,7 +1692,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("test-app/app")["default"].create({"name":"test-app","version":"0.0.0+d5339825"});
+  require("test-app/app")["default"].create({"name":"test-app","version":"0.0.0+0edaf375"});
 }
 
 /* jshint ignore:end */

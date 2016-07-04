@@ -27,7 +27,7 @@ export default Ember.Route.extend({
                 }
             },
             error: function(errorThrown) {
-                console.log(JSON.stringify(errorTrown));
+                console.log(JSON.stringify(errorThrown));
             }
         });
         console.log(JSON.stringify(mdl));
