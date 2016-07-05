@@ -32,7 +32,6 @@ namespace CCT_App.Services
         SessionViewModel Get(string id);
         IEnumerable<SessionViewModel> GetAll();
         IEnumerable<ActivityViewModel> GetActivitiesForSession(string id);
-        SessionViewModel GetCurrentSession();
     }
 
     public interface IFacultyService

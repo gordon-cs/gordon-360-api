@@ -102,7 +102,7 @@ namespace CCT_App.Controllers.Api
         [Route("current")]
         public IHttpActionResult GetCurrentSession()
         {
-            var currentSession = _sessionService.GetCurrentSession();
+            var currentSession = Helpers.GetCurrentSession();
             if(currentSession == null)
             {
                 return NotFound();
