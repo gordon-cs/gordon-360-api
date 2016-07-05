@@ -17,5 +17,12 @@ namespace CCT_App.Models
     [MetadataType(typeof(SUPERVISOR_Metadata))]
     public partial class SUPERVISOR
     { }
-   
+
+    [MetadataType(typeof(Request_Metadata))]
+    public partial class Request
+    { }
+
+    [MetadataType(typeof(Activity_Info_Metadata))]
+    public partial class Activity_Info
+    { }
 }

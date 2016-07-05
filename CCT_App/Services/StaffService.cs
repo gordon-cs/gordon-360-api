@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CCT_App.Models;
+using CCT_App.Models.ViewModels;
 using CCT_App.Repositories;
 
 namespace CCT_App.Services
 {
+    /// <summary>
+    /// Service class to facilitate the data transactions between the controllers and the database models.
+    /// </summary>
     public class StaffService : IStaffService
     {
         private IUnitOfWork _unitOfWork;
@@ -16,16 +20,27 @@ namespace CCT_App.Services
             _unitOfWork = unitOfWork;
         }
 
-        public Staff Get(string id)
+        /// <summary>
+        /// Fetches the staff record whose id matches the provided parameter.
+        /// </summary>
+        /// <param name="id">The staff's gordon id.</param>
+        /// <returns>A StaffViewModel if the record exists, null if it doesn't.</returns>
+        public StaffViewModel Get(string id)
         {
-            var result = _unitOfWork.StaffRepository.GetById(id);
+            var query = _unitOfWork.StaffRepository.GetById(id);
+            StaffViewModel result = query;
             return result;
         }
 
-        public IEnumerable<Staff> GetAll()
+        /// <summary>
+        /// Fetches all the staff records from the database.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<StaffViewModel> GetAll()
         {
-            var all = _unitOfWork.StaffRepository.GetAll();
-            return all;
+            var query = _unitOfWork.StaffRepository.GetAll();
+            var result = query.Select<Staff, StaffViewModel>(x => x);
+            return result;
         }
     }
 }

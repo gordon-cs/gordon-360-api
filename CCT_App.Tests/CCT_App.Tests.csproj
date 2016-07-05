@@ -100,8 +100,9 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ControllerUnitTests\Activities.cs" />
+    <Compile Include="ControllerUnitTests\MembershipRequests.cs" />
     <Compile Include="ControllerUnitTests\Memberships.cs" />
-    <Compile Include="ControllerUnitTests\Roles.cs" />
+    <Compile Include="ControllerUnitTests\Participations.cs" />
     <Compile Include="ControllerUnitTests\Sessions.cs" />
     <Compile Include="ControllerUnitTests\Students.cs" />
     <Compile Include="ControllerUnitTests\Supervisors.cs" />

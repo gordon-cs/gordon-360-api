@@ -168,6 +168,8 @@ namespace CCT_App.Repositories
             return _context.Database.SqlQuery<T>(query, parameters);
         }
 
+        
+
 
     }
 }

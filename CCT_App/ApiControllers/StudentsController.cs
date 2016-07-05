@@ -11,6 +11,7 @@ using System.Web.Http.Description;
 using CCT_App.Models;
 using CCT_App.Repositories;
 using CCT_App.Services;
+using CCT_App.Models.ViewModels;
 
 namespace CCT_App.Controllers.Api
 {
@@ -18,7 +19,7 @@ namespace CCT_App.Controllers.Api
     public class StudentsController : ApiController
     {
         private IStudentService _studentService;
-
+        
         public StudentsController()
         {
             var _unitOfWork = new UnitOfWork();
@@ -83,7 +84,12 @@ namespace CCT_App.Controllers.Api
             {
                 return BadRequest();
             }
-           var result = _studentService.GetActivitiesForStudent(id);
+            var result = _studentService.GetActivitiesForStudent(id);
+            
+            if( result == null)
+            {
+                return NotFound();
+            }
 
             return Ok(result);
         }

@@ -7,6 +7,12 @@ using CCT_App.Repositories;
 
 namespace CCT_App.Services
 {
+    /// <summary>
+    /// Service class to faclitate data transfers between in and out of the JNZB_ACTIVITIES table.
+    /// This is a special class whose contents might not end up being exposed. The original idea 
+    /// was for this class to represent all the memberships that would be moved to Jenzibar.
+    /// We have not reached that point yet though.
+    /// </summary>
     public class JenzibarActivityService : IJenzibarActivityService
     {
         private IUnitOfWork _unitOfWork;

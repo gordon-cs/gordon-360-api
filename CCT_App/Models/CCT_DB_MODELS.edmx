@@ -43,8 +43,8 @@
           <Property Name="SESSION_CDE" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="ID_NUM" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="PART_LVL" Type="varchar" MaxLength="30" Nullable="false" />
-          <Property Name="BEGIN_DTE" Type="smalldatetime" Nullable="false" />
-          <Property Name="END_DTE" Type="smalldatetime" />
+          <Property Name="BEGIN_DTE" Type="datetime" Nullable="false" />
+          <Property Name="END_DTE" Type="datetime" />
           <Property Name="DESCRIPTION" Type="varchar(max)" />
           <Property Name="USER_NAME" Type="varchar" MaxLength="20" />
           <Property Name="JOB_NAME" Type="varchar" MaxLength="10" />
@@ -52,13 +52,16 @@
         </EntityType>
         <EntityType Name="Request">
           <Key>
-            <PropertyRef Name="Request_ID" />
+            <PropertyRef Name="REQUEST_ID" />
           </Key>
-          <Property Name="Request_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ACT_CDE" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="REQUEST_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SESS_CDE" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="ACT_CDE" Type="varchar" MaxLength="20" />
           <Property Name="ID_NUM" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="PART_LVL" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="DATE_SENT" Type="datetime" Nullable="false" />
+          <Property Name="COMMENT_TXT" Type="varchar" MaxLength="120" />
+          <Property Name="APPROVED" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="SUPERVISOR">
           <Key>
@@ -121,7 +124,6 @@ warning 6002: The table/view 'CCT.dbo.PART_DEF' does not have a primary key defi
         <EntityType Name="PART_DEF">
           <Key>
             <PropertyRef Name="PART_CDE" />
-            <PropertyRef Name="PART_DESC" />
           </Key>
           <Property Name="PART_CDE" Type="char" MaxLength="5" Nullable="false" />
           <Property Name="PART_DESC" Type="char" MaxLength="45" Nullable="false" />
@@ -286,7 +288,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <EntityType Name="PART_DEF">
           <Key>
             <PropertyRef Name="PART_CDE" />
-            <PropertyRef Name="PART_DESC" />
           </Key>
           <Property Name="PART_CDE" Type="String" MaxLength="5" FixedLength="true" Unicode="false" Nullable="false" />
           <Property Name="PART_DESC" Type="String" MaxLength="45" FixedLength="true" Unicode="false" Nullable="false" />
@@ -332,13 +333,16 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         </ComplexType>
         <EntityType Name="Request">
           <Key>
-            <PropertyRef Name="Request_ID" />
+            <PropertyRef Name="REQUEST_ID" />
           </Key>
-          <Property Name="Request_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ACT_CDE" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="ACT_CDE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="ID_NUM" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="PART_LVL" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="DATE_SENT" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="REQUEST_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="COMMENT_TXT" Type="String" MaxLength="120" FixedLength="false" Unicode="false" />
+          <Property Name="SESS_CDE" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="APPROVED" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="Activity_Info">
           <Key>
@@ -359,8 +363,8 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="SESSION_CDE" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="ID_NUM" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="PART_LVL" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="BEGIN_DTE" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="END_DTE" Type="DateTime" Precision="0" />
+          <Property Name="BEGIN_DTE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="END_DTE" Type="DateTime" Precision="3" />
           <Property Name="DESCRIPTION" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="USER_NAME" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="JOB_NAME" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
@@ -484,11 +488,14 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="Request">
             <EntityTypeMapping TypeName="CCT_App.Models.Request">
               <MappingFragment StoreEntitySet="Request">
+                <ScalarProperty Name="APPROVED" ColumnName="APPROVED" />
+                <ScalarProperty Name="SESS_CDE" ColumnName="SESS_CDE" />
+                <ScalarProperty Name="COMMENT_TXT" ColumnName="COMMENT_TXT" />
+                <ScalarProperty Name="REQUEST_ID" ColumnName="REQUEST_ID" />
                 <ScalarProperty Name="DATE_SENT" ColumnName="DATE_SENT" />
                 <ScalarProperty Name="PART_LVL" ColumnName="PART_LVL" />
                 <ScalarProperty Name="ID_NUM" ColumnName="ID_NUM" />
                 <ScalarProperty Name="ACT_CDE" ColumnName="ACT_CDE" />
-                <ScalarProperty Name="Request_ID" ColumnName="Request_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Web;
+using CCT_App.Models;
 
 namespace CCT_App.Repositories
 {
@@ -102,7 +103,9 @@ namespace CCT_App.Repositories
         /// <param name="query">Name of the stored procedure </param>
         /// <param name="parameters">Parameters to pass to the stored procedure</param>
         IEnumerable<T> ExecWithStoredProcedure(string query, params object[] parameters);
-        
+
+
+
 
 
     }

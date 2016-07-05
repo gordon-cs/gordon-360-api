@@ -96,7 +96,7 @@ namespace CCT_App.Controllers.Api
         }
 
         /// <summary>Add a new supervisor</summary>
-        /// <param name="sUPERVISOR">The name of the new supervisor</param>
+        /// <param name="supervisor">The name of the new supervisor</param>
         /// <returns>The new supervisor object</returns>
         /// <remarks>Queries the database to add a new supervisor into the table</remarks>
         // POST: api/Supervisors

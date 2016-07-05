@@ -8,6 +8,7 @@ using Moq;
 using CCT_App.Controllers.Api;
 using CCT_App.Services;
 using CCT_App.Models;
+using CCT_App.Models.ViewModels;
 using System.Web.Http.Results;
 
 namespace CCT_App.Tests.ControllerUnitTests
@@ -25,14 +26,14 @@ namespace CCT_App.Tests.ControllerUnitTests
             var controller = new SessionsController(theservice.Object);
             theservice
                 .Setup(x => x.GetAll())
-                .Returns(new List<CM_SESSION_MSTR>());
+                .Returns(new List<SessionViewModel>());
 
             // Act
             var result = controller.Get();
-            var contentresult = result as OkNegotiatedContentResult<IEnumerable<CM_SESSION_MSTR>>;
+            var contentresult = result as OkNegotiatedContentResult<IEnumerable<SessionViewModel>>;
 
             // Assert
-            Assert.IsType<OkNegotiatedContentResult<IEnumerable<CM_SESSION_MSTR>>>(result);
+            Assert.IsType<OkNegotiatedContentResult<IEnumerable<SessionViewModel>>>(result);
             Assert.NotNull(contentresult);
             Assert.NotNull(contentresult.Content);
             Assert.Empty(contentresult.Content);
@@ -45,17 +46,17 @@ namespace CCT_App.Tests.ControllerUnitTests
             // Arrange
             var theservice = new Mock<ISessionService>();
             var controller = new SessionsController(theservice.Object);
-            var data = new List<CM_SESSION_MSTR> { new CM_SESSION_MSTR { }, new CM_SESSION_MSTR { }, new CM_SESSION_MSTR { } };
+            var data = new List<SessionViewModel> { new SessionViewModel { }, new SessionViewModel { }, new SessionViewModel { } };
             theservice
                 .Setup(x => x.GetAll())
                 .Returns(data);
 
             // Act
             var result = controller.Get();
-            var contentresult = result as OkNegotiatedContentResult<IEnumerable<CM_SESSION_MSTR>>;
+            var contentresult = result as OkNegotiatedContentResult<IEnumerable<SessionViewModel>>;
 
             // Assert
-            Assert.IsType<OkNegotiatedContentResult<IEnumerable<CM_SESSION_MSTR>>>(result);
+            Assert.IsType<OkNegotiatedContentResult<IEnumerable<SessionViewModel>>>(result);
             Assert.NotNull(contentresult);
             Assert.NotNull(contentresult.Content);
             Assert.NotEmpty(contentresult.Content);
@@ -101,7 +102,7 @@ namespace CCT_App.Tests.ControllerUnitTests
             // Arrange
             var theservice = new Mock<ISessionService>();
             var controller = new SessionsController(theservice.Object);
-            var data = new CM_SESSION_MSTR { };
+            var data = new SessionViewModel { };
             var id = "id";
             theservice
                 .Setup(x => x.Get(id))
@@ -109,14 +110,49 @@ namespace CCT_App.Tests.ControllerUnitTests
 
             // Act
             var result = controller.Get(id);
-            var contentresult = result as OkNegotiatedContentResult<CM_SESSION_MSTR>;
+            var contentresult = result as OkNegotiatedContentResult<SessionViewModel>;
 
             // Assert
-            Assert.IsType<OkNegotiatedContentResult<CM_SESSION_MSTR>>(result);
+            Assert.IsType<OkNegotiatedContentResult<SessionViewModel>>(result);
             Assert.NotNull(contentresult);
             Assert.NotNull(contentresult.Content);
         }
        
+        [Fact]
+        public void Get_Current_Session_Returns_Null_If_Current_Session_Was_Not_found()
+        {
+            // Arrange
+            var theservice = new Mock<ISessionService>();
+            var controller = new SessionsController(theservice.Object);
+            theservice
+                .Setup(x => x.GetCurrentSession());
+
+            // Act
+            var result = controller.GetCurrentSession();
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+        [Fact]
+        public void Get_Current_Session_Correctly_If_Session_Was_Found()
+        {
+            // Arrange
+            var theservice = new Mock<ISessionService>();
+            var controller = new SessionsController(theservice.Object);
+            theservice
+                .Setup(x => x.GetCurrentSession())
+                .Returns(new CM_SESSION_MSTR { });
+
+            // Act
+            var result = controller.GetCurrentSession();
+            var contentresult = result as OkNegotiatedContentResult<SessionViewModel>;
+
+            // Assert
+            Assert.IsType<OkNegotiatedContentResult<SessionViewModel>>(result);
+            Assert.NotNull(contentresult);
+            Assert.NotNull(contentresult.Content);
+        }
         /* TEST FOR MISC METHODS */
     }
 }

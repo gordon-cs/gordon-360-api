@@ -7,12 +7,12 @@ using Xunit;
 using Moq;
 using CCT_App.Controllers.Api;
 using CCT_App.Services;
-using CCT_App.Models;
+using CCT_App.Models.ViewModels;
 using System.Web.Http.Results;
 
 namespace CCT_App.Tests.ControllerUnitTests
 {
-    /*  Test for Roles Controller */
+    /*  Test for Participation Controller */
     public class Roles
     {
         /* TEST FOR GET METHODS */
@@ -21,18 +21,18 @@ namespace CCT_App.Tests.ControllerUnitTests
         {
 
             // Arrange
-            var theservice = new Mock<IRoleService>();
-            var controller = new RolesController(theservice.Object);
+            var theservice = new Mock<IParticipationService>();
+            var controller = new ParticipationsController(theservice.Object);
             theservice
                 .Setup(x => x.GetAll())
-                .Returns(new List<PART_DEF>());
+                .Returns(new List<ParticipationViewModel>());
 
             // Act
             var result = controller.Get();
-            var contentresult = result as OkNegotiatedContentResult<IEnumerable<PART_DEF>>;
+            var contentresult = result as OkNegotiatedContentResult<IEnumerable<ParticipationViewModel>>;
 
             // Assert
-            Assert.IsType<OkNegotiatedContentResult<IEnumerable<PART_DEF>>>(result);
+            Assert.IsType<OkNegotiatedContentResult<IEnumerable<ParticipationViewModel>>>(result);
             Assert.NotNull(contentresult);
             Assert.NotNull(contentresult.Content);
             Assert.Empty(contentresult.Content);
@@ -43,19 +43,19 @@ namespace CCT_App.Tests.ControllerUnitTests
         public void GetAll_Returns_With_Popluated_List()
         {
             // Arrange
-            var theservice = new Mock<IRoleService>();
-            var controller = new RolesController(theservice.Object);
-            var data = new List<PART_DEF> { new PART_DEF { }, new PART_DEF { }, new PART_DEF { } };
+            var theservice = new Mock<IParticipationService>();
+            var controller = new ParticipationsController(theservice.Object);
+            var data = new List<ParticipationViewModel> { new ParticipationViewModel { }, new ParticipationViewModel { }, new ParticipationViewModel { } };
             theservice
                 .Setup(x => x.GetAll())
                 .Returns(data);
 
             // Act
             var result = controller.Get();
-            var contentresult = result as OkNegotiatedContentResult<IEnumerable<PART_DEF>>;
+            var contentresult = result as OkNegotiatedContentResult<IEnumerable<ParticipationViewModel>>;
 
             // Assert
-            Assert.IsType<OkNegotiatedContentResult<IEnumerable<PART_DEF>>>(result);
+            Assert.IsType<OkNegotiatedContentResult<IEnumerable<ParticipationViewModel>>>(result);
             Assert.NotNull(contentresult);
             Assert.NotNull(contentresult.Content);
             Assert.NotEmpty(contentresult.Content);
@@ -67,8 +67,8 @@ namespace CCT_App.Tests.ControllerUnitTests
         public void Get_Returns_Not_Found_Given_Non_Existent_Id()
         {
             // Arrange
-            var theservice = new Mock<IRoleService>();
-            var controller = new RolesController(theservice.Object);
+            var theservice = new Mock<IParticipationService>();
+            var controller = new ParticipationsController(theservice.Object);
             var id = "id";
             theservice
                 .Setup(x => x.Get(id));
@@ -85,8 +85,8 @@ namespace CCT_App.Tests.ControllerUnitTests
         public void Get_Returns_Bad_Request_With_Empty_id()
         {
             // Arrange
-            var theservice = new Mock<IRoleService>();
-            var controller = new RolesController(theservice.Object);
+            var theservice = new Mock<IParticipationService>();
+            var controller = new ParticipationsController(theservice.Object);
             var id = string.Empty;
 
             // Act
@@ -99,9 +99,9 @@ namespace CCT_App.Tests.ControllerUnitTests
         public void Get_Returns_Ok_With_Object_Model_Given_Valid_id()
         {
             // Arrange
-            var theservice = new Mock<IRoleService>();
-            var controller = new RolesController(theservice.Object);
-            var data = new PART_DEF { };
+            var theservice = new Mock<IParticipationService>();
+            var controller = new ParticipationsController(theservice.Object);
+            var data = new ParticipationViewModel { };
             var id = "id";
             theservice
                 .Setup(x => x.Get(id))
@@ -109,10 +109,10 @@ namespace CCT_App.Tests.ControllerUnitTests
 
             // Act
             var result = controller.Get(id);
-            var contentresult = result as OkNegotiatedContentResult<PART_DEF>;
+            var contentresult = result as OkNegotiatedContentResult<ParticipationViewModel>;
 
             // Assert
-            Assert.IsType<OkNegotiatedContentResult<PART_DEF>>(result);
+            Assert.IsType<OkNegotiatedContentResult<ParticipationViewModel>>(result);
             Assert.NotNull(contentresult);
             Assert.NotNull(contentresult.Content);
         }

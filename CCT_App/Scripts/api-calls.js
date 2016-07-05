@@ -4,7 +4,7 @@ $apiUrl = "https://ccttrain.gordon.edu/api";
 $activityUrl = $apiUrl + "/activities";
 $membershipUrl = $apiUrl + "/memberships";
 $studentUrl = $apiUrl + "/students";
-$roleUrl = $apiUrl + "/roles";
+$roleUrl = $apiUrl + "/participations";
 $sessionUrl = $apiUrl + "/sessions";
 $loginUrl = $apiUrl + "/authentication";
 
@@ -85,8 +85,8 @@ function populateActivities(sessionId) {
             select.appendChild(option);
             for (var i = 0; i < data.length; i ++) {
                 var option = document.createElement("option");
-                option.appendChild(document.createTextNode(data[i].ACT_DESC));
-                option.value = data[i].ACT_CDE;
+                option.appendChild(document.createTextNode(data[i].ActivityDescription));
+                option.value = data[i].ActivityCode;
                 select.appendChild(option);
             }
         }
@@ -104,8 +104,8 @@ function populateRole() {
             var select = document.getElementById('membershipPostLevel');
             for (var i = 0; i < data.length; i ++) {
                 var option  = document.createElement("option");
-                option.appendChild(document.createTextNode(data[i].PART_DESC));
-                option.value = data[i].PART_CDE;
+                option.appendChild(document.createTextNode(data[i].ParticipationDescription));
+                option.value = data[i].ParticipationCode;
                 select.appendChild(option);
             }
         }
@@ -123,8 +123,8 @@ function populateSession() {
             var select = document.getElementById('membershipPostSessionCode');
             for (var i = 0; i < data.length; i ++) {
                 var option  = document.createElement("option");
-                option.appendChild(document.createTextNode(data[i].SESS_DESC));
-                option.value = data[i].SESS_CDE;
+                option.appendChild(document.createTextNode(data[i].SessionDescription));
+                option.value = data[i].SessionCode;
                 select.appendChild(option);
             }
         }

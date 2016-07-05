@@ -3,33 +3,42 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CCT_App.Models;
+using CCT_App.Models.ViewModels;
 
+/// <summary>
+/// Namespace with all the Service Interfaces that are to be implemented. I don't think making this interface is required, the services can work find on their own.
+/// However, building the interfaces first does give a general sense of structure to their implementations. A certian cohesiveness :p.
+/// </summary>
 namespace CCT_App.Services
 {
+
     public interface IAccountService
     {
-        ACCOUNT Get(string id);
-        IEnumerable<ACCOUNT> GetAll();
+        AccountViewModel Get(string id);
+        IEnumerable<AccountViewModel> GetAll();
     }
 
     public interface IActivityService
     {
-        ACT_CLUB_DEF Get(string id);
-        IEnumerable<ACT_CLUB_DEF> GetAll();
-        SUPERVISOR GetSupervisorForActivity(string id);
+        ActivityViewModel Get(string id);
+        IEnumerable<ActivityViewModel> GetAll();
+        IEnumerable<SupervisorViewModel> GetSupervisorsForActivity(string id);
+        IEnumerable<MembershipViewModel> GetLeadersForActivity(string id);
+        IEnumerable<MembershipViewModel> GetMembershipsForActivity(string id);
     }
 
     public interface ISessionService
     {
-        CM_SESSION_MSTR Get(string id);
-        IEnumerable<CM_SESSION_MSTR> GetAll();
-        IEnumerable<ACTIVE_CLUBS_PER_SESS_ID_Result> GetActivitiesForSession(string id);
+        SessionViewModel Get(string id);
+        IEnumerable<SessionViewModel> GetAll();
+        IEnumerable<ActivityViewModel> GetActivitiesForSession(string id);
+        SessionViewModel GetCurrentSession();
     }
 
     public interface IFacultyService
     {
-        Faculty Get(string id);
-        IEnumerable<Faculty> GetAll();
+        FacultyViewModel Get(string id);
+        IEnumerable<FacultyViewModel> GetAll();
     }
 
     public interface IJenzibarActivityService
@@ -40,38 +49,47 @@ namespace CCT_App.Services
 
     public interface IMembershipService
     {
-        Membership Get(int id);
-        IEnumerable<Membership> GetAll();
+        MembershipViewModel Get(int id);
+        IEnumerable<MembershipViewModel> GetAll();
         Membership Add(Membership membership);
         Membership Update(int id, Membership membership);
         Membership Delete(int id);   
     }
 
-    public interface IRoleService
+    public interface IParticipationService
     {
-        PART_DEF Get(string id);
-        IEnumerable<PART_DEF> GetAll();
+        ParticipationViewModel Get(string id);
+        IEnumerable<ParticipationViewModel> GetAll();
     }
 
     public interface IStaffService
     {
-        Staff Get(string id);
-        IEnumerable<Staff> GetAll();
+        StaffViewModel Get(string id);
+        IEnumerable<StaffViewModel> GetAll();
     }
 
     public interface IStudentService
     {
-        Student Get(string id);
-        IEnumerable<Student> GetAll();
-        IEnumerable<Membership> GetActivitiesForStudent(string id);
+        StudentViewModel Get(string id);
+        IEnumerable<StudentViewModel> GetAll();
+        IEnumerable<MembershipViewModel> GetActivitiesForStudent(string id);
     }
 
     public interface ISupervisorService
     {
-        SUPERVISOR Get(int id);
-        IEnumerable<SUPERVISOR> GetAll();
+        SupervisorViewModel Get(int id);
+        IEnumerable<SupervisorViewModel> GetAll();
         SUPERVISOR Add(SUPERVISOR supervisor);
         SUPERVISOR Update(int id, SUPERVISOR supervisor);
         SUPERVISOR Delete(int id);
+    }
+
+    public interface IMembershipRequestService
+    {
+        MembershipRequestViewModel Get(int id);
+        IEnumerable<MembershipRequestViewModel> GetAll();
+        Request Add(Request membershipRequest);
+        Request Update(int id, Request membershipRequest);
+        Request Delete(int id);
     }
 }

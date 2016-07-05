@@ -67,24 +67,23 @@ namespace CCT_App.Controllers.Api
         }
 
         /// <summary>
-        /// Get the supervisor for a specific activity
+        /// Get the supervisors for a given activity
         /// </summary>
         /// <param name="id">The identifier for a specific activity</param>
         /// <returns></returns>
         /// <remarks>
-        /// Get the supervisor for a specified activity within the database
+        /// Get the supervisors for a specified activity within the database
         /// </remarks>
-        //TODO: Logic for finding current session. 
         [HttpGet]
         [Route("{id}/supervisor")]
-        public IHttpActionResult GetSupervisorForActivity(string id)
+        public IHttpActionResult GetSupervisorsForActivity(string id)
         {
 
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
                 return BadRequest();
             }
-            var result = _activityService.GetSupervisorForActivity(id);
+            var result = _activityService.GetSupervisorsForActivity(id);
 
             if (result == null)
             {
@@ -94,6 +93,49 @@ namespace CCT_App.Controllers.Api
 
         }
 
+        /// <summary>
+        /// Get all the memberships associated with a given activity
+        /// </summary>
+        /// <param name="id">The activity ID</param>
+        /// <returns>IHttpActionResult</returns>
+        [HttpGet]
+        [Route("{id}/memberships")]
+        public IHttpActionResult GetMembershipsForActivity(string id)
+        {
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest();
+            }
+            var result = _activityService.GetMembershipsForActivity(id);
+
+            if (result == null )
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Gets the leaders associated with a given activity
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{id}/leaders")]
+        public IHttpActionResult GetLeadersForActivity(string id)
+        {
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest();
+            }
+            var result = _activityService.GetLeadersForActivity(id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
      
     }
 }

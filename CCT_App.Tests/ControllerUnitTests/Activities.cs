@@ -8,6 +8,7 @@ using Moq;
 using CCT_App.Controllers.Api;
 using CCT_App.Services;
 using CCT_App.Models;
+using CCT_App.Models.ViewModels;
 using System.Web.Http.Results;
 
 namespace CCT_App.Tests.ControllerUnitTests
@@ -26,14 +27,14 @@ namespace CCT_App.Tests.ControllerUnitTests
             var controller = new ActivitiesController(theservice.Object);
             theservice
                 .Setup(x => x.GetAll())
-                .Returns(new List<ACT_CLUB_DEF>());
+                .Returns(new List<ActivityViewModel>());
 
             // Act 
             var result = controller.Get();
-            var contentresult = result as OkNegotiatedContentResult<IEnumerable<ACT_CLUB_DEF>>;
+            var contentresult = result as OkNegotiatedContentResult<IEnumerable<ActivityViewModel>>;
 
             // Assert
-            Assert.IsType<OkNegotiatedContentResult<IEnumerable<ACT_CLUB_DEF>>>(result);
+            Assert.IsType<OkNegotiatedContentResult<IEnumerable<ActivityViewModel>>>(result);
             Assert.NotNull(contentresult);
             Assert.NotNull(contentresult.Content);
             Assert.Empty(contentresult.Content);   
@@ -46,17 +47,17 @@ namespace CCT_App.Tests.ControllerUnitTests
             // Arrange
             var theservice = new Mock<IActivityService>();
             var controller = new ActivitiesController(theservice.Object);
-            var data = new List<ACT_CLUB_DEF> { new ACT_CLUB_DEF { }, new ACT_CLUB_DEF { }, new ACT_CLUB_DEF { } };
+            var data = new List<ActivityViewModel> { new ActivityViewModel { }, new ActivityViewModel { }, new ActivityViewModel { } };
             theservice
                 .Setup(x => x.GetAll())
                 .Returns(data);
 
             // Act 
             var result = controller.Get();
-            var contentresult = result as OkNegotiatedContentResult<IEnumerable<ACT_CLUB_DEF>>;
+            var contentresult = result as OkNegotiatedContentResult<IEnumerable<ActivityViewModel>>;
 
             // Assert 
-            Assert.IsType<OkNegotiatedContentResult<IEnumerable<ACT_CLUB_DEF>>>(result);
+            Assert.IsType<OkNegotiatedContentResult<IEnumerable<ActivityViewModel>>>(result);
             Assert.NotNull(contentresult);
             Assert.NotNull(contentresult.Content);
             Assert.NotEmpty(contentresult.Content);
@@ -103,7 +104,7 @@ namespace CCT_App.Tests.ControllerUnitTests
             // Arrange
             var theservice = new Mock<IActivityService>();
             var controller = new ActivitiesController(theservice.Object);
-            var data = new ACT_CLUB_DEF { };
+            var data = new ActivityViewModel { };
             var id = "id";
             theservice
                 .Setup(x => x.Get(id))
@@ -111,10 +112,10 @@ namespace CCT_App.Tests.ControllerUnitTests
 
             // Act 
             var result = controller.Get(id);
-            var contentresult = result as OkNegotiatedContentResult<ACT_CLUB_DEF>;
+            var contentresult = result as OkNegotiatedContentResult<ActivityViewModel>;
 
             // Assert 
-            Assert.IsType<OkNegotiatedContentResult<ACT_CLUB_DEF>>(result);
+            Assert.IsType<OkNegotiatedContentResult<ActivityViewModel>>(result);
             Assert.NotNull(contentresult);
             Assert.NotNull(contentresult.Content);
         }
@@ -128,7 +129,7 @@ namespace CCT_App.Tests.ControllerUnitTests
             var id = string.Empty;
 
             // Act 
-            var result = controller.GetSupervisorForActivity(id);
+            var result = controller.GetSupervisorsForActivity(id);
 
             // Assert
             Assert.IsType<BadRequestResult>(result);
@@ -141,10 +142,10 @@ namespace CCT_App.Tests.ControllerUnitTests
             var controller = new ActivitiesController(theservice.Object);
             var id = "non-existent-id";
             theservice
-                .Setup(x => x.GetSupervisorForActivity(id));
+                .Setup(x => x.GetSupervisorsForActivity(id));
 
             // Act 
-            var result = controller.GetSupervisorForActivity(id);
+            var result = controller.GetSupervisorsForActivity(id);
 
             // Assert
             Assert.IsType<NotFoundResult>(result);
@@ -156,20 +157,141 @@ namespace CCT_App.Tests.ControllerUnitTests
             // Arrange
             var theservice = new Mock<IActivityService>();
             var controller = new ActivitiesController(theservice.Object);
-            var id = "non-existent-id";
-            var data = new SUPERVISOR { };
+            var id = "id";
+            var data = new List<SupervisorViewModel> {
+                new SupervisorViewModel { },
+                new SupervisorViewModel { }
+            };
             theservice
-                .Setup(x => x.GetSupervisorForActivity(id))
+                .Setup(x => x.GetSupervisorsForActivity(id))
                 .Returns(data);
 
             // Act 
-            var result = controller.GetSupervisorForActivity(id);
-            var contentresult = result as OkNegotiatedContentResult<SUPERVISOR>;
+            var result = controller.GetSupervisorsForActivity(id);
+            var contentresult = result as OkNegotiatedContentResult<IEnumerable<SupervisorViewModel>>;
 
             // Assert
-            Assert.IsType<OkNegotiatedContentResult<SUPERVISOR>>(result);
+            Assert.IsType<OkNegotiatedContentResult<IEnumerable<SupervisorViewModel>>>(result);
+            Assert.NotNull(contentresult);
+            Assert.NotNull(contentresult.Content);
+        }
+
+        [Fact]
+        public void GetMembershipsForActivity_Returns_Bad_Request_Given_Empty_String()
+        {
+            // Arrange
+            var theservice = new Mock<IActivityService>();
+            var controller = new ActivitiesController(theservice.Object);
+            var id = string.Empty;
+
+            // Act 
+            var result = controller.GetSupervisorsForActivity(id);
+
+            // Assert
+            Assert.IsType<BadRequestResult>(result);
+        }
+        [Fact]
+        public void GetMembershipsForActivity_Returns_Not_Found_Given_Non_Existent_ID()
+        {
+            // Arrange
+            var theservice = new Mock<IActivityService>();
+            var controller = new ActivitiesController(theservice.Object);
+            var id = "non-existent-id";
+            theservice
+                .Setup(x => x.GetMembershipsForActivity(id));
+
+            // Act 
+            var result = controller.GetMembershipsForActivity(id);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+        [Fact]
+        public void GetMembershipsForActivity_Returns_Ok_With_Object_Model_Given_Valid_id()
+        {
+            // Arrange
+            var theservice = new Mock<IActivityService>();
+            var controller = new ActivitiesController(theservice.Object);
+            var id = "id";
+            var data = new List<MembershipViewModel>
+            {
+                new MembershipViewModel { },
+                new MembershipViewModel { },
+                new MembershipViewModel { }
+            };
+            theservice
+                .Setup(x => x.GetMembershipsForActivity(id))
+                .Returns(data);
+
+            // Act 
+            var result = controller.GetMembershipsForActivity(id);
+            var contentresult = result as OkNegotiatedContentResult<IEnumerable<MembershipViewModel>>;
+
+            // Assert
+            Assert.IsType<OkNegotiatedContentResult<IEnumerable<MembershipViewModel>>>(result);
+            Assert.NotNull(contentresult);
+            Assert.NotNull(contentresult.Content);
+        }
+
+
+        [Fact]
+        public void GetLeadersForActivity_Returns_Bad_Request_Given_Empty_String()
+        {
+            // Arrange
+            var theservice = new Mock<IActivityService>();
+            var controller = new ActivitiesController(theservice.Object);
+            var id = string.Empty;
+
+            // Act 
+            var result = controller.GetLeadersForActivity(id);
+
+            // Assert
+            Assert.IsType<BadRequestResult>(result);
+        }
+        [Fact]
+        public void GetLeadersForActivity_Returns_Not_Found_Given_Non_Existent_ID()
+        {
+            // Arrange
+            var theservice = new Mock<IActivityService>();
+            var controller = new ActivitiesController(theservice.Object);
+            var id = "non-existent-id";
+            theservice
+                .Setup(x => x.GetLeadersForActivity(id));
+
+            // Act 
+            var result = controller.GetLeadersForActivity(id);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+        [Fact]
+        public void GetLeadersForActivity_Returns_Ok_With_Object_Model_Given_Valid_id()
+        {
+            // Arrange
+            var theservice = new Mock<IActivityService>();
+            var controller = new ActivitiesController(theservice.Object);
+            var id = "id";
+            var data = new List<MembershipViewModel>
+            {
+                new MembershipViewModel { },
+                new MembershipViewModel { },
+                new MembershipViewModel { }
+            };
+            theservice
+                .Setup(x => x.GetLeadersForActivity(id))
+                .Returns(data);
+
+            // Act 
+            var result = controller.GetMembershipsForActivity(id);
+            var contentresult = result as OkNegotiatedContentResult<IEnumerable<MembershipViewModel>>;
+
+            // Assert
+            Assert.IsType<OkNegotiatedContentResult<IEnumerable<MembershipViewModel>>>(result);
             Assert.NotNull(contentresult);
             Assert.NotNull(contentresult.Content);
         }
     }
+
 }

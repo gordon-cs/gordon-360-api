@@ -8,6 +8,7 @@ using Moq;
 using CCT_App.Controllers.Api;
 using CCT_App.Services;
 using CCT_App.Models;
+using CCT_App.Models.ViewModels;
 using System.Web.Http.Results;
 
 namespace CCT_App.Tests.ControllerUnitTests
@@ -25,14 +26,14 @@ namespace CCT_App.Tests.ControllerUnitTests
             var controller = new SupervisorsController(theservice.Object);
             theservice
                 .Setup(x => x.GetAll())
-                .Returns(new List<SUPERVISOR>());
+                .Returns(new List<SupervisorViewModel>());
 
             // Act
             var result = controller.Get();
-            var contentresult = result as OkNegotiatedContentResult<IEnumerable<SUPERVISOR>>;
+            var contentresult = result as OkNegotiatedContentResult<IEnumerable<SupervisorViewModel>>;
 
             // Assert
-            Assert.IsType<OkNegotiatedContentResult<IEnumerable<SUPERVISOR>>>(result);
+            Assert.IsType<OkNegotiatedContentResult<IEnumerable<SupervisorViewModel>>>(result);
             Assert.NotNull(contentresult);
             Assert.NotNull(contentresult.Content);
             Assert.Empty(contentresult.Content);
@@ -45,17 +46,17 @@ namespace CCT_App.Tests.ControllerUnitTests
             // Arrange
             var theservice = new Mock<ISupervisorService>();
             var controller = new SupervisorsController(theservice.Object);
-            var data = new List<SUPERVISOR> { new SUPERVISOR { }, new SUPERVISOR { }, new SUPERVISOR { } };
+            var data = new List<SupervisorViewModel> { new SupervisorViewModel { }, new SupervisorViewModel { }, new SupervisorViewModel { } };
             theservice
                 .Setup(x => x.GetAll())
                 .Returns(data);
 
             // Act
             var result = controller.Get();
-            var contentresult = result as OkNegotiatedContentResult<IEnumerable<SUPERVISOR>>;
+            var contentresult = result as OkNegotiatedContentResult<IEnumerable<SupervisorViewModel>>;
 
             // Assert
-            Assert.IsType<OkNegotiatedContentResult<IEnumerable<SUPERVISOR>>>(result);
+            Assert.IsType<OkNegotiatedContentResult<IEnumerable<SupervisorViewModel>>>(result);
             Assert.NotNull(contentresult);
             Assert.NotNull(contentresult.Content);
             Assert.NotEmpty(contentresult.Content);
@@ -88,7 +89,7 @@ namespace CCT_App.Tests.ControllerUnitTests
             // Arrange
             var theservice = new Mock<ISupervisorService>();
             var controller = new SupervisorsController(theservice.Object);
-            var data = new SUPERVISOR { };
+            var data = new SupervisorViewModel { };
             var id = 123;
             theservice
                 .Setup(x => x.Get(id))
@@ -96,10 +97,10 @@ namespace CCT_App.Tests.ControllerUnitTests
 
             // Act
             var result = controller.Get(id);
-            var contentresult = result as OkNegotiatedContentResult<SUPERVISOR>;
+            var contentresult = result as OkNegotiatedContentResult<SupervisorViewModel>;
 
             // Assert
-            Assert.IsType<OkNegotiatedContentResult<SUPERVISOR>>(result);
+            Assert.IsType<OkNegotiatedContentResult<SupervisorViewModel>>(result);
             Assert.NotNull(contentresult);
             Assert.NotNull(contentresult.Content);
         }

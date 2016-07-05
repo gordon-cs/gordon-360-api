@@ -16,11 +16,12 @@ namespace CCT_App.Repositories
         private IRepository<Faculty> _FacultyRepository;
         private IRepository<JNZB_ACTIVITIES> _JenzibarActvityRepository;
         private IRepository<Membership> _MembershipRepository;
-        private IRepository<PART_DEF> _RoleRepository;
+        private IRepository<PART_DEF> _ParticipationRepository;
         private IRepository<Staff> _StaffRepository;
         private IRepository<Student> _StudentRepository;
         private IRepository<SUPERVISOR> _SupervisorRepository;
         private IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> _ActivityPerSessionRepository;
+        private IRepository<Request> _MembershipRequestRepository;
 
         private CCTEntities _context;
 
@@ -52,9 +53,9 @@ namespace CCT_App.Repositories
         {
             get { return _MembershipRepository ?? (_MembershipRepository = new GenericRepository<Membership>(_context)); }
         }
-        public IRepository<PART_DEF> RoleRepository
+        public IRepository<PART_DEF> ParticipationRepository
         {
-            get { return _RoleRepository ?? (_RoleRepository = new GenericRepository<PART_DEF>(_context)); }
+            get { return _ParticipationRepository ?? (_ParticipationRepository = new GenericRepository<PART_DEF>(_context)); }
         }
         public IRepository<Staff> StaffRepository
         {
@@ -75,6 +76,11 @@ namespace CCT_App.Repositories
             {
                  return _ActivityPerSessionRepository ?? (_ActivityPerSessionRepository = new GenericRepository<ACTIVE_CLUBS_PER_SESS_ID_Result>(_context)); 
             }
+        }
+
+        public IRepository<Request> MembershipRequestRepository
+        {
+            get { return _MembershipRequestRepository ?? (_MembershipRequestRepository = new GenericRepository<Request>(_context)); }
         }
 
         public bool Save()
