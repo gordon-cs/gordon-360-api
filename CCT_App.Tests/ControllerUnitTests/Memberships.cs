@@ -87,7 +87,7 @@ namespace CCT_App.Tests.ControllerUnitTests
             // Arrange
             var theservice = new Mock<IMembershipService>();
             var controller = new MembershipsController(theservice.Object);
-            var data = new Membership { };
+            var data = new MembershipViewModel { };
             var id = 123;
             theservice
                 .Setup(x => x.Get(id))

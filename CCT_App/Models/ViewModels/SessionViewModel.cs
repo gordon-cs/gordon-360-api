@@ -16,8 +16,8 @@ namespace CCT_App.Models.ViewModels
         {
             SessionViewModel vm = new SessionViewModel
             {
-                SessionCode = sess.SESS_CDE,
-                SessionDescription = sess.SESS_DESC,
+                SessionCode = sess.SESS_CDE.Trim(),
+                SessionDescription = sess.SESS_DESC.Trim(),
                 SessionBeginDate = sess.SESS_BEGN_DTE, 
                 SessionEndDate = sess.SESS_END_DTE
             };

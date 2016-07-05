@@ -16,14 +16,6 @@ namespace CCT_App.Services
     public static class Constants
     {
         
-
-        public static readonly string[] LeaderParticipationCodes =
-        {
-            "AC","CAPT","CODIR",
-            "CORD","DIREC","PRES",
-            "RA1","RA2","RA3",
-            "VICEC","VICEP"
-        };
         public const string getMembershipsForStudentQuery = @"SELECT MEMBERSHIP_ID as MembershipID,
 		                                                    mem.ACT_CDE as ActivityCode,
 		                                                    act.ACT_DESC as ActivityDescription,
@@ -94,7 +86,7 @@ namespace CCT_App.Services
 	                                                    ON mem.ID_NUM = acct.gordon_id
                                                     INNER JOIN PART_DEF as part
 	                                                    ON mem.PART_LVL = part.PART_CDE
-                                                    WHERE mem.ACT_CDE = @p0 AND mem.PART_LVL in ('AC','CAPT','CODIR','CORD','DIREC','PRES','RA1','RA2','RA3','VICEC','VICEP')";
+                                                    WHERE mem.ACT_CDE = @p0 AND mem.PART_LVL in ('CAPT','CODIR','CORD','DIREC','PRES','VICEC','VICEP') AND mem.SESSION_CDE = @p1";
 
         public const string getSupervisorsForActivityQuery = @"SELECT sup.SUP_ID as SupervisorID,
 		                                                    acct.firstname as FirstName,

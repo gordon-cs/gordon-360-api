@@ -51,8 +51,9 @@ namespace CCT_App.Services
         public IEnumerable<MembershipViewModel> GetLeadersForActivity(string id)
         {
             var rawsqlquery = Constants.getLeadersForActivityQuery;
-            var result = RawSqlQuery<MembershipViewModel>.query(rawsqlquery, id);
-
+            var currentSession = Helpers.GetCurrentSession().SessionCode;
+            var result = RawSqlQuery<MembershipViewModel>.query(rawsqlquery, id, currentSession);
+            
             // Getting rid of whitespace inherited from the database .__.
             var trimmedResult = result.Select(x =>
             {

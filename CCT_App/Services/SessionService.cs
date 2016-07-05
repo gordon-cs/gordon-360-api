@@ -59,23 +59,6 @@ namespace CCT_App.Services
             return result;
         }
 
-        /// <summary>
-        /// Service method that gets the current session we are in.
-        /// </summary>
-        /// <returns>SessionViewModel of the current session. If no session is found for our current date, returns null.</returns>
-        public SessionViewModel GetCurrentSession()
-        {
-
-            var currentDateTime = DateTime.Now;
-            var notNullQuery = _unitOfWork.SessionRepository.Where(x => x.SESS_BEGN_DTE.HasValue && x.SESS_END_DTE.HasValue);
-            var currentSession = notNullQuery.Where( x => 
-                (currentDateTime.CompareTo(x.SESS_BEGN_DTE.Value) > 0)
-                && 
-                (currentDateTime.CompareTo(x.SESS_END_DTE.Value) < 0) )
-                .OrderByDescending(x => x.SESS_BEGN_DTE.Value)
-                .AsEnumerable()
-                .LastOrDefault();
-            return currentSession;
-        }
+        
     }
 }
