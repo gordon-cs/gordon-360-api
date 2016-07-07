@@ -13,7 +13,7 @@ using CCT_App.Models.ViewModels;
 
 namespace CCT_App.Controllers.Api
 {
-    [RoutePrefix("api/memberships")]
+    [RoutePrefix("KJzKJ6FOKx/api/memberships")]
     public class MembershipsController : ApiController
     {
 

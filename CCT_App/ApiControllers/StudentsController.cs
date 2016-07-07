@@ -15,7 +15,7 @@ using CCT_App.Models.ViewModels;
 
 namespace CCT_App.Controllers.Api
 {
-    [RoutePrefix("api/students")]
+    [RoutePrefix("KJzKJ6FOKx/api/students")]
     public class StudentsController : ApiController
     {
         private IStudentService _studentService;

@@ -11,7 +11,7 @@ using CCT_App.Repositories;
 namespace CCT_App.ApiControllers
 {
     // TODO: GET RID OF THIS CLASS
-    [RoutePrefix("activitiesInfo")]
+    [RoutePrefix("KJzKJ6FOKx/api/activitiesInfo")]
     public class ActivityInfoController : ApiController
     {
         private IActivityInfoService _activityInfoService;

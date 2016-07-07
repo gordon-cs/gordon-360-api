@@ -12,7 +12,7 @@ using CCT_App.Repositories;
 namespace CCT_App.Controllers.Api
 {
     
-    [RoutePrefix("api/activities")]
+    [RoutePrefix("KJzKJ6FOKx/api/activities")]
     public class ActivitiesController : ApiController
     {
         private IActivityService _activityService;

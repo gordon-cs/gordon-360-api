@@ -14,7 +14,7 @@ using CCT_App.Repositories;
 
 namespace CCT_App.Controllers.Api
 {
-    [RoutePrefix("api/participations")]
+    [RoutePrefix("KJzKJ6FOKx/api/participations")]
     public class ParticipationsController : ApiController
     {
         private IParticipationService _participationService;
