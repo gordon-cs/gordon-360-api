@@ -86,7 +86,7 @@ namespace CCT_App.Services
 	                                                    ON mem.ID_NUM = acct.gordon_id
                                                     INNER JOIN PART_DEF as part
 	                                                    ON mem.PART_LVL = part.PART_CDE
-                                                    WHERE mem.ACT_CDE = @p0 AND mem.PART_LVL in ('CAPT','CODIR','CORD','DIREC','PRES','VICEC','VICEP') AND mem.SESSION_CDE = @p1";
+                                                    WHERE mem.ACT_CDE = @p0 AND mem.PART_LVL in ('CAPT','CODIR','CORD','DIREC','PRES','VICEC','VICEP')";
 
         public const string getSupervisorsForActivityQuery = @"SELECT sup.SUP_ID as SupervisorID,
 		                                                    acct.firstname as FirstName,
