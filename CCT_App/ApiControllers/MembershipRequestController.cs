@@ -10,7 +10,7 @@ using CCT_App.Services;
 
 namespace CCT_App.Controllers.Api
 {
-    [RoutePrefix("api/requests")]
+    [RoutePrefix("KJzKJ6FOKx/api/requests")]
     public class MembershipRequestController : ApiController
     {
         public IMembershipRequestService _membershipRequestService;

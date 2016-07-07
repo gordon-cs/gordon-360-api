@@ -15,7 +15,7 @@ using System.Data.Entity.Core.Objects;
 
 namespace CCT_App.Controllers.Api
 {
-    [RoutePrefix("api/sessions")]
+    [RoutePrefix("KJzKJ6FOKx/api/sessions")]
     public class SessionsController : ApiController
     {
 

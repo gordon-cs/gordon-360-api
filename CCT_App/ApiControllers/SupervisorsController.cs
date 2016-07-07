@@ -14,7 +14,7 @@ using CCT_App.Services;
 
 namespace CCT_App.Controllers.Api
 {
-    [RoutePrefix("api/supervisors")]
+    [RoutePrefix("KJzKJ6FOKx/api/supervisors")]
     public class SupervisorsController : ApiController
     {
         private ISupervisorService _supervisorService;
