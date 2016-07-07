@@ -25,10 +25,10 @@ namespace CCT_App.Services
         /// </summary>
         /// <param name="id">The activity code</param>
         /// <returns>ActivityViewModel if found, null if not found</returns>
-        public ActivityViewModel Get(string id)
+        public ActivityInfoViewModel Get(string id)
         {
-            var query = _unitOfWork.ActivityRepository.GetById(id);
-            ActivityViewModel result = query;
+            var query = _unitOfWork.ActivityInfoRepository.GetById(id);
+            ActivityInfoViewModel result = query;
             return result;
         }
 
@@ -36,10 +36,10 @@ namespace CCT_App.Services
         /// Fetches all activity records from storage.
         /// </summary>
         /// <returns>ActivityViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        public IEnumerable<ActivityViewModel> GetAll()
+        public IEnumerable<ActivityInfoViewModel> GetAll()
         {
-            var query = _unitOfWork.ActivityRepository.GetAll();
-            var result = query.Select<ACT_CLUB_DEF, ActivityViewModel>(x => x);
+            var query = _unitOfWork.ActivityInfoRepository.GetAll();
+            var result = query.Select<Activity_Info, ActivityInfoViewModel>(x => x);
             return result;
         }
 

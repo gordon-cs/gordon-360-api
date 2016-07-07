@@ -10,6 +10,7 @@ namespace CCT_App.Repositories
     {
         IRepository<ACCOUNT> AccountRepository { get; }
         IRepository<ACT_CLUB_DEF> ActivityRepository { get; }
+        IRepository<Activity_Info> ActivityInfoRepository { get; }
         IRepository<CM_SESSION_MSTR> SessionRepository { get; }
         IRepository<Faculty> FacultyRepository { get; }
         IRepository<JNZB_ACTIVITIES> JenzibarActvityRepository { get; }

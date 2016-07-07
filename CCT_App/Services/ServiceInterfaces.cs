@@ -20,18 +20,24 @@ namespace CCT_App.Services
 
     public interface IActivityService
     {
-        ActivityViewModel Get(string id);
-        IEnumerable<ActivityViewModel> GetAll();
+        ActivityInfoViewModel Get(string id);
+        IEnumerable<ActivityInfoViewModel> GetAll();
         IEnumerable<SupervisorViewModel> GetSupervisorsForActivity(string id);
         IEnumerable<MembershipViewModel> GetLeadersForActivity(string id);
         IEnumerable<MembershipViewModel> GetMembershipsForActivity(string id);
+    }
+
+    public interface IActivityInfoService
+    {
+        ActivityInfoViewModel Get(string id);
+        IEnumerable<ActivityInfoViewModel> GetAll();
     }
 
     public interface ISessionService
     {
         SessionViewModel Get(string id);
         IEnumerable<SessionViewModel> GetAll();
-        IEnumerable<ActivityViewModel> GetActivitiesForSession(string id);
+        IEnumerable<ActivityInfoViewModel> GetActivitiesForSession(string id);
     }
 
     public interface IFacultyService
