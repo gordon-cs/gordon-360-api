@@ -292,10 +292,17 @@
     <Compile Include="Services\SupervisorService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\assets\ember-test-a69e195ce0b0c9ac8e500f78ef9f5479.js" />
-    <Content Include="Content\assets\ember-test-d41d8cd98f00b204e9800998ecf8427e.css" />
-    <Content Include="Content\assets\vendor-61f8b330f2f26a87ea82f5d3a4376dad.js" />
-    <Content Include="Content\assets\vendor-d41d8cd98f00b204e9800998ecf8427e.css" />
+    <Content Include="Content\assets\add-membership-ceb028a4564690006b54c4efea59eaed.css" />
+    <Content Include="Content\assets\all-activities-1fd8edcc830b5981b8f5cf785e69e4ff.css" />
+    <Content Include="Content\assets\custom-63c9f0c6665d423d35f5fcb6cc4009b8.css" />
+    <Content Include="Content\assets\favicon.ico" />
+    <Content Include="Content\assets\gordon_responsive_styles-65b84814f9345940fe08c008d6c220bd.css" />
+    <Content Include="Content\assets\my-activities-b953f4b6c8283991d8e6b61f5835338e.css" />
+    <Content Include="Content\assets\specific-activity-746ec976ae2120b0e5fd08d6aeb4765c.css" />
+    <Content Include="Content\assets\test-app-d41d8cd98f00b204e9800998ecf8427e.css" />
+    <Content Include="Content\assets\test-app-e8da41b7c15aebc0d6a35b05207de3b6.js" />
+    <Content Include="Content\assets\vendor-3805aadf252a1b05dc07878b9731d1f9.js" />
+    <Content Include="Content\assets\vendor-a2db23d85e0413eb58e87bb778485eac.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\custom.css" />
@@ -313,6 +320,11 @@
     <Content Include="Models\CCT_DB_Models.edmx.diagram">
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
     </Content>
+    <Content Include="Content\assets\app.scss" />
+    <Content Include="Content\assets\ember-basic-dropdown.scss" />
+    <Content Include="Content\assets\ember-power-select.scss" />
+    <Content Include="Content\assets\ember-power-select\themes\bootstrap.scss" />
+    <Content Include="Content\assets\ember-power-select\variables.scss" />
     <None Include="Properties\PublishProfiles\CCTEmber.pubxml" />
     <None Include="Properties\PublishProfiles\CCT_App.pubxml" />
     <None Include="Properties\PublishProfiles\CCT_APP_PUBLISH.pubxml" />
@@ -335,6 +347,7 @@
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="robots.txt" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
