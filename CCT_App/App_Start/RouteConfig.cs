@@ -15,7 +15,7 @@ namespace CCT_App
 
             routes.MapRoute(
                 name: "Default",
-                url: "KJzKJ6FOKx/{controller}/{action}/{id}",
+                url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
         }

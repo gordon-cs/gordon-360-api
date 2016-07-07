@@ -19,6 +19,9 @@ namespace CCT_App.Services
         public const string getMembershipsForStudentQuery = @"SELECT MEMBERSHIP_ID as MembershipID,
 		                                                    mem.ACT_CDE as ActivityCode,
 		                                                    act.ACT_DESC as ActivityDescription,
+                                                            act_info.ACT_IMAGE as ActivityImage,
+		                                                    act_info.MTG_DAY as ActivityMeetingTime,
+		                                                    act_info.MTG_TIME as ActivityMeetingDay,
 		                                                    mem.SESSION_CDE as SessionCode,
 		                                                    sess.SESS_DESC as SessionDescription,
 		                                                    mem.ID_NUM as IDNumber,
@@ -32,6 +35,8 @@ namespace CCT_App.Services
                                                     FROM Membership as mem
                                                     INNER JOIN ACT_CLUB_DEF as act
 	                                                    ON mem.ACT_CDE = act.ACT_CDE
+                                                    INNER JOIN Activity_Info as act_info
+	                                                    ON mem.ACT_CDE = act_info.ACT_CDE
                                                     INNER JOIN CM_SESSION_MSTR as sess
 	                                                    ON mem.SESSION_CDE = sess.SESS_CDE
                                                     INNER JOIN ACCOUNT as acct
@@ -43,6 +48,9 @@ namespace CCT_App.Services
         public const string getMembershipForActivityQuery = @"SELECT MEMBERSHIP_ID as MembershipID,
 		                                                    mem.ACT_CDE as ActivityCode,
 		                                                    act.ACT_DESC as ActivityDescription,
+                                                            act_info.ACT_IMAGE as ActivityImage,
+		                                                    act_info.MTG_DAY as ActivityMeetingTime,
+		                                                    act_info.MTG_TIME as ActivityMeetingDay,
 		                                                    mem.SESSION_CDE as SessionCode,
 		                                                    sess.SESS_DESC as SessionDescription,
 		                                                    mem.ID_NUM as IDNumber,
@@ -56,6 +64,8 @@ namespace CCT_App.Services
                                                         FROM Membership as mem
                                                         INNER JOIN ACT_CLUB_DEF as act
 	                                                        ON mem.ACT_CDE = act.ACT_CDE
+                                                        INNER JOIN Activity_Info as act_info
+	                                                        ON mem.ACT_CDE = act_info.ACT_CDE
                                                         INNER JOIN CM_SESSION_MSTR as sess
 	                                                        ON mem.SESSION_CDE = sess.SESS_CDE
                                                         INNER JOIN ACCOUNT as acct
@@ -67,6 +77,9 @@ namespace CCT_App.Services
         public const string getLeadersForActivityQuery = @"SELECT MEMBERSHIP_ID as MembershipID,
 		                                                mem.ACT_CDE as ActivityCode,
 		                                                act.ACT_DESC as ActivityDescription,
+                                                        act_info.ACT_IMAGE as ActivityImage,
+		                                                act_info.MTG_DAY as ActivityMeetingTime,
+		                                                act_info.MTG_TIME as ActivityMeetingDay,
 		                                                mem.SESSION_CDE as SessionCode,
 		                                                sess.SESS_DESC as SessionDescription,
 		                                                mem.ID_NUM as IDNumber,
@@ -80,6 +93,8 @@ namespace CCT_App.Services
                                                     FROM Membership as mem
                                                     INNER JOIN ACT_CLUB_DEF as act
 	                                                    ON mem.ACT_CDE = act.ACT_CDE
+                                                    INNER JOIN Activity_Info as act_info
+	                                                    ON mem.ACT_CDE = act_info.ACT_CDE
                                                     INNER JOIN CM_SESSION_MSTR as sess
 	                                                    ON mem.SESSION_CDE = sess.SESS_CDE
                                                     INNER JOIN ACCOUNT as acct
@@ -108,6 +123,9 @@ namespace CCT_App.Services
         public const string getMembershipByIDQuery = @"SELECT MEMBERSHIP_ID as MembershipID,
 		                                        mem.ACT_CDE as ActivityCode,
 		                                        act.ACT_DESC as ActivityDescription,
+                                                act_info.ACT_IMAGE as ActivityImage,
+		                                        act_info.MTG_DAY as ActivityMeetingTime,
+		                                        act_info.MTG_TIME as ActivityMeetingDay,
 		                                        mem.SESSION_CDE as SessionCode,
 		                                        sess.SESS_DESC as SessionDescription,
 		                                        mem.ID_NUM as IDNumber,
@@ -121,6 +139,8 @@ namespace CCT_App.Services
                                         FROM Membership as mem
                                         INNER JOIN ACT_CLUB_DEF as act
 	                                        ON mem.ACT_CDE = act.ACT_CDE
+                                        INNER JOIN Activity_Info as act_info
+	                                        ON mem.ACT_CDE = act_info.ACT_CDE
                                         INNER JOIN CM_SESSION_MSTR as sess
 	                                        ON mem.SESSION_CDE = sess.SESS_CDE
                                         INNER JOIN ACCOUNT as acct
@@ -132,6 +152,9 @@ namespace CCT_App.Services
         public const string getAllMembershipsQuery = @"SELECT MEMBERSHIP_ID as MembershipID,
 		                                        mem.ACT_CDE as ActivityCode,
 		                                        act.ACT_DESC as ActivityDescription,
+                                                act_info.ACT_IMAGE as ActivityImage,
+		                                        act_info.MTG_DAY as ActivityMeetingTime,
+		                                        act_info.MTG_TIME as ActivityMeetingDay,
 		                                        mem.SESSION_CDE as SessionCode,
 		                                        sess.SESS_DESC as SessionDescription,
 		                                        mem.ID_NUM as IDNumber,
@@ -145,6 +168,8 @@ namespace CCT_App.Services
                                         FROM Membership as mem
                                         INNER JOIN ACT_CLUB_DEF as act
 	                                        ON mem.ACT_CDE = act.ACT_CDE
+                                        INNER JOIN Activity_Info as act_info
+	                                        ON mem.ACT_CDE = act_info.ACT_CDE
                                         INNER JOIN CM_SESSION_MSTR as sess
 	                                        ON mem.SESSION_CDE = sess.SESS_CDE
                                         INNER JOIN ACCOUNT as acct

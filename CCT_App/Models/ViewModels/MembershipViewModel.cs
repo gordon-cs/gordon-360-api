@@ -8,6 +8,9 @@ namespace CCT_App.Models.ViewModels
         public int MembershipID { get; set; }
         public string ActivityCode { get; set; }
         public string ActivityDescription { get; set; }
+        public string ActivityImage { get; set; }
+        public string ActivityMeetingTime { get; set; }
+        public string ActivityMeetingday { get; set; }
         public string SessionCode { get; set; }
         public string SessionDescription { get; set; }
         public string IDNumber { get; set; }

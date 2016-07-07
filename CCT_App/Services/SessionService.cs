@@ -38,13 +38,24 @@ namespace CCT_App.Services
         /// </summary>
         /// <param name="id">The session code</param>
         /// <returns>ActivityViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
-        public IEnumerable<ActivityViewModel> GetActivitiesForSession(string id)
+        public IEnumerable<ActivityInfoViewModel> GetActivitiesForSession(string id)
         {
             var query = _unitOfWork.ActivityRepository.ExecWithStoredProcedure
                 ("ACTIVE_CLUBS_PER_SESS_ID @SESS_CDE", 
                 new SqlParameter("SESS_CDE", SqlDbType.VarChar) { Value = id });
             var result = query.Select<ACT_CLUB_DEF, ActivityViewModel>(x => x);
-            return result;
+            var activityInfo = result.Select<ActivityViewModel, ActivityInfoViewModel>(x =>
+            {
+                ActivityInfoViewModel y = new ActivityInfoViewModel();
+                var record = _unitOfWork.ActivityInfoRepository.GetById(x.ActivityCode);
+                y.ActivityCode = x.ActivityCode;
+                y.ActivityDescription = x.ActivityDescription;
+                y.ActivityImage = record.ACT_IMAGE;
+                y.MeetingDay = record.MTG_DAY;
+                y.MeetingTime = record.MTG_TIME;
+                return y;
+            });
+            return activityInfo;
         }
 
 

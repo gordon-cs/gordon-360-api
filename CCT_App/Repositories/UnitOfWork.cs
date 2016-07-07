@@ -22,6 +22,7 @@ namespace CCT_App.Repositories
         private IRepository<SUPERVISOR> _SupervisorRepository;
         private IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> _ActivityPerSessionRepository;
         private IRepository<Request> _MembershipRequestRepository;
+        private IRepository<Activity_Info> _ActivityInfoRepository;
 
         private CCTEntities _context;
 
@@ -36,6 +37,10 @@ namespace CCT_App.Repositories
         public IRepository<ACT_CLUB_DEF> ActivityRepository
         {
             get { return _ActivityRepository ?? (_ActivityRepository = new GenericRepository<ACT_CLUB_DEF>(_context)); }
+        }
+        public IRepository<Activity_Info> ActivityInfoRepository
+        {
+            get { return _ActivityInfoRepository ?? (_ActivityInfoRepository = new GenericRepository<Activity_Info>(_context)); }
         }
         public IRepository<CM_SESSION_MSTR> SessionRepository
         {

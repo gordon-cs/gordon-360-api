@@ -185,6 +185,7 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApiControllers\ActivityInfoController.cs" />
     <Compile Include="ApiControllers\MembershipRequestController.cs" />
     <Compile Include="ApiControllers\RolesController.cs" />
     <Compile Include="ApiControllers\SessionsController.cs" />
@@ -224,6 +225,11 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CCT_DB_Models.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CCT_DB_Models1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
@@ -276,6 +282,7 @@
     <Compile Include="Repositories\IUnitOfWork.cs" />
     <Compile Include="Repositories\UnitOfWork.cs" />
     <Compile Include="Services\AccountService.cs" />
+    <Compile Include="Services\ActivityInfoService.cs" />
     <Compile Include="Services\ActivityService.cs" />
     <Compile Include="Services\ComplexQueries\RawSqlQuery.cs" />
     <Compile Include="Services\Constants.cs" />
@@ -293,14 +300,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\assets\add-membership-ceb028a4564690006b54c4efea59eaed.css" />
-    <Content Include="Content\assets\all-activities-1fd8edcc830b5981b8f5cf785e69e4ff.css" />
-    <Content Include="Content\assets\custom-63c9f0c6665d423d35f5fcb6cc4009b8.css" />
+    <Content Include="Content\assets\all-activities-e8251fc05ef7095f2bdc6a924f808a1e.css" />
+    <Content Include="Content\assets\custom-3eed31082e836f01ef2bede0859c017a.css" />
     <Content Include="Content\assets\favicon.ico" />
     <Content Include="Content\assets\gordon_responsive_styles-65b84814f9345940fe08c008d6c220bd.css" />
-    <Content Include="Content\assets\my-activities-b953f4b6c8283991d8e6b61f5835338e.css" />
-    <Content Include="Content\assets\specific-activity-746ec976ae2120b0e5fd08d6aeb4765c.css" />
+    <Content Include="Content\assets\my-activities-db777515e008b42d5e5b170052b74cca.css" />
+    <Content Include="Content\assets\specific-activity-04389cbe87b0365d95c52ff6562640e6.css" />
+    <Content Include="Content\assets\test-app-7b2dc3748189b2165e211231bc0530ff.js" />
     <Content Include="Content\assets\test-app-d41d8cd98f00b204e9800998ecf8427e.css" />
-    <Content Include="Content\assets\test-app-e8da41b7c15aebc0d6a35b05207de3b6.js" />
     <Content Include="Content\assets\vendor-3805aadf252a1b05dc07878b9731d1f9.js" />
     <Content Include="Content\assets\vendor-a2db23d85e0413eb58e87bb778485eac.css" />
     <Content Include="Content\bootstrap.css" />
@@ -315,7 +322,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <EntityDeploy Include="Models\CCT_DB_Models.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>CCT_DB_Models.Designer.cs</LastGenOutput>
+      <LastGenOutput>CCT_DB_Models1.Designer.cs</LastGenOutput>
     </EntityDeploy>
     <Content Include="Models\CCT_DB_Models.edmx.diagram">
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>

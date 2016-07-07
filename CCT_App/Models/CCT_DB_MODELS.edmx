@@ -11,9 +11,9 @@
           </Key>
           <Property Name="ACT_CDE" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="ACT_DESCR" Type="text" Nullable="false" />
-          <Property Name="MTG_DAY" Type="varchar" MaxLength="9" />
-          <Property Name="MTG_TIME" Type="time" Precision="7" />
-          <Property Name="ACT_IMAGE" Type="nvarchar" MaxLength="2083" />
+          <Property Name="MTG_DAY" Type="varchar" MaxLength="20" />
+          <Property Name="MTG_TIME" Type="varchar" MaxLength="20" />
+          <Property Name="ACT_IMAGE" Type="varchar" MaxLength="2083" />
         </EntityType>
         <EntityType Name="JNZB_ACTIVITIES">
           <Key>
@@ -124,6 +124,7 @@ warning 6002: The table/view 'CCT.dbo.PART_DEF' does not have a primary key defi
         <EntityType Name="PART_DEF">
           <Key>
             <PropertyRef Name="PART_CDE" />
+            
           </Key>
           <Property Name="PART_CDE" Type="char" MaxLength="5" Nullable="false" />
           <Property Name="PART_DESC" Type="char" MaxLength="45" Nullable="false" />
@@ -350,9 +351,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           </Key>
           <Property Name="ACT_CDE" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="ACT_DESCR" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="MTG_DAY" Type="String" MaxLength="9" FixedLength="false" Unicode="false" />
-          <Property Name="MTG_TIME" Type="Time" Precision="7" />
-          <Property Name="ACT_IMAGE" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
+          <Property Name="MTG_DAY" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="ACT_IMAGE" Type="String" MaxLength="2083" FixedLength="false" Unicode="false" />
+          <Property Name="MTG_TIME" Type="String" Nullable="false" />
         </EntityType>
         <EntityType Name="Membership">
           <Key>
@@ -502,8 +503,8 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="Activity_Info">
             <EntityTypeMapping TypeName="CCT_App.Models.Activity_Info">
               <MappingFragment StoreEntitySet="Activity_Info">
-                <ScalarProperty Name="ACT_IMAGE" ColumnName="ACT_IMAGE" />
                 <ScalarProperty Name="MTG_TIME" ColumnName="MTG_TIME" />
+                <ScalarProperty Name="ACT_IMAGE" ColumnName="ACT_IMAGE" />
                 <ScalarProperty Name="MTG_DAY" ColumnName="MTG_DAY" />
                 <ScalarProperty Name="ACT_DESCR" ColumnName="ACT_DESCR" />
                 <ScalarProperty Name="ACT_CDE" ColumnName="ACT_CDE" />
