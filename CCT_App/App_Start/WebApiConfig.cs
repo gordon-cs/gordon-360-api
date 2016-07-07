@@ -27,7 +27,7 @@ namespace CCT_App
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
+                routeTemplate: "KJzKJ6FOKx/api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
         }
