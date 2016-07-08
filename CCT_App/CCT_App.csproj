@@ -300,13 +300,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\assets\add-membership-ceb028a4564690006b54c4efea59eaed.css" />
-    <Content Include="Content\assets\all-activities-e8251fc05ef7095f2bdc6a924f808a1e.css" />
-    <Content Include="Content\assets\custom-3eed31082e836f01ef2bede0859c017a.css" />
+    <Content Include="Content\assets\all-activities-685466c6d6fcc4a149ce15a22e3182c5.css" />
+    <Content Include="Content\assets\custom-322fa06174dc08be682eb3b847981dc9.css" />
     <Content Include="Content\assets\favicon.ico" />
     <Content Include="Content\assets\gordon_responsive_styles-65b84814f9345940fe08c008d6c220bd.css" />
     <Content Include="Content\assets\my-activities-db777515e008b42d5e5b170052b74cca.css" />
     <Content Include="Content\assets\specific-activity-04389cbe87b0365d95c52ff6562640e6.css" />
-    <Content Include="Content\assets\test-app-b93bf0e3f603ee8d8bf1c1d5b75db317.js" />
+    <Content Include="Content\assets\test-app-60554d7d5b9f2f89b503eb852bc1eb18.js" />
     <Content Include="Content\assets\test-app-d41d8cd98f00b204e9800998ecf8427e.css" />
     <Content Include="Content\assets\vendor-3805aadf252a1b05dc07878b9731d1f9.js" />
     <Content Include="Content\assets\vendor-a2db23d85e0413eb58e87bb778485eac.css" />

@@ -68,7 +68,7 @@ namespace CCT_App.Services
                 return trim;
             });
 
-            return trimmedResult;
+            return trimmedResult.OrderByDescending(x => x.StartDate);
         }
 
         /// <summary>
