@@ -98,7 +98,7 @@ namespace CCT_App.Services
                 trim.ParticipationDescription = x.ParticipationDescription.Trim();
                 return trim;
             });
-            return trimmedResult;
+            return trimmedResult.OrderByDescending(x => x.StartDate);
         }
 
         /// <summary>

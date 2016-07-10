@@ -299,20 +299,29 @@
     <Compile Include="Services\SupervisorService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\assets\add-membership-ceb028a4564690006b54c4efea59eaed.css" />
-    <Content Include="Content\assets\all-activities-e8251fc05ef7095f2bdc6a924f808a1e.css" />
-    <Content Include="Content\assets\custom-3eed31082e836f01ef2bede0859c017a.css" />
-    <Content Include="Content\assets\favicon.ico" />
-    <Content Include="Content\assets\gordon_responsive_styles-65b84814f9345940fe08c008d6c220bd.css" />
-    <Content Include="Content\assets\my-activities-db777515e008b42d5e5b170052b74cca.css" />
-    <Content Include="Content\assets\specific-activity-04389cbe87b0365d95c52ff6562640e6.css" />
-    <Content Include="Content\assets\test-app-b93bf0e3f603ee8d8bf1c1d5b75db317.js" />
-    <Content Include="Content\assets\test-app-d41d8cd98f00b204e9800998ecf8427e.css" />
-    <Content Include="Content\assets\vendor-3805aadf252a1b05dc07878b9731d1f9.js" />
-    <Content Include="Content\assets\vendor-a2db23d85e0413eb58e87bb778485eac.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\custom.css" />
+    <Content Include="Content\dist\assets\add-membership-2725280d72428aa3c5be595da8ed9f06.css" />
+    <Content Include="Content\dist\assets\all-activities-2fe5ed3e5ce475d93bc79dca4d00b3e7.css" />
+    <Content Include="Content\dist\assets\app.scss" />
+    <Content Include="Content\dist\assets\custom-67b9eaad3a4741345a87c7f38bff55ff.css" />
+    <Content Include="Content\dist\assets\ember-basic-dropdown.scss" />
+    <Content Include="Content\dist\assets\ember-power-select.scss" />
+    <Content Include="Content\dist\assets\ember-power-select\themes\bootstrap.scss" />
+    <Content Include="Content\dist\assets\ember-power-select\variables.scss" />
+    <Content Include="Content\dist\assets\favicon.ico" />
+    <Content Include="Content\dist\assets\gordon_responsive_styles-65b84814f9345940fe08c008d6c220bd.css" />
+    <Content Include="Content\dist\assets\my-activities-55abf61ac313d7119eda9888f97684d5.css" />
+    <Content Include="Content\dist\assets\specific-activity-dde0cac6a9a7bbadd0043ed7546e22e1.css" />
+    <Content Include="Content\dist\assets\test-app-924d186b3d182bd0f5e724ccacd42dcd.js" />
+    <Content Include="Content\dist\assets\test-app-d41d8cd98f00b204e9800998ecf8427e.css" />
+    <Content Include="Content\dist\assets\vendor-3805aadf252a1b05dc07878b9731d1f9.js" />
+    <Content Include="Content\dist\assets\vendor-ee9cdd5e7a89229508b6021db51f07ca.css" />
+    <Content Include="Content\dist\crossdomain.xml" />
+    <Content Include="Content\dist\images\gordon-logo-vertical-white.svg" />
+    <Content Include="Content\dist\index.html" />
+    <Content Include="Content\dist\robots.txt" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -327,11 +336,6 @@
     <Content Include="Models\CCT_DB_Models.edmx.diagram">
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
     </Content>
-    <Content Include="Content\assets\app.scss" />
-    <Content Include="Content\assets\ember-basic-dropdown.scss" />
-    <Content Include="Content\assets\ember-power-select.scss" />
-    <Content Include="Content\assets\ember-power-select\themes\bootstrap.scss" />
-    <Content Include="Content\assets\ember-power-select\variables.scss" />
     <None Include="Properties\PublishProfiles\CCTEmber.pubxml" />
     <None Include="Properties\PublishProfiles\CCT_App.pubxml" />
     <None Include="Properties\PublishProfiles\CCT_APP_PUBLISH.pubxml" />
