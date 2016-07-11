@@ -7,6 +7,7 @@ using System;
 
 using Gordon360.AuthorizationServer;
 using System.IdentityModel.Tokens;
+using System.Diagnostics;
 
 namespace Gordon360
 {
@@ -17,15 +18,20 @@ namespace Gordon360
             var issuer = System.Web.Configuration.WebConfigurationManager.AppSettings["jwtIssuer"];
             var secret = System.Web.Configuration.WebConfigurationManager.AppSettings["jwtSecret"];
 
+            // Configure Cors
+            appBuilder.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
+
             // Configure options for Authorization Component
             appBuilder.UseOAuthAuthorizationServer(new OAuthAuthorizationServerOptions
             {
                 AllowInsecureHttp = true,
                 TokenEndpointPath = new PathString("/token"),
                 AccessTokenExpireTimeSpan = TimeSpan.FromMinutes(10),
-                Provider = new TokenIssuer()
+                Provider = new TokenIssuer(),
+                AccessTokenFormat = new CustomJWTFormat(issuer)
             });
-
+            
+            // User json web tokens
             appBuilder.UseJwtBearerAuthentication(new JwtBearerAuthenticationOptions
             {
                 AuthenticationMode = Microsoft.Owin.Security.AuthenticationMode.Active,
@@ -34,6 +40,8 @@ namespace Gordon360
                 {
                     new SymmetricKeyIssuerSecurityTokenProvider(issuer, secret)
                 }
+                
+                
             });
 
             // Configure the options for the WebApi Component.

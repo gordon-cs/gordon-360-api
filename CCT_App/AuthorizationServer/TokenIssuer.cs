@@ -8,6 +8,9 @@ using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.OAuth;
 using System.Security.Claims;
 using System.Diagnostics;
+using Gordon360.Services;
+using Gordon360.Repositories;
+using System.Collections;
 
 namespace Gordon360.AuthorizationServer
 {
@@ -35,7 +38,6 @@ namespace Gordon360.AuthorizationServer
             // Syntax like : my.server.com:8080 
             var ldapServer = System.Web.Configuration.WebConfigurationManager.AppSettings["ldapServer"];
 
-            AuthenticationResult result;
 
             /*******************************
              * Ldap Authentication
@@ -74,7 +76,6 @@ namespace Gordon360.AuthorizationServer
                         );
 
 
-
                     var areValidCredentials = ADUserConnection.ValidateCredentials(
                         username,
                         password,
@@ -83,48 +84,43 @@ namespace Gordon360.AuthorizationServer
 
                     if (areValidCredentials)
                     {
+                        var unitOfWork = new UnitOfWork();
+                        var studentService = new StudentService(unitOfWork);
+                        var studentMemberships = studentService.GetActivitiesForStudent(userEntry.EmployeeId);
 
-                        var identity = new ClaimsIdentity(new[]
-                            {
-                            new Claim(ClaimTypes.Name, userEntry.Name),
-                            new Claim(ClaimTypes.NameIdentifier, userEntry.EmployeeId)
-                            },
-                            context.Options.AuthenticationType
-                        );
+                        IDictionary<string, string> membershipRoles = new Dictionary<string,string>();
+                        foreach (var membership in studentMemberships)
+                        {
+                            membershipRoles[membership.ActivityCode] = membership.Participation;
+                        }
+                        var identity = new ClaimsIdentity(context.Options.AuthenticationType);
+                        identity.AddClaim(new Claim(ClaimTypes.Name, userEntry.Name));
+                        identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, userEntry.EmployeeId));
                         ADServiceConnection.Dispose();
-                        result =  new AuthenticationResult();
                         context.Validated(identity);
-
-
                     }
-
-                    ADServiceConnection.Dispose();
-                    result =  new AuthenticationResult("Provided Credentials are not valid");
+                    else
+                    {
+                        ADServiceConnection.Dispose();
+                        context.SetError("invalid_grant", "The username or password is not correct");
+                    }
+                    
+                    
                 }
                 else
                 {
                     Debug.WriteLine("\n\nNOT FOUND\n\n");
-                    result =  new AuthenticationResult("User doesn't exist!");
+                    context.SetError("invalid_grant", "The user name or password is not correct");
                 }
             }
             catch (Exception e)
             {
                 Debug.WriteLine("Exception caught: " + e.ToString());
-                result =  new AuthenticationResult("There was a connection problem");
+                context.SetError("connection_error", "There was a problem connecting to the authorization server.");
 
             }
         }
 
-        public class AuthenticationResult
-        {
-            public string ErrorMsg { get; private set; }
-            public Boolean isSuccess => string.IsNullOrEmpty(ErrorMsg);
-
-            public AuthenticationResult(string errMessage = null)
-            {
-                ErrorMsg = errMessage;
-            }
-        }
 
     }
 }
