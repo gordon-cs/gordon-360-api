@@ -4,13 +4,13 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using CCT_App.Models;
-using CCT_App.Repositories;
-using CCT_App.Services;
+using Gordon360.Models;
+using Gordon360.Repositories;
+using Gordon360.Services;
 
-namespace CCT_App.Controllers.Api
+namespace Gordon360.Controllers.Api
 {
-    [RoutePrefix("KJzKJ6FOKx/api/requests")]
+    [RoutePrefix("api/requests")]
     public class MembershipRequestController : ApiController
     {
         public IMembershipRequestService _membershipRequestService;

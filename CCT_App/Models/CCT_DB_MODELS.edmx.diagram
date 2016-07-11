@@ -5,18 +5,18 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="62221ce1c0d24f23aa0466632ba17d8a" Name="Diagram1">
-        <EntityTypeShape EntityType="CCT_App.Models.JNZB_ACTIVITIES" Width="1.5" PointX="9.375" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="CCT_App.Models.SUPERVISOR" Width="1.5" PointX="5.375" PointY="0.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="CCT_App.Models.ACCOUNT" Width="1.5" PointX="5.375" PointY="3" IsExpanded="true" />
-        <EntityTypeShape EntityType="CCT_App.Models.ACT_CLUB_DEF" Width="1.5" PointX="3.75" PointY="2.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="CCT_App.Models.CM_SESSION_MSTR" Width="1.5" PointX="3.75" PointY="0.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="CCT_App.Models.Faculty" Width="1.5" PointX="7" PointY="0.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="CCT_App.Models.PART_DEF" Width="1.5" PointX="3.75" PointY="3.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="CCT_App.Models.Staff" Width="1.5" PointX="7" PointY="2.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="CCT_App.Models.Student" Width="1.5" PointX="2.125" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="CCT_App.Models.Request" Width="1.5" PointX="0.5" PointY="3.125" />
-        <EntityTypeShape EntityType="CCT_App.Models.Activity_Info" Width="1.5" PointX="0.5" PointY="6" />
-        <EntityTypeShape EntityType="CCT_App.Models.Membership" Width="1.5" PointX="3.375" PointY="6.75" />
+        <EntityTypeShape EntityType="Gordon360.Models.JNZB_ACTIVITIES" Width="1.5" PointX="9.375" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Gordon360.Models.SUPERVISOR" Width="1.5" PointX="5.375" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Gordon360.Models.ACCOUNT" Width="1.5" PointX="5.375" PointY="3" IsExpanded="true" />
+        <EntityTypeShape EntityType="Gordon360.Models.ACT_CLUB_DEF" Width="1.5" PointX="3.75" PointY="2.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Gordon360.Models.CM_SESSION_MSTR" Width="1.5" PointX="3.75" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Gordon360.Models.Faculty" Width="1.5" PointX="7" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Gordon360.Models.PART_DEF" Width="1.5" PointX="3.75" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Gordon360.Models.Staff" Width="1.5" PointX="7" PointY="2.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Gordon360.Models.Student" Width="1.5" PointX="2.125" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Gordon360.Models.Request" Width="1.5" PointX="0.5" PointY="3.125" />
+        <EntityTypeShape EntityType="Gordon360.Models.Activity_Info" Width="1.5" PointX="0.5" PointY="6" />
+        <EntityTypeShape EntityType="Gordon360.Models.Membership" Width="1.5" PointX="3.375" PointY="6.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

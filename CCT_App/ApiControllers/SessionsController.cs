@@ -1,21 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
-using CCT_App.Models;
-using CCT_App.Repositories;
-using CCT_App.Services;
-using System.Data.Entity.Core.Objects;
+using Gordon360.Models;
+using Gordon360.Repositories;
+using Gordon360.Services;
 
-namespace CCT_App.Controllers.Api
+namespace Gordon360.Controllers.Api
 {
-    [RoutePrefix("KJzKJ6FOKx/api/sessions")]
+    [RoutePrefix("api/sessions")]
     public class SessionsController : ApiController
     {
 
@@ -51,7 +43,6 @@ namespace CCT_App.Controllers.Api
         // GET: api/Sessions/5
         [HttpGet]
         [Route("{id}")]
-        [ResponseType(typeof(CM_SESSION_MSTR))]
         public IHttpActionResult Get(string id)
         {
             if (!ModelState.IsValid || String.IsNullOrWhiteSpace(id))

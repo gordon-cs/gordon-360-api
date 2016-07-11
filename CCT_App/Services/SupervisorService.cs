@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using CCT_App.Models;
-using CCT_App.Models.ViewModels;
-using CCT_App.Repositories;
+using Gordon360.Models;
+using Gordon360.Models.ViewModels;
+using Gordon360.Repositories;
 using System.Data.SqlClient;
 using System.Data;
-using CCT_App.Services.ComplexQueries;
+using Gordon360.Services.ComplexQueries;
 
-namespace CCT_App.Services
+namespace Gordon360.Services
 {
     /// <summary>
     /// Service class to facilitate data transactions between the controller and the database models.

@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="CCT_App.Models.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="Gordon360.Models.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Activity_Info">
           <Key>
             <PropertyRef Name="ACT_CDE" />
@@ -218,7 +218,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="CCT_App.Models" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="Gordon360.Models" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="JNZB_ACTIVITIES">
           <Key>
             <PropertyRef Name="ENTRY_ID" />
@@ -321,12 +321,12 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="PART_DEF" EntityType="Self.PART_DEF" />
           <EntitySet Name="Staffs" EntityType="Self.Staff" />
           <EntitySet Name="Students" EntityType="Self.Student" />
-          <FunctionImport Name="ACTIVE_CLUBS_PER_SESS_ID" ReturnType="Collection(CCT_App.Models.ACTIVE_CLUBS_PER_SESS_ID_Result)">
+          <FunctionImport Name="ACTIVE_CLUBS_PER_SESS_ID" ReturnType="Collection(Gordon360.Models.ACTIVE_CLUBS_PER_SESS_ID_Result)">
           <Parameter Name="SESS_CDE" Mode="In" Type="String" />
           </FunctionImport>
-          <EntitySet Name="Request" EntityType="CCT_App.Models.Request" />
-          <EntitySet Name="Activity_Info" EntityType="CCT_App.Models.Activity_Info" />
-          <EntitySet Name="Membership" EntityType="CCT_App.Models.Membership" />
+          <EntitySet Name="Request" EntityType="Gordon360.Models.Request" />
+          <EntitySet Name="Activity_Info" EntityType="Gordon360.Models.Activity_Info" />
+          <EntitySet Name="Membership" EntityType="Gordon360.Models.Membership" />
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
           <Property Type="String" Name="ACT_CDE" Nullable="false" MaxLength="8" />
@@ -378,7 +378,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="CCT_AppModelsStoreContainer" CdmEntityContainer="CCTEntities">
           <EntitySetMapping Name="JNZB_ACTIVITIES">
-            <EntityTypeMapping TypeName="CCT_App.Models.JNZB_ACTIVITIES">
+            <EntityTypeMapping TypeName="Gordon360.Models.JNZB_ACTIVITIES">
               <MappingFragment StoreEntitySet="JNZB_ACTIVITIES">
                 <ScalarProperty Name="ENTRY_ID" ColumnName="ENTRY_ID" />
                 <ScalarProperty Name="SESS_CDE" ColumnName="SESS_CDE" />
@@ -398,7 +398,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="SUPERVISORs">
-            <EntityTypeMapping TypeName="CCT_App.Models.SUPERVISOR">
+            <EntityTypeMapping TypeName="Gordon360.Models.SUPERVISOR">
               <MappingFragment StoreEntitySet="SUPERVISOR">
                 <ScalarProperty Name="SESSION_CDE" ColumnName="SESSION_CDE" />
                 <ScalarProperty Name="SUP_ID" ColumnName="SUP_ID" />
@@ -411,7 +411,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ACCOUNTs">
-            <EntityTypeMapping TypeName="CCT_App.Models.ACCOUNT">
+            <EntityTypeMapping TypeName="Gordon360.Models.ACCOUNT">
               <MappingFragment StoreEntitySet="ACCOUNT">
                 <ScalarProperty Name="gordon_id" ColumnName="gordon_id" />
                 <ScalarProperty Name="firstname" ColumnName="firstname" />
@@ -423,7 +423,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ACT_CLUB_DEF">
-            <EntityTypeMapping TypeName="CCT_App.Models.ACT_CLUB_DEF">
+            <EntityTypeMapping TypeName="Gordon360.Models.ACT_CLUB_DEF">
               <MappingFragment StoreEntitySet="ACT_CLUB_DEF">
                 <ScalarProperty Name="ACT_CDE" ColumnName="ACT_CDE" />
                 <ScalarProperty Name="ACT_DESC" ColumnName="ACT_DESC" />
@@ -431,7 +431,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="CM_SESSION_MSTR">
-            <EntityTypeMapping TypeName="CCT_App.Models.CM_SESSION_MSTR">
+            <EntityTypeMapping TypeName="Gordon360.Models.CM_SESSION_MSTR">
               <MappingFragment StoreEntitySet="CM_SESSION_MSTR">
                 <ScalarProperty Name="SESS_CDE" ColumnName="SESS_CDE" />
                 <ScalarProperty Name="SESS_DESC" ColumnName="SESS_DESC" />
@@ -441,7 +441,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Faculties">
-            <EntityTypeMapping TypeName="CCT_App.Models.Faculty">
+            <EntityTypeMapping TypeName="Gordon360.Models.Faculty">
               <MappingFragment StoreEntitySet="Faculty">
                 <ScalarProperty Name="faculty_id" ColumnName="faculty_id" />
                 <ScalarProperty Name="faculty_name" ColumnName="faculty_name" />
@@ -451,7 +451,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="PART_DEF">
-            <EntityTypeMapping TypeName="CCT_App.Models.PART_DEF">
+            <EntityTypeMapping TypeName="Gordon360.Models.PART_DEF">
               <MappingFragment StoreEntitySet="PART_DEF">
                 <ScalarProperty Name="PART_CDE" ColumnName="PART_CDE" />
                 <ScalarProperty Name="PART_DESC" ColumnName="PART_DESC" />
@@ -459,7 +459,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Staffs">
-            <EntityTypeMapping TypeName="CCT_App.Models.Staff">
+            <EntityTypeMapping TypeName="Gordon360.Models.Staff">
               <MappingFragment StoreEntitySet="Staff">
                 <ScalarProperty Name="staff_id" ColumnName="staff_id" />
                 <ScalarProperty Name="staff_name" ColumnName="staff_name" />
@@ -469,7 +469,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Students">
-            <EntityTypeMapping TypeName="CCT_App.Models.Student">
+            <EntityTypeMapping TypeName="Gordon360.Models.Student">
               <MappingFragment StoreEntitySet="Student">
                 <ScalarProperty Name="student_id" ColumnName="student_id" />
                 <ScalarProperty Name="student_name" ColumnName="student_name" />
@@ -478,16 +478,16 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="ACTIVE_CLUBS_PER_SESS_ID" FunctionName="CCT_App.Models.Store.ACTIVE_CLUBS_PER_SESS_ID">
+          <FunctionImportMapping FunctionImportName="ACTIVE_CLUBS_PER_SESS_ID" FunctionName="Gordon360.Models.Store.ACTIVE_CLUBS_PER_SESS_ID">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="CCT_App.Models.ACTIVE_CLUBS_PER_SESS_ID_Result">
+              <ComplexTypeMapping TypeName="Gordon360.Models.ACTIVE_CLUBS_PER_SESS_ID_Result">
                 <ScalarProperty Name="ACT_CDE" ColumnName="ACT_CDE" />
                 <ScalarProperty Name="ACT_DESC" ColumnName="ACT_DESC" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
           <EntitySetMapping Name="Request">
-            <EntityTypeMapping TypeName="CCT_App.Models.Request">
+            <EntityTypeMapping TypeName="Gordon360.Models.Request">
               <MappingFragment StoreEntitySet="Request">
                 <ScalarProperty Name="APPROVED" ColumnName="APPROVED" />
                 <ScalarProperty Name="SESS_CDE" ColumnName="SESS_CDE" />
@@ -501,7 +501,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Activity_Info">
-            <EntityTypeMapping TypeName="CCT_App.Models.Activity_Info">
+            <EntityTypeMapping TypeName="Gordon360.Models.Activity_Info">
               <MappingFragment StoreEntitySet="Activity_Info">
                 <ScalarProperty Name="MTG_TIME" ColumnName="MTG_TIME" />
                 <ScalarProperty Name="ACT_IMAGE" ColumnName="ACT_IMAGE" />
@@ -512,7 +512,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Membership">
-            <EntityTypeMapping TypeName="CCT_App.Models.Membership">
+            <EntityTypeMapping TypeName="Gordon360.Models.Membership">
               <MappingFragment StoreEntitySet="Membership">
                 <ScalarProperty Name="JOB_TIME" ColumnName="JOB_TIME" />
                 <ScalarProperty Name="JOB_NAME" ColumnName="JOB_NAME" />

@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Moq;
-using CCT_App.Controllers.Api;
-using CCT_App.Services;
-using CCT_App.Models;
-using CCT_App.Models.ViewModels;
+using Gordon360.Controllers.Api;
+using Gordon360.Services;
+using Gordon360.Models;
+using Gordon360.Models.ViewModels;
 using System.Web.Http.Results;
 
-namespace CCT_App.Tests.ControllerUnitTests
+namespace Gordon360.Tests.ControllerUnitTests
 {
     /* Test Class for Activities Controller */
     public class Activities 

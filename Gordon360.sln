@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CCT_App", "CCT_App\CCT_App.csproj", "{47DF568B-4E41-4398-BD88-B6BAB507334A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gordon360", "CCT_App\Gordon360.csproj", "{47DF568B-4E41-4398-BD88-B6BAB507334A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CCT_App.Tests", "CCT_App.Tests\CCT_App.Tests.csproj", "{323C6615-95F3-4134-913D-C9B5875ABD27}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gordon360.Tests", "CCT_App.Tests\Gordon360.Tests.csproj", "{323C6615-95F3-4134-913D-C9B5875ABD27}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

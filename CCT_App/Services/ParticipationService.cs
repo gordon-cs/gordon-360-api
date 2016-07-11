@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using CCT_App.Models;
-using CCT_App.Models.ViewModels;
-using CCT_App.Repositories;
+using Gordon360.Models;
+using Gordon360.Models.ViewModels;
+using Gordon360.Repositories;
 
-namespace CCT_App.Services
+namespace Gordon360.Services
 {
     /// <summary>
     /// Service class that facilitates data passing between the ParticipationsController and the database model.

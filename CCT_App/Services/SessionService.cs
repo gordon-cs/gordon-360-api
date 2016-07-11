@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CCT_App.Models;
-using CCT_App.Models.ViewModels;
-using CCT_App.Repositories;
+using Gordon360.Models;
+using Gordon360.Models.ViewModels;
+using Gordon360.Repositories;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace CCT_App.Services
+namespace Gordon360.Services
 {
     /// <summary>
     /// Service class to facilitate data transactions between the Controller and the database model.

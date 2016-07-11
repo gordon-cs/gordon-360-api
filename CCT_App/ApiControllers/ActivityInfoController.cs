@@ -4,14 +4,14 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using CCT_App.Models.ViewModels;
-using CCT_App.Services;
-using CCT_App.Repositories;
+using Gordon360.Models.ViewModels;
+using Gordon360.Services;
+using Gordon360.Repositories;
 
-namespace CCT_App.ApiControllers
+namespace Gordon360.ApiControllers
 {
     // TODO: GET RID OF THIS CLASS
-    [RoutePrefix("KJzKJ6FOKx/api/activitiesInfo")]
+    [RoutePrefix("api/activitiesInfo")]
     public class ActivityInfoController : ApiController
     {
         private IActivityInfoService _activityInfoService;

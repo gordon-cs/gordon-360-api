@@ -8,13 +8,13 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
-using CCT_App.Models;
-using CCT_App.Services;
-using CCT_App.Repositories;
+using Gordon360.Models;
+using Gordon360.Services;
+using Gordon360.Repositories;
 
-namespace CCT_App.Controllers.Api
+namespace Gordon360.Controllers.Api
 {
-    [RoutePrefix("KJzKJ6FOKx/api/participations")]
+    [RoutePrefix("api/participations")]
     public class ParticipationsController : ApiController
     {
         private IParticipationService _participationService;

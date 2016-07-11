@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace CCT_App.Models.ViewModels
+namespace Gordon360.Models.ViewModels
 {
     public class AccountViewModel
     {

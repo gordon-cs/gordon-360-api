@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using CCT_App.Models;
-using System.Data.Entity.Core.Objects;
-using System.Data.Entity;
-using CCT_App.Services;
-using CCT_App.Repositories;
-using CCT_App.Models.ViewModels;
+﻿using System.Web.Http;
+using Gordon360.Models;
+using Gordon360.Services;
+using Gordon360.Repositories;
+using Gordon360.Models.ViewModels;
 
-namespace CCT_App.Controllers.Api
+namespace Gordon360.Controllers.Api
 {
-    [RoutePrefix("KJzKJ6FOKx/api/memberships")]
+    [RoutePrefix("api/memberships")]
     public class MembershipsController : ApiController
     {
 

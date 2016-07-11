@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace CCT_App.Models
+namespace Gordon360.Models
 {
     [MetadataType(typeof(Membership_Metadata))]
     public partial class Membership

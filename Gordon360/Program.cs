@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Gordon360.Tests.ControllerUnitTests
+namespace Gordon360
 {
-    class MembershipRequests
+    class Program
     {
+        static void Main(string[] args)
+        {
+        }
     }
 }

@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using CCT_App.Models.ViewModels;
-using CCT_App.Repositories;
-using CCT_App.Models;
+using Gordon360.Models.ViewModels;
+using Gordon360.Repositories;
+using Gordon360.Models;
 
-namespace CCT_App.Services
+namespace Gordon360.Services
 {
     /// <summary>
     /// Service class for facilitation data transfers between the front end views and the backend database models

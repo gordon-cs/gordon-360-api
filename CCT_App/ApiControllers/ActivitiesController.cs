@@ -4,15 +4,15 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using CCT_App.Models;
+using Gordon360.Models;
 using System.Data.Entity.Core.Objects;
-using CCT_App.Services;
-using CCT_App.Repositories;
+using Gordon360.Services;
+using Gordon360.Repositories;
 
-namespace CCT_App.Controllers.Api
+namespace Gordon360.Controllers.Api
 {
     
-    [RoutePrefix("KJzKJ6FOKx/api/activities")]
+    [RoutePrefix("api/activities")]
     public class ActivitiesController : ApiController
     {
         private IActivityService _activityService;

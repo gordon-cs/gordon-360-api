@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CCT_App.Models
+namespace Gordon360.Models
 {
     using System;
     using System.Data.Entity;

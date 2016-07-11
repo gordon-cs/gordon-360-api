@@ -1,4 +1,4 @@
-﻿using CCT_App.Models;
+﻿using Gordon360.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Web;
 
-namespace CCT_App.Repositories
+namespace Gordon360.Repositories
 {
     public class GenericRepository<T> : IRepository<T> where T: class
     {

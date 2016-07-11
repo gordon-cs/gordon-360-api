@@ -1,10 +1,10 @@
-﻿using CCT_App.Models;
+﻿using Gordon360.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace CCT_App.Services.ComplexQueries
+namespace Gordon360.Services.ComplexQueries
 {
     public static class RawSqlQuery<T> where T: class
     {

@@ -1,11 +1,11 @@
-﻿using CCT_App.Models.ViewModels;
-using CCT_App.Repositories;
+﻿using Gordon360.Models.ViewModels;
+using Gordon360.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace CCT_App.Services
+namespace Gordon360.Services
 {
     /// <summary>
     /// Service class for methods that are shared between all services.

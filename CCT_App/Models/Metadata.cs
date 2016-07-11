@@ -12,7 +12,7 @@ using System.Web;
  'extend' there definition here without worrying about the code being lost
  */
 
-namespace CCT_App.Models
+namespace Gordon360.Models
 {
 
     public class Membership_Metadata

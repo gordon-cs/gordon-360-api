@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using CCT_App.Models;
-using CCT_App.Repositories;
+using Gordon360.Models;
+using Gordon360.Repositories;
 
-namespace CCT_App.Services
+namespace Gordon360.Services
 {
     /// <summary>
     /// Service class to faclitate data transfers between in and out of the JNZB_ACTIVITIES table.

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace CCT_App.Services
+namespace Gordon360.Services
 {
     /// <summary>
     /// This class is mostly being used for constructing sql queries. Since the main tables this application relies on are actually views,
