@@ -51,7 +51,6 @@ namespace Gordon360.Controllers.Api
         // GET api/<controller>/5
         [HttpGet]
         [Route("{id}")]
-        [AuthorizeActivityLeader]
         public IHttpActionResult Get(string id)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
