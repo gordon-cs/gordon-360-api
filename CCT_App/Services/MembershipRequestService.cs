@@ -88,7 +88,7 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// Fetchest all the membership request objects from the database.
+        /// Fetches all the membership request objects from the database.
         /// </summary>
         /// <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
         public IEnumerable<MembershipRequestViewModel> GetAll()
@@ -111,6 +111,33 @@ namespace Gordon360.Services
             });
             return trimmedResult;
         }
+
+        /// <summary>
+        /// Fetches all the membership requests associated with this student
+        /// </summary>
+        /// <param name="id">The student id</param>
+        /// <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
+        public IEnumerable<MembershipRequestViewModel> GetMembershipRequestsForStudent(string id)
+        {
+            var rawsqlQuery = Constants.getMembershipRequestsForStudentQuery;
+            var result = RawSqlQuery<MembershipRequestViewModel>.query(rawsqlQuery, id);
+            var trimmedResult = result.Select(x =>
+            {
+                var trim = x;
+                trim.ActivityCode = x.ActivityCode.Trim();
+                trim.ActivityDescription = x.ActivityDescription.Trim();
+                trim.SessionCode = x.SessionCode.Trim();
+                trim.SessionDescription = x.SessionDescription.Trim();
+                trim.IDNumber = x.IDNumber.Trim();
+                trim.FirstName = x.FirstName.Trim();
+                trim.LastName = x.LastName.Trim();
+                trim.Participation = x.Participation.Trim();
+                trim.ParticipationDescription = x.ParticipationDescription.Trim();
+                return trim;
+            });
+            return trimmedResult; 
+        }
+
         /// <summary>
         /// Update an existing membership request object
         /// </summary>
@@ -119,7 +146,30 @@ namespace Gordon360.Services
         /// <returns></returns>
         public Request Update(int id, Request membershipRequest)
         {
-            return null;
+            var original = _unitOfWork.MembershipRequestRepository.GetById(id);
+            if (original == null)
+            {
+                return null;
+            }
+
+            var isValidMembershipRequest = membershipRequestIsValid(membershipRequest);
+
+            if (!isValidMembershipRequest)
+            {
+                return null;
+            }
+
+            original.ID_NUM = membershipRequest.ID_NUM;
+            original.ACT_CDE = membershipRequest.ACT_CDE;
+            original.SESS_CDE = membershipRequest.SESS_CDE;
+            original.APPROVED = membershipRequest.APPROVED;
+            original.COMMENT_TXT = membershipRequest.COMMENT_TXT;
+            original.DATE_SENT = membershipRequest.DATE_SENT;
+            original.PART_LVL = membershipRequest.PART_LVL;
+
+            _unitOfWork.Save();
+
+            return original;
         }
 
         // Helper method to help validate a membership request that comes in.

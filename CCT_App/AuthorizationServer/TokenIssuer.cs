@@ -88,14 +88,14 @@ namespace Gordon360.AuthorizationServer
                         var studentService = new StudentService(unitOfWork);
                         var studentMemberships = studentService.GetActivitiesForStudent(userEntry.EmployeeId);
 
-                        IDictionary<string, string> membershipRoles = new Dictionary<string,string>();
-                        foreach (var membership in studentMemberships)
-                        {
-                            membershipRoles[membership.ActivityCode] = membership.Participation;
-                        }
                         var identity = new ClaimsIdentity(context.Options.AuthenticationType);
-                        identity.AddClaim(new Claim(ClaimTypes.Name, userEntry.Name));
-                        identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, userEntry.EmployeeId));
+                        identity.AddClaim(new Claim("name", userEntry.Name));
+                        identity.AddClaim(new Claim("id", userEntry.EmployeeId));
+                        foreach (var membership in studentMemberships )
+                        {
+                            identity.AddClaim(new Claim(membership.ActivityCode, membership.Participation));
+                        }
+
                         ADServiceConnection.Dispose();
                         context.Validated(identity);
                     }

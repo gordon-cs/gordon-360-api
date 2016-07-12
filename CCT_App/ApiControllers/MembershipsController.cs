@@ -100,7 +100,7 @@ namespace Gordon360.Controllers.Api
         /// <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         // PUT api/<controller>/5
         [HttpPut]
-        [Route("")]
+        [Route("{id}")]
         public IHttpActionResult Put(int id, [FromBody]Membership membership)
         {
             if (!ModelState.IsValid || membership == null || id != membership.MEMBERSHIP_ID)

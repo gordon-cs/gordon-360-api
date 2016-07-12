@@ -8,11 +8,13 @@ using Gordon360.Models;
 using System.Data.Entity.Core.Objects;
 using Gordon360.Services;
 using Gordon360.Repositories;
+using Gordon360.AuthorizationFilters;
 
 namespace Gordon360.Controllers.Api
 {
     
     [RoutePrefix("api/activities")]
+    [Authorize]
     public class ActivitiesController : ApiController
     {
         private IActivityService _activityService;
@@ -31,10 +33,8 @@ namespace Gordon360.Controllers.Api
         /// <summary>
         /// Get all available activities
         /// </summary>
-        /// <returns></returns>
-        /// <remarks>
-        /// Server makes a call to get a lsit of all activities from the database
-        /// </remarks>
+        /// <returns>All the activities in the databse</returns>
+        /// <remarks></remarks>
         // GET api/<controller>
         [HttpGet]
         [Route("")]
@@ -51,6 +51,7 @@ namespace Gordon360.Controllers.Api
         // GET api/<controller>/5
         [HttpGet]
         [Route("{id}")]
+        [AuthorizeActivityLeader]
         public IHttpActionResult Get(string id)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
