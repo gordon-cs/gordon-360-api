@@ -3,10 +3,12 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using Gordon360.Repositories;
 using Gordon360.Services;
+using Gordon360.AuthorizationFilters;
 
 namespace Gordon360.Controllers.Api
 {
     [RoutePrefix("api/students")]
+    [Authorize]
     public class StudentsController : ApiController
     {
         private IStudentService _studentService;
@@ -27,7 +29,7 @@ namespace Gordon360.Controllers.Api
         // GET: api/Students
         [Route("")]
         [HttpGet]
-        [ResponseType(typeof(IHttpActionResult))]
+        [AuthorizationLevel(authorizationLevel = Constants.GOD_LEVEL)]
         public IHttpActionResult Get()
         {
             var all = _studentService.GetAll();
@@ -41,7 +43,7 @@ namespace Gordon360.Controllers.Api
         // GET: api/Students/5
         [Route("{id}")]
         [HttpGet]
-        [ResponseType(typeof(IHttpActionResult))]
+        [AuthorizationLevel(authorizationLevel = Constants.GOD_LEVEL)]
         public IHttpActionResult Get(string id)
         {
             if(!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
@@ -60,7 +62,7 @@ namespace Gordon360.Controllers.Api
         }
 
 
-
+        // TODO FIGGURE THIS OUT
         /// <summary>Get any and all memberships that a specific student has been a part of</summary>
         /// <param name="id">The Gordon ID of whichever student memberships are wanted for</param>
         /// <returns>The membership information that the student is a part of</returns>

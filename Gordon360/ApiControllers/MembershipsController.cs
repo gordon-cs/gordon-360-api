@@ -3,10 +3,12 @@ using Gordon360.Models;
 using Gordon360.Services;
 using Gordon360.Repositories;
 using Gordon360.Models.ViewModels;
+using Gordon360.AuthorizationFilters;
 
 namespace Gordon360.Controllers.Api
 {
     [RoutePrefix("api/memberships")]
+    [Authorize]
     public class MembershipsController : ApiController
     {
 
@@ -35,6 +37,7 @@ namespace Gordon360.Controllers.Api
         // GET api/<controller>
         [HttpGet]
         [Route("")]
+        [AuthorizationLevel(authorizationLevel = Constants.GOD_LEVEL)]
         public IHttpActionResult Get()
         {
             
@@ -76,6 +79,7 @@ namespace Gordon360.Controllers.Api
         // POST api/<controller>
         [HttpPost]
         [Route("", Name="Memberships")]
+        [AuthorizationLevel(authorizationLevel = Constants.ACTIVITY_LEADER_LEVEL)]
         public IHttpActionResult Post([FromBody] Membership membership)
         {
             if(!ModelState.IsValid || membership == null)
@@ -94,6 +98,7 @@ namespace Gordon360.Controllers.Api
 
         }
 
+        // TODO FIGGURE THIS OUT
         /// <summary>Update an existing membership item</summary>
         /// <param name="id">The membership id of whichever one is to be changed</param>
         /// <param name="membership">The content within the membership that is to be changed and what it will change to</param>
@@ -117,6 +122,7 @@ namespace Gordon360.Controllers.Api
             return Ok(membership);
         }
 
+        // TODO FIGURE THIS OUT.
         /// <summary>Delete an existing membership</summary>
         /// <param name="id">The identifier for the membership to be deleted</param>
         /// <remarks>Calls the server to make a call and remove the given membership from the database</remarks>

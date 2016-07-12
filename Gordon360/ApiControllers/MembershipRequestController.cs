@@ -7,10 +7,12 @@ using System.Web.Http;
 using Gordon360.Models;
 using Gordon360.Repositories;
 using Gordon360.Services;
+using Gordon360.AuthorizationFilters;
 
 namespace Gordon360.Controllers.Api
 {
     [RoutePrefix("api/requests")]
+    [Authorize]
     public class MembershipRequestController : ApiController
     {
         public IMembershipRequestService _membershipRequestService;
@@ -32,6 +34,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>List of all requests for membership</returns>
         [HttpGet]
         [Route("")]
+        [AuthorizationLevel(authorizationLevel = Constants.GOD_LEVEL)]
         public IHttpActionResult Get()
         {
             var all = _membershipRequestService.GetAll();
@@ -45,6 +48,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>A memberships request with the specified id</returns>
         [HttpGet]
         [Route("{id}")]
+        [AuthorizationLevel(authorizationLevel = Constants.GOD_LEVEL)]
         public IHttpActionResult Get(int id)
         {
             if (!ModelState.IsValid)
@@ -62,6 +66,8 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
 
+
+        //TODO CHANGE THIS TO MembershipsRequestForActivity
         /// <summary>
         /// Gets the memberships requests for the specified student
         /// </summary>
@@ -69,6 +75,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>All membership requests associated with the student</returns>
         [HttpGet]
         [Route("student/{id}")]
+        [AuthorizationLevel(authorizationLevel = Constants.ACTIVITY_LEADER_LEVEL)]
         public IHttpActionResult GetMembershipsRequestsForStudent(string id)
         {
             if(!ModelState.IsValid)
@@ -119,6 +126,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>The updated request if successful. HTTP error message if not.</returns>
         [HttpPut]
         [Route("{id}")]
+        [AuthorizationLevel(authorizationLevel = Constants.ACTIVITY_LEADER_LEVEL)]
         public IHttpActionResult Put(int id, Request membershipRequest)
         {
             if (!ModelState.IsValid || membershipRequest == null || id != membershipRequest.REQUEST_ID)
@@ -135,6 +143,7 @@ namespace Gordon360.Controllers.Api
             return Ok(membershipRequest);
         }
 
+        //TODO Make Authorization level for membership owner.
         /// <summary>
         /// Delets a membership request
         /// </summary>

@@ -185,7 +185,9 @@
     <Compile Include="ApiControllers\SupervisorsController.cs" />
     <Compile Include="ApiControllers\ActivitiesController.cs" />
     <Compile Include="ApiControllers\MembershipsController.cs" />
+    <Compile Include="AuthorizationFilters\AuthorizationLevel.cs" />
     <Compile Include="AuthorizationFilters\AuthorizeActivityLeader.cs" />
+    <Compile Include="AuthorizationFilters\AuthorizeSupervisor.cs" />
     <Compile Include="AuthorizationServer\CustomJWTFormat.cs" />
     <Compile Include="AuthorizationServer\TokenIssuer.cs" />
     <Compile Include="Models\ACCOUNT.cs">

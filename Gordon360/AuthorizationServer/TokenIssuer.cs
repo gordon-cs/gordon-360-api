@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.DirectoryServices.AccountManagement;
-using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.OAuth;
 using System.Security.Claims;
 using System.Diagnostics;
 using Gordon360.Services;
-using Gordon360.Repositories;
-using System.Collections;
+
 
 namespace Gordon360.AuthorizationServer
 {
@@ -84,27 +79,21 @@ namespace Gordon360.AuthorizationServer
 
                     if (areValidCredentials)
                     {
-                        var unitOfWork = new UnitOfWork();
-                        var studentService = new StudentService(unitOfWork);
-                        var studentMemberships = studentService.GetActivitiesForStudent(userEntry.EmployeeId);
+                       
                         var distinguishedName = userEntry.DistinguishedName;
                         var collegeRole = string.Empty;
                         if(distinguishedName.Contains("OU=Students"))
                         {
-                            collegeRole = "Student";
+                            collegeRole = Constants.STUDENT_ROLE;
                         }
                         else
                         {
-                            collegeRole = "Faculty/Staff";
+                            collegeRole = Constants.FACSTAFF_ROLE;
                         }
                         var identity = new ClaimsIdentity(context.Options.AuthenticationType);
                         identity.AddClaim(new Claim("name", userEntry.Name));
                         identity.AddClaim(new Claim("id", userEntry.EmployeeId));
-                        identity.AddClaim(new Claim("collegeRole", collegeRole));
-                        foreach (var membership in studentMemberships )
-                        {
-                            identity.AddClaim(new Claim(membership.ActivityCode, membership.Participation));
-                        }
+                        identity.AddClaim(new Claim("college_role", collegeRole));
 
                         ADServiceConnection.Dispose();
                         context.Validated(identity);

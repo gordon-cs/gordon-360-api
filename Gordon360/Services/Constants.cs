@@ -15,6 +15,17 @@ namespace Gordon360.Services
     /// </summary>
     public static class Constants
     {
+        // College Coles
+        public const string STUDENT_ROLE = "Student";
+        public const string FACSTAFF_ROLE = "Faculty/Staff";
+
+        //Authorization Levels
+        public const string GOD_LEVEL = "GOD";
+        public const string SUPERVISOR_LEVEL = "SUPVERVISOR";
+        public const string ACTIVITY_LEADER_LEVEL = "ACTIVITY_LEADER";
+        public const string MEMBER = "REGULAR_MEMBER";
+
+
         // Participation Codes considered to be leaders
         public static readonly string[] Leaders = { "CAPT", "CODIR", "CORD", "DIREC", "PRES", "VICEC", "VICEP" };
 

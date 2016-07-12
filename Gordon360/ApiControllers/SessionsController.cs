@@ -8,6 +8,7 @@ using Gordon360.Services;
 namespace Gordon360.Controllers.Api
 {
     [RoutePrefix("api/sessions")]
+    [Authorize]
     public class SessionsController : ApiController
     {
 

@@ -15,6 +15,7 @@ using Gordon360.Repositories;
 namespace Gordon360.Controllers.Api
 {
     [RoutePrefix("api/participations")]
+    [Authorize]
     public class ParticipationsController : ApiController
     {
         private IParticipationService _participationService;
@@ -35,7 +36,6 @@ namespace Gordon360.Controllers.Api
         // GET: api/roles
         [HttpGet]
         [Route("")]
-
         public IHttpActionResult Get()
         {
             var all = _participationService.GetAll();
@@ -49,7 +49,6 @@ namespace Gordon360.Controllers.Api
         // GET: api/PART_DEF/5
         [HttpGet]
         [Route("{id}")]
-        [ResponseType(typeof(PART_DEF))]
         public IHttpActionResult Get(string id)
         {
             if (!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
