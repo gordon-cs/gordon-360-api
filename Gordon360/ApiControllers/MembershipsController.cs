@@ -98,7 +98,6 @@ namespace Gordon360.Controllers.Api
 
         }
 
-        // TODO FIGGURE THIS OUT
         /// <summary>Update an existing membership item</summary>
         /// <param name="id">The membership id of whichever one is to be changed</param>
         /// <param name="membership">The content within the membership that is to be changed and what it will change to</param>
@@ -106,6 +105,7 @@ namespace Gordon360.Controllers.Api
         // PUT api/<controller>/5
         [HttpPut]
         [Route("{id}")]
+        [AuthorizationLevel(authorizationLevel = Constants.RESOURCE_OWNER, resourceType = Constants.MEMBERSHIP)]
         public IHttpActionResult Put(int id, [FromBody]Membership membership)
         {
             if (!ModelState.IsValid || membership == null || id != membership.MEMBERSHIP_ID)
@@ -122,13 +122,13 @@ namespace Gordon360.Controllers.Api
             return Ok(membership);
         }
 
-        // TODO FIGURE THIS OUT.
         /// <summary>Delete an existing membership</summary>
         /// <param name="id">The identifier for the membership to be deleted</param>
         /// <remarks>Calls the server to make a call and remove the given membership from the database</remarks>
         // DELETE api/<controller>/5
         [HttpDelete]
         [Route("{id}")]
+        [AuthorizationLevel(authorizationLevel = Constants.RESOURCE_OWNER, resourceType = Constants.MEMBERSHIP)]
         public IHttpActionResult Delete(int id)
         {
             var result = _membershipService.Delete(id);

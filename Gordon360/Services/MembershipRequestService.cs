@@ -117,9 +117,9 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="id">The student id</param>
         /// <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
-        public IEnumerable<MembershipRequestViewModel> GetMembershipRequestsForStudent(string id)
+        public IEnumerable<MembershipRequestViewModel> GetMembershipRequestsForActivity(string id)
         {
-            var rawsqlQuery = Constants.getMembershipRequestsForStudentQuery;
+            var rawsqlQuery = Constants.getMembershipRequestsForActivityQuery;
             var result = RawSqlQuery<MembershipRequestViewModel>.query(rawsqlQuery, id);
             var trimmedResult = result.Select(x =>
             {

@@ -67,23 +67,22 @@ namespace Gordon360.Controllers.Api
         }
 
 
-        //TODO CHANGE THIS TO MembershipsRequestForActivity
         /// <summary>
-        /// Gets the memberships requests for the specified student
+        /// Gets the memberships requests for the specified activity
         /// </summary>
-        /// <param name="id">The student ID</param>
-        /// <returns>All membership requests associated with the student</returns>
+        /// <param name="id">The activity code</param>
+        /// <returns>All membership requests associated with the activity</returns>
         [HttpGet]
         [Route("student/{id}")]
         [AuthorizationLevel(authorizationLevel = Constants.ACTIVITY_LEADER_LEVEL)]
-        public IHttpActionResult GetMembershipsRequestsForStudent(string id)
+        public IHttpActionResult GetMembershipsRequestsForActivity(string id)
         {
             if(!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            var result = _membershipRequestService.GetMembershipRequestsForStudent(id);
+            var result = _membershipRequestService.GetMembershipRequestsForActivity(id);
 
             if(result == null)
             {
@@ -143,12 +142,12 @@ namespace Gordon360.Controllers.Api
             return Ok(membershipRequest);
         }
 
-        //TODO Make Authorization level for membership owner.
         /// <summary>
         /// Delets a membership request
         /// </summary>
         /// <param name="id">The id of the membership request to delete</param>
         /// <returns>The deleted object</returns>
+        [AuthorizationLevel(authorizationLevel = Constants.RESOURCE_OWNER, resourceType = Constants.MEMBERSHIP_REQUEST)]
         public IHttpActionResult Delete(int id)
         {
             var result = _membershipRequestService.Delete(id);

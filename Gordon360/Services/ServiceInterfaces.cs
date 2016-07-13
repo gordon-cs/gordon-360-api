@@ -93,7 +93,7 @@ namespace Gordon360.Services
     {
         MembershipRequestViewModel Get(int id);
         IEnumerable<MembershipRequestViewModel> GetAll();
-        IEnumerable<MembershipRequestViewModel> GetMembershipRequestsForStudent(string id);
+        IEnumerable<MembershipRequestViewModel> GetMembershipRequestsForActivity(string id);
         Request Add(Request membershipRequest);
         Request Update(int id, Request membershipRequest);
         Request Delete(int id);

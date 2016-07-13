@@ -89,7 +89,6 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
 
-        //TODO FIGURE OUT
         /// <summary>Add a new supervisor</summary>
         /// <param name="supervisor">The name of the new supervisor</param>
         /// <returns>The new supervisor object</returns>

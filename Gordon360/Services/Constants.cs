@@ -24,6 +24,11 @@ namespace Gordon360.Services
         public const string SUPERVISOR_LEVEL = "SUPVERVISOR";
         public const string ACTIVITY_LEADER_LEVEL = "ACTIVITY_LEADER";
         public const string MEMBER = "REGULAR_MEMBER";
+        public const string RESOURCE_OWNER = "RESOURCE_OWNER";
+
+        // Resource Types
+        public const string MEMBERSHIP = "membership";
+        public const string MEMBERSHIP_REQUEST = "membershipRequest";
 
 
         // Participation Codes considered to be leaders
@@ -271,7 +276,7 @@ namespace Gordon360.Services
                                             INNER JOIN ACT_CLUB_DEF as activity
 	                                            ON sup.ACT_CDE = activity.ACT_CDE";
 
-        public const string getMembershipRequestsForStudentQuery = @"SELECT	req.REQUEST_ID as RequestID,
+        public const string getMembershipRequestsForActivityQuery = @"SELECT	req.REQUEST_ID as RequestID,
 		                                                            req.ACT_CDE as ActivityCode,
 		                                                            activity.ACT_DESC as ActivityDescription,
 		                                                            req.ID_NUM as IDNumber,
@@ -293,7 +298,7 @@ namespace Gordon360.Services
 	                                                            ON req.ID_NUM = acct.gordon_id
                                                             INNER JOIN PART_DEF as part
 	                                                            ON req.PART_LVL = part.PART_CDE
-                                                            WHERE req.ID_NUM = @p0";
+                                                            WHERE req.ACT_CDE = @p0";
     }
 
 }
