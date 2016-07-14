@@ -4,6 +4,7 @@ using Gordon360.Models;
 using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.AuthorizationFilters;
+using Gordon360.Static.Names;
 
 namespace Gordon360.Controllers.Api
 {
@@ -32,7 +33,7 @@ namespace Gordon360.Controllers.Api
         // GET: api/Supervisors
         [HttpGet]
         [Route("")]
-        [AuthorizationLevel(authorizationLevel = Constants.GOD_LEVEL)]
+        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.SUPERVISOR)]
         public IHttpActionResult Get()
         {
             var all = _supervisorService.GetAll();
@@ -46,6 +47,7 @@ namespace Gordon360.Controllers.Api
         // GET: api/Supervisors/5
         [HttpGet]
         [Route("{id}")]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.SUPERVISOR)]
         public IHttpActionResult Get(int id)
         {
             if (!ModelState.IsValid)
@@ -71,7 +73,7 @@ namespace Gordon360.Controllers.Api
         // PUT: api/Supervisors/5
         [HttpPut]
         [Route("{id}")]
-        [AuthorizationLevel(authorizationLevel = Constants.GOD_LEVEL)]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.SUPERVISOR)]
         public IHttpActionResult Put(int id, [FromBody] SUPERVISOR supervisor)
         {
             if (!ModelState.IsValid || supervisor == null || id != supervisor.SUP_ID)
@@ -97,7 +99,7 @@ namespace Gordon360.Controllers.Api
         [ResponseType(typeof(IHttpActionResult))]
         [HttpPost]
         [Route("")]
-        [AuthorizationLevel(authorizationLevel = Constants.GOD_LEVEL)]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.SUPERVISOR)]
         public IHttpActionResult Post(SUPERVISOR supervisor)
         {
             if (!ModelState.IsValid || supervisor == null)
@@ -122,7 +124,7 @@ namespace Gordon360.Controllers.Api
         // DELETE: api/Supervisors/5
         [HttpDelete]
         [Route("{id}")]
-        [AuthorizationLevel(authorizationLevel = Constants.GOD_LEVEL)]
+        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.SUPERVISOR)]
         public IHttpActionResult Delete(int id)
         {
 

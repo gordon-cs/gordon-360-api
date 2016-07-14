@@ -188,6 +188,7 @@
     <Compile Include="AuthorizationFilters\AuthorizationLevel.cs" />
     <Compile Include="AuthorizationFilters\AuthorizeActivityLeader.cs" />
     <Compile Include="AuthorizationFilters\AuthorizeSupervisor.cs" />
+    <Compile Include="AuthorizationFilters\StateYourBusiness.cs" />
     <Compile Include="AuthorizationServer\CustomJWTFormat.cs" />
     <Compile Include="AuthorizationServer\TokenIssuer.cs" />
     <Compile Include="Models\ACCOUNT.cs">
@@ -285,6 +286,7 @@
     <Compile Include="Services\StudentService.cs" />
     <Compile Include="Services\SupervisorService.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Static Classes\Names.cs" />
   </ItemGroup>
   <ItemGroup>
     <EntityDeploy Include="Models\CCT_DB_Models.edmx">

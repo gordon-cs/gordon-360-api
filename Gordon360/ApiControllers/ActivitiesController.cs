@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using Gordon360.Models;
-using System.Data.Entity.Core.Objects;
+﻿using System.Web.Http;
 using Gordon360.Services;
 using Gordon360.Repositories;
 using Gordon360.AuthorizationFilters;
+using Gordon360.Static.Names;
 
 namespace Gordon360.Controllers.Api
 {
@@ -76,6 +70,7 @@ namespace Gordon360.Controllers.Api
         /// </remarks>
         [HttpGet]
         [Route("{id}/supervisor")]
+        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.MEMBERSHIP)]
         public IHttpActionResult GetSupervisorsForActivity(string id)
         {
 
@@ -100,6 +95,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>IHttpActionResult</returns>
         [HttpGet]
         [Route("{id}/memberships")]
+        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.MEMBERSHIP)]
         public IHttpActionResult GetMembershipsForActivity(string id)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
@@ -116,12 +112,13 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>
-        /// Gets the leaders associated with a given activity
+        /// Gets the memberships leaders associated with a given activity
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
         [Route("{id}/leaders")]
+        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.MEMBERSHIP)]
         public IHttpActionResult GetLeadersForActivity(string id)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))

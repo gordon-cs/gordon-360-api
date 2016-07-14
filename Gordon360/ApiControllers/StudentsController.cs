@@ -4,6 +4,7 @@ using System.Web.Http.Description;
 using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.AuthorizationFilters;
+using Gordon360.Static.Names;
 
 namespace Gordon360.Controllers.Api
 {
@@ -29,7 +30,7 @@ namespace Gordon360.Controllers.Api
         // GET: api/Students
         [Route("")]
         [HttpGet]
-        [AuthorizationLevel(authorizationLevel = Constants.GOD_LEVEL)]
+        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.STUDENT)]
         public IHttpActionResult Get()
         {
             var all = _studentService.GetAll();
@@ -43,7 +44,7 @@ namespace Gordon360.Controllers.Api
         // GET: api/Students/5
         [Route("{id}")]
         [HttpGet]
-        [AuthorizationLevel(authorizationLevel = Constants.GOD_LEVEL)]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.STUDENT)]
         public IHttpActionResult Get(string id)
         {
             if(!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
@@ -62,14 +63,13 @@ namespace Gordon360.Controllers.Api
         }
 
 
-        // TODO FIGGURE THIS OUT
         /// <summary>Get any and all memberships that a specific student has been a part of</summary>
         /// <param name="id">The Gordon ID of whichever student memberships are wanted for</param>
         /// <returns>The membership information that the student is a part of</returns>
         /// <remarks>Queries the database for membership information regarding the student id specified only</remarks>
-        [ResponseType(typeof(IHttpActionResult))]
         [Route("{id}/memberships")]
         [HttpGet]
+        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.MEMBERSHIP)]
         public IHttpActionResult GetActivitiesForStudent(string id)
         {
 

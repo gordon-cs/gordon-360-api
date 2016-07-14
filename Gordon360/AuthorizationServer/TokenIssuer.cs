@@ -5,7 +5,7 @@ using Microsoft.Owin.Security.OAuth;
 using System.Security.Claims;
 using System.Diagnostics;
 using Gordon360.Services;
-
+using Gordon360.Static.Names;
 
 namespace Gordon360.AuthorizationServer
 {
@@ -84,11 +84,11 @@ namespace Gordon360.AuthorizationServer
                         var collegeRole = string.Empty;
                         if(distinguishedName.Contains("OU=Students"))
                         {
-                            collegeRole = Constants.STUDENT_ROLE;
+                            collegeRole = Position.STUDENT;
                         }
                         else
                         {
-                            collegeRole = Constants.FACSTAFF_ROLE;
+                            collegeRole = Position.FACSTAFF;
                         }
                         var identity = new ClaimsIdentity(context.Options.AuthenticationType);
                         identity.AddClaim(new Claim("name", userEntry.Name));

@@ -4,6 +4,7 @@ using Gordon360.Services;
 using Gordon360.Repositories;
 using Gordon360.Models.ViewModels;
 using Gordon360.AuthorizationFilters;
+using Gordon360.Static.Names;
 
 namespace Gordon360.Controllers.Api
 {
@@ -37,7 +38,7 @@ namespace Gordon360.Controllers.Api
         // GET api/<controller>
         [HttpGet]
         [Route("")]
-        [AuthorizationLevel(authorizationLevel = Constants.GOD_LEVEL)]
+        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.MEMBERSHIP)]
         public IHttpActionResult Get()
         {
             
@@ -54,6 +55,7 @@ namespace Gordon360.Controllers.Api
         // GET api/<controller>/5
         [HttpGet]
         [Route("{id}")]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
         public IHttpActionResult Get(int id)
         {
             if(!ModelState.IsValid)
@@ -79,7 +81,7 @@ namespace Gordon360.Controllers.Api
         // POST api/<controller>
         [HttpPost]
         [Route("", Name="Memberships")]
-        [AuthorizationLevel(authorizationLevel = Constants.ACTIVITY_LEADER_LEVEL)]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.MEMBERSHIP)]
         public IHttpActionResult Post([FromBody] Membership membership)
         {
             if(!ModelState.IsValid || membership == null)
@@ -105,7 +107,7 @@ namespace Gordon360.Controllers.Api
         // PUT api/<controller>/5
         [HttpPut]
         [Route("{id}")]
-        [AuthorizationLevel(authorizationLevel = Constants.RESOURCE_OWNER, resourceType = Constants.MEMBERSHIP)]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP)]
         public IHttpActionResult Put(int id, [FromBody]Membership membership)
         {
             if (!ModelState.IsValid || membership == null || id != membership.MEMBERSHIP_ID)
@@ -122,6 +124,7 @@ namespace Gordon360.Controllers.Api
             return Ok(membership);
         }
 
+        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.MEMBERSHIP)]
         /// <summary>Delete an existing membership</summary>
         /// <param name="id">The identifier for the membership to be deleted</param>
         /// <remarks>Calls the server to make a call and remove the given membership from the database</remarks>

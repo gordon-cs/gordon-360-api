@@ -8,6 +8,7 @@ using Gordon360.Models;
 using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.AuthorizationFilters;
+using Gordon360.Static.Names;
 
 namespace Gordon360.Controllers.Api
 {
@@ -34,7 +35,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>List of all requests for membership</returns>
         [HttpGet]
         [Route("")]
-        [AuthorizationLevel(authorizationLevel = Constants.GOD_LEVEL)]
+        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.MEMBERSHIP_REQUEST)]
         public IHttpActionResult Get()
         {
             var all = _membershipRequestService.GetAll();
@@ -48,7 +49,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>A memberships request with the specified id</returns>
         [HttpGet]
         [Route("{id}")]
-        [AuthorizationLevel(authorizationLevel = Constants.GOD_LEVEL)]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP_REQUEST)]
         public IHttpActionResult Get(int id)
         {
             if (!ModelState.IsValid)
@@ -74,7 +75,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>All membership requests associated with the activity</returns>
         [HttpGet]
         [Route("student/{id}")]
-        [AuthorizationLevel(authorizationLevel = Constants.ACTIVITY_LEADER_LEVEL)]
+        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.MEMBERSHIP_REQUEST)]
         public IHttpActionResult GetMembershipsRequestsForActivity(string id)
         {
             if(!ModelState.IsValid)
@@ -100,6 +101,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>The added request if successful. HTTP error message if not.</returns>
         [HttpPost]
         [Route("",Name = "membershipRequest")]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.MEMBERSHIP_REQUEST)]
         public IHttpActionResult Post(Request membershipRequest)
         {
             if( !ModelState.IsValid || membershipRequest == null)
@@ -125,7 +127,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>The updated request if successful. HTTP error message if not.</returns>
         [HttpPut]
         [Route("{id}")]
-        [AuthorizationLevel(authorizationLevel = Constants.ACTIVITY_LEADER_LEVEL)]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP_REQUEST)]
         public IHttpActionResult Put(int id, Request membershipRequest)
         {
             if (!ModelState.IsValid || membershipRequest == null || id != membershipRequest.REQUEST_ID)
@@ -147,7 +149,7 @@ namespace Gordon360.Controllers.Api
         /// </summary>
         /// <param name="id">The id of the membership request to delete</param>
         /// <returns>The deleted object</returns>
-        [AuthorizationLevel(authorizationLevel = Constants.RESOURCE_OWNER, resourceType = Constants.MEMBERSHIP_REQUEST)]
+        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.MEMBERSHIP_REQUEST)]
         public IHttpActionResult Delete(int id)
         {
             var result = _membershipRequestService.Delete(id);
