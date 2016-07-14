@@ -113,7 +113,7 @@ namespace Gordon360.AuthorizationFilters
                 var membershipRequestToConsider = (int)_context.ActionArguments["id"];
                 var membershipRequestOwner = membershipRequestService.Get(membershipRequestToConsider);
                 isOwner = membershipRequestOwner.IDNumber == userId.Value;
-                return isOwner
+                return isOwner;
             }
             else
             {
