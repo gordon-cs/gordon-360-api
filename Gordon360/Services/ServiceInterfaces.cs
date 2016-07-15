@@ -102,7 +102,7 @@ namespace Gordon360.Services
         IEnumerable<MembershipRequestViewModel> GetMembershipRequestsForStudent(string id);
         Request Add(Request membershipRequest);
         Request Update(int id, Request membershipRequest);
-        Request AproveRequest(int id);
+        Request ApproveRequest(int id);
         Request DenyRequest(int id);
         Request Delete(int id);
     }

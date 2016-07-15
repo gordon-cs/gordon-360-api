@@ -170,6 +170,55 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>
+        /// Sets a membership request to Approved
+        /// </summary>
+        /// <param name="id">The id of the membership request in question.</param>
+        /// <returns>If successful: THe updated membership request wrapped in an OK Http status code.</returns>
+        [HttpPost]
+        [Route("{id}/approve")]
+        [StateYourBusiness(operation = Operation.DENY_ALLOW, resource = Resource.MEMBERSHIP_REQUEST)]
+        public IHttpActionResult ApproveRequest(int id)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var result = _membershipRequestService.ApproveRequest(id);
+
+            if(result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Sets the membership request to Denied
+        /// </summary>
+        /// <param name="id">The id of the membership reuqest in question.</param>
+        /// <returns>If successful: THe updated membership request wrapped in an OK Http status code.</returns>
+        [HttpPost]
+        [Route("{id}/deny")]
+        [StateYourBusiness(operation = Operation.DENY_ALLOW, resource = Resource.MEMBERSHIP_REQUEST)]
+        public IHttpActionResult DenyRequest(int id)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var result = _membershipRequestService.DenyRequest(id);
+
+            if(result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+        /// <summary>
         /// Delets a membership request
         /// </summary>
         /// <param name="id">The id of the membership request to delete</param>

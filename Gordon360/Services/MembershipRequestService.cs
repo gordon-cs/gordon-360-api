@@ -48,13 +48,28 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="id">The ID of the request to be approved</param>
         /// <returns></returns>
-        public Request AproveRequest(int id)
+        public Request ApproveRequest(int id)
         {
             var query = _unitOfWork.MembershipRequestRepository.GetById(id);
             if (query == null)
             {
-
+                return null;
             }
+            query.APPROVED = Request_Status.APPROVED;
+            Membership newMembership = new Membership
+            {
+                ACT_CDE = query.ACT_CDE,
+                ID_NUM = query.ID_NUM,
+                SESSION_CDE = query.SESS_CDE,
+                PART_LVL = query.PART_LVL,
+                BEGIN_DTE = DateTime.Now,
+            };
+            _unitOfWork.MembershipRepository.Add(newMembership);
+
+            _unitOfWork.Save();
+
+            return query;
+
         }
 
         /// <summary>
@@ -74,9 +89,22 @@ namespace Gordon360.Services
             return result;
         }
 
+        /// <summary>
+        /// Denies the membership request object whose id is given in the parameters
+        /// </summary>
+        /// <param name="id">The membership request id</param>
+        /// <returns></returns>
         public Request DenyRequest(int id)
         {
-            throw new NotImplementedException();
+            var query = _unitOfWork.MembershipRequestRepository.GetById(id);
+            if (query == null)
+            {
+                return null;
+            }
+
+            query.APPROVED = Request_Status.DENIED;
+            _unitOfWork.Save();
+            return query;
         }
 
         /// <summary>
@@ -205,11 +233,10 @@ namespace Gordon360.Services
             {
                 return null;
             }
+            
 
-            original.ID_NUM = membershipRequest.ID_NUM;
-            original.ACT_CDE = membershipRequest.ACT_CDE;
+            // Only a few fields should be able to be changed through an update.
             original.SESS_CDE = membershipRequest.SESS_CDE;
-            original.APPROVED = membershipRequest.APPROVED;
             original.COMMENT_TXT = membershipRequest.COMMENT_TXT;
             original.DATE_SENT = membershipRequest.DATE_SENT;
             original.PART_LVL = membershipRequest.PART_LVL;
@@ -227,6 +254,7 @@ namespace Gordon360.Services
             var participationExists = _unitOfWork.ParticipationRepository.Where(x => x.PART_CDE.Trim() == membershipRequest.PART_LVL).Count() > 0;
             var sessionExists = _unitOfWork.SessionRepository.Where(x => x.SESS_CDE.Trim() == membershipRequest.SESS_CDE).Count() > 0;
             var isPendingRequest = membershipRequest.APPROVED == Request_Status.PENDING;
+
             if (!personExists || !activityExists || !participationExists || !sessionExists || !isPendingRequest)
             {
                 return false;

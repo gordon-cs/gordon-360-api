@@ -29,14 +29,17 @@ namespace Gordon360.Static.Names
         public const string UPDATE = "Updating a resource";
         public const string DELETE = "Deleting a resource";
 
+        // Should only be used for a resource of type Membership Request
+        public const string DENY_ALLOW = "Denying or allowing a request";
+
     }
 
 
     public static class Position
     {
-        public const string STUDENT = "This person is a student";
-        public const string FACSTAFF = "This person is either a faculty or staff member";
-        public const string GOD = "This person is an admin and has all the permissions";
+        public const string STUDENT = "student";
+        public const string FACSTAFF = "facstaff";
+        public const string GOD = "god";
     }
 
     public static class Activity_Roles

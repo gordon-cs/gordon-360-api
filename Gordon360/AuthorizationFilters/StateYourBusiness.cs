@@ -47,7 +47,12 @@ namespace Gordon360.AuthorizationFilters
             var authenticatedUser = actionContext.RequestContext.Principal as ClaimsPrincipal;
             user_position = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role").Value;
             user_id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
-
+            // If user is god, skip verification steps and return.
+            if (user_position == Position.GOD)
+            {
+                base.OnActionExecuting(actionContext);
+                return;
+            }
             // Step 2: Verify if the user can operate on the resource
             isAuthorized = canAccessResource(user_position, resource);
             if(!isAuthorized) 
@@ -92,6 +97,7 @@ namespace Gordon360.AuthorizationFilters
                 case Operation.READ_ALL: return canReadAll(resource);
                 case Operation.READ_PARTIAL: return canReadPartial(resource);
                 case Operation.ADD: return canAdd(resource);
+                case Operation.DENY_ALLOW: return canDenyAllow(resource);
                 case Operation.UPDATE: return canUpdate(resource);
                 case Operation.DELETE: return canDelete(resource);
                 default: return false;
@@ -145,6 +151,38 @@ namespace Gordon360.AuthorizationFilters
          * Operations
          * 
          */
+
+         // This operation is specifically for authorizing deny and allow operations on membership requests. These two operations don't
+         // Fit in nicely with the REST specificatino which is why there is a seperate case for them.
+         private bool canDenyAllow(string resource)
+        {
+            switch(resource)
+            {
+                
+                case Resource.MEMBERSHIP_REQUEST:
+                    {
+                        var mrID = (int)context.ActionArguments["id"];
+                        // Get the veiw model from the repository
+                        var mrService = new MembershipRequestService(new UnitOfWork());
+                        var mrToConsider = mrService.Get(mrID);
+                        // Populate the membershipRequest manually. Omit fields I don't need.
+                        var activityCode = mrToConsider.ActivityCode;
+                        var membershipService = new MembershipService(new UnitOfWork());
+                        var is_activityLeader = membershipService.GetLeaderMembershipsForActivity(activityCode).Where(x => x.IDNumber == user_id).Count() > 0;
+                        if (is_activityLeader) // If user is the leader of the activity that the request is sent to.
+                            return true;
+                        var supervisorService = new SupervisorService(new UnitOfWork());
+                        var is_mrSupervisor = supervisorService.GetSupervisorsForActivity(activityCode).Where(x => x.IDNumber == user_id).Count() > 0;
+                        if (is_mrSupervisor) // If user is a supervisor of the activity that the request is sent to
+                            return true;
+
+                        return false;
+                    }
+                default: return false;
+                    
+            }
+        }
+
          private bool canReadOne(string resource)
         {
             switch(resource)
@@ -291,7 +329,6 @@ namespace Gordon360.AuthorizationFilters
                     {
                         // membershipRequest = mr
                         var mrToConsider = (Request)context.ActionArguments["membershipRequest"];
-                        
                         var activityCode = mrToConsider.ACT_CDE;
                         var membershipService = new MembershipService(new UnitOfWork());
                         var is_activityLeader = membershipService.GetLeaderMembershipsForActivity(activityCode).Where(x => x.IDNumber == user_id).Count() > 0;
