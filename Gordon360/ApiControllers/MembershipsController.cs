@@ -5,6 +5,7 @@ using Gordon360.Repositories;
 using Gordon360.Models.ViewModels;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
+using System;
 
 namespace Gordon360.Controllers.Api
 {
@@ -74,6 +75,53 @@ namespace Gordon360.Controllers.Api
             return Ok(membership);
         }
 
+        /// <summary>
+        /// Get all the memberships associated with a given activity
+        /// </summary>
+        /// <param name="id">The activity ID</param>
+        /// <returns>IHttpActionResult</returns>
+        [HttpGet]
+        [Route("activity/{id}")]
+        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_BY_ACTIVITY)]
+        public IHttpActionResult GetMembershipsForActivity(string id)
+        {
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest();
+            }
+
+            var result = _membershipService.GetMembershipsForActivity(id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Gets the leader-type memberships associated with a given activity.
+        /// </summary>
+        /// <param name="id">The activity ID.</param>
+        /// <returns>A list of all leader-type memberships for the specified activity.</returns>
+        [HttpGet]
+        [Route("activity/{id}/leaders")]
+        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_BY_ACTIVITY)]
+        public IHttpActionResult GetLeadersForActivity(string id)
+        {
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest();
+            }
+            var result = _membershipService.GetLeaderMembershipsForActivity(id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+
         /// <summary>Create a new membership item to be added to database</summary>
         /// <param name="membership">The membership item containing all required and relevant information</param>
         /// <returns></returns>
@@ -100,6 +148,29 @@ namespace Gordon360.Controllers.Api
 
         }
 
+        /// <summary>Fetch memberships that a specific student has been a part of</summary>
+        /// <param name="id">The Student id</param>
+        /// <returns>The membership information that the student is a part of</returns>
+        [Route("student/{id}")]
+        [HttpGet]
+        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_BY_STUDENT)]
+        public IHttpActionResult GetMembershipsForStudent(string id)
+        {
+
+            if (!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest();
+            }
+            var result = _membershipService.GetMembershipsForStudent(id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
         /// <summary>Update an existing membership item</summary>
         /// <param name="id">The membership id of whichever one is to be changed</param>
         /// <param name="membership">The content within the membership that is to be changed and what it will change to</param>
@@ -124,14 +195,13 @@ namespace Gordon360.Controllers.Api
             return Ok(membership);
         }
 
-        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.MEMBERSHIP)]
         /// <summary>Delete an existing membership</summary>
         /// <param name="id">The identifier for the membership to be deleted</param>
         /// <remarks>Calls the server to make a call and remove the given membership from the database</remarks>
         // DELETE api/<controller>/5
         [HttpDelete]
         [Route("{id}")]
-        [AuthorizationLevel(authorizationLevel = Constants.RESOURCE_OWNER, resourceType = Constants.MEMBERSHIP)]
+        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.MEMBERSHIP)]
         public IHttpActionResult Delete(int id)
         {
             var result = _membershipService.Delete(id);

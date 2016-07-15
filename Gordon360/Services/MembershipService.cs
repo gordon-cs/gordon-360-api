@@ -128,6 +128,101 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// Fetches the leaders of the activity whose activity code is specified by the parameter.
+        /// </summary>
+        /// <param name="id">The activity code.</param>
+        /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+        public IEnumerable<MembershipViewModel> GetLeaderMembershipsForActivity(string id)
+        {
+            var rawsqlquery = Constants.getLeadersForActivityQuery;
+            //var currentSession = Helpers.GetCurrentSession().SessionCode;
+            var result = RawSqlQuery<MembershipViewModel>.query(rawsqlquery, id);
+
+            // Getting rid of whitespace inherited from the database .__.
+            var trimmedResult = result.Select(x =>
+            {
+                var trim = x;
+                trim.ActivityCode = x.ActivityCode.Trim();
+                trim.ActivityDescription = x.ActivityDescription.Trim();
+                trim.SessionCode = x.SessionCode.Trim();
+                trim.SessionDescription = x.SessionDescription.Trim();
+                trim.IDNumber = x.IDNumber.Trim();
+                trim.FirstName = x.FirstName.Trim();
+                trim.LastName = x.LastName.Trim();
+                trim.Participation = x.Participation.Trim();
+                trim.ParticipationDescription = x.ParticipationDescription.Trim();
+                return trim;
+            });
+            //var query = _unitOfWork.MembershipRepository.Where(x => x.ACT_CDE.Trim() == id);
+            //var filterQuery = query.Where(x => Constants.LeaderParticipationCodes.Contains(x.PART_LVL.Trim())).ToList();
+            //var result = filterQuery.Select<Membership, MembershipViewModel>(x => x);
+            return trimmedResult;
+        }
+
+        /// <summary>
+        /// Fetches the memberships associated with the activity whose code is specified by the parameter.
+        /// </summary>
+        /// <param name="id">The activity code.</param>
+        /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+        public IEnumerable<MembershipViewModel> GetMembershipsForActivity(string id)
+        {
+            var rawsqlquery = Constants.getMembershipForActivityQuery;
+            var result = RawSqlQuery<MembershipViewModel>.query(rawsqlquery, id);
+            var trimmedResult = result.Select(x =>
+            {
+                var trim = x;
+                trim.ActivityCode = x.ActivityCode.Trim();
+                trim.ActivityDescription = x.ActivityDescription.Trim();
+                trim.SessionCode = x.SessionCode.Trim();
+                trim.SessionDescription = x.SessionDescription.Trim();
+                trim.IDNumber = x.IDNumber.Trim();
+                trim.FirstName = x.FirstName.Trim();
+                trim.LastName = x.LastName.Trim();
+                trim.Participation = x.Participation.Trim();
+                trim.ParticipationDescription = x.ParticipationDescription.Trim();
+                return trim;
+            });
+            return trimmedResult.OrderByDescending(x => x.StartDate);
+        }
+
+        /// <summary>
+        /// Fetches all the membership information linked to the student whose id appears as a parameter.
+        /// </summary>
+        /// <param name="id">The student id.</param>
+        /// <returns>A MembershipViewModel IEnumerable. If nothing is found, an empty IEnumberable is returned.</returns>
+        public IEnumerable<MembershipViewModel> GetMembershipsForStudent(string id)
+        {
+            var studentExists = _unitOfWork.StudentRepository.Where(x => x.student_id.Trim() == id).Count() > 0;
+            if (!studentExists)
+            {
+                return null;
+            }
+
+            var query = Constants.getMembershipsForStudentQuery;
+            var result = RawSqlQuery<MembershipViewModel>.query(query, id);
+
+            // The Views that were given to were defined as char(n) instead of varchar(n)
+            // They return with whitespace padding which messes up comparisons later on.
+            // I'm using the IEnumerable Select method here to help get rid of that.
+            var trimmedResult = result.Select(x =>
+            {
+                var trim = x;
+                trim.ActivityCode = x.ActivityCode.Trim();
+                trim.ActivityDescription = x.ActivityDescription.Trim();
+                trim.SessionCode = x.SessionCode.Trim();
+                trim.SessionDescription = x.SessionDescription.Trim();
+                trim.Participation = x.Participation.Trim();
+                trim.ParticipationDescription = x.ParticipationDescription.Trim();
+                trim.FirstName = x.FirstName.Trim();
+                trim.LastName = x.LastName.Trim();
+                trim.IDNumber = x.IDNumber.Trim();
+                return trim;
+            });
+
+            return trimmedResult.OrderByDescending(x => x.StartDate);
+        }
+
+        /// <summary>
         /// Updates the membership whose id is given as the first parameter to the contents of the second parameter.
         /// </summary>
         /// <param name="id">The membership id.</param>

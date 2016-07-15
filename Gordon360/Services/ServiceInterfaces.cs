@@ -21,10 +21,8 @@ namespace Gordon360.Services
     public interface IActivityService
     {
         ActivityInfoViewModel Get(string id);
+        IEnumerable<ActivityInfoViewModel> GetActivitiesForSession(string id);
         IEnumerable<ActivityInfoViewModel> GetAll();
-        IEnumerable<SupervisorViewModel> GetSupervisorsForActivity(string id);
-        IEnumerable<MembershipViewModel> GetLeadersForActivity(string id);
-        IEnumerable<MembershipViewModel> GetMembershipsForActivity(string id);
     }
 
     public interface IActivityInfoService
@@ -32,12 +30,15 @@ namespace Gordon360.Services
         ActivityInfoViewModel Get(string id);
         IEnumerable<ActivityInfoViewModel> GetAll();
     }
-
+    public interface IAdministratorService
+    {
+        Admins Get(int id);
+        IEnumerable<Admins> GetAll();
+    }
     public interface ISessionService
     {
         SessionViewModel Get(string id);
         IEnumerable<SessionViewModel> GetAll();
-        IEnumerable<ActivityInfoViewModel> GetActivitiesForSession(string id);
     }
 
     public interface IFacultyService
@@ -55,6 +56,9 @@ namespace Gordon360.Services
     public interface IMembershipService
     {
         MembershipViewModel Get(int id);
+        IEnumerable<MembershipViewModel> GetLeaderMembershipsForActivity(string id);
+        IEnumerable<MembershipViewModel> GetMembershipsForActivity(string id);
+        IEnumerable<MembershipViewModel> GetMembershipsForStudent(string id);
         IEnumerable<MembershipViewModel> GetAll();
         Membership Add(Membership membership);
         Membership Update(int id, Membership membership);
@@ -76,13 +80,14 @@ namespace Gordon360.Services
     public interface IStudentService
     {
         StudentViewModel Get(string id);
+        StudentViewModel GetByEmail(string email);
         IEnumerable<StudentViewModel> GetAll();
-        IEnumerable<MembershipViewModel> GetActivitiesForStudent(string id);
     }
 
     public interface ISupervisorService
     {
         SupervisorViewModel Get(int id);
+        IEnumerable<SupervisorViewModel> GetSupervisorsForActivity(string id);
         IEnumerable<SupervisorViewModel> GetAll();
         SUPERVISOR Add(SUPERVISOR supervisor);
         SUPERVISOR Update(int id, SUPERVISOR supervisor);
@@ -94,6 +99,7 @@ namespace Gordon360.Services
         MembershipRequestViewModel Get(int id);
         IEnumerable<MembershipRequestViewModel> GetAll();
         IEnumerable<MembershipRequestViewModel> GetMembershipRequestsForActivity(string id);
+        IEnumerable<MembershipRequestViewModel> GetMembershipRequestsForStudent(string id);
         Request Add(Request membershipRequest);
         Request Update(int id, Request membershipRequest);
         Request Delete(int id);

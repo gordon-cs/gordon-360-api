@@ -5,6 +5,7 @@ using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
+using System.Diagnostics;
 
 namespace Gordon360.Controllers.Api
 {
@@ -62,24 +63,25 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
 
-
-        /// <summary>Get any and all memberships that a specific student has been a part of</summary>
-        /// <param name="id">The Gordon ID of whichever student memberships are wanted for</param>
-        /// <returns>The membership information that the student is a part of</returns>
-        /// <remarks>Queries the database for membership information regarding the student id specified only</remarks>
-        [Route("{id}/memberships")]
+        /// <summary>Get information about a single student</summary>
+        /// <param name="email">The email of desired student</param>
+        /// <returns>The information about the specified student</returns>
+        /// <remarks>Queries the database for the specific student identified by their email</remarks>
+        // GET: api/Students/email/john.doe@gordon.edu
+        [Route("email/{email}")]
         [HttpGet]
-        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.MEMBERSHIP)]
-        public IHttpActionResult GetActivitiesForStudent(string id)
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.STUDENT)]
+        public IHttpActionResult GetByEmail(string email)
         {
-
-            if(!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
+            Debug.WriteLine(email);
+            if (!ModelState.IsValid || String.IsNullOrWhiteSpace(email))
             {
                 return BadRequest();
             }
-            var result = _studentService.GetActivitiesForStudent(id);
-            
-            if( result == null)
+
+            var result = _studentService.GetByEmail(email);
+
+            if (result == null)
             {
                 return NotFound();
             }

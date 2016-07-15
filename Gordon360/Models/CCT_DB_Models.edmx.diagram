@@ -16,7 +16,8 @@
         <EntityTypeShape EntityType="Gordon360.Models.Student" Width="1.5" PointX="2.125" PointY="3.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.Models.Request" Width="1.5" PointX="0.5" PointY="3.125" />
         <EntityTypeShape EntityType="Gordon360.Models.Activity_Info" Width="1.5" PointX="0.5" PointY="6" />
-        <EntityTypeShape EntityType="Gordon360.Models.Membership" Width="1.5" PointX="3.375" PointY="6.75" />
+        <EntityTypeShape EntityType="Gordon360.Models.Membership" Width="1.5" PointX="2.125" PointY="6" />
+        <EntityTypeShape EntityType="Gordon360.Models.Admins" Width="1.5" PointX="4.375" PointY="6.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

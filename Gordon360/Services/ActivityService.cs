@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using Gordon360.Models;
@@ -33,6 +35,31 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// Fetches the Activities that are active during the session whose code is specified as parameter.
+        /// </summary>
+        /// <param name="id">The session code</param>
+        /// <returns>ActivityViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
+        public IEnumerable<ActivityInfoViewModel> GetActivitiesForSession(string id)
+        {
+            var query = _unitOfWork.ActivityRepository.ExecWithStoredProcedure
+                ("ACTIVE_CLUBS_PER_SESS_ID @SESS_CDE",
+                new SqlParameter("SESS_CDE", SqlDbType.VarChar) { Value = id });
+            var result = query.Select<ACT_CLUB_DEF, ActivityViewModel>(x => x);
+            var activityInfo = result.Select<ActivityViewModel, ActivityInfoViewModel>(x =>
+            {
+                ActivityInfoViewModel y = new ActivityInfoViewModel();
+                var record = _unitOfWork.ActivityInfoRepository.GetById(x.ActivityCode);
+                y.ActivityCode = x.ActivityCode;
+                y.ActivityDescription = x.ActivityDescription;
+                y.ActivityImage = record.ACT_IMAGE;
+                y.MeetingDay = record.MTG_DAY;
+                y.MeetingTime = record.MTG_TIME;
+                return y;
+            });
+            return activityInfo;
+        }
+
+        /// <summary>
         /// Fetches all activity records from storage.
         /// </summary>
         /// <returns>ActivityViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
@@ -43,75 +70,5 @@ namespace Gordon360.Services
             return result;
         }
 
-        /// <summary>
-        /// Fetches the leaders of the activity whose activity code is specified by the parameter.
-        /// </summary>
-        /// <param name="id">The activity code.</param>
-        /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        public IEnumerable<MembershipViewModel> GetLeadersForActivity(string id)
-        {
-            var rawsqlquery = Constants.getLeadersForActivityQuery;
-            //var currentSession = Helpers.GetCurrentSession().SessionCode;
-            var result = RawSqlQuery<MembershipViewModel>.query(rawsqlquery, id);
-            
-            // Getting rid of whitespace inherited from the database .__.
-            var trimmedResult = result.Select(x =>
-            {
-                var trim = x;
-                trim.ActivityCode = x.ActivityCode.Trim();
-                trim.ActivityDescription = x.ActivityDescription.Trim();
-                trim.SessionCode = x.SessionCode.Trim();
-                trim.SessionDescription = x.SessionDescription.Trim();
-                trim.IDNumber = x.IDNumber.Trim();
-                trim.FirstName = x.FirstName.Trim();
-                trim.LastName = x.LastName.Trim();
-                trim.Participation = x.Participation.Trim();
-                trim.ParticipationDescription = x.ParticipationDescription.Trim();
-                return trim;
-            });
-            //var query = _unitOfWork.MembershipRepository.Where(x => x.ACT_CDE.Trim() == id);
-            //var filterQuery = query.Where(x => Constants.LeaderParticipationCodes.Contains(x.PART_LVL.Trim())).ToList();
-            //var result = filterQuery.Select<Membership, MembershipViewModel>(x => x);
-            return trimmedResult;
-        }
-
-        /// <summary>
-        /// Fetches the memberships associated with the activity whose code is specified by the parameter.
-        /// </summary>
-        /// <param name="id">The activity code.</param>
-        /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        public IEnumerable<MembershipViewModel> GetMembershipsForActivity(string id)
-        {
-            var rawsqlquery = Constants.getMembershipForActivityQuery;
-            var result = RawSqlQuery<MembershipViewModel>.query(rawsqlquery, id);
-            var trimmedResult = result.Select(x =>
-            {
-                var trim = x;
-                trim.ActivityCode = x.ActivityCode.Trim();
-                trim.ActivityDescription = x.ActivityDescription.Trim();
-                trim.SessionCode = x.SessionCode.Trim();
-                trim.SessionDescription = x.SessionDescription.Trim();
-                trim.IDNumber = x.IDNumber.Trim();
-                trim.FirstName = x.FirstName.Trim();
-                trim.LastName = x.LastName.Trim();
-                trim.Participation = x.Participation.Trim();
-                trim.ParticipationDescription = x.ParticipationDescription.Trim();
-                return trim;
-            });
-            return trimmedResult.OrderByDescending(x => x.StartDate);
-        }
-
-        /// <summary>
-        /// Fetches the supervisors of the activity whose activity code is specified by the parameter.
-        /// </summary>
-        /// <param name="id">The activity code.</param>
-        /// <returns>SupervisorViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        public IEnumerable<SupervisorViewModel> GetSupervisorsForActivity(string id)
-        {
-            var rawsqlquery = Constants.getSupervisorsForActivityQuery;
-            var result = RawSqlQuery<SupervisorViewModel>.query(rawsqlquery, id);
-            // No trimming here because we made the Supervisor Table, and we made sure to use varchar(n).
-            return result;
-        }
     }
 }

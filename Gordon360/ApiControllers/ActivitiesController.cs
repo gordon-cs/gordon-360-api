@@ -3,6 +3,7 @@ using Gordon360.Services;
 using Gordon360.Repositories;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
+using System;
 
 namespace Gordon360.Controllers.Api
 {
@@ -60,79 +61,30 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
 
-        /// <summary>
-        /// Get the supervisors for a given activity
-        /// </summary>
-        /// <param name="id">The identifier for a specific activity</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// Get the supervisors for a specified activity within the database
-        /// </remarks>
+        /// <summary>Gets the activities taking place during a given session</summary>
+        /// <param name="id">The session identifier</param>
+        /// <returns>A list of all activities that are active during the given session determined by the id parameter</returns>
+        /// <remarks>Queries the database to find which activities are active during the session desired</remarks>
+        // GET: api/sessions/id/activities
         [HttpGet]
-        [Route("{id}/supervisor")]
-        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.MEMBERSHIP)]
-        public IHttpActionResult GetSupervisorsForActivity(string id)
+        [Route("session/{id}")]
+        public IHttpActionResult GetActivitiesForSession(string id)
         {
-
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
-            var result = _activityService.GetSupervisorsForActivity(id);
+
+            var result = _activityService.GetActivitiesForSession(id);
 
             if (result == null)
             {
                 return NotFound();
             }
+
             return Ok(result);
 
         }
 
-        /// <summary>
-        /// Get all the memberships associated with a given activity
-        /// </summary>
-        /// <param name="id">The activity ID</param>
-        /// <returns>IHttpActionResult</returns>
-        [HttpGet]
-        [Route("{id}/memberships")]
-        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.MEMBERSHIP)]
-        public IHttpActionResult GetMembershipsForActivity(string id)
-        {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
-            {
-                return BadRequest();
-            }
-            var result = _activityService.GetMembershipsForActivity(id);
-
-            if (result == null )
-            {
-                return NotFound();
-            }
-            return Ok(result);
-        }
-
-        /// <summary>
-        /// Gets the memberships leaders associated with a given activity
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("{id}/leaders")]
-        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.MEMBERSHIP)]
-        public IHttpActionResult GetLeadersForActivity(string id)
-        {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
-            {
-                return BadRequest();
-            }
-            var result = _activityService.GetLeadersForActivity(id);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-            return Ok(result);
-        }
-     
     }
 }

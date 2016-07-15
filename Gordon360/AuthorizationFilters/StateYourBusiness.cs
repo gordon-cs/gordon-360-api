@@ -14,7 +14,10 @@ namespace Gordon360.AuthorizationFilters
     /* Authorization Filter.
      * It is actually an action filter masquerading as an authorization filter. This is because I need access to the 
      * parameters passed to the controller. Authorizatoin Filters don't have that access. Action Filters do.
-     * Because of the nature of how we authorize people, this code might seem very odd, so I'll try to explain.
+     * 
+     * Because of the nature of how we authorize people, this code might seem very odd, so I'll try to explain. 
+     * Proceed at your own risk. If you can understand this code, you can understand the whole project. 
+     * 
      * 1st Observation: You can't authorize access to a resource that isn't owned by someone. Resources like Sessions, Participations,
      * and Activity Definitions are accessbile by anyone.
      * 2nd Observation: To Authorize someone to perform an action on a resource, you need to know the following:
@@ -66,8 +69,16 @@ namespace Gordon360.AuthorizationFilters
         {
             switch(resource)
             {
-                case Resource.MEMBERSHIP: return canAccessMembership(user_position);
-                case Resource.MEMBERSHIP_REQUEST: return canAccessMembershipRequest(user_position);
+                // All three options below result in the same thing.
+                case Resource.MEMBERSHIP_BY_ACTIVITY:
+                case Resource.MEMBERSHIP_BY_STUDENT:
+                case Resource.MEMBERSHIP:
+                    return canAccessMembership(user_position);
+                // All three options below resutl in the same thing.
+                case Resource.MEMBERSHIP_REQUEST_BY_ACTIVITY:
+                case Resource.MEMBERSHIP_REQUEST_BY_STUDENT:
+                case Resource.MEMBERSHIP_REQUEST:
+                    return canAccessMembershipRequest(user_position);
                 case Resource.STUDENT: return canAccessStudent(user_position);
                 case Resource.SUPERVISOR: return canAccessSupervisor(user_position);
                 default: return false;
@@ -79,6 +90,7 @@ namespace Gordon360.AuthorizationFilters
             {
                 case Operation.READ_ONE: return canReadOne(resource);
                 case Operation.READ_ALL: return canReadAll(resource);
+                case Operation.READ_PARTIAL: return canReadPartial(resource);
                 case Operation.ADD: return canAdd(resource);
                 case Operation.UPDATE: return canUpdate(resource);
                 case Operation.DELETE: return canDelete(resource);
@@ -112,10 +124,7 @@ namespace Gordon360.AuthorizationFilters
         {
             switch(user_position)
             {
-                // We restrict student access to student resource here. A student should never need to touch this resource.
-                // Q: What if i need to know stuff about MY student resource? 
-                // A: You should already know info about yourself. Don't need a computer to tell you that.
-                case Position.STUDENT: return false;
+                case Position.STUDENT: return true;
                 case Position.FACSTAFF: return true;
                 case Position.GOD: return true;
                 default: return false;
@@ -154,26 +163,59 @@ namespace Gordon360.AuthorizationFilters
                         return true;
 
                     var activityCode = mrToConsider.ActivityCode;
-                    var activityService = new ActivityService(new UnitOfWork());
-                    var isLeader = activityService.GetLeadersForActivity(activityCode).Where(x => x.IDNumber == user_id).Count() > 0;
+                    var membershipService = new MembershipService(new UnitOfWork());
+                    var isLeader = membershipService.GetLeaderMembershipsForActivity(activityCode).Where(x => x.IDNumber == user_id).Count() > 0;
                     if (isLeader) // If user is the leader of the activity that the request is sent to.
                         return true;
 
-                    var isSupervisor = activityService.GetSupervisorsForActivity(activityCode).Where(x => x.IDNumber == user_id).Count() > 0;
+                    var supervisorService = new SupervisorService(new UnitOfWork());
+                    var isSupervisor = supervisorService.GetSupervisorsForActivity(activityCode).Where(x => x.IDNumber == user_id).Count() > 0;
                     if (isSupervisor) // If user is a supervisor of the activity that the request is sent to
                         return true;
 
                     return false;
                 case Resource.STUDENT:
-                    return false;  // For now, I'm thinking no one (excpet GOD) should ever neeed to reed student data
-                    // Enough information for a student is available in the membership resource.
-                    
+                    return true; // To add a membership for a student, you need to have the students identifier. So at least, they should be able
+                    // To read a record with a specific identifier
                 case Resource.SUPERVISOR:
                     return true;
                 default: return false;
                     
             }
-        } 
+        }
+        // For reads that access a group of resources filterd in a specific way 
+        private bool canReadPartial(string resource)
+        {
+            switch (resource)
+            {
+                case Resource.MEMBERSHIP_BY_ACTIVITY:
+                    return true;
+                case Resource.MEMBERSHIP_BY_STUDENT:
+                    return true;
+                case Resource.MEMBERSHIP_REQUEST_BY_ACTIVITY:
+                    {
+                        // An activity leader should be able to see the membership requests that belong to the activity he is leading.
+                        var membershipService = new MembershipService(new UnitOfWork());
+                        var activityCode = (string)context.ActionArguments["id"];
+                        var activityLeaders = membershipService.GetLeaderMembershipsForActivity(activityCode);
+                        var is_activityLeader = activityLeaders.Where(x => x.IDNumber == user_id).Count() > 0;
+                        if (is_activityLeader)
+                            return true;
+                        var supervisorService = new SupervisorService(new UnitOfWork());
+                        var activitySupervisors = supervisorService.GetSupervisorsForActivity(activityCode);
+                        var is_activitySupervisor = activitySupervisors.Where(x => x.IDNumber == user_id).Count() > 0;
+                        if (is_activitySupervisor)
+                            return true;
+                        return false;
+                    }
+                // No one except god should be able to see all the membership requests a student has
+                case Resource.MEMBERSHIP_REQUEST_BY_STUDENT:
+                    return false;
+                case Resource.SUPERVISOR_BY_ACTIVITY:
+                    return true;
+                default: return false;
+            }
+        }
         private bool canReadAll(string resource)
         {
             switch (resource)
@@ -181,11 +223,12 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.MEMBERSHIP:
                     return true;
                 case Resource.MEMBERSHIP_REQUEST:
-                    return true; ;
+                    return false;
                 case Resource.STUDENT:
-                    return false; // See reasons for this in CanReadOne()
+                    return false; // See reasons for this in CanReadOne(). No one (except for god) should be able to access student records through
+                    // our API.
                 case Resource.SUPERVISOR:
-                    return true;
+                    return false;
                 default: return false;
             }
         }
@@ -195,27 +238,28 @@ namespace Gordon360.AuthorizationFilters
             {
                 case Resource.MEMBERSHIP:
                     var membershipToConsider = (Membership)context.ActionArguments["membership"];
-                    var isFollower = membershipToConsider.PART_LVL == Activity_Roles.GUEST;
+                    // A membership can always be added if it is of type "GUEST"
+                    var isFollower = (membershipToConsider.PART_LVL == Activity_Roles.GUEST) && (user_id == membershipToConsider.ID_NUM);
                     if (isFollower)
                         return true;
 
                     var activityCode = membershipToConsider.ACT_CDE;
-                    var activityService = new ActivityService(new UnitOfWork());
-                    var isLeader = activityService.GetLeadersForActivity(activityCode).Where(x => x.IDNumber == user_id).Count() > 0;
+                    var membershipService = new MembershipService(new UnitOfWork());
+                    var isLeader = membershipService.GetLeaderMembershipsForActivity(activityCode).Where(x => x.IDNumber == user_id).Count() > 0;
                     if (isLeader) // If user is the leader of the activity to which the membership is added
                         return true;
-
-                    var isSupervisor = activityService.GetSupervisorsForActivity(activityCode).Where(x => x.IDNumber == user_id).Count() > 0;
+                    var supervisorService = new SupervisorService(new UnitOfWork());
+                    var isSupervisor = supervisorService.GetSupervisorsForActivity(activityCode).Where(x => x.IDNumber == user_id).Count() > 0;
                     if (isSupervisor) // If user is a supervisor of the activity to which the memberhsip is added
                         return true;
 
                     return false;
                 case Resource.MEMBERSHIP_REQUEST:
-                    return true;
+                    return true; // Anyone should be able to spawn a membership request.
                 case Resource.STUDENT:
-                    return false;
+                    return false; // No one should be able to add students through this API
                 case Resource.SUPERVISOR:
-                    return false;
+                    return false; // Only god can add Supervisors through this API
                 default: return false;
             }
         }
@@ -224,45 +268,49 @@ namespace Gordon360.AuthorizationFilters
             switch (resource)
             {
                 case Resource.MEMBERSHIP:
-                    var membershipToConsider = (Membership)context.ActionArguments["membership"];
-                    var is_membershipOwner = membershipToConsider.ID_NUM == user_id;
-                    if (is_membershipOwner)
-                        return true;
+                    {
+                        var membershipToConsider = (Membership)context.ActionArguments["membership"];
+                        var is_membershipOwner = membershipToConsider.ID_NUM == user_id;
+                        if (is_membershipOwner)
+                            return true;
 
-                    var activityCode = membershipToConsider.ACT_CDE;
-                    var activityService = new ActivityService(new UnitOfWork());
-                    var is_membershipLeader = activityService.GetLeadersForActivity(activityCode).Where(x => x.IDNumber == user_id).Count() > 0;
-                    if (is_membershipLeader)
-                        return true;
+                        var activityCode = membershipToConsider.ACT_CDE;
+                        var membershipService = new MembershipService(new UnitOfWork());
+                        var is_membershipLeader = membershipService.GetLeaderMembershipsForActivity(activityCode).Where(x => x.IDNumber == user_id).Count() > 0;
+                        if (is_membershipLeader)
+                            return true; // Activity Leaders can update memberships of people in their activity.
+                        var supervisorService = new SupervisorService(new UnitOfWork());
+                        var isSupervisor = supervisorService.GetSupervisorsForActivity(activityCode).Where(x => x.IDNumber == user_id).Count() > 0;
+                        if (isSupervisor)
+                            return true; // supervisors for an activity can update memberships within that activity
 
-                    var isSupervisor = activityService.GetSupervisorsForActivity(activityCode).Where(x => x.IDNumber == user_id).Count() > 0;
-                    if (isSupervisor)
-                        return true;
-
-                    return false;
+                        return false;
+                    }
+                    
                 case Resource.MEMBERSHIP_REQUEST:
-                    // membershipRequest = mr
-                    var mrToConsider = (Request)context.ActionArguments["membershipRequest"];
-                    // Use of mr here is to differentiate from variables declared in other case statements.
-                    var activityCode_mr = mrToConsider.ACT_CDE;
-                    var activityService_mr = new ActivityService(new UnitOfWork());
-                    var is_activityLeader = activityService_mr.GetLeadersForActivity(activityCode_mr).Where(x => x.IDNumber == user_id).Count() > 0;
-                    if (is_activityLeader) // If user is the leader of the activity that the request is sent to.
-                        return true;
+                    {
+                        // membershipRequest = mr
+                        var mrToConsider = (Request)context.ActionArguments["membershipRequest"];
+                        
+                        var activityCode = mrToConsider.ACT_CDE;
+                        var membershipService = new MembershipService(new UnitOfWork());
+                        var is_activityLeader = membershipService.GetLeaderMembershipsForActivity(activityCode).Where(x => x.IDNumber == user_id).Count() > 0;
+                        if (is_activityLeader) // If user is the leader of the activity that the request is sent to.
+                            return true;
+                        var supervisorService = new SupervisorService(new UnitOfWork());
+                        var is_mrSupervisor = supervisorService.GetSupervisorsForActivity(activityCode).Where(x => x.IDNumber == user_id).Count() > 0;
+                        if (is_mrSupervisor) // If user is a supervisor of the activity that the request is sent to
+                            return true;
 
-                    var is_mrSupervisor = activityService_mr.GetSupervisorsForActivity(activityCode_mr).Where(x => x.IDNumber == user_id).Count() > 0;
-                    if (is_mrSupervisor) // If user is a supervisor of the activity that the request is sent to
-                        return true;
-
-                    return false;
+                        return false;
+                    }
                 case Resource.STUDENT:
-                    return false;
+                    return false; // No one should be able to update a student through this API
                 case Resource.SUPERVISOR:
                     // sup = supervisor
                     var supService = new SupervisorService(new UnitOfWork());
-                    var supID = (int)context.ActionArguments["id"];
-                    var supToConsider = supService.Get(supID);
-                    var is_supOwner = supToConsider.IDNumber == user_id; // User_id is an instance variable.
+                    var supToConsider = (SUPERVISOR)context.ActionArguments["supervisor"];
+                    var is_supOwner = supToConsider.ID_NUM == user_id; // User_id is an instance variable.
                     if (is_supOwner) // User is the supervisor
                         return true;
 
@@ -275,46 +323,49 @@ namespace Gordon360.AuthorizationFilters
             switch (resource)
             {
                 case Resource.MEMBERSHIP:
-                    var membershipService = new MembershipService(new UnitOfWork());
-                    var membershipID = (int)context.ActionArguments["id"];
-                    var membershipToConsider = membershipService.Get(membershipID);
-                    var is_membershipOwner = membershipToConsider.IDNumber == user_id;
-                    if (is_membershipOwner)
-                        return true;
+                    {
+                        var membershipService = new MembershipService(new UnitOfWork());
+                        var membershipID = (int)context.ActionArguments["id"];
+                        var membershipToConsider = membershipService.Get(membershipID);
+                        var is_membershipOwner = membershipToConsider.IDNumber == user_id;
+                        if (is_membershipOwner)
+                            return true;
 
-                    var activityCode = membershipToConsider.IDNumber;
-                    var activityService = new ActivityService(new UnitOfWork());
-                    var is_membershipLeader = activityService.GetLeadersForActivity(activityCode).Where(x => x.IDNumber == user_id).Count() > 0;
-                    if (is_membershipLeader)
-                        return true;
+                        var activityCode = membershipToConsider.IDNumber;
+                        var is_membershipLeader = membershipService.GetLeaderMembershipsForActivity(activityCode).Where(x => x.IDNumber == user_id).Count() > 0;
+                        if (is_membershipLeader)
+                            return true;
+                        var supervisorService = new SupervisorService(new UnitOfWork());
+                        var isSupervisor = supervisorService.GetSupervisorsForActivity(activityCode).Where(x => x.IDNumber == user_id).Count() > 0;
+                        if (isSupervisor)
+                            return true;
 
-                    var isSupervisor = activityService.GetSupervisorsForActivity(activityCode).Where(x => x.IDNumber == user_id).Count() > 0;
-                    if (isSupervisor)
-                        return true;
-
-                    return false;
+                        return false;
+                    }
                 case Resource.MEMBERSHIP_REQUEST:
-                    // membershipRequest = mr
-                    var mrService = new MembershipRequestService(new UnitOfWork());
-                    var mrID = (int)context.ActionArguments["id"];
-                    var mrToConsider = mrService.Get(mrID);
-                    var is_mrOwner = mrToConsider.IDNumber == user_id;
-                    if (is_mrOwner)
-                        return true;
-                    // Use of mr here is to differentiate from variables declared in other case statements.
-                    var activityCode_mr = mrToConsider.IDNumber;
-                    var activityService_mr = new ActivityService(new UnitOfWork());
-                    var is_mrLeader = activityService_mr.GetLeadersForActivity(activityCode_mr).Where(x => x.IDNumber == user_id).Count() > 0;
-                    if (is_mrLeader)
-                        return true;
+                    {
+                        // membershipRequest = mr
+                        var mrService = new MembershipRequestService(new UnitOfWork());
+                        var mrID = (int)context.ActionArguments["id"];
+                        var mrToConsider = mrService.Get(mrID);
+                        var is_mrOwner = mrToConsider.IDNumber == user_id;
+                        if (is_mrOwner)
+                            return true;
+                        // Use of mr here is to differentiate from variables declared in other case statements.
+                        var activityCode = mrToConsider.IDNumber;
+                        var membershipService = new MembershipService(new UnitOfWork());
+                        var is_mrLeader = membershipService.GetLeaderMembershipsForActivity(activityCode).Where(x => x.IDNumber == user_id).Count() > 0;
+                        if (is_mrLeader)
+                            return true;
+                        var supervisorService = new SupervisorService(new UnitOfWork());
+                        var is_mrSupervisor = supervisorService.GetSupervisorsForActivity(activityCode).Where(x => x.IDNumber == user_id).Count() > 0;
+                        if (is_mrSupervisor)
+                            return true;
 
-                    var is_mrSupervisor = activityService_mr.GetSupervisorsForActivity(activityCode_mr).Where(x => x.IDNumber == user_id).Count() > 0;
-                    if (is_mrSupervisor)
-                        return true;
-
-                    return false;
+                        return false;
+                    }
                 case Resource.STUDENT:
-                    return false;
+                    return false; // No one should be able to delete a student through our API
                 case Resource.SUPERVISOR:
                     return false;
                 default: return false;

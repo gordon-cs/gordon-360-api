@@ -65,6 +65,34 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
 
+        /// <summary>
+        /// Get the supervisors for a given activity
+        /// </summary>
+        /// <param name="id">The identifier for a specific activity</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Get the supervisors for a specified activity within the database
+        /// </remarks>
+        [HttpGet]
+        [Route("activity/{id}")]
+        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.SUPERVISOR_BY_ACTIVITY)]
+        public IHttpActionResult GetSupervisorsForActivity(string id)
+        {
+
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest();
+            }
+            var result = _supervisorService.GetSupervisorsForActivity(id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+
+        }
+
         /// <summary>Update an existing supervisor</summary>
         /// <param name="id">The id for an existing supervisor</param>
         /// <param name="supervisor">The supervisor object to be changed</param>

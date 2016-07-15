@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Diagnostics;
 using Gordon360.Services;
 using Gordon360.Static.Names;
+using Gordon360.Repositories;
 
 namespace Gordon360.AuthorizationServer
 {
@@ -79,7 +80,10 @@ namespace Gordon360.AuthorizationServer
 
                     if (areValidCredentials)
                     {
-                       
+                        var firstDotLastName = userEntry.SamAccountName;
+                        var adminService = new AdministratorService(new UnitOfWork());
+                        var isAdmin = adminService.Get(firstDotLastName);
+
                         var distinguishedName = userEntry.DistinguishedName;
                         var collegeRole = string.Empty;
                         if(distinguishedName.Contains("OU=Students"))
@@ -89,6 +93,10 @@ namespace Gordon360.AuthorizationServer
                         else
                         {
                             collegeRole = Position.FACSTAFF;
+                        }
+                        if (isAdmin != null) // If the boolean from earlier was not null, this is actually an admin.
+                        {
+                            collegeRole = Position.GOD;
                         }
                         var identity = new ClaimsIdentity(context.Options.AuthenticationType);
                         identity.AddClaim(new Claim("name", userEntry.Name));

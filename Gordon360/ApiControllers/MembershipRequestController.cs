@@ -74,8 +74,8 @@ namespace Gordon360.Controllers.Api
         /// <param name="id">The activity code</param>
         /// <returns>All membership requests associated with the activity</returns>
         [HttpGet]
-        [Route("student/{id}")]
-        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.MEMBERSHIP_REQUEST)]
+        [Route("activity/{id}")]
+        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_REQUEST_BY_ACTIVITY)]
         public IHttpActionResult GetMembershipsRequestsForActivity(string id)
         {
             if(!ModelState.IsValid)
@@ -92,7 +92,32 @@ namespace Gordon360.Controllers.Api
 
             return Ok(result);
         }
-        
+
+        /// <summary>
+        /// Gets the memberships requests for the specified student
+        /// </summary>
+        /// <param name="id">The student id</param>
+        /// <returns>All membership requests associated with the student</returns>
+        [HttpGet]
+        [Route("student/{id}")]
+        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_REQUEST_BY_STUDENT)]
+        public IHttpActionResult GetMembershipsRequestsForStudent(string id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var result = _membershipRequestService.GetMembershipRequestsForStudent(id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
 
         /// <summary>
         /// Creates a new membership request

@@ -100,6 +100,19 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// Fetches the supervisors of the activity whose activity code is specified by the parameter.
+        /// </summary>
+        /// <param name="id">The activity code.</param>
+        /// <returns>SupervisorViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+        public IEnumerable<SupervisorViewModel> GetSupervisorsForActivity(string id)
+        {
+            var rawsqlquery = Constants.getSupervisorsForActivityQuery;
+            var result = RawSqlQuery<SupervisorViewModel>.query(rawsqlquery, id);
+            // No trimming here because we made the Supervisor Table, and we made sure to use varchar(n).
+            return result;
+        }
+
+        /// <summary>
         /// Fetches all supervisor records from storage.
         /// </summary>
         /// <returns>SupervisorViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>

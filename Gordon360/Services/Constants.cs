@@ -195,7 +195,7 @@ namespace Gordon360.Services
                                         INNER JOIN PART_DEF as part
 	                                        ON mem.PART_LVL = part.PART_CDE";
 
-        public const string getAllMembershipRequestsQuery = @"SELECT	req.REQUEST_ID as RequestID,
+        public const string getAllMembershipRequestsQuery = @"SELECT req.REQUEST_ID as RequestID,
 		                                                    req.ACT_CDE as ActivityCode,
 		                                                    activity.ACT_DESC as ActivityDescription,
 		                                                    req.ID_NUM as IDNumber,
@@ -241,7 +241,7 @@ namespace Gordon360.Services
 	                                                    ON req.ID_NUM = acct.gordon_id
                                                     INNER JOIN PART_DEF as part
 	                                                    ON req.PART_LVL = part.PART_CDE
-                                                    WHERE req.REQUEST_ID = @q0";
+                                                    WHERE req.REQUEST_ID = @p0";
 
         public const string getSupervisorByIdQuery = @"SELECT sup.SUP_ID as SupervisorID,
 		                                            acct.firstname as FirstName,
@@ -258,7 +258,7 @@ namespace Gordon360.Services
 	                                            ON sup.SESSION_CDE = sess.SESS_CDE
                                             INNER JOIN ACT_CLUB_DEF as activity
 	                                            ON sup.ACT_CDE = activity.ACT_CDE
-                                            WHERE sup.SUP_ID = @q0";
+                                            WHERE sup.SUP_ID = @p0";
 
         public const string getAllSupervisorsQuery = @"SELECT sup.SUP_ID as SupervisorID,
 		                                            acct.firstname as FirstName,
@@ -276,7 +276,7 @@ namespace Gordon360.Services
                                             INNER JOIN ACT_CLUB_DEF as activity
 	                                            ON sup.ACT_CDE = activity.ACT_CDE";
 
-        public const string getMembershipRequestsForActivityQuery = @"SELECT	req.REQUEST_ID as RequestID,
+        public const string getMembershipRequestsForActivityQuery = @"SELECT req.REQUEST_ID as RequestID,
 		                                                            req.ACT_CDE as ActivityCode,
 		                                                            activity.ACT_DESC as ActivityDescription,
 		                                                            req.ID_NUM as IDNumber,
@@ -299,6 +299,30 @@ namespace Gordon360.Services
                                                             INNER JOIN PART_DEF as part
 	                                                            ON req.PART_LVL = part.PART_CDE
                                                             WHERE req.ACT_CDE = @p0";
+
+        public const string getMembershipRequestsForStudentQuery = @"SELECT req.REQUEST_ID as RequestID,
+		                                                            req.ACT_CDE as ActivityCode,
+		                                                            activity.ACT_DESC as ActivityDescription,
+		                                                            req.ID_NUM as IDNumber,
+		                                                            acct.firstname as FirstName,
+		                                                            acct.lastname as LastName,
+		                                                            req.PART_LVL as Participation,
+		                                                            part.PART_DESC as ParticipationDescription,
+		                                                            sess.SESS_CDE as SessionCode,
+		                                                            sess.SESS_DESC as SessionDescription,
+		                                                            req.COMMENT_TXT as CommentText,
+		                                                            req.DATE_SENT as DateSent,
+		                                                            req.APPROVED as RequestApproved
+                                                            FROM Request as req
+                                                            INNER JOIN CM_SESSION_MSTR as sess
+	                                                            ON req.SESS_CDE = sess.SESS_CDE
+                                                            INNER JOIN ACT_CLUB_DEF as activity
+	                                                            ON req.ACT_CDE = activity.ACT_CDE
+                                                            INNER JOIN ACCOUNT as acct
+	                                                            ON req.ID_NUM = acct.gordon_id
+                                                            INNER JOIN PART_DEF as part
+	                                                            ON req.PART_LVL = part.PART_CDE
+                                                            WHERE req.ID_NUM = @p0";
     }
 
 }

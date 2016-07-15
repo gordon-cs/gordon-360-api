@@ -61,31 +61,6 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
 
-        /// <summary>Gets the activities taking place during a given session</summary>
-        /// <param name="id">The session identifier</param>
-        /// <returns>A list of all activities that are active during the given session determined by the id parameter</returns>
-        /// <remarks>Queries the database to find which activities are active during the session desired</remarks>
-        // GET: api/sessions/id/activities
-        [HttpGet]
-        [Route("{id}/activities")]
-        public IHttpActionResult GetActivitiesForSession(string id)
-        {
-            if(!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
-            {
-                return BadRequest(ModelState);
-            }
-
-            var result = _sessionService.GetActivitiesForSession(id);
-
-            if(result == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(result);
-
-        }
-
         /// <summary>
         /// Gets the current active session
         /// </summary>

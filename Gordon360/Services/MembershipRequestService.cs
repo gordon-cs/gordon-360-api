@@ -113,9 +113,9 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// Fetches all the membership requests associated with this student
+        /// Fetches all the membership requests associated with this activity
         /// </summary>
-        /// <param name="id">The student id</param>
+        /// <param name="id">The activity id</param>
         /// <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
         public IEnumerable<MembershipRequestViewModel> GetMembershipRequestsForActivity(string id)
         {
@@ -136,6 +136,32 @@ namespace Gordon360.Services
                 return trim;
             });
             return trimmedResult; 
+        }
+
+        /// <summary>
+        /// Fetches all the membership requests associated with this student
+        /// </summary>
+        /// <param name="id">The student id</param>
+        /// <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
+        public IEnumerable<MembershipRequestViewModel> GetMembershipRequestsForStudent(string id)
+        {
+            var rawsqlQuery = Constants.getMembershipRequestsForStudentQuery;
+            var result = RawSqlQuery<MembershipRequestViewModel>.query(rawsqlQuery, id);
+            var trimmedResult = result.Select(x =>
+            {
+                var trim = x;
+                trim.ActivityCode = x.ActivityCode.Trim();
+                trim.ActivityDescription = x.ActivityDescription.Trim();
+                trim.SessionCode = x.SessionCode.Trim();
+                trim.SessionDescription = x.SessionDescription.Trim();
+                trim.IDNumber = x.IDNumber.Trim();
+                trim.FirstName = x.FirstName.Trim();
+                trim.LastName = x.LastName.Trim();
+                trim.Participation = x.Participation.Trim();
+                trim.ParticipationDescription = x.ParticipationDescription.Trim();
+                return trim;
+            });
+            return trimmedResult;
         }
 
         /// <summary>

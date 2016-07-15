@@ -39,6 +39,7 @@ namespace Gordon360.Models
         public virtual DbSet<Request> Request { get; set; }
         public virtual DbSet<Activity_Info> Activity_Info { get; set; }
         public virtual DbSet<Membership> Membership { get; set; }
+        public virtual DbSet<Admins> Admins { get; set; }
     
         public virtual ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> ACTIVE_CLUBS_PER_SESS_ID(string sESS_CDE)
         {

@@ -185,9 +185,6 @@
     <Compile Include="ApiControllers\SupervisorsController.cs" />
     <Compile Include="ApiControllers\ActivitiesController.cs" />
     <Compile Include="ApiControllers\MembershipsController.cs" />
-    <Compile Include="AuthorizationFilters\AuthorizationLevel.cs" />
-    <Compile Include="AuthorizationFilters\AuthorizeActivityLeader.cs" />
-    <Compile Include="AuthorizationFilters\AuthorizeSupervisor.cs" />
     <Compile Include="AuthorizationFilters\StateYourBusiness.cs" />
     <Compile Include="AuthorizationServer\CustomJWTFormat.cs" />
     <Compile Include="AuthorizationServer\TokenIssuer.cs" />
@@ -201,6 +198,9 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ACT_CLUB_DEF.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Admins.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CCT_DB_Models.Context.cs">
@@ -272,6 +272,7 @@
     <Compile Include="Services\AccountService.cs" />
     <Compile Include="Services\ActivityInfoService.cs" />
     <Compile Include="Services\ActivityService.cs" />
+    <Compile Include="Services\AdministratorService.cs" />
     <Compile Include="Services\ComplexQueries\RawSqlQuery.cs" />
     <Compile Include="Services\Constants.cs" />
     <Compile Include="Services\FacultyService.cs" />

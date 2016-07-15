@@ -15,6 +15,16 @@
           <Property Name="MTG_TIME" Type="varchar" MaxLength="20" />
           <Property Name="ACT_IMAGE" Type="varchar" MaxLength="2083" />
         </EntityType>
+        <EntityType Name="Admins">
+          <Key>
+            <PropertyRef Name="ADMIN_ID" />
+          </Key>
+          <Property Name="ADMIN_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="USER_NAME" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="FIRST_NAME" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="LAST_NAME" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="EMAIL" Type="varchar" MaxLength="20" />
+        </EntityType>
         <EntityType Name="JNZB_ACTIVITIES">
           <Key>
             <PropertyRef Name="ENTRY_ID" />
@@ -154,8 +164,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <Function Name="ACTIVE_CLUBS_PER_SESS_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="SESS_CDE" Type="char" Mode="In" />
         </Function>
-        <EntityContainer Name="CCT_AppModelsStoreContainer">
+        <EntityContainer Name="Gordon360ModelsStoreContainer">
           <EntitySet Name="Activity_Info" EntityType="Self.Activity_Info" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Admins" EntityType="Self.Admins" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="JNZB_ACTIVITIES" EntityType="Self.JNZB_ACTIVITIES" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Membership" EntityType="Self.Membership" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Request" EntityType="Self.Request" Schema="dbo" store:Type="Tables" />
@@ -327,6 +338,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="Request" EntityType="Gordon360.Models.Request" />
           <EntitySet Name="Activity_Info" EntityType="Gordon360.Models.Activity_Info" />
           <EntitySet Name="Membership" EntityType="Gordon360.Models.Membership" />
+          <EntitySet Name="Admins" EntityType="Gordon360.Models.Admins" />
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
           <Property Type="String" Name="ACT_CDE" Nullable="false" MaxLength="8" />
@@ -353,7 +365,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="ACT_DESCR" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="MTG_DAY" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="ACT_IMAGE" Type="String" MaxLength="2083" FixedLength="false" Unicode="false" />
-          <Property Name="MTG_TIME" Type="String" Nullable="false" />
+          <Property Name="MTG_TIME" Type="String" Unicode="false" FixedLength="false" MaxLength="20" />
         </EntityType>
         <EntityType Name="Membership">
           <Key>
@@ -371,12 +383,22 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="JOB_NAME" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="JOB_TIME" Type="DateTime" Precision="3" />
         </EntityType>
+        <EntityType Name="Admins">
+          <Key>
+            <PropertyRef Name="ADMIN_ID" />
+          </Key>
+          <Property Name="ADMIN_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="USER_NAME" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="FIRST_NAME" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="LAST_NAME" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="EMAIL" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="CCT_AppModelsStoreContainer" CdmEntityContainer="CCTEntities">
+        <EntityContainerMapping StorageEntityContainer="Gordon360ModelsStoreContainer" CdmEntityContainer="CCTEntities">
           <EntitySetMapping Name="JNZB_ACTIVITIES">
             <EntityTypeMapping TypeName="Gordon360.Models.JNZB_ACTIVITIES">
               <MappingFragment StoreEntitySet="JNZB_ACTIVITIES">
@@ -525,6 +547,17 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="SESSION_CDE" ColumnName="SESSION_CDE" />
                 <ScalarProperty Name="ACT_CDE" ColumnName="ACT_CDE" />
                 <ScalarProperty Name="MEMBERSHIP_ID" ColumnName="MEMBERSHIP_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Admins">
+            <EntityTypeMapping TypeName="Gordon360.Models.Admins">
+              <MappingFragment StoreEntitySet="Admins">
+                <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
+                <ScalarProperty Name="LAST_NAME" ColumnName="LAST_NAME" />
+                <ScalarProperty Name="FIRST_NAME" ColumnName="FIRST_NAME" />
+                <ScalarProperty Name="USER_NAME" ColumnName="USER_NAME" />
+                <ScalarProperty Name="ADMIN_ID" ColumnName="ADMIN_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
