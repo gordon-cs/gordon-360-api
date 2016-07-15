@@ -15,7 +15,7 @@
           <Property Name="MTG_TIME" Type="varchar" MaxLength="20" />
           <Property Name="ACT_IMAGE" Type="varchar" MaxLength="2083" />
         </EntityType>
-        <EntityType Name="Admins">
+        <EntityType Name="Admin">
           <Key>
             <PropertyRef Name="ADMIN_ID" />
           </Key>
@@ -66,12 +66,12 @@
           </Key>
           <Property Name="REQUEST_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="SESS_CDE" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="ACT_CDE" Type="varchar" MaxLength="20" />
+          <Property Name="ACT_CDE" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="ID_NUM" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="PART_LVL" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="DATE_SENT" Type="datetime" Nullable="false" />
           <Property Name="COMMENT_TXT" Type="varchar" MaxLength="120" />
-          <Property Name="APPROVED" Type="bit" Nullable="false" />
+          <Property Name="APPROVED" Type="varchar" MaxLength="20" Nullable="false" />
         </EntityType>
         <EntityType Name="SUPERVISOR">
           <Key>
@@ -166,7 +166,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         </Function>
         <EntityContainer Name="Gordon360ModelsStoreContainer">
           <EntitySet Name="Activity_Info" EntityType="Self.Activity_Info" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Admins" EntityType="Self.Admins" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Admin" EntityType="Self.Admin" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="JNZB_ACTIVITIES" EntityType="Self.JNZB_ACTIVITIES" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Membership" EntityType="Self.Membership" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Request" EntityType="Self.Request" Schema="dbo" store:Type="Tables" />
@@ -338,7 +338,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="Request" EntityType="Gordon360.Models.Request" />
           <EntitySet Name="Activity_Info" EntityType="Gordon360.Models.Activity_Info" />
           <EntitySet Name="Membership" EntityType="Gordon360.Models.Membership" />
-          <EntitySet Name="Admins" EntityType="Gordon360.Models.Admins" />
+          <EntitySet Name="Admin" EntityType="Gordon360.Models.Admin" />
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
           <Property Type="String" Name="ACT_CDE" Nullable="false" MaxLength="8" />
@@ -348,14 +348,14 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Key>
             <PropertyRef Name="REQUEST_ID" />
           </Key>
-          <Property Name="ACT_CDE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="ACT_CDE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="ID_NUM" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="PART_LVL" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="DATE_SENT" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="REQUEST_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="COMMENT_TXT" Type="String" MaxLength="120" FixedLength="false" Unicode="false" />
           <Property Name="SESS_CDE" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="APPROVED" Type="Boolean" Nullable="false" />
+          <Property Name="APPROVED" Type="String" Nullable="false" MaxLength="20" Unicode="false" FixedLength="false" />
         </EntityType>
         <EntityType Name="Activity_Info">
           <Key>
@@ -383,7 +383,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="JOB_NAME" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="JOB_TIME" Type="DateTime" Precision="3" />
         </EntityType>
-        <EntityType Name="Admins">
+        <EntityType Name="Admin">
           <Key>
             <PropertyRef Name="ADMIN_ID" />
           </Key>
@@ -550,9 +550,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Admins">
-            <EntityTypeMapping TypeName="Gordon360.Models.Admins">
-              <MappingFragment StoreEntitySet="Admins">
+          <EntitySetMapping Name="Admin">
+            <EntityTypeMapping TypeName="Gordon360.Models.Admin">
+              <MappingFragment StoreEntitySet="Admin">
                 <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
                 <ScalarProperty Name="LAST_NAME" ColumnName="LAST_NAME" />
                 <ScalarProperty Name="FIRST_NAME" ColumnName="FIRST_NAME" />

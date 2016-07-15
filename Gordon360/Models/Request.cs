@@ -21,6 +21,6 @@ namespace Gordon360.Models
         public int REQUEST_ID { get; set; }
         public string COMMENT_TXT { get; set; }
         public string SESS_CDE { get; set; }
-        public bool APPROVED { get; set; }
+        public string APPROVED { get; set; }
     }
 }

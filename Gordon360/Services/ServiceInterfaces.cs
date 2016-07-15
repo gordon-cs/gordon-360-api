@@ -32,8 +32,8 @@ namespace Gordon360.Services
     }
     public interface IAdministratorService
     {
-        Admins Get(int id);
-        IEnumerable<Admins> GetAll();
+        Admin Get(int id);
+        IEnumerable<Admin> GetAll();
     }
     public interface ISessionService
     {
@@ -102,6 +102,8 @@ namespace Gordon360.Services
         IEnumerable<MembershipRequestViewModel> GetMembershipRequestsForStudent(string id);
         Request Add(Request membershipRequest);
         Request Update(int id, Request membershipRequest);
+        Request AproveRequest(int id);
+        Request DenyRequest(int id);
         Request Delete(int id);
     }
 }

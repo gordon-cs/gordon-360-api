@@ -243,16 +243,12 @@ namespace Gordon360.Services
                 return null;
             }
 
-            original.ACT_CDE = membership.ACT_CDE;
+            // One can only update certain fields within a membrship
             original.BEGIN_DTE = membership.BEGIN_DTE;
             original.DESCRIPTION = membership.DESCRIPTION;
             original.END_DTE = membership.END_DTE;
-            original.ID_NUM = membership.ID_NUM;
-            original.JOB_NAME = membership.JOB_NAME;
-            original.JOB_TIME = membership.JOB_TIME;
             original.PART_LVL = membership.PART_LVL;
             original.SESSION_CDE = membership.SESSION_CDE;
-            original.USER_NAME = membership.USER_NAME;
 
             _unitOfWork.Save();
 

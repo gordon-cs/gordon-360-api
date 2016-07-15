@@ -23,7 +23,7 @@ namespace Gordon360.Repositories
         private IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> _ActivityPerSessionRepository;
         private IRepository<Request> _MembershipRequestRepository;
         private IRepository<Activity_Info> _ActivityInfoRepository;
-        private IRepository<Admins> _AdministratorRepository;
+        private IRepository<Admin> _AdministratorRepository;
 
         private CCTEntities _context;
 
@@ -89,9 +89,9 @@ namespace Gordon360.Repositories
             get { return _MembershipRequestRepository ?? (_MembershipRequestRepository = new GenericRepository<Request>(_context)); }
         }
 
-        public IRepository<Admins> AdministratorRepository
+        public IRepository<Admin> AdministratorRepository
         {
-            get { return _AdministratorRepository ?? (_AdministratorRepository = new GenericRepository<Admins>(_context));  }
+            get { return _AdministratorRepository ?? (_AdministratorRepository = new GenericRepository<Admin>(_context));  }
         }
 
         public bool Save()

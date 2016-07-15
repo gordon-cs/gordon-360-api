@@ -6,6 +6,7 @@ using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using Gordon360.Services.ComplexQueries;
+using Gordon360.Static.Names;
 
 namespace Gordon360.Services
 {
@@ -43,6 +44,20 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// Approves the request with the specified ID.
+        /// </summary>
+        /// <param name="id">The ID of the request to be approved</param>
+        /// <returns></returns>
+        public Request AproveRequest(int id)
+        {
+            var query = _unitOfWork.MembershipRequestRepository.GetById(id);
+            if (query == null)
+            {
+
+            }
+        }
+
+        /// <summary>
         /// Delete the membershipRequest object whose id is given in the parameters 
         /// </summary>
         /// <param name="id">The membership request id</param>
@@ -58,6 +73,12 @@ namespace Gordon360.Services
             _unitOfWork.Save();
             return result;
         }
+
+        public Request DenyRequest(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Get the membership request object whose Id is specified in the parameters.
         /// </summary>
@@ -205,8 +226,8 @@ namespace Gordon360.Services
             var activityExists = _unitOfWork.ActivityRepository.Where(x => x.ACT_CDE.Trim() == membershipRequest.ACT_CDE).Count() > 0;
             var participationExists = _unitOfWork.ParticipationRepository.Where(x => x.PART_CDE.Trim() == membershipRequest.PART_LVL).Count() > 0;
             var sessionExists = _unitOfWork.SessionRepository.Where(x => x.SESS_CDE.Trim() == membershipRequest.SESS_CDE).Count() > 0;
-
-            if (!personExists || !activityExists || !participationExists || !sessionExists)
+            var isPendingRequest = membershipRequest.APPROVED == Request_Status.PENDING;
+            if (!personExists || !activityExists || !participationExists || !sessionExists || !isPendingRequest)
             {
                 return false;
             }

@@ -12,7 +12,7 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Admins
+    public partial class Admin
     {
         public int ADMIN_ID { get; set; }
         public string USER_NAME { get; set; }

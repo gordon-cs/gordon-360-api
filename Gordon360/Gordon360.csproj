@@ -200,7 +200,7 @@
     <Compile Include="Models\ACT_CLUB_DEF.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Admins.cs">
+    <Compile Include="Models\Admin.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CCT_DB_Models.Context.cs">

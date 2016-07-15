@@ -20,7 +20,7 @@ namespace Gordon360.Repositories
         IRepository<Student> StudentRepository { get; }
         IRepository<SUPERVISOR> SupervisorRepository { get; }
         IRepository<Request> MembershipRequestRepository { get; }
-        IRepository<Admins> AdministratorRepository { get; }
+        IRepository<Admin> AdministratorRepository { get; }
 
         // Note -- Only use this repository to call SQL Stored Procedures
         IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> ActivityPerSessionRepository { get;  }

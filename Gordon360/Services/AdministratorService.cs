@@ -22,7 +22,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="id">The admin ID.l</param>
         /// <returns>The Specified administrator. If none was found, a null value is returned.</returns>
-        public Admins Get(int id)
+        public Admin Get(int id)
         {
             var query = _unitOfWork.AdministratorRepository.GetById(id);
             if (query == null)
@@ -37,7 +37,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">The admin username</param>
         /// <returns>The Specified administrator. If none was found, a null value is returned.</returns>
-        public Admins Get(string username)
+        public Admin Get(string username)
         {
             var query = _unitOfWork.AdministratorRepository.FirstOrDefault(x => x.USER_NAME == username);
             if(query == null)
@@ -50,7 +50,7 @@ namespace Gordon360.Services
         /// Fetches all the administrators from the database
         /// </summary>
         /// <returns>Returns a list of administrators. If no administrators were found, an empty list is returned.</returns>
-        public IEnumerable<Admins> GetAll()
+        public IEnumerable<Admin> GetAll()
         {
             var query = _unitOfWork.AdministratorRepository.GetAll();
             return query;

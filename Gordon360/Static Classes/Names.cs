@@ -46,5 +46,11 @@ namespace Gordon360.Static.Names
         public static readonly string[] LEADER = { "CAPT", "CODIR", "CORD", "DIREC", "PRES", "VICEC", "VICEP" };
     }
 
+    public static class Request_Status
+    {
+        public const string PENDING = "Pending";
+        public const string APPROVED = "Approved";
+        public const string DENIED = "Denied";
+    }
     
 }

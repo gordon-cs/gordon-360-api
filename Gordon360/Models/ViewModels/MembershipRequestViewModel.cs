@@ -19,7 +19,7 @@ namespace Gordon360.Models.ViewModels
         public string CommentText { get; set; }
         public string SessionCode { get; set; }
         public string SessionDescription { get; set; }
-        public bool RequestApproved { get; set; }
+        public string RequestApproved { get; set; }
 
         public static implicit operator MembershipRequestViewModel(Request req)
         {

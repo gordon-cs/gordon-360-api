@@ -17,7 +17,7 @@
         <EntityTypeShape EntityType="Gordon360.Models.Request" Width="1.5" PointX="0.5" PointY="3.125" />
         <EntityTypeShape EntityType="Gordon360.Models.Activity_Info" Width="1.5" PointX="0.5" PointY="6" />
         <EntityTypeShape EntityType="Gordon360.Models.Membership" Width="1.5" PointX="2.125" PointY="6" />
-        <EntityTypeShape EntityType="Gordon360.Models.Admins" Width="1.5" PointX="4.375" PointY="6.75" />
+        <EntityTypeShape EntityType="Gordon360.Models.Admin" Width="1.5" PointX="4.375" PointY="6" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
