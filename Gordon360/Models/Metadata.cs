@@ -26,7 +26,6 @@ namespace Gordon360.Models
         [Required]
         public int ID_NUM { get; set; }
         [Required]
-        [MinLength(3)]
         public string PART_LVL { get; set; }
         [Required]
         public System.DateTime BEGIN_DTE { get; set; }

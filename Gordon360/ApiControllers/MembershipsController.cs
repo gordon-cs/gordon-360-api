@@ -183,7 +183,7 @@ namespace Gordon360.Controllers.Api
         {
             if (!ModelState.IsValid || membership == null || id != membership.MEMBERSHIP_ID)
             {
-                return BadRequest();
+                return BadRequest("The sent data is invalid");
             }
 
             var result = _membershipService.Update(id, membership);

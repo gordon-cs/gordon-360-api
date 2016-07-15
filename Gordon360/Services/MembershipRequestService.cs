@@ -56,6 +56,7 @@ namespace Gordon360.Services
                 return null;
             }
             query.APPROVED = Request_Status.APPROVED;
+
             Membership newMembership = new Membership
             {
                 ACT_CDE = query.ACT_CDE,
