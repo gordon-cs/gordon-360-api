@@ -418,7 +418,7 @@ namespace Gordon360.AuthorizationFilters
                         if (is_membershipOwner)
                             return true;
 
-                        var activityCode = membershipToConsider.IDNumber;
+                        var activityCode = membershipToConsider.ActivityCode;
                         var is_membershipLeader = membershipService.GetLeaderMembershipsForActivity(activityCode).Where(x => x.IDNumber == user_id).Count() > 0;
                         if (is_membershipLeader)
                             return true;
