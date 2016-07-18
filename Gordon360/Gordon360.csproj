@@ -18,10 +18,10 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort />
-    <IISExpressAnonymousAuthentication />
-    <IISExpressWindowsAuthentication />
-    <IISExpressUseClassicPipelineMode />
+    <IISExpressSSLPort>49645</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -298,6 +298,7 @@
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
     </Content>
     <None Include="Properties\PublishProfiles\CCTEmber.pubxml" />
+    <None Include="Properties\PublishProfiles\CCTTRAIN.pubxml" />
     <None Include="Properties\PublishProfiles\CCT_App.pubxml" />
     <None Include="Properties\PublishProfiles\CCT_APP_PUBLISH.pubxml" />
     <Content Include="Models\CCT_DB_Models.Context.tt">
@@ -350,13 +351,13 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:49645/</IISUrl>
+          <IISUrl>http://localhost:3000/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
           </CustomServerUrl>
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
-          <servers defaultServer="SelfHostServer">
+          <servers defaultServer="">
             <server name="SelfHostServer" exePath="" cmdArgs="" url="http://localhost:49645/" workingDir="" />
           </servers>
         </WebProjectProperties>

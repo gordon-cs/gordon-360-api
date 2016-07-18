@@ -58,13 +58,6 @@ namespace Gordon360.AuthorizationServer
 
                 if (userEntry != null)
                 {
-                    /* Debugging Purposes */
-                    Debug.WriteLine("\n\nFOUND!\n\n");
-                    Debug.WriteLine(userEntry.DistinguishedName);
-                    Debug.WriteLine(userEntry.SamAccountName);
-
-                    /* End Debug */
-
                     PrincipalContext ADUserConnection = new PrincipalContext(
                         ContextType.Domain,
                         ldapServer,

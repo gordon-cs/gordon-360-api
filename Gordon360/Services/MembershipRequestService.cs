@@ -35,7 +35,7 @@ namespace Gordon360.Services
             {
                 return null;
             }
-
+            membershipRequest.APPROVED = Request_Status.PENDING;
             var addedMembershipRequest = _unitOfWork.MembershipRequestRepository.Add(membershipRequest);
             _unitOfWork.Save();
 
@@ -254,9 +254,8 @@ namespace Gordon360.Services
             var activityExists = _unitOfWork.ActivityRepository.Where(x => x.ACT_CDE.Trim() == membershipRequest.ACT_CDE).Count() > 0;
             var participationExists = _unitOfWork.ParticipationRepository.Where(x => x.PART_CDE.Trim() == membershipRequest.PART_LVL).Count() > 0;
             var sessionExists = _unitOfWork.SessionRepository.Where(x => x.SESS_CDE.Trim() == membershipRequest.SESS_CDE).Count() > 0;
-            var isPendingRequest = membershipRequest.APPROVED == Request_Status.PENDING;
 
-            if (!personExists || !activityExists || !participationExists || !sessionExists || !isPendingRequest)
+            if (!personExists || !activityExists || !participationExists || !sessionExists)
             {
                 return false;
             }
