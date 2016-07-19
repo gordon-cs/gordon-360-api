@@ -95,6 +95,7 @@ namespace Gordon360.Services
             result.IDNumber = result.IDNumber.Trim();
             result.FirstName = result.FirstName.Trim();
             result.LastName = result.LastName.Trim();
+            result.Email = result.Email.Trim();
             result.Participation = result.Participation.Trim();
             result.ParticipationDescription = result.ParticipationDescription.Trim();
 
@@ -120,6 +121,7 @@ namespace Gordon360.Services
                 trim.IDNumber = x.IDNumber.Trim();
                 trim.FirstName = x.FirstName.Trim();
                 trim.LastName = x.LastName.Trim();
+                trim.Email = x.Email.Trim();
                 trim.Participation = x.Participation.Trim();
                 trim.ParticipationDescription = x.ParticipationDescription.Trim();
                 return trim;
@@ -149,6 +151,7 @@ namespace Gordon360.Services
                 trim.IDNumber = x.IDNumber.Trim();
                 trim.FirstName = x.FirstName.Trim();
                 trim.LastName = x.LastName.Trim();
+                trim.Email = x.Email.Trim();
                 trim.Participation = x.Participation.Trim();
                 trim.ParticipationDescription = x.ParticipationDescription.Trim();
                 return trim;
@@ -178,6 +181,7 @@ namespace Gordon360.Services
                 trim.IDNumber = x.IDNumber.Trim();
                 trim.FirstName = x.FirstName.Trim();
                 trim.LastName = x.LastName.Trim();
+                trim.Email = x.Email.Trim();
                 trim.Participation = x.Participation.Trim();
                 trim.ParticipationDescription = x.ParticipationDescription.Trim();
                 return trim;
@@ -215,6 +219,7 @@ namespace Gordon360.Services
                 trim.ParticipationDescription = x.ParticipationDescription.Trim();
                 trim.FirstName = x.FirstName.Trim();
                 trim.LastName = x.LastName.Trim();
+                trim.Email = x.Email.Trim();
                 trim.IDNumber = x.IDNumber.Trim();
                 return trim;
             });
