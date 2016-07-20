@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Web.Http;
-using System.Web.Http.Description;
-using Gordon360.Models;
 using Gordon360.Repositories;
 using Gordon360.Services;
+using Gordon360.Static.Methods;
 
 namespace Gordon360.Controllers.Api
 {

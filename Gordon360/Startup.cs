@@ -24,11 +24,15 @@ namespace Gordon360
             // Configure options for Authorization Component
             appBuilder.UseOAuthAuthorizationServer(new OAuthAuthorizationServerOptions
             {
-                AllowInsecureHttp = true,
+               
                 TokenEndpointPath = new PathString("/token"),
                 AccessTokenExpireTimeSpan = TimeSpan.FromMinutes(10),
                 Provider = new TokenIssuer(),
-                AccessTokenFormat = new CustomJWTFormat(issuer)
+                AccessTokenFormat = new CustomJWTFormat(issuer),
+                #if DEBUG       
+                AllowInsecureHttp = true
+                #endif
+
             });
             
             // User json web tokens

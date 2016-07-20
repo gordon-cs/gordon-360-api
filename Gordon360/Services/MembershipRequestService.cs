@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using Gordon360.Models;
@@ -27,7 +28,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="membershipRequest">The membership request object</param>
         /// <returns>The membership request object once it is added</returns>
-        public Request Add(Request membershipRequest)
+        public REQUEST Add(REQUEST membershipRequest)
         {
             var isValidMembershipRequest = membershipRequestIsValid(membershipRequest);
 
@@ -35,7 +36,7 @@ namespace Gordon360.Services
             {
                 return null;
             }
-
+            membershipRequest.STATUS = Request_Status.PENDING;
             var addedMembershipRequest = _unitOfWork.MembershipRequestRepository.Add(membershipRequest);
             _unitOfWork.Save();
 
@@ -48,22 +49,23 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="id">The ID of the request to be approved</param>
         /// <returns></returns>
-        public Request ApproveRequest(int id)
+        public REQUEST ApproveRequest(int id)
         {
             var query = _unitOfWork.MembershipRequestRepository.GetById(id);
             if (query == null)
             {
                 return null;
             }
-            query.APPROVED = Request_Status.APPROVED;
+            query.STATUS = Request_Status.APPROVED;
 
-            Membership newMembership = new Membership
+            MEMBERSHIP newMembership = new MEMBERSHIP
             {
                 ACT_CDE = query.ACT_CDE,
                 ID_NUM = query.ID_NUM,
-                SESSION_CDE = query.SESS_CDE,
-                PART_LVL = query.PART_LVL,
+                SESS_CDE = query.SESS_CDE,
+                PART_CDE = query.PART_CDE,
                 BEGIN_DTE = DateTime.Now,
+                COMMENT_TXT = ""
             };
             _unitOfWork.MembershipRepository.Add(newMembership);
 
@@ -78,7 +80,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="id">The membership request id</param>
         /// <returns>A copy of the deleted membership request</returns>
-        public Request Delete(int id)
+        public REQUEST Delete(int id)
         {
             var result = _unitOfWork.MembershipRequestRepository.GetById(id);
             if (result == null)
@@ -95,7 +97,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="id">The membership request id</param>
         /// <returns></returns>
-        public Request DenyRequest(int id)
+        public REQUEST DenyRequest(int id)
         {
             var query = _unitOfWork.MembershipRequestRepository.GetById(id);
             if (query == null)
@@ -103,7 +105,7 @@ namespace Gordon360.Services
                 return null;
             }
 
-            query.APPROVED = Request_Status.DENIED;
+            query.STATUS = Request_Status.DENIED;
             _unitOfWork.Save();
             return query;
         }
@@ -115,9 +117,9 @@ namespace Gordon360.Services
         /// <returns>If found, returns MembershipRequestViewModel. If not found, returns null.</returns>
         public MembershipRequestViewModel Get(int id)
         {
-            var rawsqlquery = Constants.getMembershipRequestByIdQuery;
-            var result = RawSqlQuery<MembershipRequestViewModel>.query(rawsqlquery, id).FirstOrDefault();
-
+            
+            var idParameter = new SqlParameter("@REQUEST_ID", id);
+            var result = RawSqlQuery<MembershipRequestViewModel>.query("REQUEST_PER_REQUEST_ID @REQUEST_ID", idParameter).FirstOrDefault();
             if (result == null)
             {
                 return null;
@@ -128,7 +130,7 @@ namespace Gordon360.Services
             result.ActivityDescription = result.ActivityDescription.Trim();
             result.SessionCode = result.SessionCode.Trim();
             result.SessionDescription = result.SessionDescription.Trim();
-            result.IDNumber = result.IDNumber.Trim();
+            result.IDNumber = result.IDNumber;
             result.FirstName = result.FirstName.Trim();
             result.LastName = result.LastName.Trim();
             result.Participation = result.Participation.Trim();
@@ -143,8 +145,8 @@ namespace Gordon360.Services
         /// <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
         public IEnumerable<MembershipRequestViewModel> GetAll()
         {
-            var rawsqlquery = Constants.getAllMembershipRequestsQuery;
-            var result = RawSqlQuery<MembershipRequestViewModel>.query(rawsqlquery);
+            
+            var result = RawSqlQuery<MembershipRequestViewModel>.query("ALL_REQUESTS");
             var trimmedResult = result.Select(x =>
             {
                 var trim = x;
@@ -152,7 +154,7 @@ namespace Gordon360.Services
                 trim.ActivityDescription = x.ActivityDescription.Trim();
                 trim.SessionCode = x.SessionCode.Trim();
                 trim.SessionDescription = x.SessionDescription.Trim();
-                trim.IDNumber = x.IDNumber.Trim();
+                trim.IDNumber = x.IDNumber;
                 trim.FirstName = x.FirstName.Trim();
                 trim.LastName = x.LastName.Trim();
                 trim.Participation = x.Participation.Trim();
@@ -169,8 +171,10 @@ namespace Gordon360.Services
         /// <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
         public IEnumerable<MembershipRequestViewModel> GetMembershipRequestsForActivity(string id)
         {
-            var rawsqlQuery = Constants.getMembershipRequestsForActivityQuery;
-            var result = RawSqlQuery<MembershipRequestViewModel>.query(rawsqlQuery, id);
+            
+            var idParameter = new SqlParameter("@ACT_CDE", id);
+            var result = RawSqlQuery<MembershipRequestViewModel>.query("REQUESTS_PER_ACT_CDE @ACT_CDE", idParameter);
+
             var trimmedResult = result.Select(x =>
             {
                 var trim = x;
@@ -178,7 +182,7 @@ namespace Gordon360.Services
                 trim.ActivityDescription = x.ActivityDescription.Trim();
                 trim.SessionCode = x.SessionCode.Trim();
                 trim.SessionDescription = x.SessionDescription.Trim();
-                trim.IDNumber = x.IDNumber.Trim();
+                trim.IDNumber = x.IDNumber;
                 trim.FirstName = x.FirstName.Trim();
                 trim.LastName = x.LastName.Trim();
                 trim.Participation = x.Participation.Trim();
@@ -195,8 +199,9 @@ namespace Gordon360.Services
         /// <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
         public IEnumerable<MembershipRequestViewModel> GetMembershipRequestsForStudent(string id)
         {
-            var rawsqlQuery = Constants.getMembershipRequestsForStudentQuery;
-            var result = RawSqlQuery<MembershipRequestViewModel>.query(rawsqlQuery, id);
+            
+            var idParameter = new SqlParameter("@STUDENT_ID", id);
+            var result = RawSqlQuery<MembershipRequestViewModel>.query("REQUESTS_PER_STUDENT_ID @STUDENT_ID", idParameter);
             var trimmedResult = result.Select(x =>
             {
                 var trim = x;
@@ -204,7 +209,7 @@ namespace Gordon360.Services
                 trim.ActivityDescription = x.ActivityDescription.Trim();
                 trim.SessionCode = x.SessionCode.Trim();
                 trim.SessionDescription = x.SessionDescription.Trim();
-                trim.IDNumber = x.IDNumber.Trim();
+                trim.IDNumber = x.IDNumber;
                 trim.FirstName = x.FirstName.Trim();
                 trim.LastName = x.LastName.Trim();
                 trim.Participation = x.Participation.Trim();
@@ -220,7 +225,7 @@ namespace Gordon360.Services
         /// <param name="id">The membership request id</param>
         /// <param name="membershipRequest">The newly modified membership request</param>
         /// <returns></returns>
-        public Request Update(int id, Request membershipRequest)
+        public REQUEST Update(int id, REQUEST membershipRequest)
         {
             var original = _unitOfWork.MembershipRequestRepository.GetById(id);
             if (original == null)
@@ -240,7 +245,7 @@ namespace Gordon360.Services
             original.SESS_CDE = membershipRequest.SESS_CDE;
             original.COMMENT_TXT = membershipRequest.COMMENT_TXT;
             original.DATE_SENT = membershipRequest.DATE_SENT;
-            original.PART_LVL = membershipRequest.PART_LVL;
+            original.PART_CDE = membershipRequest.PART_CDE;
 
             _unitOfWork.Save();
 
@@ -248,15 +253,14 @@ namespace Gordon360.Services
         }
 
         // Helper method to help validate a membership request that comes in.
-        private bool membershipRequestIsValid(Request membershipRequest)
+        private bool membershipRequestIsValid(REQUEST membershipRequest)
         {
-            var personExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id.Trim() == membershipRequest.ID_NUM).Count() > 0;
+            var personExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id.Trim() == membershipRequest.ID_NUM.ToString()).Count() > 0;
             var activityExists = _unitOfWork.ActivityRepository.Where(x => x.ACT_CDE.Trim() == membershipRequest.ACT_CDE).Count() > 0;
-            var participationExists = _unitOfWork.ParticipationRepository.Where(x => x.PART_CDE.Trim() == membershipRequest.PART_LVL).Count() > 0;
+            var participationExists = _unitOfWork.ParticipationRepository.Where(x => x.PART_CDE.Trim() == membershipRequest.PART_CDE).Count() > 0;
             var sessionExists = _unitOfWork.SessionRepository.Where(x => x.SESS_CDE.Trim() == membershipRequest.SESS_CDE).Count() > 0;
-            var isPendingRequest = membershipRequest.APPROVED == Request_Status.PENDING;
 
-            if (!personExists || !activityExists || !participationExists || !sessionExists || !isPendingRequest)
+            if (!personExists || !activityExists || !participationExists || !sessionExists)
             {
                 return false;
             }

@@ -17,16 +17,16 @@ namespace Gordon360.Models
         public int ENTRY_ID { get; set; }
         public string SESS_CDE { get; set; }
         public string ACT_CDE { get; set; }
-        public string ID_NUM { get; set; }
+        public int ID_NUM { get; set; }
         public string PART_CDE { get; set; }
-        public bool MEMBERSHIP_STS { get; set; }
-        public bool TRACK_MTG_ATTEND { get; set; }
+        public string MEMBERSHIP_STS { get; set; }
+        public string TRACK_MTG_ATTEND { get; set; }
         public System.DateTime BEGIN_DTE { get; set; }
         public System.DateTime END_DTE { get; set; }
         public string COMMENT_TXT { get; set; }
-        public bool INCL_PROFILE_RPT { get; set; }
+        public string INCL_PROFILE_RPT { get; set; }
         public string USER_NAME { get; set; }
-        public string USER_JOB { get; set; }
+        public string JOB_NAME { get; set; }
         public Nullable<System.DateTime> JOB_TIME { get; set; }
     }
 }

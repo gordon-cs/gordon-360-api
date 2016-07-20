@@ -127,7 +127,7 @@ namespace Gordon360.Controllers.Api
         [HttpPost]
         [Route("",Name = "membershipRequest")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.MEMBERSHIP_REQUEST)]
-        public IHttpActionResult Post(Request membershipRequest)
+        public IHttpActionResult Post(REQUEST membershipRequest)
         {
             if( !ModelState.IsValid || membershipRequest == null)
             {
@@ -153,7 +153,7 @@ namespace Gordon360.Controllers.Api
         [HttpPut]
         [Route("{id}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP_REQUEST)]
-        public IHttpActionResult Put(int id, Request membershipRequest)
+        public IHttpActionResult Put(int id, REQUEST membershipRequest)
         {
             if (!ModelState.IsValid || membershipRequest == null || id != membershipRequest.REQUEST_ID)
             {
@@ -223,6 +223,8 @@ namespace Gordon360.Controllers.Api
         /// </summary>
         /// <param name="id">The id of the membership request to delete</param>
         /// <returns>The deleted object</returns>
+        [Route("{id}")]
+        [HttpDelete]
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.MEMBERSHIP_REQUEST)]
         public IHttpActionResult Delete(int id)
         {

@@ -130,7 +130,7 @@ namespace Gordon360.Controllers.Api
         [HttpPost]
         [Route("", Name="Memberships")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.MEMBERSHIP)]
-        public IHttpActionResult Post([FromBody] Membership membership)
+        public IHttpActionResult Post([FromBody] MEMBERSHIP membership)
         {
             if(!ModelState.IsValid || membership == null)
             {
@@ -179,7 +179,7 @@ namespace Gordon360.Controllers.Api
         [HttpPut]
         [Route("{id}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP)]
-        public IHttpActionResult Put(int id, [FromBody]Membership membership)
+        public IHttpActionResult Put(int id, [FromBody]MEMBERSHIP membership)
         {
             if (!ModelState.IsValid || membership == null || id != membership.MEMBERSHIP_ID)
             {

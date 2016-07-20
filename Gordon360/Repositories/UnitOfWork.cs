@@ -15,21 +15,21 @@ namespace Gordon360.Repositories
         private IRepository<CM_SESSION_MSTR> _SessionRepository;
         private IRepository<Faculty> _FacultyRepository;
         private IRepository<JNZB_ACTIVITIES> _JenzibarActvityRepository;
-        private IRepository<Membership> _MembershipRepository;
+        private IRepository<MEMBERSHIP> _MembershipRepository;
         private IRepository<PART_DEF> _ParticipationRepository;
         private IRepository<Staff> _StaffRepository;
         private IRepository<Student> _StudentRepository;
         private IRepository<SUPERVISOR> _SupervisorRepository;
         private IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> _ActivityPerSessionRepository;
-        private IRepository<Request> _MembershipRequestRepository;
-        private IRepository<Activity_Info> _ActivityInfoRepository;
-        private IRepository<Admin> _AdministratorRepository;
+        private IRepository<REQUEST> _MembershipRequestRepository;
+        private IRepository<ACT_INFO> _ActivityInfoRepository;
+        private IRepository<ADMIN> _AdministratorRepository;
 
-        private CCTEntities _context;
+        private CCTEntities1 _context;
 
         public UnitOfWork()
         {
-            _context = new CCTEntities();
+            _context = new CCTEntities1();
         }
         public IRepository<ACCOUNT> AccountRepository
         {
@@ -39,9 +39,9 @@ namespace Gordon360.Repositories
         {
             get { return _ActivityRepository ?? (_ActivityRepository = new GenericRepository<ACT_CLUB_DEF>(_context)); }
         }
-        public IRepository<Activity_Info> ActivityInfoRepository
+        public IRepository<ACT_INFO> ActivityInfoRepository
         {
-            get { return _ActivityInfoRepository ?? (_ActivityInfoRepository = new GenericRepository<Activity_Info>(_context)); }
+            get { return _ActivityInfoRepository ?? (_ActivityInfoRepository = new GenericRepository<ACT_INFO>(_context)); }
         }
         public IRepository<CM_SESSION_MSTR> SessionRepository
         {
@@ -55,9 +55,9 @@ namespace Gordon360.Repositories
         {
             get { return _JenzibarActvityRepository ?? (_JenzibarActvityRepository = new GenericRepository<JNZB_ACTIVITIES>(_context)); }
         }
-        public IRepository<Membership> MembershipRepository
+        public IRepository<MEMBERSHIP> MembershipRepository
         {
-            get { return _MembershipRepository ?? (_MembershipRepository = new GenericRepository<Membership>(_context)); }
+            get { return _MembershipRepository ?? (_MembershipRepository = new GenericRepository<MEMBERSHIP>(_context)); }
         }
         public IRepository<PART_DEF> ParticipationRepository
         {
@@ -84,14 +84,14 @@ namespace Gordon360.Repositories
             }
         }
 
-        public IRepository<Request> MembershipRequestRepository
+        public IRepository<REQUEST> MembershipRequestRepository
         {
-            get { return _MembershipRequestRepository ?? (_MembershipRequestRepository = new GenericRepository<Request>(_context)); }
+            get { return _MembershipRequestRepository ?? (_MembershipRequestRepository = new GenericRepository<REQUEST>(_context)); }
         }
 
-        public IRepository<Admin> AdministratorRepository
+        public IRepository<ADMIN> AdministratorRepository
         {
-            get { return _AdministratorRepository ?? (_AdministratorRepository = new GenericRepository<Admin>(_context));  }
+            get { return _AdministratorRepository ?? (_AdministratorRepository = new GenericRepository<ADMIN>(_context));  }
         }
 
         public bool Save()

@@ -79,8 +79,8 @@ namespace Gordon360.Services
                 return null;
             }
 
-            var rawsqlquery = Constants.getSupervisorByIdQuery;
-            var result = RawSqlQuery<SupervisorViewModel>.query(rawsqlquery, id).FirstOrDefault();
+            var idParam = new SqlParameter("@SUP_ID", id);
+            var result = RawSqlQuery<SupervisorViewModel>.query("SUPERVISOR_PER_SUP_ID @SUP_ID", idParam).FirstOrDefault();
 
             if (result == null)
             {
@@ -91,7 +91,7 @@ namespace Gordon360.Services
             result.ActivityDescription = result.ActivityDescription.Trim();
             result.SessionCode = result.SessionCode.Trim();
             result.SessionDescription = result.SessionDescription.Trim();
-            result.IDNumber = result.IDNumber.Trim();
+            result.IDNumber = result.IDNumber;
             result.FirstName = result.FirstName.Trim();
             result.LastName = result.LastName.Trim();
 
@@ -106,8 +106,9 @@ namespace Gordon360.Services
         /// <returns>SupervisorViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
         public IEnumerable<SupervisorViewModel> GetSupervisorsForActivity(string id)
         {
-            var rawsqlquery = Constants.getSupervisorsForActivityQuery;
-            var result = RawSqlQuery<SupervisorViewModel>.query(rawsqlquery, id);
+           
+            var idParam = new SqlParameter("@ACT_CDE", id);
+            var result = RawSqlQuery<SupervisorViewModel>.query("SUPERVISORS_PER_ACT_CDE @ACT_CDE", idParam);
             // No trimming here because we made the Supervisor Table, and we made sure to use varchar(n).
             return result;
         }
@@ -118,8 +119,9 @@ namespace Gordon360.Services
         /// <returns>SupervisorViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
         public IEnumerable<SupervisorViewModel> GetAll()
         {
-            var rawsqlquery = Constants.getAllSupervisorsQuery;
-            var result = RawSqlQuery<SupervisorViewModel>.query(rawsqlquery);
+
+            var result = RawSqlQuery<SupervisorViewModel>.query("ALL_SUPERVISORS");
+
             // Trimming database generated whitespace ._.
             var trimmedResult = result.Select(x =>
             {
@@ -128,7 +130,7 @@ namespace Gordon360.Services
                 trim.ActivityDescription = x.ActivityDescription.Trim();
                 trim.SessionCode = x.SessionCode.Trim();
                 trim.SessionDescription = x.SessionDescription.Trim();
-                trim.IDNumber = x.IDNumber.Trim();
+                trim.IDNumber = x.IDNumber;
                 trim.FirstName = x.FirstName.Trim();
                 trim.LastName = x.LastName.Trim();
                 return trim;
@@ -152,7 +154,7 @@ namespace Gordon360.Services
             }
             original.SUP_ID = supervisor.SUP_ID;
             original.ACT_CDE = supervisor.ACT_CDE;
-            original.SESSION_CDE = supervisor.SESSION_CDE;
+            original.SESS_CDE = supervisor.SESS_CDE;
             original.ID_NUM = supervisor.ID_NUM;
 
             _unitOfWork.Save();
@@ -167,8 +169,8 @@ namespace Gordon360.Services
         /// <returns>True if the supervisor is valid. False if it isn't</returns>
         private bool supervisorIsValid(SUPERVISOR supervisor)
         {
-            var personExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id.Trim() == supervisor.ID_NUM).Count() > 0;
-            var sessionExists = _unitOfWork.SessionRepository.Where(x => x.SESS_CDE.Trim() == supervisor.SESSION_CDE).Count() > 0;
+            var personExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id == supervisor.ID_NUM.ToString()).Count() > 0;
+            var sessionExists = _unitOfWork.SessionRepository.Where(x => x.SESS_CDE.Trim() == supervisor.SESS_CDE).Count() > 0;
             var activityExists = _unitOfWork.ActivityRepository.Where(x => x.ACT_CDE.Trim() == supervisor.ACT_CDE).Count() > 0;
 
             if (!personExists || !sessionExists || !activityExists)
@@ -176,7 +178,7 @@ namespace Gordon360.Services
                 return false;
             }
 
-            var activitiesThisSession = _unitOfWork.ActivityPerSessionRepository.ExecWithStoredProcedure("ACTIVE_CLUBS_PER_SESS_ID @SESS_CDE", new SqlParameter("SESS_CDE", SqlDbType.VarChar) { Value = supervisor.SESSION_CDE });
+            var activitiesThisSession = RawSqlQuery<ACT_CLUB_DEF>.query("ACTIVE_CLUBS_PER_SESS_ID @SESS_CDE", new SqlParameter("SESS_CDE", SqlDbType.VarChar) { Value = supervisor.SESS_CDE });
 
             bool offered = false;
             foreach (var activityResult in activitiesThisSession)

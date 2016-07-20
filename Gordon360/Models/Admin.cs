@@ -12,12 +12,11 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Admin
+    public partial class ADMIN
     {
         public int ADMIN_ID { get; set; }
+        public int ID_NUM { get; set; }
         public string USER_NAME { get; set; }
-        public string FIRST_NAME { get; set; }
-        public string LAST_NAME { get; set; }
         public string EMAIL { get; set; }
     }
 }

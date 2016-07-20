@@ -38,7 +38,7 @@ namespace Gordon360.Services
         public IEnumerable<ActivityInfoViewModel> GetAll()
         {
             var query = _unitOfWork.ActivityInfoRepository.GetAll();
-            var result = query.Select<Activity_Info, ActivityInfoViewModel>(x => x);
+            var result = query.Select<ACT_INFO, ActivityInfoViewModel>(x => x);
             return result;
         }
     }
