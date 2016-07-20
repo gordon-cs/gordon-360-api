@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>README.html</title>
+
+</head>
+
+<body>
+
+<h1 id="gordon-360">Gordon 360</h1>
+<p>Dive in.</p>
+<p><code>API Url:</code> Coming soon...</p>
+<h2 id="api-endpoints-in-progress-...">API Endpoints: (IN PROGRESS ... )</h2>
+<h3 id="authentication">Authentication</h3>
+<h4 id="post">POST</h4>
+<p><code>/token:</code> Implements Open Authentication (OAuth).</p>
+<p>Accepts a form encoded object in the body of the request:</p>
+<div class="sourceCode"><pre class="sourceCode json"><code class="sourceCode json"><span class="fu">{</span> 
+    <span class="er">username</span><span class="fu">:</span> <span class="er">YOUR-USERNAME</span><span class="fu">,</span> 
+    <span class="er">password</span><span class="fu">:</span> <span class="er">YOUR-PASSWORD</span><span class="fu">,</span> 
+    <span class="er">grant_type</span><span class="fu">:</span> <span class="st">&quot;password&quot;</span> 
+<span class="fu">}</span></code></pre></div>
+<p>Response will include an access token which should be included in subsequent request headers. Specifically include it in the <code>Authorization</code> header like so <code>Bearer YOUR-ACCESS-TOKEN</code></p>
+<h3 id="memberships">Memberships</h3>
+<h4 id="get">GET</h4>
+<p><code>/memberships</code></p>
+<p><code>/memberships/:id</code></p>
+<p><code>/memberships/activity/:id</code></p>
+<p><code>/memberships/activity/:id/leaders</code></p>
+<p><code>/memberships/student/:id</code></p>
+<h4 id="post-1">POST</h4>
+<p><code>/memberships</code></p>
+<h4 id="put">PUT</h4>
+<p><code>/memberships</code></p>
+<h4 id="delete">DELETE</h4>
+<p><code>/memberships/:id</code></p>
+<h3 id="clubs">Clubs</h3>
+<h4 id="get-1">GET</h4>
+<p><code>/activities</code></p>
+<p><code>/activities/session/:id</code></p>
+<h3 id="membership-requests">Membership Requests</h3>
+<h4 id="get-2">GET</h4>
+<p><code>/requests</code></p>
+<p><code>/requests/student/:id</code></p>
+<p><code>/requests/activity/:id</code></p>
+<h4 id="post-2">POST</h4>
+<p><code>/requests</code></p>
+<h4 id="delete-1">DELETE</h4>
+<p><code>/requests/:id</code></p>
+<h3 id="sessions">Sessions</h3>
+<h4 id="get-3">GET</h4>
+<p><code>/sessions</code></p>
+<p><code>/sessoins/current</code></p>
+<h3 id="participation-definitions">Participation Definitions</h3>
+<h4 id="get-4">GET</h4>
+<p><code>/participations</code></p>
+<p>Team members: Eze Anyanwu, James Kempf, Adam Bartholomew</p>
+<p>Computer Science Summer Practicum 2016</p>
+
+</body>
+</html>
