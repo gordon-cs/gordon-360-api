@@ -14,7 +14,7 @@ Dive in.
 `/token:` Implements Open Authentication (OAuth). 
 
 Accepts a form encoded object in the body of the request: 
-```json
+```
 { 
 	username: YOUR-USERNAME, 
 	password: YOUR-PASSWORD, 
