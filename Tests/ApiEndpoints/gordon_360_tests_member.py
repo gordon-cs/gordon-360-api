@@ -1624,8 +1624,62 @@ class get_student_by_email___regular_member(TestCase):
                 self.log_error('Expected StudentID in response, got{0}.'.format(response.json()))
 
             
+# # # # # # # #
+# EMAIL  TEST #
+# # # # # # # #
 
 
+class get_emails_for_activity___regular_member(TestCase):
+    """ Verify that a regular member cannot get the emails for the members of an activity
+    
+    Pre-conditions:
+    Valid Authentication Header
+    Authenticated as Regular Member
+    Expectations:
+    Endpoint -- api/emails/activity/:id
+    Expected Status Code -- 401 Unauthorized
+    Expected Response Body -- Empty
+    """
+    def __init__(self , session=None):
+        super().__init__(session)
+        self.url = hostURL + 'api/emails/activity/' + activity_code
+
+    def test(self):
+        response = api.get(self.session, self.url)
+        if not response.status_code == 401:
+            self.log_error('Expected 401 Unauthorized, got {0}.'.format(response.status_code))
+        if response.text:
+            self.log_error('Expected empty response body, got {0}.'.format(response.text))
+    
+
+
+class get_emails_for_leaders___regular_member(TestCase):
+    """ Verify that a regular member can get the emails for any activity leader
+    
+    Pre-Conditions:
+    Valid Authentication header
+    Expectaions:
+    Endpoint -- api/emails/activity/:id/leaders
+    Expected Status Code -- 200 OK
+    Expected Respones Body -- Json response with a list of emails
+    """
+    def __init__(self, session=None):
+        super().__init__(session)
+        self.url = hostURL + 'api/emails/activity/' + activity_code + '/leaders'
+
+    def test(self):
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            self.log_error('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            self.log_error('Expected Json response body, got {0}.'.format(response.text))
+        else:
+            try:
+                response.json()[0]['Email']
+            except KeyError:
+                self.log_error('Expected Email in response, got{0}.'.format(response.json()))
 
     
 if __name__ == '__main__':

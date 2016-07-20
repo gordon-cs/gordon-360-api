@@ -614,7 +614,7 @@ class delete_valid_membership___activity_leader(TestCase):
         r = api.postAsJson(self.session, self.url, self.predata)
         try:
             self.createdMembershipID = r.json()['MEMBERSHIP_ID']
-        except ValueError:
+        except (ValueError, KeyError):
             self.log_error('Error doing setup for {0}'.format(self.test_name))
 
     def test(self):
@@ -911,6 +911,7 @@ class allow_someone_to_join_my_activity___activity_leader(TestCase):
         self.url = hostURL + 'api/requests/'
         self.data = {}
         self.requestID = -1
+        self.membershipID = -1
 
     def setup(self):
         #Create a memberships request for the trash club.
@@ -945,10 +946,9 @@ class allow_someone_to_join_my_activity___activity_leader(TestCase):
             self.log_error('Expected Json response body, got {0}.'.format(response.text))
         else:
             try:
-                if not response.json()['STATUS'] == REQUEST_STATUS_APPROVED:
-                    self.log_error('Expected approved request, got {0}.'.format(response.json()))
+                self.membershipID = response.json()['MEMBERSHIP_ID']
             except KeyError:
-                self.log_error('Expected STATUS in response bady, got {0}.'.format(response.json()))
+                self.log_error('Expected MEMBERSHIP_ID in response bady, got {0}.'.format(response.json()))
                     
 
     def cleanup(self):
@@ -958,7 +958,15 @@ class allow_someone_to_join_my_activity___activity_leader(TestCase):
         else:
             d = api.delete(self.session, self.url + str(self.requestID))
             if not d.status_code == 200:
-                self.log_error('Error in cleanup for {0}. Expected 200 OK, got {1}.'.format(self.test_name, d.status_code))
+                self.log_error('Error in cleanup for {0}. Expected 200 OK when deleting request, got {1}.'.format(self.test_name, d.status_code))
+        # We try to delete the membership we created
+        if self.membershipID < 0: # membership creatino was not successful
+            self.log_error('Error in cleanup for {0}. Expected valid membership ID, got {1}.'.format(self.test_name, self.membershipID))
+        else:
+            d = api.delete(self.session, hostURL + 'api/memberships/' + str(self.membershipID))
+            if not d.status_code == 200:
+                self.log_error('Error in cleanup for {0}. Expected 200 OK when deleting membership, got {1}.'.format(self.test_name, d.status_code))
+        
 
 
 class deny_someone_joining_my_activity___activity_leader(TestCase):
@@ -1195,6 +1203,8 @@ class delete_supervisor___activity_leader(TestCase):
             self.log_error('Expected 401 Unauthorized, got {0}.'.format(response.status_code))
         if response.text:
             self.log_error('Expected empty body, got {0}.'.format(response.text))
+
+
 
 
 
