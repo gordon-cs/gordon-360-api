@@ -79,6 +79,7 @@ namespace Gordon360.AuthorizationServer
                         var isAdmin = adminService.Get(personID);
 
                         var distinguishedName = userEntry.DistinguishedName;
+
                         var collegeRole = string.Empty;
                         if(distinguishedName.Contains("OU=Students"))
                         {
