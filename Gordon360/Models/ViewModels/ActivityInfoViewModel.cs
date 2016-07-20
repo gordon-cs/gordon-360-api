@@ -13,12 +13,12 @@ namespace Gordon360.Models.ViewModels
         public string MeetingTime { get; set; }
         public string ActivityImage { get; set; }
 
-        public static implicit operator ActivityInfoViewModel(Activity_Info info)
+        public static implicit operator ActivityInfoViewModel(ACT_INFO info)
         {
             ActivityInfoViewModel vm = new ActivityInfoViewModel
             {
                 ActivityCode = info.ACT_CDE.Trim(),
-                ActivityDescription = info.ACT_DESCR.Trim(),
+                ActivityDescription = info.ACT_DESC.Trim(),
                 MeetingDay = info.MTG_DAY.Trim(),
                 MeetingTime = info.MTG_TIME.Trim(),
                 ActivityImage = info.ACT_IMAGE.Trim()

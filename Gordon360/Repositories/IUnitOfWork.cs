@@ -10,17 +10,17 @@ namespace Gordon360.Repositories
     {
         IRepository<ACCOUNT> AccountRepository { get; }
         IRepository<ACT_CLUB_DEF> ActivityRepository { get; }
-        IRepository<Activity_Info> ActivityInfoRepository { get; }
+        IRepository<ACT_INFO> ActivityInfoRepository { get; }
         IRepository<CM_SESSION_MSTR> SessionRepository { get; }
         IRepository<Faculty> FacultyRepository { get; }
         IRepository<JNZB_ACTIVITIES> JenzibarActvityRepository { get; }
-        IRepository<Membership> MembershipRepository { get; }
+        IRepository<MEMBERSHIP> MembershipRepository { get; }
         IRepository<PART_DEF> ParticipationRepository { get; }
         IRepository<Staff> StaffRepository { get; }
         IRepository<Student> StudentRepository { get; }
         IRepository<SUPERVISOR> SupervisorRepository { get; }
-        IRepository<Request> MembershipRequestRepository { get; }
-        IRepository<Admin> AdministratorRepository { get; }
+        IRepository<REQUEST> MembershipRequestRepository { get; }
+        IRepository<ADMIN> AdministratorRepository { get; }
 
         // Note -- Only use this repository to call SQL Stored Procedures
         IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> ActivityPerSessionRepository { get;  }

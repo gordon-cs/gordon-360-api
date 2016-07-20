@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Gordon360.Services
+namespace Gordon360.Static.Methods
 {
     /// <summary>
     /// Service class for methods that are shared between all services.

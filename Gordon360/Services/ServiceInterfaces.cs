@@ -32,8 +32,8 @@ namespace Gordon360.Services
     }
     public interface IAdministratorService
     {
-        Admin Get(int id);
-        IEnumerable<Admin> GetAll();
+        ADMIN Get(int id);
+        IEnumerable<ADMIN> GetAll();
     }
     public interface ISessionService
     {
@@ -60,9 +60,9 @@ namespace Gordon360.Services
         IEnumerable<MembershipViewModel> GetMembershipsForActivity(string id);
         IEnumerable<MembershipViewModel> GetMembershipsForStudent(string id);
         IEnumerable<MembershipViewModel> GetAll();
-        Membership Add(Membership membership);
-        Membership Update(int id, Membership membership);
-        Membership Delete(int id);   
+        MEMBERSHIP Add(MEMBERSHIP membership);
+        MEMBERSHIP Update(int id, MEMBERSHIP membership);
+        MEMBERSHIP Delete(int id);   
     }
 
     public interface IParticipationService
@@ -100,10 +100,10 @@ namespace Gordon360.Services
         IEnumerable<MembershipRequestViewModel> GetAll();
         IEnumerable<MembershipRequestViewModel> GetMembershipRequestsForActivity(string id);
         IEnumerable<MembershipRequestViewModel> GetMembershipRequestsForStudent(string id);
-        Request Add(Request membershipRequest);
-        Request Update(int id, Request membershipRequest);
-        Request ApproveRequest(int id);
-        Request DenyRequest(int id);
-        Request Delete(int id);
+        REQUEST Add(REQUEST membershipRequest);
+        REQUEST Update(int id, REQUEST membershipRequest);
+        REQUEST ApproveRequest(int id);
+        REQUEST DenyRequest(int id);
+        REQUEST Delete(int id);
     }
 }

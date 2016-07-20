@@ -12,15 +12,15 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Request
+    public partial class REQUEST
     {
-        public string ACT_CDE { get; set; }
-        public string ID_NUM { get; set; }
-        public string PART_LVL { get; set; }
-        public System.DateTime DATE_SENT { get; set; }
         public int REQUEST_ID { get; set; }
-        public string COMMENT_TXT { get; set; }
         public string SESS_CDE { get; set; }
-        public string APPROVED { get; set; }
+        public string ACT_CDE { get; set; }
+        public int ID_NUM { get; set; }
+        public string PART_CDE { get; set; }
+        public System.DateTime DATE_SENT { get; set; }
+        public string COMMENT_TXT { get; set; }
+        public string STATUS { get; set; }
     }
 }

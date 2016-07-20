@@ -73,9 +73,10 @@ namespace Gordon360.AuthorizationServer
 
                     if (areValidCredentials)
                     {
-                        var firstDotLastName = userEntry.SamAccountName;
+                        var personID = userEntry.EmployeeId;
                         var adminService = new AdministratorService(new UnitOfWork());
-                        var isAdmin = adminService.Get(firstDotLastName);
+                        // This get operation is by gordon_id
+                        var isAdmin = adminService.Get(personID);
 
                         var distinguishedName = userEntry.DistinguishedName;
                         var collegeRole = string.Empty;
@@ -93,7 +94,7 @@ namespace Gordon360.AuthorizationServer
                         }
                         var identity = new ClaimsIdentity(context.Options.AuthenticationType);
                         identity.AddClaim(new Claim("name", userEntry.Name));
-                        identity.AddClaim(new Claim("id", userEntry.EmployeeId));
+                        identity.AddClaim(new Claim("id", personID));
                         identity.AddClaim(new Claim("college_role", collegeRole));
 
                         ADServiceConnection.Dispose();

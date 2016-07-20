@@ -10,16 +10,16 @@
 namespace Gordon360.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class SUPERVISOR
+    public partial class SUPERVISOR_PER_SUP_ID_Result
     {
-        public int SUP_ID { get; set; }
-        public int ID_NUM { get; set; }
-        public string SESS_CDE { get; set; }
-        public string ACT_CDE { get; set; }
-        public string USER_NAME { get; set; }
-        public string JOB_NAME { get; set; }
-        public Nullable<System.DateTime> JOB_TIME { get; set; }
+        public int SupervisorID { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public int IDNumber { get; set; }
+        public string ActivityCode { get; set; }
+        public string ActivityDescription { get; set; }
+        public string SessionCode { get; set; }
+        public string SessionDescription { get; set; }
     }
 }

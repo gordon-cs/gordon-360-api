@@ -12,12 +12,12 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Activity_Info
+    public partial class ACT_INFO
     {
         public string ACT_CDE { get; set; }
-        public string ACT_DESCR { get; set; }
+        public string ACT_DESC { get; set; }
         public string MTG_DAY { get; set; }
-        public string ACT_IMAGE { get; set; }
         public string MTG_TIME { get; set; }
+        public string ACT_IMAGE { get; set; }
     }
 }

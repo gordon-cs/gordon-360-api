@@ -10,7 +10,7 @@ namespace Gordon360.Models.ViewModels
         public int SupervisorID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string IDNumber { get; set; }
+        public int IDNumber { get; set; }
         public string ActivityCode { get; set; }
         public string ActivityDescription { get; set; }
         public string SessionCode { get; set; }
@@ -21,9 +21,9 @@ namespace Gordon360.Models.ViewModels
             SupervisorViewModel vm = new SupervisorViewModel
             {
                 SupervisorID = sup.SUP_ID,
-                IDNumber = sup.ID_NUM.Trim(),
+                IDNumber = sup.ID_NUM,
                 ActivityCode = sup.ACT_CDE.Trim(),
-                SessionCode = sup.SESSION_CDE.Trim()
+                SessionCode = sup.SESS_CDE.Trim()
 
             };
 
