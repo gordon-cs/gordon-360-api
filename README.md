@@ -16,9 +16,9 @@ Dive in.
 Accepts a form encoded object in the body of the request: 
 ```
 { 
-	username: YOUR-USERNAME, 
-	password: YOUR-PASSWORD, 
-	grant_type: "password" 
+	"username": YOUR-USERNAME, 
+	"password": YOUR-PASSWORD, 
+	"grant_type": "password" 
 }
 ```
 Response will include an access token which should be included in subsequent request headers.
