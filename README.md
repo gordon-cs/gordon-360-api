@@ -33,11 +33,11 @@ Who has access? It's complicated.
 
 `api/memberships` Get all the memberships.
 
-`api/memberships/:id` Get the membership with id `id`.
+`api/memberships/:id` Get the membership with membership id `id`.
 
-`api/memberships/activity/:id` Get the memberships associated with the activity with id `id`.
+`api/memberships/activity/:id` Get the memberships associated with the activity with activity code `id`.
 
-`api/memberships/activity/:id/leaders` Get the memberships of the leaders for the activity with id `id`.
+`api/memberships/activity/:id/leaders` Get the memberships of the leaders for the activity with activity code `id`.
 
 `api/memberships/student/:id` Get the memberships of the student with student id `id`.
 
@@ -47,11 +47,11 @@ Who has access? It's complicated.
 
 ##### PUT 
 
-`api/memberships/:id` Edit the membership with id `id`.
+`api/memberships/:id` Edit the membership with membership id `id`.
 
 ##### DELETE
 
-`api/memberships/:id` Delete the membership with id `id`.
+`api/memberships/:id` Delete the membership with membership id `id`.
 
 
 ### Clubs
@@ -62,13 +62,13 @@ Who has access? It's complicated.
 
 `api/activities` Get all the clubs.
 
-`api/activities/:id` Get the club with id `id`.
+`api/activities/:id` Get the club with activity code `id`.
 
-`api/activities/session/:id` Get the clubs offered during the session with id `id`.
+`api/activities/session/:id` Get the clubs offered during the session with session code `id`.
 
 ##### PUT
 
-`api/activities/:id` Edit club information for the club with id `id`.
+`api/activities/:id` Edit club information for the club with activity code `id`.
 
 ### Membership Requests
 What is it? Resource that represents a person's application/request to join a club.
@@ -78,20 +78,20 @@ Who has access? It's complicated.
 
 `api/requests` Get all the membership applications.
 
-`api/requests/:id` Get the membership application with id `id`.
+`api/requests/:id` Get the membership application with request id `id`.
 
-`api/requests/student/:id` Get all the membership applications for the student with id `id`.
+`api/requests/student/:id` Get all the membership applications for the student with student `id`.
 
-`api/requests/activity/:id` Get all the membership applications for the club with id `id`.
+`api/requests/activity/:id` Get all the membership applications for the club with activity code `id`.
 
 
 ##### POST
 
 `api/requests` Create a new membership application.
 
-`api/requests/:id/deny` Deny the membership application with id `id`.
+`api/requests/:id/deny` Deny the membership application with request id `id`.
 
-`api/requests/:id/approve` Approve the membership application with id `id`.
+`api/requests/:id/approve` Approve the membership application with request id `id`.
 
 ##### DELETE
 
@@ -103,23 +103,23 @@ Who has access? It's complicated.
 
 ##### GET
 
-`api/supervisors`
+`api/supervisors` Get all the supervisors.
 
-`api/supervisors/:id`
+`api/supervisors/:id` Get the supervisor with supervisor id `id`.
 
-`api/supervisors/activity/:id`
+`api/supervisors/activity/:id` Get the supervisors for the activity with activity code `id`.
 
 ##### POST
 
-`api/supervisors`
+`api/supervisors` Create a new supervisor.
 
 #### PUT
 
-`api/supervisors/:id`
+`api/supervisors/:id` Edit the supervisor with supervisor id `id`.
 
 ##### DELETE
 
-`api/supervisors/:id`
+`api/supervisors/:id` Delete the supervisor with supervisor id `id`.
 
 
 ### Students
@@ -128,11 +128,11 @@ Who has access? Probably not you.
 
 ##### GET
 
-`api/students`
+`api/students` Get all the students.
 
-`api/students/:id`
+`api/students/:id` Get the student with student id `id`.
 
-`api/student/:email`
+`api/student/:email` Get the student with email `email`.
 
 
 ### Accounts
@@ -141,7 +141,7 @@ Who has access? Probably not you.
 
 ##### GET
 
-`api/accounts/:email`
+`api/accounts/:email` Get the account with email `email`.
 
 ### Sessions
 What is it? Resource that represents the current session. e.g. Fall 2014-2015.
@@ -149,11 +149,11 @@ Who has access? Everyone.
 
 ##### GET
 
-`api/sessions`
+`api/sessions` Get all the sessions.
 
-`api/sessions/:id`
+`api/sessions/:id` Get the session with session code `id`.
 
-`api/sessions/current`
+`api/sessions/current` Get the current session.
 
 ### Participation Definitions
 What is it? Resource that represents the different levels with which a person can affiliate themselves with a club.
@@ -161,9 +161,9 @@ Who has access? Everyone.
 
 ##### GET
 
-`api/participations`
+`api/participations` Get all the possible participation levels.
 
-`api/partiipations/:id`
+`api/partiipations/:id` Get the participation level with code `id`.
 
 
 ### Emails
@@ -173,9 +173,9 @@ Who has access? It's complicated.
 
 ##### GET 
 
-`api/emails/activity:id`
+`api/emails/activity:id` Get the emails for members of the activity with activity code `id`.
 
-`api/emails/activity:id/leaders`
+`api/emails/activity:id/leaders` Get the emails for the leaders of the activity with activity code `id`.
 
 
 
