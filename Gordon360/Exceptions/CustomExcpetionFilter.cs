@@ -17,7 +17,8 @@ namespace Gordon360.Exceptions.ExceptionFilters
                 {
 
                     StatusCode = System.Net.HttpStatusCode.NotFound,
-                    Content = new StringContent(exception.ExceptionMessage)
+                    Content = new StringContent(exception.ExceptionMessage),
+                    ReasonPhrase = "LOL"
                 };
             }
 
@@ -27,6 +28,16 @@ namespace Gordon360.Exceptions.ExceptionFilters
                 actionExecutedContext.Response = new HttpResponseMessage()
                 {
                     StatusCode = System.Net.HttpStatusCode.Conflict,
+                    Content = new StringContent(exception.ExceptionMessage)
+                };
+            }
+
+            else if( actionExecutedContext.Exception is BadInputException)
+            {
+                var exception = actionExecutedContext.Exception as BadInputException;
+                actionExecutedContext.Response = new HttpResponseMessage()
+                {
+                    StatusCode = System.Net.HttpStatusCode.BadRequest,
                     Content = new StringContent(exception.ExceptionMessage)
                 };
             }

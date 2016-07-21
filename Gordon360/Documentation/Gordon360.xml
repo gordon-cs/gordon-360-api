@@ -527,16 +527,32 @@
         </member>
         <member name="M:Gordon360.Services.EmailService.GetEmailsForActivity(System.String)">
             <summary>
-            Get a list of the emails for all members in the activity
+            Get a list of the emails for all members in the activity during the current session.
             </summary>
-            <param name="id">The Activity Code</param>
-            <returns>List of the emails for the members of this activity</returns>
+            <param name="activity_code"></param>
+            <returns></returns>
         </member>
         <member name="M:Gordon360.Services.EmailService.GetEmailsForActivityLeaders(System.String)">
             <summary>
-            Get a list of emails for leaders in the activity
+            Get a list of emails for leaders in the activity during the current session.
             </summary>
-            <param name="id">The Activity Code</param>
+            <param name="activity_code"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivity(System.String,System.String)">
+            <summary>
+            Get a list of the emails for all members in the activity during a specific session
+            </summary>
+            <param name="activity_code">The activity code</param>
+            <param name="session_code">The session code</param>
+            <returns>List of the emails for the members of this activity</returns>
+        </member>
+        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivityLeaders(System.String,System.String)">
+            <summary>
+            Get a list of emails for leaders in the activity during a specified session
+            </summary>
+            <param name="activity_code">The activity code</param>
+            <param name="session_code">The session code</param>
             <returns>List of emails for the leaders of this activity</returns>
         </member>
         <member name="T:Gordon360.Services.FacultyService">

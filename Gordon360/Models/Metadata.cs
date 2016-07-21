@@ -18,7 +18,6 @@ namespace Gordon360.Models
     public class Membership_Metadata
     {
 
-        public int MEMBERSHIP_ID { get; set; }
         [Required]
         public string ACT_CDE { get; set; }
         [Required]
@@ -30,51 +29,23 @@ namespace Gordon360.Models
         [Required]
         public System.DateTime BEGIN_DTE { get; set; }
 
-        public Nullable<System.DateTime> END_DTE { get; set; }
-        public string DESCRIPTION { get; set; }
-        public string USER_NAME { get; set; }
-        public string JOB_NAME { get; set; }
-        public string JOB_TIME { get; set; }
 
     }
 
     public class SUPERVISOR_Metadata
     {
 
-        public int SUP_ID { get; set; }
         [Required]
         public int ID_NUM { get; set; }
         [Required]
         public string ACT_CDE { get; set; }
         [Required]
         public string SESS_CDE { get; set; }
-        public string USER_NAME { get; set; }
-        public string JOB_NAME { get; set; }
-        public Nullable<System.DateTime> JOB_TIME { get; set; }
     }
 
     public class JNZB_ACTIVITIES_Metadata
     {
-        public int ENTRY_ID { get; set; }
-        [Required]
-        public string SESS_CDE { get; set; }
-        [Required]
-        public string ACT_CDE { get; set; }
-        [Required]
-        public int ID_NUM { get; set; }
-        [Required]
-        public string PART_CDE { get; set; }
-
-        public bool MEMBERSHIP_STS { get; set; }
-        public bool TRACK_MTG_ATTEND { get; set; }
-        [Required]
-        public System.DateTime BEGIN_DTE { get; set; }
-        public System.DateTime END_DTE { get; set; }
-        public string COMMENT_TXT { get; set; }
-        public bool INCL_PROFILE_RPT { get; set; }
-        public string USER_NAME { get; set; }
-        public string USER_JOB { get; set; }
-        public Nullable<System.DateTime> JOB_TIME { get; set; }
+       
     }
 
     public class Request_Metadata
@@ -84,25 +55,17 @@ namespace Gordon360.Models
         [Required]
         public string ID_NUM { get; set; }
         [Required]
-        public string PART_LVL { get; set; }
+        public string PART_CDE { get; set; }
         [Required]
         public System.DateTime DATE_SENT { get; set; }
-        public int REQUEST_ID { get; set; }
-        public string COMMENT_TXT { get; set; }
         [Required]
         public string SESS_CDE { get; set; }
-        // No need to require this because default is FALSE.
-        public bool APPROVED { get; set; }
     }
 
     public class Activity_Info_Metadata
     {
         [Required]
         public string ACT_CDE { get; set; }
-        public string ACT_DESCR { get; set; }
-        public string ACT_IMAGE { get; set; }
-        public string ACT_BLURB { get; set; }
-        public string ACT_URL { get; set; }
     }
 
 

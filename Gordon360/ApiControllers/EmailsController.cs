@@ -43,6 +43,24 @@ namespace Gordon360.ApiControllers
 
         }
 
+        [Route("activity/{id}/session/{session}")]
+        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_ACTIVITY)]
+        public IHttpActionResult GetEmailsForActivity(string id, string session)
+        {
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest();
+            }
+            var result = _emailService.GetEmailsForActivity(id, session);
+
+            if (result == null)
+            {
+                NotFound();
+            }
+            return Ok(result);
+
+        }
+
         [Route("activity/{id}/leaders")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_LEADERS)]
         public IHttpActionResult GetEmailsForleader(string id)
@@ -52,6 +70,23 @@ namespace Gordon360.ApiControllers
                 return BadRequest();
             }
             var result = _emailService.GetEmailsForActivityLeaders(id);
+
+            if (result == null)
+            {
+                NotFound();
+            }
+            return Ok(result);
+        }
+
+        [Route("activity/{id}/leaders/session/{session}")]
+        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_LEADERS)]
+        public IHttpActionResult GetEmailsForleader(string id, string session)
+        {
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest();
+            }
+            var result = _emailService.GetEmailsForActivityLeaders(id, session);
 
             if (result == null)
             {
