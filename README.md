@@ -27,6 +27,7 @@ Specifically include it in the `Authorization` header like so `Bearer YOUR-ACCES
 
 ### Memberships
 What is it? Resource that respresents the affiliation between a student and a club.
+
 Who has access? It's complicated.
 
 ##### GET
@@ -56,6 +57,7 @@ Who has access? It's complicated.
 
 ### Clubs
 What is it? Resource that represents a club.
+
 Who has access? It's complicated.
 
 ##### GET
@@ -72,6 +74,7 @@ Who has access? It's complicated.
 
 ### Membership Requests
 What is it? Resource that represents a person's application/request to join a club.
+
 Who has access? It's complicated.
 
 ##### GET
@@ -99,6 +102,7 @@ Who has access? It's complicated.
 
 ### Supervisors
 What is it? Resource that represents the supervisor of an activity.
+
 Who has access? It's complicated.
 
 ##### GET
@@ -124,6 +128,7 @@ Who has access? It's complicated.
 
 ### Students
 What is it? Resource that represents a student.
+
 Who has access? Probably not you.
 
 ##### GET
@@ -137,6 +142,7 @@ Who has access? Probably not you.
 
 ### Accounts
 What is it? Resource that represents a gordon account.
+
 Who has access? Probably not you.
 
 ##### GET
@@ -145,6 +151,7 @@ Who has access? Probably not you.
 
 ### Sessions
 What is it? Resource that represents the current session. e.g. Fall 2014-2015.
+
 Who has access? Everyone.
 
 ##### GET
@@ -157,6 +164,7 @@ Who has access? Everyone.
 
 ### Participation Definitions
 What is it? Resource that represents the different levels with which a person can affiliate themselves with a club.
+
 Who has access? Everyone.
 
 ##### GET
@@ -168,6 +176,7 @@ Who has access? Everyone.
 
 ### Emails
 What is it? Resource that represents emails. 
+
 Who has access? It's complicated.
 
 
