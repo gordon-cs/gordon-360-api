@@ -9,7 +9,7 @@ Dive in.
 
 ### Authentication
 
-#### POST
+##### POST
 
 `/token:` Implements Open Authentication (OAuth). 
 
@@ -29,75 +29,79 @@ Specifically include it in the `Authorization` header like so `Bearer YOUR-ACCES
 What is it? Resource that respresents the affiliation between a student and a club.
 Who has access? It's complicated.
 
-#### GET
+##### GET
 
-`api/memberships`
+`api/memberships` Get all the memberships.
 
-`api/memberships/:id`
+`api/memberships/:id` Get the membership with id `id`.
 
-`api/memberships/activity/:id`
+`api/memberships/activity/:id` Get the memberships associated with the activity with id `id`.
 
-`api/memberships/activity/:id/leaders`
+`api/memberships/activity/:id/leaders` Get the memberships of the leaders for the activity with id `id`.
 
-`api/memberships/student/:id`
+`api/memberships/student/:id` Get the memberships of the student with student id `id`.
 
-#### POST
+##### POST
 
-`api/memberships`
+`api/memberships` Create a new membership.
 
-#### PUT 
+##### PUT 
 
-`api/memberships`
+`api/memberships/:id` Edit the membership with id `id`.
 
-#### DELETE
+##### DELETE
 
-`api/memberships/:id`
+`api/memberships/:id` Delete the membership with id `id`.
 
 
 ### Clubs
 What is it? Resource that represents a club.
 Who has access? It's complicated.
 
-#### GET
+##### GET
 
-`api/activities`
+`api/activities` Get all the clubs.
 
-`api/activities/:id`
+`api/activities/:id` Get the club with id `id`.
 
-`api/activities/session/:id`
+`api/activities/session/:id` Get the clubs offered during the session with id `id`.
 
-#### POST
+##### PUT
 
-`api/activities/:id`
+`api/activities/:id` Edit club information for the club with id `id`.
 
 ### Membership Requests
 What is it? Resource that represents a person's application/request to join a club.
 Who has access? It's complicated.
 
-#### GET
+##### GET
 
-`api/requests`
+`api/requests` Get all the membership applications.
 
-`api/requests/:id`
+`api/requests/:id` Get the membership application with id `id`.
 
-`api/requests/student/:id`
+`api/requests/student/:id` Get all the membership applications for the student with id `id`.
 
-`api/requests/activity/:id`
+`api/requests/activity/:id` Get all the membership applications for the club with id `id`.
 
 
-#### POST
+##### POST
 
-`api/requests`
+`api/requests` Create a new membership application.
 
-#### DELETE
+`api/requests/:id/deny` Deny the membership application with id `id`.
 
-`api/requests/:id`
+`api/requests/:id/approve` Approve the membership application with id `id`.
+
+##### DELETE
+
+`api/requests/:id` Delete the membership application with id `id`.
 
 ### Supervisors
 What is it? Resource that represents the supervisor of an activity.
 Who has access? It's complicated.
 
-#### GET
+##### GET
 
 `api/supervisors`
 
@@ -105,7 +109,7 @@ Who has access? It's complicated.
 
 `api/supervisors/activity/:id`
 
-#### POST
+##### POST
 
 `api/supervisors`
 
@@ -113,7 +117,7 @@ Who has access? It's complicated.
 
 `api/supervisors/:id`
 
-#### DELETE
+##### DELETE
 
 `api/supervisors/:id`
 
@@ -122,7 +126,7 @@ Who has access? It's complicated.
 What is it? Resource that represents a student.
 Who has access? Probably not you.
 
-#### GET
+##### GET
 
 `api/students`
 
@@ -135,7 +139,7 @@ Who has access? Probably not you.
 What is it? Resource that represents a gordon account.
 Who has access? Probably not you.
 
-#### GET
+##### GET
 
 `api/accounts/:email`
 
@@ -143,7 +147,7 @@ Who has access? Probably not you.
 What is it? Resource that represents the current session. e.g. Fall 2014-2015.
 Who has access? Everyone.
 
-#### GET
+##### GET
 
 `api/sessions`
 
@@ -155,19 +159,19 @@ Who has access? Everyone.
 What is it? Resource that represents the different levels with which a person can affiliate themselves with a club.
 Who has access? Everyone.
 
-#### GET
+##### GET
 
 `api/participations`
 
 `api/partiipations/:id`
 
 
-#### Emails
+### Emails
 What is it? Resource that represents emails. 
 Who has access? It's complicated.
 
 
-#### GET 
+##### GET 
 
 `api/emails/activity:id`
 
