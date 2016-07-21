@@ -8,6 +8,7 @@ using Gordon360.Repositories;
 using Gordon360.Services.ComplexQueries;
 using System.Data.SqlClient;
 using System.Data;
+using Gordon360.Exceptions.CustomExceptions;
 
 namespace Gordon360.Services
 {
@@ -25,22 +26,23 @@ namespace Gordon360.Services
 
         /// <summary>
         /// Adds a new Membership record to storage. Since we can't establish foreign key constraints and relationships on the database side,
-        /// we do it here by using the membershipIsValid() method.
+        /// we do it here by using the validateMembership() method.
         /// </summary>
         /// <param name="membership">The membership to be added</param>
         /// <returns>The newly added Membership object</returns>
         public MEMBERSHIP Add(MEMBERSHIP membership)
         {
-            // membershipIsValid() returns a boolean value.
-            var isValidMembership = membershipIsValid(membership);
+            // validate returns a boolean value.
+            validateMembership(membership);
             
-            if(!isValidMembership)
-            {
-                return null;
-            }
-
             // The Add() method returns the added membership.
             var payload = _unitOfWork.MembershipRepository.Add(membership);
+
+            // There is a unique constraint in the Database on columns (ID_NUM, PART_LVL, SESS_CDE and ACT_CDE)
+            if (payload == null)
+            {
+                throw new ResourceCreationException() { ExceptionMessage = "There was an error creating the membership. Verify that a similar membership doesn't already exist." };
+            }
             _unitOfWork.Save();
 
             return payload;
@@ -57,8 +59,7 @@ namespace Gordon360.Services
             var result = _unitOfWork.MembershipRepository.GetById(id);
             if (result == null)
             {
-                // Controller checks for nulls and returns NotFound() when it sees one returned by a service.
-                return null;
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
             }
             result = _unitOfWork.MembershipRepository.Delete(result);
 
@@ -77,7 +78,7 @@ namespace Gordon360.Services
             var query = _unitOfWork.MembershipRepository.GetById(id);
             if (query == null)
             {
-                return null;
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
             }
 
             var idParam = new SqlParameter("@MEMBERSHIP_ID", id);
@@ -230,15 +231,10 @@ namespace Gordon360.Services
             var original = _unitOfWork.MembershipRepository.GetById(id);
             if (original == null)
             {
-                return null;
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
             }
 
-            var isValidMembership = membershipIsValid(membership);
-
-            if(!isValidMembership)
-            {
-                return null;
-            }
+            validateMembership(membership);
 
             // One can only update certain fields within a membrship
             original.BEGIN_DTE = membership.BEGIN_DTE;
@@ -254,21 +250,33 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// Helper method to check for the validity of a membership.
+        /// Helper method to Validate a membership
         /// </summary>
         /// <param name="membership">The membership to validate</param>
-        /// <returns>True if the membership is valid. False if it isn't</returns>
-        private bool membershipIsValid(MEMBERSHIP membership)
+        /// <returns>True if the membership is valid. Throws ResourceNotFoundException if not. Exception is cauth in an Exception Filter</returns>
+        private bool validateMembership(MEMBERSHIP membership)
         {
             var personExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id.Trim() == membership.ID_NUM.ToString()).Count() > 0;
-            var participationExists = _unitOfWork.ParticipationRepository.Where(x => x.PART_CDE.Trim() == membership.PART_CDE).Count() > 0;
-            var sessionExists = _unitOfWork.SessionRepository.Where(x => x.SESS_CDE.Trim() == membership.SESS_CDE).Count() > 0;
-            var activityExists = _unitOfWork.ActivityRepository.Where(x => x.ACT_CDE.Trim() == membership.ACT_CDE).Count() > 0;
-
-            if (!personExists || !participationExists || !sessionExists || !activityExists)
+            if (!personExists)
             {
-                return false;
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Person was not found." };
             }
+            var participationExists = _unitOfWork.ParticipationRepository.Where(x => x.PART_CDE.Trim() == membership.PART_CDE).Count() > 0;
+            if (!participationExists)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Participation was not found." };
+            }
+            var sessionExists = _unitOfWork.SessionRepository.Where(x => x.SESS_CDE.Trim() == membership.SESS_CDE).Count() > 0;
+            if (!sessionExists)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Session was not found." };
+            }
+            var activityExists = _unitOfWork.ActivityRepository.Where(x => x.ACT_CDE.Trim() == membership.ACT_CDE).Count() > 0;
+            if (!activityExists)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
+            }
+
 
             var activitiesThisSession = RawSqlQuery<ACT_CLUB_DEF>.query("ACTIVE_CLUBS_PER_SESS_ID @SESS_CDE", new SqlParameter("SESS_CDE", SqlDbType.VarChar) { Value = membership.SESS_CDE });
 
@@ -283,7 +291,7 @@ namespace Gordon360.Services
 
             if (!offered)
             {
-                return false;
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity is not available for this session." };
             }
 
             

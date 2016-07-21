@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
+using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
@@ -30,12 +31,9 @@ namespace Gordon360.Services
         /// <returns>The membership request object once it is added</returns>
         public REQUEST Add(REQUEST membershipRequest)
         {
-            var isValidMembershipRequest = membershipRequestIsValid(membershipRequest);
+            // Validates the memberships request by throwing appropriate exceptions. The exceptions are caugth in the CustomExceptionFilter 
+            validateMembershipRequest(membershipRequest);
 
-            if(!isValidMembershipRequest)
-            {
-                return null;
-            }
             membershipRequest.STATUS = Request_Status.PENDING;
             var addedMembershipRequest = _unitOfWork.MembershipRequestRepository.Add(membershipRequest);
             _unitOfWork.Save();
@@ -54,7 +52,7 @@ namespace Gordon360.Services
             var query = _unitOfWork.MembershipRequestRepository.GetById(id);
             if (query == null)
             {
-                return null;
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Request was not found." };
             }
             query.STATUS = Request_Status.APPROVED;
 
@@ -72,7 +70,8 @@ namespace Gordon360.Services
             
             if (created == null)
             {
-                return null;
+                // The main reason why a membership won't be added is if a similar one (similar id_num, part_lvl, sess_cde and act_cde ) exists.
+                throw new ResourceCreationException() { ExceptionMessage = "There was an error creating the membership. Verify that a similar membership doesn't already exist." };
             }
             
             _unitOfWork.Save();
@@ -91,7 +90,7 @@ namespace Gordon360.Services
             var result = _unitOfWork.MembershipRequestRepository.GetById(id);
             if (result == null)
             {
-                return null;
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Request was not found." };
             }
             result = _unitOfWork.MembershipRequestRepository.Delete(result);
             _unitOfWork.Save();
@@ -108,7 +107,7 @@ namespace Gordon360.Services
             var query = _unitOfWork.MembershipRequestRepository.GetById(id);
             if (query == null)
             {
-                return null;
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Request was not found." };
             }
 
             query.STATUS = Request_Status.DENIED;
@@ -128,7 +127,7 @@ namespace Gordon360.Services
             var result = RawSqlQuery<MembershipRequestViewModel>.query("REQUEST_PER_REQUEST_ID @REQUEST_ID", idParameter).FirstOrDefault();
             if (result == null)
             {
-                return null;
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Request was not found." };
             }
 
             // Getting rid of database-inherited whitespace
@@ -239,13 +238,8 @@ namespace Gordon360.Services
                 return null;
             }
 
-            var isValidMembershipRequest = membershipRequestIsValid(membershipRequest);
-
-            if (!isValidMembershipRequest)
-            {
-                return null;
-            }
-            
+            // The validate function throws ResourceNotFoundExceptino where needed. The exceptions are caught in my CustomExceptionFilter
+            validateMembershipRequest(membershipRequest);
 
             // Only a few fields should be able to be changed through an update.
             original.SESS_CDE = membershipRequest.SESS_CDE;
@@ -259,16 +253,28 @@ namespace Gordon360.Services
         }
 
         // Helper method to help validate a membership request that comes in.
-        private bool membershipRequestIsValid(REQUEST membershipRequest)
+        // Return true if it is valid. Throws an exception if not. Exception is cauth in an Exception filter.
+        private bool validateMembershipRequest(REQUEST membershipRequest)
         {
             var personExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id.Trim() == membershipRequest.ID_NUM.ToString()).Count() > 0;
-            var activityExists = _unitOfWork.ActivityRepository.Where(x => x.ACT_CDE.Trim() == membershipRequest.ACT_CDE).Count() > 0;
-            var participationExists = _unitOfWork.ParticipationRepository.Where(x => x.PART_CDE.Trim() == membershipRequest.PART_CDE).Count() > 0;
-            var sessionExists = _unitOfWork.SessionRepository.Where(x => x.SESS_CDE.Trim() == membershipRequest.SESS_CDE).Count() > 0;
-
-            if (!personExists || !activityExists || !participationExists || !sessionExists)
+            if(!personExists)
             {
-                return false;
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Person was not found." };
+            }
+            var activityExists = _unitOfWork.ActivityRepository.Where(x => x.ACT_CDE.Trim() == membershipRequest.ACT_CDE).Count() > 0;
+            if(!activityExists)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
+            }
+            var participationExists = _unitOfWork.ParticipationRepository.Where(x => x.PART_CDE.Trim() == membershipRequest.PART_CDE).Count() > 0;
+            if(!participationExists)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Participation level was not found." };
+            }
+            var sessionExists = _unitOfWork.SessionRepository.Where(x => x.SESS_CDE.Trim() == membershipRequest.SESS_CDE).Count() > 0;
+            if(!sessionExists)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Session was not found." };
             }
 
             return true;

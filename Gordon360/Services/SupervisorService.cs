@@ -8,6 +8,7 @@ using Gordon360.Repositories;
 using System.Data.SqlClient;
 using System.Data;
 using Gordon360.Services.ComplexQueries;
+using Gordon360.Exceptions.CustomExceptions;
 
 namespace Gordon360.Services
 {
@@ -31,16 +32,15 @@ namespace Gordon360.Services
         /// <returns>The newly added SUPERVISOR object</returns>
         public SUPERVISOR Add(SUPERVISOR supervisor)
         {
-            // supervisorIsValid() returns a boolean value.
-            var isValidSupervisor = supervisorIsValid(supervisor);
-
-            if (!isValidSupervisor)
-            {
-                return null;
-            }
+            // validates the supervisor. See comments for validation in MembershipService and MembershipRequestService
+            validateSupervisor(supervisor);
 
             // The Add() method returns the added supervisor.
             var payload = _unitOfWork.SupervisorRepository.Add(supervisor);
+            if (payload == null)
+            {
+                throw new ResourceCreationException() { ExceptionMessage = "There was an error creating the supervisor. Verify that a similar supervisor doesn't already exist." };
+            }
             _unitOfWork.Save();
 
             return payload;
@@ -56,8 +56,7 @@ namespace Gordon360.Services
             var result = _unitOfWork.SupervisorRepository.GetById(id);
             if (result == null)
             {
-                // Controller checks for nulls and returns NotFound() when it sees one returned by a service.
-                return null;
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Supervisor was not found." };
             }
             result = _unitOfWork.SupervisorRepository.Delete(result);
 
@@ -76,7 +75,7 @@ namespace Gordon360.Services
             var query = _unitOfWork.SupervisorRepository.GetById(id);
             if (query == null)
             {
-                return null;
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Supervisor was not found." };
             }
 
             var idParam = new SqlParameter("@SUP_ID", id);
@@ -143,15 +142,11 @@ namespace Gordon360.Services
             var original = _unitOfWork.SupervisorRepository.GetById(id);
             if (original == null)
             {
-                return null;
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Supervisor was not found." };
             }
 
-            var isValidSupervisor = supervisorIsValid(supervisor);
+            validateSupervisor(supervisor);
 
-            if (!isValidSupervisor)
-            {
-                return null;
-            }
             original.SUP_ID = supervisor.SUP_ID;
             original.ACT_CDE = supervisor.ACT_CDE;
             original.SESS_CDE = supervisor.SESS_CDE;
@@ -167,15 +162,22 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="supervisor">The supervisor to validate</param>
         /// <returns>True if the supervisor is valid. False if it isn't</returns>
-        private bool supervisorIsValid(SUPERVISOR supervisor)
+        private bool validateSupervisor(SUPERVISOR supervisor)
         {
             var personExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id == supervisor.ID_NUM.ToString()).Count() > 0;
-            var sessionExists = _unitOfWork.SessionRepository.Where(x => x.SESS_CDE.Trim() == supervisor.SESS_CDE).Count() > 0;
-            var activityExists = _unitOfWork.ActivityRepository.Where(x => x.ACT_CDE.Trim() == supervisor.ACT_CDE).Count() > 0;
-
-            if (!personExists || !sessionExists || !activityExists)
+            if (!personExists)
             {
-                return false;
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Person was not found." };
+            }
+            var sessionExists = _unitOfWork.SessionRepository.Where(x => x.SESS_CDE.Trim() == supervisor.SESS_CDE).Count() > 0;
+            if (!sessionExists)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Session was not found." };
+            }
+            var activityExists = _unitOfWork.ActivityRepository.Where(x => x.ACT_CDE.Trim() == supervisor.ACT_CDE).Count() > 0;
+            if (!activityExists)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
             }
 
             var activitiesThisSession = RawSqlQuery<ACT_CLUB_DEF>.query("ACTIVE_CLUBS_PER_SESS_ID @SESS_CDE", new SqlParameter("SESS_CDE", SqlDbType.VarChar) { Value = supervisor.SESS_CDE });
@@ -192,7 +194,7 @@ namespace Gordon360.Services
 
             if (!offered)
             {
-                return false;
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity is not available for this session." };
             }
             return true;
         }

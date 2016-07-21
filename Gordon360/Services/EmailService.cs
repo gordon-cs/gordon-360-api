@@ -25,8 +25,8 @@ namespace Gordon360.Services
         /// <summary>
         /// Get a list of the emails for all members in the activity
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="id">The Activity Code</param>
+        /// <returns>List of the emails for the members of this activity</returns>
         public IEnumerable<EmailViewModel> GetEmailsForActivity(string id)
         {
             var idParam = new SqlParameter("@ACT_CDE", id);
@@ -41,8 +41,8 @@ namespace Gordon360.Services
         /// <summary>
         /// Get a list of emails for leaders in the activity
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="id">The Activity Code</param>
+        /// <returns>List of emails for the leaders of this activity</returns>
         public IEnumerable<EmailViewModel> GetEmailsForActivityLeaders(string id)
         {
             var idParam = new SqlParameter("@ACT_CDE", id);

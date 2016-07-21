@@ -8,10 +8,12 @@ using System.Net.Http;
 using System.Web.Http;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
+using Gordon360.Exceptions.ExceptionFilters;
 
 namespace Gordon360.ApiControllers
 {
     [Authorize]
+    [CustomExceptionFilter]
     [RoutePrefix("api/emails")]
     public class EmailsController : ApiController
     {

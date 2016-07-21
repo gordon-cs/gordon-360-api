@@ -11,6 +11,7 @@ namespace Gordon360.Controllers.Api
     
     [RoutePrefix("api/activities")]
     [CustomExceptionFilter]
+    [Authorize]
     public class ActivitiesController : ApiController
     {
         private IActivityService _activityService;

@@ -6,11 +6,13 @@ using Gordon360.Models.ViewModels;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using System;
+using Gordon360.Exceptions.ExceptionFilters;
 
 namespace Gordon360.Controllers.Api
 {
     [RoutePrefix("api/memberships")]
     [Authorize]
+    [CustomExceptionFilter]
     public class MembershipsController : ApiController
     {
 

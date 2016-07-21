@@ -7,6 +7,7 @@ using System.Diagnostics;
 using Gordon360.Services;
 using Gordon360.Static.Names;
 using Gordon360.Repositories;
+using Gordon360.Exceptions.CustomExceptions;
 
 namespace Gordon360.AuthorizationServer
 {
@@ -75,9 +76,14 @@ namespace Gordon360.AuthorizationServer
                     if (areValidCredentials)
                     {
                         var personID = userEntry.EmployeeId;
+                        // Some accounts don't have id's 
+                        if (personID == null)
+                        {
+                            context.SetError("Unsuccessful Login", "The username or password is not correct.");
+                            return;
+                        }
                         var adminService = new AdministratorService(new UnitOfWork());
-                        // This get operation is by gordon_id
-                        var isAdmin = adminService.Get(personID);
+                        
 
                         var distinguishedName = userEntry.DistinguishedName;
 
@@ -90,10 +96,23 @@ namespace Gordon360.AuthorizationServer
                         {
                             collegeRole = Position.FACSTAFF;
                         }
-                        if (isAdmin != null) // If the boolean from earlier was not null, this is actually an admin.
+                        try
                         {
-                            collegeRole = Position.GOD;
+                            // This get operation is by gordon_id
+                            // Throws an exception if not found.
+                            var isAdmin = adminService.Get(personID);
+                            if (isAdmin != null)
+                            {
+                                collegeRole = Position.GOD;
+                            }
                         }
+                        catch(ResourceNotFoundException e)
+                        {
+                            // Silent catch. 
+                            // This is ok because we know this exception means the user is not an admin
+                        }
+                        
+                        
                         var identity = new ClaimsIdentity(context.Options.AuthenticationType);
                         identity.AddClaim(new Claim("name", userEntry.Name));
                         identity.AddClaim(new Claim("id", personID));
@@ -105,7 +124,7 @@ namespace Gordon360.AuthorizationServer
                     else
                     {
                         ADServiceConnection.Dispose();
-                        context.SetError("invalid_grant", "The username or password is not correct");
+                        context.SetError("Unsuccessful Login", "The username or password is not correct");
                     }
                     
                     
@@ -113,7 +132,7 @@ namespace Gordon360.AuthorizationServer
                 else
                 {
                     Debug.WriteLine("\n\nNOT FOUND\n\n");
-                    context.SetError("invalid_grant", "The user name or password is not correct");
+                    context.SetError("Unsuccessful Login", "The username or password is not correct");
                 }
             }
             catch (Exception e)

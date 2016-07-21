@@ -9,6 +9,7 @@ namespace Gordon360.Controllers.Api
 {
     [RoutePrefix("api/sessions")]
     [CustomExceptionFilter]
+    //[Authorize]
     public class SessionsController : ApiController
     {
 

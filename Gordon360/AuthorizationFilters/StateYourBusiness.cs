@@ -54,15 +54,8 @@ namespace Gordon360.AuthorizationFilters
                 base.OnActionExecuting(actionContext);
                 return;
             }
-            // Step 2: Verify if the user can operate on the resource
-            //isAuthorized = canAccessResource(user_position, resource);
-            //if(!isAuthorized) 
-            //{
-            //    actionContext.Response = new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
-                
-            //}
-
-            // The user has access to the resource. Can the user perfom the operation on the resource?
+           
+            // Can the user perfom the operation on the resource?
             isAuthorized = canPerformOperation(resource, operation);
             if(!isAuthorized)
             {
@@ -73,28 +66,7 @@ namespace Gordon360.AuthorizationFilters
             base.OnActionExecuting(actionContext);
         }
 
-        //private bool canAccessResource(string user_position,string resource)
-        //{
-        //    switch(resource)
-        //    {
-        //        // All three options below result in the same thing.
-        //        case Resource.MEMBERSHIP_BY_ACTIVITY:
-        //        case Resource.MEMBERSHIP_BY_STUDENT:
-        //        case Resource.MEMBERSHIP:
-        //            return canAccessMembership(user_position);
-        //        // All three options below resutl in the same thing.
-        //        case Resource.MEMBERSHIP_REQUEST_BY_ACTIVITY:
-        //        case Resource.MEMBERSHIP_REQUEST_BY_STUDENT:
-        //        case Resource.MEMBERSHIP_REQUEST:
-        //            return canAccessMembershipRequest(user_position);
-        //        case Resource.STUDENT:
-        //            return canAccessStudent(user_position);
-        //        case Resource.SUPERVISOR_BY_ACTIVITY:
-        //        case Resource.SUPERVISOR:
-        //            return canAccessSupervisor(user_position);
-        //        default: return false;
-        //    }
-        //}
+       
         private bool canPerformOperation(string resource, string operation)
         {
             switch(operation)
@@ -109,55 +81,10 @@ namespace Gordon360.AuthorizationFilters
                 default: return false;
             }
         }
-        ///*
-        // * Resources
-        // */
-        //private bool canAccessMembership(string user_position)
-        //{
-        //    switch(user_position)
-        //    {
-        //        case Position.STUDENT: return true;
-        //        case Position.FACSTAFF: return true;
-        //        case Position.GOD: return true;
-        //        default: return false;
-        //    }
-        //}
-        //private bool canAccessMembershipRequest(string user_position)
-        //{
-        //    switch(user_position)
-        //    {
-        //        case Position.STUDENT: return true;
-        //        case Position.FACSTAFF: return true;
-        //        case Position.GOD: return true;
-        //        default: return false;
-        //    }
-        //}
-        //private bool canAccessStudent(string user_position)
-        //{
-        //    switch(user_position)
-        //    {
-        //        case Position.STUDENT: return true;
-        //        case Position.FACSTAFF: return true;
-        //        case Position.GOD: return true;
-        //        default: return false;
-        //    }
-        //}
-        //private bool canAccessSupervisor(string user_position)
-        //{
-        //    switch (user_position)
-        //    {
-        //        case Position.STUDENT: return true;
-        //        case Position.FACSTAFF: return true;
-        //        case Position.GOD: return true;
-        //        default: return false;
-        //    }
-        //}
 
         /*
          * Operations
-         * 
          */
-
          // This operation is specifically for authorizing deny and allow operations on membership requests. These two operations don't
          // Fit in nicely with the REST specificatino which is why there is a seperate case for them.
          private bool canDenyAllow(string resource)

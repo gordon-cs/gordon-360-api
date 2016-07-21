@@ -8,5 +8,10 @@ namespace Gordon360.Exceptions.CustomExceptions
     {
         public string ExceptionMessage { get; set; }
     }
+
+    public class ResourceCreationException : Exception
+    {
+        public string ExceptionMessage { get; set; }
+    }
     
 }

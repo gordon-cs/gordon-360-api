@@ -4,12 +4,14 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
 using Gordon360.Services;
 
 namespace Gordon360.ApiControllers
 {
     [Authorize]
+    [CustomExceptionFilter]
     [RoutePrefix("api/accounts")]
     public class AccountsController : ApiController
     {

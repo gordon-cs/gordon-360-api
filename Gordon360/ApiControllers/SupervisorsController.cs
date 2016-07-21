@@ -5,11 +5,13 @@ using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
+using Gordon360.Exceptions.ExceptionFilters;
 
 namespace Gordon360.Controllers.Api
 {
     [RoutePrefix("api/supervisors")]
     [Authorize]
+    [CustomExceptionFilter]
     public class SupervisorsController : ApiController
     {
         private ISupervisorService _supervisorService;
