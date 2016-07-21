@@ -145,5 +145,23 @@ namespace Gordon360.Models
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SUPERVISORS_PER_ACT_CDE_Result>("SUPERVISORS_PER_ACT_CDE", aCT_CDEParameter);
         }
+    
+        public virtual ObjectResult<EMAILS_PER_ACT_CDE_Result> EMAILS_PER_ACT_CDE(string aCT_CDE)
+        {
+            var aCT_CDEParameter = aCT_CDE != null ?
+                new ObjectParameter("ACT_CDE", aCT_CDE) :
+                new ObjectParameter("ACT_CDE", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<EMAILS_PER_ACT_CDE_Result>("EMAILS_PER_ACT_CDE", aCT_CDEParameter);
+        }
+    
+        public virtual ObjectResult<LEADER_EMAILS_PER_ACT_CDE_Result> LEADER_EMAILS_PER_ACT_CDE(string aCT_CDE)
+        {
+            var aCT_CDEParameter = aCT_CDE != null ?
+                new ObjectParameter("ACT_CDE", aCT_CDE) :
+                new ObjectParameter("ACT_CDE", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<LEADER_EMAILS_PER_ACT_CDE_Result>("LEADER_EMAILS_PER_ACT_CDE", aCT_CDEParameter);
+        }
     }
 }

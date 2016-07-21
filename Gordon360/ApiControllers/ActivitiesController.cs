@@ -5,6 +5,7 @@ using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using System;
 using Gordon360.Exceptions.ExceptionFilters;
+using Gordon360.Models;
 
 namespace Gordon360.Controllers.Api
 {
@@ -86,6 +87,25 @@ namespace Gordon360.Controllers.Api
 
             return Ok(result);
 
+        }
+
+        [HttpPost]
+        [Route("")]
+        public IHttpActionResult Post(string id, ACT_INFO activity)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = _activityService.Update(id, activity);
+
+            if(result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
         }
 
     }

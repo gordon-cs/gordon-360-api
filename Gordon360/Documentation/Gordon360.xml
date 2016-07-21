@@ -4,21 +4,6 @@
         <name>Gordon360</name>
     </assembly>
     <members>
-        <member name="M:Gordon360.ApiControllers.ActivityInfoController.Get">
-            <summary>
-            Get all available information for activities
-            </summary>
-            <returns></returns>
-            <remarks>
-            Server makes a call to get a list of all activity information from the database
-            </remarks>
-        </member>
-        <member name="M:Gordon360.ApiControllers.ActivityInfoController.Get(System.String)">
-            <summary>Get the activityInfo object whose activity code corresponds to the given parameter</summary>
-            <param name="id">The activity code</param>
-            <returns></returns>
-            <remarks>Get a single activity from the database</remarks>
-        </member>
         <member name="M:Gordon360.Controllers.Api.MembershipRequestController.Get">
             <summary>
             Gets all Membership Request Objects
@@ -453,27 +438,12 @@
             </summary>
             <returns>AccountViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
         </member>
-        <member name="T:Gordon360.Services.ActivityInfoService">
-            <summary>
-            Service class for facilitation data transfers between the front end views and the backend database models
-            </summary>
-        </member>
-        <member name="M:Gordon360.Services.ActivityInfoService.Get(System.String)">
-            <summary>
-            Fetches the activity info whose Activity Code is specified as a parameter
-            </summary>
-            <param name="id">The activity code</param>
-            <returns>An ActivityViewModel if one was found, null if none were found.</returns>
-        </member>
-        <member name="M:Gordon360.Services.ActivityInfoService.GetAll">
-            <summary>
-            Fetches all available activity info from the database
-            </summary>
-            <returns>ActivityInfoViewModel IEnumerable. If nothing was found, an empty IEnumerable is returned</returns>
-        </member>
         <member name="T:Gordon360.Services.ActivityService">
             <summary>
             Service Class that facilitates data transactions between the ActivitiesController and the ACT_CLUB_DEF database model.
+            ACT_INFO (ActivityInfo) and ACT_CLUB_DEF(Activity) are very similar. 
+            ACT_INFO is basically a copy of the ACT_CLUB_DEF domain model but with extra fields that we want to store (activity image, blurb etc...)
+            Activity Info and ACtivity may be talked about interchangeably.
             </summary>
         </member>
         <member name="M:Gordon360.Services.ActivityService.Get(System.String)">
@@ -495,6 +465,14 @@
             Fetches all activity records from storage.
             </summary>
             <returns>ActivityViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+        </member>
+        <member name="M:Gordon360.Services.ActivityService.Update(System.String,Gordon360.Models.ACT_INFO)">
+            <summary>
+            Updates the Activity Info 
+            </summary>
+            <param name="activity">The activity info resource with the updated information</param>
+            <param name="id">The id of the activity info to be updated</param>
+            <returns>The updated activity info resource</returns>
         </member>
         <member name="T:Gordon360.Services.AdministratorService">
             <summary>

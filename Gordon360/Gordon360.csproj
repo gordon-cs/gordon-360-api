@@ -178,7 +178,6 @@
   <ItemGroup />
   <ItemGroup>
     <Compile Include="ApiControllers\AccountsController.cs" />
-    <Compile Include="ApiControllers\ActivityInfoController.cs" />
     <Compile Include="ApiControllers\EmailsController.cs" />
     <Compile Include="ApiControllers\MembershipRequestController.cs" />
     <Compile Include="ApiControllers\RolesController.cs" />
@@ -234,10 +233,16 @@
     <Compile Include="Models\CM_SESSION_MSTR.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\EMAILS_PER_ACT_CDE_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Faculty.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\JNZB_ACTIVITIES.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\LEADER_EMAILS_PER_ACT_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\LEADER_MEMBERSHIPS_PER_ACT_CDE_Result.cs">
@@ -306,7 +311,6 @@
     <Compile Include="Repositories\IUnitOfWork.cs" />
     <Compile Include="Repositories\UnitOfWork.cs" />
     <Compile Include="Services\AccountService.cs" />
-    <Compile Include="Services\ActivityInfoService.cs" />
     <Compile Include="Services\ActivityService.cs" />
     <Compile Include="Services\AdministratorService.cs" />
     <Compile Include="Services\ComplexQueries\RawSqlQuery.cs" />

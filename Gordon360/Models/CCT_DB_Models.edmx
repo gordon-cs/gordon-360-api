@@ -11,9 +11,9 @@
           </Key>
           <Property Name="ACT_CDE" Type="char" MaxLength="8" Nullable="false" />
           <Property Name="ACT_DESC" Type="char" MaxLength="45" Nullable="false" />
-          <Property Name="MTG_DAY" Type="varchar" MaxLength="20" />
-          <Property Name="MTG_TIME" Type="varchar" MaxLength="20" />
           <Property Name="ACT_IMAGE" Type="varchar(max)" />
+          <Property Name="ACT_BLURB" Type="varchar(max)" />
+          <Property Name="ACT_URL" Type="varchar(max)" />
         </EntityType>
         <EntityType Name="ADMIN">
           <Key>
@@ -133,6 +133,7 @@ warning 6002: The table/view 'CCT.dbo.PART_DEF' does not have a primary key defi
         <EntityType Name="PART_DEF">
           <Key>
             <PropertyRef Name="PART_CDE" />
+            
           </Key>
           <Property Name="PART_CDE" Type="char" MaxLength="5" Nullable="false" />
           <Property Name="PART_DESC" Type="char" MaxLength="45" Nullable="false" />
@@ -165,6 +166,12 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <Function Name="ALL_MEMBERSHIPS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="ALL_REQUESTS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="ALL_SUPERVISORS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="EMAILS_PER_ACT_CDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ACT_CDE" Type="char" Mode="In" />
+        </Function>
+        <Function Name="LEADER_EMAILS_PER_ACT_CDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ACT_CDE" Type="char" Mode="In" />
+        </Function>
         <Function Name="LEADER_MEMBERSHIPS_PER_ACT_CDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ACT_CDE" Type="char" Mode="In" />
         </Function>
@@ -264,9 +271,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           </Key>
           <Property Name="ACT_CDE" Type="String" MaxLength="8" FixedLength="true" Unicode="false" Nullable="false" />
           <Property Name="ACT_DESC" Type="String" MaxLength="45" FixedLength="true" Unicode="false" Nullable="false" />
-          <Property Name="MTG_DAY" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="MTG_TIME" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="ACT_IMAGE" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ACT_BLURB" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ACT_URL" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="ADMIN">
           <Key>
@@ -419,31 +426,37 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImport Name="ALL_REQUESTS" ReturnType="Collection(Gordon360.ALL_REQUESTS_Result)" />
           <FunctionImport Name="ALL_SUPERVISORS" ReturnType="Collection(Gordon360.ALL_SUPERVISORS_Result)" />
           <FunctionImport Name="LEADER_MEMBERSHIPS_PER_ACT_CDE" ReturnType="Collection(Gordon360.LEADER_MEMBERSHIPS_PER_ACT_CDE_Result)">
-            <Parameter Name="ACT_CDE" Mode="In" Type="String" />
+          <Parameter Name="ACT_CDE" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="MEMBERSHIPS_PER_ACT_CDE" ReturnType="Collection(Gordon360.MEMBERSHIPS_PER_ACT_CDE_Result)">
-            <Parameter Name="ACT_CDE" Mode="In" Type="String" />
+          <Parameter Name="ACT_CDE" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="MEMBERSHIPS_PER_MEMBERSHIP_ID" ReturnType="Collection(Gordon360.MEMBERSHIPS_PER_MEMBERSHIP_ID_Result)">
-            <Parameter Name="MEMBERSHIP_ID" Mode="In" Type="Int32" />
+          <Parameter Name="MEMBERSHIP_ID" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="MEMBERSHIPS_PER_STUDENT_ID" ReturnType="Collection(Gordon360.MEMBERSHIPS_PER_STUDENT_ID_Result)">
-            <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
+          <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="REQUEST_PER_REQUEST_ID" ReturnType="Collection(Gordon360.REQUEST_PER_REQUEST_ID_Result)">
-            <Parameter Name="REQUEST_ID" Mode="In" Type="Int32" />
+          <Parameter Name="REQUEST_ID" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="REQUESTS_PER_ACT_CDE" ReturnType="Collection(Gordon360.REQUESTS_PER_ACT_CDE_Result)">
-            <Parameter Name="ACT_CDE" Mode="In" Type="String" />
+          <Parameter Name="ACT_CDE" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="REQUESTS_PER_STUDENT_ID" ReturnType="Collection(Gordon360.REQUESTS_PER_STUDENT_ID_Result)">
-            <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
+          <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="SUPERVISOR_PER_SUP_ID" ReturnType="Collection(Gordon360.SUPERVISOR_PER_SUP_ID_Result)">
-            <Parameter Name="SUP_ID" Mode="In" Type="Int32" />
+          <Parameter Name="SUP_ID" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="SUPERVISORS_PER_ACT_CDE" ReturnType="Collection(Gordon360.SUPERVISORS_PER_ACT_CDE_Result)">
-            <Parameter Name="ACT_CDE" Mode="In" Type="String" />
+          <Parameter Name="ACT_CDE" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="EMAILS_PER_ACT_CDE" ReturnType="Collection(Gordon360.EMAILS_PER_ACT_CDE_Result)">
+          <Parameter Name="ACT_CDE" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="LEADER_EMAILS_PER_ACT_CDE" ReturnType="Collection(Gordon360.LEADER_EMAILS_PER_ACT_CDE_Result)">
+          <Parameter Name="ACT_CDE" Mode="In" Type="String" />
           </FunctionImport>
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
@@ -635,6 +648,16 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="String" Name="SessionCode" Nullable="false" MaxLength="8" />
           <Property Type="String" Name="SessionDescription" Nullable="true" MaxLength="60" />
         </ComplexType>
+        <ComplexType Name="EMAILS_PER_ACT_CDE_Result">
+          <Property Type="String" Name="FirstName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="LastName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Email" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="LEADER_EMAILS_PER_ACT_CDE_Result">
+          <Property Type="String" Name="FirstName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="LastName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Email" Nullable="true" MaxLength="50" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -644,10 +667,10 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="ACT_INFO">
             <EntityTypeMapping TypeName="Gordon360.ACT_INFO">
               <MappingFragment StoreEntitySet="ACT_INFO">
+                <ScalarProperty Name="ACT_URL" ColumnName="ACT_URL" />
+                <ScalarProperty Name="ACT_BLURB" ColumnName="ACT_BLURB" />
                 <ScalarProperty Name="ACT_CDE" ColumnName="ACT_CDE" />
                 <ScalarProperty Name="ACT_DESC" ColumnName="ACT_DESC" />
-                <ScalarProperty Name="MTG_DAY" ColumnName="MTG_DAY" />
-                <ScalarProperty Name="MTG_TIME" ColumnName="MTG_TIME" />
                 <ScalarProperty Name="ACT_IMAGE" ColumnName="ACT_IMAGE" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -1032,6 +1055,24 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="ActivityDescription" ColumnName="ActivityDescription" />
                 <ScalarProperty Name="SessionCode" ColumnName="SessionCode" />
                 <ScalarProperty Name="SessionDescription" ColumnName="SessionDescription" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="EMAILS_PER_ACT_CDE" FunctionName="Gordon360.Store.EMAILS_PER_ACT_CDE">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.EMAILS_PER_ACT_CDE_Result">
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="LEADER_EMAILS_PER_ACT_CDE" FunctionName="Gordon360.Store.LEADER_EMAILS_PER_ACT_CDE">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.LEADER_EMAILS_PER_ACT_CDE_Result">
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
