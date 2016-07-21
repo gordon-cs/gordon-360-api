@@ -9,7 +9,7 @@ random_id_number = 999999001
 # Participation Codes that correspond to leaders:
 leadership_positions = ['CAPT','CODIR','CORD','DIREC','PRES','VICEC','VICEP']
 # API 
-hostURL = 'https://ccttrain.gordon.edu/'
+hostURL = 'https://gordon360api.gordon.edu/'
 
 
 

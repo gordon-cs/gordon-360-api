@@ -592,7 +592,7 @@ class put_non_guest_membership___regular_member(TestCase):
                 self.log_error('Error in cleanup for {0}'.format(self.test_name))
 
 
-class delete_memberships_for_someone_else___regular_member(TestCase):
+class delete_membership_for_someone_else___regular_member(TestCase):
     """ Verify that a regular member cannot delete someone else's membership.
     
     Pre-Conditions:
@@ -619,7 +619,7 @@ class delete_memberships_for_someone_else___regular_member(TestCase):
         else:
             try:
                 for membership in memberships:
-                    if not membership['MembershipID'] == str(my_id_number):
+                    if not membership['IDNumber'] == str(my_id_number):
                         self.membershipID = membership['MembershipID']
                         break
             except KeyError:
@@ -1417,6 +1417,52 @@ class get_activities_for_session___regular_member(TestCase):
             if not (type(response.json()) is list):
                 self.log_error('Expected list, got {0}.'.format(response.json()))
 
+class update_activity___regular_member(TestCase):
+    """ Verify that a regular member cannot update activity information.
+
+    Pre-Conditions:
+    Valid Authentication Header
+    Authenticated as regular member
+    Expectations:
+    Endpoints -- api/activities/:id
+    Expected Status Code -- 401 Unauthorized
+    Expected Response Body -- Empty
+    """
+
+    def __init__(self, session=None):
+        super().__init__(session)
+        self.url = hostURL + 'api/activities/' + activity_code
+        self.data = {}
+
+    def setup(self):
+        # Report if there any current memberships for the Club to avoid false negatives.
+        # If I am currently a director of the club, this test should fail.
+        response = api.get(self.session, hostURL + 'api/memberships/student/' + str(my_id_number))
+        try:
+            for membership in response.json():
+                if(membership['ActivityCode'] == activity_code and membership['Participation'] in LEADERSHIP_POSITIONS):
+                    self.log_error('False Negative: This user is a leader for the activity we are testing.')
+        except ValueError:
+            self.log_error('We did not get a json response back during setup.')
+        else:
+            self.data = {
+                "ACT_CDE" : activity_code,
+                "ACT_IMG" : "HACKING INTO SYSTEM AS REGULAR MEMBER",
+                "ACT_BLURB" : "HACKING INTO SYSTEM AS REGULAR MEMBER",
+                "ACT_URL" : "HACKING INTO SYSTEM AS REGULAR MEMBER"
+            }
+
+    def test(self):
+        response = api.putAsJson(self.session, self.url , self.data)
+        if not response.status_code == 401:
+            self.log_error('Expected 401 Unauthorized, got {0}.'.format(response.status_code))
+        if response.text:
+            self.log_error('Expected empty response body, got {0}.'.format(response.text))
+
+    def cleanup(self):
+        # Don't delete activity even if it was updated. That's too drastic.
+        pass
+    
 # # # # # # # # # # # # 
 # PARTICIPATIONS TEST #
 # # # # # # # # # # # #
@@ -1624,8 +1670,62 @@ class get_student_by_email___regular_member(TestCase):
                 self.log_error('Expected StudentID in response, got{0}.'.format(response.json()))
 
             
+# # # # # # # #
+# EMAIL  TEST #
+# # # # # # # #
 
 
+class get_emails_for_activity___regular_member(TestCase):
+    """ Verify that a regular member cannot get the emails for the members of an activity
+    
+    Pre-conditions:
+    Valid Authentication Header
+    Authenticated as Regular Member
+    Expectations:
+    Endpoint -- api/emails/activity/:id
+    Expected Status Code -- 401 Unauthorized
+    Expected Response Body -- Empty
+    """
+    def __init__(self , session=None):
+        super().__init__(session)
+        self.url = hostURL + 'api/emails/activity/' + activity_code
+
+    def test(self):
+        response = api.get(self.session, self.url)
+        if not response.status_code == 401:
+            self.log_error('Expected 401 Unauthorized, got {0}.'.format(response.status_code))
+        if response.text:
+            self.log_error('Expected empty response body, got {0}.'.format(response.text))
+    
+
+
+class get_emails_for_leaders___regular_member(TestCase):
+    """ Verify that a regular member can get the emails for any activity leader
+    
+    Pre-Conditions:
+    Valid Authentication header
+    Expectaions:
+    Endpoint -- api/emails/activity/:id/leaders
+    Expected Status Code -- 200 OK
+    Expected Respones Body -- Json response with a list of emails
+    """
+    def __init__(self, session=None):
+        super().__init__(session)
+        self.url = hostURL + 'api/emails/activity/' + activity_code + '/leaders'
+
+    def test(self):
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            self.log_error('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            self.log_error('Expected Json response body, got {0}.'.format(response.text))
+        else:
+            try:
+                response.json()[0]['Email']
+            except KeyError:
+                self.log_error('Expected Email in response, got{0}.'.format(response.json()))
 
     
 if __name__ == '__main__':
