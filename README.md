@@ -1,11 +1,25 @@
 # Gordon 360
 
+### (IN PROGRESS...)
+
 Dive in.
+## Table of Contents
+- [API Endpoints](#api-endpoints)
+    - [Authentication] (#authentication)
+    - [Memberships](#memberships)
+    - [Clubs](#clubs)
+    - [Membership Requests](#membership-requests)
+    - [Supervisors](#supervisors)
+    - [Students](#students)
+    - [Accounts](#accounts)
+    - [Sessions](#sessions)
+    - [Participation Definitions](#participation-definitions)
+    - [Emails](#emails)
 
 `API Url: ` Coming soon...
 
 
-## API Endpoints: (IN PROGRESS ... )
+## API Endpoints
 
 ### Authentication
 
@@ -171,7 +185,7 @@ Who has access? Everyone.
 
 `api/participations` Get all the possible participation levels.
 
-`api/partiipations/:id` Get the participation level with code `id`.
+`api/partipations/:id` Get the participation level with code `id`.
 
 
 ### Emails
