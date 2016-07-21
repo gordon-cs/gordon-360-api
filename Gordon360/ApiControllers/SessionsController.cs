@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web.Http;
+using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Static.Methods;
@@ -7,6 +8,7 @@ using Gordon360.Static.Methods;
 namespace Gordon360.Controllers.Api
 {
     [RoutePrefix("api/sessions")]
+    [CustomExceptionFilter]
     [Authorize]
     public class SessionsController : ApiController
     {

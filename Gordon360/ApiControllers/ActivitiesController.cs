@@ -4,11 +4,14 @@ using Gordon360.Repositories;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using System;
+using Gordon360.Exceptions.ExceptionFilters;
+using Gordon360.Models;
 
 namespace Gordon360.Controllers.Api
 {
     
     [RoutePrefix("api/activities")]
+    [CustomExceptionFilter]
     [Authorize]
     public class ActivitiesController : ApiController
     {
@@ -84,6 +87,26 @@ namespace Gordon360.Controllers.Api
 
             return Ok(result);
 
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
+        public IHttpActionResult Put(string id, ACT_INFO activity)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = _activityService.Update(id, activity);
+
+            if(result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
         }
 
     }

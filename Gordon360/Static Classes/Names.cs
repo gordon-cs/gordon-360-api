@@ -7,13 +7,17 @@ namespace Gordon360.Static.Names
         public const string MEMBERSHIP_REQUEST = "A Membership Request Resource";
         public const string MEMBERSHIP = "A Membership Resource";
         public const string STUDENT = "A Student Resource";
+        public const string ACCOUNT = "An Account Resource.";
         public const string SUPERVISOR = "A Supervisor Resource";
+        public const string ACTIVITY_INFO = "An Activity Info Service.";
 
         // Partial resources, to be targetted by Operation.READ_PARTIAL
         public const string MEMBERSHIP_REQUEST_BY_ACTIVITY = "Membership Request Resources associated with an activity";
         public const string MEMBERSHIP_REQUEST_BY_STUDENT = "Membership Request Resources associated with a student";
         public const string MEMBERSHIP_BY_ACTIVITY = "Membership Resources associated with an activity";
         public const string MEMBERSHIP_BY_STUDENT = "Membership Resources associated with a student";
+        public const string EMAILS_BY_ACTIVITY = "Emails for activity members";
+        public const string EMAILS_BY_LEADERS = "Emails for activity leaders";
         public const string SUPERVISOR_BY_ACTIVITY = "Supervisor Resources associated with an activity";
 
 

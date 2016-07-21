@@ -177,7 +177,8 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Compile Include="ApiControllers\ActivityInfoController.cs" />
+    <Compile Include="ApiControllers\AccountsController.cs" />
+    <Compile Include="ApiControllers\EmailsController.cs" />
     <Compile Include="ApiControllers\MembershipRequestController.cs" />
     <Compile Include="ApiControllers\RolesController.cs" />
     <Compile Include="ApiControllers\SessionsController.cs" />
@@ -188,6 +189,8 @@
     <Compile Include="AuthorizationFilters\StateYourBusiness.cs" />
     <Compile Include="AuthorizationServer\CustomJWTFormat.cs" />
     <Compile Include="AuthorizationServer\TokenIssuer.cs" />
+    <Compile Include="Exceptions\CustomExceptions.cs" />
+    <Compile Include="Exceptions\CustomExcpetionFilter.cs" />
     <Compile Include="Models\ACCOUNT.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -230,10 +233,16 @@
     <Compile Include="Models\CM_SESSION_MSTR.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\EMAILS_PER_ACT_CDE_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Faculty.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\JNZB_ACTIVITIES.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\LEADER_EMAILS_PER_ACT_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\LEADER_MEMBERSHIPS_PER_ACT_CDE_Result.cs">
@@ -286,6 +295,7 @@
     <Compile Include="Models\ViewModels\AccountViewModel.cs" />
     <Compile Include="Models\ViewModels\ActivityInfoViewModel.cs" />
     <Compile Include="Models\ViewModels\ActivityViewModel.cs" />
+    <Compile Include="Models\ViewModels\EmailViewModel.cs" />
     <Compile Include="Models\ViewModels\FacultyViewModel.cs" />
     <Compile Include="Models\ViewModels\JenzibarActivitiesViewModel.cs" />
     <Compile Include="Models\ViewModels\MembershipViewModel.cs" />
@@ -301,10 +311,10 @@
     <Compile Include="Repositories\IUnitOfWork.cs" />
     <Compile Include="Repositories\UnitOfWork.cs" />
     <Compile Include="Services\AccountService.cs" />
-    <Compile Include="Services\ActivityInfoService.cs" />
     <Compile Include="Services\ActivityService.cs" />
     <Compile Include="Services\AdministratorService.cs" />
     <Compile Include="Services\ComplexQueries\RawSqlQuery.cs" />
+    <Compile Include="Services\EmailService.cs" />
     <Compile Include="Services\FacultyService.cs" />
     <Compile Include="Static Classes\Helpers.cs" />
     <Compile Include="Services\JenzibarActivityService.cs" />

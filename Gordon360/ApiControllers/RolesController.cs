@@ -11,11 +11,13 @@ using System.Web.Http.Description;
 using Gordon360.Models;
 using Gordon360.Services;
 using Gordon360.Repositories;
+using Gordon360.Exceptions.ExceptionFilters;
 
 namespace Gordon360.Controllers.Api
 {
     [RoutePrefix("api/participations")]
     [Authorize]
+    [CustomExceptionFilter]
     public class ParticipationsController : ApiController
     {
         private IParticipationService _participationService;

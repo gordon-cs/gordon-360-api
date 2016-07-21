@@ -5,6 +5,7 @@ using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using System.Data;
+using Gordon360.Exceptions.CustomExceptions;
 using System.Data.SqlClient;
 
 namespace Gordon360.Services
@@ -29,6 +30,10 @@ namespace Gordon360.Services
         public SessionViewModel Get(string id)
         {
             var query = _unitOfWork.SessionRepository.GetById(id);
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Session was not found." };
+            }
             SessionViewModel result = query;
             return result;
         }

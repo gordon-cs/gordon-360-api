@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
@@ -28,6 +29,10 @@ namespace Gordon360.Services
         public ParticipationViewModel Get(string id)
         {
             var query = _unitOfWork.ParticipationRepository.GetById(id);
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Participation was not found." };
+            }
             ParticipationViewModel result = query;
             return result;
         }

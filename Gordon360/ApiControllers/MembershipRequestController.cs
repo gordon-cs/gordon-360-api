@@ -9,11 +9,14 @@ using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
+using Gordon360.Exceptions.ExceptionFilters;
+using Gordon360.Exceptions.CustomExceptions;
 
 namespace Gordon360.Controllers.Api
 {
     [RoutePrefix("api/requests")]
     [Authorize]
+    [CustomExceptionFilter]
     public class MembershipRequestController : ApiController
     {
         public IMembershipRequestService _membershipRequestService;
@@ -131,7 +134,7 @@ namespace Gordon360.Controllers.Api
         {
             if( !ModelState.IsValid || membershipRequest == null)
             {
-                return BadRequest();
+                throw new BadInputException() { ExceptionMessage = ModelState.ToString() };
             }
 
             var result = _membershipRequestService.Add(membershipRequest);

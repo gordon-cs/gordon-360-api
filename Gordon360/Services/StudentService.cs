@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
@@ -29,6 +30,10 @@ namespace Gordon360.Services
         public StudentViewModel Get(string id)
         {
             var query = _unitOfWork.StudentRepository.GetById(id);
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Student was not found." };
+            }
             StudentViewModel result = query; // Implicit conversion happening here, see ViewModels.
             return result;
         }
@@ -55,7 +60,7 @@ namespace Gordon360.Services
             var query = _unitOfWork.StudentRepository.FirstOrDefault(x => x.student_email == email);
             if(query == null)
             {
-                return null;
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Student was not found." };
             }
             StudentViewModel result = query; // Implicit conversion happening here, see ViewModels.
             return result;

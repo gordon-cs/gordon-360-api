@@ -4,21 +4,6 @@
         <name>Gordon360</name>
     </assembly>
     <members>
-        <member name="M:Gordon360.ApiControllers.ActivityInfoController.Get">
-            <summary>
-            Get all available information for activities
-            </summary>
-            <returns></returns>
-            <remarks>
-            Server makes a call to get a list of all activity information from the database
-            </remarks>
-        </member>
-        <member name="M:Gordon360.ApiControllers.ActivityInfoController.Get(System.String)">
-            <summary>Get the activityInfo object whose activity code corresponds to the given parameter</summary>
-            <param name="id">The activity code</param>
-            <returns></returns>
-            <remarks>Get a single activity from the database</remarks>
-        </member>
         <member name="M:Gordon360.Controllers.Api.MembershipRequestController.Get">
             <summary>
             Gets all Membership Request Objects
@@ -453,27 +438,19 @@
             </summary>
             <returns>AccountViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
         </member>
-        <member name="T:Gordon360.Services.ActivityInfoService">
+        <member name="M:Gordon360.Services.AccountService.GetAccountByEmail(System.String)">
             <summary>
-            Service class for facilitation data transfers between the front end views and the backend database models
+            Fetches the account record with the specified email.
             </summary>
-        </member>
-        <member name="M:Gordon360.Services.ActivityInfoService.Get(System.String)">
-            <summary>
-            Fetches the activity info whose Activity Code is specified as a parameter
-            </summary>
-            <param name="id">The activity code</param>
-            <returns>An ActivityViewModel if one was found, null if none were found.</returns>
-        </member>
-        <member name="M:Gordon360.Services.ActivityInfoService.GetAll">
-            <summary>
-            Fetches all available activity info from the database
-            </summary>
-            <returns>ActivityInfoViewModel IEnumerable. If nothing was found, an empty IEnumerable is returned</returns>
+            <param name="email">The email address associated with the account.</param>
+            <returns></returns>
         </member>
         <member name="T:Gordon360.Services.ActivityService">
             <summary>
             Service Class that facilitates data transactions between the ActivitiesController and the ACT_CLUB_DEF database model.
+            ACT_INFO (ActivityInfo) and ACT_CLUB_DEF(Activity) are very similar. 
+            ACT_INFO is basically a copy of the ACT_CLUB_DEF domain model but with extra fields that we want to store (activity image, blurb etc...)
+            Activity Info and ACtivity may be talked about interchangeably.
             </summary>
         </member>
         <member name="M:Gordon360.Services.ActivityService.Get(System.String)">
@@ -495,6 +472,14 @@
             Fetches all activity records from storage.
             </summary>
             <returns>ActivityViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+        </member>
+        <member name="M:Gordon360.Services.ActivityService.Update(System.String,Gordon360.Models.ACT_INFO)">
+            <summary>
+            Updates the Activity Info 
+            </summary>
+            <param name="activity">The activity info resource with the updated information</param>
+            <param name="id">The id of the activity info to be updated</param>
+            <returns>The updated activity info resource</returns>
         </member>
         <member name="T:Gordon360.Services.AdministratorService">
             <summary>
@@ -534,6 +519,41 @@
             <param name="query">An sql statment. Can be a stored procedure or even a simple SELECT statment</param>
             <param name="parameters">Parameters to pass into the stored procedure</param>
             <returns></returns>
+        </member>
+        <member name="T:Gordon360.Services.EmailService">
+            <summary>
+            Service class to facilitate getting emails for members of an activity.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivity(System.String)">
+            <summary>
+            Get a list of the emails for all members in the activity during the current session.
+            </summary>
+            <param name="activity_code"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivityLeaders(System.String)">
+            <summary>
+            Get a list of emails for leaders in the activity during the current session.
+            </summary>
+            <param name="activity_code"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivity(System.String,System.String)">
+            <summary>
+            Get a list of the emails for all members in the activity during a specific session
+            </summary>
+            <param name="activity_code">The activity code</param>
+            <param name="session_code">The session code</param>
+            <returns>List of the emails for the members of this activity</returns>
+        </member>
+        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivityLeaders(System.String,System.String)">
+            <summary>
+            Get a list of emails for leaders in the activity during a specified session
+            </summary>
+            <param name="activity_code">The activity code</param>
+            <param name="session_code">The session code</param>
+            <returns>List of emails for the leaders of this activity</returns>
         </member>
         <member name="T:Gordon360.Services.FacultyService">
             <summary>
@@ -578,7 +598,7 @@
             Approves the request with the specified ID.
             </summary>
             <param name="id">The ID of the request to be approved</param>
-            <returns></returns>
+            <returns>The approved membership</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipRequestService.Delete(System.Int32)">
             <summary>
@@ -637,7 +657,7 @@
         <member name="M:Gordon360.Services.MembershipService.Add(Gordon360.Models.MEMBERSHIP)">
             <summary>
             Adds a new Membership record to storage. Since we can't establish foreign key constraints and relationships on the database side,
-            we do it here by using the membershipIsValid() method.
+            we do it here by using the validateMembership() method.
             </summary>
             <param name="membership">The membership to be added</param>
             <returns>The newly added Membership object</returns>
@@ -691,12 +711,12 @@
             <param name="membership">The updated membership.</param>
             <returns>The newly modified membership.</returns>
         </member>
-        <member name="M:Gordon360.Services.MembershipService.membershipIsValid(Gordon360.Models.MEMBERSHIP)">
+        <member name="M:Gordon360.Services.MembershipService.validateMembership(Gordon360.Models.MEMBERSHIP)">
             <summary>
-            Helper method to check for the validity of a membership.
+            Helper method to Validate a membership
             </summary>
             <param name="membership">The membership to validate</param>
-            <returns>True if the membership is valid. False if it isn't</returns>
+            <returns>True if the membership is valid. Throws ResourceNotFoundException if not. Exception is cauth in an Exception Filter</returns>
         </member>
         <member name="T:Gordon360.Services.ParticipationService">
             <summary>
@@ -817,7 +837,7 @@
             </summary>
             <returns>SupervisorViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
         </member>
-        <member name="M:Gordon360.Services.SupervisorService.supervisorIsValid(Gordon360.Models.SUPERVISOR)">
+        <member name="M:Gordon360.Services.SupervisorService.validateSupervisor(Gordon360.Models.SUPERVISOR)">
             <summary>
             Helper method to check for the validity of a supervisor.
             </summary>
