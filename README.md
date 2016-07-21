@@ -196,9 +196,13 @@ Who has access? It's complicated.
 
 ##### GET 
 
-`api/emails/activity/:id` Get the emails for members of the activity with activity code `id`.
+`api/emails/activity/:id` Get the emails for members of the activity with activity code `id` during the current session.
 
-`api/emails/activity/:id/leaders` Get the emails for the leaders of the activity with activity code `id`.
+`api/emails/activity/:id/session/:sessionid` Get the emails for the members of the activity with activity code `id` during the session with session code `sessionid`.
+
+`api/emails/activity/:id/leaders` Get the emails for the leaders of the activity with activity code `id` during the current session.
+
+`api/emails/activity/:id/leaders/session/:sessionid` Get the emails for the leaders of the activity with activity code `id` during the session with session code `sessionid`.
 
 
 
