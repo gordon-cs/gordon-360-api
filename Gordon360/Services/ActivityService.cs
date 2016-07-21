@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
+using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
@@ -30,6 +31,10 @@ namespace Gordon360.Services
         public ActivityInfoViewModel Get(string id)
         {
             var query = _unitOfWork.ActivityInfoRepository.GetById(id);
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
+            }
             ActivityInfoViewModel result = query;
             return result;
         }
@@ -43,7 +48,10 @@ namespace Gordon360.Services
         {
             // Stored procedure returns columns ACT_CDE and ACT_DESC
             var query = RawSqlQuery<ACT_CLUB_DEF>.query("ACTIVE_CLUBS_PER_SESS_ID @SESS_CDE", new SqlParameter("SESS_CDE", SqlDbType.VarChar) { Value = id });
-
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Session was not found." };
+            }
             // We Transform the result into an activityViewModel
             var result = query.Select<ACT_CLUB_DEF, ActivityViewModel>(x => x);
             // Then transform the ActivityViewModel into ActivityInfoViewModel

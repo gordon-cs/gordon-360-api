@@ -186,6 +186,7 @@ namespace Gordon360.Services
                 if (activityResult.ACT_CDE.Trim() == supervisor.ACT_CDE)
                 {
                     offered = true;
+                    break;
                 }
             }
 

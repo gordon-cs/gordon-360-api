@@ -16,6 +16,7 @@ namespace Gordon360.Services
     {
         AccountViewModel Get(string id);
         IEnumerable<AccountViewModel> GetAll();
+        AccountViewModel GetAccountByEmail(string email);
     }
 
     public interface IActivityService
@@ -34,6 +35,11 @@ namespace Gordon360.Services
     {
         ADMIN Get(int id);
         IEnumerable<ADMIN> GetAll();
+    }
+    public interface IEmailService
+    {
+        IEnumerable<EmailViewModel> GetEmailsForActivityLeaders(string id);
+        IEnumerable<EmailViewModel> GetEmailsForActivity(string id);
     }
     public interface ISessionService
     {
@@ -102,7 +108,8 @@ namespace Gordon360.Services
         IEnumerable<MembershipRequestViewModel> GetMembershipRequestsForStudent(string id);
         REQUEST Add(REQUEST membershipRequest);
         REQUEST Update(int id, REQUEST membershipRequest);
-        REQUEST ApproveRequest(int id);
+        // The ODD one out. When we approve a request, we would like to get back the new membership.
+        MEMBERSHIP ApproveRequest(int id);
         REQUEST DenyRequest(int id);
         REQUEST Delete(int id);
     }

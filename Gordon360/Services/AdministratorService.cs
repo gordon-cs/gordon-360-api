@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Models;
 using Gordon360.Repositories;
 
@@ -27,7 +28,7 @@ namespace Gordon360.Services
             var query = _unitOfWork.AdministratorRepository.GetById(id);
             if (query == null)
             {
-                return null;
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Administrator was not found." };
             }
             return query;
         }
@@ -42,7 +43,7 @@ namespace Gordon360.Services
             var query = _unitOfWork.AdministratorRepository.FirstOrDefault(x => x.ID_NUM.ToString() == gordon_id);
             if(query == null)
             {
-                return null;
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Administrator was not found." };
             }
             return query;
         }

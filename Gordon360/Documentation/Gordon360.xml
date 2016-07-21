@@ -241,6 +241,9 @@
             <param name="id">The identifier for the membership to be deleted</param>
             <remarks>Calls the server to make a call and remove the given membership from the database</remarks>
         </member>
+        <member name="M:Gordon360.AuthorizationFilters.StateYourBusiness.canDenyAllow(System.String)">
+            *
+        </member>
         <member name="F:Gordon360.Repositories.GenericRepository`1._context">
             <summary>
                 The database context for the repository
@@ -535,6 +538,25 @@
             <param name="parameters">Parameters to pass into the stored procedure</param>
             <returns></returns>
         </member>
+        <member name="T:Gordon360.Services.EmailService">
+            <summary>
+            Service class to facilitate getting emails for members of an activity.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivity(System.String)">
+            <summary>
+            Get a list of the emails for all members in the activity
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivityLeaders(System.String)">
+            <summary>
+            Get a list of emails for leaders in the activity
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
         <member name="T:Gordon360.Services.FacultyService">
             <summary>
             Service Class that facilitates data transactions between the FacultyController and the Faculty database model.
@@ -578,7 +600,7 @@
             Approves the request with the specified ID.
             </summary>
             <param name="id">The ID of the request to be approved</param>
-            <returns></returns>
+            <returns>The approved membership</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipRequestService.Delete(System.Int32)">
             <summary>

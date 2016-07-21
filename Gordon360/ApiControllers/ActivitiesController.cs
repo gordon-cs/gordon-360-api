@@ -4,12 +4,13 @@ using Gordon360.Repositories;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using System;
+using Gordon360.Exceptions.ExceptionFilters;
 
 namespace Gordon360.Controllers.Api
 {
     
     [RoutePrefix("api/activities")]
-    [Authorize]
+    [CustomExceptionFilter]
     public class ActivitiesController : ApiController
     {
         private IActivityService _activityService;

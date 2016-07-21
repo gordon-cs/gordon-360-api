@@ -29,6 +29,7 @@ namespace Gordon360.Models
         public string PART_LVL { get; set; }
         [Required]
         public System.DateTime BEGIN_DTE { get; set; }
+
         public Nullable<System.DateTime> END_DTE { get; set; }
         public string DESCRIPTION { get; set; }
         public string USER_NAME { get; set; }
@@ -39,12 +40,14 @@ namespace Gordon360.Models
 
     public class SUPERVISOR_Metadata
     {
-        [Required]
+
         public int SUP_ID { get; set; }
         [Required]
         public int ID_NUM { get; set; }
         [Required]
         public string ACT_CDE { get; set; }
+        [Required]
+        public string SESS_CDE { get; set; }
         public string USER_NAME { get; set; }
         public string JOB_NAME { get; set; }
         public Nullable<System.DateTime> JOB_TIME { get; set; }

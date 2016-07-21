@@ -25,6 +25,7 @@ namespace Gordon360.AuthorizationServer
         public override async Task GrantResourceOwnerCredentials(
             OAuthGrantResourceOwnerCredentialsContext context)
         {
+
             // Get the user credentials
             var username = context.UserName;
             var password = context.Password;

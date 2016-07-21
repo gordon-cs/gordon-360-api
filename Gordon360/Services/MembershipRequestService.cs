@@ -48,8 +48,8 @@ namespace Gordon360.Services
         /// Approves the request with the specified ID.
         /// </summary>
         /// <param name="id">The ID of the request to be approved</param>
-        /// <returns></returns>
-        public REQUEST ApproveRequest(int id)
+        /// <returns>The approved membership</returns>
+        public MEMBERSHIP ApproveRequest(int id)
         {
             var query = _unitOfWork.MembershipRequestRepository.GetById(id);
             if (query == null)
@@ -67,11 +67,17 @@ namespace Gordon360.Services
                 BEGIN_DTE = DateTime.Now,
                 COMMENT_TXT = ""
             };
-            _unitOfWork.MembershipRepository.Add(newMembership);
-
+            // The add will fail if they are already a member.
+            var created = _unitOfWork.MembershipRepository.Add(newMembership);
+            
+            if (created == null)
+            {
+                return null;
+            }
+            
             _unitOfWork.Save();
 
-            return query;
+            return created;
 
         }
 

@@ -73,7 +73,7 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.STUDENT)]
         public IHttpActionResult GetByEmail(string email)
         {
-            Debug.WriteLine(email);
+  
             if (!ModelState.IsValid || String.IsNullOrWhiteSpace(email))
             {
                 return BadRequest();

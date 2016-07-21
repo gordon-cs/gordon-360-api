@@ -22,7 +22,7 @@ namespace Gordon360.AuthorizationFilters
      * and Activity Definitions are accessbile by anyone.
      * 2nd Observation: To Authorize someone to perform an action on a resource, you need to know the following:
      * 1. Who is to be authorized? 2.What resource are they trying to access? 3. What operation are they trying to make on the resource?
-     * The goes through those three points sequentially and evaluates through a series of switch statements if the current user
+     * This "algorithm" uses those three points and decides through a series of switch statements if the current user
      * is authorized.
      */ 
     public class StateYourBusiness : ActionFilterAttribute
@@ -47,6 +47,7 @@ namespace Gordon360.AuthorizationFilters
             var authenticatedUser = actionContext.RequestContext.Principal as ClaimsPrincipal;
             user_position = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role").Value;
             user_id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
+
             // If user is god, skip verification steps and return.
             if (user_position == Position.GOD)
             {
@@ -54,14 +55,14 @@ namespace Gordon360.AuthorizationFilters
                 return;
             }
             // Step 2: Verify if the user can operate on the resource
-            isAuthorized = canAccessResource(user_position, resource);
-            if(!isAuthorized) 
-            {
-                actionContext.Response = new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
+            //isAuthorized = canAccessResource(user_position, resource);
+            //if(!isAuthorized) 
+            //{
+            //    actionContext.Response = new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
                 
-            }
+            //}
 
-            // The user has access to the resource. Step 3:Can the user perfom the operation on the resource?
+            // The user has access to the resource. Can the user perfom the operation on the resource?
             isAuthorized = canPerformOperation(resource, operation);
             if(!isAuthorized)
             {
@@ -72,28 +73,28 @@ namespace Gordon360.AuthorizationFilters
             base.OnActionExecuting(actionContext);
         }
 
-        private bool canAccessResource(string user_position,string resource)
-        {
-            switch(resource)
-            {
-                // All three options below result in the same thing.
-                case Resource.MEMBERSHIP_BY_ACTIVITY:
-                case Resource.MEMBERSHIP_BY_STUDENT:
-                case Resource.MEMBERSHIP:
-                    return canAccessMembership(user_position);
-                // All three options below resutl in the same thing.
-                case Resource.MEMBERSHIP_REQUEST_BY_ACTIVITY:
-                case Resource.MEMBERSHIP_REQUEST_BY_STUDENT:
-                case Resource.MEMBERSHIP_REQUEST:
-                    return canAccessMembershipRequest(user_position);
-                case Resource.STUDENT:
-                    return canAccessStudent(user_position);
-                case Resource.SUPERVISOR_BY_ACTIVITY:
-                case Resource.SUPERVISOR:
-                    return canAccessSupervisor(user_position);
-                default: return false;
-            }
-        }
+        //private bool canAccessResource(string user_position,string resource)
+        //{
+        //    switch(resource)
+        //    {
+        //        // All three options below result in the same thing.
+        //        case Resource.MEMBERSHIP_BY_ACTIVITY:
+        //        case Resource.MEMBERSHIP_BY_STUDENT:
+        //        case Resource.MEMBERSHIP:
+        //            return canAccessMembership(user_position);
+        //        // All three options below resutl in the same thing.
+        //        case Resource.MEMBERSHIP_REQUEST_BY_ACTIVITY:
+        //        case Resource.MEMBERSHIP_REQUEST_BY_STUDENT:
+        //        case Resource.MEMBERSHIP_REQUEST:
+        //            return canAccessMembershipRequest(user_position);
+        //        case Resource.STUDENT:
+        //            return canAccessStudent(user_position);
+        //        case Resource.SUPERVISOR_BY_ACTIVITY:
+        //        case Resource.SUPERVISOR:
+        //            return canAccessSupervisor(user_position);
+        //        default: return false;
+        //    }
+        //}
         private bool canPerformOperation(string resource, string operation)
         {
             switch(operation)
@@ -108,49 +109,49 @@ namespace Gordon360.AuthorizationFilters
                 default: return false;
             }
         }
-        /*
-         * Resources
-         */
-        private bool canAccessMembership(string user_position)
-        {
-            switch(user_position)
-            {
-                case Position.STUDENT: return true;
-                case Position.FACSTAFF: return true;
-                case Position.GOD: return true;
-                default: return false;
-            }
-        }
-        private bool canAccessMembershipRequest(string user_position)
-        {
-            switch(user_position)
-            {
-                case Position.STUDENT: return true;
-                case Position.FACSTAFF: return true;
-                case Position.GOD: return true;
-                default: return false;
-            }
-        }
-        private bool canAccessStudent(string user_position)
-        {
-            switch(user_position)
-            {
-                case Position.STUDENT: return true;
-                case Position.FACSTAFF: return true;
-                case Position.GOD: return true;
-                default: return false;
-            }
-        }
-        private bool canAccessSupervisor(string user_position)
-        {
-            switch (user_position)
-            {
-                case Position.STUDENT: return true;
-                case Position.FACSTAFF: return true;
-                case Position.GOD: return true;
-                default: return false;
-            }
-        }
+        ///*
+        // * Resources
+        // */
+        //private bool canAccessMembership(string user_position)
+        //{
+        //    switch(user_position)
+        //    {
+        //        case Position.STUDENT: return true;
+        //        case Position.FACSTAFF: return true;
+        //        case Position.GOD: return true;
+        //        default: return false;
+        //    }
+        //}
+        //private bool canAccessMembershipRequest(string user_position)
+        //{
+        //    switch(user_position)
+        //    {
+        //        case Position.STUDENT: return true;
+        //        case Position.FACSTAFF: return true;
+        //        case Position.GOD: return true;
+        //        default: return false;
+        //    }
+        //}
+        //private bool canAccessStudent(string user_position)
+        //{
+        //    switch(user_position)
+        //    {
+        //        case Position.STUDENT: return true;
+        //        case Position.FACSTAFF: return true;
+        //        case Position.GOD: return true;
+        //        default: return false;
+        //    }
+        //}
+        //private bool canAccessSupervisor(string user_position)
+        //{
+        //    switch (user_position)
+        //    {
+        //        case Position.STUDENT: return true;
+        //        case Position.FACSTAFF: return true;
+        //        case Position.GOD: return true;
+        //        default: return false;
+        //    }
+        //}
 
         /*
          * Operations
@@ -263,6 +264,28 @@ namespace Gordon360.AuthorizationFilters
                         if (is_student)
                             return true;
                         return false;
+                    }
+                 // Only activity leaders/supervisors should be to get emails for his/her members.
+                case Resource.EMAILS_BY_ACTIVITY:
+                    {
+                        var activityCode = (string)context.ActionArguments["id"];
+                        var membershipService = new MembershipService(new UnitOfWork());
+                        var leaders = membershipService.GetLeaderMembershipsForActivity(activityCode);
+                        var is_activity_leader = leaders.Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        if (is_activity_leader)
+                            return true;
+
+                        var supervisorService = new SupervisorService(new UnitOfWork());
+                        var supervisors = supervisorService.GetSupervisorsForActivity(activityCode);
+                        var is_activity_supervisor = supervisors.Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        if (is_activity_supervisor)
+                            return true;
+                        return false;
+                    }
+                // Anyone who is already logged in can contact the leaders
+                case Resource.EMAILS_BY_LEADERS:
+                    {
+                        return true;
                     }
                 case Resource.SUPERVISOR_BY_ACTIVITY:
                     {

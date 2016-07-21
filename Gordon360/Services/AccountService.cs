@@ -5,6 +5,7 @@ using System.Web;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
+using Gordon360.Exceptions.CustomExceptions;
 
 namespace Gordon360.Services
 {
@@ -29,6 +30,11 @@ namespace Gordon360.Services
         public AccountViewModel Get(string id)
         {
             var query = _unitOfWork.AccountRepository.GetById(id);
+            if (query == null)
+            {
+                // Custom Exception is thrown that will be cauth in the controller Exception filter.
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
+            }
             AccountViewModel result = query;
             return result;
         }
@@ -41,6 +47,18 @@ namespace Gordon360.Services
         {
             var query = _unitOfWork.AccountRepository.GetAll();
             var result = query.Select<ACCOUNT, AccountViewModel>(x => x); //Map the database model to a more presentable version (a ViewModel)
+            return result;
+        }
+
+
+        public AccountViewModel GetAccountByEmail(string email)
+        {
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.email == email);
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
+            }
+            AccountViewModel result = query; // Implicit conversion happening here, see ViewModels.
             return result;
         }
     }

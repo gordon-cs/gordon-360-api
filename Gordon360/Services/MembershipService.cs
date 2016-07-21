@@ -95,7 +95,6 @@ namespace Gordon360.Services
             result.IDNumber = result.IDNumber;
             result.FirstName = result.FirstName.Trim();
             result.LastName = result.LastName.Trim();
-            result.Email = result.Email.Trim();
             result.Participation = result.Participation.Trim();
             result.ParticipationDescription = result.ParticipationDescription.Trim();
 
@@ -121,7 +120,6 @@ namespace Gordon360.Services
                 trim.IDNumber = x.IDNumber;
                 trim.FirstName = x.FirstName.Trim();
                 trim.LastName = x.LastName.Trim();
-                trim.Email = x.Email.Trim();
                 trim.Participation = x.Participation.Trim();
                 trim.ParticipationDescription = x.ParticipationDescription.Trim();
                 return trim;
@@ -150,7 +148,6 @@ namespace Gordon360.Services
                 trim.IDNumber = x.IDNumber;
                 trim.FirstName = x.FirstName.Trim();
                 trim.LastName = x.LastName.Trim();
-                trim.Email = x.Email.Trim();
                 trim.Participation = x.Participation.Trim();
                 trim.ParticipationDescription = x.ParticipationDescription.Trim();
                 return trim;
@@ -178,7 +175,6 @@ namespace Gordon360.Services
                 trim.IDNumber = x.IDNumber;
                 trim.FirstName = x.FirstName.Trim();
                 trim.LastName = x.LastName.Trim();
-                trim.Email = x.Email.Trim();
                 trim.Participation = x.Participation.Trim();
                 trim.ParticipationDescription = x.ParticipationDescription.Trim();
                 return trim;
@@ -201,7 +197,7 @@ namespace Gordon360.Services
 
             var idParam = new SqlParameter("@STUDENT_ID", id);
             var result = RawSqlQuery<MembershipViewModel>.query("MEMBERSHIPS_PER_STUDENT_ID @STUDENT_ID", idParam);
-
+            
             // The Views that were given to were defined as char(n) instead of varchar(n)
             // They return with whitespace padding which messes up comparisons later on.
             // I'm using the IEnumerable Select method here to help get rid of that.
@@ -216,7 +212,6 @@ namespace Gordon360.Services
                 trim.ParticipationDescription = x.ParticipationDescription.Trim();
                 trim.FirstName = x.FirstName.Trim();
                 trim.LastName = x.LastName.Trim();
-                trim.Email = x.Email.Trim();
                 trim.IDNumber = x.IDNumber;
                 return trim;
             });
@@ -290,6 +285,8 @@ namespace Gordon360.Services
             {
                 return false;
             }
+
+            
             return true;
         }
 
