@@ -154,6 +154,11 @@ namespace Gordon360.AuthorizationFilters
                     }
                 case Resource.SUPERVISOR:
                     return true;
+                case Resource.ACCOUNT:
+                    // To add a membership for a person, you need to have the the person's identifier.
+                    {
+                        return true;
+                    }
                 default: return false;
                     
             }
@@ -233,6 +238,8 @@ namespace Gordon360.AuthorizationFilters
                     return false; // See reasons for this in CanReadOne(). No one (except for god) should be able to access student records through
                     // our API.
                 case Resource.SUPERVISOR:
+                    return false;
+                case Resource.ACCOUNT:
                     return false;
                 default: return false;
             }
@@ -320,15 +327,32 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.STUDENT:
                     return false; // No one should be able to update a student through this API
                 case Resource.SUPERVISOR:
-                    // sup = supervisor
-                    var supService = new SupervisorService(new UnitOfWork());
-                    var supToConsider = (SUPERVISOR)context.ActionArguments["supervisor"];
-                    var is_supervisor = supService.GetAll().Where(x => x.IDNumber.ToString() == user_id).Count() > 0; // Make sure its a supervisor
-                    var is_supOwner = supToConsider.ID_NUM.ToString() == user_id; // They can only modify their resource
-                    if (is_supOwner && is_supervisor) // User is the supervisor
-                        return true;
+                    {
+                        // sup = supervisor
+                        var supService = new SupervisorService(new UnitOfWork());
+                        var supToConsider = (SUPERVISOR)context.ActionArguments["supervisor"];
+                        var is_supervisor = supService.GetAll().Where(x => x.IDNumber.ToString() == user_id).Count() > 0; // Make sure its a supervisor
+                        var is_supOwner = supToConsider.ID_NUM.ToString() == user_id; // They can only modify their resource
+                        if (is_supOwner && is_supervisor) // User is the supervisor
+                            return true;
 
-                    return false;
+                        return false;
+                    }
+                case Resource.ACTIVITY_INFO:
+                    {
+                        // sup = supervisor
+                        var activityCode = (string)context.ActionArguments["id"];
+                        var supService = new SupervisorService(new UnitOfWork());
+                        var is_supervisor = supService.GetSupervisorsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        if (is_supervisor)
+                            return true;
+                        var membershipService = new MembershipService(new UnitOfWork());
+                        var is_activity_leader = membershipService.GetLeaderMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        if (is_activity_leader)
+                            return true;
+                        return false;
+
+                    }
                 default: return false;
             }
         }

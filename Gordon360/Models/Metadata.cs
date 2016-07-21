@@ -100,9 +100,9 @@ namespace Gordon360.Models
         [Required]
         public string ACT_CDE { get; set; }
         public string ACT_DESCR { get; set; }
-        public string MTG_DAY { get; set; }
-        public Nullable<System.TimeSpan> MTG_TIME { get; set; }
         public string ACT_IMAGE { get; set; }
+        public string ACT_BLURB { get; set; }
+        public string ACT_URL { get; set; }
     }
 
 

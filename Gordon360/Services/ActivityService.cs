@@ -90,6 +90,7 @@ namespace Gordon360.Services
         public ACT_INFO Update(string id,ACT_INFO activity)
         {
             var original = _unitOfWork.ActivityInfoRepository.GetById(id);
+
             if (original == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity Info was not found." };

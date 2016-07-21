@@ -89,9 +89,10 @@ namespace Gordon360.Controllers.Api
 
         }
 
-        [HttpPost]
-        [Route("")]
-        public IHttpActionResult Post(string id, ACT_INFO activity)
+        [HttpPut]
+        [Route("{id}")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
+        public IHttpActionResult Put(string id, ACT_INFO activity)
         {
             if(!ModelState.IsValid)
             {

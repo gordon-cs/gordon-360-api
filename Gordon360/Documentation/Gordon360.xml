@@ -438,6 +438,13 @@
             </summary>
             <returns>AccountViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
         </member>
+        <member name="M:Gordon360.Services.AccountService.GetAccountByEmail(System.String)">
+            <summary>
+            Fetches the account record with the specified email.
+            </summary>
+            <param name="email">The email address associated with the account.</param>
+            <returns></returns>
+        </member>
         <member name="T:Gordon360.Services.ActivityService">
             <summary>
             Service Class that facilitates data transactions between the ActivitiesController and the ACT_CLUB_DEF database model.
