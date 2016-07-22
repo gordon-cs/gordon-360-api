@@ -127,6 +127,8 @@ Who has access? It's complicated.
 
 `api/supervisors/activity/:id` Get the supervisors for the activity with activity code `id`.
 
+`api/supervisors/person/:id` Get the supervisor objects associated with the person with id `id`.
+
 ##### POST
 
 `api/supervisors` Create a new supervisor.
