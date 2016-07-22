@@ -55,7 +55,16 @@ namespace Gordon360.Controllers.Api
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
             }
 
             var result = _supervisorService.Get(id);
@@ -84,7 +93,16 @@ namespace Gordon360.Controllers.Api
 
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
-                return BadRequest();
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
             }
             var result = _supervisorService.GetSupervisorsForActivity(id);
 
@@ -143,7 +161,16 @@ namespace Gordon360.Controllers.Api
         {
             if (!ModelState.IsValid || supervisor == null || id != supervisor.SUP_ID)
             {
-                return BadRequest();
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors +=  "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
             }
 
             var result = _supervisorService.Update(id, supervisor);
@@ -169,7 +196,16 @@ namespace Gordon360.Controllers.Api
         {
             if (!ModelState.IsValid || supervisor == null)
             {
-                return BadRequest();
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
             }
 
             var result = _supervisorService.Add(supervisor);

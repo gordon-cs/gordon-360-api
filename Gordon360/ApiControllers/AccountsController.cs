@@ -28,7 +28,16 @@ namespace Gordon360.ApiControllers
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(email))
             {
-                return BadRequest();
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
             }
 
             var result = _accountService.GetAccountByEmail(email);

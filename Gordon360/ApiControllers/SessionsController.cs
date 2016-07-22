@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web.Http;
+using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
 using Gordon360.Services;
@@ -49,7 +50,16 @@ namespace Gordon360.Controllers.Api
         {
             if (!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
             {
-                return BadRequest();
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
             }
 
             var result = _sessionService.Get(id);

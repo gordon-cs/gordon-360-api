@@ -9,6 +9,7 @@ using System.Web.Http;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using Gordon360.Exceptions.ExceptionFilters;
+using Gordon360.Exceptions.CustomExceptions;
 
 namespace Gordon360.ApiControllers
 {
@@ -31,7 +32,16 @@ namespace Gordon360.ApiControllers
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
-                return BadRequest();
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
             }
             var result = _emailService.GetEmailsForActivity(id);
 
@@ -49,7 +59,16 @@ namespace Gordon360.ApiControllers
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
-                return BadRequest();
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
             }
             var result = _emailService.GetEmailsForActivity(id, session);
 
@@ -67,7 +86,16 @@ namespace Gordon360.ApiControllers
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
-                return BadRequest();
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
             }
             var result = _emailService.GetEmailsForActivityLeaders(id);
 
@@ -84,7 +112,16 @@ namespace Gordon360.ApiControllers
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
-                return BadRequest();
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
             }
             var result = _emailService.GetEmailsForActivityLeaders(id, session);
 
