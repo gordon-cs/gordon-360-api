@@ -53,6 +53,7 @@ namespace Gordon360.Services
             var idParam = new SqlParameter("@ACT_CDE", activity_code);
             var sessParam = new SqlParameter("@SESS_CDE", currentSessionCode);
             var result = RawSqlQuery<EmailViewModel>.query("LEADER_EMAILS_PER_ACT_CDE @ACT_CDE, @SESS_CDE", idParam, sessParam);
+
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };

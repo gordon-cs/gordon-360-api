@@ -9,6 +9,8 @@ using Gordon360.Services.ComplexQueries;
 using System.Data.SqlClient;
 using System.Data;
 using Gordon360.Exceptions.CustomExceptions;
+using Gordon360.Static.Methods;
+using System.Diagnostics;
 
 namespace Gordon360.Services
 {
@@ -136,7 +138,11 @@ namespace Gordon360.Services
         public IEnumerable<MembershipViewModel> GetLeaderMembershipsForActivity(string id)
         {
             var idParam = new SqlParameter("@ACT_CDE", id);
-            var result = RawSqlQuery<MembershipViewModel>.query("LEADER_MEMBERSHIPS_PER_ACT_CDE @ACT_CDE", idParam);
+            var result = RawSqlQuery<MembershipViewModel>.query("MEMBERSHIPS_PER_ACT_CDE @ACT_CDE", idParam);
+            // Filter leaders
+            
+            var leaderRoles = Helpers.GetLeaderRoleCodes();
+            result = result.Where(x => Array.IndexOf(leaderRoles,x.Participation.Trim()) != -1);
 
             // Getting rid of whitespace inherited from the database .__.
             var trimmedResult = result.Select(x =>
