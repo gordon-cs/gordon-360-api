@@ -4,6 +4,7 @@ using Gordon360.Services;
 using Gordon360.Repositories;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Exceptions.CustomExceptions;
+using Gordon360.Static.Methods;
 
 namespace Gordon360.Controllers.Api
 {
@@ -59,6 +60,70 @@ namespace Gordon360.Controllers.Api
                 throw new BadInputException() { ExceptionMessage = errors };
             }
             var result = _participationService.Get(id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+
+        /// <summary>
+        /// Get the participation levels that are considered to be leadership positions.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("leaders")]
+        public IHttpActionResult GetLeaderRoles()
+        {
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+            var result = Helpers.GetLeaderRoleCodes();
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+
+        /// <summary>
+        /// GEt the participation levels that are considered to be leadership positions.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("transcript-worthy")]
+        public IHttpActionResult GetTranscriptWorthyRoles()
+        {
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+            var result = Helpers.GetTranscriptWorthyRoles();
 
             if (result == null)
             {

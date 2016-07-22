@@ -13,6 +13,7 @@ namespace Gordon360.Models.ViewModels
         public int IDNumber { get; set; }
         public string ActivityCode { get; set; }
         public string ActivityDescription { get; set; }
+        public string ActivityImage { get; set; }
         public string SessionCode { get; set; }
         public string SessionDescription { get; set; }
 

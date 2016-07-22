@@ -133,6 +133,13 @@
             Get the supervisors for a specified activity within the database
             </remarks>
         </member>
+        <member name="M:Gordon360.Controllers.Api.SupervisorsController.GetSupervisorsForPerson(System.String)">
+            <summary>
+            Get the supervisor objects for a given gordon id
+            </summary>
+            <param name="id">the gordon id</param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.SupervisorsController.Put(System.Int32,Gordon360.Models.SUPERVISOR)">
             <summary>Update an existing supervisor</summary>
             <param name="id">The id for an existing supervisor</param>
@@ -830,6 +837,13 @@
             </summary>
             <param name="id">The activity code.</param>
             <returns>SupervisorViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+        </member>
+        <member name="M:Gordon360.Services.SupervisorService.GetSupervisorsForPerson(System.String)">
+            <summary>
+            Fetch the supervisor objects associated with the gordon id number
+            </summary>
+            <param name="id">gordon id number</param>
+            <returns></returns>
         </member>
         <member name="M:Gordon360.Services.SupervisorService.GetAll">
             <summary>

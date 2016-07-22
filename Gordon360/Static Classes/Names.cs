@@ -48,9 +48,7 @@ namespace Gordon360.Static.Names
 
     public static class Activity_Roles
     {
-        public const string MEMBER = "MEMBR";
         public const string GUEST = "GUEST";
-        public static readonly string[] LEADER = { "CAPT", "CODIR", "CORD", "DIREC", "PRES", "VICEC", "VICEP" };
     }
 
     public static class Request_Status
