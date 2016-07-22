@@ -79,6 +79,10 @@ namespace Gordon360.Controllers.Api
         }
 
 
+        /// <summary>
+        /// Get the participation levels that are considered to be leadership positions.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("leaders")]
         public IHttpActionResult GetLeaderRoles()
@@ -107,6 +111,10 @@ namespace Gordon360.Controllers.Api
         }
 
 
+        /// <summary>
+        /// GEt the participation levels that are considered to be leadership positions.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("transcript-worthy")]
         public IHttpActionResult GetTranscriptWorthyRoles()
