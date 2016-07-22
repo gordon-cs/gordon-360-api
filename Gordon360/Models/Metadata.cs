@@ -25,9 +25,9 @@ namespace Gordon360.Models
         [Required]
         public int ID_NUM { get; set; }
         [Required]
-        public string PART_LVL { get; set; }
+        public string PART_CDE { get; set; }
         [Required]
-        public System.DateTime BEGIN_DTE { get; set; }
+        public DateTime BEGIN_DTE { get; set; }
 
 
     }
@@ -43,21 +43,17 @@ namespace Gordon360.Models
         public string SESS_CDE { get; set; }
     }
 
-    public class JNZB_ACTIVITIES_Metadata
-    {
-       
-    }
 
     public class Request_Metadata
     {
         [Required]
         public string ACT_CDE { get; set; }
         [Required]
-        public string ID_NUM { get; set; }
+        public int ID_NUM { get; set; }
         [Required]
         public string PART_CDE { get; set; }
         [Required]
-        public System.DateTime DATE_SENT { get; set; }
+        public DateTime DATE_SENT { get; set; }
         [Required]
         public string SESS_CDE { get; set; }
     }
