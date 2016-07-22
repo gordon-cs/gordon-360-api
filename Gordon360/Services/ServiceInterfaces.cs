@@ -99,6 +99,7 @@ namespace Gordon360.Services
     public interface ISupervisorService
     {
         SupervisorViewModel Get(int id);
+        IEnumerable<SupervisorViewModel> GetSupervisorsForPerson(string id);
         IEnumerable<SupervisorViewModel> GetSupervisorsForActivity(string id);
         IEnumerable<SupervisorViewModel> GetAll();
         SUPERVISOR Add(SUPERVISOR supervisor);

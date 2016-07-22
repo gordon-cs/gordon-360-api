@@ -108,7 +108,18 @@ namespace Gordon360.Services
            
             var idParam = new SqlParameter("@ACT_CDE", id);
             var result = RawSqlQuery<SupervisorViewModel>.query("SUPERVISORS_PER_ACT_CDE @ACT_CDE", idParam);
-            // No trimming here because we made the Supervisor Table, and we made sure to use varchar(n).
+            return result;
+        }
+
+        /// <summary>
+        /// Fetch the supervisor objects associated with the gordon id number
+        /// </summary>
+        /// <param name="id">gordon id number</param>
+        /// <returns></returns>
+        public IEnumerable<SupervisorViewModel> GetSupervisorsForPerson(string id)
+        {
+            var idParam = new SqlParameter("@ID_NUM", id);
+            var result = RawSqlQuery<SupervisorViewModel>.query("SUPERVISORS_PER_ID_NUM @ID_NUM", idParam);
             return result;
         }
 
@@ -129,7 +140,6 @@ namespace Gordon360.Services
                 trim.ActivityDescription = x.ActivityDescription.Trim();
                 trim.SessionCode = x.SessionCode.Trim();
                 trim.SessionDescription = x.SessionDescription.Trim();
-                trim.IDNumber = x.IDNumber;
                 trim.FirstName = x.FirstName.Trim();
                 trim.LastName = x.LastName.Trim();
                 return trim;
@@ -198,5 +208,7 @@ namespace Gordon360.Services
             }
             return true;
         }
+
+       
     }
 }
