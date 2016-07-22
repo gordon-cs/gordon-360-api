@@ -7,6 +7,7 @@ using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using System.Diagnostics;
 using Gordon360.Exceptions.ExceptionFilters;
+using Gordon360.Exceptions.CustomExceptions;
 
 namespace Gordon360.Controllers.Api
 {
@@ -52,7 +53,16 @@ namespace Gordon360.Controllers.Api
         {
             if(!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
             {
-                return BadRequest();
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
             }
 
             var result = _studentService.Get(id);
@@ -78,7 +88,16 @@ namespace Gordon360.Controllers.Api
   
             if (!ModelState.IsValid || String.IsNullOrWhiteSpace(email))
             {
-                return BadRequest();
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
             }
 
             var result = _studentService.GetByEmail(email);

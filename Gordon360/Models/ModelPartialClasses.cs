@@ -10,9 +10,6 @@ namespace Gordon360.Models
     public partial class Membership
     { }
 
-    [MetadataType(typeof(JNZB_ACTIVITIES_Metadata))]
-    public partial class JNZB_ACTIVITIES
-    { }
 
     [MetadataType(typeof(SUPERVISOR_Metadata))]
     public partial class SUPERVISOR

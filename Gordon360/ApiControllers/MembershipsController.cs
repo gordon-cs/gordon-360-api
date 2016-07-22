@@ -7,6 +7,7 @@ using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using System;
 using Gordon360.Exceptions.ExceptionFilters;
+using Gordon360.Exceptions.CustomExceptions;
 
 namespace Gordon360.Controllers.Api
 {
@@ -63,7 +64,16 @@ namespace Gordon360.Controllers.Api
         {
             if(!ModelState.IsValid)
             {
-                return BadRequest();
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
             }
 
             var result =  _membershipService.Get(id);
@@ -89,7 +99,16 @@ namespace Gordon360.Controllers.Api
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
-                return BadRequest();
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
             }
 
             var result = _membershipService.GetMembershipsForActivity(id);
@@ -113,7 +132,16 @@ namespace Gordon360.Controllers.Api
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
-                return BadRequest();
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
             }
             var result = _membershipService.GetLeaderMembershipsForActivity(id);
 
@@ -136,7 +164,16 @@ namespace Gordon360.Controllers.Api
         {
             if(!ModelState.IsValid || membership == null)
             {
-                return BadRequest();
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach(var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
             }
 
             var result = _membershipService.Add(membership);
@@ -161,7 +198,16 @@ namespace Gordon360.Controllers.Api
 
             if (!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
             {
-                return BadRequest();
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
             }
             var result = _membershipService.GetMembershipsForStudent(id);
 
@@ -185,7 +231,16 @@ namespace Gordon360.Controllers.Api
         {
             if (!ModelState.IsValid || membership == null || id != membership.MEMBERSHIP_ID)
             {
-                return BadRequest("The sent data is invalid");
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
             }
 
             var result = _membershipService.Update(id, membership);
