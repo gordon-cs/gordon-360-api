@@ -33,5 +33,18 @@ namespace Gordon360.Static.Methods
             SessionViewModel result = currentSession;
             return result; ;
         }
+
+        public static Array GetLeaderRoleCodes()
+        {
+            string[] leaderRoles = { "CAPT", "CODIR", "CORD", "DIREC", "PRES", "VICEC", "VICEP" };
+            return leaderRoles;
+
+        }
+
+        public static Array GetTranscriptWorthyRoles()
+        {
+            string[] transcriptWorthyRoles = { "CAPT", "CODIR", "CORD", "DIREC", "PRES", "VICEC", "VICEP", "AC", "RA1", "RA2","RA3", "SEC" };
+            return transcriptWorthyRoles;
+        }
     }
 }
