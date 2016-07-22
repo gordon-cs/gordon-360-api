@@ -114,6 +114,40 @@ namespace Gordon360.Controllers.Api
 
         }
 
+        /// <summary>
+        /// Get the supervisor objects for a given gordon id
+        /// </summary>
+        /// <param name="id">the gordon id</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("person/{id}")]
+        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.SUPERVISOR_BY_ACTIVITY)]
+        public IHttpActionResult GetSupervisorsForPerson(string id)
+        {
+
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+            var result = _supervisorService.GetSupervisorsForPerson(id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+
+        }
+
         /// <summary>Update an existing supervisor</summary>
         /// <param name="id">The id for an existing supervisor</param>
         /// <param name="supervisor">The supervisor object to be changed</param>
