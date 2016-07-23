@@ -66,6 +66,7 @@ namespace Gordon360.Services
                 y.ActivityImage = record.ACT_IMAGE ?? "";
                 y.ActivityBlurb = record.ACT_BLURB ?? "";
                 y.ActivityURL = record.ACT_URL ?? "";
+                y.ActivityImagePath = record.ACT_IMG_PATH ?? "";
                 return y;
             });
             return activityInfo;
@@ -108,6 +109,20 @@ namespace Gordon360.Services
 
             return original;
 
+        }
+
+        public void UpdateActivityImage(string id, string path)
+        {
+            var original = _unitOfWork.ActivityInfoRepository.GetById(id);
+
+            if (original == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity Info was not found." };
+            }
+
+            original.ACT_IMG_PATH = path;
+
+            _unitOfWork.Save();
         }
 
         // Helper method to validate an activity info post. Throws an exception that gets caught later if something is not valid.

@@ -78,6 +78,18 @@
             <returns>The information about the specified role</returns>
             <remarks>Queries the database and returns information about one particular role</remarks>
         </member>
+        <member name="M:Gordon360.Controllers.Api.ParticipationsController.GetLeaderRoles">
+            <summary>
+            Get the participation levels that are considered to be leadership positions.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ParticipationsController.GetTranscriptWorthyRoles">
+            <summary>
+            GEt the participation levels that are considered to be leadership positions.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.SessionsController.Get">
             <summary>Get a list of all sessions</summary>
             <returns>All sessions within the database</returns>

@@ -7,13 +7,20 @@ using System;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Models;
 using Gordon360.Exceptions.CustomExceptions;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Web;
+using System.Net;
+using System.Diagnostics;
+using Gordon360.Providers;
+using System.IO;
 
 namespace Gordon360.Controllers.Api
 {
     
     [RoutePrefix("api/activities")]
     [CustomExceptionFilter]
-    [Authorize]
+   // [Authorize]
     public class ActivitiesController : ApiController
     {
         private IActivityService _activityService;
@@ -135,6 +142,46 @@ namespace Gordon360.Controllers.Api
             }
 
             return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("{id}/image")]
+        public async Task<HttpResponseMessage> PostImage(string id)
+        {
+            var uploadsFolder = "/browseable/uploads/" + id + "/";
+            if (!Request.Content.IsMimeMultipartContent())
+            {
+                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+            }
+            
+            if(!System.IO.Directory.Exists(HttpContext.Current.Server.MapPath("~" + uploadsFolder)))
+            {
+                System.IO.Directory.CreateDirectory(HttpContext.Current.Server.MapPath("~" + uploadsFolder));
+            }
+
+            string root = HttpContext.Current.Server.MapPath("~" + uploadsFolder);
+            var provider = new CustomMultipartFormDataStreamProvider(root);
+
+            try
+            {
+                // Read the form data.
+                await Request.Content.ReadAsMultipartAsync(provider);
+
+                // This illustrates how to get the file names.
+                foreach (MultipartFileData file in provider.FileData)
+                {
+                    FileInfo i = new FileInfo(file.LocalFileName);
+                    var uploadPath = uploadsFolder +  i.Name;
+                    var baseUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority);
+                    var imagePath = baseUrl + uploadPath;
+                    _activityService.UpdateActivityImage(id, imagePath);
+                }
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (System.Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
+            }
         }
 
     }
