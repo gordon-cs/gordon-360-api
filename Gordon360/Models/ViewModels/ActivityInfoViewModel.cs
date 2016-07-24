@@ -13,7 +13,7 @@ namespace Gordon360.Models.ViewModels
         public string ActivityImagePath { get; set; }
         public string ActivityBlurb { get; set; }
         public string ActivityURL { get; set; }
-
+         
         public static implicit operator ActivityInfoViewModel(ACT_INFO info)
         {
             ActivityInfoViewModel vm = new ActivityInfoViewModel

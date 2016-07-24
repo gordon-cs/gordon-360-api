@@ -26,6 +26,7 @@ namespace Gordon360.Services
         IEnumerable<ActivityInfoViewModel> GetAll();
         ACT_INFO Update(string id, ACT_INFO activity);
         void UpdateActivityImage(string id, string path);
+        void ResetActivityImage(string id);
     }
 
     public interface IActivityInfoService

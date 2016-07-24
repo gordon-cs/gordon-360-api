@@ -9,6 +9,7 @@ using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using Gordon360.Services.ComplexQueries;
+using Gordon360.Static.Names;
 
 namespace Gordon360.Services
 {
@@ -111,6 +112,11 @@ namespace Gordon360.Services
 
         }
 
+        /// <summary>
+        /// Sets the path for the activity image.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="path"></param>
         public void UpdateActivityImage(string id, string path)
         {
             var original = _unitOfWork.ActivityInfoRepository.GetById(id);
@@ -121,6 +127,20 @@ namespace Gordon360.Services
             }
 
             original.ACT_IMG_PATH = path;
+
+            _unitOfWork.Save();
+        }
+
+        public void ResetActivityImage(string id)
+        {
+            var original = _unitOfWork.ActivityInfoRepository.GetById(id);
+
+            if (original == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity Info was not found." };
+            }
+
+            original.ACT_IMG_PATH = Defaults.DEFAULT_ACTIVITY_IMAGE_PATH;
 
             _unitOfWork.Save();
         }

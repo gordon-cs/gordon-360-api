@@ -20,7 +20,7 @@ namespace Gordon360.Controllers.Api
     
     [RoutePrefix("api/activities")]
     [CustomExceptionFilter]
-   // [Authorize]
+    [Authorize]
     public class ActivitiesController : ApiController
     {
         private IActivityService _activityService;
@@ -115,6 +115,12 @@ namespace Gordon360.Controllers.Api
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="activity"></param>
+        /// <returns></returns>
         [HttpPut]
         [Route("{id}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
@@ -144,10 +150,29 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("{id}/image")]
         public async Task<HttpResponseMessage> PostImage(string id)
         {
+            // Verify Input
+            if(!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
             var uploadsFolder = "/browseable/uploads/" + id + "/";
             if (!Request.Content.IsMimeMultipartContent())
             {
@@ -182,6 +207,36 @@ namespace Gordon360.Controllers.Api
             {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("{id}/image/reset")]
+        public IHttpActionResult ResetImage(string id)
+        {
+            // Verify Input
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            _activityService.ResetActivityImage(id);
+
+            return Ok();
+
         }
 
     }

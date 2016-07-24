@@ -57,5 +57,11 @@ namespace Gordon360.Static.Names
         public const string APPROVED = "Approved";
         public const string DENIED = "Denied";
     }
+
+
+    public static class Defaults
+    {
+        public const string DEFAULT_ACTIVITY_IMAGE_PATH = "https://gordon360api.gordon.edu/browseable/uploads/Default/activityImage.png";
+    }
     
 }

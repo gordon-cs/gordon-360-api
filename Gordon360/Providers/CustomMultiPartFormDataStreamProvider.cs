@@ -9,16 +9,7 @@ namespace Gordon360.Providers
 
         public override string GetLocalFileName(System.Net.Http.Headers.HttpContentHeaders headers)
         {
-            string name;
-            if (string.IsNullOrWhiteSpace(headers.ContentDisposition.FileName))
-            {
-                name = "";
-            }
-            else
-            {
-                name = headers.ContentDisposition.FileName;
-            }
-            return name.Replace("\"", string.Empty); ;
+            return "activityImage.png";
         }
     }
 }

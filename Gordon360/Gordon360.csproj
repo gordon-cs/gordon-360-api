@@ -363,6 +363,7 @@
     </Content>
     <None Include="Properties\PublishProfiles\Gordon360.pubxml" />
     <Content Include="secrets.config" />
+    <None Include="Properties\PublishProfiles\TestProfile.pubxml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
