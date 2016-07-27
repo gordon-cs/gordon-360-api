@@ -214,7 +214,6 @@ namespace Gordon360.Services
                 trim.ActivityDescription = x.ActivityDescription.Trim();
                 trim.SessionCode = x.SessionCode.Trim();
                 trim.SessionDescription = x.SessionDescription.Trim();
-                trim.IDNumber = x.IDNumber;
                 trim.FirstName = x.FirstName.Trim();
                 trim.LastName = x.LastName.Trim();
                 trim.Participation = x.Participation.Trim();

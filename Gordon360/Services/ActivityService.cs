@@ -54,7 +54,7 @@ namespace Gordon360.Services
             var query = RawSqlQuery<ACT_CLUB_DEF>.query("ACTIVE_CLUBS_PER_SESS_ID @SESS_CDE", new SqlParameter("SESS_CDE", SqlDbType.VarChar) { Value = id });
             if (query == null)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Session was not found." };
+                throw new ResourceNotFoundException() { ExceptionMessage = "No Activities for this session was not found." };
             }
             
             // Transform the ACT_CLUB_DEF into ActivityInfoViewModel
@@ -62,9 +62,12 @@ namespace Gordon360.Services
             {
                 ActivityInfoViewModel y = new ActivityInfoViewModel();
                 var record = _unitOfWork.ActivityInfoRepository.GetById(x.ACT_CDE);
+                if (record == null )
+                {
+                    throw new ResourceNotFoundException() { ExceptionMessage = "The Activity Info was not found." };
+                }
                 y.ActivityCode = x.ACT_CDE;
                 y.ActivityDescription = x.ACT_DESC ?? "";
-                y.ActivityImage = record.ACT_IMAGE ?? "";
                 y.ActivityBlurb = record.ACT_BLURB ?? "";
                 y.ActivityURL = record.ACT_URL ?? "";
                 y.ActivityImagePath = record.ACT_IMG_PATH ?? "";
@@ -102,7 +105,6 @@ namespace Gordon360.Services
             validateActivityInfo(activity);
 
             // One can only update certain fields within a membrship
-            original.ACT_IMAGE = activity.ACT_IMAGE;
             original.ACT_BLURB = activity.ACT_BLURB;
             original.ACT_URL = activity.ACT_URL;
 
@@ -115,7 +117,7 @@ namespace Gordon360.Services
         /// <summary>
         /// Sets the path for the activity image.
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">The activity code</param>
         /// <param name="path"></param>
         public void UpdateActivityImage(string id, string path)
         {
@@ -130,7 +132,10 @@ namespace Gordon360.Services
 
             _unitOfWork.Save();
         }
-
+        /// <summary>
+        /// Reset the path for the activity image
+        /// </summary>
+        /// <param name="id">The activity code</param>
         public void ResetActivityImage(string id)
         {
             var original = _unitOfWork.ActivityInfoRepository.GetById(id);

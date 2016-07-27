@@ -16,7 +16,6 @@ namespace Gordon360.Models
     {
         public string ACT_CDE { get; set; }
         public string ACT_DESC { get; set; }
-        public string ACT_IMAGE { get; set; }
         public string ACT_BLURB { get; set; }
         public string ACT_URL { get; set; }
         public string ACT_IMG_PATH { get; set; }

@@ -335,13 +335,10 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>CCT_DB_Models.Designer.cs</LastGenOutput>
     </EntityDeploy>
+    <Content Include="browseable\uploads\Default\activityImage.png" />
     <Content Include="Models\CCT_DB_Models.edmx.diagram">
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
     </Content>
-    <None Include="Properties\PublishProfiles\CCTEmber.pubxml" />
-    <None Include="Properties\PublishProfiles\CCTTRAIN.pubxml" />
-    <None Include="Properties\PublishProfiles\CCT_App.pubxml" />
-    <None Include="Properties\PublishProfiles\CCT_APP_PUBLISH.pubxml" />
     <Content Include="Models\CCT_DB_Models.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
@@ -361,15 +358,17 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <None Include="Properties\PublishProfiles\Gordon360.pubxml" />
     <Content Include="secrets.config" />
-    <None Include="Properties\PublishProfiles\TestProfile.pubxml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\PublishProfiles\DEV_PACKAGE.pubxml" />
+    <None Include="Properties\PublishProfiles\PROD_PACKAGE.pubxml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

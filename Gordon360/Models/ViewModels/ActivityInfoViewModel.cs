@@ -9,7 +9,6 @@ namespace Gordon360.Models.ViewModels
     {
         public string ActivityCode { get; set; }
         public string ActivityDescription { get; set; }
-        public string ActivityImage { get; set; }
         public string ActivityImagePath { get; set; }
         public string ActivityBlurb { get; set; }
         public string ActivityURL { get; set; }
@@ -20,7 +19,6 @@ namespace Gordon360.Models.ViewModels
             {
                 ActivityCode = info.ACT_CDE.Trim(),
                 ActivityDescription = info.ACT_DESC.Trim() ?? "",
-                ActivityImage = info.ACT_IMAGE.Trim() ?? "",
                 ActivityBlurb = info.ACT_BLURB ?? "",
                 ActivityURL = info.ACT_URL ?? "",
                 ActivityImagePath = info.ACT_IMG_PATH ?? ""

@@ -151,12 +151,13 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>
-        /// 
+        /// Set an image for the activity
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">The activity Code</param>
         /// <returns></returns>
         [HttpPost]
         [Route("{id}/image")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
         public async Task<HttpResponseMessage> PostImage(string id)
         {
             // Verify Input
@@ -205,17 +206,18 @@ namespace Gordon360.Controllers.Api
             }
             catch (System.Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e.StackTrace + e.InnerException);
             }
         }
 
         /// <summary>
-        /// 
+        /// Reset the activity Image
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">The activity code</param>
         /// <returns></returns>
         [HttpPost]
         [Route("{id}/image/reset")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
         public IHttpActionResult ResetImage(string id)
         {
             // Verify Input
