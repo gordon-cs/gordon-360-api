@@ -196,10 +196,10 @@ namespace Gordon360.Services
         /// <returns>A MembershipViewModel IEnumerable. If nothing is found, an empty IEnumberable is returned.</returns>
         public IEnumerable<MembershipViewModel> GetMembershipsForStudent(string id)
         {
-            var studentExists = _unitOfWork.StudentRepository.Where(x => x.student_id.Trim() == id).Count() > 0;
+            var studentExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id.Trim() == id).Count() > 0;
             if (!studentExists)
             {
-                return null;
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
             }
 
             var idParam = new SqlParameter("@STUDENT_ID", id);

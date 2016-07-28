@@ -7,6 +7,13 @@ using System;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Models;
 using Gordon360.Exceptions.CustomExceptions;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Web;
+using System.Net;
+using System.Diagnostics;
+using Gordon360.Providers;
+using System.IO;
 
 namespace Gordon360.Controllers.Api
 {
@@ -108,6 +115,12 @@ namespace Gordon360.Controllers.Api
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="activity"></param>
+        /// <returns></returns>
         [HttpPut]
         [Route("{id}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
@@ -135,6 +148,97 @@ namespace Gordon360.Controllers.Api
             }
 
             return Ok(result);
+        }
+
+        /// <summary>
+        /// Set an image for the activity
+        /// </summary>
+        /// <param name="id">The activity Code</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("{id}/image")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
+        public async Task<HttpResponseMessage> PostImage(string id)
+        {
+            // Verify Input
+            if(!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+            var uploadsFolder = "/browseable/uploads/" + id + "/";
+            if (!Request.Content.IsMimeMultipartContent())
+            {
+                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+            }
+            
+            if(!System.IO.Directory.Exists(HttpContext.Current.Server.MapPath("~" + uploadsFolder)))
+            {
+                System.IO.Directory.CreateDirectory(HttpContext.Current.Server.MapPath("~" + uploadsFolder));
+            }
+
+            string root = HttpContext.Current.Server.MapPath("~" + uploadsFolder);
+            var provider = new CustomMultipartFormDataStreamProvider(root);
+
+            try
+            {
+                // Read the form data.
+                await Request.Content.ReadAsMultipartAsync(provider);
+
+                // This illustrates how to get the file names.
+                foreach (MultipartFileData file in provider.FileData)
+                {
+                    FileInfo i = new FileInfo(file.LocalFileName);
+                    var uploadPath = uploadsFolder +  i.Name;
+                    var baseUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority);
+                    var imagePath = baseUrl + uploadPath;
+                    _activityService.UpdateActivityImage(id, imagePath);
+                }
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (System.Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e.StackTrace + e.InnerException);
+            }
+        }
+
+        /// <summary>
+        /// Reset the activity Image
+        /// </summary>
+        /// <param name="id">The activity code</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("{id}/image/reset")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
+        public IHttpActionResult ResetImage(string id)
+        {
+            // Verify Input
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            _activityService.ResetActivityImage(id);
+
+            return Ok();
+
         }
 
     }

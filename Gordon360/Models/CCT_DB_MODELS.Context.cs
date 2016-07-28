@@ -146,22 +146,39 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SUPERVISORS_PER_ACT_CDE_Result>("SUPERVISORS_PER_ACT_CDE", aCT_CDEParameter);
         }
     
-        public virtual ObjectResult<EMAILS_PER_ACT_CDE_Result> EMAILS_PER_ACT_CDE(string aCT_CDE)
+        public virtual ObjectResult<EMAILS_PER_ACT_CDE_Result> EMAILS_PER_ACT_CDE(string aCT_CDE, string sESS_CDE)
         {
             var aCT_CDEParameter = aCT_CDE != null ?
                 new ObjectParameter("ACT_CDE", aCT_CDE) :
                 new ObjectParameter("ACT_CDE", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<EMAILS_PER_ACT_CDE_Result>("EMAILS_PER_ACT_CDE", aCT_CDEParameter);
+            var sESS_CDEParameter = sESS_CDE != null ?
+                new ObjectParameter("SESS_CDE", sESS_CDE) :
+                new ObjectParameter("SESS_CDE", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<EMAILS_PER_ACT_CDE_Result>("EMAILS_PER_ACT_CDE", aCT_CDEParameter, sESS_CDEParameter);
         }
     
-        public virtual ObjectResult<LEADER_EMAILS_PER_ACT_CDE_Result> LEADER_EMAILS_PER_ACT_CDE(string aCT_CDE)
+        public virtual ObjectResult<LEADER_EMAILS_PER_ACT_CDE_Result> LEADER_EMAILS_PER_ACT_CDE(string aCT_CDE, string sESS_CDE)
         {
             var aCT_CDEParameter = aCT_CDE != null ?
                 new ObjectParameter("ACT_CDE", aCT_CDE) :
                 new ObjectParameter("ACT_CDE", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<LEADER_EMAILS_PER_ACT_CDE_Result>("LEADER_EMAILS_PER_ACT_CDE", aCT_CDEParameter);
+            var sESS_CDEParameter = sESS_CDE != null ?
+                new ObjectParameter("SESS_CDE", sESS_CDE) :
+                new ObjectParameter("SESS_CDE", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<LEADER_EMAILS_PER_ACT_CDE_Result>("LEADER_EMAILS_PER_ACT_CDE", aCT_CDEParameter, sESS_CDEParameter);
+        }
+    
+        public virtual int SUPERVISORS_PER_ID_NUM(Nullable<int> iD_NUM)
+        {
+            var iD_NUMParameter = iD_NUM.HasValue ?
+                new ObjectParameter("ID_NUM", iD_NUM) :
+                new ObjectParameter("ID_NUM", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SUPERVISORS_PER_ID_NUM", iD_NUMParameter);
         }
     }
 }

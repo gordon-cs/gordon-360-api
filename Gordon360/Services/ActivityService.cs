@@ -9,6 +9,7 @@ using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using Gordon360.Services.ComplexQueries;
+using Gordon360.Static.Names;
 
 namespace Gordon360.Services
 {
@@ -53,18 +54,23 @@ namespace Gordon360.Services
             var query = RawSqlQuery<ACT_CLUB_DEF>.query("ACTIVE_CLUBS_PER_SESS_ID @SESS_CDE", new SqlParameter("SESS_CDE", SqlDbType.VarChar) { Value = id });
             if (query == null)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Session was not found." };
+                throw new ResourceNotFoundException() { ExceptionMessage = "No Activities for this session was not found." };
             }
-            // We Transform the result into an activityViewModel
-            var result = query.Select<ACT_CLUB_DEF, ActivityViewModel>(x => x);
-            // Then transform the ActivityViewModel into ActivityInfoViewModel
-            var activityInfo = result.Select(x =>
+            
+            // Transform the ACT_CLUB_DEF into ActivityInfoViewModel
+            var activityInfo = query.Select(x =>
             {
                 ActivityInfoViewModel y = new ActivityInfoViewModel();
-                var record = _unitOfWork.ActivityInfoRepository.GetById(x.ActivityCode);
-                y.ActivityCode = x.ActivityCode;
-                y.ActivityDescription = x.ActivityDescription ?? "";
-                y.ActivityImage = record.ACT_IMAGE ?? "";
+                var record = _unitOfWork.ActivityInfoRepository.GetById(x.ACT_CDE);
+                if (record == null )
+                {
+                    throw new ResourceNotFoundException() { ExceptionMessage = "The Activity Info was not found." };
+                }
+                y.ActivityCode = x.ACT_CDE.Trim();
+                y.ActivityDescription = x.ACT_DESC ?? "";
+                y.ActivityBlurb = record.ACT_BLURB ?? "";
+                y.ActivityURL = record.ACT_URL ?? "";
+                y.ActivityImagePath = record.ACT_IMG_PATH.Trim() ?? "";
                 return y;
             });
             return activityInfo;
@@ -99,7 +105,6 @@ namespace Gordon360.Services
             validateActivityInfo(activity);
 
             // One can only update certain fields within a membrship
-            original.ACT_IMAGE = activity.ACT_IMAGE;
             original.ACT_BLURB = activity.ACT_BLURB;
             original.ACT_URL = activity.ACT_URL;
 
@@ -109,11 +114,47 @@ namespace Gordon360.Services
 
         }
 
+        /// <summary>
+        /// Sets the path for the activity image.
+        /// </summary>
+        /// <param name="id">The activity code</param>
+        /// <param name="path"></param>
+        public void UpdateActivityImage(string id, string path)
+        {
+            var original = _unitOfWork.ActivityInfoRepository.GetById(id);
+
+            if (original == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity Info was not found." };
+            }
+
+            original.ACT_IMG_PATH = path;
+
+            _unitOfWork.Save();
+        }
+        /// <summary>
+        /// Reset the path for the activity image
+        /// </summary>
+        /// <param name="id">The activity code</param>
+        public void ResetActivityImage(string id)
+        {
+            var original = _unitOfWork.ActivityInfoRepository.GetById(id);
+
+            if (original == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity Info was not found." };
+            }
+
+            original.ACT_IMG_PATH = Defaults.DEFAULT_ACTIVITY_IMAGE_PATH;
+
+            _unitOfWork.Save();
+        }
+
         // Helper method to validate an activity info post. Throws an exception that gets caught later if something is not valid.
         // Returns true if all is well. The return value is not really used though. This could be of type void.
         private bool validateActivityInfo(ACT_INFO activity)
         {
-            var activityExists = _unitOfWork.ActivityRepository.Where(x => x.ACT_CDE == activity.ACT_CDE).Count() > 0;
+            var activityExists = _unitOfWork.ActivityInfoRepository.Where(x => x.ACT_CDE == activity.ACT_CDE).Count() > 0;
             if (!activityExists)
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
 

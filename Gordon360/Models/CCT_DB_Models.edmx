@@ -11,9 +11,9 @@
           </Key>
           <Property Name="ACT_CDE" Type="char" MaxLength="8" Nullable="false" />
           <Property Name="ACT_DESC" Type="char" MaxLength="45" Nullable="false" />
-          <Property Name="ACT_IMAGE" Type="varchar(max)" />
           <Property Name="ACT_BLURB" Type="varchar(max)" />
           <Property Name="ACT_URL" Type="varchar(max)" />
+          <Property Name="ACT_IMG_PATH" Type="varchar(max)" />
         </EntityType>
         <EntityType Name="ADMIN">
           <Key>
@@ -168,9 +168,11 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <Function Name="ALL_SUPERVISORS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="EMAILS_PER_ACT_CDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ACT_CDE" Type="char" Mode="In" />
+          <Parameter Name="SESS_CDE" Type="char" Mode="In" />
         </Function>
         <Function Name="LEADER_EMAILS_PER_ACT_CDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ACT_CDE" Type="char" Mode="In" />
+          <Parameter Name="SESS_CDE" Type="char" Mode="In" />
         </Function>
         <Function Name="LEADER_MEMBERSHIPS_PER_ACT_CDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ACT_CDE" Type="char" Mode="In" />
@@ -198,6 +200,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         </Function>
         <Function Name="SUPERVISORS_PER_ACT_CDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ACT_CDE" Type="char" Mode="In" />
+        </Function>
+        <Function Name="SUPERVISORS_PER_ID_NUM" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID_NUM" Type="int" Mode="In" />
         </Function>
         <EntityContainer Name="Gordon360StoreContainer">
           <EntitySet Name="ACT_INFO" EntityType="Self.ACT_INFO" Schema="dbo" store:Type="Tables" />
@@ -271,9 +276,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           </Key>
           <Property Name="ACT_CDE" Type="String" MaxLength="8" FixedLength="true" Unicode="false" Nullable="false" />
           <Property Name="ACT_DESC" Type="String" MaxLength="45" FixedLength="true" Unicode="false" Nullable="false" />
-          <Property Name="ACT_IMAGE" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="ACT_BLURB" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="ACT_URL" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ACT_IMG_PATH" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="ADMIN">
           <Key>
@@ -453,10 +458,15 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Parameter Name="ACT_CDE" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="EMAILS_PER_ACT_CDE" ReturnType="Collection(Gordon360.EMAILS_PER_ACT_CDE_Result)">
-          <Parameter Name="ACT_CDE" Mode="In" Type="String" />
+            <Parameter Name="ACT_CDE" Mode="In" Type="String" />
+            <Parameter Name="SESS_CDE" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="LEADER_EMAILS_PER_ACT_CDE" ReturnType="Collection(Gordon360.LEADER_EMAILS_PER_ACT_CDE_Result)">
-          <Parameter Name="ACT_CDE" Mode="In" Type="String" />
+            <Parameter Name="ACT_CDE" Mode="In" Type="String" />
+            <Parameter Name="SESS_CDE" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SUPERVISORS_PER_ID_NUM">
+          <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
           </FunctionImport>
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
@@ -667,11 +677,11 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="ACT_INFO">
             <EntityTypeMapping TypeName="Gordon360.ACT_INFO">
               <MappingFragment StoreEntitySet="ACT_INFO">
+                <ScalarProperty Name="ACT_IMG_PATH" ColumnName="ACT_IMG_PATH" />
                 <ScalarProperty Name="ACT_URL" ColumnName="ACT_URL" />
                 <ScalarProperty Name="ACT_BLURB" ColumnName="ACT_BLURB" />
                 <ScalarProperty Name="ACT_CDE" ColumnName="ACT_CDE" />
                 <ScalarProperty Name="ACT_DESC" ColumnName="ACT_DESC" />
-                <ScalarProperty Name="ACT_IMAGE" ColumnName="ACT_IMAGE" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1076,6 +1086,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SUPERVISORS_PER_ID_NUM" FunctionName="Gordon360.Store.SUPERVISORS_PER_ID_NUM" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

@@ -90,7 +90,6 @@ namespace Gordon360.Services
             result.ActivityDescription = result.ActivityDescription.Trim();
             result.SessionCode = result.SessionCode.Trim();
             result.SessionDescription = result.SessionDescription.Trim();
-            result.IDNumber = result.IDNumber;
             result.FirstName = result.FirstName.Trim();
             result.LastName = result.LastName.Trim();
 
