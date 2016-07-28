@@ -30,6 +30,11 @@ namespace Gordon360.AuthorizationServer
             // Get the user credentials
             var username = context.UserName;
             var password = context.Password;
+            if (string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(username))
+            {
+                context.SetError("Unsuccessful Login", "The username or password is not correct.");
+                return;
+            }
             // Get service account credentials
             var serviceUsername = System.Web.Configuration.WebConfigurationManager.AppSettings["serviceUsername"];
             var servicePassword = System.Web.Configuration.WebConfigurationManager.AppSettings["servicePassword"];

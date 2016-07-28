@@ -19,17 +19,10 @@ namespace Gordon360.Static.Methods
         public static SessionViewModel GetCurrentSession()
         {
             var tempUnitOfWork = new UnitOfWork();
-            //var currentDateTime = DateTime.Now;
-            var currentDateTime = new DateTime(2015, 02, 26);
+
             // Filters the sessions to make sure they have dates.
             var notNullQuery = tempUnitOfWork.SessionRepository.Where(x => x.SESS_BEGN_DTE.HasValue && x.SESS_END_DTE.HasValue);
-            var currentSession = notNullQuery.Where(x =>
-               (currentDateTime.CompareTo(x.SESS_BEGN_DTE.Value) > 0)
-               &&
-               (currentDateTime.CompareTo(x.SESS_END_DTE.Value) < 0))
-                .OrderByDescending(x => x.SESS_BEGN_DTE.Value)
-                .AsEnumerable()
-                .LastOrDefault();
+            var currentSession = notNullQuery.OrderByDescending(x => x.SESS_BEGN_DTE.Value).FirstOrDefault();
             SessionViewModel result = currentSession;
             return result; ;
         }

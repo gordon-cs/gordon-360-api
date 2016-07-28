@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 
@@ -14,11 +15,13 @@ namespace Gordon360.Models.ViewModels
 
         public static implicit operator SessionViewModel(CM_SESSION_MSTR sess)
         {
+            Debug.WriteLine("HEREE",sess);
             SessionViewModel vm = new SessionViewModel
             {
+                
                 SessionCode = sess.SESS_CDE.Trim(),
                 SessionDescription = sess.SESS_DESC.Trim(),
-                SessionBeginDate = sess.SESS_BEGN_DTE, 
+                SessionBeginDate = sess.SESS_BEGN_DTE , 
                 SessionEndDate = sess.SESS_END_DTE
             };
 

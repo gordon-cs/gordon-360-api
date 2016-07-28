@@ -66,11 +66,11 @@ namespace Gordon360.Services
                 {
                     throw new ResourceNotFoundException() { ExceptionMessage = "The Activity Info was not found." };
                 }
-                y.ActivityCode = x.ACT_CDE;
+                y.ActivityCode = x.ACT_CDE.Trim();
                 y.ActivityDescription = x.ACT_DESC ?? "";
                 y.ActivityBlurb = record.ACT_BLURB ?? "";
                 y.ActivityURL = record.ACT_URL ?? "";
-                y.ActivityImagePath = record.ACT_IMG_PATH ?? "";
+                y.ActivityImagePath = record.ACT_IMG_PATH.Trim() ?? "";
                 return y;
             });
             return activityInfo;
