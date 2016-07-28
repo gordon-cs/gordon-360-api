@@ -92,7 +92,7 @@ class authenticate_with_valid_credentials___regular_member(TestCase):
 # MEMBERSHIP TESTS #
 # # # # # # # # # # #
 class get_all_memberships___regular_member(TestCase):
-    """ Test retrieving all membership resources.
+    """ Verify that a regular member can retrieve all memberships
 
     Pre-conditions:
     Valid Authentication Header.
@@ -1277,19 +1277,26 @@ class put_supervisor___regular_member(TestCase):
     def __init__(self , session=None):
         super().__init__(session)
         # Trying to update a random supervisor
-        # The authorization step comes before finding the supervisor.
-        # Even if the supervisor doesn't exist, we should be unauthorized.
-        self.url = hostURL + 'api/supervisors/2' 
+        self.url = hostURL + 'api/supervisors/'
+
+        tempID = 0
+        response = api.get(self.session, self.url + str(tempID))
+        # Iterate until we find an actual supervisor.
+        while response.status_code == 404:
+            tempID = tempID + 1
+            response = api.get(self.session, self.url + str(tempID))
+
         self.data = {
-            'SUP_ID' : 2,
+            'SUP_ID' : tempID,
             'ACT_CDE' : activity_code,
             'SESS_CDE' : '201501',
             'ID_NUM' : my_id_number
         }
+
         self.supervisorID = -1
         
     def test(self):
-        response = api.putAsJson(self.session, self.url, self.data)
+        response = api.putAsJson(self.session, self.url + str(self.data['SUP_ID']), self.data)
         if not response.status_code == 401:
             self.log_error('Expected 401 Unauthorized, got {0}.'.format(response.status_code))
         if response.text:
@@ -1309,7 +1316,7 @@ class put_supervisor___regular_member(TestCase):
             else:
                 self.log_error('Unable to delete compromised resource.')
 
-# This test might need to be removed if the authorization process for supervisors is altered.
+
 class delete_supervisor___regular_member(TestCase):
     """ Verify that regular member can't delete a supervisor 
 
