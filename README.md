@@ -4,6 +4,9 @@
 
 Dive in.
 ## Table of Contents
+- [Sites](#sites)
+    - [Deploying to the Api Site](#deploying-to-the-api-site)
+    - [Deploying to the Front-end site](#deploying-to-the-front-end-site)
 - [API Endpoints](#api-endpoints)
     - [Authentication] (#authentication)
     - [Memberships](#memberships)
@@ -22,8 +25,45 @@ Dive in.
         - [PC](#pc)
 
 
-`API Url: ` Coming soon...
+## Sites 
+The folders for theses IIS sites can be found on the CS-RDP1 machine under `F:\sites`. 
+- 360.gordon.edu -- Production Front-end. User-facing code (css, js, html)
+- 360Train.gordon.edu -- Development Front-end. User-facing code (css, js, html)
+- 360Api.gordon.edu -- Production JSON server site. C# using the ASP.NET Framework.
+- 360ApiTrain.gordon.edu -- Development JSON server site. C# using the ASP.NET Framework.
 
+### Deploying to the Api Site
+
+- Log in to CS-RDP1 and start Visual Studio as the cct.service user. (Shift + right click)
+- Open an existing project/solution - `C:\users\cct.service\code\Project-Raymod\Gordon360` file. It is a Microsoft Visual Studio Solution file.
+- Make a change. Do your thing.
+- Menu Bar -> Build - Publish Gordon360.
+- Choose the right publish profile.  
+    - DEV -- Development ( Uses the admintrain connection string). 
+    - Prod -- Production ( Uses the adminprod connection string).
+- Clicking publish creates a Package. A Package in this context is a basically a zipped-up version of the project.
+- The package saves to `C:\users\cct.service\Gordon360Deploy`  and depending on what you published, it will go to the right folder.
+    - deploy_production.bat -- moves the package in the ReleasePackage to 360Api
+    - deploy_development.bat -- moves the package in the Development Package to 360ApiTrain.
+- The scripts need to be run as an admin.
+
+### Deploying to the Front-end Site
+
+- This is easier done on a mac.
+- To make a change to the code, clone the [Project Bernard]() repository to your (hopefully) mac.
+- Install EmberJS and its dependencies. See the Project Bernard repository for help on how to do this.
+- Make a change to the code. Do your thing, make your mark. A legacy.
+- Run one of these commands in the terminal at the root of the project folder.
+    - `ember build --env development` -- This version will use the Development api endpoint (360ApiTrain.gordon.edu)
+    - `ember build --env production` -- This version will use the Production api endpoint (360Api.gordon.edu)
+- The output is placed in the `dist/` folder at root of your project folder.
+    - Note: Since emberJS is a javascript framework, the output is just an html file with a TON of javascript linked :p
+- Move the `dist/` folder as is to one of the sites on CS-RDP1.
+    - If you used the development flag move `dist/` to the 360Train IIS site.
+    - If you used the production flag, move `dist/` to the 360 IIS site.
+- For moving files between a mac and the virtual windows machine, we used a Microsoft Remote Desktop feature called folder redirection. It lets you specify folders on your mac that will be available on the PC you are remoting to.
+
+`API Url: ` Coming soon...
 
 ## API Endpoints
 
