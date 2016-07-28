@@ -23,7 +23,7 @@ Dive in.
     - [Running the tests](#running-the-tests)
         - [Mac](#mac)
         - [PC](#pc)
-
+- [Troubleshooting](#troubleshooting)
 
 ## Sites 
 The folders for theses IIS sites can be found on the CS-RDP1 machine under `F:\sites`. 
@@ -295,4 +295,11 @@ Coming soon....
 Team members: Eze Anyanwu, James Kempf, Adam Bartholomew
 
 Computer Science Summer Practicum 2016
+
+## Troubleshooting
+
+#### 500 Server Error when updating Activity Images
+
+This is usually a folder permissions problem. The Json site runs as cct.service@gordon.edu
+
 
