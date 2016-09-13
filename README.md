@@ -80,23 +80,64 @@ The `CCT` database exists in:
 
 ###### ACT_INFO
 
-A record in this table stores
+A record in this table stores:
 - ACT_CDE - The short code for the activity.
 - ACT_DESC - The name of the activity.
 - ACT_BLURB - A short description of what the activity is about. This will be filled out by a leader.
 - ACT_URL - URL to the website for the club/organization (if they have one).
 - ACT_IMAGE_PATH - Path to where the activity logo is stored in the browseable folder.
 
+You might notice that this table is an extension of the ACT_CLUB_DEF view. It contains extra information that the view does not have, but that we need. This is clearly a case of Information Duplication; information is available in two places and can easily fall out of sync. To remedy this, the stored procedure `UPDATE_ACT_INFO` was made.
+
 ###### ADMIN
 
+A record in this table stores:
+
+- ID_NUM - The gordon id number of the administrator
+- USER_NAME - The administrator's username
+- EMAIL - The administrator's email.
 
 ###### JNZB_ACTIVITIES
 
+A record in this table stores all the same fields as an Activity table in Jensibar would. 
+The goal of this table was to contain membership information that was to be moved to Jenzibar. To do this, one would use the stored procedure `UPDATE_JNZB_ACTIVITIES`.
+
 ###### MEMBERSHIP
+
+A record in this table stores:
+
+- ACT_CDE - The short code for the activity.
+- SESS_CDE - The short code for the session when this membership took place.
+- ID_NUM - The gordon id number of the member.
+- PART_CDE - The short code for the participation level of the member.
+- BEGIN_DTE - The date the membership began
+- END_DTE - The date the membership ended
+- COMMENT_TXT - Comment about the membership
+
+The other three fields (USER_NAME, JOB_NAME and JOB_TIME) where meant to be administrative fields to store data about who inserted records and when they did it. We ended up not using them. We kept them because they have good potential use.
 
 ###### REQUEST
 
+A record in this table stores:
+
+- SESS_CDE - The short code for the session they are requesting to join.
+- ACT_CDE - The short code of the activity they are requesting to join.
+- ID_NUM - The gordon id number of the potential member.
+- PART_CDE - The short code for the participation level they want to join as.
+- DATE_SENT - The date the request was made.
+- COMMENT_TXT - Comments to accompany the request.
+- STATUS - Status of the request. Should be either Pending, Approved or Denied.\
+
+
 ###### SUPERVISOR 
+
+A record in this table stores:
+
+- ID_NUM - The gordon id number of the potential member.
+- SESS_CDE - The session short code during which this person is a supervisor.
+- ACT_CDE - The activity short code for which this person is a supervisor.
+
+The other three fields (USER_NAME, JOB_NAME and JOB_TIME) where meant to be administrative fields to store data about who inserted records and when they did it. We ended up not using them. We kept them because they have good potential use.
 
 ### Views
 
