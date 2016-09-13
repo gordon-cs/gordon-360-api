@@ -7,6 +7,11 @@ Dive in.
 - [Sites](#sites)
     - [Deploying to the Api Site](#deploying-to-the-api-site)
     - [Deploying to the Front-end site](#deploying-to-the-front-end-site)
+- [The Database](#the-database)
+    - [Tables](#tables)
+    - [Stored Procedures](#stored-procedures)
+- [The Code](#the-code)	
+    - [Introduction](#introduction) 
 - [API Endpoints](#api-endpoints)
     - [Authentication] (#authentication)
     - [Memberships](#memberships)
@@ -64,6 +69,56 @@ The folders for theses IIS sites can be found on the CS-RDP1 machine under `F:\s
 - For moving files between a mac and the virtual windows machine, we used a Microsoft Remote Desktop feature called folder redirection. It lets you specify folders on your mac that will be available on the PC you are remoting to.
 
 `API Url: ` Coming soon...
+
+## The Database
+
+The `CCT` database exists in:
+- `admintrainsql.gordon.edu` - The Train/dev database server
+- `adminprodsql.gordon.edu` -  The production/live database server.
+
+### Tables
+
+###### ACT_INFO
+
+A record in this table stores
+- ACT_CDE - The short code for the activity.
+- ACT_DESC - The name of the activity.
+- ACT_BLURB - A short description of what the activity is about. This will be filled out by a leader.
+- ACT_URL - URL to the website for the club/organization (if they have one).
+- ACT_IMAGE_PATH - Path to where the activity logo is stored in the browseable folder.
+
+###### ADMIN
+
+
+###### JNZB_ACTIVITIES
+
+###### MEMBERSHIP
+
+###### REQUEST
+
+###### SUPERVISOR 
+
+### Views
+
+###### ACCOUNT
+
+###### ACT_CLUB_DEF
+
+###### CM_SESSION_MSTR
+
+###### Faculty
+
+###### PART_DEF
+
+###### Staff
+
+###### Student
+
+### Stored Procedures
+
+## The Code
+
+### Introduction
 
 ## API Endpoints
 
@@ -301,5 +356,6 @@ Computer Science Summer Practicum 2016
 #### 500 Server Error when updating Activity Images
 
 This is usually a folder permissions problem. The Json site runs as cct.service@gordon.edu
+
 
 
