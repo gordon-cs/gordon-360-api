@@ -78,6 +78,12 @@ The `CCT` database exists in:
 
 ### Tables
 
+All the tables were created from scratch by our team. 
+
+Misc Information:
+- Apart from a few exceptions, the tables don't make use of foreign key constraints. This is because the relevant primary keys are in the tables referenced by Views. Unfortunately, one cannot add foreign keys that reference Views. 
+
+
 ###### ACT_INFO
 
 A record in this table stores:
@@ -87,7 +93,7 @@ A record in this table stores:
 - ACT_URL - URL to the website for the club/organization (if they have one).
 - ACT_IMAGE_PATH - Path to where the activity logo is stored in the browseable folder.
 
-You might notice that this table is an extension of the ACT_CLUB_DEF view. It contains extra information that the view does not have, but that we need. This is clearly a case of Information Duplication; information is available in two places and can easily fall out of sync. To remedy this, the stored procedure `UPDATE_ACT_INFO` was made.
+You might notice that this table is an extension of the ACT_CLUB_DEF view. It contains extra information that the view does not have, but that we need. This is clearly a case of Information Duplication; information is available in two places and can easily fall out of sync. To remedy this, the stored procedure [UPDATE_ACT_INFO](#update_act_info) was made.
 
 ###### ADMIN
 
@@ -100,7 +106,7 @@ A record in this table stores:
 ###### JNZB_ACTIVITIES
 
 A record in this table stores all the same fields as an Activity table in Jensibar would. 
-The goal of this table was to contain membership information that was to be moved to Jenzibar. To do this, one would use the stored procedure `UPDATE_JNZB_ACTIVITIES`.
+The goal of this table was to contain membership information that was to be moved to Jenzibar. To do this, one would use the stored procedure [UPDATE_JNZB_ACTIVITIES](#update_jnzb_activities).
 
 ###### MEMBERSHIP
 
@@ -141,21 +147,36 @@ The other three fields (USER_NAME, JOB_NAME and JOB_TIME) where meant to be admi
 
 ### Views
 
+We got access to these views through CTS. They are a direct live feed from the tables they represent. As mentioned earlier, we cannot use primary keys in the views to make foreign keys in other tables.  
+
 ###### ACCOUNT
-
+Account information for all the members of gordon college.
 ###### ACT_CLUB_DEF
-
+The Activity information. Includes short codes and what they represent.
 ###### CM_SESSION_MSTR
-
+The Session information. Includes short codes, the session they represent, and the physical dates spanned by the session.
 ###### Faculty
-
+A subset of `ACCOUNT` that has only faculty member records.
 ###### PART_DEF
-
+Definitions of the different participation levels for someone in an activity.
 ###### Staff
-
+A subset of `ACCOUNT` that has only staff member records.
 ###### Student
+A subset of `ACCOUNT` that has only student records.
 
 ### Stored Procedures
+
+Stored procedures have been written to make some database accesses and administrative tasks easier.
+Here are the most important ones.
+
+###### UPDATE_ACT_INFO
+
+Because ACT_INFO is basically a duplicate of ACT_CLUB_DEF, this stored procedure tries to keep them synced. Ideally it should be run automatically anytime ACT_CLUB_DEF changes. If that is not possible, it should be run periodically (e.g. daily). 
+In non-sql terms, this procedure makes sure all the activities defined in ACT_CLUB_DEF are also present in ACT_INFO. If something has been added to ACT_CLUB_DEF but is not present in ACT_INFO, it adds the corresponding record to ACT_INFO, filling in the other columns with default data.
+
+###### UPDATE_JNZB_ACTIVITIES
+
+This stored procedures is pretty simple. It moves all the relevant information from the MEMBERSHIP table and puts it in the JNZB_ACTIVITIES table. To prevent duplication, it will only add records that are present in the MEMBERSHIP table, but missing the JNZB_ACTIVITIES table.
 
 ## The Code
 
