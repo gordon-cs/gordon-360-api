@@ -25,9 +25,6 @@ Dive in.
     - [Emails](#emails)
 - [API Testing](#api-testing)
     - [Setting up](#setting-up)
-    - [Running the tests](#running-the-tests)
-        - [Mac](#mac)
-        - [PC](#pc)
 - [Troubleshooting](#troubleshooting)
 
 ## Sites 
@@ -423,7 +420,7 @@ Navigate to the API Tests folder:
 Create the `test_credentials.py` file and define the six variables mentioned above.
 Make sure the credentials you enter match the descriptions provided above.
 
-Run the tests.
+Run the tests. The results of the tests are displayed as they are run. If a test fails, the reason for failure will also be displayed.
 
 
 
@@ -435,7 +432,18 @@ Computer Science Summer Practicum 2016
 
 #### 500 Server Error when updating Activity Images
 
-This is usually a folder permissions problem. The Json site runs as cct.service@gordon.edu
+This is usually a folder permissions problem. The Json site runs as cct.service@gordon.edu. To solve this issue, edit the permissions to allow the cct.service@gordon.edu user to edit the `browseable` folder. The folder is located in the Api site folder (either 360Api or 360ApiTrain, depending on which is having the problem).
+
+Note that the permissions are reset everytime a new `browseable` folder is created. This should not usually happen because the deployment scripts don't touch the `browseable` folder. However, in the case that you delete the old `browseable` folder and put a new one in, make sure to also edit the permissions.
+
+
+#### 500 Server errors appear all of a sudden, even when nothing has changed in the code base.
+
+At this point, I think we eleminiated most code base problems. Potential code base errors will be throwing custom exceptions that will tell you more about what is wrong. If it is a plain 500 error though, the problem might be a database one.
+Check:
+- That the ACT_INFO and ACT_CLUB_DEF tables are in sync.
+- That the stored procedures return exactly what the models expect.
+- That the views are up. Sometimes CTS unexpectedly does maintainance. Try running simple select statements against the Views.
 
 
 
