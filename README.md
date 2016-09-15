@@ -28,7 +28,7 @@ Dive in.
 - [Troubleshooting](#troubleshooting)
 
 ## Sites 
-The folders for theses IIS sites can be found on the CS-RDP1 machine under `F:\sites`. 
+The folders for these IIS sites can be found on the CS-RDP1 machine under `F:\sites`. 
 - 360.gordon.edu -- Production Front-end. User-facing code (css, js, html)
 - 360Train.gordon.edu -- Development Front-end. User-facing code (css, js, html)
 - 360Api.gordon.edu -- Production JSON server site. C# using the ASP.NET Framework.
