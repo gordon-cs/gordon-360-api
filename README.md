@@ -179,14 +179,16 @@ This stored procedures is pretty simple. It moves all the relevant information f
 
 ### Introduction
 
-The server was written using ASP.NET and is generally structured as such. Here is a breakdown of the project folder:
+The server was written using ASP.NET and is generally structured as such. As a MVC (Model View Controller) system, the heart of the code is in ApiControllers (which is organized like the API it implements, which is documented later in this file) and in the Models folder. The View is provided by a separate repository, Project-Bernard.
+
+Here is a breakdown of the project folder:
 
 - Project-Raymond/
     - Design_Documents/ - currently empty. I do not actually remember why we had this. 
     - Gordon360/ - The main project. Most of the work will be done here.
         - ApiControllers/ - Folder contatining the Controllers for the API endpoints.
-        - AuthorizationFilters/ - Custom ASP.NET Authorization filters. 
-        - AuthorizationServer/ - Code related to Open Authentication (OAuth).
+        - AuthorizationFilters/ - Contains code that enforces rules about who can access what.
+        - AuthorizationServer/ (The folder should really be called AuthenticationServer) -  Contains code that does user authentication.
         - bin/ - binary files. nothing to see here.
         - browseable/ - Placeholder folder that will be moved AS-IS to the built product. It will end up containing user-generated content. Right now, it only contains uploaded activity pictures.
         - Documentation/ - All the comments in the code are concatenated and made into this file. This is an automatic ASP.NET feature. We were going to somehow use the generated file for documentation, but didn't go through with it.
