@@ -41,8 +41,8 @@ The folders for these IIS sites can be found on the CS-RDP1 machine under `F:\si
 - Make a change. Do your thing.
 - Menu Bar -> Build - Publish Gordon360.
 - Choose the right publish profile.  
-    - DEV -- Development ( Uses the admintrain connection string). 
-    - Prod -- Production ( Uses the adminprod connection string).
+    - DEV -- Development ( Connects to the admintrainsql database server). 
+    - Prod -- Production ( Connects to the adminprodsql database server).
 - Clicking publish creates a Package. A Package in this context is a basically a zipped-up version of the project.
 - The package saves to `C:\users\cct.service\Gordon360Deploy`  and depending on what you published, it will go to the right folder.
     - deploy_production.bat -- moves the package in the ReleasePackage to 360Api
@@ -60,17 +60,16 @@ The folders for these IIS sites can be found on the CS-RDP1 machine under `F:\si
     - `ember build --env production` -- This version will use the Production api endpoint (360Api.gordon.edu)
 - The output is placed in the `dist/` folder at root of your project folder.
     - Note: Since emberJS is a javascript framework, the output is just an html file with a TON of javascript linked :p
-- Move the `dist/` folder as is to one of the sites on CS-RDP1.
-    - If you used the development flag move `dist/` to the 360Train IIS site.
+- Move the `dist/` folder AS-IS to one of the two user-facing sites on CS-RDP1.
+    - If you used the development flag, move `dist/` to the 360Train IIS site.
     - If you used the production flag, move `dist/` to the 360 IIS site.
 - For moving files between a mac and the virtual windows machine, we used a Microsoft Remote Desktop feature called folder redirection. It lets you specify folders on your mac that will be available on the PC you are remoting to.
 
-`API Url: ` Coming soon...
 
 ## The Database
 
 The `CCT` database exists in:
-- `admintrainsql.gordon.edu` - The Train/dev database server
+- `admintrainsql.gordon.edu` - The development/test database server
 - `adminprodsql.gordon.edu` -  The production/live database server.
 
 ### Tables
@@ -78,7 +77,7 @@ The `CCT` database exists in:
 All the tables were created from scratch by our team. 
 
 Misc Information:
-- Apart from a few exceptions, the tables don't make use of foreign key constraints. This is because the relevant primary keys are in the tables referenced by Views. Unfortunately, one cannot add foreign keys that reference Views. 
+- Apart from a few exceptions, the tables don't make use of foreign key constraints. This is because the relevant primary keys are in the tables referenced by Views. Unfortunately, one cannot make foreign keys that reference Views. 
 
 
 ###### ACT_INFO
@@ -225,13 +224,11 @@ Accepts a form encoded object in the body of the request:
 }
 ```
 Response will include an access token which should be included in subsequent request headers.
-Specifically include it in the `Authorization` header like so `Bearer YOUR-ACCESS-TOKEN`
+Specifically, include it in the `Authorization` header like so `Bearer YOUR-ACCESS-TOKEN`
 
 
 ### Memberships
 What is it? Resource that respresents the affiliation between a student and a club.
-
-Who has access? It's complicated.
 
 ##### GET
 
@@ -261,8 +258,6 @@ Who has access? It's complicated.
 ### Clubs
 What is it? Resource that represents a club.
 
-Who has access? It's complicated.
-
 ##### GET
 
 `api/activities` Get all the clubs.
@@ -277,8 +272,6 @@ Who has access? It's complicated.
 
 ### Membership Requests
 What is it? Resource that represents a person's application/request to join a club.
-
-Who has access? It's complicated.
 
 ##### GET
 
@@ -306,8 +299,6 @@ Who has access? It's complicated.
 ### Supervisors
 What is it? Resource that represents the supervisor of an activity.
 
-Who has access? It's complicated.
-
 ##### GET
 
 `api/supervisors` Get all the supervisors.
@@ -332,8 +323,6 @@ Who has access? It's complicated.
 ### Students
 What is it? Resource that represents a student.
 
-Who has access? Probably not you.
-
 ##### GET
 
 `api/students` Get all the students.
@@ -345,8 +334,6 @@ Who has access? Probably not you.
 
 ### Accounts
 What is it? Resource that represents a gordon account.
-
-Who has access? Probably not you.
 
 ##### GET
 
@@ -379,8 +366,6 @@ Who has access? Everyone.
 
 ### Emails
 What is it? Resource that represents emails. 
-
-Who has access? It's complicated.
 
 
 ##### GET 
@@ -438,18 +423,22 @@ Computer Science Summer Practicum 2016
 
 #### 500 Server Error when updating Activity Images
 
-This is usually a folder permissions problem. The Json site runs as cct.service@gordon.edu. To solve this issue, edit the permissions to allow the cct.service@gordon.edu user to edit the `browseable` folder. The folder is located in the Api site folder (either 360Api or 360ApiTrain, depending on which is having the problem).
+This is usually a folder permissions problem. The Json site runs as the user cct.service@gordon.edu. To solve this issue, edit the permissions to allow the cct.service@gordon.edu user to edit the `browseable` folder. The folder is located in the Api site folder (either 360Api or 360ApiTrain, depending on which is having the problem).
 
 Note that the permissions are reset everytime a new `browseable` folder is created. This should not usually happen because the deployment scripts don't touch the `browseable` folder. However, in the case that you delete the old `browseable` folder and put a new one in, make sure to also edit the permissions.
 
 
 #### 500 Server errors appear all of a sudden, even when nothing has changed in the code base.
 
-At this point, I think we eleminiated most code base problems. Potential code base errors will be throwing custom exceptions that will tell you more about what is wrong. If it is a plain 500 error though, the problem might be a database one.
+At this point, I think we eleminiated most c#-related problems. Potential c#-related errors will be throwing custom exceptions that will tell you more about what is wrong. If you do get plain 500 error though, the problem might be a database one.
 Check:
 - That the ACT_INFO and ACT_CLUB_DEF tables are in sync.
 - That the stored procedures return exactly what the models expect.
 - That the views are up. Sometimes CTS unexpectedly does maintainance. Try running simple select statements against the Views.
 
+#### 404 Not Found when trying to access the `/token` endpoint:
 
-
+This error will only pop up when you are testing the server directly by running it with visual studio. When you run the gordon360 server from visual studio it automatically "hosts" it on `localhost:3000`. By default, the server doesn't accept non-HTTPS (anything not on port 443) connections. There are two solutions:
+- Change Visual studio settings to run on `localhost:443` by default. I tried this a bit, but didn't get very far. I don't think it is that hard though, I just didn't have the motivation to continue.
+- Allow non-HTTPS connections by commenting out some code. This is what I did. DON'T FORGET TO REMMOVE THE COMMENT SYMBOLS AFTER YOU FINISH THOUGH. 
+    - The code that restricts non-HTTPS connections is located under the `Startup.cs` file. Look for the "#if DEBUG" and "#endif" code-blocks. Comment both out. 
