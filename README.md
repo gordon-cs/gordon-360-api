@@ -10,6 +10,7 @@ Dive in.
 - [The Database](#the-database)
     - [Tables](#tables)
     - [Stored Procedures](#stored-procedures)
+    - [Triggers](#triggers)
 - [The Code](#the-code)	
     - [Introduction](#introduction) 
 - [API Endpoints](#api-endpoints)
