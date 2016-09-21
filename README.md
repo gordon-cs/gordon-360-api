@@ -417,9 +417,9 @@ A test suite is available at `Tests/ApiEndpoints` to excercise the different end
 	- `username` -- String with the username of a test account that is a member of `activity_code` in `test_config.py`.
 	- `password` -- String with the password of a test account that is a member of `activity_code` in `test_config.py`.
 	- `id_number` -- Integer with the id number of the `username`.
-	- `username_leader` -- String with the username of a test account that is a leader of `activity_code` in `test_config.py`.
-	- `password_leader` -- String with the password of a test account that is a leader of `activity_code` in `test_config.py`.
-	- `id_number_leader` -- Integer with the id number of the `username_leader`.
+	- `username_activity_leader` -- String with the username of a test account that is a leader of `activity_code` in `test_config.py`.
+	- `password_activity_leader` -- String with the password of a test account that is a leader of `activity_code` in `test_config.py`.
+	- `id_number_activity_leader` -- Integer with the id number of the `username_leader`.
 
 ### Setting up
 
@@ -434,8 +434,12 @@ Navigate to the API Tests folder:
 Create the `test_credentials.py` file and define the six variables mentioned above.
 Make sure the credentials you enter match the descriptions provided above.
 
-Run the tests. The results of the tests are displayed as they are run. If a test fails, the reason for failure will also be displayed.
+Verify that the variables defined in `test_config.py` are correct.
 
+Run the tests:
+`python3 gordon_360_tests.py` -- This runs all the tests. For both members and leaders.
+`python3 gordon_360_tests_member.py` -- This runs the tests for members.
+`python3 gordon_360_tests_leader.py` -- This runs the tests for leaders.
 
 
 Team members: Eze Anyanwu, James Kempf, Adam Bartholomew
