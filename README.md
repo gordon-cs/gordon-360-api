@@ -26,6 +26,7 @@ Dive in.
     - [Emails](#emails)
 - [API Testing](#api-testing)
     - [Setting up](#setting-up)
+    - [Introduction](#introduction)
 - [Troubleshooting](#troubleshooting)
 
 ## Sites 
@@ -405,6 +406,8 @@ What is it? Resource that represents emails.
 
 ## API Testing
 
+### Introduction 
+
 A test suite is available at `Tests/ApiEndpoints` to excercise the different endpoints. The most important files here are:
 - `gordon_360_tests_leader.py` -- Tests the api endpoints while authorized as an activity leader.
 - `gordon_360_tests_member.py` -- Tests the api endpoints while authorized as a regular member.
@@ -421,9 +424,7 @@ A test suite is available at `Tests/ApiEndpoints` to excercise the different end
 	- `password_activity_leader` -- String with the password of a test account that is a leader of `activity_code` in `test_config.py`.
 	- `id_number_activity_leader` -- Integer with the id number of the `username_leader`.
 
-### Setting up
-
-The following instructions are for Mac machines.
+### Running the tests
 
 Clone the project from the github site:
 `git clone https://github.com/gordon-cs/Project-Raymond.git`
