@@ -4,7 +4,7 @@
 
 Dive in.
 ## Table of Contents
-- [Sites](#sites)
+- [Machines and Sites](#machines-and-sites)
     - [Deploying to the Api Site](#deploying-to-the-api-site)
     - [Deploying to the Front-end site](#deploying-to-the-front-end-site)
 - [The Database](#the-database)
@@ -29,8 +29,21 @@ Dive in.
     - [Introduction](#introduction)
 - [Troubleshooting](#troubleshooting)
 
-## Sites 
-The folders for these IIS sites can be found on the CS-RDP1 machine under `F:\sites`. 
+## Machines and Sites
+To work on this project, it is easiest to use the following machines provided by CTS:
+- CCCTrain.gordon.edu - Windows machine.
+    - Can be accessed through Remote Desktop Connection.
+    - Has the C# code.
+    - Has Visual Studio, MSSQL Server.
+    - Has deployment scripts and folders.
+    - Has site folders.
+- CS-360-API-TEST.gordon.edu - Ubuntu machine
+    - Is accessed through ssh.
+    - Is setup for running the tests (has an already filled `test_credentials.py` file.)
+    - Has the User-facing code (HTML, JS and CSS)
+
+
+The folders for these IIS sites can be found on the CCCTrain machine under `F:\sites`. 
 - 360.gordon.edu -- Production Front-end. User-facing code (css, js, html)
 - 360Train.gordon.edu -- Development Front-end. User-facing code (css, js, html)
 - 360Api.gordon.edu -- Production JSON server site. C# using the ASP.NET Framework.
@@ -38,7 +51,7 @@ The folders for these IIS sites can be found on the CS-RDP1 machine under `F:\si
 
 ### Deploying to the Api Site
 
-- Log in to CS-RDP1 and start Visual Studio as the cct.service user. (Shift + right click)
+- Log in to CCCTrain and start Visual Studio as the cct.service user. (Shift + right click)
 - Open an existing project/solution - `C:\users\cct.service\code\Project-Raymod\Gordon360` file. It is a Microsoft Visual Studio Solution file.
 - Make a change. Do your thing.
 - Menu Bar -> Build - Publish Gordon360.
@@ -100,6 +113,8 @@ A record in this table stores:
 - ID_NUM - The gordon id number of the administrator
 - USER_NAME - The administrator's username
 - EMAIL - The administrator's email.
+
+To make someone an admin, simply insert a record into this table through MSSQL Studio. 
 
 ###### JNZB_ACTIVITIES
 
