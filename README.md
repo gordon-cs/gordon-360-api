@@ -200,7 +200,8 @@ This keeps the ACT_CLUB_DEF table in sync with the JENZ_ACT_CLUB_DEF view. It sh
 
 Because ACT_INFO is basically a duplicate of ACT_CLUB_DEF, this stored procedure tries to keep them synced. Ideally it should be run automatically anytime ACT_CLUB_DEF changes.
 
-In non-sql terms, this procedure makes sure all the activities defined in ACT_CLUB_DEF are also present in ACT_INFO. If something has been added to ACT_CLUB_DEF but is not present in ACT_INFO, it adds the corresponding record to ACT_INFO, filling in the other columns with default data.
+In non-sql terms, this procedure makes sure all the activities defined in ACT_CLUB_DEF are also present in ACT_INFO. If something has been added/removed to ACT_CLUB_DEF but not in ACT_INFO, it adds/removes the corresponding record to ACT_INFO.
+
 
 ###### UPDATE_JNZB_ACTIVITIES
 
@@ -211,7 +212,7 @@ This stored procedures is pretty simple. It moves all the relevant information f
 
 ###### ACT_CLUB_DEF_INSERT_TRIGGER
 
-Everytime a record is inserted into the ACT_CLUB_DEF table, this trigger runs the UPDATE_ACT_INFO stored procedure.
+Everytime a record is inserted into the ACT_CLUB_DEF table, this trigger runs the UPDATE_ACT_INFO stored procedure. Although not clear in the name, this trigger also runs whenever a row is deleted from ACT_CLUB_DEF. 
 
 ## The Code
 
