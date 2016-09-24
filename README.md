@@ -4,12 +4,13 @@
 
 Dive in.
 ## Table of Contents
-- [Sites](#sites)
+- [Machines and Sites](#machines-and-sites)
     - [Deploying to the Api Site](#deploying-to-the-api-site)
     - [Deploying to the Front-end site](#deploying-to-the-front-end-site)
 - [The Database](#the-database)
     - [Tables](#tables)
     - [Stored Procedures](#stored-procedures)
+    - [Triggers](#triggers)
 - [The Code](#the-code)	
     - [Introduction](#introduction) 
 - [API Endpoints](#api-endpoints)
@@ -25,10 +26,24 @@ Dive in.
     - [Emails](#emails)
 - [API Testing](#api-testing)
     - [Setting up](#setting-up)
+    - [Introduction](#introduction)
 - [Troubleshooting](#troubleshooting)
 
-## Sites 
-The folders for these IIS sites can be found on the CS-RDP1 machine under `F:\sites`. 
+## Machines and Sites
+To work on this project, it is easiest to use the following machines provided by CTS:
+- CCCTrain.gordon.edu - Windows machine.
+    - Can be accessed through Remote Desktop Connection.
+    - Has the C# code.
+    - Has Visual Studio, MSSQL Server.
+    - Has deployment scripts and folders.
+    - Has site folders.
+- CS-360-API-TEST.gordon.edu - Ubuntu machine
+    - Is accessed through ssh.
+    - Is setup for running the tests (has an already filled `test_credentials.py` file.)
+    - Has the User-facing code (HTML, JS and CSS)
+
+
+The folders for these IIS sites can be found on the CCCTrain machine under `F:\sites`. 
 - 360.gordon.edu -- Production Front-end. User-facing code (css, js, html)
 - 360Train.gordon.edu -- Development Front-end. User-facing code (css, js, html)
 - 360Api.gordon.edu -- Production JSON server site. C# using the ASP.NET Framework.
@@ -36,7 +51,7 @@ The folders for these IIS sites can be found on the CS-RDP1 machine under `F:\si
 
 ### Deploying to the Api Site
 
-- Log in to CS-RDP1 and start Visual Studio as the cct.service user. (Shift + right click)
+- Log in to CCCTrain and start Visual Studio as the cct.service user. (Shift + right click)
 - Open an existing project/solution - `C:\users\cct.service\code\Project-Raymod\Gordon360` file. It is a Microsoft Visual Studio Solution file.
 - Make a change. Do your thing.
 - Menu Bar -> Build - Publish Gordon360.
@@ -51,9 +66,9 @@ The folders for these IIS sites can be found on the CS-RDP1 machine under `F:\si
 
 ### Deploying to the Front-end Site
 
-- This is easier done on a mac.
-- To make a change to the code, clone the [Project Bernard]() repository to your (hopefully) mac.
-- Install EmberJS and its dependencies. See the Project Bernard repository for help on how to do this.
+- Log into CS-360-API-TEST through ssh.
+- To make a change to the code, clone the [Project Bernard](https://github.com/gordon-cs/Project-Bernard) repository.
+- Install EmberJS and its dependencies. See the Project Bernard repository for help on how to do this (If you are using the CS-360-API-TEST machine, skip this step).
 - Make a change to the code. Do your thing, make your mark. A legacy.
 - Run one of these commands in the terminal at the root of the project folder.
     - `ember build --env development` -- This version will use the Development api endpoint (360ApiTrain.gordon.edu)
@@ -99,6 +114,8 @@ A record in this table stores:
 - USER_NAME - The administrator's username
 - EMAIL - The administrator's email.
 
+To make someone an admin, simply insert a record into this table through MSSQL Studio. 
+
 ###### JNZB_ACTIVITIES
 
 A record in this table stores all the same fields as an Activity table in Jensibar would. 
@@ -141,13 +158,23 @@ A record in this table stores:
 
 The other three fields (USER_NAME, JOB_NAME and JOB_TIME) where meant to be administrative fields to store data about who inserted records and when they did it. We ended up not using them. We kept them because they have good potential use.
 
+###### ACT_CLUB_DEF
+
+A record in this table stores
+
+- ACT_CDE - The activity short code.
+- ACT_DESC - The name of the activity.
+
+This table is an exact duplicate of the JENZ_ACT_CLUB_DEF view. It is periodically updated by making sure what is in it corresponds to what is in JENZ_ACT_CLUB_DEF. When a new activity is found in JENZ_ACT_CLUB_DEF, it is inserted into ACT_CLUB_DEF and the stored procedure UPDATE_ACT_INFO is run.
+
+
 ### Views
 
 We got access to these views through CTS. They are a direct live feed from the tables they represent. As mentioned earlier, we cannot use primary keys in the views to make foreign keys in other tables.  
 
 ###### ACCOUNT
 Account information for all the members of gordon college.
-###### ACT_CLUB_DEF
+###### JENZ_ACT_CLUB_DEF
 The Activity information. Includes short codes and what they represent.
 ###### CM_SESSION_MSTR
 The Session information. Includes short codes, the session they represent, and the physical dates spanned by the session.
@@ -165,14 +192,27 @@ A subset of `ACCOUNT` that has only student records.
 Stored procedures have been written to make some database accesses and administrative tasks easier.
 Here are the most important ones.
 
+###### UPDATE_ACT_CLUB_DEF
+
+This keeps the ACT_CLUB_DEF table in sync with the JENZ_ACT_CLUB_DEF view. It should be run periodically.
+
 ###### UPDATE_ACT_INFO
 
-Because ACT_INFO is basically a duplicate of ACT_CLUB_DEF, this stored procedure tries to keep them synced. Ideally it should be run automatically anytime ACT_CLUB_DEF changes. If that is not possible, it should be run periodically (e.g. daily). 
-In non-sql terms, this procedure makes sure all the activities defined in ACT_CLUB_DEF are also present in ACT_INFO. If something has been added to ACT_CLUB_DEF but is not present in ACT_INFO, it adds the corresponding record to ACT_INFO, filling in the other columns with default data.
+Because ACT_INFO is basically a duplicate of ACT_CLUB_DEF, this stored procedure tries to keep them synced. Ideally it should be run automatically anytime ACT_CLUB_DEF changes.
+
+In non-sql terms, this procedure makes sure all the activities defined in ACT_CLUB_DEF are also present in ACT_INFO. If something has been added/removed to ACT_CLUB_DEF but not in ACT_INFO, it adds/removes the corresponding record to ACT_INFO.
+
 
 ###### UPDATE_JNZB_ACTIVITIES
 
 This stored procedures is pretty simple. It moves all the relevant information from the MEMBERSHIP table and puts it in the JNZB_ACTIVITIES table. To prevent duplication, it will only add records that are present in the MEMBERSHIP table, but missing the JNZB_ACTIVITIES table.
+
+
+### Triggers
+
+###### ACT_CLUB_DEF_INSERT_TRIGGER
+
+Everytime a record is inserted into the ACT_CLUB_DEF table, this trigger runs the UPDATE_ACT_INFO stored procedure. Although not clear in the name, this trigger also runs whenever a row is deleted from ACT_CLUB_DEF. 
 
 ## The Code
 
@@ -382,6 +422,8 @@ What is it? Resource that represents emails.
 
 ## API Testing
 
+### Introduction 
+
 A test suite is available at `Tests/ApiEndpoints` to excercise the different endpoints. The most important files here are:
 - `gordon_360_tests_leader.py` -- Tests the api endpoints while authorized as an activity leader.
 - `gordon_360_tests_member.py` -- Tests the api endpoints while authorized as a regular member.
@@ -394,13 +436,11 @@ A test suite is available at `Tests/ApiEndpoints` to excercise the different end
 	- `username` -- String with the username of a test account that is a member of `activity_code` in `test_config.py`.
 	- `password` -- String with the password of a test account that is a member of `activity_code` in `test_config.py`.
 	- `id_number` -- Integer with the id number of the `username`.
-	- `username_leader` -- String with the username of a test account that is a leader of `activity_code` in `test_config.py`.
-	- `password_leader` -- String with the password of a test account that is a leader of `activity_code` in `test_config.py`.
-	- `id_number_leader` -- Integer with the id number of the `username_leader`.
+	- `username_activity_leader` -- String with the username of a test account that is a leader of `activity_code` in `test_config.py`.
+	- `password_activity_leader` -- String with the password of a test account that is a leader of `activity_code` in `test_config.py`.
+	- `id_number_activity_leader` -- Integer with the id number of the `username_leader`.
 
-### Setting up
-
-The following instructions are for Mac machines.
+### Running the tests
 
 Clone the project from the github site:
 `git clone https://github.com/gordon-cs/Project-Raymond.git`
@@ -411,8 +451,12 @@ Navigate to the API Tests folder:
 Create the `test_credentials.py` file and define the six variables mentioned above.
 Make sure the credentials you enter match the descriptions provided above.
 
-Run the tests. The results of the tests are displayed as they are run. If a test fails, the reason for failure will also be displayed.
+Verify that the variables defined in `test_config.py` are correct.
 
+Run the tests:
+`python3 gordon_360_tests.py` -- This runs all the tests. For both members and leaders.
+`python3 gordon_360_tests_member.py` -- This runs the tests for members.
+`python3 gordon_360_tests_leader.py` -- This runs the tests for leaders.
 
 
 Team members: Eze Anyanwu, James Kempf, Adam Bartholomew
