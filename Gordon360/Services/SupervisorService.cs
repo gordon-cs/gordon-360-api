@@ -119,7 +119,19 @@ namespace Gordon360.Services
         {
             var idParam = new SqlParameter("@ID_NUM", id);
             var result = RawSqlQuery<SupervisorViewModel>.query("SUPERVISORS_PER_ID_NUM @ID_NUM", idParam);
-            return result;
+            // Trimming database generated whitespace ._.
+            var trimmedResult = result.Select(x =>
+            {
+                var trim = x;
+                trim.ActivityCode = x.ActivityCode.Trim();
+                trim.ActivityDescription = x.ActivityDescription.Trim();
+                trim.SessionCode = x.SessionCode.Trim();
+                trim.SessionDescription = x.SessionDescription.Trim();
+                trim.FirstName = x.FirstName.Trim();
+                trim.LastName = x.LastName.Trim();
+                return trim;
+            });
+            return trimmedResult;
         }
 
         /// <summary>

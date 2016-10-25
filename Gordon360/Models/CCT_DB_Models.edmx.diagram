@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="75d34de2af984c0bad1a90cb8a64e116" Name="Diagram1">
+      <Diagram DiagramId="75d34de2af984c0bad1a90cb8a64e116" Name="Diagram1" ZoomLevel="74">
         <EntityTypeShape EntityType="Gordon360.ACT_INFO" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.ADMIN" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.JNZB_ACTIVITIES" Width="1.5" PointX="0.75" PointY="3.75" IsExpanded="true" />
@@ -12,12 +12,13 @@
         <EntityTypeShape EntityType="Gordon360.REQUEST" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.SUPERVISOR" Width="1.5" PointX="4.75" PointY="3.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.ACCOUNT" Width="1.5" PointX="13.625" PointY="6.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="Gordon360.ACT_CLUB_DEF" Width="1.5" PointX="12" PointY="0.5" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.CM_SESSION_MSTR" Width="1.5" PointX="11.875" PointY="2.375" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.Faculty" Width="1.5" PointX="13.625" PointY="0.5" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.PART_DEF" Width="1.5" PointX="11.875" PointY="4.25" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.Staff" Width="1.5" PointX="13.625" PointY="4.25" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.Student" Width="1.5" PointX="13.625" PointY="2.375" IsExpanded="true" />
+        <AssociationConnector Association="Gordon360.FK_SUPERVISOR_SUPERVISOR" />
+        <EntityTypeShape EntityType="Gordon360.ACT_CLUB_DEF" Width="1.5" PointX="7.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

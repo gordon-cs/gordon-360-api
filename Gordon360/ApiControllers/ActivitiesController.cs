@@ -206,7 +206,7 @@ namespace Gordon360.Controllers.Api
             }
             catch (System.Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e.StackTrace + e.InnerException);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error uploading the image. Please contact the maintainers");
             }
         }
 

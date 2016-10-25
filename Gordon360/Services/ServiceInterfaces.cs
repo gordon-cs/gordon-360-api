@@ -38,6 +38,8 @@ namespace Gordon360.Services
     {
         ADMIN Get(int id);
         IEnumerable<ADMIN> GetAll();
+        ADMIN Add(ADMIN admin);
+        ADMIN Delete(int id);
     }
     public interface IEmailService
     {

@@ -5,6 +5,13 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="Gordon360.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ACT_CLUB_DEF">
+          <Key>
+            <PropertyRef Name="ACT_CDE" />
+          </Key>
+          <Property Name="ACT_CDE" Type="char" MaxLength="8" Nullable="false" />
+          <Property Name="ACT_DESC" Type="char" MaxLength="45" Nullable="false" />
+        </EntityType>
         <EntityType Name="ACT_INFO">
           <Key>
             <PropertyRef Name="ACT_CDE" />
@@ -22,7 +29,8 @@
           <Property Name="ADMIN_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ID_NUM" Type="int" Nullable="false" />
           <Property Name="USER_NAME" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="EMAIL" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="EMAIL" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="SUPER_ADMIN" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="JNZB_ACTIVITIES">
           <Key>
@@ -35,8 +43,8 @@
           <Property Name="PART_CDE" Type="char" MaxLength="5" Nullable="false" />
           <Property Name="MEMBERSHIP_STS" Type="char" MaxLength="1" Nullable="false" />
           <Property Name="TRACK_MTG_ATTEND" Type="char" MaxLength="1" Nullable="false" />
-          <Property Name="BEGIN_DTE" Type="datetime" Nullable="false" />
-          <Property Name="END_DTE" Type="datetime" Nullable="false" />
+          <Property Name="BEGIN_DTE" Type="datetime" />
+          <Property Name="END_DTE" Type="datetime" />
           <Property Name="COMMENT_TXT" Type="varchar" MaxLength="45" />
           <Property Name="INCL_PROFILE_RPT" Type="char" MaxLength="1" Nullable="false" />
           <Property Name="USER_NAME" Type="char" MaxLength="15" />
@@ -88,6 +96,7 @@
 warning 6002: The table/view 'CCT.dbo.ACCOUNT' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ACCOUNT">
           <Key>
+            <PropertyRef Name="Private" />
             <PropertyRef Name="gordon_id" />
           </Key>
           <Property Name="gordon_id" Type="varchar" MaxLength="10" Nullable="false" />
@@ -96,15 +105,7 @@ warning 6002: The table/view 'CCT.dbo.ACCOUNT' does not have a primary key defin
           <Property Name="email" Type="varchar" MaxLength="50" />
           <Property Name="AD_Username" Type="varchar" MaxLength="50" />
           <Property Name="account_type" Type="varchar" MaxLength="20" />
-        </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'CCT.dbo.ACT_CLUB_DEF' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <EntityType Name="ACT_CLUB_DEF">
-          <Key>
-            <PropertyRef Name="ACT_CDE" />
-          </Key>
-          <Property Name="ACT_CDE" Type="char" MaxLength="8" Nullable="false" />
-          <Property Name="ACT_DESC" Type="char" MaxLength="45" />
+          <Property Name="Private" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.CM_SESSION_MSTR' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -121,12 +122,14 @@ warning 6002: The table/view 'CCT.dbo.CM_SESSION_MSTR' does not have a primary k
 warning 6002: The table/view 'CCT.dbo.Faculty' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Faculty">
           <Key>
+            <PropertyRef Name="Private" />
             <PropertyRef Name="faculty_id" />
           </Key>
           <Property Name="faculty_id" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="faculty_name" Type="varchar" MaxLength="101" />
           <Property Name="faculty_email" Type="varchar" MaxLength="50" />
           <Property Name="user_name" Type="varchar" MaxLength="50" />
+          <Property Name="Private" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.PART_DEF' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -142,24 +145,40 @@ warning 6002: The table/view 'CCT.dbo.PART_DEF' does not have a primary key defi
 warning 6002: The table/view 'CCT.dbo.Staff' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Staff">
           <Key>
+            <PropertyRef Name="Private" />
             <PropertyRef Name="staff_id" />
           </Key>
           <Property Name="staff_id" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="staff_name" Type="varchar" MaxLength="101" />
           <Property Name="staff_email" Type="varchar" MaxLength="50" />
           <Property Name="user_name" Type="varchar" MaxLength="50" />
+          <Property Name="Private" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Student">
           <Key>
+            <PropertyRef Name="Private" />
             <PropertyRef Name="student_id" />
           </Key>
           <Property Name="student_id" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="student_name" Type="varchar" MaxLength="101" />
           <Property Name="student_email" Type="varchar" MaxLength="50" />
           <Property Name="user_name" Type="varchar" MaxLength="50" />
+          <Property Name="Private" Type="int" Nullable="false" />
         </EntityType>
+        <Association Name="FK_SUPERVISOR_SUPERVISOR">
+          <End Role="SUPERVISOR" Type="Self.SUPERVISOR" Multiplicity="1" />
+          <End Role="SUPERVISOR1" Type="Self.SUPERVISOR" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="SUPERVISOR">
+              <PropertyRef Name="SUP_ID" />
+            </Principal>
+            <Dependent Role="SUPERVISOR1">
+              <PropertyRef Name="SUP_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Function Name="ACTIVE_CLUBS_PER_SESS_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="SESS_CDE" Type="char" Mode="In" />
         </Function>
@@ -205,6 +224,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Parameter Name="ID_NUM" Type="int" Mode="In" />
         </Function>
         <EntityContainer Name="Gordon360StoreContainer">
+          <EntitySet Name="ACT_CLUB_DEF" EntityType="Self.ACT_CLUB_DEF" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ACT_INFO" EntityType="Self.ACT_INFO" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ADMIN" EntityType="Self.ADMIN" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="JNZB_ACTIVITIES" EntityType="Self.JNZB_ACTIVITIES" Schema="dbo" store:Type="Tables" />
@@ -218,14 +238,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [ACCOUNT].[lastname] AS [lastname], 
     [ACCOUNT].[email] AS [email], 
     [ACCOUNT].[AD_Username] AS [AD_Username], 
-    [ACCOUNT].[account_type] AS [account_type]
+    [ACCOUNT].[account_type] AS [account_type], 
+    [ACCOUNT].[Private] AS [Private]
     FROM [dbo].[ACCOUNT] AS [ACCOUNT]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="ACT_CLUB_DEF" EntityType="Self.ACT_CLUB_DEF" store:Type="Views" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [ACT_CLUB_DEF].[ACT_CDE] AS [ACT_CDE], 
-    [ACT_CLUB_DEF].[ACT_DESC] AS [ACT_DESC]
-    FROM [dbo].[ACT_CLUB_DEF] AS [ACT_CLUB_DEF]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="CM_SESSION_MSTR" EntityType="Self.CM_SESSION_MSTR" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -240,7 +255,8 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [Faculty].[faculty_id] AS [faculty_id], 
     [Faculty].[faculty_name] AS [faculty_name], 
     [Faculty].[faculty_email] AS [faculty_email], 
-    [Faculty].[user_name] AS [user_name]
+    [Faculty].[user_name] AS [user_name], 
+    [Faculty].[Private] AS [Private]
     FROM [dbo].[Faculty] AS [Faculty]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="PART_DEF" EntityType="Self.PART_DEF" store:Type="Views" store:Schema="dbo">
@@ -254,7 +270,8 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [Staff].[staff_id] AS [staff_id], 
     [Staff].[staff_name] AS [staff_name], 
     [Staff].[staff_email] AS [staff_email], 
-    [Staff].[user_name] AS [user_name]
+    [Staff].[user_name] AS [user_name], 
+    [Staff].[Private] AS [Private]
     FROM [dbo].[Staff] AS [Staff]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="Student" EntityType="Self.Student" store:Type="Views" store:Schema="dbo">
@@ -262,9 +279,14 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [Student].[student_id] AS [student_id], 
     [Student].[student_name] AS [student_name], 
     [Student].[student_email] AS [student_email], 
-    [Student].[user_name] AS [user_name]
+    [Student].[user_name] AS [user_name], 
+    [Student].[Private] AS [Private]
     FROM [dbo].[Student] AS [Student]</DefiningQuery>
           </EntitySet>
+          <AssociationSet Name="FK_SUPERVISOR_SUPERVISOR" Association="Self.FK_SUPERVISOR_SUPERVISOR">
+            <End Role="SUPERVISOR" EntitySet="SUPERVISOR" />
+            <End Role="SUPERVISOR1" EntitySet="SUPERVISOR" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -287,7 +309,8 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="ADMIN_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ID_NUM" Type="Int32" Nullable="false" />
           <Property Name="USER_NAME" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="EMAIL" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="EMAIL" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="SUPER_ADMIN" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="JNZB_ACTIVITIES">
           <Key>
@@ -300,8 +323,8 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="PART_CDE" Type="String" MaxLength="5" FixedLength="true" Unicode="false" Nullable="false" />
           <Property Name="MEMBERSHIP_STS" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
           <Property Name="TRACK_MTG_ATTEND" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
-          <Property Name="BEGIN_DTE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="END_DTE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="BEGIN_DTE" Type="DateTime" Precision="3" />
+          <Property Name="END_DTE" Type="DateTime" Precision="3" />
           <Property Name="COMMENT_TXT" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
           <Property Name="INCL_PROFILE_RPT" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
           <Property Name="USER_NAME" Type="String" MaxLength="15" FixedLength="true" Unicode="false" />
@@ -348,10 +371,13 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="USER_NAME" Type="String" MaxLength="15" FixedLength="true" Unicode="false" />
           <Property Name="JOB_NAME" Type="String" MaxLength="30" FixedLength="true" Unicode="false" />
           <Property Name="JOB_TIME" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="SUPERVISOR1" Relationship="Gordon360.FK_SUPERVISOR_SUPERVISOR" FromRole="SUPERVISOR" ToRole="SUPERVISOR1" />
+          <NavigationProperty Name="SUPERVISOR2" Relationship="Gordon360.FK_SUPERVISOR_SUPERVISOR" FromRole="SUPERVISOR1" ToRole="SUPERVISOR" />
         </EntityType>
         <EntityType Name="ACCOUNT">
           <Key>
             <PropertyRef Name="gordon_id" />
+            <PropertyRef Name="Private" />
           </Key>
           <Property Name="gordon_id" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="firstname" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -359,13 +385,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="AD_Username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="account_type" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="ACT_CLUB_DEF">
-          <Key>
-            <PropertyRef Name="ACT_CDE" />
-          </Key>
-          <Property Name="ACT_CDE" Type="String" MaxLength="8" FixedLength="true" Unicode="false" Nullable="false" />
-          <Property Name="ACT_DESC" Type="String" MaxLength="45" FixedLength="true" Unicode="false" />
+          <Property Name="Private" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="CM_SESSION_MSTR">
           <Key>
@@ -379,11 +399,13 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <EntityType Name="Faculty">
           <Key>
             <PropertyRef Name="faculty_id" />
+            <PropertyRef Name="Private" />
           </Key>
           <Property Name="faculty_id" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="faculty_name" Type="String" MaxLength="101" FixedLength="false" Unicode="false" />
           <Property Name="faculty_email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="user_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Private" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="PART_DEF">
           <Key>
@@ -395,20 +417,24 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <EntityType Name="Staff">
           <Key>
             <PropertyRef Name="staff_id" />
+            <PropertyRef Name="Private" />
           </Key>
           <Property Name="staff_id" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="staff_name" Type="String" MaxLength="101" FixedLength="false" Unicode="false" />
           <Property Name="staff_email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="user_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Private" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Student">
           <Key>
             <PropertyRef Name="student_id" />
+            <PropertyRef Name="Private" />
           </Key>
           <Property Name="student_id" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="student_name" Type="String" MaxLength="101" FixedLength="false" Unicode="false" />
           <Property Name="student_email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="user_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Private" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityContainer Name="CCTEntities1" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="ACT_INFO" EntityType="Self.ACT_INFO" />
@@ -418,7 +444,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="REQUEST" EntityType="Self.REQUEST" />
           <EntitySet Name="SUPERVISOR" EntityType="Self.SUPERVISOR" />
           <EntitySet Name="ACCOUNT" EntityType="Self.ACCOUNT" />
-          <EntitySet Name="ACT_CLUB_DEF" EntityType="Self.ACT_CLUB_DEF" />
           <EntitySet Name="CM_SESSION_MSTR" EntityType="Self.CM_SESSION_MSTR" />
           <EntitySet Name="Faculty" EntityType="Self.Faculty" />
           <EntitySet Name="PART_DEF" EntityType="Self.PART_DEF" />
@@ -468,6 +493,11 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImport Name="SUPERVISORS_PER_ID_NUM">
           <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
           </FunctionImport>
+          <AssociationSet Name="FK_SUPERVISOR_SUPERVISOR" Association="Gordon360.FK_SUPERVISOR_SUPERVISOR">
+            <End Role="SUPERVISOR" EntitySet="SUPERVISOR" />
+            <End Role="SUPERVISOR1" EntitySet="SUPERVISOR" />
+          </AssociationSet>
+          <EntitySet Name="ACT_CLUB_DEF" EntityType="Gordon360.ACT_CLUB_DEF" />
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
           <Property Type="String" Name="ACT_CDE" Nullable="false" MaxLength="8" />
@@ -668,6 +698,25 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="String" Name="LastName" Nullable="true" MaxLength="50" />
           <Property Type="String" Name="Email" Nullable="true" MaxLength="50" />
         </ComplexType>
+        <Association Name="FK_SUPERVISOR_SUPERVISOR">
+          <End Type="Gordon360.SUPERVISOR" Role="SUPERVISOR" Multiplicity="1" />
+          <End Type="Gordon360.SUPERVISOR" Role="SUPERVISOR1" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="SUPERVISOR">
+              <PropertyRef Name="SUP_ID" />
+            </Principal>
+            <Dependent Role="SUPERVISOR1">
+              <PropertyRef Name="SUP_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ACT_CLUB_DEF">
+          <Key>
+            <PropertyRef Name="ACT_CDE" />
+          </Key>
+          <Property Name="ACT_CDE" Type="String" Nullable="false" MaxLength="8" FixedLength="true" Unicode="false" />
+          <Property Name="ACT_DESC" Type="String" Nullable="false" MaxLength="45" FixedLength="true" Unicode="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -688,6 +737,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="ADMIN">
             <EntityTypeMapping TypeName="Gordon360.ADMIN">
               <MappingFragment StoreEntitySet="ADMIN">
+                <ScalarProperty Name="SUPER_ADMIN" ColumnName="SUPER_ADMIN" />
                 <ScalarProperty Name="ADMIN_ID" ColumnName="ADMIN_ID" />
                 <ScalarProperty Name="ID_NUM" ColumnName="ID_NUM" />
                 <ScalarProperty Name="USER_NAME" ColumnName="USER_NAME" />
@@ -762,20 +812,13 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="ACCOUNT">
             <EntityTypeMapping TypeName="Gordon360.ACCOUNT">
               <MappingFragment StoreEntitySet="ACCOUNT">
+                <ScalarProperty Name="Private" ColumnName="Private" />
                 <ScalarProperty Name="gordon_id" ColumnName="gordon_id" />
                 <ScalarProperty Name="firstname" ColumnName="firstname" />
                 <ScalarProperty Name="lastname" ColumnName="lastname" />
                 <ScalarProperty Name="email" ColumnName="email" />
                 <ScalarProperty Name="AD_Username" ColumnName="AD_Username" />
                 <ScalarProperty Name="account_type" ColumnName="account_type" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ACT_CLUB_DEF">
-            <EntityTypeMapping TypeName="Gordon360.ACT_CLUB_DEF">
-              <MappingFragment StoreEntitySet="ACT_CLUB_DEF">
-                <ScalarProperty Name="ACT_CDE" ColumnName="ACT_CDE" />
-                <ScalarProperty Name="ACT_DESC" ColumnName="ACT_DESC" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -792,6 +835,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="Faculty">
             <EntityTypeMapping TypeName="Gordon360.Faculty">
               <MappingFragment StoreEntitySet="Faculty">
+                <ScalarProperty Name="Private" ColumnName="Private" />
                 <ScalarProperty Name="faculty_id" ColumnName="faculty_id" />
                 <ScalarProperty Name="faculty_name" ColumnName="faculty_name" />
                 <ScalarProperty Name="faculty_email" ColumnName="faculty_email" />
@@ -810,6 +854,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="Staff">
             <EntityTypeMapping TypeName="Gordon360.Staff">
               <MappingFragment StoreEntitySet="Staff">
+                <ScalarProperty Name="Private" ColumnName="Private" />
                 <ScalarProperty Name="staff_id" ColumnName="staff_id" />
                 <ScalarProperty Name="staff_name" ColumnName="staff_name" />
                 <ScalarProperty Name="staff_email" ColumnName="staff_email" />
@@ -820,6 +865,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="Student">
             <EntityTypeMapping TypeName="Gordon360.Student">
               <MappingFragment StoreEntitySet="Student">
+                <ScalarProperty Name="Private" ColumnName="Private" />
                 <ScalarProperty Name="student_id" ColumnName="student_id" />
                 <ScalarProperty Name="student_name" ColumnName="student_name" />
                 <ScalarProperty Name="student_email" ColumnName="student_email" />
@@ -1087,6 +1133,14 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             </ResultMapping>
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="SUPERVISORS_PER_ID_NUM" FunctionName="Gordon360.Store.SUPERVISORS_PER_ID_NUM" />
+          <EntitySetMapping Name="ACT_CLUB_DEF">
+            <EntityTypeMapping TypeName="Gordon360.ACT_CLUB_DEF">
+              <MappingFragment StoreEntitySet="ACT_CLUB_DEF">
+                <ScalarProperty Name="ACT_DESC" ColumnName="ACT_DESC" />
+                <ScalarProperty Name="ACT_CDE" ColumnName="ACT_CDE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

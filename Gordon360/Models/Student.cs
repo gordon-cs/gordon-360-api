@@ -18,5 +18,6 @@ namespace Gordon360.Models
         public string student_name { get; set; }
         public string student_email { get; set; }
         public string user_name { get; set; }
+        public int Private { get; set; }
     }
 }

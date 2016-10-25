@@ -34,12 +34,12 @@ namespace Gordon360.Models
         public virtual DbSet<REQUEST> REQUEST { get; set; }
         public virtual DbSet<SUPERVISOR> SUPERVISOR { get; set; }
         public virtual DbSet<ACCOUNT> ACCOUNT { get; set; }
-        public virtual DbSet<ACT_CLUB_DEF> ACT_CLUB_DEF { get; set; }
         public virtual DbSet<CM_SESSION_MSTR> CM_SESSION_MSTR { get; set; }
         public virtual DbSet<Faculty> Faculty { get; set; }
         public virtual DbSet<PART_DEF> PART_DEF { get; set; }
         public virtual DbSet<Staff> Staff { get; set; }
         public virtual DbSet<Student> Student { get; set; }
+        public virtual DbSet<ACT_CLUB_DEF> ACT_CLUB_DEF { get; set; }
     
         public virtual ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> ACTIVE_CLUBS_PER_SESS_ID(string sESS_CDE)
         {

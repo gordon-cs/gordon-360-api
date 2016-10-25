@@ -4,6 +4,28 @@
         <name>Gordon360</name>
     </assembly>
     <members>
+        <member name="M:Gordon360.ApiControllers.AdminsController.Get">
+            <summary>
+            Get all admins
+            </summary>
+            <returns>
+            A list of all admins
+            </returns>
+            <remarks>
+            Server makes call to the database and returns all admins
+            </remarks>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AdminsController.Post(Gordon360.Models.ADMIN)">
+            <summary>Create a new admin to be added to database</summary>
+            <param name="admin">The admin item containing all required and relevant information</param>
+            <returns></returns>
+            <remarks>Posts a new admin to the server to be added into the database</remarks>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AdminsController.Delete(System.Int32)">
+            <summary>Delete an existing admin</summary>
+            <param name="id">The identifier for the admin to be deleted</param>
+            <remarks>Calls the server to make a call and remove the given admin from the database</remarks>
+        </member>
         <member name="M:Gordon360.Controllers.Api.MembershipRequestController.Get">
             <summary>
             Gets all Membership Request Objects
@@ -537,7 +559,7 @@
         </member>
         <member name="T:Gordon360.Services.AdministratorService">
             <summary>
-            Service class to facilitate interacting with teh Admin table.
+            Service class to facilitate interacting with the Admin table.
             </summary>
         </member>
         <member name="M:Gordon360.Services.AdministratorService.Get(System.Int32)">
@@ -559,6 +581,28 @@
             Fetches all the administrators from the database
             </summary>
             <returns>Returns a list of administrators. If no administrators were found, an empty list is returned.</returns>
+        </member>
+        <member name="M:Gordon360.Services.AdministratorService.Add(Gordon360.Models.ADMIN)">
+            <summary>
+            Adds a new Administrator record to storage. Since we can't establish foreign key constraints and relationships on the database side,
+            we do it here by using the validateAdmin() method.
+            </summary>
+            <param name="admin">The admin to be added</param>
+            <returns>The newly added Admin object</returns>
+        </member>
+        <member name="M:Gordon360.Services.AdministratorService.Delete(System.Int32)">
+            <summary>
+            Delete the admin whose id is specified by the parameter.
+            </summary>
+            <param name="id">The admin id</param>
+            <returns>The admin that was just deleted</returns>
+        </member>
+        <member name="M:Gordon360.Services.AdministratorService.validateAdmin(Gordon360.Models.ADMIN)">
+            <summary>
+            Helper method to Validate an admin
+            </summary>
+            <param name="admin">The admin to validate</param>
+            <returns>True if the admin is valid. Throws ResourceNotFoundException if not. Exception is cauth in an Exception Filter</returns>
         </member>
         <member name="T:Gordon360.Services.ComplexQueries.RawSqlQuery`1">
             <summary>
