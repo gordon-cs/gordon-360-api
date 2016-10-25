@@ -115,6 +115,13 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Person was not found." };
             }
 
+            var personIsAlreadyAdmin = _unitOfWork.AdministratorRepository.Any(x => x.EMAIL == admin.EMAIL);
+
+            if (personIsAlreadyAdmin)
+            {
+                throw new ResourceCreationException() { ExceptionMessage = "This person is already an admin." };
+            }
+
             return true;
         }
     }
