@@ -4,7 +4,7 @@
         <name>Gordon360</name>
     </assembly>
     <members>
-        <member name="M:Gordon360.ApiControllers.AdminsController.Get">
+        <member name="M:Gordon360.ApiControllers.AdminsController.GetAll">
             <summary>
             Get all admins
             </summary>
@@ -13,6 +13,17 @@
             </returns>
             <remarks>
             Server makes call to the database and returns all admins
+            </remarks>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AdminsController.GetByGordonId(System.String)">
+            <summary>
+            Get a specific admin
+            </summary>
+            <returns>
+            The specific admin
+            </returns>
+            <remarks>
+            Server makes call to the database and returns the specific admin
             </remarks>
         </member>
         <member name="M:Gordon360.ApiControllers.AdminsController.Post(Gordon360.Models.ADMIN)">

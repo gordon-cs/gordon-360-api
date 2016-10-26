@@ -37,6 +37,7 @@ namespace Gordon360.Services
     public interface IAdministratorService
     {
         ADMIN Get(int id);
+        ADMIN Get(string gordon_id);
         IEnumerable<ADMIN> GetAll();
         ADMIN Add(ADMIN admin);
         ADMIN Delete(int id);

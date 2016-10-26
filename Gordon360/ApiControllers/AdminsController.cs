@@ -46,9 +46,28 @@ namespace Gordon360.ApiControllers
         [HttpGet]
         [Route("")]
         [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.ADMIN)]
-        public IHttpActionResult Get()
+        public IHttpActionResult GetAll()
         {
             var result = _adminService.GetAll();
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Get a specific admin
+        /// </summary>
+        /// <returns>
+        /// The specific admin
+        /// </returns>
+        /// <remarks>
+        /// Server makes call to the database and returns the specific admin
+        /// </remarks>
+        // GET api/<controller>/5
+        [HttpGet]
+        [Route("{id}")]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ADMIN)]
+        public IHttpActionResult GetByGordonId(string id)
+        {
+            var result = _adminService.Get(id);
             return Ok(result);
         }
 
