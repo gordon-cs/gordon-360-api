@@ -21,8 +21,8 @@ namespace Gordon360.Models
         public string PART_CDE { get; set; }
         public string MEMBERSHIP_STS { get; set; }
         public string TRACK_MTG_ATTEND { get; set; }
-        public System.DateTime BEGIN_DTE { get; set; }
-        public System.DateTime END_DTE { get; set; }
+        public Nullable<System.DateTime> BEGIN_DTE { get; set; }
+        public Nullable<System.DateTime> END_DTE { get; set; }
         public string COMMENT_TXT { get; set; }
         public string INCL_PROFILE_RPT { get; set; }
         public string USER_NAME { get; set; }

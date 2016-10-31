@@ -18,5 +18,6 @@ namespace Gordon360.Models
         public int ID_NUM { get; set; }
         public string USER_NAME { get; set; }
         public string EMAIL { get; set; }
+        public bool SUPER_ADMIN { get; set; }
     }
 }

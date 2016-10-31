@@ -178,6 +178,7 @@
   <ItemGroup />
   <ItemGroup>
     <Compile Include="ApiControllers\AccountsController.cs" />
+    <Compile Include="ApiControllers\AdminsController.cs" />
     <Compile Include="ApiControllers\EmailsController.cs" />
     <Compile Include="ApiControllers\MembershipRequestController.cs" />
     <Compile Include="ApiControllers\RolesController.cs" />

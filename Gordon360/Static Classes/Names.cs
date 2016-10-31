@@ -9,6 +9,7 @@ namespace Gordon360.Static.Names
         public const string STUDENT = "A Student Resource";
         public const string ACCOUNT = "An Account Resource.";
         public const string SUPERVISOR = "A Supervisor Resource";
+        public const string ADMIN = "An admininistrator Ressource";
         public const string ACTIVITY_INFO = "An Activity Info Service.";
 
         // Partial resources, to be targetted by Operation.READ_PARTIAL
