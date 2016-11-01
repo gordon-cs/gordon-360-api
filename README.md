@@ -24,6 +24,7 @@ Dive in.
     - [Sessions](#sessions)
     - [Participation Definitions](#participation-definitions)
     - [Emails](#emails)
+    - [Admins](#admins)
 - [API Testing](#api-testing)
     - [Setting up](#setting-up)
     - [Introduction](#introduction)
@@ -113,6 +114,7 @@ A record in this table stores:
 - ID_NUM - The gordon id number of the administrator
 - USER_NAME - The administrator's username
 - EMAIL - The administrator's email.
+- SUPER_ADMIN - Whether or not the admin has super admin privilege
 
 To make someone an admin, simply insert a record into this table through MSSQL Studio. 
 
@@ -418,6 +420,25 @@ What is it? Resource that represents emails.
 
 `api/emails/activity/:id/leaders/session/:sessionid` Get the emails for the leaders of the activity with activity code `id` during the session with session code `sessionid`.
 
+
+### Admins
+What is it? Ressource that represents admins.
+
+Who has access? Only super admins.
+
+##### GET
+
+`api/admins` Get all the admins.
+
+`api/admins/:id` Get a specific admin with the Gordon ID specified.
+
+##### POST
+
+`api/admins` Create a new admin.
+
+##### DELETE
+
+`api/admins/:id` Delete the admin with the admin id `id`.
 
 
 ## API Testing
