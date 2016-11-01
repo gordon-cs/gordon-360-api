@@ -424,7 +424,7 @@ What is it? Resource that represents emails.
 ### Admins
 What is it? Ressource that represents admins.
 
-Who has access? Only super admins.
+Who has access? Only super admins, except to get a specific admin where all admins have access.
 
 ##### GET
 
