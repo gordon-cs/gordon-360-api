@@ -132,6 +132,17 @@ warning 6002: The table/view 'CCT.dbo.Faculty' does not have a primary key defin
           <Property Name="Private" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6002: The table/view 'CCT.dbo.JENZ_ACT_CLUB_DEF' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="JENZ_ACT_CLUB_DEF">
+          <Key>
+            <PropertyRef Name="ACT_CDE" />
+          </Key>
+          <Property Name="ACT_CDE" Type="char" MaxLength="8" Nullable="false" />
+          <Property Name="ACT_DESC" Type="char" MaxLength="45" />
+          <Property Name="ACT_TYPE" Type="char" MaxLength="3" />
+          <Property Name="ACT_TYPE_DESC" Type="char" MaxLength="60" />
+        </EntityType>
+        <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.PART_DEF' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="PART_DEF">
           <Key>
@@ -223,6 +234,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <Function Name="SUPERVISORS_PER_ID_NUM" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ID_NUM" Type="int" Mode="In" />
         </Function>
+        <Function Name="UPDATE_ACT_CLUB_DEF" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="UPDATE_ACT_INFO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="UPDATE_JNZB_ACTIVITIES" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="Gordon360StoreContainer">
           <EntitySet Name="ACT_CLUB_DEF" EntityType="Self.ACT_CLUB_DEF" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ACT_INFO" EntityType="Self.ACT_INFO" Schema="dbo" store:Type="Tables" />
@@ -258,6 +272,14 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [Faculty].[user_name] AS [user_name], 
     [Faculty].[Private] AS [Private]
     FROM [dbo].[Faculty] AS [Faculty]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="JENZ_ACT_CLUB_DEF" EntityType="Self.JENZ_ACT_CLUB_DEF" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [JENZ_ACT_CLUB_DEF].[ACT_CDE] AS [ACT_CDE], 
+    [JENZ_ACT_CLUB_DEF].[ACT_DESC] AS [ACT_DESC], 
+    [JENZ_ACT_CLUB_DEF].[ACT_TYPE] AS [ACT_TYPE], 
+    [JENZ_ACT_CLUB_DEF].[ACT_TYPE_DESC] AS [ACT_TYPE_DESC]
+    FROM [dbo].[JENZ_ACT_CLUB_DEF] AS [JENZ_ACT_CLUB_DEF]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="PART_DEF" EntityType="Self.PART_DEF" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -498,6 +520,10 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <End Role="SUPERVISOR1" EntitySet="SUPERVISOR" />
           </AssociationSet>
           <EntitySet Name="ACT_CLUB_DEF" EntityType="Gordon360.ACT_CLUB_DEF" />
+          <EntitySet Name="JENZ_ACT_CLUB_DEF" EntityType="Gordon360.JENZ_ACT_CLUB_DEF" />
+          <FunctionImport Name="UPDATE_ACT_CLUB_DEF" />
+          <FunctionImport Name="UPDATE_ACT_INFO" />
+          <FunctionImport Name="UPDATE_JNZB_ACTIVITIES" />
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
           <Property Type="String" Name="ACT_CDE" Nullable="false" MaxLength="8" />
@@ -716,6 +742,15 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           </Key>
           <Property Name="ACT_CDE" Type="String" Nullable="false" MaxLength="8" FixedLength="true" Unicode="false" />
           <Property Name="ACT_DESC" Type="String" Nullable="false" MaxLength="45" FixedLength="true" Unicode="false" />
+        </EntityType>
+        <EntityType Name="JENZ_ACT_CLUB_DEF">
+          <Key>
+            <PropertyRef Name="ACT_CDE" />
+          </Key>
+          <Property Name="ACT_CDE" Type="String" Nullable="false" MaxLength="8" FixedLength="true" Unicode="false" />
+          <Property Name="ACT_DESC" Type="String" MaxLength="45" FixedLength="true" Unicode="false" />
+          <Property Name="ACT_TYPE" Type="String" MaxLength="3" FixedLength="true" Unicode="false" />
+          <Property Name="ACT_TYPE_DESC" Type="String" MaxLength="60" FixedLength="true" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1141,6 +1176,19 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="JENZ_ACT_CLUB_DEF">
+            <EntityTypeMapping TypeName="Gordon360.JENZ_ACT_CLUB_DEF">
+              <MappingFragment StoreEntitySet="JENZ_ACT_CLUB_DEF">
+                <ScalarProperty Name="ACT_TYPE_DESC" ColumnName="ACT_TYPE_DESC" />
+                <ScalarProperty Name="ACT_TYPE" ColumnName="ACT_TYPE" />
+                <ScalarProperty Name="ACT_DESC" ColumnName="ACT_DESC" />
+                <ScalarProperty Name="ACT_CDE" ColumnName="ACT_CDE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="UPDATE_ACT_CLUB_DEF" FunctionName="Gordon360.Store.UPDATE_ACT_CLUB_DEF" />
+          <FunctionImportMapping FunctionImportName="UPDATE_ACT_INFO" FunctionName="Gordon360.Store.UPDATE_ACT_INFO" />
+          <FunctionImportMapping FunctionImportName="UPDATE_JNZB_ACTIVITIES" FunctionName="Gordon360.Store.UPDATE_JNZB_ACTIVITIES" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

@@ -240,6 +240,9 @@
     <Compile Include="Models\Faculty.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\JENZ_ACT_CLUB_DEF.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\JNZB_ACTIVITIES.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>

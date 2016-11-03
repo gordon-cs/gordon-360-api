@@ -19,6 +19,7 @@
         <EntityTypeShape EntityType="Gordon360.Student" Width="1.5" PointX="13.625" PointY="2.375" IsExpanded="true" />
         <AssociationConnector Association="Gordon360.FK_SUPERVISOR_SUPERVISOR" />
         <EntityTypeShape EntityType="Gordon360.ACT_CLUB_DEF" Width="1.5" PointX="7.375" PointY="0.75" />
+        <EntityTypeShape EntityType="Gordon360.JENZ_ACT_CLUB_DEF" Width="1.5" PointX="7.375" PointY="3.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

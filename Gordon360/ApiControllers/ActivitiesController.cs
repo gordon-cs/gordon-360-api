@@ -196,8 +196,7 @@ namespace Gordon360.Controllers.Api
                 // This illustrates how to get the file names.
                 foreach (MultipartFileData file in provider.FileData)
                 {
-                    FileInfo i = new FileInfo(file.LocalFileName);
-                    var uploadPath = uploadsFolder +  i.Name;
+                    var uploadPath = uploadsFolder + file.Headers.ContentDisposition.FileName.Replace("\"", "");
                     var baseUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority);
                     var imagePath = baseUrl + uploadPath;
                     _activityService.UpdateActivityImage(id, imagePath);
