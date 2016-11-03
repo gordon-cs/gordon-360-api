@@ -195,10 +195,7 @@ namespace Gordon360.Controllers.Api
                         file.Delete();
                     }
                 }
-                catch (System.Exception e)
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e.ToString());
-                }
+                catch (System.Exception e) {}
             }
 
             string root = HttpContext.Current.Server.MapPath("~" + uploadsFolder);
