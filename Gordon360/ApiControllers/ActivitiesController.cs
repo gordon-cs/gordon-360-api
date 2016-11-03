@@ -184,6 +184,22 @@ namespace Gordon360.Controllers.Api
             {
                 System.IO.Directory.CreateDirectory(HttpContext.Current.Server.MapPath("~" + uploadsFolder));
             }
+            else
+            {
+                try
+                {
+                    System.IO.DirectoryInfo di = new DirectoryInfo(HttpContext.Current.Server.MapPath("~" + uploadsFolder));
+
+                    foreach (FileInfo file in di.GetFiles())
+                    {
+                        file.Delete();
+                    }
+                }
+                catch (System.Exception e)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e.ToString());
+                }
+            }
 
             string root = HttpContext.Current.Server.MapPath("~" + uploadsFolder);
             var provider = new CustomMultipartFormDataStreamProvider(root);
