@@ -179,10 +179,26 @@ namespace Gordon360.Controllers.Api
             {
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
             }
+
+            var existingFile = "";
             
             if(!System.IO.Directory.Exists(HttpContext.Current.Server.MapPath("~" + uploadsFolder)))
             {
                 System.IO.Directory.CreateDirectory(HttpContext.Current.Server.MapPath("~" + uploadsFolder));
+            }
+            else
+            {
+                try
+                {
+                    System.IO.DirectoryInfo di = new DirectoryInfo(HttpContext.Current.Server.MapPath("~" + uploadsFolder));
+                    
+                    foreach (FileInfo file in di.GetFiles())
+                    {
+                        existingFile = file.Name;
+                        file.Delete();
+                    }
+                }
+                catch (System.Exception e) {}
             }
 
             string root = HttpContext.Current.Server.MapPath("~" + uploadsFolder);
@@ -196,8 +212,22 @@ namespace Gordon360.Controllers.Api
                 // This illustrates how to get the file names.
                 foreach (MultipartFileData file in provider.FileData)
                 {
-                    FileInfo i = new FileInfo(file.LocalFileName);
-                    var uploadPath = uploadsFolder +  i.Name;
+                    var fileName = file.Headers.ContentDisposition.FileName.Replace("\"", "");
+
+                    // If the file has the same name as the previous one, add a 1 at the end to make it different (so that the browser does not cache it)
+                    if (fileName.Equals(existingFile))
+                    {
+                        var oldFileName = fileName;
+
+                        // Add "1" before the extension
+                        fileName = fileName.Substring(0, fileName.LastIndexOf('.')) + "1" + fileName.Substring(fileName.LastIndexOf('.'));
+
+                        // Rename existing File
+                        System.IO.DirectoryInfo di = new DirectoryInfo(HttpContext.Current.Server.MapPath("~" + uploadsFolder));
+                        System.IO.File.Move(di.FullName + oldFileName, di.FullName + fileName);
+                    }
+
+                    var uploadPath = uploadsFolder + fileName;
                     var baseUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority);
                     var imagePath = baseUrl + uploadPath;
                     _activityService.UpdateActivityImage(id, imagePath);

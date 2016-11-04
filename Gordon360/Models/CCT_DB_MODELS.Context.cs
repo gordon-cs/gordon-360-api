@@ -40,6 +40,7 @@ namespace Gordon360.Models
         public virtual DbSet<Staff> Staff { get; set; }
         public virtual DbSet<Student> Student { get; set; }
         public virtual DbSet<ACT_CLUB_DEF> ACT_CLUB_DEF { get; set; }
+        public virtual DbSet<JENZ_ACT_CLUB_DEF> JENZ_ACT_CLUB_DEF { get; set; }
     
         public virtual ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> ACTIVE_CLUBS_PER_SESS_ID(string sESS_CDE)
         {
@@ -179,6 +180,21 @@ namespace Gordon360.Models
                 new ObjectParameter("ID_NUM", typeof(int));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SUPERVISORS_PER_ID_NUM", iD_NUMParameter);
+        }
+    
+        public virtual int UPDATE_ACT_CLUB_DEF()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_ACT_CLUB_DEF");
+        }
+    
+        public virtual int UPDATE_ACT_INFO()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_ACT_INFO");
+        }
+    
+        public virtual int UPDATE_JNZB_ACTIVITIES()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_JNZB_ACTIVITIES");
         }
     }
 }

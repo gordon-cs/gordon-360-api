@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System.IO;
+using System.Net.Http;
 
 namespace Gordon360.Providers
 {
@@ -9,7 +10,7 @@ namespace Gordon360.Providers
 
         public override string GetLocalFileName(System.Net.Http.Headers.HttpContentHeaders headers)
         {
-            return "activityImage.png";
+            return headers.ContentDisposition.FileName.Replace("\"", "");
         }
     }
 }
