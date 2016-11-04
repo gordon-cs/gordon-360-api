@@ -27,17 +27,15 @@ namespace Gordon360.Static.Methods
             return result; ;
         }
 
-        public static Array GetLeaderRoleCodes()
+        public static string GetLeaderRoleCodes()
         {
-            string[] leaderRoles = { "CAPT", "CODIR", "CORD", "DIREC", "PRES", "VICEC", "VICEP" };
-            return leaderRoles;
-
+            return "LEAD";
         }
 
-        public static Array GetTranscriptWorthyRoles()
+        public static string GetTranscriptWorthyRoles()
         {
-            string[] transcriptWorthyRoles = { "CAPT", "CODIR", "CORD", "DIREC", "PRES", "VICEC", "VICEP", "AC", "RA1", "RA2","RA3", "SEC" };
-            return transcriptWorthyRoles;
+            //string[] transcriptWorthyRoles = { "CAPT", "CODIR", "CORD", "DIREC", "PRES", "VICEC", "VICEP", "AC", "RA1", "RA2","RA3", "SEC" };
+            return "LEAD";
         }
     }
 }
