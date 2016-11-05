@@ -142,7 +142,7 @@ namespace Gordon360.Services
             // Filter leaders
             
             var leaderRoles = Helpers.GetLeaderRoleCodes();
-            result = result.Where(x => Array.IndexOf(leaderRoles,x.Participation.Trim()) != -1);
+            result = result.Where(x => leaderRoles == x.Participation.Trim());
 
             // Getting rid of whitespace inherited from the database .__.
             var trimmedResult = result.Select(x =>
