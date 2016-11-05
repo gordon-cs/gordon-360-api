@@ -74,6 +74,7 @@ namespace Gordon360.Services
     {
         MembershipViewModel Get(int id);
         IEnumerable<MembershipViewModel> GetLeaderMembershipsForActivity(string id);
+        IEnumerable<MembershipViewModel> GetAdvisorMembershipsForActivity(string id);
         IEnumerable<MembershipViewModel> GetMembershipsForActivity(string id);
         IEnumerable<MembershipViewModel> GetMembershipsForStudent(string id);
         IEnumerable<MembershipViewModel> GetAll();
