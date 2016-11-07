@@ -278,6 +278,13 @@
             <param name="id">The activity ID.</param>
             <returns>A list of all leader-type memberships for the specified activity.</returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.MembershipsController.GetAdvisorsForActivity(System.String)">
+            <summary>
+            Gets the advisor-type memberships associated with a given activity.
+            </summary>
+            <param name="id">The activity ID.</param>
+            <returns>A list of all advisor-type memberships for the specified activity.</returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.MembershipsController.Post(Gordon360.Models.MEMBERSHIP)">
             <summary>Create a new membership item to be added to database</summary>
             <param name="membership">The membership item containing all required and relevant information</param>
@@ -794,6 +801,13 @@
         <member name="M:Gordon360.Services.MembershipService.GetLeaderMembershipsForActivity(System.String)">
             <summary>
             Fetches the leaders of the activity whose activity code is specified by the parameter.
+            </summary>
+            <param name="id">The activity code.</param>
+            <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.GetAdvisorMembershipsForActivity(System.String)">
+            <summary>
+            Fetches the advisors of the activity whose activity code is specified by the parameter.
             </summary>
             <param name="id">The activity code.</param>
             <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>

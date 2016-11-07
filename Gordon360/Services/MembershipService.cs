@@ -174,7 +174,7 @@ namespace Gordon360.Services
             var result = RawSqlQuery<MembershipViewModel>.query("MEMBERSHIPS_PER_ACT_CDE @ACT_CDE", idParam);
             // Filter advisors
 
-            var advisorRole = Helpers.GetLeaderRoleCodes();
+            var advisorRole = Helpers.GetAdvisorRoleCodes();
             result = result.Where(x => advisorRole == x.Participation.Trim());
 
             // Getting rid of whitespace inherited from the database .__.
