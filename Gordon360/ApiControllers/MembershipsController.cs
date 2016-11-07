@@ -152,6 +152,38 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
 
+        /// <summary>
+        /// Gets the advisor-type memberships associated with a given activity.
+        /// </summary>
+        /// <param name="id">The activity ID.</param>
+        /// <returns>A list of all advisor-type memberships for the specified activity.</returns>
+        [HttpGet]
+        [Route("activity/{id}/advisors")]
+        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_BY_ACTIVITY)]
+        public IHttpActionResult GetAdvisorsForActivity(string id)
+        {
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+            var result = _membershipService.GetAdvisorMembershipsForActivity(id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+
         /// <summary>Create a new membership item to be added to database</summary>
         /// <param name="membership">The membership item containing all required and relevant information</param>
         /// <returns></returns>

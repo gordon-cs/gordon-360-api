@@ -157,53 +157,6 @@
             <returns>The information about the specified student</returns>
             <remarks>Queries the database for the specific student identified by their email</remarks>
         </member>
-        <member name="M:Gordon360.Controllers.Api.SupervisorsController.Get">
-            <summary>Get all supervisors</summary>
-            <returns>All supervisors and their corresponding information</returns>
-            <remarks>Queries the database for all supervisors</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.SupervisorsController.Get(System.Int32)">
-            <summary>Get a single supervisor</summary>
-            <param name="id">The ID of desired supervisor</param>
-            <returns>The supervisor object that has an ID matching the one specified in the URL</returns>
-            <remarks>Queries the database for a specific supervisor based on their Gordon ID</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.SupervisorsController.GetSupervisorsForActivity(System.String)">
-            <summary>
-            Get the supervisors for a given activity
-            </summary>
-            <param name="id">The identifier for a specific activity</param>
-            <returns></returns>
-            <remarks>
-            Get the supervisors for a specified activity within the database
-            </remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.SupervisorsController.GetSupervisorsForPerson(System.String)">
-            <summary>
-            Get the supervisor objects for a given gordon id
-            </summary>
-            <param name="id">the gordon id</param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.SupervisorsController.Put(System.Int32,Gordon360.Models.SUPERVISOR)">
-            <summary>Update an existing supervisor</summary>
-            <param name="id">The id for an existing supervisor</param>
-            <param name="supervisor">The supervisor object to be changed</param>
-            <returns>The changed supervisor object</returns>
-            <remarks>Queries the database to update one supervisor</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.SupervisorsController.Post(Gordon360.Models.SUPERVISOR)">
-            <summary>Add a new supervisor</summary>
-            <param name="supervisor">The name of the new supervisor</param>
-            <returns>The new supervisor object</returns>
-            <remarks>Queries the database to add a new supervisor into the table</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.SupervisorsController.Delete(System.Int32)">
-            <summary>Delete a supervisor</summary>
-            <param name="id">The ID of supervisor to be deleted</param>
-            <returns>The supervisor object that was deleted</returns>
-            <remarks>Queries the database to remove the row of the specified supervisor</remarks>
-        </member>
         <member name="M:Gordon360.Controllers.Api.ActivitiesController.Get">
             <summary>
             Get all available activities
@@ -277,6 +230,13 @@
             </summary>
             <param name="id">The activity ID.</param>
             <returns>A list of all leader-type memberships for the specified activity.</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.MembershipsController.GetAdvisorsForActivity(System.String)">
+            <summary>
+            Gets the advisor-type memberships associated with a given activity.
+            </summary>
+            <param name="id">The activity ID.</param>
+            <returns>A list of all advisor-type memberships for the specified activity.</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.MembershipsController.Post(Gordon360.Models.MEMBERSHIP)">
             <summary>Create a new membership item to be added to database</summary>
@@ -648,6 +608,13 @@
             <param name="activity_code"></param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivityAdvisors(System.String)">
+            <summary>
+            Get a list of emails for advisors in the activity during the current session.
+            </summary>
+            <param name="activity_code"></param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Services.EmailService.GetEmailsForActivity(System.String,System.String)">
             <summary>
             Get a list of the emails for all members in the activity during a specific session
@@ -657,6 +624,14 @@
             <returns>List of the emails for the members of this activity</returns>
         </member>
         <member name="M:Gordon360.Services.EmailService.GetEmailsForActivityLeaders(System.String,System.String)">
+            <summary>
+            Get a list of emails for leaders in the activity during a specified session
+            </summary>
+            <param name="activity_code">The activity code</param>
+            <param name="session_code">The session code</param>
+            <returns>List of emails for the leaders of this activity</returns>
+        </member>
+        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivityAdvisors(System.String,System.String)">
             <summary>
             Get a list of emails for leaders in the activity during a specified session
             </summary>
@@ -794,6 +769,13 @@
         <member name="M:Gordon360.Services.MembershipService.GetLeaderMembershipsForActivity(System.String)">
             <summary>
             Fetches the leaders of the activity whose activity code is specified by the parameter.
+            </summary>
+            <param name="id">The activity code.</param>
+            <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.GetAdvisorMembershipsForActivity(System.String)">
+            <summary>
+            Fetches the advisors of the activity whose activity code is specified by the parameter.
             </summary>
             <param name="id">The activity code.</param>
             <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>

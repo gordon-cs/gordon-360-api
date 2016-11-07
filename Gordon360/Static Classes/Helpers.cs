@@ -32,6 +32,11 @@ namespace Gordon360.Static.Methods
             return "LEAD";
         }
 
+        public static string GetAdvisorRoleCodes()
+        {
+            return "ADV";
+        }
+
         public static string GetTranscriptWorthyRoles()
         {
             //string[] transcriptWorthyRoles = { "CAPT", "CODIR", "CORD", "DIREC", "PRES", "VICEC", "VICEP", "AC", "RA1", "RA2","RA3", "SEC" };

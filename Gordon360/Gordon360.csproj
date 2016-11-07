@@ -184,7 +184,6 @@
     <Compile Include="ApiControllers\RolesController.cs" />
     <Compile Include="ApiControllers\SessionsController.cs" />
     <Compile Include="ApiControllers\StudentsController.cs" />
-    <Compile Include="ApiControllers\SupervisorsController.cs" />
     <Compile Include="ApiControllers\ActivitiesController.cs" />
     <Compile Include="ApiControllers\MembershipsController.cs" />
     <Compile Include="AuthorizationFilters\StateYourBusiness.cs" />

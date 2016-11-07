@@ -164,6 +164,39 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// Fetches the advisors of the activity whose activity code is specified by the parameter.
+        /// </summary>
+        /// <param name="id">The activity code.</param>
+        /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+        public IEnumerable<MembershipViewModel> GetAdvisorMembershipsForActivity(string id)
+        {
+            var idParam = new SqlParameter("@ACT_CDE", id);
+            var result = RawSqlQuery<MembershipViewModel>.query("MEMBERSHIPS_PER_ACT_CDE @ACT_CDE", idParam);
+            // Filter advisors
+
+            var advisorRole = Helpers.GetAdvisorRoleCodes();
+            result = result.Where(x => advisorRole == x.Participation.Trim());
+
+            // Getting rid of whitespace inherited from the database .__.
+            var trimmedResult = result.Select(x =>
+            {
+                var trim = x;
+                trim.ActivityCode = x.ActivityCode.Trim();
+                trim.ActivityDescription = x.ActivityDescription.Trim();
+                trim.SessionCode = x.SessionCode.Trim();
+                trim.SessionDescription = x.SessionDescription.Trim();
+                trim.IDNumber = x.IDNumber;
+                trim.FirstName = x.FirstName.Trim();
+                trim.LastName = x.LastName.Trim();
+                trim.Participation = x.Participation.Trim();
+                trim.ParticipationDescription = x.ParticipationDescription.Trim();
+                return trim;
+            });
+
+            return trimmedResult;
+        }
+
+        /// <summary>
         /// Fetches the memberships associated with the activity whose code is specified by the parameter.
         /// </summary>
         /// <param name="id">The activity code.</param>
