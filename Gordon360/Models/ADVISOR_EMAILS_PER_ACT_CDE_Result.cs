@@ -10,16 +10,11 @@
 namespace Gordon360.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class ACT_INFO
+    public partial class ADVISOR_EMAILS_PER_ACT_CDE_Result
     {
-        public string ACT_CDE { get; set; }
-        public string ACT_DESC { get; set; }
-        public string ACT_BLURB { get; set; }
-        public string ACT_URL { get; set; }
-        public string ACT_IMG_PATH { get; set; }
-        public string ACT_TYPE { get; set; }
-        public string ACT_TYPE_DESC { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
     }
 }

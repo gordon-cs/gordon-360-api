@@ -115,6 +115,39 @@ namespace Gordon360.Controllers.Api
 
         }
 
+        /// <summary>Gets the different types of activities taking place during a given session</summary>
+        /// <param name="id">The session identifier</param>
+        /// <returns>A list of all the different types of activities that are active during the given session determined by the id parameter</returns>
+        /// <remarks>Queries the database to find the distinct activities type of activities that are active during the session desired</remarks>
+        [HttpGet]
+        [Route("session/{id}/types")]
+        public IHttpActionResult GetActivityTypesForSession(string id)
+        {
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            var result = _activityService.GetActivityTypesForSession(id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+
+        }
+
         /// <summary>
         /// 
         /// </summary>

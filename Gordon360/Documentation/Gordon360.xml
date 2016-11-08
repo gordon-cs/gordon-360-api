@@ -176,6 +176,12 @@
             <returns>A list of all activities that are active during the given session determined by the id parameter</returns>
             <remarks>Queries the database to find which activities are active during the session desired</remarks>
         </member>
+        <member name="M:Gordon360.Controllers.Api.ActivitiesController.GetActivityTypesForSession(System.String)">
+            <summary>Gets the different types of activities taking place during a given session</summary>
+            <param name="id">The session identifier</param>
+            <returns>A list of all the different types of activities that are active during the given session determined by the id parameter</returns>
+            <remarks>Queries the database to find the distinct activities type of activities that are active during the session desired</remarks>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ActivitiesController.Put(System.String,Gordon360.Models.ACT_INFO)">
             <summary>
             
@@ -497,6 +503,13 @@
         <member name="M:Gordon360.Services.ActivityService.GetActivitiesForSession(System.String)">
             <summary>
             Fetches the Activities that are active during the session whose code is specified as parameter.
+            </summary>
+            <param name="id">The session code</param>
+            <returns>ActivityViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
+        </member>
+        <member name="M:Gordon360.Services.ActivityService.GetActivityTypesForSession(System.String)">
+            <summary>
+            Fetches the Activity types of activities that are active during the session whose code is specified as parameter.
             </summary>
             <param name="id">The session code</param>
             <returns>ActivityViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>

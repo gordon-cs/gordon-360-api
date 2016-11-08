@@ -206,6 +206,9 @@
     <Compile Include="Models\ADMIN.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ADVISOR_EMAILS_PER_ACT_CDE_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ALL_MEMBERSHIPS_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -231,6 +234,9 @@
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\CM_SESSION_MSTR.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DISTINCT_ACT_TYPE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\EMAILS_PER_ACT_CDE_Result.cs">

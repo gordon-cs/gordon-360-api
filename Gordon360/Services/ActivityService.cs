@@ -71,10 +71,34 @@ namespace Gordon360.Services
                 y.ActivityBlurb = record.ACT_BLURB ?? "";
                 y.ActivityURL = record.ACT_URL ?? "";
                 y.ActivityImagePath = record.ACT_IMG_PATH.Trim() ?? "";
+                y.ActivityType = record.ACT_TYPE.Trim() ?? "";
+                y.ActivityTypeDescription = record.ACT_TYPE_DESC.Trim() ?? "";
                 return y;
             });
             return activityInfo;
         }
+        /// <summary>
+        /// Fetches the Activity types of activities that are active during the session whose code is specified as parameter.
+        /// </summary>
+        /// <param name="id">The session code</param>
+        /// <returns>ActivityViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
+        public IEnumerable<String> GetActivityTypesForSession(string id)
+        {
+            // Stored procedure returns column ACT_TYPE_DESC
+            var query = RawSqlQuery<String>.query("DISTINCT_ACT_TYPE @SESS_CDE", new SqlParameter("SESS_CDE", SqlDbType.VarChar) { Value = id });
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "No Activities for this session was not found." };
+            }
+
+            // Remove white space
+            var types = query.Select(x => 
+            {
+                return x.Trim();
+            });
+            return types;
+        }
+
 
         /// <summary>
         /// Fetches all activity records from storage.
