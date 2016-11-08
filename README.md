@@ -18,7 +18,6 @@ Dive in.
     - [Memberships](#memberships)
     - [Clubs](#clubs)
     - [Membership Requests](#membership-requests)
-    - [Supervisors](#supervisors)
     - [Students](#students)
     - [Accounts](#accounts)
     - [Sessions](#sessions)
@@ -104,6 +103,8 @@ A record in this table stores:
 - ACT_BLURB - A short description of what the activity is about. This will be filled out by a leader.
 - ACT_URL - URL to the website for the club/organization (if they have one).
 - ACT_IMAGE_PATH - Path to where the activity logo is stored in the browseable folder.
+- ACT_TYPE - Short code for the type of the activity
+- ACT_TYPE_DESC - Full name of the type of the activity
 
 You might notice that this table is an extension of the ACT_CLUB_DEF view. It contains extra information that the view does not have, but that we need. This is clearly a case of Information Duplication; information is available in two places and can easily fall out of sync. To remedy this, the stored procedure [UPDATE_ACT_INFO](#update_act_info) was made.
 
@@ -149,16 +150,6 @@ A record in this table stores:
 - COMMENT_TXT - Comments to accompany the request.
 - STATUS - Status of the request. Should be either Pending, Approved or Denied.\
 
-
-###### SUPERVISOR 
-
-A record in this table stores:
-
-- ID_NUM - The gordon id number of the potential member.
-- SESS_CDE - The session short code during which this person is a supervisor.
-- ACT_CDE - The activity short code for which this person is a supervisor.
-
-The other three fields (USER_NAME, JOB_NAME and JOB_TIME) where meant to be administrative fields to store data about who inserted records and when they did it. We ended up not using them. We kept them because they have good potential use.
 
 ###### ACT_CLUB_DEF
 
@@ -282,6 +273,8 @@ What is it? Resource that respresents the affiliation between a student and a cl
 
 `api/memberships/activity/:id/leaders` Get the memberships of the leaders for the activity with activity code `id`.
 
+`api/memberships/activity/:id/advisors` Get the memberships of the adviors for the activity with activity code `id`.
+
 `api/memberships/student/:id` Get the memberships of the student with student id `id`.
 
 ##### POST
@@ -337,29 +330,6 @@ What is it? Resource that represents a person's application/request to join a cl
 ##### DELETE
 
 `api/requests/:id` Delete the membership application with id `id`.
-
-### Supervisors
-What is it? Resource that represents the supervisor of an activity.
-
-##### GET
-
-`api/supervisors` Get all the supervisors.
-
-`api/supervisors/:id` Get the supervisor with supervisor id `id`.
-
-`api/supervisors/activity/:id` Get the supervisors for the activity with activity code `id`.
-
-##### POST
-
-`api/supervisors` Create a new supervisor.
-
-#### PUT
-
-`api/supervisors/:id` Edit the supervisor with supervisor id `id`.
-
-##### DELETE
-
-`api/supervisors/:id` Delete the supervisor with supervisor id `id`.
 
 
 ### Students
@@ -420,6 +390,10 @@ What is it? Resource that represents emails.
 
 `api/emails/activity/:id/leaders/session/:sessionid` Get the emails for the leaders of the activity with activity code `id` during the session with session code `sessionid`.
 
+`api/emails/activity/:id/advisors` Get the emails for the advisors of the activity with activity code `id` during the current session.
+
+`api/emails/activity/:id/advisors/session/:sessionid` Get the emails for the advisors of the activity with activity code `id` during the session with session code `sessionid`.
+
 
 ### Admins
 What is it? Ressource that represents admins.
@@ -450,7 +424,7 @@ A test suite is available at `Tests/ApiEndpoints` to excercise the different end
 - `gordon_360_tests_member.py` -- Tests the api endpoints while authorized as a regular member.
 - `test_config.py` -- Configuration options, includes the following variables:
     - `activity_code` -- The activity that will be used for testing. Tests under `gordon_360_tests_leader.py` assume the account used for testing is a leader of this activity. Tests under `gordon_360_tests_member.py` assume the account used for testing is a member of this activity.
-    - `random_id_number` -- A random id number that is used when we want to verify if we can do things on behalf of someone else. E.g. A supervisor can create memberships for anyone. A regular member can only create a membership for him/herself.
+    - `random_id_number` -- A random id number that is used when we want to verify if we can do things on behalf of someone else. E.g. An advisor can create memberships for anyone. A regular member can only create a membership for him/herself.
     - `leadership_positions` -- A list of participation levels considered to be leadership positsions.
     - `hostURL` -- Base url of the api
 - `test_credentials.py` -- (If you cloned the project, you need to create this file) File with credentials the test program will use.
