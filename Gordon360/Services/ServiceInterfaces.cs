@@ -23,6 +23,7 @@ namespace Gordon360.Services
     {
         ActivityInfoViewModel Get(string id);
         IEnumerable<ActivityInfoViewModel> GetActivitiesForSession(string id);
+        IEnumerable<String> GetActivityTypesForSession(string id);
         IEnumerable<ActivityInfoViewModel> GetAll();
         ACT_INFO Update(string id, ACT_INFO activity);
         void UpdateActivityImage(string id, string path);
