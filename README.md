@@ -301,6 +301,8 @@ What is it? Resource that represents a club.
 
 `api/activities/session/:id` Get the clubs offered during the session with session code `id`.
 
+`api/activities/session/:id/types` Get the different activity types among the clubs offered during the session with session code `id`.
+
 ##### PUT
 
 `api/activities/:id` Edit club information for the club with activity code `id`.
