@@ -27,7 +27,6 @@ namespace Gordon360.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<ACT_INFO> ACT_INFO { get; set; }
         public virtual DbSet<ADMIN> ADMIN { get; set; }
         public virtual DbSet<JNZB_ACTIVITIES> JNZB_ACTIVITIES { get; set; }
         public virtual DbSet<MEMBERSHIP> MEMBERSHIP { get; set; }
@@ -41,6 +40,7 @@ namespace Gordon360.Models
         public virtual DbSet<Student> Student { get; set; }
         public virtual DbSet<ACT_CLUB_DEF> ACT_CLUB_DEF { get; set; }
         public virtual DbSet<JENZ_ACT_CLUB_DEF> JENZ_ACT_CLUB_DEF { get; set; }
+        public virtual DbSet<ACT_INFO> ACT_INFO { get; set; }
     
         public virtual ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> ACTIVE_CLUBS_PER_SESS_ID(string sESS_CDE)
         {
@@ -195,6 +195,24 @@ namespace Gordon360.Models
         public virtual int UPDATE_JNZB_ACTIVITIES()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_JNZB_ACTIVITIES");
+        }
+    
+        public virtual ObjectResult<ADVISOR_EMAILS_PER_ACT_CDE_Result> ADVISOR_EMAILS_PER_ACT_CDE(string aCT_CDE, string sESS_CDE)
+        {
+            var aCT_CDEParameter = aCT_CDE != null ?
+                new ObjectParameter("ACT_CDE", aCT_CDE) :
+                new ObjectParameter("ACT_CDE", typeof(string));
+    
+            var sESS_CDEParameter = sESS_CDE != null ?
+                new ObjectParameter("SESS_CDE", sESS_CDE) :
+                new ObjectParameter("SESS_CDE", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ADVISOR_EMAILS_PER_ACT_CDE_Result>("ADVISOR_EMAILS_PER_ACT_CDE", aCT_CDEParameter, sESS_CDEParameter);
+        }
+    
+        public virtual ObjectResult<DISTINCT_ACT_TYPE_Result> DISTINCT_ACT_TYPE()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<DISTINCT_ACT_TYPE_Result>("DISTINCT_ACT_TYPE");
         }
     }
 }

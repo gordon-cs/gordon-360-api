@@ -71,6 +71,8 @@ namespace Gordon360.Services
                 y.ActivityBlurb = record.ACT_BLURB ?? "";
                 y.ActivityURL = record.ACT_URL ?? "";
                 y.ActivityImagePath = record.ACT_IMG_PATH.Trim() ?? "";
+                y.ActivityType = record.ACT_TYPE.Trim() ?? "";
+                y.ActivityTypeDescription = record.ACT_TYPE_DESC.Trim() ?? "";
                 return y;
             });
             return activityInfo;

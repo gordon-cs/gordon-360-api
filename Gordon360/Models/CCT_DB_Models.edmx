@@ -21,6 +21,8 @@
           <Property Name="ACT_BLURB" Type="varchar(max)" />
           <Property Name="ACT_URL" Type="varchar(max)" />
           <Property Name="ACT_IMG_PATH" Type="varchar(max)" />
+          <Property Name="ACT_TYPE" Type="char" MaxLength="3" />
+          <Property Name="ACT_TYPE_DESC" Type="char" MaxLength="60" />
         </EntityType>
         <EntityType Name="ADMIN">
           <Key>
@@ -193,9 +195,14 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <Function Name="ACTIVE_CLUBS_PER_SESS_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="SESS_CDE" Type="char" Mode="In" />
         </Function>
+        <Function Name="ADVISOR_EMAILS_PER_ACT_CDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ACT_CDE" Type="char" Mode="In" />
+          <Parameter Name="SESS_CDE" Type="char" Mode="In" />
+        </Function>
         <Function Name="ALL_MEMBERSHIPS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="ALL_REQUESTS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="ALL_SUPERVISORS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="DISTINCT_ACT_TYPE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="EMAILS_PER_ACT_CDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ACT_CDE" Type="char" Mode="In" />
           <Parameter Name="SESS_CDE" Type="char" Mode="In" />
@@ -314,16 +321,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="Gordon360" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="ACT_INFO">
-          <Key>
-            <PropertyRef Name="ACT_CDE" />
-          </Key>
-          <Property Name="ACT_CDE" Type="String" MaxLength="8" FixedLength="true" Unicode="false" Nullable="false" />
-          <Property Name="ACT_DESC" Type="String" MaxLength="45" FixedLength="true" Unicode="false" Nullable="false" />
-          <Property Name="ACT_BLURB" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="ACT_URL" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="ACT_IMG_PATH" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="ADMIN">
           <Key>
             <PropertyRef Name="ADMIN_ID" />
@@ -459,7 +456,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="Private" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityContainer Name="CCTEntities1" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="ACT_INFO" EntityType="Self.ACT_INFO" />
           <EntitySet Name="ADMIN" EntityType="Self.ADMIN" />
           <EntitySet Name="JNZB_ACTIVITIES" EntityType="Self.JNZB_ACTIVITIES" />
           <EntitySet Name="MEMBERSHIP" EntityType="Self.MEMBERSHIP" />
@@ -524,6 +520,12 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImport Name="UPDATE_ACT_CLUB_DEF" />
           <FunctionImport Name="UPDATE_ACT_INFO" />
           <FunctionImport Name="UPDATE_JNZB_ACTIVITIES" />
+          <FunctionImport Name="ADVISOR_EMAILS_PER_ACT_CDE" ReturnType="Collection(Gordon360.ADVISOR_EMAILS_PER_ACT_CDE_Result)">
+            <Parameter Name="ACT_CDE" Mode="In" Type="String" />
+            <Parameter Name="SESS_CDE" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="DISTINCT_ACT_TYPE" ReturnType="Collection(Gordon360.DISTINCT_ACT_TYPE_Result)" />
+          <EntitySet Name="ACT_INFO" EntityType="Gordon360.ACT_INFO" />
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
           <Property Type="String" Name="ACT_CDE" Nullable="false" MaxLength="8" />
@@ -752,23 +754,33 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="ACT_TYPE" Type="String" MaxLength="3" FixedLength="true" Unicode="false" />
           <Property Name="ACT_TYPE_DESC" Type="String" MaxLength="60" FixedLength="true" Unicode="false" />
         </EntityType>
+        <ComplexType Name="ADVISOR_EMAILS_PER_ACT_CDE_Result">
+          <Property Type="String" Name="FirstName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="LastName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Email" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="DISTINCT_ACT_TYPE_Result">
+          <Property Type="String" Name="ACT_TYPE" Nullable="true" MaxLength="3" />
+          <Property Type="String" Name="ACT_TYPE_DESC" Nullable="true" MaxLength="60" />
+        </ComplexType>
+        <EntityType Name="ACT_INFO">
+          <Key>
+            <PropertyRef Name="ACT_CDE" />
+          </Key>
+          <Property Name="ACT_CDE" Type="String" Nullable="false" MaxLength="8" FixedLength="true" Unicode="false" />
+          <Property Name="ACT_DESC" Type="String" Nullable="false" MaxLength="45" FixedLength="true" Unicode="false" />
+          <Property Name="ACT_BLURB" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ACT_URL" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ACT_IMG_PATH" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ACT_TYPE" Type="String" MaxLength="3" FixedLength="true" Unicode="false" />
+          <Property Name="ACT_TYPE_DESC" Type="String" MaxLength="60" FixedLength="true" Unicode="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="Gordon360StoreContainer" CdmEntityContainer="CCTEntities1">
-          <EntitySetMapping Name="ACT_INFO">
-            <EntityTypeMapping TypeName="Gordon360.ACT_INFO">
-              <MappingFragment StoreEntitySet="ACT_INFO">
-                <ScalarProperty Name="ACT_IMG_PATH" ColumnName="ACT_IMG_PATH" />
-                <ScalarProperty Name="ACT_URL" ColumnName="ACT_URL" />
-                <ScalarProperty Name="ACT_BLURB" ColumnName="ACT_BLURB" />
-                <ScalarProperty Name="ACT_CDE" ColumnName="ACT_CDE" />
-                <ScalarProperty Name="ACT_DESC" ColumnName="ACT_DESC" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="ADMIN">
             <EntityTypeMapping TypeName="Gordon360.ADMIN">
               <MappingFragment StoreEntitySet="ADMIN">
@@ -1189,6 +1201,36 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImportMapping FunctionImportName="UPDATE_ACT_CLUB_DEF" FunctionName="Gordon360.Store.UPDATE_ACT_CLUB_DEF" />
           <FunctionImportMapping FunctionImportName="UPDATE_ACT_INFO" FunctionName="Gordon360.Store.UPDATE_ACT_INFO" />
           <FunctionImportMapping FunctionImportName="UPDATE_JNZB_ACTIVITIES" FunctionName="Gordon360.Store.UPDATE_JNZB_ACTIVITIES" />
+          <FunctionImportMapping FunctionImportName="ADVISOR_EMAILS_PER_ACT_CDE" FunctionName="Gordon360.Store.ADVISOR_EMAILS_PER_ACT_CDE">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.ADVISOR_EMAILS_PER_ACT_CDE_Result">
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="DISTINCT_ACT_TYPE" FunctionName="Gordon360.Store.DISTINCT_ACT_TYPE">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.DISTINCT_ACT_TYPE_Result">
+                <ScalarProperty Name="ACT_TYPE" ColumnName="ACT_TYPE" />
+                <ScalarProperty Name="ACT_TYPE_DESC" ColumnName="ACT_TYPE_DESC" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="ACT_INFO">
+            <EntityTypeMapping TypeName="Gordon360.ACT_INFO">
+              <MappingFragment StoreEntitySet="ACT_INFO">
+                <ScalarProperty Name="ACT_TYPE_DESC" ColumnName="ACT_TYPE_DESC" />
+                <ScalarProperty Name="ACT_TYPE" ColumnName="ACT_TYPE" />
+                <ScalarProperty Name="ACT_IMG_PATH" ColumnName="ACT_IMG_PATH" />
+                <ScalarProperty Name="ACT_URL" ColumnName="ACT_URL" />
+                <ScalarProperty Name="ACT_BLURB" ColumnName="ACT_BLURB" />
+                <ScalarProperty Name="ACT_DESC" ColumnName="ACT_DESC" />
+                <ScalarProperty Name="ACT_CDE" ColumnName="ACT_CDE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

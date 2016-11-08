@@ -12,7 +12,9 @@ namespace Gordon360.Models.ViewModels
         public string ActivityImagePath { get; set; }
         public string ActivityBlurb { get; set; }
         public string ActivityURL { get; set; }
-         
+        public string ActivityType { get; set; }
+        public string ActivityTypeDescription { get; set; }
+
         public static implicit operator ActivityInfoViewModel(ACT_INFO info)
         {
             ActivityInfoViewModel vm = new ActivityInfoViewModel
@@ -21,7 +23,9 @@ namespace Gordon360.Models.ViewModels
                 ActivityDescription = info.ACT_DESC.Trim() ?? "",
                 ActivityBlurb = info.ACT_BLURB ?? "",
                 ActivityURL = info.ACT_URL ?? "",
-                ActivityImagePath = info.ACT_IMG_PATH ?? ""
+                ActivityImagePath = info.ACT_IMG_PATH ?? "",
+                ActivityType = info.ACT_TYPE ?? "",
+                ActivityTypeDescription = info.ACT_TYPE_DESC ?? ""
             };
 
             return vm;
