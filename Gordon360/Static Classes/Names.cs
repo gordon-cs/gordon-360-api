@@ -8,7 +8,7 @@ namespace Gordon360.Static.Names
         public const string MEMBERSHIP = "A Membership Resource";
         public const string STUDENT = "A Student Resource";
         public const string ACCOUNT = "An Account Resource.";
-        public const string SUPERVISOR = "A Supervisor Resource";
+        public const string ADVISOR = "An Advisor Resource";
         public const string ADMIN = "An admininistrator Ressource";
         public const string ACTIVITY_INFO = "An Activity Info Service.";
 
@@ -19,7 +19,7 @@ namespace Gordon360.Static.Names
         public const string MEMBERSHIP_BY_STUDENT = "Membership Resources associated with a student";
         public const string EMAILS_BY_ACTIVITY = "Emails for activity members";
         public const string EMAILS_BY_LEADERS = "Emails for activity leaders";
-        public const string SUPERVISOR_BY_ACTIVITY = "Supervisor Resources associated with an activity";
+        public const string ADVISOR_BY_ACTIVITY = "Advisor Resources associated with an activity";
 
 
 

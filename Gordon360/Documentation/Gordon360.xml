@@ -901,60 +901,6 @@
             <param name="email">The Student email</param>
             <returns></returns>
         </member>
-        <member name="T:Gordon360.Services.SupervisorService">
-            <summary>
-            Service class to facilitate data transactions between the controller and the database models.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Services.SupervisorService.Add(Gordon360.Models.SUPERVISOR)">
-            <summary>
-            Adds a new Supervisor record to storage. Since we can't establish foreign key constraints and relationships on the database side,
-            we do it here by using the supervisorIsValid() method.
-            </summary>
-            <param name="supervisor">The supervisor to be added</param>
-            <returns>The newly added SUPERVISOR object</returns>
-        </member>
-        <member name="M:Gordon360.Services.SupervisorService.Delete(System.Int32)">
-            <summary>
-            Delete the supervisor whose id is specified by the parameter.
-            </summary>
-            <param name="id">The supervisor id</param>
-            <returns>The supervisor that was just deleted</returns>
-        </member>
-        <member name="M:Gordon360.Services.SupervisorService.Get(System.Int32)">
-            <summary>
-            Fetch the supervisor whose id is specified by the parameter
-            </summary>
-            <param name="id">The supervisor id</param>
-            <returns>SupervisorViewModel if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Services.SupervisorService.GetSupervisorsForActivity(System.String)">
-            <summary>
-            Fetches the supervisors of the activity whose activity code is specified by the parameter.
-            </summary>
-            <param name="id">The activity code.</param>
-            <returns>SupervisorViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        </member>
-        <member name="M:Gordon360.Services.SupervisorService.GetSupervisorsForPerson(System.String)">
-            <summary>
-            Fetch the supervisor objects associated with the gordon id number
-            </summary>
-            <param name="id">gordon id number</param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Services.SupervisorService.GetAll">
-            <summary>
-            Fetches all supervisor records from storage.
-            </summary>
-            <returns>SupervisorViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        </member>
-        <member name="M:Gordon360.Services.SupervisorService.validateSupervisor(Gordon360.Models.SUPERVISOR)">
-            <summary>
-            Helper method to check for the validity of a supervisor.
-            </summary>
-            <param name="supervisor">The supervisor to validate</param>
-            <returns>True if the supervisor is valid. False if it isn't</returns>
-        </member>
         <member name="T:Gordon360.Static.Methods.Helpers">
             <summary>
             Service class for methods that are shared between all services.
