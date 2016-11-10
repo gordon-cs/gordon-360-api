@@ -105,17 +105,6 @@ namespace Gordon360.Services
         IEnumerable<StudentViewModel> GetAll();
     }
 
-    public interface ISupervisorService
-    {
-        SupervisorViewModel Get(int id);
-        IEnumerable<SupervisorViewModel> GetSupervisorsForPerson(string id);
-        IEnumerable<SupervisorViewModel> GetSupervisorsForActivity(string id);
-        IEnumerable<SupervisorViewModel> GetAll();
-        SUPERVISOR Add(SUPERVISOR supervisor);
-        SUPERVISOR Update(int id, SUPERVISOR supervisor);
-        SUPERVISOR Delete(int id);
-    }
-
     public interface IMembershipRequestService
     {
         MembershipRequestViewModel Get(int id);
