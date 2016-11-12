@@ -185,9 +185,21 @@ namespace Gordon360.AuthorizationFilters
             switch (resource)
             {
                 case Resource.MEMBERSHIP_BY_ACTIVITY:
-                    return true;
+                    {
+                        // Only people that are part of the activity should be able to see members
+                        var membershipService = new MembershipService(new UnitOfWork());
+                        var activityCode = (string)context.ActionArguments["id"];
+                        var activityMembers = membershipService.GetMembershipsForActivity(activityCode);
+                        var is_personAMember = activityMembers.Where(x => x.IDNumber.ToString() == user_id && x.Participation != "GUEST").Count() > 0;
+                        if (is_personAMember)
+                            return true;
+                        return false;
+                    }
                 case Resource.MEMBERSHIP_BY_STUDENT:
-                    return true;
+                    {
+                        // Only the person itself or an admin can see someone's memberships
+                        return (string)context.ActionArguments["id"] == user_id;
+                    }
                 case Resource.MEMBERSHIP_REQUEST_BY_ACTIVITY:
                     {
                         // An activity leader should be able to see the membership requests that belong to the activity he is leading.
@@ -237,6 +249,10 @@ namespace Gordon360.AuthorizationFilters
                     {
                         return true;
                     }
+                case Resource.LEADER_BY_ACTIVITY:
+                    {
+                        return true;
+                    }
                 default: return false;
             }
         }
@@ -245,7 +261,11 @@ namespace Gordon360.AuthorizationFilters
             switch (resource)
             {
                 case Resource.MEMBERSHIP:
-                    return true;
+                    // User is admin
+                    if (user_position == Position.GOD)
+                        return true;
+                    else
+                        return false;
                 case Resource.MEMBERSHIP_REQUEST:
                     // User is admin
                     if (user_position == Position.GOD)

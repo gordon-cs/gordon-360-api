@@ -127,7 +127,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>A list of all leader-type memberships for the specified activity.</returns>
         [HttpGet]
         [Route("activity/{id}/leaders")]
-        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_BY_ACTIVITY)]
+        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.LEADER_BY_ACTIVITY)]
         public IHttpActionResult GetLeadersForActivity(string id)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
@@ -159,7 +159,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>A list of all advisor-type memberships for the specified activity.</returns>
         [HttpGet]
         [Route("activity/{id}/advisors")]
-        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_BY_ACTIVITY)]
+        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.ADVISOR_BY_ACTIVITY)]
         public IHttpActionResult GetAdvisorsForActivity(string id)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
