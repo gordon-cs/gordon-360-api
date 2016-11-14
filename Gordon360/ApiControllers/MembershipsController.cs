@@ -184,6 +184,62 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
 
+        /// <summary>
+        /// Gets the number of members and followers of an activity
+        /// </summary>
+        /// <param name="id">The activity ID.</param>
+        /// <returns>The number of followers of the activity</returns>
+        [HttpGet]
+        [Route("activity/{id}/followers")]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
+        public IHttpActionResult GetActivityFollowersCount(string id)
+        {
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+            var result = _membershipService.GetActivityFollowersCount(id);
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Gets the number of members and followers of an activity
+        /// </summary>
+        /// <param name="id">The activity ID.</param>
+        /// <returns>The number of members of the activity</returns>
+        [HttpGet]
+        [Route("activity/{id}/members")]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
+        public IHttpActionResult GetActivityMembersCount(string id)
+        {
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+            var result = _membershipService.GetActivityMembersCount(id);
+
+            return Ok(result);
+        }
+
         /// <summary>Create a new membership item to be added to database</summary>
         /// <param name="membership">The membership item containing all required and relevant information</param>
         /// <returns></returns>
