@@ -63,7 +63,7 @@ namespace Gordon360.Static.Names
 
     public static class Defaults
     {
-        public const string DEFAULT_ACTIVITY_IMAGE_PATH = "https://gordon360api.gordon.edu/browseable/uploads/Default/activityImage.png";
+        public const string DEFAULT_ACTIVITY_IMAGE_PATH = "https://360api.gordon.edu/browseable/uploads/Default/activityImage.png";
     }
     
 }
