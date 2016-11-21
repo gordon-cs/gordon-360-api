@@ -36,7 +36,8 @@ namespace Gordon360.Services
         {
             // validate returns a boolean value.
             validateMembership(membership);
-            
+            isPersonAlreadyInActivity(membership);
+
             // The Add() method returns the added membership.
             var payload = _unitOfWork.MembershipRepository.Add(membership);
 
@@ -260,6 +261,32 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// Fetches the number of followers associated with the activity whose code is specified by the parameter.
+        /// </summary>
+        /// <param name="id">The activity code.</param>
+        /// <returns>int.</returns>
+        public int GetActivityFollowersCount(string id)
+        {
+            var idParam = new SqlParameter("@ACT_CDE", id);
+            var result = RawSqlQuery<MembershipViewModel>.query("MEMBERSHIPS_PER_ACT_CDE @ACT_CDE", idParam);
+
+            return result.Where(x => x.Participation == "GUEST").Count();
+        }
+
+        /// <summary>
+        /// Fetches the number of memberships associated with the activity whose code is specified by the parameter.
+        /// </summary>
+        /// <param name="id">The activity code.</param>
+        /// <returns>int.</returns>
+        public int GetActivityMembersCount(string id)
+        {
+            var idParam = new SqlParameter("@ACT_CDE", id);
+            var result = RawSqlQuery<MembershipViewModel>.query("MEMBERSHIPS_PER_ACT_CDE @ACT_CDE", idParam);
+
+            return result.Where(x => x.Participation != "GUEST").Count();
+        }
+
+        /// <summary>
         /// Updates the membership whose id is given as the first parameter to the contents of the second parameter.
         /// </summary>
         /// <param name="id">The membership id.</param>
@@ -316,7 +343,6 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
             }
 
-
             var activitiesThisSession = RawSqlQuery<ACT_CLUB_DEF>.query("ACTIVE_CLUBS_PER_SESS_ID @SESS_CDE", new SqlParameter("SESS_CDE", SqlDbType.VarChar) { Value = membership.SESS_CDE });
 
             bool offered = false;
@@ -337,5 +363,16 @@ namespace Gordon360.Services
             return true;
         }
 
+        private bool isPersonAlreadyInActivity(MEMBERSHIP membershipRequest)
+        {
+            var personAlreadyInActivity = _unitOfWork.MembershipRepository.Where(x => x.SESS_CDE == membershipRequest.SESS_CDE &&
+                x.ACT_CDE == membershipRequest.ACT_CDE && x.ID_NUM == membershipRequest.ID_NUM).Count() > 0;
+            if (personAlreadyInActivity)
+            {
+                throw new ResourceCreationException() { ExceptionMessage = "The Person is already part of the activity." };
+            }
+
+            return true;
+        }
     }
 }

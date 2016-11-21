@@ -127,7 +127,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>A list of all leader-type memberships for the specified activity.</returns>
         [HttpGet]
         [Route("activity/{id}/leaders")]
-        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_BY_ACTIVITY)]
+        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.LEADER_BY_ACTIVITY)]
         public IHttpActionResult GetLeadersForActivity(string id)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
@@ -159,7 +159,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>A list of all advisor-type memberships for the specified activity.</returns>
         [HttpGet]
         [Route("activity/{id}/advisors")]
-        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_BY_ACTIVITY)]
+        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.ADVISOR_BY_ACTIVITY)]
         public IHttpActionResult GetAdvisorsForActivity(string id)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
@@ -181,6 +181,62 @@ namespace Gordon360.Controllers.Api
             {
                 return NotFound();
             }
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Gets the number of members and followers of an activity
+        /// </summary>
+        /// <param name="id">The activity ID.</param>
+        /// <returns>The number of followers of the activity</returns>
+        [HttpGet]
+        [Route("activity/{id}/followers")]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
+        public IHttpActionResult GetActivityFollowersCount(string id)
+        {
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+            var result = _membershipService.GetActivityFollowersCount(id);
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Gets the number of members and followers of an activity
+        /// </summary>
+        /// <param name="id">The activity ID.</param>
+        /// <returns>The number of members of the activity</returns>
+        [HttpGet]
+        [Route("activity/{id}/members")]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
+        public IHttpActionResult GetActivityMembersCount(string id)
+        {
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+            var result = _membershipService.GetActivityMembersCount(id);
+
             return Ok(result);
         }
 

@@ -81,6 +81,8 @@ namespace Gordon360.Services
         IEnumerable<MembershipViewModel> GetMembershipsForActivity(string id);
         IEnumerable<MembershipViewModel> GetMembershipsForStudent(string id);
         IEnumerable<MembershipViewModel> GetAll();
+        int GetActivityFollowersCount(string id);
+        int GetActivityMembersCount(string id);
         MEMBERSHIP Add(MEMBERSHIP membership);
         MEMBERSHIP Update(int id, MEMBERSHIP membership);
         MEMBERSHIP Delete(int id);   

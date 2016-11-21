@@ -33,6 +33,7 @@ namespace Gordon360.Services
         {
             // Validates the memberships request by throwing appropriate exceptions. The exceptions are caugth in the CustomExceptionFilter 
             validateMembershipRequest(membershipRequest);
+            isPersonAlreadyInActivity(membershipRequest);
 
             membershipRequest.STATUS = Request_Status.PENDING;
             var addedMembershipRequest = _unitOfWork.MembershipRequestRepository.Add(membershipRequest);
@@ -65,13 +66,37 @@ namespace Gordon360.Services
                 BEGIN_DTE = DateTime.Now,
                 COMMENT_TXT = ""
             };
-            // The add will fail if they are already a member.
-            var created = _unitOfWork.MembershipRepository.Add(newMembership);
-            
-            if (created == null)
+
+            MEMBERSHIP created;
+
+            var personAlreadyInActivity = _unitOfWork.MembershipRepository.Where(x => x.SESS_CDE == query.SESS_CDE &&
+                x.ACT_CDE == query.ACT_CDE && x.ID_NUM == query.ID_NUM);
+
+            // If the person is already in the activity, we simply change his or her role
+            if (personAlreadyInActivity.Count() > 0)
             {
-                // The main reason why a membership won't be added is if a similar one (similar id_num, part_lvl, sess_cde and act_cde ) exists.
-                throw new ResourceCreationException() { ExceptionMessage = "There was an error creating the membership. Verify that a similar membership doesn't already exist." };
+                created = personAlreadyInActivity.First();
+
+                if (created == null)
+                {
+                    throw new ResourceNotFoundException() { ExceptionMessage = "There was an error creating the membership." };
+                }
+
+                // Simply change role and comment
+                created.COMMENT_TXT = newMembership.COMMENT_TXT;
+                created.PART_CDE = newMembership.PART_CDE;
+            }
+            // Else, we add him or her to the activity
+            else
+            {
+                // The add will fail if they are already a member.
+                created = _unitOfWork.MembershipRepository.Add(newMembership);
+
+                if (created == null)
+                {
+                    // The main reason why a membership won't be added is if a similar one (similar id_num, part_lvl, sess_cde and act_cde ) exists.
+                    throw new ResourceCreationException() { ExceptionMessage = "There was an error creating the membership. Verify that a similar membership doesn't already exist." };
+                }
             }
             
             _unitOfWork.Save();
@@ -274,6 +299,18 @@ namespace Gordon360.Services
             if(!sessionExists)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Session was not found." };
+            }
+
+            return true;
+        }
+
+        private bool isPersonAlreadyInActivity(REQUEST membershipRequest)
+        {
+            var personAlreadyInActivity = _unitOfWork.MembershipRepository.Where(x => x.SESS_CDE == membershipRequest.SESS_CDE &&
+                x.ACT_CDE == membershipRequest.ACT_CDE && x.ID_NUM == membershipRequest.ID_NUM).Count() > 0;
+            if (personAlreadyInActivity)
+            {
+                throw new ResourceCreationException() { ExceptionMessage = "You are already part of the activity." };
             }
 
             return true;

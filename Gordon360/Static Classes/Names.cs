@@ -20,6 +20,7 @@ namespace Gordon360.Static.Names
         public const string EMAILS_BY_ACTIVITY = "Emails for activity members";
         public const string EMAILS_BY_LEADERS = "Emails for activity leaders";
         public const string ADVISOR_BY_ACTIVITY = "Advisor Resources associated with an activity";
+        public const string LEADER_BY_ACTIVITY = "Leader Ressources associated with an activity";
 
 
 
@@ -62,7 +63,7 @@ namespace Gordon360.Static.Names
 
     public static class Defaults
     {
-        public const string DEFAULT_ACTIVITY_IMAGE_PATH = "https://gordon360api.gordon.edu/browseable/uploads/Default/activityImage.png";
+        public const string DEFAULT_ACTIVITY_IMAGE_PATH = "https://360api.gordon.edu/browseable/uploads/Default/activityImage.png";
     }
     
 }

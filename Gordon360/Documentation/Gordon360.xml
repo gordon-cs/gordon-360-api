@@ -244,6 +244,20 @@
             <param name="id">The activity ID.</param>
             <returns>A list of all advisor-type memberships for the specified activity.</returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.MembershipsController.GetActivityFollowersCount(System.String)">
+            <summary>
+            Gets the number of members and followers of an activity
+            </summary>
+            <param name="id">The activity ID.</param>
+            <returns>The number of followers of the activity</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.MembershipsController.GetActivityMembersCount(System.String)">
+            <summary>
+            Gets the number of members and followers of an activity
+            </summary>
+            <param name="id">The activity ID.</param>
+            <returns>The number of members of the activity</returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.MembershipsController.Post(Gordon360.Models.MEMBERSHIP)">
             <summary>Create a new membership item to be added to database</summary>
             <param name="membership">The membership item containing all required and relevant information</param>
@@ -806,6 +820,20 @@
             </summary>
             <param name="id">The student id.</param>
             <returns>A MembershipViewModel IEnumerable. If nothing is found, an empty IEnumberable is returned.</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.GetActivityFollowersCount(System.String)">
+            <summary>
+            Fetches the number of followers associated with the activity whose code is specified by the parameter.
+            </summary>
+            <param name="id">The activity code.</param>
+            <returns>int.</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.GetActivityMembersCount(System.String)">
+            <summary>
+            Fetches the number of memberships associated with the activity whose code is specified by the parameter.
+            </summary>
+            <param name="id">The activity code.</param>
+            <returns>int.</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.Update(System.Int32,Gordon360.Models.MEMBERSHIP)">
             <summary>
