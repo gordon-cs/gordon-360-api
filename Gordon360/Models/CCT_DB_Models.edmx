@@ -202,7 +202,10 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <Function Name="ALL_MEMBERSHIPS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="ALL_REQUESTS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="ALL_SUPERVISORS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
-        <Function Name="DISTINCT_ACT_TYPE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="CURRENT_SESSION" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="DISTINCT_ACT_TYPE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="SESS_CDE" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="EMAILS_PER_ACT_CDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ACT_CDE" Type="char" Mode="In" />
           <Parameter Name="SESS_CDE" Type="char" Mode="In" />
@@ -241,7 +244,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <Function Name="SUPERVISORS_PER_ID_NUM" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ID_NUM" Type="int" Mode="In" />
         </Function>
-        <Function Name="UPDATE_ACT_CLUB_DEF" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="UPDATE_ACT_INFO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="UPDATE_JNZB_ACTIVITIES" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="Gordon360StoreContainer">
@@ -524,8 +526,11 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="ACT_CDE" Mode="In" Type="String" />
             <Parameter Name="SESS_CDE" Mode="In" Type="String" />
           </FunctionImport>
-          <FunctionImport Name="DISTINCT_ACT_TYPE" ReturnType="Collection(Gordon360.DISTINCT_ACT_TYPE_Result)" />
+          <FunctionImport Name="DISTINCT_ACT_TYPE" ReturnType="Collection(Gordon360.DISTINCT_ACT_TYPE_Result)" >
+            <Parameter Name="SESS_CDE" Mode="In" Type="String" />
+          </FunctionImport>
           <EntitySet Name="ACT_INFO" EntityType="Gordon360.ACT_INFO" />
+          <FunctionImport Name="CURRENT_SESSION" ReturnType="Collection(String)" />
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
           <Property Type="String" Name="ACT_CDE" Nullable="false" MaxLength="8" />
@@ -1198,7 +1203,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="UPDATE_ACT_CLUB_DEF" FunctionName="Gordon360.Store.UPDATE_ACT_CLUB_DEF" />
           <FunctionImportMapping FunctionImportName="UPDATE_ACT_INFO" FunctionName="Gordon360.Store.UPDATE_ACT_INFO" />
           <FunctionImportMapping FunctionImportName="UPDATE_JNZB_ACTIVITIES" FunctionName="Gordon360.Store.UPDATE_JNZB_ACTIVITIES" />
           <FunctionImportMapping FunctionImportName="ADVISOR_EMAILS_PER_ACT_CDE" FunctionName="Gordon360.Store.ADVISOR_EMAILS_PER_ACT_CDE">
@@ -1231,6 +1235,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="CURRENT_SESSION" FunctionName="Gordon360.Store.CURRENT_SESSION" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

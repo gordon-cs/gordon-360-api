@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Gordon360.Services.ComplexQueries;
+using Gordon360.Services;
 
 namespace Gordon360.Static.Methods
 {
@@ -19,11 +21,13 @@ namespace Gordon360.Static.Methods
         public static SessionViewModel GetCurrentSession()
         {
             var tempUnitOfWork = new UnitOfWork();
+            var sessionService = new SessionService(tempUnitOfWork);
 
-            // Filters the sessions to make sure they have dates.
-            var notNullQuery = tempUnitOfWork.SessionRepository.Where(x => x.SESS_BEGN_DTE.HasValue && x.SESS_END_DTE.HasValue);
-            var currentSession = notNullQuery.OrderByDescending(x => x.SESS_BEGN_DTE.Value).FirstOrDefault();
-            SessionViewModel result = currentSession;
+            var query = RawSqlQuery<String>.query("CURRENT_SESSION");
+            var currentSessionCode = query.Select(x => x).FirstOrDefault();
+
+            SessionViewModel result = sessionService.Get(currentSessionCode);
+
             return result; ;
         }
 
