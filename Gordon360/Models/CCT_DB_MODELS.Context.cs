@@ -210,9 +210,18 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ADVISOR_EMAILS_PER_ACT_CDE_Result>("ADVISOR_EMAILS_PER_ACT_CDE", aCT_CDEParameter, sESS_CDEParameter);
         }
     
-        public virtual ObjectResult<DISTINCT_ACT_TYPE_Result> DISTINCT_ACT_TYPE()
+        public virtual ObjectResult<DISTINCT_ACT_TYPE_Result> DISTINCT_ACT_TYPE(string sESS_CDE)
         {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<DISTINCT_ACT_TYPE_Result>("DISTINCT_ACT_TYPE");
+            var sESS_CDEParameter = sESS_CDE != null ?
+                new ObjectParameter("SESS_CDE", sESS_CDE) :
+                new ObjectParameter("SESS_CDE", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<DISTINCT_ACT_TYPE_Result>("DISTINCT_ACT_TYPE", sESS_CDEParameter);
+        }
+    
+        public virtual ObjectResult<string> CURRENT_SESSION()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("CURRENT_SESSION");
         }
     }
 }
