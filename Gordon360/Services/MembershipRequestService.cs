@@ -300,6 +300,13 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Session was not found." };
             }
+            // Add another check here to see if membership has already been requested
+            var requestedAlready = _unitOfWork.MembershipRequestRepository.Any(x => x.ID_NUM == membershipRequest.ID_NUM &&
+                x.SESS_CDE.Equals(membershipRequest.SESS_CDE) && x.ACT_CDE.Equals(membershipRequest.ACT_CDE));
+            if (requestedAlready)
+            {
+                throw new ResourceCreationException() { ExceptionMessage = "A request for this activity has already been made for you." };
+            }
 
             return true;
         }
