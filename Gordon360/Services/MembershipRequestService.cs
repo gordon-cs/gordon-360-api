@@ -300,12 +300,13 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Session was not found." };
             }
-            // Add another check here to see if membership has already been requested
-            var requestedAlready = _unitOfWork.MembershipRequestRepository.Any(x => x.ID_NUM == membershipRequest.ID_NUM &&
-                x.SESS_CDE.Equals(membershipRequest.SESS_CDE) && x.ACT_CDE.Equals(membershipRequest.ACT_CDE));
-            if (requestedAlready)
+            // Check for a pending request
+            var pendingRequest = _unitOfWork.MembershipRequestRepository.Any(x => x.ID_NUM == membershipRequest.ID_NUM &&
+                x.SESS_CDE.Equals(membershipRequest.SESS_CDE) && x.ACT_CDE.Equals(membershipRequest.ACT_CDE) && 
+                x.STATUS.Equals("Pending"));
+            if (pendingRequest)
             {
-                throw new ResourceCreationException() { ExceptionMessage = "A request for this activity has already been made for you." };
+                throw new ResourceCreationException() { ExceptionMessage = "A request for this activity has already been made for you and is awaiting group leader approval." };
             }
 
             return true;
