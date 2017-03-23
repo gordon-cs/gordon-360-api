@@ -14,7 +14,7 @@ Dive in.
 - [The Code](#the-code)	
     - [Introduction](#introduction) 
 - [API Endpoints](#api-endpoints)
-    - [Authentication] (#authentication)
+    - [Authentication](#authentication)
     - [Memberships](#memberships)
     - [Clubs](#clubs)
     - [Membership Requests](#membership-requests)
