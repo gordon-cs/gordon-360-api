@@ -7,11 +7,12 @@ namespace Gordon360.Models.ViewModels
 {
     public class SliderViewModel
     {
-        public string FilePath { get; set; }
+        public string ImagePath { get; set; }
         public string AltTag { get; set; }
         public string SliderTitle { get; set; }
         public string SliderSubTitle { get; set; }
         public string SliderAction { get; set; }
+        public string ActionLink { get; set; }
         public Nullable<int> Width { get; set; }
         public Nullable<int> Height { get; set; }
         public int SortOrder { get; set; }
@@ -20,11 +21,12 @@ namespace Gordon360.Models.ViewModels
         {
             SliderViewModel svm = new SliderViewModel
             {
-                FilePath = s.strLinkURL + s.strFileName,
+                ImagePath = s.strFileName,
                 AltTag = s.strAltTag,
                 SliderTitle = s.strSliderTitle,
                 SliderSubTitle = s.strSliderSubTitle,
                 SliderAction = s.strSliderAction,
+                ActionLink = s.strLinkURL,
                 Width = s.iWidth,
                 Height = s.iHeight,
                 SortOrder = s.sortOrder
