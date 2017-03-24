@@ -95,6 +95,28 @@
           <Property Name="JOB_TIME" Type="datetime" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6002: The table/view 'CCT.dbo.360_SLIDER' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="360_SLIDER">
+          <Key>
+            <PropertyRef Name="strFileName" />
+            <PropertyRef Name="strAltTag" />
+            <PropertyRef Name="dtModified" />
+            <PropertyRef Name="sortOrder" />
+          </Key>
+          <Property Name="strFileName" Type="varchar" MaxLength="159" Nullable="false" />
+          <Property Name="strFlashFileName" Type="varchar" MaxLength="100" />
+          <Property Name="strAltTag" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="strLinkURL" Type="varchar" MaxLength="500" />
+          <Property Name="strSliderTitle" Type="nchar" MaxLength="100" />
+          <Property Name="strSliderSubTitle" Type="nchar" MaxLength="100" />
+          <Property Name="strSliderAction" Type="nchar" MaxLength="100" />
+          <Property Name="iWidth" Type="int" />
+          <Property Name="iHeight" Type="int" />
+          <Property Name="strExtensions" Type="varchar" MaxLength="255" />
+          <Property Name="dtModified" Type="datetime" Nullable="false" />
+          <Property Name="sortOrder" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.ACCOUNT' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ACCOUNT">
           <Key>
@@ -254,6 +276,22 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="MEMBERSHIP" EntityType="Self.MEMBERSHIP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="REQUEST" EntityType="Self.REQUEST" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SUPERVISOR" EntityType="Self.SUPERVISOR" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="360_SLIDER" EntityType="Self.360_SLIDER" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [360_SLIDER].[strFileName] AS [strFileName], 
+    [360_SLIDER].[strFlashFileName] AS [strFlashFileName], 
+    [360_SLIDER].[strAltTag] AS [strAltTag], 
+    [360_SLIDER].[strLinkURL] AS [strLinkURL], 
+    [360_SLIDER].[strSliderTitle] AS [strSliderTitle], 
+    [360_SLIDER].[strSliderSubTitle] AS [strSliderSubTitle], 
+    [360_SLIDER].[strSliderAction] AS [strSliderAction], 
+    [360_SLIDER].[iWidth] AS [iWidth], 
+    [360_SLIDER].[iHeight] AS [iHeight], 
+    [360_SLIDER].[strExtensions] AS [strExtensions], 
+    [360_SLIDER].[dtModified] AS [dtModified], 
+    [360_SLIDER].[sortOrder] AS [sortOrder]
+    FROM [dbo].[360_SLIDER] AS [360_SLIDER]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="ACCOUNT" EntityType="Self.ACCOUNT" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [ACCOUNT].[gordon_id] AS [gordon_id], 
@@ -527,10 +565,11 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="SESS_CDE" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="DISTINCT_ACT_TYPE" ReturnType="Collection(Gordon360.DISTINCT_ACT_TYPE_Result)" >
-            <Parameter Name="SESS_CDE" Mode="In" Type="String" />
+          <Parameter Name="SESS_CDE" Mode="In" Type="String" />
           </FunctionImport>
           <EntitySet Name="ACT_INFO" EntityType="Gordon360.ACT_INFO" />
           <FunctionImport Name="CURRENT_SESSION" ReturnType="Collection(String)" />
+          <EntitySet Name="C360_SLIDER" EntityType="Gordon360.C360_SLIDER" />
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
           <Property Type="String" Name="ACT_CDE" Nullable="false" MaxLength="8" />
@@ -779,6 +818,26 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="ACT_IMG_PATH" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="ACT_TYPE" Type="String" MaxLength="3" FixedLength="true" Unicode="false" />
           <Property Name="ACT_TYPE_DESC" Type="String" MaxLength="60" FixedLength="true" Unicode="false" />
+        </EntityType>
+        <EntityType Name="C360_SLIDER">
+          <Key>
+            <PropertyRef Name="strFileName" />
+            <PropertyRef Name="strAltTag" />
+            <PropertyRef Name="dtModified" />
+            <PropertyRef Name="sortOrder" />
+          </Key>
+          <Property Name="strFileName" Type="String" Nullable="false" MaxLength="159" FixedLength="false" Unicode="false" />
+          <Property Name="strFlashFileName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="strAltTag" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="strLinkURL" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="strSliderTitle" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
+          <Property Name="strSliderSubTitle" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
+          <Property Name="strSliderAction" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
+          <Property Name="iWidth" Type="Int32" />
+          <Property Name="iHeight" Type="Int32" />
+          <Property Name="strExtensions" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="dtModified" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="sortOrder" Type="Int32" Nullable="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1236,6 +1295,24 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             </EntityTypeMapping>
           </EntitySetMapping>
           <FunctionImportMapping FunctionImportName="CURRENT_SESSION" FunctionName="Gordon360.Store.CURRENT_SESSION" />
+          <EntitySetMapping Name="C360_SLIDER">
+            <EntityTypeMapping TypeName="Gordon360.C360_SLIDER">
+              <MappingFragment StoreEntitySet="360_SLIDER">
+                <ScalarProperty Name="sortOrder" ColumnName="sortOrder" />
+                <ScalarProperty Name="dtModified" ColumnName="dtModified" />
+                <ScalarProperty Name="strExtensions" ColumnName="strExtensions" />
+                <ScalarProperty Name="iHeight" ColumnName="iHeight" />
+                <ScalarProperty Name="iWidth" ColumnName="iWidth" />
+                <ScalarProperty Name="strSliderAction" ColumnName="strSliderAction" />
+                <ScalarProperty Name="strSliderSubTitle" ColumnName="strSliderSubTitle" />
+                <ScalarProperty Name="strSliderTitle" ColumnName="strSliderTitle" />
+                <ScalarProperty Name="strLinkURL" ColumnName="strLinkURL" />
+                <ScalarProperty Name="strAltTag" ColumnName="strAltTag" />
+                <ScalarProperty Name="strFlashFileName" ColumnName="strFlashFileName" />
+                <ScalarProperty Name="strFileName" ColumnName="strFileName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
