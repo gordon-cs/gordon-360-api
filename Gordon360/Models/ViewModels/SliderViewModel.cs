@@ -20,7 +20,7 @@ namespace Gordon360.Models.ViewModels
         {
             SliderViewModel svm = new SliderViewModel
             {
-                FilePath = s.strLinkURL + s.strFileName + s.strExtensions,
+                FilePath = s.strLinkURL + s.strFileName,
                 AltTag = s.strAltTag,
                 SliderTitle = s.strSliderTitle,
                 SliderSubTitle = s.strSliderSubTitle,
@@ -32,18 +32,5 @@ namespace Gordon360.Models.ViewModels
 
             return svm;
         }
-
-        public string strFileName { get; set; }
-        public string strFlashFileName { get; set; }
-        public string strAltTag { get; set; }
-        public string strLinkURL { get; set; }
-        public string strSliderTitle { get; set; }
-        public string strSliderSubTitle { get; set; }
-        public string strSliderAction { get; set; }
-        public Nullable<int> iWidth { get; set; }
-        public Nullable<int> iHeight { get; set; }
-        public string strExtensions { get; set; }
-        public System.DateTime dtModified { get; set; }
-        public int sortOrder { get; set; }
     }
 }

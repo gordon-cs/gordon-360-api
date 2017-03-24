@@ -13,5 +13,34 @@ namespace Gordon360.Controllers.Api
     [CustomExceptionFilter]
     public class ContentManagementController : ApiController
     {
+        private IContentManagementService _contentManagementService;
+
+        public ContentManagementController()
+        {
+            var _unitOfWork = new UnitOfWork();
+            _contentManagementService = new ContentManagementService(_unitOfWork);
+        }
+
+        public ContentManagementController(IContentManagementService contentManagementService)
+        {
+            _contentManagementService = contentManagementService;
+        }
+
+        /// <summary>Get all the slider content for the dashboard slider</summary>
+        /// <returns>A list of all the slides for the slider</returns>
+        /// <remarks>Queries the database for all entries in slider table</remarks>
+        // GET: api/cms/slider
+        [HttpGet]
+        [Route("slider")]
+        public IHttpActionResult GetSliderContent()
+        {
+            var result = _contentManagementService.GetSliderContent();
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
     }
 }

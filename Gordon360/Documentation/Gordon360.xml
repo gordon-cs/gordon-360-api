@@ -37,6 +37,11 @@
             <param name="id">The identifier for the admin to be deleted</param>
             <remarks>Calls the server to make a call and remove the given admin from the database</remarks>
         </member>
+        <member name="M:Gordon360.Controllers.Api.ContentManagementController.GetSliderContent">
+            <summary>Get all the slider content for the dashboard slider</summary>
+            <returns>A list of all the slides for the slider</returns>
+            <remarks>Queries the database for all entries in slider table</remarks>
+        </member>
         <member name="M:Gordon360.Controllers.Api.MembershipRequestController.Get">
             <summary>
             Gets all Membership Request Objects
@@ -615,6 +620,18 @@
             <param name="query">An sql statment. Can be a stored procedure or even a simple SELECT statment</param>
             <param name="parameters">Parameters to pass into the stored procedure</param>
             <returns></returns>
+        </member>
+        <member name="T:Gordon360.Services.ContentManagementService">
+            <summary>
+            Service class that facilitates data (specifically, site content) passing between the ContentManagementController and the database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.ContentManagementService.GetSliderContent">
+            <summary>
+            Fetches the dashboard slider content from the database.
+            </summary>
+            <returns>If found, returns a set of SliderViewModel's, based on each slide entry in the db. 
+            If not returns an empty IEnumerable.</returns>
         </member>
         <member name="T:Gordon360.Services.EmailService">
             <summary>
