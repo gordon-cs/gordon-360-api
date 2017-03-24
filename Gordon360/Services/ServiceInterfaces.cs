@@ -120,4 +120,9 @@ namespace Gordon360.Services
         REQUEST DenyRequest(int id);
         REQUEST Delete(int id);
     }
+
+    public interface IContentManagementService
+    {
+        IEnumerable<SliderViewModel> GetSliderContent();
+    }
 }

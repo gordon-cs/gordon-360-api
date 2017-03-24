@@ -28,7 +28,7 @@ namespace Gordon360.Controllers.Api
         /// <summary>Get all the roles a person may have within an activity</summary>
         /// <returns>A list of all the roles and their coresponding acronyms</returns>
         /// <remarks>Queries the database for all the roles that are valid</remarks>
-        // GET: api/roles
+        // GET: api/participations
         [HttpGet]
         [Route("")]
         public IHttpActionResult Get()
