@@ -1,7 +1,6 @@
 # Gordon 360
 
-### (IN PROGRESS...)
-
+#### The API consumed by [Project Bernard](https://github.com/gordon-cs/Project-Bernard)
 Dive in.
 ## Table of Contents
 - [Machines and Sites](#machines-and-sites)
