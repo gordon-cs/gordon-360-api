@@ -21,7 +21,7 @@ namespace Gordon360.Models.ViewModels
         {
             SliderViewModel svm = new SliderViewModel
             {
-                ImagePath = s.strFileName,
+                ImagePath = "https://wwwtrain.gordon.edu" + s.strFileName,
                 AltTag = s.strAltTag,
                 SliderTitle = s.strSliderTitle,
                 SliderSubTitle = s.strSliderSubTitle,
