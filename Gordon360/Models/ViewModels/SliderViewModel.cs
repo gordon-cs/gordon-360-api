@@ -9,9 +9,10 @@ namespace Gordon360.Models.ViewModels
     {
         public string ImagePath { get; set; }
         public string AltTag { get; set; }
-        public string SliderTitle { get; set; }
-        public string SliderSubTitle { get; set; }
-        public string SliderAction { get; set; }
+        public bool HasCaption { get; set; }
+        public string Title { get; set; }
+        public string SubTitle { get; set; }
+        public string Action { get; set; }
         public string ActionLink { get; set; }
         public Nullable<int> Width { get; set; }
         public Nullable<int> Height { get; set; }
@@ -19,13 +20,19 @@ namespace Gordon360.Models.ViewModels
 
         public static implicit operator SliderViewModel(C360_SLIDER s)
         {
+            bool hasCaption = false;
+            if (!s.strSliderAction.Equals("") || !s.strSliderTitle.Equals("") || !s.strSliderSubTitle.Equals(""))
+            {
+                hasCaption = true;
+            }
             SliderViewModel svm = new SliderViewModel
             {
                 ImagePath = "https://wwwtrain.gordon.edu" + s.strFileName,
                 AltTag = s.strAltTag,
-                SliderTitle = s.strSliderTitle,
-                SliderSubTitle = s.strSliderSubTitle,
-                SliderAction = s.strSliderAction,
+                HasCaption = hasCaption,
+                Title = s.strSliderTitle,
+                SubTitle = s.strSliderSubTitle,
+                Action = s.strSliderAction,
                 ActionLink = s.strLinkURL,
                 Width = s.iWidth,
                 Height = s.iHeight,
