@@ -23,6 +23,7 @@ Dive in.
     - [Participation Definitions](#participation-definitions)
     - [Emails](#emails)
     - [Admins](#admins)
+    - [Content Management](#content-management)
 - [API Testing](#api-testing)
     - [Setting up](#setting-up)
     - [Introduction](#introduction)
@@ -178,6 +179,8 @@ Definitions of the different participation levels for someone in an activity.
 A subset of `ACCOUNT` that has only staff member records.
 ###### Student
 A subset of `ACCOUNT` that has only student records.
+###### 360_SLIDER
+Content (images, captions, and links) for the slider on the dashboard page.
 
 ### Stored Procedures
 
@@ -414,6 +417,14 @@ Who has access? Only super admins, except to get a specific admin where all admi
 ##### DELETE
 
 `api/admins/:id` Delete the admin with the admin id `id`.
+
+
+### Content Management
+What is it? Resource for fetching content that has been stored in the database by Gordon's website [content manager](http://wwwtrain.gordon.edu/).
+
+##### GET
+
+`api/cms/slider` Get the content for the dashboard slide.
 
 
 ## API Testing
