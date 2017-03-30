@@ -17,6 +17,7 @@ namespace Gordon360.Models.ViewModels
         public string LastName { get; set; }
         public string Participation { get; set; }
         public string ParticipationDescription { get; set; }
+        public bool GroupAdmin { get; set; }
         public DateTime StartDate { get; set; }
         public Nullable<DateTime> EndDate { get; set; }
         public string Description { get; set; }
@@ -31,6 +32,7 @@ namespace Gordon360.Models.ViewModels
                 SessionCode = m.SESS_CDE.Trim(),
                 IDNumber = m.ID_NUM,
                 Participation = m.PART_CDE.Trim(),
+                GroupAdmin = (bool) m.GRP_ADMIN,
                 StartDate = m.BEGIN_DTE, 
                 EndDate = m.END_DTE,
                 Description = m.COMMENT_TXT ?? "" // For Null comments

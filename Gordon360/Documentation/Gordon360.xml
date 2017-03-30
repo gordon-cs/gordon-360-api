@@ -235,6 +235,13 @@
             <param name="id">The activity ID</param>
             <returns>IHttpActionResult</returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.MembershipsController.GetGroupAdminForActivity(System.String)">
+            <summary>
+            Gets the group admin memberships associated with a given activity.
+            </summary>
+            <param name="id">The activity ID.</param>
+            <returns>A list of all leader-type memberships for the specified activity.</returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.MembershipsController.GetLeadersForActivity(System.String)">
             <summary>
             Gets the leader-type memberships associated with a given activity.
@@ -808,6 +815,13 @@
             <summary>
             Fetches all membership records from storage.
             </summary>
+            <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.GetGroupAdminMembershipsForActivity(System.String)">
+            <summary>
+            Fetches the group admin (who have edit privileges of the page) of the activity whose activity code is specified by the parameter.
+            </summary>
+            <param name="id">The activity code.</param>
             <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.GetLeaderMembershipsForActivity(System.String)">

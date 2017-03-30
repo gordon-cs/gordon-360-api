@@ -149,13 +149,16 @@ namespace Gordon360.AuthorizationFilters
 
                         var activityCode = mrToConsider.ActivityCode;
                         var membershipService = new MembershipService(new UnitOfWork());
-                        var isLeader = membershipService.GetLeaderMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
-                        if (isLeader) // If user is the leader of the activity that the request is sent to.
+                        var isGroupAdmin = membershipService.GetGroupAdminMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        if (isGroupAdmin) // If user is a group admin of the activity that the request is sent to
                             return true;
+                        //var isLeader = membershipService.GetLeaderMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        //if (isLeader) // If user is the leader of the activity that the request is sent to.
+                        //    return true;
 
-                        var isAdvisor = membershipService.GetAdvisorMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
-                        if (isAdvisor) // If user is the advisor of the activity that the request is sent to.
-                            return true;
+                        //var isAdvisor = membershipService.GetAdvisorMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        //if (isAdvisor) // If user is the advisor of the activity that the request is sent to.
+                        //    return true;
 
                         return false;
                     }
@@ -253,6 +256,10 @@ namespace Gordon360.AuthorizationFilters
                     {
                         return true;
                     }
+                case Resource.GROUP_ADMIN_BY_ACTIVITY:
+                    {
+                        return true;
+                    }
                 default: return false;
             }
         }
@@ -285,6 +292,12 @@ namespace Gordon360.AuthorizationFilters
                         return true;
                     else
                         return false;
+                case Resource.GROUP_ADMIN:
+                    // User is site-wide admin
+                    if (user_position == Position.GOD)
+                        return true;
+                    else
+                        return false;
                 case Resource.ACCOUNT:
                     return false;
                 case Resource.ADMIN:
@@ -309,11 +322,14 @@ namespace Gordon360.AuthorizationFilters
 
                         var activityCode = membershipToConsider.ACT_CDE;
                         var membershipService = new MembershipService(new UnitOfWork());
-                        var isLeader = membershipService.GetLeaderMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
-                        if (isLeader) // If user is the leader of the activity to which the membership is added
-                            return true;
-                        var isAdvisor = membershipService.GetAdvisorMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
-                        if (isAdvisor) // If user is the advisor of the activity that the request is sent to.
+                        //var isLeader = membershipService.GetLeaderMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        //if (isLeader) // If user is the leader of the activity to which the membership is added
+                        //    return true;
+                        //var isAdvisor = membershipService.GetAdvisorMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        //if (isAdvisor) // If user is the advisor of the activity that the request is sent to.
+                        //    return true;
+                        var isGroupAdmin = membershipService.GetGroupAdminMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        if (isGroupAdmin) // If user is the advisor of the activity that the request is sent to.
                             return true;
                         return false;
                     }
@@ -357,12 +373,15 @@ namespace Gordon360.AuthorizationFilters
                         var activityCode = membershipToConsider.ACT_CDE;
 
                         var membershipService = new MembershipService(new UnitOfWork());
-                        var is_membershipLeader = membershipService.GetLeaderMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
-                        if (is_membershipLeader)
-                            return true; // Activity Leaders can update memberships of people in their activity.
+                        //var is_membershipLeader = membershipService.GetLeaderMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        //if (is_membershipLeader)
+                        //    return true; // Activity Leaders can update memberships of people in their activity.
 
-                        var is_membershipAdvisor = membershipService.GetAdvisorMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
-                        if (is_membershipAdvisor)
+                        //var is_membershipAdvisor = membershipService.GetAdvisorMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        //if (is_membershipAdvisor)
+                        //    return true; // Activity Advisors can update memberships of people in their activity.
+                        var isGroupAdmin = membershipService.GetGroupAdminMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        if (isGroupAdmin)
                             return true; // Activity Advisors can update memberships of people in their activity.
 
                         var is_membershipOwner = membershipToConsider.ID_NUM.ToString() == user_id;
@@ -410,11 +429,15 @@ namespace Gordon360.AuthorizationFilters
                             return true;
                         var activityCode = (string)context.ActionArguments["id"];
                         var membershipService = new MembershipService(new UnitOfWork());
-                        var is_activity_leader = membershipService.GetLeaderMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
-                        if (is_activity_leader)
-                            return true;
-                        var is_advisor = membershipService.GetAdvisorMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
-                        if (is_advisor)
+                        //var is_activity_leader = membershipService.GetLeaderMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        //if (is_activity_leader)
+                        //    return true;
+                        //var is_advisor = membershipService.GetAdvisorMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        //if (is_advisor)
+                        //    return true;
+
+                        var isGroupAdmin = membershipService.GetGroupAdminMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        if (isGroupAdmin)
                             return true;
                         return false;
 
@@ -439,11 +462,14 @@ namespace Gordon360.AuthorizationFilters
                             return true;
 
                         var activityCode = membershipToConsider.ActivityCode;
-                        var is_membershipLeader = membershipService.GetLeaderMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
-                        if (is_membershipLeader)
-                            return true;
-                        var is_advisor = membershipService.GetAdvisorMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
-                        if (is_advisor)
+                        //var is_membershipLeader = membershipService.GetLeaderMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        //if (is_membershipLeader)
+                        //    return true;
+                        //var is_advisor = membershipService.GetAdvisorMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        //if (is_advisor)
+                        //    return true;
+                        var isGroupAdmin = membershipService.GetGroupAdminMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        if (isGroupAdmin)
                             return true;
 
                         return false;
@@ -463,12 +489,17 @@ namespace Gordon360.AuthorizationFilters
 
                         var activityCode = mrToConsider.ActivityCode;
                         var membershipService = new MembershipService(new UnitOfWork());
-                        var is_mrLeader = membershipService.GetLeaderMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
-                        if (is_mrLeader)
+                        //var is_mrLeader = membershipService.GetLeaderMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        //if (is_mrLeader)
+                        //    return true;
+                        //var is_mrAdvisor = membershipService.GetAdvisorMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        //if (is_mrAdvisor)
+                        //    return true;
+
+                        var isGroupAdmin = membershipService.GetGroupAdminMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        if (isGroupAdmin)
                             return true;
-                        var is_mrAdvisor = membershipService.GetAdvisorMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
-                        if (is_mrAdvisor)
-                            return true;
+
 
                         return false;
                     }
