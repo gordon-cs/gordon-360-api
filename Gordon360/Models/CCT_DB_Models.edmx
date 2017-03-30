@@ -68,6 +68,7 @@
           <Property Name="USER_NAME" Type="char" MaxLength="15" />
           <Property Name="JOB_NAME" Type="char" MaxLength="30" />
           <Property Name="JOB_TIME" Type="datetime" />
+          <Property Name="GRP_ADMIN" Type="bit" />
         </EntityType>
         <EntityType Name="REQUEST">
           <Key>
@@ -405,6 +406,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="USER_NAME" Type="String" MaxLength="15" FixedLength="true" Unicode="false" />
           <Property Name="JOB_NAME" Type="String" MaxLength="30" FixedLength="true" Unicode="false" />
           <Property Name="JOB_TIME" Type="DateTime" Precision="3" />
+          <Property Name="GRP_ADMIN" Type="Boolean" />
         </EntityType>
         <EntityType Name="REQUEST">
           <Key>
@@ -879,6 +881,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="MEMBERSHIP">
             <EntityTypeMapping TypeName="Gordon360.MEMBERSHIP">
               <MappingFragment StoreEntitySet="MEMBERSHIP">
+                <ScalarProperty Name="GRP_ADMIN" ColumnName="GRP_ADMIN" />
                 <ScalarProperty Name="MEMBERSHIP_ID" ColumnName="MEMBERSHIP_ID" />
                 <ScalarProperty Name="ACT_CDE" ColumnName="ACT_CDE" />
                 <ScalarProperty Name="SESS_CDE" ColumnName="SESS_CDE" />
