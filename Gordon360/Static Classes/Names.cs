@@ -20,6 +20,7 @@ namespace Gordon360.Static.Names
         public const string MEMBERSHIP_BY_STUDENT = "Membership Resources associated with a student";
         public const string EMAILS_BY_ACTIVITY = "Emails for activity members";
         public const string EMAILS_BY_LEADERS = "Emails for activity leaders";
+        public const string EMAILS_BY_GROUP_ADMIN = "Emails for group admin";
         public const string ADVISOR_BY_ACTIVITY = "Advisor Resources associated with an activity";
         public const string LEADER_BY_ACTIVITY = "Leader Ressources associated with an activity";
         public const string GROUP_ADMIN_BY_ACTIVITY = "Group Admin Resources associated with an activity";

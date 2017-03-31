@@ -46,10 +46,12 @@ namespace Gordon360.Services
     public interface IEmailService
     {
         // Get emails for the current session.
+        IEnumerable<EmailViewModel> GetEmailsForGroupAdmin(string id);
         IEnumerable<EmailViewModel> GetEmailsForActivityLeaders(string id);
         IEnumerable<EmailViewModel> GetEmailsForActivityAdvisors(string id);
         IEnumerable<EmailViewModel> GetEmailsForActivity(string id);
         // Get emails for some other session
+        IEnumerable<EmailViewModel> GetEmailsForGroupAdmin(string id, string session_code);
         IEnumerable<EmailViewModel> GetEmailsForActivityLeaders(string activity_code, string session_code);
         IEnumerable<EmailViewModel> GetEmailsForActivityAdvisors(string activity_code, string session_code);
         IEnumerable<EmailViewModel> GetEmailsForActivity(string activity_code, string session_code);

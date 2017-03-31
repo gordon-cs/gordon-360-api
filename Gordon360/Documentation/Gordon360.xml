@@ -652,6 +652,21 @@
             <param name="activity_code"></param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Services.EmailService.GetEmailsForGroupAdmin(System.String)">
+            <summary>
+            Get a list of emails for group admin in the activity during the current session.
+            </summary>
+            <param name="activity_code"></param>
+            <returns>A collection of group admin emails</returns>
+        </member>
+        <member name="M:Gordon360.Services.EmailService.GetEmailsForGroupAdmin(System.String,System.String)">
+            <summary>
+            Get a list of emails for group admin in the activity during a specified session.
+            </summary>
+            <param name="activity_code"></param>
+            <param name="session_code"></param>
+            <returns>A collection of the group admin emails</returns>
+        </member>
         <member name="M:Gordon360.Services.EmailService.GetEmailsForActivityLeaders(System.String)">
             <summary>
             Get a list of emails for leaders in the activity during the current session.

@@ -241,10 +241,19 @@ namespace Gordon360.AuthorizationFilters
                         var is_activityAdvisor = advisors.Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
                         if (is_activityAdvisor)
                             return true;
+
+                        var groupAdmin = membershipService.GetGroupAdminMembershipsForActivity(activityCode);
+                        var is_groupAdmin = advisors.Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        if (is_groupAdmin)
+                            return true;
                         return false;
                     }
-                // Anyone who is already logged in can contact the leaders
+                // Anyone who is already logged in can contact the leaders or group admin ("primary contact")
                 case Resource.EMAILS_BY_LEADERS:
+                    {
+                        return true;
+                    }
+                case Resource.EMAILS_BY_GROUP_ADMIN:
                     {
                         return true;
                     }
