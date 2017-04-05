@@ -142,7 +142,7 @@ namespace Gordon360.Services
             var result = RawSqlQuery<MembershipViewModel>.query("MEMBERSHIPS_PER_ACT_CDE @ACT_CDE", idParam);
 
             // Filter group admin
-            result = result.Where(x => x.GroupAdmin);
+            result = result.Where(x => x.GroupAdmin.HasValue && x.GroupAdmin.Value == true);
             // Getting rid of whitespace inherited from the database .__.
             var trimmedResult = result.Select(x =>
             {
