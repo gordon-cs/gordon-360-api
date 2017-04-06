@@ -25,8 +25,8 @@ Dive in.
     - [Admins](#admins)
     - [Content Management](#content-management)
 - [API Testing](#api-testing)
-    - [Setting up](#setting-up)
     - [Introduction](#introduction)
+    - [Running the Tests](#running-the-tests)
 - [Troubleshooting](#troubleshooting)
 
 ## Machines and Sites
@@ -135,6 +135,7 @@ A record in this table stores:
 - BEGIN_DTE - The date the membership began
 - END_DTE - The date the membership ended
 - COMMENT_TXT - Comment about the membership
+- GRP_ADMIN - A boolean indicating whether or not this member has group admin privileges, allowing them to edit the group's page on the site
 
 The other three fields (USER_NAME, JOB_NAME and JOB_TIME) where meant to be administrative fields to store data about who inserted records and when they did it. We ended up not using them. We kept them because they have good potential use.
 
@@ -276,6 +277,8 @@ What is it? Resource that respresents the affiliation between a student and a cl
 `api/memberships/activity/:id/leaders` Get the memberships of the leaders for the activity with activity code `id`.
 
 `api/memberships/activity/:id/advisors` Get the memberships of the adviors for the activity with activity code `id`.
+
+`api/memberships/activity/:id/group-admin` Get the memberships of the group admin (displayed as "Group Contacts") for the activity with activity code `id`.
 
 `api/memberships/student/:id` Get the memberships of the student with student id `id`.
 
