@@ -88,6 +88,7 @@ namespace Gordon360.Services
         int GetActivityMembersCount(string id);
         MEMBERSHIP Add(MEMBERSHIP membership);
         MEMBERSHIP Update(int id, MEMBERSHIP membership);
+        MEMBERSHIP ToggleGroupAdmin(int id, MEMBERSHIP membership);
         MEMBERSHIP Delete(int id);   
     }
 

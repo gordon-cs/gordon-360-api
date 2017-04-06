@@ -287,6 +287,12 @@
             <param name="membership">The content within the membership that is to be changed and what it will change to</param>
             <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         </member>
+        <member name="M:Gordon360.Controllers.Api.MembershipsController.ToggleGroupAdmin(System.Int32,Gordon360.Models.MEMBERSHIP)">
+            <summary>Update an existing membership item to be a group admin or not</summary>
+            <param name="id">The membership id of whichever one is to be changed</param>
+             /// <param name="membership">The content within the membership that is to be changed</param>
+            <remarks>Calls the server to make a call and update the database with the changed information</remarks>
+        </member>
         <member name="M:Gordon360.Controllers.Api.MembershipsController.Delete(System.Int32)">
             <summary>Delete an existing membership</summary>
             <param name="id">The identifier for the membership to be deleted</param>
@@ -887,6 +893,14 @@
             </summary>
             <param name="id">The membership id.</param>
             <param name="membership">The updated membership.</param>
+            <returns>The newly modified membership.</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.ToggleGroupAdmin(System.Int32,Gordon360.Models.MEMBERSHIP)">
+            <summary>
+            Switches the group-admin property of the person whose membership id is given
+            </summary>
+            <param name="id">The membership id.</param>
+            <param name="membership">The corresponding membership object</param>
             <returns>The newly modified membership.</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.validateMembership(Gordon360.Models.MEMBERSHIP)">

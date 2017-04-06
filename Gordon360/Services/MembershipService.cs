@@ -250,6 +250,7 @@ namespace Gordon360.Services
                 trim.LastName = x.LastName.Trim();
                 trim.Participation = x.Participation.Trim();
                 trim.ParticipationDescription = x.ParticipationDescription.Trim();
+                trim.GroupAdmin = x.GroupAdmin;
                 return trim;
             });
             return trimmedResult.OrderByDescending(x => x.StartDate);
@@ -346,6 +347,33 @@ namespace Gordon360.Services
             return original;
 
         }
+        /// <summary>
+        /// Switches the group-admin property of the person whose membership id is given
+        /// </summary>
+        /// <param name="id">The membership id.</param>
+        /// <param name="membership">The corresponding membership object</param>
+        /// <returns>The newly modified membership.</returns>
+        public MEMBERSHIP ToggleGroupAdmin(int id, MEMBERSHIP membership)
+        {
+            var original = _unitOfWork.MembershipRepository.GetById(id);
+            if (original == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
+            }
+
+            validateMembership(membership);
+
+            var isAdmin = original.GRP_ADMIN ?? false;
+            if (!isAdmin)
+                original.GRP_ADMIN = true;
+            else
+                original.GRP_ADMIN = false;
+
+            _unitOfWork.Save();
+
+            return original;
+        }
+
 
         /// <summary>
         /// Helper method to Validate a membership
