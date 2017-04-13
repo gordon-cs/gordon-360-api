@@ -373,15 +373,14 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>Update an existing membership item to be a group admin or not</summary>
-        /// <param name="id">The membership id of whichever one is to be changed</param>
         ///  /// <param name="membership">The content within the membership that is to be changed</param>
         /// <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         [HttpPut]
         [Route("{id}/group-admin")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP)]
-        public IHttpActionResult ToggleGroupAdmin(int id, [FromBody]MEMBERSHIP membership)
+        public IHttpActionResult ToggleGroupAdmin([FromBody]MEMBERSHIP membership)
         {
-            if (!ModelState.IsValid || membership == null || id != membership.MEMBERSHIP_ID)
+            if (!ModelState.IsValid || membership == null)
             {
                 string errors = "";
                 foreach (var modelstate in ModelState.Values)
@@ -394,6 +393,7 @@ namespace Gordon360.Controllers.Api
                 }
                 throw new BadInputException() { ExceptionMessage = errors };
             }
+            var id = membership.MEMBERSHIP_ID;
 
             var result = _membershipService.ToggleGroupAdmin(id, membership);
 
@@ -401,7 +401,7 @@ namespace Gordon360.Controllers.Api
             {
                 return NotFound();
             }
-            return Ok(membership);
+            return Ok(result);
         }
 
         /// <summary>Delete an existing membership</summary>

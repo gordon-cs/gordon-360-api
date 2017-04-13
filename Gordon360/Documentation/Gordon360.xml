@@ -287,7 +287,7 @@
             <param name="membership">The content within the membership that is to be changed and what it will change to</param>
             <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         </member>
-        <member name="M:Gordon360.Controllers.Api.MembershipsController.ToggleGroupAdmin(System.Int32,Gordon360.Models.MEMBERSHIP)">
+        <member name="M:Gordon360.Controllers.Api.MembershipsController.ToggleGroupAdmin(Gordon360.Models.MEMBERSHIP)">
             <summary>Update an existing membership item to be a group admin or not</summary>
             <param name="id">The membership id of whichever one is to be changed</param>
              /// <param name="membership">The content within the membership that is to be changed</param>
