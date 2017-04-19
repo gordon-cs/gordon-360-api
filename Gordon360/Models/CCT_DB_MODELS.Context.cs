@@ -41,6 +41,7 @@ namespace Gordon360.Models
         public virtual DbSet<ACT_CLUB_DEF> ACT_CLUB_DEF { get; set; }
         public virtual DbSet<JENZ_ACT_CLUB_DEF> JENZ_ACT_CLUB_DEF { get; set; }
         public virtual DbSet<ACT_INFO> ACT_INFO { get; set; }
+        public virtual DbSet<C360_SLIDER> C360_SLIDER { get; set; }
     
         public virtual ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> ACTIVE_CLUBS_PER_SESS_ID(string sESS_CDE)
         {
@@ -99,7 +100,9 @@ namespace Gordon360.Models
                 new ObjectParameter("STUDENT_ID", sTUDENT_ID) :
                 new ObjectParameter("STUDENT_ID", typeof(int));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<MEMBERSHIPS_PER_STUDENT_ID_Result>("MEMBERSHIPS_PER_STUDENT_ID", sTUDENT_IDParameter);
+            var result = ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<MEMBERSHIPS_PER_STUDENT_ID_Result>("MEMBERSHIPS_PER_STUDENT_ID", sTUDENT_IDParameter);
+
+            return result;
         }
     
         public virtual ObjectResult<REQUEST_PER_REQUEST_ID_Result> REQUEST_PER_REQUEST_ID(Nullable<int> rEQUEST_ID)

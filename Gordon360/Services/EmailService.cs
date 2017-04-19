@@ -42,6 +42,47 @@ namespace Gordon360.Services
             return result;
         }
 
+
+        /// <summary>
+        /// Get a list of emails for group admin in the activity during the current session.
+        /// </summary>
+        /// <param name="activity_code"></param>
+        /// <returns>A collection of group admin emails</returns>
+        public IEnumerable<EmailViewModel> GetEmailsForGroupAdmin(string activity_code)
+        {
+            var currentSessionCode = Helpers.GetCurrentSession().SessionCode;
+            var idParam = new SqlParameter("@ACT_CDE", activity_code);
+            var sessParam = new SqlParameter("@SESS_CDE", currentSessionCode);
+            var result = RawSqlQuery<EmailViewModel>.query("GRP_ADMIN_EMAILS_PER_ACT_CDE @ACT_CDE, @SESS_CDE", idParam, sessParam);
+
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Get a list of emails for group admin in the activity during a specified session.
+        /// </summary>
+        /// <param name="activity_code"></param>
+        /// <param name="session_code"></param>
+        /// <returns>A collection of the group admin emails</returns>
+        public IEnumerable<EmailViewModel> GetEmailsForGroupAdmin(string activity_code, string session_code)
+        {
+            var idParam = new SqlParameter("@ACT_CDE", activity_code);
+            var sessParam = new SqlParameter("@SESS_CDE", session_code);
+            var result = RawSqlQuery<EmailViewModel>.query("GRP_ADMIN_EMAILS_PER_ACT_CDE @ACT_CDE, @SESS_CDE", idParam, sessParam);
+
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
+            }
+
+            return result;
+        }
+
         /// <summary>
         /// Get a list of emails for leaders in the activity during the current session.
         /// </summary>

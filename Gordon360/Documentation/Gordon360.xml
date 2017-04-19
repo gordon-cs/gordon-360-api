@@ -37,6 +37,11 @@
             <param name="id">The identifier for the admin to be deleted</param>
             <remarks>Calls the server to make a call and remove the given admin from the database</remarks>
         </member>
+        <member name="M:Gordon360.Controllers.Api.ContentManagementController.GetSliderContent">
+            <summary>Get all the slider content for the dashboard slider</summary>
+            <returns>A list of all the slides for the slider</returns>
+            <remarks>Queries the database for all entries in slider table</remarks>
+        </member>
         <member name="M:Gordon360.Controllers.Api.MembershipRequestController.Get">
             <summary>
             Gets all Membership Request Objects
@@ -230,6 +235,13 @@
             <param name="id">The activity ID</param>
             <returns>IHttpActionResult</returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.MembershipsController.GetGroupAdminForActivity(System.String)">
+            <summary>
+            Gets the group admin memberships associated with a given activity.
+            </summary>
+            <param name="id">The activity ID.</param>
+            <returns>A list of all leader-type memberships for the specified activity.</returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.MembershipsController.GetLeadersForActivity(System.String)">
             <summary>
             Gets the leader-type memberships associated with a given activity.
@@ -273,6 +285,11 @@
             <summary>Update an existing membership item</summary>
             <param name="id">The membership id of whichever one is to be changed</param>
             <param name="membership">The content within the membership that is to be changed and what it will change to</param>
+            <remarks>Calls the server to make a call and update the database with the changed information</remarks>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.MembershipsController.ToggleGroupAdmin(Gordon360.Models.MEMBERSHIP)">
+            <summary>Update an existing membership item to be a group admin or not</summary>
+             /// <param name="membership">The content within the membership that is to be changed</param>
             <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         </member>
         <member name="M:Gordon360.Controllers.Api.MembershipsController.Delete(System.Int32)">
@@ -616,6 +633,18 @@
             <param name="parameters">Parameters to pass into the stored procedure</param>
             <returns></returns>
         </member>
+        <member name="T:Gordon360.Services.ContentManagementService">
+            <summary>
+            Service class that facilitates data (specifically, site content) passing between the ContentManagementController and the database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.ContentManagementService.GetSliderContent">
+            <summary>
+            Fetches the dashboard slider content from the database.
+            </summary>
+            <returns>If found, returns a set of SliderViewModel's, based on each slide entry in the db. 
+            If not returns an empty IEnumerable.</returns>
+        </member>
         <member name="T:Gordon360.Services.EmailService">
             <summary>
             Service class to facilitate getting emails for members of an activity.
@@ -627,6 +656,21 @@
             </summary>
             <param name="activity_code"></param>
             <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.EmailService.GetEmailsForGroupAdmin(System.String)">
+            <summary>
+            Get a list of emails for group admin in the activity during the current session.
+            </summary>
+            <param name="activity_code"></param>
+            <returns>A collection of group admin emails</returns>
+        </member>
+        <member name="M:Gordon360.Services.EmailService.GetEmailsForGroupAdmin(System.String,System.String)">
+            <summary>
+            Get a list of emails for group admin in the activity during a specified session.
+            </summary>
+            <param name="activity_code"></param>
+            <param name="session_code"></param>
+            <returns>A collection of the group admin emails</returns>
         </member>
         <member name="M:Gordon360.Services.EmailService.GetEmailsForActivityLeaders(System.String)">
             <summary>
@@ -793,6 +837,13 @@
             </summary>
             <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
         </member>
+        <member name="M:Gordon360.Services.MembershipService.GetGroupAdminMembershipsForActivity(System.String)">
+            <summary>
+            Fetches the group admin (who have edit privileges of the page) of the activity whose activity code is specified by the parameter.
+            </summary>
+            <param name="id">The activity code.</param>
+            <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+        </member>
         <member name="M:Gordon360.Services.MembershipService.GetLeaderMembershipsForActivity(System.String)">
             <summary>
             Fetches the leaders of the activity whose activity code is specified by the parameter.
@@ -841,6 +892,14 @@
             </summary>
             <param name="id">The membership id.</param>
             <param name="membership">The updated membership.</param>
+            <returns>The newly modified membership.</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.ToggleGroupAdmin(System.Int32,Gordon360.Models.MEMBERSHIP)">
+            <summary>
+            Switches the group-admin property of the person whose membership id is given
+            </summary>
+            <param name="id">The membership id.</param>
+            <param name="membership">The corresponding membership object</param>
             <returns>The newly modified membership.</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.validateMembership(Gordon360.Models.MEMBERSHIP)">

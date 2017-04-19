@@ -46,10 +46,12 @@ namespace Gordon360.Services
     public interface IEmailService
     {
         // Get emails for the current session.
+        IEnumerable<EmailViewModel> GetEmailsForGroupAdmin(string id);
         IEnumerable<EmailViewModel> GetEmailsForActivityLeaders(string id);
         IEnumerable<EmailViewModel> GetEmailsForActivityAdvisors(string id);
         IEnumerable<EmailViewModel> GetEmailsForActivity(string id);
         // Get emails for some other session
+        IEnumerable<EmailViewModel> GetEmailsForGroupAdmin(string id, string session_code);
         IEnumerable<EmailViewModel> GetEmailsForActivityLeaders(string activity_code, string session_code);
         IEnumerable<EmailViewModel> GetEmailsForActivityAdvisors(string activity_code, string session_code);
         IEnumerable<EmailViewModel> GetEmailsForActivity(string activity_code, string session_code);
@@ -78,6 +80,7 @@ namespace Gordon360.Services
         MembershipViewModel Get(int id);
         IEnumerable<MembershipViewModel> GetLeaderMembershipsForActivity(string id);
         IEnumerable<MembershipViewModel> GetAdvisorMembershipsForActivity(string id);
+        IEnumerable<MembershipViewModel> GetGroupAdminMembershipsForActivity(string id);
         IEnumerable<MembershipViewModel> GetMembershipsForActivity(string id);
         IEnumerable<MembershipViewModel> GetMembershipsForStudent(string id);
         IEnumerable<MembershipViewModel> GetAll();
@@ -85,6 +88,7 @@ namespace Gordon360.Services
         int GetActivityMembersCount(string id);
         MEMBERSHIP Add(MEMBERSHIP membership);
         MEMBERSHIP Update(int id, MEMBERSHIP membership);
+        MEMBERSHIP ToggleGroupAdmin(int id, MEMBERSHIP membership);
         MEMBERSHIP Delete(int id);   
     }
 
@@ -119,5 +123,10 @@ namespace Gordon360.Services
         MEMBERSHIP ApproveRequest(int id);
         REQUEST DenyRequest(int id);
         REQUEST Delete(int id);
+    }
+
+    public interface IContentManagementService
+    {
+        IEnumerable<SliderViewModel> GetSliderContent();
     }
 }

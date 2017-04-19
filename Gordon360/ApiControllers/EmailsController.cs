@@ -106,6 +106,32 @@ namespace Gordon360.ApiControllers
             return Ok(result);
         }
 
+        [Route("activity/{id}/group-admin/session/{session}")]
+        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_GROUP_ADMIN)]
+        public IHttpActionResult GetEmailsForGroupAdmin(string id, string session)
+        {
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+            var result = _emailService.GetEmailsForGroupAdmin(id, session);
+
+            if (result == null)
+            {
+                NotFound();
+            }
+            return Ok(result);
+        }
+
         [Route("activity/{id}/leaders/session/{session}")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_LEADERS)]
         public IHttpActionResult GetEmailsForleader(string id, string session)
