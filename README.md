@@ -15,7 +15,7 @@ Dive in.
 - [API Endpoints](#api-endpoints)
     - [Authentication](#authentication)
     - [Memberships](#memberships)
-    - [Clubs](#clubs)
+    - [Activities](#activities)
     - [Membership Requests](#membership-requests)
     - [Students](#students)
     - [Accounts](#accounts)
@@ -295,25 +295,25 @@ What is it? Resource that respresents the affiliation between a student and a cl
 `api/memberships/:id` Delete the membership with membership id `id`.
 
 
-### Clubs
-What is it? Resource that represents a club.
+### Activities
+What is it? Resource that represents some activity - such as a club, ministry, leadership program, etc.
 
 ##### GET
 
-`api/activities` Get all the clubs.
+`api/activities` Get all the activities.
 
-`api/activities/:id` Get the club with activity code `id`.
+`api/activities/:id` Get the activity with activity code `id`.
 
-`api/activities/session/:id` Get the clubs offered during the session with session code `id`.
+`api/activities/session/:id` Get the activity offered during the session with session code `id`.
 
-`api/activities/session/:id/types` Get the different activity types among the clubs offered during the session with session code `id`.
+`api/activities/session/:id/types` Get the different activity types among the activities offered during the session with session code `id`.
 
 ##### PUT
 
-`api/activities/:id` Edit club information for the club with activity code `id`.
+`api/activities/:id` Edit activity information for the club with activity code `id`.
 
 ### Membership Requests
-What is it? Resource that represents a person's application/request to join a club.
+What is it? Resource that represents a person's application/request to join an activity group.
 
 ##### GET
 
