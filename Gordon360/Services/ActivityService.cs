@@ -138,6 +138,18 @@ namespace Gordon360.Services
 
         }
 
+        public void CloseOutActivityForSession(string id, string sess_cde)
+        {
+            var memberships = _unitOfWork.MembershipRepository.Where(x => x.ACT_CDE == id && x.SESS_CDE == sess_cde);
+
+            foreach (var mem in memberships)
+            {
+                mem.END_DTE = DateTime.Today;
+            }
+
+            _unitOfWork.Save();
+        }
+
         /// <summary>
         /// Sets the path for the activity image.
         /// </summary>

@@ -183,6 +183,16 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
 
+        [HttpPut]
+        [Route("{id}/session/{sess_cde}/close")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP)]
+        public IHttpActionResult CloseSession(string id, string sess_cde)
+        {
+            _activityService.CloseOutActivityForSession(id, sess_cde);
+
+            return Ok();
+        }
+
         /// <summary>
         /// Set an image for the activity
         /// </summary>
