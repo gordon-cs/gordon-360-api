@@ -175,7 +175,7 @@ namespace Gordon360.Controllers.Api
         {
             var sessionCode = Helpers.GetCurrentSession().SessionCode;
 
-            var activities = _activityService.GetOpenActivities();
+            var activities = _activityService.GetOpenActivities(sessionCode);
 
             return Ok(activities);
         }
@@ -190,7 +190,7 @@ namespace Gordon360.Controllers.Api
         {
             var sessionCode = Helpers.GetCurrentSession().SessionCode;
 
-            var activities = _activityService.GetClosedActivities();
+            var activities = _activityService.GetClosedActivities(sessionCode);
 
             return Ok(activities);
         }

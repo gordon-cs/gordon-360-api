@@ -134,9 +134,9 @@ namespace Gordon360.Services
         /// memberships with an END_DTE that is null
         /// </summary>
         /// <returns>The collection of activity codes for open activities</returns>
-        public IEnumerable<string> GetOpenActivities()
+        public IEnumerable<string> GetOpenActivities(string sess_cde)
         {
-            var query = from mem in _unitOfWork.MembershipRepository.Where(m => m.END_DTE == null)
+            var query = from mem in _unitOfWork.MembershipRepository.Where(m => m.END_DTE == null && m.SESS_CDE == sess_cde)
                         group mem by mem.ACT_CDE into activities
                         select activities;
 
@@ -150,6 +150,9 @@ namespace Gordon360.Services
 
             return activity_codes;
 
+            //TODO: this works for all the activities that actually have members. But if an acivity has no members, it
+            // will not show up as closed or open.
+
         }
 
         /// <summary>
@@ -157,9 +160,9 @@ namespace Gordon360.Services
         /// memberships with an END_DTE that is not null
         /// </summary>
         /// <returns>The collection of activity codes for open activities</returns>
-        public IEnumerable<string> GetClosedActivities()
+        public IEnumerable<string> GetClosedActivities(string sess_cde)
         {
-            var query = from mem in _unitOfWork.MembershipRepository.Where((m => m.END_DTE != null))
+            var query = from mem in _unitOfWork.MembershipRepository.Where(m => m.END_DTE != null && m.SESS_CDE == sess_cde)
                                  group mem by mem.ACT_CDE into activities
                                  orderby activities.Key
                                  select activities;

@@ -26,8 +26,8 @@ namespace Gordon360.Services
         IEnumerable<String> GetActivityTypesForSession(string id);
         IEnumerable<ActivityInfoViewModel> GetAll();
         bool IsOpen(string id);
-        IEnumerable<string> GetOpenActivities();
-        IEnumerable<string> GetClosedActivities();
+        IEnumerable<string> GetOpenActivities(string sess_cde);
+        IEnumerable<string> GetClosedActivities(string sess_cde);
         ACT_INFO Update(string id, ACT_INFO activity);
         void CloseOutActivityForSession(string id, string sess_cde);
         void UpdateActivityImage(string id, string path);
