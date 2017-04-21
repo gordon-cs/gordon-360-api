@@ -14,6 +14,7 @@ using System.Net;
 using System.Diagnostics;
 using Gordon360.Providers;
 using System.IO;
+using Gordon360.Static.Methods;
 
 namespace Gordon360.Controllers.Api
 {
@@ -146,6 +147,52 @@ namespace Gordon360.Controllers.Api
 
             return Ok(result);
 
+        }
+
+        /// <summary>
+        /// Get the status (open or closed) of an activity for the current session
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{id}/status")]
+        public IHttpActionResult GetActivityStatus(string id)
+        {
+            var sessionCode = Helpers.GetCurrentSession().SessionCode;
+
+            var result = _activityService.IsOpen(id) ? "OPEN" : "CLOSED";
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Get all the activities that have not yet been closed out for the current session
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("open")]
+        public IHttpActionResult GetOpenActivities()
+        {
+            var sessionCode = Helpers.GetCurrentSession().SessionCode;
+
+            var activities = _activityService.GetOpenActivities();
+
+            return Ok(activities);
+        }
+
+        /// <summary>
+        /// Get all the activities that are already closed out for the current session
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("closed")]
+        public IHttpActionResult GetClosedActivities()
+        {
+            var sessionCode = Helpers.GetCurrentSession().SessionCode;
+
+            var activities = _activityService.GetClosedActivities();
+
+            return Ok(activities);
         }
 
         /// <summary>
