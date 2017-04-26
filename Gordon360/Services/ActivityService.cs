@@ -119,10 +119,10 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="id">The activity code for the activity in question</param>
         /// <returns></returns>
-        public bool IsOpen(string id)
+        public bool IsOpen(string id, string sessionCode)
         {
             // Check to see if there are any memberships where END_DTE is not null
-            if (_unitOfWork.MembershipRepository.Where(m => m.ACT_CDE.Equals(id) && m.END_DTE != null).Any() )
+            if (_unitOfWork.MembershipRepository.Where(m => m.ACT_CDE.Equals(id) && m.SESS_CDE.Equals(sessionCode) && m.END_DTE != null).Any() )
             {
                 return false;
             }

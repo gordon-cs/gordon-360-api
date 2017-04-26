@@ -160,9 +160,9 @@ namespace Gordon360.Controllers.Api
         {
             var sessionCode = Helpers.GetCurrentSession().SessionCode;
 
-            var result = _activityService.IsOpen(id) ? "OPEN" : "CLOSED";
+            var result = _activityService.IsOpen(id, sessionCode) ? "OPEN" : "CLOSED";
 
-            return Ok();
+            return Ok(result);
         }
 
         /// <summary>

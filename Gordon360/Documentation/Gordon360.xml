@@ -570,7 +570,7 @@
             </summary>
             <returns>ActivityViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
         </member>
-        <member name="M:Gordon360.Services.ActivityService.IsOpen(System.String)">
+        <member name="M:Gordon360.Services.ActivityService.IsOpen(System.String,System.String)">
             <summary>
             Checks to see if a specified activity is still open for this session
             Note: the way we know that an activity is open or closed is by the column END_DTE in MEMBERSHIP table

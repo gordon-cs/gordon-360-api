@@ -380,8 +380,8 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\PublishProfiles\DEV_PACKAGE.pubxml" />
-    <None Include="Properties\PublishProfiles\PROD_PACKAGE.pubxml" />
+    <None Include="Properties\PublishProfiles\DEV.pubxml" />
+    <None Include="Properties\PublishProfiles\PROD.pubxml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
