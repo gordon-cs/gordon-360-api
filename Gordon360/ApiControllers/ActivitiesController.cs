@@ -150,16 +150,15 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>
-        /// Get the status (open or closed) of an activity for the current session
+        /// Get the status (open or closed) of an activity for a given session
         /// </summary>
+        /// <param name="sessionCode">The session code that we want to check the status for</param>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{id}/status")]
-        public IHttpActionResult GetActivityStatus(string id)
+        [Route("{sessionCode}/{id}/status")]
+        public IHttpActionResult GetActivityStatus(string sessionCode, string id)
         {
-            var sessionCode = Helpers.GetCurrentSession().SessionCode;
-
             var result = _activityService.IsOpen(id, sessionCode) ? "OPEN" : "CLOSED";
 
             return Ok(result);
