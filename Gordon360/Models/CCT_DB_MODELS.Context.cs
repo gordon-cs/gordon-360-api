@@ -100,9 +100,7 @@ namespace Gordon360.Models
                 new ObjectParameter("STUDENT_ID", sTUDENT_ID) :
                 new ObjectParameter("STUDENT_ID", typeof(int));
     
-            var result = ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<MEMBERSHIPS_PER_STUDENT_ID_Result>("MEMBERSHIPS_PER_STUDENT_ID", sTUDENT_IDParameter);
-
-            return result;
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<MEMBERSHIPS_PER_STUDENT_ID_Result>("MEMBERSHIPS_PER_STUDENT_ID", sTUDENT_IDParameter);
         }
     
         public virtual ObjectResult<REQUEST_PER_REQUEST_ID_Result> REQUEST_PER_REQUEST_ID(Nullable<int> rEQUEST_ID)
@@ -225,6 +223,19 @@ namespace Gordon360.Models
         public virtual ObjectResult<string> CURRENT_SESSION()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("CURRENT_SESSION");
+        }
+    
+        public virtual ObjectResult<GRP_ADMIN_EMAILS_PER_ACT_CDE_Result> GRP_ADMIN_EMAILS_PER_ACT_CDE(string aCT_CDE, string sESS_CDE)
+        {
+            var aCT_CDEParameter = aCT_CDE != null ?
+                new ObjectParameter("ACT_CDE", aCT_CDE) :
+                new ObjectParameter("ACT_CDE", typeof(string));
+    
+            var sESS_CDEParameter = sESS_CDE != null ?
+                new ObjectParameter("SESS_CDE", sESS_CDE) :
+                new ObjectParameter("SESS_CDE", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GRP_ADMIN_EMAILS_PER_ACT_CDE_Result>("GRP_ADMIN_EMAILS_PER_ACT_CDE", aCT_CDEParameter, sESS_CDEParameter);
         }
     }
 }

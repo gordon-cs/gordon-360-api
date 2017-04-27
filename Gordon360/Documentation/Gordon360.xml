@@ -187,10 +187,11 @@
             <returns>A list of all the different types of activities that are active during the given session determined by the id parameter</returns>
             <remarks>Queries the database to find the distinct activities type of activities that are active during the session desired</remarks>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ActivitiesController.GetActivityStatus(System.String)">
+        <member name="M:Gordon360.Controllers.Api.ActivitiesController.GetActivityStatus(System.String,System.String)">
             <summary>
-            Get the status (open or closed) of an activity for the current session
+            Get the status (open or closed) of an activity for a given session
             </summary>
+            <param name="sessionCode">The session code that we want to check the status for</param>
             <param name="id"></param>
             <returns></returns>
         </member>

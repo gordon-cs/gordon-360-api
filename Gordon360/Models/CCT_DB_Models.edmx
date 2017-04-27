@@ -108,9 +108,9 @@ warning 6002: The table/view 'CCT.dbo.360_SLIDER' does not have a primary key de
           <Property Name="strFlashFileName" Type="varchar" MaxLength="100" />
           <Property Name="strAltTag" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="strLinkURL" Type="varchar" MaxLength="500" />
-          <Property Name="strSliderTitle" Type="nchar" MaxLength="100" />
-          <Property Name="strSliderSubTitle" Type="nchar" MaxLength="100" />
-          <Property Name="strSliderAction" Type="nchar" MaxLength="100" />
+          <Property Name="strSliderTitle" Type="varchar" MaxLength="100" />
+          <Property Name="strSliderSubTitle" Type="varchar" MaxLength="100" />
+          <Property Name="strSliderAction" Type="varchar" MaxLength="100" />
           <Property Name="iWidth" Type="int" />
           <Property Name="iHeight" Type="int" />
           <Property Name="strExtensions" Type="varchar" MaxLength="255" />
@@ -230,6 +230,10 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Parameter Name="SESS_CDE" Type="varchar" Mode="In" />
         </Function>
         <Function Name="EMAILS_PER_ACT_CDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ACT_CDE" Type="char" Mode="In" />
+          <Parameter Name="SESS_CDE" Type="char" Mode="In" />
+        </Function>
+        <Function Name="GRP_ADMIN_EMAILS_PER_ACT_CDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ACT_CDE" Type="char" Mode="In" />
           <Parameter Name="SESS_CDE" Type="char" Mode="In" />
         </Function>
@@ -572,6 +576,10 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="ACT_INFO" EntityType="Gordon360.ACT_INFO" />
           <FunctionImport Name="CURRENT_SESSION" ReturnType="Collection(String)" />
           <EntitySet Name="C360_SLIDER" EntityType="Gordon360.C360_SLIDER" />
+          <FunctionImport Name="GRP_ADMIN_EMAILS_PER_ACT_CDE" ReturnType="Collection(Gordon360.GRP_ADMIN_EMAILS_PER_ACT_CDE_Result)">
+            <Parameter Name="ACT_CDE" Mode="In" Type="String" />
+            <Parameter Name="SESS_CDE" Mode="In" Type="String" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
           <Property Type="String" Name="ACT_CDE" Nullable="false" MaxLength="8" />
@@ -832,15 +840,20 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="strFlashFileName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="strAltTag" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="strLinkURL" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="strSliderTitle" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
-          <Property Name="strSliderSubTitle" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
-          <Property Name="strSliderAction" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
+          <Property Name="strSliderTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="strSliderSubTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="strSliderAction" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="iWidth" Type="Int32" />
           <Property Name="iHeight" Type="Int32" />
           <Property Name="strExtensions" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="dtModified" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="sortOrder" Type="Int32" Nullable="false" />
         </EntityType>
+        <ComplexType Name="GRP_ADMIN_EMAILS_PER_ACT_CDE_Result">
+          <Property Type="String" Name="FirstName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="LastName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Email" Nullable="true" MaxLength="50" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1316,6 +1329,15 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="GRP_ADMIN_EMAILS_PER_ACT_CDE" FunctionName="Gordon360.Store.GRP_ADMIN_EMAILS_PER_ACT_CDE">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.GRP_ADMIN_EMAILS_PER_ACT_CDE_Result">
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
