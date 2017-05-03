@@ -15,6 +15,8 @@ using System.Diagnostics;
 using Gordon360.Providers;
 using System.IO;
 using Gordon360.Static.Methods;
+using System.Collections.Generic;
+using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Controllers.Api
 {
@@ -174,7 +176,37 @@ namespace Gordon360.Controllers.Api
         {
             var sessionCode = Helpers.GetCurrentSession().SessionCode;
 
-            var activities = _activityService.GetOpenActivities(sessionCode);
+            var activity_codes = _activityService.GetOpenActivities(sessionCode);
+
+            var activities = new List<ActivityInfoViewModel>();
+
+            foreach( var code in activity_codes)
+            {
+                activities.Add(_activityService.Get(code));
+            }
+
+            return Ok(activities);
+        }
+
+        /// <summary>
+        /// Get all the activities that have not yet been closed out for the current session for 
+        /// which a given user is the group admin
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{id}/open")]
+        public IHttpActionResult GetOpenActivities(int id)
+        {
+            var sessionCode = Helpers.GetCurrentSession().SessionCode;
+
+            var activity_codes = _activityService.GetOpenActivities(sessionCode, id);
+
+            var activities = new List<ActivityInfoViewModel>();
+
+            foreach (var code in activity_codes)
+            {
+                activities.Add(_activityService.Get(code));
+            }
 
             return Ok(activities);
         }
@@ -189,7 +221,36 @@ namespace Gordon360.Controllers.Api
         {
             var sessionCode = Helpers.GetCurrentSession().SessionCode;
 
-            var activities = _activityService.GetClosedActivities(sessionCode);
+            var activity_codes = _activityService.GetClosedActivities(sessionCode);
+
+            var activities = new List<ActivityInfoViewModel>();
+
+            foreach (var code in activity_codes)
+            {
+                activities.Add(_activityService.Get(code));
+            }
+
+            return Ok(activities);
+        }
+
+        /// <summary>
+        /// Get all the activities that are already closed out for the current session
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{id}/closed")]
+        public IHttpActionResult GetClosedActivities(int id)
+        {
+            var sessionCode = Helpers.GetCurrentSession().SessionCode;
+
+            var activity_codes = _activityService.GetClosedActivities(sessionCode, id);
+
+            var activities = new List<ActivityInfoViewModel>();
+
+            foreach (var code in activity_codes)
+            {
+                activities.Add(_activityService.Get(code));
+            }
 
             return Ok(activities);
         }

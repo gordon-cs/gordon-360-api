@@ -156,6 +156,33 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// Gets a collection of all the current open activities for which a given user is group admin, by finding which activities have 
+        /// memberships with an END_DTE that is null
+        /// </summary>
+        /// <returns>The collection of activity codes for open activities</returns>
+        public IEnumerable<string> GetOpenActivities(string sess_cde, int id)
+        {
+            var query = from mem in _unitOfWork.MembershipRepository.Where(m => m.END_DTE == null &&
+                m.SESS_CDE.Equals(sess_cde) && m.ID_NUM == id && m.GRP_ADMIN == true)
+                group mem by mem.ACT_CDE into activities
+                select activities;
+
+            // Convert the query result into a simple list of strings
+            List<string> activity_codes = new List<string>();
+            foreach (var a in query)
+            {
+                activity_codes.Add(a.Key.Trim());
+            }
+
+
+            return activity_codes;
+
+            //TODO: this works for all the activities that actually have members. But if an acivity has no members, it
+            // will not show up as closed or open.
+
+        }
+
+        /// <summary>
         /// Gets a collection of all the current activitie already closed out, by finding which activities have 
         /// memberships with an END_DTE that is not null
         /// </summary>
@@ -175,6 +202,31 @@ namespace Gordon360.Services
             }
 
             return activity_codes;
+
+        }
+
+        /// <summary>
+        /// Gets a collection of all the current closed activities for which a given user is group admin, by finding which activities have 
+        /// memberships with an END_DTE that is not null
+        /// </summary>
+        /// <returns>The collection of activity codes for open activities</returns>
+        public IEnumerable<string> GetClosedActivities(string sess_cde, int id)
+        {
+            var query = _unitOfWork.MembershipRepository.Where(m => m.END_DTE != null &&
+                m.SESS_CDE.Equals(sess_cde) && m.ID_NUM == id && m.GRP_ADMIN == true);
+
+            // Convert the query result into a simple list of strings
+            List<string> activity_codes = new List<string>();
+            foreach (var a in query)
+            {
+                activity_codes.Add(a.ACT_CDE);
+            }
+
+
+            return activity_codes;
+
+            //TODO: this works for all the activities that actually have members. But if an acivity has no members, it
+            // will not show up as closed or open.
 
         }
 
