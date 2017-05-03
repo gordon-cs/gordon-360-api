@@ -336,7 +336,7 @@ namespace Gordon360.Services
             validateMembership(membership);
 
             // One can only update certain fields within a membrship
-            original.BEGIN_DTE = membership.BEGIN_DTE;
+            //original.BEGIN_DTE = membership.BEGIN_DTE;
             original.COMMENT_TXT = membership.COMMENT_TXT;
             original.END_DTE = membership.END_DTE;
             original.PART_CDE = membership.PART_CDE;
