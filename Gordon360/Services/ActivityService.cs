@@ -122,7 +122,7 @@ namespace Gordon360.Services
         public bool IsOpen(string id, string sessionCode)
         {
             // Check to see if there are any memberships where END_DTE is not null
-            if (_unitOfWork.MembershipRepository.Where(m => m.ACT_CDE.Equals(id) && m.SESS_CDE.Equals(sessionCode) && m.END_DTE != null).Any() )
+            if (_unitOfWork.MembershipRepository.Where(m => m.ACT_CDE.Equals(id) && m.SESS_CDE.Equals(sessionCode) && m.PART_CDE != "GUEST" && m.END_DTE != null).Any() )
             {
                 return false;
             }
@@ -136,7 +136,7 @@ namespace Gordon360.Services
         /// <returns>The collection of activity codes for open activities</returns>
         public IEnumerable<string> GetOpenActivities(string sess_cde)
         {
-            var query = from mem in _unitOfWork.MembershipRepository.Where(m => m.END_DTE == null && m.SESS_CDE == sess_cde)
+            var query = from mem in _unitOfWork.MembershipRepository.Where(m => m.END_DTE == null && m.PART_CDE != "GUEST" && m.SESS_CDE == sess_cde)
                         group mem by mem.ACT_CDE into activities
                         select activities;
 
@@ -189,7 +189,7 @@ namespace Gordon360.Services
         /// <returns>The collection of activity codes for open activities</returns>
         public IEnumerable<string> GetClosedActivities(string sess_cde)
         {
-            var query = from mem in _unitOfWork.MembershipRepository.Where(m => m.END_DTE != null && m.SESS_CDE == sess_cde)
+            var query = from mem in _unitOfWork.MembershipRepository.Where(m => m.END_DTE != null && m.PART_CDE != "GUEST" && m.SESS_CDE == sess_cde)
                                  group mem by mem.ACT_CDE into activities
                                  orderby activities.Key
                                  select activities;
