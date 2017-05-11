@@ -209,6 +209,8 @@ namespace Gordon360.Services
         /// Gets a collection of all the current closed activities for which a given user is group admin, by finding which activities have 
         /// memberships with an END_DTE that is not null
         /// </summary>
+        /// <param name="id">The user's id</param>
+        /// <param name="sess_cde">The session we want to get the closed activities for</param>
         /// <returns>The collection of activity codes for open activities</returns>
         public IEnumerable<string> GetClosedActivities(string sess_cde, int id)
         {
@@ -273,6 +275,27 @@ namespace Gordon360.Services
             foreach (var mem in memberships)
             {
                 mem.END_DTE = DateTime.Today;
+            }
+
+            _unitOfWork.Save();
+        }
+
+        /// <summary>
+        /// Open a specific activity for a specific session
+        /// </summary>
+        /// <param name="id">The activity code for the activity that will be closed</param>
+        /// <param name="sess_cde">The session code for the session where the activity is being closed</param>
+        public void OpenActivityForSession(string id, string sess_cde)
+        {
+            var memberships = _unitOfWork.MembershipRepository.Where(x => x.ACT_CDE == id && x.SESS_CDE == sess_cde);
+
+            if (!memberships.Any())
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "No members found for this activity in this session." };
+            }
+            foreach (var mem in memberships)
+            {
+                mem.END_DTE = null;
             }
 
             _unitOfWork.Save();

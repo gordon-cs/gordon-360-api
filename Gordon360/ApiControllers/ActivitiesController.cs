@@ -292,10 +292,20 @@ namespace Gordon360.Controllers.Api
 
         [HttpPut]
         [Route("{id}/session/{sess_cde}/close")]
-        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP)]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_STATUS)]
         public IHttpActionResult CloseSession(string id, string sess_cde)
         {
             _activityService.CloseOutActivityForSession(id, sess_cde);
+
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("{id}/session/{sess_cde}/open")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_STATUS)]
+        public IHttpActionResult OpenSession(string id, string sess_cde)
+        {
+            _activityService.OpenActivityForSession(id, sess_cde);
 
             return Ok();
         }

@@ -637,6 +637,13 @@
             <param name="id">The activity code for the activity that will be closed</param>
             <param name="sess_cde">The session code for the session where the activity is being closed</param>
         </member>
+        <member name="M:Gordon360.Services.ActivityService.OpenActivityForSession(System.String,System.String)">
+            <summary>
+            Open a specific activity for a specific session
+            </summary>
+            <param name="id">The activity code for the activity that will be closed</param>
+            <param name="sess_cde">The session code for the session where the activity is being closed</param>
+        </member>
         <member name="M:Gordon360.Services.ActivityService.UpdateActivityImage(System.String,System.String)">
             <summary>
             Sets the path for the activity image.
