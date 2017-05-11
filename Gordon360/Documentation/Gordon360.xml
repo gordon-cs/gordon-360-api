@@ -187,6 +187,39 @@
             <returns>A list of all the different types of activities that are active during the given session determined by the id parameter</returns>
             <remarks>Queries the database to find the distinct activities type of activities that are active during the session desired</remarks>
         </member>
+        <member name="M:Gordon360.Controllers.Api.ActivitiesController.GetActivityStatus(System.String,System.String)">
+            <summary>
+            Get the status (open or closed) of an activity for a given session
+            </summary>
+            <param name="sessionCode">The session code that we want to check the status for</param>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ActivitiesController.GetOpenActivities">
+            <summary>
+            Get all the activities that have not yet been closed out for the current session
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ActivitiesController.GetOpenActivities(System.Int32)">
+            <summary>
+            Get all the activities that have not yet been closed out for the current session for 
+            which a given user is the group admin
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ActivitiesController.GetClosedActivities">
+            <summary>
+            Get all the activities that are already closed out for the current session
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ActivitiesController.GetClosedActivities(System.Int32)">
+            <summary>
+            Get all the activities that are already closed out for the current session
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ActivitiesController.Put(System.String,Gordon360.Models.ACT_INFO)">
             <summary>
             
@@ -551,6 +584,46 @@
             </summary>
             <returns>ActivityViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
         </member>
+        <member name="M:Gordon360.Services.ActivityService.IsOpen(System.String,System.String)">
+            <summary>
+            Checks to see if a specified activity is still open for this session
+            Note: the way we know that an activity is open or closed is by the column END_DTE in MEMBERSHIP table
+            When an activity is closed out, the END_DTE is set to the date on which the closing happened
+            Otherwise, the END_DTE for all memberships of the activity will be null for that session
+            </summary>
+            <param name="id">The activity code for the activity in question</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.ActivityService.GetOpenActivities(System.String)">
+            <summary>
+            Gets a collection of all the current open activities, by finding which activities have 
+            memberships with an END_DTE that is null
+            </summary>
+            <returns>The collection of activity codes for open activities</returns>
+        </member>
+        <member name="M:Gordon360.Services.ActivityService.GetOpenActivities(System.String,System.Int32)">
+            <summary>
+            Gets a collection of all the current open activities for which a given user is group admin, by finding which activities have 
+            memberships with an END_DTE that is null
+            </summary>
+            <returns>The collection of activity codes for open activities</returns>
+        </member>
+        <member name="M:Gordon360.Services.ActivityService.GetClosedActivities(System.String)">
+            <summary>
+            Gets a collection of all the current activitie already closed out, by finding which activities have 
+            memberships with an END_DTE that is not null
+            </summary>
+            <returns>The collection of activity codes for open activities</returns>
+        </member>
+        <member name="M:Gordon360.Services.ActivityService.GetClosedActivities(System.String,System.Int32)">
+            <summary>
+            Gets a collection of all the current closed activities for which a given user is group admin, by finding which activities have 
+            memberships with an END_DTE that is not null
+            </summary>
+            <param name="id">The user's id</param>
+            <param name="sess_cde">The session we want to get the closed activities for</param>
+            <returns>The collection of activity codes for open activities</returns>
+        </member>
         <member name="M:Gordon360.Services.ActivityService.Update(System.String,Gordon360.Models.ACT_INFO)">
             <summary>
             Updates the Activity Info 
@@ -558,6 +631,20 @@
             <param name="activity">The activity info resource with the updated information</param>
             <param name="id">The id of the activity info to be updated</param>
             <returns>The updated activity info resource</returns>
+        </member>
+        <member name="M:Gordon360.Services.ActivityService.CloseOutActivityForSession(System.String,System.String)">
+            <summary>
+            Closes out a specific activity for a specific session
+            </summary>
+            <param name="id">The activity code for the activity that will be closed</param>
+            <param name="sess_cde">The session code for the session where the activity is being closed</param>
+        </member>
+        <member name="M:Gordon360.Services.ActivityService.OpenActivityForSession(System.String,System.String)">
+            <summary>
+            Open a specific activity for a specific session
+            </summary>
+            <param name="id">The activity code for the activity that will be closed</param>
+            <param name="sess_cde">The session code for the session where the activity is being closed</param>
         </member>
         <member name="M:Gordon360.Services.ActivityService.UpdateActivityImage(System.String,System.String)">
             <summary>

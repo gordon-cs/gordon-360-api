@@ -14,6 +14,9 @@ using System.Net;
 using System.Diagnostics;
 using Gordon360.Providers;
 using System.IO;
+using Gordon360.Static.Methods;
+using System.Collections.Generic;
+using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Controllers.Api
 {
@@ -149,6 +152,110 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>
+        /// Get the status (open or closed) of an activity for a given session
+        /// </summary>
+        /// <param name="sessionCode">The session code that we want to check the status for</param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{sessionCode}/{id}/status")]
+        public IHttpActionResult GetActivityStatus(string sessionCode, string id)
+        {
+            var result = _activityService.IsOpen(id, sessionCode) ? "OPEN" : "CLOSED";
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Get all the activities that have not yet been closed out for the current session
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("open")]
+        public IHttpActionResult GetOpenActivities()
+        {
+            var sessionCode = Helpers.GetCurrentSession().SessionCode;
+
+            var activity_codes = _activityService.GetOpenActivities(sessionCode);
+
+            var activities = new List<ActivityInfoViewModel>();
+
+            foreach( var code in activity_codes)
+            {
+                activities.Add(_activityService.Get(code));
+            }
+
+            return Ok(activities);
+        }
+
+        /// <summary>
+        /// Get all the activities that have not yet been closed out for the current session for 
+        /// which a given user is the group admin
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{id}/open")]
+        public IHttpActionResult GetOpenActivities(int id)
+        {
+            var sessionCode = Helpers.GetCurrentSession().SessionCode;
+
+            var activity_codes = _activityService.GetOpenActivities(sessionCode, id);
+
+            var activities = new List<ActivityInfoViewModel>();
+
+            foreach (var code in activity_codes)
+            {
+                activities.Add(_activityService.Get(code));
+            }
+
+            return Ok(activities);
+        }
+
+        /// <summary>
+        /// Get all the activities that are already closed out for the current session
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("closed")]
+        public IHttpActionResult GetClosedActivities()
+        {
+            var sessionCode = Helpers.GetCurrentSession().SessionCode;
+
+            var activity_codes = _activityService.GetClosedActivities(sessionCode);
+
+            var activities = new List<ActivityInfoViewModel>();
+
+            foreach (var code in activity_codes)
+            {
+                activities.Add(_activityService.Get(code));
+            }
+
+            return Ok(activities);
+        }
+
+        /// <summary>
+        /// Get all the activities that are already closed out for the current session
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{id}/closed")]
+        public IHttpActionResult GetClosedActivities(int id)
+        {
+            var sessionCode = Helpers.GetCurrentSession().SessionCode;
+
+            var activity_codes = _activityService.GetClosedActivities(sessionCode, id);
+
+            var activities = new List<ActivityInfoViewModel>();
+
+            foreach (var code in activity_codes)
+            {
+                activities.Add(_activityService.Get(code));
+            }
+
+            return Ok(activities);
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="id"></param>
@@ -181,6 +288,26 @@ namespace Gordon360.Controllers.Api
             }
 
             return Ok(result);
+        }
+
+        [HttpPut]
+        [Route("{id}/session/{sess_cde}/close")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_STATUS)]
+        public IHttpActionResult CloseSession(string id, string sess_cde)
+        {
+            _activityService.CloseOutActivityForSession(id, sess_cde);
+
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("{id}/session/{sess_cde}/open")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_STATUS)]
+        public IHttpActionResult OpenSession(string id, string sess_cde)
+        {
+            _activityService.OpenActivityForSession(id, sess_cde);
+
+            return Ok();
         }
 
         /// <summary>

@@ -64,7 +64,8 @@ namespace Gordon360.Services
                 SESS_CDE = query.SESS_CDE,
                 PART_CDE = query.PART_CDE,
                 BEGIN_DTE = DateTime.Now,
-                COMMENT_TXT = ""
+                COMMENT_TXT = "",
+                GRP_ADMIN = false
             };
 
             MEMBERSHIP created;

@@ -112,6 +112,127 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// Checks to see if a specified activity is still open for this session
+        /// Note: the way we know that an activity is open or closed is by the column END_DTE in MEMBERSHIP table
+        /// When an activity is closed out, the END_DTE is set to the date on which the closing happened
+        /// Otherwise, the END_DTE for all memberships of the activity will be null for that session
+        /// </summary>
+        /// <param name="id">The activity code for the activity in question</param>
+        /// <returns></returns>
+        public bool IsOpen(string id, string sessionCode)
+        {
+            // Check to see if there are any memberships where END_DTE is not null
+            if (_unitOfWork.MembershipRepository.Where(m => m.ACT_CDE.Equals(id) && m.SESS_CDE.Equals(sessionCode) && m.PART_CDE != "GUEST" && m.END_DTE != null).Any() )
+            {
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Gets a collection of all the current open activities, by finding which activities have 
+        /// memberships with an END_DTE that is null
+        /// </summary>
+        /// <returns>The collection of activity codes for open activities</returns>
+        public IEnumerable<string> GetOpenActivities(string sess_cde)
+        {
+            var query = from mem in _unitOfWork.MembershipRepository.Where(m => m.END_DTE == null && m.PART_CDE != "GUEST" && m.SESS_CDE == sess_cde)
+                        group mem by mem.ACT_CDE into activities
+                        select activities;
+
+            // Convert the query result into a simple list of strings
+            List<string> activity_codes = new List<string>();
+            foreach (var a in query)
+            {
+                activity_codes.Add(a.Key.Trim());
+            }
+
+
+            return activity_codes;
+
+            //TODO: this works for all the activities that actually have members. But if an acivity has no members, it
+            // will not show up as closed or open.
+
+        }
+
+        /// <summary>
+        /// Gets a collection of all the current open activities for which a given user is group admin, by finding which activities have 
+        /// memberships with an END_DTE that is null
+        /// </summary>
+        /// <returns>The collection of activity codes for open activities</returns>
+        public IEnumerable<string> GetOpenActivities(string sess_cde, int id)
+        {
+            var query = from mem in _unitOfWork.MembershipRepository.Where(m => m.END_DTE == null &&
+                m.SESS_CDE.Equals(sess_cde) && m.ID_NUM == id && m.GRP_ADMIN == true)
+                group mem by mem.ACT_CDE into activities
+                select activities;
+
+            // Convert the query result into a simple list of strings
+            List<string> activity_codes = new List<string>();
+            foreach (var a in query)
+            {
+                activity_codes.Add(a.Key.Trim());
+            }
+
+
+            return activity_codes;
+
+            //TODO: this works for all the activities that actually have members. But if an acivity has no members, it
+            // will not show up as closed or open.
+
+        }
+
+        /// <summary>
+        /// Gets a collection of all the current activitie already closed out, by finding which activities have 
+        /// memberships with an END_DTE that is not null
+        /// </summary>
+        /// <returns>The collection of activity codes for open activities</returns>
+        public IEnumerable<string> GetClosedActivities(string sess_cde)
+        {
+            var query = from mem in _unitOfWork.MembershipRepository.Where(m => m.END_DTE != null && m.PART_CDE != "GUEST" && m.SESS_CDE == sess_cde)
+                                 group mem by mem.ACT_CDE into activities
+                                 orderby activities.Key
+                                 select activities;
+
+            List<string> activity_codes = new List<string>();
+
+            foreach (var a in query)
+            {
+                activity_codes.Add(a.Key.Trim());
+            }
+
+            return activity_codes;
+
+        }
+
+        /// <summary>
+        /// Gets a collection of all the current closed activities for which a given user is group admin, by finding which activities have 
+        /// memberships with an END_DTE that is not null
+        /// </summary>
+        /// <param name="id">The user's id</param>
+        /// <param name="sess_cde">The session we want to get the closed activities for</param>
+        /// <returns>The collection of activity codes for open activities</returns>
+        public IEnumerable<string> GetClosedActivities(string sess_cde, int id)
+        {
+            var query = _unitOfWork.MembershipRepository.Where(m => m.END_DTE != null &&
+                m.SESS_CDE.Equals(sess_cde) && m.ID_NUM == id && m.GRP_ADMIN == true);
+
+            // Convert the query result into a simple list of strings
+            List<string> activity_codes = new List<string>();
+            foreach (var a in query)
+            {
+                activity_codes.Add(a.ACT_CDE);
+            }
+
+
+            return activity_codes;
+
+            //TODO: this works for all the activities that actually have members. But if an acivity has no members, it
+            // will not show up as closed or open.
+
+        }
+
+        /// <summary>
         /// Updates the Activity Info 
         /// </summary>
         /// <param name="activity">The activity info resource with the updated information</param>
@@ -136,6 +257,48 @@ namespace Gordon360.Services
 
             return original;
 
+        }
+
+        /// <summary>
+        /// Closes out a specific activity for a specific session
+        /// </summary>
+        /// <param name="id">The activity code for the activity that will be closed</param>
+        /// <param name="sess_cde">The session code for the session where the activity is being closed</param>
+        public void CloseOutActivityForSession(string id, string sess_cde)
+        {
+            var memberships = _unitOfWork.MembershipRepository.Where(x => x.ACT_CDE == id && x.SESS_CDE == sess_cde);
+
+            if (!memberships.Any())
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "No members found for this activity in this session." };
+            }
+            foreach (var mem in memberships)
+            {
+                mem.END_DTE = DateTime.Today;
+            }
+
+            _unitOfWork.Save();
+        }
+
+        /// <summary>
+        /// Open a specific activity for a specific session
+        /// </summary>
+        /// <param name="id">The activity code for the activity that will be closed</param>
+        /// <param name="sess_cde">The session code for the session where the activity is being closed</param>
+        public void OpenActivityForSession(string id, string sess_cde)
+        {
+            var memberships = _unitOfWork.MembershipRepository.Where(x => x.ACT_CDE == id && x.SESS_CDE == sess_cde);
+
+            if (!memberships.Any())
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "No members found for this activity in this session." };
+            }
+            foreach (var mem in memberships)
+            {
+                mem.END_DTE = null;
+            }
+
+            _unitOfWork.Save();
         }
 
         /// <summary>
