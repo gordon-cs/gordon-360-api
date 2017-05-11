@@ -201,13 +201,9 @@ namespace Gordon360.AuthorizationFilters
                         // An activity leader should be able to see the membership requests that belong to the activity he is leading.
                         var membershipService = new MembershipService(new UnitOfWork());
                         var activityCode = (string)context.ActionArguments["id"];
-                        var activityLeaders = membershipService.GetLeaderMembershipsForActivity(activityCode);
-                        var is_activityLeader = activityLeaders.Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
-                        if (is_activityLeader)
-                            return true;
-                        var activityAdvisors = membershipService.GetAdvisorMembershipsForActivity(activityCode);
-                        var is_activityAdvisor = activityAdvisors.Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
-                        if (is_activityAdvisor)
+                        var groupAdmin = membershipService.GetGroupAdminMembershipsForActivity(activityCode);
+                        var isGroupAdmin = membershipService.GetGroupAdminMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        if (isGroupAdmin) // If user is a group admin of the activity that the request is sent to
                             return true;
                         return false;
                     }
@@ -236,7 +232,7 @@ namespace Gordon360.AuthorizationFilters
                             return true;
 
                         var groupAdmin = membershipService.GetGroupAdminMembershipsForActivity(activityCode);
-                        var is_groupAdmin = advisors.Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        var is_groupAdmin = groupAdmin.Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
                         if (is_groupAdmin)
                             return true;
                         return false;
