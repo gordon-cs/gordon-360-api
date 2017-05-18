@@ -290,6 +290,8 @@ What is it? Resource that respresents the affiliation between a student and a cl
 
 `api/memberships/:id` Edit the membership with membership id `id`.
 
+`api/memberships/:id/group-admin` Toggle whether or not a given member is in a group admin role for a given activity. The `id` parameter is the membership id.
+
 ##### DELETE
 
 `api/memberships/:id` Delete the membership with membership id `id`.
@@ -307,6 +309,21 @@ What is it? Resource that represents some activity - such as a club, ministry, l
 `api/activities/session/:id` Get the activity offered during the session with session code `id`.
 
 `api/activities/session/:id/types` Get the different activity types among the activities offered during the session with session code `id`.
+
+`api/activities/{sessionCode}/{id}/status` Get the status of an activity (either open or closed), which indicates whether or not new members can be added to the activity for this session.
+
+`api/activities/open` Get all the open activities for the current session.
+
+`api/activities/:id/open` Get only the open activities for which a given user (identified by their user `id`) is the group admin.
+
+`api/activities/closed` Get all the closed activities for the current session.
+
+`api/activities/:id/closed` Get only the closed activities for which a given user (identified by their user `id`) is the group admin.
+
+`api/activities/:id/session/{sess_cde}/close` Close out an activity for a given session (this is like confirming the final roster of an activity for a given session.
+
+`api/activities/:id/session/{sess_cde}/open` Reopen an activity for a given session.
+
 
 ##### PUT
 
@@ -450,7 +467,7 @@ A test suite is available at `Tests/ApiEndpoints` to excercise the different end
 	- `password_activity_leader` -- String with the password of a test account that is a leader of `activity_code` in `test_config.py`.
 	- `id_number_activity_leader` -- Integer with the id number of the `username_leader`.
 
-### Running the tests
+### Running the Tests
 
 Clone the project from the github site:
 `git clone https://github.com/gordon-cs/Project-Raymond.git`
@@ -467,6 +484,17 @@ Run the tests:
 `python3 gordon_360_tests.py` -- This runs all the tests. For both members and leaders.
 `python3 gordon_360_tests_member.py` -- This runs the tests for members.
 `python3 gordon_360_tests_leader.py` -- This runs the tests for leaders.
+
+### Manual Testing
+
+To manually test the API, use an API development/testing app like [Postman](https://www.getpostman.com/).
+* Here you can create HTTP requests to hit the API endpoints that you want to test, and see what data response you get back. 
+* _Before you can call any normal API endpoints_, you must first call the authentication endpoint, which will give you a token.
+	* E.g. Call `localhost:3000/token` with the following (key, value) pairs in the request body: (username, _MYUSERNAME_), (grant_type, password), (password, _MYPASSWORD_). This will give me back a long token string. I then can copy that token and paste it in the Authorization header of another API request I want to make. 
+* Making a normal API request: 
+	* E.g. Call something like `localhost:3000/api/memberships/activity/AJG` and under Headers you will need two (as key, value pairs):
+		1. (`Content-Type`, `application/x-www-form-urlencoded`) - usually this is the content type. Subject to change, though.
+		2. (`Authorization`, `Bearer  [MYTOKEN]`)
 
 
 Team members: Eze Anyanwu, James Kempf, Adam Bartholomew
