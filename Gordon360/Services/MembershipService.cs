@@ -38,6 +38,10 @@ namespace Gordon360.Services
             validateMembership(membership);
             isPersonAlreadyInActivity(membership);
 
+            // Get session begin date of the membership
+            var sessionCode = _unitOfWork.SessionRepository.Find(x => x.SESS_CDE.Equals(membership.SESS_CDE)).FirstOrDefault();
+            membership.BEGIN_DTE = (DateTime) sessionCode.SESS_BEGN_DTE;
+
             // The Add() method returns the added membership.
             var payload = _unitOfWork.MembershipRepository.Add(membership);
 
