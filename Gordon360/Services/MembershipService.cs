@@ -342,7 +342,7 @@ namespace Gordon360.Services
             // One can only update certain fields within a membrship
             //original.BEGIN_DTE = membership.BEGIN_DTE;
             original.COMMENT_TXT = membership.COMMENT_TXT;
-            original.END_DTE = membership.END_DTE;
+            //original.END_DTE = membership.END_DTE;
             original.PART_CDE = membership.PART_CDE;
             original.SESS_CDE = membership.SESS_CDE;
 
