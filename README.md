@@ -316,12 +316,11 @@ What is it? Resource that represents some activity - such as a club, ministry, l
 
 `api/activities/:id/closed` Get only the closed activities for which a given user (identified by their user `id`) is the group admin.
 
+##### PUT
+
 `api/activities/:id/session/{sess_cde}/close` Close out an activity for a given session (this is like confirming the final roster of an activity for a given session.
 
 `api/activities/:id/session/{sess_cde}/open` Reopen an activity for a given session.
-
-
-##### PUT
 
 `api/activities/:id` Edit activity information for the club with activity code `id`.
 
