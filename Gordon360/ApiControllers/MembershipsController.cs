@@ -272,6 +272,64 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
 
+        /// <summary>
+        /// Gets the number of members and followers of an activity
+        /// </summary>
+        /// <param name="id">The activity ID.</param>
+        /// <param name="sess_cde">The session code</param>
+        /// <returns>The number of followers of the activity</returns>
+        [HttpGet]
+        [Route("activity/{id}/followers/{sess_cde}")]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
+        public IHttpActionResult GetActivityFollowersCountForSession(string id, string sess_cde)
+        {
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+            var result = _membershipService.GetActivityFollowersCountForSession(id, sess_cde);
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Gets the number of members and followers of an activity
+        /// </summary>
+        /// <param name="id">The activity ID.</param>
+        /// <param name="sess_cde">The session code</param>
+        /// <returns>The number of members of the activity</returns>
+        [HttpGet]
+        [Route("activity/{id}/members/{sess_cde}")]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
+        public IHttpActionResult GetActivityMembersCountForSession(string id, string sess_cde)
+        {
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+            var result = _membershipService.GetActivityMembersCountForSession(id, sess_cde);
+
+            return Ok(result);
+        }
+
         /// <summary>Create a new membership item to be added to database</summary>
         /// <param name="membership">The membership item containing all required and relevant information</param>
         /// <returns></returns>
