@@ -38,6 +38,10 @@ namespace Gordon360.Services
             validateMembership(membership);
             isPersonAlreadyInActivity(membership);
 
+            // Get session begin date of the membership
+            var sessionCode = _unitOfWork.SessionRepository.Find(x => x.SESS_CDE.Equals(membership.SESS_CDE)).FirstOrDefault();
+            membership.BEGIN_DTE = (DateTime) sessionCode.SESS_BEGN_DTE;
+
             // The Add() method returns the added membership.
             var payload = _unitOfWork.MembershipRepository.Add(membership);
 
@@ -338,7 +342,7 @@ namespace Gordon360.Services
             // One can only update certain fields within a membrship
             //original.BEGIN_DTE = membership.BEGIN_DTE;
             original.COMMENT_TXT = membership.COMMENT_TXT;
-            original.END_DTE = membership.END_DTE;
+            //original.END_DTE = membership.END_DTE;
             original.PART_CDE = membership.PART_CDE;
             original.SESS_CDE = membership.SESS_CDE;
 

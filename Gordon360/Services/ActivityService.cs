@@ -272,9 +272,12 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "No members found for this activity in this session." };
             }
+
+            var session = _unitOfWork.SessionRepository.Find(x => x.SESS_CDE == sess_cde).FirstOrDefault();
+
             foreach (var mem in memberships)
             {
-                mem.END_DTE = DateTime.Today;
+                mem.END_DTE =session.SESS_END_DTE;
             }
 
             _unitOfWork.Save();
