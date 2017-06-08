@@ -363,6 +363,11 @@ namespace Gordon360.Services
 
             validateMembership(membership);
 
+            var isGuest = original.PART_CDE == "GUEST";
+
+            if (isGuest)
+                throw new ArgumentException("A guest cannot be assigned as an admin.", "Participation Level" );
+
             var isAdmin = original.GRP_ADMIN ?? false;
             if (!isAdmin)
                 original.GRP_ADMIN = true;
