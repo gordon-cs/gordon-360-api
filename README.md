@@ -276,6 +276,14 @@ What is it? Resource that respresents the affiliation between a student and a cl
 
 `api/memberships/activity/:id/group-admin` Get the memberships of the group admin (displayed as "Group Contacts") for the activity with activity code `id`.
 
+`api/memberships/activity/:id/followers` Get the number of followers of an activity with activity code `id`.
+
+`api/memberships/activity/:id/members` Get the number of members of an activity with activity code `id`.
+
+`api/memberships/activity/:id/followers/:sess_cde` Get the number of followers of an activity with activity code `id` in session `:sess_cde`.
+
+`api/memberships/activity/:id/members/:sess_cde` Get the number of members of an activity with activity code `id` in session `:sess_cde`.
+
 `api/memberships/student/:id` Get the memberships of the student with student id `id`.
 
 ##### POST
