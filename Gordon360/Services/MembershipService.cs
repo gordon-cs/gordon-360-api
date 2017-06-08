@@ -324,6 +324,34 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// Fetches the number of followers associated with the activity and session whose codes are specified by the parameter.
+        /// </summary>
+        /// <param name="id">The activity code.</param>
+        /// <param name="sess_cde">The session code</param>
+        /// <returns>int.</returns>
+        public int GetActivityFollowersCountForSession(string id, string sess_cde)
+        {
+            var idParam = new SqlParameter("@ACT_CDE", id);
+            var result = RawSqlQuery<MembershipViewModel>.query("MEMBERSHIPS_PER_ACT_CDE @ACT_CDE", idParam);
+
+            return result.Where(x => x.Participation == "GUEST" && x.SessionCode.Trim() == sess_cde).Count();
+        }
+
+        /// <summary>
+        /// Fetches the number of memberships associated with the activity and session whose codes are specified by the parameter.
+        /// </summary>
+        /// <param name="id">The activity code.</param>
+        /// <param name="sess_cde">The session code</param>
+        /// <returns>int.</returns>
+        public int GetActivityMembersCountForSession(string id, string sess_cde)
+        {
+            var idParam = new SqlParameter("@ACT_CDE", id);
+            var result = RawSqlQuery<MembershipViewModel>.query("MEMBERSHIPS_PER_ACT_CDE @ACT_CDE", idParam);
+
+            return result.Where(x => x.Participation != "GUEST" && x.SessionCode.Trim() == sess_cde).Count();
+        }
+
+        /// <summary>
         /// Updates the membership whose id is given as the first parameter to the contents of the second parameter.
         /// </summary>
         /// <param name="id">The membership id.</param>

@@ -90,6 +90,8 @@ namespace Gordon360.Services
         IEnumerable<MembershipViewModel> GetGroupAdminMembershipsForActivity(string id);
         IEnumerable<MembershipViewModel> GetMembershipsForActivity(string id);
         IEnumerable<MembershipViewModel> GetMembershipsForStudent(string id);
+        int GetActivityFollowersCountForSession(string id, string sess_cde);
+        int GetActivityMembersCountForSession(string id, string sess_cde);
         IEnumerable<MembershipViewModel> GetAll();
         int GetActivityFollowersCount(string id);
         int GetActivityMembersCount(string id);
