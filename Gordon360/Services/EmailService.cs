@@ -8,6 +8,7 @@ using System.Data.SqlClient;
 using Gordon360.Services.ComplexQueries;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Static.Methods;
+using System.Net.Mail;
 
 namespace Gordon360.Services
 {
@@ -181,6 +182,35 @@ namespace Gordon360.Services
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Send a email to a list of email addresses
+        /// </summary>
+        /// <param name="to_emails">All addresses to send this email to</param>
+        /// <param name="from_email">The address this email is sent from</param>
+        /// <param name="subject">Subject of the email to be sent</param>
+        /// <param name="email_content">The content of the email to be sent</param>
+        /// <returns></returns>
+        public void SendEmails(IEnumerable<EmailViewModel> to_emails, string from_email, string subject, string email_content)
+        {
+            using (var smtp = new SmtpClient())
+            {
+                smtp.Host = "smtp.gordon.edu";
+                smtp.Port = 587;
+                smtp.EnableSsl = true;
+                var message = new MailMessage();
+                message.From = new MailAddress(from_email);
+                foreach (EmailViewModel to_email in to_emails)
+                {
+                    message.To.Add(new MailAddress(to_email.Email));
+                }
+                message.Subject = subject;
+                message.Body = email_content;
+                message.IsBodyHtml = true;
+
+                smtp.Send(message);
+            }
         }
     }
 }

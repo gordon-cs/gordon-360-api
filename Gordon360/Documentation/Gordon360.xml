@@ -813,6 +813,16 @@
             <param name="session_code">The session code</param>
             <returns>List of emails for the leaders of this activity</returns>
         </member>
+        <member name="M:Gordon360.Services.EmailService.SendEmails(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.EmailViewModel},System.String,System.String,System.String)">
+            <summary>
+            Send a email to a list of email addresses
+            </summary>
+            <param name="to_emails">All addresses to send this email to</param>
+            <param name="from_email">The address this email is sent from</param>
+            <param name="subject">Subject of the email to be sent</param>
+            <param name="email_content">The content of the email to be sent</param>
+            <returns></returns>
+        </member>
         <member name="T:Gordon360.Services.FacultyService">
             <summary>
             Service Class that facilitates data transactions between the FacultyController and the Faculty database model.

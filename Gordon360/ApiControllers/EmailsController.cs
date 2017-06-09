@@ -10,6 +10,7 @@ using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Exceptions.CustomExceptions;
+using Gordon360.Models.ViewModels;
 
 namespace Gordon360.ApiControllers
 {
@@ -19,11 +20,13 @@ namespace Gordon360.ApiControllers
     public class EmailsController : ApiController
     {
         EmailService _emailService;
+        AccountService _accountService;
 
         public EmailsController()
         {
             IUnitOfWork unitOfWork = new UnitOfWork();
             _emailService = new EmailService(unitOfWork);
+            _accountService = new AccountService(unitOfWork);
         }
 
         [Route("activity/{id}")]
@@ -208,6 +211,31 @@ namespace Gordon360.ApiControllers
                 NotFound();
             }
             return Ok(result);
+        }
+
+        [HttpPut]
+        [Route("activity/{id}/session/{session}/send/{gordon_id}")]
+        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAIL_CONTENT)]
+        public IHttpActionResult SendEmailsToGroup(string id, string session, string gordon_id, [FromBody]EmailContentViewModel email)
+        {
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+            var to_emails = _emailService.GetEmailsForActivityLeaders(id, session);
+            var from_email = _accountService.Get(gordon_id).Email;
+            _emailService.SendEmails(to_emails, from_email, email.Subject, email.Content);
+
+            return Ok();
         }
 
     }

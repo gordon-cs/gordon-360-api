@@ -62,6 +62,8 @@ namespace Gordon360.Services
         IEnumerable<EmailViewModel> GetEmailsForActivityLeaders(string activity_code, string session_code);
         IEnumerable<EmailViewModel> GetEmailsForActivityAdvisors(string activity_code, string session_code);
         IEnumerable<EmailViewModel> GetEmailsForActivity(string activity_code, string session_code);
+        // Send emails
+        void SendEmails(IEnumerable<EmailViewModel> to_emails, string to_email, string subject, string email_content);
 
     }
     public interface ISessionService

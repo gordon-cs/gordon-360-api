@@ -311,6 +311,7 @@
     <Compile Include="Models\ViewModels\AccountViewModel.cs" />
     <Compile Include="Models\ViewModels\ActivityInfoViewModel.cs" />
     <Compile Include="Models\ViewModels\ActivityViewModel.cs" />
+    <Compile Include="Models\ViewModels\EmailContentViewModel.cs" />
     <Compile Include="Models\ViewModels\EmailViewModel.cs" />
     <Compile Include="Models\ViewModels\FacultyViewModel.cs" />
     <Compile Include="Models\ViewModels\JenzibarActivitiesViewModel.cs" />
