@@ -238,5 +238,27 @@ namespace Gordon360.ApiControllers
             return Ok();
         }
 
+        [HttpPut]
+        [Route("")]
+        public IHttpActionResult SendEmails([FromBody]EmailContentViewModel email)
+        {
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+            var to_emails = email.ToAddress.Split(",");
+            _emailService.SendEmails(to_emails, email.FromAddress, email.Subject, email.Content);
+            return Ok();
+        }
+
     }
 }
