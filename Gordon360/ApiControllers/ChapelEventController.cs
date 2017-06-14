@@ -25,7 +25,7 @@ namespace Gordon360.ApiControllers
         // GET: api/Accounts
         [HttpGet]
         [Route("CHEventID/{CHEventID}")]
-        public IHttpActionResult GetByAccountEmail(string CHEventID)
+        public IHttpActionResult GetChapelEventByChapelEventID(string CHEventID)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(CHEventID))
             {
