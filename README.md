@@ -542,4 +542,7 @@ This error will only pop up when you are testing the server directly by running 
 
 
 ### Documentation
-The documentation folder currently contains the ColdFusion files from go.gordon that contain the logic behind the people search.  Index.cfm is the page used to select search criteria.  Searchresults.cfm is the list of people you get back based on that criteria.  It selects from a student view, facstaff view, and alumni view all separately and then sorts all the results together.  Showperson.cfm is the detail page of the person you select from the searchresults.cfm page.
+The documentation folder currently contains the ColdFusion files from go.gordon that contain the logic behind the people search.  
+* Index.cfm is the page used to select search criteria.
+* Searchresults.cfm is the list of people you get back based on that criteria.  It selects from a student view, facstaff view, and alumni view all separately and then sorts all the results together.
+* Showperson.cfm is the detail page of the person you select from the searchresults.cfm page.
