@@ -100,20 +100,28 @@ warning 6002: The table/view 'CCT.dbo.360_SLIDER' does not have a primary key de
         <EntityType Name="360_SLIDER">
           <Key>
             <PropertyRef Name="strFileName" />
+            
             <PropertyRef Name="strAltTag" />
+            
+            
+            
+            
+            
+            
+            
             <PropertyRef Name="dtModified" />
             <PropertyRef Name="sortOrder" />
           </Key>
           <Property Name="strFileName" Type="varchar" MaxLength="159" Nullable="false" />
-          <Property Name="strFlashFileName" Type="varchar" MaxLength="100" />
+          <Property Name="strFlashFileName" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="strAltTag" Type="varchar" MaxLength="255" Nullable="false" />
-          <Property Name="strLinkURL" Type="varchar" MaxLength="500" />
-          <Property Name="strSliderTitle" Type="varchar" MaxLength="100" />
-          <Property Name="strSliderSubTitle" Type="varchar" MaxLength="100" />
-          <Property Name="strSliderAction" Type="varchar" MaxLength="100" />
-          <Property Name="iWidth" Type="int" />
-          <Property Name="iHeight" Type="int" />
-          <Property Name="strExtensions" Type="varchar" MaxLength="255" />
+          <Property Name="strLinkURL" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="strSliderTitle" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="strSliderSubTitle" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="strSliderAction" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="iWidth" Type="int" Nullable="false" />
+          <Property Name="iHeight" Type="int" Nullable="false" />
+          <Property Name="strExtensions" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="dtModified" Type="datetime" Nullable="false" />
           <Property Name="sortOrder" Type="int" Nullable="false" />
         </EntityType>
@@ -125,12 +133,30 @@ warning 6002: The table/view 'CCT.dbo.ACCOUNT' does not have a primary key defin
             <PropertyRef Name="gordon_id" />
           </Key>
           <Property Name="gordon_id" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="barcode" Type="varchar" MaxLength="14" />
           <Property Name="firstname" Type="varchar" MaxLength="50" />
           <Property Name="lastname" Type="varchar" MaxLength="50" />
           <Property Name="email" Type="varchar" MaxLength="50" />
           <Property Name="AD_Username" Type="varchar" MaxLength="50" />
           <Property Name="account_type" Type="varchar" MaxLength="20" />
           <Property Name="Private" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'CCT.dbo.ChapelEvent' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ChapelEvent">
+          <Key>
+            <PropertyRef Name="ROWID" />
+            <PropertyRef Name="CHBarEventID" />
+          </Key>
+          <Property Name="ROWID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CHBarEventID" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="CHBarcode" Type="nvarchar" MaxLength="14" />
+          <Property Name="CHEventID" Type="nvarchar" MaxLength="6" />
+          <Property Name="CHCheckerID" Type="nvarchar" MaxLength="14" />
+          <Property Name="CHDate" Type="datetime" />
+          <Property Name="CHTime" Type="datetime" />
+          <Property Name="CHSource" Type="nvarchar" MaxLength="1" />
+          <Property Name="CHTermCD" Type="nvarchar" MaxLength="4" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.CM_SESSION_MSTR' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -300,6 +326,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="ACCOUNT" EntityType="Self.ACCOUNT" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [ACCOUNT].[gordon_id] AS [gordon_id], 
+    [ACCOUNT].[barcode] AS [barcode], 
     [ACCOUNT].[firstname] AS [firstname], 
     [ACCOUNT].[lastname] AS [lastname], 
     [ACCOUNT].[email] AS [email], 
@@ -307,6 +334,19 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [ACCOUNT].[account_type] AS [account_type], 
     [ACCOUNT].[Private] AS [Private]
     FROM [dbo].[ACCOUNT] AS [ACCOUNT]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="ChapelEvent" EntityType="Self.ChapelEvent" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ChapelEvent].[ROWID] AS [ROWID], 
+    [ChapelEvent].[CHBarEventID] AS [CHBarEventID], 
+    [ChapelEvent].[CHBarcode] AS [CHBarcode], 
+    [ChapelEvent].[CHEventID] AS [CHEventID], 
+    [ChapelEvent].[CHCheckerID] AS [CHCheckerID], 
+    [ChapelEvent].[CHDate] AS [CHDate], 
+    [ChapelEvent].[CHTime] AS [CHTime], 
+    [ChapelEvent].[CHSource] AS [CHSource], 
+    [ChapelEvent].[CHTermCD] AS [CHTermCD]
+    FROM [dbo].[ChapelEvent] AS [ChapelEvent]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="CM_SESSION_MSTR" EntityType="Self.CM_SESSION_MSTR" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -451,6 +491,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="AD_Username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="account_type" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Private" Type="Int32" Nullable="false" />
+          <Property Name="barcode" Type="String" MaxLength="14" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="CM_SESSION_MSTR">
           <Key>
@@ -580,6 +621,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="ACT_CDE" Mode="In" Type="String" />
             <Parameter Name="SESS_CDE" Mode="In" Type="String" />
           </FunctionImport>
+          <EntitySet Name="ChapelEvent" EntityType="Gordon360.ChapelEvent" />
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
           <Property Type="String" Name="ACT_CDE" Nullable="false" MaxLength="8" />
@@ -837,15 +879,15 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <PropertyRef Name="sortOrder" />
           </Key>
           <Property Name="strFileName" Type="String" Nullable="false" MaxLength="159" FixedLength="false" Unicode="false" />
-          <Property Name="strFlashFileName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="strFlashFileName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="strAltTag" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="strLinkURL" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="strSliderTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="strSliderSubTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="strSliderAction" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="iWidth" Type="Int32" />
-          <Property Name="iHeight" Type="Int32" />
-          <Property Name="strExtensions" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="strLinkURL" Type="String" MaxLength="500" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="strSliderTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="strSliderSubTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="strSliderAction" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="iWidth" Type="Int32" Nullable="false" />
+          <Property Name="iHeight" Type="Int32" Nullable="false" />
+          <Property Name="strExtensions" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="dtModified" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="sortOrder" Type="Int32" Nullable="false" />
         </EntityType>
@@ -854,6 +896,21 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="String" Name="LastName" Nullable="true" MaxLength="50" />
           <Property Type="String" Name="Email" Nullable="true" MaxLength="50" />
         </ComplexType>
+        <EntityType Name="ChapelEvent">
+          <Key>
+            <PropertyRef Name="ROWID" />
+            <PropertyRef Name="CHBarEventID" />
+          </Key>
+          <Property Name="ROWID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CHBarEventID" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CHBarcode" Type="String" MaxLength="14" FixedLength="false" Unicode="true" />
+          <Property Name="CHEventID" Type="String" MaxLength="6" FixedLength="false" Unicode="true" />
+          <Property Name="CHCheckerID" Type="String" MaxLength="14" FixedLength="false" Unicode="true" />
+          <Property Name="CHDate" Type="DateTime" Precision="3" />
+          <Property Name="CHTime" Type="DateTime" Precision="3" />
+          <Property Name="CHSource" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="CHTermCD" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -939,6 +996,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="ACCOUNT">
             <EntityTypeMapping TypeName="Gordon360.ACCOUNT">
               <MappingFragment StoreEntitySet="ACCOUNT">
+                <ScalarProperty Name="barcode" ColumnName="barcode" />
                 <ScalarProperty Name="Private" ColumnName="Private" />
                 <ScalarProperty Name="gordon_id" ColumnName="gordon_id" />
                 <ScalarProperty Name="firstname" ColumnName="firstname" />
@@ -1338,6 +1396,21 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <EntitySetMapping Name="ChapelEvent">
+            <EntityTypeMapping TypeName="Gordon360.ChapelEvent">
+              <MappingFragment StoreEntitySet="ChapelEvent">
+                <ScalarProperty Name="CHTermCD" ColumnName="CHTermCD" />
+                <ScalarProperty Name="CHSource" ColumnName="CHSource" />
+                <ScalarProperty Name="CHTime" ColumnName="CHTime" />
+                <ScalarProperty Name="CHDate" ColumnName="CHDate" />
+                <ScalarProperty Name="CHCheckerID" ColumnName="CHCheckerID" />
+                <ScalarProperty Name="CHEventID" ColumnName="CHEventID" />
+                <ScalarProperty Name="CHBarcode" ColumnName="CHBarcode" />
+                <ScalarProperty Name="CHBarEventID" ColumnName="CHBarEventID" />
+                <ScalarProperty Name="ROWID" ColumnName="ROWID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

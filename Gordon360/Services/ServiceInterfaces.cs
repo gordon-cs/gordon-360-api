@@ -11,7 +11,12 @@ using Gordon360.Models.ViewModels;
 /// </summary>
 namespace Gordon360.Services
 {
-
+    public interface IChapelEventService
+    {
+        ChapelEventViewModel Get(string id);
+        IEnumerable<ChapelEventViewModel> GetAll();
+        ChapelEventViewModel GetChapelEventByChapelEventID(string CHEventID);
+    }
     public interface IAccountService
     {
         AccountViewModel Get(string id);

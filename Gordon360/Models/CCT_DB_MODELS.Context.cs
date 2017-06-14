@@ -42,6 +42,7 @@ namespace Gordon360.Models
         public virtual DbSet<JENZ_ACT_CLUB_DEF> JENZ_ACT_CLUB_DEF { get; set; }
         public virtual DbSet<ACT_INFO> ACT_INFO { get; set; }
         public virtual DbSet<C360_SLIDER> C360_SLIDER { get; set; }
+        public virtual DbSet<ChapelEvent> ChapelEvent { get; set; }
     
         public virtual ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> ACTIVE_CLUBS_PER_SESS_ID(string sESS_CDE)
         {
