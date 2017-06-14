@@ -29,6 +29,7 @@ Dive in.
     - [Running the Tests](#running-the-tests)
     - [Running the server locally](#running-the-server-locally)
 - [Troubleshooting](#troubleshooting)
+- [Documentation](#documentation)
 
 ## Machines and Sites
 To work on this project, it is easiest to use the following machines provided by CTS:
@@ -489,15 +490,17 @@ Run the tests:
 `python3 gordon_360_tests_member.py` -- This runs the tests for members.
 `python3 gordon_360_tests_leader.py` -- This runs the tests for leaders.
 
-### Manual Testing
+## Manual Testing
 
-##### Running the server locally
+#### Running the server locally
 
 * Before you begin you will have to add the secrets.config file to the folder that you are working from. The file is located on the cs-devA virtual machine in `C:\Users\Public\Documents\360 Shared files` Copy the file secrets.config to the same folder in your project that contains the web.config file. This will allow you to run the server locally.
 
 * If you are using the virtual machine you will need to run the server on an unused port.  To change the port that the server is running open the solution in virtual studio.  In the solution explorer, right click the name of the project (Gordon360) and select properties.  Choose the Web tab and change the Project Url to an unused port.
 
 * You can then press the Start button in virtual studio to run the server. It will open the web browser and display an Error 403.14 - Forbdden. This is expected.  You can now begin manually testing the API
+
+#### Manually Testing API
 
 To manually test the API, use an API development/testing app like [Postman](https://www.getpostman.com/).
 * Here you can create HTTP requests to hit the API endpoints that you want to test, and see what data response you get back. 
@@ -536,3 +539,7 @@ This error will only pop up when you are testing the server directly by running 
 - Change Visual studio settings to run on `localhost:443` by default. I tried this a bit, but didn't get very far. I don't think it is that hard though, I just didn't have the motivation to continue.
 - Allow non-HTTPS connections by commenting out some code. This is what I did. DON'T FORGET TO REMMOVE THE COMMENT SYMBOLS AFTER YOU FINISH THOUGH. 
     - The code that restricts non-HTTPS connections is located under the `Startup.cs` file. Look for the "#if DEBUG" and "#endif" code-blocks. Comment both out. 
+
+
+### Documentation
+The documentation folder currently contains the ColdFusion files from go.gordon that contain the logic behind the people search.  Index.cfm is the page used to select search criteria.  Searchresults.cfm is the list of people you get back based on that criteria.  It selects from a student view, facstaff view, and alumni view all separately and then sorts all the results together.  Showperson.cfm is the detail page of the person you select from the searchresults.cfm page.
