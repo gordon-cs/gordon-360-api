@@ -11,5 +11,6 @@ namespace Gordon360.Models.ViewModels
         public string FromAddress { get; set; }
         public string Subject { get; set; }
         public string Content { get; set; }
+        public string Password { get; set; }
     }
 }

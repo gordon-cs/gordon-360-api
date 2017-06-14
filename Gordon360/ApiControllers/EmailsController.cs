@@ -214,31 +214,6 @@ namespace Gordon360.ApiControllers
         }
 
         [HttpPut]
-        [Route("activity/{id}/session/{session}/send/{gordon_id}")]
-        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAIL_CONTENT)]
-        public IHttpActionResult SendEmailsToGroup(string id, string session, string gordon_id, [FromBody]EmailContentViewModel email)
-        {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-            var to_emails = _emailService.GetEmailsForActivityLeaders(id, session);
-            var from_email = _accountService.Get(gordon_id).Email;
-            _emailService.SendEmails(to_emails, from_email, email.Subject, email.Content);
-
-            return Ok();
-        }
-
-        [HttpPut]
         [Route("")]
         public IHttpActionResult SendEmails([FromBody]EmailContentViewModel email)
         {
@@ -255,8 +230,8 @@ namespace Gordon360.ApiControllers
                 }
                 throw new BadInputException() { ExceptionMessage = errors };
             }
-            var to_emails = email.ToAddress.Split(",");
-            _emailService.SendEmails(to_emails, email.FromAddress, email.Subject, email.Content);
+            var to_emails = email.ToAddress.Split(',');
+            _emailService.SendEmails(to_emails, email.FromAddress, email.Subject, email.Content, email.Password);
             return Ok();
         }
 

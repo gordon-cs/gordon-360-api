@@ -9,6 +9,7 @@ using Gordon360.Services.ComplexQueries;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Static.Methods;
 using System.Net.Mail;
+using System.Net;
 
 namespace Gordon360.Services
 {
@@ -191,19 +192,26 @@ namespace Gordon360.Services
         /// <param name="from_email">The address this email is sent from</param>
         /// <param name="subject">Subject of the email to be sent</param>
         /// <param name="email_content">The content of the email to be sent</param>
+        /// <param name="password">Password of the email sender</param>
         /// <returns></returns>
-        public void SendEmails(IEnumerable<EmailViewModel> to_emails, string from_email, string subject, string email_content)
+        public void SendEmails(string [] to_emails, string from_email, string subject, string email_content, string password)
         {
             using (var smtp = new SmtpClient())
             {
+                var credential = new NetworkCredential
+                {
+                    UserName = from_email,
+                    Password = password
+                };
+                smtp.Credentials = credential;
                 smtp.Host = "smtp.gordon.edu";
-                smtp.Port = 587;
+                smtp.Port = 465;
                 smtp.EnableSsl = true;
                 var message = new MailMessage();
                 message.From = new MailAddress(from_email);
-                foreach (EmailViewModel to_email in to_emails)
+                foreach (string to_email in to_emails)
                 {
-                    message.To.Add(new MailAddress(to_email.Email));
+                    message.To.Add(new MailAddress(to_email));
                 }
                 message.Subject = subject;
                 message.Body = email_content;
