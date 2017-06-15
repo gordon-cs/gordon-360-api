@@ -209,7 +209,7 @@ namespace Gordon360.Services
                 smtp.EnableSsl = true;
                 var message = new MailMessage();
                 message.From = new MailAddress(from_email);
-                message.CC.Add(new MailAddress(from_email));
+                message.Bcc.Add(new MailAddress(from_email));
                 foreach (string to_email in to_emails)
                 {
                     message.To.Add(new MailAddress(to_email));
