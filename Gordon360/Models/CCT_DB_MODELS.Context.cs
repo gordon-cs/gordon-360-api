@@ -376,5 +376,18 @@ namespace Gordon360.Models
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_upgraddiagrams");
         }
+    
+        public virtual ObjectResult<STUDENT_EVENTS_PER_TERM_Result> STUDENT_EVENTS_PER_TERM(string sTU_ID, string tERM)
+        {
+            var sTU_IDParameter = sTU_ID != null ?
+                new ObjectParameter("STU_ID", sTU_ID) :
+                new ObjectParameter("STU_ID", typeof(string));
+    
+            var tERMParameter = tERM != null ?
+                new ObjectParameter("TERM", tERM) :
+                new ObjectParameter("TERM", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<STUDENT_EVENTS_PER_TERM_Result>("STUDENT_EVENTS_PER_TERM", sTU_IDParameter, tERMParameter);
+        }
     }
 }

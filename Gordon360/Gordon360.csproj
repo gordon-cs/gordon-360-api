@@ -315,6 +315,9 @@
     <Compile Include="Models\Student.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\STUDENT_EVENTS_PER_TERM_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\SUPERVISOR.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>

@@ -73,13 +73,13 @@ namespace Gordon360.Services
             ChapelEventViewModel result = query; // Implicit conversion happening here, see ViewModels.
             return result;
         }
-       
+
         /// <summary>
         /// Returns all attended events for a student
         /// </summary>
         /// <param name="ID"> The student's ID</param>
         /// <returns></returns>
-        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.ChapelEvent)]
+        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.ChapelEvent)]
         public IEnumerable<ChapelEventViewModel> GetAllForStudent(string ID)
         {
             var studentExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id.Trim() == ID).Count() > 0;
@@ -112,5 +112,37 @@ namespace Gordon360.Services
             });
             return result;
         }
-    }
+
+        /// <summary>
+        /// Returns all attended events for a student
+        /// </summary>
+        /// <param name="ID"> The student's ID</param>
+        /// <param name="term"> The current term</param>
+        /// <returns></returns>
+        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.ChapelEvent)]
+        public string GetCreditsForStudent(string ID, string term)
+        {
+            var studentExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id.Trim() == ID).Count() > 0;
+            if (!studentExists)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
+            }
+
+            /// Declare the variables used
+            var idParam = new SqlParameter("@STU_ID", ID);
+            var termParam = new SqlParameter("@TERM", term);
+            string[] parameters = new string[2];
+            parameters[0] = ID;
+            parameters[1] = term;
+
+            var result = RawSqlQuery<String>.query("TOTAL_CREDITS_PER_STUDENT @STU_ID @TERM", parameters );
+
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The student was not found" };
+            }
+
+            return result.ToString();
+        }
+       }
 }

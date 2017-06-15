@@ -26,8 +26,11 @@ namespace Gordon360.Static.Names
         public const string ADVISOR_BY_ACTIVITY = "Advisor Resources associated with an activity";
         public const string LEADER_BY_ACTIVITY = "Leader Ressources associated with an activity";
         public const string GROUP_ADMIN_BY_ACTIVITY = "Group Admin Resources associated with an activity";
+        public const string EVENTS_BY_STUDENT_ID = "Every event attended for a specific student";
+        public const string STUDENT_EVENTS_PER_TERM = "Every event attended by a student in a specific term";
+        public const string TOTAL_CREDITS_PER_STUDENT = "Total credits for a student in a specific term";
 
-
+ 
     }
 
     public static class Operation

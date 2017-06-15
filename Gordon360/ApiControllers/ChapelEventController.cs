@@ -77,7 +77,35 @@ namespace Gordon360.ApiControllers
 
             return Ok(result);
         }
+        [HttpGet]
+        [Route("Student/{ID}/{term}")]
+        public IHttpActionResult GetCreditsForStudent(string ID, string term)
+        {
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(ID))
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            var result = _chapelService.GetCreditsForStudent(ID, term);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
     }
+
 
 
 

@@ -248,10 +248,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Parameter Name="ACT_CDE" Type="char" Mode="In" />
           <Parameter Name="SESS_CDE" Type="char" Mode="In" />
         </Function>
-        <Function Name="ALL_EVENTS_PER_STUDENT" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="STU_ID" Type="char" Mode="In" />
-          <Parameter Name="TERM" Type="char" Mode="In" />
-        </Function>
         <Function Name="ALL_MEMBERSHIPS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="ALL_REQUESTS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="ALL_SUPERVISORS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
@@ -326,6 +322,10 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
         </Function>
         <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="STUDENT_EVENTS_PER_TERM" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="STU_ID" Type="char" Mode="In" />
+          <Parameter Name="TERM" Type="char" Mode="In" />
+        </Function>
         <Function Name="SUPERVISOR_PER_SUP_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="SUP_ID" Type="int" Mode="In" />
         </Function>
@@ -704,6 +704,10 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="new_diagramname" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="sp_upgraddiagrams" />
+          <FunctionImport Name="STUDENT_EVENTS_PER_TERM" ReturnType="Collection(Gordon360.STUDENT_EVENTS_PER_TERM_Result)">
+            <Parameter Name="STU_ID" Mode="In" Type="String" />
+            <Parameter Name="TERM" Mode="In" Type="String" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
           <Property Type="String" Name="ACT_CDE" Nullable="false" MaxLength="8" />
@@ -1014,6 +1018,17 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="Int32" Name="ID" Nullable="false" />
           <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
           <Property Type="Int32" Name="OwnerID" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="STUDENT_EVENTS_PER_TERM_Result">
+          <Property Type="Int32" Name="ROWID" Nullable="false" />
+          <Property Type="String" Name="CHBarEventID" Nullable="false" MaxLength="20" />
+          <Property Type="String" Name="CHBarcode" Nullable="true" MaxLength="14" />
+          <Property Type="String" Name="CHEventID" Nullable="true" MaxLength="6" />
+          <Property Type="String" Name="CHCheckerID" Nullable="true" MaxLength="14" />
+          <Property Type="DateTime" Name="CHDate" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="CHTime" Nullable="true" Precision="23" />
+          <Property Type="String" Name="CHSource" Nullable="true" MaxLength="1" />
+          <Property Type="String" Name="CHTermCD" Nullable="true" MaxLength="4" />
         </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1514,15 +1529,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="ALL_EVENTS_PER_STUDENT" FunctionName="Gordon360.Store.ALL_EVENTS_PER_STUDENT">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="Gordon360.ALL_EVENTS_PER_STUDENT_Result">
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="Time" ColumnName="Time" />
-                <ScalarProperty Name="EventID" ColumnName="EventID" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="EVENTS_BY_STUDENT_ID" FunctionName="Gordon360.Store.EVENTS_BY_STUDENT_ID">
             <ResultMapping>
               <ComplexTypeMapping TypeName="Gordon360.EVENTS_BY_STUDENT_ID_Result">
@@ -1558,6 +1564,21 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="Gordon360.Store.sp_renamediagram" />
           <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="Gordon360.Store.sp_upgraddiagrams" />
+          <FunctionImportMapping FunctionImportName="STUDENT_EVENTS_PER_TERM" FunctionName="Gordon360.Store.STUDENT_EVENTS_PER_TERM">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.STUDENT_EVENTS_PER_TERM_Result">
+                <ScalarProperty Name="ROWID" ColumnName="ROWID" />
+                <ScalarProperty Name="CHBarEventID" ColumnName="CHBarEventID" />
+                <ScalarProperty Name="CHBarcode" ColumnName="CHBarcode" />
+                <ScalarProperty Name="CHEventID" ColumnName="CHEventID" />
+                <ScalarProperty Name="CHCheckerID" ColumnName="CHCheckerID" />
+                <ScalarProperty Name="CHDate" ColumnName="CHDate" />
+                <ScalarProperty Name="CHTime" ColumnName="CHTime" />
+                <ScalarProperty Name="CHSource" ColumnName="CHSource" />
+                <ScalarProperty Name="CHTermCD" ColumnName="CHTermCD" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
