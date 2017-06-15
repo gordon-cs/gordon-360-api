@@ -24,7 +24,7 @@ namespace Gordon360.Models.ViewModels
                 ROWID = a.ROWID,
                 CHBarEventID = a.CHBarEventID.Trim(),
                 CHBarcode = a.CHBarcode.Trim(),
-                CHEventID = a.CHEventID, // Some random records have null for an email.
+                CHEventID = a.CHEventID, 
                 CHCheckerID = a.CHCheckerID.Trim(),
                 CHDate = a.CHDate,
                 CHTime = a.CHTime,

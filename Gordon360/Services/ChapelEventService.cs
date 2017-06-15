@@ -5,6 +5,9 @@ using System.Web;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
+using Gordon360.Services.ComplexQueries;
+using System.Data.SqlClient;
+using System.Data;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
@@ -68,6 +71,45 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The event was not found." };
             }
             ChapelEventViewModel result = query; // Implicit conversion happening here, see ViewModels.
+            return result;
+        }
+       
+        /// <summary>
+        /// Returns all attended events for a student
+        /// </summary>
+        /// <param name="ID"> The student's ID</param>
+        /// <returns></returns>
+        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.ChapelEvent)]
+        public IEnumerable<ChapelEventViewModel> GetAllForStudent(string ID)
+        {
+            var studentExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id.Trim() == ID).Count() > 0;
+            if (!studentExists)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
+            }
+
+            /// Declare the variables used
+            var idParam = new SqlParameter("@STU_ID", ID);
+            var result = RawSqlQuery<ChapelEventViewModel>.query("EVENTS_BY_STUDENT_ID @STU_ID", idParam);
+
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The student was not found" };
+            }
+
+            var trimmedResult = result.Select(x =>
+            {
+                var trim = x;
+                trim.ROWID = x.ROWID;
+                trim.CHBarEventID = x.CHBarEventID.Trim();
+                trim.CHEventID = x.CHEventID.Trim();
+                trim.CHCheckerID = x.CHCheckerID.Trim();
+                trim.CHDate = x.CHDate;
+                trim.CHTime = x.CHTime;
+                trim.CHSource = x.CHSource.Trim();
+                trim.CHTermCD = x.CHTermCD.Trim();
+                return trim;
+            });
             return result;
         }
     }

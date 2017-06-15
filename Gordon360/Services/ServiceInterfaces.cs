@@ -16,6 +16,7 @@ namespace Gordon360.Services
         ChapelEventViewModel Get(string id);
         IEnumerable<ChapelEventViewModel> GetAll();
         ChapelEventViewModel GetChapelEventByChapelEventID(string CHEventID);
+        IEnumerable<ChapelEventViewModel> GetAllForStudent(string id);
     }
     public interface IAccountService
     {

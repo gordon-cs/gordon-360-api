@@ -731,6 +731,13 @@
             <param name="CHEventID">The email address associated with the account.</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Services.ChapelEventService.GetAllForStudent(System.String)">
+            <summary>
+            Returns all attended events for a student
+            </summary>
+            <param name="ID"> The student's ID</param>
+            <returns></returns>
+        </member>
         <member name="T:Gordon360.Services.ComplexQueries.RawSqlQuery`1">
             <summary>
             Helper class to execute Sql statements.
