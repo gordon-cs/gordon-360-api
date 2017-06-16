@@ -82,14 +82,16 @@ namespace Gordon360.Services
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.ChapelEvent)]
         public IEnumerable<ChapelEventViewModel> GetAllForStudent(string ID)
         {
+            // Confirm that student exists
             var studentExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id.Trim() == ID).Count() > 0;
             if (!studentExists)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
             }
 
-            /// Declare the variables used
+            // Declare the variables used
             var idParam = new SqlParameter("@STU_ID", ID);
+            // Run the query, which returns an iterable json list 
             var result = RawSqlQuery<ChapelEventViewModel>.query("EVENTS_BY_STUDENT_ID @STU_ID", idParam);
 
             if (result == null)
@@ -97,6 +99,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The student was not found" };
             }
 
+            // Trim white space off of results
             var trimmedResult = result.Select(x =>
             {
                 var trim = x;
@@ -160,5 +163,48 @@ namespace Gordon360.Services
 
             return result;
         }
-       }
+
+        /// <summary>
+        /// Returns all attended events for a student
+        /// </summary>
+        /// <param name="ID"> The student's ID</param>
+        /// <param name="term"> The current term</param>
+        /// <returns></returns>
+        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.ChapelEvent)]
+        public int GetCredits(string ID, string term)
+        {
+            var studentExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id.Trim() == ID).Count() > 0;
+            if (!studentExists)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
+            }
+
+            // Declare the variables used
+            var idParam = new SqlParameter("@STU_ID", ID);
+
+            // Run the stored query  and return an iterable list of objects
+            var result = RawSqlQuery<ChapelEventViewModel>.query("EVENTS_BY_STUDENT_ID @STU_ID", idParam);
+
+            // Confirm that result is not empty
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The student was not found" };
+            }
+
+            // Filter out the events that are part of the specified term, based on the attribute specified
+            result = result.Where(x => x.CHTermCD.Trim().Equals(term));
+
+            // Use iteration to count credits
+            int c = 0;
+            using (var e = result.GetEnumerator())
+            {
+                while (e.MoveNext())
+                    c++;
+            }
+
+            // Return total count 
+            return c;
+        }
+
+    }
 }

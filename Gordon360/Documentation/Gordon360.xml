@@ -746,6 +746,14 @@
             <param name="term"> The current term</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Services.ChapelEventService.GetCredits(System.String,System.String)">
+            <summary>
+            Returns all attended events for a student
+            </summary>
+            <param name="ID"> The student's ID</param>
+            <param name="term"> The current term</param>
+            <returns></returns>
+        </member>
         <member name="T:Gordon360.Services.ComplexQueries.RawSqlQuery`1">
             <summary>
             Helper class to execute Sql statements.
