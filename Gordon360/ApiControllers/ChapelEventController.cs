@@ -79,9 +79,9 @@ namespace Gordon360.ApiControllers
         }
         [HttpGet]
         [Route("Student/{ID}/{term}")]
-        public IHttpActionResult GetCreditsForStudent(string ID, string term)
+        public IHttpActionResult GetEventsForStudentByTerm(string ID, string term)
         {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(ID))
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(ID) || string.IsNullOrWhiteSpace(term))
             {
                 string errors = "";
                 foreach (var modelstate in ModelState.Values)
@@ -95,7 +95,7 @@ namespace Gordon360.ApiControllers
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var result = _chapelService.GetCreditsForStudent(ID, term);
+            var result = _chapelService.GetEventsForStudentByTerm(ID, term);
 
             if (result == null)
             {

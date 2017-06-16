@@ -120,7 +120,7 @@ namespace Gordon360.Services
         /// <param name="term"> The current term</param>
         /// <returns></returns>
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.ChapelEvent)]
-        public string GetCreditsForStudent(string ID, string term)
+        public IEnumerable<ChapelEventViewModel> GetEventsForStudentByTerm(string ID, string term)
         {
             var studentExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id.Trim() == ID).Count() > 0;
             if (!studentExists)
@@ -128,21 +128,37 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
             }
 
-            /// Declare the variables used
+            // Declare the variables used
             var idParam = new SqlParameter("@STU_ID", ID);
-            var termParam = new SqlParameter("@TERM", term);
-            string[] parameters = new string[2];
-            parameters[0] = ID;
-            parameters[1] = term;
+            
+            // Run the stored query  and return an iterable list of objects
+            var result = RawSqlQuery<ChapelEventViewModel>.query("EVENTS_BY_STUDENT_ID @STU_ID", idParam );
 
-            var result = RawSqlQuery<String>.query("TOTAL_CREDITS_PER_STUDENT @STU_ID @TERM", parameters );
-
+            // Confirm that result is not empty
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The student was not found" };
             }
 
-            return result.ToString();
+            // Filter out the events that are part of the specified term, based on the attribute specified
+            result = result.Where(x => x.CHTermCD.Trim().Equals(term));
+
+            // Trim the white space off of each entry
+            var trimmedResult = result.Select(x =>
+            {
+                var trim = x;
+                trim.ROWID = x.ROWID;
+                trim.CHBarEventID = x.CHBarEventID.Trim();
+                trim.CHEventID = x.CHEventID.Trim();
+                trim.CHCheckerID = x.CHCheckerID.Trim();
+                trim.CHDate = x.CHDate;
+                trim.CHTime = x.CHTime;
+                trim.CHSource = x.CHSource.Trim();
+                trim.CHTermCD = x.CHTermCD.Trim();
+                return trim;
+            });
+
+            return result;
         }
        }
 }

@@ -738,7 +738,7 @@
             <param name="ID"> The student's ID</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Services.ChapelEventService.GetCreditsForStudent(System.String,System.String)">
+        <member name="M:Gordon360.Services.ChapelEventService.GetEventsForStudentByTerm(System.String,System.String)">
             <summary>
             Returns all attended events for a student
             </summary>
