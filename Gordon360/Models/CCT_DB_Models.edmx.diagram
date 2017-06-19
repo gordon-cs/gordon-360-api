@@ -21,6 +21,9 @@
         <EntityTypeShape EntityType="Gordon360.JENZ_ACT_CLUB_DEF" Width="1.5" PointX="7.375" PointY="3.75" />
         <EntityTypeShape EntityType="Gordon360.ACT_INFO" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.C360_SLIDER" Width="1.5" PointX="3.375" PointY="7.75" />
+        <EntityTypeShape EntityType="Gordon360.alumni" Width="1.5" PointX="5.75" PointY="7.75" />
+        <EntityTypeShape EntityType="Gordon360.facstaff" Width="1.5" PointX="7.75" PointY="6.75" />
+        <EntityTypeShape EntityType="Gordon360.student_temp" Width="1.5" PointX="0.75" PointY="8.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

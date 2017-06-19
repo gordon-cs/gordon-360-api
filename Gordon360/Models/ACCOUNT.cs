@@ -21,5 +21,6 @@ namespace Gordon360.Models
         public string AD_Username { get; set; }
         public string account_type { get; set; }
         public int Private { get; set; }
+        public string barcode { get; set; }
     }
 }

@@ -105,6 +105,19 @@
             <param name="id">The id of the membership request to delete</param>
             <returns>The deleted object</returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.Get">
+            <summary>
+            Get all available activities
+            </summary>
+            <returns>All the activities in the databse</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.Get(System.String)">
+            <summary>Get a single activity based upon the string id entered in the URL</summary>
+            <param name="username">An identifier for a single activity</param>
+            <returns></returns>
+            <remarks>Get a single activity from the database</remarks>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ParticipationsController.Get">
             <summary>Get all the roles a person may have within an activity</summary>
             <returns>A list of all the roles and their coresponding acronyms</returns>
@@ -814,6 +827,19 @@
             Fetches all the Faculty members from the database.
             </summary>
             <returns>FacultyViewModel IEnumerable. If no records are found an empty IEnumerable is returned.</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetProfileByUsername(System.String)">
+            <summary>
+            Fetches a single activity record whose id matches the id provided as an argument
+            </summary>
+            <param name="username">The activity code</param>
+            <returns>ActivityViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetAll">
+            <summary>
+            Fetches all the account records from storage.
+            </summary>
+            <returns>AccountViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
         </member>
         <member name="T:Gordon360.Services.JenzibarActivityService">
             <summary>
