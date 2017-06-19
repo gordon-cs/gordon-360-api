@@ -126,11 +126,7 @@ namespace Gordon360.ApiControllers
             // Run count function
             var result = _chapelService.GetCredits(ID, term);
 
-            if (result == null)
-            {
-                return NotFound();
-            }
-
+         
             // Return total credits
             return Ok(result);
         }
