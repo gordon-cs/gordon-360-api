@@ -22,13 +22,13 @@ namespace Gordon360.Static.Names
         public const string EMAILS_BY_ACTIVITY = "Emails for activity members";
         public const string EMAILS_BY_LEADERS = "Emails for activity leaders";
         public const string EMAILS_BY_GROUP_ADMIN = "Emails for group admin";
-        public const string EMAIL_CONTENT = "Email content to be sent";
         public const string ADVISOR_BY_ACTIVITY = "Advisor Resources associated with an activity";
         public const string LEADER_BY_ACTIVITY = "Leader Ressources associated with an activity";
         public const string GROUP_ADMIN_BY_ACTIVITY = "Group Admin Resources associated with an activity";
-        
 
-
+        // Public resources
+        public const string SLIDER = "Slider to be shown on the homepage";
+    
     }
 
     public static class Operation
@@ -36,6 +36,7 @@ namespace Gordon360.Static.Names
         public const string READ_ALL = "Reading all available resources";
         public const string READ_PARTIAL = "Reading a group of related resources";
         public const string READ_ONE = "Reading one resource";
+        public const string READ_PUBLIC = "Reading public resources";
         public const string ADD = "Creating a resource";
         public const string UPDATE = "Updating a resource";
         public const string DELETE = "Deleting a resource";
