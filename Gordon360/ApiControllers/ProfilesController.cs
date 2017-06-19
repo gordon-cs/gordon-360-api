@@ -32,19 +32,19 @@ namespace Gordon360.Controllers.Api
             _profileService = profileService;
         }
 
-        /// <summary>
-        /// Get all available activities
-        /// </summary>
-        /// <returns>All the activities in the databse</returns>
-        /// <remarks></remarks>
-        // GET api/<controller>
-        [HttpGet]
-        [Route("")]
-        public IHttpActionResult Get()
-        {
-            var all = _profileService.GetAll();
-            return Ok(all);
-        }
+        ///// <summary>
+        ///// Get all available activities
+        ///// </summary>
+        ///// <returns>All the activities in the databse</returns>
+        ///// <remarks></remarks>
+        //// GET api/<controller>
+        //[HttpGet]
+        //[Route("")]
+        //public IHttpActionResult Get()
+        //{
+        //    var all = _profileService.GetAll();
+        //    return Ok(all);
+        //}
 
         /// <summary>Get a single activity based upon the string id entered in the URL</summary>
         /// <param name="username">An identifier for a single activity</param>
@@ -68,13 +68,25 @@ namespace Gordon360.Controllers.Api
                 }
                 throw new BadInputException() { ExceptionMessage = errors };
             }
-            var result = _profileService.GetProfileByUsername(username);
-
-            if (result == null)
+            var student = _profileService.GetStudentProfileByUsername(username);
+            var faculty = _profileService.GetFacultyStaffProfileByUsername(username);
+            var alumni = _profileService.GetAlumniProfileByUsername(username);
+            if (student != null)
+            {
+                return Ok(student);
+            }
+            else if (faculty != null)
+            {
+                return Ok(faculty);                
+            }
+            else if (alumni != null)
+            {
+                return Ok(alumni);
+            }
+            else
             {
                 return NotFound();
             }
-            return Ok(result);
         }
     }
 }

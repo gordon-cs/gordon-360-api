@@ -13,8 +13,9 @@ namespace Gordon360.Services
 {
     public interface IProfileService
     {
-        ProfileViewModel GetProfileByUsername(string username);
-        IEnumerable<ProfileViewModel> GetAll();
+        StudentProfileViewModel GetStudentProfileByUsername(string username);
+        FacultyStaffProfileViewModel GetFacultyStaffProfileByUsername(string username);
+        AlumniProfileViewModel GetAlumniProfileByUsername(string username);
     }
     public interface IAccountService
     {

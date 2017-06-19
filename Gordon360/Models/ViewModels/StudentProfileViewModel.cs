@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Gordon360.Models.ViewModels
 {
-    public class ProfileViewModel
+    public class StudentProfileViewModel
     {
         public int Row_ID { get; set; }
         public string ID { get; set; }
@@ -34,29 +34,29 @@ namespace Gordon360.Models.ViewModels
         public Nullable<bool> IsMobilePhonePrivate { get; set; }
 
 
-        public static implicit operator ProfileViewModel(student_temp stu)
+        public static implicit operator StudentProfileViewModel(student_temp stu)
         {
-            ProfileViewModel vm = new ProfileViewModel
+            StudentProfileViewModel vm = new StudentProfileViewModel
             {
                 Row_ID = stu.Row_ID,
                 ID = stu.ID.Trim(),
                 FirstName = stu.FirstName.Trim(),
                 LastName = stu.LastName.Trim(), 
-                NickName = stu.NickName.Trim() ?? "", // Just in case some random record has a null user_name 
+                NickName = stu.NickName ?? "", // Just in case some random record has a null user_name 
                 EmailUserName = stu.EmailUserName.Trim() ?? "", // Just in case some random record has a null email field
                 OnOffCampus = stu.OnOffCampus.Trim() ?? "",
                 HomeStreet1 = stu.HomeStreet1 ?? "",
                 HomeStreet2 = stu.HomeStreet2 ?? "",
-                HomeCity = stu.HomeCity.Trim() ?? "",
-                HomeState = stu.HomeState.Trim() ?? "",
-                HomePostalCode = stu.HomePostalCode.Trim() ?? "",
-                HomeCountry = stu.HomeCountry.Trim() ?? "",
+                HomeCity = stu.HomeCity ?? "",
+                HomeState = stu.HomeState ?? "",
+                HomePostalCode = stu.HomePostalCode ?? "",
+                HomeCountry = stu.HomeCountry ?? "",
                 HomePhone = stu.HomePhone ?? "",
-                Class = stu.Class.Trim() ?? "",
-                KeepPrivate = stu.KeepPrivate.Trim() ?? "",
-                Major = stu.Major.Trim() ?? "",
+                Class = stu.Class ?? "",
+                KeepPrivate = stu.KeepPrivate ?? "",
+                Major = stu.Major ?? "",
                 Email = stu.Email ?? "",
-                Gender = stu.Gender.Trim() ?? "",
+                Gender = stu.Gender ?? "",
                 MobilePhone = stu.MobilePhone ?? "",
                 IsMobilePhonePrivate = stu.IsMobilePhonePrivate
             };
