@@ -231,8 +231,7 @@ namespace Gordon360.ApiControllers
                 throw new BadInputException() { ExceptionMessage = errors };
             }
             var to_emails = email.ToAddress.Split(',');
-            var from_email = _accountService.Get(email.FromID).Email;
-            _emailService.SendEmails(to_emails, from_email, email.Subject, email.Content, email.Password);
+            _emailService.SendEmails(to_emails, email.FromAddress, email.Subject, email.Content, email.Password);
             return Ok();
         }
 
