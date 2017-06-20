@@ -33,32 +33,32 @@ namespace Gordon360.Models.ViewModels
         public string StudentID { get; set; }
 
 
-        public static implicit operator FacultyStaffProfileViewModel(facstaff f)
+        public static implicit operator FacultyStaffProfileViewModel(facstaff fac)
         {
             FacultyStaffProfileViewModel vm = new FacultyStaffProfileViewModel
             {
-                Row_ID = f.Row_ID,
-                ID = f.ID.Trim(),
-                FirstName = f.FirstName.Trim(),
-                LastName = f.LastName.Trim(),
-                NickName = f.Nickname ?? "", // Just in case some random record has a null user_name 
-                EmailUserName = f.EmailUserName.Trim() ?? "", // Just in case some random record has a null email field
-                OnCampusDepartment = f.OnCampusDepartment ?? "",
-                OnCampusBuilding = f.OnCampusBuilding ?? "",
-                OnCampusRoom = f.OnCampusRoom ?? "",
-                OnCampusPhone = f.OnCampusPhone ?? "",
-                HomeStreet1 = f.HomeStreet1 ?? "",
-                HomeStreet2 = f.HomeStreet2 ?? "",
-                HomeCity = f.HomeCity ?? "",
-                HomeState = f.HomeState ?? "",
-                HomePostalCode = f.HomePostalCode ?? "",
-                HomeCountry = f.HomeCountry ?? "",
-                HomePhone = f.HomePhone ?? "",
-                KeepPrivate = f.KeepPrivate ?? "",
-                JobTitle = f.JobTitle ?? "",
-                Email = f.Email ?? "",
-                Gender = f.Gender ?? "",
-                StudentID = f.StudentID ?? ""
+                Row_ID = fac.Row_ID,
+                ID = fac.ID.Trim(),
+                FirstName = fac.FirstName.Trim(),
+                LastName = fac.LastName.Trim(),
+                NickName = fac.Nickname ?? "", // Just in case some random record has a null user_name 
+                EmailUserName = fac.EmailUserName.Trim() ?? "", // Just in case some random record has a null email field
+                OnCampusDepartment = fac.OnCampusDepartment ?? "",
+                OnCampusBuilding = fac.OnCampusBuilding ?? "",
+                OnCampusRoom = fac.OnCampusRoom ?? "",
+                OnCampusPhone = fac.OnCampusPhone ?? "",
+                HomeStreet1 = fac.HomeStreet1 ?? "",
+                HomeStreet2 = fac.HomeStreet2 ?? "",
+                HomeCity = fac.HomeCity ?? "",
+                HomeState = fac.HomeState ?? "",
+                HomePostalCode = fac.HomePostalCode ?? "",
+                HomeCountry = fac.HomeCountry ?? "",
+                HomePhone = fac.HomePhone ?? "",
+                KeepPrivate = fac.KeepPrivate ?? "",
+                JobTitle = fac.JobTitle ?? "",
+                Email = fac.Email ?? "",
+                Gender = fac.Gender ?? "",
+                StudentID = fac.StudentID ?? ""
             };
 
             return vm;

@@ -21,31 +21,31 @@ namespace Gordon360.Models.ViewModels
         public string HomeCountry { get; set; }
         public string HomePhone { get; set; }
         public string ClassYear { get; set; }
-        public string Major1 { get; set; }
+        public string Major { get; set; }
         public string ShareName { get; set; }
         public string ShareAddress { get; set; }
 
-        public static implicit operator AlumniProfileViewModel(alumni al)
+        public static implicit operator AlumniProfileViewModel(alumni alu)
         {
             AlumniProfileViewModel vm = new AlumniProfileViewModel
             {
-                Row_ID = al.Row_ID,
-                ID = al.ID.Trim(),
-                FirstName = al.FirstName.Trim(),
-                LastName = al.LastName.Trim(),
-                NickName = al.NickName ?? "", // Just in case some random record has a null user_name 
-                EmailUserName = al.EmailUserName.Trim() ?? "", // Just in case some random record has a null email field
-                HomeStreet1 = al.HomeStreet1 ?? "",
-                HomeStreet2 = al.HomeStreet2 ?? "",
-                HomeCity = al.HomeCity ?? "",
-                HomeState = al.HomeState ?? "",
-                HomePostalCode = al.HomePostalCode ?? "",
-                HomeCountry = al.HomeCountry ?? "",
-                HomePhone = al.HomePhone ?? "",
-                ClassYear = al.ClassYear ?? "",
-                Major1 = al.Major1 ?? "",
-                ShareName = al.ShareName ?? "",
-                ShareAddress =al.ShareAddress ?? ""
+                Row_ID = alu.Row_ID,
+                ID = alu.ID.Trim(),
+                FirstName = alu.FirstName.Trim(),
+                LastName = alu.LastName.Trim(),
+                NickName = alu.NickName ?? "", // Just in case some random record has a null user_name 
+                EmailUserName = alu.EmailUserName.Trim() ?? "", // Just in case some random record has a null email field
+                HomeStreet1 = alu.HomeStreet1 ?? "",
+                HomeStreet2 = alu.HomeStreet2 ?? "",
+                HomeCity = alu.HomeCity ?? "",
+                HomeState = alu.HomeState ?? "",
+                HomePostalCode = alu.HomePostalCode ?? "",
+                HomeCountry = alu.HomeCountry ?? "",
+                HomePhone = alu.HomePhone ?? "",
+                ClassYear = alu.ClassYear ?? "",
+                Major = alu.Major1 ?? "",
+                ShareName = alu.ShareName ?? "",
+                ShareAddress =alu.ShareAddress ?? ""
             };
 
             return vm;

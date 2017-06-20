@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Newtonsoft.Json.Linq;
 
 
 
@@ -54,38 +55,79 @@ namespace Gordon360.Controllers.Api
                 }
                 throw new BadInputException() { ExceptionMessage = errors };
             }
+
             var student = _profileService.GetStudentProfileByUsername(username);
             var faculty = _profileService.GetFacultyStaffProfileByUsername(username);
             var alumni = _profileService.GetAlumniProfileByUsername(username);
-            
+
 
             if (student != null)
             {   
                 if(faculty != null)
                 {
-                    if(alumni != null)
+                    if (alumni != null)
                     {
-                        return Json ( new { type = "stualufac", student, faculty, alumni});
+                        JObject stualufac = JObject.FromObject(student);
+                        stualufac.Merge(JObject.FromObject(alumni), new JsonMergeSettings
+                        {
+                            MergeArrayHandling = MergeArrayHandling.Union
+                        });
+                        stualufac.Merge(JObject.FromObject(faculty), new JsonMergeSettings
+                        {
+                            MergeArrayHandling = MergeArrayHandling.Union
+                        });
+                        stualufac.Add("PesonType", "stualufac");
+                        return Ok(stualufac);
+                        //return Json ( new { type = "stualufac", student, faculty, alumni});
                     }
-                    return Json(new { type = "stufac", student, faculty });
+                    JObject stufac = JObject.FromObject(student);
+                    stufac.Merge(JObject.FromObject(faculty), new JsonMergeSettings
+                    {
+                        MergeArrayHandling = MergeArrayHandling.Union
+                    });
+                    stufac.Add("PesonType", "stufac");
+                    return Ok(stufac);
                 }
                 else if (alumni != null)
                 {
-                    return Json(new { type = "stualu", student, alumni });
+                    JObject stualu = JObject.FromObject(student);
+                    stualu.Merge(JObject.FromObject(alumni), new JsonMergeSettings
+                    {
+                        MergeArrayHandling = MergeArrayHandling.Union
+                    });
+                    stualu.Add("PesonType", "stualu");
+                    return Ok(stualu);
+                    //return Json(new { type = "stualu", student, alumni });
                 }
-                return Json( new { type = "student", student });
+                JObject stu = JObject.FromObject(student);
+                stu.Add("PesonType", "stu");
+                return Ok(stu);
+                //return Json( new { type = "student", student });
             }
             else if (faculty != null)
             {
                 if(alumni != null)
                 {
-                    return Json(new { type = "alufac", alumni, faculty });
+                    JObject alufac = JObject.FromObject(alumni);
+                    alufac.Merge(JObject.FromObject(faculty), new JsonMergeSettings
+                    {
+                        MergeArrayHandling = MergeArrayHandling.Union
+                    });
+                    alufac.Add("PesonType", "alufac");
+                    return Ok(alufac);
+                    //return Json(new { type = "alufac", alumni, faculty });
                 }
-                return Json(new { type = "faculty", faculty});                
+                JObject fac = JObject.FromObject(faculty);
+                fac.Add("PesonType", "fac");
+                return Ok(fac);
+                //return Json(new { type = "faculty", faculty});                
             }
             else if (alumni != null)
             {
-                return Json( new { type = "alumni", alumni });
+                JObject alu = JObject.FromObject(alumni);
+                alu.Add("PesonType", "alu");
+                return Ok(alu);
+                //return Json( new { type = "alumni", alumni });
             }
             else
             {
