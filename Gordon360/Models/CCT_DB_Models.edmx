@@ -34,6 +34,132 @@
           <Property Name="EMAIL" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="SUPER_ADMIN" Type="bit" Nullable="false" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'CCT.dbo.alumni' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="alumni">
+          <Key>
+            <PropertyRef Name="Row_ID" />
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="Row_ID" Type="int" Nullable="false" />
+          <Property Name="ID" Type="varchar" MaxLength="25" Nullable="false" />
+          <Property Name="SSN" Type="varchar" MaxLength="25" />
+          <Property Name="WebUpdate" Type="varchar" MaxLength="25" />
+          <Property Name="Title" Type="varchar" MaxLength="50" />
+          <Property Name="FirstName" Type="varchar" MaxLength="50" />
+          <Property Name="MiddleName" Type="varchar" MaxLength="50" />
+          <Property Name="LastName" Type="varchar" MaxLength="50" />
+          <Property Name="Suffix" Type="varchar" MaxLength="50" />
+          <Property Name="MaidenName" Type="varchar" MaxLength="50" />
+          <Property Name="NickName" Type="varchar" MaxLength="50" />
+          <Property Name="EmailUserName" Type="varchar" MaxLength="50" />
+          <Property Name="EmailPassword" Type="varchar" MaxLength="50" />
+          <Property Name="EmailServer" Type="varchar" MaxLength="50" />
+          <Property Name="EmailProtocol" Type="varchar" MaxLength="25" />
+          <Property Name="HomeStreet1" Type="varchar" MaxLength="60" />
+          <Property Name="HomeStreet2" Type="varchar" MaxLength="60" />
+          <Property Name="HomeCity" Type="varchar" MaxLength="50" />
+          <Property Name="HomeState" Type="varchar" MaxLength="50" />
+          <Property Name="HomePostalCode" Type="varchar" MaxLength="50" />
+          <Property Name="HomeCountry" Type="varchar" MaxLength="50" />
+          <Property Name="HomePhone" Type="varchar" MaxLength="41" />
+          <Property Name="HomeFax" Type="varchar" MaxLength="25" />
+          <Property Name="HomeEmail" Type="varchar" MaxLength="255" />
+          <Property Name="Occupation" Type="varchar" MaxLength="50" />
+          <Property Name="JobTitle" Type="varchar" MaxLength="50" />
+          <Property Name="Employer" Type="varchar" MaxLength="50" />
+          <Property Name="WorkStreet1" Type="varchar" MaxLength="60" />
+          <Property Name="WorkStreet2" Type="varchar" MaxLength="60" />
+          <Property Name="WorkCity" Type="varchar" MaxLength="50" />
+          <Property Name="WorkState" Type="varchar" MaxLength="50" />
+          <Property Name="WorkPostalCode" Type="varchar" MaxLength="50" />
+          <Property Name="WorkCountry" Type="varchar" MaxLength="50" />
+          <Property Name="WorkPhone" Type="varchar" MaxLength="41" />
+          <Property Name="WorkFax" Type="varchar" MaxLength="25" />
+          <Property Name="WorkEmail" Type="varchar" MaxLength="50" />
+          <Property Name="MaritalStatus" Type="varchar" MaxLength="50" />
+          <Property Name="SpouseName" Type="varchar" MaxLength="60" />
+          <Property Name="SpouseID" Type="varchar" MaxLength="25" />
+          <Property Name="Children" Type="varchar" MaxLength="200" />
+          <Property Name="Relatives" Type="varchar" MaxLength="200" />
+          <Property Name="College" Type="varchar" MaxLength="50" />
+          <Property Name="ClassYear" Type="varchar" MaxLength="25" />
+          <Property Name="PreferredClassYear" Type="varchar" MaxLength="25" />
+          <Property Name="Major1" Type="varchar" MaxLength="50" />
+          <Property Name="Major2" Type="varchar" MaxLength="50" />
+          <Property Name="ShareName" Type="varchar" MaxLength="25" />
+          <Property Name="ShareAddress" Type="varchar" MaxLength="25" />
+          <Property Name="ChurchName" Type="varchar" MaxLength="50" />
+          <Property Name="ChurchStreet1" Type="varchar" MaxLength="50" />
+          <Property Name="ChurchStreet2" Type="varchar" MaxLength="50" />
+          <Property Name="ChurchCity" Type="varchar" MaxLength="50" />
+          <Property Name="ChurchState" Type="varchar" MaxLength="50" />
+          <Property Name="ChurchPostalCode" Type="varchar" MaxLength="50" />
+          <Property Name="ChurchCountry" Type="varchar" MaxLength="50" />
+          <Property Name="ChurchPhone" Type="varchar" MaxLength="25" />
+          <Property Name="ChurchPastor" Type="varchar" MaxLength="50" />
+          <Property Name="ChurchDenomination" Type="varchar" MaxLength="50" />
+          <Property Name="DOB" Type="varchar" MaxLength="50" />
+          <Property Name="Gender" Type="varchar" MaxLength="10" />
+          <Property Name="GradDate" Type="varchar" MaxLength="50" />
+          <Property Name="Email" Type="varchar" MaxLength="255" />
+          <Property Name="grad_student" Type="char" MaxLength="1" />
+          <Property Name="FacStaffID" Type="varchar" MaxLength="10" />
+          <Property Name="Barcode" Type="varchar" MaxLength="15" />
+          <Property Name="AlumniID" Type="varchar" MaxLength="25" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'CCT.dbo.facstaff' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="facstaff">
+          <Key>
+            <PropertyRef Name="row_source" />
+          </Key>
+          <Property Name="Row_ID" Type="int" />
+          <Property Name="ID" Type="nvarchar" MaxLength="15" />
+          <Property Name="SSN" Type="nvarchar" MaxLength="11" />
+          <Property Name="Title" Type="varchar" MaxLength="255" />
+          <Property Name="FirstName" Type="varchar" MaxLength="255" />
+          <Property Name="MiddleName" Type="varchar" MaxLength="255" />
+          <Property Name="LastName" Type="varchar" MaxLength="255" />
+          <Property Name="Suffix" Type="varchar" MaxLength="255" />
+          <Property Name="MaidenName" Type="varchar" MaxLength="255" />
+          <Property Name="Nickname" Type="nvarchar" MaxLength="255" />
+          <Property Name="EmailUserName" Type="varchar" MaxLength="255" />
+          <Property Name="EmailPassword" Type="varchar" MaxLength="255" />
+          <Property Name="EmailServer" Type="varchar" MaxLength="255" />
+          <Property Name="EmailProtocol" Type="varchar" MaxLength="255" />
+          <Property Name="OnCampusDepartment" Type="varchar" MaxLength="255" />
+          <Property Name="OnCampusBuilding" Type="varchar" MaxLength="255" />
+          <Property Name="OnCampusRoom" Type="varchar" MaxLength="255" />
+          <Property Name="OnCampusPhone" Type="varchar" MaxLength="255" />
+          <Property Name="OnCampusPrivatePhone" Type="varchar" MaxLength="255" />
+          <Property Name="OnCampusFax" Type="varchar" MaxLength="255" />
+          <Property Name="HomeStreet1" Type="varchar" MaxLength="1000" />
+          <Property Name="HomeStreet2" Type="varchar" MaxLength="1000" />
+          <Property Name="HomeCity" Type="varchar" MaxLength="255" />
+          <Property Name="HomeState" Type="varchar" MaxLength="255" />
+          <Property Name="HomePostalCode" Type="varchar" MaxLength="255" />
+          <Property Name="HomeCountry" Type="varchar" MaxLength="255" />
+          <Property Name="HomePhone" Type="varchar" MaxLength="255" />
+          <Property Name="HomeFax" Type="varchar" MaxLength="255" />
+          <Property Name="KeepPrivate" Type="varchar" MaxLength="255" />
+          <Property Name="JobTitle" Type="varchar" MaxLength="255" />
+          <Property Name="SpouseName" Type="varchar" MaxLength="255" />
+          <Property Name="Dept" Type="varchar" MaxLength="255" />
+          <Property Name="Barcode" Type="nvarchar" MaxLength="14" />
+          <Property Name="AppointDate" Type="datetime" />
+          <Property Name="EmployStatus" Type="varchar" MaxLength="255" />
+          <Property Name="ChangeDate" Type="datetime" />
+          <Property Name="TerminateDate" Type="datetime" />
+          <Property Name="BirthDate" Type="datetime" />
+          <Property Name="Gender" Type="varchar" MaxLength="255" />
+          <Property Name="Email" Type="varchar" MaxLength="255" />
+          <Property Name="StudentID" Type="nvarchar" MaxLength="255" />
+          <Property Name="GoSiteOnly" Type="varchar" MaxLength="255" />
+          <Property Name="ActiveAccount" Type="bit" />
+          <Property Name="Type" Type="varchar" MaxLength="255" />
+          <Property Name="row_source" Type="varchar" MaxLength="255" Nullable="false" />
+        </EntityType>
         <EntityType Name="JNZB_ACTIVITIES">
           <Key>
             <PropertyRef Name="ENTRY_ID" />
@@ -70,6 +196,13 @@
           <Property Name="JOB_TIME" Type="datetime" />
           <Property Name="GRP_ADMIN" Type="bit" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6013: The table/view 'CCT.dbo.PROFILE_IMAGE' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="PROFILE_IMAGE">
+          <Property Name="id" Type="varchar" MaxLength="10" />
+          <Property Name="Username" Type="varchar" MaxLength="50" />
+          <Property Name="Img_Path" Type="varchar(max)" />
+        </EntityType>-->
         <EntityType Name="REQUEST">
           <Key>
             <PropertyRef Name="REQUEST_ID" />
@@ -82,6 +215,80 @@
           <Property Name="DATE_SENT" Type="datetime" Nullable="false" />
           <Property Name="COMMENT_TXT" Type="varchar" MaxLength="45" />
           <Property Name="STATUS" Type="varchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'CCT.dbo.student_temp' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="student_temp">
+          <Key>
+            <PropertyRef Name="Row_ID" />
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="Row_ID" Type="int" Nullable="false" />
+          <Property Name="ID" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="SSN" Type="varchar" MaxLength="255" />
+          <Property Name="Title" Type="varchar" MaxLength="255" />
+          <Property Name="FirstName" Type="varchar" MaxLength="255" />
+          <Property Name="MiddleName" Type="varchar" MaxLength="255" />
+          <Property Name="LastName" Type="varchar" MaxLength="255" />
+          <Property Name="Suffix" Type="varchar" MaxLength="255" />
+          <Property Name="MaidenName" Type="varchar" MaxLength="255" />
+          <Property Name="NickName" Type="varchar" MaxLength="255" />
+          <Property Name="EmailUserName" Type="varchar" MaxLength="255" />
+          <Property Name="EmailPassword" Type="varchar" MaxLength="255" />
+          <Property Name="EmailServer" Type="varchar" MaxLength="255" />
+          <Property Name="EmailProtocol" Type="varchar" MaxLength="255" />
+          <Property Name="OnOffCampus" Type="varchar" MaxLength="255" />
+          <Property Name="OnCampusBuilding" Type="varchar" MaxLength="255" />
+          <Property Name="OnCampusRoom" Type="varchar" MaxLength="255" />
+          <Property Name="OnCampusPhone" Type="varchar" MaxLength="255" />
+          <Property Name="OnCampusPrivatePhone" Type="varchar" MaxLength="255" />
+          <Property Name="OnCampusFax" Type="varchar" MaxLength="255" />
+          <Property Name="OffCampusStreet1" Type="varchar" MaxLength="255" />
+          <Property Name="OffCampusStreet2" Type="varchar" MaxLength="255" />
+          <Property Name="OffCampusCity" Type="varchar" MaxLength="255" />
+          <Property Name="OffCampusState" Type="varchar" MaxLength="255" />
+          <Property Name="OffCampusPostalCode" Type="varchar" MaxLength="255" />
+          <Property Name="OffCampusCountry" Type="varchar" MaxLength="255" />
+          <Property Name="OffCampusPhone" Type="varchar" MaxLength="255" />
+          <Property Name="OffCampusFax" Type="varchar" MaxLength="255" />
+          <Property Name="HomeStreet1" Type="varchar" MaxLength="255" />
+          <Property Name="HomeStreet2" Type="varchar" MaxLength="255" />
+          <Property Name="HomeCity" Type="varchar" MaxLength="255" />
+          <Property Name="HomeState" Type="varchar" MaxLength="255" />
+          <Property Name="HomePostalCode" Type="varchar" MaxLength="255" />
+          <Property Name="HomeCountry" Type="varchar" MaxLength="255" />
+          <Property Name="HomePhone" Type="varchar" MaxLength="255" />
+          <Property Name="HomeFax" Type="varchar" MaxLength="255" />
+          <Property Name="Cohort" Type="varchar" MaxLength="255" />
+          <Property Name="Class" Type="varchar" MaxLength="255" />
+          <Property Name="KeepPrivate" Type="char" MaxLength="2" />
+          <Property Name="Major" Type="varchar" MaxLength="255" />
+          <Property Name="Barcode" Type="varchar" MaxLength="255" />
+          <Property Name="AdvisorIDs" Type="varchar" MaxLength="255" />
+          <Property Name="Married" Type="char" MaxLength="1" />
+          <Property Name="Commuter" Type="char" MaxLength="1" />
+          <Property Name="StatusType" Type="char" MaxLength="2" />
+          <Property Name="CurrentStatusType" Type="char" MaxLength="2" />
+          <Property Name="NextStatusType" Type="char" MaxLength="2" />
+          <Property Name="CreditHrs" Type="tinyint" />
+          <Property Name="GradFlag" Type="char" MaxLength="3" />
+          <Property Name="Major2" Type="varchar" MaxLength="255" />
+          <Property Name="Email" Type="varchar" MaxLength="255" />
+          <Property Name="BirthDate" Type="varchar" MaxLength="255" />
+          <Property Name="Gender" Type="char" MaxLength="1" />
+          <Property Name="finance_approved" Type="char" MaxLength="1" />
+          <Property Name="reg_complete" Type="char" MaxLength="1" />
+          <Property Name="grad_student" Type="char" MaxLength="1" />
+          <Property Name="GradDate" Type="varchar" MaxLength="255" />
+          <Property Name="AJScholar" Type="char" MaxLength="1" />
+          <Property Name="Major3" Type="varchar" MaxLength="255" />
+          <Property Name="Minor1" Type="varchar" MaxLength="50" />
+          <Property Name="Minor2" Type="varchar" MaxLength="50" />
+          <Property Name="Minor3" Type="varchar" MaxLength="50" />
+          <Property Name="Class_List" Type="varchar" MaxLength="8000" />
+          <Property Name="GC_Insurance" Type="char" MaxLength="1" />
+          <Property Name="MobilePhone" Type="varchar" MaxLength="20" />
+          <Property Name="IsMobilePhonePrivate" Type="bit" />
         </EntityType>
         <EntityType Name="SUPERVISOR">
           <Key>
@@ -100,20 +307,28 @@ warning 6002: The table/view 'CCT.dbo.360_SLIDER' does not have a primary key de
         <EntityType Name="360_SLIDER">
           <Key>
             <PropertyRef Name="strFileName" />
+            
             <PropertyRef Name="strAltTag" />
+            
+            
+            
+            
+            
+            
+            
             <PropertyRef Name="dtModified" />
             <PropertyRef Name="sortOrder" />
           </Key>
           <Property Name="strFileName" Type="varchar" MaxLength="159" Nullable="false" />
-          <Property Name="strFlashFileName" Type="varchar" MaxLength="100" />
+          <Property Name="strFlashFileName" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="strAltTag" Type="varchar" MaxLength="255" Nullable="false" />
-          <Property Name="strLinkURL" Type="varchar" MaxLength="500" />
-          <Property Name="strSliderTitle" Type="varchar" MaxLength="100" />
-          <Property Name="strSliderSubTitle" Type="varchar" MaxLength="100" />
-          <Property Name="strSliderAction" Type="varchar" MaxLength="100" />
-          <Property Name="iWidth" Type="int" />
-          <Property Name="iHeight" Type="int" />
-          <Property Name="strExtensions" Type="varchar" MaxLength="255" />
+          <Property Name="strLinkURL" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="strSliderTitle" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="strSliderSubTitle" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="strSliderAction" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="iWidth" Type="int" Nullable="false" />
+          <Property Name="iHeight" Type="int" Nullable="false" />
+          <Property Name="strExtensions" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="dtModified" Type="datetime" Nullable="false" />
           <Property Name="sortOrder" Type="int" Nullable="false" />
         </EntityType>
@@ -125,12 +340,30 @@ warning 6002: The table/view 'CCT.dbo.ACCOUNT' does not have a primary key defin
             <PropertyRef Name="gordon_id" />
           </Key>
           <Property Name="gordon_id" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="barcode" Type="varchar" MaxLength="14" />
           <Property Name="firstname" Type="varchar" MaxLength="50" />
           <Property Name="lastname" Type="varchar" MaxLength="50" />
           <Property Name="email" Type="varchar" MaxLength="50" />
           <Property Name="AD_Username" Type="varchar" MaxLength="50" />
           <Property Name="account_type" Type="varchar" MaxLength="20" />
           <Property Name="Private" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'CCT.dbo.ChapelEvent' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ChapelEvent">
+          <Key>
+            <PropertyRef Name="ROWID" />
+            <PropertyRef Name="CHBarEventID" />
+          </Key>
+          <Property Name="ROWID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CHBarEventID" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="CHBarcode" Type="nvarchar" MaxLength="14" />
+          <Property Name="CHEventID" Type="nvarchar" MaxLength="6" />
+          <Property Name="CHCheckerID" Type="nvarchar" MaxLength="14" />
+          <Property Name="CHDate" Type="datetime" />
+          <Property Name="CHTime" Type="datetime" />
+          <Property Name="CHSource" Type="nvarchar" MaxLength="1" />
+          <Property Name="CHTermCD" Type="nvarchar" MaxLength="4" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.CM_SESSION_MSTR' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -272,7 +505,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Parameter Name="ID_NUM" Type="int" Mode="In" />
         </Function>
         <Function Name="UPDATE_ACT_INFO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
-        <Function Name="UPDATE_JNZB_ACTIVITIES" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="Gordon360StoreContainer">
           <EntitySet Name="ACT_CLUB_DEF" EntityType="Self.ACT_CLUB_DEF" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ACT_INFO" EntityType="Self.ACT_INFO" Schema="dbo" store:Type="Tables" />
@@ -281,6 +513,195 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="MEMBERSHIP" EntityType="Self.MEMBERSHIP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="REQUEST" EntityType="Self.REQUEST" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SUPERVISOR" EntityType="Self.SUPERVISOR" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="alumni" EntityType="Self.alumni" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [alumni].[Row_ID] AS [Row_ID], 
+    [alumni].[ID] AS [ID], 
+    [alumni].[SSN] AS [SSN], 
+    [alumni].[WebUpdate] AS [WebUpdate], 
+    [alumni].[Title] AS [Title], 
+    [alumni].[FirstName] AS [FirstName], 
+    [alumni].[MiddleName] AS [MiddleName], 
+    [alumni].[LastName] AS [LastName], 
+    [alumni].[Suffix] AS [Suffix], 
+    [alumni].[MaidenName] AS [MaidenName], 
+    [alumni].[NickName] AS [NickName], 
+    [alumni].[EmailUserName] AS [EmailUserName], 
+    [alumni].[EmailPassword] AS [EmailPassword], 
+    [alumni].[EmailServer] AS [EmailServer], 
+    [alumni].[EmailProtocol] AS [EmailProtocol], 
+    [alumni].[HomeStreet1] AS [HomeStreet1], 
+    [alumni].[HomeStreet2] AS [HomeStreet2], 
+    [alumni].[HomeCity] AS [HomeCity], 
+    [alumni].[HomeState] AS [HomeState], 
+    [alumni].[HomePostalCode] AS [HomePostalCode], 
+    [alumni].[HomeCountry] AS [HomeCountry], 
+    [alumni].[HomePhone] AS [HomePhone], 
+    [alumni].[HomeFax] AS [HomeFax], 
+    [alumni].[HomeEmail] AS [HomeEmail], 
+    [alumni].[Occupation] AS [Occupation], 
+    [alumni].[JobTitle] AS [JobTitle], 
+    [alumni].[Employer] AS [Employer], 
+    [alumni].[WorkStreet1] AS [WorkStreet1], 
+    [alumni].[WorkStreet2] AS [WorkStreet2], 
+    [alumni].[WorkCity] AS [WorkCity], 
+    [alumni].[WorkState] AS [WorkState], 
+    [alumni].[WorkPostalCode] AS [WorkPostalCode], 
+    [alumni].[WorkCountry] AS [WorkCountry], 
+    [alumni].[WorkPhone] AS [WorkPhone], 
+    [alumni].[WorkFax] AS [WorkFax], 
+    [alumni].[WorkEmail] AS [WorkEmail], 
+    [alumni].[MaritalStatus] AS [MaritalStatus], 
+    [alumni].[SpouseName] AS [SpouseName], 
+    [alumni].[SpouseID] AS [SpouseID], 
+    [alumni].[Children] AS [Children], 
+    [alumni].[Relatives] AS [Relatives], 
+    [alumni].[College] AS [College], 
+    [alumni].[ClassYear] AS [ClassYear], 
+    [alumni].[PreferredClassYear] AS [PreferredClassYear], 
+    [alumni].[Major1] AS [Major1], 
+    [alumni].[Major2] AS [Major2], 
+    [alumni].[ShareName] AS [ShareName], 
+    [alumni].[ShareAddress] AS [ShareAddress], 
+    [alumni].[ChurchName] AS [ChurchName], 
+    [alumni].[ChurchStreet1] AS [ChurchStreet1], 
+    [alumni].[ChurchStreet2] AS [ChurchStreet2], 
+    [alumni].[ChurchCity] AS [ChurchCity], 
+    [alumni].[ChurchState] AS [ChurchState], 
+    [alumni].[ChurchPostalCode] AS [ChurchPostalCode], 
+    [alumni].[ChurchCountry] AS [ChurchCountry], 
+    [alumni].[ChurchPhone] AS [ChurchPhone], 
+    [alumni].[ChurchPastor] AS [ChurchPastor], 
+    [alumni].[ChurchDenomination] AS [ChurchDenomination], 
+    [alumni].[DOB] AS [DOB], 
+    [alumni].[Gender] AS [Gender], 
+    [alumni].[GradDate] AS [GradDate], 
+    [alumni].[Email] AS [Email], 
+    [alumni].[grad_student] AS [grad_student], 
+    [alumni].[FacStaffID] AS [FacStaffID], 
+    [alumni].[Barcode] AS [Barcode], 
+    [alumni].[AlumniID] AS [AlumniID]
+    FROM [dbo].[alumni] AS [alumni]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="facstaff" EntityType="Self.facstaff" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [facstaff].[Row_ID] AS [Row_ID], 
+    [facstaff].[ID] AS [ID], 
+    [facstaff].[SSN] AS [SSN], 
+    [facstaff].[Title] AS [Title], 
+    [facstaff].[FirstName] AS [FirstName], 
+    [facstaff].[MiddleName] AS [MiddleName], 
+    [facstaff].[LastName] AS [LastName], 
+    [facstaff].[Suffix] AS [Suffix], 
+    [facstaff].[MaidenName] AS [MaidenName], 
+    [facstaff].[Nickname] AS [Nickname], 
+    [facstaff].[EmailUserName] AS [EmailUserName], 
+    [facstaff].[EmailPassword] AS [EmailPassword], 
+    [facstaff].[EmailServer] AS [EmailServer], 
+    [facstaff].[EmailProtocol] AS [EmailProtocol], 
+    [facstaff].[OnCampusDepartment] AS [OnCampusDepartment], 
+    [facstaff].[OnCampusBuilding] AS [OnCampusBuilding], 
+    [facstaff].[OnCampusRoom] AS [OnCampusRoom], 
+    [facstaff].[OnCampusPhone] AS [OnCampusPhone], 
+    [facstaff].[OnCampusPrivatePhone] AS [OnCampusPrivatePhone], 
+    [facstaff].[OnCampusFax] AS [OnCampusFax], 
+    [facstaff].[HomeStreet1] AS [HomeStreet1], 
+    [facstaff].[HomeStreet2] AS [HomeStreet2], 
+    [facstaff].[HomeCity] AS [HomeCity], 
+    [facstaff].[HomeState] AS [HomeState], 
+    [facstaff].[HomePostalCode] AS [HomePostalCode], 
+    [facstaff].[HomeCountry] AS [HomeCountry], 
+    [facstaff].[HomePhone] AS [HomePhone], 
+    [facstaff].[HomeFax] AS [HomeFax], 
+    [facstaff].[KeepPrivate] AS [KeepPrivate], 
+    [facstaff].[JobTitle] AS [JobTitle], 
+    [facstaff].[SpouseName] AS [SpouseName], 
+    [facstaff].[Dept] AS [Dept], 
+    [facstaff].[Barcode] AS [Barcode], 
+    [facstaff].[AppointDate] AS [AppointDate], 
+    [facstaff].[EmployStatus] AS [EmployStatus], 
+    [facstaff].[ChangeDate] AS [ChangeDate], 
+    [facstaff].[TerminateDate] AS [TerminateDate], 
+    [facstaff].[BirthDate] AS [BirthDate], 
+    [facstaff].[Gender] AS [Gender], 
+    [facstaff].[Email] AS [Email], 
+    [facstaff].[StudentID] AS [StudentID], 
+    [facstaff].[GoSiteOnly] AS [GoSiteOnly], 
+    [facstaff].[ActiveAccount] AS [ActiveAccount], 
+    [facstaff].[Type] AS [Type], 
+    [facstaff].[row_source] AS [row_source]
+    FROM [dbo].[facstaff] AS [facstaff]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="student_temp" EntityType="Self.student_temp" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [student_temp].[Row_ID] AS [Row_ID], 
+    [student_temp].[ID] AS [ID], 
+    [student_temp].[SSN] AS [SSN], 
+    [student_temp].[Title] AS [Title], 
+    [student_temp].[FirstName] AS [FirstName], 
+    [student_temp].[MiddleName] AS [MiddleName], 
+    [student_temp].[LastName] AS [LastName], 
+    [student_temp].[Suffix] AS [Suffix], 
+    [student_temp].[MaidenName] AS [MaidenName], 
+    [student_temp].[NickName] AS [NickName], 
+    [student_temp].[EmailUserName] AS [EmailUserName], 
+    [student_temp].[EmailPassword] AS [EmailPassword], 
+    [student_temp].[EmailServer] AS [EmailServer], 
+    [student_temp].[EmailProtocol] AS [EmailProtocol], 
+    [student_temp].[OnOffCampus] AS [OnOffCampus], 
+    [student_temp].[OnCampusBuilding] AS [OnCampusBuilding], 
+    [student_temp].[OnCampusRoom] AS [OnCampusRoom], 
+    [student_temp].[OnCampusPhone] AS [OnCampusPhone], 
+    [student_temp].[OnCampusPrivatePhone] AS [OnCampusPrivatePhone], 
+    [student_temp].[OnCampusFax] AS [OnCampusFax], 
+    [student_temp].[OffCampusStreet1] AS [OffCampusStreet1], 
+    [student_temp].[OffCampusStreet2] AS [OffCampusStreet2], 
+    [student_temp].[OffCampusCity] AS [OffCampusCity], 
+    [student_temp].[OffCampusState] AS [OffCampusState], 
+    [student_temp].[OffCampusPostalCode] AS [OffCampusPostalCode], 
+    [student_temp].[OffCampusCountry] AS [OffCampusCountry], 
+    [student_temp].[OffCampusPhone] AS [OffCampusPhone], 
+    [student_temp].[OffCampusFax] AS [OffCampusFax], 
+    [student_temp].[HomeStreet1] AS [HomeStreet1], 
+    [student_temp].[HomeStreet2] AS [HomeStreet2], 
+    [student_temp].[HomeCity] AS [HomeCity], 
+    [student_temp].[HomeState] AS [HomeState], 
+    [student_temp].[HomePostalCode] AS [HomePostalCode], 
+    [student_temp].[HomeCountry] AS [HomeCountry], 
+    [student_temp].[HomePhone] AS [HomePhone], 
+    [student_temp].[HomeFax] AS [HomeFax], 
+    [student_temp].[Cohort] AS [Cohort], 
+    [student_temp].[Class] AS [Class], 
+    [student_temp].[KeepPrivate] AS [KeepPrivate], 
+    [student_temp].[Major] AS [Major], 
+    [student_temp].[Barcode] AS [Barcode], 
+    [student_temp].[AdvisorIDs] AS [AdvisorIDs], 
+    [student_temp].[Married] AS [Married], 
+    [student_temp].[Commuter] AS [Commuter], 
+    [student_temp].[StatusType] AS [StatusType], 
+    [student_temp].[CurrentStatusType] AS [CurrentStatusType], 
+    [student_temp].[NextStatusType] AS [NextStatusType], 
+    [student_temp].[CreditHrs] AS [CreditHrs], 
+    [student_temp].[GradFlag] AS [GradFlag], 
+    [student_temp].[Major2] AS [Major2], 
+    [student_temp].[Email] AS [Email], 
+    [student_temp].[BirthDate] AS [BirthDate], 
+    [student_temp].[Gender] AS [Gender], 
+    [student_temp].[finance_approved] AS [finance_approved], 
+    [student_temp].[reg_complete] AS [reg_complete], 
+    [student_temp].[grad_student] AS [grad_student], 
+    [student_temp].[GradDate] AS [GradDate], 
+    [student_temp].[AJScholar] AS [AJScholar], 
+    [student_temp].[Major3] AS [Major3], 
+    [student_temp].[Minor1] AS [Minor1], 
+    [student_temp].[Minor2] AS [Minor2], 
+    [student_temp].[Minor3] AS [Minor3], 
+    [student_temp].[Class_List] AS [Class_List], 
+    [student_temp].[GC_Insurance] AS [GC_Insurance], 
+    [student_temp].[MobilePhone] AS [MobilePhone], 
+    [student_temp].[IsMobilePhonePrivate] AS [IsMobilePhonePrivate]
+    FROM [dbo].[student_temp] AS [student_temp]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="360_SLIDER" EntityType="Self.360_SLIDER" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [360_SLIDER].[strFileName] AS [strFileName], 
@@ -300,6 +721,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="ACCOUNT" EntityType="Self.ACCOUNT" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [ACCOUNT].[gordon_id] AS [gordon_id], 
+    [ACCOUNT].[barcode] AS [barcode], 
     [ACCOUNT].[firstname] AS [firstname], 
     [ACCOUNT].[lastname] AS [lastname], 
     [ACCOUNT].[email] AS [email], 
@@ -307,6 +729,19 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [ACCOUNT].[account_type] AS [account_type], 
     [ACCOUNT].[Private] AS [Private]
     FROM [dbo].[ACCOUNT] AS [ACCOUNT]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="ChapelEvent" EntityType="Self.ChapelEvent" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ChapelEvent].[ROWID] AS [ROWID], 
+    [ChapelEvent].[CHBarEventID] AS [CHBarEventID], 
+    [ChapelEvent].[CHBarcode] AS [CHBarcode], 
+    [ChapelEvent].[CHEventID] AS [CHEventID], 
+    [ChapelEvent].[CHCheckerID] AS [CHCheckerID], 
+    [ChapelEvent].[CHDate] AS [CHDate], 
+    [ChapelEvent].[CHTime] AS [CHTime], 
+    [ChapelEvent].[CHSource] AS [CHSource], 
+    [ChapelEvent].[CHTermCD] AS [CHTermCD]
+    FROM [dbo].[ChapelEvent] AS [ChapelEvent]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="CM_SESSION_MSTR" EntityType="Self.CM_SESSION_MSTR" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -451,6 +886,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="AD_Username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="account_type" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Private" Type="Int32" Nullable="false" />
+          <Property Name="barcode" Type="String" MaxLength="14" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="CM_SESSION_MSTR">
           <Key>
@@ -580,6 +1016,10 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="ACT_CDE" Mode="In" Type="String" />
             <Parameter Name="SESS_CDE" Mode="In" Type="String" />
           </FunctionImport>
+          <EntitySet Name="alumni" EntityType="Gordon360.alumni" />
+          <EntitySet Name="facstaff" EntityType="Gordon360.facstaff" />
+          <EntitySet Name="student_temp" EntityType="Gordon360.student_temp" />
+          <EntitySet Name="ChapelEvent" EntityType="Gordon360.ChapelEvent" />
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
           <Property Type="String" Name="ACT_CDE" Nullable="false" MaxLength="8" />
@@ -837,15 +1277,15 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <PropertyRef Name="sortOrder" />
           </Key>
           <Property Name="strFileName" Type="String" Nullable="false" MaxLength="159" FixedLength="false" Unicode="false" />
-          <Property Name="strFlashFileName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="strFlashFileName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="strAltTag" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="strLinkURL" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="strSliderTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="strSliderSubTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="strSliderAction" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="iWidth" Type="Int32" />
-          <Property Name="iHeight" Type="Int32" />
-          <Property Name="strExtensions" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="strLinkURL" Type="String" MaxLength="500" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="strSliderTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="strSliderSubTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="strSliderAction" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="iWidth" Type="Int32" Nullable="false" />
+          <Property Name="iHeight" Type="Int32" Nullable="false" />
+          <Property Name="strExtensions" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="dtModified" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="sortOrder" Type="Int32" Nullable="false" />
         </EntityType>
@@ -854,6 +1294,215 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="String" Name="LastName" Nullable="true" MaxLength="50" />
           <Property Type="String" Name="Email" Nullable="true" MaxLength="50" />
         </ComplexType>
+        <EntityType Name="alumni">
+          <Key>
+            <PropertyRef Name="Row_ID" />
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="Row_ID" Type="Int32" Nullable="false" />
+          <Property Name="ID" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="SSN" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="WebUpdate" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MiddleName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Suffix" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MaidenName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="NickName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EmailUserName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EmailPassword" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EmailServer" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EmailProtocol" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="HomeStreet1" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="HomeStreet2" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="HomeCity" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="HomeState" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="HomePostalCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="HomeCountry" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="HomePhone" Type="String" MaxLength="41" FixedLength="false" Unicode="false" />
+          <Property Name="HomeFax" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="HomeEmail" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Occupation" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="JobTitle" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Employer" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="WorkStreet1" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="WorkStreet2" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="WorkCity" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="WorkState" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="WorkPostalCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="WorkCountry" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="WorkPhone" Type="String" MaxLength="41" FixedLength="false" Unicode="false" />
+          <Property Name="WorkFax" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="WorkEmail" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MaritalStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SpouseName" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="SpouseID" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="Children" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Relatives" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="College" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ClassYear" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="PreferredClassYear" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="Major1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Major2" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ShareName" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="ShareAddress" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="ChurchName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ChurchStreet1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ChurchStreet2" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ChurchCity" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ChurchState" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ChurchPostalCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ChurchCountry" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ChurchPhone" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="ChurchPastor" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ChurchDenomination" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DOB" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Gender" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="GradDate" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="grad_student" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="FacStaffID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Barcode" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="AlumniID" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="facstaff">
+          <Key>
+            <PropertyRef Name="row_source" />
+          </Key>
+          <Property Name="Row_ID" Type="Int32" />
+          <Property Name="ID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="SSN" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
+          <Property Name="Title" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="FirstName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="MiddleName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="LastName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Suffix" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="MaidenName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Nickname" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="EmailUserName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="EmailPassword" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="EmailServer" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="EmailProtocol" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="OnCampusDepartment" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="OnCampusBuilding" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="OnCampusRoom" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="OnCampusPhone" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="OnCampusPrivatePhone" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="OnCampusFax" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="HomeStreet1" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="HomeStreet2" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="HomeCity" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="HomeState" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="HomePostalCode" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="HomeCountry" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="HomePhone" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="HomeFax" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="KeepPrivate" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="JobTitle" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="SpouseName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Dept" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Barcode" Type="String" MaxLength="14" FixedLength="false" Unicode="true" />
+          <Property Name="AppointDate" Type="DateTime" Precision="3" />
+          <Property Name="EmployStatus" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="ChangeDate" Type="DateTime" Precision="3" />
+          <Property Name="TerminateDate" Type="DateTime" Precision="3" />
+          <Property Name="BirthDate" Type="DateTime" Precision="3" />
+          <Property Name="Gender" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="StudentID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="GoSiteOnly" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="ActiveAccount" Type="Boolean" />
+          <Property Name="Type" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="row_source" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="student_temp">
+          <Key>
+            <PropertyRef Name="Row_ID" />
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="Row_ID" Type="Int32" Nullable="false" />
+          <Property Name="ID" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="SSN" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Title" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="FirstName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="MiddleName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="LastName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Suffix" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="MaidenName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="NickName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="EmailUserName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="EmailPassword" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="EmailServer" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="EmailProtocol" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="OnOffCampus" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="OnCampusBuilding" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="OnCampusRoom" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="OnCampusPhone" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="OnCampusPrivatePhone" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="OnCampusFax" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="OffCampusStreet1" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="OffCampusStreet2" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="OffCampusCity" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="OffCampusState" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="OffCampusPostalCode" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="OffCampusCountry" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="OffCampusPhone" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="OffCampusFax" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="HomeStreet1" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="HomeStreet2" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="HomeCity" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="HomeState" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="HomePostalCode" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="HomeCountry" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="HomePhone" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="HomeFax" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Cohort" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Class" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="KeepPrivate" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="Major" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Barcode" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="AdvisorIDs" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Married" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="Commuter" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="StatusType" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="CurrentStatusType" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="NextStatusType" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="CreditHrs" Type="Byte" />
+          <Property Name="GradFlag" Type="String" MaxLength="3" FixedLength="true" Unicode="false" />
+          <Property Name="Major2" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="BirthDate" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Gender" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="finance_approved" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="reg_complete" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="grad_student" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="GradDate" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="AJScholar" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="Major3" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Minor1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Minor2" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Minor3" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Class_List" Type="String" MaxLength="8000" FixedLength="false" Unicode="false" />
+          <Property Name="GC_Insurance" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="MobilePhone" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="IsMobilePhonePrivate" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="ChapelEvent">
+          <Key>
+            <PropertyRef Name="ROWID" />
+            <PropertyRef Name="CHBarEventID" />
+          </Key>
+          <Property Name="ROWID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CHBarEventID" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CHBarcode" Type="String" MaxLength="14" FixedLength="false" Unicode="true" />
+          <Property Name="CHEventID" Type="String" MaxLength="6" FixedLength="false" Unicode="true" />
+          <Property Name="CHCheckerID" Type="String" MaxLength="14" FixedLength="false" Unicode="true" />
+          <Property Name="CHDate" Type="DateTime" Precision="3" />
+          <Property Name="CHTime" Type="DateTime" Precision="3" />
+          <Property Name="CHSource" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="CHTermCD" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -939,6 +1588,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="ACCOUNT">
             <EntityTypeMapping TypeName="Gordon360.ACCOUNT">
               <MappingFragment StoreEntitySet="ACCOUNT">
+                <ScalarProperty Name="barcode" ColumnName="barcode" />
                 <ScalarProperty Name="Private" ColumnName="Private" />
                 <ScalarProperty Name="gordon_id" ColumnName="gordon_id" />
                 <ScalarProperty Name="firstname" ColumnName="firstname" />
@@ -1279,7 +1929,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             </EntityTypeMapping>
           </EntitySetMapping>
           <FunctionImportMapping FunctionImportName="UPDATE_ACT_INFO" FunctionName="Gordon360.Store.UPDATE_ACT_INFO" />
-          <FunctionImportMapping FunctionImportName="UPDATE_JNZB_ACTIVITIES" FunctionName="Gordon360.Store.UPDATE_JNZB_ACTIVITIES" />
           <FunctionImportMapping FunctionImportName="ADVISOR_EMAILS_PER_ACT_CDE" FunctionName="Gordon360.Store.ADVISOR_EMAILS_PER_ACT_CDE">
             <ResultMapping>
               <ComplexTypeMapping TypeName="Gordon360.ADVISOR_EMAILS_PER_ACT_CDE_Result">
@@ -1338,6 +1987,216 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <EntitySetMapping Name="alumni">
+            <EntityTypeMapping TypeName="Gordon360.alumni">
+              <MappingFragment StoreEntitySet="alumni">
+                <ScalarProperty Name="AlumniID" ColumnName="AlumniID" />
+                <ScalarProperty Name="Barcode" ColumnName="Barcode" />
+                <ScalarProperty Name="FacStaffID" ColumnName="FacStaffID" />
+                <ScalarProperty Name="grad_student" ColumnName="grad_student" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="GradDate" ColumnName="GradDate" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="DOB" ColumnName="DOB" />
+                <ScalarProperty Name="ChurchDenomination" ColumnName="ChurchDenomination" />
+                <ScalarProperty Name="ChurchPastor" ColumnName="ChurchPastor" />
+                <ScalarProperty Name="ChurchPhone" ColumnName="ChurchPhone" />
+                <ScalarProperty Name="ChurchCountry" ColumnName="ChurchCountry" />
+                <ScalarProperty Name="ChurchPostalCode" ColumnName="ChurchPostalCode" />
+                <ScalarProperty Name="ChurchState" ColumnName="ChurchState" />
+                <ScalarProperty Name="ChurchCity" ColumnName="ChurchCity" />
+                <ScalarProperty Name="ChurchStreet2" ColumnName="ChurchStreet2" />
+                <ScalarProperty Name="ChurchStreet1" ColumnName="ChurchStreet1" />
+                <ScalarProperty Name="ChurchName" ColumnName="ChurchName" />
+                <ScalarProperty Name="ShareAddress" ColumnName="ShareAddress" />
+                <ScalarProperty Name="ShareName" ColumnName="ShareName" />
+                <ScalarProperty Name="Major2" ColumnName="Major2" />
+                <ScalarProperty Name="Major1" ColumnName="Major1" />
+                <ScalarProperty Name="PreferredClassYear" ColumnName="PreferredClassYear" />
+                <ScalarProperty Name="ClassYear" ColumnName="ClassYear" />
+                <ScalarProperty Name="College" ColumnName="College" />
+                <ScalarProperty Name="Relatives" ColumnName="Relatives" />
+                <ScalarProperty Name="Children" ColumnName="Children" />
+                <ScalarProperty Name="SpouseID" ColumnName="SpouseID" />
+                <ScalarProperty Name="SpouseName" ColumnName="SpouseName" />
+                <ScalarProperty Name="MaritalStatus" ColumnName="MaritalStatus" />
+                <ScalarProperty Name="WorkEmail" ColumnName="WorkEmail" />
+                <ScalarProperty Name="WorkFax" ColumnName="WorkFax" />
+                <ScalarProperty Name="WorkPhone" ColumnName="WorkPhone" />
+                <ScalarProperty Name="WorkCountry" ColumnName="WorkCountry" />
+                <ScalarProperty Name="WorkPostalCode" ColumnName="WorkPostalCode" />
+                <ScalarProperty Name="WorkState" ColumnName="WorkState" />
+                <ScalarProperty Name="WorkCity" ColumnName="WorkCity" />
+                <ScalarProperty Name="WorkStreet2" ColumnName="WorkStreet2" />
+                <ScalarProperty Name="WorkStreet1" ColumnName="WorkStreet1" />
+                <ScalarProperty Name="Employer" ColumnName="Employer" />
+                <ScalarProperty Name="JobTitle" ColumnName="JobTitle" />
+                <ScalarProperty Name="Occupation" ColumnName="Occupation" />
+                <ScalarProperty Name="HomeEmail" ColumnName="HomeEmail" />
+                <ScalarProperty Name="HomeFax" ColumnName="HomeFax" />
+                <ScalarProperty Name="HomePhone" ColumnName="HomePhone" />
+                <ScalarProperty Name="HomeCountry" ColumnName="HomeCountry" />
+                <ScalarProperty Name="HomePostalCode" ColumnName="HomePostalCode" />
+                <ScalarProperty Name="HomeState" ColumnName="HomeState" />
+                <ScalarProperty Name="HomeCity" ColumnName="HomeCity" />
+                <ScalarProperty Name="HomeStreet2" ColumnName="HomeStreet2" />
+                <ScalarProperty Name="HomeStreet1" ColumnName="HomeStreet1" />
+                <ScalarProperty Name="EmailProtocol" ColumnName="EmailProtocol" />
+                <ScalarProperty Name="EmailServer" ColumnName="EmailServer" />
+                <ScalarProperty Name="EmailPassword" ColumnName="EmailPassword" />
+                <ScalarProperty Name="EmailUserName" ColumnName="EmailUserName" />
+                <ScalarProperty Name="NickName" ColumnName="NickName" />
+                <ScalarProperty Name="MaidenName" ColumnName="MaidenName" />
+                <ScalarProperty Name="Suffix" ColumnName="Suffix" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="WebUpdate" ColumnName="WebUpdate" />
+                <ScalarProperty Name="SSN" ColumnName="SSN" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Row_ID" ColumnName="Row_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="facstaff">
+            <EntityTypeMapping TypeName="Gordon360.facstaff">
+              <MappingFragment StoreEntitySet="facstaff">
+                <ScalarProperty Name="row_source" ColumnName="row_source" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="ActiveAccount" ColumnName="ActiveAccount" />
+                <ScalarProperty Name="GoSiteOnly" ColumnName="GoSiteOnly" />
+                <ScalarProperty Name="StudentID" ColumnName="StudentID" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="BirthDate" ColumnName="BirthDate" />
+                <ScalarProperty Name="TerminateDate" ColumnName="TerminateDate" />
+                <ScalarProperty Name="ChangeDate" ColumnName="ChangeDate" />
+                <ScalarProperty Name="EmployStatus" ColumnName="EmployStatus" />
+                <ScalarProperty Name="AppointDate" ColumnName="AppointDate" />
+                <ScalarProperty Name="Barcode" ColumnName="Barcode" />
+                <ScalarProperty Name="Dept" ColumnName="Dept" />
+                <ScalarProperty Name="SpouseName" ColumnName="SpouseName" />
+                <ScalarProperty Name="JobTitle" ColumnName="JobTitle" />
+                <ScalarProperty Name="KeepPrivate" ColumnName="KeepPrivate" />
+                <ScalarProperty Name="HomeFax" ColumnName="HomeFax" />
+                <ScalarProperty Name="HomePhone" ColumnName="HomePhone" />
+                <ScalarProperty Name="HomeCountry" ColumnName="HomeCountry" />
+                <ScalarProperty Name="HomePostalCode" ColumnName="HomePostalCode" />
+                <ScalarProperty Name="HomeState" ColumnName="HomeState" />
+                <ScalarProperty Name="HomeCity" ColumnName="HomeCity" />
+                <ScalarProperty Name="HomeStreet2" ColumnName="HomeStreet2" />
+                <ScalarProperty Name="HomeStreet1" ColumnName="HomeStreet1" />
+                <ScalarProperty Name="OnCampusFax" ColumnName="OnCampusFax" />
+                <ScalarProperty Name="OnCampusPrivatePhone" ColumnName="OnCampusPrivatePhone" />
+                <ScalarProperty Name="OnCampusPhone" ColumnName="OnCampusPhone" />
+                <ScalarProperty Name="OnCampusRoom" ColumnName="OnCampusRoom" />
+                <ScalarProperty Name="OnCampusBuilding" ColumnName="OnCampusBuilding" />
+                <ScalarProperty Name="OnCampusDepartment" ColumnName="OnCampusDepartment" />
+                <ScalarProperty Name="EmailProtocol" ColumnName="EmailProtocol" />
+                <ScalarProperty Name="EmailServer" ColumnName="EmailServer" />
+                <ScalarProperty Name="EmailPassword" ColumnName="EmailPassword" />
+                <ScalarProperty Name="EmailUserName" ColumnName="EmailUserName" />
+                <ScalarProperty Name="Nickname" ColumnName="Nickname" />
+                <ScalarProperty Name="MaidenName" ColumnName="MaidenName" />
+                <ScalarProperty Name="Suffix" ColumnName="Suffix" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="SSN" ColumnName="SSN" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Row_ID" ColumnName="Row_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="student_temp">
+            <EntityTypeMapping TypeName="Gordon360.student_temp">
+              <MappingFragment StoreEntitySet="student_temp">
+                <ScalarProperty Name="IsMobilePhonePrivate" ColumnName="IsMobilePhonePrivate" />
+                <ScalarProperty Name="MobilePhone" ColumnName="MobilePhone" />
+                <ScalarProperty Name="GC_Insurance" ColumnName="GC_Insurance" />
+                <ScalarProperty Name="Class_List" ColumnName="Class_List" />
+                <ScalarProperty Name="Minor3" ColumnName="Minor3" />
+                <ScalarProperty Name="Minor2" ColumnName="Minor2" />
+                <ScalarProperty Name="Minor1" ColumnName="Minor1" />
+                <ScalarProperty Name="Major3" ColumnName="Major3" />
+                <ScalarProperty Name="AJScholar" ColumnName="AJScholar" />
+                <ScalarProperty Name="GradDate" ColumnName="GradDate" />
+                <ScalarProperty Name="grad_student" ColumnName="grad_student" />
+                <ScalarProperty Name="reg_complete" ColumnName="reg_complete" />
+                <ScalarProperty Name="finance_approved" ColumnName="finance_approved" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="BirthDate" ColumnName="BirthDate" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Major2" ColumnName="Major2" />
+                <ScalarProperty Name="GradFlag" ColumnName="GradFlag" />
+                <ScalarProperty Name="CreditHrs" ColumnName="CreditHrs" />
+                <ScalarProperty Name="NextStatusType" ColumnName="NextStatusType" />
+                <ScalarProperty Name="CurrentStatusType" ColumnName="CurrentStatusType" />
+                <ScalarProperty Name="StatusType" ColumnName="StatusType" />
+                <ScalarProperty Name="Commuter" ColumnName="Commuter" />
+                <ScalarProperty Name="Married" ColumnName="Married" />
+                <ScalarProperty Name="AdvisorIDs" ColumnName="AdvisorIDs" />
+                <ScalarProperty Name="Barcode" ColumnName="Barcode" />
+                <ScalarProperty Name="Major" ColumnName="Major" />
+                <ScalarProperty Name="KeepPrivate" ColumnName="KeepPrivate" />
+                <ScalarProperty Name="Class" ColumnName="Class" />
+                <ScalarProperty Name="Cohort" ColumnName="Cohort" />
+                <ScalarProperty Name="HomeFax" ColumnName="HomeFax" />
+                <ScalarProperty Name="HomePhone" ColumnName="HomePhone" />
+                <ScalarProperty Name="HomeCountry" ColumnName="HomeCountry" />
+                <ScalarProperty Name="HomePostalCode" ColumnName="HomePostalCode" />
+                <ScalarProperty Name="HomeState" ColumnName="HomeState" />
+                <ScalarProperty Name="HomeCity" ColumnName="HomeCity" />
+                <ScalarProperty Name="HomeStreet2" ColumnName="HomeStreet2" />
+                <ScalarProperty Name="HomeStreet1" ColumnName="HomeStreet1" />
+                <ScalarProperty Name="OffCampusFax" ColumnName="OffCampusFax" />
+                <ScalarProperty Name="OffCampusPhone" ColumnName="OffCampusPhone" />
+                <ScalarProperty Name="OffCampusCountry" ColumnName="OffCampusCountry" />
+                <ScalarProperty Name="OffCampusPostalCode" ColumnName="OffCampusPostalCode" />
+                <ScalarProperty Name="OffCampusState" ColumnName="OffCampusState" />
+                <ScalarProperty Name="OffCampusCity" ColumnName="OffCampusCity" />
+                <ScalarProperty Name="OffCampusStreet2" ColumnName="OffCampusStreet2" />
+                <ScalarProperty Name="OffCampusStreet1" ColumnName="OffCampusStreet1" />
+                <ScalarProperty Name="OnCampusFax" ColumnName="OnCampusFax" />
+                <ScalarProperty Name="OnCampusPrivatePhone" ColumnName="OnCampusPrivatePhone" />
+                <ScalarProperty Name="OnCampusPhone" ColumnName="OnCampusPhone" />
+                <ScalarProperty Name="OnCampusRoom" ColumnName="OnCampusRoom" />
+                <ScalarProperty Name="OnCampusBuilding" ColumnName="OnCampusBuilding" />
+                <ScalarProperty Name="OnOffCampus" ColumnName="OnOffCampus" />
+                <ScalarProperty Name="EmailProtocol" ColumnName="EmailProtocol" />
+                <ScalarProperty Name="EmailServer" ColumnName="EmailServer" />
+                <ScalarProperty Name="EmailPassword" ColumnName="EmailPassword" />
+                <ScalarProperty Name="EmailUserName" ColumnName="EmailUserName" />
+                <ScalarProperty Name="NickName" ColumnName="NickName" />
+                <ScalarProperty Name="MaidenName" ColumnName="MaidenName" />
+                <ScalarProperty Name="Suffix" ColumnName="Suffix" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="SSN" ColumnName="SSN" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Row_ID" ColumnName="Row_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ChapelEvent">
+            <EntityTypeMapping TypeName="Gordon360.ChapelEvent">
+              <MappingFragment StoreEntitySet="ChapelEvent">
+                <ScalarProperty Name="CHTermCD" ColumnName="CHTermCD" />
+                <ScalarProperty Name="CHSource" ColumnName="CHSource" />
+                <ScalarProperty Name="CHTime" ColumnName="CHTime" />
+                <ScalarProperty Name="CHDate" ColumnName="CHDate" />
+                <ScalarProperty Name="CHCheckerID" ColumnName="CHCheckerID" />
+                <ScalarProperty Name="CHEventID" ColumnName="CHEventID" />
+                <ScalarProperty Name="CHBarcode" ColumnName="CHBarcode" />
+                <ScalarProperty Name="CHBarEventID" ColumnName="CHBarEventID" />
+                <ScalarProperty Name="ROWID" ColumnName="ROWID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

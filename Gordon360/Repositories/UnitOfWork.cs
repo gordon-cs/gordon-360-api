@@ -25,6 +25,7 @@ namespace Gordon360.Repositories
         private IRepository<ACT_INFO> _ActivityInfoRepository;
         private IRepository<ADMIN> _AdministratorRepository;
         private IRepository<C360_SLIDER> _SliderRepository;
+        private IRepository<PROFILE_IMAGE> _ProfileImageRepository;
 
         private CCTEntities1 _context;
 
@@ -98,6 +99,11 @@ namespace Gordon360.Repositories
         public IRepository<C360_SLIDER> SliderRepository
         {
             get { return _SliderRepository ?? (_SliderRepository = new GenericRepository<C360_SLIDER>(_context));  }
+        }
+
+        public IRepository<PROFILE_IMAGE> ProfileImageRepository
+        {
+            get { return _ProfileImageRepository ?? (_ProfileImageRepository = new GenericRepository<PROFILE_IMAGE>(_context)); }
         }
 
         public bool Save()
