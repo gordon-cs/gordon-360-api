@@ -24,13 +24,11 @@ namespace Gordon360.Models.ViewModels
         public string HomePostalCode { get; set; }
         public string HomeCountry { get; set; }
         public string HomePhone { get; set; }
-        public string HomeFax { get; set; }
         public string KeepPrivate { get; set; }
         public string JobTitle { get; set; }
         public Nullable<System.DateTime> AppointDate { get; set; }
         public string Gender { get; set; }
         public string Email { get; set; }
-        public string StudentID { get; set; }
 
 
         public static implicit operator FacultyStaffProfileViewModel(facstaff fac)
@@ -56,9 +54,9 @@ namespace Gordon360.Models.ViewModels
                 HomePhone = fac.HomePhone ?? "",
                 KeepPrivate = fac.KeepPrivate ?? "",
                 JobTitle = fac.JobTitle ?? "",
+                AppointDate = fac.AppointDate,
                 Email = fac.Email ?? "",
                 Gender = fac.Gender ?? "",
-                StudentID = fac.StudentID ?? ""
             };
 
             return vm;
