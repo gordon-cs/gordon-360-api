@@ -57,16 +57,6 @@ namespace Gordon360.Services
             AlumniProfileViewModel result = query; // Implicit conversion happening here, see ViewModels.
             return result;
         }
-        ///// <summary>
-        ///// Fetches all the account records from storage.
-        ///// </summary>
-        ///// <returns>AccountViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        //[StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.PROFILE)]
-        //public IEnumerable<StudentProfileViewModel> GetAll()
-        //{
-        //    var query = _unitOfWork.StudentTempRepository.GetAll();
-        //    var result = query.Select<student_temp, StudentProfileViewModel>(x => x); //Map the database model to a more presentable version (a ViewModel)
-        //    return result;
-        //}
+
     }
 }

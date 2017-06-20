@@ -32,20 +32,6 @@ namespace Gordon360.Controllers.Api
             _profileService = profileService;
         }
 
-        ///// <summary>
-        ///// Get all available activities
-        ///// </summary>
-        ///// <returns>All the activities in the databse</returns>
-        ///// <remarks></remarks>
-        //// GET api/<controller>
-        //[HttpGet]
-        //[Route("")]
-        //public IHttpActionResult Get()
-        //{
-        //    var all = _profileService.GetAll();
-        //    return Ok(all);
-        //}
-
         /// <summary>Get a single activity based upon the string id entered in the URL</summary>
         /// <param name="username">An identifier for a single activity</param>
         /// <returns></returns>
@@ -71,17 +57,35 @@ namespace Gordon360.Controllers.Api
             var student = _profileService.GetStudentProfileByUsername(username);
             var faculty = _profileService.GetFacultyStaffProfileByUsername(username);
             var alumni = _profileService.GetAlumniProfileByUsername(username);
+            
+
             if (student != null)
-            {
-                return Ok(student);
+            {   
+                if(faculty != null)
+                {
+                    if(alumni != null)
+                    {
+                        return Json ( new { type = "stualufac", student, faculty, alumni});
+                    }
+                    return Json(new { type = "stufac", student, faculty });
+                }
+                else if (alumni != null)
+                {
+                    return Json(new { type = "stualu", student, alumni });
+                }
+                return Json( new { type = "student", student });
             }
             else if (faculty != null)
             {
-                return Ok(faculty);                
+                if(alumni != null)
+                {
+                    return Json(new { type = "alufac", alumni, faculty });
+                }
+                return Json(new { type = "faculty", faculty});                
             }
             else if (alumni != null)
             {
-                return Ok(alumni);
+                return Json( new { type = "alumni", alumni });
             }
             else
             {

@@ -44,7 +44,7 @@ namespace Gordon360.Models.ViewModels
                 LastName = stu.LastName.Trim(), 
                 NickName = stu.NickName ?? "", // Just in case some random record has a null user_name 
                 EmailUserName = stu.EmailUserName.Trim() ?? "", // Just in case some random record has a null email field
-                OnOffCampus = stu.OnOffCampus.Trim() ?? "",
+                OnOffCampus = stu.OnOffCampus ?? "",
                 HomeStreet1 = stu.HomeStreet1 ?? "",
                 HomeStreet2 = stu.HomeStreet2 ?? "",
                 HomeCity = stu.HomeCity ?? "",
