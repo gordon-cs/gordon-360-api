@@ -9,8 +9,8 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using Newtonsoft.Json.Linq;
-
-
+using Gordon360.AuthorizationFilters;
+using Gordon360.Static.Names;
 
 namespace Gordon360.Controllers.Api
 {
@@ -40,6 +40,7 @@ namespace Gordon360.Controllers.Api
         // GET api/<controller>/5
         [HttpGet]
         [Route("{username}")]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
         public IHttpActionResult Get(string username)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(username))
@@ -56,19 +57,20 @@ namespace Gordon360.Controllers.Api
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
+            // search username in three tables
             var student = _profileService.GetStudentProfileByUsername(username);
             var faculty = _profileService.GetFacultyStaffProfileByUsername(username);
             var alumni = _profileService.GetAlumniProfileByUsername(username);
 
-
+            // merge the person's info if this person is in multiple tables and return result 
             if (student != null)
             {   
                 if(faculty != null)
                 {
                     if (alumni != null)
                     {
-                        JObject stualufac = JObject.FromObject(student);
-                        stualufac.Merge(JObject.FromObject(alumni), new JsonMergeSettings
+                        JObject stualufac = JObject.FromObject(student);                                 //convert into JSON object in order to use JSON.NET library 
+                        stualufac.Merge(JObject.FromObject(alumni), new JsonMergeSettings                // user Merge function to merge two json object
                         {
                             MergeArrayHandling = MergeArrayHandling.Union
                         });
@@ -76,7 +78,7 @@ namespace Gordon360.Controllers.Api
                         {
                             MergeArrayHandling = MergeArrayHandling.Union
                         });
-                        stualufac.Add("PesonType", "stualufac");
+                        stualufac.Add("PersonType", "stualufac");                                          // assign a type to the json object 
                         return Ok(stualufac);
                         //return Json ( new { type = "stualufac", student, faculty, alumni});
                     }
@@ -85,7 +87,7 @@ namespace Gordon360.Controllers.Api
                     {
                         MergeArrayHandling = MergeArrayHandling.Union
                     });
-                    stufac.Add("PesonType", "stufac");
+                    stufac.Add("PersonType", "stufac");
                     return Ok(stufac);
                 }
                 else if (alumni != null)
@@ -95,12 +97,12 @@ namespace Gordon360.Controllers.Api
                     {
                         MergeArrayHandling = MergeArrayHandling.Union
                     });
-                    stualu.Add("PesonType", "stualu");
+                    stualu.Add("PersonType", "stualu");
                     return Ok(stualu);
                     //return Json(new { type = "stualu", student, alumni });
                 }
                 JObject stu = JObject.FromObject(student);
-                stu.Add("PesonType", "stu");
+                stu.Add("PersonType", "stu");
                 return Ok(stu);
                 //return Json( new { type = "student", student });
             }
@@ -113,19 +115,19 @@ namespace Gordon360.Controllers.Api
                     {
                         MergeArrayHandling = MergeArrayHandling.Union
                     });
-                    alufac.Add("PesonType", "alufac");
+                    alufac.Add("PersonType", "alufac");
                     return Ok(alufac);
                     //return Json(new { type = "alufac", alumni, faculty });
                 }
                 JObject fac = JObject.FromObject(faculty);
-                fac.Add("PesonType", "fac");
+                fac.Add("PersonType", "fac");
                 return Ok(fac);
                 //return Json(new { type = "faculty", faculty});                
             }
             else if (alumni != null)
             {
                 JObject alu = JObject.FromObject(alumni);
-                alu.Add("PesonType", "alu");
+                alu.Add("PersonType", "alu");
                 return Ok(alu);
                 //return Json( new { type = "alumni", alumni });
             }

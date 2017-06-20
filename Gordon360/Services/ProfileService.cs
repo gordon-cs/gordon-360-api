@@ -6,8 +6,6 @@ using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using Gordon360.Exceptions.CustomExceptions;
-using Gordon360.AuthorizationFilters;
-using Gordon360.Static.Names;
 
 namespace Gordon360.Services
 {
@@ -19,12 +17,7 @@ namespace Gordon360.Services
         {
             _unitOfWork = unitOfWork;
         }
-        /// <summary>
-        /// Fetches a single activity record whose id matches the id provided as an argument
-        /// </summary>
-        /// <param name="username">The activity code</param>
-        /// <returns>ActivityViewModel if found, null if not found</returns>
-        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
+
         public StudentProfileViewModel GetStudentProfileByUsername(string username)
         {
             var query = _unitOfWork.StudentTempRepository.FirstOrDefault(x => x.EmailUserName == username);

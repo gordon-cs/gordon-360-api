@@ -821,13 +821,6 @@
             </summary>
             <returns>FacultyViewModel IEnumerable. If no records are found an empty IEnumerable is returned.</returns>
         </member>
-        <member name="M:Gordon360.Services.ProfileService.GetStudentProfileByUsername(System.String)">
-            <summary>
-            Fetches a single activity record whose id matches the id provided as an argument
-            </summary>
-            <param name="username">The activity code</param>
-            <returns>ActivityViewModel if found, null if not found</returns>
-        </member>
         <member name="T:Gordon360.Services.JenzibarActivityService">
             <summary>
             Service class to faclitate data transfers between in and out of the JNZB_ACTIVITIES table.
