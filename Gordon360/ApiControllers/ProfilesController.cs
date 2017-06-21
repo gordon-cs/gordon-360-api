@@ -33,14 +33,13 @@ namespace Gordon360.Controllers.Api
             _profileService = profileService;
         }
 
-        /// <summary>Get a single activity based upon the string id entered in the URL</summary>
-        /// <param name="username">An identifier for a single activity</param>
+        /// <summary>Get the info of currently logged in user</summary>
+        /// <param name="username">An identifier for the person</param>
         /// <returns></returns>
-        /// <remarks>Get a single activity from the database</remarks>
         // GET api/<controller>/5
         [HttpGet]
         [Route("{username}")]
-        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]    //make sure the requested person is the same as the logged in user
         public IHttpActionResult Get(string username)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(username))
@@ -64,8 +63,8 @@ namespace Gordon360.Controllers.Api
 
             // merge the person's info if this person is in multiple tables and return result 
             if (student != null)
-            {   
-                if(faculty != null)
+            {
+                if (faculty != null)
                 {
                     if (alumni != null)
                     {
@@ -80,7 +79,6 @@ namespace Gordon360.Controllers.Api
                         });
                         stualufac.Add("PersonType", "stualufac");                                          // assign a type to the json object 
                         return Ok(stualufac);
-                        //return Json ( new { type = "stualufac", student, faculty, alumni});
                     }
                     JObject stufac = JObject.FromObject(student);
                     stufac.Merge(JObject.FromObject(faculty), new JsonMergeSettings
@@ -99,16 +97,14 @@ namespace Gordon360.Controllers.Api
                     });
                     stualu.Add("PersonType", "stualu");
                     return Ok(stualu);
-                    //return Json(new { type = "stualu", student, alumni });
                 }
                 JObject stu = JObject.FromObject(student);
                 stu.Add("PersonType", "stu");
                 return Ok(stu);
-                //return Json( new { type = "student", student });
             }
             else if (faculty != null)
             {
-                if(alumni != null)
+                if (alumni != null)
                 {
                     JObject alufac = JObject.FromObject(alumni);
                     alufac.Merge(JObject.FromObject(faculty), new JsonMergeSettings
@@ -117,19 +113,16 @@ namespace Gordon360.Controllers.Api
                     });
                     alufac.Add("PersonType", "alufac");
                     return Ok(alufac);
-                    //return Json(new { type = "alufac", alumni, faculty });
                 }
                 JObject fac = JObject.FromObject(faculty);
                 fac.Add("PersonType", "fac");
                 return Ok(fac);
-                //return Json(new { type = "faculty", faculty});                
             }
             else if (alumni != null)
             {
                 JObject alu = JObject.FromObject(alumni);
                 alu.Add("PersonType", "alu");
                 return Ok(alu);
-                //return Json( new { type = "alumni", alumni });
             }
             else
             {
