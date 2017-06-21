@@ -208,7 +208,6 @@
     <Compile Include="ApiControllers\EmailsController.cs" />
     <Compile Include="ApiControllers\MembershipRequestController.cs" />
     <Compile Include="ApiControllers\ProfileImageController.cs" />
-    <Compile Include="ApiControllers\ProfileLinkController.cs" />
     <Compile Include="ApiControllers\ProfilesController.cs" />
     <Compile Include="ApiControllers\RolesController.cs" />
     <Compile Include="ApiControllers\SessionsController.cs" />
@@ -363,7 +362,6 @@
     <Compile Include="Models\ViewModels\MembershipRequestViewModel.cs" />
     <Compile Include="Models\ViewModels\ParticipationViewModel.cs" />
     <Compile Include="Models\ViewModels\ProfileImageViewModel.cs" />
-    <Compile Include="Models\ViewModels\ProfileLinkViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\SessionViewModel.cs" />
     <Compile Include="Models\ViewModels\SliderViewModel.cs" />
@@ -403,9 +401,6 @@
     </EntityDeploy>
     <Content Include="browseable\profile\Default\profile.png" />
     <Content Include="browseable\uploads\Default\activityImage.png" />
-    <Content Include="Content\bootstrap.css" />
-    <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Content\Site.css" />
     <Content Include="Models\CCT_DB_Models.edmx.diagram">
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
     </Content>
@@ -462,7 +457,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:4500/</IISUrl>
+          <IISUrl>http://localhost:3900/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

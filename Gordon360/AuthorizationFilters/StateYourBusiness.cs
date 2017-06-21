@@ -428,12 +428,8 @@ namespace Gordon360.AuthorizationFilters
                             return true;
 
                         var username = (string)context.ActionArguments["username"];
-                        var profileimageservice = new ProfileImageService(new UnitOfWork());
-
                         var isSelf = username.Equals(user_name);
-                        if (isSelf)
-                            return true;
-                        return false;
+                        return isSelf;
                     }
 
                 case Resource.ACTIVITY_INFO:
