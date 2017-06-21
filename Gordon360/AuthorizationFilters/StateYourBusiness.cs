@@ -48,7 +48,7 @@ namespace Gordon360.AuthorizationFilters
             var authenticatedUser = actionContext.RequestContext.Principal as ClaimsPrincipal;
             user_position = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role").Value;
             user_id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
-            user_name = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "name").Value;
+            user_name = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
             if (user_position == Position.GOD)
             {
@@ -136,10 +136,9 @@ namespace Gordon360.AuthorizationFilters
             switch (resource)
             {
                 case Resource.PROFILE:
-                    //var username_requested = context.ActionArguments["username"];
-                    //var is_prOwner = username_requested.ToString().Equals(user_name);
-                    //if (is_prOwner)
-                    return true;
+                    var username_requested = context.ActionArguments["username"];
+                    var is_prOwner = username_requested.ToString().Equals(user_name);
+                    return is_prOwner;
 
                 case Resource.MEMBERSHIP:
                     return true;
