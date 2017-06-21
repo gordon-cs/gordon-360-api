@@ -430,7 +430,7 @@ namespace Gordon360.AuthorizationFilters
                         var username = (string)context.ActionArguments["username"];
                         var profileimageservice = new ProfileImageService(new UnitOfWork());
 
-                        var isSelf = profileimageservice.Get(username).Equals(user_name);
+                        var isSelf = username.Equals(user_name);
                         if (isSelf)
                             return true;
                         return false;
