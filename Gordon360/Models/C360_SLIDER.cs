@@ -21,8 +21,8 @@ namespace Gordon360.Models
         public string strSliderTitle { get; set; }
         public string strSliderSubTitle { get; set; }
         public string strSliderAction { get; set; }
-        public Nullable<int> iWidth { get; set; }
-        public Nullable<int> iHeight { get; set; }
+        public int iWidth { get; set; }
+        public int iHeight { get; set; }
         public string strExtensions { get; set; }
         public System.DateTime dtModified { get; set; }
         public int sortOrder { get; set; }
