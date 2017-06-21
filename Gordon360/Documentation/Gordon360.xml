@@ -105,7 +105,6 @@
             <param name="id">The id of the membership request to delete</param>
             <returns>The deleted object</returns>
         </member>
-
         <member name="M:Gordon360.Controllers.Api.ProfileImageController.Get">
             <summary>
             Get all available users
@@ -132,13 +131,11 @@
             </summary>
             <param name="username">The username</param>
             <returns></returns>
-
+        </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.Get(System.String)">
-            <summary>Get a single activity based upon the string id entered in the URL</summary>
-            <param name="username">An identifier for a single activity</param>
+            <summary>Get the info of currently logged in user</summary>
+            <param name="username">An identifier for the person</param>
             <returns></returns>
-            <remarks>Get a single activity from the database</remarks>
-
         </member>
         <member name="M:Gordon360.Controllers.Api.ParticipationsController.Get">
             <summary>Get all the roles a person may have within an activity</summary>
