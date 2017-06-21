@@ -101,7 +101,7 @@ namespace Gordon360.Services
         MEMBERSHIP Add(MEMBERSHIP membership);
         MEMBERSHIP Update(int id, MEMBERSHIP membership);
         MEMBERSHIP ToggleGroupAdmin(int id, MEMBERSHIP membership);
-        MEMBERSHIP Delete(int id);   
+        MEMBERSHIP Delete(int id);
     }
 
     public interface IParticipationService
@@ -141,4 +141,13 @@ namespace Gordon360.Services
     {
         IEnumerable<SliderViewModel> GetSliderContent();
     }
+
+    public interface IProfileImageService
+    {
+        ProfileImageViewModel Get(string id);
+        IEnumerable<ProfileImageViewModel> GetAll();
+        void UpdateProfileImage(string id, string path);
+        void ResetProfileImage(string id);
+    }
 }
+
