@@ -25,6 +25,7 @@
         <EntityTypeShape EntityType="Gordon360.facstaff" Width="1.5" PointX="7.75" PointY="6.75" />
         <EntityTypeShape EntityType="Gordon360.student_temp" Width="1.5" PointX="0.75" PointY="8.75" />
         <EntityTypeShape EntityType="Gordon360.ChapelEvent" Width="1.5" PointX="9.75" PointY="6.75" />
+        <EntityTypeShape EntityType="Gordon360.PROFILE_IMAGE" Width="1.5" PointX="13.625" PointY="8.875" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

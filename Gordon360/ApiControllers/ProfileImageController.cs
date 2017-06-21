@@ -53,16 +53,16 @@ namespace Gordon360.Controllers.Api
             return Ok(all);
         }
 
-        /// <summary>Get a single profile based upon the string id entered in the URL</summary>
-        /// <param name="id">An identifier for a single person's profile</param>
+        /// <summary>Get a single profile based upon the string username entered in the URL</summary>
+        /// <param name="username">An identifier for a single person's profile</param>
         /// <returns></returns>
         /// <remarks>Get a single profile from the database</remarks>
         // GET api/<controller>/5
         [HttpGet]
-        [Route("{id}")]
-        public IHttpActionResult Get(string id)
+        [Route("{username}")]
+        public IHttpActionResult Get(string username)
         {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(username))
             {
                 string errors = "";
                 foreach (var modelstate in ModelState.Values)
@@ -75,7 +75,7 @@ namespace Gordon360.Controllers.Api
                 }
                 throw new BadInputException() { ExceptionMessage = errors };
             }
-            var result = _profileImageService.Get(id);
+            var result = _profileImageService.Get(username);
 
             if (result == null)
             {
@@ -87,12 +87,12 @@ namespace Gordon360.Controllers.Api
         /// <summary>
         /// Set an image for profile
         /// </summary>
-        /// <param name="id">The user id</param>
+        /// <param name="username">The username</param>
         /// <returns></returns>
         [HttpPost]
-        [Route("{id}/image")]
+        [Route("{username}/image")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE_IMAGE)]
-        public async Task<HttpResponseMessage> PostImage(string id)
+        public async Task<HttpResponseMessage> PostImage(string username)
         {
             // Verify Input
             if (!ModelState.IsValid)
@@ -108,7 +108,7 @@ namespace Gordon360.Controllers.Api
                 }
                 throw new BadInputException() { ExceptionMessage = errors };
             }
-            var profileFolder = "/browseable/profile/" + id + "/";
+            var profileFolder = "/browseable/profile/" + username + "/";
             if (!Request.Content.IsMimeMultipartContent())
             {
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
@@ -164,7 +164,7 @@ namespace Gordon360.Controllers.Api
                     var uploadPath = profileFolder + fileName;
                     var baseUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority);
                     var imagePath = baseUrl + uploadPath;
-                    _profileImageService.UpdateProfileImage(id, imagePath);
+                    _profileImageService.UpdateProfileImage(username, imagePath);
                 }
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
@@ -177,12 +177,12 @@ namespace Gordon360.Controllers.Api
         /// <summary>
         /// Reset the profile Image
         /// </summary>
-        /// <param name="id">The user id</param>
+        /// <param name="username">The username</param>
         /// <returns></returns>
         [HttpPost]
-        [Route("{id}/image/reset")]
+        [Route("{username}/image/reset")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE_IMAGE)]
-        public IHttpActionResult ResetImage(string id)
+        public IHttpActionResult ResetImage(string username)
         {
             // Verify Input
             if (!ModelState.IsValid)
@@ -199,7 +199,7 @@ namespace Gordon360.Controllers.Api
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            _profileImageService.ResetProfileImage(id);
+            _profileImageService.ResetProfileImage(username);
 
             return Ok();
 

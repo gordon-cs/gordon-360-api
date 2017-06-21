@@ -23,13 +23,13 @@ namespace Gordon360.Services
             _unitOfWork = unitOfWork;
         }
         /// <summary>
-        /// Fetches a single activity record whose id matches the id provided as an argument
+        /// Fetches a single activity record whose username matches the username provided as an argument
         /// </summary>
-        /// <param name="id">The user ID</param>
+        /// <param name="username">The username</param>
         /// <returns>ProfileViewModel if found, null if not found</returns>
-        public ProfileImageViewModel Get(string id)
+        public ProfileImageViewModel Get(string username)
         {
-            var query = _unitOfWork.ProfileImageRepository.GetById(id);
+            var query = _unitOfWork.ProfileImageRepository.GetByUsername(username);
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Profile was not found." };
@@ -52,11 +52,11 @@ namespace Gordon360.Services
         /// <summary>
         /// Sets the path for the profile image.
         /// </summary>
-        /// <param name="id">The user id</param>
+        /// <param name="username">The username</param>
         /// <param name="path"></param>
-        public void UpdateProfileImage(string id, string path)
+        public void UpdateProfileImage(string username, string path)
         {
-            var original = _unitOfWork.ProfileImageRepository.GetById(id);
+            var original = _unitOfWork.ProfileImageRepository.GetByUsername(username);
 
             if (original == null)
             {
@@ -71,10 +71,10 @@ namespace Gordon360.Services
         /// <summary>
         /// Reset the path for the profile image
         /// </summary>
-        /// <param name="ID">The user ID</param>
-        public void ResetProfileImage(string ID)
+        /// <param name="username">The username</param>
+        public void ResetProfileImage(string username)
         {
-            var original = _unitOfWork.ProfileImageRepository.GetById(ID);
+            var original = _unitOfWork.ProfileImageRepository.GetByUsername(username);
 
             if (original == null)
             {

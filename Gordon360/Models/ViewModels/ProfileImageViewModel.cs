@@ -16,7 +16,7 @@ namespace Gordon360.Models.ViewModels
             ProfileImageViewModel vm = new ProfileImageViewModel
             {
                 ProfileID = info.id.Trim(),
-                ProfileUsername = info.Username.Trim() ?? "",
+                ProfileUsername = info.username.Trim(),
                 ProfileImagePath = info.Img_Path.Trim() ?? ""
             };
 
