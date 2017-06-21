@@ -3,7 +3,7 @@ namespace Gordon360.Static.Names
 {
     public static class Resource
     {
-         
+        public const string PROFILE = "A new profile resource";
         public const string MEMBERSHIP_REQUEST = "A Membership Request Resource";
         public const string MEMBERSHIP = "A Membership Resource";
         public const string STUDENT = "A Student Resource";

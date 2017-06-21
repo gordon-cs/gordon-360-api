@@ -10,6 +10,9 @@ namespace Gordon360.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
+        private IRepository<student_temp> _StudentTempRepository;
+        private IRepository<facstaff> _FacultyStaffRepository;
+        private IRepository<alumni> _AlumniRepository;
         private IRepository<ACCOUNT> _AccountRepository;
         private IRepository<ACT_CLUB_DEF> _ActivityRepository;
         private IRepository<CM_SESSION_MSTR> _SessionRepository;
@@ -32,6 +35,18 @@ namespace Gordon360.Repositories
         public UnitOfWork()
         {
             _context = new CCTEntities1();
+        }
+        public IRepository<student_temp> StudentTempRepository
+        {
+            get { return _StudentTempRepository ?? (_StudentTempRepository = new GenericRepository<student_temp>(_context)); }
+        }
+        public IRepository<facstaff> FacultyStaffRepository
+        {
+            get { return _FacultyStaffRepository ?? (_FacultyStaffRepository = new GenericRepository<facstaff>(_context)); }
+        }
+        public IRepository<alumni> AlumniRepository
+        {
+            get { return _AlumniRepository ?? (_AlumniRepository = new GenericRepository<alumni>(_context)); }
         }
         public IRepository<ACCOUNT> AccountRepository
         {
