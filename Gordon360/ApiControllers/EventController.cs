@@ -13,45 +13,18 @@ namespace Gordon360.ApiControllers
 {
     [Authorize]
     [CustomExceptionFilter]
-    [RoutePrefix("api/chapel_event")]
-    public class ChapelEventController : ApiController
+    [RoutePrefix("api/event")]
+    public class EventController : ApiController
     {
         IChapelEventService _chapelService;
-        public ChapelEventController()
+        public EventController()
         {
             IUnitOfWork unitOfWork = new UnitOfWork();
-            _chapelService = new ChapelEventService(unitOfWork);
+            _chapelService = new EventService(unitOfWork);
         }
-        // GET: api/Accounts
+        
         [HttpGet]
-        [Route("CHEventID/{CHEventID}")]
-        public IHttpActionResult GetChapelEventByChapelEventID(string CHEventID)
-        {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(CHEventID))
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
-            var result = _chapelService.GetChapelEventByChapelEventID(CHEventID);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(result);
-        }
-        [HttpGet]
-        [Route("Student/{ID}")]
+        [Route("/chapel/Student/{ID}")]
         public IHttpActionResult GetAllForStudent(string ID)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(ID))
@@ -78,7 +51,7 @@ namespace Gordon360.ApiControllers
             return Ok(result);
         }
         [HttpGet]
-        [Route("Student/{ID}/{term}")]
+        [Route("/chapel/Student/{ID}/{term}")]
         public IHttpActionResult GetEventsForStudentByTerm(string ID, string term)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(ID) || string.IsNullOrWhiteSpace(term))
@@ -104,6 +77,7 @@ namespace Gordon360.ApiControllers
 
             return Ok(result);
         }
+
 
 
 

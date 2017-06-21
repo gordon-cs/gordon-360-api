@@ -17,12 +17,12 @@ namespace Gordon360.Services
     /// <summary>
     /// Service Class that facilitates data transactions between the AccountsController and the Account database model.
     /// </summary>
-    public class ChapelEventService : IChapelEventService
+    public class EventService : IChapelEventService
     {
         // See UnitOfWork class
         private IUnitOfWork _unitOfWork;
 
-        public ChapelEventService(IUnitOfWork unitOfWork)
+        public EventService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }

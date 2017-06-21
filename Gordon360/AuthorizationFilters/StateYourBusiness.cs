@@ -203,11 +203,6 @@ namespace Gordon360.AuthorizationFilters
                         return (string)context.ActionArguments["id"] == user_id;
                     }
 
-                case Resource.TOTAL_CREDITS_PER_STUDENT:
-                    {
-                        // Only the person itself or an admin can see someone's chapel attendance
-                        return (string)context.ActionArguments["id"] == user_id;
-                    }
 
                 case Resource.MEMBERSHIP_REQUEST_BY_ACTIVITY:
                     {
@@ -291,19 +286,6 @@ namespace Gordon360.AuthorizationFilters
                     else
                         return false;
                 case Resource.EVENTS_BY_STUDENT_ID:
-                    // User is admin
-                    if (user_position == Position.GOD)
-                        return true;
-                    else
-                        return false;
-                case Resource.STUDENT_EVENTS_PER_TERM:
-                    // User is admin
-                    if (user_position == Position.GOD)
-                        return true;
-                    else
-                        return false;
-
-                case Resource.TOTAL_CREDITS_PER_STUDENT:
                     // User is admin
                     if (user_position == Position.GOD)
                         return true;

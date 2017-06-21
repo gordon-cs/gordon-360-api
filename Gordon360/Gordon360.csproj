@@ -179,7 +179,7 @@
   <ItemGroup>
     <Compile Include="ApiControllers\AccountsController.cs" />
     <Compile Include="ApiControllers\AdminsController.cs" />
-    <Compile Include="ApiControllers\ChapelEventController.cs" />
+    <Compile Include="ApiControllers\EventController.cs" />
     <Compile Include="ApiControllers\ContentManagementController.cs" />
     <Compile Include="ApiControllers\EmailsController.cs" />
     <Compile Include="ApiControllers\MembershipRequestController.cs" />
@@ -350,7 +350,7 @@
     <Compile Include="Services\AccountService.cs" />
     <Compile Include="Services\ActivityService.cs" />
     <Compile Include="Services\AdministratorService.cs" />
-    <Compile Include="Services\ChapelEventService.cs" />
+    <Compile Include="Services\EventService.cs" />
     <Compile Include="Services\ComplexQueries\RawSqlQuery.cs" />
     <Compile Include="Services\ContentManagementService.cs" />
     <Compile Include="Services\EmailService.cs" />
