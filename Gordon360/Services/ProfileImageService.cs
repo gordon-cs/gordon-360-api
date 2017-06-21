@@ -23,7 +23,7 @@ namespace Gordon360.Services
             _unitOfWork = unitOfWork;
         }
         /// <summary>
-        /// Fetches a single activity record whose username matches the username provided as an argument
+        /// Fetches a single profile whose username matches the username provided as an argument
         /// </summary>
         /// <param name="username">The username</param>
         /// <returns>ProfileViewModel if found, null if not found</returns>

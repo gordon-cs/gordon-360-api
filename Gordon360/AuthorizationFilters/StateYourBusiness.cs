@@ -421,6 +421,17 @@ namespace Gordon360.AuthorizationFilters
 
                         return false;
                     }
+                case Resource.PROFILE_IMAGE:
+                    {
+                        // User is admin
+                        if (user_position == Position.GOD)
+                            return true;
+
+                        var username = (string)context.ActionArguments["username"];
+                        var isSelf = username.Equals(user_name);
+                        return isSelf;
+                    }
+
                 case Resource.ACTIVITY_INFO:
                     {
                         // User is admin
