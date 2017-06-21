@@ -43,6 +43,11 @@ namespace Gordon360.Models
         public virtual DbSet<ACT_INFO> ACT_INFO { get; set; }
         public virtual DbSet<C360_SLIDER> C360_SLIDER { get; set; }
         public virtual DbSet<ChapelEvent> ChapelEvent { get; set; }
+        public virtual DbSet<PROFILE_IMAGE> PROFILE_IMAGE { get; set; }
+        public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
+        public virtual DbSet<alumni> alumni { get; set; }
+        public virtual DbSet<facstaff> facstaff { get; set; }
+        public virtual DbSet<student_temp> student_temp { get; set; }
     
         public virtual ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> ACTIVE_CLUBS_PER_SESS_ID(string sESS_CDE)
         {

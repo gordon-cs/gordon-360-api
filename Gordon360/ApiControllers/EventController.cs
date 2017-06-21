@@ -24,7 +24,7 @@ namespace Gordon360.ApiControllers
         }
         
         [HttpGet]
-        [Route("/chapel/Student/{ID}")]
+        [Route("chapel/Student/{ID}")]
         public IHttpActionResult GetAllForStudent(string ID)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(ID))
@@ -51,7 +51,7 @@ namespace Gordon360.ApiControllers
             return Ok(result);
         }
         [HttpGet]
-        [Route("/chapel/Student/{ID}/{term}")]
+        [Route("chapel/Student/{ID}/{term}")]
         public IHttpActionResult GetEventsForStudentByTerm(string ID, string term)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(ID) || string.IsNullOrWhiteSpace(term))
