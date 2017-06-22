@@ -10,18 +10,12 @@
 namespace Gordon360.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class ACCOUNT
+    public partial class EVENTS_BY_STUDENT_ID_Result
     {
-        public string gordon_id { get; set; }
-        public string firstname { get; set; }
-        public string lastname { get; set; }
-        public string email { get; set; }
-        public string AD_Username { get; set; }
-        public string account_type { get; set; }
-        public int Private { get; set; }
-        public string barcode { get; set; }
-        public int preferred_photo { get; set; }
+        public Nullable<System.DateTime> Date { get; set; }
+        public Nullable<System.DateTime> Time { get; set; }
+        public string EventID { get; set; }
+        public string Term { get; set; }
     }
 }
