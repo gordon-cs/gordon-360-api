@@ -203,10 +203,12 @@ warning 6002: The table/view 'CCT.dbo.facstaff' does not have a primary key defi
           <Property Name="id" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="username" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="Img_Path" Type="varchar(max)" />
+
           <Property Name="facebook" Type="varchar(max)" />
           <Property Name="twitter" Type="varchar(max)" />
           <Property Name="instagram" Type="varchar(max)" />
           <Property Name="linkedin" Type="varchar(max)" />
+
         </EntityType>
         <EntityType Name="REQUEST">
           <Key>
@@ -565,6 +567,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="PROFILE_IMAGE" EntityType="Self.PROFILE_IMAGE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="REQUEST" EntityType="Self.REQUEST" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SUPERVISOR" EntityType="Self.SUPERVISOR" Schema="dbo" store:Type="Tables" />
+
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="alumni" EntityType="Self.alumni" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -1072,6 +1075,11 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="ACT_CDE" Mode="In" Type="String" />
             <Parameter Name="SESS_CDE" Mode="In" Type="String" />
           </FunctionImport>
+          <EntitySet Name="alumni" EntityType="Gordon360.alumni" />
+          <EntitySet Name="facstaff" EntityType="Gordon360.facstaff" />
+          <EntitySet Name="student_temp" EntityType="Gordon360.student_temp" />
+          <EntitySet Name="ChapelEvent" EntityType="Gordon360.ChapelEvent" />
+          <EntitySet Name="PROFILE_IMAGE" EntityType="Gordon360.PROFILE_IMAGE" />
           <EntitySet Name="ChapelEvent" EntityType="Gordon360.ChapelEvent" />
           <FunctionImport Name="ALL_EVENTS_PER_STUDENT" ReturnType="Collection(Gordon360.ALL_EVENTS_PER_STUDENT_Result)">
             <Parameter Name="STU_ID" Mode="In" Type="String" />
@@ -1661,6 +1669,30 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="MobilePhone" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="IsMobilePhonePrivate" Type="Boolean" />
         </EntityType>
+        <EntityType Name="ChapelEvent">
+          <Key>
+            <PropertyRef Name="ROWID" />
+            <PropertyRef Name="CHBarEventID" />
+          </Key>
+          <Property Name="ROWID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CHBarEventID" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CHBarcode" Type="String" MaxLength="14" FixedLength="false" Unicode="true" />
+          <Property Name="CHEventID" Type="String" MaxLength="6" FixedLength="false" Unicode="true" />
+          <Property Name="CHCheckerID" Type="String" MaxLength="14" FixedLength="false" Unicode="true" />
+          <Property Name="CHDate" Type="DateTime" Precision="3" />
+          <Property Name="CHTime" Type="DateTime" Precision="3" />
+          <Property Name="CHSource" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="CHTermCD" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="PROFILE_IMAGE">
+          <Key>
+            <PropertyRef Name="username" />
+          </Key>
+          <Property Name="id" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Img_Path" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2411,6 +2443,30 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="SSN" ColumnName="SSN" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Row_ID" ColumnName="Row_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ChapelEvent">
+            <EntityTypeMapping TypeName="Gordon360.ChapelEvent">
+              <MappingFragment StoreEntitySet="ChapelEvent">
+                <ScalarProperty Name="CHTermCD" ColumnName="CHTermCD" />
+                <ScalarProperty Name="CHSource" ColumnName="CHSource" />
+                <ScalarProperty Name="CHTime" ColumnName="CHTime" />
+                <ScalarProperty Name="CHDate" ColumnName="CHDate" />
+                <ScalarProperty Name="CHCheckerID" ColumnName="CHCheckerID" />
+                <ScalarProperty Name="CHEventID" ColumnName="CHEventID" />
+                <ScalarProperty Name="CHBarcode" ColumnName="CHBarcode" />
+                <ScalarProperty Name="CHBarEventID" ColumnName="CHBarEventID" />
+                <ScalarProperty Name="ROWID" ColumnName="ROWID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PROFILE_IMAGE">
+            <EntityTypeMapping TypeName="Gordon360.PROFILE_IMAGE">
+              <MappingFragment StoreEntitySet="PROFILE_IMAGE">
+                <ScalarProperty Name="Img_Path" ColumnName="Img_Path" />
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
