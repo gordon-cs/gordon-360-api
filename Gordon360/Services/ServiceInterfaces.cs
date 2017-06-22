@@ -11,12 +11,23 @@ using Gordon360.Models.ViewModels;
 /// </summary>
 namespace Gordon360.Services
 {
+
     public interface IProfileService
     {
         StudentProfileViewModel GetStudentProfileByUsername(string username);
         FacultyStaffProfileViewModel GetFacultyStaffProfileByUsername(string username);
         AlumniProfileViewModel GetAlumniProfileByUsername(string username);
     }
+
+    public interface IChapelEventService
+    {
+        ChapelEventViewModel Get(string id);
+        IEnumerable<ChapelEventViewModel> GetAll();
+        ChapelEventViewModel GetChapelEventByChapelEventID(string CHEventID);
+        IEnumerable<ChapelEventViewModel> GetAllForStudent(string id);
+        IEnumerable<ChapelEventViewModel> GetEventsForStudentByTerm(string id, string term);
+    }
+
     public interface IAccountService
     {
         AccountViewModel Get(string id);
