@@ -25,6 +25,7 @@ namespace Gordon360.Repositories
         private IRepository<ACT_INFO> _ActivityInfoRepository;
         private IRepository<ADMIN> _AdministratorRepository;
         private IRepository<C360_SLIDER> _SliderRepository;
+        private IRepository<ChapelEvent> _ChapelEventRepository;
 
         private CCTEntities1 _context;
 
@@ -98,6 +99,10 @@ namespace Gordon360.Repositories
         public IRepository<C360_SLIDER> SliderRepository
         {
             get { return _SliderRepository ?? (_SliderRepository = new GenericRepository<C360_SLIDER>(_context));  }
+        }
+        public IRepository<ChapelEvent> ChapelEventRepository
+        {
+            get { return _ChapelEventRepository ?? (_ChapelEventRepository = new GenericRepository<ChapelEvent>(_context)); }
         }
 
         public bool Save()

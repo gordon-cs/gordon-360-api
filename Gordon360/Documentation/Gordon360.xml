@@ -706,6 +706,46 @@
             <param name="admin">The admin to validate</param>
             <returns>True if the admin is valid. Throws ResourceNotFoundException if not. Exception is cauth in an Exception Filter</returns>
         </member>
+        <member name="T:Gordon360.Services.EventService">
+            <summary>
+            Service Class that facilitates data transactions between the AccountsController and the Account database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.EventService.Get(System.String)">
+            <summary>
+            Fetches a single account record whose id matches the id provided as an argument
+            </summary>
+            <param name="id">The person's gordon id</param>
+            <returns>AccountViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.EventService.GetAll">
+            <summary>
+            Fetches all the account records from storage.
+            </summary>
+            <returns>AccountViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+        </member>
+        <member name="M:Gordon360.Services.EventService.GetChapelEventByChapelEventID(System.String)">
+            <summary>
+            Fetches the account record with the specified email.
+            </summary>
+            <param name="CHEventID">The email address associated with the account.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.EventService.GetAllForStudent(System.String)">
+            <summary>
+            Returns all attended events for a student
+            </summary>
+            <param name="ID"> The student's ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.EventService.GetEventsForStudentByTerm(System.String,System.String)">
+            <summary>
+            Returns all attended events for a student
+            </summary>
+            <param name="ID"> The student's ID</param>
+            <param name="term"> The current term</param>
+            <returns></returns>
+        </member>
         <member name="T:Gordon360.Services.ComplexQueries.RawSqlQuery`1">
             <summary>
             Helper class to execute Sql statements.

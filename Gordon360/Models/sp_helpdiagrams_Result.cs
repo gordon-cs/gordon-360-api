@@ -10,18 +10,13 @@
 namespace Gordon360.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class ACCOUNT
+    public partial class sp_helpdiagrams_Result
     {
-        public string gordon_id { get; set; }
-        public string firstname { get; set; }
-        public string lastname { get; set; }
-        public string email { get; set; }
-        public string AD_Username { get; set; }
-        public string account_type { get; set; }
-        public int Private { get; set; }
-        public string barcode { get; set; }
-        public int preferred_photo { get; set; }
+        public string Database { get; set; }
+        public string Name { get; set; }
+        public int ID { get; set; }
+        public string Owner { get; set; }
+        public int OwnerID { get; set; }
     }
 }
