@@ -21,11 +21,11 @@
         <EntityTypeShape EntityType="Gordon360.JENZ_ACT_CLUB_DEF" Width="1.5" PointX="7.375" PointY="3.75" />
         <EntityTypeShape EntityType="Gordon360.ACT_INFO" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.C360_SLIDER" Width="1.5" PointX="0.75" PointY="7.75" />
-        <EntityTypeShape EntityType="Gordon360.alumni" Width="1.5" PointX="4.5" PointY="7.5" />
-        <EntityTypeShape EntityType="Gordon360.facstaff" Width="1.5" PointX="6.25" PointY="7.5" />
-        <EntityTypeShape EntityType="Gordon360.student_temp" Width="1.5" PointX="2.75" PointY="7.5" />
+        <EntityTypeShape EntityType="Gordon360.alumni" Width="1.5" PointX="4.5" PointY="7.5" IsExpanded="false" />
+        <EntityTypeShape EntityType="Gordon360.facstaff" Width="1.5" PointX="6.25" PointY="7.5" IsExpanded="false" />
+        <EntityTypeShape EntityType="Gordon360.student_temp" Width="1.5" PointX="2.75" PointY="7.5" IsExpanded="false" />
         <EntityTypeShape EntityType="Gordon360.ChapelEvent" Width="1.5" PointX="11.875" PointY="6.25" />
-        <EntityTypeShape EntityType="Gordon360.PROFILE_IMAGE" Width="1.5" PointX="13.625" PointY="9" />
+        <EntityTypeShape EntityType="Gordon360.PROFILE_IMAGE" Width="1.5" PointX="13.625" PointY="9.25" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

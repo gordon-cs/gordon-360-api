@@ -203,6 +203,10 @@ warning 6002: The table/view 'CCT.dbo.facstaff' does not have a primary key defi
           <Property Name="id" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="username" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="Img_Path" Type="varchar(max)" />
+          <Property Name="facebook" Type="varchar(max)" />
+          <Property Name="twitter" Type="varchar(max)" />
+          <Property Name="instagram" Type="varchar(max)" />
+          <Property Name="linkedin" Type="varchar(max)" />
         </EntityType>
         <EntityType Name="REQUEST">
           <Key>
@@ -1518,6 +1522,10 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="id" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Img_Path" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="facebook" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="twitter" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="instagram" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="linkedin" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -2217,6 +2225,10 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="PROFILE_IMAGE">
             <EntityTypeMapping TypeName="Gordon360.PROFILE_IMAGE">
               <MappingFragment StoreEntitySet="PROFILE_IMAGE">
+                <ScalarProperty Name="linkedin" ColumnName="linkedin" />
+                <ScalarProperty Name="instagram" ColumnName="instagram" />
+                <ScalarProperty Name="twitter" ColumnName="twitter" />
+                <ScalarProperty Name="facebook" ColumnName="facebook" />
                 <ScalarProperty Name="Img_Path" ColumnName="Img_Path" />
                 <ScalarProperty Name="username" ColumnName="username" />
                 <ScalarProperty Name="id" ColumnName="id" />

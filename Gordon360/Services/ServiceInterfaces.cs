@@ -144,10 +144,11 @@ namespace Gordon360.Services
 
     public interface IProfileImageService
     {
-        ProfileImageViewModel Get(string id);
+        ProfileImageViewModel Get(string username);
+        ProfileImageViewModel GetImage(string username);
         IEnumerable<ProfileImageViewModel> GetAll();
-        void UpdateProfileImage(string id, string path);
-        void ResetProfileImage(string id);
+        void UpdateProfileImage(string username, string path);
+        void ResetProfileImage(string username);
     }
 }
 
