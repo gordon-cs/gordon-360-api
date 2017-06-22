@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using static System.DateTime;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
@@ -143,9 +144,8 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The student was not found" };
             }
 
-            // Filter out the events that are part of the specified term, based on the attribute specified
-            result = result.Where(x => x.CHTermCD.Trim().Equals(term));
-
+            // Filter out the events that are part of the specified term, based on the attribute specified, then sort by Date
+            result = result.Where(x => x.CHTermCD.Trim().Equals(term)).OrderByDescending(x => x.CHDate);
             // Trim the white space off of each entry
             var trimmedResult = result.Select(x =>
             {
@@ -154,8 +154,8 @@ namespace Gordon360.Services
                 trim.CHBarEventID = x.CHBarEventID.Trim();
                 trim.CHEventID = x.CHEventID.Trim();
                 trim.CHCheckerID = x.CHCheckerID.Trim();
-                trim.CHDate = x.CHDate;
-                trim.CHTime = x.CHTime;
+                x.CHDate = x.CHDate;
+                x.CHTime = x.CHTime;
                 trim.CHSource = x.CHSource.Trim();
                 trim.CHTermCD = x.CHTermCD.Trim();
                 return trim;
