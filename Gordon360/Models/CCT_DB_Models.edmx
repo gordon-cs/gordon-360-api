@@ -1073,6 +1073,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="SESS_CDE" Mode="In" Type="String" />
           </FunctionImport>
           <EntitySet Name="ChapelEvent" EntityType="Gordon360.ChapelEvent" />
+
           <FunctionImport Name="ALL_EVENTS_PER_STUDENT" ReturnType="Collection(Gordon360.ALL_EVENTS_PER_STUDENT_Result)">
             <Parameter Name="STU_ID" Mode="In" Type="String" />
             <Parameter Name="TERM" Mode="In" Type="String" />
@@ -1123,6 +1124,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="alumni" EntityType="Gordon360.alumni" />
           <EntitySet Name="facstaff" EntityType="Gordon360.facstaff" />
           <EntitySet Name="student_temp" EntityType="Gordon360.student_temp" />
+
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
           <Property Type="String" Name="ACT_CDE" Nullable="false" MaxLength="8" />
@@ -1412,6 +1414,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="CHSource" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
           <Property Name="CHTermCD" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
         </EntityType>
+
         <ComplexType Name="ALL_EVENTS_PER_STUDENT_Result">
           <Property Type="DateTime" Name="Date" Nullable="true" Precision="23" />
           <Property Type="DateTime" Name="Time" Nullable="true" Precision="23" />
@@ -1661,6 +1664,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="MobilePhone" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="IsMobilePhonePrivate" Type="Boolean" />
         </EntityType>
+
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1746,7 +1750,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="ACCOUNT">
             <EntityTypeMapping TypeName="Gordon360.ACCOUNT">
               <MappingFragment StoreEntitySet="ACCOUNT">
+
                 <ScalarProperty Name="preferred_photo" ColumnName="preferred_photo" />
+
                 <ScalarProperty Name="barcode" ColumnName="barcode" />
                 <ScalarProperty Name="Private" ColumnName="Private" />
                 <ScalarProperty Name="gordon_id" ColumnName="gordon_id" />
@@ -2156,6 +2162,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="CHCheckerID" ColumnName="CHCheckerID" />
                 <ScalarProperty Name="CHEventID" ColumnName="CHEventID" />
                 <ScalarProperty Name="CHBarcode" ColumnName="CHBarcode" />
+
                 <ScalarProperty Name="CHBarEventID" ColumnName="CHBarEventID" />
                 <ScalarProperty Name="ROWID" ColumnName="ROWID" />
               </MappingFragment>
@@ -2411,6 +2418,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="SSN" ColumnName="SSN" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Row_ID" ColumnName="Row_ID" />
+
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
