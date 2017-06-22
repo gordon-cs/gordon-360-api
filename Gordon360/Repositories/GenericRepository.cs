@@ -50,15 +50,6 @@ namespace Gordon360.Repositories
         }
 
         /// <summary>
-        /// Gets single entity by username
-        /// </summary>
-        /// <returns>All entities</returns>
-        public T GetByUsername(string username)
-        {
-            return _dbSet.Find(username);
-        }
-
-        /// <summary>
         ///     Gets all entities
         /// </summary>
         /// <returns>All entities</returns>

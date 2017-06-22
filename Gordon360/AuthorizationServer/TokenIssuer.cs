@@ -122,7 +122,7 @@ namespace Gordon360.AuthorizationServer
                         identity.AddClaim(new Claim("name", userEntry.Name));
                         identity.AddClaim(new Claim("id", personID));
                         identity.AddClaim(new Claim("college_role", collegeRole));
-                        identity.AddClaim(new Claim("user_name", username));
+
                         ADServiceConnection.Dispose();
                         context.Validated(identity);
                     }

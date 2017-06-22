@@ -22,5 +22,4 @@ namespace Gordon360.Models
     [MetadataType(typeof(Activity_Info_Metadata))]
     public partial class Activity_Info
     { }
-
 }

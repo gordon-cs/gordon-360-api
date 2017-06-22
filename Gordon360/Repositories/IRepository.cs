@@ -22,12 +22,6 @@ namespace Gordon360.Repositories
         T GetById(string id);
 
         /// <summary>
-        /// Gets entity by username
-        /// </summary>
-        /// <returns>Specific entity</returns>
-        T GetByUsername(string username);
-
-        /// <summary>
         /// Gets all entities
         /// </summary>        
         /// <returns>All entities</returns>
