@@ -17,5 +17,11 @@ namespace Gordon360.Models
         public string id { get; set; }
         public string username { get; set; }
         public string Img_Path { get; set; }
+
+        public string facebook { get; set; }
+        public string twitter { get; set; }
+        public string instagram { get; set; }
+        public string linkedin { get; set; }
+
     }
 }
