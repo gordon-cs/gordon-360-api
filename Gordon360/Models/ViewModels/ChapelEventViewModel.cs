@@ -12,12 +12,13 @@ namespace Gordon360.Models.ViewModels
         public string CHBarcode { get; set; }
         public string CHEventID { get; set; }
         public string CHCheckerID { get; set; }
-        public DateTime CHDate { get; set; }
-        public DateTime CHTime { get; set; }
+        public Nullable<DateTime> CHDate { get; set; }
+        public Nullable<DateTime> CHTime { get; set; }
         public string CHTermCD { get; set; }
 
         public static implicit operator ChapelEventViewModel(ChapelEvent a)
         {
+            DateTime NOTIME = new DateTime();
             ChapelEventViewModel vm = new ChapelEventViewModel
             {
                 ROWID = a.ROWID,
@@ -25,8 +26,8 @@ namespace Gordon360.Models.ViewModels
                 CHBarcode = a.CHBarcode.Trim(),
                 CHEventID = a.CHEventID,
                 CHCheckerID = a.CHCheckerID.Trim(),
-                CHDate = a.CHDate.Add(a.CHTime.TimeOfDay),
-                CHTime = a.CHTime,
+                CHDate = a.CHDate ?? NOTIME,
+                CHTime = a.CHTime ?? NOTIME,
                 CHTermCD = a.CHTermCD.Trim(),
             };
 

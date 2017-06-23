@@ -13,7 +13,7 @@ namespace Gordon360.ApiControllers
 {
     [Authorize]
     [CustomExceptionFilter]
-    [RoutePrefix("api/event")]
+    [RoutePrefix("api/events")]
     public class EventController : ApiController
     {
         IChapelEventService _chapelService;

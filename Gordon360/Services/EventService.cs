@@ -154,7 +154,7 @@ namespace Gordon360.Services
                 trim.CHBarEventID = x.CHBarEventID.Trim();
                 trim.CHEventID = x.CHEventID.Trim();
                 trim.CHCheckerID = x.CHCheckerID.Trim();
-                trim.CHDate = x.CHDate.Add(x.CHTime.TimeOfDay);
+                trim.CHDate = x.CHDate.Value.Add(x.CHTime.Value.TimeOfDay);
                 trim.CHTime = x.CHTime;
                 trim.CHTermCD = x.CHTermCD.Trim();
                 return trim;
