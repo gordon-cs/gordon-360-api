@@ -62,7 +62,7 @@ namespace Gordon360.Controllers.Api
         // GET api/<controller>/5
         [HttpGet]
         [Route("{username}")]
-        //[StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]    //make sure the requested person is the same as the logged in user
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]    //make sure the requested person is the same as the logged in user
         public IHttpActionResult Get(string username)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(username))
@@ -159,6 +159,10 @@ namespace Gordon360.Controllers.Api
                     return Ok(alufac);
                 }
                 JObject fac = JObject.FromObject(faculty);
+                fac.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
+                {
+                    MergeArrayHandling = MergeArrayHandling.Union
+                });
                 fac.Add("PersonType", "fac");
                 return Ok(fac);
             }
