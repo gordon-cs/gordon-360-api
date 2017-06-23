@@ -314,7 +314,7 @@
     <Compile Include="Models\PART_DEF.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\PROFILE_IMAGE.cs">
+    <Compile Include="Models\PROFILE_CUSTOM.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\REQUEST.cs">
@@ -358,7 +358,7 @@
     <Compile Include="Models\ViewModels\MembershipViewModel.cs" />
     <Compile Include="Models\ViewModels\MembershipRequestViewModel.cs" />
     <Compile Include="Models\ViewModels\ParticipationViewModel.cs" />
-    <Compile Include="Models\ViewModels\ProfileImageViewModel.cs" />
+    <Compile Include="Models\ViewModels\ProfileCustomViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\SessionViewModel.cs" />
     <Compile Include="Models\ViewModels\SliderViewModel.cs" />

@@ -9,14 +9,12 @@
         <EntityTypeShape EntityType="Gordon360.JNZB_ACTIVITIES" Width="1.5" PointX="0.75" PointY="3.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.MEMBERSHIP" Width="1.5" PointX="2.75" PointY="3.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.REQUEST" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="Gordon360.SUPERVISOR" Width="1.5" PointX="4.75" PointY="3.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.ACCOUNT" Width="1.5" PointX="13.625" PointY="6.375" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.CM_SESSION_MSTR" Width="1.5" PointX="11.875" PointY="2.375" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.Faculty" Width="1.5" PointX="13.625" PointY="0.5" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.PART_DEF" Width="1.5" PointX="11.875" PointY="4.25" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.Staff" Width="1.5" PointX="13.625" PointY="4.25" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.Student" Width="1.5" PointX="13.625" PointY="2.375" IsExpanded="true" />
-        <AssociationConnector Association="Gordon360.FK_SUPERVISOR_SUPERVISOR" />
         <EntityTypeShape EntityType="Gordon360.ACT_CLUB_DEF" Width="1.5" PointX="7.375" PointY="0.75" />
         <EntityTypeShape EntityType="Gordon360.JENZ_ACT_CLUB_DEF" Width="1.5" PointX="7.375" PointY="3.75" />
         <EntityTypeShape EntityType="Gordon360.ACT_INFO" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
@@ -25,7 +23,7 @@
         <EntityTypeShape EntityType="Gordon360.facstaff" Width="1.5" PointX="6.25" PointY="7.5" IsExpanded="false" />
         <EntityTypeShape EntityType="Gordon360.student_temp" Width="1.5" PointX="2.75" PointY="7.5" IsExpanded="false" />
         <EntityTypeShape EntityType="Gordon360.ChapelEvent" Width="1.5" PointX="11.875" PointY="6.25" />
-        <EntityTypeShape EntityType="Gordon360.PROFILE_IMAGE" Width="1.5" PointX="13.625" PointY="9.25" />
+        <EntityTypeShape EntityType="Gordon360.PROFILE_CUSTOM" Width="1.5" PointX="3.375" PointY="8.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

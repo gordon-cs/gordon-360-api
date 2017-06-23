@@ -12,7 +12,7 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class PROFILE_IMAGE
+    public partial class PROFILE_CUSTOM
     {
         public string id { get; set; }
         public string username { get; set; }
