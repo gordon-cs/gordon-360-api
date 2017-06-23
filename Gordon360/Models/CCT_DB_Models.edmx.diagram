@@ -21,11 +21,11 @@
         <EntityTypeShape EntityType="Gordon360.C360_SLIDER" Width="1.5" PointX="3.375" PointY="7.75" />
         <EntityTypeShape EntityType="Gordon360.Entity" Width="1.5" PointX="11.125" PointY="5.5" />
         <EntityTypeShape EntityType="Gordon360.ChapelEvent" Width="1.5" PointX="9.75" PointY="1.25" />
-        <EntityTypeShape EntityType="Gordon360.PROFILE_IMAGE" Width="1.5" PointX="5.75" PointY="7.75" />
         <EntityTypeShape EntityType="Gordon360.sysdiagrams" Width="1.5" PointX="7.75" PointY="6.75" />
         <EntityTypeShape EntityType="Gordon360.alumni" Width="1.5" PointX="0.75" PointY="8.75" />
         <EntityTypeShape EntityType="Gordon360.facstaff" Width="1.5" PointX="9.75" PointY="6.75" />
         <EntityTypeShape EntityType="Gordon360.student_temp" Width="1.5" PointX="5.75" PointY="11.75" />
+        <EntityTypeShape EntityType="Gordon360.PROFILE_IMAGE" Width="1.5" PointX="12.375" PointY="9.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

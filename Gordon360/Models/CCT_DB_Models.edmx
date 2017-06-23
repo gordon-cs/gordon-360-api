@@ -1071,11 +1071,11 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="STU_ID" Mode="In" Type="String" />
             <Parameter Name="TERM" Mode="In" Type="String" />
           </FunctionImport>
-          <EntitySet Name="PROFILE_IMAGE" EntityType="Gordon360.PROFILE_IMAGE" />
           <EntitySet Name="sysdiagrams" EntityType="Gordon360.sysdiagrams" />
           <EntitySet Name="alumni" EntityType="Gordon360.alumni" />
           <EntitySet Name="facstaff" EntityType="Gordon360.facstaff" />
           <EntitySet Name="student_temp" EntityType="Gordon360.student_temp" />
+          <EntitySet Name="PROFILE_IMAGE" EntityType="Gordon360.PROFILE_IMAGE" />
 
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
@@ -1388,18 +1388,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="String" Name="CHSource" Nullable="true" MaxLength="1" />
           <Property Type="String" Name="CHTermCD" Nullable="true" MaxLength="4" />
         </ComplexType>
-        <EntityType Name="PROFILE_IMAGE">
-          <Key>
-            <PropertyRef Name="username" />
-          </Key>
-          <Property Name="id" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Img_Path" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="facebook" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="twitter" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="instagram" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="linkedin" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
             <PropertyRef Name="diagram_id" />
@@ -1603,6 +1591,18 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="GC_Insurance" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
           <Property Name="MobilePhone" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="IsMobilePhonePrivate" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="PROFILE_IMAGE">
+          <Key>
+            <PropertyRef Name="username" />
+          </Key>
+          <Property Name="id" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Img_Path" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="facebook" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="twitter" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="instagram" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="linkedin" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
 
       </Schema>
@@ -2129,19 +2129,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="Gordon360.Store.sp_renamediagram" />
           <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="Gordon360.Store.sp_upgraddiagrams" />
-          <EntitySetMapping Name="PROFILE_IMAGE">
-            <EntityTypeMapping TypeName="Gordon360.PROFILE_IMAGE">
-              <MappingFragment StoreEntitySet="PROFILE_IMAGE">
-                <ScalarProperty Name="linkedin" ColumnName="linkedin" />
-                <ScalarProperty Name="instagram" ColumnName="instagram" />
-                <ScalarProperty Name="twitter" ColumnName="twitter" />
-                <ScalarProperty Name="facebook" ColumnName="facebook" />
-                <ScalarProperty Name="Img_Path" ColumnName="Img_Path" />
-                <ScalarProperty Name="username" ColumnName="username" />
-                <ScalarProperty Name="id" ColumnName="id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="sysdiagrams">
             <EntityTypeMapping TypeName="Gordon360.sysdiagrams">
               <MappingFragment StoreEntitySet="sysdiagrams">
@@ -2346,6 +2333,19 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Row_ID" ColumnName="Row_ID" />
 
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PROFILE_IMAGE">
+            <EntityTypeMapping TypeName="Gordon360.PROFILE_IMAGE">
+              <MappingFragment StoreEntitySet="PROFILE_IMAGE">
+                <ScalarProperty Name="linkedin" ColumnName="linkedin" />
+                <ScalarProperty Name="instagram" ColumnName="instagram" />
+                <ScalarProperty Name="twitter" ColumnName="twitter" />
+                <ScalarProperty Name="facebook" ColumnName="facebook" />
+                <ScalarProperty Name="Img_Path" ColumnName="Img_Path" />
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
