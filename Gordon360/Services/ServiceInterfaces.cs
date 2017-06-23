@@ -149,6 +149,7 @@ namespace Gordon360.Services
         IEnumerable<ProfileImageViewModel> GetAll();
         void UpdateProfileImage(string username, string path);
         void ResetProfileImage(string username);
+        void UpdateProfileLink(string username, string type, string path);
     }
 }
 

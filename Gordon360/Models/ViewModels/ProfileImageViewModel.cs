@@ -22,10 +22,10 @@ namespace Gordon360.Models.ViewModels
                 ProfileID = info.id.Trim(),
                 ProfileUsername = info.username.Trim(),
                 ProfileImagePath = info.Img_Path.Trim() ?? "",
-                // ProfileFacebook = info.facebook.Trim() ?? "",
-                // ProfileTwitter = info.twitter.Trim() ?? "",
-                // ProfileInstagram = info.instagram.Trim() ?? "",
-                // ProfileLinkedIn = info.linkedin.Trim() ?? ""
+                ProfileFacebook = info.facebook ?? "",
+                ProfileTwitter = info.twitter ?? "",
+                ProfileInstagram = info.instagram ?? "",
+                ProfileLinkedIn = info.linkedin ?? ""
             };
 
             return vm;

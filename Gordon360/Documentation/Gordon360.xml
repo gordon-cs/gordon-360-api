@@ -132,6 +132,15 @@
             <param name="username">The username</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.ProfileImageController.UpdateLink(System.String,System.String,System.String)">
+            <summary>
+            Update the profile social media links
+            </summary>
+            <param name="username">The username</param>
+            <param name="type">The type of social media</param>
+            <param name="path">The path of the links</param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.Get(System.String)">
             <summary>Get the info of currently logged in user</summary>
             <param name="username">An identifier for the person</param>
@@ -889,6 +898,14 @@
             Sets the path for the profile image.
             </summary>
             <param name="username">The username</param>
+            <param name="path"></param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileImageService.UpdateProfileLink(System.String,System.String,System.String)">
+            <summary>
+            Sets the path for the profile links.
+            </summary>
+            <param name="username">The username</param>
+            <param name="type"></param>
             <param name="path"></param>
         </member>
         <member name="M:Gordon360.Services.ProfileImageService.ResetProfileImage(System.String)">

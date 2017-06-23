@@ -85,6 +85,43 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// Sets the path for the profile links.
+        /// </summary>
+        /// <param name="username">The username</param>
+        /// <param name="type"></param>
+        /// <param name="path"></param>
+        public void UpdateProfileLink(string username, string type, string path)
+        {
+            var original = _unitOfWork.ProfileImageRepository.GetByUsername(username);
+
+            if (original == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The profile was not found." };
+            }
+
+            switch(type)
+            {
+                case "facebook":
+                    original.facebook = path;
+                    break;
+
+                case "twitter":
+                    original.twitter = path;
+                    break;
+
+                case "instagram":
+                    original.instagram = path;
+                    break;
+
+                case "linkedin":
+                    original.linkedin = path;
+                    break;
+            }
+
+            _unitOfWork.Save();
+        }
+
+        /// <summary>
         /// Reset the path for the profile image
         /// </summary>
         /// <param name="username">The username</param>

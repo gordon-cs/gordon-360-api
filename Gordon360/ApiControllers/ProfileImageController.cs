@@ -204,7 +204,38 @@ namespace Gordon360.Controllers.Api
             return Ok();
 
         }
-        
 
+        /// <summary>
+        /// Update the profile social media links
+        /// </summary>
+        /// <param name="username">The username</param>
+        /// <param name="type">The type of social media</param>
+        /// <param name="path">The path of the links</param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("{username}/{type}/{path}")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE_IMAGE)]
+        public IHttpActionResult UpdateLink(string username, string type, string path)
+        {
+            // Verify Input
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            _profileImageService.UpdateProfileLink(username, type, path);
+
+            return Ok();
+
+        }
     }
 }
