@@ -307,6 +307,16 @@ warning 6002: The table/view 'CCT.dbo.student_temp' does not have a primary key 
           <Property Name="JOB_NAME" Type="char" MaxLength="30" />
           <Property Name="JOB_TIME" Type="datetime" />
         </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.360_SLIDER' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="360_SLIDER">
@@ -473,6 +483,10 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Parameter Name="ACT_CDE" Type="char" Mode="In" />
           <Parameter Name="SESS_CDE" Type="char" Mode="In" />
         </Function>
+        <Function Name="EVENTS_BY_STUDENT_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="STU_ID" Type="char" Mode="In" />
+        </Function>
+        <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
         <Function Name="GRP_ADMIN_EMAILS_PER_ACT_CDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ACT_CDE" Type="char" Mode="In" />
           <Parameter Name="SESS_CDE" Type="char" Mode="In" />
@@ -502,6 +516,36 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <Function Name="REQUESTS_PER_STUDENT_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="STUDENT_ID" Type="int" Mode="In" />
         </Function>
+        <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_creatediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_dropdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagramdefinition" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_renamediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="SUPERVISOR_PER_SUP_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="SUP_ID" Type="int" Mode="In" />
         </Function>
@@ -521,6 +565,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="PROFILE_IMAGE" EntityType="Self.PROFILE_IMAGE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="REQUEST" EntityType="Self.REQUEST" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SUPERVISOR" EntityType="Self.SUPERVISOR" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="alumni" EntityType="Self.alumni" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [alumni].[Row_ID] AS [Row_ID], 
@@ -1027,11 +1072,59 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="ACT_CDE" Mode="In" Type="String" />
             <Parameter Name="SESS_CDE" Mode="In" Type="String" />
           </FunctionImport>
+          <EntitySet Name="ChapelEvent" EntityType="Gordon360.ChapelEvent" />
+
+          <FunctionImport Name="ALL_EVENTS_PER_STUDENT" ReturnType="Collection(Gordon360.ALL_EVENTS_PER_STUDENT_Result)">
+            <Parameter Name="STU_ID" Mode="In" Type="String" />
+            <Parameter Name="TERM" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="EVENTS_BY_STUDENT_ID" ReturnType="Collection(Gordon360.EVENTS_BY_STUDENT_ID_Result)">
+          <Parameter Name="STU_ID" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="TOTAL_CREDITS_PER_STUDENT" ReturnType="Collection(Int32)">
+            <Parameter Name="STU_ID" Mode="In" Type="String" />
+            <Parameter Name="TERM" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_alterdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_creatediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_dropdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(Gordon360.sp_helpdiagramdefinition_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(Gordon360.sp_helpdiagrams_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_renamediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="new_diagramname" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_upgraddiagrams" />
+          <FunctionImport Name="STUDENT_EVENTS_PER_TERM" ReturnType="Collection(Gordon360.STUDENT_EVENTS_PER_TERM_Result)">
+            <Parameter Name="STU_ID" Mode="In" Type="String" />
+            <Parameter Name="TERM" Mode="In" Type="String" />
+          </FunctionImport>
+          <EntitySet Name="PROFILE_IMAGE" EntityType="Gordon360.PROFILE_IMAGE" />
+          <EntitySet Name="sysdiagrams" EntityType="Gordon360.sysdiagrams" />
           <EntitySet Name="alumni" EntityType="Gordon360.alumni" />
           <EntitySet Name="facstaff" EntityType="Gordon360.facstaff" />
           <EntitySet Name="student_temp" EntityType="Gordon360.student_temp" />
-          <EntitySet Name="ChapelEvent" EntityType="Gordon360.ChapelEvent" />
-          <EntitySet Name="PROFILE_IMAGE" EntityType="Gordon360.PROFILE_IMAGE" />
+
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
           <Property Type="String" Name="ACT_CDE" Nullable="false" MaxLength="8" />
@@ -1306,6 +1399,77 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="String" Name="LastName" Nullable="true" MaxLength="50" />
           <Property Type="String" Name="Email" Nullable="true" MaxLength="50" />
         </ComplexType>
+        <EntityType Name="ChapelEvent">
+          <Key>
+            <PropertyRef Name="ROWID" />
+            <PropertyRef Name="CHBarEventID" />
+          </Key>
+          <Property Name="ROWID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CHBarEventID" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CHBarcode" Type="String" MaxLength="14" FixedLength="false" Unicode="true" />
+          <Property Name="CHEventID" Type="String" MaxLength="6" FixedLength="false" Unicode="true" />
+          <Property Name="CHCheckerID" Type="String" MaxLength="14" FixedLength="false" Unicode="true" />
+          <Property Name="CHDate" Type="DateTime" Precision="3" />
+          <Property Name="CHTime" Type="DateTime" Precision="3" />
+          <Property Name="CHSource" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="CHTermCD" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+        </EntityType>
+
+        <ComplexType Name="ALL_EVENTS_PER_STUDENT_Result">
+          <Property Type="DateTime" Name="Date" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="Time" Nullable="true" Precision="23" />
+          <Property Type="String" Name="EventID" Nullable="true" MaxLength="6" />
+        </ComplexType>
+        <ComplexType Name="EVENTS_BY_STUDENT_ID_Result">
+          <Property Type="DateTime" Name="Date" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="Time" Nullable="true" Precision="23" />
+          <Property Type="String" Name="EventID" Nullable="true" MaxLength="6" />
+          <Property Type="String" Name="Term" Nullable="true" MaxLength="4" />
+        </ComplexType>
+        <ComplexType Name="sp_helpdiagramdefinition_Result">
+          <Property Type="Int32" Name="version" Nullable="true" />
+          <Property Type="Binary" Name="definition" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_helpdiagrams_Result">
+          <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+          <Property Type="Int32" Name="OwnerID" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="STUDENT_EVENTS_PER_TERM_Result">
+          <Property Type="Int32" Name="ROWID" Nullable="false" />
+          <Property Type="String" Name="CHBarEventID" Nullable="false" MaxLength="20" />
+          <Property Type="String" Name="CHBarcode" Nullable="true" MaxLength="14" />
+          <Property Type="String" Name="CHEventID" Nullable="true" MaxLength="6" />
+          <Property Type="String" Name="CHCheckerID" Nullable="true" MaxLength="14" />
+          <Property Type="DateTime" Name="CHDate" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="CHTime" Nullable="true" Precision="23" />
+          <Property Type="String" Name="CHSource" Nullable="true" MaxLength="1" />
+          <Property Type="String" Name="CHTermCD" Nullable="true" MaxLength="4" />
+        </ComplexType>
+        <EntityType Name="PROFILE_IMAGE">
+          <Key>
+            <PropertyRef Name="username" />
+          </Key>
+          <Property Name="id" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Img_Path" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="facebook" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="twitter" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="instagram" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="linkedin" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
         <EntityType Name="alumni">
           <Key>
             <PropertyRef Name="Row_ID" />
@@ -1612,7 +1776,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="ACCOUNT">
             <EntityTypeMapping TypeName="Gordon360.ACCOUNT">
               <MappingFragment StoreEntitySet="ACCOUNT">
+
                 <ScalarProperty Name="preferred_photo" ColumnName="preferred_photo" />
+
                 <ScalarProperty Name="barcode" ColumnName="barcode" />
                 <ScalarProperty Name="Private" ColumnName="Private" />
                 <ScalarProperty Name="gordon_id" ColumnName="gordon_id" />
@@ -2012,6 +2178,80 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <EntitySetMapping Name="ChapelEvent">
+            <EntityTypeMapping TypeName="Gordon360.ChapelEvent">
+              <MappingFragment StoreEntitySet="ChapelEvent">
+                <ScalarProperty Name="CHTermCD" ColumnName="CHTermCD" />
+                <ScalarProperty Name="CHSource" ColumnName="CHSource" />
+                <ScalarProperty Name="CHTime" ColumnName="CHTime" />
+                <ScalarProperty Name="CHDate" ColumnName="CHDate" />
+                <ScalarProperty Name="CHCheckerID" ColumnName="CHCheckerID" />
+                <ScalarProperty Name="CHEventID" ColumnName="CHEventID" />
+                <ScalarProperty Name="CHBarcode" ColumnName="CHBarcode" />
+
+                <ScalarProperty Name="CHBarEventID" ColumnName="CHBarEventID" />
+                <ScalarProperty Name="ROWID" ColumnName="ROWID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="EVENTS_BY_STUDENT_ID" FunctionName="Gordon360.Store.EVENTS_BY_STUDENT_ID">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.EVENTS_BY_STUDENT_ID_Result">
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Time" ColumnName="Time" />
+                <ScalarProperty Name="EventID" ColumnName="EventID" />
+                <ScalarProperty Name="Term" ColumnName="Term" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="Gordon360.Store.sp_alterdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="Gordon360.Store.sp_creatediagram" />
+          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="Gordon360.Store.sp_dropdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="Gordon360.Store.sp_helpdiagramdefinition">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.sp_helpdiagramdefinition_Result">
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="Gordon360.Store.sp_helpdiagrams">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.sp_helpdiagrams_Result">
+                <ScalarProperty Name="Database" ColumnName="Database" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Owner" ColumnName="Owner" />
+                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="Gordon360.Store.sp_renamediagram" />
+          <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="Gordon360.Store.sp_upgraddiagrams" />
+          <EntitySetMapping Name="PROFILE_IMAGE">
+            <EntityTypeMapping TypeName="Gordon360.PROFILE_IMAGE">
+              <MappingFragment StoreEntitySet="PROFILE_IMAGE">
+                <ScalarProperty Name="linkedin" ColumnName="linkedin" />
+                <ScalarProperty Name="instagram" ColumnName="instagram" />
+                <ScalarProperty Name="twitter" ColumnName="twitter" />
+                <ScalarProperty Name="facebook" ColumnName="facebook" />
+                <ScalarProperty Name="Img_Path" ColumnName="Img_Path" />
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="Gordon360.sysdiagrams">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="alumni">
             <EntityTypeMapping TypeName="Gordon360.alumni">
               <MappingFragment StoreEntitySet="alumni">
@@ -2204,6 +2444,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="SSN" ColumnName="SSN" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Row_ID" ColumnName="Row_ID" />
+
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2235,7 +2476,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

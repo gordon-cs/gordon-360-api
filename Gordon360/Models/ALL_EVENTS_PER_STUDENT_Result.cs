@@ -10,18 +10,11 @@
 namespace Gordon360.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class ChapelEvent
+    public partial class ALL_EVENTS_PER_STUDENT_Result
     {
-        public int ROWID { get; set; }
-        public string CHBarEventID { get; set; }
-        public string CHBarcode { get; set; }
-        public string CHEventID { get; set; }
-        public string CHCheckerID { get; set; }
-        public DateTime CHDate { get; set; }
-        public DateTime CHTime { get; set; }
-        public string CHSource { get; set; }
-        public string CHTermCD { get; set; }
+        public Nullable<System.DateTime> Date { get; set; }
+        public Nullable<System.DateTime> Time { get; set; }
+        public string EventID { get; set; }
     }
 }

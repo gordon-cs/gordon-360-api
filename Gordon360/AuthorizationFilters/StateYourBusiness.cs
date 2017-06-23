@@ -27,7 +27,7 @@ namespace Gordon360.AuthorizationFilters
      */ 
     public class StateYourBusiness : ActionFilterAttribute
     {
-        // Rousource to be accessed: Will get as parameters to the attribute
+        // Resource to be accessed: Will get as parameters to the attribute
         public string resource { get; set; }
         // Operation to be performed: Will get as parameters to the attribute
         public string operation { get; set; }
@@ -202,6 +202,14 @@ namespace Gordon360.AuthorizationFilters
                         // Only the person itself or an admin can see someone's memberships
                         return (string)context.ActionArguments["id"] == user_id;
                     }
+
+                case Resource.EVENTS_BY_STUDENT_ID:
+                    {
+                        // Only the person itself or an admin can see someone's chapel attendance
+                        return (string)context.ActionArguments["id"] == user_id;
+                    }
+
+
                 case Resource.MEMBERSHIP_REQUEST_BY_ACTIVITY:
                     {
                         // An activity leader should be able to see the membership requests that belong to the activity he is leading.
@@ -277,6 +285,19 @@ namespace Gordon360.AuthorizationFilters
                         return true;
                     else
                         return false;
+                case Resource.ChapelEvent:
+                    // User is admin
+                    if (user_position == Position.GOD)
+                        return true;
+                    else
+                        return false;
+                case Resource.EVENTS_BY_STUDENT_ID:
+                    // User is admin
+                    if (user_position == Position.GOD)
+                        return true;
+                    else
+                        return false;
+
                 case Resource.MEMBERSHIP_REQUEST:
                     // User is admin
                     if (user_position == Position.GOD)
