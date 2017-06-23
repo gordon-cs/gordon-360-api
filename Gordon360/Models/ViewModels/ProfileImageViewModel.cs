@@ -7,17 +7,25 @@ namespace Gordon360.Models.ViewModels
 {
     public class ProfileImageViewModel
     {
-        public string ProfileID { get; set; }
-        public string ProfileUsername { get; set; }
-        public string ProfileImagePath { get; set; }
+        public string ID { get; set; }
+        public string EmailUserName { get; set; }
+        public string ImagePath { get; set; }
+        public string Facebook { get; set; }
+        public string Twitter { get; set; }
+        public string Instagram { get; set; }
+        public string LinkedIn { get; set; }
 
         public static implicit operator ProfileImageViewModel(PROFILE_IMAGE info)
         {
             ProfileImageViewModel vm = new ProfileImageViewModel
             {
-                ProfileID = info.id.Trim(),
-                ProfileUsername = info.username.Trim(),
-                ProfileImagePath = info.Img_Path.Trim() ?? ""
+                ID = info.id.Trim(),
+                EmailUserName = info.username.Trim(),
+                ImagePath = info.Img_Path ?? "",
+                Facebook = info.facebook ?? "",
+                Twitter = info.twitter ?? "",
+                Instagram = info.instagram ?? "",
+                LinkedIn = info.linkedin ?? ""
             };
 
             return vm;

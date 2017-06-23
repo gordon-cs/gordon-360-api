@@ -1664,7 +1664,33 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="MobilePhone" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="IsMobilePhonePrivate" Type="Boolean" />
         </EntityType>
-
+        <EntityType Name="ChapelEvent">
+          <Key>
+            <PropertyRef Name="ROWID" />
+            <PropertyRef Name="CHBarEventID" />
+          </Key>
+          <Property Name="ROWID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CHBarEventID" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CHBarcode" Type="String" MaxLength="14" FixedLength="false" Unicode="true" />
+          <Property Name="CHEventID" Type="String" MaxLength="6" FixedLength="false" Unicode="true" />
+          <Property Name="CHCheckerID" Type="String" MaxLength="14" FixedLength="false" Unicode="true" />
+          <Property Name="CHDate" Type="DateTime" Precision="3" />
+          <Property Name="CHTime" Type="DateTime" Precision="3" />
+          <Property Name="CHSource" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="CHTermCD" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="PROFILE_IMAGE">
+          <Key>
+            <PropertyRef Name="username" />
+          </Key>
+          <Property Name="id" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Img_Path" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="facebook" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="twitter" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="instagram" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="linkedin" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2419,6 +2445,34 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Row_ID" ColumnName="Row_ID" />
 
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ChapelEvent">
+            <EntityTypeMapping TypeName="Gordon360.ChapelEvent">
+              <MappingFragment StoreEntitySet="ChapelEvent">
+                <ScalarProperty Name="CHTermCD" ColumnName="CHTermCD" />
+                <ScalarProperty Name="CHSource" ColumnName="CHSource" />
+                <ScalarProperty Name="CHTime" ColumnName="CHTime" />
+                <ScalarProperty Name="CHDate" ColumnName="CHDate" />
+                <ScalarProperty Name="CHCheckerID" ColumnName="CHCheckerID" />
+                <ScalarProperty Name="CHEventID" ColumnName="CHEventID" />
+                <ScalarProperty Name="CHBarcode" ColumnName="CHBarcode" />
+                <ScalarProperty Name="CHBarEventID" ColumnName="CHBarEventID" />
+                <ScalarProperty Name="ROWID" ColumnName="ROWID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PROFILE_IMAGE">
+            <EntityTypeMapping TypeName="Gordon360.PROFILE_IMAGE">
+              <MappingFragment StoreEntitySet="PROFILE_IMAGE">
+                <ScalarProperty Name="linkedin" ColumnName="linkedin" />
+                <ScalarProperty Name="instagram" ColumnName="instagram" />
+                <ScalarProperty Name="twitter" ColumnName="twitter" />
+                <ScalarProperty Name="facebook" ColumnName="facebook" />
+                <ScalarProperty Name="Img_Path" ColumnName="Img_Path" />
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

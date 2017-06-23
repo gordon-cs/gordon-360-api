@@ -105,36 +105,39 @@
             <param name="id">The id of the membership request to delete</param>
             <returns>The deleted object</returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfileImageController.Get">
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.Get">
             <summary>
             Get all available users
             </summary>
             <returns>All the users in the databse</returns>
             <remarks></remarks>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfileImageController.Get(System.String)">
-            <summary>Get a single profile based upon the string username entered in the URL</summary>
-            <param name="username">An identifier for a single person's profile</param>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.Get(System.String)">
+            <summary>Get the info of currently logged in user</summary>
+            <param name="username">An identifier for the person</param>
             <returns></returns>
-            <remarks>Get a single profile from the database</remarks>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfileImageController.PostImage(System.String)">
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.PostImage(System.String)">
             <summary>
             Set an image for profile
             </summary>
             <param name="username">The username</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfileImageController.ResetImage(System.String)">
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.ResetImage(System.String)">
             <summary>
             Reset the profile Image
             </summary>
             <param name="username">The username</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.Get(System.String)">
-            <summary>Get the info of currently logged in user</summary>
-            <param name="username">An identifier for the person</param>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateLink(System.String,System.String,System.String)">
+            <summary>
+            Update the profile social media links
+            </summary>
+            <param name="username">The username</param>
+            <param name="type">The type of social media</param>
+            <param name="path">The path of the links</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ParticipationsController.Get">
@@ -899,32 +902,42 @@
             </summary>
             <returns>FacultyViewModel IEnumerable. If no records are found an empty IEnumerable is returned.</returns>
         </member>
-        <member name="T:Gordon360.Services.ProfileImageService">
-            <summary>
-            Service Class that facilitates data transactions between the ProfileController and the PROFILE database model.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Services.ProfileImageService.Get(System.String)">
+        <member name="M:Gordon360.Services.ProfileService.GetUser(System.String)">
             <summary>
             Fetches a single profile whose username matches the username provided as an argument
             </summary>
             <param name="username">The username</param>
             <returns>ProfileViewModel if found, null if not found</returns>
         </member>
-        <member name="M:Gordon360.Services.ProfileImageService.GetAll">
+        <member name="M:Gordon360.Services.ProfileService.GetAll">
             <summary>
             Fetches all profile records from storage.
             </summary>
             <returns>ProfileImageViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
         </member>
-        <member name="M:Gordon360.Services.ProfileImageService.UpdateProfileImage(System.String,System.String)">
+        <member name="M:Gordon360.Services.ProfileService.GetImage(System.String)">
+            <summary>
+            Fetches an image of a single profile whose username matches the username provided as an argument
+            </summary>
+            <param name="username">The username</param>
+            <returns>ProfileViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.UpdateProfileImage(System.String,System.String)">
             <summary>
             Sets the path for the profile image.
             </summary>
             <param name="username">The username</param>
             <param name="path"></param>
         </member>
-        <member name="M:Gordon360.Services.ProfileImageService.ResetProfileImage(System.String)">
+        <member name="M:Gordon360.Services.ProfileService.UpdateProfileLink(System.String,System.String,System.String)">
+            <summary>
+            Sets the path for the profile links.
+            </summary>
+            <param name="username">The username</param>
+            <param name="type"></param>
+            <param name="path"></param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.ResetProfileImage(System.String)">
             <summary>
             Reset the path for the profile image
             </summary>

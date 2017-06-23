@@ -17,6 +17,12 @@ namespace Gordon360.Services
         StudentProfileViewModel GetStudentProfileByUsername(string username);
         FacultyStaffProfileViewModel GetFacultyStaffProfileByUsername(string username);
         AlumniProfileViewModel GetAlumniProfileByUsername(string username);
+        ProfileImageViewModel GetUser(string username);
+        ProfileImageViewModel GetImage(string username);
+        IEnumerable<ProfileImageViewModel> GetAll();
+        void UpdateProfileImage(string username, string path);
+        void ResetProfileImage(string username);
+        void UpdateProfileLink(string username, string type, string path);
     }
 
     public interface IChapelEventService
@@ -153,12 +159,5 @@ namespace Gordon360.Services
         IEnumerable<SliderViewModel> GetSliderContent();
     }
 
-    public interface IProfileImageService
-    {
-        ProfileImageViewModel Get(string id);
-        IEnumerable<ProfileImageViewModel> GetAll();
-        void UpdateProfileImage(string id, string path);
-        void ResetProfileImage(string id);
-    }
 }
 
