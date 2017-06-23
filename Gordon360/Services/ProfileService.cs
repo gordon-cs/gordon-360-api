@@ -57,14 +57,14 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">The username</param>
         /// <returns>ProfileViewModel if found, null if not found</returns>
-        public ProfileImageViewModel GetUser(string username)
+        public ProfileCustomViewModel GetUser(string username)
         {
-            var query = _unitOfWork.ProfileImageRepository.GetByUsername(username);
+            var query = _unitOfWork.ProfileCustomRepository.GetByUsername(username);
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Profile was not found." };
             }
-            ProfileImageViewModel result = query;
+            ProfileCustomViewModel result = query;
             return result;
         }
 
@@ -72,10 +72,10 @@ namespace Gordon360.Services
         /// Fetches all profile records from storage.
         /// </summary>
         /// <returns>ProfileImageViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        public IEnumerable<ProfileImageViewModel> GetAll()
+        public IEnumerable<ProfileCustomViewModel> GetAll()
         {
-            var query = _unitOfWork.ProfileImageRepository.GetAll();
-            var result = query.Select<PROFILE_IMAGE, ProfileImageViewModel>(x => x);
+            var query = _unitOfWork.ProfileCustomRepository.GetAll();
+            var result = query.Select<PROFILE_IMAGE, ProfileCustomViewModel>(x => x);
             return result;
         }
 
@@ -84,14 +84,14 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">The username</param>
         /// <returns>ProfileViewModel if found, null if not found</returns>
-        public ProfileImageViewModel GetImage(string username)
+        public ProfileCustomViewModel GetImage(string username)
         {
-            var query = _unitOfWork.ProfileImageRepository.GetByUsername(username);
+            var query = _unitOfWork.ProfileCustomRepository.GetByUsername(username);
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Profile image was not found." };
             }
-            ProfileImageViewModel result = query;
+            ProfileCustomViewModel result = query;
             return result;
         }
 
@@ -102,7 +102,7 @@ namespace Gordon360.Services
         /// <param name="path"></param>
         public void UpdateProfileImage(string username, string path)
         {
-            var original = _unitOfWork.ProfileImageRepository.GetByUsername(username);
+            var original = _unitOfWork.ProfileCustomRepository.GetByUsername(username);
 
             if (original == null)
             {
@@ -122,7 +122,7 @@ namespace Gordon360.Services
         /// <param name="path"></param>
         public void UpdateProfileLink(string username, string type, string path)
         {
-            var original = _unitOfWork.ProfileImageRepository.GetByUsername(username);
+            var original = _unitOfWork.ProfileCustomRepository.GetByUsername(username);
 
             if (original == null)
             {
@@ -157,7 +157,7 @@ namespace Gordon360.Services
         /// <param name="username">The username</param>
         public void ResetProfileImage(string username)
         {
-            var original = _unitOfWork.ProfileImageRepository.GetByUsername(username);
+            var original = _unitOfWork.ProfileCustomRepository.GetByUsername(username);
 
             if (original == null)
             {
