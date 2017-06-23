@@ -17,8 +17,7 @@ namespace Gordon360.Services
         StudentProfileViewModel GetStudentProfileByUsername(string username);
         FacultyStaffProfileViewModel GetFacultyStaffProfileByUsername(string username);
         AlumniProfileViewModel GetAlumniProfileByUsername(string username);
-        ProfileCustomViewModel GetUser(string username);
-        ProfileCustomViewModel GetImage(string username);
+        ProfileCustomViewModel GetCustomUserInfo(string username);
         IEnumerable<ProfileCustomViewModel> GetAll();
         void UpdateProfileImage(string username, string path);
         void ResetProfileImage(string username);

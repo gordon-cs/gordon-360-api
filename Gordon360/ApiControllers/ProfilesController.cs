@@ -83,7 +83,7 @@ namespace Gordon360.Controllers.Api
             var student = _profileService.GetStudentProfileByUsername(username);
             var faculty = _profileService.GetFacultyStaffProfileByUsername(username);
             var alumni = _profileService.GetAlumniProfileByUsername(username);
-            var customInfo = _profileService.GetUser(username);
+            var customInfo = _profileService.GetCustomUserInfo(username);
 
             // merge the person's info if this person is in multiple tables and return result 
             if (student != null)

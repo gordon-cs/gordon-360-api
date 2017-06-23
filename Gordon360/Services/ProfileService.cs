@@ -57,7 +57,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">The username</param>
         /// <returns>ProfileViewModel if found, null if not found</returns>
-        public ProfileCustomViewModel GetUser(string username)
+        public ProfileCustomViewModel GetCustomUserInfo(string username)
         {
             var query = _unitOfWork.ProfileCustomRepository.GetByUsername(username);
             if (query == null)
@@ -79,21 +79,6 @@ namespace Gordon360.Services
             return result;
         }
 
-        /// <summary>
-        /// Fetches an image of a single profile whose username matches the username provided as an argument
-        /// </summary>
-        /// <param name="username">The username</param>
-        /// <returns>ProfileViewModel if found, null if not found</returns>
-        public ProfileCustomViewModel GetImage(string username)
-        {
-            var query = _unitOfWork.ProfileCustomRepository.GetByUsername(username);
-            if (query == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Profile image was not found." };
-            }
-            ProfileCustomViewModel result = query;
-            return result;
-        }
 
         /// <summary>
         /// Sets the path for the profile image.
