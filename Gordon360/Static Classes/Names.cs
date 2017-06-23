@@ -13,7 +13,6 @@ namespace Gordon360.Static.Names
         public const string ADMIN = "An admininistrator Ressource";
         public const string ACTIVITY_INFO = "An Activity Info Service.";
         public const string ACTIVITY_STATUS = "The open or closed status of an activity";
-        public const string PROFILE_IMAGE = "A profile image resource";
 
         // Partial resources, to be targetted by Operation.READ_PARTIAL
         public const string MEMBERSHIP_REQUEST_BY_ACTIVITY = "Membership Request Resources associated with an activity";

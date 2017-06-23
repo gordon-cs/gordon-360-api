@@ -205,7 +205,6 @@
     <Compile Include="ApiControllers\ContentManagementController.cs" />
     <Compile Include="ApiControllers\EmailsController.cs" />
     <Compile Include="ApiControllers\MembershipRequestController.cs" />
-    <Compile Include="ApiControllers\ProfileImageController.cs" />
     <Compile Include="ApiControllers\ProfilesController.cs" />
     <Compile Include="ApiControllers\RolesController.cs" />
     <Compile Include="ApiControllers\SessionsController.cs" />
@@ -378,7 +377,6 @@
     <Compile Include="Services\ContentManagementService.cs" />
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Services\FacultyService.cs" />
-    <Compile Include="Services\ProfileImageService.cs" />
     <Compile Include="Services\ProfileService.cs" />
     <Compile Include="Static Classes\Helpers.cs" />
     <Compile Include="Services\JenzibarActivityService.cs" />

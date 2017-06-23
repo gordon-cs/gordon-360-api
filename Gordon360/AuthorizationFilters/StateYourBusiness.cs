@@ -421,7 +421,7 @@ namespace Gordon360.AuthorizationFilters
 
                         return false;
                     }
-                case Resource.PROFILE_IMAGE:
+                case Resource.PROFILE:
                     {
                         // User is admin
                         if (user_position == Position.GOD)
