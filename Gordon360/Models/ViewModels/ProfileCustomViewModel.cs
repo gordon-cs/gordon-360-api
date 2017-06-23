@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-
+using Gordon360.Static.Names;
 namespace Gordon360.Models.ViewModels
 {
     public class ProfileCustomViewModel
@@ -21,7 +21,7 @@ namespace Gordon360.Models.ViewModels
             {
                 ID = info.id.Trim(),
                 EmailUserName = info.username.Trim(),
-                ImagePath = info.Img_Path ?? "",
+                ImagePath = info.Img_Path ?? Defaults.DEFAULT_PROFILE_IMAGE_PATH,
                 Facebook = info.facebook ?? "",
                 Twitter = info.twitter ?? "",
                 Instagram = info.instagram ?? "",

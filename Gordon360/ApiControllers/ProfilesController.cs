@@ -183,7 +183,7 @@ namespace Gordon360.Controllers.Api
         /// </summary>
         /// <param name="username">The username</param>
         /// <returns></returns>
-        [HttpPut]
+        [HttpPost]
         [Route("{username}/image")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE)]
         public async Task<HttpResponseMessage> PostImage(string username)
