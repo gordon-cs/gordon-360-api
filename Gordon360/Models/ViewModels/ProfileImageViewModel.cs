@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Gordon360.Models.ViewModels
 {
-    public class ProfileCustomViewModel
+    public class ProfileImageViewModel
     {
         public string ID { get; set; }
         public string EmailUserName { get; set; }
@@ -15,9 +15,9 @@ namespace Gordon360.Models.ViewModels
         public string Instagram { get; set; }
         public string LinkedIn { get; set; }
 
-        public static implicit operator ProfileCustomViewModel(PROFILE_CUSTOM info)
+        public static implicit operator ProfileImageViewModel(PROFILE_IMAGE info)
         {
-            ProfileCustomViewModel vm = new ProfileCustomViewModel
+            ProfileImageViewModel vm = new ProfileImageViewModel
             {
                 ID = info.id.Trim(),
                 EmailUserName = info.username.Trim(),
