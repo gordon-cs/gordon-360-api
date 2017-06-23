@@ -31,7 +31,6 @@ namespace Gordon360.Models
         public virtual DbSet<JNZB_ACTIVITIES> JNZB_ACTIVITIES { get; set; }
         public virtual DbSet<MEMBERSHIP> MEMBERSHIP { get; set; }
         public virtual DbSet<REQUEST> REQUEST { get; set; }
-        public virtual DbSet<SUPERVISOR> SUPERVISOR { get; set; }
         public virtual DbSet<ACCOUNT> ACCOUNT { get; set; }
         public virtual DbSet<CM_SESSION_MSTR> CM_SESSION_MSTR { get; set; }
         public virtual DbSet<Faculty> Faculty { get; set; }

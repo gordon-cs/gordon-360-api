@@ -109,12 +109,10 @@ namespace Gordon360.Services
                 trim.CHEventID = x.CHEventID.Trim();
                 trim.CHCheckerID = x.CHCheckerID.Trim();
                 trim.CHDate = x.CHDate;
-                trim.CHTime = x.CHTime;
-                trim.CHSource = x.CHSource.Trim();
                 trim.CHTermCD = x.CHTermCD.Trim();
                 return trim;
             });
-            return result;
+            return trimmedResult;
         }
 
         /// <summary>
@@ -146,6 +144,8 @@ namespace Gordon360.Services
 
             // Filter out the events that are part of the specified term, based on the attribute specified, then sort by Date
             result = result.Where(x => x.CHTermCD.Trim().Equals(term)).OrderByDescending(x => x.CHDate);
+
+            
             // Trim the white space off of each entry
             var trimmedResult = result.Select(x =>
             {
@@ -154,14 +154,13 @@ namespace Gordon360.Services
                 trim.CHBarEventID = x.CHBarEventID.Trim();
                 trim.CHEventID = x.CHEventID.Trim();
                 trim.CHCheckerID = x.CHCheckerID.Trim();
-                x.CHDate = x.CHDate;
-                x.CHTime = x.CHTime;
-                trim.CHSource = x.CHSource.Trim();
+                trim.CHDate = x.CHDate.Add(x.CHTime.TimeOfDay);
+                trim.CHTime = x.CHTime;
                 trim.CHTermCD = x.CHTermCD.Trim();
                 return trim;
             });
 
-            return result;
+            return trimmedResult;
         }
 
     }
