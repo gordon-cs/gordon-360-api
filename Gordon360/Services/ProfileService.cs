@@ -154,5 +154,22 @@ namespace Gordon360.Services
             _unitOfWork.Save();
         }
 
+        /// <summary>
+        /// privacy setting of mobile phone.
+        /// </summary>
+        /// <param name="username">The username</param>
+        /// <param name="p"></param>
+        public void UpdateMobilePrivacy(string username, bool p)
+        {
+            var original = _unitOfWork.StudentTempRepository.FirstOrDefault(x => x.EmailUserName == username);
+
+            if (original == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The profile was not found." };
+            }
+            original.IsMobilePhonePrivate = p;
+            _unitOfWork.Save();
+        }
+
     }
 }

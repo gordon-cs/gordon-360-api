@@ -40,7 +40,7 @@ namespace Gordon360.Models.ViewModels
         public string BirthDate { get; set; }
         public string Gender { get; set; }
         public string MobilePhone { get; set; }
-        public Nullable<bool> IsMobilePhonePrivate { get; set; }
+        public bool? IsMobilePhonePrivate { get; set; }
 
 
         public static implicit operator StudentProfileViewModel(student_temp stu)
@@ -77,7 +77,7 @@ namespace Gordon360.Models.ViewModels
                 Gender = stu.Gender ?? "",
                 BirthDate = stu.BirthDate ?? "",
                 MobilePhone = stu.MobilePhone ?? "",
-                IsMobilePhonePrivate = stu.IsMobilePhonePrivate
+                IsMobilePhonePrivate = stu.IsMobilePhonePrivate ?? false
             };
 
             return vm;

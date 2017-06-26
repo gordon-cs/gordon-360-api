@@ -12,8 +12,8 @@ namespace Gordon360.Models.ViewModels
         public string CHBarcode { get; set; }
         public string CHEventID { get; set; }
         public string CHCheckerID { get; set; }
-        public DateTime CHDate { get; set; }
-        public DateTime CHTime { get; set; }
+        public Nullable<System.DateTime> CHDate { get; set; }
+        public Nullable<System.DateTime> CHTime { get; set; }
         public string CHSource { get; set; }
         public string CHTermCD { get; set; }
 

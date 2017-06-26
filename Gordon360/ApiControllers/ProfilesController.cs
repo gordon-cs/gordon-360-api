@@ -335,5 +335,36 @@ namespace Gordon360.Controllers.Api
             return Ok();
 
         }
+        /// <summary>
+        /// Update privacy of mobile phone number
+        /// </summary>
+        /// <param name="username">The username</param>
+        /// <param name="p">private or not(1 or 0)</param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("{username}/mobile_privacy/{p}")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE)]
+        public IHttpActionResult UpdateMobilePrivacy(string username, bool p)
+        {
+            // Verify Input
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            _profileService.UpdateMobilePrivacy(username, p);
+
+            return Ok();
+
+        }
     }
 }

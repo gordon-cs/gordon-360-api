@@ -195,6 +195,7 @@ warning 6002: The table/view 'CCT.dbo.facstaff' does not have a primary key defi
           <Property Name="JOB_NAME" Type="char" MaxLength="30" />
           <Property Name="JOB_TIME" Type="datetime" />
           <Property Name="GRP_ADMIN" Type="bit" />
+          <Property Name="PRIVACY" Type="bit" />
         </EntityType>
         <EntityType Name="PROFILE_IMAGE">
           <Key>
@@ -221,11 +222,8 @@ warning 6002: The table/view 'CCT.dbo.facstaff' does not have a primary key defi
           <Property Name="COMMENT_TXT" Type="varchar" MaxLength="45" />
           <Property Name="STATUS" Type="varchar" MaxLength="20" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'CCT.dbo.student_temp' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="student_temp">
           <Key>
-            <PropertyRef Name="Row_ID" />
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="Row_ID" Type="int" Nullable="false" />
@@ -460,7 +458,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Parameter Name="SESS_CDE" Type="char" Mode="In" />
         </Function>
         <Function Name="EVENTS_BY_STUDENT_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="STU_ID" Type="char" Mode="In" />
+          <Parameter Name="STU_USERNAME" Type="char" Mode="In" />
         </Function>
         <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
         <Function Name="GRP_ADMIN_EMAILS_PER_ACT_CDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
@@ -540,6 +538,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="MEMBERSHIP" EntityType="Self.MEMBERSHIP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PROFILE_IMAGE" EntityType="Self.PROFILE_IMAGE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="REQUEST" EntityType="Self.REQUEST" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="student_temp" EntityType="Self.student_temp" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="alumni" EntityType="Self.alumni" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -659,76 +658,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [facstaff].[Type] AS [Type], 
     [facstaff].[row_source] AS [row_source]
     FROM [dbo].[facstaff] AS [facstaff]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="student_temp" EntityType="Self.student_temp" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [student_temp].[Row_ID] AS [Row_ID], 
-    [student_temp].[ID] AS [ID], 
-    [student_temp].[SSN] AS [SSN], 
-    [student_temp].[Title] AS [Title], 
-    [student_temp].[FirstName] AS [FirstName], 
-    [student_temp].[MiddleName] AS [MiddleName], 
-    [student_temp].[LastName] AS [LastName], 
-    [student_temp].[Suffix] AS [Suffix], 
-    [student_temp].[MaidenName] AS [MaidenName], 
-    [student_temp].[NickName] AS [NickName], 
-    [student_temp].[EmailUserName] AS [EmailUserName], 
-    [student_temp].[EmailPassword] AS [EmailPassword], 
-    [student_temp].[EmailServer] AS [EmailServer], 
-    [student_temp].[EmailProtocol] AS [EmailProtocol], 
-    [student_temp].[OnOffCampus] AS [OnOffCampus], 
-    [student_temp].[OnCampusBuilding] AS [OnCampusBuilding], 
-    [student_temp].[OnCampusRoom] AS [OnCampusRoom], 
-    [student_temp].[OnCampusPhone] AS [OnCampusPhone], 
-    [student_temp].[OnCampusPrivatePhone] AS [OnCampusPrivatePhone], 
-    [student_temp].[OnCampusFax] AS [OnCampusFax], 
-    [student_temp].[OffCampusStreet1] AS [OffCampusStreet1], 
-    [student_temp].[OffCampusStreet2] AS [OffCampusStreet2], 
-    [student_temp].[OffCampusCity] AS [OffCampusCity], 
-    [student_temp].[OffCampusState] AS [OffCampusState], 
-    [student_temp].[OffCampusPostalCode] AS [OffCampusPostalCode], 
-    [student_temp].[OffCampusCountry] AS [OffCampusCountry], 
-    [student_temp].[OffCampusPhone] AS [OffCampusPhone], 
-    [student_temp].[OffCampusFax] AS [OffCampusFax], 
-    [student_temp].[HomeStreet1] AS [HomeStreet1], 
-    [student_temp].[HomeStreet2] AS [HomeStreet2], 
-    [student_temp].[HomeCity] AS [HomeCity], 
-    [student_temp].[HomeState] AS [HomeState], 
-    [student_temp].[HomePostalCode] AS [HomePostalCode], 
-    [student_temp].[HomeCountry] AS [HomeCountry], 
-    [student_temp].[HomePhone] AS [HomePhone], 
-    [student_temp].[HomeFax] AS [HomeFax], 
-    [student_temp].[Cohort] AS [Cohort], 
-    [student_temp].[Class] AS [Class], 
-    [student_temp].[KeepPrivate] AS [KeepPrivate], 
-    [student_temp].[Major] AS [Major], 
-    [student_temp].[Barcode] AS [Barcode], 
-    [student_temp].[AdvisorIDs] AS [AdvisorIDs], 
-    [student_temp].[Married] AS [Married], 
-    [student_temp].[Commuter] AS [Commuter], 
-    [student_temp].[StatusType] AS [StatusType], 
-    [student_temp].[CurrentStatusType] AS [CurrentStatusType], 
-    [student_temp].[NextStatusType] AS [NextStatusType], 
-    [student_temp].[CreditHrs] AS [CreditHrs], 
-    [student_temp].[GradFlag] AS [GradFlag], 
-    [student_temp].[Major2] AS [Major2], 
-    [student_temp].[Email] AS [Email], 
-    [student_temp].[BirthDate] AS [BirthDate], 
-    [student_temp].[Gender] AS [Gender], 
-    [student_temp].[finance_approved] AS [finance_approved], 
-    [student_temp].[reg_complete] AS [reg_complete], 
-    [student_temp].[grad_student] AS [grad_student], 
-    [student_temp].[GradDate] AS [GradDate], 
-    [student_temp].[AJScholar] AS [AJScholar], 
-    [student_temp].[Major3] AS [Major3], 
-    [student_temp].[Minor1] AS [Minor1], 
-    [student_temp].[Minor2] AS [Minor2], 
-    [student_temp].[Minor3] AS [Minor3], 
-    [student_temp].[Class_List] AS [Class_List], 
-    [student_temp].[GC_Insurance] AS [GC_Insurance], 
-    [student_temp].[MobilePhone] AS [MobilePhone], 
-    [student_temp].[IsMobilePhonePrivate] AS [IsMobilePhonePrivate]
-    FROM [dbo].[student_temp] AS [student_temp]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="360_SLIDER" EntityType="Self.360_SLIDER" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -871,6 +800,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="JOB_NAME" Type="String" MaxLength="30" FixedLength="true" Unicode="false" />
           <Property Name="JOB_TIME" Type="DateTime" Precision="3" />
           <Property Name="GRP_ADMIN" Type="Boolean" />
+          <Property Name="PRIVACY" Type="Boolean" />
         </EntityType>
         <EntityType Name="REQUEST">
           <Key>
@@ -1030,7 +960,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="TERM" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="EVENTS_BY_STUDENT_ID" ReturnType="Collection(Gordon360.EVENTS_BY_STUDENT_ID_Result)">
-          <Parameter Name="STU_ID" Mode="In" Type="String" />
+          <Parameter Name="STU_USERNAME" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="TOTAL_CREDITS_PER_STUDENT" ReturnType="Collection(Int32)">
             <Parameter Name="STU_ID" Mode="In" Type="String" />
@@ -1506,7 +1436,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         </EntityType>
         <EntityType Name="student_temp">
           <Key>
-            <PropertyRef Name="Row_ID" />
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="Row_ID" Type="Int32" Nullable="false" />
@@ -1643,6 +1572,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="MEMBERSHIP">
             <EntityTypeMapping TypeName="Gordon360.MEMBERSHIP">
               <MappingFragment StoreEntitySet="MEMBERSHIP">
+                <ScalarProperty Name="PRIVACY" ColumnName="PRIVACY" />
                 <ScalarProperty Name="GRP_ADMIN" ColumnName="GRP_ADMIN" />
                 <ScalarProperty Name="MEMBERSHIP_ID" ColumnName="MEMBERSHIP_ID" />
                 <ScalarProperty Name="ACT_CDE" ColumnName="ACT_CDE" />
