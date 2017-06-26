@@ -404,6 +404,32 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
 
+        /// <summary>Update an existing membership item to be private or not</summary>
+        ///  /// <param name="id">The id of the membership</param>
+        /// <remarks>Calls the server to make a call and update the database with the changed information</remarks>
+        [HttpPut]
+        [Route("{id}/privacy/{p}")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP)]
+        public IHttpActionResult TogglePrivacy(int id, bool p)
+        {
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            _membershipService.TogglePrivacy(id, p);
+            return Ok();
+        }
+
         /// <summary>Delete an existing membership</summary>
         /// <param name="id">The identifier for the membership to be deleted</param>
         /// <remarks>Calls the server to make a call and remove the given membership from the database</remarks>
