@@ -10,6 +10,9 @@ namespace Gordon360.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
+        private IRepository<student_temp> _StudentTempRepository;
+        private IRepository<facstaff> _FacultyStaffRepository;
+        private IRepository<alumni> _AlumniRepository;
         private IRepository<ACCOUNT> _AccountRepository;
         private IRepository<ACT_CLUB_DEF> _ActivityRepository;
         private IRepository<CM_SESSION_MSTR> _SessionRepository;
@@ -25,12 +28,25 @@ namespace Gordon360.Repositories
         private IRepository<ACT_INFO> _ActivityInfoRepository;
         private IRepository<ADMIN> _AdministratorRepository;
         private IRepository<C360_SLIDER> _SliderRepository;
+        private IRepository<PROFILE_IMAGE> _ProfileImageRepository;
 
         private CCTEntities1 _context;
 
         public UnitOfWork()
         {
             _context = new CCTEntities1();
+        }
+        public IRepository<student_temp> StudentTempRepository
+        {
+            get { return _StudentTempRepository ?? (_StudentTempRepository = new GenericRepository<student_temp>(_context)); }
+        }
+        public IRepository<facstaff> FacultyStaffRepository
+        {
+            get { return _FacultyStaffRepository ?? (_FacultyStaffRepository = new GenericRepository<facstaff>(_context)); }
+        }
+        public IRepository<alumni> AlumniRepository
+        {
+            get { return _AlumniRepository ?? (_AlumniRepository = new GenericRepository<alumni>(_context)); }
         }
         public IRepository<ACCOUNT> AccountRepository
         {
@@ -98,6 +114,11 @@ namespace Gordon360.Repositories
         public IRepository<C360_SLIDER> SliderRepository
         {
             get { return _SliderRepository ?? (_SliderRepository = new GenericRepository<C360_SLIDER>(_context));  }
+        }
+
+        public IRepository<PROFILE_IMAGE> ProfileImageRepository
+        {
+            get { return _ProfileImageRepository ?? (_ProfileImageRepository = new GenericRepository<PROFILE_IMAGE>(_context)); }
         }
 
         public bool Save()

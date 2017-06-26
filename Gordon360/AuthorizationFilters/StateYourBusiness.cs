@@ -37,6 +37,7 @@ namespace Gordon360.AuthorizationFilters
         // User position at the college and their id.
         private string user_position { get; set; }
         private string user_id { get; set; }
+        private string user_name { get; set; }
 
         private bool isAuthorized = false;
 
@@ -47,6 +48,7 @@ namespace Gordon360.AuthorizationFilters
             var authenticatedUser = actionContext.RequestContext.Principal as ClaimsPrincipal;
             user_position = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role").Value;
             user_id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
+            user_name = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
             if (user_position == Position.GOD)
             {
@@ -133,7 +135,11 @@ namespace Gordon360.AuthorizationFilters
 
             switch (resource)
             {
-                
+                case Resource.PROFILE:
+                    var username_requested = context.ActionArguments["username"];
+                    var is_prOwner = username_requested.ToString().Equals(user_name);
+                    return is_prOwner;
+
                 case Resource.MEMBERSHIP:
                     return true;
                 case Resource.MEMBERSHIP_REQUEST:
@@ -415,6 +421,17 @@ namespace Gordon360.AuthorizationFilters
 
                         return false;
                     }
+                case Resource.PROFILE:
+                    {
+                        // User is admin
+                        if (user_position == Position.GOD)
+                            return true;
+
+                        var username = (string)context.ActionArguments["username"];
+                        var isSelf = username.Equals(user_name);
+                        return isSelf;
+                    }
+
                 case Resource.ACTIVITY_INFO:
                     {
                         // User is admin

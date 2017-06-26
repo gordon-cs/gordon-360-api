@@ -11,7 +11,18 @@ using Gordon360.Models.ViewModels;
 /// </summary>
 namespace Gordon360.Services
 {
-
+    public interface IProfileService
+    {
+        StudentProfileViewModel GetStudentProfileByUsername(string username);
+        FacultyStaffProfileViewModel GetFacultyStaffProfileByUsername(string username);
+        AlumniProfileViewModel GetAlumniProfileByUsername(string username);
+        ProfileImageViewModel GetUser(string username);
+        ProfileImageViewModel GetImage(string username);
+        IEnumerable<ProfileImageViewModel> GetAll();
+        void UpdateProfileImage(string username, string path);
+        void ResetProfileImage(string username);
+        void UpdateProfileLink(string username, string type, string path);
+    }
     public interface IAccountService
     {
         AccountViewModel Get(string id);
@@ -96,7 +107,8 @@ namespace Gordon360.Services
         MEMBERSHIP Add(MEMBERSHIP membership);
         MEMBERSHIP Update(int id, MEMBERSHIP membership);
         MEMBERSHIP ToggleGroupAdmin(int id, MEMBERSHIP membership);
-        MEMBERSHIP Delete(int id);   
+        MEMBERSHIP TogglePrivacy(int id);
+        MEMBERSHIP Delete(int id);
     }
 
     public interface IParticipationService
@@ -136,4 +148,6 @@ namespace Gordon360.Services
     {
         IEnumerable<SliderViewModel> GetSliderContent();
     }
+
 }
+

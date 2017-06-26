@@ -12,17 +12,16 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class SUPERVISOR
+    public partial class ChapelEvent
     {
-        public int SUP_ID { get; set; }
-        public int ID_NUM { get; set; }
-        public string SESS_CDE { get; set; }
-        public string ACT_CDE { get; set; }
-        public string USER_NAME { get; set; }
-        public string JOB_NAME { get; set; }
-        public Nullable<System.DateTime> JOB_TIME { get; set; }
-    
-        public virtual SUPERVISOR SUPERVISOR1 { get; set; }
-        public virtual SUPERVISOR SUPERVISOR2 { get; set; }
+        public int ROWID { get; set; }
+        public string CHBarEventID { get; set; }
+        public string CHBarcode { get; set; }
+        public string CHEventID { get; set; }
+        public string CHCheckerID { get; set; }
+        public Nullable<System.DateTime> CHDate { get; set; }
+        public Nullable<System.DateTime> CHTime { get; set; }
+        public string CHSource { get; set; }
+        public string CHTermCD { get; set; }
     }
 }

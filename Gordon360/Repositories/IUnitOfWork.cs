@@ -7,7 +7,10 @@ using Gordon360.Models;
 namespace Gordon360.Repositories
 {
     public interface IUnitOfWork
-    {
+    {   
+        IRepository<student_temp> StudentTempRepository { get; }
+        IRepository<facstaff> FacultyStaffRepository { get; }
+        IRepository<alumni> AlumniRepository { get; }
         IRepository<ACCOUNT> AccountRepository { get; }
         IRepository<ACT_CLUB_DEF> ActivityRepository { get; }
         IRepository<ACT_INFO> ActivityInfoRepository { get; }
@@ -22,6 +25,7 @@ namespace Gordon360.Repositories
         IRepository<REQUEST> MembershipRequestRepository { get; }
         IRepository<ADMIN> AdministratorRepository { get; }
         IRepository<C360_SLIDER> SliderRepository { get; }
+        IRepository<PROFILE_IMAGE> ProfileImageRepository { get; }
 
         // Note -- Only use this repository to call SQL Stored Procedures
         IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> ActivityPerSessionRepository { get;  }

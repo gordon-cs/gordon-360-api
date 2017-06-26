@@ -379,6 +379,30 @@ namespace Gordon360.Services
             return original;
         }
 
+        /// <summary>
+        /// Switches the privacy property of the person whose membership id is given
+        /// </summary>
+        /// <param name="id">The membership id.</param>
+        /// <returns>The newly modified membership.</returns>
+        public MEMBERSHIP TogglePrivacy(int id)
+        {
+            var original = _unitOfWork.MembershipRepository.GetById(id);
+            if (original == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
+            }
+
+            var isPrivate = original.PRIVACY ?? false;
+            if (!isPrivate)
+                original.PRIVACY = true;
+            else
+                original.PRIVACY = false;
+
+            _unitOfWork.Save();
+
+            return original;
+        }
+
 
         /// <summary>
         /// Helper method to Validate a membership
