@@ -107,7 +107,7 @@ namespace Gordon360.Services
         MEMBERSHIP Add(MEMBERSHIP membership);
         MEMBERSHIP Update(int id, MEMBERSHIP membership);
         MEMBERSHIP ToggleGroupAdmin(int id, MEMBERSHIP membership);
-        MEMBERSHIP TogglePrivacy(int id);
+        void TogglePrivacy(int id, bool p);
         MEMBERSHIP Delete(int id);
     }
 

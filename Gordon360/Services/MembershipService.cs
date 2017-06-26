@@ -384,7 +384,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="id">The membership id.</param>
         /// <returns>The newly modified membership.</returns>
-        public MEMBERSHIP TogglePrivacy(int id)
+        public void TogglePrivacy(int id, bool p)
         {
             var original = _unitOfWork.MembershipRepository.GetById(id);
             if (original == null)
@@ -392,15 +392,9 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
             }
 
-            var isPrivate = original.PRIVACY ?? false;
-            if (!isPrivate)
-                original.PRIVACY = true;
-            else
-                original.PRIVACY = false;
+            original.PRIVACY = p;
 
             _unitOfWork.Save();
-
-            return original;
         }
 
 

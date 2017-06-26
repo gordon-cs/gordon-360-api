@@ -408,9 +408,9 @@ namespace Gordon360.Controllers.Api
         ///  /// <param name="id">The id of the membership</param>
         /// <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         [HttpPut]
-        [Route("{id}/privacy")]
+        [Route("{id}/privacy/{p}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP)]
-        public IHttpActionResult TogglePrivacy(int id)
+        public IHttpActionResult TogglePrivacy(int id, bool p)
         {
             if (!ModelState.IsValid)
             {
@@ -426,13 +426,8 @@ namespace Gordon360.Controllers.Api
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var result = _membershipService.TogglePrivacy(id);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-            return Ok(result);
+            _membershipService.TogglePrivacy(id, p);
+            return Ok();
         }
 
         /// <summary>Delete an existing membership</summary>
