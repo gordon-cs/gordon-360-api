@@ -360,6 +360,11 @@
              /// <param name="membership">The content within the membership that is to be changed</param>
             <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         </member>
+        <member name="M:Gordon360.Controllers.Api.MembershipsController.TogglePrivacy(System.Int32)">
+            <summary>Update an existing membership item to be private or not</summary>
+             /// <param name="id">The id of the membership</param>
+            <remarks>Calls the server to make a call and update the database with the changed information</remarks>
+        </member>
         <member name="M:Gordon360.Controllers.Api.MembershipsController.Delete(System.Int32)">
             <summary>Delete an existing membership</summary>
             <param name="id">The identifier for the membership to be deleted</param>
@@ -1075,6 +1080,13 @@
             </summary>
             <param name="id">The membership id.</param>
             <param name="membership">The corresponding membership object</param>
+            <returns>The newly modified membership.</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.TogglePrivacy(System.Int32)">
+            <summary>
+            Switches the privacy property of the person whose membership id is given
+            </summary>
+            <param name="id">The membership id.</param>
             <returns>The newly modified membership.</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.validateMembership(Gordon360.Models.MEMBERSHIP)">

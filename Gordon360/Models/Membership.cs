@@ -26,5 +26,6 @@ namespace Gordon360.Models
         public string JOB_NAME { get; set; }
         public Nullable<System.DateTime> JOB_TIME { get; set; }
         public Nullable<bool> GRP_ADMIN { get; set; }
+        public Nullable<bool> PRIVACY { get; set; }
     }
 }
