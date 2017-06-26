@@ -62,7 +62,7 @@ namespace Gordon360.Controllers.Api
         // GET api/<controller>/5
         [HttpGet]
         [Route("{username}")]
-        //[StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]    //make sure the requested person is the same as the logged in user
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]    //make sure the requested person is the same as the logged in user
         public IHttpActionResult Get(string username)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(username))
@@ -83,7 +83,7 @@ namespace Gordon360.Controllers.Api
             var student = _profileService.GetStudentProfileByUsername(username);
             var faculty = _profileService.GetFacultyStaffProfileByUsername(username);
             var alumni = _profileService.GetAlumniProfileByUsername(username);
-            var customInfo = _profileService.GetUser(username);
+            var customInfo = _profileService.GetCustomUserInfo(username);
 
             // merge the person's info if this person is in multiple tables and return result 
             if (student != null)
@@ -159,6 +159,10 @@ namespace Gordon360.Controllers.Api
                     return Ok(alufac);
                 }
                 JObject fac = JObject.FromObject(faculty);
+                fac.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
+                {
+                    MergeArrayHandling = MergeArrayHandling.Union
+                });
                 fac.Add("PersonType", "fac");
                 return Ok(fac);
             }
@@ -183,7 +187,7 @@ namespace Gordon360.Controllers.Api
         /// </summary>
         /// <param name="username">The username</param>
         /// <returns></returns>
-        [HttpPut]
+        [HttpPost]
         [Route("{username}/image")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE)]
         public async Task<HttpResponseMessage> PostImage(string username)
@@ -327,6 +331,37 @@ namespace Gordon360.Controllers.Api
             }
 
             _profileService.UpdateProfileLink(username, type, path);
+
+            return Ok();
+
+        }
+        /// <summary>
+        /// Update privacy of mobile phone number
+        /// </summary>
+        /// <param name="username">The username</param>
+        /// <param name="p">private or not(1 or 0)</param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("{username}/mobile_privacy/{p}")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE)]
+        public IHttpActionResult UpdateMobilePrivacy(string username, bool p)
+        {
+            // Verify Input
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            _profileService.UpdateMobilePrivacy(username, p);
 
             return Ok();
 

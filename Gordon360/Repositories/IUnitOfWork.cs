@@ -25,7 +25,8 @@ namespace Gordon360.Repositories
         IRepository<REQUEST> MembershipRequestRepository { get; }
         IRepository<ADMIN> AdministratorRepository { get; }
         IRepository<C360_SLIDER> SliderRepository { get; }
-        IRepository<PROFILE_IMAGE> ProfileImageRepository { get; }
+        IRepository<PROFILE_IMAGE> ProfileCustomRepository { get; }
+        IRepository<ChapelEvent> ChapelEventRepository { get; }
 
         // Note -- Only use this repository to call SQL Stored Procedures
         IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> ActivityPerSessionRepository { get;  }

@@ -11,18 +11,29 @@ using Gordon360.Models.ViewModels;
 /// </summary>
 namespace Gordon360.Services
 {
+
     public interface IProfileService
     {
         StudentProfileViewModel GetStudentProfileByUsername(string username);
         FacultyStaffProfileViewModel GetFacultyStaffProfileByUsername(string username);
         AlumniProfileViewModel GetAlumniProfileByUsername(string username);
-        ProfileImageViewModel GetUser(string username);
-        ProfileImageViewModel GetImage(string username);
-        IEnumerable<ProfileImageViewModel> GetAll();
+        ProfileCustomViewModel GetCustomUserInfo(string username);
+        IEnumerable<ProfileCustomViewModel> GetAll();
         void UpdateProfileImage(string username, string path);
         void ResetProfileImage(string username);
         void UpdateProfileLink(string username, string type, string path);
+        void UpdateMobilePrivacy(string username, bool p);
     }
+
+    public interface IChapelEventService
+    {
+        ChapelEventViewModel Get(string id);
+        IEnumerable<ChapelEventViewModel> GetAll();
+        ChapelEventViewModel GetChapelEventByChapelEventID(string CHEventID);
+        IEnumerable<ChapelEventViewModel> GetAllForStudent(string id);
+        IEnumerable<ChapelEventViewModel> GetEventsForStudentByTerm(string id, string term);
+    }
+
     public interface IAccountService
     {
         AccountViewModel Get(string id);
