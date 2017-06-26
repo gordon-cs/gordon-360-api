@@ -57,6 +57,7 @@ namespace Gordon360.Services
         void OpenActivityForSession(string id, string sess_cde);
         void UpdateActivityImage(string id, string path);
         void ResetActivityImage(string id);
+        void TogglePrivacy(string id, bool p);
     }
 
     public interface IActivityInfoService

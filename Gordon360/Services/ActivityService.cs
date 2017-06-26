@@ -349,6 +349,25 @@ namespace Gordon360.Services
 
         }
 
+        /// <summary>
+        /// change activty privacy
+        /// </summary>
+        /// <param name="id">The activity code</param>
+        /// <param name="p">boolean value</param>
+        public void TogglePrivacy(string id,bool p)
+        {
+            var original = _unitOfWork.ActivityInfoRepository.GetById(id);
+
+            if (original == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity Info was not found." };
+            }
+
+            original.PRIVACY = p;
+
+            _unitOfWork.Save();
+        }
+
 
     }
 }

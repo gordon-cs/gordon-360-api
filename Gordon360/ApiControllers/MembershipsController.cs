@@ -405,7 +405,8 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>Update an existing membership item to be private or not</summary>
-        ///  /// <param name="id">The id of the membership</param>
+        /// <param name="id">The id of the membership</param>
+        /// <param name = "p">the boolean value</param>
         /// <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         [HttpPut]
         [Route("{id}/privacy/{p}")]

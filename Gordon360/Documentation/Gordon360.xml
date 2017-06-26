@@ -285,6 +285,12 @@
             <param name="id">The activity code</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.ActivitiesController.TogglePrivacy(System.String,System.Boolean)">
+            <summary>Update an existing activity to be private or not</summary>
+            <param name="id">The id of the activity</param>
+            <param name = "p">the boolean value</param>
+            <remarks>Calls the server to make a call and update the database with the changed information</remarks>
+        </member>
         <member name="M:Gordon360.Controllers.Api.MembershipsController.Get">
             <summary>
             Get all memberships
@@ -370,7 +376,8 @@
         </member>
         <member name="M:Gordon360.Controllers.Api.MembershipsController.TogglePrivacy(System.Int32,System.Boolean)">
             <summary>Update an existing membership item to be private or not</summary>
-             /// <param name="id">The id of the membership</param>
+            <param name="id">The id of the membership</param>
+            <param name = "p">the boolean value</param>
             <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         </member>
         <member name="M:Gordon360.Controllers.Api.MembershipsController.Delete(System.Int32)">
@@ -718,6 +725,13 @@
             Reset the path for the activity image
             </summary>
             <param name="id">The activity code</param>
+        </member>
+        <member name="M:Gordon360.Services.ActivityService.TogglePrivacy(System.String,System.Boolean)">
+            <summary>
+            change activty privacy
+            </summary>
+            <param name="id">The activity code</param>
+            <param name="p">boolean value</param>
         </member>
         <member name="T:Gordon360.Services.AdministratorService">
             <summary>

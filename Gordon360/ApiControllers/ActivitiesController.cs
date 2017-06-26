@@ -430,6 +430,32 @@ namespace Gordon360.Controllers.Api
             return Ok();
 
         }
+        /// <summary>Update an existing activity to be private or not</summary>
+        /// <param name="id">The id of the activity</param>
+        /// <param name = "p">the boolean value</param>
+        /// <remarks>Calls the server to make a call and update the database with the changed information</remarks>
+        [HttpPut]
+        [Route("{id}/privacy/{p}")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
+        public IHttpActionResult TogglePrivacy(string id, bool p)
+        {
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            _activityService.TogglePrivacy(id, p);
+            return Ok();
+        }
 
     }
 }
