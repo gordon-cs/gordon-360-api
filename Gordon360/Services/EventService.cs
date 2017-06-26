@@ -78,22 +78,22 @@ namespace Gordon360.Services
         /// <summary>
         /// Returns all attended events for a student
         /// </summary>
-        /// <param name="ID"> The student's ID</param>
+        /// <param name="user_name"> The student's ID</param>
         /// <returns></returns>
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.ChapelEvent)]
-        public IEnumerable<ChapelEventViewModel> GetAllForStudent(string ID)
+        public IEnumerable<ChapelEventViewModel> GetAllForStudent(string user_name)
         {
             // Confirm that student exists
-            var studentExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id.Trim() == ID).Count() > 0;
+            var studentExists = _unitOfWork.AccountRepository.Where(x => x.AD_Username.Trim() == user_name.Trim()).Count() > 0;
             if (!studentExists)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
             }
 
             // Declare the variables used
-            var idParam = new SqlParameter("@STU_ID", ID);
+            var idParam = new SqlParameter("@STU_USERNAME", user_name.Trim());
             // Run the query, which returns an iterable json list 
-            var result = RawSqlQuery<ChapelEventViewModel>.query("EVENTS_BY_STUDENT_ID @STU_ID", idParam);
+            var result = RawSqlQuery<ChapelEventViewModel>.query("EVENTS_BY_STUDENT_ID @STU_USERNAME", idParam);
 
             if (result == null)
             {
@@ -118,23 +118,23 @@ namespace Gordon360.Services
         /// <summary>
         /// Returns all attended events for a student
         /// </summary>
-        /// <param name="ID"> The student's ID</param>
+        /// <param name="user_name"> The student's ID</param>
         /// <param name="term"> The current term</param>
         /// <returns></returns>
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.ChapelEvent)]
-        public IEnumerable<ChapelEventViewModel> GetEventsForStudentByTerm(string ID, string term)
+        public IEnumerable<ChapelEventViewModel> GetEventsForStudentByTerm(string user_name, string term)
         {
-            var studentExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id.Trim() == ID).Count() > 0;
+            var studentExists = _unitOfWork.AccountRepository.Where(x => x.AD_Username.Trim() == user_name.Trim()).Count() > 0;
             if (!studentExists)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
             }
 
             // Declare the variables used
-            var idParam = new SqlParameter("@STU_ID", ID);
+            var idParam = new SqlParameter("@STU_USERNAME", user_name.Trim());
             
             // Run the stored query  and return an iterable list of objects
-            var result = RawSqlQuery<ChapelEventViewModel>.query("EVENTS_BY_STUDENT_ID @STU_ID", idParam );
+            var result = RawSqlQuery<ChapelEventViewModel>.query("EVENTS_BY_STUDENT_ID @STU_USERNAME", idParam );
 
             // Confirm that result is not empty
             if (result == null)

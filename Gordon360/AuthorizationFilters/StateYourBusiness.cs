@@ -206,7 +206,9 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.EVENTS_BY_STUDENT_ID:
                     {
                         // Only the person itself or an admin can see someone's chapel attendance
-                        return (string)context.ActionArguments["id"] == user_id;
+                        var username_requested = context.ActionArguments["username"];
+                        var is_creditOwner = username_requested.ToString().Equals(user_name);
+                        return is_creditOwner;
                     }
 
 

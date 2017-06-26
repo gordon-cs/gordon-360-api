@@ -779,14 +779,14 @@
             <summary>
             Returns all attended events for a student
             </summary>
-            <param name="ID"> The student's ID</param>
+            <param name="user_name"> The student's ID</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Services.EventService.GetEventsForStudentByTerm(System.String,System.String)">
             <summary>
             Returns all attended events for a student
             </summary>
-            <param name="ID"> The student's ID</param>
+            <param name="user_name"> The student's ID</param>
             <param name="term"> The current term</param>
             <returns></returns>
         </member>

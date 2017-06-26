@@ -24,10 +24,10 @@ namespace Gordon360.ApiControllers
         }
         
         [HttpGet]
-        [Route("chapel/Student/{ID}")]
-        public IHttpActionResult GetAllForStudent(string ID)
+        [Route("chapel/Student/{user_name}")]
+        public IHttpActionResult GetAllForStudent(string user_name)
         {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(ID))
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(user_name))
             {
                 string errors = "";
                 foreach (var modelstate in ModelState.Values)
@@ -41,7 +41,7 @@ namespace Gordon360.ApiControllers
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var result = _chapelService.GetAllForStudent(ID);
+            var result = _chapelService.GetAllForStudent(user_name);
 
             if (result == null)
             {
@@ -51,10 +51,10 @@ namespace Gordon360.ApiControllers
             return Ok(result);
         }
         [HttpGet]
-        [Route("chapel/Student/{ID}/{term}")]
-        public IHttpActionResult GetEventsForStudentByTerm(string ID, string term)
+        [Route("chapel/Student/{user_name}/{term}")]
+        public IHttpActionResult GetEventsForStudentByTerm(string user_name, string term)
         {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(ID) || string.IsNullOrWhiteSpace(term))
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(user_name) || string.IsNullOrWhiteSpace(term))
             {
                 string errors = "";
                 foreach (var modelstate in ModelState.Values)
@@ -68,7 +68,7 @@ namespace Gordon360.ApiControllers
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var result = _chapelService.GetEventsForStudentByTerm(ID, term);
+            var result = _chapelService.GetEventsForStudentByTerm(user_name, term);
 
             if (result == null)
             {

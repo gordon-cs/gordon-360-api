@@ -18,7 +18,7 @@ namespace Gordon360.Models.ViewModels
 
         public static implicit operator ChapelEventViewModel(ChapelEvent a)
         {
-            Nullable<DateTime> NoTIme;
+            Nullable<DateTime> NoTIme = new DateTime();
             ChapelEventViewModel vm = new ChapelEventViewModel
             {
                 
@@ -27,7 +27,7 @@ namespace Gordon360.Models.ViewModels
                 CHBarcode = a.CHBarcode.Trim(),
                 CHEventID = a.CHEventID,
                 CHCheckerID = a.CHCheckerID.Trim(),
-                CHDate = a.CHDate,
+                CHDate = a.CHDate ?? NoTIme,
                 CHTime = a.CHTime,
                 CHTermCD = a.CHTermCD.Trim(),
             };

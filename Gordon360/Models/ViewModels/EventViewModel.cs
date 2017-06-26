@@ -43,6 +43,7 @@ namespace Gordon360.Models.ViewModels
                 return null;
             }
 
+            return requestUrl;
         }
     }
 
