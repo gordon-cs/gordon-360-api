@@ -131,7 +131,7 @@
             <param name="username">The username</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateLink(System.String,System.String,System.String)">
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateLink(System.String,System.String,Gordon360.Models.PROFILE_IMAGE)">
             <summary>
             Update the profile social media links
             </summary>
@@ -145,7 +145,7 @@
             Update privacy of mobile phone number
             </summary>
             <param name="username">The username</param>
-            <param name="p">private or not(1 or 0)</param>
+            <param name="p">private or not</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ParticipationsController.Get">
@@ -949,7 +949,7 @@
             <param name="username">The username</param>
             <param name="path"></param>
         </member>
-        <member name="M:Gordon360.Services.ProfileService.UpdateProfileLink(System.String,System.String,System.String)">
+        <member name="M:Gordon360.Services.ProfileService.UpdateProfileLink(System.String,System.String,Gordon360.Models.PROFILE_IMAGE)">
             <summary>
             Sets the path for the profile links.
             </summary>

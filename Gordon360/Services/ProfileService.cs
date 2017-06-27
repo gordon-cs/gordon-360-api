@@ -105,7 +105,7 @@ namespace Gordon360.Services
         /// <param name="username">The username</param>
         /// <param name="type"></param>
         /// <param name="path"></param>
-        public void UpdateProfileLink(string username, string type, string path)
+        public void UpdateProfileLink(string username, string type, PROFILE_IMAGE path)
         {
             var original = _unitOfWork.ProfileCustomRepository.GetByUsername(username);
 
@@ -117,19 +117,19 @@ namespace Gordon360.Services
             switch (type)
             {
                 case "facebook":
-                    original.facebook = path;
+                    original.facebook = path.facebook;
                     break;
 
                 case "twitter":
-                    original.twitter = path;
+                    original.twitter = path.twitter;
                     break;
 
                 case "instagram":
-                    original.instagram = path;
+                    original.instagram = path.instagram;
                     break;
 
                 case "linkedin":
-                    original.linkedin = path;
+                    original.linkedin = path.linkedin;
                     break;
             }
 

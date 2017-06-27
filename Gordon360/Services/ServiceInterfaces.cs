@@ -21,7 +21,7 @@ namespace Gordon360.Services
         IEnumerable<ProfileCustomViewModel> GetAll();
         void UpdateProfileImage(string username, string path);
         void ResetProfileImage(string username);
-        void UpdateProfileLink(string username, string type, string path);
+        void UpdateProfileLink(string username, string type, PROFILE_IMAGE path);
         void UpdateMobilePrivacy(string username, bool p);
     }
 

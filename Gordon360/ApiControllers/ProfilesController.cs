@@ -313,7 +313,7 @@ namespace Gordon360.Controllers.Api
         [HttpPut]
         [Route("{username}/{type}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE)]
-        public IHttpActionResult UpdateLink(string username, string type, string path)
+        public IHttpActionResult UpdateLink(string username, string type, PROFILE_IMAGE path)
         {
             // Verify Input
             if (!ModelState.IsValid)
@@ -339,7 +339,7 @@ namespace Gordon360.Controllers.Api
         /// Update privacy of mobile phone number
         /// </summary>
         /// <param name="username">The username</param>
-        /// <param name="p">private or not(1 or 0)</param>
+        /// <param name="p">private or not</param>
         /// <returns></returns>
         [HttpPut]
         [Route("{username}/mobile_privacy")]
