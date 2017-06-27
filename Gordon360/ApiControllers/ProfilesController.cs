@@ -311,7 +311,7 @@ namespace Gordon360.Controllers.Api
         /// <param name="path">The path of the links</param>
         /// <returns></returns>
         [HttpPut]
-        [Route("{username}/{type}/{path}")]
+        [Route("{username}/{type}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE)]
         public IHttpActionResult UpdateLink(string username, string type, string path)
         {
