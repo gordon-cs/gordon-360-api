@@ -124,6 +124,12 @@
             <param name="username">The username</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateImagePrivacy(System.String,System.Boolean)">
+            <summary>Update an existing profile image to be private or not</summary>
+            <param name="username">The username</param>
+            <param name="p">The boolean value</param> 
+            <remarks>Calls the server to make a call and update the database with the changed information</remarks>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.ResetImage(System.String)">
             <summary>
             Reset the profile Image
@@ -652,6 +658,7 @@
             Otherwise, the END_DTE for all memberships of the activity will be null for that session
             </summary>
             <param name="id">The activity code for the activity in question</param>
+            <param name="sessionCode">The session code for the activity</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Services.ActivityService.GetOpenActivities(System.String)">
@@ -659,6 +666,7 @@
             Gets a collection of all the current open activities, by finding which activities have 
             memberships with an END_DTE that is null
             </summary>
+            <param name="sess_cde">The session code for activity</param>
             <returns>The collection of activity codes for open activities</returns>
         </member>
         <member name="M:Gordon360.Services.ActivityService.GetOpenActivities(System.String,System.Int32)">
@@ -934,6 +942,12 @@
             </summary>
             <param name="username">The username</param>
             <param name="path"></param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.UpdateImagePrivacy(System.String,System.Boolean)">
+            <summary>
+            Sets the profile image to be private or not
+            </summary>
+            
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateProfileLink(System.String,System.String,System.String)">
             <summary>

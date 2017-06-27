@@ -23,6 +23,7 @@
           <Property Name="ACT_IMG_PATH" Type="varchar(max)" />
           <Property Name="ACT_TYPE" Type="char" MaxLength="3" />
           <Property Name="ACT_TYPE_DESC" Type="char" MaxLength="60" />
+          <Property Name="PRIVACY" Type="bit" />
         </EntityType>
         <EntityType Name="ADMIN">
           <Key>
@@ -208,6 +209,7 @@ warning 6002: The table/view 'CCT.dbo.facstaff' does not have a primary key defi
           <Property Name="twitter" Type="varchar(max)" />
           <Property Name="instagram" Type="varchar(max)" />
           <Property Name="linkedin" Type="varchar(max)" />
+          <Property Name="privacy" Type="bit" />
         </EntityType>
         <EntityType Name="REQUEST">
           <Key>
@@ -1243,6 +1245,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="ACT_IMG_PATH" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="ACT_TYPE" Type="String" MaxLength="3" FixedLength="true" Unicode="false" />
           <Property Name="ACT_TYPE_DESC" Type="String" MaxLength="60" FixedLength="true" Unicode="false" />
+          <Property Name="PRIVACY" Type="Boolean" />
         </EntityType>
         <EntityType Name="C360_SLIDER">
           <Key>
@@ -1516,6 +1519,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="twitter" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="instagram" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="linkedin" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="privacy" Type="Boolean" />
         </EntityType>
         <EntityType Name="ChapelEvent">
           <Key>
@@ -1969,6 +1973,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="ACT_INFO">
             <EntityTypeMapping TypeName="Gordon360.ACT_INFO">
               <MappingFragment StoreEntitySet="ACT_INFO">
+                <ScalarProperty Name="PRIVACY" ColumnName="PRIVACY" />
                 <ScalarProperty Name="ACT_TYPE_DESC" ColumnName="ACT_TYPE_DESC" />
                 <ScalarProperty Name="ACT_TYPE" ColumnName="ACT_TYPE" />
                 <ScalarProperty Name="ACT_IMG_PATH" ColumnName="ACT_IMG_PATH" />
@@ -2251,6 +2256,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="PROFILE_IMAGE">
             <EntityTypeMapping TypeName="Gordon360.PROFILE_IMAGE">
               <MappingFragment StoreEntitySet="PROFILE_IMAGE">
+                <ScalarProperty Name="privacy" ColumnName="privacy" />
                 <ScalarProperty Name="linkedin" ColumnName="linkedin" />
                 <ScalarProperty Name="instagram" ColumnName="instagram" />
                 <ScalarProperty Name="twitter" ColumnName="twitter" />

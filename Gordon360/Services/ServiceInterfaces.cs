@@ -23,6 +23,7 @@ namespace Gordon360.Services
         void ResetProfileImage(string username);
         void UpdateProfileLink(string username, string type, string path);
         void UpdateMobilePrivacy(string username, bool p);
+        void UpdateImagePrivacy(string username, bool p);
     }
 
     public interface IChapelEventService

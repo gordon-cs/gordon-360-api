@@ -272,6 +272,33 @@ namespace Gordon360.Controllers.Api
             }
         }
 
+        /// <summary>Update an existing profile image to be private or not</summary>
+        /// <param name="username">The username</param>
+        /// <param name="p">The boolean value</param> 
+        /// <remarks>Calls the server to make a call and update the database with the changed information</remarks>
+        [HttpPut]
+        [Route("{username}/image_privacy/{p}")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE)]
+        public IHttpActionResult UpdateImagePrivacy(string username, bool p)
+        {
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            _profileService.UpdateImagePrivacy(username, p);
+            return Ok();
+        }
+
         /// <summary>
         /// Reset the profile Image
         /// </summary>

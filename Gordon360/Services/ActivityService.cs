@@ -118,6 +118,7 @@ namespace Gordon360.Services
         /// Otherwise, the END_DTE for all memberships of the activity will be null for that session
         /// </summary>
         /// <param name="id">The activity code for the activity in question</param>
+        /// <param name="sessionCode">The session code for the activity</param>
         /// <returns></returns>
         public bool IsOpen(string id, string sessionCode)
         {
@@ -133,6 +134,7 @@ namespace Gordon360.Services
         /// Gets a collection of all the current open activities, by finding which activities have 
         /// memberships with an END_DTE that is null
         /// </summary>
+        /// <param name="sess_cde">The session code for activity</param>
         /// <returns>The collection of activity codes for open activities</returns>
         public IEnumerable<string> GetOpenActivities(string sess_cde)
         {
@@ -249,7 +251,7 @@ namespace Gordon360.Services
 
             validateActivityInfo(activity);
 
-            // One can only update certain fields within a membrship
+            // One can only update certain fields within a membership
             original.ACT_BLURB = activity.ACT_BLURB;
             original.ACT_URL = activity.ACT_URL;
 

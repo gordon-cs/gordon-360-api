@@ -100,6 +100,22 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// Sets the profile image to be private or not
+        /// </summary>
+        /// 
+        public void UpdateImagePrivacy(string username, bool p)
+        {
+            var original = _unitOfWork.ProfileCustomRepository.GetByUsername(username);
+
+            if (original == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The profile was not found." };
+            }
+            original.privacy = p;
+            _unitOfWork.Save();
+        }
+
+        /// <summary>
         /// Sets the path for the profile links.
         /// </summary>
         /// <param name="username">The username</param>
