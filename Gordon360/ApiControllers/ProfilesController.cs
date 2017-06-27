@@ -342,7 +342,7 @@ namespace Gordon360.Controllers.Api
         /// <param name="p">private or not(1 or 0)</param>
         /// <returns></returns>
         [HttpPut]
-        [Route("{username}/mobile_privacy/{p}")]
+        [Route("{username}/mobile_privacy")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE)]
         public IHttpActionResult UpdateMobilePrivacy(string username, bool p)
         {
