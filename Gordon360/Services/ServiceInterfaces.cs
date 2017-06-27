@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
+using Newtonsoft.Json.Linq;
 
 /// <summary>
 /// Namespace with all the Service Interfaces that are to be implemented. I don't think making this interface is required, the services can work find on their own.
@@ -19,13 +18,15 @@ namespace Gordon360.Services
         AlumniProfileViewModel GetAlumniProfileByUsername(string username);
     }
 
-    public interface IChapelEventService
+    public interface IEventService
     {
         ChapelEventViewModel Get(string id);
         IEnumerable<ChapelEventViewModel> GetAll();
         ChapelEventViewModel GetChapelEventByChapelEventID(string CHEventID);
         IEnumerable<ChapelEventViewModel> GetAllForStudent(string id);
         IEnumerable<ChapelEventViewModel> GetEventsForStudentByTerm(string id, string term);
+        JObject GetLiveEvent(string Event_ID);
+        EventViewModel GetEvent(string Event_ID);
     }
 
     public interface IAccountService

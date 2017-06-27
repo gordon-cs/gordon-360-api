@@ -752,7 +752,7 @@
         </member>
         <member name="T:Gordon360.Services.EventService">
             <summary>
-            Service Class that facilitates data transactions between the AccountsController and the Account database model.
+            Service that allows for event control
             </summary>
         </member>
         <member name="M:Gordon360.Services.EventService.Get(System.String)">
@@ -768,9 +768,22 @@
             </summary>
             <returns>AccountViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
         </member>
+        <member name="M:Gordon360.Services.EventService.GetLiveEvent(System.String)">
+            <summary>
+            Return a Single Event JObject from Live25
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.EventService.GetEvent(System.String)">
+            <summary>
+            Fetches an event from Live25, and parses it into a smaller ViewModel to send off to the front end
+            </summary>
+            <param name="EventID">The Event ID for an Event</param>
+            <returns>EventViewModel</returns>
+        </member>
         <member name="M:Gordon360.Services.EventService.GetChapelEventByChapelEventID(System.String)">
             <summary>
-            Fetches the account record with the specified email.
+            Fetches the event with the specified ID (from Gordon's Database)
             </summary>
             <param name="CHEventID">The email address associated with the account.</param>
             <returns></returns>

@@ -1,8 +1,8 @@
 ﻿using System;
+using System.IO;
+using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using static System.DateTime;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
@@ -12,13 +12,16 @@ using System.Data;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
+using System.Net;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Gordon360.Services
 {
     /// <summary>
-    /// Service Class that facilitates data transactions between the AccountsController and the Account database model.
+    /// Service that allows for event control
     /// </summary>
-    public class EventService : IChapelEventService
+    public class EventService : IEventService
     {
         // See UnitOfWork class
         private IUnitOfWork _unitOfWork;
@@ -59,7 +62,38 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// Fetches the account record with the specified email.
+        /// Return a Single Event JObject from Live25
+        /// </summary>
+        /// <returns></returns>
+        public JObject GetLiveEvent(string EventID)
+        {
+            var requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&event_id=" + EventID + "&scope=extended";
+
+            using (WebClient client = new WebClient())
+            {
+                MemoryStream stream = new MemoryStream(client.DownloadData(requestUrl));
+                using (StreamReader streamReader = new StreamReader(stream, Encoding.UTF8 ))
+                {
+                    string readContents = streamReader.ReadToEnd();
+                    var data = (JObject)JsonConvert.DeserializeObject(readContents);
+                    return data;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Fetches an event from Live25, and parses it into a smaller ViewModel to send off to the front end
+        /// </summary>
+        /// <param name="EventID">The Event ID for an Event</param>
+        /// <returns>EventViewModel</returns>
+        public EventViewModel GetEvent(string EventID)
+        {
+            EventViewModel vm = new EventViewModel(GetLiveEvent(EventID));
+            return vm;
+        }
+
+        /// <summary>
+        /// Fetches the event with the specified ID (from Gordon's Database)
         /// </summary>
         /// <param name="CHEventID">The email address associated with the account.</param>
         /// <returns></returns>
