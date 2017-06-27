@@ -409,7 +409,7 @@ namespace Gordon360.Controllers.Api
         /// <param name = "p">the boolean value</param>
         /// <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         [HttpPut]
-        [Route("{id}/privacy")]
+        [Route("{id}/privacy/{p}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP)]
         public IHttpActionResult TogglePrivacy(int id, bool p)
         {
