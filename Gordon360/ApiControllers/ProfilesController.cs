@@ -47,7 +47,6 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpGet]
         [Route("")]
-        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]    //make sure the requested person is the same as the logged in user
         public IHttpActionResult Get()
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
@@ -284,7 +283,6 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpPost]
         [Route("image")]
-        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE)]
         public async Task<HttpResponseMessage> PostImage()
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
@@ -361,7 +359,6 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpPost]
         [Route("image/reset")]
-        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE)]
         public IHttpActionResult ResetImage()
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
@@ -380,7 +377,6 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpPut]
         [Route("{type}")]
-        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE)]
         public IHttpActionResult UpdateLink(string type, PROFILE_IMAGE path)
         {
             // Verify Input
@@ -412,7 +408,6 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpPut]
         [Route("mobile_privacy/{p}")]
-        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE)]
         public IHttpActionResult UpdateMobilePrivacy(bool p)
         {
             // Verify Input
@@ -444,7 +439,6 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpPut]
         [Route("image_privacy/{p}")]
-        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE)]
         public IHttpActionResult UpdateImagePrivacy(bool p)
         {
             // Verify Input

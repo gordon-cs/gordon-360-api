@@ -136,9 +136,7 @@ namespace Gordon360.AuthorizationFilters
             switch (resource)
             {
                 case Resource.PROFILE:
-                    var username_requested = context.ActionArguments["username"];
-                    var is_prOwner = username_requested.ToString().Equals(user_name);
-                    return is_prOwner;
+                    return true;
 
                 case Resource.MEMBERSHIP:
                     return true;
