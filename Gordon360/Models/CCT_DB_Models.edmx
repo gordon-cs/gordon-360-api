@@ -209,6 +209,7 @@ warning 6002: The table/view 'CCT.dbo.facstaff' does not have a primary key defi
           <Property Name="twitter" Type="varchar(max)" />
           <Property Name="instagram" Type="varchar(max)" />
           <Property Name="linkedin" Type="varchar(max)" />
+          <Property Name="show_img" Type="bit" />
         </EntityType>
         <EntityType Name="REQUEST">
           <Key>
@@ -339,6 +340,7 @@ warning 6002: The table/view 'CCT.dbo.ACCOUNT' does not have a primary key defin
         <EntityType Name="ACCOUNT">
           <Key>
             <PropertyRef Name="preferred_photo" />
+            <PropertyRef Name="show_pic" />
             <PropertyRef Name="Private" />
             <PropertyRef Name="gordon_id" />
           </Key>
@@ -350,6 +352,7 @@ warning 6002: The table/view 'CCT.dbo.ACCOUNT' does not have a primary key defin
           <Property Name="AD_Username" Type="varchar" MaxLength="50" />
           <Property Name="account_type" Type="varchar" MaxLength="20" />
           <Property Name="preferred_photo" Type="int" Nullable="false" />
+          <Property Name="show_pic" Type="int" Nullable="false" />
           <Property Name="Private" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -358,9 +361,11 @@ warning 6002: The table/view 'CCT.dbo.ChapelEvent' does not have a primary key d
           <Key>
             <PropertyRef Name="ROWID" />
             <PropertyRef Name="CHBarEventID" />
+            <PropertyRef Name="ID_NUM" />
           </Key>
-          <Property Name="ROWID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ROWID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="CHBarEventID" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ID_NUM" Type="int" Nullable="false" />
           <Property Name="CHBarcode" Type="nvarchar" MaxLength="14" />
           <Property Name="CHEventID" Type="nvarchar" MaxLength="6" />
           <Property Name="CHCheckerID" Type="nvarchar" MaxLength="14" />
@@ -368,6 +373,8 @@ warning 6002: The table/view 'CCT.dbo.ChapelEvent' does not have a primary key d
           <Property Name="CHTime" Type="datetime" />
           <Property Name="CHSource" Type="nvarchar" MaxLength="1" />
           <Property Name="CHTermCD" Type="nvarchar" MaxLength="4" />
+          <Property Name="Attended" Type="int" />
+          <Property Name="Required" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.CM_SESSION_MSTR' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -686,6 +693,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [ACCOUNT].[AD_Username] AS [AD_Username], 
     [ACCOUNT].[account_type] AS [account_type], 
     [ACCOUNT].[preferred_photo] AS [preferred_photo], 
+    [ACCOUNT].[show_pic] AS [show_pic], 
     [ACCOUNT].[Private] AS [Private]
     FROM [dbo].[ACCOUNT] AS [ACCOUNT]</DefiningQuery>
           </EntitySet>
@@ -693,13 +701,16 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <DefiningQuery>SELECT 
     [ChapelEvent].[ROWID] AS [ROWID], 
     [ChapelEvent].[CHBarEventID] AS [CHBarEventID], 
+    [ChapelEvent].[ID_NUM] AS [ID_NUM], 
     [ChapelEvent].[CHBarcode] AS [CHBarcode], 
     [ChapelEvent].[CHEventID] AS [CHEventID], 
     [ChapelEvent].[CHCheckerID] AS [CHCheckerID], 
     [ChapelEvent].[CHDate] AS [CHDate], 
     [ChapelEvent].[CHTime] AS [CHTime], 
     [ChapelEvent].[CHSource] AS [CHSource], 
-    [ChapelEvent].[CHTermCD] AS [CHTermCD]
+    [ChapelEvent].[CHTermCD] AS [CHTermCD], 
+    [ChapelEvent].[Attended] AS [Attended], 
+    [ChapelEvent].[Required] AS [Required]
     FROM [dbo].[ChapelEvent] AS [ChapelEvent]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="CM_SESSION_MSTR" EntityType="Self.CM_SESSION_MSTR" store:Type="Views" store:Schema="dbo">
@@ -821,6 +832,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <PropertyRef Name="gordon_id" />
             <PropertyRef Name="Private" />
             <PropertyRef Name="preferred_photo" />
+            <PropertyRef Name="show_pic" />
           </Key>
           <Property Name="gordon_id" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="firstname" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -831,6 +843,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="Private" Type="Int32" Nullable="false" />
           <Property Name="barcode" Type="String" MaxLength="14" FixedLength="false" Unicode="false" />
           <Property Name="preferred_photo" Type="Int32" Nullable="false" />
+          <Property Name="show_pic" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="CM_SESSION_MSTR">
           <Key>
@@ -1518,11 +1531,13 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="twitter" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="instagram" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="linkedin" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="show_img" Type="Boolean" />
         </EntityType>
         <EntityType Name="ChapelEvent">
           <Key>
             <PropertyRef Name="ROWID" />
             <PropertyRef Name="CHBarEventID" />
+            <PropertyRef Name="ID_NUM" />
           </Key>
           <Property Name="ROWID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="CHBarEventID" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
@@ -1533,6 +1548,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="CHTime" Type="DateTime" Precision="3" />
           <Property Name="CHSource" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
           <Property Name="CHTermCD" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="ID_NUM" Type="Int32" Nullable="false" />
+          <Property Name="Attended" Type="Int32" />
+          <Property Name="Required" Type="Int32" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1608,6 +1626,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <EntityTypeMapping TypeName="Gordon360.ACCOUNT">
               <MappingFragment StoreEntitySet="ACCOUNT">
 
+                <ScalarProperty Name="show_pic" ColumnName="show_pic" />
                 <ScalarProperty Name="preferred_photo" ColumnName="preferred_photo" />
 
                 <ScalarProperty Name="barcode" ColumnName="barcode" />
@@ -2254,6 +2273,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="PROFILE_IMAGE">
             <EntityTypeMapping TypeName="Gordon360.PROFILE_IMAGE">
               <MappingFragment StoreEntitySet="PROFILE_IMAGE">
+                <ScalarProperty Name="show_img" ColumnName="show_img" />
                 <ScalarProperty Name="linkedin" ColumnName="linkedin" />
                 <ScalarProperty Name="instagram" ColumnName="instagram" />
                 <ScalarProperty Name="twitter" ColumnName="twitter" />
@@ -2267,6 +2287,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="ChapelEvent">
             <EntityTypeMapping TypeName="Gordon360.ChapelEvent">
               <MappingFragment StoreEntitySet="ChapelEvent">
+                <ScalarProperty Name="Required" ColumnName="Required" />
+                <ScalarProperty Name="Attended" ColumnName="Attended" />
+                <ScalarProperty Name="ID_NUM" ColumnName="ID_NUM" />
                 <ScalarProperty Name="CHTermCD" ColumnName="CHTermCD" />
                 <ScalarProperty Name="CHSource" ColumnName="CHSource" />
                 <ScalarProperty Name="CHTime" ColumnName="CHTime" />

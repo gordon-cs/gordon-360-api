@@ -383,6 +383,7 @@ namespace Gordon360.Services
         /// Switches the privacy property of the person whose membership id is given
         /// </summary>
         /// <param name="id">The membership id.</param>
+        /// <param name="p">membership private or not</param>
         /// <returns>The newly modified membership.</returns>
         public void TogglePrivacy(int id, bool p)
         {

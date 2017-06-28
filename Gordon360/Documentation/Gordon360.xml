@@ -109,6 +109,11 @@
             <summary>Get the info of currently logged in user</summary>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.GetUserProfile(System.String)">
+            <summary>Get public profile info for a user</summary>
+            <param name="username">username of the profile info</param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.PostImage">
             <summary>
             Set an image for profile
@@ -132,6 +137,13 @@
         <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateMobilePrivacy(System.Boolean)">
             <summary>
             Update privacy of mobile phone number
+            </summary>
+            <param name="p">private or not</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateImagePrivacy(System.Boolean)">
+            <summary>
+            Update privacy of profile image
             </summary>
             <param name="p">private or not</param>
             <returns></returns>
@@ -719,7 +731,7 @@
             change activty privacy
             </summary>
             <param name="id">The activity code</param>
-            <param name="p">boolean value</param>
+            <param name="p">activity private or not</param>
         </member>
         <member name="T:Gordon360.Services.AdministratorService">
             <summary>
@@ -924,12 +936,6 @@
             <param name="username">The username</param>
             <returns>ProfileViewModel if found, null if not found</returns>
         </member>
-        <member name="M:Gordon360.Services.ProfileService.GetAll">
-            <summary>
-            Fetches all profile records from storage.
-            </summary>
-            <returns>ProfileImageViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateProfileImage(System.String,System.String)">
             <summary>
             Sets the path for the profile image.
@@ -954,6 +960,13 @@
         <member name="M:Gordon360.Services.ProfileService.UpdateMobilePrivacy(System.String,System.Boolean)">
             <summary>
             privacy setting of mobile phone.
+            </summary>
+            <param name="username">The username</param>
+            <param name="p"></param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.UpdateImagePrivacy(System.String,System.Boolean)">
+            <summary>
+            privacy setting user profile photo.
             </summary>
             <param name="username">The username</param>
             <param name="p"></param>
@@ -1137,6 +1150,7 @@
             Switches the privacy property of the person whose membership id is given
             </summary>
             <param name="id">The membership id.</param>
+            <param name="p">membership private or not</param>
             <returns>The newly modified membership.</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.validateMembership(Gordon360.Models.MEMBERSHIP)">

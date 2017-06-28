@@ -68,17 +68,6 @@ namespace Gordon360.Services
             return result;
         }
 
-        /// <summary>
-        /// Fetches all profile records from storage.
-        /// </summary>
-        /// <returns>ProfileImageViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        public IEnumerable<ProfileCustomViewModel> GetAll()
-        {
-            var query = _unitOfWork.ProfileCustomRepository.GetAll();
-            var result = query.Select<PROFILE_IMAGE, ProfileCustomViewModel>(x => x);
-            return result;
-        }
-
 
         /// <summary>
         /// Sets the path for the profile image.
@@ -168,6 +157,22 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The profile was not found." };
             }
             original.IsMobilePhonePrivate = p;
+            _unitOfWork.Save();
+        }
+        /// <summary>
+        /// privacy setting user profile photo.
+        /// </summary>
+        /// <param name="username">The username</param>
+        /// <param name="p"></param>
+        public void UpdateImagePrivacy(string username, bool p)
+        {
+            var original = _unitOfWork.ProfileCustomRepository.FirstOrDefault(x => x.username == username);
+
+            if (original == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The profile was not found." };
+            }
+            original.show_img = p;
             _unitOfWork.Save();
         }
 

@@ -23,5 +23,8 @@ namespace Gordon360.Models
         public Nullable<System.DateTime> CHTime { get; set; }
         public string CHSource { get; set; }
         public string CHTermCD { get; set; }
+        public int ID_NUM { get; set; }
+        public Nullable<int> Attended { get; set; }
+        public Nullable<int> Required { get; set; }
     }
 }

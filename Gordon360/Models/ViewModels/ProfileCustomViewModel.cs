@@ -14,6 +14,7 @@ namespace Gordon360.Models.ViewModels
         public string Twitter { get; set; }
         public string Instagram { get; set; }
         public string LinkedIn { get; set; }
+        public Nullable<bool> show_img { get; set; }
 
         public static implicit operator ProfileCustomViewModel(PROFILE_IMAGE info)
         {
@@ -25,7 +26,8 @@ namespace Gordon360.Models.ViewModels
                 Facebook = info.facebook ?? "",
                 Twitter = info.twitter ?? "",
                 Instagram = info.instagram ?? "",
-                LinkedIn = info.linkedin ?? ""
+                LinkedIn = info.linkedin ?? "",
+                show_img = info.show_img ?? true
             };
 
             return vm;

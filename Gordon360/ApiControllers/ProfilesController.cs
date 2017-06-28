@@ -154,6 +154,129 @@ namespace Gordon360.Controllers.Api
                 return NotFound();
             }
         }
+        /// <summary>Get public profile info for a user</summary>
+        /// <param name="username">username of the profile info</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{username}")]
+       // [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]    
+        public IHttpActionResult GetUserProfile(string username)
+        {
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(username))
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+            // search username in three tables
+            var student = _profileService.GetStudentProfileByUsername(username);
+            var faculty = _profileService.GetFacultyStaffProfileByUsername(username);
+            var alumni = _profileService.GetAlumniProfileByUsername(username);
+            var customInfo = _profileService.GetCustomUserInfo(username);
+
+            // merge the person's info if this person is in multiple tables and return result 
+            if (student != null)
+            {
+                if (faculty != null)
+                {
+                    if (alumni != null)
+                    {
+                        JObject stualufac = JObject.FromObject(student);                                 //convert into JSON object in order to use JSON.NET library 
+                        stualufac.Merge(JObject.FromObject(alumni), new JsonMergeSettings                // user Merge function to merge two json object
+                        {
+                            MergeArrayHandling = MergeArrayHandling.Union
+                        });
+                        stualufac.Merge(JObject.FromObject(faculty), new JsonMergeSettings
+                        {
+                            MergeArrayHandling = MergeArrayHandling.Union
+                        });
+                        stualufac.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
+                        {
+                            MergeArrayHandling = MergeArrayHandling.Union
+                        });
+                        stualufac.Add("PersonType", "stualufac");                                         // assign a type to the json object 
+                        return Ok(stualufac);
+                    }
+                    JObject stufac = JObject.FromObject(student);
+                    stufac.Merge(JObject.FromObject(faculty), new JsonMergeSettings
+                    {
+                        MergeArrayHandling = MergeArrayHandling.Union
+                    });
+                    stufac.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
+                    {
+                        MergeArrayHandling = MergeArrayHandling.Union
+                    });
+                    stufac.Add("PersonType", "stufac");
+                    return Ok(stufac);
+                }
+                else if (alumni != null)
+                {
+                    JObject stualu = JObject.FromObject(student);
+                    stualu.Merge(JObject.FromObject(alumni), new JsonMergeSettings
+                    {
+                        MergeArrayHandling = MergeArrayHandling.Union
+                    });
+                    stualu.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
+                    {
+                        MergeArrayHandling = MergeArrayHandling.Union
+                    });
+                    stualu.Add("PersonType", "stualu");
+                    return Ok(stualu);
+                }
+                JObject stu = JObject.FromObject(student);
+                stu.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
+                {
+                    MergeArrayHandling = MergeArrayHandling.Union
+                });
+                stu.Add("PersonType", "stu");
+                return Ok(stu);
+            }
+            else if (faculty != null)
+            {
+                if (alumni != null)
+                {
+                    JObject alufac = JObject.FromObject(alumni);
+                    alufac.Merge(JObject.FromObject(faculty), new JsonMergeSettings
+                    {
+                        MergeArrayHandling = MergeArrayHandling.Union
+                    });
+                    alufac.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
+                    {
+                        MergeArrayHandling = MergeArrayHandling.Union
+                    });
+                    alufac.Add("PersonType", "alufac");
+                    return Ok(alufac);
+                }
+                JObject fac = JObject.FromObject(faculty);
+                fac.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
+                {
+                    MergeArrayHandling = MergeArrayHandling.Union
+                });
+                fac.Add("PersonType", "fac");
+                return Ok(fac);
+            }
+            else if (alumni != null)
+            {
+                JObject alu = JObject.FromObject(alumni);
+                alu.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
+                {
+                    MergeArrayHandling = MergeArrayHandling.Union
+                });
+                alu.Add("PersonType", "alu");
+                return Ok(alu);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
 
         /// <summary>
         /// Set an image for profile
@@ -310,6 +433,38 @@ namespace Gordon360.Controllers.Api
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             _profileService.UpdateMobilePrivacy(username, p);
+
+            return Ok();
+
+        }
+        /// <summary>
+        /// Update privacy of profile image
+        /// </summary>
+        /// <param name="p">private or not</param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("image_privacy/{p}")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE)]
+        public IHttpActionResult UpdateImagePrivacy(bool p)
+        {
+            // Verify Input
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            _profileService.UpdateImagePrivacy(username, p);
 
             return Ok();
 

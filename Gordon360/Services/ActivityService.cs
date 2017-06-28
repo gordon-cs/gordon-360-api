@@ -353,7 +353,7 @@ namespace Gordon360.Services
         /// change activty privacy
         /// </summary>
         /// <param name="id">The activity code</param>
-        /// <param name="p">boolean value</param>
+        /// <param name="p">activity private or not</param>
         public void TogglePrivacy(string id,bool p)
         {
             var original = _unitOfWork.ActivityInfoRepository.GetById(id);
