@@ -106,45 +106,33 @@
             <returns>The deleted object</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.Get">
-            <summary>
-            Get all available users
-            </summary>
-            <returns>All the users in the databse</returns>
-            <remarks></remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.Get(System.String)">
             <summary>Get the info of currently logged in user</summary>
-            <param name="username">An identifier for the person</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.PostImage(System.String)">
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.PostImage">
             <summary>
             Set an image for profile
             </summary>
-            <param name="username">The username</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.ResetImage(System.String)">
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.ResetImage">
             <summary>
             Reset the profile Image
             </summary>
-            <param name="username">The username</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateLink(System.String,System.String,Gordon360.Models.PROFILE_IMAGE)">
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateLink(System.String,Gordon360.Models.PROFILE_IMAGE)">
             <summary>
             Update the profile social media links
             </summary>
-            <param name="username">The username</param>
             <param name="type">The type of social media</param>
             <param name="path">The path of the links</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateMobilePrivacy(System.String,System.Boolean)">
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateMobilePrivacy(System.Boolean)">
             <summary>
             Update privacy of mobile phone number
             </summary>
-            <param name="username">The username</param>
             <param name="p">private or not</param>
             <returns></returns>
         </member>
