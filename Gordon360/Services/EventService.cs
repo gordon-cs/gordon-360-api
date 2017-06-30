@@ -32,52 +32,50 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// Fetches a single account record whose id matches the id provided as an argument
-        /// </summary>
-        /// <param name="id">The person's gordon id</param>
-        /// <returns>AccountViewModel if found, null if not found</returns>
-        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ChapelEvent)]
-        public ChapelEventViewModel Get(string id)
-        {
-            var query = _unitOfWork.ChapelEventRepository.GetById(id);
-            if (query == null)
-            {
-                // Custom Exception is thrown that will be cauth in the controller Exception filter.
-                throw new ResourceNotFoundException() { ExceptionMessage = "The event was not found." };
-            }
-            ChapelEventViewModel result = query;
-            return result;
-        }
-
-        /// <summary>
-        /// Fetches all the account records from storage.
-        /// </summary>
-        /// <returns>AccountViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.ChapelEvent)]
-        public IEnumerable<ChapelEventViewModel> GetAll()
-        {
-            var query = _unitOfWork.ChapelEventRepository.GetAll();
-            var result = query.Select<ChapelEvent, ChapelEventViewModel>(x => x); //Map the database model to a more presentable version (a ViewModel)
-            return result;
-        }
-
-        /// <summary>
         /// Return a Single Event JObject from Live25
         /// </summary>
         /// <returns></returns>
-        public JObject GetLiveEvent(string EventID)
-        {
-            var requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&event_id=" + EventID + "&scope=extended";
+        public JObject GetLiveEvent(string EventID, string type) {
 
-            using (WebClient client = new WebClient())
-            {
-                MemoryStream stream = new MemoryStream(client.DownloadData(requestUrl));
-                using (StreamReader streamReader = new StreamReader(stream, Encoding.UTF8 ))
+            // If the type is "s", then it is a single event request
+            if (type == "s" || type == "S")
+            {   
+                // Set our api route and fill in the event information we would like
+                var requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&event_id=" + EventID + "&scope=extended";
+                using (WebClient client = new WebClient())
                 {
-                    string readContents = streamReader.ReadToEnd();
-                    var data = (JObject)JsonConvert.DeserializeObject(readContents);
-                    return data;
+                    // Commit contents of the request to temporary memory
+                    MemoryStream stream = new MemoryStream(client.DownloadData(requestUrl));
+                    // Begin to read contents with correct encoding
+                    using (StreamReader streamReader = new StreamReader(stream, Encoding.UTF8))
+                    {
+                        string readContents = streamReader.ReadToEnd();
+                        // Parse the data into a json object
+                        var data = (JObject)JsonConvert.DeserializeObject(readContents);
+                        return data;
+                    }
                 }
+            }
+            // If it is a type "t", then it is a search for a type"
+            // Same logic is used as above 
+            else if (type == "t" || type == "T")
+            {
+                var requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&event_type_id=" + EventID + "&scope=extended";
+                using (WebClient client = new WebClient())
+                {
+                    MemoryStream stream = new MemoryStream(client.DownloadData(requestUrl));
+                    using (StreamReader streamReader = new StreamReader(stream, Encoding.UTF8))
+                    {
+                        string readContents = streamReader.ReadToEnd();
+                        var data = (JObject)JsonConvert.DeserializeObject(readContents);
+                        return data;
+                    }
+                }
+            }
+            // If the input is incorrect, throw an appropriate error
+            else
+            {
+                throw new Exception("Invalid type!");
             }
         }
 
@@ -85,29 +83,39 @@ namespace Gordon360.Services
         /// Fetches an event from Live25, and parses it into a smaller ViewModel to send off to the front end
         /// </summary>
         /// <param name="EventID">The Event ID for an Event</param>
+        /// <param name="type"> the type of item being parsed</param>
         /// <returns>EventViewModel</returns>
-        public EventViewModel GetEvent(string EventID)
+        public IEnumerable<EventViewModel> GetEvents(string EventID, string type)
         {
-            EventViewModel vm = new EventViewModel(GetLiveEvent(EventID));
-            return vm;
+            // Use defined function to query 25Live
+            JObject events = GetLiveEvent(EventID, type);
+            // Determine how many events exist within the query contents
+            int index = events["events"]["event"].Count();
+            // Initiate a list to contain the events
+            List<EventViewModel> list = new List<EventViewModel>();
+            // If there is only one event, let the EventViewModel contructor know!
+            if (index == 1)
+            {
+                EventViewModel vm = new EventViewModel(events, index, true);
+                list.Add(vm);
+                IEnumerable<EventViewModel> result = list.AsEnumerable<EventViewModel>();
+                return result;
+            }
+            else
+            {   
+                // Iterate through the JSon Object of events and add them to the list
+                for (int y = 0; y < index; y++)
+                {
+                    EventViewModel vm = new EventViewModel(events, y, false);
+                    list.Add(vm);
+                }
+
+                IEnumerable<EventViewModel> result = list.AsEnumerable<EventViewModel>();
+                return result;
+            }
+
         }
 
-        /// <summary>
-        /// Fetches the event with the specified ID (from Gordon's Database)
-        /// </summary>
-        /// <param name="CHEventID">The email address associated with the account.</param>
-        /// <returns></returns>
-        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ChapelEvent)]
-        public ChapelEventViewModel GetChapelEventByChapelEventID(string CHEventID)
-        {
-            var query = _unitOfWork.ChapelEventRepository.FirstOrDefault(x => x.CHEventID == CHEventID);
-            if (query == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The event was not found." };
-            }
-            ChapelEventViewModel result = query; // Implicit conversion happening here, see ViewModels.
-            return result;
-        }
 
         /// <summary>
         /// Returns all attended events for a student
@@ -115,7 +123,7 @@ namespace Gordon360.Services
         /// <param name="user_name"> The student's ID</param>
         /// <returns></returns>
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.ChapelEvent)]
-        public IEnumerable<ChapelEventViewModel> GetAllForStudent(string user_name)
+        public IEnumerable<AttendedEventViewModel> GetAllForStudent(string user_name)
         {
             // Confirm that student exists
             var studentExists = _unitOfWork.AccountRepository.Where(x => x.AD_Username.Trim() == user_name.Trim()).Count() > 0;
@@ -127,37 +135,31 @@ namespace Gordon360.Services
             // Declare the variables used
             var idParam = new SqlParameter("@STU_USERNAME", user_name.Trim());
             // Run the query, which returns an iterable json list 
-            var result = RawSqlQuery<ChapelEventViewModel>.query("EVENTS_BY_STUDENT_ID @STU_USERNAME", idParam);
+            var query = RawSqlQuery<ChapelEventViewModel>.query("EVENTS_BY_STUDENT_ID @STU_USERNAME", idParam);
 
-            if (result == null)
+            if (query == null)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The student was not found" };
+                throw new ResourceNotFoundException() { ExceptionMessage = "No events attended yet!" };
             }
 
-            // Trim white space off of results
-            var trimmedResult = result.Select(x =>
+            List<AttendedEventViewModel> result = new List<AttendedEventViewModel>();
+            foreach (var c in query)
             {
-                var trim = x;
-                trim.ROWID = x.ROWID;
-                trim.CHBarEventID = x.CHBarEventID.Trim();
-                trim.CHEventID = x.CHEventID.Trim();
-                trim.CHCheckerID = x.CHCheckerID.Trim();
-                trim.CHDate = x.CHDate;
-                trim.CHTermCD = x.CHTermCD.Trim();
-                trim.Required = x.Required;
-                return trim;
-            });
-            return trimmedResult;
+                AttendedEventViewModel combine = new AttendedEventViewModel( new EventViewModel(GetLiveEvent(c.CHEventID, "s"), 0, true), c);
+                result.Add(combine);
+            }
+            IEnumerable<AttendedEventViewModel> vm = result.AsEnumerable<AttendedEventViewModel>();
+            return vm;
         }
 
         /// <summary>
-        /// Returns all attended events for a student
+        /// Returns all attended events for a student in a specific term
         /// </summary>
         /// <param name="user_name"> The student's ID</param>
         /// <param name="term"> The current term</param>
         /// <returns></returns>
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.ChapelEvent)]
-        public IEnumerable<ChapelEventViewModel> GetEventsForStudentByTerm(string user_name, string term)
+        public IEnumerable<AttendedEventViewModel> GetEventsForStudentByTerm(string user_name, string term)
         {
             var studentExists = _unitOfWork.AccountRepository.Where(x => x.AD_Username.Trim() == user_name.Trim()).Count() > 0;
             if (!studentExists)
@@ -180,23 +182,15 @@ namespace Gordon360.Services
             // Filter out the events that are part of the specified term, based on the attribute specified, then sort by Date
             result = result.Where(x => x.CHTermCD.Trim().Equals(term)).OrderByDescending(x => x.CHDate);
 
-            
-            // Trim the white space off of each entry
-            var trimmedResult = result.Select(x =>
-            {
-                var trim = x;
-                trim.ROWID = x.ROWID;
-                trim.CHBarEventID = x.CHBarEventID.Trim();
-                trim.CHEventID = x.CHEventID.Trim();
-                trim.CHCheckerID = x.CHCheckerID.Trim();
-                trim.CHDate = x.CHDate.Value.Add(x.CHTime.Value.TimeOfDay);
-                trim.CHTime = x.CHTime;
-                trim.CHTermCD = x.CHTermCD.Trim();
-                trim.Required = x.Required;
-                return trim;
-            });
 
-            return trimmedResult;
+            List<AttendedEventViewModel> list = new List<AttendedEventViewModel>();
+            foreach (var c in result)
+            {
+                AttendedEventViewModel combine = new AttendedEventViewModel(new EventViewModel(GetLiveEvent(c.CHEventID, "s"), 0, true), c);
+                list.Add(combine);
+            }
+            IEnumerable<AttendedEventViewModel> vm = list.AsEnumerable<AttendedEventViewModel>();
+            return vm;
         }
 
     }

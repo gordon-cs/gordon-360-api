@@ -20,13 +20,10 @@ namespace Gordon360.Services
 
     public interface IEventService
     {
-        ChapelEventViewModel Get(string id);
-        IEnumerable<ChapelEventViewModel> GetAll();
-        ChapelEventViewModel GetChapelEventByChapelEventID(string CHEventID);
-        IEnumerable<ChapelEventViewModel> GetAllForStudent(string id);
-        IEnumerable<ChapelEventViewModel> GetEventsForStudentByTerm(string id, string term);
-        JObject GetLiveEvent(string Event_ID);
-        EventViewModel GetEvent(string Event_ID);
+        IEnumerable<AttendedEventViewModel> GetAllForStudent(string id);
+        IEnumerable<AttendedEventViewModel> GetEventsForStudentByTerm(string id, string term);
+        JObject GetLiveEvent(string Event_ID, string type);
+        IEnumerable<EventViewModel> GetEvents(string Event_ID, string type);
     }
 
     public interface IAccountService
