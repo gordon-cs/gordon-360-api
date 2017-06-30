@@ -15,13 +15,14 @@ namespace Gordon360.Models.ViewModels
         public Nullable<DateTime> CHDate { get; set; }
         public Nullable<DateTime> CHTime { get; set; }
         public string CHTermCD { get; set; }
+        public Nullable<int> Required { get; set; }
 
         public static implicit operator ChapelEventViewModel(ChapelEvent a)
         {
             Nullable<DateTime> NoTIme = new DateTime();
             ChapelEventViewModel vm = new ChapelEventViewModel
             {
-                
+
                 ROWID = a.ROWID,
                 CHBarEventID = a.CHBarEventID.Trim(),
                 CHBarcode = a.CHBarcode.Trim(),
@@ -30,6 +31,7 @@ namespace Gordon360.Models.ViewModels
                 CHDate = a.CHDate ?? NoTIme,
                 CHTime = a.CHTime,
                 CHTermCD = a.CHTermCD.Trim(),
+                Required = a.Required,
             };
 
             return vm;

@@ -144,6 +144,7 @@ namespace Gordon360.Services
                 trim.CHCheckerID = x.CHCheckerID.Trim();
                 trim.CHDate = x.CHDate;
                 trim.CHTermCD = x.CHTermCD.Trim();
+                trim.Required = x.Required;
                 return trim;
             });
             return trimmedResult;
@@ -191,6 +192,7 @@ namespace Gordon360.Services
                 trim.CHDate = x.CHDate.Value.Add(x.CHTime.Value.TimeOfDay);
                 trim.CHTime = x.CHTime;
                 trim.CHTermCD = x.CHTermCD.Trim();
+                trim.Required = x.Required;
                 return trim;
             });
 

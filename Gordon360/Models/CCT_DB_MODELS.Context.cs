@@ -256,13 +256,13 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ALL_EVENTS_PER_STUDENT_Result>("ALL_EVENTS_PER_STUDENT", sTU_IDParameter, tERMParameter);
         }
     
-        public virtual ObjectResult<EVENTS_BY_STUDENT_ID_Result> EVENTS_BY_STUDENT_ID(string sTU_ID)
+        public virtual ObjectResult<EVENTS_BY_STUDENT_ID_Result> EVENTS_BY_STUDENT_ID(string sTU_USERNAME)
         {
-            var sTU_IDParameter = sTU_ID != null ?
-                new ObjectParameter("STU_ID", sTU_ID) :
-                new ObjectParameter("STU_ID", typeof(string));
+            var sTU_USERNAMEParameter = sTU_USERNAME != null ?
+                new ObjectParameter("STU_USERNAME", sTU_USERNAME) :
+                new ObjectParameter("STU_USERNAME", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<EVENTS_BY_STUDENT_ID_Result>("EVENTS_BY_STUDENT_ID", sTU_IDParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<EVENTS_BY_STUDENT_ID_Result>("EVENTS_BY_STUDENT_ID", sTU_USERNAMEParameter);
         }
     
         public virtual ObjectResult<Nullable<int>> TOTAL_CREDITS_PER_STUDENT(string sTU_ID, string tERM)
