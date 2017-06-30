@@ -95,6 +95,7 @@ namespace Gordon360.ApiControllers
                     }
 
                 }
+                // Throw errors for invalid route
                 if (errors == "") {
                     if (type.Length > 1) {
                         throw new Exception("Invalid type!");
