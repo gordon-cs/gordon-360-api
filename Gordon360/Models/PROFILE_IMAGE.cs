@@ -12,17 +12,15 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class SUPERVISOR
+    public partial class PROFILE_IMAGE
     {
-        public int SUP_ID { get; set; }
-        public int ID_NUM { get; set; }
-        public string SESS_CDE { get; set; }
-        public string ACT_CDE { get; set; }
-        public string USER_NAME { get; set; }
-        public string JOB_NAME { get; set; }
-        public Nullable<System.DateTime> JOB_TIME { get; set; }
-    
-        public virtual SUPERVISOR SUPERVISOR1 { get; set; }
-        public virtual SUPERVISOR SUPERVISOR2 { get; set; }
+        public string id { get; set; }
+        public string username { get; set; }
+        public string Img_Path { get; set; }
+        public string facebook { get; set; }
+        public string twitter { get; set; }
+        public string instagram { get; set; }
+        public string linkedin { get; set; }
+        public Nullable<bool> show_img { get; set; }
     }
 }

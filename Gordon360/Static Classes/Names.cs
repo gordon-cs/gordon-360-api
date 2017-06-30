@@ -52,6 +52,7 @@ namespace Gordon360.Static.Names
         public const string STUDENT = "student";
         public const string FACSTAFF = "facstaff";
         public const string GOD = "god";
+        public const string READONLY = "readonly";
     }
 
     public static class Activity_Roles

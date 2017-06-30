@@ -10,17 +10,10 @@
 namespace Gordon360.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class ACT_INFO
+    public partial class sp_helpdiagramdefinition_Result
     {
-        public string ACT_CDE { get; set; }
-        public string ACT_DESC { get; set; }
-        public string ACT_BLURB { get; set; }
-        public string ACT_URL { get; set; }
-        public string ACT_IMG_PATH { get; set; }
-        public string ACT_TYPE { get; set; }
-        public string ACT_TYPE_DESC { get; set; }
-        public Nullable<bool> PRIVACY { get; set; }
+        public Nullable<int> version { get; set; }
+        public byte[] definition { get; set; }
     }
 }
