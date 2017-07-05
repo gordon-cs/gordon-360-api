@@ -342,6 +342,7 @@ warning 6002: The table/view 'CCT.dbo.ACCOUNT' does not have a primary key defin
             <PropertyRef Name="preferred_photo" />
             <PropertyRef Name="show_pic" />
             <PropertyRef Name="Private" />
+            <PropertyRef Name="ReadOnly" />
             <PropertyRef Name="gordon_id" />
           </Key>
           <Property Name="gordon_id" Type="varchar" MaxLength="10" Nullable="false" />
@@ -354,6 +355,7 @@ warning 6002: The table/view 'CCT.dbo.ACCOUNT' does not have a primary key defin
           <Property Name="preferred_photo" Type="int" Nullable="false" />
           <Property Name="show_pic" Type="int" Nullable="false" />
           <Property Name="Private" Type="int" Nullable="false" />
+          <Property Name="ReadOnly" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.ChapelEvent' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -694,7 +696,8 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [ACCOUNT].[account_type] AS [account_type], 
     [ACCOUNT].[preferred_photo] AS [preferred_photo], 
     [ACCOUNT].[show_pic] AS [show_pic], 
-    [ACCOUNT].[Private] AS [Private]
+    [ACCOUNT].[Private] AS [Private], 
+    [ACCOUNT].[ReadOnly] AS [ReadOnly]
     FROM [dbo].[ACCOUNT] AS [ACCOUNT]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="ChapelEvent" EntityType="Self.ChapelEvent" store:Type="Views" store:Schema="dbo">
@@ -833,6 +836,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <PropertyRef Name="Private" />
             <PropertyRef Name="preferred_photo" />
             <PropertyRef Name="show_pic" />
+            <PropertyRef Name="ReadOnly" />
           </Key>
           <Property Name="gordon_id" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="firstname" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -844,6 +848,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="barcode" Type="String" MaxLength="14" FixedLength="false" Unicode="false" />
           <Property Name="preferred_photo" Type="Int32" Nullable="false" />
           <Property Name="show_pic" Type="Int32" Nullable="false" />
+          <Property Name="ReadOnly" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="CM_SESSION_MSTR">
           <Key>
@@ -1626,6 +1631,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <EntityTypeMapping TypeName="Gordon360.ACCOUNT">
               <MappingFragment StoreEntitySet="ACCOUNT">
 
+                <ScalarProperty Name="ReadOnly" ColumnName="ReadOnly" />
                 <ScalarProperty Name="show_pic" ColumnName="show_pic" />
                 <ScalarProperty Name="preferred_photo" ColumnName="preferred_photo" />
 
