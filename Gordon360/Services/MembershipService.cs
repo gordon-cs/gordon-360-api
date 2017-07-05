@@ -101,7 +101,6 @@ namespace Gordon360.Services
             result.LastName = result.LastName.Trim();
             result.Participation = result.Participation.Trim();
             result.ParticipationDescription = result.ParticipationDescription.Trim();
-            result.Privacy = result.Privacy;
 
             return result;
         }
@@ -288,7 +287,6 @@ namespace Gordon360.Services
                 trim.FirstName = x.FirstName.Trim();
                 trim.LastName = x.LastName.Trim();
                 trim.IDNumber = x.IDNumber;
-                trim.Privacy = x.Privacy;
                 return trim;
             });
 
