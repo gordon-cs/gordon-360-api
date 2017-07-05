@@ -15,6 +15,7 @@ Dive in.
 - [API Endpoints](#api-endpoints)
     - [Authentication](#authentication)
     - [Memberships](#memberships)
+    - [Events] (#events)
     - [Activities](#activities)
     - [Membership Requests](#membership-requests)
     - [Students](#students)
@@ -302,6 +303,17 @@ What is it? Resource that respresents the affiliation between a student and a cl
 
 `api/memberships/:id` Delete the membership with membership id `id`.
 
+### Events
+What is it? Resources to get information on Events from the 25Live system
+
+##### GET
+
+`api/events/chapel/Student/:user_name` Get all events attended by a student (pulls from local database)
+
+`api/events/chapel/Student/:user_name/:term` Get all events attended by a student in a specific term
+
+`api/events/25Live/:Event_OR_Type_ID/:type` Get events specified by an ID number or a type. If the type is "s", you will enter an event id (or multple event ids se[arated by a space). If the type is "t", you will enter in a type id (or multiple types separated by a space)
+Multiple types or events are separated by a '$'
 
 ### Activities
 What is it? Resource that represents some activity - such as a club, ministry, leadership program, etc.

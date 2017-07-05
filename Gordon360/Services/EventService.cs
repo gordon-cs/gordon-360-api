@@ -38,10 +38,17 @@ namespace Gordon360.Services
         public JObject GetLiveEvent(string EventID, string type) {
 
             // If the type is "s", then it is a single event request
-            if (type == "s" || type == "S")
+            if (type == "s" || type == "S" || type == "m" || type == "M")
             {   
+                if (type == "m" || type == "M")
+                {
+                    if (EventID.Contains('$'))
+                    {
+                        EventID = EventID.Replace('$', '+');
+                    }
+                }
                 // Set our api route and fill in the event information we would like
-                var requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&event_id=" + EventID + "&scope=extended";
+                var requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&event_id="+EventID+"&scope=extended";
                 using (WebClient client = new WebClient())
                 {
                     // Commit contents of the request to temporary memory
@@ -60,6 +67,10 @@ namespace Gordon360.Services
             // Same logic is used as above 
             else if (type == "t" || type == "T")
             {
+                if (EventID.Contains('$'))
+                {
+                    EventID = EventID.Replace('$', '+');
+                }
                 var requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&event_type_id=" + EventID + "&scope=extended";
                 using (WebClient client = new WebClient())
                 {
@@ -89,20 +100,23 @@ namespace Gordon360.Services
         {
             // Use defined function to query 25Live
             JObject events = GetLiveEvent(EventID, type);
-            // Determine how many events exist within the query contents
-            int index = events["events"]["event"].Count();
             // Initiate a list to contain the events
             List<EventViewModel> list = new List<EventViewModel>();
+
             // If there is only one event, let the EventViewModel contructor know!
-            if (index == 1)
+            if (type == "s")
             {
-                EventViewModel vm = new EventViewModel(events, index, true);
+                EventViewModel vm = new EventViewModel(events, 0, true);
                 list.Add(vm);
                 IEnumerable<EventViewModel> result = list.AsEnumerable<EventViewModel>();
                 return result;
             }
+
+            // Otherwise, we treat it as a json object containing multiple events
             else
-            {   
+            {
+                // Determine how many events exist within the query contents
+                int index = events["events"]["event"].Count();
                 // Iterate through the JSon Object of events and add them to the list
                 for (int y = 0; y < index; y++)
                 {
