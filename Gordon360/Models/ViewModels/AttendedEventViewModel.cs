@@ -25,13 +25,12 @@ namespace Gordon360.Models.ViewModels
         public JToken Location { get; set; }
         public string Organization { get; set; }
 
-        Nullable<DateTime> NoTIme = new DateTime();
         public AttendedEventViewModel(EventViewModel a, ChapelEventViewModel b)
         {
             CHBarcode = b.CHBarcode.Trim();
             CHEventID = b.CHEventID;
             CHCheckerID = b.CHCheckerID.Trim();
-            CHDate = b.CHDate ?? NoTIme;
+            CHDate = b.CHDate.Value.Add(CHTime.Value.TimeOfDay);
             CHTime = b.CHTime;
             CHTermCD = b.CHTermCD.Trim();
             Required = b.Required;

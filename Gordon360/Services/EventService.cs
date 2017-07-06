@@ -169,22 +169,34 @@ namespace Gordon360.Services
             // Declare the variables used
             var idParam = new SqlParameter("@STU_USERNAME", user_name.Trim());
             // Run the query, which returns an iterable json list 
-            var query = RawSqlQuery<ChapelEventViewModel>.query("EVENTS_BY_STUDENT_ID @STU_USERNAME", idParam);
+            var result = RawSqlQuery<ChapelEventViewModel>.query("EVENTS_BY_STUDENT_ID @STU_USERNAME", idParam);
 
-            if (query == null)
+            if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "No events attended yet!" };
             }
 
-            List<AttendedEventViewModel> result = new List<AttendedEventViewModel>();
-            foreach (var c in query)
+            // A list to hold each combined event until we finish
+            List<AttendedEventViewModel> list = new List<AttendedEventViewModel>();
+            // Get a list of every attended event, to send over to 25Live
+            string joined = string.Join("+", result.Select(x => x.CHEventID));
+            // Return all events attended by the student from 25Live
+            IEnumerable<EventViewModel> events = GetEvents(joined, "m");
+
+            foreach (var c in result)
             {
-                AttendedEventViewModel combine = new AttendedEventViewModel( new EventViewModel(GetLiveEvent(c.CHEventID, "s"), 0, true), c);
-                result.Add(combine);
+                // Find the event with the same ID as the attended event
+                EventViewModel l = events.ToList().Find(x => x.Event_ID == c.CHEventID);
+                // Combine the two view models
+                AttendedEventViewModel combine = new AttendedEventViewModel(l, c);
+                // Add to the list we made earlier
+                list.Add(combine);
             }
-            IEnumerable<AttendedEventViewModel> vm = result.AsEnumerable<AttendedEventViewModel>();
+            // Convert the list to an IEnumerable 
+            IEnumerable<AttendedEventViewModel> vm = list.AsEnumerable<AttendedEventViewModel>();
             return vm;
         }
+
 
         /// <summary>
         /// Returns all attended events for a student in a specific term
@@ -216,14 +228,25 @@ namespace Gordon360.Services
             // Filter out the events that are part of the specified term, based on the attribute specified, then sort by Date
             result = result.Where(x => x.CHTermCD.Trim().Equals(term)).OrderByDescending(x => x.CHDate);
 
-
+            // A list to hold each combined event until we finish
             List<AttendedEventViewModel> list = new List<AttendedEventViewModel>();
+            // Get a list of every attended event, to send over to 25Live
+            string joined = string.Join("+", result.Select(x => x.CHEventID));
+            // Return all events attended by the student from 25Live
+            IEnumerable<EventViewModel> events = GetEvents(joined, "m");
+
             foreach (var c in result)
             {
-                AttendedEventViewModel combine = new AttendedEventViewModel(new EventViewModel(GetLiveEvent(c.CHEventID, "s"), 0, true), c);
+                // Find the event with the same ID as the attended event
+                EventViewModel l = events.ToList().Find(x => x.Event_ID == c.CHEventID);
+                // Combine the two view models
+                AttendedEventViewModel combine = new AttendedEventViewModel(l, c);
+                // Add to the list we made earlier
                 list.Add(combine);
             }
+            // Convert the list to an IEnumerable 
             IEnumerable<AttendedEventViewModel> vm = list.AsEnumerable<AttendedEventViewModel>();
+
             return vm;
         }
 
