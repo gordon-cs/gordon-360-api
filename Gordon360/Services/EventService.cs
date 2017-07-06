@@ -3,7 +3,6 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using Gordon360.Services.ComplexQueries;
@@ -37,8 +36,28 @@ namespace Gordon360.Services
         /// <returns></returns>
         public JObject GetLiveEvent(string EventID, string type) {
 
-            // If the type is "s", then it is a single event request
-            if (type == "s" || type == "S" || type == "m" || type == "M")
+            // Return a list of all chapel events
+            if (EventID == "Chapel")
+            {
+              
+                // Set our api route and fill in the event information we would like
+                var requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&category_id=85&scope=extended";
+                using (WebClient client = new WebClient())
+                {
+                    // Commit contents of the request to temporary memory
+                    MemoryStream stream = new MemoryStream(client.DownloadData(requestUrl));
+                    // Begin to read contents with correct encoding
+                    using (StreamReader streamReader = new StreamReader(stream, Encoding.UTF8))
+                    {
+                        string readContents = streamReader.ReadToEnd();
+                        // Parse the data into a json object
+                        var data = (JObject)JsonConvert.DeserializeObject(readContents);
+                        return data;
+                    }
+                }
+            }
+            // If the type is "s", then it is a single event request, "m" is multiple event IDs
+            else if (type == "s" || type == "S" || type == "m" || type == "M")
             {   
                 if (type == "m" || type == "M")
                 {
@@ -103,8 +122,8 @@ namespace Gordon360.Services
             // Initiate a list to contain the events
             List<EventViewModel> list = new List<EventViewModel>();
 
-            // If there is only one event, let the EventViewModel contructor know!
-            if (type == "s")
+            // If the event key is of type array, we know there are more than one events nested within, so check for that here
+            if (events.SelectToken("events.event").Type != JTokenType.Array)
             {
                 EventViewModel vm = new EventViewModel(events, 0, true);
                 list.Add(vm);
@@ -121,6 +140,7 @@ namespace Gordon360.Services
                 for (int y = 0; y < index; y++)
                 {
                     EventViewModel vm = new EventViewModel(events, y, false);
+              
                     list.Add(vm);
                 }
 
