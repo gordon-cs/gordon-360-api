@@ -491,6 +491,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <Function Name="MEMBERSHIPS_PER_STUDENT_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="STUDENT_ID" Type="int" Mode="In" />
         </Function>
+        <Function Name="PHOTO_INFO_PER_USER_NAME" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="USER_NAME" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="REQUEST_PER_REQUEST_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="REQUEST_ID" Type="int" Mode="In" />
         </Function>
@@ -1025,6 +1028,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="student_temp" EntityType="Gordon360.student_temp" />
           <EntitySet Name="PROFILE_IMAGE" EntityType="Gordon360.PROFILE_IMAGE" />
           <EntitySet Name="ChapelEvent" EntityType="Gordon360.ChapelEvent" />
+          <FunctionImport Name="PHOTO_INFO_PER_USER_NAME" ReturnType="Collection(Gordon360.PHOTO_INFO_PER_USER_NAME_Result)">
+          <Parameter Name="USER_NAME" Mode="In" Type="String" />
+          </FunctionImport>
 
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
@@ -1557,6 +1563,15 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="Attended" Type="Int32" />
           <Property Name="Required" Type="Int32" />
         </EntityType>
+        <ComplexType Name="PHOTO_INFO_PER_USER_NAME_Result">
+          <Property Type="String" Name="Img_Path" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Img_Name" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Pref_Img_Path" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Pref_Img_Name" Nullable="true" MaxLength="100" />
+          <Property Type="Int32" Name="preffered_photo" Nullable="false" />
+          <Property Type="Int32" Name="show_pic" Nullable="false" />
+          <Property Type="String" Name="EmailUserName" Nullable="true" MaxLength="50" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2308,6 +2323,19 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="PHOTO_INFO_PER_USER_NAME" FunctionName="Gordon360.Store.PHOTO_INFO_PER_USER_NAME">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.PHOTO_INFO_PER_USER_NAME_Result">
+                <ScalarProperty Name="Img_Path" ColumnName="Img_Path" />
+                <ScalarProperty Name="Img_Name" ColumnName="Img_Name" />
+                <ScalarProperty Name="Pref_Img_Path" ColumnName="Pref_Img_Path" />
+                <ScalarProperty Name="Pref_Img_Name" ColumnName="Pref_Img_Name" />
+                <ScalarProperty Name="preffered_photo" ColumnName="preffered_photo" />
+                <ScalarProperty Name="show_pic" ColumnName="show_pic" />
+                <ScalarProperty Name="EmailUserName" ColumnName="EmailUserName" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

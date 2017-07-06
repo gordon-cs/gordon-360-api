@@ -148,6 +148,12 @@
             <param name="p">private or not</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateImage(System.String,System.String)">
+            <summary>
+            Update image path
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ParticipationsController.Get">
             <summary>Get all the roles a person may have within an activity</summary>
             <returns>A list of all the roles and their coresponding acronyms</returns>
@@ -936,12 +942,13 @@
             <param name="username">The username</param>
             <returns>ProfileViewModel if found, null if not found</returns>
         </member>
-        <member name="M:Gordon360.Services.ProfileService.UpdateProfileImage(System.String,System.String)">
+        <member name="M:Gordon360.Services.ProfileService.UpdateProfileImage(System.String,System.String,System.String)">
             <summary>
             Sets the path for the profile image.
             </summary>
             <param name="username">The username</param>
             <param name="path"></param>
+            <param name="name"></param>
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateProfileLink(System.String,System.String,Gordon360.Models.PROFILE_IMAGE)">
             <summary>

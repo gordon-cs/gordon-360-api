@@ -9,25 +9,21 @@ namespace Gordon360.Models.ViewModels
     {
         public string ID { get; set; }
         public string EmailUserName { get; set; }
-        public string ImagePath { get; set; }
         public string Facebook { get; set; }
         public string Twitter { get; set; }
         public string Instagram { get; set; }
         public string LinkedIn { get; set; }
-        public Nullable<bool> show_img { get; set; }
+        public string Img_Path { get; set; }
+        public string Img_Name { get; set; }
+        public string Pref_Img_Path { get; set; }
+        public string Pref_Img_Name { get; set; }
+        public int preffered_photo { get; set; }
+        public int show_pic { get; set; }
 
         public static implicit operator ProfileCustomViewModel(PROFILE_IMAGE info)
         {
             ProfileCustomViewModel vm = new ProfileCustomViewModel
             {
-                ID = info.id.Trim(),
-                EmailUserName = info.username.Trim(),
-                ImagePath = info.Img_Path ?? Defaults.DEFAULT_PROFILE_IMAGE_PATH,
-                Facebook = info.facebook ?? "",
-                Twitter = info.twitter ?? "",
-                Instagram = info.instagram ?? "",
-                LinkedIn = info.linkedin ?? "",
-                show_img = info.show_img ?? true
             };
 
             return vm;

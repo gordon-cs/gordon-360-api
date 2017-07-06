@@ -287,7 +287,7 @@ namespace Gordon360.Controllers.Api
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var profileFolder = "/browseable/profile/" + username + "/";
+            var profileFolder = "\\gotrain\pref_photos";
             if (!Request.Content.IsMimeMultipartContent())
             {
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
@@ -343,7 +343,8 @@ namespace Gordon360.Controllers.Api
                     var uploadPath = profileFolder + fileName;
                     var baseUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority);
                     var imagePath = baseUrl + uploadPath;
-                    _profileService.UpdateProfileImage(username, imagePath);
+                    //_profileService.UpdateProfileImage(username, imagePath);
+                    _profileService.UpdateProfileImage(username, profileFolder, fileName);
                 }
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
@@ -459,6 +460,36 @@ namespace Gordon360.Controllers.Api
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             _profileService.UpdateImagePrivacy(username, p);
+
+            return Ok();
+
+        }
+        /// <summary>
+        /// Update image path
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("photo/{path}/{name}")]
+        public IHttpActionResult UpdateImage(string path, string name)
+        {
+            // Verify Input
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            _profileService.UpdateProfileImage(username, path, name);
 
             return Ok();
 

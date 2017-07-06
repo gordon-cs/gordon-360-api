@@ -18,11 +18,11 @@ namespace Gordon360.Services
         FacultyStaffProfileViewModel GetFacultyStaffProfileByUsername(string username);
         AlumniProfileViewModel GetAlumniProfileByUsername(string username);
         ProfileCustomViewModel GetCustomUserInfo(string username);
-        void UpdateProfileImage(string username, string path);
         void ResetProfileImage(string username);
         void UpdateProfileLink(string username, string type, PROFILE_IMAGE path);
         void UpdateMobilePrivacy(string username, bool p);
         void UpdateImagePrivacy(string username, bool p);
+        void UpdateProfileImage(string username, string path, string name);
     }
 
     public interface IChapelEventService

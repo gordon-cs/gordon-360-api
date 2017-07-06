@@ -7,6 +7,8 @@ using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Static.Names;
+using System.Data.SqlClient;
+using Gordon360.Services.ComplexQueries;
 
 namespace Gordon360.Services
 {
@@ -59,34 +61,41 @@ namespace Gordon360.Services
         /// <returns>ProfileViewModel if found, null if not found</returns>
         public ProfileCustomViewModel GetCustomUserInfo(string username)
         {
-            var query = _unitOfWork.ProfileCustomRepository.GetByUsername(username);
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.AD_Username == username);
             if (query == null)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Profile was not found." };
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
-            ProfileCustomViewModel result = query;
+
+            var nameParam = new SqlParameter("@USER_NAME", username);
+            var result = RawSqlQuery<ProfileCustomViewModel>.query("PHOTO_INFO_PER_USER_NAME @USER_NAME", nameParam).FirstOrDefault();
+
+            if (result == null)
+            {
+                return null;
+            }
+
             return result;
         }
-
-
         /// <summary>
         /// Sets the path for the profile image.
         /// </summary>
         /// <param name="username">The username</param>
         /// <param name="path"></param>
-        public void UpdateProfileImage(string username, string path)
+        /// <param name="name"></param>
+        public void UpdateProfileImage(string username, string path, string name)
         {
-            var original = _unitOfWork.ProfileCustomRepository.GetByUsername(username);
-
-            if (original == null)
+            if (_unitOfWork.AccountRepository.FirstOrDefault(x => x.AD_Username == username) == null)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The profile was not found." };
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
-
-            original.Img_Path = path;
-
-            _unitOfWork.Save();
+            var authParam = new SqlParameter("@USER_NAME", username);
+            var pathParam = new SqlParameter("@FILE_PATH", path);
+            var nameParam = new SqlParameter("@FILE_NAME", name);
+            var context = new CCTEntities1();
+            context.Database.ExecuteSqlCommand("UPDATE_PHOTO_PATH @USER_NAME, @FILE_PATH, @FILE_NAME", authParam, pathParam, nameParam);
         }
+
 
         /// <summary>
         /// Sets the path for the profile links.

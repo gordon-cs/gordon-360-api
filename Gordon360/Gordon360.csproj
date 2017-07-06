@@ -321,6 +321,9 @@
     <Compile Include="Models\PART_DEF.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\PHOTO_INFO_PER_USER_NAME_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\PROFILE_IMAGE.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>

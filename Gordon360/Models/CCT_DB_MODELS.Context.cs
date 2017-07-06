@@ -393,5 +393,14 @@ namespace Gordon360.Models
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<STUDENT_EVENTS_PER_TERM_Result>("STUDENT_EVENTS_PER_TERM", sTU_IDParameter, tERMParameter);
         }
+    
+        public virtual ObjectResult<PHOTO_INFO_PER_USER_NAME_Result> PHOTO_INFO_PER_USER_NAME(string uSER_NAME)
+        {
+            var uSER_NAMEParameter = uSER_NAME != null ?
+                new ObjectParameter("USER_NAME", uSER_NAME) :
+                new ObjectParameter("USER_NAME", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<PHOTO_INFO_PER_USER_NAME_Result>("PHOTO_INFO_PER_USER_NAME", uSER_NAMEParameter);
+        }
     }
 }
