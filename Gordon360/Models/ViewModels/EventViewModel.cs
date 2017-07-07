@@ -18,6 +18,7 @@ namespace Gordon360.Models.ViewModels
         public List<Object[]> Locations { get; set; }
         public string Organization { get; set; }
 
+
  
         public EventViewModel(JObject a, int index, bool single)
         {
@@ -36,12 +37,13 @@ namespace Gordon360.Models.ViewModels
                 else {
                     List<Object[]> list = new List<object[]>();
                     int count = a.SelectToken("events.event.profile.reservation").Count();
+                    
                     for (int y=0; y < count; y++)
                     {
                         Object[] loc = new Object[]
                        {
                            DateTime.Parse(a.SelectToken("events.event.profile.reservation[" + y + "].event_start_dt._text").ToString()),
-                           a.SelectToken("events.event.profile.reservation[" + y + "].space_reservation.space.formal_name._text").ToString()
+                           a.SelectToken("events.event.profile.reservation[" + y + "].space_reservation.space.formal_name._text") == null ? String.Empty : a.SelectToken("events.event.profile.reservation[" + y + "].space_reservation.space.formal_name._text")
                        };
                         list.Add(loc);
                         Locations = list;
@@ -60,18 +62,18 @@ namespace Gordon360.Models.ViewModels
                 Description = a.SelectToken("events.event[" + index + "].event_text[0].text._text") ?? "No description available";
                 if (a.SelectToken("events.event[" + index + "].profile.reservation").Type != JTokenType.Array)
                 {
-                    Location = a.SelectToken("events.event.profile.reservation.space_reservation.space.formal_name._text") ?? "No location available";
+                    Location = a.SelectToken("events.event[" + index + "].profile.reservation.space_reservation.space.formal_name._text") ?? "No location available";
                 }
                 else
                 {
                     int count = a.SelectToken("events.event[" + index + "].profile.reservation").Count();
                     List<Object[]> list = new List<object[]>();
                     for (int y = 0; y < count; y++)
-                    {
+                    {                  
                         Object[] loc = new Object[]
                         {
                            DateTime.Parse(a.SelectToken("events.event[" + index + "].profile.reservation[" + y + "].event_start_dt._text").ToString()),
-                           a.SelectToken("events.event[" + index + "].profile.reservation[" + y + "].space_reservation.space.formal_name._text").ToString()
+                           a.SelectToken("events.event[" + index + "].profile.reservation[" + y + "].space_reservation.space.formal_name._text") == null ? String.Empty : a.SelectToken("events.event[" + index + "].profile.reservation[" + y + "].space_reservation.space.formal_name._text")
                         };
                         list.Add(loc);
                         Locations = list;
