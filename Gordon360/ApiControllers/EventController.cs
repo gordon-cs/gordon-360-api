@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
@@ -50,6 +47,7 @@ namespace Gordon360.ApiControllers
 
             return Ok(result);
         }
+
         [HttpGet]
         [Route("chapel/Student/{user_name}/{term}")]
         public IHttpActionResult GetEventsForStudentByTerm(string user_name, string term)
@@ -114,7 +112,6 @@ namespace Gordon360.ApiControllers
                 return NotFound();
             }
 
-
             return Ok(result);
 
         }
@@ -158,7 +155,6 @@ namespace Gordon360.ApiControllers
             {
                 return NotFound();
             }
-
 
             return Ok(result);
 

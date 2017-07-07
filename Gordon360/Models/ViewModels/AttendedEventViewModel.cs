@@ -24,6 +24,7 @@ namespace Gordon360.Models.ViewModels
         public JToken Description { get; set; }
         public JToken Location { get; set; }
         public string Organization { get; set; }
+        public string Category_ID { get; set; }
 
         public AttendedEventViewModel(EventViewModel a, ChapelEventViewModel b)
         {
@@ -38,6 +39,7 @@ namespace Gordon360.Models.ViewModels
             Event_ID = a.Event_ID;
             Event_Name = a.Event_Name;
             Event_Type_Name = a.Event_Type_Name;
+            Category_ID = a.Category_Id;
             Start_Time = a.Start_Time;
             End_Time = a.End_Time;
             Description = a.Description;

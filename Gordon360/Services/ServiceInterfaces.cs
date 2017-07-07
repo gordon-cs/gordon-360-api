@@ -26,6 +26,11 @@ namespace Gordon360.Services
         IEnumerable<EventViewModel> GetEvents(string Event_ID, string type);
     }
 
+    public interface IDiningService
+    {
+        System.Threading.Tasks.Task<string> GetBalanceAsync();
+    }
+
     public interface IAccountService
     {
         AccountViewModel Get(string id);

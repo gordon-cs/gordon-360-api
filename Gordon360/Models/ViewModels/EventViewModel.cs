@@ -11,6 +11,7 @@ namespace Gordon360.Models.ViewModels
         public string Event_ID { get; set; }
         public string Event_Name { get; set; }
         public string Event_Type_Name { get; set; }
+        public string Category_Id { get; set; }
         public DateTime Start_Time { get; set; }
         public DateTime End_Time { get; set; }
         public JToken Description { get; set; }
@@ -30,6 +31,7 @@ namespace Gordon360.Models.ViewModels
                 Start_Time = DateTime.Parse(a.SelectToken("events.event.profile.init_start_dt._text").ToString());
                 End_Time = DateTime.Parse(a.SelectToken("events.event.profile.init_end_dt._text").ToString());
                 Description = a.SelectToken("events.event.event_text[0].text._text") ?? "No description available";
+                Category_Id = a.SelectToken("events.event.category.category_id._text") == null ? String.Empty : a.SelectToken("events.event.category.category_id._text").ToString();
                 if (a.SelectToken("events.event.profile.reservation").Type != JTokenType.Array)
                 {
                     Location = a.SelectToken("events.event.profile.reservation.space_reservation.space.formal_name._text") ?? "No location available";
@@ -60,6 +62,7 @@ namespace Gordon360.Models.ViewModels
                 Start_Time = DateTime.Parse(a.SelectToken("events.event[" + index + "].profile.init_start_dt._text").ToString());
                 End_Time = DateTime.Parse(a.SelectToken("events.event[" + index + "].profile.init_end_dt._text").ToString());
                 Description = a.SelectToken("events.event[" + index + "].event_text[0].text._text") ?? "No description available";
+                Category_Id = a.SelectToken("events.event[" + index + "].category.category_id._text") == null ? String.Empty : a.SelectToken("events.event.category.category_id._text").ToString();
                 if (a.SelectToken("events.event[" + index + "].profile.reservation").Type != JTokenType.Array)
                 {
                     Location = a.SelectToken("events.event[" + index + "].profile.reservation.space_reservation.space.formal_name._text") ?? "No location available";
