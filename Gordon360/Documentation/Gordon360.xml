@@ -141,17 +141,11 @@
             <param name="p">private or not</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateImagePrivacy(System.Boolean)">
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateImagePrivacy(System.Int32)">
             <summary>
             Update privacy of profile image
             </summary>
             <param name="p">private or not</param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateImage(System.String,System.String)">
-            <summary>
-            Update image path
-            </summary>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ParticipationsController.Get">
@@ -971,7 +965,7 @@
             <param name="username">The username</param>
             <param name="p"></param>
         </member>
-        <member name="M:Gordon360.Services.ProfileService.UpdateImagePrivacy(System.String,System.Boolean)">
+        <member name="M:Gordon360.Services.ProfileService.UpdateImagePrivacy(System.String,System.Int32)">
             <summary>
             privacy setting user profile photo.
             </summary>

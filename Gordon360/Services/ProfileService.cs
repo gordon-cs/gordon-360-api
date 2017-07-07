@@ -91,9 +91,13 @@ namespace Gordon360.Services
             }
             var authParam = new SqlParameter("@USER_NAME", username);
             var pathParam = new SqlParameter("@FILE_PATH", path);
+            if (path == null)
+                pathParam = new SqlParameter("@FILE_PATH", DBNull.Value);
             var nameParam = new SqlParameter("@FILE_NAME", name);
+            if (name == null)
+                nameParam = new SqlParameter("@FILE_NAME", DBNull.Value);
             var context = new CCTEntities1();
-            context.Database.ExecuteSqlCommand("UPDATE_PHOTO_PATH @USER_NAME, @FILE_PATH, @FILE_NAME", authParam, pathParam, nameParam);
+          context.Database.ExecuteSqlCommand("UPDATE_PHOTO_PATH @USER_NAME, @FILE_PATH, @FILE_NAME", authParam, pathParam, nameParam);
         }
 
 
@@ -173,15 +177,15 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">The username</param>
         /// <param name="p"></param>
-        public void UpdateImagePrivacy(string username, bool p)
+        public void UpdateImagePrivacy(string username, int p)
         {
-            var original = _unitOfWork.ProfileCustomRepository.FirstOrDefault(x => x.username == username);
+            var original = _unitOfWork.AccountRepository.FirstOrDefault(x => x.AD_Username == username);
 
             if (original == null)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The profile was not found." };
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
-            original.show_img = p;
+            original.show_pic = p;
             _unitOfWork.Save();
         }
 

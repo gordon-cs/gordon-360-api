@@ -30,11 +30,13 @@ namespace Gordon360.Controllers.Api
     public class ProfilesController : ApiController
     {
         private IProfileService _profileService;
+        private IAccountService _accountService;
 
         public ProfilesController()
         {
             var _unitOfWork = new UnitOfWork();
             _profileService = new ProfileService(_unitOfWork);
+            _accountService = new AccountService(_unitOfWork);
         }
 
         public ProfilesController(IProfileService profileService)
@@ -287,35 +289,25 @@ namespace Gordon360.Controllers.Api
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var profileFolder = "\\gotrain\pref_photos";
+            var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value; ;
+            string root = "C:\\Users\\chris.qiao\\Desktop\\";
+            var fileName = _accountService.GetAccountByEmail(username + "@gordon.edu").Barcode + ".jpg";
+            var provider = new CustomMultipartFormDataStreamProvider(root);
+
             if (!Request.Content.IsMimeMultipartContent())
             {
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
             }
 
-            var existingFile = "";
-
-            if (!System.IO.Directory.Exists(HttpContext.Current.Server.MapPath("~" + profileFolder)))
+            try
             {
-                System.IO.Directory.CreateDirectory(HttpContext.Current.Server.MapPath("~" + profileFolder));
-            }
-            else
-            {
-                try
+                System.IO.DirectoryInfo di = new DirectoryInfo(root);
+                foreach (FileInfo file in di.GetFiles(fileName))
                 {
-                    System.IO.DirectoryInfo di = new DirectoryInfo(HttpContext.Current.Server.MapPath("~" + profileFolder));
-
-                    foreach (FileInfo file in di.GetFiles())
-                    {
-                        existingFile = file.Name;
                         file.Delete();
-                    }
                 }
-                catch (System.Exception e) { }
             }
-
-            string root = HttpContext.Current.Server.MapPath("~" + profileFolder);
-            var provider = new CustomMultipartFormDataStreamProvider(root);
+            catch (System.Exception e) { }
 
             try
             {
@@ -325,26 +317,13 @@ namespace Gordon360.Controllers.Api
                 // This illustrates how to get the file names.
                 foreach (MultipartFileData file in provider.FileData)
                 {
-                    var fileName = file.Headers.ContentDisposition.FileName.Replace("\"", "");
+                    var fileContent = provider.Contents.SingleOrDefault();
+                    var oldFileName = fileContent.Headers.ContentDisposition.FileName.Replace("\"", string.Empty);
 
-                    // If the file has the same name as the previous one, add a 1 at the end to make it different (so that the browser does not cache it)
-                    if (fileName.Equals(existingFile))
-                    {
-                        var oldFileName = fileName;
+                    System.IO.DirectoryInfo di = new DirectoryInfo(root);
+                    System.IO.File.Move(di.FullName + oldFileName, di.FullName + fileName);
 
-                        // Add "1" before the extension
-                        fileName = fileName.Substring(0, fileName.LastIndexOf('.')) + "1" + fileName.Substring(fileName.LastIndexOf('.'));
-
-                        // Rename existing File
-                        System.IO.DirectoryInfo di = new DirectoryInfo(HttpContext.Current.Server.MapPath("~" + profileFolder));
-                        System.IO.File.Move(di.FullName + oldFileName, di.FullName + fileName);
-                    }
-
-                    var uploadPath = profileFolder + fileName;
-                    var baseUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority);
-                    var imagePath = baseUrl + uploadPath;
-                    //_profileService.UpdateProfileImage(username, imagePath);
-                    _profileService.UpdateProfileImage(username, profileFolder, fileName);
+                    _profileService.UpdateProfileImage(username, root, fileName);
                 }
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
@@ -364,10 +343,20 @@ namespace Gordon360.Controllers.Api
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            _profileService.ResetProfileImage(username);
-
+            var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value; ;
+            string root = "C:\\Users\\chris.qiao\\Desktop\\";
+            var fileName = _accountService.GetAccountByEmail(username + "@gordon.edu").Barcode + ".jpg";
+            try
+            {
+                System.IO.DirectoryInfo di = new DirectoryInfo(root);
+                foreach (FileInfo file in di.GetFiles(fileName))
+                {
+                    file.Delete();
+                }
+            }
+            catch (System.Exception e) { }
+           _profileService.UpdateProfileImage(username, null, null);
             return Ok();
-
         }
 
         /// <summary>
@@ -440,7 +429,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpPut]
         [Route("image_privacy/{p}")]
-        public IHttpActionResult UpdateImagePrivacy(bool p)
+        public IHttpActionResult UpdateImagePrivacy(int p)
         {
             // Verify Input
             if (!ModelState.IsValid)
@@ -462,37 +451,6 @@ namespace Gordon360.Controllers.Api
             _profileService.UpdateImagePrivacy(username, p);
 
             return Ok();
-
-        }
-        /// <summary>
-        /// Update image path
-        /// </summary>
-        /// <returns></returns>
-        [HttpPut]
-        [Route("photo/{path}/{name}")]
-        public IHttpActionResult UpdateImage(string path, string name)
-        {
-            // Verify Input
-            if (!ModelState.IsValid)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            _profileService.UpdateProfileImage(username, path, name);
-
-            return Ok();
-
         }
     }
 }
