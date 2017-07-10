@@ -98,10 +98,10 @@ namespace Gordon360.Models.ViewModels
                     Organization = a.SelectToken("events.event[" + index + "].organization.organization_name._text").ToString().Trim();
                 }
             }
-            // Catch any exceptions thrown by the selecttoken 
+            // Continue without throwing an error, it will be empty
             catch (Exception e)
             {
-                throw new Exception("Could not find event information using the path provided!", e);
+                //
             }
         }
     }

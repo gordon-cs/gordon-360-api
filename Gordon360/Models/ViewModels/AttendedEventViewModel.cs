@@ -26,25 +26,26 @@ namespace Gordon360.Models.ViewModels
         public string Organization { get; set; }
         public string Category_ID { get; set; }
 
+        DateTime noDate;
         public AttendedEventViewModel(EventViewModel a, ChapelEventViewModel b)
-        {
+        {   
             CHBarcode = b.CHBarcode.Trim();
             CHEventID = b.CHEventID;
             CHCheckerID = b.CHCheckerID.Trim();
-            CHDate = b.CHDate.Value.Add(CHTime.Value.TimeOfDay);
+            CHDate = b.CHDate;
             CHTime = b.CHTime;
             CHTermCD = b.CHTermCD.Trim();
             Required = b.Required;
 
-            Event_ID = a.Event_ID;
-            Event_Name = a.Event_Name;
-            Event_Type_Name = a.Event_Type_Name;
-            Category_ID = a.Category_Id;
+            Event_ID = a.Event_ID ?? "";
+            Event_Name = a.Event_Name ?? "";
+            Event_Type_Name = a.Event_Type_Name ?? "";
+            Category_ID = a.Category_Id ?? "";
             Start_Time = a.Start_Time;
             End_Time = a.End_Time;
-            Description = a.Description;
-            Location = a.Location;
-            Organization = a.Organization;
+            Description = a.Description ?? "";
+            Location = a.Location ?? "";
+            Organization = a.Organization ?? "";
  
         }
     }

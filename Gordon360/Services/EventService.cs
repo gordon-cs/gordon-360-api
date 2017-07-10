@@ -34,12 +34,13 @@ namespace Gordon360.Services
         /// Return a Single Event JObject from Live25
         /// </summary>
         /// <returns></returns>
-        public JObject GetLiveEvent(string EventID, string type) {
+        public JObject GetLiveEvent(string EventID, string type)
+        {
 
             // Return a list of all chapel events
             if (EventID == "Chapel")
             {
-              
+
                 // Set our api route and fill in the event information we would like
                 var requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&category_id=85&state=2&scope=extended";
                 using (WebClient client = new WebClient())
@@ -58,7 +59,7 @@ namespace Gordon360.Services
             }
             // If the type is "s", then it is a single event request, "m" is multiple event IDs
             else if (type == "s" || type == "S" || type == "m" || type == "M")
-            {   
+            {
                 if (type == "m" || type == "M")
                 {
                     if (EventID.Contains('$'))
@@ -67,7 +68,7 @@ namespace Gordon360.Services
                     }
                 }
                 // Set our api route and fill in the event information we would like
-                var requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&event_id="+EventID+"&state=2&scope=extended";
+                var requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&event_id=" + EventID + "&state=2&scope=extended";
                 using (WebClient client = new WebClient())
                 {
                     // Commit contents of the request to temporary memory
@@ -121,14 +122,26 @@ namespace Gordon360.Services
             JObject events = GetLiveEvent(EventID, type);
             // Initiate a list to contain the events
             List<EventViewModel> list = new List<EventViewModel>();
+            // Create an empty event to return in the case of an issue
+            IEnumerable<EventViewModel> result = null;
 
             // If the event key is of type array, we know there are more than one events nested within, so check for that here
             if (events.SelectToken("events.event").Type != JTokenType.Array)
             {
-                EventViewModel vm = new EventViewModel(events, 0, true);
-                list.Add(vm);
-                IEnumerable<EventViewModel> result = list.AsEnumerable<EventViewModel>();
+                try
+                {
+                    EventViewModel vm = new EventViewModel(events, 0, true);
+                    list.Add(vm);
+                    result = list.AsEnumerable<EventViewModel>();
+
+                }
+                catch (Exception e)
+                {
+                    throw new Exception("Error finding event");
+                }
+
                 return result;
+
             }
 
             // Otherwise, we treat it as a json object containing multiple events 
@@ -139,12 +152,19 @@ namespace Gordon360.Services
                 // Iterate through the JSon Object of events and add them to the list
                 for (int y = 0; y < index; y++)
                 {
-                    EventViewModel vm = new EventViewModel(events, y, false);
-              
-                    list.Add(vm);
+                    try
+                    {
+                        EventViewModel vm = new EventViewModel(events, y, false);
+                        list.Add(vm);
+                    }
+                    catch (Exception e)
+                    {
+                        // Do nothing
+                    }
+
                 }
 
-                IEnumerable<EventViewModel> result = list.AsEnumerable<EventViewModel>();
+                result = list.AsEnumerable<EventViewModel>();
                 return result;
             }
 
@@ -178,22 +198,65 @@ namespace Gordon360.Services
 
             // A list to hold each combined event until we finish
             List<AttendedEventViewModel> list = new List<AttendedEventViewModel>();
+
+            // Create an empty event view model, to use just in case we cannot find the event in 25Live
+            EventViewModel whoops = new EventViewModel(new JObject(), 0, false);
+            whoops.Category_Id = "";
+            whoops.Description = "";
+            whoops.Event_ID = "";
+            whoops.Event_Name = "";
+            whoops.Location = "";
+            whoops.Locations = new List<object[]>();
+            whoops.Start_Time = default(DateTime);
+            whoops.End_Time = default(DateTime);
+            whoops.Organization = "";
+
+
+            // Fill it with empty strings
+
+            // Create an empty list of events, to use just in case
+            IEnumerable<EventViewModel> events = null;
+
             // Get a list of every attended event, to send over to 25Live
             string joined = string.Join("+", result.Select(x => x.CHEventID));
-            // Return all events attended by the student from 25Live
-            IEnumerable<EventViewModel> events = GetEvents(joined, "m");
+
+            // Attempt to return all events attended by the student from 25Live
+            try
+            {
+                events = GetEvents(joined, "m");
+            }
+            catch
+            {
+                // Do nothing - it will be empty 
+            }
 
             foreach (var c in result)
             {
-                // Find the event with the same ID as the attended event
-                EventViewModel l = events.ToList().Find(x => x.Event_ID == c.CHEventID);
-                // Combine the two view models
-                AttendedEventViewModel combine = new AttendedEventViewModel(l, c);
+                try
+                {
+                    // Find the event with the same ID as the attended event
+                    EventViewModel l = events.ToList().Find(x => x.Event_ID == c.CHEventID);
+                    whoops = l;
+                }
+                catch
+                {
+                    // Ignore issue and continue to iterate
+                }
+                AttendedEventViewModel combine = new AttendedEventViewModel(whoops, c);
                 // Add to the list we made earlier
                 list.Add(combine);
+
             }
+            // In the database, the time and date are stored as separate datetime objects, here we combine them into one
+            foreach (var v in list)
+            {
+                v.CHDate = v.CHDate.Value.Add(v.CHTime.Value.TimeOfDay);
+            }
+
             // Convert the list to an IEnumerable 
             IEnumerable<AttendedEventViewModel> vm = list.AsEnumerable<AttendedEventViewModel>();
+
+            // Returm the iterable viewmodel 
             return vm;
         }
 
@@ -230,35 +293,73 @@ namespace Gordon360.Services
 
             // A list to hold each combined event until we finish
             List<AttendedEventViewModel> list = new List<AttendedEventViewModel>();
+
+            // Create an empty event view model, to use just in case
+            EventViewModel whoops = new EventViewModel(new JObject(), 0, false);
+            whoops.Category_Id = "";
+            whoops.Description = "";
+            whoops.Event_ID = "";
+            whoops.Event_Name = "";
+            whoops.Location = "";
+            whoops.Locations = new List<object[]>();
+            whoops.Start_Time = default(DateTime);
+            whoops.End_Time = default(DateTime);
+            whoops.Organization = "";
+
+
+            // Fill it with empty strings
+
+            // Create an empty list of events, to use just in case
+            IEnumerable<EventViewModel> events = null;
+
             // Get a list of every attended event, to send over to 25Live
             string joined = string.Join("+", result.Select(x => x.CHEventID));
-            // If there exists an event, pull info for it!
-            if (joined != "")
-            {
-                // Return all events attended by the student from 25Live
-                IEnumerable<EventViewModel> events = GetEvents(joined, "m");
 
-                foreach (var c in result)
+            // Attempt to return all events attended by the student from 25Live
+            try
+            {
+                events = GetEvents(joined, "m");
+            }
+            catch
+            {
+                // Do nothing - it will be empty 
+            }
+
+            foreach (var c in result)
+            {
+                try
                 {
                     // Find the event with the same ID as the attended event
                     EventViewModel l = events.ToList().Find(x => x.Event_ID == c.CHEventID);
-                    // Combine the two view models
-                    AttendedEventViewModel combine = new AttendedEventViewModel(l, c);
-                    // Add to the list we made earlier
-                    list.Add(combine);
+                    whoops = l;
                 }
+                catch
+                {
+                    // Ignore issue and continue to iterate
+                }
+                AttendedEventViewModel combine = new AttendedEventViewModel(whoops, c);
+                // Add to the list we made earlier
+                list.Add(combine);
+
+            }
+            // In the database, the time and date are stored as separate datetime objects, here we combine them into one
+            foreach (var v in list)
+            {
+                v.CHDate = v.CHDate.Value.Add(v.CHTime.Value.TimeOfDay);
+            }
+
+            if (list.Any<AttendedEventViewModel>())
+            {
                 // Convert the list to an IEnumerable 
                 IEnumerable<AttendedEventViewModel> vm = list.AsEnumerable<AttendedEventViewModel>();
-
+                // Returm the iterable viewmodel 
                 return vm;
             }
-            // Since the string "joined" is empty, we can assume there are no attended events this term 
             else
             {
-                throw new Exception("No events attended this term!");
+                throw new Exception("No attendance information for this term");
             }
 
         }
-
     }
 }
