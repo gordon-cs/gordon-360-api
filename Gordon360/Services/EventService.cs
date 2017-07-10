@@ -41,7 +41,7 @@ namespace Gordon360.Services
             {
               
                 // Set our api route and fill in the event information we would like
-                var requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&category_id=85&scope=extended";
+                var requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&category_id=85&state=2&scope=extended";
                 using (WebClient client = new WebClient())
                 {
                     // Commit contents of the request to temporary memory
@@ -67,7 +67,7 @@ namespace Gordon360.Services
                     }
                 }
                 // Set our api route and fill in the event information we would like
-                var requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&event_id="+EventID+"&scope=extended";
+                var requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&event_id="+EventID+"&state=2&scope=extended";
                 using (WebClient client = new WebClient())
                 {
                     // Commit contents of the request to temporary memory
@@ -90,7 +90,7 @@ namespace Gordon360.Services
                 {
                     EventID = EventID.Replace('$', '+');
                 }
-                var requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&event_type_id=" + EventID + "&scope=extended";
+                var requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&event_type_id=" + EventID + "&state=2&scope=extended";
                 using (WebClient client = new WebClient())
                 {
                     MemoryStream stream = new MemoryStream(client.DownloadData(requestUrl));
@@ -131,7 +131,7 @@ namespace Gordon360.Services
                 return result;
             }
 
-            // Otherwise, we treat it as a json object containing multiple events
+            // Otherwise, we treat it as a json object containing multiple events 
             else
             {
                 // Determine how many events exist within the query contents
@@ -215,9 +215,9 @@ namespace Gordon360.Services
 
             // Declare the variables used
             var idParam = new SqlParameter("@STU_USERNAME", user_name.Trim());
-            
+
             // Run the stored query  and return an iterable list of objects
-            var result = RawSqlQuery<ChapelEventViewModel>.query("EVENTS_BY_STUDENT_ID @STU_USERNAME", idParam );
+            var result = RawSqlQuery<ChapelEventViewModel>.query("EVENTS_BY_STUDENT_ID @STU_USERNAME", idParam);
 
             // Confirm that result is not empty
             if (result == null)
@@ -232,22 +232,32 @@ namespace Gordon360.Services
             List<AttendedEventViewModel> list = new List<AttendedEventViewModel>();
             // Get a list of every attended event, to send over to 25Live
             string joined = string.Join("+", result.Select(x => x.CHEventID));
-            // Return all events attended by the student from 25Live
-            IEnumerable<EventViewModel> events = GetEvents(joined, "m");
-
-            foreach (var c in result)
+            // If there exists an event, pull info for it!
+            if (joined != "")
             {
-                // Find the event with the same ID as the attended event
-                EventViewModel l = events.ToList().Find(x => x.Event_ID == c.CHEventID);
-                // Combine the two view models
-                AttendedEventViewModel combine = new AttendedEventViewModel(l, c);
-                // Add to the list we made earlier
-                list.Add(combine);
-            }
-            // Convert the list to an IEnumerable 
-            IEnumerable<AttendedEventViewModel> vm = list.AsEnumerable<AttendedEventViewModel>();
+                // Return all events attended by the student from 25Live
+                IEnumerable<EventViewModel> events = GetEvents(joined, "m");
 
-            return vm;
+                foreach (var c in result)
+                {
+                    // Find the event with the same ID as the attended event
+                    EventViewModel l = events.ToList().Find(x => x.Event_ID == c.CHEventID);
+                    // Combine the two view models
+                    AttendedEventViewModel combine = new AttendedEventViewModel(l, c);
+                    // Add to the list we made earlier
+                    list.Add(combine);
+                }
+                // Convert the list to an IEnumerable 
+                IEnumerable<AttendedEventViewModel> vm = list.AsEnumerable<AttendedEventViewModel>();
+
+                return vm;
+            }
+            // Since the string "joined" is empty, we can assume there are no attended events this term 
+            else
+            {
+                throw new Exception("No events attended this term!");
+            }
+
         }
 
     }
