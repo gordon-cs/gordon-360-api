@@ -114,6 +114,10 @@
             <param name="username">username of the profile info</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.getImg">
+            <summary>Get the profile image of currently logged in user</summary>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.PostImage">
             <summary>
             Set an image for profile

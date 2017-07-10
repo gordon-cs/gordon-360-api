@@ -20,6 +20,9 @@ using System.IO;
 using Gordon360.Static.Methods;
 using Gordon360.Models.ViewModels;
 using System.Security.Claims;
+using System.Drawing;
+using System.Net.Http.Headers;
+using System.Drawing.Imaging;
 
 namespace Gordon360.Controllers.Api
 {
@@ -279,6 +282,24 @@ namespace Gordon360.Controllers.Api
             }
         }
 
+        /// <summary>Get the profile image of currently logged in user</summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("getImage")]
+        public HttpResponseMessage getImg()
+        {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var userInfo = _profileService.GetCustomUserInfo(username);
+            var filePath = userInfo.Pref_Img_Path;
+            var fileName = userInfo.Pref_Img_Name;
+            var result = new HttpResponseMessage(HttpStatusCode.OK);
+
+            result.Content = new StreamContent(new FileStream(filePath+fileName, FileMode.Open)); // this file stream will be closed by lower layers of web api for you once the response is completed.
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpg");
+            return result;
+        }
+
         /// <summary>
         /// Set an image for profile
         /// </summary>
@@ -289,8 +310,8 @@ namespace Gordon360.Controllers.Api
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value; ;
-            string root = "C:\\Users\\chris.qiao\\Desktop\\";
+            var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
+            string root = "C:\\Users\\chris.qiao\\Desktop\\pref_photos\\";
             var fileName = _accountService.GetAccountByEmail(username + "@gordon.edu").Barcode + ".jpg";
             var provider = new CustomMultipartFormDataStreamProvider(root);
 
@@ -344,7 +365,7 @@ namespace Gordon360.Controllers.Api
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value; ;
-            string root = "C:\\Users\\chris.qiao\\Desktop\\";
+            string root = "C:\\Users\\chris.qiao\\Desktop\\pref_photos\\";
             var fileName = _accountService.GetAccountByEmail(username + "@gordon.edu").Barcode + ".jpg";
             try
             {
@@ -358,6 +379,7 @@ namespace Gordon360.Controllers.Api
            _profileService.UpdateProfileImage(username, null, null);
             return Ok();
         }
+
 
         /// <summary>
         /// Update the profile social media links
