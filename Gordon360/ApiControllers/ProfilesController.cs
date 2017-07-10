@@ -285,7 +285,7 @@ namespace Gordon360.Controllers.Api
         /// <summary>Get the profile image of currently logged in user</summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("getImage")]
+        [Route("Image")]
         public HttpResponseMessage getImg()
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
