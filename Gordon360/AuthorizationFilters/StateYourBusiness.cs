@@ -422,6 +422,26 @@ namespace Gordon360.AuthorizationFilters
                         // If a mistake is made in creating the original request, the user can always delete it and make a new one.
                         return false;
                     }
+                case Resource.MEMBERSHIP_PRIVACY:
+                    {
+                        // User is admin
+                        if (user_position == Position.GOD)
+                            return true;
+                        var membershipService = new MembershipService(new UnitOfWork());
+                        var membershipID = (int)context.ActionArguments["id"];
+                        var membershipToConsider = membershipService.Get(membershipID);
+                        var is_membershipOwner = membershipToConsider.IDNumber.ToString() == user_id;
+                        if (is_membershipOwner)
+                            return true;
+
+                        var activityCode = membershipToConsider.ActivityCode;
+
+                        var isGroupAdmin = membershipService.GetGroupAdminMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        if (isGroupAdmin)
+                            return true;
+
+                        return false;
+                    }
                 case Resource.STUDENT:
                     return false; // No one should be able to update a student through this API
                 case Resource.ADVISOR:

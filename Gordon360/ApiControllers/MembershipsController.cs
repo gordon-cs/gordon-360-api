@@ -410,7 +410,7 @@ namespace Gordon360.Controllers.Api
         /// <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         [HttpPut]
         [Route("{id}/privacy/{p}")]
-        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP)]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP_PRIVACY)]
         public IHttpActionResult TogglePrivacy(int id, bool p)
         {
             if (!ModelState.IsValid)

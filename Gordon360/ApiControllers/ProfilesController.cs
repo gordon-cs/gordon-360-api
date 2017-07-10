@@ -20,9 +20,7 @@ using System.IO;
 using Gordon360.Static.Methods;
 using Gordon360.Models.ViewModels;
 using System.Security.Claims;
-using System.Drawing;
 using System.Net.Http.Headers;
-using System.Drawing.Imaging;
 
 namespace Gordon360.Controllers.Api
 {
