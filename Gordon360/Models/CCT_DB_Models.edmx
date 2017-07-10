@@ -24,6 +24,7 @@
           <Property Name="ACT_TYPE" Type="char" MaxLength="3" />
           <Property Name="ACT_TYPE_DESC" Type="char" MaxLength="60" />
           <Property Name="PRIVACY" Type="bit" />
+          <Property Name="ACT_JOIN_INFO" Type="varchar(max)" />
         </EntityType>
         <EntityType Name="ADMIN">
           <Key>
@@ -487,6 +488,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <Function Name="MEMBERSHIPS_PER_STUDENT_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="STUDENT_ID" Type="int" Mode="In" />
         </Function>
+        <Function Name="PHOTO_INFO_PER_USER_NAME" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="USER_NAME" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="REQUEST_PER_REQUEST_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="REQUEST_ID" Type="int" Mode="In" />
         </Function>
@@ -536,6 +540,11 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Parameter Name="ID_NUM" Type="int" Mode="In" />
         </Function>
         <Function Name="UPDATE_ACT_INFO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="UPDATE_PHOTO_PATH" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="USER_NAME" Type="varchar" Mode="In" />
+          <Parameter Name="FILE_PATH" Type="varchar" Mode="In" />
+          <Parameter Name="FILE_NAME" Type="varchar" Mode="In" />
+        </Function>
         <EntityContainer Name="Gordon360StoreContainer">
           <EntitySet Name="ACT_CLUB_DEF" EntityType="Self.ACT_CLUB_DEF" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ACT_INFO" EntityType="Self.ACT_INFO" Schema="dbo" store:Type="Tables" />
@@ -826,28 +835,8 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="ACT_CDE" Mode="In" Type="String" />
             <Parameter Name="SESS_CDE" Mode="In" Type="String" />
           </FunctionImport>
-          <EntitySet Name="ACT_CLUB_DEF" EntityType="Gordon360.ACT_CLUB_DEF" />
-          <EntitySet Name="ACT_INFO" EntityType="Gordon360.ACT_INFO" />
-          <EntitySet Name="ADMIN" EntityType="Gordon360.ADMIN" />
-          <EntitySet Name="JNZB_ACTIVITIES" EntityType="Gordon360.JNZB_ACTIVITIES" />
-          <EntitySet Name="MEMBERSHIP" EntityType="Gordon360.MEMBERSHIP" />
-          <EntitySet Name="PROFILE_IMAGE" EntityType="Gordon360.PROFILE_IMAGE" />
-          <EntitySet Name="REQUEST" EntityType="Gordon360.REQUEST" />
-          <EntitySet Name="student_temp" EntityType="Gordon360.student_temp" />
-          <EntitySet Name="sysdiagrams" EntityType="Gordon360.sysdiagrams" />
-          <EntitySet Name="alumni" EntityType="Gordon360.alumni" />
-          <EntitySet Name="facstaff" EntityType="Gordon360.facstaff" />
-          <EntitySet Name="C360_SLIDER" EntityType="Gordon360.C360_SLIDER" />
-          <EntitySet Name="ACCOUNT" EntityType="Gordon360.ACCOUNT" />
-          <EntitySet Name="ChapelEvent" EntityType="Gordon360.ChapelEvent" />
-          <EntitySet Name="CM_SESSION_MSTR" EntityType="Gordon360.CM_SESSION_MSTR" />
-          <EntitySet Name="Faculty" EntityType="Gordon360.Faculty" />
-          <EntitySet Name="JENZ_ACT_CLUB_DEF" EntityType="Gordon360.JENZ_ACT_CLUB_DEF" />
-          <EntitySet Name="PART_DEF" EntityType="Gordon360.PART_DEF" />
-          <EntitySet Name="Staff" EntityType="Gordon360.Staff" />
-          <EntitySet Name="Student" EntityType="Gordon360.Student" />
           <FunctionImport Name="EVENTS_BY_STUDENT_ID" ReturnType="Collection(Gordon360.EVENTS_BY_STUDENT_ID_Result)">
-            <Parameter Name="STU_USERNAME" Mode="In" Type="String" />
+          <Parameter Name="STU_USERNAME" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="sp_alterdiagram">
             <Parameter Name="diagramname" Mode="In" Type="String" />
@@ -879,6 +868,34 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="new_diagramname" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="sp_upgraddiagrams" />
+          <EntitySet Name="ACT_CLUB_DEF" EntityType="Gordon360.ACT_CLUB_DEF" />
+          <EntitySet Name="ACT_INFO" EntityType="Gordon360.ACT_INFO" />
+          <EntitySet Name="ADMIN" EntityType="Gordon360.ADMIN" />
+          <EntitySet Name="JNZB_ACTIVITIES" EntityType="Gordon360.JNZB_ACTIVITIES" />
+          <EntitySet Name="MEMBERSHIP" EntityType="Gordon360.MEMBERSHIP" />
+          <EntitySet Name="PROFILE_IMAGE" EntityType="Gordon360.PROFILE_IMAGE" />
+          <EntitySet Name="REQUEST" EntityType="Gordon360.REQUEST" />
+          <EntitySet Name="student_temp" EntityType="Gordon360.student_temp" />
+          <EntitySet Name="sysdiagrams" EntityType="Gordon360.sysdiagrams" />
+          <EntitySet Name="alumni" EntityType="Gordon360.alumni" />
+          <EntitySet Name="facstaff" EntityType="Gordon360.facstaff" />
+          <EntitySet Name="C360_SLIDER" EntityType="Gordon360.C360_SLIDER" />
+          <EntitySet Name="ACCOUNT" EntityType="Gordon360.ACCOUNT" />
+          <EntitySet Name="ChapelEvent" EntityType="Gordon360.ChapelEvent" />
+          <EntitySet Name="CM_SESSION_MSTR" EntityType="Gordon360.CM_SESSION_MSTR" />
+          <EntitySet Name="Faculty" EntityType="Gordon360.Faculty" />
+          <EntitySet Name="JENZ_ACT_CLUB_DEF" EntityType="Gordon360.JENZ_ACT_CLUB_DEF" />
+          <EntitySet Name="PART_DEF" EntityType="Gordon360.PART_DEF" />
+          <EntitySet Name="Staff" EntityType="Gordon360.Staff" />
+          <EntitySet Name="Student" EntityType="Gordon360.Student" />
+          <FunctionImport Name="PHOTO_INFO_PER_USER_NAME" ReturnType="Collection(Gordon360.PHOTO_INFO_PER_USER_NAME_Result)">
+            <Parameter Name="USER_NAME" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="UPDATE_PHOTO_PATH">
+            <Parameter Name="USER_NAME" Mode="In" Type="String" />
+            <Parameter Name="FILE_PATH" Mode="In" Type="String" />
+            <Parameter Name="FILE_NAME" Mode="In" Type="String" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
           <Property Type="String" Name="ACT_CDE" Nullable="false" MaxLength="8" />
@@ -1093,6 +1110,29 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="String" Name="LastName" Nullable="true" MaxLength="50" />
           <Property Type="String" Name="Email" Nullable="true" MaxLength="50" />
         </ComplexType>
+        <ComplexType Name="EVENTS_BY_STUDENT_ID_Result">
+          <Property Type="Int32" Name="ROWID" Nullable="false" />
+          <Property Type="String" Name="CHBarEventID" Nullable="false" MaxLength="20" />
+          <Property Type="String" Name="CHBarcode" Nullable="true" MaxLength="14" />
+          <Property Type="String" Name="CHEventID" Nullable="true" MaxLength="6" />
+          <Property Type="String" Name="CHCheckerID" Nullable="true" MaxLength="14" />
+          <Property Type="DateTime" Name="CHDate" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="CHTime" Nullable="true" Precision="23" />
+          <Property Type="String" Name="CHSource" Nullable="true" MaxLength="1" />
+          <Property Type="String" Name="CHTermCD" Nullable="true" MaxLength="4" />
+          <Property Type="Int32" Name="Required" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_helpdiagramdefinition_Result">
+          <Property Type="Int32" Name="version" Nullable="true" />
+          <Property Type="Binary" Name="definition" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_helpdiagrams_Result">
+          <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+          <Property Type="Int32" Name="OwnerID" Nullable="false" />
+        </ComplexType>
         <EntityType Name="ACT_CLUB_DEF">
           <Key>
             <PropertyRef Name="ACT_CDE" />
@@ -1112,6 +1152,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="ACT_TYPE" Type="String" MaxLength="3" FixedLength="true" Unicode="false" />
           <Property Name="ACT_TYPE_DESC" Type="String" MaxLength="60" FixedLength="true" Unicode="false" />
           <Property Name="PRIVACY" Type="Boolean" />
+          <Property Name="ACT_JOIN_INFO" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="ADMIN">
           <Key>
@@ -1511,28 +1552,18 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="user_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Private" Type="Int32" Nullable="false" />
         </EntityType>
-        <ComplexType Name="EVENTS_BY_STUDENT_ID_Result">
-          <Property Type="Int32" Name="ROWID" Nullable="false" />
-          <Property Type="String" Name="CHBarEventID" Nullable="false" MaxLength="20" />
-          <Property Type="String" Name="CHBarcode" Nullable="true" MaxLength="14" />
-          <Property Type="String" Name="CHEventID" Nullable="true" MaxLength="6" />
-          <Property Type="String" Name="CHCheckerID" Nullable="true" MaxLength="14" />
-          <Property Type="DateTime" Name="CHDate" Nullable="true" Precision="23" />
-          <Property Type="DateTime" Name="CHTime" Nullable="true" Precision="23" />
-          <Property Type="String" Name="CHSource" Nullable="true" MaxLength="1" />
-          <Property Type="String" Name="CHTermCD" Nullable="true" MaxLength="4" />
-          <Property Type="Int32" Name="Required" Nullable="true" />
-        </ComplexType>
-        <ComplexType Name="sp_helpdiagramdefinition_Result">
-          <Property Type="Int32" Name="version" Nullable="true" />
-          <Property Type="Binary" Name="definition" Nullable="true" />
-        </ComplexType>
-        <ComplexType Name="sp_helpdiagrams_Result">
-          <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
-          <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
-          <Property Type="Int32" Name="ID" Nullable="false" />
-          <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
-          <Property Type="Int32" Name="OwnerID" Nullable="false" />
+        <ComplexType Name="PHOTO_INFO_PER_USER_NAME_Result">
+          <Property Type="Int32" Name="preffered_photo" Nullable="false" />
+          <Property Type="Int32" Name="show_pic" Nullable="false" />
+          <Property Type="String" Name="EmailUserName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Img_Name" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Img_Path" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Pref_Img_Name" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Pref_Img_Path" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="facebook" Nullable="true" />
+          <Property Type="String" Name="instagram" Nullable="true" />
+          <Property Type="String" Name="linkedin" Nullable="true" />
+          <Property Type="String" Name="twitter" Nullable="true" />
         </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1828,6 +1859,46 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="EVENTS_BY_STUDENT_ID" FunctionName="Gordon360.Store.EVENTS_BY_STUDENT_ID">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.EVENTS_BY_STUDENT_ID_Result">
+                <ScalarProperty Name="ROWID" ColumnName="ROWID" />
+                <ScalarProperty Name="CHBarEventID" ColumnName="CHBarEventID" />
+                <ScalarProperty Name="CHBarcode" ColumnName="CHBarcode" />
+                <ScalarProperty Name="CHEventID" ColumnName="CHEventID" />
+                <ScalarProperty Name="CHCheckerID" ColumnName="CHCheckerID" />
+                <ScalarProperty Name="CHDate" ColumnName="CHDate" />
+                <ScalarProperty Name="CHTime" ColumnName="CHTime" />
+                <ScalarProperty Name="CHSource" ColumnName="CHSource" />
+                <ScalarProperty Name="CHTermCD" ColumnName="CHTermCD" />
+                <ScalarProperty Name="Required" ColumnName="Required" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="Gordon360.Store.sp_alterdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="Gordon360.Store.sp_creatediagram" />
+          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="Gordon360.Store.sp_dropdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="Gordon360.Store.sp_helpdiagramdefinition">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.sp_helpdiagramdefinition_Result">
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="Gordon360.Store.sp_helpdiagrams">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.sp_helpdiagrams_Result">
+                <ScalarProperty Name="Database" ColumnName="Database" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Owner" ColumnName="Owner" />
+                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="Gordon360.Store.sp_renamediagram" />
+          <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="Gordon360.Store.sp_upgraddiagrams" />
           <EntitySetMapping Name="ACT_CLUB_DEF">
             <EntityTypeMapping TypeName="Gordon360.ACT_CLUB_DEF">
               <MappingFragment StoreEntitySet="ACT_CLUB_DEF">
@@ -1839,6 +1910,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="ACT_INFO">
             <EntityTypeMapping TypeName="Gordon360.ACT_INFO">
               <MappingFragment StoreEntitySet="ACT_INFO">
+                <ScalarProperty Name="ACT_JOIN_INFO" ColumnName="ACT_JOIN_INFO" />
                 <ScalarProperty Name="PRIVACY" ColumnName="PRIVACY" />
                 <ScalarProperty Name="ACT_TYPE_DESC" ColumnName="ACT_TYPE_DESC" />
                 <ScalarProperty Name="ACT_TYPE" ColumnName="ACT_TYPE" />
@@ -2248,46 +2320,24 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="EVENTS_BY_STUDENT_ID" FunctionName="Gordon360.Store.EVENTS_BY_STUDENT_ID">
+          <FunctionImportMapping FunctionImportName="PHOTO_INFO_PER_USER_NAME" FunctionName="Gordon360.Store.PHOTO_INFO_PER_USER_NAME">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="Gordon360.EVENTS_BY_STUDENT_ID_Result">
-                <ScalarProperty Name="ROWID" ColumnName="ROWID" />
-                <ScalarProperty Name="CHBarEventID" ColumnName="CHBarEventID" />
-                <ScalarProperty Name="CHBarcode" ColumnName="CHBarcode" />
-                <ScalarProperty Name="CHEventID" ColumnName="CHEventID" />
-                <ScalarProperty Name="CHCheckerID" ColumnName="CHCheckerID" />
-                <ScalarProperty Name="CHDate" ColumnName="CHDate" />
-                <ScalarProperty Name="CHTime" ColumnName="CHTime" />
-                <ScalarProperty Name="CHSource" ColumnName="CHSource" />
-                <ScalarProperty Name="CHTermCD" ColumnName="CHTermCD" />
-                <ScalarProperty Name="Required" ColumnName="Required" />
+              <ComplexTypeMapping TypeName="Gordon360.PHOTO_INFO_PER_USER_NAME_Result">
+                <ScalarProperty Name="preffered_photo" ColumnName="preffered_photo" />
+                <ScalarProperty Name="show_pic" ColumnName="show_pic" />
+                <ScalarProperty Name="EmailUserName" ColumnName="EmailUserName" />
+                <ScalarProperty Name="Img_Name" ColumnName="Img_Name" />
+                <ScalarProperty Name="Img_Path" ColumnName="Img_Path" />
+                <ScalarProperty Name="Pref_Img_Name" ColumnName="Pref_Img_Name" />
+                <ScalarProperty Name="Pref_Img_Path" ColumnName="Pref_Img_Path" />
+                <ScalarProperty Name="facebook" ColumnName="facebook" />
+                <ScalarProperty Name="instagram" ColumnName="instagram" />
+                <ScalarProperty Name="linkedin" ColumnName="linkedin" />
+                <ScalarProperty Name="twitter" ColumnName="twitter" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="Gordon360.Store.sp_alterdiagram" />
-          <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="Gordon360.Store.sp_creatediagram" />
-          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="Gordon360.Store.sp_dropdiagram" />
-          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="Gordon360.Store.sp_helpdiagramdefinition">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="Gordon360.sp_helpdiagramdefinition_Result">
-                <ScalarProperty Name="version" ColumnName="version" />
-                <ScalarProperty Name="definition" ColumnName="definition" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="Gordon360.Store.sp_helpdiagrams">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="Gordon360.sp_helpdiagrams_Result">
-                <ScalarProperty Name="Database" ColumnName="Database" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Owner" ColumnName="Owner" />
-                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="Gordon360.Store.sp_renamediagram" />
-          <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="Gordon360.Store.sp_upgraddiagrams" />
+          <FunctionImportMapping FunctionImportName="UPDATE_PHOTO_PATH" FunctionName="Gordon360.Store.UPDATE_PHOTO_PATH" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

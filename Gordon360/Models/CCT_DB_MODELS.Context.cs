@@ -354,5 +354,31 @@ namespace Gordon360.Models
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_upgraddiagrams");
         }
+    
+        public virtual ObjectResult<PHOTO_INFO_PER_USER_NAME_Result> PHOTO_INFO_PER_USER_NAME(string uSER_NAME)
+        {
+            var uSER_NAMEParameter = uSER_NAME != null ?
+                new ObjectParameter("USER_NAME", uSER_NAME) :
+                new ObjectParameter("USER_NAME", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<PHOTO_INFO_PER_USER_NAME_Result>("PHOTO_INFO_PER_USER_NAME", uSER_NAMEParameter);
+        }
+    
+        public virtual int UPDATE_PHOTO_PATH(string uSER_NAME, string fILE_PATH, string fILE_NAME)
+        {
+            var uSER_NAMEParameter = uSER_NAME != null ?
+                new ObjectParameter("USER_NAME", uSER_NAME) :
+                new ObjectParameter("USER_NAME", typeof(string));
+    
+            var fILE_PATHParameter = fILE_PATH != null ?
+                new ObjectParameter("FILE_PATH", fILE_PATH) :
+                new ObjectParameter("FILE_PATH", typeof(string));
+    
+            var fILE_NAMEParameter = fILE_NAME != null ?
+                new ObjectParameter("FILE_NAME", fILE_NAME) :
+                new ObjectParameter("FILE_NAME", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_PHOTO_PATH", uSER_NAMEParameter, fILE_PATHParameter, fILE_NAMEParameter);
+        }
     }
 }

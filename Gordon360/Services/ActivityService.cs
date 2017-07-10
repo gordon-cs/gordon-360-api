@@ -238,7 +238,7 @@ namespace Gordon360.Services
         /// <param name="activity">The activity info resource with the updated information</param>
         /// <param name="id">The id of the activity info to be updated</param>
         /// <returns>The updated activity info resource</returns>
-        public ACT_INFO Update(string id,ACT_INFO activity)
+        public ACT_INFO Update(string id, ACT_INFO activity)
         {
             var original = _unitOfWork.ActivityInfoRepository.GetById(id);
 
@@ -252,6 +252,7 @@ namespace Gordon360.Services
             // One can only update certain fields within a membrship
             original.ACT_BLURB = activity.ACT_BLURB;
             original.ACT_URL = activity.ACT_URL;
+            original.ACT_JOIN_INFO = activity.ACT_JOIN_INFO;
 
             _unitOfWork.Save();
 

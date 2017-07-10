@@ -14,6 +14,7 @@ namespace Gordon360.Models.ViewModels
         public string ActivityURL { get; set; }
         public string ActivityType { get; set; }
         public string ActivityTypeDescription { get; set; }
+        public string ActivityJoinInfo { get; set; }
 
         public static implicit operator ActivityInfoViewModel(ACT_INFO info)
         {
@@ -25,7 +26,8 @@ namespace Gordon360.Models.ViewModels
                 ActivityURL = info.ACT_URL ?? "",
                 ActivityImagePath = info.ACT_IMG_PATH ?? "",
                 ActivityType = info.ACT_TYPE ?? "",
-                ActivityTypeDescription = info.ACT_TYPE_DESC ?? ""
+                ActivityTypeDescription = info.ACT_TYPE_DESC.Trim() ?? "",
+                ActivityJoinInfo = info.ACT_JOIN_INFO.Trim() ?? ""
             };
 
             return vm;
