@@ -289,11 +289,16 @@ namespace Gordon360.Controllers.Api
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             var userInfo = _profileService.GetCustomUserInfo(username);
-            var filePath = userInfo.Pref_Img_Path;
+            var filePath = Defaults.DEFAULT_PREF_IMAGE_PATH;
             var fileName = userInfo.Pref_Img_Name;
+            if (fileName == null)
+            {
+                filePath = Defaults.DEFAULT_IMAGE_PATH;
+                fileName = userInfo.Img_Name;
+            }
             var result = new HttpResponseMessage(HttpStatusCode.OK);
 
-            result.Content = new StreamContent(new FileStream(filePath+fileName, FileMode.Open)); // this file stream will be closed by lower layers of web api for you once the response is completed.
+            result.Content = new StreamContent(new FileStream(filePath+fileName, FileMode.Open, FileAccess.Read)); // this file stream will be closed by lower layers of web api for you once the response is completed.
             result.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpg");
             return result;
         }
@@ -309,7 +314,7 @@ namespace Gordon360.Controllers.Api
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
-            string root = "C:\\Users\\chris.qiao\\Desktop\\pref_photos\\";
+            string root = Defaults.DEFAULT_PREF_IMAGE_PATH;
             var fileName = _accountService.GetAccountByEmail(username + "@gordon.edu").Barcode + ".jpg";
             var provider = new CustomMultipartFormDataStreamProvider(root);
 
@@ -363,7 +368,7 @@ namespace Gordon360.Controllers.Api
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value; ;
-            string root = "C:\\Users\\chris.qiao\\Desktop\\pref_photos\\";
+            string root = Defaults.DEFAULT_PREF_IMAGE_PATH;
             var fileName = _accountService.GetAccountByEmail(username + "@gordon.edu").Barcode + ".jpg";
             try
             {
