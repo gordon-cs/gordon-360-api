@@ -12,6 +12,7 @@ using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using System.Net;
+using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Linq;
 
@@ -26,6 +27,9 @@ namespace Gordon360.Services
     {
         // See UnitOfWork class
         private IUnitOfWork _unitOfWork;
+
+        // Set the namespace for XML Paths
+        private XNamespace r25 = "http://www.collegenet.com/r25";
 
         public EventService(IUnitOfWork unitOfWork)
         {
@@ -95,19 +99,20 @@ namespace Gordon360.Services
                 // Commit contents of the request to temporary memory
                 MemoryStream stream = new MemoryStream(client.DownloadData(requestUrl));
                 // Begin to read contents with correct encoding
-                using (StreamReader streamReader = new StreamReader(stream, Encoding.UTF8))
+                using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
                 {
+                    // Create a string of content
+                    string content = reader.ReadToEnd();
                     // Load the data into an XmlDocument
-                    XDocument xmlDoc = new XDocument();
-                    xmlDoc.Add(streamReader.ReadToEnd());
+                    XDocument xmlDoc = XDocument.Parse(content);
 
                     // Pull out the nodes for events
-                    IEnumerable<XElement> events = xmlDoc.XPathSelectElements("r25:event");
+
+                    IEnumerable<XElement> events = xmlDoc.Descendants(r25 +"event");
                     return events;
 
                 }
-            }
-     
+            } 
         }
             
         
@@ -115,11 +120,15 @@ namespace Gordon360.Services
         ///  Converts events from XML Nodes to EventViewModesl
         /// </summary>
         /// <param name="nodeList"> The XML Node List</param>
-        public IEnumerable<EventViewModel> GetAllEvents(XmlNodeList nodeList)
+        public IEnumerable<EventViewModel> GetAllEvents(IEnumerable<XElement> nodeList)
         {
             List<EventViewModel> stuff = new List<EventViewModel>();
-            
-         return stuff.AsEnumerable<EventViewModel>();
+            foreach (XElement n in nodeList)
+            {
+                
+            }
+
+            return stuff.AsEnumerable<EventViewModel>();
         }
 
         /// <summary>

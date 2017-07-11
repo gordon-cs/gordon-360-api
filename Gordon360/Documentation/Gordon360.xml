@@ -778,6 +778,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Services.EventService.GetAllEvents(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement})">
+            <summary>
+             Converts events from XML Nodes to EventViewModesl
+            </summary>
+            <param name="nodeList"> The XML Node List</param>
+        </member>
         <member name="M:Gordon360.Services.EventService.GetAllForStudent(System.String)">
             <summary>
             Returns all attended events for a student

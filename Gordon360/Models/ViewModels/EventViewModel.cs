@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Linq;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
-using System.Xml;
-using System.Xml.XPath;
 using System.Xml.Linq;
 
 namespace Gordon360.Models.ViewModels
@@ -22,11 +19,13 @@ namespace Gordon360.Models.ViewModels
         public List<Object[]> Locations { get; set; }
         public string Organization { get; set; }
 
+        // Set the namespace for XML Paths
+        private XNamespace r25 = "http://www.collegenet.com/r25";
 
         // This view model contains pieces of info pulled from a JSon array which is pulled from 25Live, using a pre-defined function
         public EventViewModel(XElement a)
         {
-            
+            Event_ID = a.Element(r25 + "event_id").Value;
         }
     }
 
