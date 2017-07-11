@@ -52,7 +52,7 @@ namespace Gordon360.Services
     /// <returns></returns>
     public JObject GetLiveEvent(string EventID, string type)
         {
-            
+            string year = GetDay();
             // If the type is "s", then it is a single event request, "m" is multiple event IDs
             if (type == "s" || type == "S" || type == "m" || type == "M")
             {
