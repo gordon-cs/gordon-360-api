@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
 
 /// <summary>
 /// Namespace with all the Service Interfaces that are to be implemented. I don't think making this interface is required, the services can work find on their own.
@@ -22,7 +23,7 @@ namespace Gordon360.Services
     {
         IEnumerable<AttendedEventViewModel> GetAllForStudent(string id);
         IEnumerable<AttendedEventViewModel> GetEventsForStudentByTerm(string id, string term);
-        JObject GetLiveEvent(string Event_ID, string type);
+        Task<JObject> GetLiveEvent(string Event_ID, string type);
         IEnumerable<EventViewModel> GetEvents(string Event_ID, string type);
     }
 

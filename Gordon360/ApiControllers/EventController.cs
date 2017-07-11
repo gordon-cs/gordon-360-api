@@ -118,12 +118,11 @@ namespace Gordon360.ApiControllers
 
 
         [HttpGet]
-        [Route("25Live/ClawApproved")]
-        public IHttpActionResult GetUpcomingClawEvents(string Event_OR_Type_ID, string type)
+        [Route("25Live/All")]
+        public IHttpActionResult GetUpcomingClawEvents()
         {
             // Two important checks: make sure the event_or_type_id does not contain any letters, and make sure the type is a single letter
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(Event_OR_Type_ID) || string.IsNullOrWhiteSpace(type) ||
-                type.Length > 1 || !Event_OR_Type_ID.Any(x => !char.IsLetter(x)))
+            if (!ModelState.IsValid )
             {
                 string errors = "";
                 foreach (var modelstate in ModelState.Values)
@@ -134,22 +133,11 @@ namespace Gordon360.ApiControllers
                     }
 
                 }
-                // Throw errors for invalid route
-                if (errors == "")
-                {
-                    if (type.Length > 1)
-                    {
-                        throw new Exception("Invalid type!");
-                    }
-                    else if (!Event_OR_Type_ID.Any(x => !char.IsLetter(x)))
-                    {
-                        throw new Exception("Invalid event identifyer!");
-                    }
-                }
+
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var result = _eventService.GetEvents("Chapel", "Upcoming");
+            var result = _eventService.GetEvents("All", "");
 
             if (result == null)
             {

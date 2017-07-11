@@ -12,8 +12,10 @@ using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using System.Net;
+using System.Net.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
 
 namespace Gordon360.Services
 {
@@ -30,31 +32,42 @@ namespace Gordon360.Services
             _unitOfWork = unitOfWork;
         }
 
-        /// <summary>
-        /// Return a Single Event JObject from Live25
-        /// </summary>
-        /// <returns></returns>
-        public JObject GetLiveEvent(string EventID, string type)
-        {
+        public string GetDay()
+        { 
+        // We need to determine what the current date is
+          DateTime today = DateTime.Today;
+          if(today.Month < 06)
+            {
+                return (today.Year - 1).ToString();
+            }
+          else if(today.Month > 07)
+            {
+                return (today.Year).ToString();
+            }
+          return today.Year.ToString();
+         }
 
+    /// <summary>
+    /// Return a Single Event JObject from Live25
+    /// </summary>
+    /// <returns></returns>
+    public async Task<JObject> GetLiveEvent(string EventID, string type)
+        {
+            string year = GetDay();
             // Return a list of all chapel events
-            if (EventID == "Chapel")
+            if (EventID == "All")
             {
 
                 // Set our api route and fill in the event information we would like
-                var requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&category_id=85&state=2&scope=extended";
-                using (WebClient client = new WebClient())
+                string requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&state=2&end_after=" + year + "0820&scope=extended";
+                using (HttpClient client = new HttpClient())
                 {
-                    // Commit contents of the request to temporary memory
-                    MemoryStream stream = new MemoryStream(client.DownloadData(requestUrl));
-                    // Begin to read contents with correct encoding
-                    using (StreamReader streamReader = new StreamReader(stream, Encoding.UTF8))
-                    {
-                        string readContents = streamReader.ReadToEnd();
-                        // Parse the data into a json object
-                        var data = (JObject)JsonConvert.DeserializeObject(readContents);
-                        return data;
-                    }
+                    Task<String> getStringTask = client.GetStringAsync(requestUrl);
+                    String result = getStringTask.Result;
+                    // Parse the data into a json object
+                    var data = (JObject)JsonConvert.DeserializeObject(result);
+                    return data;
+                    
                 }
             }
             // If the type is "s", then it is a single event request, "m" is multiple event IDs
@@ -68,7 +81,7 @@ namespace Gordon360.Services
                     }
                 }
                 // Set our api route and fill in the event information we would like
-                var requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&event_id=" + EventID + "&state=2&scope=extended";
+                var requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&event_id=" + EventID + "&state=2&end_after=" + year + "0820&scope=extended";
                 using (WebClient client = new WebClient())
                 {
                     // Commit contents of the request to temporary memory
@@ -91,7 +104,7 @@ namespace Gordon360.Services
                 {
                     EventID = EventID.Replace('$', '+');
                 }
-                var requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&event_type_id=" + EventID + "&state=2&scope=extended";
+                var requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&event_type_id=" + EventID + "&state=2&end_after=" + year + "0820&scope=extended";
                 using (WebClient client = new WebClient())
                 {
                     MemoryStream stream = new MemoryStream(client.DownloadData(requestUrl));
@@ -119,7 +132,7 @@ namespace Gordon360.Services
         public IEnumerable<EventViewModel> GetEvents(string EventID, string type)
         {
             // Use defined function to query 25Live
-            JObject events = GetLiveEvent(EventID, type);
+            JObject events =  GetLiveEvent(EventID, type).Result;
             // Initiate a list to contain the events
             List<EventViewModel> list = new List<EventViewModel>();
             // Create an empty event to return in the case of an issue

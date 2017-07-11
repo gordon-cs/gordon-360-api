@@ -1,8 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Text;
-using System.Net;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Gordon360.Models.ViewModels
@@ -16,7 +12,6 @@ namespace Gordon360.Models.ViewModels
         public Nullable<DateTime> CHTime { get; set; }
         public string CHTermCD { get; set; }
         public Nullable<int> Required { get; set; }
-        public string Event_ID { get; set; }
         public string Event_Name { get; set; }
         public string Event_Type_Name { get; set; }
         public DateTime Start_Time { get; set; }
@@ -26,9 +21,11 @@ namespace Gordon360.Models.ViewModels
         public string Organization { get; set; }
         public string Category_ID { get; set; }
 
-        DateTime noDate;
+        // We're gonna take an eventviewmodel (info from 25Live) and a Chapeleventviewmodel (info form our database) 
+        // then mash 'em together
         public AttendedEventViewModel(EventViewModel a, ChapelEventViewModel b)
         {   
+            // First the EventViewModel
             CHBarcode = b.CHBarcode.Trim();
             CHEventID = b.CHEventID;
             CHCheckerID = b.CHCheckerID.Trim();
@@ -36,8 +33,7 @@ namespace Gordon360.Models.ViewModels
             CHTime = b.CHTime;
             CHTermCD = b.CHTermCD.Trim();
             Required = b.Required;
-
-            Event_ID = a.Event_ID ?? "";
+            // Then the CHapelEventViewModel
             Event_Name = a.Event_Name ?? "";
             Event_Type_Name = a.Event_Type_Name ?? "";
             Category_ID = a.Category_Id ?? "";
