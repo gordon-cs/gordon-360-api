@@ -291,14 +291,14 @@ namespace Gordon360.Controllers.Api
             var userInfo = _profileService.GetCustomUserInfo(username);
             var filePath = Defaults.DEFAULT_PREF_IMAGE_PATH;
             var fileName = userInfo.Pref_Img_Name;
-            if (fileName == null)
+            if (string.IsNullOrEmpty(fileName))
             {
                 filePath = Defaults.DEFAULT_IMAGE_PATH;
                 fileName = userInfo.Img_Name;
             }
             byte [] imageBytes = File.ReadAllBytes(filePath + fileName);
             string base64String = Convert.ToBase64String(imageBytes);
-            return Ok(base64String);
+            return Ok(base64String);  //return image as a base64 string
 
         }
 
@@ -327,7 +327,7 @@ namespace Gordon360.Controllers.Api
                 System.IO.DirectoryInfo di = new DirectoryInfo(root);
                 foreach (FileInfo file in di.GetFiles(fileName))
                 {
-                        file.Delete();
+                        file.Delete();                   //delete old image file if it exists.
                 }
             }
             catch (System.Exception e) { }
@@ -344,9 +344,9 @@ namespace Gordon360.Controllers.Api
                     var oldFileName = fileContent.Headers.ContentDisposition.FileName.Replace("\"", string.Empty);
 
                     System.IO.DirectoryInfo di = new DirectoryInfo(root);
-                    System.IO.File.Move(di.FullName + oldFileName, di.FullName + fileName);
+                    System.IO.File.Move(di.FullName + oldFileName, di.FullName + fileName); //rename
 
-                    _profileService.UpdateProfileImage(username, root, fileName);
+                    _profileService.UpdateProfileImage(username, root, fileName); //update database
                 }
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
@@ -374,11 +374,11 @@ namespace Gordon360.Controllers.Api
                 System.IO.DirectoryInfo di = new DirectoryInfo(root);
                 foreach (FileInfo file in di.GetFiles(fileName))
                 {
-                    file.Delete();
+                    file.Delete();                  //delete old image file if it exists.
                 }
             }
             catch (System.Exception e) { }
-           _profileService.UpdateProfileImage(username, null, null);
+           _profileService.UpdateProfileImage(username, null, null);  //update database
             return Ok();
         }
 
@@ -391,7 +391,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpPut]
         [Route("{type}")]
-        public IHttpActionResult UpdateLink(string type, PROFILE_IMAGE path)
+        public IHttpActionResult UpdateLink(string type, CUSTOM_PROFILE path)
         {
             // Verify Input
             if (!ModelState.IsValid)

@@ -24,6 +24,7 @@
           <Property Name="ACT_TYPE" Type="char" MaxLength="3" />
           <Property Name="ACT_TYPE_DESC" Type="char" MaxLength="60" />
           <Property Name="PRIVACY" Type="bit" />
+          <Property Name="ACT_JOIN_INFO" Type="varchar(max)" />
         </EntityType>
         <EntityType Name="ADMIN">
           <Key>
@@ -108,6 +109,17 @@ warning 6002: The table/view 'CCT.dbo.alumni' does not have a primary key define
           <Property Name="FacStaffID" Type="varchar" MaxLength="10" />
           <Property Name="Barcode" Type="varchar" MaxLength="15" />
           <Property Name="AlumniID" Type="varchar" MaxLength="25" />
+        </EntityType>
+        <EntityType Name="CUSTOM_PROFILE">
+          <Key>
+            <PropertyRef Name="username" />
+          </Key>
+          <Property Name="id" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="username" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="facebook" Type="varchar(max)" />
+          <Property Name="twitter" Type="varchar(max)" />
+          <Property Name="instagram" Type="varchar(max)" />
+          <Property Name="linkedin" Type="varchar(max)" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.facstaff' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -197,19 +209,6 @@ warning 6002: The table/view 'CCT.dbo.facstaff' does not have a primary key defi
           <Property Name="JOB_TIME" Type="datetime" />
           <Property Name="GRP_ADMIN" Type="bit" />
           <Property Name="PRIVACY" Type="bit" />
-        </EntityType>
-        <EntityType Name="PROFILE_IMAGE">
-          <Key>
-            <PropertyRef Name="username" />
-          </Key>
-          <Property Name="id" Type="varchar" MaxLength="10" Nullable="false" />
-          <Property Name="username" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="Img_Path" Type="varchar(max)" />
-          <Property Name="facebook" Type="varchar(max)" />
-          <Property Name="twitter" Type="varchar(max)" />
-          <Property Name="instagram" Type="varchar(max)" />
-          <Property Name="linkedin" Type="varchar(max)" />
-          <Property Name="show_img" Type="bit" />
         </EntityType>
         <EntityType Name="REQUEST">
           <Key>
@@ -352,6 +351,7 @@ warning 6002: The table/view 'CCT.dbo.ACCOUNT' does not have a primary key defin
           <Property Name="email" Type="varchar" MaxLength="50" />
           <Property Name="AD_Username" Type="varchar" MaxLength="50" />
           <Property Name="account_type" Type="varchar" MaxLength="20" />
+          <Property Name="office_hours" Type="varchar" MaxLength="75" />
           <Property Name="preferred_photo" Type="int" Nullable="false" />
           <Property Name="show_pic" Type="int" Nullable="false" />
           <Property Name="Private" Type="int" Nullable="false" />
@@ -543,13 +543,18 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Parameter Name="ID_NUM" Type="int" Mode="In" />
         </Function>
         <Function Name="UPDATE_ACT_INFO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="UPDATE_PHOTO_PATH" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="USER_NAME" Type="varchar" Mode="In" />
+          <Parameter Name="FILE_PATH" Type="varchar" Mode="In" />
+          <Parameter Name="FILE_NAME" Type="varchar" Mode="In" />
+        </Function>
         <EntityContainer Name="Gordon360StoreContainer">
           <EntitySet Name="ACT_CLUB_DEF" EntityType="Self.ACT_CLUB_DEF" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ACT_INFO" EntityType="Self.ACT_INFO" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ADMIN" EntityType="Self.ADMIN" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CUSTOM_PROFILE" EntityType="Self.CUSTOM_PROFILE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="JNZB_ACTIVITIES" EntityType="Self.JNZB_ACTIVITIES" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MEMBERSHIP" EntityType="Self.MEMBERSHIP" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="PROFILE_IMAGE" EntityType="Self.PROFILE_IMAGE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="REQUEST" EntityType="Self.REQUEST" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="student_temp" EntityType="Self.student_temp" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
@@ -697,6 +702,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [ACCOUNT].[email] AS [email], 
     [ACCOUNT].[AD_Username] AS [AD_Username], 
     [ACCOUNT].[account_type] AS [account_type], 
+    [ACCOUNT].[office_hours] AS [office_hours], 
     [ACCOUNT].[preferred_photo] AS [preferred_photo], 
     [ACCOUNT].[show_pic] AS [show_pic], 
     [ACCOUNT].[Private] AS [Private], 
@@ -852,6 +858,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="preferred_photo" Type="Int32" Nullable="false" />
           <Property Name="show_pic" Type="Int32" Nullable="false" />
           <Property Name="ReadOnly" Type="Int32" Nullable="false" />
+          <Property Name="office_hours" Type="String" MaxLength="75" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="CM_SESSION_MSTR">
           <Key>
@@ -1026,11 +1033,16 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="alumni" EntityType="Gordon360.alumni" />
           <EntitySet Name="facstaff" EntityType="Gordon360.facstaff" />
           <EntitySet Name="student_temp" EntityType="Gordon360.student_temp" />
-          <EntitySet Name="PROFILE_IMAGE" EntityType="Gordon360.PROFILE_IMAGE" />
           <EntitySet Name="ChapelEvent" EntityType="Gordon360.ChapelEvent" />
           <FunctionImport Name="PHOTO_INFO_PER_USER_NAME" ReturnType="Collection(Gordon360.PHOTO_INFO_PER_USER_NAME_Result)">
           <Parameter Name="USER_NAME" Mode="In" Type="String" />
           </FunctionImport>
+          <FunctionImport Name="UPDATE_PHOTO_PATH">
+            <Parameter Name="USER_NAME" Mode="In" Type="String" />
+            <Parameter Name="FILE_PATH" Mode="In" Type="String" />
+            <Parameter Name="FILE_NAME" Mode="In" Type="String" />
+          </FunctionImport>
+          <EntitySet Name="CUSTOM_PROFILE" EntityType="Gordon360.CUSTOM_PROFILE" />
 
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
@@ -1269,6 +1281,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="ACT_TYPE" Type="String" MaxLength="3" FixedLength="true" Unicode="false" />
           <Property Name="ACT_TYPE_DESC" Type="String" MaxLength="60" FixedLength="true" Unicode="false" />
           <Property Name="PRIVACY" Type="Boolean" />
+          <Property Name="ACT_JOIN_INFO" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="C360_SLIDER">
           <Key>
@@ -1531,19 +1544,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="MobilePhone" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="IsMobilePhonePrivate" Type="Boolean" />
         </EntityType>
-        <EntityType Name="PROFILE_IMAGE">
-          <Key>
-            <PropertyRef Name="username" />
-          </Key>
-          <Property Name="id" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Img_Path" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="facebook" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="twitter" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="instagram" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="linkedin" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="show_img" Type="Boolean" />
-        </EntityType>
         <EntityType Name="ChapelEvent">
           <Key>
             <PropertyRef Name="ROWID" />
@@ -1572,6 +1572,17 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="Int32" Name="show_pic" Nullable="false" />
           <Property Type="String" Name="EmailUserName" Nullable="true" MaxLength="50" />
         </ComplexType>
+        <EntityType Name="CUSTOM_PROFILE">
+          <Key>
+            <PropertyRef Name="username" />
+          </Key>
+          <Property Name="id" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="facebook" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="twitter" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="instagram" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="linkedin" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1646,6 +1657,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <EntityTypeMapping TypeName="Gordon360.ACCOUNT">
               <MappingFragment StoreEntitySet="ACCOUNT">
 
+                <ScalarProperty Name="office_hours" ColumnName="office_hours" />
                 <ScalarProperty Name="ReadOnly" ColumnName="ReadOnly" />
                 <ScalarProperty Name="show_pic" ColumnName="show_pic" />
                 <ScalarProperty Name="preferred_photo" ColumnName="preferred_photo" />
@@ -2011,6 +2023,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="ACT_INFO">
             <EntityTypeMapping TypeName="Gordon360.ACT_INFO">
               <MappingFragment StoreEntitySet="ACT_INFO">
+                <ScalarProperty Name="ACT_JOIN_INFO" ColumnName="ACT_JOIN_INFO" />
                 <ScalarProperty Name="PRIVACY" ColumnName="PRIVACY" />
                 <ScalarProperty Name="ACT_TYPE_DESC" ColumnName="ACT_TYPE_DESC" />
                 <ScalarProperty Name="ACT_TYPE" ColumnName="ACT_TYPE" />
@@ -2291,20 +2304,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="PROFILE_IMAGE">
-            <EntityTypeMapping TypeName="Gordon360.PROFILE_IMAGE">
-              <MappingFragment StoreEntitySet="PROFILE_IMAGE">
-                <ScalarProperty Name="show_img" ColumnName="show_img" />
-                <ScalarProperty Name="linkedin" ColumnName="linkedin" />
-                <ScalarProperty Name="instagram" ColumnName="instagram" />
-                <ScalarProperty Name="twitter" ColumnName="twitter" />
-                <ScalarProperty Name="facebook" ColumnName="facebook" />
-                <ScalarProperty Name="Img_Path" ColumnName="Img_Path" />
-                <ScalarProperty Name="username" ColumnName="username" />
-                <ScalarProperty Name="id" ColumnName="id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="ChapelEvent">
             <EntityTypeMapping TypeName="Gordon360.ChapelEvent">
               <MappingFragment StoreEntitySet="ChapelEvent">
@@ -2336,6 +2335,19 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="UPDATE_PHOTO_PATH" FunctionName="Gordon360.Store.UPDATE_PHOTO_PATH" />
+          <EntitySetMapping Name="CUSTOM_PROFILE">
+            <EntityTypeMapping TypeName="Gordon360.CUSTOM_PROFILE">
+              <MappingFragment StoreEntitySet="CUSTOM_PROFILE">
+                <ScalarProperty Name="linkedin" ColumnName="linkedin" />
+                <ScalarProperty Name="instagram" ColumnName="instagram" />
+                <ScalarProperty Name="twitter" ColumnName="twitter" />
+                <ScalarProperty Name="facebook" ColumnName="facebook" />
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

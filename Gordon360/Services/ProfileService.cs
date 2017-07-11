@@ -107,7 +107,7 @@ namespace Gordon360.Services
         /// <param name="username">The username</param>
         /// <param name="type"></param>
         /// <param name="path"></param>
-        public void UpdateProfileLink(string username, string type, PROFILE_IMAGE path)
+        public void UpdateProfileLink(string username, string type, CUSTOM_PROFILE path)
         {
             var original = _unitOfWork.ProfileCustomRepository.GetByUsername(username);
 
@@ -134,24 +134,6 @@ namespace Gordon360.Services
                     original.linkedin = path.linkedin;
                     break;
             }
-
-            _unitOfWork.Save();
-        }
-
-        /// <summary>
-        /// Reset the path for the profile image
-        /// </summary>
-        /// <param name="username">The username</param>
-        public void ResetProfileImage(string username)
-        {
-            var original = _unitOfWork.ProfileCustomRepository.GetByUsername(username);
-
-            if (original == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The profile was not found." };
-            }
-
-            original.Img_Path = Defaults.DEFAULT_PROFILE_IMAGE_PATH;
 
             _unitOfWork.Save();
         }

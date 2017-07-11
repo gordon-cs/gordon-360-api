@@ -130,7 +130,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateLink(System.String,Gordon360.Models.PROFILE_IMAGE)">
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateLink(System.String,Gordon360.Models.CUSTOM_PROFILE)">
             <summary>
             Update the profile social media links
             </summary>
@@ -948,19 +948,13 @@
             <param name="path"></param>
             <param name="name"></param>
         </member>
-        <member name="M:Gordon360.Services.ProfileService.UpdateProfileLink(System.String,System.String,Gordon360.Models.PROFILE_IMAGE)">
+        <member name="M:Gordon360.Services.ProfileService.UpdateProfileLink(System.String,System.String,Gordon360.Models.CUSTOM_PROFILE)">
             <summary>
             Sets the path for the profile links.
             </summary>
             <param name="username">The username</param>
             <param name="type"></param>
             <param name="path"></param>
-        </member>
-        <member name="M:Gordon360.Services.ProfileService.ResetProfileImage(System.String)">
-            <summary>
-            Reset the path for the profile image
-            </summary>
-            <param name="username">The username</param>
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateMobilePrivacy(System.String,System.Boolean)">
             <summary>

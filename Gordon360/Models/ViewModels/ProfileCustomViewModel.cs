@@ -20,7 +20,7 @@ namespace Gordon360.Models.ViewModels
         public int preffered_photo { get; set; }
         public int show_pic { get; set; }
 
-        public static implicit operator ProfileCustomViewModel(PROFILE_IMAGE info)
+        public static implicit operator ProfileCustomViewModel(CUSTOM_PROFILE info)
         {
             ProfileCustomViewModel vm = new ProfileCustomViewModel
             {
