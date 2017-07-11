@@ -284,7 +284,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpGet]
         [Route("Image")]
-        public HttpResponseMessage getImg()
+        public IHttpActionResult getImg()
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
@@ -296,11 +296,10 @@ namespace Gordon360.Controllers.Api
                 filePath = Defaults.DEFAULT_IMAGE_PATH;
                 fileName = userInfo.Img_Name;
             }
-            var result = new HttpResponseMessage(HttpStatusCode.OK);
+            byte [] imageBytes = File.ReadAllBytes(filePath + fileName);
+            string base64String = Convert.ToBase64String(imageBytes);
+            return Ok(base64String);
 
-            result.Content = new StreamContent(new FileStream(filePath+fileName, FileMode.Open, FileAccess.Read)); // this file stream will be closed by lower layers of web api for you once the response is completed.
-            result.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpg");
-            return result;
         }
 
         /// <summary>
