@@ -778,14 +778,6 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Services.EventService.GetEvents(System.String,System.String)">
-            <summary>
-            Fetches an event from Live25, and parses it into a smaller ViewModel to send off to the front end
-            </summary>
-            <param name="EventID">The Event ID for an Event</param>
-            <param name="type"> the type of item being parsed</param>
-            <returns>EventViewModel</returns>
-        </member>
         <member name="M:Gordon360.Services.EventService.GetAllForStudent(System.String)">
             <summary>
             Returns all attended events for a student

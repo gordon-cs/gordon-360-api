@@ -12,8 +12,9 @@ using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using System.Net;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Xml.XPath;
+using System.Xml.Linq;
+
 
 
 namespace Gordon360.Services
@@ -46,15 +47,26 @@ namespace Gordon360.Services
           return today.Year.ToString();
          }
 
-    /// <summary>
-    /// Return a Single Event JObject from Live25
-    /// </summary>
-    /// <returns></returns>
-    public JObject GetLiveEvent(string EventID, string type)
+        /// <summary>
+        /// Return a Single Event JObject from Live25
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<XElement> GetLiveEvent(string EventID, string type)
         {
+            // Get the current year
             string year = GetDay();
+            // Make an empty url string
+            string requestUrl = "";
+
+            // Return a list of all chapel events
+            if (EventID == "All")
+            {
+                // Set our api route and fill in the event information we would like
+                requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=10+12+13+14+16+17+18+19+51+20+21+22+23+24+25+29+30+33+41&state=2&end_after=" + year + "0820&scope=extended";
+            }
+
             // If the type is "s", then it is a single event request, "m" is multiple event IDs
-            if (type == "s" || type == "S" || type == "m" || type == "M")
+            else if (type == "s" || type == "S" || type == "m" || type == "M")
             {
                 if (type == "m" || type == "M")
                 {
@@ -64,20 +76,8 @@ namespace Gordon360.Services
                     }
                 }
                 // Set our api route and fill in the event information we would like
-                var requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&event_id=" + EventID + "&state=2&end_after=" + year + "0820&scope=extended";
-                using (WebClient client = new WebClient())
-                {
-                    // Commit contents of the request to temporary memory
-                    MemoryStream stream = new MemoryStream(client.DownloadData(requestUrl));
-                    // Begin to read contents with correct encoding
-                    using (StreamReader streamReader = new StreamReader(stream, Encoding.UTF8))
-                    {
-                        string readContents = streamReader.ReadToEnd();
-                        // Parse the data into a json object
-                        var data = (JObject)JsonConvert.DeserializeObject(readContents);
-                        return data;
-                    }
-                }
+                requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&event_id=" + EventID + "&state=2&end_after=" + year + "0820&scope=extended";
+
             }
             // If it is a type "t", then it is a search for a type"
             // Same logic is used as above 
@@ -87,87 +87,40 @@ namespace Gordon360.Services
                 {
                     EventID = EventID.Replace('$', '+');
                 }
-                var requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&event_type_id=" + EventID + "&state=2&end_after=" + year + "0820&scope=extended";
-                using (WebClient client = new WebClient())
+                requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&event_type_id=" + EventID + "&state=2&end_after=" + year + "0820&scope=extended";
+            }
+
+            using (WebClient client = new WebClient())
+            {
+                // Commit contents of the request to temporary memory
+                MemoryStream stream = new MemoryStream(client.DownloadData(requestUrl));
+                // Begin to read contents with correct encoding
+                using (StreamReader streamReader = new StreamReader(stream, Encoding.UTF8))
                 {
-                    MemoryStream stream = new MemoryStream(client.DownloadData(requestUrl));
-                    using (StreamReader streamReader = new StreamReader(stream, Encoding.UTF8))
-                    {
-                        string readContents = streamReader.ReadToEnd();
-                        var data = (JObject)JsonConvert.DeserializeObject(readContents);
-                        return data;
-                    }
+                    // Load the data into an XmlDocument
+                    XDocument xmlDoc = new XDocument();
+                    xmlDoc.Add(streamReader.ReadToEnd());
+
+                    // Pull out the nodes for events
+                    IEnumerable<XElement> events = xmlDoc.XPathSelectElements("r25:event");
+                    return events;
+
                 }
             }
+     
+        }
             
-            // If the input is incorrect, throw an appropriate error
-            else
-            {
-                throw new Exception("Invalid type!");
-            }
-        }
         
-
         /// <summary>
-        /// Fetches an event from Live25, and parses it into a smaller ViewModel to send off to the front end
+        ///  Converts events from XML Nodes to EventViewModesl
         /// </summary>
-        /// <param name="EventID">The Event ID for an Event</param>
-        /// <param name="type"> the type of item being parsed</param>
-        /// <returns>EventViewModel</returns>
-        public IEnumerable<EventViewModel> GetEvents(string EventID, string type)
+        /// <param name="nodeList"> The XML Node List</param>
+        public IEnumerable<EventViewModel> GetAllEvents(XmlNodeList nodeList)
         {
-            // Use defined function to query 25Live
-            JObject events =  GetLiveEvent(EventID, type);
-            // Initiate a list to contain the events
-            List<EventViewModel> list = new List<EventViewModel>();
-            // Create an empty event to return in the case of an issue
-            IEnumerable<EventViewModel> result = null;
-
-            // If the event key is of type array, we know there are more than one events nested within, so check for that here
-            if (events.SelectToken("events.event").Type != JTokenType.Array)
-            {
-                try
-                {
-                    EventViewModel vm = new EventViewModel(events, 0, true);
-                    list.Add(vm);
-                    result = list.AsEnumerable<EventViewModel>();
-
-                }
-                catch (Exception e)
-                {
-                    throw new Exception("Error finding event");
-                }
-
-                return result;
-
-            }
-
-            // Otherwise, we treat it as a json object containing multiple events 
-            else
-            {
-                // Determine how many events exist within the query contents
-                int index = events["events"]["event"].Count();
-                // Iterate through the JSon Object of events and add them to the list
-                for (int y = 0; y < index; y++)
-                {
-                    try
-                    {
-                        EventViewModel vm = new EventViewModel(events, y, false);
-                        list.Add(vm);
-                    }
-                    catch (Exception e)
-                    {
-                        // Do nothing
-                    }
-
-                }
-
-                result = list.AsEnumerable<EventViewModel>();
-                return result;
-            }
-
+            List<EventViewModel> stuff = new List<EventViewModel>();
+            
+         return stuff.AsEnumerable<EventViewModel>();
         }
-
 
         /// <summary>
         /// Returns all attended events for a student
@@ -198,16 +151,7 @@ namespace Gordon360.Services
             List<AttendedEventViewModel> list = new List<AttendedEventViewModel>();
 
             // Create an empty event view model, to use just in case we cannot find the event in 25Live
-            EventViewModel whoops = new EventViewModel(new JObject(), 0, false);
-            whoops.Category_Id = "";
-            whoops.Description = "";
-            whoops.Event_ID = "";
-            whoops.Event_Name = "";
-            whoops.Location = "";
-            whoops.Locations = new List<object[]>();
-            whoops.Start_Time = default(DateTime);
-            whoops.End_Time = default(DateTime);
-            whoops.Organization = "";
+
 
 
             // Fill it with empty strings
@@ -218,15 +162,6 @@ namespace Gordon360.Services
             // Get a list of every attended event, to send over to 25Live
             string joined = string.Join("+", result.Select(x => x.CHEventID));
 
-            // Attempt to return all events attended by the student from 25Live
-            try
-            {
-                events = GetEvents(joined, "m");
-            }
-            catch
-            {
-                // Do nothing - it will be empty 
-            }
 
             foreach (var c in result)
             {
@@ -234,13 +169,12 @@ namespace Gordon360.Services
                 {
                     // Find the event with the same ID as the attended event
                     EventViewModel l = events.ToList().Find(x => x.Event_ID == c.CHEventID);
-                    whoops = l;
                 }
                 catch
                 {
                     // Ignore issue and continue to iterate
                 }
-                AttendedEventViewModel combine = new AttendedEventViewModel(whoops, c);
+                AttendedEventViewModel combine = null;
                 // Add to the list we made earlier
                 list.Add(combine);
 
@@ -293,16 +227,6 @@ namespace Gordon360.Services
             List<AttendedEventViewModel> list = new List<AttendedEventViewModel>();
 
             // Create an empty event view model, to use just in case
-            EventViewModel whoops = new EventViewModel(new JObject(), 0, false);
-            whoops.Category_Id = "";
-            whoops.Description = "";
-            whoops.Event_ID = "";
-            whoops.Event_Name = "";
-            whoops.Location = "";
-            whoops.Locations = new List<object[]>();
-            whoops.Start_Time = default(DateTime);
-            whoops.End_Time = default(DateTime);
-            whoops.Organization = "";
 
 
             // Fill it with empty strings
@@ -314,14 +238,7 @@ namespace Gordon360.Services
             string joined = string.Join("+", result.Select(x => x.CHEventID));
 
             // Attempt to return all events attended by the student from 25Live
-            try
-            {
-                events = GetEvents(joined, "m");
-            }
-            catch
-            {
-                // Do nothing - it will be empty 
-            }
+
 
             foreach (var c in result)
             {
@@ -329,13 +246,12 @@ namespace Gordon360.Services
                 {
                     // Find the event with the same ID as the attended event
                     EventViewModel l = events.ToList().Find(x => x.Event_ID == c.CHEventID);
-                    whoops = l;
                 }
                 catch
                 {
                     // Ignore issue and continue to iterate
                 }
-                AttendedEventViewModel combine = new AttendedEventViewModel(whoops, c);
+                AttendedEventViewModel combine = null;
                 // Add to the list we made earlier
                 list.Add(combine);
 
