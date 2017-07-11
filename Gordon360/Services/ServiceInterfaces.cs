@@ -23,7 +23,7 @@ namespace Gordon360.Services
     {
         IEnumerable<AttendedEventViewModel> GetAllForStudent(string id);
         IEnumerable<AttendedEventViewModel> GetEventsForStudentByTerm(string id, string term);
-        Task<JObject> GetLiveEvent(string Event_ID, string type);
+        JObject GetLiveEvent(string Event_ID, string type);
         IEnumerable<EventViewModel> GetEvents(string Event_ID, string type);
     }
 

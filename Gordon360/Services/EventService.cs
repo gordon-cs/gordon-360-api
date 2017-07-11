@@ -12,10 +12,9 @@ using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using System.Net;
-using System.Net.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Threading.Tasks;
+
 
 namespace Gordon360.Services
 {
@@ -51,27 +50,11 @@ namespace Gordon360.Services
     /// Return a Single Event JObject from Live25
     /// </summary>
     /// <returns></returns>
-    public async Task<JObject> GetLiveEvent(string EventID, string type)
+    public JObject GetLiveEvent(string EventID, string type)
         {
-            string year = GetDay();
-            // Return a list of all chapel events
-            if (EventID == "All")
-            {
-
-                // Set our api route and fill in the event information we would like
-                string requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&state=2&end_after=" + year + "0820&scope=extended";
-                using (HttpClient client = new HttpClient())
-                {
-                    Task<String> getStringTask = client.GetStringAsync(requestUrl);
-                    String result = getStringTask.Result;
-                    // Parse the data into a json object
-                    var data = (JObject)JsonConvert.DeserializeObject(result);
-                    return data;
-                    
-                }
-            }
+            
             // If the type is "s", then it is a single event request, "m" is multiple event IDs
-            else if (type == "s" || type == "S" || type == "m" || type == "M")
+            if (type == "s" || type == "S" || type == "m" || type == "M")
             {
                 if (type == "m" || type == "M")
                 {
@@ -116,12 +99,14 @@ namespace Gordon360.Services
                     }
                 }
             }
+            
             // If the input is incorrect, throw an appropriate error
             else
             {
                 throw new Exception("Invalid type!");
             }
         }
+        
 
         /// <summary>
         /// Fetches an event from Live25, and parses it into a smaller ViewModel to send off to the front end
@@ -132,7 +117,7 @@ namespace Gordon360.Services
         public IEnumerable<EventViewModel> GetEvents(string EventID, string type)
         {
             // Use defined function to query 25Live
-            JObject events =  GetLiveEvent(EventID, type).Result;
+            JObject events =  GetLiveEvent(EventID, type);
             // Initiate a list to contain the events
             List<EventViewModel> list = new List<EventViewModel>();
             // Create an empty event to return in the case of an issue
