@@ -21,7 +21,7 @@ namespace Gordon360.Services
     {
         IEnumerable<AttendedEventViewModel> GetAllForStudent(string id);
         IEnumerable<AttendedEventViewModel> GetEventsForStudentByTerm(string id, string term);
-        IEnumerable<EventViewModel> GetLiveEvent(string Event_ID, string type);
+        IEnumerable<EventViewModel> GetLiveEvents(string Event_ID, string type);
     }
 
     public interface IDiningService

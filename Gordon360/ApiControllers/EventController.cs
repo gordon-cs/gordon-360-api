@@ -21,7 +21,7 @@ namespace Gordon360.ApiControllers
         }
         
         [HttpGet]
-        [Route("chapel/Student/{user_name}")]
+        [Route("chapel/{user_name}")]
         public IHttpActionResult GetAllForStudent(string user_name)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(user_name))
@@ -49,7 +49,7 @@ namespace Gordon360.ApiControllers
         }
 
         [HttpGet]
-        [Route("chapel/Student/{user_name}/{term}")]
+        [Route("chapel/{user_name}/{term}")]
         public IHttpActionResult GetEventsForStudentByTerm(string user_name, string term)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(user_name) || string.IsNullOrWhiteSpace(term))
@@ -77,12 +77,11 @@ namespace Gordon360.ApiControllers
         }
 
         [HttpGet]
-        [Route("25Live/{Event_OR_Type_ID}/{type}")]
-        public IHttpActionResult GetEvents(string Event_OR_Type_ID, string type)
+        [Route("25Live/type/{Type_ID}")]
+        public IHttpActionResult GetEventsByType(string Type_ID)
         {
             // Two important checks: make sure the event_or_type_id does not contain any letters, and make sure the type is a single letter
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(Event_OR_Type_ID) || string.IsNullOrWhiteSpace(type) || 
-                type.Length > 1 || !Event_OR_Type_ID.Any( x=> !char.IsLetter(x)))
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(Type_ID) )
             {
                 string errors = "";
                 foreach (var modelstate in ModelState.Values)
@@ -94,18 +93,43 @@ namespace Gordon360.ApiControllers
 
                 }
                 // Throw errors for invalid route
-                if (errors == "") {
-                    if (type.Length > 1) {
-                        throw new Exception("Invalid type!");
-                    }
-                    else if (!Event_OR_Type_ID.Any(x => !char.IsLetter(x))){
-                        throw new Exception("Invalid event identifyer!");
-                    }
-                }
+     
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var result = _eventService.GetLiveEvent(Event_OR_Type_ID, type);
+            var result = _eventService.GetLiveEvents(Type_ID, "t");
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+
+        }
+
+        [HttpGet]
+        [Route("25Live/{Event_ID}")]
+        public IHttpActionResult GetEventsByID(string Event_ID)
+        {
+            // Two important checks: make sure the event_or_type_id does not contain any letters, and make sure the type is a single letter
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(Event_ID))
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                // Throw errors for invalid route
+
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            var result = _eventService.GetLiveEvents(Event_ID, "m");
 
             if (result == null)
             {
@@ -119,9 +143,9 @@ namespace Gordon360.ApiControllers
 
         [HttpGet]
         [Route("25Live/All")]
-        public IHttpActionResult GetUpcomingClawEvents()
+        public IHttpActionResult GetAllEvents()
         {
-            // Two important checks: make sure the event_or_type_id does not contain any letters, and make sure the type is a single letter
+
             if (!ModelState.IsValid )
             {
                 string errors = "";
@@ -137,7 +161,7 @@ namespace Gordon360.ApiControllers
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var result = _eventService.GetLiveEvent("All", "");
+            var result = _eventService.GetLiveEvents("All", "");
 
             if (result == null)
             {

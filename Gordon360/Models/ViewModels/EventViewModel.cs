@@ -25,19 +25,19 @@ namespace Gordon360.Models.ViewModels
         // This view model contains pieces of info pulled from a JSon array which is pulled from 25Live, using a pre-defined function
         public EventViewModel(XElement a)
         {
-            Event_ID = a.Element(r25 + "event_id").Value;
-            Event_Name = a.Element(r25 + "event_name").Value;
-            Event_Title = a.Element(r25 + "event_title").Value;
-            Event_Type_Name = a.Element(r25 + "event_type_name").Value;
+            Event_ID = a.Element(r25 + "event_id").ElementValueNull().Value;
+            Event_Name = a.Element(r25 + "event_name").ElementValueNull().Value;
+            Event_Title = a.Element(r25 + "event_title").ElementValueNull().Value;
+            Event_Type_Name = a.Element(r25 + "event_type_name").ElementValueNull().Value;
             Category_Id = a.Element(r25 + "category").ElementValueNull().Element(r25 + "category_id").ElementValueNull().Value;
             List<Object[]> placeholder = new List<object[]>();
             foreach (XElement reservation in a.Element(r25 + "profile").ElementValueNull().Descendants(r25 + "reservation"))
             {
                 Object[] occurrence = new Object[]
                 {
-                    "Start_Time: " + reservation.Element(r25 +"event_start_dt").ElementValueNull().Value,
-                    "End_Time: " + reservation.Element(r25 + "event_start_dt").ElementValueNull().Value,
-                    "Location: " + reservation.Element(r25 + "space_reservation").ElementValueNull().Element(r25 + "space").ElementValueNull().Element(r25 + "formal_name").ElementValueNull().Value
+                    reservation.Element(r25 +"event_start_dt").ElementValueNull().Value,
+                    reservation.Element(r25 + "event_start_dt").ElementValueNull().Value,
+                    reservation.Element(r25 + "space_reservation").ElementValueNull().Element(r25 + "space").ElementValueNull().Element(r25 + "formal_name").ElementValueNull().Value
                 };
                 placeholder.Add(occurrence);  
             }

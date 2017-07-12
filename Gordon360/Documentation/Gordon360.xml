@@ -786,7 +786,7 @@
             <param name="type"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Services.EventService.GetLiveEvent(System.String,System.String)">
+        <member name="M:Gordon360.Services.EventService.GetLiveEvents(System.String,System.String)">
             <summary>
             Return a Single Event JObject from Live25
             </summary>

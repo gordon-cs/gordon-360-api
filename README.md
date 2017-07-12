@@ -305,15 +305,22 @@ What is it? Resource that respresents the affiliation between a student and a cl
 
 ### Events
 What is it? Resources to get information on Events from the 25Live system
+- Only confirmed events are pulled
+- Only events ending after the start of the current academic year are requested from 25Live
 
 ##### GET
 
-`api/events/chapel/Student/:user_name` Get all events attended by a student (pulls from local database)
+`api/events/chapel/:user_name` Get all events attended by a student (pulls from local database)
 
-`api/events/chapel/Student/:user_name/:term` Get all events attended by a student in a specific term
+`api/events/chapel/:user_name/:term` Get all events attended by a student in a specific term
 
-`api/events/25Live/:Event_OR_Type_ID/:type` Get events specified by an ID number or a type. If the type is "s", you will enter an event id (or multple event ids se[arated by a space). If the type is "t", you will enter in a type id (or multiple types separated by a space)
+`api/events/25Live/type/:Type_ID` Get event(s) specified by a type ID (or multiple). A full list can be found here: https://webservices.collegenet.com/r25ws/wrd/gordon/run/evtype.xml?parent_id=9&otransform=browse.xsl
 Multiple types or events are separated by a '$'
+
+`api/events/25Live/:Event_ID` Get event(s) specified by one or multiple Event_ID. Event IDs can be found in the url or resources in a 25Live request in a browser. 
+Multiple types or events are separated by a '$'
+
+`api/events/25Live/All` Returns all events in 25Live under predefined categories
 
 ### Activities
 What is it? Resource that represents some activity - such as a club, ministry, leadership program, etc.

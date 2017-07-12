@@ -12,8 +12,6 @@ using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using System.Net;
-using System.Xml;
-using System.Xml.XPath;
 using System.Xml.Linq;
 
 
@@ -98,7 +96,7 @@ namespace Gordon360.Services
                 {
                     EventID = EventID.Replace('$', '+');
                 }
-                requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&event_type_id=" + EventID + "&state=2&end_after=" + year + "0820&scope=extended";
+                requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=" + EventID + "&state=2&end_after=" + year + "0820&scope=extended";
             }
 
             return requestUrl;
@@ -108,7 +106,7 @@ namespace Gordon360.Services
         /// Return a Single Event JObject from Live25
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<EventViewModel> GetLiveEvent(string EventID, string type)
+        public IEnumerable<EventViewModel> GetLiveEvents(string EventID, string type)
         {
 
             // Get API Route for 25 Live
@@ -172,11 +170,8 @@ namespace Gordon360.Services
             // A list to hold each combined event until we finish
             List<AttendedEventViewModel> list = new List<AttendedEventViewModel>();
 
-            // Create an empty event view model, to use just in case we cannot find the event in 25Live
-
-
-
-            // Fill it with empty strings
+            // Create an empty event view model, to use just in case
+            EventViewModel whoops = null;
 
             // Create an empty list of events, to use just in case
             IEnumerable<EventViewModel> events = null;
@@ -184,44 +179,60 @@ namespace Gordon360.Services
             // Get a list of every attended event, to send over to 25Live
             string joined = string.Join("+", result.Select(x => x.CHEventID));
 
+            // Attempt to return all events attended by the student from 25Live
+            events = GetLiveEvents(joined, "m");
 
+            // Loop through each event a student has attended and pull it's corresponding details from 25Live
             foreach (var c in result)
             {
                 try
                 {
                     // Find the event with the same ID as the attended event
                     EventViewModel l = events.ToList().Find(x => x.Event_ID == c.CHEventID);
+                    whoops = l;
                 }
                 catch
                 {
                     // Ignore issue and continue to iterate
                 }
-                AttendedEventViewModel combine = null;
+
+                // Bring the two together into an AttendedEventViewModel
+                AttendedEventViewModel combine = new AttendedEventViewModel(whoops, c);
                 // Add to the list we made earlier
                 list.Add(combine);
 
             }
+
+            // Declare an empty AttendedEventViewModel to return in the case of a problem
+            IEnumerable<AttendedEventViewModel> vm = null;
             // In the database, the time and date are stored as separate datetime objects, here we combine them into one
             foreach (var v in list)
             {
                 v.CHDate = v.CHDate.Value.Add(v.CHTime.Value.TimeOfDay);
             }
 
-            // Convert the list to an IEnumerable 
-            IEnumerable<AttendedEventViewModel> vm = list.AsEnumerable<AttendedEventViewModel>();
+            // Attempt to convert the list to a ViewModel we can return
+            try
+            {
+                vm = list.AsEnumerable<AttendedEventViewModel>();
+            }
 
-            // Returm the iterable viewmodel 
+            catch (Exception c)
+            {
+                // Do Nothing -- Let the Front End handle a return containing 0 Events
+            }
             return vm;
         }
+    
 
 
-        /// <summary>
-        /// Returns all attended events for a student in a specific term
-        /// </summary>
-        /// <param name="user_name"> The student's ID</param>
-        /// <param name="term"> The current term</param>
-        /// <returns></returns>
-        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.ChapelEvent)]
+    /// <summary>
+    /// Returns all attended events for a student in a specific term
+    /// </summary>
+    /// <param name="user_name"> The student's ID</param>
+    /// <param name="term"> The current term</param>
+    /// <returns></returns>
+    [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.ChapelEvent)]
         public IEnumerable<AttendedEventViewModel> GetEventsForStudentByTerm(string user_name, string term)
         {
             var studentExists = _unitOfWork.AccountRepository.Where(x => x.AD_Username.Trim() == user_name.Trim()).Count() > 0;
@@ -242,6 +253,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The student was not found" };
             }
 
+            // This is the only real difference between the last method and this one
             // Filter out the events that are part of the specified term, based on the attribute specified, then sort by Date
             result = result.Where(x => x.CHTermCD.Trim().Equals(term)).OrderByDescending(x => x.CHDate);
 
@@ -249,9 +261,7 @@ namespace Gordon360.Services
             List<AttendedEventViewModel> list = new List<AttendedEventViewModel>();
 
             // Create an empty event view model, to use just in case
-
-
-            // Fill it with empty strings
+            EventViewModel whoops = null;
 
             // Create an empty list of events, to use just in case
             IEnumerable<EventViewModel> events = null;
@@ -260,42 +270,45 @@ namespace Gordon360.Services
             string joined = string.Join("+", result.Select(x => x.CHEventID));
 
             // Attempt to return all events attended by the student from 25Live
+            events = GetLiveEvents(joined, "m");
 
-
+            // Loop through each event a student has attended and pull it's corresponding details from 25Live
             foreach (var c in result)
             {
                 try
                 {
                     // Find the event with the same ID as the attended event
                     EventViewModel l = events.ToList().Find(x => x.Event_ID == c.CHEventID);
+                    whoops = l;
                 }
                 catch
                 {
                     // Ignore issue and continue to iterate
                 }
-                AttendedEventViewModel combine = null;
+                AttendedEventViewModel combine = new AttendedEventViewModel(whoops, c);
                 // Add to the list we made earlier
                 list.Add(combine);
 
             }
+
+            // Declare an empty AttendedEventViewModel to return in the case of a problem
+            IEnumerable<AttendedEventViewModel> vm = null;
             // In the database, the time and date are stored as separate datetime objects, here we combine them into one
             foreach (var v in list)
             {
                 v.CHDate = v.CHDate.Value.Add(v.CHTime.Value.TimeOfDay);
             }
 
-            if (list.Any<AttendedEventViewModel>())
-            {
-                // Convert the list to an IEnumerable 
-                IEnumerable<AttendedEventViewModel> vm = list.AsEnumerable<AttendedEventViewModel>();
-                // Returm the iterable viewmodel 
-                return vm;
-            }
-            else
-            {
-                throw new Exception("No attendance information for this term");
+            // Attempt to convert the list to a ViewModel we can return
+            try { 
+                vm = list.AsEnumerable<AttendedEventViewModel>();
             }
 
+            catch (Exception c)
+            {
+                // Do Nothing -- Let the Front End handle a return containing 0 Events
+            }
+            return vm;
         }
     }
 }
