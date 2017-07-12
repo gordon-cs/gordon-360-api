@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
-using System.Xml;
-using System.Xml.XPath;
-using System.Xml.Linq;
 
 /// <summary>
 /// Namespace with all the Service Interfaces that are to be implemented. I don't think making this interface is required, the services can work find on their own.
@@ -24,9 +21,7 @@ namespace Gordon360.Services
     {
         IEnumerable<AttendedEventViewModel> GetAllForStudent(string id);
         IEnumerable<AttendedEventViewModel> GetEventsForStudentByTerm(string id, string term);
-        IEnumerable<XElement> GetLiveEvent(string Event_ID, string type);
-        IEnumerable<EventViewModel> GetAllEvents(IEnumerable<XElement> nodeList);
- 
+        IEnumerable<EventViewModel> GetLiveEvent(string Event_ID, string type);
     }
 
     public interface IDiningService

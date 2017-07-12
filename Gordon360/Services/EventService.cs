@@ -36,6 +36,10 @@ namespace Gordon360.Services
             _unitOfWork = unitOfWork;
         }
 
+        /// <summary>
+        ///  Helper function to determine the current academic year
+        /// </summary>
+        /// <returns></returns>
         public string GetDay()
         { 
         // We need to determine what the current date is
@@ -51,11 +55,14 @@ namespace Gordon360.Services
           return today.Year.ToString();
          }
 
+
         /// <summary>
-        /// Return a Single Event JObject from Live25
+        /// Helper function to set the route we are making our request to in 25Live
         /// </summary>
+        /// <param name="EventID"></param>
+        /// <param name="type"></param>
         /// <returns></returns>
-        public IEnumerable<XElement> GetLiveEvent(string EventID, string type)
+        public string GetRoute(string EventID, string type)
         {
             // Get the current year
             string year = GetDay();
@@ -80,7 +87,7 @@ namespace Gordon360.Services
                     }
                 }
                 // Set our api route and fill in the event information we would like
-                requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&event_id=" + EventID + "&state=2&end_after=" + year + "0820&scope=extended";
+                requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_id=" + EventID + "&scope=extended";
 
             }
             // If it is a type "t", then it is a search for a type"
@@ -94,6 +101,20 @@ namespace Gordon360.Services
                 requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&otransform=json.xsl&event_type_id=" + EventID + "&state=2&end_after=" + year + "0820&scope=extended";
             }
 
+            return requestUrl;
+        }
+
+        /// <summary>
+        /// Return a Single Event JObject from Live25
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<EventViewModel> GetLiveEvent(string EventID, string type)
+        {
+
+            // Get API Route for 25 Live
+            string requestUrl = GetRoute(EventID, type);
+
+            // Send the request and parse 
             using (WebClient client = new WebClient())
             {
                 // Commit contents of the request to temporary memory
@@ -107,29 +128,21 @@ namespace Gordon360.Services
                     XDocument xmlDoc = XDocument.Parse(content);
 
                     // Pull out the nodes for events
-
                     IEnumerable<XElement> events = xmlDoc.Descendants(r25 +"event");
-                    return events;
 
+                    // Convert to iterable list containing just the pieces we need
+                    List<EventViewModel> stuff = new List<EventViewModel>();
+                    foreach (XElement n in events)
+                    {
+                        EventViewModel vm = new EventViewModel(n);
+                        stuff.Add(vm);
+                    }
+
+                    return stuff.AsEnumerable<EventViewModel>();
                 }
             } 
         }
             
-        
-        /// <summary>
-        ///  Converts events from XML Nodes to EventViewModesl
-        /// </summary>
-        /// <param name="nodeList"> The XML Node List</param>
-        public IEnumerable<EventViewModel> GetAllEvents(IEnumerable<XElement> nodeList)
-        {
-            List<EventViewModel> stuff = new List<EventViewModel>();
-            foreach (XElement n in nodeList)
-            {
-                
-            }
-
-            return stuff.AsEnumerable<EventViewModel>();
-        }
 
         /// <summary>
         /// Returns all attended events for a student

@@ -772,17 +772,25 @@
             Service that allows for event control
             </summary>
         </member>
+        <member name="M:Gordon360.Services.EventService.GetDay">
+            <summary>
+             Helper function to determine the current academic year
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.EventService.GetRoute(System.String,System.String)">
+            <summary>
+            Helper function to set the route we are making our request to in 25Live
+            </summary>
+            <param name="EventID"></param>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Services.EventService.GetLiveEvent(System.String,System.String)">
             <summary>
             Return a Single Event JObject from Live25
             </summary>
             <returns></returns>
-        </member>
-        <member name="M:Gordon360.Services.EventService.GetAllEvents(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement})">
-            <summary>
-             Converts events from XML Nodes to EventViewModesl
-            </summary>
-            <param name="nodeList"> The XML Node List</param>
         </member>
         <member name="M:Gordon360.Services.EventService.GetAllForStudent(System.String)">
             <summary>

@@ -14,10 +14,8 @@ namespace Gordon360.Models.ViewModels
         public Nullable<int> Required { get; set; }
         public string Event_Name { get; set; }
         public string Event_Type_Name { get; set; }
-        public DateTime Start_Time { get; set; }
-        public DateTime End_Time { get; set; }
-        public JToken Description { get; set; }
-        public JToken Location { get; set; }
+        public string Description { get; set; }
+        public string Occurrence { get; set; }
         public string Organization { get; set; }
         public string Category_ID { get; set; }
 
@@ -37,10 +35,7 @@ namespace Gordon360.Models.ViewModels
             Event_Name = a.Event_Name ?? "";
             Event_Type_Name = a.Event_Type_Name ?? "";
             Category_ID = a.Category_Id ?? "";
-            Start_Time = a.Start_Time;
-            End_Time = a.End_Time;
             Description = a.Description ?? "";
-            Location = a.Location ?? "";
             Organization = a.Organization ?? "";
  
         }
