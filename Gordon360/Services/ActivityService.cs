@@ -14,9 +14,8 @@ using Gordon360.Static.Names;
 namespace Gordon360.Services
 {
     /// <summary>
-    /// Service Class that facilitates data transactions between the ActivitiesController and the ACT_CLUB_DEF database model.
-    /// ACT_INFO (ActivityInfo) and ACT_CLUB_DEF(Activity) are very similar. 
-    /// ACT_INFO is basically a copy of the ACT_CLUB_DEF domain model but with extra fields that we want to store (activity image, blurb etc...)
+    /// Service Class that facilitates data transactions between the ActivitiesController and the ACT_INFO database model.
+    /// ACT_INFO is basically a copy of the ACT_CLUB_DEF domain model in TmsEPrd but with extra fields that we want to store (activity image, blurb etc...)
     /// Activity Info and ACtivity may be talked about interchangeably.
     /// </summary>
     public class ActivityService : IActivityService
@@ -51,13 +50,13 @@ namespace Gordon360.Services
         public IEnumerable<ActivityInfoViewModel> GetActivitiesForSession(string id)
         {
             // Stored procedure returns columns ACT_CDE and ACT_DESC
-            var query = RawSqlQuery<ACT_CLUB_DEF>.query("ACTIVE_CLUBS_PER_SESS_ID @SESS_CDE", new SqlParameter("SESS_CDE", SqlDbType.VarChar) { Value = id });
+            var query = RawSqlQuery<ActivityViewModel>.query("ACTIVE_CLUBS_PER_SESS_ID @SESS_CDE", new SqlParameter("SESS_CDE", SqlDbType.VarChar) { Value = id });
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "No Activities for this session was not found." };
             }
             
-            // Transform the ACT_CLUB_DEF into ActivityInfoViewModel
+            // Transform the ActivityViewModel (ACT_CLUB_DEF) into ActivityInfoViewModel
             var activityInfo = query.Select(x =>
             {
                 ActivityInfoViewModel y = new ActivityInfoViewModel();
@@ -73,6 +72,7 @@ namespace Gordon360.Services
                 y.ActivityImagePath = record.ACT_IMG_PATH.Trim() ?? "";
                 y.ActivityType = record.ACT_TYPE.Trim() ?? "";
                 y.ActivityTypeDescription = record.ACT_TYPE_DESC.Trim() ?? "";
+                y.ActivityJoinInfo = record.ACT_JOIN_INFO ?? "";
                 return y;
             });
             return activityInfo;
