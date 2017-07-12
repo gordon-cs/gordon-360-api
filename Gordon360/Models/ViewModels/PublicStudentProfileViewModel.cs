@@ -5,10 +5,8 @@ using System.Web;
 
 namespace Gordon360.Models.ViewModels
 {
-    public class StudentProfileViewModel
+    public class PublicStudentProfileViewModel
     {
-        public int Row_ID { get; set; }
-        public string ID { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string LastName { get; set; }
@@ -35,7 +33,6 @@ namespace Gordon360.Models.ViewModels
         public string HomePostalCode { get; set; }
         public string HomeCountry { get; set; }
         public string HomePhone { get; set; }
-        public string Barcode { get; set; }
         public string Class { get; set; }
         public string KeepPrivate { get; set; }
         public string Major { get; set; }
@@ -45,15 +42,13 @@ namespace Gordon360.Models.ViewModels
         public string BirthDate { get; set; }
         public string Gender { get; set; }
         public string MobilePhone { get; set; }
-        public bool? IsMobilePhonePrivate { get; set; }
+        public bool IsMobilePhonePrivate { get; set; }
 
 
-        public static implicit operator StudentProfileViewModel(student_temp stu)
+        public static implicit operator PublicStudentProfileViewModel(StudentProfileViewModel stu)
         {
-            StudentProfileViewModel vm = new StudentProfileViewModel
+            PublicStudentProfileViewModel vm = new PublicStudentProfileViewModel
             {
-                Row_ID = stu.Row_ID,
-                ID = stu.ID.Trim(),
                 FirstName = stu.FirstName.Trim(),
                 MiddleName = stu.MiddleName ?? "",
                 LastName = stu.LastName.Trim(),
@@ -80,7 +75,6 @@ namespace Gordon360.Models.ViewModels
                 HomePostalCode = stu.HomePostalCode ?? "",
                 HomeCountry = stu.HomeCountry ?? "",
                 HomePhone = stu.HomePhone ?? "",
-                Barcode = stu.Barcode ?? "",
                 Class = stu.Class ?? "",
                 KeepPrivate = stu.KeepPrivate ?? "",
                 Major = stu.Major ?? "",
@@ -89,10 +83,36 @@ namespace Gordon360.Models.ViewModels
                 Email = stu.Email ?? "",
                 Gender = stu.Gender ?? "",
                 BirthDate = stu.BirthDate ?? "",
-                MobilePhone = stu.MobilePhone ?? "",
-                IsMobilePhonePrivate = stu.IsMobilePhonePrivate ?? false
-            };
+                IsMobilePhonePrivate = stu.IsMobilePhonePrivate ?? false,
+                MobilePhone = stu.MobilePhone ?? ""
 
+            };
+            if (vm.IsMobilePhonePrivate)
+            {
+                vm.MobilePhone = "Private as requested.";
+            }
+            if (vm.KeepPrivate.Contains("S"))
+            {
+                vm.OnOffCampus = "Private as requested.";
+                vm.OnCampusBuilding = "Private as requested.";
+                vm.OnCampusRoom = "Private as requested.";
+                vm.OnCampusPhone = "Private as requested.";
+                vm.OnCampusPrivatePhone = "Private as requested.";
+                vm.OffCampusStreet1 = "Private as requested.";
+                vm.OffCampusStreet2 = "Private as requested.";
+                vm.OffCampusCity = "Private as requested.";
+                vm.OffCampusState = "Private as requested.";
+                vm.OffCampusCountry = "Private as requested.";
+                vm.OffCampusPostalCode = "Private as requested.";
+                vm.OffCampusPhone = "Private as requested.";
+                vm.HomeStreet1 = "Private as requested.";
+                vm.HomeStreet2 = "Private as requested.";
+                vm.HomeCity = "Private as requested.";
+                vm.HomeState = "Private as requested.";
+                vm.HomePostalCode = "Private as requested.";
+                vm.HomeCountry = "Private as requested.";
+                vm.HomePhone = "Private as requested.";
+            }
             return vm;
         }
     }

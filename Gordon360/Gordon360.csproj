@@ -372,6 +372,8 @@
     <Compile Include="Models\ViewModels\AlumniProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\ChapelEventViewModel.cs" />
     <Compile Include="Models\ViewModels\EmailViewModel.cs" />
+    <Compile Include="Models\ViewModels\PublicProfileCustomViewModel.cs" />
+    <Compile Include="Models\ViewModels\PublicFacultyStaffProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\FacultyStaffProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\FacultyViewModel.cs" />
     <Compile Include="Models\ViewModels\JenzibarActivitiesViewModel.cs" />
@@ -379,6 +381,7 @@
     <Compile Include="Models\ViewModels\MembershipRequestViewModel.cs" />
     <Compile Include="Models\ViewModels\ParticipationViewModel.cs" />
     <Compile Include="Models\ViewModels\ProfileCustomViewModel.cs" />
+    <Compile Include="Models\ViewModels\PublicStudentProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\SessionViewModel.cs" />
     <Compile Include="Models\ViewModels\SliderViewModel.cs" />
@@ -399,6 +402,7 @@
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Services\FacultyService.cs" />
     <Compile Include="Services\ProfileService.cs" />
+    <Compile Include="Services\RoleCheckingService.cs" />
     <Compile Include="Static Classes\Helpers.cs" />
     <Compile Include="Services\JenzibarActivityService.cs" />
     <Compile Include="Services\MembershipRequestService.cs" />

@@ -5,10 +5,8 @@ using System.Web;
 
 namespace Gordon360.Models.ViewModels
 {
-    public class FacultyStaffProfileViewModel
+    public class PublicFacultyStaffProfileViewModel
     {
-        public Nullable<int> Row_ID { get; set; }
-        public string ID { get; set; }
         public string Title { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
@@ -35,28 +33,24 @@ namespace Gordon360.Models.ViewModels
         public string JobTitle { get; set; }
         public string SpouseName { get; set; }
         public string Dept { get; set; }
-        public string Barcode { get; set; }
         public Nullable<System.DateTime> AppointDate { get; set; }
         public string EmployStatus { get; set; }
         public Nullable<System.DateTime> BirthDate { get; set; }
         public string Gender { get; set; }
         public string Email { get; set; }
-        public string StudentID { get; set; }
 
 
-        public static implicit operator FacultyStaffProfileViewModel(facstaff fac)
+        public static implicit operator PublicFacultyStaffProfileViewModel(FacultyStaffProfileViewModel fac)
         {
-            FacultyStaffProfileViewModel vm = new FacultyStaffProfileViewModel
+            PublicFacultyStaffProfileViewModel vm = new PublicFacultyStaffProfileViewModel
             {
-                Row_ID = fac.Row_ID,
-                ID = fac.ID.Trim(),
                 Title = fac.Title ?? "",
                 Suffix = fac.Suffix ?? "",
                 MaidenName = fac.MaidenName ?? "",
                 FirstName = fac.FirstName.Trim(),
                 LastName = fac.LastName.Trim(),
                 MiddleName = fac.MiddleName ?? "",
-                NickName = fac.Nickname ?? "", // Just in case some random record has a null user_name 
+                NickName = fac.NickName ?? "", // Just in case some random record has a null user_name 
                 EmailUserName = fac.EmailUserName.Trim() ?? "", // Just in case some random record has a null email field
                 OnCampusDepartment = fac.OnCampusDepartment ?? "",
                 OnCampusBuilding = fac.OnCampusBuilding ?? "",
@@ -76,15 +70,24 @@ namespace Gordon360.Models.ViewModels
                 JobTitle = fac.JobTitle ?? "",
                 AppointDate = fac.AppointDate,
                 EmployStatus = fac.EmployStatus ?? "",
-                BirthDate = fac.BirthDate,
                 Dept = fac.Dept ?? "",
+                BirthDate = fac.BirthDate,
                 SpouseName = fac.SpouseName ?? "",
-                Barcode = fac.Barcode ?? "",
-                StudentID = fac.StudentID ?? "",
                 Email = fac.Email ?? "",
                 Gender = fac.Gender ?? "",
             };
-
+            if (vm.KeepPrivate.Contains("S"))
+            {
+                vm.HomeStreet1 = "Private as requested.";
+                vm.HomeStreet2 = "Private as requested.";
+                vm.HomeCity = "Private as requested.";
+                vm.HomeState = "Private as requested.";
+                vm.HomeCountry = "Private as requested.";
+                vm.HomePostalCode = "Private as requested.";
+                vm.HomePhone = "Private as requested.";
+                vm.HomeFax = "Private as requested.";
+                vm.SpouseName = "Private as requested.";
+            }
             return vm;
         }
     }

@@ -12,6 +12,11 @@ using Gordon360.Models.ViewModels;
 namespace Gordon360.Services
 {
 
+    public interface IRoleCheckingService
+    {
+        string getViewerRole(string username);
+        string getPersonRole(string username);
+    }
     public interface IProfileService
     {
         StudentProfileViewModel GetStudentProfileByUsername(string username);
@@ -38,6 +43,7 @@ namespace Gordon360.Services
         AccountViewModel Get(string id);
         IEnumerable<AccountViewModel> GetAll();
         AccountViewModel GetAccountByEmail(string email);
+        AccountViewModel GetAccountByUsername(string username);
     }
 
     public interface IActivityService

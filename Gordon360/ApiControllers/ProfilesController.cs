@@ -32,12 +32,14 @@ namespace Gordon360.Controllers.Api
     {
         private IProfileService _profileService;
         private IAccountService _accountService;
+        private IRoleCheckingService _roleCheckingService;
 
         public ProfilesController()
         {
             var _unitOfWork = new UnitOfWork();
             _profileService = new ProfileService(_unitOfWork);
             _accountService = new AccountService(_unitOfWork);
+            _roleCheckingService = new RoleCheckingService(_unitOfWork);
         }
 
         public ProfilesController(IProfileService profileService)
@@ -177,11 +179,50 @@ namespace Gordon360.Controllers.Api
                 }
                 throw new BadInputException() { ExceptionMessage = errors };
             }
-            // search username in three tables
-            var student = _profileService.GetStudentProfileByUsername(username);
-            var faculty = _profileService.GetFacultyStaffProfileByUsername(username);
-            var alumni = _profileService.GetAlumniProfileByUsername(username);
-            var customInfo = _profileService.GetCustomUserInfo(username);
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var viewerType = _roleCheckingService.getViewerRole(viewerName);
+
+            //search this person in three tables.
+            var _student = _profileService.GetStudentProfileByUsername(username);
+            var _faculty = _profileService.GetFacultyStaffProfileByUsername(username);
+            var _alumni = _profileService.GetAlumniProfileByUsername(username);
+            var _customInfo = _profileService.GetCustomUserInfo(username);
+
+            object student = null;
+            object faculty = null;
+            object alumni = null;
+            object customInfo = null;
+
+            //if (viewerType.Equals(Position.GOD))
+            //    student = _student;
+            //else if (viewerType.Equals(Position.STUDENT))
+            //    student = (PublicStudentProfileViewModel)_student;
+            //else if
+
+
+            switch (viewerType)
+                {
+                    case Position.GOD:
+                        student = _student;
+                        faculty = _faculty;
+                        alumni = _alumni;
+                        customInfo = _customInfo;
+                        break;
+                    case Position.STUDENT:
+                        student = (_student == null) ? null : (PublicStudentProfileViewModel)_student;
+                        faculty = (_faculty == null) ? null : (PublicFacultyStaffProfileViewModel)_faculty;
+                        alumni = _alumni;
+                        customInfo = (_customInfo == null) ? null : (PublicProfileCustomViewModel)_customInfo;
+                        break;
+                    case Position.FACSTAFF:
+                        student = _student;
+                        faculty = (_faculty == null) ? null : (PublicFacultyStaffProfileViewModel)_faculty;
+                        alumni = _alumni;
+                        customInfo = (_customInfo == null) ? null : (PublicProfileCustomViewModel)_customInfo;
+                        break;
+            }
+
 
             // merge the person's info if this person is in multiple tables and return result 
             if (student != null)
@@ -279,6 +320,13 @@ namespace Gordon360.Controllers.Api
                 return NotFound();
             }
         }
+        [HttpGet]
+        [Route("role/{username}")]
+        public IHttpActionResult getRole(string username)
+        {
+            var role  = _roleCheckingService.getViewerRole(username);
+            return Ok(role);
+        }
 
         /// <summary>Get the profile image of currently logged in user</summary>
         /// <returns></returns>
@@ -314,7 +362,7 @@ namespace Gordon360.Controllers.Api
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
             string root = Defaults.DEFAULT_PREF_IMAGE_PATH;
-            var fileName = _accountService.GetAccountByEmail(username + "@gordon.edu").Barcode + ".jpg";
+            var fileName = _accountService.GetAccountByUsername(username).Barcode + ".jpg";
             var provider = new CustomMultipartFormDataStreamProvider(root);
 
             if (!Request.Content.IsMimeMultipartContent())
@@ -368,7 +416,7 @@ namespace Gordon360.Controllers.Api
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value; ;
             string root = Defaults.DEFAULT_PREF_IMAGE_PATH;
-            var fileName = _accountService.GetAccountByEmail(username + "@gordon.edu").Barcode + ".jpg";
+            var fileName = _accountService.GetAccountByUsername(username).Barcode + ".jpg";
             try
             {
                 System.IO.DirectoryInfo di = new DirectoryInfo(root);
