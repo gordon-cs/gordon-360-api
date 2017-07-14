@@ -5,18 +5,14 @@ using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using System;
 using Gordon360.Exceptions.ExceptionFilters;
-using Gordon360.Models;
 using Gordon360.Exceptions.CustomExceptions;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using System.Net;
-using System.Diagnostics;
 using Gordon360.Providers;
 using System.IO;
-using Gordon360.Static.Methods;
-using System.Collections.Generic;
-using Gordon360.Models.ViewModels;
+
 
 namespace Gordon360.Controllers.Api
 {

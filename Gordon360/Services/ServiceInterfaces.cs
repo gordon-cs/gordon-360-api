@@ -1,7 +1,6 @@
 ﻿using System;
+using System.Xml.Linq;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 
@@ -19,13 +18,17 @@ namespace Gordon360.Services
         AlumniProfileViewModel GetAlumniProfileByUsername(string username);
     }
 
-    public interface IChapelEventService
+    public interface IEventService
     {
-        ChapelEventViewModel Get(string id);
-        IEnumerable<ChapelEventViewModel> GetAll();
-        ChapelEventViewModel GetChapelEventByChapelEventID(string CHEventID);
-        IEnumerable<ChapelEventViewModel> GetAllForStudent(string id);
-        IEnumerable<ChapelEventViewModel> GetEventsForStudentByTerm(string id, string term);
+        IEnumerable<AttendedEventViewModel> GetAllForStudent(string id);
+        IEnumerable<AttendedEventViewModel> GetEventsForStudentByTerm(string id, string term);
+        IEnumerable<EventViewModel> GetSpecificEvents(string Event_ID, string type);
+        IEnumerable<EventViewModel> GetAllEvents(XDocument xmlDoc);
+    }
+
+    public interface IDiningService
+    {
+        System.Threading.Tasks.Task<string> GetBalanceAsync();
     }
 
     public interface IAccountService

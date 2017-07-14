@@ -15,6 +15,7 @@ Dive in.
 - [API Endpoints](#api-endpoints)
     - [Authentication](#authentication)
     - [Memberships](#memberships)
+    - [Events] (#events)
     - [Activities](#activities)
     - [Membership Requests](#membership-requests)
     - [Students](#students)
@@ -302,6 +303,24 @@ What is it? Resource that respresents the affiliation between a student and a cl
 
 `api/memberships/:id` Delete the membership with membership id `id`.
 
+### Events
+What is it? Resources to get information on Events from the 25Live system
+- Only confirmed events are pulled
+- Only events ending after the start of the current academic year are requested from 25Live
+
+##### GET
+
+`api/events/chapel/:user_name` Get all events attended by a student (pulls from local database)
+
+`api/events/chapel/:user_name/:term` Get all events attended by a student in a specific term
+
+`api/events/25Live/type/:Type_ID` Get event(s) specified by a type ID (or multiple). A full list can be found here: https://webservices.collegenet.com/r25ws/wrd/gordon/run/evtype.xml?parent_id=9&otransform=browse.xsl
+Multiple types or events are separated by a '$'
+
+`api/events/25Live/:Event_ID` Get event(s) specified by one or multiple Event_ID. Event IDs can be found in the url or resources in a 25Live request in a browser. 
+Multiple types or events are separated by a '$'
+
+`api/events/25Live/All` Returns all events in 25Live under predefined categories
 
 ### Activities
 What is it? Resource that represents some activity - such as a club, ministry, leadership program, etc.

@@ -568,6 +568,23 @@
             <param name="query">Name of the stored procedure </param>
             <param name="parameters">Parameters to pass to the stored procedure</param>
         </member>
+        <member name="T:Gordon360.Services.DiningService">
+            <summary>
+            Service Class that facilitates data transactions between the AccountsController and the Account database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.DiningService.Hash(System.String)">
+            <summary>
+            Sha1 Hash for input string 
+            </summary>
+            <returns> Sha1 hash of input string </returns>
+        </member>
+        <member name="M:Gordon360.Services.DiningService.GetBalanceAsync">
+            <summary>
+            Fetches the account balance of a student (From Blackboardtransact's RESTful Meal Plan API)
+            </summary>
+            <returns> A single integer representing the user's meal point balance </returns>
+        </member>
         <member name="T:Gordon360.Services.AccountService">
             <summary>
             Service Class that facilitates data transactions between the AccountsController and the Account database model.
@@ -635,7 +652,8 @@
             When an activity is closed out, the END_DTE is set to the date on which the closing happened
             Otherwise, the END_DTE for all memberships of the activity will be null for that session
             </summary>
-            <param name="id">The activity code for the activity in question</param>
+            <param name="sessionCode">The activity code for the activity in question</param>
+            <param name="id"></param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Services.ActivityService.GetOpenActivities(System.String)">
@@ -752,41 +770,42 @@
         </member>
         <member name="T:Gordon360.Services.EventService">
             <summary>
-            Service Class that facilitates data transactions between the AccountsController and the Account database model.
+            Service that allows for event control
             </summary>
         </member>
-        <member name="M:Gordon360.Services.EventService.Get(System.String)">
+        <member name="M:Gordon360.Services.EventService.GetRoute(System.String,System.String)">
             <summary>
-            Fetches a single account record whose id matches the id provided as an argument
+            Helper function to set the route we are making our request to in 25Live
             </summary>
-            <param name="id">The person's gordon id</param>
-            <returns>AccountViewModel if found, null if not found</returns>
+            <param name="EventID"></param>
+            <param name="type"></param>
+            <returns></returns>
         </member>
-        <member name="M:Gordon360.Services.EventService.GetAll">
+        <member name="M:Gordon360.Services.EventService.GetSpecificEvents(System.String,System.String)">
             <summary>
-            Fetches all the account records from storage.
+            Return a Single Event JObject from Live25
             </summary>
-            <returns>AccountViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+            <returns></returns>
         </member>
-        <member name="M:Gordon360.Services.EventService.GetChapelEventByChapelEventID(System.String)">
+        <member name="M:Gordon360.Services.EventService.GetAllEvents(System.Xml.Linq.XDocument)">
             <summary>
-            Fetches the account record with the specified email.
+            Access the memory stream created by the cached task and parse it into events
             </summary>
-            <param name="CHEventID">The email address associated with the account.</param>
+            <param name="xmlDoc"></param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Services.EventService.GetAllForStudent(System.String)">
             <summary>
             Returns all attended events for a student
             </summary>
-            <param name="ID"> The student's ID</param>
+            <param name="user_name"> The student's ID</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Services.EventService.GetEventsForStudentByTerm(System.String,System.String)">
             <summary>
-            Returns all attended events for a student
+            Returns all attended events for a student in a specific term
             </summary>
-            <param name="ID"> The student's ID</param>
+            <param name="user_name"> The student's ID</param>
             <param name="term"> The current term</param>
             <returns></returns>
         </member>
@@ -1190,6 +1209,11 @@
             <param name="email">The Student email</param>
             <returns></returns>
         </member>
+        <member name="T:Gordon360.Static.Data.Data">
+            <summary>
+            Service class for data that is shared between all services.
+            </summary>
+        </member>
         <member name="T:Gordon360.Static.Methods.Helpers">
             <summary>
             Service class for methods that are shared between all services.
@@ -1200,6 +1224,18 @@
             Service method that gets the current session we are in.
             </summary>
             <returns>SessionViewModel of the current session. If no session is found for our current date, returns null.</returns>
+        </member>
+        <member name="M:Gordon360.Static.Methods.Helpers.GetDay">
+            <summary>
+             Helper function to determine the current academic year
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:Gordon360.Startup.DummyCacheItemKey">
+            <summary>
+            Caching task method created using the article written by Omar Al Zabir
+            Article: https://www.codeproject.com/Articles/12117/Simulate-a-Windows-Service-using-ASP-NET-to-run-sc
+            </summary>
         </member>
     </members>
 </doc>

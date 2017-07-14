@@ -117,7 +117,8 @@ namespace Gordon360.Services
         /// When an activity is closed out, the END_DTE is set to the date on which the closing happened
         /// Otherwise, the END_DTE for all memberships of the activity will be null for that session
         /// </summary>
-        /// <param name="id">The activity code for the activity in question</param>
+        /// <param name="sessionCode">The activity code for the activity in question</param>
+        /// <param name="id"></param>
         /// <returns></returns>
         public bool IsOpen(string id, string sessionCode)
         {

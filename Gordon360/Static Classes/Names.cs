@@ -1,4 +1,5 @@
-﻿
+﻿using Gordon360.Static.Methods;
+
 namespace Gordon360.Static.Names
 {
     public static class Resource
@@ -15,6 +16,7 @@ namespace Gordon360.Static.Names
         public const string ACTIVITY_STATUS = "The open or closed status of an activity";
         public const string PROFILE_IMAGE = "A profile image resource";
         public const string ChapelEvent = "The info of chapel events";
+        public const string DINING = "Info related to dining service";
 
         // Partial resources, to be targetted by Operation.READ_PARTIAL
         public const string MEMBERSHIP_REQUEST_BY_ACTIVITY = "Membership Request Resources associated with an activity";
@@ -72,4 +74,9 @@ namespace Gordon360.Static.Names
         public const string DEFAULT_PROFILE_IMAGE_PATH = "https://360api.gordon.edu/browseable/profile/Default/profile.png";
     }
     
+    public static class URLs
+    {
+        public static string ALL_EVENTS_REQUEST = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=10+12+13+14+16+17+18+19+51+20+21+22+23+24+25+29+30+33&state=2&end_after=" + Helpers.GetDay() + "0820&scope=extended";
+
+    }
 }

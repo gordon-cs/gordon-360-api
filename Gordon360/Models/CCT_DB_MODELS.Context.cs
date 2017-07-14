@@ -31,7 +31,6 @@ namespace Gordon360.Models
         public virtual DbSet<JNZB_ACTIVITIES> JNZB_ACTIVITIES { get; set; }
         public virtual DbSet<MEMBERSHIP> MEMBERSHIP { get; set; }
         public virtual DbSet<REQUEST> REQUEST { get; set; }
-        public virtual DbSet<SUPERVISOR> SUPERVISOR { get; set; }
         public virtual DbSet<ACCOUNT> ACCOUNT { get; set; }
         public virtual DbSet<CM_SESSION_MSTR> CM_SESSION_MSTR { get; set; }
         public virtual DbSet<Faculty> Faculty { get; set; }
@@ -43,11 +42,11 @@ namespace Gordon360.Models
         public virtual DbSet<ACT_INFO> ACT_INFO { get; set; }
         public virtual DbSet<C360_SLIDER> C360_SLIDER { get; set; }
         public virtual DbSet<ChapelEvent> ChapelEvent { get; set; }
-        public virtual DbSet<PROFILE_IMAGE> PROFILE_IMAGE { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         public virtual DbSet<alumni> alumni { get; set; }
         public virtual DbSet<facstaff> facstaff { get; set; }
         public virtual DbSet<student_temp> student_temp { get; set; }
+        public virtual DbSet<PROFILE_IMAGE> PROFILE_IMAGE { get; set; }
     
         public virtual ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> ACTIVE_CLUBS_PER_SESS_ID(string sESS_CDE)
         {
@@ -257,13 +256,13 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ALL_EVENTS_PER_STUDENT_Result>("ALL_EVENTS_PER_STUDENT", sTU_IDParameter, tERMParameter);
         }
     
-        public virtual ObjectResult<EVENTS_BY_STUDENT_ID_Result> EVENTS_BY_STUDENT_ID(string sTU_ID)
+        public virtual ObjectResult<EVENTS_BY_STUDENT_ID_Result> EVENTS_BY_STUDENT_ID(string sTU_USERNAME)
         {
-            var sTU_IDParameter = sTU_ID != null ?
-                new ObjectParameter("STU_ID", sTU_ID) :
-                new ObjectParameter("STU_ID", typeof(string));
+            var sTU_USERNAMEParameter = sTU_USERNAME != null ?
+                new ObjectParameter("STU_USERNAME", sTU_USERNAME) :
+                new ObjectParameter("STU_USERNAME", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<EVENTS_BY_STUDENT_ID_Result>("EVENTS_BY_STUDENT_ID", sTU_IDParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<EVENTS_BY_STUDENT_ID_Result>("EVENTS_BY_STUDENT_ID", sTU_USERNAMEParameter);
         }
     
         public virtual ObjectResult<Nullable<int>> TOTAL_CREDITS_PER_STUDENT(string sTU_ID, string tERM)
