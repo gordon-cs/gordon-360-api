@@ -12,6 +12,7 @@ namespace Gordon360.Models.ViewModels
         public string CHBarcode { get; set; }
         public string CHEventID { get; set; }
         public string CHCheckerID { get; set; }
+        public int? Required { get; set; }
         public Nullable<System.DateTime> CHDate { get; set; }
         public Nullable<System.DateTime> CHTime { get; set; }
         public string CHSource { get; set; }
@@ -25,6 +26,7 @@ namespace Gordon360.Models.ViewModels
                 CHBarEventID = a.CHBarEventID.Trim(),
                 CHBarcode = a.CHBarcode.Trim(),
                 CHEventID = a.CHEventID,
+                Required = a.Required,
                 CHCheckerID = a.CHCheckerID.Trim(),
                 CHDate = a.CHDate,
                 CHTime = a.CHTime,

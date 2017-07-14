@@ -26,7 +26,7 @@ namespace Gordon360.Models.ViewModels
             CHDate = b.CHDate;
             CHTime = b.CHTime;
             CHTermCD = b.CHTermCD.Trim();
-
+            Required = b.Required;
             // Then the CHapelEventViewModel
             if (a != null)
             {
