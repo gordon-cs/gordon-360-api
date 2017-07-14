@@ -43,7 +43,6 @@ namespace Gordon360.Models.ViewModels
         public string AD_Username { get; set; }
         public Nullable<int> show_pic { get; set; }
         public Nullable<int> preferred_photo { get; set; }
-
         public static implicit operator AlumniProfileViewModel(Alumni alu)
         {
             AlumniProfileViewModel vm = new AlumniProfileViewModel
