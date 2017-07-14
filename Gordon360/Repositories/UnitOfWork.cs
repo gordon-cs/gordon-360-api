@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Gordon360.Models;
+﻿using Gordon360.Models;
 using System.Data.Entity.Validation;
 using System.Text;
 
@@ -14,7 +10,6 @@ namespace Gordon360.Repositories
         private IRepository<FacStaff> _FacultyStaffRepository;
         private IRepository<Alumni> _AlumniRepository;
         private IRepository<ACCOUNT> _AccountRepository;
-        private IRepository<ACT_CLUB_DEF_DELETE> _ActivityRepository;
         private IRepository<CM_SESSION_MSTR> _SessionRepository;
         private IRepository<JNZB_ACTIVITIES> _JenzibarActvityRepository;
         private IRepository<MEMBERSHIP> _MembershipRepository;
@@ -26,7 +21,6 @@ namespace Gordon360.Repositories
         private IRepository<ACT_INFO> _ActivityInfoRepository;
         private IRepository<ADMIN> _AdministratorRepository;
         private IRepository<C360_SLIDER> _SliderRepository;
-        private IRepository<CUSTOM_PROFILE> _ProfileCustomRepository;
         private IRepository<ChapelEvent> _ChapelEventRepository;
 
         private CCTEntities1 _context;
@@ -50,10 +44,6 @@ namespace Gordon360.Repositories
         public IRepository<ACCOUNT> AccountRepository
         {
             get { return _AccountRepository ?? (_AccountRepository = new GenericRepository<ACCOUNT>(_context)); }
-        }
-        public IRepository<ACT_CLUB_DEF_DELETE> ActivityRepository
-        {
-            get { return _ActivityRepository ?? (_ActivityRepository = new GenericRepository<ACT_CLUB_DEF_DELETE>(_context)); }
         }
         public IRepository<ACT_INFO> ActivityInfoRepository
         {
@@ -111,10 +101,6 @@ namespace Gordon360.Repositories
             get { return _ChapelEventRepository ?? (_ChapelEventRepository = new GenericRepository<ChapelEvent>(_context)); }
         }
 
-        public IRepository<CUSTOM_PROFILE> ProfileCustomRepository
-        {
-            get { return _ProfileCustomRepository ?? (_ProfileCustomRepository = new GenericRepository<CUSTOM_PROFILE>(_context)); }
-        }
 
         public bool Save()
         {
