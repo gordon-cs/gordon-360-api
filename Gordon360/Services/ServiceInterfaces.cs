@@ -98,12 +98,6 @@ namespace Gordon360.Services
         IEnumerable<SessionViewModel> GetAll();
     }
 
-    public interface IFacultyService
-    {
-        FacultyViewModel Get(string id);
-        IEnumerable<FacultyViewModel> GetAll();
-    }
-
     public interface IJenzibarActivityService
     {
         JNZB_ACTIVITIES Get(int id);
@@ -132,19 +126,6 @@ namespace Gordon360.Services
     {
         ParticipationViewModel Get(string id);
         IEnumerable<ParticipationViewModel> GetAll();
-    }
-
-    public interface IStaffService
-    {
-        StaffViewModel Get(string id);
-        IEnumerable<StaffViewModel> GetAll();
-    }
-
-    public interface IStudentService
-    {
-        StudentViewModel Get(string id);
-        StudentViewModel GetByEmail(string email);
-        IEnumerable<StudentViewModel> GetAll();
     }
 
     public interface IMembershipRequestService

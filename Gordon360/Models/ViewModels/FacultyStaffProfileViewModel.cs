@@ -7,7 +7,6 @@ namespace Gordon360.Models.ViewModels
 {
     public class FacultyStaffProfileViewModel
     {
-        public Nullable<int> Row_ID { get; set; }
         public string ID { get; set; }
         public string Title { get; set; }
         public string FirstName { get; set; }
@@ -16,7 +15,6 @@ namespace Gordon360.Models.ViewModels
         public string Suffix { get; set; }
         public string MaidenName { get; set; }
         public string NickName { get; set; }
-        public string EmailUserName { get; set; }
         public string OnCampusDepartment { get; set; }
         public string OnCampusBuilding { get; set; }
         public string OnCampusRoom { get; set; }
@@ -36,19 +34,19 @@ namespace Gordon360.Models.ViewModels
         public string SpouseName { get; set; }
         public string Dept { get; set; }
         public string Barcode { get; set; }
-        public Nullable<System.DateTime> AppointDate { get; set; }
-        public string EmployStatus { get; set; }
-        public Nullable<System.DateTime> BirthDate { get; set; }
         public string Gender { get; set; }
         public string Email { get; set; }
-        public string StudentID { get; set; }
+        public string Type { get; set; }
+        public string AD_Username { get; set; }
+        public string office_hours { get; set; }
+        public Nullable<int> preferred_photo { get; set; }
+        public Nullable<int> show_pic { get; set; }
 
 
-        public static implicit operator FacultyStaffProfileViewModel(facstaff fac)
+        public static implicit operator FacultyStaffProfileViewModel(FacStaff fac)
         {
             FacultyStaffProfileViewModel vm = new FacultyStaffProfileViewModel
             {
-                Row_ID = fac.Row_ID,
                 ID = fac.ID.Trim(),
                 Title = fac.Title ?? "",
                 Suffix = fac.Suffix ?? "",
@@ -56,8 +54,8 @@ namespace Gordon360.Models.ViewModels
                 FirstName = fac.FirstName.Trim(),
                 LastName = fac.LastName.Trim(),
                 MiddleName = fac.MiddleName ?? "",
-                NickName = fac.Nickname ?? "", // Just in case some random record has a null user_name 
-                EmailUserName = fac.EmailUserName.Trim() ?? "", // Just in case some random record has a null email field
+                NickName = fac.Nickname ?? "", 
+                AD_Username = fac.AD_Username.Trim() ?? "",
                 OnCampusDepartment = fac.OnCampusDepartment ?? "",
                 OnCampusBuilding = fac.OnCampusBuilding ?? "",
                 OnCampusRoom = fac.OnCampusRoom ?? "",
@@ -74,15 +72,15 @@ namespace Gordon360.Models.ViewModels
                 HomeFax = fac.HomeFax ?? "",
                 KeepPrivate = fac.KeepPrivate ?? "",
                 JobTitle = fac.JobTitle ?? "",
-                AppointDate = fac.AppointDate,
-                EmployStatus = fac.EmployStatus ?? "",
-                BirthDate = fac.BirthDate,
                 Dept = fac.Dept ?? "",
                 SpouseName = fac.SpouseName ?? "",
                 Barcode = fac.Barcode ?? "",
-                StudentID = fac.StudentID ?? "",
                 Email = fac.Email ?? "",
+                Type = fac.Type ?? "",
                 Gender = fac.Gender ?? "",
+                office_hours = fac.office_hours ?? "",
+                show_pic = fac.show_pic,
+                preferred_photo = fac.preferred_photo
             };
 
             return vm;

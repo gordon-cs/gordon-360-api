@@ -23,7 +23,7 @@ namespace Gordon360.Services
 
         public StudentProfileViewModel GetStudentProfileByUsername(string username)
         {
-            var query = _unitOfWork.StudentTempRepository.FirstOrDefault(x => x.EmailUserName == username);
+            var query = _unitOfWork.StudentTempRepository.FirstOrDefault(x => x.AD_Username == username);
             if (query == null)
             {
                 return null;
@@ -34,7 +34,7 @@ namespace Gordon360.Services
 
         public FacultyStaffProfileViewModel GetFacultyStaffProfileByUsername(string username)
         {
-            var query = _unitOfWork.FacultyStaffRepository.FirstOrDefault(x => x.EmailUserName == username);
+            var query = _unitOfWork.FacultyStaffRepository.FirstOrDefault(x => x.AD_Username == username);
             if (query == null)
             {
                 return null;
@@ -45,7 +45,7 @@ namespace Gordon360.Services
 
         public AlumniProfileViewModel GetAlumniProfileByUsername(string username)
         {
-            var query = _unitOfWork.AlumniRepository.FirstOrDefault(x => x.EmailUserName == username);
+            var query = _unitOfWork.AlumniRepository.FirstOrDefault(x => x.AD_Username == username);
             if (query == null)
             {
                 return null;
@@ -145,7 +145,7 @@ namespace Gordon360.Services
         /// <param name="p"></param>
         public void UpdateMobilePrivacy(string username, bool p)
         {
-            var original = _unitOfWork.StudentTempRepository.FirstOrDefault(x => x.EmailUserName == username);
+            var original = _unitOfWork.StudentTempRepository.FirstOrDefault(x => x.AD_Username == username);
 
             if (original == null)
             {

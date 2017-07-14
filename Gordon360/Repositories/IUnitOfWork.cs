@@ -8,18 +8,16 @@ namespace Gordon360.Repositories
 {
     public interface IUnitOfWork
     {   
-        IRepository<student_temp> StudentTempRepository { get; }
-        IRepository<facstaff> FacultyStaffRepository { get; }
-        IRepository<alumni> AlumniRepository { get; }
+        IRepository<Student> StudentTempRepository { get; }
+        IRepository<FacStaff> FacultyStaffRepository { get; }
+        IRepository<Alumni> AlumniRepository { get; }
         IRepository<ACCOUNT> AccountRepository { get; }
-        IRepository<ACT_CLUB_DEF> ActivityRepository { get; }
+        IRepository<ACT_CLUB_DEF_DELETE> ActivityRepository { get; }
         IRepository<ACT_INFO> ActivityInfoRepository { get; }
         IRepository<CM_SESSION_MSTR> SessionRepository { get; }
-        IRepository<Faculty> FacultyRepository { get; }
         IRepository<JNZB_ACTIVITIES> JenzibarActvityRepository { get; }
         IRepository<MEMBERSHIP> MembershipRepository { get; }
         IRepository<PART_DEF> ParticipationRepository { get; }
-        IRepository<Staff> StaffRepository { get; }
         IRepository<Student> StudentRepository { get; }
         IRepository<SUPERVISOR> SupervisorRepository { get; }
         IRepository<REQUEST> MembershipRequestRepository { get; }

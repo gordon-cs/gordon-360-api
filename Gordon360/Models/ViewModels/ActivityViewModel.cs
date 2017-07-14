@@ -10,7 +10,7 @@ namespace Gordon360.Models.ViewModels
         public string ActivityCode { get; set; }
         public string ActivityDescription { get; set; }
 
-        public static implicit operator ActivityViewModel(ACT_CLUB_DEF a)
+        public static implicit operator ActivityViewModel(ACT_CLUB_DEF_DELETE a)
         {
             ActivityViewModel vm = new ActivityViewModel
             {

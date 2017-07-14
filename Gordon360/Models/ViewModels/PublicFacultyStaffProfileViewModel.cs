@@ -14,7 +14,6 @@ namespace Gordon360.Models.ViewModels
         public string Suffix { get; set; }
         public string MaidenName { get; set; }
         public string NickName { get; set; }
-        public string EmailUserName { get; set; }
         public string OnCampusDepartment { get; set; }
         public string OnCampusBuilding { get; set; }
         public string OnCampusRoom { get; set; }
@@ -33,11 +32,15 @@ namespace Gordon360.Models.ViewModels
         public string JobTitle { get; set; }
         public string SpouseName { get; set; }
         public string Dept { get; set; }
-        public Nullable<System.DateTime> AppointDate { get; set; }
-        public string EmployStatus { get; set; }
-        public Nullable<System.DateTime> BirthDate { get; set; }
         public string Gender { get; set; }
         public string Email { get; set; }
+        public string Type { get; set; }
+        public string AD_Username { get; set; }
+        public string office_hours { get; set; }
+        public Nullable<int> preferred_photo { get; set; }
+        public Nullable<int> show_pic { get; set; }
+
+
 
 
         public static implicit operator PublicFacultyStaffProfileViewModel(FacultyStaffProfileViewModel fac)
@@ -51,7 +54,7 @@ namespace Gordon360.Models.ViewModels
                 LastName = fac.LastName.Trim(),
                 MiddleName = fac.MiddleName ?? "",
                 NickName = fac.NickName ?? "", // Just in case some random record has a null user_name 
-                EmailUserName = fac.EmailUserName.Trim() ?? "", // Just in case some random record has a null email field
+                AD_Username = fac.AD_Username.Trim() ?? "", // Just in case some random record has a null email field
                 OnCampusDepartment = fac.OnCampusDepartment ?? "",
                 OnCampusBuilding = fac.OnCampusBuilding ?? "",
                 OnCampusRoom = fac.OnCampusRoom ?? "",
@@ -68,13 +71,14 @@ namespace Gordon360.Models.ViewModels
                 HomeFax = fac.HomeFax ?? "",
                 KeepPrivate = fac.KeepPrivate ?? "",
                 JobTitle = fac.JobTitle ?? "",
-                AppointDate = fac.AppointDate,
-                EmployStatus = fac.EmployStatus ?? "",
-                Dept = fac.Dept ?? "",
-                BirthDate = fac.BirthDate,
                 SpouseName = fac.SpouseName ?? "",
+                Type = fac.Type ?? "",
+                Dept = fac.Dept ?? "",
                 Email = fac.Email ?? "",
                 Gender = fac.Gender ?? "",
+                office_hours = fac.office_hours ?? "",
+                preferred_photo = fac.preferred_photo,
+                show_pic = fac.show_pic
             };
             if (vm.KeepPrivate.Contains("S"))
             {

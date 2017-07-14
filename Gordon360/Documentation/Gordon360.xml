@@ -192,23 +192,6 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.StudentsController.Get">
-            <summary>Get a list of all students in the database</summary>
-            <returns>A list of student names, IDs, and emails</returns>
-            <remarks>Queries the database for every student record within the student table</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.StudentsController.Get(System.String)">
-            <summary>Get information about a single student</summary>
-            <param name="id">The Gordon ID of desired student</param>
-            <returns>The information about the specified student</returns>
-            <remarks>Queries the database for the specific student identified by their Gordon ID</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.StudentsController.GetByEmail(System.String)">
-            <summary>Get information about a single student</summary>
-            <param name="email">The email of desired student</param>
-            <returns>The information about the specified student</returns>
-            <remarks>Queries the database for the specific student identified by their email</remarks>
-        </member>
         <member name="M:Gordon360.Controllers.Api.ActivitiesController.Get">
             <summary>
             Get all available activities
@@ -922,24 +905,6 @@
             <param name="session_code">The session code</param>
             <returns>List of emails for the leaders of this activity</returns>
         </member>
-        <member name="T:Gordon360.Services.FacultyService">
-            <summary>
-            Service Class that facilitates data transactions between the FacultyController and the Faculty database model.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Services.FacultyService.Get(System.String)">
-            <summary>
-            Fetches the faculty member whose gordon id is specified as the parameter.
-            </summary>
-            <param name="id">The gordon id</param>
-            <returns>If found returns FacultyViewModel, if not returns null</returns>
-        </member>
-        <member name="M:Gordon360.Services.FacultyService.GetAll">
-            <summary>
-            Fetches all the Faculty members from the database.
-            </summary>
-            <returns>FacultyViewModel IEnumerable. If no records are found an empty IEnumerable is returned.</returns>
-        </member>
         <member name="M:Gordon360.Services.ProfileService.GetCustomUserInfo(System.String)">
             <summary>
             Fetches a single profile whose username matches the username provided as an argument
@@ -1201,49 +1166,6 @@
             Fetches all the session records from the database.
             </summary>
             <returns>A SessionViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
-        </member>
-        <member name="T:Gordon360.Services.StaffService">
-            <summary>
-            Service class to facilitate the data transactions between the controllers and the database models.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Services.StaffService.Get(System.String)">
-            <summary>
-            Fetches the staff record whose id matches the provided parameter.
-            </summary>
-            <param name="id">The staff's gordon id.</param>
-            <returns>A StaffViewModel if the record exists, null if it doesn't.</returns>
-        </member>
-        <member name="M:Gordon360.Services.StaffService.GetAll">
-            <summary>
-            Fetches all the staff records from the database.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="T:Gordon360.Services.StudentService">
-            <summary>
-            Service Class to faciliatate data transactions between the controller and the database models.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Services.StudentService.Get(System.String)">
-            <summary>
-            Fetches the student record whose id number matches the parameter.
-            </summary>
-            <param name="id">The student id</param>
-            <returns>A student view model if found, null if not found.</returns>
-        </member>
-        <member name="M:Gordon360.Services.StudentService.GetAll">
-            <summary>
-            Fetches all the Student records from the database.
-            </summary>
-            <returns>StudentViweModel IEnumberable. If nothing is found, an empty IEnumberable is returned.</returns>
-        </member>
-        <member name="M:Gordon360.Services.StudentService.GetByEmail(System.String)">
-            <summary>
-            Fetches the student record using the specified email address
-            </summary>
-            <param name="email">The Student email</param>
-            <returns></returns>
         </member>
         <member name="T:Gordon360.Static.Methods.Helpers">
             <summary>
