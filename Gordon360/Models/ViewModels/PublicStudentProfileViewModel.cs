@@ -5,9 +5,8 @@ using System.Web;
 
 namespace Gordon360.Models.ViewModels
 {
-    public class StudentProfileViewModel
+    public class PublicStudentProfileViewModel
     {
-        public string ID { get; set; }
         public string Title { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
@@ -41,32 +40,26 @@ namespace Gordon360.Models.ViewModels
         public string Class { get; set; }
         public string KeepPrivate { get; set; }
         public string Major { get; set; }
-        public string Barcode { get; set; }
-        public string AdvisorIDs { get; set; }
-        public string Married { get; set; }
-        public string Commuter { get; set; }
         public string Major2 { get; set; }
         public string Email { get; set; }
         public string Gender { get; set; }
         public string grad_student { get; set; }
-        public string GradDate { get; set; }
         public string Major3 { get; set; }
         public string Minor1 { get; set; }
         public string Minor2 { get; set; }
         public string Minor3 { get; set; }
         public string MobilePhone { get; set; }
-        public bool IsMobilePhonePrivate { get; set; }
         public string AD_Username { get; set; }
+        public bool IsMobilePhonePrivate { get; set; }
         public Nullable<int> show_pic { get; set; }
         public Nullable<int> preferred_photo { get; set; }
 
 
-        public static implicit operator StudentProfileViewModel(Student stu)
+        public static implicit operator PublicStudentProfileViewModel(StudentProfileViewModel stu)
         {
-            StudentProfileViewModel vm = new StudentProfileViewModel
+            PublicStudentProfileViewModel vm = new PublicStudentProfileViewModel
             {
                 Title = stu.Title ?? "",
-                ID = stu.ID.Trim(),
                 FirstName = stu.FirstName.Trim(),
                 MiddleName = stu.MiddleName ?? "",
                 LastName = stu.LastName.Trim(),
@@ -74,11 +67,6 @@ namespace Gordon360.Models.ViewModels
                 MaidenName = stu.MaidenName ?? "",
                 NickName = stu.NickName ?? "", // Just in case some random record has a null user_name 
                 AD_Username = stu.AD_Username.Trim() ?? "", // Just in case some random record has a null email field
-                Cohort = stu.Cohort ?? "",
-                Class = stu.Class ?? "",
-                Commuter = stu.Commuter ?? "",
-                grad_student = stu.grad_student ?? "",
-                GradDate = stu.GradDate,
                 OnOffCampus = stu.OnOffCampus ?? "",
                 OnCampusBuilding = stu.OnCampusBuilding ?? "",
                 OnCampusRoom = stu.OnCampusRoom ?? "",
@@ -101,24 +89,50 @@ namespace Gordon360.Models.ViewModels
                 HomeCountry = stu.HomeCountry ?? "",
                 HomePhone = stu.HomePhone ?? "",
                 HomeFax = stu.HomeFax ?? "",
-                Barcode = stu.Barcode ?? "",
-                AdvisorIDs = stu.AdvisorIDs ?? "",
-                Married = stu.Married ?? "",
+                Class = stu.Class ?? "",
+                Cohort = stu.Cohort ?? "",
+                grad_student = stu.grad_student ?? "",
                 KeepPrivate = stu.KeepPrivate ?? "",
                 Major = stu.Major ?? "",
                 Major2 = stu.Major2 ?? "",
                 Major3 = stu.Major3 ?? "",
-                Minor1 = stu.Minor1 ?? "",
-                Minor2 = stu.Minor2 ?? "",
-                Minor3 = stu.Minor3 ?? "",
                 Email = stu.Email ?? "",
                 Gender = stu.Gender ?? "",
+                IsMobilePhonePrivate = stu.IsMobilePhonePrivate,
                 MobilePhone = stu.MobilePhone ?? "",
-                IsMobilePhonePrivate = stu.IsMobilePhonePrivate ?? false,
                 show_pic = stu.show_pic,
                 preferred_photo = stu.preferred_photo
-            };
 
+            };
+            if (vm.IsMobilePhonePrivate)
+            {
+                vm.MobilePhone = "Private as requested.";
+            }
+            if (vm.KeepPrivate.Contains("S"))
+            {
+                vm.OnOffCampus = "Private as requested.";
+                vm.OnCampusBuilding = "Private as requested.";
+                vm.OnCampusRoom = "Private as requested.";
+                vm.OnCampusPhone = "Private as requested.";
+                vm.OnCampusPrivatePhone = "Private as requested.";
+                vm.OnCampusFax = "Private as requested.";
+                vm.OffCampusStreet1 = "Private as requested.";
+                vm.OffCampusStreet2 = "Private as requested.";
+                vm.OffCampusCity = "Private as requested.";
+                vm.OffCampusState = "Private as requested.";
+                vm.OffCampusCountry = "Private as requested.";
+                vm.OffCampusPostalCode = "Private as requested.";
+                vm.OffCampusPhone = "Private as requested.";
+                vm.OffCampusFax = "Private as requested.";
+                vm.HomeStreet1 = "Private as requested.";
+                vm.HomeStreet2 = "Private as requested.";
+                vm.HomeCity = "Private as requested.";
+                vm.HomeState = "Private as requested.";
+                vm.HomePostalCode = "Private as requested.";
+                vm.HomeCountry = "Private as requested.";
+                vm.HomePhone = "Private as requested.";
+                vm.HomeFax = "Private as requested.";
+            }
             return vm;
         }
     }

@@ -7,6 +7,7 @@ namespace Gordon360.Static.Names
         public const string PROFILE = "A new profile resource";
         public const string MEMBERSHIP_REQUEST = "A Membership Request Resource";
         public const string MEMBERSHIP = "A Membership Resource";
+        public const string MEMBERSHIP_PRIVACY = "A Membership privacy";
         public const string STUDENT = "A Student Resource";
         public const string ACCOUNT = "An Account Resource.";
         public const string ADVISOR = "An Advisor Resource";
@@ -14,9 +15,9 @@ namespace Gordon360.Static.Names
         public const string ADMIN = "An admininistrator Ressource";
         public const string ACTIVITY_INFO = "An Activity Info Service.";
         public const string ACTIVITY_STATUS = "The open or closed status of an activity";
-        public const string PROFILE_IMAGE = "A profile image resource";
         public const string ChapelEvent = "The info of chapel events";
         public const string DINING = "Info related to dining service";
+
 
         // Partial resources, to be targetted by Operation.READ_PARTIAL
         public const string MEMBERSHIP_REQUEST_BY_ACTIVITY = "Membership Request Resources associated with an activity";
@@ -72,6 +73,8 @@ namespace Gordon360.Static.Names
     {
         public const string DEFAULT_ACTIVITY_IMAGE_PATH = "https://360api.gordon.edu/browseable/uploads/Default/activityImage.png";
         public const string DEFAULT_PROFILE_IMAGE_PATH = "https://360api.gordon.edu/browseable/profile/Default/profile.png";
+        public const string DEFAULT_PREF_IMAGE_PATH = "\\\\gotrain\\pref_photos\\";
+        public const string DEFAULT_IMAGE_PATH = "\\\\go\\photos\\";
     }
     
     public static class URLs

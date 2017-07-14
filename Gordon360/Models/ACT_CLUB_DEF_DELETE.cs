@@ -12,15 +12,9 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class PROFILE_IMAGE
+    public partial class ACT_CLUB_DEF_DELETE
     {
-        public string id { get; set; }
-        public string username { get; set; }
-        public string Img_Path { get; set; }
-        public string facebook { get; set; }
-        public string twitter { get; set; }
-        public string instagram { get; set; }
-        public string linkedin { get; set; }
-        public Nullable<bool> show_img { get; set; }
+        public string ACT_CDE { get; set; }
+        public string ACT_DESC { get; set; }
     }
 }
