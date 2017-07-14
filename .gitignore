@@ -3,8 +3,6 @@
 ## From Github https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 # DataBase Files 
-Gordon360/Models/ACCOUNT.cs
-Gordon360/Models/ACT_INFO.cs
 Gordon360/Models/CCT_DB_MODELS.Context.cs
 Gordon360/Models/CCT_DB_Models.edmx
 Gordon360/Models/CCT_DB_Models.edmx.diagram
