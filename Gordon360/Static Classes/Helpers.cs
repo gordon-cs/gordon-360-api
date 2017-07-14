@@ -1,9 +1,9 @@
 ﻿using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Web;
+using System.Net;
 using Gordon360.Services.ComplexQueries;
 using Gordon360.Services;
 
@@ -29,6 +29,39 @@ namespace Gordon360.Static.Methods
             SessionViewModel result = sessionService.Get(currentSessionCode);
 
             return result; ;
+        }
+
+        // Return a memorystream from a specific URL
+        public static MemoryStream GetLiveStream(string requestUrl)
+        {
+
+            // Send the request and parse 
+            using (WebClient client = new WebClient())
+            {
+                // Commit contents of the request to temporary memory
+                MemoryStream stream = new MemoryStream(client.DownloadData(requestUrl));
+                // Begin to read contents with correct encoding
+                return stream;
+            }
+        }
+
+        /// <summary>
+        ///  Helper function to determine the current academic year
+        /// </summary>
+        /// <returns></returns>
+        public static string GetDay()
+        {
+            // We need to determine what the current date is
+            DateTime today = DateTime.Today;
+            if (today.Month < 06)
+            {
+                return (today.Year - 1).ToString();
+            }
+            else if (today.Month > 07)
+            {
+                return (today.Year).ToString();
+            }
+            return today.Year.ToString();
         }
 
         public static string GetLeaderRoleCodes()

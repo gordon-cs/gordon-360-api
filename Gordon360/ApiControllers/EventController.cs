@@ -97,7 +97,7 @@ namespace Gordon360.ApiControllers
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var result = _eventService.GetLiveEvents(Type_ID, "t");
+            var result = _eventService.GetSpecificEvents(Type_ID, "t");
 
             if (result == null)
             {
@@ -129,7 +129,7 @@ namespace Gordon360.ApiControllers
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var result = _eventService.GetLiveEvents(Event_ID, "m");
+            var result = _eventService.GetSpecificEvents(Event_ID, "m");
 
             if (result == null)
             {
@@ -161,7 +161,7 @@ namespace Gordon360.ApiControllers
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var result = _eventService.GetLiveEvents("All", "");
+            var result = _eventService.GetAllEvents(Static.Data.Data.AllEvents);
 
             if (result == null)
             {

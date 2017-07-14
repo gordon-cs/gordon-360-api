@@ -11,7 +11,8 @@ using System.Data;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
-using System.Net;
+using Gordon360.Static.Data;
+using Gordon360.Static.Methods;
 using System.Xml.Linq;
 
 
@@ -34,25 +35,6 @@ namespace Gordon360.Services
             _unitOfWork = unitOfWork;
         }
 
-        /// <summary>
-        ///  Helper function to determine the current academic year
-        /// </summary>
-        /// <returns></returns>
-        public string GetDay()
-        { 
-        // We need to determine what the current date is
-          DateTime today = DateTime.Today;
-          if(today.Month < 06)
-            {
-                return (today.Year - 1).ToString();
-            }
-          else if(today.Month > 07)
-            {
-                return (today.Year).ToString();
-            }
-          return today.Year.ToString();
-         }
-
 
         /// <summary>
         /// Helper function to set the route we are making our request to in 25Live
@@ -63,7 +45,7 @@ namespace Gordon360.Services
         public string GetRoute(string EventID, string type)
         {
             // Get the current year
-            string year = GetDay();
+            string year = Helpers.GetDay();
             // Make an empty url string
             string requestUrl = "";
 
@@ -71,7 +53,7 @@ namespace Gordon360.Services
             if (EventID == "All")
             {
                 // Set our api route and fill in the event information we would like
-                requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=10+12+13+14+16+17+18+19+51+20+21+22+23+24+25+29+30+33+41&state=2&end_after=" + year + "0820&scope=extended";
+                requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=10+12+13+14+16+17+18+19+51+20+21+22+23+24+25+29+30+33&state=2&end_after=" + year + "0820&scope=extended";
             }
 
             // If the type is "s", then it is a single event request, "m" is multiple event IDs
@@ -102,45 +84,73 @@ namespace Gordon360.Services
             return requestUrl;
         }
 
+
         /// <summary>
         /// Return a Single Event JObject from Live25
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<EventViewModel> GetLiveEvents(string EventID, string type)
+        public IEnumerable<EventViewModel> GetSpecificEvents(string EventID, string type)
         {
 
             // Get API Route for 25 Live
             string requestUrl = GetRoute(EventID, type);
-
-            // Send the request and parse 
-            using (WebClient client = new WebClient())
+            // Commit contents of the request to temporary memory
+            MemoryStream stream = Helpers.GetLiveStream(requestUrl);
+            // Begin to read contents with correct encoding
+            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
             {
-                // Commit contents of the request to temporary memory
-                MemoryStream stream = new MemoryStream(client.DownloadData(requestUrl));
-                // Begin to read contents with correct encoding
-                using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+                // Create a string of content
+                string content = reader.ReadToEnd();
+                // Load the data into an XmlDocument
+                XDocument xmlDoc = XDocument.Parse(content);
+
+                // Pull out the nodes for events
+                IEnumerable<XElement> events = xmlDoc.Descendants(r25 +"event");
+
+                // Convert to iterable list containing just the pieces we need
+                List<EventViewModel> stuff = new List<EventViewModel>();
+
+                // Convert each element into a viewmodel for events          
+                foreach (XElement n in events)
                 {
-                    // Create a string of content
-                    string content = reader.ReadToEnd();
-                    // Load the data into an XmlDocument
-                    XDocument xmlDoc = XDocument.Parse(content);
-
-                    // Pull out the nodes for events
-                    IEnumerable<XElement> events = xmlDoc.Descendants(r25 +"event");
-
-                    // Convert to iterable list containing just the pieces we need
-                    List<EventViewModel> stuff = new List<EventViewModel>();
-                    foreach (XElement n in events)
-                    {
-                        EventViewModel vm = new EventViewModel(n);
-                        stuff.Add(vm);
-                    }
-
-                    return stuff.AsEnumerable<EventViewModel>();
+                    EventViewModel vm = new EventViewModel(n);
+                    stuff.Add(vm);
                 }
-            } 
+
+                return stuff.AsEnumerable<EventViewModel>();
+            }
         }
-            
+        
+        /// <summary>
+        /// Access the memory stream created by the cached task and parse it into events
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        public IEnumerable<EventViewModel> GetAllEvents (MemoryStream stream)
+        {
+            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+            {
+                // Create a string of content
+                string content = reader.ReadToEnd();
+                // Load the data into an XmlDocument
+                XDocument xmlDoc = XDocument.Parse(content);
+
+                // Pull out the nodes for events
+                IEnumerable<XElement> events = xmlDoc.Descendants(r25 + "event");
+
+                // Convert to iterable list containing just the pieces we need
+                List<EventViewModel> stuff = new List<EventViewModel>();
+
+                // Convert each element into a viewmodel for events          
+                foreach (XElement n in events)
+                {
+                    EventViewModel vm = new EventViewModel(n);
+                    stuff.Add(vm);
+                }
+
+                return stuff.AsEnumerable<EventViewModel>();
+            }
+        }
 
         /// <summary>
         /// Returns all attended events for a student
@@ -180,7 +190,7 @@ namespace Gordon360.Services
             string joined = string.Join("+", result.Select(x => x.CHEventID));
 
             // Attempt to return all events attended by the student from 25Live
-            events = GetLiveEvents(joined, "m");
+            events = GetAllEvents(Data.AllEvents);
 
             // Loop through each event a student has attended and pull it's corresponding details from 25Live
             foreach (var c in result)
@@ -270,7 +280,7 @@ namespace Gordon360.Services
             string joined = string.Join("+", result.Select(x => x.CHEventID));
 
             // Attempt to return all events attended by the student from 25Live
-            events = GetLiveEvents(joined, "m");
+            events = GetAllEvents(Data.AllEvents);
 
             // Loop through each event a student has attended and pull it's corresponding details from 25Live
             foreach (var c in result)

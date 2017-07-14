@@ -772,12 +772,6 @@
             Service that allows for event control
             </summary>
         </member>
-        <member name="M:Gordon360.Services.EventService.GetDay">
-            <summary>
-             Helper function to determine the current academic year
-            </summary>
-            <returns></returns>
-        </member>
         <member name="M:Gordon360.Services.EventService.GetRoute(System.String,System.String)">
             <summary>
             Helper function to set the route we are making our request to in 25Live
@@ -786,10 +780,17 @@
             <param name="type"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Services.EventService.GetLiveEvents(System.String,System.String)">
+        <member name="M:Gordon360.Services.EventService.GetSpecificEvents(System.String,System.String)">
             <summary>
             Return a Single Event JObject from Live25
             </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.EventService.GetAllEvents(System.IO.MemoryStream)">
+            <summary>
+            Access the memory stream created by the cached task and parse it into events
+            </summary>
+            <param name="stream"></param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Services.EventService.GetAllForStudent(System.String)">
@@ -1207,6 +1208,11 @@
             <param name="email">The Student email</param>
             <returns></returns>
         </member>
+        <member name="T:Gordon360.Static.Data.Data">
+            <summary>
+            Service class for data that is shared between all services.
+            </summary>
+        </member>
         <member name="T:Gordon360.Static.Methods.Helpers">
             <summary>
             Service class for methods that are shared between all services.
@@ -1217,6 +1223,12 @@
             Service method that gets the current session we are in.
             </summary>
             <returns>SessionViewModel of the current session. If no session is found for our current date, returns null.</returns>
+        </member>
+        <member name="M:Gordon360.Static.Methods.Helpers.GetDay">
+            <summary>
+             Helper function to determine the current academic year
+            </summary>
+            <returns></returns>
         </member>
     </members>
 </doc>

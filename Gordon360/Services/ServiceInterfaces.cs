@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
@@ -21,7 +22,8 @@ namespace Gordon360.Services
     {
         IEnumerable<AttendedEventViewModel> GetAllForStudent(string id);
         IEnumerable<AttendedEventViewModel> GetEventsForStudentByTerm(string id, string term);
-        IEnumerable<EventViewModel> GetLiveEvents(string Event_ID, string type);
+        IEnumerable<EventViewModel> GetSpecificEvents(string Event_ID, string type);
+        IEnumerable<EventViewModel> GetAllEvents(MemoryStream memory);
     }
 
     public interface IDiningService

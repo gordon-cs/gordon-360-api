@@ -403,6 +403,8 @@
     <Compile Include="Services\FacultyService.cs" />
     <Compile Include="Services\ProfileImageService.cs" />
     <Compile Include="Services\ProfileService.cs" />
+    <Compile Include="Caching.cs" />
+    <Compile Include="Static Classes\Data.cs" />
     <Compile Include="Static Classes\Helpers.cs" />
     <Compile Include="Services\JenzibarActivityService.cs" />
     <Compile Include="Services\MembershipRequestService.cs" />
