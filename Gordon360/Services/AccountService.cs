@@ -79,7 +79,7 @@ namespace Gordon360.Services
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
         public AccountViewModel GetAccountByUsername(string username)
         {
-            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.account_type == username);
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.AD_Username == username);
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
