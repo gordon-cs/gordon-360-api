@@ -393,7 +393,6 @@
     <Compile Include="Services\ContentManagementService.cs" />
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Services\ProfileService.cs" />
-    <Compile Include="Caching.cs" />
     <Compile Include="Services\RoleCheckingService.cs" />
     <Compile Include="Static Classes\Data.cs" />
     <Compile Include="Static Classes\Helpers.cs" />

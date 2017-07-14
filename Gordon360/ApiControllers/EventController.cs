@@ -112,7 +112,6 @@ namespace Gordon360.ApiControllers
         [Route("25Live/{Event_ID}")]
         public IHttpActionResult GetEventsByID(string Event_ID)
         {
-            // Two important checks: make sure the event_or_type_id does not contain any letters, and make sure the type is a single letter
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(Event_ID))
             {
                 string errors = "";
@@ -162,6 +161,38 @@ namespace Gordon360.ApiControllers
             }
 
             var result = _eventService.GetAllEvents(Static.Data.Data.AllEvents);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+
+        }
+
+        [HttpGet]
+        [Route("25Live/CLAW")]
+        public IHttpActionResult GetAllChapelEvents()
+        {
+
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            var result = _eventService.GetAllEvents(Static.Data.Data.AllEvents).Where( x => x.Category_Id == "85");
+
 
             if (result == null)
             {

@@ -8,12 +8,10 @@ using Gordon360.AuthorizationServer;
 using Gordon360.Static.Data;
 using Gordon360.Static.Methods;
 using Gordon360.Static.Names;
-using Gordon360.Models.ViewModels;
 using System.Xml.Linq;
 using System.Web;
 using System.Diagnostics;
 using System.Web.Caching;
-using System.Collections.Generic;
 
 
 namespace Gordon360
@@ -68,7 +66,7 @@ namespace Gordon360
         }
 
         /// <summary>
-        /// Caching task method created using the article written by Omar Al Zabir
+        /// Caching task methods created using the article written by Omar Al Zabir
         /// Article: https://www.codeproject.com/Articles/12117/Simulate-a-Windows-Service-using-ASP-NET-to-run-sc
         /// </summary>
        
@@ -87,7 +85,7 @@ namespace Gordon360
 
             // Otherwise, we add it to the cache
             HttpRuntime.Cache.Add(DummyCacheItemKey, "Test", null,
-                DateTime.MaxValue, TimeSpan.FromMinutes(1),
+                DateTime.MaxValue, TimeSpan.FromMinutes(4),
                 CacheItemPriority.Normal,
                 new CacheItemRemovedCallback(CacheItemRemovedCallback));
             return true;

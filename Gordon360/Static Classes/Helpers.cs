@@ -33,7 +33,12 @@ namespace Gordon360.Static.Methods
             return result; ;
         }
 
-        // Return a memorystream from a specific URL
+        /// <summary>
+        /// Return an XDocument from a URL containing XML. 
+        /// This is used to retrieve data from 25Live specifically.
+        /// </summary>
+        /// <param name="requestUrl"></param>
+        /// <returns></returns>
         public static XDocument GetLiveStream(string requestUrl)
         {
 
