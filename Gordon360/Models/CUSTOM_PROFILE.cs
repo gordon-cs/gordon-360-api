@@ -20,6 +20,5 @@ namespace Gordon360.Models
         public string twitter { get; set; }
         public string instagram { get; set; }
         public string linkedin { get; set; }
-        public Nullable<bool> show_img { get; set; }
     }
 }

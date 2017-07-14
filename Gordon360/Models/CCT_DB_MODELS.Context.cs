@@ -33,20 +33,17 @@ namespace Gordon360.Models
         public virtual DbSet<REQUEST> REQUEST { get; set; }
         public virtual DbSet<ACCOUNT> ACCOUNT { get; set; }
         public virtual DbSet<CM_SESSION_MSTR> CM_SESSION_MSTR { get; set; }
-        public virtual DbSet<Faculty> Faculty { get; set; }
         public virtual DbSet<PART_DEF> PART_DEF { get; set; }
-        public virtual DbSet<Staff> Staff { get; set; }
-        public virtual DbSet<Student> Student { get; set; }
-        public virtual DbSet<ACT_CLUB_DEF> ACT_CLUB_DEF { get; set; }
         public virtual DbSet<JENZ_ACT_CLUB_DEF> JENZ_ACT_CLUB_DEF { get; set; }
         public virtual DbSet<ACT_INFO> ACT_INFO { get; set; }
         public virtual DbSet<C360_SLIDER> C360_SLIDER { get; set; }
-        public virtual DbSet<ChapelEvent> ChapelEvent { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
-        public virtual DbSet<alumni> alumni { get; set; }
-        public virtual DbSet<facstaff> facstaff { get; set; }
-        public virtual DbSet<student_temp> student_temp { get; set; }
-        public virtual DbSet<PROFILE_IMAGE> PROFILE_IMAGE { get; set; }
+        public virtual DbSet<ChapelEvent> ChapelEvent { get; set; }
+        public virtual DbSet<CUSTOM_PROFILE> CUSTOM_PROFILE { get; set; }
+        public virtual DbSet<Alumni> Alumni { get; set; }
+        public virtual DbSet<Student> Student { get; set; }
+        public virtual DbSet<ACT_CLUB_DEF_DELETE> ACT_CLUB_DEF_DELETE { get; set; }
+        public virtual DbSet<FacStaff> FacStaff { get; set; }
     
         public virtual ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> ACTIVE_CLUBS_PER_SESS_ID(string sESS_CDE)
         {
@@ -392,6 +389,32 @@ namespace Gordon360.Models
                 new ObjectParameter("TERM", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<STUDENT_EVENTS_PER_TERM_Result>("STUDENT_EVENTS_PER_TERM", sTU_IDParameter, tERMParameter);
+        }
+    
+        public virtual ObjectResult<PHOTO_INFO_PER_USER_NAME_Result> PHOTO_INFO_PER_USER_NAME(string uSER_NAME)
+        {
+            var uSER_NAMEParameter = uSER_NAME != null ?
+                new ObjectParameter("USER_NAME", uSER_NAME) :
+                new ObjectParameter("USER_NAME", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<PHOTO_INFO_PER_USER_NAME_Result>("PHOTO_INFO_PER_USER_NAME", uSER_NAMEParameter);
+        }
+    
+        public virtual int UPDATE_PHOTO_PATH(string uSER_NAME, string fILE_PATH, string fILE_NAME)
+        {
+            var uSER_NAMEParameter = uSER_NAME != null ?
+                new ObjectParameter("USER_NAME", uSER_NAME) :
+                new ObjectParameter("USER_NAME", typeof(string));
+    
+            var fILE_PATHParameter = fILE_PATH != null ?
+                new ObjectParameter("FILE_PATH", fILE_PATH) :
+                new ObjectParameter("FILE_PATH", typeof(string));
+    
+            var fILE_NAMEParameter = fILE_NAME != null ?
+                new ObjectParameter("FILE_NAME", fILE_NAME) :
+                new ObjectParameter("FILE_NAME", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_PHOTO_PATH", uSER_NAMEParameter, fILE_PATHParameter, fILE_NAMEParameter);
         }
     }
 }
