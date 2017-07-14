@@ -23,5 +23,8 @@ namespace Gordon360.Models
         public int Private { get; set; }
         public string barcode { get; set; }
         public int preferred_photo { get; set; }
+        public int show_pic { get; set; }
+        public int ReadOnly { get; set; }
+        public string office_hours { get; set; }
     }
 }

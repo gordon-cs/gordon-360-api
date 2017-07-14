@@ -10,16 +10,15 @@
 namespace Gordon360.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class PROFILE_IMAGE
+    public partial class PHOTO_INFO_PER_USER_NAME_Result
     {
-        public string id { get; set; }
-        public string username { get; set; }
         public string Img_Path { get; set; }
-        public string facebook { get; set; }
-        public string twitter { get; set; }
-        public string instagram { get; set; }
-        public string linkedin { get; set; }
+        public string Img_Name { get; set; }
+        public string Pref_Img_Path { get; set; }
+        public string Pref_Img_Name { get; set; }
+        public int preffered_photo { get; set; }
+        public int show_pic { get; set; }
+        public string EmailUserName { get; set; }
     }
 }

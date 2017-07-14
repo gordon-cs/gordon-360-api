@@ -21,6 +21,7 @@ namespace Gordon360.Models.ViewModels
         public DateTime StartDate { get; set; }
         public Nullable<DateTime> EndDate { get; set; }
         public string Description { get; set; }
+        public bool? Privacy { get; set; }
 
         
         public static implicit operator MembershipViewModel(MEMBERSHIP m)
@@ -35,7 +36,8 @@ namespace Gordon360.Models.ViewModels
                 GroupAdmin = m.GRP_ADMIN ?? false,
                 StartDate = m.BEGIN_DTE, 
                 EndDate = m.END_DTE,
-                Description = m.COMMENT_TXT ?? "" // For Null comments
+                Description = m.COMMENT_TXT ?? "", // For Null comments
+                Privacy = m.PRIVACY ?? false
             };
 
             return vm;
