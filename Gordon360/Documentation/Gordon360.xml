@@ -105,36 +105,51 @@
             <param name="id">The id of the membership request to delete</param>
             <returns>The deleted object</returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfileImageController.Get">
-            <summary>
-            Get all available users
-            </summary>
-            <returns>All the users in the databse</returns>
-            <remarks></remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.ProfileImageController.Get(System.String)">
-            <summary>Get a single profile based upon the string username entered in the URL</summary>
-            <param name="username">An identifier for a single person's profile</param>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.Get">
+            <summary>Get the info of currently logged in user</summary>
             <returns></returns>
-            <remarks>Get a single profile from the database</remarks>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfileImageController.PostImage(System.String)">
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.GetUserProfile(System.String)">
+            <summary>Get public profile info for a user</summary>
+            <param name="username">username of the profile info</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.getImg">
+            <summary>Get the profile image of currently logged in user</summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.PostImage">
             <summary>
             Set an image for profile
             </summary>
-            <param name="username">The username</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfileImageController.ResetImage(System.String)">
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.ResetImage">
             <summary>
             Reset the profile Image
             </summary>
-            <param name="username">The username</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.Get(System.String)">
-            <summary>Get the info of currently logged in user</summary>
-            <param name="username">An identifier for the person</param>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateLink(System.String,Gordon360.Models.CUSTOM_PROFILE)">
+            <summary>
+            Update the profile social media links
+            </summary>
+            <param name="type">The type of social media</param>
+            <param name="path">The path of the links</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateMobilePrivacy(System.Boolean)">
+            <summary>
+            Update privacy of mobile phone number
+            </summary>
+            <param name="p">private or not</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateImagePrivacy(System.Int32)">
+            <summary>
+            Update privacy of profile image
+            </summary>
+            <param name="p">private or not</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ParticipationsController.Get">
@@ -176,23 +191,6 @@
             Gets the current active session
             </summary>
             <returns></returns>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.StudentsController.Get">
-            <summary>Get a list of all students in the database</summary>
-            <returns>A list of student names, IDs, and emails</returns>
-            <remarks>Queries the database for every student record within the student table</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.StudentsController.Get(System.String)">
-            <summary>Get information about a single student</summary>
-            <param name="id">The Gordon ID of desired student</param>
-            <returns>The information about the specified student</returns>
-            <remarks>Queries the database for the specific student identified by their Gordon ID</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.StudentsController.GetByEmail(System.String)">
-            <summary>Get information about a single student</summary>
-            <param name="email">The email of desired student</param>
-            <returns>The information about the specified student</returns>
-            <remarks>Queries the database for the specific student identified by their email</remarks>
         </member>
         <member name="M:Gordon360.Controllers.Api.ActivitiesController.Get">
             <summary>
@@ -273,6 +271,12 @@
             </summary>
             <param name="id">The activity code</param>
             <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ActivitiesController.TogglePrivacy(System.String,System.Boolean)">
+            <summary>Update an existing activity to be private or not</summary>
+            <param name="id">The id of the activity</param>
+            <param name = "p">the boolean value</param>
+            <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         </member>
         <member name="M:Gordon360.Controllers.Api.MembershipsController.Get">
             <summary>
@@ -355,6 +359,12 @@
         <member name="M:Gordon360.Controllers.Api.MembershipsController.ToggleGroupAdmin(Gordon360.Models.MEMBERSHIP)">
             <summary>Update an existing membership item to be a group admin or not</summary>
              /// <param name="membership">The content within the membership that is to be changed</param>
+            <remarks>Calls the server to make a call and update the database with the changed information</remarks>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.MembershipsController.TogglePrivacy(System.Int32,System.Boolean)">
+            <summary>Update an existing membership item to be private or not</summary>
+            <param name="id">The id of the membership</param>
+            <param name = "p">the boolean value</param>
             <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         </member>
         <member name="M:Gordon360.Controllers.Api.MembershipsController.Delete(System.Int32)">
@@ -610,6 +620,13 @@
             <param name="email">The email address associated with the account.</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Services.AccountService.GetAccountByUsername(System.String)">
+            <summary>
+            Fetches the account record with the specified username.
+            </summary>
+            <param name="username">The username associated with the account.</param>
+            <returns></returns>
+        </member>
         <member name="T:Gordon360.Services.ActivityService">
             <summary>
             Service Class that facilitates data transactions between the ActivitiesController and the ACT_CLUB_DEF database model.
@@ -720,6 +737,13 @@
             Reset the path for the activity image
             </summary>
             <param name="id">The activity code</param>
+        </member>
+        <member name="M:Gordon360.Services.ActivityService.TogglePrivacy(System.String,System.Boolean)">
+            <summary>
+            change activty privacy
+            </summary>
+            <param name="id">The activity code</param>
+            <param name="p">activity private or not</param>
         </member>
         <member name="T:Gordon360.Services.AdministratorService">
             <summary>
@@ -900,54 +924,42 @@
             <param name="session_code">The session code</param>
             <returns>List of emails for the leaders of this activity</returns>
         </member>
-        <member name="T:Gordon360.Services.FacultyService">
-            <summary>
-            Service Class that facilitates data transactions between the FacultyController and the Faculty database model.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Services.FacultyService.Get(System.String)">
-            <summary>
-            Fetches the faculty member whose gordon id is specified as the parameter.
-            </summary>
-            <param name="id">The gordon id</param>
-            <returns>If found returns FacultyViewModel, if not returns null</returns>
-        </member>
-        <member name="M:Gordon360.Services.FacultyService.GetAll">
-            <summary>
-            Fetches all the Faculty members from the database.
-            </summary>
-            <returns>FacultyViewModel IEnumerable. If no records are found an empty IEnumerable is returned.</returns>
-        </member>
-        <member name="T:Gordon360.Services.ProfileImageService">
-            <summary>
-            Service Class that facilitates data transactions between the ProfileController and the PROFILE database model.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Services.ProfileImageService.Get(System.String)">
+        <member name="M:Gordon360.Services.ProfileService.GetCustomUserInfo(System.String)">
             <summary>
             Fetches a single profile whose username matches the username provided as an argument
             </summary>
             <param name="username">The username</param>
             <returns>ProfileViewModel if found, null if not found</returns>
         </member>
-        <member name="M:Gordon360.Services.ProfileImageService.GetAll">
-            <summary>
-            Fetches all profile records from storage.
-            </summary>
-            <returns>ProfileImageViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        </member>
-        <member name="M:Gordon360.Services.ProfileImageService.UpdateProfileImage(System.String,System.String)">
+        <member name="M:Gordon360.Services.ProfileService.UpdateProfileImage(System.String,System.String,System.String)">
             <summary>
             Sets the path for the profile image.
             </summary>
             <param name="username">The username</param>
             <param name="path"></param>
+            <param name="name"></param>
         </member>
-        <member name="M:Gordon360.Services.ProfileImageService.ResetProfileImage(System.String)">
+        <member name="M:Gordon360.Services.ProfileService.UpdateProfileLink(System.String,System.String,Gordon360.Models.CUSTOM_PROFILE)">
             <summary>
-            Reset the path for the profile image
+            Sets the path for the profile links.
             </summary>
             <param name="username">The username</param>
+            <param name="type"></param>
+            <param name="path"></param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.UpdateMobilePrivacy(System.String,System.Boolean)">
+            <summary>
+            privacy setting of mobile phone.
+            </summary>
+            <param name="username">The username</param>
+            <param name="p"></param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.UpdateImagePrivacy(System.String,System.Int32)">
+            <summary>
+            privacy setting user profile photo.
+            </summary>
+            <param name="username">The username</param>
+            <param name="p"></param>
         </member>
         <member name="T:Gordon360.Services.JenzibarActivityService">
             <summary>
@@ -1123,6 +1135,14 @@
             <param name="membership">The corresponding membership object</param>
             <returns>The newly modified membership.</returns>
         </member>
+        <member name="M:Gordon360.Services.MembershipService.TogglePrivacy(System.Int32,System.Boolean)">
+            <summary>
+            Switches the privacy property of the person whose membership id is given
+            </summary>
+            <param name="id">The membership id.</param>
+            <param name="p">membership private or not</param>
+            <returns>The newly modified membership.</returns>
+        </member>
         <member name="M:Gordon360.Services.MembershipService.validateMembership(Gordon360.Models.MEMBERSHIP)">
             <summary>
             Helper method to Validate a membership
@@ -1165,49 +1185,6 @@
             Fetches all the session records from the database.
             </summary>
             <returns>A SessionViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
-        </member>
-        <member name="T:Gordon360.Services.StaffService">
-            <summary>
-            Service class to facilitate the data transactions between the controllers and the database models.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Services.StaffService.Get(System.String)">
-            <summary>
-            Fetches the staff record whose id matches the provided parameter.
-            </summary>
-            <param name="id">The staff's gordon id.</param>
-            <returns>A StaffViewModel if the record exists, null if it doesn't.</returns>
-        </member>
-        <member name="M:Gordon360.Services.StaffService.GetAll">
-            <summary>
-            Fetches all the staff records from the database.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="T:Gordon360.Services.StudentService">
-            <summary>
-            Service Class to faciliatate data transactions between the controller and the database models.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Services.StudentService.Get(System.String)">
-            <summary>
-            Fetches the student record whose id number matches the parameter.
-            </summary>
-            <param name="id">The student id</param>
-            <returns>A student view model if found, null if not found.</returns>
-        </member>
-        <member name="M:Gordon360.Services.StudentService.GetAll">
-            <summary>
-            Fetches all the Student records from the database.
-            </summary>
-            <returns>StudentViweModel IEnumberable. If nothing is found, an empty IEnumberable is returned.</returns>
-        </member>
-        <member name="M:Gordon360.Services.StudentService.GetByEmail(System.String)">
-            <summary>
-            Fetches the student record using the specified email address
-            </summary>
-            <param name="email">The Student email</param>
-            <returns></returns>
         </member>
         <member name="T:Gordon360.Static.Data.Data">
             <summary>
