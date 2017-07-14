@@ -4,6 +4,8 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Xml.Linq;
+using System.Text;
 using Gordon360.Services.ComplexQueries;
 using Gordon360.Services;
 
@@ -32,18 +34,50 @@ namespace Gordon360.Static.Methods
         }
 
         // Return a memorystream from a specific URL
-        public static MemoryStream GetLiveStream(string requestUrl)
+        public static XDocument GetLiveStream(string requestUrl)
         {
 
             // Send the request and parse 
             using (WebClient client = new WebClient())
             {
+                MemoryStream stream = null;
                 // Commit contents of the request to temporary memory
-                MemoryStream stream = new MemoryStream(client.DownloadData(requestUrl));
+                try
+                {
+                    stream = new MemoryStream(client.DownloadData(requestUrl));
+                }
+                catch (ArgumentNullException e)
+                {
+                    // The DownloadData function didn't return anything!
+                }
+                catch (WebException e)
+                {
+                    // The DownloadData function wasn't able to connect to the source!
+                }
+
                 // Begin to read contents with correct encoding
-                return stream;
+                XDocument xmlDoc = null;
+                try
+                {
+                    using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+                    {
+                        // Create a string of content
+                        string content = reader.ReadToEnd();
+                        // Load the data into an XmlDocument
+                        xmlDoc = XDocument.Parse(content);
+
+                    }
+                }
+                catch (ArgumentException e)
+                {
+                    // Something was wrong with the memory stream
+                }
+
+                return xmlDoc;
             }
+
         }
+
 
         /// <summary>
         ///  Helper function to determine the current academic year

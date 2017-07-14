@@ -95,45 +95,32 @@ namespace Gordon360.Services
             // Get API Route for 25 Live
             string requestUrl = GetRoute(EventID, type);
             // Commit contents of the request to temporary memory
-            MemoryStream stream = Helpers.GetLiveStream(requestUrl);
-            // Begin to read contents with correct encoding
-            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+            XDocument xmlDoc = Helpers.GetLiveStream(requestUrl);
+
+            // Pull out the nodes for events
+            IEnumerable<XElement> events = xmlDoc.Descendants(r25 +"event");
+
+            // Convert to iterable list containing just the pieces we need
+            List<EventViewModel> stuff = new List<EventViewModel>();
+
+            // Convert each element into a viewmodel for events          
+            foreach (XElement n in events)
             {
-                // Create a string of content
-                string content = reader.ReadToEnd();
-                // Load the data into an XmlDocument
-                XDocument xmlDoc = XDocument.Parse(content);
-
-                // Pull out the nodes for events
-                IEnumerable<XElement> events = xmlDoc.Descendants(r25 +"event");
-
-                // Convert to iterable list containing just the pieces we need
-                List<EventViewModel> stuff = new List<EventViewModel>();
-
-                // Convert each element into a viewmodel for events          
-                foreach (XElement n in events)
-                {
-                    EventViewModel vm = new EventViewModel(n);
-                    stuff.Add(vm);
-                }
-
-                return stuff.AsEnumerable<EventViewModel>();
+                EventViewModel vm = new EventViewModel(n);
+                stuff.Add(vm);
             }
+
+            return stuff.AsEnumerable<EventViewModel>();
+            
         }
         
         /// <summary>
         /// Access the memory stream created by the cached task and parse it into events
         /// </summary>
-        /// <param name="stream"></param>
+        /// <param name="xmlDoc"></param>
         /// <returns></returns>
-        public IEnumerable<EventViewModel> GetAllEvents (MemoryStream stream)
+        public IEnumerable<EventViewModel> GetAllEvents (XDocument xmlDoc)
         {
-            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
-            {
-                // Create a string of content
-                string content = reader.ReadToEnd();
-                // Load the data into an XmlDocument
-                XDocument xmlDoc = XDocument.Parse(content);
 
                 // Pull out the nodes for events
                 IEnumerable<XElement> events = xmlDoc.Descendants(r25 + "event");
@@ -149,7 +136,7 @@ namespace Gordon360.Services
                 }
 
                 return stuff.AsEnumerable<EventViewModel>();
-            }
+            
         }
 
         /// <summary>

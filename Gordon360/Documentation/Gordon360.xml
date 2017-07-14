@@ -652,7 +652,8 @@
             When an activity is closed out, the END_DTE is set to the date on which the closing happened
             Otherwise, the END_DTE for all memberships of the activity will be null for that session
             </summary>
-            <param name="id">The activity code for the activity in question</param>
+            <param name="sessionCode">The activity code for the activity in question</param>
+            <param name="id"></param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Services.ActivityService.GetOpenActivities(System.String)">
@@ -786,11 +787,11 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Services.EventService.GetAllEvents(System.IO.MemoryStream)">
+        <member name="M:Gordon360.Services.EventService.GetAllEvents(System.Xml.Linq.XDocument)">
             <summary>
             Access the memory stream created by the cached task and parse it into events
             </summary>
-            <param name="stream"></param>
+            <param name="xmlDoc"></param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Services.EventService.GetAllForStudent(System.String)">
@@ -1229,6 +1230,12 @@
              Helper function to determine the current academic year
             </summary>
             <returns></returns>
+        </member>
+        <member name="F:Gordon360.Startup.DummyCacheItemKey">
+            <summary>
+            Caching task method created using the article written by Omar Al Zabir
+            Article: https://www.codeproject.com/Articles/12117/Simulate-a-Windows-Service-using-ASP-NET-to-run-sc
+            </summary>
         </member>
     </members>
 </doc>

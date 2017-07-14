@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using System.Xml.Linq;
-
+using Gordon360.Models.ViewModels;
 namespace Gordon360.Static.Data
 {
     /// <summary>
@@ -8,6 +8,6 @@ namespace Gordon360.Static.Data
     /// </summary>
     public static class Data
     {
-        public static MemoryStream AllEvents { get; set; }
+        public static XDocument AllEvents { get; set; }
     }
 }
