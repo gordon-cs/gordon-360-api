@@ -208,7 +208,14 @@ namespace Gordon360.Services
             // In the database, the time and date are stored as separate datetime objects, here we combine them into one
             foreach (var v in list)
             {
-                v.CHDate = v.CHDate.Value.Add(v.CHTime.Value.TimeOfDay);
+                try
+                {
+                    v.CHDate = v.CHDate.Value.Add(v.CHTime.Value.TimeOfDay);
+                }
+                catch (InvalidOperationException e)
+                {
+                    // time value is null -- don't worry bout it
+                }
             }
 
             // Attempt to convert the list to a ViewModel we can return
@@ -297,7 +304,14 @@ namespace Gordon360.Services
             // In the database, the time and date are stored as separate datetime objects, here we combine them into one
             foreach (var v in list)
             {
-                v.CHDate = v.CHDate.Value.Add(v.CHTime.Value.TimeOfDay);
+                try
+                {
+                    v.CHDate = v.CHDate.Value.Add(v.CHTime.Value.TimeOfDay);
+                }
+                catch (InvalidOperationException e)
+                {
+                    // time value is null -- don't worry bout it
+                }
             }
 
             // Attempt to convert the list to a ViewModel we can return
