@@ -11,6 +11,7 @@ namespace Gordon360.Models.ViewModels
         public string CHTermCD { get; set; }
         public Nullable<int> Required { get; set; }
         public string Event_Name { get; set; }
+        public string Event_Title { get; set; }
         public string Event_Type_Name { get; set; }
         public string Description { get; set; }
         public string Organization { get; set; }
@@ -31,6 +32,7 @@ namespace Gordon360.Models.ViewModels
             if (a != null)
             {
                 Event_Name = a.Event_Name ?? "";
+                Event_Title = a.Event_Title ?? "";
                 Event_Type_Name = a.Event_Type_Name ?? "";
                 Category_ID = a.Category_Id ?? "";
                 Description = a.Description ?? "";
@@ -42,6 +44,7 @@ namespace Gordon360.Models.ViewModels
             else
             {
                 Event_Name =  "";
+                Event_Title = "";
                 Event_Type_Name =  "";
                 Category_ID =  "";
                 Description =  "";
