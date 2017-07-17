@@ -9,7 +9,6 @@ namespace Gordon360.Repositories
     public interface IUnitOfWork
     {
         IRepository<ACCOUNT> AccountRepository { get; }
-        IRepository<ACT_CLUB_DEF> ActivityRepository { get; }
         IRepository<ACT_INFO> ActivityInfoRepository { get; }
         IRepository<CM_SESSION_MSTR> SessionRepository { get; }
         IRepository<Faculty> FacultyRepository { get; }

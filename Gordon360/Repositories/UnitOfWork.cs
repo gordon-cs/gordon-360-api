@@ -36,10 +36,6 @@ namespace Gordon360.Repositories
         {
             get { return _AccountRepository ?? (_AccountRepository = new GenericRepository<ACCOUNT>(_context)); }
         }
-        public IRepository<ACT_CLUB_DEF> ActivityRepository
-        {
-            get { return _ActivityRepository ?? (_ActivityRepository = new GenericRepository<ACT_CLUB_DEF>(_context)); }
-        }
         public IRepository<ACT_INFO> ActivityInfoRepository
         {
             get { return _ActivityInfoRepository ?? (_ActivityInfoRepository = new GenericRepository<ACT_INFO>(_context)); }

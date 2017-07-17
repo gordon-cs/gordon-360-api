@@ -434,7 +434,7 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Session was not found." };
             }
-            var activityExists = _unitOfWork.ActivityRepository.Where(x => x.ACT_CDE.Trim() == membership.ACT_CDE).Count() > 0;
+            var activityExists = _unitOfWork.ActivityInfoRepository.Where(x => x.ACT_CDE.Trim() == membership.ACT_CDE).Count() > 0;
             if (!activityExists)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
