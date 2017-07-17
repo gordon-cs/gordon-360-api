@@ -81,7 +81,7 @@ namespace Gordon360.Static.Names
     {
         // This url makes use of the 25Live API to retrieve events based on the "event_type" parameter. 
         // We also make use of the "end after" field to get only events from this academic year.
-        public static string ALL_EVENTS_REQUEST = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=10+12+13+14+16+17+18+19+51+20+21+22+23+24+25+29+30+33&state=2&end_after=" + Helpers.GetDay() + "0820&scope=extended";
+        public static string ALL_EVENTS_REQUEST = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=10+12+13+14+16+17+18+19+51+20+21+22+23+24+25+29+30+33&state=2&end_after=" + Helpers.GetDay() + "0810&scope=extended";
 
     }
 }

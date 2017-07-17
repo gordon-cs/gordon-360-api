@@ -49,8 +49,13 @@ namespace Gordon360.Static.Methods
                 // Commit contents of the request to temporary memory
                 try
                 {
-                    stream = new MemoryStream(client.DownloadData(requestUrl));
+                    Uri request = new Uri(requestUrl);
+                    // Use an Async method to make sure we have completed the download 
+                    // We don't want to try and pull partial data!
+                    var data = client.DownloadDataTaskAsync(request);
+                    stream = new MemoryStream(data.Result);
                 }
+                // catch any errors thrown
                 catch (ArgumentNullException e)
                 {
                     // The DownloadData function didn't return anything!
