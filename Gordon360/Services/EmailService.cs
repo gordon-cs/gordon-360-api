@@ -204,8 +204,8 @@ namespace Gordon360.Services
                     Password = password
                 };
                 smtp.Credentials = credential;
-                smtp.Host = "smtp.gordon.edu";
-                smtp.Port = 465;
+                smtp.Host = "smtp.office365.com";
+                smtp.Port = 587;
                 smtp.EnableSsl = true;
                 var message = new MailMessage();
                 message.From = new MailAddress(from_email);
@@ -213,6 +213,45 @@ namespace Gordon360.Services
                 foreach (string to_email in to_emails)
                 {
                     message.To.Add(new MailAddress(to_email));
+                }
+                message.Subject = subject;
+                message.Body = email_content;
+                message.IsBodyHtml = true;
+
+                smtp.Send(message);
+            }
+        }
+
+        /// <summary>
+        /// Send a email to members of an activity
+        /// </summary>
+        /// <param name="activityCode">The activity code to send this email to</param>
+        /// <param name="sessionCode">The session of activity to select members from</param>
+        /// <param name="from_email">The address this email is sent from</param>
+        /// <param name="subject">Subject of the email to be sent</param>
+        /// <param name="email_content">The content of the email to be sent</param>
+        /// <param name="password">Password of the email sender</param>
+        /// <returns></returns>
+        public void SendEmailToActivity(string activityCode, string sessionCode, string from_email, string subject, string email_content, string password)
+        {
+            using (var smtp = new SmtpClient())
+            {
+                var credential = new NetworkCredential
+                {
+                    UserName = from_email,
+                    Password = password
+                };
+                smtp.Credentials = credential;
+                smtp.Host = "smtp.office365.com";
+                smtp.Port = 587;
+                smtp.EnableSsl = true;
+                var message = new MailMessage();
+                message.From = new MailAddress(from_email);
+                message.To.Add(new MailAddress(from_email));
+                var to_emails = GetEmailsForActivity(activityCode, sessionCode).Select(x => x.Email).ToArray();
+                foreach (string to_email in to_emails)
+                {
+                    message.Bcc.Add(new MailAddress(to_email));
                 }
                 message.Subject = subject;
                 message.Body = email_content;
