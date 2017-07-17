@@ -8,6 +8,9 @@ using System.Xml.Linq;
 using System.Text;
 using Gordon360.Services.ComplexQueries;
 using Gordon360.Services;
+using Gordon360.Models;
+using Gordon360.Repositories;
+using System.Collections.Generic;
 
 namespace Gordon360.Static.Methods
 {
@@ -16,6 +19,7 @@ namespace Gordon360.Static.Methods
     /// </summary>
     public static class Helpers
     {
+
         /// <summary>
         /// Service method that gets the current session we are in.
         /// </summary>
@@ -106,6 +110,13 @@ namespace Gordon360.Static.Methods
                 return (today.Year).ToString();
             }
             return today.Year.ToString();
+        }
+
+        public static IEnumerable<BasicInfoViewModel> GetAllBasicInfo()
+        {
+            var result = RawSqlQuery<BasicInfoViewModel>.query("SELECT gordon_id, firstname, lastname, account_type, AD_Username FROM[CCT].[dbo].[ACCOUNT]");
+            // var result = all.Select<ACCOUNT, BasicInfoViewModel>(x => x);
+            return result;
         }
 
         public static string GetLeaderRoleCodes()

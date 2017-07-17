@@ -56,8 +56,11 @@ namespace Gordon360
 
             // Perform task for the first time at startup
             DoWork();
+            DoMoreWork();
+
             // Register a job in the cache to re-occur at a specified interval
-            RegisterCacheEntry();
+            RegisterEventCacheEntry();
+            RegisterAccountCacheEntry();
 
             // Configure the options for the WebApi Component.
             HttpConfiguration config = new HttpConfiguration();
@@ -72,23 +75,49 @@ namespace Gordon360
        
         // Create a new dummy cache entry. We don't want to store anything here, because it will be gone on restart of application
         // Thus, all we need is the frequent callback from this item
-        private const string DummyCacheItemKey = "DeloresMichaelLindsay";
+        private const string EventItemKey = "DeloresMichaelLindsay";
+        private const string AccountItemKey = "DeathToGoDotGordon";
 
         // Register the entry in the cache
-        private bool RegisterCacheEntry()
+        private bool RegisterEventCacheEntry()
         {
             // Check and see if the dummy entry is already in the cache
-            if (null != HttpRuntime.Cache[DummyCacheItemKey])
+            if (null != HttpRuntime.Cache[EventItemKey])
             {
                 return false;
             }
 
-            // Otherwise, we add it to the cache
-            HttpRuntime.Cache.Add(DummyCacheItemKey, "Test", null,
-                DateTime.MaxValue, TimeSpan.FromMinutes(4),
-                CacheItemPriority.Normal,
-                new CacheItemRemovedCallback(CacheItemRemovedCallback));
-            return true;
+            else
+            {
+                // Otherwise, we add it to the cache
+                HttpRuntime.Cache.Add(EventItemKey, "Test", null,
+                    DateTime.MaxValue, TimeSpan.FromMinutes(4),
+                    CacheItemPriority.Normal,
+                    new CacheItemRemovedCallback(CacheEventRemovedCallback));
+                return true;
+            }
+
+        }
+
+        // Register the entry in the cache
+        private bool RegisterAccountCacheEntry()
+        {
+            // Check and see if the dummy entry is already in the cache
+            if (null != HttpRuntime.Cache[AccountItemKey])
+            {
+                return false;
+            }
+
+            else
+            {
+                // Otherwise, we add it to the cache
+                HttpRuntime.Cache.Add(AccountItemKey, "Test", null,
+                    DateTime.MaxValue, TimeSpan.FromMinutes(200),
+                    CacheItemPriority.Normal,
+                    new CacheItemRemovedCallback(CacheAccountRemovedCallback));
+                return true;
+            }
+
         }
 
         // Perform a job (in this case, we are calling 25Live and storing the data in a "global" variable
@@ -100,18 +129,34 @@ namespace Gordon360
             {
                 Data.AllEvents = _memory;
             }
+
         }
 
-        // Inside the callback we do all the service work
-        public void CacheItemRemovedCallback(string key, object value, CacheItemRemovedReason reason)
+        private void DoMoreWork()
+        {
+            Data.AllBasicInfo = Helpers.GetAllBasicInfo();
+        }
+
+        // Inside the callback we do all the service work to cache events
+        public void CacheEventRemovedCallback(string key, object value, CacheItemRemovedReason reason)
         {
             // Record that the callback works (output to debug console)
             Debug.WriteLine("Cache item callback: " + DateTime.Now.ToString());
             // Call the jobs you want to 
             DoWork();
             // Re-register the item in the cache
-            RegisterCacheEntry();
+            RegisterEventCacheEntry();
+        }
+
+        // Inside the callback we do all the service work to cache accounts
+        public void CacheAccountRemovedCallback(string key, object value, CacheItemRemovedReason reason)
+        {
+            // Record that the callback works (output to debug console)
+            Debug.WriteLine("Cache item callback: " + DateTime.Now.ToString());
+            // Call the jobs you want to 
+            DoMoreWork();
+            // Re-register the item in the cache
+            RegisterAccountCacheEntry();
         }
     }
-       
-    }
+}
