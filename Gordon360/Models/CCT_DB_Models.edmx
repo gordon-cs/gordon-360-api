@@ -40,7 +40,6 @@
           <Key>
             <PropertyRef Name="username" />
           </Key>
-          <Property Name="id" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="username" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="facebook" Type="varchar(max)" />
           <Property Name="twitter" Type="varchar(max)" />
@@ -366,6 +365,13 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <Function Name="ALL_MEMBERSHIPS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="ALL_REQUESTS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="ALL_SUPERVISORS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="CREATE_SOCIAL_LINKS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="USERNAME" Type="varchar" Mode="In" />
+          <Parameter Name="FACEBOOK" Type="varchar(max)" Mode="In" />
+          <Parameter Name="TWITTER" Type="varchar(max)" Mode="In" />
+          <Parameter Name="INSTAGRAM" Type="varchar(max)" Mode="In" />
+          <Parameter Name="LINKEDIN" Type="varchar(max)" Mode="In" />
+        </Function>
         <Function Name="CURRENT_SESSION" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="DISTINCT_ACT_TYPE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="SESS_CDE" Type="varchar" Mode="In" />
@@ -392,6 +398,10 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <Function Name="MEMBERSHIPS_PER_ACT_CDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ACT_CDE" Type="char" Mode="In" />
         </Function>
+        <Function Name="MEMBERSHIPS_PER_ACT_CDE_AUTHORIZED" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ACT_CDE" Type="char" Mode="In" />
+          <Parameter Name="AUTHORIZED" Type="bit" Mode="In" />
+        </Function>
         <Function Name="MEMBERSHIPS_PER_MEMBERSHIP_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="MEMBERSHIP_ID" Type="int" Mode="In" />
         </Function>
@@ -399,7 +409,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Parameter Name="STUDENT_ID" Type="int" Mode="In" />
         </Function>
         <Function Name="PHOTO_INFO_PER_USER_NAME" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="USER_NAME" Type="varchar" Mode="In" />
+          <Parameter Name="ID" Type="int" Mode="In" />
         </Function>
         <Function Name="REQUEST_PER_REQUEST_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="REQUEST_ID" Type="int" Mode="In" />
@@ -451,7 +461,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         </Function>
         <Function Name="UPDATE_ACT_INFO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="UPDATE_PHOTO_PATH" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="USER_NAME" Type="varchar" Mode="In" />
+          <Parameter Name="ID" Type="int" Mode="In" />
           <Parameter Name="FILE_PATH" Type="varchar" Mode="In" />
           <Parameter Name="FILE_NAME" Type="varchar" Mode="In" />
         </Function>
@@ -889,18 +899,29 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="sysdiagrams" EntityType="Gordon360.sysdiagrams" />
           <EntitySet Name="ChapelEvent" EntityType="Gordon360.ChapelEvent" />
           <FunctionImport Name="PHOTO_INFO_PER_USER_NAME" ReturnType="Collection(Gordon360.PHOTO_INFO_PER_USER_NAME_Result)">
-          <Parameter Name="USER_NAME" Mode="In" Type="String" />
+          <Parameter Name="ID" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="UPDATE_PHOTO_PATH">
-            <Parameter Name="USER_NAME" Mode="In" Type="String" />
+            <Parameter Name="ID" Mode="In" Type="Int32" />
             <Parameter Name="FILE_PATH" Mode="In" Type="String" />
             <Parameter Name="FILE_NAME" Mode="In" Type="String" />
           </FunctionImport>
-          <EntitySet Name="CUSTOM_PROFILE" EntityType="Gordon360.CUSTOM_PROFILE" />
           <EntitySet Name="Alumni" EntityType="Gordon360.Alumni" />
           <EntitySet Name="Student" EntityType="Gordon360.Student" />
           <EntitySet Name="ACT_CLUB_DEF_DELETE" EntityType="Gordon360.ACT_CLUB_DEF_DELETE" />
           <EntitySet Name="FacStaff" EntityType="Gordon360.FacStaff" />
+          <FunctionImport Name="CREATE_SOCIAL_LINKS">
+            <Parameter Name="USERNAME" Mode="In" Type="String" />
+            <Parameter Name="FACEBOOK" Mode="In" Type="String" />
+            <Parameter Name="TWITTER" Mode="In" Type="String" />
+            <Parameter Name="INSTAGRAM" Mode="In" Type="String" />
+            <Parameter Name="LINKEDIN" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="MEMBERSHIPS_PER_ACT_CDE_AUTHORIZED" ReturnType="Collection(Gordon360.MEMBERSHIPS_PER_ACT_CDE_AUTHORIZED_Result)">
+            <Parameter Name="ACT_CDE" Mode="In" Type="String" />
+            <Parameter Name="AUTHORIZED" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <EntitySet Name="CUSTOM_PROFILE" EntityType="Gordon360.CUSTOM_PROFILE" />
 
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
@@ -1230,17 +1251,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="Int32" Name="show_pic" Nullable="false" />
           <Property Type="String" Name="EmailUserName" Nullable="true" MaxLength="50" />
         </ComplexType>
-        <EntityType Name="CUSTOM_PROFILE">
-          <Key>
-            <PropertyRef Name="username" />
-          </Key>
-          <Property Name="id" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="facebook" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="twitter" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="instagram" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="linkedin" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="Alumni">
           <Key>
             <PropertyRef Name="ID" />
@@ -1384,6 +1394,33 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="office_hours" Type="String" MaxLength="75" FixedLength="false" Unicode="false" />
           <Property Name="preferred_photo" Type="Int32" />
           <Property Name="show_pic" Type="Int32" />
+        </EntityType>
+        <ComplexType Name="MEMBERSHIPS_PER_ACT_CDE_AUTHORIZED_Result">
+          <Property Type="Int32" Name="MembershipID" Nullable="false" />
+          <Property Type="String" Name="ActivityCode" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="ActivityDescription" Nullable="false" MaxLength="45" />
+          <Property Type="String" Name="ActivityImagePath" Nullable="true" />
+          <Property Type="String" Name="SessionCode" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="SessionDescription" Nullable="true" MaxLength="60" />
+          <Property Type="Int32" Name="IDNumber" Nullable="false" />
+          <Property Type="String" Name="FirstName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="LastName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Participation" Nullable="false" MaxLength="5" />
+          <Property Type="String" Name="ParticipationDescription" Nullable="false" MaxLength="45" />
+          <Property Type="DateTime" Name="StartDate" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="EndDate" Nullable="true" Precision="23" />
+          <Property Type="String" Name="Description" Nullable="true" MaxLength="45" />
+          <Property Type="Boolean" Name="GroupAdmin" Nullable="true" />
+        </ComplexType>
+        <EntityType Name="CUSTOM_PROFILE">
+          <Key>
+            <PropertyRef Name="username" />
+          </Key>
+          <Property Name="username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="facebook" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="twitter" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="instagram" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="linkedin" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1901,18 +1938,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             </ResultMapping>
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="UPDATE_PHOTO_PATH" FunctionName="Gordon360.Store.UPDATE_PHOTO_PATH" />
-          <EntitySetMapping Name="CUSTOM_PROFILE">
-            <EntityTypeMapping TypeName="Gordon360.CUSTOM_PROFILE">
-              <MappingFragment StoreEntitySet="CUSTOM_PROFILE">
-                <ScalarProperty Name="linkedin" ColumnName="linkedin" />
-                <ScalarProperty Name="instagram" ColumnName="instagram" />
-                <ScalarProperty Name="twitter" ColumnName="twitter" />
-                <ScalarProperty Name="facebook" ColumnName="facebook" />
-                <ScalarProperty Name="username" ColumnName="username" />
-                <ScalarProperty Name="id" ColumnName="id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Alumni">
             <EntityTypeMapping TypeName="Gordon360.Alumni">
               <MappingFragment StoreEntitySet="Alumni">
@@ -2058,6 +2083,39 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="CREATE_SOCIAL_LINKS" FunctionName="Gordon360.Store.CREATE_SOCIAL_LINKS" />
+          <FunctionImportMapping FunctionImportName="MEMBERSHIPS_PER_ACT_CDE_AUTHORIZED" FunctionName="Gordon360.Store.MEMBERSHIPS_PER_ACT_CDE_AUTHORIZED">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.MEMBERSHIPS_PER_ACT_CDE_AUTHORIZED_Result">
+                <ScalarProperty Name="MembershipID" ColumnName="MembershipID" />
+                <ScalarProperty Name="ActivityCode" ColumnName="ActivityCode" />
+                <ScalarProperty Name="ActivityDescription" ColumnName="ActivityDescription" />
+                <ScalarProperty Name="ActivityImagePath" ColumnName="ActivityImagePath" />
+                <ScalarProperty Name="SessionCode" ColumnName="SessionCode" />
+                <ScalarProperty Name="SessionDescription" ColumnName="SessionDescription" />
+                <ScalarProperty Name="IDNumber" ColumnName="IDNumber" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Participation" ColumnName="Participation" />
+                <ScalarProperty Name="ParticipationDescription" ColumnName="ParticipationDescription" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="GroupAdmin" ColumnName="GroupAdmin" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="CUSTOM_PROFILE">
+            <EntityTypeMapping TypeName="Gordon360.CUSTOM_PROFILE">
+              <MappingFragment StoreEntitySet="CUSTOM_PROFILE">
+                <ScalarProperty Name="linkedin" ColumnName="linkedin" />
+                <ScalarProperty Name="instagram" ColumnName="instagram" />
+                <ScalarProperty Name="twitter" ColumnName="twitter" />
+                <ScalarProperty Name="facebook" ColumnName="facebook" />
+                <ScalarProperty Name="username" ColumnName="username" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

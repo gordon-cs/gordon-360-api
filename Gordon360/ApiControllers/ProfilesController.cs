@@ -194,13 +194,6 @@ namespace Gordon360.Controllers.Api
             object alumni = null;
             object customInfo = null;
 
-            //if (viewerType.Equals(Position.GOD))
-            //    student = _student;
-            //else if (viewerType.Equals(Position.STUDENT))
-            //    student = (PublicStudentProfileViewModel)_student;
-            //else if
-
-
             switch (viewerType)
                 {
                     case Position.GOD:
@@ -212,14 +205,12 @@ namespace Gordon360.Controllers.Api
                     case Position.STUDENT:
                         student = (_student == null) ? null : (PublicStudentProfileViewModel)_student;
                         faculty = (_faculty == null) ? null : (PublicFacultyStaffProfileViewModel)_faculty;
-                        alumni = _alumni;
-                        customInfo = (_customInfo == null) ? null : (PublicProfileCustomViewModel)_customInfo;
+                        customInfo = _customInfo;
                         break;
                     case Position.FACSTAFF:
                         student = _student;
                         faculty = (_faculty == null) ? null : (PublicFacultyStaffProfileViewModel)_faculty;
-                        alumni = _alumni;
-                        customInfo = (_customInfo == null) ? null : (PublicProfileCustomViewModel)_customInfo;
+                        customInfo = _customInfo;
                         break;
             }
 
@@ -317,7 +308,7 @@ namespace Gordon360.Controllers.Api
             }
             else
             {
-                return NotFound();
+                return Ok("Not Found");
             }
         }
         [HttpGet]
@@ -332,22 +323,118 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpGet]
         [Route("Image")]
-        public IHttpActionResult getImg()
+        public IHttpActionResult getMyImg()
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var userInfo = _profileService.GetCustomUserInfo(username);
+            var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
+            var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var viewerType = _roleCheckingService.getViewerRole(viewerName);
+            var photoInfo = _profileService.GetPhotoPath(id);
+            string pref_img = "";
+            string default_img = "";
+            byte[] imageBytes;
+            JObject result = new JObject();
+
             var filePath = Defaults.DEFAULT_PREF_IMAGE_PATH;
-            var fileName = userInfo.Pref_Img_Name;
-            if (string.IsNullOrEmpty(fileName))
+            var fileName = photoInfo.Pref_Img_Name;
+            if (string.IsNullOrEmpty(fileName) || !File.Exists(filePath + fileName))
             {
                 filePath = Defaults.DEFAULT_IMAGE_PATH;
-                fileName = userInfo.Img_Name;
+                fileName = photoInfo.Img_Name;
+                imageBytes = File.ReadAllBytes(filePath + fileName);
+                default_img = Convert.ToBase64String(imageBytes);
+                result.Add("def", default_img);
+                return Ok(result);
             }
-            byte [] imageBytes = File.ReadAllBytes(filePath + fileName);
-            string base64String = Convert.ToBase64String(imageBytes);
-            return Ok(base64String);  //return image as a base64 string
+            else
+            {
+                imageBytes = File.ReadAllBytes(filePath + fileName);
+                pref_img = Convert.ToBase64String(imageBytes);
+                result.Add("pref", pref_img);
+                return Ok(result);  //return image as a base64 string
+            }
+        }
+        /// <summary>Get the profile image of currently logged in user</summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("Image/{username}")]
+        public IHttpActionResult getImg(string username)
+        {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var viewerType = _roleCheckingService.getViewerRole(viewerName);
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+            var photoInfo = _profileService.GetPhotoPath(id);
 
+            var filePath = "";
+            var fileName = "";
+            byte[] pref_image;
+            string pref_img = ""; 
+            byte[] default_image;
+            string default_img = "";
+            JObject result = new JObject();
+            switch (viewerType)
+            {
+                case Position.GOD:
+                    filePath = Defaults.DEFAULT_PREF_IMAGE_PATH;
+                    fileName = photoInfo.Pref_Img_Name;
+                    if (!string.IsNullOrEmpty(fileName) && File.Exists(filePath + fileName))
+                    {
+                        pref_image = File.ReadAllBytes(filePath + fileName);
+                        pref_img = Convert.ToBase64String(pref_image);
+                    }
+                    filePath = Defaults.DEFAULT_IMAGE_PATH;
+                    fileName = photoInfo.Img_Name;
+                    default_image = File.ReadAllBytes(filePath + fileName);
+                    default_img = Convert.ToBase64String(default_image);
+                    result.Add("def", default_img);
+                    result.Add("pref", pref_img);
+                    return Ok(result);
+
+                case Position.STUDENT:
+                    if (_accountService.GetAccountByUsername(username).show_pic == 1)
+                    {
+                        filePath = Defaults.DEFAULT_PREF_IMAGE_PATH;
+                        fileName = photoInfo.Pref_Img_Name;
+                        if (string.IsNullOrEmpty(fileName) || !File.Exists(filePath + fileName))
+                        {
+                            filePath = Defaults.DEFAULT_IMAGE_PATH;
+                            fileName = photoInfo.Img_Name;
+                            default_image = File.ReadAllBytes(filePath + fileName);
+                            default_img = Convert.ToBase64String(default_image);
+                            result.Add("def", default_img);
+                            return Ok(result);
+                        }
+                        pref_image = File.ReadAllBytes(filePath + fileName);
+                        pref_img = Convert.ToBase64String(pref_image);
+                        result.Add("pref", pref_img);
+                    }
+                    else
+                    {
+                        var private_image = File.ReadAllBytes(Defaults.DEFAULT_PROFILE_IMAGE_PATH);
+                        var private_img = Convert.ToBase64String(private_image);
+                        result.Add("private", private_img);
+                        return Ok(result);
+                    }
+                    return Ok(result);
+                case Position.FACSTAFF:
+                    filePath = Defaults.DEFAULT_PREF_IMAGE_PATH;
+                    fileName = photoInfo.Pref_Img_Name;
+                    if (!string.IsNullOrEmpty(fileName) && File.Exists(filePath + fileName))
+                    {
+                        pref_image = File.ReadAllBytes(filePath + fileName);
+                        pref_img = Convert.ToBase64String(pref_image);
+                    }
+                    filePath = Defaults.DEFAULT_IMAGE_PATH;
+                    fileName = photoInfo.Img_Name;
+                    default_image = File.ReadAllBytes(filePath + fileName);
+                    default_img = Convert.ToBase64String(default_image);
+                    result.Add("def", default_img);
+                    result.Add("pref", pref_img);
+                    return Ok(result);
+                default:
+                    return Ok();
+            }
         }
 
         /// <summary>
@@ -394,7 +481,7 @@ namespace Gordon360.Controllers.Api
                     System.IO.DirectoryInfo di = new DirectoryInfo(root);
                     System.IO.File.Move(di.FullName + oldFileName, di.FullName + fileName); //rename
 
-                    _profileService.UpdateProfileImage(username, root, fileName); //update database
+                    _profileService.UpdateProfileImage(id, root, fileName); //update database
                 }
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
@@ -426,7 +513,7 @@ namespace Gordon360.Controllers.Api
                 }
             }
             catch (System.Exception e) { }
-           _profileService.UpdateProfileImage(username, null, null);  //update database
+           _profileService.UpdateProfileImage(id, null, null);  //update database
             return Ok();
         }
 

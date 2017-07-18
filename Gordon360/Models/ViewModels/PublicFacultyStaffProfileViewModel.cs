@@ -20,14 +20,10 @@ namespace Gordon360.Models.ViewModels
         public string OnCampusPhone { get; set; }
         public string OnCampusPrivatePhone { get; set; }
         public string OnCampusFax { get; set; }
-        public string HomeStreet1 { get; set; }
-        public string HomeStreet2 { get; set; }
+        public string HomePhone { get; set; }
         public string HomeCity { get; set; }
         public string HomeState { get; set; }
-        public string HomePostalCode { get; set; }
         public string HomeCountry { get; set; }
-        public string HomePhone { get; set; }
-        public string HomeFax { get; set; }
         public string KeepPrivate { get; set; }
         public string JobTitle { get; set; }
         public string SpouseName { get; set; }
@@ -61,14 +57,10 @@ namespace Gordon360.Models.ViewModels
                 OnCampusPhone = fac.OnCampusPhone ?? "",
                 OnCampusPrivatePhone = fac.OnCampusPrivatePhone ?? "",
                 OnCampusFax = fac.OnCampusFax ?? "",
-                HomeStreet1 = fac.HomeStreet1 ?? "",
-                HomeStreet2 = fac.HomeStreet2 ?? "",
+                HomePhone = fac.HomePhone ?? "",
                 HomeCity = fac.HomeCity ?? "",
                 HomeState = fac.HomeState ?? "",
-                HomePostalCode = fac.HomePostalCode ?? "",
                 HomeCountry = fac.HomeCountry ?? "",
-                HomePhone = fac.HomePhone ?? "",
-                HomeFax = fac.HomeFax ?? "",
                 KeepPrivate = fac.KeepPrivate ?? "",
                 JobTitle = fac.JobTitle ?? "",
                 SpouseName = fac.SpouseName ?? "",
@@ -82,14 +74,9 @@ namespace Gordon360.Models.ViewModels
             };
             if (vm.KeepPrivate.Contains("S"))
             {
-                vm.HomeStreet1 = "Private as requested.";
-                vm.HomeStreet2 = "Private as requested.";
                 vm.HomeCity = "Private as requested.";
                 vm.HomeState = "Private as requested.";
                 vm.HomeCountry = "Private as requested.";
-                vm.HomePostalCode = "Private as requested.";
-                vm.HomePhone = "Private as requested.";
-                vm.HomeFax = "Private as requested.";
                 vm.SpouseName = "Private as requested.";
             }
             return vm;

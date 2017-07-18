@@ -11,9 +11,17 @@ namespace Gordon360.Models.ViewModels
         public string Twitter { get; set; }
         public string Instagram { get; set; }
         public string LinkedIn { get; set; }
-        public string Img_Path { get; set; }
-        public string Img_Name { get; set; }
-        public string Pref_Img_Path { get; set; }
-        public string Pref_Img_Name { get; set; }
+
+        public static implicit operator ProfileCustomViewModel(CUSTOM_PROFILE pro)
+        {
+            ProfileCustomViewModel vm = new ProfileCustomViewModel
+            {
+                Facebook = pro.facebook ?? "",
+                Twitter = pro.twitter ?? "",
+                Instagram = pro.instagram ?? "",
+                LinkedIn = pro.linkedin ?? ""
+            };
+            return vm;
+        }
     }
 }

@@ -59,8 +59,6 @@ public partial class CCTEntities1 : DbContext
 
     public virtual DbSet<ChapelEvent> ChapelEvent { get; set; }
 
-    public virtual DbSet<CUSTOM_PROFILE> CUSTOM_PROFILE { get; set; }
-
     public virtual DbSet<Alumni> Alumni { get; set; }
 
     public virtual DbSet<Student> Student { get; set; }
@@ -68,6 +66,8 @@ public partial class CCTEntities1 : DbContext
     public virtual DbSet<ACT_CLUB_DEF_DELETE> ACT_CLUB_DEF_DELETE { get; set; }
 
     public virtual DbSet<FacStaff> FacStaff { get; set; }
+
+    public virtual DbSet<CUSTOM_PROFILE> CUSTOM_PROFILE { get; set; }
 
 
     public virtual ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> ACTIVE_CLUBS_PER_SESS_ID(string sESS_CDE)
@@ -528,24 +528,24 @@ public partial class CCTEntities1 : DbContext
     }
 
 
-    public virtual ObjectResult<PHOTO_INFO_PER_USER_NAME_Result> PHOTO_INFO_PER_USER_NAME(string uSER_NAME)
+    public virtual ObjectResult<PHOTO_INFO_PER_USER_NAME_Result> PHOTO_INFO_PER_USER_NAME(Nullable<int> iD)
     {
 
-        var uSER_NAMEParameter = uSER_NAME != null ?
-            new ObjectParameter("USER_NAME", uSER_NAME) :
-            new ObjectParameter("USER_NAME", typeof(string));
+        var iDParameter = iD.HasValue ?
+            new ObjectParameter("ID", iD) :
+            new ObjectParameter("ID", typeof(int));
 
 
-        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<PHOTO_INFO_PER_USER_NAME_Result>("PHOTO_INFO_PER_USER_NAME", uSER_NAMEParameter);
+        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<PHOTO_INFO_PER_USER_NAME_Result>("PHOTO_INFO_PER_USER_NAME", iDParameter);
     }
 
 
-    public virtual int UPDATE_PHOTO_PATH(string uSER_NAME, string fILE_PATH, string fILE_NAME)
+    public virtual int UPDATE_PHOTO_PATH(Nullable<int> iD, string fILE_PATH, string fILE_NAME)
     {
 
-        var uSER_NAMEParameter = uSER_NAME != null ?
-            new ObjectParameter("USER_NAME", uSER_NAME) :
-            new ObjectParameter("USER_NAME", typeof(string));
+        var iDParameter = iD.HasValue ?
+            new ObjectParameter("ID", iD) :
+            new ObjectParameter("ID", typeof(int));
 
 
         var fILE_PATHParameter = fILE_PATH != null ?
@@ -558,7 +558,56 @@ public partial class CCTEntities1 : DbContext
             new ObjectParameter("FILE_NAME", typeof(string));
 
 
-        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_PHOTO_PATH", uSER_NAMEParameter, fILE_PATHParameter, fILE_NAMEParameter);
+        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_PHOTO_PATH", iDParameter, fILE_PATHParameter, fILE_NAMEParameter);
+    }
+
+
+    public virtual int CREATE_SOCIAL_LINKS(string uSERNAME, string fACEBOOK, string tWITTER, string iNSTAGRAM, string lINKEDIN)
+    {
+
+        var uSERNAMEParameter = uSERNAME != null ?
+            new ObjectParameter("USERNAME", uSERNAME) :
+            new ObjectParameter("USERNAME", typeof(string));
+
+
+        var fACEBOOKParameter = fACEBOOK != null ?
+            new ObjectParameter("FACEBOOK", fACEBOOK) :
+            new ObjectParameter("FACEBOOK", typeof(string));
+
+
+        var tWITTERParameter = tWITTER != null ?
+            new ObjectParameter("TWITTER", tWITTER) :
+            new ObjectParameter("TWITTER", typeof(string));
+
+
+        var iNSTAGRAMParameter = iNSTAGRAM != null ?
+            new ObjectParameter("INSTAGRAM", iNSTAGRAM) :
+            new ObjectParameter("INSTAGRAM", typeof(string));
+
+
+        var lINKEDINParameter = lINKEDIN != null ?
+            new ObjectParameter("LINKEDIN", lINKEDIN) :
+            new ObjectParameter("LINKEDIN", typeof(string));
+
+
+        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("CREATE_SOCIAL_LINKS", uSERNAMEParameter, fACEBOOKParameter, tWITTERParameter, iNSTAGRAMParameter, lINKEDINParameter);
+    }
+
+
+    public virtual ObjectResult<MEMBERSHIPS_PER_ACT_CDE_AUTHORIZED_Result> MEMBERSHIPS_PER_ACT_CDE_AUTHORIZED(string aCT_CDE, Nullable<bool> aUTHORIZED)
+    {
+
+        var aCT_CDEParameter = aCT_CDE != null ?
+            new ObjectParameter("ACT_CDE", aCT_CDE) :
+            new ObjectParameter("ACT_CDE", typeof(string));
+
+
+        var aUTHORIZEDParameter = aUTHORIZED.HasValue ?
+            new ObjectParameter("AUTHORIZED", aUTHORIZED) :
+            new ObjectParameter("AUTHORIZED", typeof(bool));
+
+
+        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<MEMBERSHIPS_PER_ACT_CDE_AUTHORIZED_Result>("MEMBERSHIPS_PER_ACT_CDE_AUTHORIZED", aCT_CDEParameter, aUTHORIZEDParameter);
     }
 
 }

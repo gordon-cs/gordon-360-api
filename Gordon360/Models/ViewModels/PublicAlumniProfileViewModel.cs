@@ -5,9 +5,8 @@ using System.Web;
 
 namespace Gordon360.Models.ViewModels
 {
-    public class AlumniProfileViewModel
+    public class PublicAlumniProfileViewModel
     {
-        public string ID { get; set; }
         public string WebUpdate { get; set; }
         public string Title { get; set; }
         public string FirstName { get; set; }
@@ -16,14 +15,9 @@ namespace Gordon360.Models.ViewModels
         public string Suffix { get; set; }
         public string MaidenName { get; set; }
         public string NickName { get; set; }
-        public string HomeStreet1 { get; set; }
-        public string HomeStreet2 { get; set; }
         public string HomeCity { get; set; }
         public string HomeState { get; set; }
-        public string HomePostalCode { get; set; }
         public string HomeCountry { get; set; }
-        public string HomePhone { get; set; }
-        public string HomeFax { get; set; }
         public string HomeEmail { get; set; }
         public string JobTitle { get; set; }
         public string MaritalStatus { get; set; }
@@ -39,15 +33,13 @@ namespace Gordon360.Models.ViewModels
         public string GradDate { get; set; }
         public string Email { get; set; }
         public string grad_student { get; set; }
-        public string Barcode { get; set; }
         public string AD_Username { get; set; }
         public Nullable<int> show_pic { get; set; }
         public Nullable<int> preferred_photo { get; set; }
-        public static implicit operator AlumniProfileViewModel(Alumni alu)
+        public static implicit operator PublicAlumniProfileViewModel(AlumniProfileViewModel alu)
         {
-            AlumniProfileViewModel vm = new AlumniProfileViewModel
+            PublicAlumniProfileViewModel vm = new PublicAlumniProfileViewModel
             {
-                ID = alu.ID.Trim(),
                 WebUpdate = alu.WebUpdate ?? "",
                 Title = alu.Title ?? "",
                 FirstName = alu.FirstName.Trim(),
@@ -55,16 +47,11 @@ namespace Gordon360.Models.ViewModels
                 LastName = alu.LastName.Trim(),
                 Suffix = alu.Suffix ?? "",
                 MaidenName = alu.MaidenName ?? "",
-                NickName = alu.NickName ?? "", // Just in case some random record has a null user_name 
-                AD_Username = alu.AD_Username.Trim() ?? "", // Just in case some random record has a null email field
-                HomeStreet1 = alu.HomeStreet1 ?? "",
-                HomeStreet2 = alu.HomeStreet2 ?? "",
+                NickName = alu.NickName ?? "",
+                AD_Username = alu.AD_Username.Trim() ?? "",
                 HomeCity = alu.HomeCity ?? "",
                 HomeState = alu.HomeState ?? "",
-                HomePostalCode = alu.HomePostalCode ?? "",
                 HomeCountry = alu.HomeCountry ?? "",
-                HomePhone = alu.HomePhone ?? "",
-                HomeFax = alu.HomeFax ?? "",
                 HomeEmail = alu.HomeEmail ?? "",
                 JobTitle = alu.JobTitle ?? "",
                 MaritalStatus = alu.MaritalStatus ?? "",
@@ -72,7 +59,6 @@ namespace Gordon360.Models.ViewModels
                 College = alu.College ?? "",
                 ClassYear = alu.ClassYear ?? "",
                 PreferredClassYear = alu.PreferredClassYear ?? "",
-                Major = alu.Major1 ?? "",
                 Major2 = alu.Major2 ?? "",
                 ShareName = alu.ShareName ?? "",
                 ShareAddress = alu.ShareAddress ?? "",
@@ -80,7 +66,6 @@ namespace Gordon360.Models.ViewModels
                 GradDate = alu.GradDate ?? "",
                 Email = alu.Email ?? "",
                 grad_student = alu.grad_student ?? "",
-                Barcode = alu.Barcode ?? "",
                 show_pic = alu.show_pic,
                 preferred_photo = alu.preferred_photo
             };

@@ -114,7 +114,11 @@
             <param name="username">username of the profile info</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.getImg">
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.getMyImg">
+            <summary>Get the profile image of currently logged in user</summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.getImg(System.String)">
             <summary>Get the profile image of currently logged in user</summary>
             <returns></returns>
         </member>
@@ -348,6 +352,11 @@
         <member name="M:Gordon360.Controllers.Api.MembershipsController.GetMembershipsForStudent(System.String)">
             <summary>Fetch memberships that a specific student has been a part of</summary>
             <param name="id">The Student id</param>
+            <returns>The membership information that the student is a part of</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.MembershipsController.GetMembershipsForStudentByUsename(System.String)">
+            <summary>Fetch memberships that a specific student has been a part of</summary>
+            <param name="username">The Student Username</param>
             <returns>The membership information that the student is a part of</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.MembershipsController.Put(System.Int32,Gordon360.Models.MEMBERSHIP)">
@@ -907,6 +916,13 @@
             <param name="session_code">The session code</param>
             <returns>List of emails for the leaders of this activity</returns>
         </member>
+        <member name="M:Gordon360.Services.ProfileService.GetPhotoPath(System.String)">
+            <summary>
+            get photo path
+            </summary>
+            <param name="id">id</param>
+            <returns>PhotoPathViewModel if found, null if not found</returns>
+        </member>
         <member name="M:Gordon360.Services.ProfileService.GetCustomUserInfo(System.String)">
             <summary>
             Fetches a single profile whose username matches the username provided as an argument
@@ -918,7 +934,7 @@
             <summary>
             Sets the path for the profile image.
             </summary>
-            <param name="username">The username</param>
+            <param name="id">The student id</param>
             <param name="path"></param>
             <param name="name"></param>
         </member>

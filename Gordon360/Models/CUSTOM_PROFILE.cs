@@ -18,8 +18,6 @@ using System;
 public partial class CUSTOM_PROFILE
 {
 
-    public string id { get; set; }
-
     public string username { get; set; }
 
     public string facebook { get; set; }

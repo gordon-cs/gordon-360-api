@@ -55,20 +55,20 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// Fetches a single profile whose username matches the username provided as an argument
+        /// get photo path
         /// </summary>
-        /// <param name="username">The username</param>
-        /// <returns>ProfileViewModel if found, null if not found</returns>
-        public ProfileCustomViewModel GetCustomUserInfo(string username)
+        /// <param name="id">id</param>
+        /// <returns>PhotoPathViewModel if found, null if not found</returns>
+        public PhotoPathViewModel GetPhotoPath(string id)
         {
-            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.AD_Username == username);
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            var nameParam = new SqlParameter("@USER_NAME", username);
-            var result = RawSqlQuery<ProfileCustomViewModel>.query("PHOTO_INFO_PER_USER_NAME @USER_NAME", nameParam).FirstOrDefault();
+            var idParam = new SqlParameter("@ID", id);
+            var result = RawSqlQuery<PhotoPathViewModel>.query("PHOTO_INFO_PER_USER_NAME @ID", idParam).FirstOrDefault();
 
             if (result == null)
             {
@@ -78,18 +78,35 @@ namespace Gordon360.Services
             return result;
         }
         /// <summary>
-        /// Sets the path for the profile image.
+        /// Fetches a single profile whose username matches the username provided as an argument
         /// </summary>
         /// <param name="username">The username</param>
+        /// <returns>ProfileViewModel if found, null if not found</returns>
+        public ProfileCustomViewModel GetCustomUserInfo(string username)
+        {
+            var query = _unitOfWork.ProfileCustomRepository.FirstOrDefault(x => x.username == username);
+            if (query == null)
+            {
+                //throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+                return new ProfileCustomViewModel();
+            }
+
+            ProfileCustomViewModel result = query;
+            return result;
+        }
+        /// <summary>
+        /// Sets the path for the profile image.
+        /// </summary>
+        /// <param name="id">The student id</param>
         /// <param name="path"></param>
         /// <param name="name"></param>
-        public void UpdateProfileImage(string username, string path, string name)
+        public void UpdateProfileImage(string id, string path, string name)
         {
-            if (_unitOfWork.AccountRepository.FirstOrDefault(x => x.AD_Username == username) == null)
+            if (_unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id) == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
-            var authParam = new SqlParameter("@USER_NAME", username);
+            var authParam = new SqlParameter("@ID", id);
             var pathParam = new SqlParameter("@FILE_PATH", path);
             if (path == null)
                 pathParam = new SqlParameter("@FILE_PATH", DBNull.Value);
@@ -97,7 +114,7 @@ namespace Gordon360.Services
             if (name == null)
                 nameParam = new SqlParameter("@FILE_NAME", DBNull.Value);
             var context = new CCTEntities1();
-          context.Database.ExecuteSqlCommand("UPDATE_PHOTO_PATH @USER_NAME, @FILE_PATH, @FILE_NAME", authParam, pathParam, nameParam);
+            context.Database.ExecuteSqlCommand("UPDATE_PHOTO_PATH @ID, @FILE_PATH, @FILE_NAME", authParam, pathParam, nameParam);
         }
 
 
@@ -113,7 +130,14 @@ namespace Gordon360.Services
 
             if (original == null)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The profile was not found." };
+                var nameParam = new SqlParameter("@USERNAME", username);
+                var fParam = new SqlParameter("@FACEBOOK", DBNull.Value);
+                var tParam = new SqlParameter("@TWITTER", DBNull.Value);
+                var iParam = new SqlParameter("@INSTAGRAM", DBNull.Value);
+                var lParam = new SqlParameter("@LINKEDIN", DBNull.Value);
+                var context = new CCTEntities1();
+                context.Database.ExecuteSqlCommand("CREATE_SOCIAL_LINKS @USERNAME, @FACEBOOK, @TWITTER, @INSTAGRAM, @LINKEDIN", nameParam, fParam, tParam, iParam, lParam);
+                original = _unitOfWork.ProfileCustomRepository.GetByUsername(username);
             }
 
             switch (type)

@@ -8,6 +8,9 @@ using Gordon360.Static.Names;
 using System;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Exceptions.CustomExceptions;
+using System.Collections.Generic;
+using System.Security.Claims;
+using System.Linq;
 
 namespace Gordon360.Controllers.Api
 {
@@ -18,12 +21,15 @@ namespace Gordon360.Controllers.Api
     {
 
         private IMembershipService _membershipService;
-
+        private IAccountService _accountService;
+        private IActivityService _activityService;
 
         public MembershipsController()
         {
             IUnitOfWork _unitOfWork = new UnitOfWork();
             _membershipService = new MembershipService(_unitOfWork);
+            _accountService = new AccountService(_unitOfWork);
+            _activityService = new ActivityService(_unitOfWork);
         }
         public MembershipsController(IMembershipService membershipService)
         {
@@ -337,6 +343,71 @@ namespace Gordon360.Controllers.Api
             }
 
             return Ok(result);
+        }
+        /// <summary>Fetch memberships that a specific student has been a part of</summary>
+        /// <param name="username">The Student Username</param>
+        /// <returns>The membership information that the student is a part of</returns>
+        [Route("student/username/{username}")]
+        [HttpGet]
+       // [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_BY_STUDENT)]
+        public IHttpActionResult GetMembershipsForStudentByUsename(string username)
+        {
+
+            if (!ModelState.IsValid || String.IsNullOrWhiteSpace(username))
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+            var result = _membershipService.GetMembershipsForStudent(id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var viewerID = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
+            bool superAdmin = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role").Value.Equals(Position.GOD);
+            if (superAdmin)                    //super admin reads all
+                return Ok(result);
+            else
+            {
+                List<MembershipViewModel> list = new List<MembershipViewModel>();
+                foreach (var item in result)
+                {
+                    var act = _activityService.Get(item.ActivityCode);
+                    var admins = _membershipService.GetGroupAdminMembershipsForActivity(item.ActivityCode);
+                    bool groupAdmin = false;
+                    foreach (var admin in admins)                                                             // group admin of a group can read membership of this group
+                    {
+                        if (admin.IDNumber.ToString().Equals(viewerID))
+                            groupAdmin = true;
+                    }
+                    if (groupAdmin)
+                    {
+                        list.Add(item);
+                    }
+                    else if (act.Privacy != true)               // check group privacy
+                    {
+                        if (item.Privacy != true)               // check personal membership privacy
+                        {
+                            list.Add(item);
+                        }
+                    }
+                }
+                return Ok(list);
+            }
         }
 
         /// <summary>Update an existing membership item</summary>
