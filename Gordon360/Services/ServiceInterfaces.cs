@@ -1,7 +1,6 @@
 ﻿using System;
+using System.Xml.Linq;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 
@@ -12,11 +11,42 @@ using Gordon360.Models.ViewModels;
 namespace Gordon360.Services
 {
 
+    public interface IRoleCheckingService
+    {
+        string getViewerRole(string username);
+        string getPersonRole(string username);
+    }
+    public interface IProfileService
+    {
+        StudentProfileViewModel GetStudentProfileByUsername(string username);
+        FacultyStaffProfileViewModel GetFacultyStaffProfileByUsername(string username);
+        AlumniProfileViewModel GetAlumniProfileByUsername(string username);
+        ProfileCustomViewModel GetCustomUserInfo(string username);
+        void UpdateProfileLink(string username, string type, CUSTOM_PROFILE path);
+        void UpdateMobilePrivacy(string username, bool p);
+        void UpdateImagePrivacy(string username, int p);
+        void UpdateProfileImage(string username, string path, string name);
+    }
+
+    public interface IEventService
+    {
+        IEnumerable<AttendedEventViewModel> GetAllForStudent(string id);
+        IEnumerable<AttendedEventViewModel> GetEventsForStudentByTerm(string id, string term);
+        IEnumerable<EventViewModel> GetSpecificEvents(string Event_ID, string type);
+        IEnumerable<EventViewModel> GetAllEvents(XDocument xmlDoc);
+    }
+
+    public interface IDiningService
+    {
+        System.Threading.Tasks.Task<string> GetBalanceAsync();
+    }
+
     public interface IAccountService
     {
         AccountViewModel Get(string id);
         IEnumerable<AccountViewModel> GetAll();
         AccountViewModel GetAccountByEmail(string email);
+        AccountViewModel GetAccountByUsername(string username);
     }
 
     public interface IActivityService
@@ -35,6 +65,7 @@ namespace Gordon360.Services
         void OpenActivityForSession(string id, string sess_cde);
         void UpdateActivityImage(string id, string path);
         void ResetActivityImage(string id);
+        void TogglePrivacy(string id, bool p);
     }
 
     public interface IActivityInfoService
@@ -70,12 +101,6 @@ namespace Gordon360.Services
         IEnumerable<SessionViewModel> GetAll();
     }
 
-    public interface IFacultyService
-    {
-        FacultyViewModel Get(string id);
-        IEnumerable<FacultyViewModel> GetAll();
-    }
-
     public interface IJenzibarActivityService
     {
         JNZB_ACTIVITIES Get(int id);
@@ -96,26 +121,14 @@ namespace Gordon360.Services
         MEMBERSHIP Add(MEMBERSHIP membership);
         MEMBERSHIP Update(int id, MEMBERSHIP membership);
         MEMBERSHIP ToggleGroupAdmin(int id, MEMBERSHIP membership);
-        MEMBERSHIP Delete(int id);   
+        void TogglePrivacy(int id, bool p);
+        MEMBERSHIP Delete(int id);
     }
 
     public interface IParticipationService
     {
         ParticipationViewModel Get(string id);
         IEnumerable<ParticipationViewModel> GetAll();
-    }
-
-    public interface IStaffService
-    {
-        StaffViewModel Get(string id);
-        IEnumerable<StaffViewModel> GetAll();
-    }
-
-    public interface IStudentService
-    {
-        StudentViewModel Get(string id);
-        StudentViewModel GetByEmail(string email);
-        IEnumerable<StudentViewModel> GetAll();
     }
 
     public interface IMembershipRequestService
@@ -136,4 +149,6 @@ namespace Gordon360.Services
     {
         IEnumerable<SliderViewModel> GetSliderContent();
     }
+
 }
+

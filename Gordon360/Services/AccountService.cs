@@ -70,5 +70,22 @@ namespace Gordon360.Services
             AccountViewModel result = query; // Implicit conversion happening here, see ViewModels.
             return result;
         }
+
+        /// <summary>
+        /// Fetches the account record with the specified username.
+        /// </summary>
+        /// <param name="username">The username associated with the account.</param>
+        /// <returns></returns>
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
+        public AccountViewModel GetAccountByUsername(string username)
+        {
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.AD_Username == username);
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
+            }
+            AccountViewModel result = query; // Implicit conversion happening here, see ViewModels.
+            return result;
+        }
     }
 }

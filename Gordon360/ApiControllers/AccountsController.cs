@@ -50,6 +50,35 @@ namespace Gordon360.ApiControllers
 
             return Ok(result);
         }
+        // GET: api/Accounts
+        [HttpGet]
+        [Route("username/{username}")]
+        public IHttpActionResult GetByAccountUsername(string username)
+        {
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(username))
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            var result = _accountService.GetAccountByUsername(username);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
     }
 
   
