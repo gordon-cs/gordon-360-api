@@ -123,7 +123,7 @@ namespace Gordon360.Static.Methods
                 //
             }
             // var result = all.Select<ACCOUNT, BasicInfoViewModel>(x => x);
-            result = result.Where(x => x.ADUserName != null);
+            result = result.Where(x => x.ADUserName != null && x.ADUserName != "");
             return result;
         }
 
