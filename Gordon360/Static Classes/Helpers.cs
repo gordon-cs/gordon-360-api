@@ -55,8 +55,8 @@ namespace Gordon360.Static.Methods
                     Uri request = new Uri(requestUrl);
                     // Use an Async method to make sure we have completed the download 
                     // We don't want to try and pull partial data!
-                    var data = client.DownloadDataTaskAsync(request);
-                    stream = new MemoryStream(data.Result);
+                    var data = client.DownloadData(request);
+                    stream = new MemoryStream(data);
                 }
                 // catch any errors thrown
                 catch (ArgumentNullException e)
