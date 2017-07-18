@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System;
 using System.Linq;
-using System.Web;
+using System.Web.Mvc;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
+using Gordon360.Static.Data;
 
 namespace Gordon360.Services
 {
@@ -23,6 +24,8 @@ namespace Gordon360.Services
         {
             _unitOfWork = unitOfWork;
         }
+        
+ 
 
         /// <summary>
         /// Fetches a single account record whose id matches the id provided as an argument

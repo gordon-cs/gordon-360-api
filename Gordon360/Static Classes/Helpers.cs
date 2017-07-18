@@ -113,8 +113,17 @@ namespace Gordon360.Static.Methods
 
         public static IEnumerable<BasicInfoViewModel> GetAllBasicInfo()
         {
-            var result = RawSqlQuery<BasicInfoViewModel>.query("SELECT firstname, lastname, AD_Username as ADUserName, account_type as AccountType, email FROM[CCT].[dbo].[ACCOUNT]");
+            IEnumerable<BasicInfoViewModel> result = null;
+            try
+            {
+                result = RawSqlQuery<BasicInfoViewModel>.query("SELECT firstname, lastname, AD_Username as ADUserName, account_type as AccountType, email FROM[CCT].[dbo].[ACCOUNT]");
+            }
+            catch
+            {
+                //
+            }
             // var result = all.Select<ACCOUNT, BasicInfoViewModel>(x => x);
+            result = result.Where(x => x.ADUserName != null);
             return result;
         }
 

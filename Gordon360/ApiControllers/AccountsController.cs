@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
+using Gordon360.Static.Data;
 using System.Web.Http;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
@@ -50,6 +49,19 @@ namespace Gordon360.ApiControllers
 
             return Ok(result);
         }
+
+        [HttpGet]
+        [Route ("search/{searchString}")]
+        public IHttpActionResult Index(string searchString)
+        {
+            var accounts = from m in Data.AllBasicInfo select m;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                accounts = accounts.Where(s => s.LastName.ToLower().Contains(searchString) || s.FirstName.ToLower().Contains(searchString));
+            }
+            return Ok(accounts);
+        }
+
         // GET: api/Accounts
         [HttpGet]
         [Route("username/{username}")]

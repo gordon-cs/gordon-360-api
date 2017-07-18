@@ -17,11 +17,11 @@ namespace Gordon360.Models.ViewModels
         {
             BasicInfoViewModel vm = new BasicInfoViewModel
             {
-                FirstName = a.firstname.Trim(),
-                LastName = a.lastname.Trim(),
-                ADUserName = a.AD_Username.Trim() ?? "",
-                AccountType = a.account_type.Trim(),
-                Email = a.email.Trim() ?? ""
+                FirstName = a.firstname,
+                LastName = a.lastname,
+                ADUserName = a.AD_Username ?? "",
+                AccountType = a.account_type,
+                Email = a.email ?? ""
             };
 
             return vm;
