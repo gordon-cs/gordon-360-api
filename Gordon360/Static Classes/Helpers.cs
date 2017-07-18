@@ -9,7 +9,6 @@ using System.Text;
 using Gordon360.Services.ComplexQueries;
 using Gordon360.Services;
 using Gordon360.Models;
-using Gordon360.Repositories;
 using System.Collections.Generic;
 
 namespace Gordon360.Static.Methods
@@ -114,7 +113,7 @@ namespace Gordon360.Static.Methods
 
         public static IEnumerable<BasicInfoViewModel> GetAllBasicInfo()
         {
-            var result = RawSqlQuery<BasicInfoViewModel>.query("SELECT gordon_id, firstname, lastname, account_type, AD_Username FROM[CCT].[dbo].[ACCOUNT]");
+            var result = RawSqlQuery<BasicInfoViewModel>.query("SELECT firstname, lastname, AD_Username as ADUserName, account_type as AccountType, email FROM[CCT].[dbo].[ACCOUNT]");
             // var result = all.Select<ACCOUNT, BasicInfoViewModel>(x => x);
             return result;
         }

@@ -578,23 +578,6 @@
             <param name="query">Name of the stored procedure </param>
             <param name="parameters">Parameters to pass to the stored procedure</param>
         </member>
-        <member name="T:Gordon360.Services.DiningService">
-            <summary>
-            Service Class that facilitates data transactions between the AccountsController and the Account database model.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Services.DiningService.Hash(System.String)">
-            <summary>
-            Sha1 Hash for input string 
-            </summary>
-            <returns> Sha1 hash of input string </returns>
-        </member>
-        <member name="M:Gordon360.Services.DiningService.GetBalanceAsync">
-            <summary>
-            Fetches the account balance of a student (From Blackboardtransact's RESTful Meal Plan API)
-            </summary>
-            <returns> A single integer representing the user's meal point balance </returns>
-        </member>
         <member name="T:Gordon360.Services.AccountService">
             <summary>
             Service Class that facilitates data transactions between the AccountsController and the Account database model.
@@ -1216,7 +1199,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="F:Gordon360.Startup.EventItemKey">
+        <member name="F:Gordon360.Startup.DummyCacheItemKey">
             <summary>
             Caching task methods created using the article written by Omar Al Zabir
             Article: https://www.codeproject.com/Articles/12117/Simulate-a-Windows-Service-using-ASP-NET-to-run-sc
