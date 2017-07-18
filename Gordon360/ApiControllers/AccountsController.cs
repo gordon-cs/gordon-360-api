@@ -57,7 +57,7 @@ namespace Gordon360.ApiControllers
             var accounts = from m in Data.AllBasicInfo select m;
             if (!String.IsNullOrEmpty(searchString))
             {
-                accounts = accounts.Where(s => s.LastName.ToLower().Contains(searchString) || s.FirstName.ToLower().Contains(searchString));
+                accounts = accounts.Where(s => s.ADUserName.ToLower().Contains(searchString) );
             }
             return Ok(accounts);
         }
