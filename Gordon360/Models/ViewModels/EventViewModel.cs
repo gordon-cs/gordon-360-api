@@ -36,7 +36,7 @@ namespace Gordon360.Models.ViewModels
                 Object[] occurrence = new Object[]
                 {
                     reservation.Element(r25 +"event_start_dt").ElementValueNull().Value,
-                    reservation.Element(r25 + "event_start_dt").ElementValueNull().Value,
+                    reservation.Element(r25 + "event_end_dt").ElementValueNull().Value,
                     reservation.Element(r25 + "space_reservation").ElementValueNull().Element(r25 + "space").ElementValueNull().Element(r25 + "formal_name").ElementValueNull().Value
                 };
                 placeholder.Add(occurrence);  

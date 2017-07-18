@@ -200,18 +200,15 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Compile Include="ApiControllers\DiningController.cs" />
     <Compile Include="ApiControllers\AccountsController.cs" />
     <Compile Include="ApiControllers\AdminsController.cs" />
     <Compile Include="ApiControllers\EventController.cs" />
     <Compile Include="ApiControllers\ContentManagementController.cs" />
     <Compile Include="ApiControllers\EmailsController.cs" />
     <Compile Include="ApiControllers\MembershipRequestController.cs" />
-    <Compile Include="ApiControllers\ProfileImageController.cs" />
     <Compile Include="ApiControllers\ProfilesController.cs" />
     <Compile Include="ApiControllers\RolesController.cs" />
     <Compile Include="ApiControllers\SessionsController.cs" />
-    <Compile Include="ApiControllers\StudentsController.cs" />
     <Compile Include="ApiControllers\ActivitiesController.cs" />
     <Compile Include="ApiControllers\MembershipsController.cs" />
     <Compile Include="AuthorizationFilters\StateYourBusiness.cs" />
@@ -225,7 +222,7 @@
     <Compile Include="Models\ACTIVE_CLUBS_PER_SESS_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ACT_CLUB_DEF.cs">
+    <Compile Include="Models\ACT_CLUB_DEF_DELETE.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ACT_INFO.cs">
@@ -249,7 +246,7 @@
     <Compile Include="Models\ALL_SUPERVISORS_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\alumni.cs">
+    <Compile Include="Models\Alumni.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\C360_SLIDER.cs">
@@ -276,6 +273,9 @@
     <Compile Include="Models\CM_SESSION_MSTR.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CUSTOM_PROFILE.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\DISTINCT_ACT_TYPE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -285,10 +285,7 @@
     <Compile Include="Models\EVENTS_BY_STUDENT_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\facstaff.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Faculty.cs">
+    <Compile Include="Models\FacStaff.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\GRP_ADMIN_EMAILS_PER_ACT_CDE_Result.cs">
@@ -323,7 +320,7 @@
     <Compile Include="Models\PART_DEF.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\PROFILE_IMAGE.cs">
+    <Compile Include="Models\PHOTO_INFO_PER_USER_NAME_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\REQUEST.cs">
@@ -344,16 +341,10 @@
     <Compile Include="Models\sp_helpdiagrams_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Staff.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\Student.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\STUDENT_EVENTS_PER_TERM_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\student_temp.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SUPERVISORS_PER_ACT_CDE_Result.cs">
@@ -365,6 +356,7 @@
     <Compile Include="Models\sysdiagrams.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModels\BasicInfoViewModel.cs" />
     <Compile Include="Models\ViewModels\AccountViewModel.cs" />
     <Compile Include="Models\ViewModels\ActivityInfoViewModel.cs" />
     <Compile Include="Models\ViewModels\ActivityViewModel.cs" />
@@ -375,24 +367,23 @@
     <Compile Include="Models\ViewModels\EmailViewModel.cs" />
     <Compile Include="Models\ViewModels\ExtensionMethods\EventViewModelExtension.cs" />
     <Compile Include="Models\ViewModels\FacultyStaffProfileViewModel.cs" />
-    <Compile Include="Models\ViewModels\FacultyViewModel.cs" />
     <Compile Include="Models\ViewModels\JenzibarActivitiesViewModel.cs" />
     <Compile Include="Models\ViewModels\MembershipViewModel.cs" />
     <Compile Include="Models\ViewModels\MembershipRequestViewModel.cs" />
     <Compile Include="Models\ViewModels\ParticipationViewModel.cs" />
-    <Compile Include="Models\ViewModels\ProfileImageViewModel.cs" />
+    <Compile Include="Models\ViewModels\ProfileCustomViewModel.cs" />
+    <Compile Include="Models\ViewModels\PublicFacultyStaffProfileViewModel.cs" />
+    <Compile Include="Models\ViewModels\PublicProfileCustomViewModel.cs" />
+    <Compile Include="Models\ViewModels\PublicStudentProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\SessionViewModel.cs" />
     <Compile Include="Models\ViewModels\SliderViewModel.cs" />
-    <Compile Include="Models\ViewModels\StaffViewModel.cs" />
-    <Compile Include="Models\ViewModels\StudentViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\CustomMultiPartFormDataStreamProvider.cs" />
     <Compile Include="Repositories\GenericRepository.cs" />
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Repositories\IUnitOfWork.cs" />
     <Compile Include="Repositories\UnitOfWork.cs" />
-    <Compile Include="Services\DiningService.cs" />
     <Compile Include="Services\AccountService.cs" />
     <Compile Include="Services\ActivityService.cs" />
     <Compile Include="Services\AdministratorService.cs" />
@@ -400,10 +391,8 @@
     <Compile Include="Services\ComplexQueries\RawSqlQuery.cs" />
     <Compile Include="Services\ContentManagementService.cs" />
     <Compile Include="Services\EmailService.cs" />
-    <Compile Include="Services\FacultyService.cs" />
-    <Compile Include="Services\ProfileImageService.cs" />
     <Compile Include="Services\ProfileService.cs" />
-    <Compile Include="Caching.cs" />
+    <Compile Include="Services\RoleCheckingService.cs" />
     <Compile Include="Static Classes\Data.cs" />
     <Compile Include="Static Classes\Helpers.cs" />
     <Compile Include="Services\JenzibarActivityService.cs" />
@@ -412,8 +401,6 @@
     <Compile Include="Services\ParticipationService.cs" />
     <Compile Include="Services\ServiceInterfaces.cs" />
     <Compile Include="Services\SessionService.cs" />
-    <Compile Include="Services\StaffService.cs" />
-    <Compile Include="Services\StudentService.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Static Classes\Names.cs" />
   </ItemGroup>

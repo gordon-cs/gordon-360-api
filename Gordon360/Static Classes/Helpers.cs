@@ -8,6 +8,8 @@ using System.Xml.Linq;
 using System.Text;
 using Gordon360.Services.ComplexQueries;
 using Gordon360.Services;
+using Gordon360.Models;
+using System.Collections.Generic;
 
 namespace Gordon360.Static.Methods
 {
@@ -16,6 +18,7 @@ namespace Gordon360.Static.Methods
     /// </summary>
     public static class Helpers
     {
+
         /// <summary>
         /// Service method that gets the current session we are in.
         /// </summary>
@@ -33,7 +36,12 @@ namespace Gordon360.Static.Methods
             return result; ;
         }
 
-        // Return a memorystream from a specific URL
+        /// <summary>
+        /// Return an XDocument from a URL containing XML. 
+        /// This is used to retrieve data from 25Live specifically.
+        /// </summary>
+        /// <param name="requestUrl"></param>
+        /// <returns></returns>
         public static XDocument GetLiveStream(string requestUrl)
         {
 
@@ -44,8 +52,13 @@ namespace Gordon360.Static.Methods
                 // Commit contents of the request to temporary memory
                 try
                 {
-                    stream = new MemoryStream(client.DownloadData(requestUrl));
+                    Uri request = new Uri(requestUrl);
+                    // Use an Async method to make sure we have completed the download 
+                    // We don't want to try and pull partial data!
+                    var data = client.DownloadDataTaskAsync(request);
+                    stream = new MemoryStream(data.Result);
                 }
+                // catch any errors thrown
                 catch (ArgumentNullException e)
                 {
                     // The DownloadData function didn't return anything!
@@ -96,6 +109,13 @@ namespace Gordon360.Static.Methods
                 return (today.Year).ToString();
             }
             return today.Year.ToString();
+        }
+
+        public static IEnumerable<BasicInfoViewModel> GetAllBasicInfo()
+        {
+            var result = RawSqlQuery<BasicInfoViewModel>.query("SELECT firstname, lastname, AD_Username as ADUserName, account_type as AccountType, email FROM[CCT].[dbo].[ACCOUNT]");
+            // var result = all.Select<ACCOUNT, BasicInfoViewModel>(x => x);
+            return result;
         }
 
         public static string GetLeaderRoleCodes()

@@ -307,6 +307,7 @@ What is it? Resource that respresents the affiliation between a student and a cl
 What is it? Resources to get information on Events from the 25Live system
 - Only confirmed events are pulled
 - Only events ending after the start of the current academic year are requested from 25Live
+- Data from 25Live is retreived every four minutes using a cached request
 
 ##### GET
 
@@ -320,7 +321,11 @@ Multiple types or events are separated by a '$'
 `api/events/25Live/:Event_ID` Get event(s) specified by one or multiple Event_ID. Event IDs can be found in the url or resources in a 25Live request in a browser. 
 Multiple types or events are separated by a '$'
 
-`api/events/25Live/All` Returns all events in 25Live under predefined categories
+`api/events/25Live/All` Returns all events in 25Live under predefined categories. 
+
+`api/events/25Live/CLAW` Returns all events in 25Live with Category_ID = 85 (CL&W Credit approved)
+
+
 
 ### Activities
 What is it? Resource that represents some activity - such as a club, ministry, leadership program, etc.

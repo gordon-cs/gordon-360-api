@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using Gordon360.Models.ViewModels;
@@ -16,7 +14,11 @@ using Gordon360.Static.Methods;
 using System.Xml.Linq;
 
 
-
+/// <summary>
+/// We use this service to pull data from 25Live as well as parsing it
+/// For the most part, we use the data which is pulled and cached in the Startup.cs file
+/// However, there are functions included in this service to manually pull data from 25Live
+/// </summary>
 namespace Gordon360.Services
 {
     /// <summary>
@@ -59,6 +61,7 @@ namespace Gordon360.Services
             // If the type is "s", then it is a single event request, "m" is multiple event IDs
             else if (type == "s" || type == "S" || type == "m" || type == "M")
             {
+                // For 25Live, additional types must be separated by "+", so we replace the $ with "+"s here
                 if (type == "m" || type == "M")
                 {
                     if (EventID.Contains('$'))
@@ -205,7 +208,14 @@ namespace Gordon360.Services
             // In the database, the time and date are stored as separate datetime objects, here we combine them into one
             foreach (var v in list)
             {
-                v.CHDate = v.CHDate.Value.Add(v.CHTime.Value.TimeOfDay);
+                try
+                {
+                    v.CHDate = v.CHDate.Value.Add(v.CHTime.Value.TimeOfDay);
+                }
+                catch (InvalidOperationException e)
+                {
+                    // time value is null -- don't worry bout it
+                }
             }
 
             // Attempt to convert the list to a ViewModel we can return
@@ -267,6 +277,7 @@ namespace Gordon360.Services
             string joined = string.Join("+", result.Select(x => x.CHEventID));
 
             // Attempt to return all events attended by the student from 25Live
+            // We use the cached data
             events = GetAllEvents(Data.AllEvents);
 
             // Loop through each event a student has attended and pull it's corresponding details from 25Live
@@ -293,7 +304,14 @@ namespace Gordon360.Services
             // In the database, the time and date are stored as separate datetime objects, here we combine them into one
             foreach (var v in list)
             {
-                v.CHDate = v.CHDate.Value.Add(v.CHTime.Value.TimeOfDay);
+                try
+                {
+                    v.CHDate = v.CHDate.Value.Add(v.CHTime.Value.TimeOfDay);
+                }
+                catch (InvalidOperationException e)
+                {
+                    // time value is null -- don't worry bout it
+                }
             }
 
             // Attempt to convert the list to a ViewModel we can return
