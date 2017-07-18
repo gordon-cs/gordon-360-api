@@ -5,6 +5,7 @@ using Microsoft.Owin.Security.OAuth;
 using Microsoft.Owin.Security.Jwt;
 using System;
 using Gordon360.AuthorizationServer;
+using Gordon360.Models.ViewModels;
 using Gordon360.Static.Data;
 using Gordon360.Static.Methods;
 using Gordon360.Static.Names;
@@ -12,6 +13,7 @@ using System.Xml.Linq;
 using System.Web;
 using System.Diagnostics;
 using System.Web.Caching;
+using System.Collections.Generic;
 
 
 namespace Gordon360
@@ -57,7 +59,7 @@ namespace Gordon360
             // Perform task for the first time at startup
             DoWork();
             DoMoreWork();
-            // Register a job in the cache to re-occur at a specified interval
+            // Register a job(s) in the cache to re-occur at a specified interval
             RegisterCacheEntry();
 
             // Configure the options for the WebApi Component.
@@ -67,7 +69,7 @@ namespace Gordon360
         }
 
         /// <summary>
-        /// Caching task methods created using the article written by Omar Al Zabir
+        /// Caching task methods created based upon the ideas in the article written by Omar Al Zabir
         /// Article: https://www.codeproject.com/Articles/12117/Simulate-a-Windows-Service-using-ASP-NET-to-run-sc
         /// </summary>
 
@@ -97,16 +99,26 @@ namespace Gordon360
         {
             // Make a call to 25Live and retrieve a list of all events
             XDocument _memory = Helpers.GetLiveStream(URLs.ALL_EVENTS_REQUEST);
+            // If it is not null, store it to a global variable
+
             if (_memory != null)
             {
                 Data.AllEvents = _memory;
             }
         }
 
+        // Perform a secondary job at startup and at every caching event
         private void DoMoreWork()
         {
-            Data.AllBasicInfo = Helpers.GetAllBasicInfo();
+            // Make the call to retrieve all basic info on every account
+            IEnumerable<BasicInfoViewModel> hold = Helpers.GetAllBasicInfo();
+            // If it is not null, store it to a global variable
+            if (hold != null)
+            {
+                Data.AllBasicInfo = hold;
+            }
         }
+
         // Inside the callback we do all the service work
         public void CacheItemRemovedCallback(string key, object value, CacheItemRemovedReason reason)
         {

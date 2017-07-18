@@ -111,19 +111,25 @@ namespace Gordon360.Static.Methods
             return today.Year.ToString();
         }
 
+        // Fill an iterable list of basicinfo from a query to the database
         public static IEnumerable<BasicInfoViewModel> GetAllBasicInfo()
         {
+            // Create a list to be filled
             IEnumerable<BasicInfoViewModel> result = null;
             try
             {
+                // Attempt to query the DB
                 result = RawSqlQuery<BasicInfoViewModel>.query("SELECT firstname, lastname, AD_Username as ADUserName, account_type as AccountType, email FROM[CCT].[dbo].[ACCOUNT]");
             }
             catch
             {
                 //
             }
-            // var result = all.Select<ACCOUNT, BasicInfoViewModel>(x => x);
-            result = result.Where(x => x.ADUserName != null && x.ADUserName != "");
+            // Filter out results with null or empty active directory names
+            if (result != null)
+            {
+                result = result.Where(x => x.ADUserName != null && x.ADUserName != "");
+            }
             return result;
         }
 

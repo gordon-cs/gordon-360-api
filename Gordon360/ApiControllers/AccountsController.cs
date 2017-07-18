@@ -50,15 +50,24 @@ namespace Gordon360.ApiControllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Return a list of accounts matching some or all of the parameter
+        /// </summary>
+        /// <param name="searchString"> The input to search for </param>
+        /// <returns> All accounts meeting some or all of the parameter</returns>
         [HttpGet]
         [Route ("search/{searchString}")]
         public IHttpActionResult Index(string searchString)
         {
+            // Create an index on the stored account list, using "m" as your range variable
             var accounts = from m in Data.AllBasicInfo select m;
+            // If the input is not null, do this
             if (!String.IsNullOrEmpty(searchString))
             {
+                // for every stored account, convert it to lowercase and compare it to the search paramter 
                 accounts = accounts.Where(s => s.ADUserName.ToLower().Contains(searchString) );
             }
+            // Return all of the 
             return Ok(accounts);
         }
 
