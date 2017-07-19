@@ -374,8 +374,7 @@ namespace Gordon360.Controllers.Api
             {
                 return NotFound();
             }
-
-
+            // privacy control of membership view model
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var viewerID = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
             bool superAdmin = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role").Value.Equals(Position.GOD);

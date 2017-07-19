@@ -23,7 +23,7 @@ namespace Gordon360.Services
 
         public StudentProfileViewModel GetStudentProfileByUsername(string username)
         {
-            var query = _unitOfWork.StudentTempRepository.FirstOrDefault(x => x.AD_Username == username);
+            var query = _unitOfWork.StudentRepository.FirstOrDefault(x => x.AD_Username == username);
             if (query == null)
             {
                 return null;
@@ -165,34 +165,41 @@ namespace Gordon360.Services
         /// <summary>
         /// privacy setting of mobile phone.
         /// </summary>
-        /// <param name="username">The username</param>
-        /// <param name="p"></param>
-        public void UpdateMobilePrivacy(string username, bool p)
+        /// <param name="id">id</param>
+        /// <param name="value">Y or N</param>
+        public void UpdateMobilePrivacy(string id, string value)
         {
-            var original = _unitOfWork.StudentTempRepository.FirstOrDefault(x => x.AD_Username == username);
-
-            if (original == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The profile was not found." };
-            }
-            original.IsMobilePhonePrivate = p;
-            _unitOfWork.Save();
-        }
-        /// <summary>
-        /// privacy setting user profile photo.
-        /// </summary>
-        /// <param name="username">The username</param>
-        /// <param name="p"></param>
-        public void UpdateImagePrivacy(string username, int p)
-        {
-            var original = _unitOfWork.AccountRepository.FirstOrDefault(x => x.AD_Username == username);
+            var original = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
 
             if (original == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
-            original.show_pic = p;
-            _unitOfWork.Save();
+            var idParam = new SqlParameter("@ID", id);
+            var valueParam = new SqlParameter("@VALUE", value);
+            var context = new CCTEntities1();
+            context.Database.ExecuteSqlCommand("UPDATE_PHONE_PRIVACY @ID, @VALUE", idParam, valueParam);
+
+        }
+        /// <summary>
+        /// privacy setting user profile photo.
+        /// </summary>
+        /// <param name="id">id</param>
+        /// <param name="value">Y or N</param>
+        public void UpdateImagePrivacy(string id, string value)
+        {
+            var original = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+
+            if (original == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
+
+            var accountID = original.gordon_id;
+            var idParam = new SqlParameter("@ACCOUNT_ID", accountID);
+            var valueParam = new SqlParameter("@VALUE", value);
+            var context = new CCTEntities1();
+            context.Database.ExecuteSqlCommand("UPDATE_SHOW_PIC @ACCOUNT_ID, @VALUE", idParam, valueParam);
         }
 
     }

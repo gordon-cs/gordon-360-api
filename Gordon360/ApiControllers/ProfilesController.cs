@@ -332,11 +332,22 @@ namespace Gordon360.Controllers.Api
             var photoInfo = _profileService.GetPhotoPath(id);
             string pref_img = "";
             string default_img = "";
+            var fileName = "";
+            var filePath = Defaults.DEFAULT_PREF_IMAGE_PATH;
             byte[] imageBytes;
             JObject result = new JObject();
 
-            var filePath = Defaults.DEFAULT_PREF_IMAGE_PATH;
-            var fileName = photoInfo.Pref_Img_Name;
+            if (photoInfo == null)
+            {
+                var webClient = new WebClient();
+                imageBytes = webClient.DownloadData(Defaults.DEFAULT_PROFILE_IMAGE_PATH);
+                default_img = Convert.ToBase64String(imageBytes);
+                result.Add("def", default_img);
+                return Ok(result);
+            }
+            else
+                fileName = photoInfo.Pref_Img_Name;
+
             if (string.IsNullOrEmpty(fileName) || !File.Exists(filePath + fileName))
             {
                 filePath = Defaults.DEFAULT_IMAGE_PATH;
@@ -373,6 +384,17 @@ namespace Gordon360.Controllers.Api
             byte[] default_image;
             string default_img = "";
             JObject result = new JObject();
+
+            if (photoInfo == null)
+            {
+                var webClient = new WebClient();
+                default_image = webClient.DownloadData(Defaults.DEFAULT_PROFILE_IMAGE_PATH);
+                default_img = Convert.ToBase64String(default_image);
+                result.Add("def", default_img);
+                result.Add("pref", default_img);
+                return Ok(result);
+            }
+
             switch (viewerType)
             {
                 case Position.GOD:
@@ -411,9 +433,10 @@ namespace Gordon360.Controllers.Api
                     }
                     else
                     {
-                        var private_image = File.ReadAllBytes(Defaults.DEFAULT_PROFILE_IMAGE_PATH);
-                        var private_img = Convert.ToBase64String(private_image);
-                        result.Add("private", private_img);
+                        var webClient = new WebClient();
+                        default_image = webClient.DownloadData(Defaults.DEFAULT_PROFILE_IMAGE_PATH);
+                        default_img = Convert.ToBase64String(default_image);
+                        result.Add("def", default_img);
                         return Ok(result);
                     }
                     return Ok(result);
@@ -450,6 +473,7 @@ namespace Gordon360.Controllers.Api
             var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
             string root = Defaults.DEFAULT_PREF_IMAGE_PATH;
             var fileName = _accountService.GetAccountByUsername(username).Barcode + ".jpg";
+            var pathInfo = _profileService.GetPhotoPath(id);
             var provider = new CustomMultipartFormDataStreamProvider(root);
 
             if (!Request.Content.IsMimeMultipartContent())
@@ -459,16 +483,15 @@ namespace Gordon360.Controllers.Api
 
             try
             {
+                if (pathInfo == null)
+                    return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error uploading the image. Please contact the maintainers");
+
                 System.IO.DirectoryInfo di = new DirectoryInfo(root);
                 foreach (FileInfo file in di.GetFiles(fileName))
                 {
                         file.Delete();                   //delete old image file if it exists.
                 }
-            }
-            catch (System.Exception e) { }
 
-            try
-            {
                 // Read the form data.
                 await Request.Content.ReadAsMultipartAsync(provider);
 
@@ -478,7 +501,7 @@ namespace Gordon360.Controllers.Api
                     var fileContent = provider.Contents.SingleOrDefault();
                     var oldFileName = fileContent.Headers.ContentDisposition.FileName.Replace("\"", string.Empty);
 
-                    System.IO.DirectoryInfo di = new DirectoryInfo(root);
+                    di = new DirectoryInfo(root);
                     System.IO.File.Move(di.FullName + oldFileName, di.FullName + fileName); //rename
 
                     _profileService.UpdateProfileImage(id, root, fileName); //update database
@@ -553,11 +576,11 @@ namespace Gordon360.Controllers.Api
         /// <summary>
         /// Update privacy of mobile phone number
         /// </summary>
-        /// <param name="p">private or not</param>
+        /// <param name="value">Y or N</param>
         /// <returns></returns>
         [HttpPut]
-        [Route("mobile_privacy/{p}")]
-        public IHttpActionResult UpdateMobilePrivacy(bool p)
+        [Route("mobile_privacy/{value}")]
+        public IHttpActionResult UpdateMobilePrivacy(string value)
         {
             // Verify Input
             if (!ModelState.IsValid)
@@ -575,8 +598,8 @@ namespace Gordon360.Controllers.Api
             }
 
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            _profileService.UpdateMobilePrivacy(username, p);
+            var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
+            _profileService.UpdateMobilePrivacy(id, value);
 
             return Ok();
 
@@ -584,11 +607,11 @@ namespace Gordon360.Controllers.Api
         /// <summary>
         /// Update privacy of profile image
         /// </summary>
-        /// <param name="p">private or not</param>
+        /// <param name="value">Y or N</param>
         /// <returns></returns>
         [HttpPut]
-        [Route("image_privacy/{p}")]
-        public IHttpActionResult UpdateImagePrivacy(int p)
+        [Route("image_privacy/{value}")]
+        public IHttpActionResult UpdateImagePrivacy(string value)
         {
             // Verify Input
             if (!ModelState.IsValid)
@@ -606,8 +629,8 @@ namespace Gordon360.Controllers.Api
             }
 
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            _profileService.UpdateImagePrivacy(username, p);
+            var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
+            _profileService.UpdateImagePrivacy(id, value);
 
             return Ok();
         }

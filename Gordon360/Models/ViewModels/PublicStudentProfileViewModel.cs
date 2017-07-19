@@ -29,7 +29,7 @@ namespace Gordon360.Models.ViewModels
         public string grad_student { get; set; }
         public string MobilePhone { get; set; }
         public string AD_Username { get; set; }
-        public bool IsMobilePhonePrivate { get; set; }
+        public int IsMobilePhonePrivate { get; set; }
         public Nullable<int> show_pic { get; set; }
         public Nullable<int> preferred_photo { get; set; }
 
@@ -65,7 +65,7 @@ namespace Gordon360.Models.ViewModels
                 preferred_photo = stu.preferred_photo
 
             };
-            if (vm.IsMobilePhonePrivate)
+            if (vm.IsMobilePhonePrivate==1)
             {
                 vm.MobilePhone = "Private as requested.";
             }

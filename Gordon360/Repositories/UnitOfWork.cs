@@ -10,7 +10,7 @@ namespace Gordon360.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private IRepository<Student> _StudentTempRepository;
+        private IRepository<Student> _StudentRepository;
         private IRepository<FacStaff> _FacultyStaffRepository;
         private IRepository<Alumni> _AlumniRepository;
         private IRepository<ACCOUNT> _AccountRepository;
@@ -19,7 +19,6 @@ namespace Gordon360.Repositories
         private IRepository<JNZB_ACTIVITIES> _JenzibarActvityRepository;
         private IRepository<MEMBERSHIP> _MembershipRepository;
         private IRepository<PART_DEF> _ParticipationRepository;
-        private IRepository<Student> _StudentRepository;
         private IRepository<SUPERVISOR> _SupervisorRepository;
         private IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> _ActivityPerSessionRepository;
         private IRepository<REQUEST> _MembershipRequestRepository;
@@ -35,9 +34,9 @@ namespace Gordon360.Repositories
         {
             _context = new CCTEntities1();
         }
-        public IRepository<Student> StudentTempRepository
+        public IRepository<Student> StudentRepository
         {
-            get { return _StudentTempRepository ?? (_StudentTempRepository = new GenericRepository<Student>(_context)); }
+            get { return _StudentRepository ?? (_StudentRepository = new GenericRepository<Student>(_context)); }
         }
         public IRepository<FacStaff> FacultyStaffRepository
         {
@@ -74,10 +73,6 @@ namespace Gordon360.Repositories
         public IRepository<PART_DEF> ParticipationRepository
         {
             get { return _ParticipationRepository ?? (_ParticipationRepository = new GenericRepository<PART_DEF>(_context)); }
-        }
-        public IRepository<Student> StudentRepository
-        {
-            get { return _StudentRepository ?? (_StudentRepository = new GenericRepository<Student>(_context)); }
         }
         public IRepository<SUPERVISOR> SupervisorRepository
         {

@@ -149,18 +149,18 @@
             <param name="path">The path of the links</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateMobilePrivacy(System.Boolean)">
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateMobilePrivacy(System.String)">
             <summary>
             Update privacy of mobile phone number
             </summary>
-            <param name="p">private or not</param>
+            <param name="value">Y or N</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateImagePrivacy(System.Int32)">
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateImagePrivacy(System.String)">
             <summary>
             Update privacy of profile image
             </summary>
-            <param name="p">private or not</param>
+            <param name="value">Y or N</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ParticipationsController.Get">
@@ -959,19 +959,19 @@
             <param name="type"></param>
             <param name="path"></param>
         </member>
-        <member name="M:Gordon360.Services.ProfileService.UpdateMobilePrivacy(System.String,System.Boolean)">
+        <member name="M:Gordon360.Services.ProfileService.UpdateMobilePrivacy(System.String,System.String)">
             <summary>
             privacy setting of mobile phone.
             </summary>
-            <param name="username">The username</param>
-            <param name="p"></param>
+            <param name="id">id</param>
+            <param name="value">Y or N</param>
         </member>
-        <member name="M:Gordon360.Services.ProfileService.UpdateImagePrivacy(System.String,System.Int32)">
+        <member name="M:Gordon360.Services.ProfileService.UpdateImagePrivacy(System.String,System.String)">
             <summary>
             privacy setting user profile photo.
             </summary>
-            <param name="username">The username</param>
-            <param name="p"></param>
+            <param name="id">id</param>
+            <param name="value">Y or N</param>
         </member>
         <member name="T:Gordon360.Services.JenzibarActivityService">
             <summary>

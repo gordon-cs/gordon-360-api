@@ -7,8 +7,8 @@ using Gordon360.Models;
 namespace Gordon360.Repositories
 {
     public interface IUnitOfWork
-    {   
-        IRepository<Student> StudentTempRepository { get; }
+    {
+        IRepository<Student> StudentRepository { get; }
         IRepository<FacStaff> FacultyStaffRepository { get; }
         IRepository<Alumni> AlumniRepository { get; }
         IRepository<ACCOUNT> AccountRepository { get; }
@@ -18,7 +18,6 @@ namespace Gordon360.Repositories
         IRepository<JNZB_ACTIVITIES> JenzibarActvityRepository { get; }
         IRepository<MEMBERSHIP> MembershipRepository { get; }
         IRepository<PART_DEF> ParticipationRepository { get; }
-        IRepository<Student> StudentRepository { get; }
         IRepository<SUPERVISOR> SupervisorRepository { get; }
         IRepository<REQUEST> MembershipRequestRepository { get; }
         IRepository<ADMIN> AdministratorRepository { get; }
