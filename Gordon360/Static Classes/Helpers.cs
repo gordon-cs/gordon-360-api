@@ -36,6 +36,23 @@ namespace Gordon360.Static.Methods
             return result; ;
         }
 
+        // Return the days left in the semester, and the total days in the semester
+        public static double[] GetDaysLeft()
+        {
+            // The end of the current session
+            DateTime sessionEnd = GetCurrentSession().SessionEndDate.Value;
+            DateTime sessionBegin = GetCurrentSession().SessionBeginDate.Value;
+            // Get todays date
+            DateTime startTime = DateTime.Today;
+            //Initialize array
+            double[] days = new double[2];
+            // Days left in semester
+            days[0] = (sessionEnd - startTime).TotalDays;
+            // Total days in the semester
+            days[1] = (sessionEnd - sessionBegin).TotalDays;
+            return days;
+        }
+
         /// <summary>
         /// Return an XDocument from a URL containing XML. 
         /// This is used to retrieve data from 25Live specifically.
