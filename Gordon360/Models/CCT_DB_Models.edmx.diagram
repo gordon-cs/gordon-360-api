@@ -19,12 +19,10 @@
         <EntityTypeShape EntityType="Gordon360.sysdiagrams" Width="1.5" PointX="7.75" PointY="6.75" />
         <EntityTypeShape EntityType="Gordon360.ChapelEvent" Width="1.5" PointX="12.375" PointY="10.75" />
         <EntityTypeShape EntityType="Gordon360.Alumni" Width="1.5" PointX="24.375" PointY="6" />
-        <EntityTypeShape EntityType="Gordon360.Student" Width="1.5" PointX="21.125" PointY="6" />
         <EntityTypeShape EntityType="Gordon360.ACT_CLUB_DEF_DELETE" Width="1.5" PointX="7.375" PointY="0.75" />
         <EntityTypeShape EntityType="Gordon360.FacStaff" Width="1.5" PointX="22.75" PointY="6" />
         <EntityTypeShape EntityType="Gordon360.CUSTOM_PROFILE" Width="1.5" PointX="0.75" PointY="8.75" />
-        <EntityTypeShape EntityType="Gordon360.Buildings" Width="1.5" PointX="5.375" PointY="9.75" />
-        <EntityTypeShape EntityType="Gordon360.Countries" Width="1.5" PointX="7.375" PointY="9.75" />
+        <EntityTypeShape EntityType="Gordon360.Student" Width="1.5" PointX="9.375" PointY="9.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
