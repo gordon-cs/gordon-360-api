@@ -23,11 +23,16 @@ namespace Gordon360.Services
             string type = viewer.account_type;
             var id = viewer.gordon_id;
             bool isAdmin = _unitOfWork.AdministratorRepository.FirstOrDefault(x => x.ID_NUM.ToString() == id) != null;
+            bool isPolice = viewer.is_police == 1;
+
+
             if (isAdmin)
             {
                 type = Position.GOD;
                 return type;
-            }   
+            }
+            else if (isPolice)
+                type = Position.POLICE;
             else if (type == "STUDENT")
                 type = Position.STUDENT;
             else if (type == "FACULTY" || type == "STAFF")

@@ -195,25 +195,31 @@ namespace Gordon360.Controllers.Api
             object customInfo = null;
 
             switch (viewerType)
-                {
-                    case Position.GOD:
-                        student = _student;
-                        faculty = _faculty;
-                        alumni = _alumni;
-                        customInfo = _customInfo;
-                        break;
-                    case Position.STUDENT:
-                        student = (_student == null) ? null : (PublicStudentProfileViewModel)_student;
-                        faculty = (_faculty == null) ? null : (PublicFacultyStaffProfileViewModel)_faculty;
-                        alumni = (_alumni == null) ? null : (PublicAlumniProfileViewModel)_alumni;
-                        customInfo = _customInfo;
-                        break;
-                    case Position.FACSTAFF:
-                        student = _student;
-                        faculty = (_faculty == null) ? null : (PublicFacultyStaffProfileViewModel)_faculty;
-                        alumni = (_alumni == null) ? null : (PublicAlumniProfileViewModel)_alumni;
-                        customInfo = _customInfo;
-                        break;
+            {
+                case Position.GOD:
+                    student = _student;
+                    faculty = _faculty;
+                    alumni = _alumni;
+                    customInfo = _customInfo;
+                    break;
+                case Position.POLICE:
+                    student = _student;
+                    faculty = _faculty;
+                    alumni = _alumni;
+                    customInfo = _customInfo;
+                    break;
+                case Position.STUDENT:
+                    student = (_student == null) ? null : (PublicStudentProfileViewModel)_student;
+                    faculty = (_faculty == null) ? null : (PublicFacultyStaffProfileViewModel)_faculty;
+                    alumni = (_alumni == null) ? null : (PublicAlumniProfileViewModel)_alumni;
+                    customInfo = _customInfo;
+                    break;
+                case Position.FACSTAFF:
+                    student = _student;
+                    faculty = (_faculty == null) ? null : (PublicFacultyStaffProfileViewModel)_faculty;
+                    alumni = (_alumni == null) ? null : (PublicAlumniProfileViewModel)_alumni;
+                    customInfo = _customInfo;
+                    break;
             }
 
 
@@ -414,7 +420,21 @@ namespace Gordon360.Controllers.Api
                     result.Add("def", default_img);
                     result.Add("pref", pref_img);
                     return Ok(result);
-
+                case Position.POLICE:
+                    filePath = Defaults.DEFAULT_PREF_IMAGE_PATH;
+                    fileName = photoInfo.Pref_Img_Name;
+                    if (!string.IsNullOrEmpty(fileName) && File.Exists(filePath + fileName))
+                    {
+                        pref_image = File.ReadAllBytes(filePath + fileName);
+                        pref_img = Convert.ToBase64String(pref_image);
+                    }
+                    filePath = Defaults.DEFAULT_IMAGE_PATH;
+                    fileName = photoInfo.Img_Name;
+                    default_image = File.ReadAllBytes(filePath + fileName);
+                    default_img = Convert.ToBase64String(default_image);
+                    result.Add("def", default_img);
+                    result.Add("pref", pref_img);
+                    return Ok(result);
                 case Position.STUDENT:
                     if (_accountService.GetAccountByUsername(username).show_pic == 1)
                     {

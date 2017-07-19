@@ -377,8 +377,10 @@ namespace Gordon360.Controllers.Api
             // privacy control of membership view model
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var viewerID = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
-            bool superAdmin = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role").Value.Equals(Position.GOD);
-            if (superAdmin)                    //super admin reads all
+            var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            bool issuperAdmin = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role").Value.Equals(Position.GOD);
+            bool isPolice = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role").Value.Equals(Position.POLICE);
+            if (issuperAdmin||isPolice)                    //super admin and gordon police reads all
                 return Ok(result);
             else
             {

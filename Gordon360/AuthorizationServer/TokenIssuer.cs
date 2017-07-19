@@ -88,7 +88,6 @@ namespace Gordon360.AuthorizationServer
                             return;
                         }
                         var adminService = new AdministratorService(new UnitOfWork());
-                        
 
                         var distinguishedName = userEntry.DistinguishedName;
 
@@ -100,6 +99,24 @@ namespace Gordon360.AuthorizationServer
                         else
                         {
                             collegeRole = Position.FACSTAFF;
+                        }
+                        try
+                        {
+                            // This get operation is by gordon_id
+                            // Throws an exception if not found.
+                            var unit = new UnitOfWork();
+
+                            bool isPolice = unit.AccountRepository.FirstOrDefault(x => x.gordon_id == personID).is_police == 1;
+
+                            if (isPolice)
+                            {
+                                collegeRole = Position.POLICE;
+                            }
+                        }
+                        catch (ResourceNotFoundException e)
+                        {
+                            // Silent catch. 
+                            // This is ok because we know this exception means the user is not an admin
                         }
                         try
                         {
@@ -117,7 +134,9 @@ namespace Gordon360.AuthorizationServer
                             // This is ok because we know this exception means the user is not an admin
                         }
                         
-                        
+
+
+
                         var identity = new ClaimsIdentity(context.Options.AuthenticationType);
                         identity.AddClaim(new Claim("name", userEntry.Name));
                         identity.AddClaim(new Claim("id", personID));
