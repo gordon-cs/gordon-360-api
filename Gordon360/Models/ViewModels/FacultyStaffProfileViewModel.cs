@@ -41,6 +41,8 @@ namespace Gordon360.Models.ViewModels
         public string office_hours { get; set; }
         public Nullable<int> preferred_photo { get; set; }
         public Nullable<int> show_pic { get; set; }
+        public string BuildingDescription { get; set; }
+        public string Country { get; set; }
 
 
         public static implicit operator FacultyStaffProfileViewModel(FacStaff fac)
@@ -80,7 +82,9 @@ namespace Gordon360.Models.ViewModels
                 Gender = fac.Gender ?? "",
                 office_hours = fac.office_hours ?? "",
                 show_pic = fac.show_pic,
-                preferred_photo = fac.preferred_photo
+                preferred_photo = fac.preferred_photo,
+                BuildingDescription = fac.BuildingDescription ?? "",
+                Country = fac.Country ?? ""
             };
 
             return vm;

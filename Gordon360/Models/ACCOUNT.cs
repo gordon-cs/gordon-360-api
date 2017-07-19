@@ -42,6 +42,8 @@ public partial class ACCOUNT
 
     public string office_hours { get; set; }
 
+    public Nullable<int> account_id { get; set; }
+
 }
 
 }

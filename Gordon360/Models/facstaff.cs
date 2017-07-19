@@ -86,6 +86,10 @@ public partial class FacStaff
 
     public Nullable<int> show_pic { get; set; }
 
+    public string BuildingDescription { get; set; }
+
+    public string Country { get; set; }
+
 }
 
 }

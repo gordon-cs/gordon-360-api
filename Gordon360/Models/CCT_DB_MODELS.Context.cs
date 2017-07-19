@@ -69,6 +69,10 @@ public partial class CCTEntities1 : DbContext
 
     public virtual DbSet<CUSTOM_PROFILE> CUSTOM_PROFILE { get; set; }
 
+    public virtual DbSet<Buildings> Buildings { get; set; }
+
+    public virtual DbSet<Countries> Countries { get; set; }
+
 
     public virtual ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> ACTIVE_CLUBS_PER_SESS_ID(string sESS_CDE)
     {
@@ -608,6 +612,40 @@ public partial class CCTEntities1 : DbContext
 
 
         return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<MEMBERSHIPS_PER_ACT_CDE_AUTHORIZED_Result>("MEMBERSHIPS_PER_ACT_CDE_AUTHORIZED", aCT_CDEParameter, aUTHORIZEDParameter);
+    }
+
+
+    public virtual int UPDATE_PHONE_PRIVACY(Nullable<int> iD, string vALUE)
+    {
+
+        var iDParameter = iD.HasValue ?
+            new ObjectParameter("ID", iD) :
+            new ObjectParameter("ID", typeof(int));
+
+
+        var vALUEParameter = vALUE != null ?
+            new ObjectParameter("VALUE", vALUE) :
+            new ObjectParameter("VALUE", typeof(string));
+
+
+        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_PHONE_PRIVACY", iDParameter, vALUEParameter);
+    }
+
+
+    public virtual int UPDATE_SHOW_PIC(Nullable<int> aCCOUNT_ID, string vALUE)
+    {
+
+        var aCCOUNT_IDParameter = aCCOUNT_ID.HasValue ?
+            new ObjectParameter("ACCOUNT_ID", aCCOUNT_ID) :
+            new ObjectParameter("ACCOUNT_ID", typeof(int));
+
+
+        var vALUEParameter = vALUE != null ?
+            new ObjectParameter("VALUE", vALUE) :
+            new ObjectParameter("VALUE", typeof(string));
+
+
+        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_SHOW_PIC", aCCOUNT_IDParameter, vALUEParameter);
     }
 
 }

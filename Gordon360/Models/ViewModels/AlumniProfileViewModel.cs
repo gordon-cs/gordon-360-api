@@ -43,6 +43,11 @@ namespace Gordon360.Models.ViewModels
         public string AD_Username { get; set; }
         public Nullable<int> show_pic { get; set; }
         public Nullable<int> preferred_photo { get; set; }
+        public string Country { get; set; }
+        public string Major2Description { get; set; }
+        public string Major1Description { get; set; }
+
+
         public static implicit operator AlumniProfileViewModel(Alumni alu)
         {
             AlumniProfileViewModel vm = new AlumniProfileViewModel
@@ -82,7 +87,10 @@ namespace Gordon360.Models.ViewModels
                 grad_student = alu.grad_student ?? "",
                 Barcode = alu.Barcode ?? "",
                 show_pic = alu.show_pic,
-                preferred_photo = alu.preferred_photo
+                preferred_photo = alu.preferred_photo,
+                Country = alu.Country ?? "",
+                Major1Description = alu.Major1Description ?? "",
+                Major2Description = alu.Major2Description ?? ""
             };
 
             return vm;

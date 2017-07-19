@@ -146,6 +146,7 @@ warning 6002: The table/view 'CCT.dbo.ACCOUNT' does not have a primary key defin
             <PropertyRef Name="Private" />
             <PropertyRef Name="ReadOnly" />
           </Key>
+          <Property Name="account_id" Type="int" />
           <Property Name="gordon_id" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="barcode" Type="varchar" MaxLength="14" />
           <Property Name="firstname" Type="varchar" MaxLength="50" />
@@ -201,6 +202,18 @@ warning 6002: The table/view 'CCT.dbo.Alumni' does not have a primary key define
           <Property Name="AD_Username" Type="varchar" MaxLength="50" />
           <Property Name="show_pic" Type="int" />
           <Property Name="preferred_photo" Type="int" />
+          <Property Name="Country" Type="char" MaxLength="60" />
+          <Property Name="Major2Description" Type="varchar" MaxLength="50" />
+          <Property Name="Major1Description" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'CCT.dbo.Buildings' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Buildings">
+          <Key>
+            <PropertyRef Name="BLDG_CDE" />
+          </Key>
+          <Property Name="BLDG_CDE" Type="char" MaxLength="5" Nullable="false" />
+          <Property Name="BUILDING_DESC" Type="char" MaxLength="45" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.ChapelEvent' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -233,6 +246,15 @@ warning 6002: The table/view 'CCT.dbo.CM_SESSION_MSTR' does not have a primary k
           <Property Name="SESS_DESC" Type="varchar" MaxLength="60" />
           <Property Name="SESS_BEGN_DTE" Type="datetime" />
           <Property Name="SESS_END_DTE" Type="datetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'CCT.dbo.Countries' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Countries">
+          <Key>
+            <PropertyRef Name="CTY" />
+          </Key>
+          <Property Name="CTY" Type="char" MaxLength="10" Nullable="false" />
+          <Property Name="COUNTRY" Type="char" MaxLength="60" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.FacStaff' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -274,6 +296,8 @@ warning 6002: The table/view 'CCT.dbo.FacStaff' does not have a primary key defi
           <Property Name="office_hours" Type="varchar" MaxLength="75" />
           <Property Name="preferred_photo" Type="int" />
           <Property Name="show_pic" Type="int" />
+          <Property Name="BuildingDescription" Type="char" MaxLength="45" />
+          <Property Name="Country" Type="char" MaxLength="60" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.JENZ_ACT_CLUB_DEF' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -301,6 +325,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <EntityType Name="Student">
           <Key>
             <PropertyRef Name="ID" />
+            
           </Key>
           <Property Name="ID" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="Title" Type="varchar" MaxLength="255" />
@@ -335,25 +360,33 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="Cohort" Type="varchar" MaxLength="255" />
           <Property Name="Class" Type="varchar" MaxLength="255" />
           <Property Name="KeepPrivate" Type="char" MaxLength="2" />
-          <Property Name="Major" Type="varchar" MaxLength="255" />
           <Property Name="Barcode" Type="varchar" MaxLength="255" />
           <Property Name="AdvisorIDs" Type="varchar" MaxLength="255" />
           <Property Name="Married" Type="char" MaxLength="1" />
           <Property Name="Commuter" Type="char" MaxLength="1" />
+          <Property Name="Major" Type="varchar" MaxLength="255" />
           <Property Name="Major2" Type="varchar" MaxLength="255" />
+          <Property Name="Major3" Type="varchar" MaxLength="255" />
           <Property Name="Email" Type="varchar" MaxLength="255" />
           <Property Name="Gender" Type="char" MaxLength="1" />
           <Property Name="grad_student" Type="char" MaxLength="1" />
           <Property Name="GradDate" Type="varchar" MaxLength="255" />
-          <Property Name="Major3" Type="varchar" MaxLength="255" />
           <Property Name="Minor1" Type="varchar" MaxLength="50" />
           <Property Name="Minor2" Type="varchar" MaxLength="50" />
           <Property Name="Minor3" Type="varchar" MaxLength="50" />
           <Property Name="MobilePhone" Type="varchar" MaxLength="20" />
-          <Property Name="IsMobilePhonePrivate" Type="bit" />
+          <Property Name="IsMobilePhonePrivate" Type="int" Nullable="false" />
           <Property Name="AD_Username" Type="varchar" MaxLength="50" />
           <Property Name="show_pic" Type="int" />
           <Property Name="preferred_photo" Type="int" />
+          <Property Name="Country" Type="char" MaxLength="60" />
+          <Property Name="BuildingDescription" Type="char" MaxLength="45" />
+          <Property Name="Major1Description" Type="varchar" MaxLength="50" />
+          <Property Name="Major2Description" Type="varchar" MaxLength="50" />
+          <Property Name="Major3Description" Type="varchar" MaxLength="50" />
+          <Property Name="Minor1Description" Type="varchar" MaxLength="50" />
+          <Property Name="Minor2Description" Type="varchar" MaxLength="50" />
+          <Property Name="Minor3Description" Type="varchar" MaxLength="50" />
         </EntityType>
         <Function Name="ACTIVE_CLUBS_PER_SESS_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="SESS_CDE" Type="char" Mode="In" />
@@ -460,10 +493,18 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Parameter Name="ID_NUM" Type="int" Mode="In" />
         </Function>
         <Function Name="UPDATE_ACT_INFO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="UPDATE_PHONE_PRIVACY" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="int" Mode="In" />
+          <Parameter Name="VALUE" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="UPDATE_PHOTO_PATH" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ID" Type="int" Mode="In" />
           <Parameter Name="FILE_PATH" Type="varchar" Mode="In" />
           <Parameter Name="FILE_NAME" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="UPDATE_SHOW_PIC" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ACCOUNT_ID" Type="int" Mode="In" />
+          <Parameter Name="VALUE" Type="varchar" Mode="In" />
         </Function>
         <EntityContainer Name="Gordon360StoreContainer">
           <EntitySet Name="ACT_CLUB_DEF_DELETE" EntityType="Self.ACT_CLUB_DEF_DELETE" Schema="dbo" store:Type="Tables" />
@@ -492,6 +533,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           </EntitySet>
           <EntitySet Name="ACCOUNT" EntityType="Self.ACCOUNT" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
+    [ACCOUNT].[account_id] AS [account_id], 
     [ACCOUNT].[gordon_id] AS [gordon_id], 
     [ACCOUNT].[barcode] AS [barcode], 
     [ACCOUNT].[firstname] AS [firstname], 
@@ -543,8 +585,17 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [Alumni].[Barcode] AS [Barcode], 
     [Alumni].[AD_Username] AS [AD_Username], 
     [Alumni].[show_pic] AS [show_pic], 
-    [Alumni].[preferred_photo] AS [preferred_photo]
+    [Alumni].[preferred_photo] AS [preferred_photo], 
+    [Alumni].[Country] AS [Country], 
+    [Alumni].[Major2Description] AS [Major2Description], 
+    [Alumni].[Major1Description] AS [Major1Description]
     FROM [dbo].[Alumni] AS [Alumni]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Buildings" EntityType="Self.Buildings" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Buildings].[BLDG_CDE] AS [BLDG_CDE], 
+    [Buildings].[BUILDING_DESC] AS [BUILDING_DESC]
+    FROM [dbo].[Buildings] AS [Buildings]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="ChapelEvent" EntityType="Self.ChapelEvent" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -569,6 +620,12 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [CM_SESSION_MSTR].[SESS_BEGN_DTE] AS [SESS_BEGN_DTE], 
     [CM_SESSION_MSTR].[SESS_END_DTE] AS [SESS_END_DTE]
     FROM [dbo].[CM_SESSION_MSTR] AS [CM_SESSION_MSTR]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Countries" EntityType="Self.Countries" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Countries].[CTY] AS [CTY], 
+    [Countries].[COUNTRY] AS [COUNTRY]
+    FROM [dbo].[Countries] AS [Countries]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="FacStaff" EntityType="Self.FacStaff" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -605,7 +662,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [FacStaff].[AD_Username] AS [AD_Username], 
     [FacStaff].[office_hours] AS [office_hours], 
     [FacStaff].[preferred_photo] AS [preferred_photo], 
-    [FacStaff].[show_pic] AS [show_pic]
+    [FacStaff].[show_pic] AS [show_pic], 
+    [FacStaff].[BuildingDescription] AS [BuildingDescription], 
+    [FacStaff].[Country] AS [Country]
     FROM [dbo].[FacStaff] AS [FacStaff]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="JENZ_ACT_CLUB_DEF" EntityType="Self.JENZ_ACT_CLUB_DEF" store:Type="Views" store:Schema="dbo">
@@ -657,17 +716,17 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [Student].[Cohort] AS [Cohort], 
     [Student].[Class] AS [Class], 
     [Student].[KeepPrivate] AS [KeepPrivate], 
-    [Student].[Major] AS [Major], 
     [Student].[Barcode] AS [Barcode], 
     [Student].[AdvisorIDs] AS [AdvisorIDs], 
     [Student].[Married] AS [Married], 
     [Student].[Commuter] AS [Commuter], 
+    [Student].[Major] AS [Major], 
     [Student].[Major2] AS [Major2], 
+    [Student].[Major3] AS [Major3], 
     [Student].[Email] AS [Email], 
     [Student].[Gender] AS [Gender], 
     [Student].[grad_student] AS [grad_student], 
     [Student].[GradDate] AS [GradDate], 
-    [Student].[Major3] AS [Major3], 
     [Student].[Minor1] AS [Minor1], 
     [Student].[Minor2] AS [Minor2], 
     [Student].[Minor3] AS [Minor3], 
@@ -675,7 +734,15 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [Student].[IsMobilePhonePrivate] AS [IsMobilePhonePrivate], 
     [Student].[AD_Username] AS [AD_Username], 
     [Student].[show_pic] AS [show_pic], 
-    [Student].[preferred_photo] AS [preferred_photo]
+    [Student].[preferred_photo] AS [preferred_photo], 
+    [Student].[Country] AS [Country], 
+    [Student].[BuildingDescription] AS [BuildingDescription], 
+    [Student].[Major1Description] AS [Major1Description], 
+    [Student].[Major2Description] AS [Major2Description], 
+    [Student].[Major3Description] AS [Major3Description], 
+    [Student].[Minor1Description] AS [Minor1Description], 
+    [Student].[Minor2Description] AS [Minor2Description], 
+    [Student].[Minor3Description] AS [Minor3Description]
     FROM [dbo].[Student] AS [Student]</DefiningQuery>
           </EntitySet>
         </EntityContainer>
@@ -763,6 +830,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="show_pic" Type="Int32" Nullable="false" />
           <Property Name="ReadOnly" Type="Int32" Nullable="false" />
           <Property Name="office_hours" Type="String" MaxLength="75" FixedLength="false" Unicode="false" />
+          <Property Name="account_id" Type="Int32" />
         </EntityType>
         <EntityType Name="CM_SESSION_MSTR">
           <Key>
@@ -922,6 +990,16 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="AUTHORIZED" Mode="In" Type="Boolean" />
           </FunctionImport>
           <EntitySet Name="CUSTOM_PROFILE" EntityType="Gordon360.CUSTOM_PROFILE" />
+          <EntitySet Name="Buildings" EntityType="Gordon360.Buildings" />
+          <EntitySet Name="Countries" EntityType="Gordon360.Countries" />
+          <FunctionImport Name="UPDATE_PHONE_PRIVACY">
+            <Parameter Name="ID" Mode="In" Type="Int32" />
+            <Parameter Name="VALUE" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="UPDATE_SHOW_PIC">
+            <Parameter Name="ACCOUNT_ID" Mode="In" Type="Int32" />
+            <Parameter Name="VALUE" Mode="In" Type="String" />
+          </FunctionImport>
 
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
@@ -1291,6 +1369,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="AD_Username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="show_pic" Type="Int32" />
           <Property Name="preferred_photo" Type="Int32" />
+          <Property Name="Country" Type="String" MaxLength="60" FixedLength="true" Unicode="false" />
+          <Property Name="Major2Description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Major1Description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Student">
           <Key>
@@ -1344,10 +1425,18 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="Minor2" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Minor3" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="MobilePhone" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="IsMobilePhonePrivate" Type="Boolean" />
+          <Property Name="IsMobilePhonePrivate" Type="Boolean" Nullable="false" />
           <Property Name="AD_Username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="show_pic" Type="Int32" />
           <Property Name="preferred_photo" Type="Int32" />
+          <Property Name="Country" Type="String" MaxLength="60" FixedLength="true" Unicode="false" />
+          <Property Name="BuildingDescription" Type="String" MaxLength="45" FixedLength="true" Unicode="false" />
+          <Property Name="Major1Description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Major2Description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Major3Description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Minor1Description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Minor2Description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Minor3Description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="ACT_CLUB_DEF_DELETE">
           <Key>
@@ -1394,6 +1483,8 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="office_hours" Type="String" MaxLength="75" FixedLength="false" Unicode="false" />
           <Property Name="preferred_photo" Type="Int32" />
           <Property Name="show_pic" Type="Int32" />
+          <Property Name="BuildingDescription" Type="String" MaxLength="45" FixedLength="true" Unicode="false" />
+          <Property Name="Country" Type="String" MaxLength="60" FixedLength="true" Unicode="false" />
         </EntityType>
         <ComplexType Name="MEMBERSHIPS_PER_ACT_CDE_AUTHORIZED_Result">
           <Property Type="Int32" Name="MembershipID" Nullable="false" />
@@ -1421,6 +1512,20 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="twitter" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="instagram" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="linkedin" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Buildings">
+          <Key>
+            <PropertyRef Name="BLDG_CDE" />
+          </Key>
+          <Property Name="BLDG_CDE" Type="String" Nullable="false" MaxLength="5" FixedLength="true" Unicode="false" />
+          <Property Name="BUILDING_DESC" Type="String" MaxLength="45" FixedLength="true" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Countries">
+          <Key>
+            <PropertyRef Name="CTY" />
+          </Key>
+          <Property Name="CTY" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="COUNTRY" Type="String" MaxLength="60" FixedLength="true" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1496,6 +1601,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <EntityTypeMapping TypeName="Gordon360.ACCOUNT">
               <MappingFragment StoreEntitySet="ACCOUNT">
 
+                <ScalarProperty Name="account_id" ColumnName="account_id" />
                 <ScalarProperty Name="office_hours" ColumnName="office_hours" />
                 <ScalarProperty Name="ReadOnly" ColumnName="ReadOnly" />
                 <ScalarProperty Name="show_pic" ColumnName="show_pic" />
@@ -1941,6 +2047,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="Alumni">
             <EntityTypeMapping TypeName="Gordon360.Alumni">
               <MappingFragment StoreEntitySet="Alumni">
+                <ScalarProperty Name="Major1Description" ColumnName="Major1Description" />
+                <ScalarProperty Name="Major2Description" ColumnName="Major2Description" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
                 <ScalarProperty Name="preferred_photo" ColumnName="preferred_photo" />
                 <ScalarProperty Name="show_pic" ColumnName="show_pic" />
                 <ScalarProperty Name="AD_Username" ColumnName="AD_Username" />
@@ -1983,6 +2092,14 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="Student">
             <EntityTypeMapping TypeName="Gordon360.Student">
               <MappingFragment StoreEntitySet="Student">
+                <ScalarProperty Name="Minor3Description" ColumnName="Minor3Description" />
+                <ScalarProperty Name="Minor2Description" ColumnName="Minor2Description" />
+                <ScalarProperty Name="Minor1Description" ColumnName="Minor1Description" />
+                <ScalarProperty Name="Major3Description" ColumnName="Major3Description" />
+                <ScalarProperty Name="Major2Description" ColumnName="Major2Description" />
+                <ScalarProperty Name="Major1Description" ColumnName="Major1Description" />
+                <ScalarProperty Name="BuildingDescription" ColumnName="BuildingDescription" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
                 <ScalarProperty Name="preferred_photo" ColumnName="preferred_photo" />
                 <ScalarProperty Name="show_pic" ColumnName="show_pic" />
                 <ScalarProperty Name="AD_Username" ColumnName="AD_Username" />
@@ -2049,6 +2166,8 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="FacStaff">
             <EntityTypeMapping TypeName="Gordon360.FacStaff">
               <MappingFragment StoreEntitySet="FacStaff">
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="BuildingDescription" ColumnName="BuildingDescription" />
                 <ScalarProperty Name="show_pic" ColumnName="show_pic" />
                 <ScalarProperty Name="preferred_photo" ColumnName="preferred_photo" />
                 <ScalarProperty Name="office_hours" ColumnName="office_hours" />
@@ -2119,6 +2238,24 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Buildings">
+            <EntityTypeMapping TypeName="Gordon360.Buildings">
+              <MappingFragment StoreEntitySet="Buildings">
+                <ScalarProperty Name="BUILDING_DESC" ColumnName="BUILDING_DESC" />
+                <ScalarProperty Name="BLDG_CDE" ColumnName="BLDG_CDE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Countries">
+            <EntityTypeMapping TypeName="Gordon360.Countries">
+              <MappingFragment StoreEntitySet="Countries">
+                <ScalarProperty Name="COUNTRY" ColumnName="COUNTRY" />
+                <ScalarProperty Name="CTY" ColumnName="CTY" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="UPDATE_PHONE_PRIVACY" FunctionName="Gordon360.Store.UPDATE_PHONE_PRIVACY" />
+          <FunctionImportMapping FunctionImportName="UPDATE_SHOW_PIC" FunctionName="Gordon360.Store.UPDATE_SHOW_PIC" />
           </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

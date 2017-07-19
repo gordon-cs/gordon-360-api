@@ -248,6 +248,9 @@
     <Compile Include="Models\Alumni.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Buildings.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\C360_SLIDER.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -270,6 +273,9 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CM_SESSION_MSTR.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Countries.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CUSTOM_PROFILE.cs">
@@ -375,6 +381,7 @@
     <Compile Include="Models\ViewModels\ParticipationViewModel.cs" />
     <Compile Include="Models\ViewModels\PhotoPathViewModel.cs" />
     <Compile Include="Models\ViewModels\ProfileCustomViewModel.cs" />
+    <Compile Include="Models\ViewModels\PublicAlumniProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\PublicFacultyStaffProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\PublicStudentProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentProfileViewModel.cs" />

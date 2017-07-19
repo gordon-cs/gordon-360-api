@@ -90,6 +90,12 @@ public partial class Alumni
 
     public Nullable<int> preferred_photo { get; set; }
 
+    public string Country { get; set; }
+
+    public string Major2Description { get; set; }
+
+    public string Major1Description { get; set; }
+
 }
 
 }

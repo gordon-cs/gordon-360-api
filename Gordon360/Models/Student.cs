@@ -114,13 +114,29 @@ public partial class Student
 
     public string MobilePhone { get; set; }
 
-    public Nullable<bool> IsMobilePhonePrivate { get; set; }
+    public int IsMobilePhonePrivate { get; set; }
 
     public string AD_Username { get; set; }
 
     public Nullable<int> show_pic { get; set; }
 
     public Nullable<int> preferred_photo { get; set; }
+
+    public string Country { get; set; }
+
+    public string BuildingDescription { get; set; }
+
+    public string Major1Description { get; set; }
+
+    public string Major2Description { get; set; }
+
+    public string Major3Description { get; set; }
+
+    public string Minor1Description { get; set; }
+
+    public string Minor2Description { get; set; }
+
+    public string Minor3Description { get; set; }
 
 }
 

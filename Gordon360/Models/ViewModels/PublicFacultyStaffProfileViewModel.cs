@@ -35,6 +35,8 @@ namespace Gordon360.Models.ViewModels
         public string office_hours { get; set; }
         public Nullable<int> preferred_photo { get; set; }
         public Nullable<int> show_pic { get; set; }
+        public string BuildingDescription { get; set; }
+        public string Country { get; set; }
 
 
 
@@ -70,7 +72,9 @@ namespace Gordon360.Models.ViewModels
                 Gender = fac.Gender ?? "",
                 office_hours = fac.office_hours ?? "",
                 preferred_photo = fac.preferred_photo,
-                show_pic = fac.show_pic
+                show_pic = fac.show_pic,
+                BuildingDescription = fac.BuildingDescription ?? "",
+                Country = fac.Country ?? ""
             };
             if (vm.KeepPrivate.Contains("S"))
             {
@@ -78,6 +82,7 @@ namespace Gordon360.Models.ViewModels
                 vm.HomeState = "Private as requested.";
                 vm.HomeCountry = "Private as requested.";
                 vm.SpouseName = "Private as requested.";
+                vm.Country = "Private as requested.";
             }
             return vm;
         }

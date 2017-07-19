@@ -32,6 +32,13 @@ namespace Gordon360.Models.ViewModels
         public int IsMobilePhonePrivate { get; set; }
         public Nullable<int> show_pic { get; set; }
         public Nullable<int> preferred_photo { get; set; }
+        public string Country { get; set; }
+        public string Major1Description { get; set; }
+        public string Major2Description { get; set; }
+        public string Major3Description { get; set; }
+        public string Minor1Description { get; set; }
+        public string Minor2Description { get; set; }
+        public string Minor3Description { get; set; }
 
 
         public static implicit operator PublicStudentProfileViewModel(StudentProfileViewModel stu)
@@ -62,7 +69,14 @@ namespace Gordon360.Models.ViewModels
                 IsMobilePhonePrivate = stu.IsMobilePhonePrivate,
                 MobilePhone = stu.MobilePhone ?? "",
                 show_pic = stu.show_pic,
-                preferred_photo = stu.preferred_photo
+                preferred_photo = stu.preferred_photo,
+                Country = stu.Country ?? "",
+                Major1Description = stu.Major1Description ?? "",
+                Major2Description = stu.Major2Description ?? "",
+                Major3Description = stu.Major3Description ?? "",
+                Minor1Description = stu.Minor1Description ?? "",
+                Minor2Description = stu.Minor2Description ?? "",
+                Minor3Description = stu.Minor3Description ?? ""
 
             };
             if (vm.IsMobilePhonePrivate==1)
@@ -75,6 +89,7 @@ namespace Gordon360.Models.ViewModels
                 vm.HomeCity = "Private as requested.";
                 vm.HomeState = "Private as requested.";
                 vm.HomeCountry = "Private as requested.";
+                vm.Country = "Private as requested.";
             }
             return vm;
         }
