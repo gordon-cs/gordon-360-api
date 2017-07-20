@@ -91,6 +91,10 @@ namespace Gordon360.Models.ViewModels
                 vm.HomeCountry = "Private as requested.";
                 vm.Country = "Private as requested.";
             }
+            if (vm.KeepPrivate.Contains("Y") || vm.KeepPrivate.Contains("P"))
+            {
+                return null;
+            }
             return vm;
         }
     }
