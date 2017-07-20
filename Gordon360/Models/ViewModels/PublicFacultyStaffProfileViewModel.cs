@@ -76,17 +76,13 @@ namespace Gordon360.Models.ViewModels
                 BuildingDescription = fac.BuildingDescription ?? "",
                 Country = fac.Country ?? ""
             };
-            if (vm.KeepPrivate.Contains("S"))
+            if (vm.KeepPrivate.Contains("1"))
             {
                 vm.HomeCity = "Private as requested.";
                 vm.HomeState = "Private as requested.";
                 vm.HomeCountry = "Private as requested.";
                 vm.SpouseName = "Private as requested.";
                 vm.Country = "Private as requested.";
-            }
-            if (vm.KeepPrivate.Contains("Y") || vm.KeepPrivate.Contains("P"))
-            {
-                return null;
             }
             return vm;
         }
