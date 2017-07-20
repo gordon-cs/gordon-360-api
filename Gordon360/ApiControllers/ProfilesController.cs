@@ -211,11 +211,11 @@ namespace Gordon360.Controllers.Api
                 case Position.STUDENT:
                     student = (_student == null) ? null : (PublicStudentProfileViewModel)_student;
                     faculty = (_faculty == null) ? null : (PublicFacultyStaffProfileViewModel)_faculty;
-                    alumni = (_alumni == null) ? null : (PublicAlumniProfileViewModel)_alumni;
+                    alumni = null;  //student can't see alumini
                     customInfo = _customInfo;
                     break;
                 case Position.FACSTAFF:
-                    student = _student;
+                    student = (_student == null) ? null : (PublicStudentProfileViewModel)_student;
                     faculty = (_faculty == null) ? null : (PublicFacultyStaffProfileViewModel)_faculty;
                     alumni = (_alumni == null) ? null : (PublicAlumniProfileViewModel)_alumni;
                     customInfo = _customInfo;
@@ -316,7 +316,7 @@ namespace Gordon360.Controllers.Api
             }
             else
             {
-                return Ok("Not Found");
+                return NotFound();
             }
         }
         [HttpGet]

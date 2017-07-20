@@ -76,7 +76,17 @@ namespace Gordon360.Models.ViewModels
                 Major1Description = alu.Major1Description ?? "",
                 Major2Description = alu.Major2Description ?? ""
             };
-
+            if (!vm.ShareName.Contains("Y"))
+            {
+                return null;
+            }
+            else if (!vm.ShareAddress.Contains("Y"))
+            {
+                vm.HomeCity = "Private as requested.";
+                vm.HomeCountry = "Private as requested.";
+                vm.HomeState = "Private as requested.";
+                vm.Country = "Private as requested.";
+            }
             return vm;
         }
     }
