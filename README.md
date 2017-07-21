@@ -469,18 +469,33 @@ What is it? Resource for fetching content that has been stored in the database b
 
 ### Profile
 What is it? Profile info of users.
-#### GET
+
+##### GET
+
 `api/profiles` Get profile info of the current logged in user.
+
 `api/profiles/:username` Get profile info of a user with username as a parameter.
+
 `api/profiles/role/:usename` Get college role of a user with username as a parameter, college roles: god(super admin), faculty and staff,student and police.
+
 `api/profiles/Image/` Get profile image of the current logged in user.Image is stored in a base 64 string.
+
 `api/profiles/Image/:username` Get the profile image(s) of a user with username as a parameter.Image is stored in a base 64 string.
-#### POST
+
+##### POST
+
 `api/profiles/image` Upload a preffered image for the current logged in user.
+
 `api/profiles/image/reset` Delete preffered image and set profile image to default for the current logged in user.
+
 `api/profiles/:type` Update a social midea link of a type(facebook, twitter, linkedin,instagram) of current logged in user.
+
+##### PUT
+
 `api/profiles/mobile_privacy/:value` Update mobile phone number privacy with value(Y or N) for the current logged in user.
+
 `api/profiles/image_privacy/:value` Update profile image privacy with value(Y or N) for the current logged in user.
+
 ## API Testing
 
 ### Introduction 
