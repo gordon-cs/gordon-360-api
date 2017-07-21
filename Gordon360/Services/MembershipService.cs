@@ -38,6 +38,10 @@ namespace Gordon360.Services
             validateMembership(membership);
             isPersonAlreadyInActivity(membership);
 
+            // Get session begin date of the membership
+            var sessionCode = _unitOfWork.SessionRepository.Find(x => x.SESS_CDE.Equals(membership.SESS_CDE)).FirstOrDefault();
+            membership.BEGIN_DTE = (DateTime) sessionCode.SESS_BEGN_DTE;
+
             // The Add() method returns the added membership.
             var payload = _unitOfWork.MembershipRepository.Add(membership);
 
@@ -320,6 +324,34 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// Fetches the number of followers associated with the activity and session whose codes are specified by the parameter.
+        /// </summary>
+        /// <param name="id">The activity code.</param>
+        /// <param name="sess_cde">The session code</param>
+        /// <returns>int.</returns>
+        public int GetActivityFollowersCountForSession(string id, string sess_cde)
+        {
+            var idParam = new SqlParameter("@ACT_CDE", id);
+            var result = RawSqlQuery<MembershipViewModel>.query("MEMBERSHIPS_PER_ACT_CDE @ACT_CDE", idParam);
+
+            return result.Where(x => x.Participation == "GUEST" && x.SessionCode.Trim() == sess_cde).Count();
+        }
+
+        /// <summary>
+        /// Fetches the number of memberships associated with the activity and session whose codes are specified by the parameter.
+        /// </summary>
+        /// <param name="id">The activity code.</param>
+        /// <param name="sess_cde">The session code</param>
+        /// <returns>int.</returns>
+        public int GetActivityMembersCountForSession(string id, string sess_cde)
+        {
+            var idParam = new SqlParameter("@ACT_CDE", id);
+            var result = RawSqlQuery<MembershipViewModel>.query("MEMBERSHIPS_PER_ACT_CDE @ACT_CDE", idParam);
+
+            return result.Where(x => x.Participation != "GUEST" && x.SessionCode.Trim() == sess_cde).Count();
+        }
+
+        /// <summary>
         /// Updates the membership whose id is given as the first parameter to the contents of the second parameter.
         /// </summary>
         /// <param name="id">The membership id.</param>
@@ -338,7 +370,7 @@ namespace Gordon360.Services
             // One can only update certain fields within a membrship
             //original.BEGIN_DTE = membership.BEGIN_DTE;
             original.COMMENT_TXT = membership.COMMENT_TXT;
-            original.END_DTE = membership.END_DTE;
+            //original.END_DTE = membership.END_DTE;
             original.PART_CDE = membership.PART_CDE;
             original.SESS_CDE = membership.SESS_CDE;
 
@@ -421,7 +453,7 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Session was not found." };
             }
-            var activityExists = _unitOfWork.ActivityRepository.Where(x => x.ACT_CDE.Trim() == membership.ACT_CDE).Count() > 0;
+            var activityExists = _unitOfWork.ActivityInfoRepository.Where(x => x.ACT_CDE.Trim() == membership.ACT_CDE).Count() > 0;
             if (!activityExists)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };

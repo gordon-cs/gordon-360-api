@@ -10,6 +10,7 @@ using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Exceptions.CustomExceptions;
+using Gordon360.Models.ViewModels;
 
 namespace Gordon360.ApiControllers
 {
@@ -19,11 +20,13 @@ namespace Gordon360.ApiControllers
     public class EmailsController : ApiController
     {
         EmailService _emailService;
+        AccountService _accountService;
 
         public EmailsController()
         {
             IUnitOfWork unitOfWork = new UnitOfWork();
             _emailService = new EmailService(unitOfWork);
+            _accountService = new AccountService(unitOfWork);
         }
 
         [Route("activity/{id}")]
@@ -210,5 +213,81 @@ namespace Gordon360.ApiControllers
             return Ok(result);
         }
 
+        [HttpPut]
+        [Route("")]
+        public IHttpActionResult SendEmails([FromBody]EmailContentViewModel email)
+        {
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+            var to_emails = email.ToAddress.Split(',');
+            _emailService.SendEmails(to_emails, email.FromAddress, email.Subject, email.Content, email.Password);
+            return Ok();
+        }
+
+        /*
+        [HttpPut]
+        [Route("activity/{id}/leaders/session/{session}")]
+        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_LEADERS)]
+        public IHttpActionResult SendEmailsToleaders(string id, string session, [FromBody] EmailContentViewModel email)
+        {
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+            var emails = _emailService.GetEmailsForActivityLeaders(id, session);
+            var toAddress = emails.Select(x => x.Email).ToArray();
+            _emailService.SendEmails(toAddress, email.FromAddress, email.Subject, email.Content, email.Password);
+            return Ok();
+        }
+        */
+
+        [HttpPut]
+        [Route("activity/{id}/session/{session}")]
+        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_ACTIVITY)]
+        public IHttpActionResult SendEmailToActivity(string id, string session, [FromBody] EmailContentViewModel email)
+        {
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+            _emailService.SendEmailToActivity(id, session, email.FromAddress, email.Subject, email.Content, email.Password);
+
+            //if (result == null)
+            //{
+            //    NotFound();
+            //}
+            //return Ok(result);
+            return Ok();
+
+        }
     }
 }

@@ -15,6 +15,7 @@ namespace Gordon360.Models.ViewModels
         public string AccountType { get; set; }
         public string Barcode { get; set; }
         public int show_pic { get; set; }
+        public int ReadOnly { get; set; }
 
         public static implicit operator AccountViewModel(ACCOUNT a)
         {
@@ -27,7 +28,8 @@ namespace Gordon360.Models.ViewModels
                 ADUserName = a.AD_Username.Trim() ?? "",
                 AccountType = a.account_type.Trim(),
                 Barcode = a.barcode ?? "",
-                show_pic = a.show_pic
+                show_pic = a.show_pic,
+                ReadOnly = a.ReadOnly
             };
 
             return vm;

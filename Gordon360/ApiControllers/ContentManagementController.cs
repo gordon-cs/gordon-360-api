@@ -5,6 +5,8 @@ using Gordon360.Repositories;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Static.Methods;
+using Gordon360.AuthorizationFilters;
+using Gordon360.Static.Names;
 
 namespace Gordon360.Controllers.Api
 {
@@ -32,6 +34,8 @@ namespace Gordon360.Controllers.Api
         // GET: api/cms/slider
         [HttpGet]
         [Route("slider")]
+        [AllowAnonymous]
+        [StateYourBusiness(operation = Operation.READ_PUBLIC, resource = Resource.SLIDER)]
         public IHttpActionResult GetSliderContent()
         {
             var result = _contentManagementService.GetSliderContent();

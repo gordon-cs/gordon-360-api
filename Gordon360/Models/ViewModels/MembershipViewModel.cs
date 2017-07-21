@@ -37,7 +37,7 @@ namespace Gordon360.Models.ViewModels
                 StartDate = m.BEGIN_DTE, 
                 EndDate = m.END_DTE,
                 Description = m.COMMENT_TXT ?? "", // For Null comments
-                Privacy = m.PRIVACY ?? false
+                Privacy = m.PRIVACY ?? false,
             };
 
             return vm;

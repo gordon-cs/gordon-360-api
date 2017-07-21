@@ -139,7 +139,10 @@ namespace Gordon360.ApiControllers
 
         }
 
-
+        /// <summary>
+        /// This makes use of our cached request to 25Live, which stores AllEvents
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("25Live/All")]
         public IHttpActionResult GetAllEvents()

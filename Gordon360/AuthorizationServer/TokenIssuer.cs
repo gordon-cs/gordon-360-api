@@ -87,12 +87,22 @@ namespace Gordon360.AuthorizationServer
                             context.SetError("Unsuccessful Login", "The username or password is not correct.");
                             return;
                         }
-                        var adminService = new AdministratorService(new UnitOfWork());
+
+                        IUnitOfWork unitOfWork = new UnitOfWork();
+                        var adminService = new AdministratorService(unitOfWork);
+                        var accountService = new AccountService(unitOfWork);
 
                         var distinguishedName = userEntry.DistinguishedName;
+                        var readOnly = accountService.Get(personID).ReadOnly;
+
 
                         var collegeRole = string.Empty;
-                        if(distinguishedName.Contains("OU=Students"))
+
+                        if(readOnly == 1)
+                        {
+                            collegeRole = Position.READONLY;
+                        }
+                        else if(distinguishedName.Contains("OU=Students"))
                         {
                             collegeRole = Position.STUDENT;
                         }

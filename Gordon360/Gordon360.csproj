@@ -364,6 +364,7 @@
     <Compile Include="Models\ViewModels\ActivityViewModel.cs" />
     <Compile Include="Models\ViewModels\AlumniProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\AttendedEventViewModel.cs" />
+    <Compile Include="Models\ViewModels\EmailContentViewModel.cs" />
     <Compile Include="Models\ViewModels\EventViewModel.cs" />
     <Compile Include="Models\ViewModels\ChapelEventViewModel.cs" />
     <Compile Include="Models\ViewModels\EmailViewModel.cs" />
@@ -470,7 +471,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:3000</IISUrl>
+          <IISUrl>http://localhost:3322</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
