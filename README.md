@@ -167,18 +167,28 @@ We got access to these views through CTS. They are a direct live feed from the t
 
 ###### ACCOUNT
 Account information for all the members of gordon college.
+###### Alumni
+The Alumni information. Includes their information the same way as students.
+###### Buildings
+Descriptions of the different codes for buildings around campus.
 ###### CHAPEL_EVENT
 Information on chapel attendence for every student 
 ###### JENZ_ACT_CLUB_DEF
 The Activity information. Includes short codes and what they represent.
+###### Countries
+Descriptions of different codes for countries.
 ###### CM_SESSION_MSTR
 The Session information. Includes short codes, the session they represent, and the physical dates spanned by the session.
-###### Faculty
-A subset of `ACCOUNT` that has only faculty member records.
+###### EVENTS_BY_STUDENT_ID
+Returns all events which a student has attended based upon their AD_Username
+###### FacStaff
+A subset of `ACCOUNT` that has only faculty and staff member records.
+###### Majors
+Descriptions of the different codes for majors.
+###### ALL_BASIC_INFO
+Pulls firstname, lastname, category (student, stafff, faculty), and AD_Username (if it exists!) and then makes a concatonated string to be searched through 
 ###### PART_DEF
 Definitions of the different participation levels for someone in an activity.
-###### Staff
-A subset of `ACCOUNT` that has only staff member records.
 ###### Student
 A subset of `ACCOUNT` that has only student records.
 ###### 360_SLIDER
@@ -297,15 +307,20 @@ What is it? Resource that respresents the affiliation between a student and a cl
 
 `api/memberships/student/:id` Get the memberships of the student with student id `id`.
 
+`api/memberships/student/username:username` Get the public version of memberships of the student with student username `username`.
+
 ##### POST
 
 `api/memberships` Create a new membership.
+
 
 ##### PUT 
 
 `api/memberships/:id` Edit the membership with membership id `id`.
 
 `api/memberships/:id/group-admin` Toggle whether or not a given member is in a group admin role for a given activity. The `id` parameter is the membership id.
+
+`api/memberships/:id/private/:p` Update a given membership to private or not private with boolean vaule `p`. The `id` parameter is the membership id.
 
 ##### DELETE
 
@@ -366,6 +381,8 @@ What is it? Resource that represents some activity - such as a club, ministry, l
 
 `api/activities/:id` Edit activity information for the club with activity code `id`.
 
+`api/activities/:id/private/:p` Update a given activity to private or not private with boolean vaule `p`. The `id` parameter is the activity id.
+
 ### Membership Requests
 What is it? Resource that represents a person's application/request to join an activity group.
 
@@ -393,24 +410,14 @@ What is it? Resource that represents a person's application/request to join an a
 `api/requests/:id` Delete the membership application with id `id`.
 
 
-### Students
-What is it? Resource that represents a student.
-
-##### GET
-
-`api/students` Get all the students.
-
-`api/students/:id` Get the student with student id `id`.
-
-`api/student/:email` Get the student with email `email`.
-
-
 ### Accounts
 What is it? Resource that represents a gordon account.
 
 ##### GET
 
 `api/accounts/:email` Get the account with email `email`.
+
+`api/accounts/:username` Get the account with `username`.
 
 `api/accounts/search/:searchString` Returns the basicinfoviewmodel with a Concatonated attribute matching some or all of the searchstring 
 
@@ -487,6 +494,35 @@ What is it? Resource for fetching content that has been stored in the database b
 
 `api/cms/slider` Get the content for the dashboard slide.
 
+### Profile
+What is it? Profile info of users.
+
+##### GET
+
+`api/profiles` Get profile info of the current logged in user.
+
+`api/profiles/:username` Get profile info of a user with username as a parameter.
+
+`api/profiles/role/:usename` Get college role of a user with username as a parameter, college roles: god(super admin), faculty and staff,student and police.
+
+`api/profiles/Image/` Get profile image of the current logged in user.Image is stored in a base 64 string.
+
+`api/profiles/Image/:username` Get the profile image(s) of a user with username as a parameter.Image is stored in a base 64 string.
+
+##### POST
+
+`api/profiles/image` Upload a preffered image for the current logged in user.
+
+`api/profiles/image/reset` Delete preffered image and set profile image to default for the current logged in user.
+
+`api/profiles/:type` Update a social midea link of a type(facebook, twitter, linkedin,instagram) of current logged in user.
+
+##### PUT
+
+`api/profiles/mobile_privacy/:value` Update mobile phone number privacy with value(Y or N) for the current logged in user.
+
+`api/profiles/image_privacy/:value` Update profile image privacy with value(Y or N) for the current logged in user.
+  
 
 ## API Testing
 
