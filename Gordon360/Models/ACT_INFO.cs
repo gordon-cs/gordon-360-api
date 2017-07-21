@@ -21,5 +21,7 @@ namespace Gordon360.Models
         public string ACT_IMG_PATH { get; set; }
         public string ACT_TYPE { get; set; }
         public string ACT_TYPE_DESC { get; set; }
+        public Nullable<bool> PRIVACY { get; set; }
+        public string ACT_JOIN_INFO { get; set; }
     }
 }

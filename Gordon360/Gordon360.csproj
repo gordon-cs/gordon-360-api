@@ -219,6 +219,9 @@
     <Compile Include="Models\ALL_SUPERVISORS_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\alumni.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\C360_SLIDER.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -237,6 +240,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\ChapelEvent.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\CM_SESSION_MSTR.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -244,6 +250,12 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\EMAILS_PER_ACT_CDE_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EVENTS_BY_STUDENT_ID_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\facstaff.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Faculty.cs">
@@ -281,6 +293,12 @@
     <Compile Include="Models\PART_DEF.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\PHOTO_INFO_PER_USER_NAME_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PROFILE_IMAGE.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\REQUEST.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -293,13 +311,19 @@
     <Compile Include="Models\REQUEST_PER_REQUEST_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\sp_helpdiagramdefinition_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\sp_helpdiagrams_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Staff.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Student.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\SUPERVISOR.cs">
+    <Compile Include="Models\student_temp.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SUPERVISORS_PER_ACT_CDE_Result.cs">
@@ -308,9 +332,13 @@
     <Compile Include="Models\SUPERVISOR_PER_SUP_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\sysdiagrams.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ViewModels\AccountViewModel.cs" />
     <Compile Include="Models\ViewModels\ActivityInfoViewModel.cs" />
     <Compile Include="Models\ViewModels\ActivityViewModel.cs" />
+    <Compile Include="Models\ViewModels\EmailContentViewModel.cs" />
     <Compile Include="Models\ViewModels\EmailViewModel.cs" />
     <Compile Include="Models\ViewModels\FacultyViewModel.cs" />
     <Compile Include="Models\ViewModels\JenzibarActivitiesViewModel.cs" />
@@ -365,6 +393,9 @@
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
       <LastGenOutput>CCT_DB_Models.cs</LastGenOutput>
     </Content>
+    <None Include="secrets.config">
+      <SubType>Designer</SubType>
+    </None>
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -374,7 +405,6 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="secrets.config" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -383,6 +413,7 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Properties\PublishProfiles\DEV.pubxml" />
     <None Include="Properties\PublishProfiles\PROD.pubxml" />
   </ItemGroup>
@@ -408,7 +439,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:3000/</IISUrl>
+          <IISUrl>http://localhost:4869/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

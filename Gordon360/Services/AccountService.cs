@@ -32,7 +32,7 @@ namespace Gordon360.Services
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
         public AccountViewModel Get(string id)
         {
-            var query = _unitOfWork.AccountRepository.GetById(id);
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
             if (query == null)
             {
                 // Custom Exception is thrown that will be cauth in the controller Exception filter.
