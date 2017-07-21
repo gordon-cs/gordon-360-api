@@ -153,12 +153,24 @@ A record in this table stores:
 
 ###### ACT_CLUB_DEF
 
-A record in this table stores
+A record in this table stores:
 
 - ACT_CDE - The activity short code.
 - ACT_DESC - The name of the activity.
 
 This table is an exact duplicate of the JENZ_ACT_CLUB_DEF view. It is periodically updated by making sure what is in it corresponds to what is in JENZ_ACT_CLUB_DEF. When a new activity is found in JENZ_ACT_CLUB_DEF, it is inserted into ACT_CLUB_DEF and the stored procedure UPDATE_ACT_INFO is run.
+
+###### CUSTOM_PROFILE
+
+A record in this table stores:
+
+- username - The firstname.lastname of the user.
+- facebook - The URL of personal facebook account without www.facebook.com.
+- twitter - The URL of personal twitter account without www.twitter.com.
+- instagram - The URL of personal instagram account without www.instagram.com.
+- linkedin - The URL of personal linkedin account without www.linkedin.com.
+
+This table is created in order to store users' social media links when they upload them on their profile page.
 
 
 ### Views
@@ -167,16 +179,22 @@ We got access to these views through CTS. They are a direct live feed from the t
 
 ###### ACCOUNT
 Account information for all the members of gordon college.
+###### Alumni
+The Alumni information. Includes their information the same way as students.
+###### Buildings
+Descriptions of the different codes for buildings around campus.
 ###### JENZ_ACT_CLUB_DEF
 The Activity information. Includes short codes and what they represent.
 ###### CM_SESSION_MSTR
 The Session information. Includes short codes, the session they represent, and the physical dates spanned by the session.
-###### Faculty
-A subset of `ACCOUNT` that has only faculty member records.
+###### Countries
+Descriptions of different codes for countries.
+###### FacStaff
+A subset of `ACCOUNT` that has only faculty and staff member records.
+###### Majors
+Descriptions of the different codes for majors.
 ###### PART_DEF
-Definitions of the different participation levels for someone in an activity.
-###### Staff
-A subset of `ACCOUNT` that has only staff member records.
+Definitions of the different participation levels for someone in an activity
 ###### Student
 A subset of `ACCOUNT` that has only student records.
 ###### 360_SLIDER
@@ -288,7 +306,6 @@ What is it? Resource that respresents the affiliation between a student and a cl
 `api/memberships/activity/:id/members/:sess_cde` Get the number of members of an activity with activity code `id` in session `:sess_cde`.
 
 `api/memberships/student/:id` Get the memberships of the student with student id `id`.
-`api/memberships/student/username:username` Get the public version of memberships of the student with student username `username`.
 
 ##### POST
 
@@ -299,7 +316,6 @@ What is it? Resource that respresents the affiliation between a student and a cl
 `api/memberships/:id` Edit the membership with membership id `id`.
 
 `api/memberships/:id/group-admin` Toggle whether or not a given member is in a group admin role for a given activity. The `id` parameter is the membership id.
-`api/memberships/:id/private/:p` Update a given membership to private or not private with boolean vaule `p`. The `id` parameter is the membership id.
 
 ##### DELETE
 
@@ -359,7 +375,6 @@ What is it? Resource that represents some activity - such as a club, ministry, l
 `api/activities/:id/session/{sess_cde}/open` Reopen an activity for a given session.
 
 `api/activities/:id` Edit activity information for the club with activity code `id`.
-`api/memberships/:id/private/:p` Update a given activity to private or not private with boolean vaule `p`. The `id` parameter is the activity id.
 
 ### Membership Requests
 What is it? Resource that represents a person's application/request to join an activity group.
@@ -387,14 +402,25 @@ What is it? Resource that represents a person's application/request to join an a
 
 `api/requests/:id` Delete the membership application with id `id`.
 
+
+### Students
+What is it? Resource that represents a student.
+
+##### GET
+
+`api/students` Get all the students.
+
+`api/students/:id` Get the student with student id `id`.
+
+`api/student/:email` Get the student with email `email`.
+
+
 ### Accounts
 What is it? Resource that represents a gordon account.
 
 ##### GET
 
 `api/accounts/:email` Get the account with email `email`.
-`api/accounts/:username` Get the account with `username`.
-
 
 ### Sessions
 What is it? Resource that represents the current session. e.g. Fall 2014-2015.
@@ -467,34 +493,6 @@ What is it? Resource for fetching content that has been stored in the database b
 
 `api/cms/slider` Get the content for the dashboard slide.
 
-### Profile
-What is it? Profile info of users.
-
-##### GET
-
-`api/profiles` Get profile info of the current logged in user.
-
-`api/profiles/:username` Get profile info of a user with username as a parameter.
-
-`api/profiles/role/:usename` Get college role of a user with username as a parameter, college roles: god(super admin), faculty and staff,student and police.
-
-`api/profiles/Image/` Get profile image of the current logged in user.Image is stored in a base 64 string.
-
-`api/profiles/Image/:username` Get the profile image(s) of a user with username as a parameter.Image is stored in a base 64 string.
-
-##### POST
-
-`api/profiles/image` Upload a preffered image for the current logged in user.
-
-`api/profiles/image/reset` Delete preffered image and set profile image to default for the current logged in user.
-
-`api/profiles/:type` Update a social midea link of a type(facebook, twitter, linkedin,instagram) of current logged in user.
-
-##### PUT
-
-`api/profiles/mobile_privacy/:value` Update mobile phone number privacy with value(Y or N) for the current logged in user.
-
-`api/profiles/image_privacy/:value` Update profile image privacy with value(Y or N) for the current logged in user.
 
 ## API Testing
 
