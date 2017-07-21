@@ -136,17 +136,13 @@ namespace Gordon360.Static.Methods
             try
             {
                 // Attempt to query the DB
-                result = RawSqlQuery<BasicInfoViewModel>.query("SELECT firstname, lastname, AD_Username as ADUserName, account_type as AccountType, email FROM[CCT].[dbo].[ACCOUNT]");
+                result = RawSqlQuery<BasicInfoViewModel>.query("ALL_BASIC_INFO");
             }
             catch
             {
                 //
             }
             // Filter out results with null or empty active directory names
-            if (result != null)
-            {
-                result = result.Where(x => x.ADUserName != null && x.ADUserName != "");
-            }
             return result;
         }
 

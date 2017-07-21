@@ -51,7 +51,8 @@ namespace Gordon360.ApiControllers
         }
 
         /// <summary>
-        /// Return a list of accounts matching some or all of the parameter
+        /// Return a list of accounts matching some or all of the search parameter
+        /// We are searching through a concatonated string, containing several pieces of info about each user.
         /// </summary>
         /// <param name="searchString"> The input to search for </param>
         /// <returns> All accounts meeting some or all of the parameter</returns>
@@ -65,7 +66,7 @@ namespace Gordon360.ApiControllers
             if (!String.IsNullOrEmpty(searchString))
             {
                 // for every stored account, convert it to lowercase and compare it to the search paramter 
-                accounts = accounts.Where(s => s.ADUserName.ToLower().Contains(searchString) );
+                accounts = accounts.Where(s => s.ConcatonatedInfo.ToLower().Contains(searchString) );
             }
             // Return all of the 
             return Ok(accounts);

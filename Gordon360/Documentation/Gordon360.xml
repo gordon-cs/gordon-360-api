@@ -6,7 +6,8 @@
     <members>
         <member name="M:Gordon360.ApiControllers.AccountsController.Index(System.String)">
             <summary>
-            Return a list of accounts matching some or all of the parameter
+            Return a list of accounts matching some or all of the search parameter
+            We are searching through a concatonated string, containing several pieces of info about each user.
             </summary>
             <param name="searchString"> The input to search for </param>
             <returns> All accounts meeting some or all of the parameter</returns>

@@ -167,6 +167,8 @@ We got access to these views through CTS. They are a direct live feed from the t
 
 ###### ACCOUNT
 Account information for all the members of gordon college.
+###### CHAPEL_EVENT
+Information on chapel attendence for every student 
 ###### JENZ_ACT_CLUB_DEF
 The Activity information. Includes short codes and what they represent.
 ###### CM_SESSION_MSTR
@@ -186,6 +188,12 @@ Content (images, captions, and links) for the slider on the dashboard page.
 
 Stored procedures have been written to make some database accesses and administrative tasks easier.
 Here are the most important ones.
+
+###### EVENTS_BY_STUDENT_ID
+Returns all events which a student has attended based upon their AD_Username
+
+###### ALL_BASIC_INFO
+Pulls firstname, lastname, category (student, stafff, faculty), and AD_Username (if it exists!) and then makes a concatonated string to be searched through 
 
 ###### UPDATE_ACT_CLUB_DEF
 
@@ -404,6 +412,8 @@ What is it? Resource that represents a gordon account.
 
 `api/accounts/:email` Get the account with email `email`.
 
+`api/accounts/search/:searchString` Returns the basicinfoviewmodel with a Concatonated attribute matching some or all of the searchstring 
+
 ### Sessions
 What is it? Resource that represents the current session. e.g. Fall 2014-2015.
 
@@ -416,6 +426,8 @@ Who has access? Everyone.
 `api/sessions/:id` Get the session with session code `id`.
 
 `api/sessions/current` Get the current session.
+
+`api/sessions/daysLeft` Get the days left in the semester and the total days in the semester
 
 ### Participation Definitions
 What is it? Resource that represents the different levels with which a person can affiliate themselves with a club.
