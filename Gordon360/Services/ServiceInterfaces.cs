@@ -13,8 +13,7 @@ namespace Gordon360.Services
 
     public interface IRoleCheckingService
     {
-        string getViewerRole(string username);
-        string getPersonRole(string username);
+        string getCollegeRole(string username);
     }
     public interface IProfileService
     {

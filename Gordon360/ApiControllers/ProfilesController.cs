@@ -181,7 +181,7 @@ namespace Gordon360.Controllers.Api
             }
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var viewerType = _roleCheckingService.getViewerRole(viewerName);
+            var viewerType = _roleCheckingService.getCollegeRole(viewerName);
 
             //search this person in three tables.
             var _student = _profileService.GetStudentProfileByUsername(username);
@@ -323,7 +323,7 @@ namespace Gordon360.Controllers.Api
         [Route("role/{username}")]
         public IHttpActionResult getRole(string username)
         {
-            var role  = _roleCheckingService.getViewerRole(username);
+            var role  = _roleCheckingService.getCollegeRole(username);
             return Ok(role);
         }
 
@@ -336,7 +336,7 @@ namespace Gordon360.Controllers.Api
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
             var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var viewerType = _roleCheckingService.getViewerRole(viewerName);
+            var viewerType = _roleCheckingService.getCollegeRole(viewerName);
             var photoInfo = _profileService.GetPhotoPath(id);
             string pref_img = "";
             string default_img = "";
@@ -381,7 +381,7 @@ namespace Gordon360.Controllers.Api
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var viewerType = _roleCheckingService.getViewerRole(viewerName);
+            var viewerType = _roleCheckingService.getCollegeRole(viewerName);
             var id = _accountService.GetAccountByUsername(username).GordonID;
             var photoInfo = _profileService.GetPhotoPath(id);
 

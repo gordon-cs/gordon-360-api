@@ -17,7 +17,7 @@ namespace Gordon360.Services
             _unitOfWork = unitOfWork;
         }
 
-        public string getViewerRole(string username)
+        public string getCollegeRole(string username)
         {
             var viewer = _unitOfWork.AccountRepository.FirstOrDefault(x => x.AD_Username == username);
             string type = viewer.account_type;
@@ -38,11 +38,6 @@ namespace Gordon360.Services
             else if (type == "FACULTY" || type == "STAFF")
                 type = Position.FACSTAFF;
             return type;
-        }
-
-        public string getPersonRole(string username)
-        {
-            throw new NotImplementedException();
         }
     }
 }
