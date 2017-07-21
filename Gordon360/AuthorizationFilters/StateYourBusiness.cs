@@ -46,20 +46,24 @@ namespace Gordon360.AuthorizationFilters
             context = actionContext;
             // Step 1: Who is to be authorized
             var authenticatedUser = actionContext.RequestContext.Principal as ClaimsPrincipal;
+
             user_position = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role").Value;
             user_id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
             user_name = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
-            if (user_position == Position.GOD)
+            if (authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role") != null)
             {
-                var adminService = new AdministratorService(new UnitOfWork());
-                var admin = adminService.Get(user_id);
-
-                // If user is super admin, skip verification steps and return.
-                if (admin.SUPER_ADMIN)
+                if (user_position == Position.GOD)
                 {
-                    base.OnActionExecuting(actionContext);
-                    return;
+                    var adminService = new AdministratorService(new UnitOfWork());
+                    var admin = adminService.Get(user_id);
+
+                    // If user is super admin, skip verification steps and return.
+                    if (admin.SUPER_ADMIN)
+                    {
+                        base.OnActionExecuting(actionContext);
+                        return;
+                    }
                 }
             }
            
@@ -86,6 +90,7 @@ namespace Gordon360.AuthorizationFilters
                 case Operation.DENY_ALLOW: return canDenyAllow(resource);
                 case Operation.UPDATE: return canUpdate(resource);
                 case Operation.DELETE: return canDelete(resource);
+                case Operation.READ_PUBLIC: return canReadPublic(resource);
                 default: return false;
             }
         }
@@ -328,6 +333,17 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.ADMIN:
                     return false;
                 default: return false;
+            }
+        }
+
+        private bool canReadPublic(string resource)
+        {
+            switch (resource)
+            {
+                case Resource.SLIDER:
+                    return true;
+                default: return false;
+
             }
         }
         private bool canAdd(string resource)

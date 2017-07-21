@@ -32,7 +32,9 @@ namespace Gordon360.Static.Names
         public const string GROUP_ADMIN_BY_ACTIVITY = "Group Admin Resources associated with an activity";
         public const string EVENTS_BY_STUDENT_ID = "Every event attended for a specific student";
         public const string ALL_BASIC_INFO = "returns all basic public information for an account";
- 
+        // Public resources
+        public const string SLIDER = "Slider to be shown on the homepage";
+
     }
 
     public static class Operation
@@ -40,6 +42,7 @@ namespace Gordon360.Static.Names
         public const string READ_ALL = "Reading all available resources";
         public const string READ_PARTIAL = "Reading a group of related resources";
         public const string READ_ONE = "Reading one resource";
+        public const string READ_PUBLIC = "Reading public resources";
         public const string ADD = "Creating a resource";
         public const string UPDATE = "Updating a resource";
         public const string DELETE = "Deleting a resource";
@@ -56,6 +59,7 @@ namespace Gordon360.Static.Names
         public const string FACSTAFF = "facstaff";
         public const string GOD = "god";
         public const string POLICE = "gordon police";
+        public const string READONLY = "readonly";
     }
 
     public static class Activity_Roles

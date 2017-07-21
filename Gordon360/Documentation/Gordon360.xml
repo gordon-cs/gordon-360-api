@@ -45,6 +45,12 @@
             <param name="id">The identifier for the admin to be deleted</param>
             <remarks>Calls the server to make a call and remove the given admin from the database</remarks>
         </member>
+        <member name="M:Gordon360.ApiControllers.EventController.GetAllEvents">
+            <summary>
+            This makes use of our cached request to 25Live, which stores AllEvents
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ContentManagementController.GetSliderContent">
             <summary>Get all the slider content for the dashboard slider</summary>
             <returns>A list of all the slides for the slider</returns>
@@ -357,6 +363,22 @@
             <param name="id">The activity ID.</param>
             <returns>The number of members of the activity</returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.MembershipsController.GetActivityFollowersCountForSession(System.String,System.String)">
+            <summary>
+            Gets the number of members and followers of an activity
+            </summary>
+            <param name="id">The activity ID.</param>
+            <param name="sess_cde">The session code</param>
+            <returns>The number of followers of the activity</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.MembershipsController.GetActivityMembersCountForSession(System.String,System.String)">
+            <summary>
+            Gets the number of members and followers of an activity
+            </summary>
+            <param name="id">The activity ID.</param>
+            <param name="sess_cde">The session code</param>
+            <returns>The number of members of the activity</returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.MembershipsController.Post(Gordon360.Models.MEMBERSHIP)">
             <summary>Create a new membership item to be added to database</summary>
             <param name="membership">The membership item containing all required and relevant information</param>
@@ -635,9 +657,8 @@
         </member>
         <member name="T:Gordon360.Services.ActivityService">
             <summary>
-            Service Class that facilitates data transactions between the ActivitiesController and the ACT_CLUB_DEF database model.
-            ACT_INFO (ActivityInfo) and ACT_CLUB_DEF(Activity) are very similar. 
-            ACT_INFO is basically a copy of the ACT_CLUB_DEF domain model but with extra fields that we want to store (activity image, blurb etc...)
+            Service Class that facilitates data transactions between the ActivitiesController and the ACT_INFO database model.
+            ACT_INFO is basically a copy of the ACT_CLUB_DEF domain model in TmsEPrd but with extra fields that we want to store (activity image, blurb etc...)
             Activity Info and ACtivity may be talked about interchangeably.
             </summary>
         </member>
@@ -930,6 +951,29 @@
             <param name="session_code">The session code</param>
             <returns>List of emails for the leaders of this activity</returns>
         </member>
+        <member name="M:Gordon360.Services.EmailService.SendEmails(System.String[],System.String,System.String,System.String,System.String)">
+            <summary>
+            Send a email to a list of email addresses
+            </summary>
+            <param name="to_emails">All addresses to send this email to</param>
+            <param name="from_email">The address this email is sent from</param>
+            <param name="subject">Subject of the email to be sent</param>
+            <param name="email_content">The content of the email to be sent</param>
+            <param name="password">Password of the email sender</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.EmailService.SendEmailToActivity(System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Send a email to members of an activity
+            </summary>
+            <param name="activityCode">The activity code to send this email to</param>
+            <param name="sessionCode">The session of activity to select members from</param>
+            <param name="from_email">The address this email is sent from</param>
+            <param name="subject">Subject of the email to be sent</param>
+            <param name="email_content">The content of the email to be sent</param>
+            <param name="password">Password of the email sender</param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Services.ProfileService.GetPhotoPath(System.String)">
             <summary>
             get photo path
@@ -1130,6 +1174,22 @@
             Fetches the number of memberships associated with the activity whose code is specified by the parameter.
             </summary>
             <param name="id">The activity code.</param>
+            <returns>int.</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.GetActivityFollowersCountForSession(System.String,System.String)">
+            <summary>
+            Fetches the number of followers associated with the activity and session whose codes are specified by the parameter.
+            </summary>
+            <param name="id">The activity code.</param>
+            <param name="sess_cde">The session code</param>
+            <returns>int.</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.GetActivityMembersCountForSession(System.String,System.String)">
+            <summary>
+            Fetches the number of memberships associated with the activity and session whose codes are specified by the parameter.
+            </summary>
+            <param name="id">The activity code.</param>
+            <param name="sess_cde">The session code</param>
             <returns>int.</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.Update(System.Int32,Gordon360.Models.MEMBERSHIP)">
