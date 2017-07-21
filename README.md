@@ -25,6 +25,7 @@ Dive in.
     - [Emails](#emails)
     - [Admins](#admins)
     - [Content Management](#content-management)
+    - [profile](#profile)
 - [API Testing](#api-testing)
     - [Introduction](#introduction)
     - [Running the Tests](#running-the-tests)
@@ -179,8 +180,6 @@ The Activity information. Includes short codes and what they represent.
 Descriptions of different codes for countries.
 ###### CM_SESSION_MSTR
 The Session information. Includes short codes, the session they represent, and the physical dates spanned by the session.
-###### EVENTS_BY_STUDENT_ID
-Returns all events which a student has attended based upon their AD_Username
 ###### FacStaff
 A subset of `ACCOUNT` that has only faculty and staff member records.
 ###### Majors
