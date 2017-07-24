@@ -59,6 +59,7 @@ namespace Gordon360
             // Perform task for the first time at startup
             DoWork();
             DoMoreWork();
+            DoMyWork();
             // Register a job(s) in the cache to re-occur at a specified interval
             RegisterCacheEntry();
 
@@ -119,6 +120,16 @@ namespace Gordon360
             }
         }
 
+        private void DoMyWork()
+        {
+            IEnumerable<StudentProfileViewModel> student = Helpers.GetAllStudent();
+            IEnumerable<FacultyStaffProfileViewModel> facstaff = Helpers.GetAllFacultyStaff();
+            IEnumerable<AlumniProfileViewModel> alumni = Helpers.GetAllAlumni();
+            Data.StudentData = student;
+            Data.FacultyStaffData = facstaff;
+            Data.AlumniData = alumni;
+        }
+
         // Inside the callback we do all the service work
         public void CacheItemRemovedCallback(string key, object value, CacheItemRemovedReason reason)
         {
@@ -127,6 +138,7 @@ namespace Gordon360
             // Call the jobs you want to 
             DoWork();
             DoMoreWork();
+            DoMyWork();
             // Re-register the item in the cache
             RegisterCacheEntry();
         }

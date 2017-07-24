@@ -9,6 +9,7 @@ using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Static.Names;
 using System.Data.SqlClient;
 using Gordon360.Services.ComplexQueries;
+using Gordon360.Static.Data;
 
 namespace Gordon360.Services
 {
@@ -23,34 +24,25 @@ namespace Gordon360.Services
 
         public StudentProfileViewModel GetStudentProfileByUsername(string username)
         {
-            var query = _unitOfWork.StudentRepository.FirstOrDefault(x => x.AD_Username == username);
-            if (query == null)
-            {
-                return null;
-            }
-            StudentProfileViewModel result = query; // Implicit conversion happening here, see ViewModels.
+            var all = Data.StudentData;
+            StudentProfileViewModel result = null;
+            result = all.FirstOrDefault(x => x.AD_Username.ToLower() == username);
             return result;
         }
 
         public FacultyStaffProfileViewModel GetFacultyStaffProfileByUsername(string username)
         {
-            var query = _unitOfWork.FacultyStaffRepository.FirstOrDefault(x => x.AD_Username == username);
-            if (query == null)
-            {
-                return null;
-            }
-            FacultyStaffProfileViewModel result = query; // Implicit conversion happening here, see ViewModels.
+            var all = Data.FacultyStaffData;
+            FacultyStaffProfileViewModel result = null;
+            result = all.FirstOrDefault(x => x.AD_Username.ToLower() == username);
             return result;
         }
 
         public AlumniProfileViewModel GetAlumniProfileByUsername(string username)
         {
-            var query = _unitOfWork.AlumniRepository.FirstOrDefault(x => x.AD_Username == username);
-            if (query == null)
-            {
-                return null;
-            }
-            AlumniProfileViewModel result = query; // Implicit conversion happening here, see ViewModels.
+            var all = Data.AlumniData;
+            AlumniProfileViewModel result = null;
+            result = all.FirstOrDefault(x => x.AD_Username.ToLower() == username);
             return result;
         }
 

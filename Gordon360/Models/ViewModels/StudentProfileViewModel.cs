@@ -81,7 +81,7 @@ namespace Gordon360.Models.ViewModels
                 Suffix = stu.Suffix ?? "",
                 MaidenName = stu.MaidenName ?? "",
                 NickName = stu.NickName ?? "", // Just in case some random record has a null user_name 
-                AD_Username = stu.AD_Username.Trim() ?? "", // Just in case some random record has a null email field
+                AD_Username = stu.AD_Username ?? "", // Just in case some random record has a null email field
                 Cohort = stu.Cohort ?? "",
                 Class = stu.Class ?? "",
                 Commuter = stu.Commuter ?? "",

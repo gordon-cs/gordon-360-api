@@ -10,6 +10,7 @@ using Gordon360.Services.ComplexQueries;
 using Gordon360.Services;
 using Gordon360.Models;
 using System.Collections.Generic;
+using Gordon360.Static.Names;
 
 namespace Gordon360.Static.Methods
 {
@@ -19,6 +20,53 @@ namespace Gordon360.Static.Methods
     public static class Helpers
     {
 
+        public static IEnumerable<StudentProfileViewModel> GetAllStudent()
+        {
+
+            // Create a list to be filled
+            IEnumerable<StudentProfileViewModel> result = null;
+            try
+            {
+                // Attempt to query the DB
+                result = RawSqlQuery<StudentProfileViewModel>.query(SQLQuery.ALL_STUDENT_REQUEST);
+            }
+            catch
+            {
+                //
+            }
+            // Filter out results with null or empty active directory names
+            return result;
+        }
+        public static IEnumerable<FacultyStaffProfileViewModel> GetAllFacultyStaff()
+        {
+            IEnumerable<FacultyStaffProfileViewModel> result = null;
+            try
+            {
+                // Attempt to query the DB
+                result = RawSqlQuery<FacultyStaffProfileViewModel>.query(SQLQuery.ALL_FACULTY_STAFF_REQUEST);
+            }
+            catch
+            {
+                //
+            }
+            // Filter out results with null or empty active directory names
+            return result;
+        }
+        public static IEnumerable<AlumniProfileViewModel> GetAllAlumni()
+        {
+            IEnumerable<AlumniProfileViewModel> result = null;
+            try
+            {
+                // Attempt to query the DB
+                result = RawSqlQuery<AlumniProfileViewModel>.query(SQLQuery.ALL_ALUMNI_REQUEST);
+            }
+            catch
+            {
+                //
+            }
+            // Filter out results with null or empty active directory names
+            return result;
+        }
         /// <summary>
         /// Service method that gets the current session we are in.
         /// </summary>

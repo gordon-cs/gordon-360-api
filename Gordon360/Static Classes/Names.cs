@@ -91,4 +91,11 @@ namespace Gordon360.Static.Names
         public static string ALL_EVENTS_REQUEST = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=10+12+13+14+16+17+18+19+51+20+21+22+23+24+25+29+30+31+33+35&state=2&end_after=" + Helpers.GetDay() + "0810&scope=extended";
 
     }
+   
+    public static class SQLQuery
+    {
+        public static string ALL_STUDENT_REQUEST = "SELECT * from Student WHERE AD_Username is not null";
+        public static string ALL_FACULTY_STAFF_REQUEST = "SELECT * from FacStaff WHERE AD_Username is not null";
+        public static string ALL_ALUMNI_REQUEST = "SELECT * from Alumni WHERE AD_Username is not null";
+    }
 }

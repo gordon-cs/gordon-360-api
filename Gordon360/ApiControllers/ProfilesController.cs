@@ -21,6 +21,7 @@ using Gordon360.Static.Methods;
 using Gordon360.Models.ViewModels;
 using System.Security.Claims;
 using System.Net.Http.Headers;
+using Gordon360.Static.Data;
 
 namespace Gordon360.Controllers.Api
 {
@@ -46,7 +47,22 @@ namespace Gordon360.Controllers.Api
         {
             _profileService = profileService;
         }
-
+        /// <summary>
+        /// Get all student
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        // GET api/<controller>
+        [HttpGet]
+        [Route("all")]
+        public IHttpActionResult GetAll()
+        {
+            var username = "Chris.Qiao";
+            var all = Data.StudentData;
+            IEnumerable<StudentProfileViewModel> result = null;
+            result = all.Where(x => x.AD_Username == username);
+            return Ok(result);
+        }
 
         /// <summary>Get the info of currently logged in user</summary>
         /// <returns></returns>

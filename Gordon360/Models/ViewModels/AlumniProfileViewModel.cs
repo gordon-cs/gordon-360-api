@@ -55,13 +55,13 @@ namespace Gordon360.Models.ViewModels
                 ID = alu.ID.Trim(),
                 WebUpdate = alu.WebUpdate ?? "",
                 Title = alu.Title ?? "",
-                FirstName = alu.FirstName.Trim(),
+                FirstName = alu.FirstName,
                 MiddleName = alu.MiddleName ?? "",
-                LastName = alu.LastName.Trim(),
+                LastName = alu.LastName,
                 Suffix = alu.Suffix ?? "",
                 MaidenName = alu.MaidenName ?? "",
                 NickName = alu.NickName ?? "", // Just in case some random record has a null user_name 
-                AD_Username = alu.AD_Username.Trim() ?? "", // Just in case some random record has a null email field
+                AD_Username = alu.AD_Username ?? "", // Just in case some random record has a null email field
                 HomeStreet1 = alu.HomeStreet1 ?? "",
                 HomeStreet2 = alu.HomeStreet2 ?? "",
                 HomeCity = alu.HomeCity ?? "",
