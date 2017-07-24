@@ -16,7 +16,7 @@ namespace Gordon360.Services
         {
             _unitOfWork = unitOfWork;
         }
-
+        // check college role for a user
         public string getCollegeRole(string username)
         {
             var viewer = _unitOfWork.AccountRepository.FirstOrDefault(x => x.AD_Username == username);

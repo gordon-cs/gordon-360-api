@@ -31,6 +31,7 @@ namespace Gordon360.Controllers.Api
     [Authorize]
     public class ProfilesController : ApiController
     {
+        //declare services we are going to use.
         private IProfileService _profileService;
         private IAccountService _accountService;
         private IRoleCheckingService _roleCheckingService;
@@ -47,35 +48,21 @@ namespace Gordon360.Controllers.Api
         {
             _profileService = profileService;
         }
-        /// <summary>
-        /// Get all student
-        /// </summary>
-        /// <returns></returns>
-        /// <remarks></remarks>
-        // GET api/<controller>
-        [HttpGet]
-        [Route("all")]
-        public IHttpActionResult GetAll()
-        {
-            var username = "Chris.Qiao";
-            var all = Data.StudentData;
-            IEnumerable<StudentProfileViewModel> result = null;
-            result = all.Where(x => x.AD_Username == username);
-            return Ok(result);
-        }
 
-        /// <summary>Get the info of currently logged in user</summary>
+        /// <summary>Get profile info of currently logged in user</summary>
         /// <returns></returns>
         [HttpGet]
         [Route("")]
         public IHttpActionResult Get()
         {
+            //get token data from context, username is the username of current logged in person
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            // search username in three tables
+            // search username in cached data
             var student = _profileService.GetStudentProfileByUsername(username);
             var faculty = _profileService.GetFacultyStaffProfileByUsername(username);
             var alumni = _profileService.GetAlumniProfileByUsername(username);
+            //get profile links
             var customInfo = _profileService.GetCustomUserInfo(username);
 
             // merge the person's info if this person is in multiple tables and return result 
@@ -179,7 +166,6 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpGet]
         [Route("{username}")]
-       // [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]    
         public IHttpActionResult GetUserProfile(string username)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(username))
@@ -195,11 +181,12 @@ namespace Gordon360.Controllers.Api
                 }
                 throw new BadInputException() { ExceptionMessage = errors };
             }
+            //get token data from context, username is the username of current logged in person
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             var viewerType = _roleCheckingService.getCollegeRole(viewerName);
 
-            //search this person in three tables.
+            //search this person in cached data.
             var _student = _profileService.GetStudentProfileByUsername(username);
             var _faculty = _profileService.GetFacultyStaffProfileByUsername(username);
             var _alumni = _profileService.GetAlumniProfileByUsername(username);
@@ -210,6 +197,7 @@ namespace Gordon360.Controllers.Api
             object alumni = null;
             object customInfo = null;
 
+            //security control depends on viewer type. apply different views to different viewers.
             switch (viewerType)
             {
                 case Position.GOD:
@@ -225,7 +213,7 @@ namespace Gordon360.Controllers.Api
                     customInfo = _customInfo;
                     break;
                 case Position.STUDENT:
-                    student = (_student == null) ? null : (PublicStudentProfileViewModel)_student;
+                    student = (_student == null) ? null : (PublicStudentProfileViewModel)_student;         //implicit conversion
                     faculty = (_faculty == null) ? null : (PublicFacultyStaffProfileViewModel)_faculty;
                     alumni = null;  //student can't see alumini
                     customInfo = _customInfo;
@@ -335,6 +323,9 @@ namespace Gordon360.Controllers.Api
                 return NotFound();
             }
         }
+        /// <summary>Get college role of a user</summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("role/{username}")]
         public IHttpActionResult getRole(string username)
@@ -361,6 +352,7 @@ namespace Gordon360.Controllers.Api
             byte[] imageBytes;
             JObject result = new JObject();
 
+            //return default image if no photo info found for this user.
             if (photoInfo == null)
             {
                 var webClient = new WebClient();
@@ -372,7 +364,7 @@ namespace Gordon360.Controllers.Api
             else
                 fileName = photoInfo.Pref_Img_Name;
 
-            if (string.IsNullOrEmpty(fileName) || !File.Exists(filePath + fileName))
+            if (string.IsNullOrEmpty(fileName) || !File.Exists(filePath + fileName)) //check file existence for prefferred image.
             {
                 filePath = Defaults.DEFAULT_IMAGE_PATH;
                 fileName = photoInfo.Img_Name;
@@ -409,6 +401,7 @@ namespace Gordon360.Controllers.Api
             string default_img = "";
             JObject result = new JObject();
 
+            //return default image if no photo info found for this user.
             if (photoInfo == null)
             {
                 var webClient = new WebClient();
@@ -419,6 +412,7 @@ namespace Gordon360.Controllers.Api
                 return Ok(result);
             }
 
+            //security control depends on viewer type. return both photos for super admin and gordon police.
             switch (viewerType)
             {
                 case Position.GOD:
@@ -452,7 +446,7 @@ namespace Gordon360.Controllers.Api
                     result.Add("pref", pref_img);
                     return Ok(result);
                 case Position.STUDENT:
-                    if (_accountService.GetAccountByUsername(username).show_pic == 1)
+                    if (_accountService.GetAccountByUsername(username).show_pic == 1)                  //check privacy setting of this user.
                     {
                         filePath = Defaults.DEFAULT_PREF_IMAGE_PATH;
                         fileName = photoInfo.Pref_Img_Name;
@@ -521,7 +515,7 @@ namespace Gordon360.Controllers.Api
 
             try
             {
-                if (pathInfo == null)
+                if (pathInfo == null) // can't upload image if there is no record for this user in the database
                     return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error uploading the image. Please contact the maintainers");
 
                 System.IO.DirectoryInfo di = new DirectoryInfo(root);
@@ -533,7 +527,6 @@ namespace Gordon360.Controllers.Api
                 // Read the form data.
                 await Request.Content.ReadAsMultipartAsync(provider);
 
-                // This illustrates how to get the file names.
                 foreach (MultipartFileData file in provider.FileData)
                 {
                     var fileContent = provider.Contents.SingleOrDefault();

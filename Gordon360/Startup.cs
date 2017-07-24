@@ -120,8 +120,10 @@ namespace Gordon360
             }
         }
 
+        //Perform a job at startup and at every caching event
         private void DoMyWork()
         {
+            //read data from databases and store them in global Data.
             IEnumerable<StudentProfileViewModel> student = Helpers.GetAllStudent();
             IEnumerable<FacultyStaffProfileViewModel> facstaff = Helpers.GetAllFacultyStaff();
             IEnumerable<AlumniProfileViewModel> alumni = Helpers.GetAllAlumni();

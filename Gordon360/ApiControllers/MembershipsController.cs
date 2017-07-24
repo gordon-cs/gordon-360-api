@@ -407,7 +407,6 @@ namespace Gordon360.Controllers.Api
         /// <returns>The membership information that the student is a part of</returns>
         [Route("student/username/{username}")]
         [HttpGet]
-       // [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_BY_STUDENT)]
         public IHttpActionResult GetMembershipsForStudentByUsename(string username)
         {
 
@@ -448,7 +447,7 @@ namespace Gordon360.Controllers.Api
                     var act = _activityService.Get(item.ActivityCode);
                     var admins = _membershipService.GetGroupAdminMembershipsForActivity(item.ActivityCode);
                     bool groupAdmin = false;
-                    foreach (var admin in admins)                                                             // group admin of a group can read membership of this group
+                    foreach (var admin in admins)               // group admin of a group can read membership of this group
                     {
                         if (admin.IDNumber.ToString().Equals(viewerID))
                             groupAdmin = true;

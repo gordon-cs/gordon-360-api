@@ -119,20 +119,18 @@
             <param name="id">The id of the membership request to delete</param>
             <returns>The deleted object</returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.GetAll">
-            <summary>
-            Get all student
-            </summary>
-            <returns></returns>
-            <remarks></remarks>
-        </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.Get">
-            <summary>Get the info of currently logged in user</summary>
+            <summary>Get profile info of currently logged in user</summary>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.GetUserProfile(System.String)">
             <summary>Get public profile info for a user</summary>
             <param name="username">username of the profile info</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.getRole(System.String)">
+            <summary>Get college role of a user</summary>
+            <param name="username"></param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.getMyImg">
@@ -980,6 +978,27 @@
             <param name="email_content">The content of the email to be sent</param>
             <param name="password">Password of the email sender</param>
             <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetStudentProfileByUsername(System.String)">
+            <summary>
+            get student profile info
+            </summary>
+            <param name="username">username</param>
+            <returns>StudentProfileViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetFacultyStaffProfileByUsername(System.String)">
+            <summary>
+            get faculty staff profile info
+            </summary>
+            <param name="username">username</param>
+            <returns>FacultyStaffProfileViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetAlumniProfileByUsername(System.String)">
+            <summary>
+            get alumni profile info
+            </summary>
+            <param name="username">username</param>
+            <returns>AlumniProfileViewModel if found, null if not found</returns>
         </member>
         <member name="M:Gordon360.Services.ProfileService.GetPhotoPath(System.String)">
             <summary>

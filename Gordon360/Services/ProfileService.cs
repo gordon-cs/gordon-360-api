@@ -21,28 +21,40 @@ namespace Gordon360.Services
         {
             _unitOfWork = unitOfWork;
         }
-
+        /// <summary>
+        /// get student profile info
+        /// </summary>
+        /// <param name="username">username</param>
+        /// <returns>StudentProfileViewModel if found, null if not found</returns>
         public StudentProfileViewModel GetStudentProfileByUsername(string username)
         {
             var all = Data.StudentData;
             StudentProfileViewModel result = null;
-            result = all.FirstOrDefault(x => x.AD_Username.ToLower() == username);
+            result = all.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
             return result;
         }
-
+        /// <summary>
+        /// get faculty staff profile info
+        /// </summary>
+        /// <param name="username">username</param>
+        /// <returns>FacultyStaffProfileViewModel if found, null if not found</returns>
         public FacultyStaffProfileViewModel GetFacultyStaffProfileByUsername(string username)
         {
             var all = Data.FacultyStaffData;
             FacultyStaffProfileViewModel result = null;
-            result = all.FirstOrDefault(x => x.AD_Username.ToLower() == username);
+            result = all.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
             return result;
         }
-
+        /// <summary>
+        /// get alumni profile info
+        /// </summary>
+        /// <param name="username">username</param>
+        /// <returns>AlumniProfileViewModel if found, null if not found</returns>
         public AlumniProfileViewModel GetAlumniProfileByUsername(string username)
         {
             var all = Data.AlumniData;
             AlumniProfileViewModel result = null;
-            result = all.FirstOrDefault(x => x.AD_Username.ToLower() == username);
+            result = all.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
             return result;
         }
 
@@ -60,7 +72,7 @@ namespace Gordon360.Services
             }
 
             var idParam = new SqlParameter("@ID", id);
-            var result = RawSqlQuery<PhotoPathViewModel>.query("PHOTO_INFO_PER_USER_NAME @ID", idParam).FirstOrDefault();
+            var result = RawSqlQuery<PhotoPathViewModel>.query("PHOTO_INFO_PER_USER_NAME @ID", idParam).FirstOrDefault(); //run stored procedure
 
             if (result == null)
             {
@@ -79,8 +91,7 @@ namespace Gordon360.Services
             var query = _unitOfWork.ProfileCustomRepository.FirstOrDefault(x => x.username == username);
             if (query == null)
             {
-                //throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
-                return new ProfileCustomViewModel();
+                return new ProfileCustomViewModel();  //return a null object.
             }
 
             ProfileCustomViewModel result = query;
@@ -106,7 +117,7 @@ namespace Gordon360.Services
             if (name == null)
                 nameParam = new SqlParameter("@FILE_NAME", DBNull.Value);
             var context = new CCTEntities1();
-            context.Database.ExecuteSqlCommand("UPDATE_PHOTO_PATH @ID, @FILE_PATH, @FILE_NAME", authParam, pathParam, nameParam);
+            context.Database.ExecuteSqlCommand("UPDATE_PHOTO_PATH @ID, @FILE_PATH, @FILE_NAME", authParam, pathParam, nameParam);   //run stored procedure.
         }
 
 
@@ -128,7 +139,7 @@ namespace Gordon360.Services
                 var iParam = new SqlParameter("@INSTAGRAM", DBNull.Value);
                 var lParam = new SqlParameter("@LINKEDIN", DBNull.Value);
                 var context = new CCTEntities1();
-                context.Database.ExecuteSqlCommand("CREATE_SOCIAL_LINKS @USERNAME, @FACEBOOK, @TWITTER, @INSTAGRAM, @LINKEDIN", nameParam, fParam, tParam, iParam, lParam);
+                context.Database.ExecuteSqlCommand("CREATE_SOCIAL_LINKS @USERNAME, @FACEBOOK, @TWITTER, @INSTAGRAM, @LINKEDIN", nameParam, fParam, tParam, iParam, lParam); //run stored procedure to create a row in the database for this user.
                 original = _unitOfWork.ProfileCustomRepository.GetByUsername(username);
             }
 
@@ -170,7 +181,7 @@ namespace Gordon360.Services
             var idParam = new SqlParameter("@ID", id);
             var valueParam = new SqlParameter("@VALUE", value);
             var context = new CCTEntities1();
-            context.Database.ExecuteSqlCommand("UPDATE_PHONE_PRIVACY @ID, @VALUE", idParam, valueParam);
+            context.Database.ExecuteSqlCommand("UPDATE_PHONE_PRIVACY @ID, @VALUE", idParam, valueParam); // run stored procedure.
 
         }
         /// <summary>
@@ -191,7 +202,7 @@ namespace Gordon360.Services
             var idParam = new SqlParameter("@ACCOUNT_ID", accountID);
             var valueParam = new SqlParameter("@VALUE", value);
             var context = new CCTEntities1();
-            context.Database.ExecuteSqlCommand("UPDATE_SHOW_PIC @ACCOUNT_ID, @VALUE", idParam, valueParam);
+            context.Database.ExecuteSqlCommand("UPDATE_SHOW_PIC @ACCOUNT_ID, @VALUE", idParam, valueParam); //run stored procedure.
         }
 
     }
