@@ -107,9 +107,8 @@
       <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
@@ -134,9 +133,30 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Http.Owin, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Owin.5.2.3\lib\net45\System.Web.Http.Owin.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
@@ -174,17 +194,20 @@
       <Private>True</Private>
       <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="WebGrease, Version=1.5.2.14234, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
+    </Reference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Compile Include="ApiControllers\AccountsController.cs" />
     <Compile Include="ApiControllers\AdminsController.cs" />
+    <Compile Include="ApiControllers\EventController.cs" />
     <Compile Include="ApiControllers\ContentManagementController.cs" />
     <Compile Include="ApiControllers\EmailsController.cs" />
     <Compile Include="ApiControllers\MembershipRequestController.cs" />
+    <Compile Include="ApiControllers\ProfilesController.cs" />
     <Compile Include="ApiControllers\RolesController.cs" />
     <Compile Include="ApiControllers\SessionsController.cs" />
-    <Compile Include="ApiControllers\StudentsController.cs" />
     <Compile Include="ApiControllers\ActivitiesController.cs" />
     <Compile Include="ApiControllers\MembershipsController.cs" />
     <Compile Include="AuthorizationFilters\StateYourBusiness.cs" />
@@ -198,7 +221,7 @@
     <Compile Include="Models\ACTIVE_CLUBS_PER_SESS_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ACT_CLUB_DEF.cs">
+    <Compile Include="Models\ACT_CLUB_DEF_DELETE.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ACT_INFO.cs">
@@ -210,6 +233,9 @@
     <Compile Include="Models\ADVISOR_EMAILS_PER_ACT_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ALL_EVENTS_PER_STUDENT_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ALL_MEMBERSHIPS_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -219,7 +245,7 @@
     <Compile Include="Models\ALL_SUPERVISORS_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\alumni.cs">
+    <Compile Include="Models\Alumni.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\C360_SLIDER.cs">
@@ -246,6 +272,9 @@
     <Compile Include="Models\CM_SESSION_MSTR.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CUSTOM_PROFILE.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\DISTINCT_ACT_TYPE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -255,10 +284,7 @@
     <Compile Include="Models\EVENTS_BY_STUDENT_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\facstaff.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Faculty.cs">
+    <Compile Include="Models\FacStaff.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\GRP_ADMIN_EMAILS_PER_ACT_CDE_Result.cs">
@@ -279,6 +305,9 @@
     <Compile Include="Models\MEMBERSHIP.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\MEMBERSHIPS_PER_ACT_CDE_AUTHORIZED_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\MEMBERSHIPS_PER_ACT_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -294,9 +323,6 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PHOTO_INFO_PER_USER_NAME_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\PROFILE_IMAGE.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\REQUEST.cs">
@@ -317,13 +343,10 @@
     <Compile Include="Models\sp_helpdiagrams_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Staff.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\Student.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\student_temp.cs">
+    <Compile Include="Models\STUDENT_EVENTS_PER_TERM_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SUPERVISORS_PER_ACT_CDE_Result.cs">
@@ -335,20 +358,30 @@
     <Compile Include="Models\sysdiagrams.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModels\BasicInfoViewModel.cs" />
     <Compile Include="Models\ViewModels\AccountViewModel.cs" />
     <Compile Include="Models\ViewModels\ActivityInfoViewModel.cs" />
     <Compile Include="Models\ViewModels\ActivityViewModel.cs" />
+    <Compile Include="Models\ViewModels\AlumniProfileViewModel.cs" />
+    <Compile Include="Models\ViewModels\AttendedEventViewModel.cs" />
     <Compile Include="Models\ViewModels\EmailContentViewModel.cs" />
+    <Compile Include="Models\ViewModels\EventViewModel.cs" />
+    <Compile Include="Models\ViewModels\ChapelEventViewModel.cs" />
     <Compile Include="Models\ViewModels\EmailViewModel.cs" />
-    <Compile Include="Models\ViewModels\FacultyViewModel.cs" />
+    <Compile Include="Models\ViewModels\ExtensionMethods\EventViewModelExtension.cs" />
+    <Compile Include="Models\ViewModels\FacultyStaffProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\JenzibarActivitiesViewModel.cs" />
     <Compile Include="Models\ViewModels\MembershipViewModel.cs" />
     <Compile Include="Models\ViewModels\MembershipRequestViewModel.cs" />
     <Compile Include="Models\ViewModels\ParticipationViewModel.cs" />
+    <Compile Include="Models\ViewModels\PhotoPathViewModel.cs" />
+    <Compile Include="Models\ViewModels\ProfileCustomViewModel.cs" />
+    <Compile Include="Models\ViewModels\PublicAlumniProfileViewModel.cs" />
+    <Compile Include="Models\ViewModels\PublicFacultyStaffProfileViewModel.cs" />
+    <Compile Include="Models\ViewModels\PublicStudentProfileViewModel.cs" />
+    <Compile Include="Models\ViewModels\StudentProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\SessionViewModel.cs" />
     <Compile Include="Models\ViewModels\SliderViewModel.cs" />
-    <Compile Include="Models\ViewModels\StaffViewModel.cs" />
-    <Compile Include="Models\ViewModels\StudentViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\CustomMultiPartFormDataStreamProvider.cs" />
     <Compile Include="Repositories\GenericRepository.cs" />
@@ -358,10 +391,13 @@
     <Compile Include="Services\AccountService.cs" />
     <Compile Include="Services\ActivityService.cs" />
     <Compile Include="Services\AdministratorService.cs" />
+    <Compile Include="Services\EventService.cs" />
     <Compile Include="Services\ComplexQueries\RawSqlQuery.cs" />
     <Compile Include="Services\ContentManagementService.cs" />
     <Compile Include="Services\EmailService.cs" />
-    <Compile Include="Services\FacultyService.cs" />
+    <Compile Include="Services\ProfileService.cs" />
+    <Compile Include="Services\RoleCheckingService.cs" />
+    <Compile Include="Static Classes\Data.cs" />
     <Compile Include="Static Classes\Helpers.cs" />
     <Compile Include="Services\JenzibarActivityService.cs" />
     <Compile Include="Services\MembershipRequestService.cs" />
@@ -369,8 +405,6 @@
     <Compile Include="Services\ParticipationService.cs" />
     <Compile Include="Services\ServiceInterfaces.cs" />
     <Compile Include="Services\SessionService.cs" />
-    <Compile Include="Services\StaffService.cs" />
-    <Compile Include="Services\StudentService.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Static Classes\Names.cs" />
   </ItemGroup>
@@ -379,6 +413,7 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>CCT_DB_Models.Designer.cs</LastGenOutput>
     </EntityDeploy>
+    <Content Include="browseable\profile\Default\profile.png" />
     <Content Include="browseable\uploads\Default\activityImage.png" />
     <Content Include="Models\CCT_DB_Models.edmx.diagram">
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
@@ -439,7 +474,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:4869/</IISUrl>
+          <IISUrl>http://localhost:3678</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

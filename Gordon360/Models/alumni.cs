@@ -12,11 +12,9 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class alumni
+    public partial class Alumni
     {
-        public int Row_ID { get; set; }
         public string ID { get; set; }
-        public string SSN { get; set; }
         public string WebUpdate { get; set; }
         public string Title { get; set; }
         public string FirstName { get; set; }
@@ -25,10 +23,6 @@ namespace Gordon360.Models
         public string Suffix { get; set; }
         public string MaidenName { get; set; }
         public string NickName { get; set; }
-        public string EmailUserName { get; set; }
-        public string EmailPassword { get; set; }
-        public string EmailServer { get; set; }
-        public string EmailProtocol { get; set; }
         public string HomeStreet1 { get; set; }
         public string HomeStreet2 { get; set; }
         public string HomeCity { get; set; }
@@ -38,23 +32,9 @@ namespace Gordon360.Models
         public string HomePhone { get; set; }
         public string HomeFax { get; set; }
         public string HomeEmail { get; set; }
-        public string Occupation { get; set; }
         public string JobTitle { get; set; }
-        public string Employer { get; set; }
-        public string WorkStreet1 { get; set; }
-        public string WorkStreet2 { get; set; }
-        public string WorkCity { get; set; }
-        public string WorkState { get; set; }
-        public string WorkPostalCode { get; set; }
-        public string WorkCountry { get; set; }
-        public string WorkPhone { get; set; }
-        public string WorkFax { get; set; }
-        public string WorkEmail { get; set; }
         public string MaritalStatus { get; set; }
         public string SpouseName { get; set; }
-        public string SpouseID { get; set; }
-        public string Children { get; set; }
-        public string Relatives { get; set; }
         public string College { get; set; }
         public string ClassYear { get; set; }
         public string PreferredClassYear { get; set; }
@@ -62,23 +42,16 @@ namespace Gordon360.Models
         public string Major2 { get; set; }
         public string ShareName { get; set; }
         public string ShareAddress { get; set; }
-        public string ChurchName { get; set; }
-        public string ChurchStreet1 { get; set; }
-        public string ChurchStreet2 { get; set; }
-        public string ChurchCity { get; set; }
-        public string ChurchState { get; set; }
-        public string ChurchPostalCode { get; set; }
-        public string ChurchCountry { get; set; }
-        public string ChurchPhone { get; set; }
-        public string ChurchPastor { get; set; }
-        public string ChurchDenomination { get; set; }
-        public string DOB { get; set; }
         public string Gender { get; set; }
         public string GradDate { get; set; }
         public string Email { get; set; }
         public string grad_student { get; set; }
-        public string FacStaffID { get; set; }
         public string Barcode { get; set; }
-        public string AlumniID { get; set; }
+        public string AD_Username { get; set; }
+        public Nullable<int> show_pic { get; set; }
+        public Nullable<int> preferred_photo { get; set; }
+        public string Country { get; set; }
+        public string Major2Description { get; set; }
+        public string Major1Description { get; set; }
     }
 }

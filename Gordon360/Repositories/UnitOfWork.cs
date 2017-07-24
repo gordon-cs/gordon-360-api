@@ -10,27 +10,41 @@ namespace Gordon360.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
+        private IRepository<Student> _StudentRepository;
+        private IRepository<FacStaff> _FacultyStaffRepository;
+        private IRepository<Alumni> _AlumniRepository;
         private IRepository<ACCOUNT> _AccountRepository;
-        private IRepository<ACT_CLUB_DEF> _ActivityRepository;
+        private IRepository<ACT_CLUB_DEF_DELETE> _ActivityRepository;
         private IRepository<CM_SESSION_MSTR> _SessionRepository;
-        private IRepository<Faculty> _FacultyRepository;
         private IRepository<JNZB_ACTIVITIES> _JenzibarActvityRepository;
         private IRepository<MEMBERSHIP> _MembershipRepository;
         private IRepository<PART_DEF> _ParticipationRepository;
-        private IRepository<Staff> _StaffRepository;
-        private IRepository<Student> _StudentRepository;
         private IRepository<SUPERVISOR> _SupervisorRepository;
         private IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> _ActivityPerSessionRepository;
         private IRepository<REQUEST> _MembershipRequestRepository;
         private IRepository<ACT_INFO> _ActivityInfoRepository;
         private IRepository<ADMIN> _AdministratorRepository;
         private IRepository<C360_SLIDER> _SliderRepository;
+        private IRepository<CUSTOM_PROFILE> _ProfileCustomRepository;
+        private IRepository<ChapelEvent> _ChapelEventRepository;
 
         private CCTEntities1 _context;
 
         public UnitOfWork()
         {
             _context = new CCTEntities1();
+        }
+        public IRepository<Student> StudentRepository
+        {
+            get { return _StudentRepository ?? (_StudentRepository = new GenericRepository<Student>(_context)); }
+        }
+        public IRepository<FacStaff> FacultyStaffRepository
+        {
+            get { return _FacultyStaffRepository ?? (_FacultyStaffRepository = new GenericRepository<FacStaff>(_context)); }
+        }
+        public IRepository<Alumni> AlumniRepository
+        {
+            get { return _AlumniRepository ?? (_AlumniRepository = new GenericRepository<Alumni>(_context)); }
         }
         public IRepository<ACCOUNT> AccountRepository
         {
@@ -44,10 +58,6 @@ namespace Gordon360.Repositories
         {
             get { return _SessionRepository ?? (_SessionRepository = new GenericRepository<CM_SESSION_MSTR>(_context)); }
         }
-        public IRepository<Faculty> FacultyRepository
-        {
-            get { return _FacultyRepository ?? (_FacultyRepository = new GenericRepository<Faculty>(_context)); }
-        }
         public IRepository<JNZB_ACTIVITIES> JenzibarActvityRepository
         {
             get { return _JenzibarActvityRepository ?? (_JenzibarActvityRepository = new GenericRepository<JNZB_ACTIVITIES>(_context)); }
@@ -59,14 +69,6 @@ namespace Gordon360.Repositories
         public IRepository<PART_DEF> ParticipationRepository
         {
             get { return _ParticipationRepository ?? (_ParticipationRepository = new GenericRepository<PART_DEF>(_context)); }
-        }
-        public IRepository<Staff> StaffRepository
-        {
-            get { return _StaffRepository ?? (_StaffRepository = new GenericRepository<Staff>(_context)); }
-        }
-        public IRepository<Student> StudentRepository
-        {
-            get { return _StudentRepository ?? (_StudentRepository = new GenericRepository<Student>(_context)); }
         }
         public IRepository<SUPERVISOR> SupervisorRepository
         {
@@ -94,6 +96,15 @@ namespace Gordon360.Repositories
         public IRepository<C360_SLIDER> SliderRepository
         {
             get { return _SliderRepository ?? (_SliderRepository = new GenericRepository<C360_SLIDER>(_context));  }
+        }
+        public IRepository<ChapelEvent> ChapelEventRepository
+        {
+            get { return _ChapelEventRepository ?? (_ChapelEventRepository = new GenericRepository<ChapelEvent>(_context)); }
+        }
+
+        public IRepository<CUSTOM_PROFILE> ProfileCustomRepository
+        {
+            get { return _ProfileCustomRepository ?? (_ProfileCustomRepository = new GenericRepository<CUSTOM_PROFILE>(_context)); }
         }
 
         public bool Save()

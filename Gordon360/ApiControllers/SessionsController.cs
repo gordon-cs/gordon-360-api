@@ -88,6 +88,21 @@ namespace Gordon360.Controllers.Api
 
             return Ok(currentSession);
         }
+        /// <summary>
+        /// Gets the days left in the current semester
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("daysLeft")]
+        public IHttpActionResult GetDaysLeftinSemester()
+        {
+            var days = Helpers.GetDaysLeft();
+            if ((days[1] == 0 && days[2] == 0) || days == null)
+            {
+                return NotFound();
+            }
 
+            return Ok(days);
+        }
     }
 }

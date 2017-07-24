@@ -13,18 +13,22 @@ namespace Gordon360.Models.ViewModels
         public string Email { get; set; }
         public string ADUserName { get; set; }
         public string AccountType { get; set; }
+        public string Barcode { get; set; }
+        public int show_pic { get; set; }
         public int ReadOnly { get; set; }
 
         public static implicit operator AccountViewModel(ACCOUNT a)
         {
             AccountViewModel vm = new AccountViewModel
             {
-                GordonID = a.gordon_id.Trim(),
-                FirstName = a.firstname.Trim(),
-                LastName = a.lastname.Trim(),
+                GordonID = a.gordon_id,
+                FirstName = a.firstname,
+                LastName = a.lastname,
                 Email = a.email ?? "", // Some random records have null for an email.
-                ADUserName = a.AD_Username.Trim() ?? "",
-                AccountType = a.account_type.Trim(),
+                ADUserName = a.AD_Username ?? "",
+                AccountType = a.account_type,
+                Barcode = a.barcode ?? "",
+                show_pic = a.show_pic,
                 ReadOnly = a.ReadOnly
             };
 

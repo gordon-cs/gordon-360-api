@@ -411,6 +411,25 @@ namespace Gordon360.Services
             return original;
         }
 
+        /// <summary>
+        /// Switches the privacy property of the person whose membership id is given
+        /// </summary>
+        /// <param name="id">The membership id.</param>
+        /// <param name="p">membership private or not</param>
+        /// <returns>The newly modified membership.</returns>
+        public void TogglePrivacy(int id, bool p)
+        {
+            var original = _unitOfWork.MembershipRepository.GetById(id);
+            if (original == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
+            }
+
+            original.PRIVACY = p;
+
+            _unitOfWork.Save();
+        }
+
 
         /// <summary>
         /// Helper method to Validate a membership
@@ -439,7 +458,6 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
             }
-
             var activitiesThisSession = RawSqlQuery<ActivityViewModel>.query("ACTIVE_CLUBS_PER_SESS_ID @SESS_CDE", new SqlParameter("SESS_CDE", SqlDbType.VarChar) { Value = membership.SESS_CDE });
 
             bool offered = false;

@@ -16,7 +16,6 @@ namespace Gordon360.Models
     {
         public int ROWID { get; set; }
         public string CHBarEventID { get; set; }
-        public int ID_NUM { get; set; }
         public string CHBarcode { get; set; }
         public string CHEventID { get; set; }
         public string CHCheckerID { get; set; }
@@ -24,6 +23,7 @@ namespace Gordon360.Models
         public Nullable<System.DateTime> CHTime { get; set; }
         public string CHSource { get; set; }
         public string CHTermCD { get; set; }
+        public int ID_NUM { get; set; }
         public Nullable<int> Attended { get; set; }
         public Nullable<int> Required { get; set; }
     }

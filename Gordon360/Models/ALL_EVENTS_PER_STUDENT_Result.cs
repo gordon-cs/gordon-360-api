@@ -10,11 +10,11 @@
 namespace Gordon360.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class ACT_CLUB_DEF
+    public partial class ALL_EVENTS_PER_STUDENT_Result
     {
-        public string ACT_CDE { get; set; }
-        public string ACT_DESC { get; set; }
+        public Nullable<System.DateTime> Date { get; set; }
+        public Nullable<System.DateTime> Time { get; set; }
+        public string EventID { get; set; }
     }
 }
