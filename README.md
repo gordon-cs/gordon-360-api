@@ -11,7 +11,8 @@ Dive in.
     - [Stored Procedures](#stored-procedures)
     - [Triggers](#triggers)
 - [The Code](#the-code)	
-    - [Introduction](#introduction) 
+- [Introduction](#introduction) 
+- [Caching] (#caching)
 - [API Endpoints](#api-endpoints)
     - [Authentication](#authentication)
     - [Memberships](#memberships)
@@ -80,6 +81,19 @@ The folders for these IIS sites can be found on the CCCTrain machine under `F:\s
     - If you used the production flag, move `dist/` to the 360 IIS site.
 - For moving files between a mac and the virtual windows machine, we used a Microsoft Remote Desktop feature called folder redirection. It lets you specify folders on your mac that will be available on the PC you are remoting to.
 
+## Caching
+
+Since the type of solution we are using does not run like many systems, we have to cache a request that occurrs every few minutes after startup. As such, we have implemented code in the startup.cs file that:
+ 1 ) Performs static methods and saves the output to a static object (located in Helpers and Data, respectively)
+ 2 ) Create an entry in the cache that then runs these static methods every few minutes
+
+This process makes use of static names, methods, and data, since ASP.NET does not use global variables.
+
+Data which is stored upon startup includes:
+
+- All events in 25Live ending after the start of the current academic year
+- All basic information on every account with an AD Username
+- All student, faculty, staff and alumni profile info
 
 ## The Database
 
