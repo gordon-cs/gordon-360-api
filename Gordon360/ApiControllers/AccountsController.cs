@@ -83,7 +83,7 @@ namespace Gordon360.ApiControllers
                     accounts = from m in Data.AllBasicInfo select m;
                     break;
                 case Position.STUDENT:
-                    accounts = from m in Data.AllBasicInfoWithoutAlumni select m;
+                    accounts = from m in Data.AllBasicInfo select m;
                     break;
                 case Position.FACSTAFF:
                     accounts = from m in Data.AllBasicInfo select m;
