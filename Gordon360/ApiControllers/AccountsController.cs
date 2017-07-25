@@ -74,28 +74,18 @@ namespace Gordon360.ApiControllers
             // Create accounts viewmodel to search
             var accounts = from m in Data.AllBasicInfo select m;
 
-            switch (viewerType)
-            {
-                case Position.GOD:
-                    accounts = from m in Data.AllBasicInfo select m;
-                    break;
-                case Position.POLICE:
-                    accounts = from m in Data.AllBasicInfo select m;
-                    break;
-                case Position.STUDENT:
-                    accounts = from m in Data.AllBasicInfo select m;
-                    break;
-                case Position.FACSTAFF:
-                    accounts = from m in Data.AllBasicInfo select m;
-                    break;
-            }
-
             // If the input is not null, do this
-            if (!String.IsNullOrEmpty(searchString))
+            if (!String.IsNullOrEmpty(searchString) && viewerType == Position.STUDENT)
             {
                 // for every stored account, convert it to lowercase and compare it to the search paramter 
                 accounts = accounts.Where(s => s.ConcatonatedInfo.ToLower().Contains(searchString));
             
+            }
+
+            else if (!String.IsNullOrEmpty(searchString)){
+                // for every stored account, convert it to lowercase and compare it to the search paramter 
+                accounts = accounts.Where(s => s.ConcatonatedInfo.ToLower().Contains(searchString));
+
             }
 
             // Return all of the 
