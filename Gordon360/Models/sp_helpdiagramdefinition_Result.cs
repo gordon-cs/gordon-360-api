@@ -10,10 +10,14 @@
 namespace Gordon360.Models
 {
     using System;
+    using System.Collections.Generic;
     
-    public partial class sp_helpdiagramdefinition_Result
+    public partial class Faculty
     {
-        public Nullable<int> version { get; set; }
-        public byte[] definition { get; set; }
+        public string faculty_id { get; set; }
+        public string faculty_name { get; set; }
+        public string faculty_email { get; set; }
+        public string user_name { get; set; }
+        public int Private { get; set; }
     }
 }

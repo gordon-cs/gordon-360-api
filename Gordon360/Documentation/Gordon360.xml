@@ -979,6 +979,29 @@
             <param name="password">Password of the email sender</param>
             <returns></returns>
         </member>
+        <member name="T:Gordon360.Services.FacultyService">
+            <summary>
+            Send a email to a list of email addresses
+            </summary>
+            <param name="to_emails">All addresses to send this email to</param>
+            <param name="from_email">The address this email is sent from</param>
+            <param name="subject">Subject of the email to be sent</param>
+            <param name="email_content">The content of the email to be sent</param>
+            <param name="password">Password of the email sender</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.EmailService.SendEmailToActivity(System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Send a email to members of an activity
+            </summary>
+            <param name="activityCode">The activity code to send this email to</param>
+            <param name="sessionCode">The session of activity to select members from</param>
+            <param name="from_email">The address this email is sent from</param>
+            <param name="subject">Subject of the email to be sent</param>
+            <param name="email_content">The content of the email to be sent</param>
+            <param name="password">Password of the email sender</param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Services.ProfileService.GetStudentProfileByUsername(System.String)">
             <summary>
             get student profile info

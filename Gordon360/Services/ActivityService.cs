@@ -50,7 +50,7 @@ namespace Gordon360.Services
         public IEnumerable<ActivityInfoViewModel> GetActivitiesForSession(string id)
         {
             // Stored procedure returns columns ACT_CDE and ACT_DESC
-            var query = RawSqlQuery<ACT_CLUB_DEF_DELETE>.query("ACTIVE_CLUBS_PER_SESS_ID @SESS_CDE", new SqlParameter("SESS_CDE", SqlDbType.VarChar) { Value = id });
+            var query = RawSqlQuery<ActivityViewModel>.query("ACTIVE_CLUBS_PER_SESS_ID @SESS_CDE", new SqlParameter("SESS_CDE", SqlDbType.VarChar) { Value = id });
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "No Activities for this session was not found." };

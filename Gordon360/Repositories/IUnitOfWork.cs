@@ -12,7 +12,6 @@ namespace Gordon360.Repositories
         IRepository<FacStaff> FacultyStaffRepository { get; }
         IRepository<Alumni> AlumniRepository { get; }
         IRepository<ACCOUNT> AccountRepository { get; }
-        IRepository<ACT_CLUB_DEF_DELETE> ActivityRepository { get; }
         IRepository<ACT_INFO> ActivityInfoRepository { get; }
         IRepository<CM_SESSION_MSTR> SessionRepository { get; }
         IRepository<JNZB_ACTIVITIES> JenzibarActvityRepository { get; }

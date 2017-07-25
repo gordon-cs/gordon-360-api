@@ -19,7 +19,7 @@ namespace Gordon360.Models.ViewModels
 
         public static implicit operator ActivityInfoViewModel(ACT_INFO info)
         {
-          ActivityInfoViewModel vm = new ActivityInfoViewModel
+            ActivityInfoViewModel vm = new ActivityInfoViewModel
             {
                 ActivityCode = info.ACT_CDE.Trim(),
                 ActivityDescription = info.ACT_DESC.Trim() ?? "",
