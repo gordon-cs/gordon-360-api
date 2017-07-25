@@ -13,6 +13,9 @@ namespace Gordon360.Static.Data
 
         // Basic Info on Every Account
         public static IEnumerable<BasicInfoViewModel> AllBasicInfo { get; set; }
+        // Basic info excluding alumni info
+        public static IEnumerable<BasicInfoViewModel> AllBasicInfoWithoutAlumni { get; set; }
+
         public static IEnumerable<StudentProfileViewModel> StudentData { get; set; }
         public static IEnumerable<FacultyStaffProfileViewModel> FacultyStaffData { get; set; }
         public static IEnumerable<AlumniProfileViewModel> AlumniData { get; set; }

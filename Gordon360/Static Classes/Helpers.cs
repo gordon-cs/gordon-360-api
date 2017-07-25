@@ -67,6 +67,15 @@ namespace Gordon360.Static.Methods
             // Filter out results with null or empty active directory names
             return result;
         }
+
+        // Get all basic info without Alumni
+        public static IEnumerable<BasicInfoViewModel> GetBasicInfoWithoutAlumni( IEnumerable<AlumniProfileViewModel> alumni, IEnumerable<BasicInfoViewModel> basic)
+        {
+            IEnumerable<BasicInfoViewModel> result = null;
+            result = basic.Where(b => !alumni.Any(a => a.AD_Username == b.UserName));
+            return result;
+        }
+
         /// <summary>
         /// Service method that gets the current session we are in.
         /// </summary>

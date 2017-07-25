@@ -127,9 +127,12 @@ namespace Gordon360
             IEnumerable<StudentProfileViewModel> student = Helpers.GetAllStudent();
             IEnumerable<FacultyStaffProfileViewModel> facstaff = Helpers.GetAllFacultyStaff();
             IEnumerable<AlumniProfileViewModel> alumni = Helpers.GetAllAlumni();
+            IEnumerable<BasicInfoViewModel> basicWithoutAlumni = Helpers.GetBasicInfoWithoutAlumni(alumni, Data.AllBasicInfo);
+            // storing in global variable
             Data.StudentData = student;
             Data.FacultyStaffData = facstaff;
             Data.AlumniData = alumni;
+            Data.AllBasicInfoWithoutAlumni = basicWithoutAlumni;
         }
 
         // Inside the callback we do all the service work

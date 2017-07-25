@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Security.Claims;
 using System.Linq;
 using Gordon360.Static.Data;
+using Gordon360.Static.Names;
 using System.Web.Http;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
@@ -15,12 +16,17 @@ namespace Gordon360.ApiControllers
     [RoutePrefix("api/accounts")]
     public class AccountsController : ApiController
     {
+        private IRoleCheckingService _roleCheckingService;
+
         IAccountService _accountService;
+
         public AccountsController()
         {
-            IUnitOfWork unitOfWork = new UnitOfWork();
-            _accountService = new AccountService(unitOfWork);
+            IUnitOfWork _unitOfWork = new UnitOfWork();
+            _accountService = new AccountService(_unitOfWork);
+            _roleCheckingService = new RoleCheckingService(_unitOfWork);
         }
+
         // GET: api/Accounts
         [HttpGet]
         [Route("email/{email}")]
@@ -60,14 +66,38 @@ namespace Gordon360.ApiControllers
         [Route ("search/{searchString}")]
         public IHttpActionResult Index(string searchString)
         {
-            // Create an index on the stored account list, using "m" as your range variable
+            //get token data from context, username is the username of current logged in person
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var viewerType = _roleCheckingService.getCollegeRole(viewerName);
+
+            // Create accounts viewmodel to search
             var accounts = from m in Data.AllBasicInfo select m;
+
+            switch (viewerType)
+            {
+                case Position.GOD:
+                    accounts = from m in Data.AllBasicInfo select m;
+                    break;
+                case Position.POLICE:
+                    accounts = from m in Data.AllBasicInfo select m;
+                    break;
+                case Position.STUDENT:
+                    accounts = from m in Data.AllBasicInfoWithoutAlumni select m;
+                    break;
+                case Position.FACSTAFF:
+                    accounts = from m in Data.AllBasicInfo select m;
+                    break;
+            }
+
             // If the input is not null, do this
             if (!String.IsNullOrEmpty(searchString))
             {
                 // for every stored account, convert it to lowercase and compare it to the search paramter 
-                accounts = accounts.Where(s => s.ConcatonatedInfo.ToLower().Contains(searchString) );
+                accounts = accounts.Where(s => s.ConcatonatedInfo.ToLower().Contains(searchString));
+            
             }
+
             // Return all of the 
             return Ok(accounts);
         }

@@ -38,7 +38,7 @@ namespace Gordon360.Controllers.Api
 
         public ProfilesController()
         {
-            var _unitOfWork = new UnitOfWork();
+            IUnitOfWork _unitOfWork = new UnitOfWork();
             _profileService = new ProfileService(_unitOfWork);
             _accountService = new AccountService(_unitOfWork);
             _roleCheckingService = new RoleCheckingService(_unitOfWork);
