@@ -47,12 +47,11 @@ namespace Gordon360.AuthorizationFilters
             // Step 1: Who is to be authorized
             var authenticatedUser = actionContext.RequestContext.Principal as ClaimsPrincipal;
 
-            user_position = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role").Value;
-            user_id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
-            user_name = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-
             if (authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role") != null)
             {
+                user_position = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role").Value;
+                user_id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
+                user_name = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
                 if (user_position == Position.GOD)
                 {
                     var adminService = new AdministratorService(new UnitOfWork());
