@@ -219,7 +219,7 @@ namespace Gordon360.Controllers.Api
                     customInfo = _customInfo;
                     break;
                 case Position.FACSTAFF:
-                    student = (_student == null) ? null : (PublicStudentProfileViewModel)_student;
+                    student = _student;
                     faculty = (_faculty == null) ? null : (PublicFacultyStaffProfileViewModel)_faculty;
                     alumni = (_alumni == null) ? null : (PublicAlumniProfileViewModel)_alumni;
                     customInfo = _customInfo;

@@ -198,7 +198,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            var accountID = original.gordon_id;
+            var accountID = original.account_id;
             var idParam = new SqlParameter("@ACCOUNT_ID", accountID);
             var valueParam = new SqlParameter("@VALUE", value);
             var context = new CCTEntities1();
