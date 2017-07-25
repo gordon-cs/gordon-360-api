@@ -1690,6 +1690,191 @@ class post_membership_request_for_someone_else___regular_member(TestCase):
 #         # Don't delete activity even if it was updated. That's too drastic.
 #         pass
     
+
+#################
+# PROFILE TESTS #
+#################
+
+class get_my_profile___regular_member(TestCase):
+    """ Verify that a regular member can get a profile of the current user
+    
+    Pre-Conditions:
+    Valid Authentication header
+    Expectaions:
+    Endpoint -- api/profiles/
+    Expected Status Code -- 200 OK
+    Expected Respones Body -- A json object of information on own profile
+    """
+    def __init__(self, session=None):
+        super().__init__(session)
+        self.url = hostURL + 'api/profiles/'
+    def test(self):
+         response = api.get(self.session, self.url)
+         if not response.status_code == 200:
+             self.log_error('Expected 200 OK, got {0}.'.format(response.status_code))
+         try:
+             response.json()
+         except ValueError:
+             self.log_error('Expected Json response body, got {0}.'.format(response.text))
+
+
+class get_profile_by_username___regular_member(TestCase):
+    """ Verify that a regular member can get another person's profile, filtering private information
+    Pre-Conditions:
+    Valid Authentication Header
+    Expectations:
+    Endpoint -- api/profiles/:username
+    Expected Status Code -- 200 Ok
+    Expected Response Body -- list of information on the user without private info
+    """
+    def __init__(self , session=None):
+        super().__init__(session)
+        self.url = hostURL + 'api/profiles/jenny.kim/'
+
+    def test(self):
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            self.log_error('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            self.log_error('Expected Json response body, got{0}.'.format(response.text))
+
+
+class get_college_role_by_username___regular_member(TestCase):
+    """ Verify that a regular member can get a college role of the current user
+    Pre-Conditions:
+    Valid Authentication Header
+    Expectations:
+    Endpoint -- api/profiles/role/:username
+    Expected Status Code -- 200 Ok
+    Expected Response Body -- list of information on the user without private info
+    """
+    def __init__(self , session=None):
+        super().__init__(session)
+        self.url = hostURL + 'api/profiles/role/jenny.kim/'
+
+    def test(self):
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            self.log_error('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            self.log_error('Expected Json response body, got{0}.'.format(response.text))
+
+
+
+class get_image___regular_member(TestCase):
+    """ Verify that a regular member can get a profile image of the current user
+    Pre-Conditions:
+    Valid Authentication Header
+    Expectations:
+    Endpoint -- api/profiles/image
+    Expected Status Code -- 200 Ok
+    Expected Response Body -- image path of the current user
+    """
+    def __init__(self , session=None):
+        super().__init__(session)
+        self.url = hostURL + 'api/profiles/image/'
+
+    def test(self):
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            self.log_error('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            self.log_error('Expected Json response body, got{0}.'.format(response.text))
+
+
+
+class get_image_by_username___regular_member(TestCase):
+    """ Verify that a regular member can get a profile image of someone else
+    Pre-Conditions:
+    Valid Authentication Header
+    Expectations:
+    Endpoint -- api/profiles/image/:username
+    Expected Status Code -- 200 Ok
+    Expected Response Body -- image path of another user
+    """
+    def __init__(self , session=None):
+        super().__init__(session)
+        self.url = hostURL + 'api/profiles/image/jenny.kim/'
+
+    def test(self):
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            self.log_error('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            self.log_error('Expected Json response body, got{0}.'.format(response.text))
+        
+
+
+class post_image___regular_member(TestCase):
+    """ Verify that a user can upload a profile image
+    Pre-Conditions:
+    Authenticated as Regular member.
+    Expectations:
+    Endpoint -- api/profiles/image/
+    Expected Status Code -- 200 OK 
+    Expected Content -- 
+    """
+
+    def __init__(self, session=None):
+        super().__init__(session)
+        self.url = hostURL + 'api/profiles/image/'
+        self.data = {
+            'ID': my_id_number,
+            'FILE_PATH': 'C:/Users/jenny.kim/Documents/profile.png',
+            'FILE_NAME': '21607000436110'
+        }
+    
+    def test(self):
+        response = api.post(self.session, self.url, self.data)
+        if not response.status_code == 200:
+            self.log_error('Expected 200 OK, got {0}.'.format(response.status_code))
+            
+    def cleanup(self):
+        self.data = {
+            'ID': my_id_number,
+            'FILE_PATH': None,
+            'FILE_NAME': None
+        }
+        d = api.post(self.session, self.url + 'reset/', self.data)
+        if not d.status_code == 200:
+            self.log_error('There was a problem performing cleanup for {0}'.format(self.test_name))
+
+
+
+class post_reset_image___regular_member(TestCase):
+    """ Verify that a user can reset a profile image
+    Pre-Conditions:
+    Authenticated as Regular member.
+    Expectations:
+    Endpoint -- api/profiles/image/reset/
+    Expected Status Code -- 200 OK 
+    Expected Content -- 
+    """
+
+    def __init__(self, session=None):
+        super().__init__(session)
+        self.url = hostURL + 'api/profiles/image/reset/'
+        self.data = {
+            'ID': my_id_number,
+            'FILE_PATH': None,
+            'FILE_NAME': None
+        }
+        self.requestID = -1
+
+    def test(self):
+        response = api.post(self.session, self.url, self.data)
+        if not response.status_code == 200:
+            self.log_error('Expected 200 Created, got {0}.'.format(response.status_code))
+            
+
 # # # # # # # # # # # # # 
 # # PARTICIPATIONS TEST #
 # # # # # # # # # # # # #

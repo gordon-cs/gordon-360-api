@@ -81,7 +81,7 @@ namespace Gordon360.Static.Names
         public const string DEFAULT_PROFILE_IMAGE_PATH = "http://www.sessionlogs.com/media/icons/defaultIcon.png";
         //public const string DEFAULT_PROFILE_IMAGE_PATH = "https://360apitrain.gordon.edu/browseable/profile/Default/profile.png";
         public const string DEFAULT_PREF_IMAGE_PATH = "\\\\gotrain\\pref_photos\\";
-        public const string DEFAULT_IMAGE_PATH = "\\\\go\\photos\\";
+        public const string DEFAULT_IMAGE_PATH = "\\\\go\\photos\\";   //  f:\inetpub\pref_photos\
     }
     
     public static class URLs
