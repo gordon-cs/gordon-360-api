@@ -10,11 +10,13 @@
 namespace Gordon360.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class ACT_CLUB_DEF_DELETE
+    public partial class ALL_BASIC_INFO_Result
     {
-        public string ACT_CDE { get; set; }
-        public string ACT_DESC { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string UserName { get; set; }
+        public string AccountType { get; set; }
+        public string ConcatonatedInfo { get; set; }
     }
 }

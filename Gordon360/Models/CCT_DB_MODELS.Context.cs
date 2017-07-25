@@ -27,22 +27,20 @@ namespace Gordon360.Models
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<ACT_INFO> ACT_INFO { get; set; }
         public virtual DbSet<ADMIN> ADMIN { get; set; }
+        public virtual DbSet<CUSTOM_PROFILE> CUSTOM_PROFILE { get; set; }
         public virtual DbSet<JNZB_ACTIVITIES> JNZB_ACTIVITIES { get; set; }
         public virtual DbSet<MEMBERSHIP> MEMBERSHIP { get; set; }
         public virtual DbSet<REQUEST> REQUEST { get; set; }
-        public virtual DbSet<ACCOUNT> ACCOUNT { get; set; }
-        public virtual DbSet<CM_SESSION_MSTR> CM_SESSION_MSTR { get; set; }
-        public virtual DbSet<PART_DEF> PART_DEF { get; set; }
-        public virtual DbSet<JENZ_ACT_CLUB_DEF> JENZ_ACT_CLUB_DEF { get; set; }
-        public virtual DbSet<ACT_INFO> ACT_INFO { get; set; }
         public virtual DbSet<C360_SLIDER> C360_SLIDER { get; set; }
-        public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
-        public virtual DbSet<ChapelEvent> ChapelEvent { get; set; }
+        public virtual DbSet<ACCOUNT> ACCOUNT { get; set; }
         public virtual DbSet<Alumni> Alumni { get; set; }
-        public virtual DbSet<ACT_CLUB_DEF_DELETE> ACT_CLUB_DEF_DELETE { get; set; }
+        public virtual DbSet<ChapelEvent> ChapelEvent { get; set; }
+        public virtual DbSet<CM_SESSION_MSTR> CM_SESSION_MSTR { get; set; }
         public virtual DbSet<FacStaff> FacStaff { get; set; }
-        public virtual DbSet<CUSTOM_PROFILE> CUSTOM_PROFILE { get; set; }
+        public virtual DbSet<JENZ_ACT_CLUB_DEF> JENZ_ACT_CLUB_DEF { get; set; }
+        public virtual DbSet<PART_DEF> PART_DEF { get; set; }
         public virtual DbSet<Student> Student { get; set; }
     
         public virtual ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> ACTIVE_CLUBS_PER_SESS_ID(string sESS_CDE)
@@ -479,6 +477,11 @@ namespace Gordon360.Models
                 new ObjectParameter("VALUE", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_SHOW_PIC", aCCOUNT_IDParameter, vALUEParameter);
+        }
+    
+        public virtual ObjectResult<ALL_BASIC_INFO_Result> ALL_BASIC_INFO()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ALL_BASIC_INFO_Result>("ALL_BASIC_INFO");
         }
     }
 }

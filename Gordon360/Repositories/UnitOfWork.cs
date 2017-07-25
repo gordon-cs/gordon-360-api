@@ -14,7 +14,6 @@ namespace Gordon360.Repositories
         private IRepository<FacStaff> _FacultyStaffRepository;
         private IRepository<Alumni> _AlumniRepository;
         private IRepository<ACCOUNT> _AccountRepository;
-        private IRepository<ACT_CLUB_DEF_DELETE> _ActivityRepository;
         private IRepository<CM_SESSION_MSTR> _SessionRepository;
         private IRepository<JNZB_ACTIVITIES> _JenzibarActvityRepository;
         private IRepository<MEMBERSHIP> _MembershipRepository;
