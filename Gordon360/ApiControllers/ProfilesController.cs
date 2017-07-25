@@ -408,7 +408,6 @@ namespace Gordon360.Controllers.Api
                 default_image = webClient.DownloadData(Defaults.DEFAULT_PROFILE_IMAGE_PATH);
                 default_img = Convert.ToBase64String(default_image);
                 result.Add("def", default_img);
-                result.Add("pref", default_img);
                 return Ok(result);
             }
 
