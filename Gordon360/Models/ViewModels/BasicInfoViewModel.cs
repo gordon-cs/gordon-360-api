@@ -10,7 +10,6 @@ namespace Gordon360.Models.ViewModels
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string UserName { get; set; }
-        public string AccountType { get; set; }
         public string ConcatonatedInfo { get; set; }
 
         public static implicit operator BasicInfoViewModel(ACCOUNT a)
@@ -20,7 +19,6 @@ namespace Gordon360.Models.ViewModels
                 FirstName = a.firstname,
                 LastName = a.lastname,
                 UserName = a.AD_Username ?? "",
-                AccountType = a.account_type,
                 ConcatonatedInfo = ""
             };
 

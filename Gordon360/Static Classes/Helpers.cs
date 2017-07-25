@@ -68,6 +68,22 @@ namespace Gordon360.Static.Methods
             return result;
         }
 
+        public static IEnumerable<BasicInfoViewModel> GetAllBasicInfoExcludeAlumni()
+        {
+            IEnumerable<BasicInfoViewModel> result = null;
+            try
+            {
+                // Attempt to query the DB
+                result = RawSqlQuery<BasicInfoViewModel>.query(SQLQuery.ALL_BASIC_INFO_NOT_ALUM);
+            }
+            catch
+            {
+                //
+            }
+            // Filter out results with null or empty active directory names
+            return result;
+        }
+
         // Get all basic info without Alumni
         public static IEnumerable<BasicInfoViewModel> GetBasicInfoWithoutAlumni( IEnumerable<AlumniProfileViewModel> alumni, IEnumerable<BasicInfoViewModel> basic)
         {

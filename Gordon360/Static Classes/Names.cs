@@ -97,5 +97,6 @@ namespace Gordon360.Static.Names
         public static string ALL_STUDENT_REQUEST = "SELECT * from Student WHERE AD_Username is not null";
         public static string ALL_FACULTY_STAFF_REQUEST = "SELECT * from FacStaff WHERE AD_Username is not null";
         public static string ALL_ALUMNI_REQUEST = "SELECT * from Alumni WHERE AD_Username is not null";
+        public static string ALL_BASIC_INFO_NOT_ALUM = "ALL_BASIC_INFO_NOT_ALUMNI";
     }
 }
