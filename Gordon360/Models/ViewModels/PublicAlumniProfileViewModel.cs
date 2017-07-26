@@ -25,8 +25,6 @@ namespace Gordon360.Models.ViewModels
         public string College { get; set; }
         public string ClassYear { get; set; }
         public string PreferredClassYear { get; set; }
-        public string Major { get; set; }
-        public string Major2 { get; set; }
         public string ShareName { get; set; }
         public string ShareAddress { get; set; }
         public string Gender { get; set; }
@@ -62,8 +60,6 @@ namespace Gordon360.Models.ViewModels
                 College = alu.College ?? "",
                 ClassYear = alu.ClassYear ?? "",
                 PreferredClassYear = alu.PreferredClassYear ?? "",
-                Major = alu.Major ?? "",
-                Major2 = alu.Major2 ?? "",
                 ShareName = alu.ShareName ?? "",
                 ShareAddress = alu.ShareAddress ?? "",
                 Gender = alu.Gender ?? "",
@@ -83,9 +79,9 @@ namespace Gordon360.Models.ViewModels
             else if (!vm.ShareAddress.Contains("Y"))
             {
                 vm.HomeCity = "Private as requested.";
-                vm.HomeCountry = "Private as requested.";
-                vm.HomeState = "Private as requested.";
-                vm.Country = "Private as requested.";
+                vm.HomeCountry = "";
+                vm.HomeState = "";
+                vm.Country = "";
             }
             return vm;
         }

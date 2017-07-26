@@ -4,7 +4,15 @@
         <name>Gordon360</name>
     </assembly>
     <members>
-        <member name="M:Gordon360.ApiControllers.AccountsController.Index(System.String)">
+        <member name="M:Gordon360.ApiControllers.AccountsController.Search(System.String)">
+            <summary>
+            Return a list of accounts matching some or all of the search parameter
+            We are searching through a concatonated string, containing several pieces of info about each user.
+            </summary>
+            <param name="searchString"> The input to search for </param>
+            <returns> All accounts meeting some or all of the parameter</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AccountsController.SearchWithSpace(System.String,System.String)">
             <summary>
             Return a list of accounts matching some or all of the search parameter
             We are searching through a concatonated string, containing several pieces of info about each user.

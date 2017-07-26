@@ -79,10 +79,10 @@ namespace Gordon360.Models.ViewModels
             if (vm.KeepPrivate.Contains("1"))
             {
                 vm.HomeCity = "Private as requested.";
-                vm.HomeState = "Private as requested.";
-                vm.HomeCountry = "Private as requested.";
+                vm.HomeState = "";
+                vm.HomeCountry = "";
                 vm.SpouseName = "Private as requested.";
-                vm.Country = "Private as requested.";
+                vm.Country = "";
             }
             return vm;
         }

@@ -21,9 +21,6 @@ namespace Gordon360.Models.ViewModels
         public string Cohort { get; set; }
         public string Class { get; set; }
         public string KeepPrivate { get; set; }
-        public string Major { get; set; }
-        public string Major2 { get; set; }
-        public string Major3 { get; set; }
         public string Email { get; set; }
         public string Gender { get; set; }
         public string grad_student { get; set; }
@@ -61,9 +58,6 @@ namespace Gordon360.Models.ViewModels
                 Cohort = stu.Cohort ?? "",
                 grad_student = stu.grad_student ?? "",
                 KeepPrivate = stu.KeepPrivate ?? "",
-                Major = stu.Major ?? "",
-                Major2 = stu.Major2 ?? "",
-                Major3 = stu.Major3 ?? "",
                 Email = stu.Email ?? "",
                 Gender = stu.Gender ?? "",
                 IsMobilePhonePrivate = stu.IsMobilePhonePrivate,
@@ -85,11 +79,10 @@ namespace Gordon360.Models.ViewModels
             }
             if (vm.KeepPrivate.Contains("S"))
             {
-                vm.OnOffCampus = "Private as requested.";
                 vm.HomeCity = "Private as requested.";
-                vm.HomeState = "Private as requested.";
-                vm.HomeCountry = "Private as requested.";
-                vm.Country = "Private as requested.";
+                vm.HomeState = "";
+                vm.HomeCountry = "";
+                vm.Country = "";
             }
             if (vm.KeepPrivate.Contains("Y") || vm.KeepPrivate.Contains("P"))
             {
