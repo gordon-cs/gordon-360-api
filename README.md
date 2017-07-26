@@ -480,8 +480,11 @@ Clone the project from the github site:
 Navigate to the API Tests folder:
 `cd Project-Raymond/Tests/ApiEndpoints/`
 
+Install the py requirement files with this command. This should install the request module as well as other needed modules:
+"pip install -r requirements.txt"
+
 Create the `test_credentials.py` file and define the six variables mentioned above.
-Make sure the credentials you enter match the descriptions provided above.
+Make sure the credentials you enter match the descriptions provided above and none of them can be null. 
 
 Verify that the variables defined in `test_config.py` are correct.
 
