@@ -1729,7 +1729,7 @@ class get_profile_by_username___regular_member(TestCase):
     """
     def __init__(self , session=None):
         super().__init__(session)
-        self.url = hostURL + 'api/profiles/jenny.kim/'
+        self.url = hostURL + 'api/profiles/' + username
 
     def test(self):
         response = api.get(self.session, self.url)
@@ -1752,7 +1752,7 @@ class get_college_role_by_username___regular_member(TestCase):
     """
     def __init__(self , session=None):
         super().__init__(session)
-        self.url = hostURL + 'api/profiles/role/jenny.kim/'
+        self.url = hostURL + 'api/profiles/role/' + username
 
     def test(self):
         response = api.get(self.session, self.url)
@@ -1800,7 +1800,7 @@ class get_image_by_username___regular_member(TestCase):
     """
     def __init__(self , session=None):
         super().__init__(session)
-        self.url = hostURL + 'api/profiles/image/jenny.kim/'
+        self.url = hostURL + 'api/profiles/image/' + username
 
     def test(self):
         response = api.get(self.session, self.url)
@@ -1812,7 +1812,7 @@ class get_image_by_username___regular_member(TestCase):
             self.log_error('Expected Json response body, got{0}.'.format(response.text))
         
 
-
+# Often does not PASS due to permission issue to the image columns in WebSQL/CCT databases
 class post_image___regular_member(TestCase):
     """ Verify that a user can upload a profile image
     Pre-Conditions:
@@ -1828,8 +1828,8 @@ class post_image___regular_member(TestCase):
         self.url = hostURL + 'api/profiles/image/'
         self.data = {
             'ID': my_id_number,
-            'FILE_PATH': 'C:/Users/jenny.kim/Documents/profile.png',
-            'FILE_NAME': '21607000436110'
+            'FILE_PATH': #File path of the image on the user's computer,
+            'FILE_NAME': #Barcode ID of the user
         }
     
     def test(self):
@@ -1874,6 +1874,101 @@ class post_reset_image___regular_member(TestCase):
         if not response.status_code == 200:
             self.log_error('Expected 200 Created, got {0}.'.format(response.status_code))
             
+
+
+class put_social_media_links___regular_member(TestCase):
+    """ Verify that a user can add and edit social media links
+    Pre-Conditions:
+    Authenticated as Regular member.
+    Expectations:
+    Endpoint -- api/profiles/:type
+    Expected Status Code -- 200 OK
+    Expected Content --
+    """
+
+    # Any other SNS names can be used to replace 'facebook' to test
+    def __init__(self, session=None):
+        super().__init__(session)
+        self.url = hostURL + 'api/profiles/facebook/'
+        self.data = {
+            'facebook': #'URL of any SNS including the domain name'
+        }
+        
+    def test(self):
+        response = api.put(self.session, self.url, self.data)
+        if not response.status_code == 200:
+            self.log_error('Expected 200 OK, got {0}.'.format(response.status_code))
+        
+    def cleanup(self):
+        self.resetdata = {
+            'facebook': ''
+        }
+        d = api.put(self.session, self.url, self.resetdata)
+        if not d.status_code == 200:
+            self.log_error('There was a problem performing cleanup for {0}'.format(self.test_name))
+
+
+
+class put_mobile_privacy___regular_member(TestCase):
+    """ Verify that a user can add and edit social media links
+    Pre-Conditions:
+    Authenticated as Regular member.
+    Expectations:
+    Endpoint -- api/profiles/mobile_privacy/:value (Y or N)
+    Expected Status Code -- 200 OK
+    Expected Content --
+    """
+    def __init__(self, session=None):
+        super().__init__(session)
+        self.url = hostURL + 'api/profiles/mobile_privacy/Y/'
+        self.data = {
+            'IsMobilePhonePrivate': 'Y'
+        }
+        
+    def test(self):
+        response = api.put(self.session, self.url, self.data)
+        if not response.status_code == 200:
+            self.log_error('Expected 200 OK, got {0}.'.format(response.status_code))
+        
+    def cleanup(self):
+        self.resetdata = {
+            'IsMobilePhonePrivate': 'N'
+        }
+        d = api.put(self.session, self.url, self.resetdata)
+        if not d.status_code == 200:
+            self.log_error('There was a problem performing cleanup for {0}'.format(self.test_name))
+
+
+class put_image_privacy___regular_member(TestCase):
+    """ Verify that a user can add and edit social media links
+    Pre-Conditions:
+    Authenticated as Regular member.
+    Expectations:
+    Endpoint -- api/profiles/image_privacy/:value (Y or N)
+    Expected Status Code -- 200 OK
+    Expected Content --
+    """
+    def __init__(self, session=None):
+        super().__init__(session)
+        self.url = hostURL + 'api/profiles/image_privacy/Y/'
+        self.data = {
+            'show_pic': 'Y'
+        }
+        
+    def test(self):
+        response = api.put(self.session, self.url, self.data)
+        if not response.status_code == 200:
+            self.log_error('Expected 200 OK, got {0}.'.format(response.status_code))
+        
+    def cleanup(self):
+        self.resetdata = {
+            'show_pic': 'N'
+        }
+        d = api.put(self.session, self.url, self.resetdata)
+        if not d.status_code == 200:
+            self.log_error('There was a problem performing cleanup for {0}'.format(self.test_name))
+
+
 
 # # # # # # # # # # # # # 
 # # PARTICIPATIONS TEST #
