@@ -26,7 +26,7 @@ Dive in.
     - [Emails](#emails)
     - [Admins](#admins)
     - [Content Management](#content-management)
-    - [profile](#profile)
+    - [Profiles](#profiles)
 - [API Testing](#api-testing)
     - [Introduction](#introduction)
     - [Running the Tests](#running-the-tests)
@@ -133,6 +133,18 @@ A record in this table stores:
 
 To make someone an admin, simply insert a record into this table through MSSQL Studio. 
 
+###### CUSTOM_PROFILE
+
+A record in this table stores:
+
+- username - The gordon username of the current user (firstname.lastname)
+- facebook - The URL of the user's facebook without its domain name
+- twitter - The URL of the user's twitter without its domain name
+- instagram - The URL of the user's instagram without its domain name
+- linkedin - The URL of the user's linkedin without its domain name
+
+Users don't exist in the table unless they add/edit their social media links on 360 site. Once a user adds any links, the user will be added to the table. This logic is done so that there won't be unused users in the table which can possibly slow down the website.
+
 ###### JNZB_ACTIVITIES
 
 A record in this table stores all the same fields as an Activity table in Jensibar would. 
@@ -202,6 +214,8 @@ Descriptions of the different codes for majors.
 Pulls firstname, lastname, category (student, stafff, faculty), and AD_Username (if it exists!) and then makes a concatonated string to be searched through 
 ###### PART_DEF
 Definitions of the different participation levels for someone in an activity.
+###### Police
+A list of IDs that are identified as gordon police.
 ###### Student
 A subset of `ACCOUNT` that has only student records.
 ###### 360_SLIDER
@@ -507,20 +521,25 @@ What is it? Resource for fetching content that has been stored in the database b
 
 `api/cms/slider` Get the content for the dashboard slide.
 
-### Profile
-What is it? Profile info of users.
+### Profiles
+What is it? Resource that represents users' profiles.
+
+Differences from GoSite: 
+- Only displaying city and country as home address. (When the viewer is a student. Police, super admin, faculty and staff should still see all the information for home address)
+- Displaying minors.
+- On campus was changed to display more general information rather than completely getting rid of it like GoSite does now. (Shows on/off campus)
 
 ##### GET
 
 `api/profiles` Get profile info of the current logged in user.
 
-`api/profiles/:username` Get profile info of a user with username as a parameter.
+`api/profiles/:username` Get profile info of a user with username `username` as a parameter.
 
-`api/profiles/role/:usename` Get college role of a user with username as a parameter, college roles: god(super admin), faculty and staff,student and police.
+`api/profiles/role/:usename` Get college role of a user with username `username` as a parameter --- College roles: god(super admin), faculty and staff, student and police.
 
-`api/profiles/Image/` Get profile image of the current logged in user.Image is stored in a base 64 string.
+`api/profiles/Image/` Get profile image of the current logged in user. Image is stored in a base 64 string.
 
-`api/profiles/Image/:username` Get the profile image(s) of a user with username as a parameter.Image is stored in a base 64 string.
+`api/profiles/Image/:username` Get the profile image(s) of a user with username `username` as a parameter. Image is stored in a base 64 string. Police, super admin, faculty and staff can view both default and preferred profile image of students. Only police and super admin can view both images of everyone including faculty and staff.
 
 ##### POST
 
@@ -567,6 +586,7 @@ Navigate to the API Tests folder:
 
 Create the `test_credentials.py` file and define the six variables mentioned above.
 Make sure the credentials you enter match the descriptions provided above.
+Install requirements before you run any tests: `pip install -r requirements.txt`
 
 Verify that the variables defined in `test_config.py` are correct.
 
@@ -581,25 +601,21 @@ Run the tests:
 
 * Before you begin you will have to add the secrets.config file to the folder that you are working from. The file is located on the cs-devA virtual machine in `C:\Users\Public\Documents\360 Shared files` Copy the file secrets.config to the same folder in your project that contains the web.config file. This will allow you to run the server locally.
 
-* If you are using the virtual machine you will need to run the server on an unused port.  To change the port that the server is running open the solution in virtual studio.  In the solution explorer, right click the name of the project (Gordon360) and select properties.  Choose the Web tab and change the Project Url to an unused port.
+* If you are using the virtual machine you will need to run the server on an unused port.  To change the port that the server is running, open the solution in virtual studio.  In the solution explorer, right click the name of the project (Gordon360) and select properties.  Choose the Web tab and change the Project Url to an unused port.
 
-* You can then press the Start button in virtual studio to run the server. It will open the web browser and display an Error 403.14 - Forbdden. This is expected.  You can now begin manually testing the API
+* You can then press the Start button in virtual studio to run the server. It will open the web browser and display an Error 403.14 - Forbdden. This is expected.  You can now begin manually testing the API.
 
 #### Manually Testing API
 
 To manually test the API, use an API development/testing app like [Postman](https://www.getpostman.com/).
 * Here you can create HTTP requests to hit the API endpoints that you want to test, and see what data response you get back. 
-* _Before you can call any normal API endpoints_, you must first call the authentication endpoint, which will give you a token.
+* _Before you can call any normal API endpoints_, you must first call the authentication endpoint with a PUT request, which will give you a token.
 	* E.g. Call `localhost:3000/token` with the following (key, value) pairs in the request body: (username, _MYUSERNAME_), (grant_type, password), (password, _MYPASSWORD_). This will give me back a long token string. I then can copy that token and paste it in the Authorization header of another API request I want to make. 
 * Making a normal API request: 
 	* E.g. Call something like `localhost:3000/api/memberships/activity/AJG` and under Headers you will need two (as key, value pairs):
 		1. (`Content-Type`, `application/x-www-form-urlencoded`) - usually this is the content type. Subject to change, though.
 		2. (`Authorization`, `Bearer  [MYTOKEN]`)
 
-
-Team members: Eze Anyanwu, James Kempf, Adam Bartholomew
-
-Computer Science Summer Practicum 2016
 
 ## Troubleshooting
 
@@ -631,3 +647,9 @@ The documentation folder currently contains the ColdFusion files from go.gordon 
 * Index.cfm is the page used to select search criteria.
 * Searchresults.cfm is the list of people you get back based on that criteria.  It selects from a student view, facstaff view, and alumni view all separately and then sorts all the results together.
 * Showperson.cfm is the detail page of the person you select from the searchresults.cfm page.
+
+
+
+Team members: Bradley Boutcher, Chris Qiao, Jenny Kim, Joe Ross, Matt Felgate, San Nguyen
+
+Computer Science Summer Practicum 2017
