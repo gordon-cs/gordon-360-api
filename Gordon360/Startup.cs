@@ -14,7 +14,7 @@ using System.Web;
 using System.Diagnostics;
 using System.Web.Caching;
 using System.Collections.Generic;
-
+using Gordon360.Models;
 
 namespace Gordon360
 {
@@ -124,9 +124,9 @@ namespace Gordon360
         private void DoMyWork()
         {
             //read data from databases and store them in global Data.
-            IEnumerable<StudentProfileViewModel> student = Helpers.GetAllStudent();
-            IEnumerable<FacultyStaffProfileViewModel> facstaff = Helpers.GetAllFacultyStaff();
-            IEnumerable<AlumniProfileViewModel> alumni = Helpers.GetAllAlumni();
+            IEnumerable<Student> student = Helpers.GetAllStudent();
+            IEnumerable<FacStaff> facstaff = Helpers.GetAllFacultyStaff();
+            IEnumerable<Alumni> alumni = Helpers.GetAllAlumni();
             IEnumerable<BasicInfoViewModel> basic = Helpers.GetAllBasicInfoExcludeAlumni();
 
             // storing in global variab

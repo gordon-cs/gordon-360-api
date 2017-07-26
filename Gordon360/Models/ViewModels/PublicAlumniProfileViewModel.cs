@@ -43,9 +43,9 @@ namespace Gordon360.Models.ViewModels
             {
                 WebUpdate = alu.WebUpdate ?? "",
                 Title = alu.Title ?? "",
-                FirstName = alu.FirstName,
+                FirstName = alu.FirstName ?? "",
                 MiddleName = alu.MiddleName ?? "",
-                LastName = alu.LastName,
+                LastName = alu.LastName ?? "",
                 Suffix = alu.Suffix ?? "",
                 MaidenName = alu.MaidenName ?? "",
                 NickName = alu.NickName ?? "",

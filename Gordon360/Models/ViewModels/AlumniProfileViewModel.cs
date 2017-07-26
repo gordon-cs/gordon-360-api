@@ -55,9 +55,9 @@ namespace Gordon360.Models.ViewModels
                 ID = alu.ID.Trim(),
                 WebUpdate = alu.WebUpdate ?? "",
                 Title = alu.Title ?? "",
-                FirstName = alu.FirstName,
+                FirstName = alu.FirstName ?? "",
                 MiddleName = alu.MiddleName ?? "",
-                LastName = alu.LastName,
+                LastName = alu.LastName ?? "",
                 Suffix = alu.Suffix ?? "",
                 MaidenName = alu.MaidenName ?? "",
                 NickName = alu.NickName ?? "", // Just in case some random record has a null user_name 

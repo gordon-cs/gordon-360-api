@@ -43,9 +43,9 @@ namespace Gordon360.Models.ViewModels
             PublicStudentProfileViewModel vm = new PublicStudentProfileViewModel
             {
                 Title = stu.Title ?? "",
-                FirstName = stu.FirstName,
+                FirstName = stu.FirstName ?? "",
                 MiddleName = stu.MiddleName ?? "",
-                LastName = stu.LastName,
+                LastName = stu.LastName ?? "",
                 Suffix = stu.Suffix ?? "",
                 MaidenName = stu.MaidenName ?? "",
                 NickName = stu.NickName ?? "", // Just in case some random record has a null user_name 

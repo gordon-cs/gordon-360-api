@@ -48,8 +48,8 @@ namespace Gordon360.Models.ViewModels
                 Title = fac.Title ?? "",
                 Suffix = fac.Suffix ?? "",
                 MaidenName = fac.MaidenName ?? "",
-                FirstName = fac.FirstName,
-                LastName = fac.LastName,
+                FirstName = fac.FirstName ?? "",
+                LastName = fac.LastName ?? "",
                 MiddleName = fac.MiddleName ?? "",
                 NickName = fac.NickName ?? "", // Just in case some random record has a null user_name 
                 AD_Username = fac.AD_Username ?? "", // Just in case some random record has a null email field

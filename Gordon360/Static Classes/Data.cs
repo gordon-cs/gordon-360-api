@@ -1,6 +1,8 @@
 ﻿using System.Xml.Linq;
 using Gordon360.Models.ViewModels;
 using System.Collections.Generic;
+using Gordon360.Models;
+
 namespace Gordon360.Static.Data
 {
     /// <summary>
@@ -16,9 +18,9 @@ namespace Gordon360.Static.Data
         // Basic info excluding alumni info
         public static IEnumerable<BasicInfoViewModel> AllBasicInfoWithoutAlumni { get; set; }
 
-        public static IEnumerable<StudentProfileViewModel> StudentData { get; set; }
-        public static IEnumerable<FacultyStaffProfileViewModel> FacultyStaffData { get; set; }
-        public static IEnumerable<AlumniProfileViewModel> AlumniData { get; set; }
+        public static IEnumerable<Student> StudentData { get; set; }
+        public static IEnumerable<FacStaff> FacultyStaffData { get; set; }
+        public static IEnumerable<Alumni> AlumniData { get; set; }
 
     }
 }

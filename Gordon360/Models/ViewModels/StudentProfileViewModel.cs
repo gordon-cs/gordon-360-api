@@ -75,9 +75,9 @@ namespace Gordon360.Models.ViewModels
             {
                 Title = stu.Title ?? "",
                 ID = stu.ID.Trim(),
-                FirstName = stu.FirstName.Trim(),
+                FirstName = stu.FirstName ?? "",
                 MiddleName = stu.MiddleName ?? "",
-                LastName = stu.LastName.Trim(),
+                LastName = stu.LastName ?? "",
                 Suffix = stu.Suffix ?? "",
                 MaidenName = stu.MaidenName ?? "",
                 NickName = stu.NickName ?? "", // Just in case some random record has a null user_name 
@@ -86,7 +86,7 @@ namespace Gordon360.Models.ViewModels
                 Class = stu.Class ?? "",
                 Commuter = stu.Commuter ?? "",
                 grad_student = stu.grad_student ?? "",
-                GradDate = stu.GradDate,
+                GradDate = stu.GradDate ?? "",
                 OnOffCampus = stu.OnOffCampus ?? "",
                 OnCampusBuilding = stu.OnCampusBuilding ?? "",
                 OnCampusRoom = stu.OnCampusRoom ?? "",

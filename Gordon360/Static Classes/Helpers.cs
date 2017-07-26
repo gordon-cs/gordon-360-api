@@ -20,15 +20,15 @@ namespace Gordon360.Static.Methods
     public static class Helpers
     {
 
-        public static IEnumerable<StudentProfileViewModel> GetAllStudent()
+        public static IEnumerable<Student> GetAllStudent()
         {
 
             // Create a list to be filled
-            IEnumerable<StudentProfileViewModel> result = null;
+            IEnumerable<Student> result = null;
             try
             {
                 // Attempt to query the DB
-                result = RawSqlQuery<StudentProfileViewModel>.query(SQLQuery.ALL_STUDENT_REQUEST);
+                result = RawSqlQuery<Student>.query(SQLQuery.ALL_STUDENT_REQUEST);
             }
             catch
             {
@@ -37,13 +37,13 @@ namespace Gordon360.Static.Methods
             // Filter out results with null or empty active directory names
             return result;
         }
-        public static IEnumerable<FacultyStaffProfileViewModel> GetAllFacultyStaff()
+        public static IEnumerable<FacStaff> GetAllFacultyStaff()
         {
-            IEnumerable<FacultyStaffProfileViewModel> result = null;
+            IEnumerable<FacStaff> result = null;
             try
             {
                 // Attempt to query the DB
-                result = RawSqlQuery<FacultyStaffProfileViewModel>.query(SQLQuery.ALL_FACULTY_STAFF_REQUEST);
+                result = RawSqlQuery<FacStaff>.query(SQLQuery.ALL_FACULTY_STAFF_REQUEST);
             }
             catch
             {
@@ -52,13 +52,13 @@ namespace Gordon360.Static.Methods
             // Filter out results with null or empty active directory names
             return result;
         }
-        public static IEnumerable<AlumniProfileViewModel> GetAllAlumni()
+        public static IEnumerable<Alumni> GetAllAlumni()
         {
-            IEnumerable<AlumniProfileViewModel> result = null;
+            IEnumerable<Alumni> result = null;
             try
             {
                 // Attempt to query the DB
-                result = RawSqlQuery<AlumniProfileViewModel>.query(SQLQuery.ALL_ALUMNI_REQUEST);
+                result = RawSqlQuery<Alumni>.query(SQLQuery.ALL_ALUMNI_REQUEST);
             }
             catch
             {

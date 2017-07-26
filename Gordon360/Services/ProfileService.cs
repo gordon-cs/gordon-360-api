@@ -30,7 +30,9 @@ namespace Gordon360.Services
         {
             var all = Data.StudentData;
             StudentProfileViewModel result = null;
-            result = all.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
+            var student = all.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
+            if (student != null)
+                result = student;
             return result;
         }
         /// <summary>
@@ -42,7 +44,9 @@ namespace Gordon360.Services
         {
             var all = Data.FacultyStaffData;
             FacultyStaffProfileViewModel result = null;
-            result = all.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
+            var facstaff = all.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
+            if (facstaff != null)
+                result = facstaff;
             return result;
         }
         /// <summary>
@@ -54,7 +58,9 @@ namespace Gordon360.Services
         {
             var all = Data.AlumniData;
             AlumniProfileViewModel result = null;
-            result = all.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
+            var alumni = all.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
+            if (alumni != null)
+                result = alumni;
             return result;
         }
 
