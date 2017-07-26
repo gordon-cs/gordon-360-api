@@ -534,7 +534,7 @@ namespace Gordon360.Controllers.Api
                     di = new DirectoryInfo(root);
                     System.IO.File.Move(di.FullName + oldFileName, di.FullName + fileName); //rename
 
-                    _profileService.UpdateProfileImage(id, root, fileName); //update database
+                    _profileService.UpdateProfileImage(id, Defaults.DATABASE_IMAGE_PATH, fileName); //update database
                 }
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
