@@ -535,7 +535,7 @@ Differences from GoSite:
 
 `api/profiles/:username` Get profile info of a user with username `username` as a parameter.
 
-`api/profiles/role/:usename` Get college role of a user with username `username` as a parameter --- College roles: god(super admin), faculty and staff, student and police.
+`api/profiles/role/:username` Get college role of a user with username `username` as a parameter --- College roles: god(super admin), faculty and staff, student and police.
 
 `api/profiles/Image/` Get profile image of the current logged in user. Image is stored in a base 64 string.
 
@@ -543,11 +543,11 @@ Differences from GoSite:
 
 ##### POST
 
-`api/profiles/image` Upload a preffered image for the current logged in user.
+`api/profiles/image` Upload a preferred image for the current logged in user.
 
-`api/profiles/image/reset` Delete preffered image and set profile image to default for the current logged in user.
+`api/profiles/image/reset` Delete preferred image and set profile image to default for the current logged in user.
 
-`api/profiles/:type` Update a social midea link of a type(facebook, twitter, linkedin,instagram) of current logged in user.
+`api/profiles/:type` Update a social media link of a type(facebook, twitter, linkedin,instagram) of current logged in user.
 
 ##### PUT
 
