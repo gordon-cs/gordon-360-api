@@ -99,7 +99,7 @@ namespace Gordon360.ApiControllers
             if (!String.IsNullOrEmpty(searchString)) {
                 // for every stored account, convert it to lowercase and compare it to the search paramter 
                 accounts = accounts.Where(s => s.ConcatonatedInfo.ToLower().Contains(searchString));
-                accounts = accounts.OrderBy(s => s.FirstName[0].Equals(searchString[0])).ThenBy(s => s.LastName[0].CompareTo(searchString[0]));
+                accounts = accounts.OrderBy(s => s.FirstName.CompareTo(searchString)).ThenBy(s => s.LastName.CompareTo(searchString));
 
             }
 
@@ -150,7 +150,7 @@ namespace Gordon360.ApiControllers
             {
                 // for every stored account, convert it to lowercase and compare it to the search paramter 
                 accounts = accounts.Where(s => s.ConcatonatedInfo.ToLower().Contains(searchString) && s.ConcatonatedInfo.ToLower().Contains(secondaryString));
-                accounts = accounts.OrderBy(s => s.LastName[0].CompareTo(secondaryString[0])).ThenBy(s => s.FirstName[0].CompareTo(searchString[0]));
+                accounts = accounts.OrderBy(s => s.LastName.CompareTo(secondaryString)).ThenBy(s => s.FirstName.CompareTo(searchString));
             }
 
             // Return all of the 
