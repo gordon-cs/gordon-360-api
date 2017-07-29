@@ -584,9 +584,14 @@ Clone the project from the github site:
 Navigate to the API Tests folder:
 `cd Project-Raymond/Tests/ApiEndpoints/`
 
+Install the py requirement files with this command. This should install the request module as well as other needed modules:
+"pip install -r requirements.txt"
+
 Create the `test_credentials.py` file and define the six variables mentioned above.
+
 Make sure the credentials you enter match the descriptions provided above.
 Install requirements before you run any tests: `pip install -r requirements.txt`
+
 
 Verify that the variables defined in `test_config.py` are correct.
 
@@ -648,8 +653,7 @@ The documentation folder currently contains the ColdFusion files from go.gordon 
 * Searchresults.cfm is the list of people you get back based on that criteria.  It selects from a student view, facstaff view, and alumni view all separately and then sorts all the results together.
 * Showperson.cfm is the detail page of the person you select from the searchresults.cfm page.
 
-
-
-Team members: Bradley Boutcher, Chris Qiao, Jenny Kim, Joe Ross, Matt Felgate, San Nguyen
+Team members: Bradley Boutcher, Chris Qiao, Jenny Kim, Joe Ross, Matt Felgate, Sam Nguyen
 
 Computer Science Summer Practicum 2017
+
