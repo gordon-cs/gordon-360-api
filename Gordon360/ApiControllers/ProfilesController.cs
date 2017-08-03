@@ -368,14 +368,30 @@ namespace Gordon360.Controllers.Api
             {
                 filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_IMAGE_PATH"];
                 fileName = photoInfo.Img_Name;
-                imageBytes = File.ReadAllBytes(filePath + fileName);
+                try
+                {
+                    imageBytes = File.ReadAllBytes(filePath + fileName);
+                }
+                catch (FileNotFoundException e)
+                {
+                    var webClient = new WebClient();
+                    imageBytes = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
+                }
                 default_img = Convert.ToBase64String(imageBytes);
                 result.Add("def", default_img);
                 return Ok(result);
             }
             else
             {
-                imageBytes = File.ReadAllBytes(filePath + fileName);
+                try
+                {
+                    imageBytes = File.ReadAllBytes(filePath + fileName);
+                }
+                catch (FileNotFoundException e)
+                {
+                    var webClient = new WebClient();
+                    imageBytes = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
+                }
                 pref_img = Convert.ToBase64String(imageBytes);
                 result.Add("pref", pref_img);
                 return Ok(result);  //return image as a base64 string
@@ -419,12 +435,28 @@ namespace Gordon360.Controllers.Api
                     fileName = photoInfo.Pref_Img_Name;
                     if (!string.IsNullOrEmpty(fileName) && File.Exists(filePath + fileName))
                     {
-                        pref_image = File.ReadAllBytes(filePath + fileName);
+                        try
+                        {
+                            pref_image = File.ReadAllBytes(filePath + fileName);
+                        }
+                        catch (FileNotFoundException e)
+                        {
+                            var webClient = new WebClient();
+                            pref_image = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
+                        }
                         pref_img = Convert.ToBase64String(pref_image);
                     }
                     filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_IMAGE_PATH"];
                     fileName = photoInfo.Img_Name;
-                    default_image = File.ReadAllBytes(filePath + fileName);
+                    try
+                    {
+                        default_image = File.ReadAllBytes(filePath + fileName);
+                    }
+                    catch (FileNotFoundException e)
+                    {
+                        var webClient = new WebClient();
+                        default_image = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
+                    }
                     default_img = Convert.ToBase64String(default_image);
                     result.Add("def", default_img);
                     result.Add("pref", pref_img);
@@ -434,12 +466,28 @@ namespace Gordon360.Controllers.Api
                     fileName = photoInfo.Pref_Img_Name;
                     if (!string.IsNullOrEmpty(fileName) && File.Exists(filePath + fileName))
                     {
-                        pref_image = File.ReadAllBytes(filePath + fileName);
+                        try
+                        {
+                            pref_image = File.ReadAllBytes(filePath + fileName);
+                        }
+                        catch (FileNotFoundException e)
+                        {
+                            var webClient = new WebClient();
+                            pref_image = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
+                        }
                         pref_img = Convert.ToBase64String(pref_image);
                     }
                     filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_IMAGE_PATH"];
                     fileName = photoInfo.Img_Name;
-                    default_image = File.ReadAllBytes(filePath + fileName);
+                    try
+                    {
+                        default_image = File.ReadAllBytes(filePath + fileName);
+                    }
+                    catch (FileNotFoundException e)
+                    {
+                        var webClient = new WebClient();
+                        default_image = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
+                    }
                     default_img = Convert.ToBase64String(default_image);
                     result.Add("def", default_img);
                     result.Add("pref", pref_img);
@@ -453,12 +501,28 @@ namespace Gordon360.Controllers.Api
                         {
                             filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_IMAGE_PATH"];
                             fileName = photoInfo.Img_Name;
-                            default_image = File.ReadAllBytes(filePath + fileName);
+                            try
+                            {
+                                default_image = File.ReadAllBytes(filePath + fileName);
+                            }
+                            catch (FileNotFoundException e)
+                            {
+                                var webClient = new WebClient();
+                                default_image = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
+                            }
                             default_img = Convert.ToBase64String(default_image);
                             result.Add("def", default_img);
                             return Ok(result);
                         }
-                        pref_image = File.ReadAllBytes(filePath + fileName);
+                        try
+                        {
+                            pref_image = File.ReadAllBytes(filePath + fileName);
+                        }
+                        catch (FileNotFoundException e)
+                        {
+                            var webClient = new WebClient();
+                            pref_image = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
+                        }
                         pref_img = Convert.ToBase64String(pref_image);
                         result.Add("pref", pref_img);
                     }
@@ -476,12 +540,28 @@ namespace Gordon360.Controllers.Api
                     fileName = photoInfo.Pref_Img_Name;
                     if (!string.IsNullOrEmpty(fileName) && File.Exists(filePath + fileName))
                     {
-                        pref_image = File.ReadAllBytes(filePath + fileName);
+                        try
+                        {
+                            pref_image = File.ReadAllBytes(filePath + fileName);
+                        }
+                        catch (FileNotFoundException e)
+                        {
+                            var webClient = new WebClient();
+                            pref_image = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
+                        }
                         pref_img = Convert.ToBase64String(pref_image);
                     }
                     filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_IMAGE_PATH"];
                     fileName = photoInfo.Img_Name;
-                    default_image = File.ReadAllBytes(filePath + fileName);
+                    try
+                    {
+                        default_image = File.ReadAllBytes(filePath + fileName);
+                    }
+                    catch (FileNotFoundException e)
+                    {
+                        var webClient = new WebClient();
+                        default_image = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
+                    }
                     default_img = Convert.ToBase64String(default_image);
                     result.Add("def", default_img);
                     result.Add("pref", pref_img);
