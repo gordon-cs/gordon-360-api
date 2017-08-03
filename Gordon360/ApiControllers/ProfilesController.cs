@@ -348,7 +348,7 @@ namespace Gordon360.Controllers.Api
             string pref_img = "";
             string default_img = "";
             var fileName = "";
-            var filePath = Defaults.DEFAULT_PREF_IMAGE_PATH;
+            var filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PREF_IMAGE_PATH"];
             byte[] imageBytes;
             JObject result = new JObject();
 
@@ -356,7 +356,7 @@ namespace Gordon360.Controllers.Api
             if (photoInfo == null)
             {
                 var webClient = new WebClient();
-                imageBytes = webClient.DownloadData(Defaults.DEFAULT_PROFILE_IMAGE_PATH);
+                imageBytes = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
                 default_img = Convert.ToBase64String(imageBytes);
                 result.Add("def", default_img);
                 return Ok(result);
@@ -366,7 +366,7 @@ namespace Gordon360.Controllers.Api
 
             if (string.IsNullOrEmpty(fileName) || !File.Exists(filePath + fileName)) //check file existence for prefferred image.
             {
-                filePath = Defaults.DEFAULT_IMAGE_PATH;
+                filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_IMAGE_PATH"];
                 fileName = photoInfo.Img_Name;
                 imageBytes = File.ReadAllBytes(filePath + fileName);
                 default_img = Convert.ToBase64String(imageBytes);
@@ -405,7 +405,7 @@ namespace Gordon360.Controllers.Api
             if (photoInfo == null)
             {
                 var webClient = new WebClient();
-                default_image = webClient.DownloadData(Defaults.DEFAULT_PROFILE_IMAGE_PATH);
+                default_image = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
                 default_img = Convert.ToBase64String(default_image);
                 result.Add("def", default_img);
                 return Ok(result);
@@ -415,14 +415,14 @@ namespace Gordon360.Controllers.Api
             switch (viewerType)
             {
                 case Position.GOD:
-                    filePath = Defaults.DEFAULT_PREF_IMAGE_PATH;
+                    filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PREF_IMAGE_PATH"];
                     fileName = photoInfo.Pref_Img_Name;
                     if (!string.IsNullOrEmpty(fileName) && File.Exists(filePath + fileName))
                     {
                         pref_image = File.ReadAllBytes(filePath + fileName);
                         pref_img = Convert.ToBase64String(pref_image);
                     }
-                    filePath = Defaults.DEFAULT_IMAGE_PATH;
+                    filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_IMAGE_PATH"];
                     fileName = photoInfo.Img_Name;
                     default_image = File.ReadAllBytes(filePath + fileName);
                     default_img = Convert.ToBase64String(default_image);
@@ -430,14 +430,14 @@ namespace Gordon360.Controllers.Api
                     result.Add("pref", pref_img);
                     return Ok(result);
                 case Position.POLICE:
-                    filePath = Defaults.DEFAULT_PREF_IMAGE_PATH;
+                    filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PREF_IMAGE_PATH"];
                     fileName = photoInfo.Pref_Img_Name;
                     if (!string.IsNullOrEmpty(fileName) && File.Exists(filePath + fileName))
                     {
                         pref_image = File.ReadAllBytes(filePath + fileName);
                         pref_img = Convert.ToBase64String(pref_image);
                     }
-                    filePath = Defaults.DEFAULT_IMAGE_PATH;
+                    filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_IMAGE_PATH"];
                     fileName = photoInfo.Img_Name;
                     default_image = File.ReadAllBytes(filePath + fileName);
                     default_img = Convert.ToBase64String(default_image);
@@ -447,11 +447,11 @@ namespace Gordon360.Controllers.Api
                 case Position.STUDENT:
                     if (_accountService.GetAccountByUsername(username).show_pic == 1)                  //check privacy setting of this user.
                     {
-                        filePath = Defaults.DEFAULT_PREF_IMAGE_PATH;
+                        filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PREF_IMAGE_PATH"];
                         fileName = photoInfo.Pref_Img_Name;
                         if (string.IsNullOrEmpty(fileName) || !File.Exists(filePath + fileName))
                         {
-                            filePath = Defaults.DEFAULT_IMAGE_PATH;
+                            filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_IMAGE_PATH"];
                             fileName = photoInfo.Img_Name;
                             default_image = File.ReadAllBytes(filePath + fileName);
                             default_img = Convert.ToBase64String(default_image);
@@ -465,21 +465,21 @@ namespace Gordon360.Controllers.Api
                     else
                     {
                         var webClient = new WebClient();
-                        default_image = webClient.DownloadData(Defaults.DEFAULT_PROFILE_IMAGE_PATH);
+                        default_image = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
                         default_img = Convert.ToBase64String(default_image);
                         result.Add("def", default_img);
                         return Ok(result);
                     }
                     return Ok(result);
                 case Position.FACSTAFF:
-                    filePath = Defaults.DEFAULT_PREF_IMAGE_PATH;
+                    filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PREF_IMAGE_PATH"];
                     fileName = photoInfo.Pref_Img_Name;
                     if (!string.IsNullOrEmpty(fileName) && File.Exists(filePath + fileName))
                     {
                         pref_image = File.ReadAllBytes(filePath + fileName);
                         pref_img = Convert.ToBase64String(pref_image);
                     }
-                    filePath = Defaults.DEFAULT_IMAGE_PATH;
+                    filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_IMAGE_PATH"];
                     fileName = photoInfo.Img_Name;
                     default_image = File.ReadAllBytes(filePath + fileName);
                     default_img = Convert.ToBase64String(default_image);
@@ -502,7 +502,7 @@ namespace Gordon360.Controllers.Api
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
-            string root = Defaults.DEFAULT_PREF_IMAGE_PATH;
+            string root = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PREF_IMAGE_PATH"];
             var fileName = _accountService.GetAccountByUsername(username).Barcode + ".jpg";
             var pathInfo = _profileService.GetPhotoPath(id);
             var provider = new CustomMultipartFormDataStreamProvider(root);
@@ -555,7 +555,7 @@ namespace Gordon360.Controllers.Api
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value; ;
-            string root = Defaults.DEFAULT_PREF_IMAGE_PATH;
+            string root = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PREF_IMAGE_PATH"];
             var fileName = _accountService.GetAccountByUsername(username).Barcode + ".jpg";
             try
             {
