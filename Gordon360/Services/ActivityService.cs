@@ -337,7 +337,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity Info was not found." };
             }
 
-            original.ACT_IMG_PATH = Defaults.DEFAULT_ACTIVITY_IMAGE_PATH;
+            original.ACT_IMG_PATH = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_ACTIVITY_IMAGE_PATH"];
 
             _unitOfWork.Save();
         }
