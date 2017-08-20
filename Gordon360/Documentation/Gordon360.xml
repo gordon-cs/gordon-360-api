@@ -4,6 +4,22 @@
         <name>Gordon360</name>
     </assembly>
     <members>
+        <member name="M:Gordon360.ApiControllers.AccountsController.Search(System.String)">
+            <summary>
+            Return a list of accounts matching some or all of the search parameter
+            We are searching through a concatonated string, containing several pieces of info about each user.
+            </summary>
+            <param name="searchString"> The input to search for </param>
+            <returns> All accounts meeting some or all of the parameter</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AccountsController.SearchWithSpace(System.String,System.String)">
+            <summary>
+            Return a list of accounts matching some or all of the search parameter
+            We are searching through a concatonated string, containing several pieces of info about each user.
+            </summary>
+            <param name="searchString"> The input to search for </param>
+            <returns> All accounts meeting some or all of the parameter</returns>
+        </member>
         <member name="M:Gordon360.ApiControllers.AdminsController.GetAll">
             <summary>
             Get all admins
@@ -36,6 +52,12 @@
             <summary>Delete an existing admin</summary>
             <param name="id">The identifier for the admin to be deleted</param>
             <remarks>Calls the server to make a call and remove the given admin from the database</remarks>
+        </member>
+        <member name="M:Gordon360.ApiControllers.EventController.GetAllEvents">
+            <summary>
+            This makes use of our cached request to 25Live, which stores AllEvents
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ContentManagementController.GetSliderContent">
             <summary>Get all the slider content for the dashboard slider</summary>
@@ -105,6 +127,62 @@
             <param name="id">The id of the membership request to delete</param>
             <returns>The deleted object</returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.Get">
+            <summary>Get profile info of currently logged in user</summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.GetUserProfile(System.String)">
+            <summary>Get public profile info for a user</summary>
+            <param name="username">username of the profile info</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.getRole(System.String)">
+            <summary>Get college role of a user</summary>
+            <param name="username"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.getMyImg">
+            <summary>Get the profile image of currently logged in user</summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.getImg(System.String)">
+            <summary>Get the profile image of currently logged in user</summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.PostImage">
+            <summary>
+            Set an image for profile
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.ResetImage">
+            <summary>
+            Reset the profile Image
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateLink(System.String,Gordon360.Models.CUSTOM_PROFILE)">
+            <summary>
+            Update the profile social media links
+            </summary>
+            <param name="type">The type of social media</param>
+            <param name="path">The path of the links</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateMobilePrivacy(System.String)">
+            <summary>
+            Update privacy of mobile phone number
+            </summary>
+            <param name="value">Y or N</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateImagePrivacy(System.String)">
+            <summary>
+            Update privacy of profile image
+            </summary>
+            <param name="value">Y or N</param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ParticipationsController.Get">
             <summary>Get all the roles a person may have within an activity</summary>
             <returns>A list of all the roles and their coresponding acronyms</returns>
@@ -145,22 +223,11 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.StudentsController.Get">
-            <summary>Get a list of all students in the database</summary>
-            <returns>A list of student names, IDs, and emails</returns>
-            <remarks>Queries the database for every student record within the student table</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.StudentsController.Get(System.String)">
-            <summary>Get information about a single student</summary>
-            <param name="id">The Gordon ID of desired student</param>
-            <returns>The information about the specified student</returns>
-            <remarks>Queries the database for the specific student identified by their Gordon ID</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.StudentsController.GetByEmail(System.String)">
-            <summary>Get information about a single student</summary>
-            <param name="email">The email of desired student</param>
-            <returns>The information about the specified student</returns>
-            <remarks>Queries the database for the specific student identified by their email</remarks>
+        <member name="M:Gordon360.Controllers.Api.SessionsController.GetDaysLeftinSemester">
+            <summary>
+            Gets the days left in the current semester
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ActivitiesController.Get">
             <summary>
@@ -241,6 +308,12 @@
             </summary>
             <param name="id">The activity code</param>
             <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ActivitiesController.TogglePrivacy(System.String,System.Boolean)">
+            <summary>Update an existing activity to be private or not</summary>
+            <param name="id">The id of the activity</param>
+            <param name = "p">the boolean value</param>
+            <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         </member>
         <member name="M:Gordon360.Controllers.Api.MembershipsController.Get">
             <summary>
@@ -330,6 +403,11 @@
             <param name="id">The Student id</param>
             <returns>The membership information that the student is a part of</returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.MembershipsController.GetMembershipsForStudentByUsename(System.String)">
+            <summary>Fetch memberships that a specific student has been a part of</summary>
+            <param name="username">The Student Username</param>
+            <returns>The membership information that the student is a part of</returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.MembershipsController.Put(System.Int32,Gordon360.Models.MEMBERSHIP)">
             <summary>Update an existing membership item</summary>
             <param name="id">The membership id of whichever one is to be changed</param>
@@ -339,6 +417,12 @@
         <member name="M:Gordon360.Controllers.Api.MembershipsController.ToggleGroupAdmin(Gordon360.Models.MEMBERSHIP)">
             <summary>Update an existing membership item to be a group admin or not</summary>
              /// <param name="membership">The content within the membership that is to be changed</param>
+            <remarks>Calls the server to make a call and update the database with the changed information</remarks>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.MembershipsController.TogglePrivacy(System.Int32,System.Boolean)">
+            <summary>Update an existing membership item to be private or not</summary>
+            <param name="id">The id of the membership</param>
+            <param name = "p">the boolean value</param>
             <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         </member>
         <member name="M:Gordon360.Controllers.Api.MembershipsController.Delete(System.Int32)">
@@ -371,6 +455,12 @@
         <member name="M:Gordon360.Repositories.GenericRepository`1.GetById(System.String)">
             <summary>
                 Gets single entity by id
+            </summary>
+            <returns>All entities</returns>
+        </member>
+        <member name="M:Gordon360.Repositories.GenericRepository`1.GetByUsername(System.String)">
+            <summary>
+            Gets single entity by username
             </summary>
             <returns>All entities</returns>
         </member>
@@ -458,6 +548,12 @@
             Gets entity by Id
             </summary>        
             <returns>Specific enitity</returns>
+        </member>
+        <member name="M:Gordon360.Repositories.IRepository`1.GetByUsername(System.String)">
+            <summary>
+            Gets entity by username
+            </summary>
+            <returns>Specific entity</returns>
         </member>
         <member name="M:Gordon360.Repositories.IRepository`1.GetAll">
             <summary>
@@ -565,6 +661,13 @@
             <param name="email">The email address associated with the account.</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Services.AccountService.GetAccountByUsername(System.String)">
+            <summary>
+            Fetches the account record with the specified username.
+            </summary>
+            <param name="username">The username associated with the account.</param>
+            <returns></returns>
+        </member>
         <member name="T:Gordon360.Services.ActivityService">
             <summary>
             Service Class that facilitates data transactions between the ActivitiesController and the ACT_INFO database model.
@@ -606,7 +709,8 @@
             When an activity is closed out, the END_DTE is set to the date on which the closing happened
             Otherwise, the END_DTE for all memberships of the activity will be null for that session
             </summary>
-            <param name="id">The activity code for the activity in question</param>
+            <param name="sessionCode">The activity code for the activity in question</param>
+            <param name="id"></param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Services.ActivityService.GetOpenActivities(System.String)">
@@ -674,6 +778,13 @@
             </summary>
             <param name="id">The activity code</param>
         </member>
+        <member name="M:Gordon360.Services.ActivityService.TogglePrivacy(System.String,System.Boolean)">
+            <summary>
+            change activty privacy
+            </summary>
+            <param name="id">The activity code</param>
+            <param name="p">activity private or not</param>
+        </member>
         <member name="T:Gordon360.Services.AdministratorService">
             <summary>
             Service class to facilitate interacting with the Admin table.
@@ -720,6 +831,47 @@
             </summary>
             <param name="admin">The admin to validate</param>
             <returns>True if the admin is valid. Throws ResourceNotFoundException if not. Exception is cauth in an Exception Filter</returns>
+        </member>
+        <member name="T:Gordon360.Services.EventService">
+            <summary>
+            Service that allows for event control
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.EventService.GetRoute(System.String,System.String)">
+            <summary>
+            Helper function to set the route we are making our request to in 25Live
+            </summary>
+            <param name="EventID"></param>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.EventService.GetSpecificEvents(System.String,System.String)">
+            <summary>
+            Return a Single Event JObject from Live25
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.EventService.GetAllEvents(System.Xml.Linq.XDocument)">
+            <summary>
+            Access the memory stream created by the cached task and parse it into events
+            </summary>
+            <param name="xmlDoc"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.EventService.GetAllForStudent(System.String)">
+            <summary>
+            Returns all attended events for a student
+            </summary>
+            <param name="user_name"> The student's ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.EventService.GetEventsForStudentByTerm(System.String,System.String)">
+            <summary>
+            Returns all attended events for a student in a specific term
+            </summary>
+            <param name="user_name"> The student's ID</param>
+            <param name="term"> The current term</param>
+            <returns></returns>
         </member>
         <member name="T:Gordon360.Services.ComplexQueries.RawSqlQuery`1">
             <summary>
@@ -835,23 +987,70 @@
             <param name="password">Password of the email sender</param>
             <returns></returns>
         </member>
-        <member name="T:Gordon360.Services.FacultyService">
+        <member name="M:Gordon360.Services.ProfileService.GetStudentProfileByUsername(System.String)">
             <summary>
-            Service Class that facilitates data transactions between the FacultyController and the Faculty database model.
+            get student profile info
             </summary>
+            <param name="username">username</param>
+            <returns>StudentProfileViewModel if found, null if not found</returns>
         </member>
-        <member name="M:Gordon360.Services.FacultyService.Get(System.String)">
+        <member name="M:Gordon360.Services.ProfileService.GetFacultyStaffProfileByUsername(System.String)">
             <summary>
-            Fetches the faculty member whose gordon id is specified as the parameter.
+            get faculty staff profile info
             </summary>
-            <param name="id">The gordon id</param>
-            <returns>If found returns FacultyViewModel, if not returns null</returns>
+            <param name="username">username</param>
+            <returns>FacultyStaffProfileViewModel if found, null if not found</returns>
         </member>
-        <member name="M:Gordon360.Services.FacultyService.GetAll">
+        <member name="M:Gordon360.Services.ProfileService.GetAlumniProfileByUsername(System.String)">
             <summary>
-            Fetches all the Faculty members from the database.
+            get alumni profile info
             </summary>
-            <returns>FacultyViewModel IEnumerable. If no records are found an empty IEnumerable is returned.</returns>
+            <param name="username">username</param>
+            <returns>AlumniProfileViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetPhotoPath(System.String)">
+            <summary>
+            get photo path
+            </summary>
+            <param name="id">id</param>
+            <returns>PhotoPathViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetCustomUserInfo(System.String)">
+            <summary>
+            Fetches a single profile whose username matches the username provided as an argument
+            </summary>
+            <param name="username">The username</param>
+            <returns>ProfileViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.UpdateProfileImage(System.String,System.String,System.String)">
+            <summary>
+            Sets the path for the profile image.
+            </summary>
+            <param name="id">The student id</param>
+            <param name="path"></param>
+            <param name="name"></param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.UpdateProfileLink(System.String,System.String,Gordon360.Models.CUSTOM_PROFILE)">
+            <summary>
+            Sets the path for the profile links.
+            </summary>
+            <param name="username">The username</param>
+            <param name="type"></param>
+            <param name="path"></param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.UpdateMobilePrivacy(System.String,System.String)">
+            <summary>
+            privacy setting of mobile phone.
+            </summary>
+            <param name="id">id</param>
+            <param name="value">Y or N</param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.UpdateImagePrivacy(System.String,System.String)">
+            <summary>
+            privacy setting user profile photo.
+            </summary>
+            <param name="id">id</param>
+            <param name="value">Y or N</param>
         </member>
         <member name="T:Gordon360.Services.JenzibarActivityService">
             <summary>
@@ -1043,6 +1242,14 @@
             <param name="membership">The corresponding membership object</param>
             <returns>The newly modified membership.</returns>
         </member>
+        <member name="M:Gordon360.Services.MembershipService.TogglePrivacy(System.Int32,System.Boolean)">
+            <summary>
+            Switches the privacy property of the person whose membership id is given
+            </summary>
+            <param name="id">The membership id.</param>
+            <param name="p">membership private or not</param>
+            <returns>The newly modified membership.</returns>
+        </member>
         <member name="M:Gordon360.Services.MembershipService.validateMembership(Gordon360.Models.MEMBERSHIP)">
             <summary>
             Helper method to Validate a membership
@@ -1086,48 +1293,10 @@
             </summary>
             <returns>A SessionViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
         </member>
-        <member name="T:Gordon360.Services.StaffService">
+        <member name="T:Gordon360.Static.Data.Data">
             <summary>
-            Service class to facilitate the data transactions between the controllers and the database models.
+            Service class for data that is shared between all services.
             </summary>
-        </member>
-        <member name="M:Gordon360.Services.StaffService.Get(System.String)">
-            <summary>
-            Fetches the staff record whose id matches the provided parameter.
-            </summary>
-            <param name="id">The staff's gordon id.</param>
-            <returns>A StaffViewModel if the record exists, null if it doesn't.</returns>
-        </member>
-        <member name="M:Gordon360.Services.StaffService.GetAll">
-            <summary>
-            Fetches all the staff records from the database.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="T:Gordon360.Services.StudentService">
-            <summary>
-            Service Class to faciliatate data transactions between the controller and the database models.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Services.StudentService.Get(System.String)">
-            <summary>
-            Fetches the student record whose id number matches the parameter.
-            </summary>
-            <param name="id">The student id</param>
-            <returns>A student view model if found, null if not found.</returns>
-        </member>
-        <member name="M:Gordon360.Services.StudentService.GetAll">
-            <summary>
-            Fetches all the Student records from the database.
-            </summary>
-            <returns>StudentViweModel IEnumberable. If nothing is found, an empty IEnumberable is returned.</returns>
-        </member>
-        <member name="M:Gordon360.Services.StudentService.GetByEmail(System.String)">
-            <summary>
-            Fetches the student record using the specified email address
-            </summary>
-            <param name="email">The Student email</param>
-            <returns></returns>
         </member>
         <member name="T:Gordon360.Static.Methods.Helpers">
             <summary>
@@ -1139,6 +1308,26 @@
             Service method that gets the current session we are in.
             </summary>
             <returns>SessionViewModel of the current session. If no session is found for our current date, returns null.</returns>
+        </member>
+        <member name="M:Gordon360.Static.Methods.Helpers.GetLiveStream(System.String)">
+            <summary>
+            Return an XDocument from a URL containing XML. 
+            This is used to retrieve data from 25Live specifically.
+            </summary>
+            <param name="requestUrl"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Static.Methods.Helpers.GetDay">
+            <summary>
+             Helper function to determine the current academic year
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:Gordon360.Startup.DummyCacheItemKey">
+            <summary>
+            Caching task methods created based upon the ideas in the article written by Omar Al Zabir
+            Article: https://www.codeproject.com/Articles/12117/Simulate-a-Windows-Service-using-ASP-NET-to-run-sc
+            </summary>
         </member>
     </members>
 </doc>

@@ -117,7 +117,8 @@ namespace Gordon360.Services
         /// When an activity is closed out, the END_DTE is set to the date on which the closing happened
         /// Otherwise, the END_DTE for all memberships of the activity will be null for that session
         /// </summary>
-        /// <param name="id">The activity code for the activity in question</param>
+        /// <param name="sessionCode">The activity code for the activity in question</param>
+        /// <param name="id"></param>
         /// <returns></returns>
         public bool IsOpen(string id, string sessionCode)
         {
@@ -336,7 +337,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity Info was not found." };
             }
 
-            original.ACT_IMG_PATH = Defaults.DEFAULT_ACTIVITY_IMAGE_PATH;
+            original.ACT_IMG_PATH = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_ACTIVITY_IMAGE_PATH"];
 
             _unitOfWork.Save();
         }
@@ -351,6 +352,25 @@ namespace Gordon360.Services
 
             return true;
 
+        }
+
+        /// <summary>
+        /// change activty privacy
+        /// </summary>
+        /// <param name="id">The activity code</param>
+        /// <param name="p">activity private or not</param>
+        public void TogglePrivacy(string id,bool p)
+        {
+            var original = _unitOfWork.ActivityInfoRepository.GetById(id);
+
+            if (original == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity Info was not found." };
+            }
+
+            original.PRIVACY = p;
+
+            _unitOfWork.Save();
         }
 
 

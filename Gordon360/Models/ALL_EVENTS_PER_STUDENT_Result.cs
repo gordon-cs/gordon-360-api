@@ -10,14 +10,11 @@
 namespace Gordon360.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class sysdiagrams
+    public partial class ALL_EVENTS_PER_STUDENT_Result
     {
-        public string name { get; set; }
-        public int principal_id { get; set; }
-        public int diagram_id { get; set; }
-        public Nullable<int> version { get; set; }
-        public byte[] definition { get; set; }
+        public Nullable<System.DateTime> Date { get; set; }
+        public Nullable<System.DateTime> Time { get; set; }
+        public string EventID { get; set; }
     }
 }

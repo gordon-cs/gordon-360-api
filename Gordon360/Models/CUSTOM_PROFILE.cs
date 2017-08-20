@@ -12,12 +12,12 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Staff
+    public partial class CUSTOM_PROFILE
     {
-        public string staff_id { get; set; }
-        public string staff_name { get; set; }
-        public string staff_email { get; set; }
-        public string user_name { get; set; }
-        public int Private { get; set; }
+        public string username { get; set; }
+        public string facebook { get; set; }
+        public string twitter { get; set; }
+        public string instagram { get; set; }
+        public string linkedin { get; set; }
     }
 }

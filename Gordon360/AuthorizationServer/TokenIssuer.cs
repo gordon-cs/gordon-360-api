@@ -91,7 +91,6 @@ namespace Gordon360.AuthorizationServer
                         IUnitOfWork unitOfWork = new UnitOfWork();
                         var adminService = new AdministratorService(unitOfWork);
                         var accountService = new AccountService(unitOfWork);
-                        
 
                         var distinguishedName = userEntry.DistinguishedName;
                         var readOnly = accountService.Get(personID).ReadOnly;
@@ -115,6 +114,24 @@ namespace Gordon360.AuthorizationServer
                         {
                             // This get operation is by gordon_id
                             // Throws an exception if not found.
+                            var unit = new UnitOfWork();
+
+                            bool isPolice = unit.AccountRepository.FirstOrDefault(x => x.gordon_id == personID).is_police == 1;
+
+                            if (isPolice)
+                            {
+                                collegeRole = Position.POLICE;
+                            }
+                        }
+                        catch (ResourceNotFoundException e)
+                        {
+                            // Silent catch. 
+                            // This is ok because we know this exception means the user is not an admin
+                        }
+                        try
+                        {
+                            // This get operation is by gordon_id
+                            // Throws an exception if not found.
                             var isAdmin = adminService.Get(personID);
                             if (isAdmin != null)
                             {
@@ -127,12 +144,14 @@ namespace Gordon360.AuthorizationServer
                             // This is ok because we know this exception means the user is not an admin
                         }
                         
-                        
+
+
+
                         var identity = new ClaimsIdentity(context.Options.AuthenticationType);
                         identity.AddClaim(new Claim("name", userEntry.Name));
                         identity.AddClaim(new Claim("id", personID));
                         identity.AddClaim(new Claim("college_role", collegeRole));
-
+                        identity.AddClaim(new Claim("user_name", username));
                         ADServiceConnection.Dispose();
                         context.Validated(identity);
                     }

@@ -27,25 +27,20 @@ namespace Gordon360.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<ACT_CLUB_DEF> ACT_CLUB_DEF { get; set; }
         public virtual DbSet<ACT_INFO> ACT_INFO { get; set; }
         public virtual DbSet<ADMIN> ADMIN { get; set; }
+        public virtual DbSet<CUSTOM_PROFILE> CUSTOM_PROFILE { get; set; }
         public virtual DbSet<JNZB_ACTIVITIES> JNZB_ACTIVITIES { get; set; }
         public virtual DbSet<MEMBERSHIP> MEMBERSHIP { get; set; }
-        public virtual DbSet<PROFILE_IMAGE> PROFILE_IMAGE { get; set; }
         public virtual DbSet<REQUEST> REQUEST { get; set; }
-        public virtual DbSet<student_temp> student_temp { get; set; }
-        public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
-        public virtual DbSet<alumni> alumni { get; set; }
-        public virtual DbSet<facstaff> facstaff { get; set; }
         public virtual DbSet<C360_SLIDER> C360_SLIDER { get; set; }
         public virtual DbSet<ACCOUNT> ACCOUNT { get; set; }
+        public virtual DbSet<Alumni> Alumni { get; set; }
         public virtual DbSet<ChapelEvent> ChapelEvent { get; set; }
         public virtual DbSet<CM_SESSION_MSTR> CM_SESSION_MSTR { get; set; }
-        public virtual DbSet<Faculty> Faculty { get; set; }
+        public virtual DbSet<FacStaff> FacStaff { get; set; }
         public virtual DbSet<JENZ_ACT_CLUB_DEF> JENZ_ACT_CLUB_DEF { get; set; }
         public virtual DbSet<PART_DEF> PART_DEF { get; set; }
-        public virtual DbSet<Staff> Staff { get; set; }
         public virtual DbSet<Student> Student { get; set; }
     
         public virtual ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> ACTIVE_CLUBS_PER_SESS_ID(string sESS_CDE)
@@ -243,6 +238,19 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GRP_ADMIN_EMAILS_PER_ACT_CDE_Result>("GRP_ADMIN_EMAILS_PER_ACT_CDE", aCT_CDEParameter, sESS_CDEParameter);
         }
     
+        public virtual ObjectResult<ALL_EVENTS_PER_STUDENT_Result> ALL_EVENTS_PER_STUDENT(string sTU_ID, string tERM)
+        {
+            var sTU_IDParameter = sTU_ID != null ?
+                new ObjectParameter("STU_ID", sTU_ID) :
+                new ObjectParameter("STU_ID", typeof(string));
+    
+            var tERMParameter = tERM != null ?
+                new ObjectParameter("TERM", tERM) :
+                new ObjectParameter("TERM", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ALL_EVENTS_PER_STUDENT_Result>("ALL_EVENTS_PER_STUDENT", sTU_IDParameter, tERMParameter);
+        }
+    
         public virtual ObjectResult<EVENTS_BY_STUDENT_ID_Result> EVENTS_BY_STUDENT_ID(string sTU_USERNAME)
         {
             var sTU_USERNAMEParameter = sTU_USERNAME != null ?
@@ -250,6 +258,19 @@ namespace Gordon360.Models
                 new ObjectParameter("STU_USERNAME", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<EVENTS_BY_STUDENT_ID_Result>("EVENTS_BY_STUDENT_ID", sTU_USERNAMEParameter);
+        }
+    
+        public virtual ObjectResult<Nullable<int>> TOTAL_CREDITS_PER_STUDENT(string sTU_ID, string tERM)
+        {
+            var sTU_IDParameter = sTU_ID != null ?
+                new ObjectParameter("STU_ID", sTU_ID) :
+                new ObjectParameter("STU_ID", typeof(string));
+    
+            var tERMParameter = tERM != null ?
+                new ObjectParameter("TERM", tERM) :
+                new ObjectParameter("TERM", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("TOTAL_CREDITS_PER_STUDENT", sTU_IDParameter, tERMParameter);
         }
     
         public virtual int sp_alterdiagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)
@@ -355,20 +376,33 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_upgraddiagrams");
         }
     
-        public virtual ObjectResult<PHOTO_INFO_PER_USER_NAME_Result> PHOTO_INFO_PER_USER_NAME(string uSER_NAME)
+        public virtual ObjectResult<STUDENT_EVENTS_PER_TERM_Result> STUDENT_EVENTS_PER_TERM(string sTU_ID, string tERM)
         {
-            var uSER_NAMEParameter = uSER_NAME != null ?
-                new ObjectParameter("USER_NAME", uSER_NAME) :
-                new ObjectParameter("USER_NAME", typeof(string));
+            var sTU_IDParameter = sTU_ID != null ?
+                new ObjectParameter("STU_ID", sTU_ID) :
+                new ObjectParameter("STU_ID", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<PHOTO_INFO_PER_USER_NAME_Result>("PHOTO_INFO_PER_USER_NAME", uSER_NAMEParameter);
+            var tERMParameter = tERM != null ?
+                new ObjectParameter("TERM", tERM) :
+                new ObjectParameter("TERM", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<STUDENT_EVENTS_PER_TERM_Result>("STUDENT_EVENTS_PER_TERM", sTU_IDParameter, tERMParameter);
         }
     
-        public virtual int UPDATE_PHOTO_PATH(string uSER_NAME, string fILE_PATH, string fILE_NAME)
+        public virtual ObjectResult<PHOTO_INFO_PER_USER_NAME_Result> PHOTO_INFO_PER_USER_NAME(Nullable<int> iD)
         {
-            var uSER_NAMEParameter = uSER_NAME != null ?
-                new ObjectParameter("USER_NAME", uSER_NAME) :
-                new ObjectParameter("USER_NAME", typeof(string));
+            var iDParameter = iD.HasValue ?
+                new ObjectParameter("ID", iD) :
+                new ObjectParameter("ID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<PHOTO_INFO_PER_USER_NAME_Result>("PHOTO_INFO_PER_USER_NAME", iDParameter);
+        }
+    
+        public virtual int UPDATE_PHOTO_PATH(Nullable<int> iD, string fILE_PATH, string fILE_NAME)
+        {
+            var iDParameter = iD.HasValue ?
+                new ObjectParameter("ID", iD) :
+                new ObjectParameter("ID", typeof(int));
     
             var fILE_PATHParameter = fILE_PATH != null ?
                 new ObjectParameter("FILE_PATH", fILE_PATH) :
@@ -378,7 +412,76 @@ namespace Gordon360.Models
                 new ObjectParameter("FILE_NAME", fILE_NAME) :
                 new ObjectParameter("FILE_NAME", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_PHOTO_PATH", uSER_NAMEParameter, fILE_PATHParameter, fILE_NAMEParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_PHOTO_PATH", iDParameter, fILE_PATHParameter, fILE_NAMEParameter);
+        }
+    
+        public virtual int CREATE_SOCIAL_LINKS(string uSERNAME, string fACEBOOK, string tWITTER, string iNSTAGRAM, string lINKEDIN)
+        {
+            var uSERNAMEParameter = uSERNAME != null ?
+                new ObjectParameter("USERNAME", uSERNAME) :
+                new ObjectParameter("USERNAME", typeof(string));
+    
+            var fACEBOOKParameter = fACEBOOK != null ?
+                new ObjectParameter("FACEBOOK", fACEBOOK) :
+                new ObjectParameter("FACEBOOK", typeof(string));
+    
+            var tWITTERParameter = tWITTER != null ?
+                new ObjectParameter("TWITTER", tWITTER) :
+                new ObjectParameter("TWITTER", typeof(string));
+    
+            var iNSTAGRAMParameter = iNSTAGRAM != null ?
+                new ObjectParameter("INSTAGRAM", iNSTAGRAM) :
+                new ObjectParameter("INSTAGRAM", typeof(string));
+    
+            var lINKEDINParameter = lINKEDIN != null ?
+                new ObjectParameter("LINKEDIN", lINKEDIN) :
+                new ObjectParameter("LINKEDIN", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("CREATE_SOCIAL_LINKS", uSERNAMEParameter, fACEBOOKParameter, tWITTERParameter, iNSTAGRAMParameter, lINKEDINParameter);
+        }
+    
+        public virtual ObjectResult<MEMBERSHIPS_PER_ACT_CDE_AUTHORIZED_Result> MEMBERSHIPS_PER_ACT_CDE_AUTHORIZED(string aCT_CDE, Nullable<bool> aUTHORIZED)
+        {
+            var aCT_CDEParameter = aCT_CDE != null ?
+                new ObjectParameter("ACT_CDE", aCT_CDE) :
+                new ObjectParameter("ACT_CDE", typeof(string));
+    
+            var aUTHORIZEDParameter = aUTHORIZED.HasValue ?
+                new ObjectParameter("AUTHORIZED", aUTHORIZED) :
+                new ObjectParameter("AUTHORIZED", typeof(bool));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<MEMBERSHIPS_PER_ACT_CDE_AUTHORIZED_Result>("MEMBERSHIPS_PER_ACT_CDE_AUTHORIZED", aCT_CDEParameter, aUTHORIZEDParameter);
+        }
+    
+        public virtual int UPDATE_PHONE_PRIVACY(Nullable<int> iD, string vALUE)
+        {
+            var iDParameter = iD.HasValue ?
+                new ObjectParameter("ID", iD) :
+                new ObjectParameter("ID", typeof(int));
+    
+            var vALUEParameter = vALUE != null ?
+                new ObjectParameter("VALUE", vALUE) :
+                new ObjectParameter("VALUE", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_PHONE_PRIVACY", iDParameter, vALUEParameter);
+        }
+    
+        public virtual int UPDATE_SHOW_PIC(Nullable<int> aCCOUNT_ID, string vALUE)
+        {
+            var aCCOUNT_IDParameter = aCCOUNT_ID.HasValue ?
+                new ObjectParameter("ACCOUNT_ID", aCCOUNT_ID) :
+                new ObjectParameter("ACCOUNT_ID", typeof(int));
+    
+            var vALUEParameter = vALUE != null ?
+                new ObjectParameter("VALUE", vALUE) :
+                new ObjectParameter("VALUE", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_SHOW_PIC", aCCOUNT_IDParameter, vALUEParameter);
+        }
+    
+        public virtual ObjectResult<ALL_BASIC_INFO_Result> ALL_BASIC_INFO()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ALL_BASIC_INFO_Result>("ALL_BASIC_INFO");
         }
     }
 }

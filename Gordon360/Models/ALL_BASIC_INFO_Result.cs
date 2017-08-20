@@ -10,17 +10,13 @@
 namespace Gordon360.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class PROFILE_IMAGE
+    public partial class ALL_BASIC_INFO_Result
     {
-        public string id { get; set; }
-        public string username { get; set; }
-        public string Img_Path { get; set; }
-        public string facebook { get; set; }
-        public string twitter { get; set; }
-        public string instagram { get; set; }
-        public string linkedin { get; set; }
-        public Nullable<bool> show_img { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string UserName { get; set; }
+        public string AccountType { get; set; }
+        public string ConcatonatedInfo { get; set; }
     }
 }

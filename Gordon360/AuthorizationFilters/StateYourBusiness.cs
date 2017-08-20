@@ -27,7 +27,7 @@ namespace Gordon360.AuthorizationFilters
      */ 
     public class StateYourBusiness : ActionFilterAttribute
     {
-        // Rousource to be accessed: Will get as parameters to the attribute
+        // Resource to be accessed: Will get as parameters to the attribute
         public string resource { get; set; }
         // Operation to be performed: Will get as parameters to the attribute
         public string operation { get; set; }
@@ -37,6 +37,7 @@ namespace Gordon360.AuthorizationFilters
         // User position at the college and their id.
         private string user_position { get; set; }
         private string user_id { get; set; }
+        private string user_name { get; set; }
 
         private bool isAuthorized = false;
 
@@ -45,11 +46,12 @@ namespace Gordon360.AuthorizationFilters
             context = actionContext;
             // Step 1: Who is to be authorized
             var authenticatedUser = actionContext.RequestContext.Principal as ClaimsPrincipal;
+
             if (authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role") != null)
             {
                 user_position = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role").Value;
                 user_id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
-
+                user_name = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
                 if (user_position == Position.GOD)
                 {
                     var adminService = new AdministratorService(new UnitOfWork());
@@ -137,7 +139,9 @@ namespace Gordon360.AuthorizationFilters
 
             switch (resource)
             {
-                
+                case Resource.PROFILE:
+                    return true;
+
                 case Resource.MEMBERSHIP:
                     return true;
                 case Resource.MEMBERSHIP_REQUEST:
@@ -200,6 +204,16 @@ namespace Gordon360.AuthorizationFilters
                         // Only the person itself or an admin can see someone's memberships
                         return (string)context.ActionArguments["id"] == user_id;
                     }
+
+                case Resource.EVENTS_BY_STUDENT_ID:
+                    {
+                        // Only the person itself or an admin can see someone's chapel attendance
+                        var username_requested = context.ActionArguments["username"];
+                        var is_creditOwner = username_requested.ToString().Equals(user_name);
+                        return is_creditOwner;
+                    }
+
+
                 case Resource.MEMBERSHIP_REQUEST_BY_ACTIVITY:
                     {
                         // An activity leader should be able to see the membership requests that belong to the activity he is leading.
@@ -275,6 +289,19 @@ namespace Gordon360.AuthorizationFilters
                         return true;
                     else
                         return false;
+                case Resource.ChapelEvent:
+                    // User is admin
+                    if (user_position == Position.GOD)
+                        return true;
+                    else
+                        return false;
+                case Resource.EVENTS_BY_STUDENT_ID:
+                    // User is admin
+                    if (user_position == Position.GOD)
+                        return true;
+                    else
+                        return false;
+
                 case Resource.MEMBERSHIP_REQUEST:
                     // User is admin
                     if (user_position == Position.GOD)
@@ -412,6 +439,26 @@ namespace Gordon360.AuthorizationFilters
                         // If a mistake is made in creating the original request, the user can always delete it and make a new one.
                         return false;
                     }
+                case Resource.MEMBERSHIP_PRIVACY:
+                    {
+                        // User is admin
+                        if (user_position == Position.GOD)
+                            return true;
+                        var membershipService = new MembershipService(new UnitOfWork());
+                        var membershipID = (int)context.ActionArguments["id"];
+                        var membershipToConsider = membershipService.Get(membershipID);
+                        var is_membershipOwner = membershipToConsider.IDNumber.ToString() == user_id;
+                        if (is_membershipOwner)
+                            return true;
+
+                        var activityCode = membershipToConsider.ActivityCode;
+
+                        var isGroupAdmin = membershipService.GetGroupAdminMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        if (isGroupAdmin)
+                            return true;
+
+                        return false;
+                    }
                 case Resource.STUDENT:
                     return false; // No one should be able to update a student through this API
                 case Resource.ADVISOR:
@@ -430,6 +477,17 @@ namespace Gordon360.AuthorizationFilters
 
                         return false;
                     }
+                case Resource.PROFILE:
+                    {
+                        // User is admin
+                        if (user_position == Position.GOD)
+                            return true;
+
+                        var username = (string)context.ActionArguments["username"];
+                        var isSelf = username.Equals(user_name);
+                        return isSelf;
+                    }
+
                 case Resource.ACTIVITY_INFO:
                     {
                         // User is admin

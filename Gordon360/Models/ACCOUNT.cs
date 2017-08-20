@@ -14,6 +14,7 @@ namespace Gordon360.Models
     
     public partial class ACCOUNT
     {
+        public Nullable<int> account_id { get; set; }
         public string gordon_id { get; set; }
         public string barcode { get; set; }
         public string firstname { get; set; }
@@ -21,9 +22,11 @@ namespace Gordon360.Models
         public string email { get; set; }
         public string AD_Username { get; set; }
         public string account_type { get; set; }
+        public string office_hours { get; set; }
         public int preferred_photo { get; set; }
         public int show_pic { get; set; }
         public int Private { get; set; }
         public int ReadOnly { get; set; }
+        public int is_police { get; set; }
     }
 }
