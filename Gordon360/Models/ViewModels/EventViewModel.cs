@@ -29,7 +29,14 @@ namespace Gordon360.Models.ViewModels
             Event_Name = a.Element(r25 + "event_name").ElementValueNull().Value;
             Event_Title = a.Element(r25 + "event_title").ElementValueNull().Value;
             Event_Type_Name = a.Element(r25 + "event_type_name").ElementValueNull().Value;
-            Category_Id = a.Element(r25 + "category").ElementValueNull().Element(r25 + "category_id").ElementValueNull().Value;
+            // Check for a category ID of 85, and if that is true, return 85
+            foreach (XElement category in a.ElementValueNull().Descendants(r25 + "category"))
+                {
+                 if (category.ElementValueNull().Element(r25 + "category_id").ElementValueNull().Value == "85")
+                    {
+                    Category_Id = "85";
+                    }
+                }
             List<Object[]> placeholder = new List<object[]>();
             foreach (XElement reservation in a.Element(r25 + "profile").ElementValueNull().Descendants(r25 + "reservation"))
             {
