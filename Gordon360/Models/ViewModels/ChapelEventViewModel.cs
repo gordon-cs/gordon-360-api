@@ -10,7 +10,7 @@ namespace Gordon360.Models.ViewModels
         public int ROWID { get; set; }
         public string CHBarEventID { get; set; }
         public string CHBarcode { get; set; }
-        public string CHEventID { get; set; }
+        public string LiveID { get; set; }
         public string CHCheckerID { get; set; }
         public int? Required { get; set; }
         public Nullable<System.DateTime> CHDate { get; set; }
@@ -25,7 +25,7 @@ namespace Gordon360.Models.ViewModels
                 ROWID = a.ROWID,
                 CHBarEventID = a.CHBarEventID.Trim(),
                 CHBarcode = a.CHBarcode.Trim(),
-                CHEventID = a.LiveID.ToString().Trim(),
+                LiveID = a.LiveID.ToString().Trim(),
                 Required = a.Required,
                 CHCheckerID = a.CHCheckerID.Trim(),
                 CHDate = a.CHDate,

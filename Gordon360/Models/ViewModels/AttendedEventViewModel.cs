@@ -5,7 +5,7 @@ namespace Gordon360.Models.ViewModels
 {
     public class AttendedEventViewModel
     {
-        public string CHEventID { get; set; }
+        public string LiveID { get; set; }
         public Nullable<DateTime> CHDate { get; set; }
         public Nullable<DateTime> CHTime { get; set; }
         public string CHTermCD { get; set; }
@@ -23,7 +23,7 @@ namespace Gordon360.Models.ViewModels
         public AttendedEventViewModel(EventViewModel a, ChapelEventViewModel b)
         {   
             // First the EventViewModel
-            CHEventID = b.CHEventID;
+            LiveID = b.LiveID;
             CHDate = b.CHDate;
             CHTime = b.CHTime;
             CHTermCD = b.CHTermCD.Trim();
@@ -37,7 +37,6 @@ namespace Gordon360.Models.ViewModels
                 Category_ID = a.Category_Id ?? "";
                 Description = a.Description ?? "";
                 Organization = a.Organization ?? "";
-                Occurrences = a.Occurrences;
 
             }
             // If it's null, fill it with empty strings so we don't crash
@@ -49,7 +48,6 @@ namespace Gordon360.Models.ViewModels
                 Category_ID =  "";
                 Description =  "";
                 Organization =  "";
-                Occurrences = new List<object[]>();
             }
  
         }

@@ -177,7 +177,7 @@ namespace Gordon360.Services
             IEnumerable<EventViewModel> events = null;
 
             // Get a list of every attended event, to send over to 25Live
-            string joined = string.Join("+", result.Select(x => x.CHEventID));
+            string joined = string.Join("+", result.Select(x => x.LiveID));
 
             // Attempt to return all events attended by the student from 25Live
             events = GetAllEvents(Data.AllEvents);
@@ -188,7 +188,7 @@ namespace Gordon360.Services
                 try
                 {
                     // Find the event with the same ID as the attended event
-                    EventViewModel l = events.ToList().Find(x => x.Event_ID == c.CHEventID);
+                    EventViewModel l = events.ToList().Find(x => x.Event_ID == c.LiveID);
                     whoops = l;
                 }
                 catch
@@ -274,7 +274,7 @@ namespace Gordon360.Services
             IEnumerable<EventViewModel> events = null;
 
             // Get a list of every attended event, to send over to 25Live
-            string joined = string.Join("+", result.Select(x => x.CHEventID));
+            string joined = string.Join("+", result.Select(x => x.LiveID));
 
             // Attempt to return all events attended by the student from 25Live
             // We use the cached data
@@ -286,7 +286,7 @@ namespace Gordon360.Services
                 try
                 {
                     // Find the event with the same ID as the attended event
-                    EventViewModel l = events.ToList().Find(x => x.Event_ID == c.CHEventID);
+                    EventViewModel l = events.ToList().Find(x => x.Event_ID == c.LiveID);
                     whoops = l;
                 }
                 catch
