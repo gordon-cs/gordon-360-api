@@ -23,7 +23,7 @@ namespace Gordon360.Models.ViewModels
             ChapelEventViewModel vm = new ChapelEventViewModel
             {
                 ROWID = a.ROWID,
-                CHBarEventID = a.CHBarEventID.Trim(),
+                CHBarEventID = a.LiveID.ToString().Trim(),
                 CHBarcode = a.CHBarcode.Trim(),
                 CHEventID = a.CHEventID,
                 Required = a.Required,

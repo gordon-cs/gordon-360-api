@@ -15,16 +15,18 @@ namespace Gordon360.Models
 using System;
     using System.Collections.Generic;
     
-public partial class JENZ_ACT_CLUB_DEF
+public partial class sysdiagrams
 {
 
-    public string ACT_CDE { get; set; }
+    public string name { get; set; }
 
-    public string ACT_DESC { get; set; }
+    public int principal_id { get; set; }
 
-    public string ACT_TYPE { get; set; }
+    public int diagram_id { get; set; }
 
-    public string ACT_TYPE_DESC { get; set; }
+    public Nullable<int> version { get; set; }
+
+    public byte[] definition { get; set; }
 
 }
 
