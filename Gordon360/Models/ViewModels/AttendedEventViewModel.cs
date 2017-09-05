@@ -37,6 +37,7 @@ namespace Gordon360.Models.ViewModels
                 Category_ID = a.Category_Id ?? "";
                 Description = a.Description ?? "";
                 Organization = a.Organization ?? "";
+                Occurrences = a.Occurrences ?? new List<Object[]>(); 
 
             }
             // If it's null, fill it with empty strings so we don't crash
@@ -48,6 +49,7 @@ namespace Gordon360.Models.ViewModels
                 Category_ID =  "";
                 Description =  "";
                 Organization =  "";
+                Occurrences = new List<Object[]>();
             }
  
         }
