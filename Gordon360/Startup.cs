@@ -34,7 +34,7 @@ namespace Gordon360
             {
 
                 TokenEndpointPath = new PathString("/token"),
-                AccessTokenExpireTimeSpan = TimeSpan.FromMinutes(10),
+                AccessTokenExpireTimeSpan = TimeSpan.FromDays(365),
                 Provider = new TokenIssuer(),
                 AccessTokenFormat = new CustomJWTFormat(issuer),
 #if DEBUG
