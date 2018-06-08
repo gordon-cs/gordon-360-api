@@ -66,6 +66,7 @@ The folders for these IIS sites can be found on the CCCTrain machine under `F:\s
 - Clicking publish pushes your changes to the API for either 360ApiTrain.gordon.edu or 360Api.gordon.edu, depending on which publish profile you used.
 
 ### Deploying to the Front-end Site
+**Note: these instructions are out-of-date, since Project Bernard is deprecated with the transition to gordon-360-ui!** Please refer to the documentation for [gordon-360-ui](https://github.com/gordon-cs/gordon-360-ui) on GitHub. The new gordon-360-ui front-end uses the React framework rather than Ember.
 
 - Log into CS-360-API-TEST through ssh.
 - To make a change to the code, clone the [Project Bernard](https://github.com/gordon-cs/Project-Bernard) repository.
