@@ -10,8 +10,8 @@ Dive in.
     - [Tables](#tables)
     - [Stored Procedures](#stored-procedures)
     - [Triggers](#triggers)
-- [The Code](#the-code)	
-- [Introduction](#introduction) 
+- [The Code](#the-code)
+- [Introduction](#introduction)
 - [Caching](#caching)
 - [API Endpoints](#api-endpoints)
     - [Authentication](#authentication)
@@ -48,7 +48,7 @@ To work on this project, it is easiest to use the following machines provided by
     - Has the User-facing code (HTML, JS and CSS)
 
 
-The folders for these IIS sites can be found on the CCCTrain machine under `F:\sites`. 
+The folders for these IIS sites can be found on the CCCTrain machine under `F:\sites`.
 - 360.gordon.edu -- Production Front-end. User-facing code (css, js, html)
 - 360Train.gordon.edu -- Development Front-end. User-facing code (css, js, html)
 - 360Api.gordon.edu -- Production JSON server site. C# using the ASP.NET Framework.
@@ -61,7 +61,7 @@ The folders for these IIS sites can be found on the CCCTrain machine under `F:\s
 - Make a change. Do your thing.
 - Menu Bar -> Build - Publish Gordon360.
 - Choose the right publish profile.  
-    - DEV -- Development ( Connects to the admintrainsql database server, and used for 360train.gordon.edu). 
+    - DEV -- Development ( Connects to the admintrainsql database server, and used for 360train.gordon.edu).
     - Prod -- Production ( Connects to the adminprodsql database server, and used for the real site 360.gordon.edu).
 - Clicking publish pushes your changes to the API for either 360ApiTrain.gordon.edu or 360Api.gordon.edu, depending on which publish profile you used.
 
@@ -103,10 +103,10 @@ The `CCT` database exists in:
 
 ### Tables
 
-All the tables were created from scratch by our team. 
+All the tables were created from scratch by our team.
 
 Misc Information:
-- Apart from a few exceptions, the tables don't make use of foreign key constraints. This is because the relevant primary keys are in the tables referenced by Views. Unfortunately, one cannot make foreign keys that reference Views. 
+- Apart from a few exceptions, the tables don't make use of foreign key constraints. This is because the relevant primary keys are in the tables referenced by Views. Unfortunately, one cannot make foreign keys that reference Views.
 
 
 ###### ACT_INFO
@@ -131,7 +131,7 @@ A record in this table stores:
 - EMAIL - The administrator's email.
 - SUPER_ADMIN - Whether or not the admin has super admin privilege
 
-To make someone an admin, simply insert a record into this table through MSSQL Studio. 
+To make someone an admin, simply insert a record into this table through MSSQL Studio.
 
 ###### CUSTOM_PROFILE
 
@@ -147,7 +147,7 @@ Users don't exist in the table unless they add/edit their social media links on 
 
 ###### JNZB_ACTIVITIES
 
-A record in this table stores all the same fields as an Activity table in Jensibar would. 
+A record in this table stores all the same fields as an Activity table in Jensibar would.
 The goal of this table was to contain membership information that was to be moved to Jenzibar. To do this, one would use the stored procedure [UPDATE_JNZB_ACTIVITIES](#update_jnzb_activities).
 
 ###### MEMBERSHIP
@@ -199,7 +199,7 @@ The Alumni information. Includes their information the same way as students.
 ###### Buildings
 Descriptions of the different codes for buildings around campus.
 ###### CHAPEL_EVENT
-Information on chapel attendence for every student 
+Information on chapel attendence for every student
 ###### JENZ_ACT_CLUB_DEF
 The Activity information. Includes short codes and what they represent.
 ###### Countries
@@ -211,7 +211,7 @@ A subset of `ACCOUNT` that has only faculty and staff member records.
 ###### Majors
 Descriptions of the different codes for majors.
 ###### ALL_BASIC_INFO
-Pulls firstname, lastname, category (student, stafff, faculty), and AD_Username (if it exists!) and then makes a concatonated string to be searched through 
+Pulls firstname, lastname, category (student, stafff, faculty), and AD_Username (if it exists!) and then makes a concatonated string to be searched through
 ###### PART_DEF
 Definitions of the different participation levels for someone in an activity.
 ###### Police
@@ -230,7 +230,7 @@ Here are the most important ones.
 Returns all events which a student has attended based upon their AD_Username
 
 ###### ALL_BASIC_INFO
-Pulls firstname, lastname, category (student, stafff, faculty), and AD_Username (if it exists!) and then makes a concatonated string to be searched through 
+Pulls firstname, lastname, category (student, stafff, faculty), and AD_Username (if it exists!) and then makes a concatonated string to be searched through
 
 ###### UPDATE_ACT_CLUB_DEF
 
@@ -252,7 +252,7 @@ This stored procedures is pretty simple. It moves all the relevant information f
 
 ###### ACT_CLUB_DEF_INSERT_TRIGGER
 
-Everytime a record is inserted into the ACT_CLUB_DEF table, this trigger runs the UPDATE_ACT_INFO stored procedure. Although not clear in the name, this trigger also runs whenever a row is deleted from ACT_CLUB_DEF. 
+Everytime a record is inserted into the ACT_CLUB_DEF table, this trigger runs the UPDATE_ACT_INFO stored procedure. Although not clear in the name, this trigger also runs whenever a row is deleted from ACT_CLUB_DEF.
 
 ## The Code
 
@@ -263,7 +263,7 @@ The server was written using ASP.NET and is generally structured as such. As a M
 Here is a breakdown of the project folder:
 
 - Project-Raymond/
-    - Design_Documents/ - currently empty. I do not actually remember why we had this. 
+    - Design_Documents/ - currently empty. I do not actually remember why we had this.
     - Gordon360/ - The main project. Most of the work will be done here.
         - ApiControllers/ - Folder contatining the Controllers for the API endpoints.
         - AuthorizationFilters/ - Contains code that enforces rules about who can access what.
@@ -277,11 +277,11 @@ Here is a breakdown of the project folder:
         - Properties/ - Contains files that Visual Studio uses to build and publish the project. No need to dig into this unless you want to fine tune the build process.
         - Repositories/ - Contains Repository files and Unit of Work Files. Both of these are object-oriented design patterns. They help with seperation of concerns and general code organization.
         - Services/ - Services that are used by the ApiController. The concept of a Service is also a design pattern. It is very useful for decoupling. (e.g. Making sure Controller code is seperate from code that accesses the database).
-        - Static Classes/ - Helper classes that are used throughout the code. 
+        - Static Classes/ - Helper classes that are used throughout the code.
         - Stored Procedures/ - This folder can be deleted. It is a relic from the past when I used to hard-code my stored procedures.
     - packages/ - ASP.NET packages that the project depends on. You will not be making any changes here.
     - Tests/ - Folder for tests
-        - ApiEndpoints/ - I talk about this more in the Testing section. 
+        - ApiEndpoints/ - I talk about this more in the Testing section.
 
 ## API Endpoints
 
@@ -291,16 +291,16 @@ Here is a breakdown of the project folder:
 
 `/token:` The authentication process uses a simplified version of what is called Open Authentication (OAuth).
 
-In OAuth, there are two servers including the one running your app. The server running your app doesn't authenticate people directly, it relies on the second server to tell it if a given person is allowed access. This second server is called the Authentication Server. 
+In OAuth, there are two servers including the one running your app. The server running your app doesn't authenticate people directly, it relies on the second server to tell it if a given person is allowed access. This second server is called the Authentication Server.
 
 In our project, the Authentication Server and the App Server are actually the same. They are only seperated code-wise. You could say that the *App* is the ApiControllers folder and the *Authentication Server* is the AuthorizationServer folder (Recall that it is currently named incorrectly, sorry. We haven't changed the name because it would require changing multiple import statements, and we don't have time to debug after the change).
 
-Accepts a form encoded object in the body of the request: 
+Accepts a form encoded object in the body of the request:
 ```
-{ 
-	"username": YOUR-USERNAME, 
-	"password": YOUR-PASSWORD, 
-	"grant_type": "password" 
+{
+	"username": YOUR-USERNAME,
+	"password": YOUR-PASSWORD,
+	"grant_type": "password"
 }
 ```
 Response will include an access token which should be included in subsequent request headers.
@@ -341,7 +341,7 @@ What is it? Resource that respresents the affiliation between a student and a cl
 `api/memberships` Create a new membership.
 
 
-##### PUT 
+##### PUT
 
 `api/memberships/:id` Edit the membership with membership id `id`.
 
@@ -368,10 +368,10 @@ What is it? Resources to get information on Events from the 25Live system
 `api/events/25Live/type/:Type_ID` Get event(s) specified by a type ID (or multiple). A full list can be found here: https://webservices.collegenet.com/r25ws/wrd/gordon/run/evtype.xml?parent_id=9&otransform=browse.xsl
 Multiple types or events are separated by a '$'
 
-`api/events/25Live/:Event_ID` Get event(s) specified by one or multiple Event_ID. Event IDs can be found in the url or resources in a 25Live request in a browser. 
+`api/events/25Live/:Event_ID` Get event(s) specified by one or multiple Event_ID. Event IDs can be found in the url or resources in a 25Live request in a browser.
 Multiple types or events are separated by a '$'
 
-`api/events/25Live/All` Returns all events in 25Live under predefined categories. 
+`api/events/25Live/All` Returns all events in 25Live under predefined categories.
 
 `api/events/25Live/CLAW` Returns all events in 25Live with Category_ID = 85 (CL&W Credit approved)
 
@@ -446,7 +446,7 @@ What is it? Resource that represents a gordon account.
 
 `api/accounts/:username` Get the account with `username`.
 
-`api/accounts/search/:searchString` Returns the basicinfoviewmodel with a Concatonated attribute matching some or all of the searchstring 
+`api/accounts/search/:searchString` Returns the basicinfoviewmodel with a Concatonated attribute matching some or all of the searchstring
 
 ### Sessions
 What is it? Resource that represents the current session. e.g. Fall 2014-2015.
@@ -476,10 +476,10 @@ Who has access? Everyone.
 
 
 ### Emails
-What is it? Resource that represents emails. 
+What is it? Resource that represents emails.
 
 
-##### GET 
+##### GET
 
 `api/emails/activity/:id` Get the emails for members of the activity with activity code `id` during the current session.
 
@@ -524,7 +524,7 @@ What is it? Resource for fetching content that has been stored in the database b
 ### Profiles
 What is it? Resource that represents users' profiles.
 
-Differences from GoSite: 
+Differences from GoSite:
 - Only displaying city and country as home address. (When the viewer is a student. Police, super admin, faculty and staff should still see all the information for home address)
 - Displaying minors.
 - On campus was changed to display more general information rather than completely getting rid of it like GoSite does now. (Shows on/off campus)
@@ -554,11 +554,11 @@ Differences from GoSite:
 `api/profiles/mobile_privacy/:value` Update mobile phone number privacy with value(Y or N) for the current logged in user.
 
 `api/profiles/image_privacy/:value` Update profile image privacy with value(Y or N) for the current logged in user.
-  
+
 
 ## API Testing
 
-### Introduction 
+### Introduction
 
 A test suite is available at `Tests/ApiEndpoints` to excercise the different endpoints. The most important files here are:
 - `gordon_360_tests_leader.py` -- Tests the api endpoints while authorized as an activity leader.
@@ -606,17 +606,17 @@ Run the tests:
 
 * Before you begin you will have to add the secrets.config file to the folder that you are working from. The file is located on the cs-devA virtual machine in `C:\Users\Public\Documents\360 Shared files` Copy the file secrets.config to the same folder in your project that contains the web.config file. This will allow you to run the server locally.
 
-* If you are using the virtual machine you will need to run the server on an unused port.  To change the port that the server is running, open the solution in virtual studio.  In the solution explorer, right click the name of the project (Gordon360) and select properties.  Choose the Web tab and change the Project Url to an unused port.
+* If you are using the virtual machine you will need to run the server on an unused port.  To change the port that the server is running, open the solution file in Visual Studio.  In the solution explorer, right click the name of the project (Gordon360) and select properties.  Choose the Web tab and change the Project Url to an unused port. Then click Create Virtual Directory. Press OK on the dialog box, and you're good to go!
 
-* You can then press the Start button in virtual studio to run the server. It will open the web browser and display an Error 403.14 - Forbdden. This is expected.  You can now begin manually testing the API.
+* You can then press the Start button in Visual Studio to run the server. It will open the web browser and display an Error 403.14 - Forbidden. This is expected. You can now begin manually testing the API.
 
 #### Manually Testing API
 
 To manually test the API, use an API development/testing app like [Postman](https://www.getpostman.com/).
-* Here you can create HTTP requests to hit the API endpoints that you want to test, and see what data response you get back. 
+* Here you can create HTTP requests to hit the API endpoints that you want to test, and see what data response you get back.
 * _Before you can call any normal API endpoints_, you must first call the authentication endpoint with a PUT request, which will give you a token.
-	* E.g. Call `localhost:3000/token` with the following (key, value) pairs in the request body: (username, _MYUSERNAME_), (grant_type, password), (password, _MYPASSWORD_). This will give me back a long token string. I then can copy that token and paste it in the Authorization header of another API request I want to make. 
-* Making a normal API request: 
+	* E.g. Call `localhost:3000/token` with the following (key, value) pairs in the request body: (username, _MYUSERNAME_), (grant_type, password), (password, _MYPASSWORD_). This will give me back a long token string. I then can copy that token and paste it in the Authorization header of another API request I want to make.
+* Making a normal API request:
 	* E.g. Call something like `localhost:3000/api/memberships/activity/AJG` and under Headers you will need two (as key, value pairs):
 		1. (`Content-Type`, `application/x-www-form-urlencoded`) - usually this is the content type. Subject to change, though.
 		2. (`Authorization`, `Bearer  [MYTOKEN]`)
@@ -643,8 +643,8 @@ Check:
 
 This error will only pop up when you are testing the server directly by running it with visual studio. When you run the gordon360 server from visual studio it automatically "hosts" it on `localhost:3000`. By default, the server doesn't accept non-HTTPS (anything not on port 443) connections. There are two solutions:
 - Change Visual studio settings to run on `localhost:443` by default. I tried this a bit, but didn't get very far. I don't think it is that hard though, I just didn't have the motivation to continue.
-- Allow non-HTTPS connections by commenting out some code. This is what I did. DON'T FORGET TO REMMOVE THE COMMENT SYMBOLS AFTER YOU FINISH THOUGH. 
-    - The code that restricts non-HTTPS connections is located under the `Startup.cs` file. Look for the "#if DEBUG" and "#endif" code-blocks. Comment both out. 
+- Allow non-HTTPS connections by commenting out some code. This is what I did. DON'T FORGET TO REMMOVE THE COMMENT SYMBOLS AFTER YOU FINISH THOUGH.
+    - The code that restricts non-HTTPS connections is located under the `Startup.cs` file. Look for the "#if DEBUG" and "#endif" code-blocks. Comment both out.
 
 
 ### Documentation
@@ -656,4 +656,3 @@ The documentation folder currently contains the ColdFusion files from go.gordon 
 Team members: Bradley Boutcher, Chris Qiao, Jenny Kim, Joe Ross, Matt Felgate, Sam Nguyen
 
 Computer Science Summer Practicum 2017
-
