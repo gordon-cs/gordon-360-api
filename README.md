@@ -35,6 +35,7 @@ Dive in.
 - [Documentation](#documentation)
 
 ## Machines and Sites
+**Note: these instructions appear to be out of date.  CCCTrain.gordon.edu appears to have been renamed to 360train.gordon.edu**
 To work on this project, it is easiest to use the following machines provided by CTS:
 - CCCTrain.gordon.edu - Windows machine.
     - Can be accessed through Remote Desktop Connection.
@@ -60,7 +61,7 @@ The folders for these IIS sites can be found on the CCCTrain machine under `F:\s
 - Open an existing project/solution - `C:\users\cct.service\code\Project-Raymond\Gordon360` file. It is a Microsoft Visual Studio Solution file.
 - Make a change. Do your thing.
 - Menu Bar -> Build - Publish Gordon360.
-- Choose the right publish profile.  
+- Choose the right publish profile.
     - DEV -- Development ( Connects to the admintrainsql database server, and used for 360train.gordon.edu).
     - Prod -- Production ( Connects to the adminprodsql database server, and used for the real site 360.gordon.edu).
 - Clicking publish pushes your changes to the API for either 360ApiTrain.gordon.edu or 360Api.gordon.edu, depending on which publish profile you used.
@@ -191,7 +192,7 @@ This table is an exact duplicate of the JENZ_ACT_CLUB_DEF view. It is periodical
 
 ### Views
 
-We got access to these views through CTS. They are a direct live feed from the tables they represent. As mentioned earlier, we cannot use primary keys in the views to make foreign keys in other tables.  
+We got access to these views through CTS. They are a direct live feed from the tables they represent. As mentioned earlier, we cannot use primary keys in the views to make foreign keys in other tables.
 
 ###### ACCOUNT
 Account information for all the members of gordon college.
@@ -670,7 +671,7 @@ This error will only pop up when you are testing the server directly by running 
 
 
 ### Documentation
-The documentation folder currently contains the ColdFusion files from go.gordon that contain the logic behind the people search.  
+The documentation folder currently contains the ColdFusion files from go.gordon that contain the logic behind the people search.
 * Index.cfm is the page used to select search criteria.
 * Searchresults.cfm is the list of people you get back based on that criteria.  It selects from a student view, facstaff view, and alumni view all separately and then sorts all the results together.
 * Showperson.cfm is the detail page of the person you select from the searchresults.cfm page.
