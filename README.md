@@ -605,11 +605,11 @@ Run the tests:
 
 #### Running the server locally
 
-* Before you begin you will have to add the secrets.config file to the folder that you are working from. The file is located on the cs-devA virtual machine in `C:\Users\Public\Documents\360 Shared files` Copy the file secrets.config to the same folder in your project that contains the web.config file. This will allow you to run the server locally.
+* Before you begin you will have to add the `secrets.config` file to the folder that you are working from. The file is located on the CS-RDSH-02 virtual machine in `C:\Users\Public\Public Documents\` Copy the file `secrets.config` to the same folder in your project that contains the `web.config` file; currently this is in `Project-Raymond\Gordon360`. This will allow you to run the server locally.
 
 * If you are using the virtual machine you will need to run the server on an unused port.  To change the port that the server is running, open the solution file in Visual Studio.  In the solution explorer, right click the name of the project (Gordon360) and select properties.  Choose the Web tab and change the Project Url to an unused port. Then click Create Virtual Directory. Press OK on the dialog box, and you're good to go!
 
-* You can then press the Start button in Visual Studio to run the server. It will open the web browser and display an Error 403.14 - Forbidden. This is expected. You can now begin manually testing the API.
+* You can then press the Start button in Visual Studio to run the server. It will open the web browser and (eventually) display an Error 403.14 - Forbidden. This is expected. You can now begin manually testing the API.
 
 #### Manually Testing API
 
