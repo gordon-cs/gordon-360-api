@@ -55,9 +55,9 @@ The folders for these IIS sites can be found on the CCCTrain machine under `F:\s
 - 360ApiTrain.gordon.edu -- Development JSON server site. C# using the ASP.NET Framework.
 
 ### Deploying to the Api Site
-
+**Note: these instructions are out-of-date, since Project Raymond has been renamed to gordon-360-api**
 - Log in to CCCTrain and start Visual Studio as the cct.service user. (Shift + right click)
-- Open an existing project/solution - `C:\users\cct.service\code\Project-Raymod\Gordon360` file. It is a Microsoft Visual Studio Solution file.
+- Open an existing project/solution - `C:\users\cct.service\code\Project-Raymond\Gordon360` file. It is a Microsoft Visual Studio Solution file.
 - Make a change. Do your thing.
 - Menu Bar -> Build - Publish Gordon360.
 - Choose the right publish profile.  
@@ -84,7 +84,7 @@ The folders for these IIS sites can be found on the CCCTrain machine under `F:\s
 
 ## Caching
 
-Since the type of solution we are using does not run like many systems, we have to cache a request that occurrs every few minutes after startup. As such, we have implemented code in the startup.cs file that:
+Since the type of solution we are using does not run like many systems, we have to cache a request that occurs every few minutes after startup. As such, we have implemented code in the startup.cs file that:
  1 ) Performs static methods and saves the output to a static object (located in Helpers and Data, respectively)
  2 ) Create an entry in the cache that then runs these static methods every few minutes
 
@@ -148,8 +148,8 @@ Users don't exist in the table unless they add/edit their social media links on 
 
 ###### JNZB_ACTIVITIES
 
-A record in this table stores all the same fields as an Activity table in Jensibar would.
-The goal of this table was to contain membership information that was to be moved to Jenzibar. To do this, one would use the stored procedure [UPDATE_JNZB_ACTIVITIES](#update_jnzb_activities).
+A record in this table stores all the same fields as an Activity table in Jenzabar would.
+The goal of this table was to contain membership information that was to be moved to Jenzabar. To do this, one would use the stored procedure [UPDATE_JNZB_ACTIVITIES](#update_jnzb_activities).
 
 ###### MEMBERSHIP
 
@@ -200,7 +200,7 @@ The Alumni information. Includes their information the same way as students.
 ###### Buildings
 Descriptions of the different codes for buildings around campus.
 ###### CHAPEL_EVENT
-Information on chapel attendence for every student
+Information on chapel attendance for every student
 ###### JENZ_ACT_CLUB_DEF
 The Activity information. Includes short codes and what they represent.
 ###### Countries
@@ -212,7 +212,7 @@ A subset of `ACCOUNT` that has only faculty and staff member records.
 ###### Majors
 Descriptions of the different codes for majors.
 ###### ALL_BASIC_INFO
-Pulls firstname, lastname, category (student, stafff, faculty), and AD_Username (if it exists!) and then makes a concatonated string to be searched through
+Pulls firstname, lastname, category (student, staff, faculty), and AD_Username (if it exists!) and then makes a concatenated string to be searched through
 ###### PART_DEF
 Definitions of the different participation levels for someone in an activity.
 ###### Police
@@ -231,7 +231,7 @@ Here are the most important ones.
 Returns all events which a student has attended based upon their AD_Username
 
 ###### ALL_BASIC_INFO
-Pulls firstname, lastname, category (student, stafff, faculty), and AD_Username (if it exists!) and then makes a concatonated string to be searched through
+Pulls firstname, lastname, category (student, staff, faculty), and AD_Username (if it exists!) and then makes a concatenated string to be searched through
 
 ###### UPDATE_ACT_CLUB_DEF
 
@@ -253,7 +253,7 @@ This stored procedures is pretty simple. It moves all the relevant information f
 
 ###### ACT_CLUB_DEF_INSERT_TRIGGER
 
-Everytime a record is inserted into the ACT_CLUB_DEF table, this trigger runs the UPDATE_ACT_INFO stored procedure. Although not clear in the name, this trigger also runs whenever a row is deleted from ACT_CLUB_DEF.
+Every time a record is inserted into the ACT_CLUB_DEF table, this trigger runs the UPDATE_ACT_INFO stored procedure. Although not clear in the name, this trigger also runs whenever a row is deleted from ACT_CLUB_DEF.
 
 ## The Code
 
@@ -263,10 +263,10 @@ The server was written using ASP.NET and is generally structured as such. As a M
 
 Here is a breakdown of the project folder:
 
-- Project-Raymond/
+- gordon-360-api/
     - Design_Documents/ - currently empty. I do not actually remember why we had this.
     - Gordon360/ - The main project. Most of the work will be done here.
-        - ApiControllers/ - Folder contatining the Controllers for the API endpoints.
+        - ApiControllers/ - Folder containing the Controllers for the API endpoints.
         - AuthorizationFilters/ - Contains code that enforces rules about who can access what.
         - AuthorizationServer/ (The folder should really be called AuthenticationServer) -  Contains code that does user authentication.
         - bin/ - binary files. nothing to see here.
@@ -276,8 +276,8 @@ Here is a breakdown of the project folder:
         - Models/ Code for the models (Model as in MODEL-View-Controller, or MVC)
         - obj/ - Not really sure what this is. It is also automatically generated by ASP.NET.
         - Properties/ - Contains files that Visual Studio uses to build and publish the project. No need to dig into this unless you want to fine tune the build process.
-        - Repositories/ - Contains Repository files and Unit of Work Files. Both of these are object-oriented design patterns. They help with seperation of concerns and general code organization.
-        - Services/ - Services that are used by the ApiController. The concept of a Service is also a design pattern. It is very useful for decoupling. (e.g. Making sure Controller code is seperate from code that accesses the database).
+        - Repositories/ - Contains Repository files and Unit of Work Files. Both of these are object-oriented design patterns. They help with separation of concerns and general code organization.
+        - Services/ - Services that are used by the ApiController. The concept of a Service is also a design pattern. It is very useful for decoupling. (e.g. Making sure Controller code is separate from code that accesses the database).
         - Static Classes/ - Helper classes that are used throughout the code.
         - Stored Procedures/ - This folder can be deleted. It is a relic from the past when I used to hard-code my stored procedures.
     - packages/ - ASP.NET packages that the project depends on. You will not be making any changes here.
@@ -294,7 +294,7 @@ Here is a breakdown of the project folder:
 
 In OAuth, there are two servers including the one running your app. The server running your app doesn't authenticate people directly, it relies on the second server to tell it if a given person is allowed access. This second server is called the Authentication Server.
 
-In our project, the Authentication Server and the App Server are actually the same. They are only seperated code-wise. You could say that the *App* is the ApiControllers folder and the *Authentication Server* is the AuthorizationServer folder (Recall that it is currently named incorrectly, sorry. We haven't changed the name because it would require changing multiple import statements, and we don't have time to debug after the change).
+In our project, the Authentication Server and the App Server are actually the same. They are only separated code-wise. You could say that the *App* is the ApiControllers folder and the *Authentication Server* is the AuthorizationServer folder (Recall that it is currently named incorrectly, sorry. We haven't changed the name because it would require changing multiple import statements, and we don't have time to debug after the change).
 
 Accepts a form encoded object in the body of the request:
 ```
@@ -309,7 +309,7 @@ Specifically, include it in the `Authorization` header like so `Bearer YOUR-ACCE
 
 
 ### Memberships
-What is it? Resource that respresents the affiliation between a student and a club.
+What is it? Resource that represents the affiliation between a student and a club.
 
 ##### GET
 
@@ -321,7 +321,7 @@ What is it? Resource that respresents the affiliation between a student and a cl
 
 `api/memberships/activity/:id/leaders` Get the memberships of the leaders for the activity with activity code `id`.
 
-`api/memberships/activity/:id/advisors` Get the memberships of the adviors for the activity with activity code `id`.
+`api/memberships/activity/:id/advisors` Get the memberships of the advisors for the activity with activity code `id`.
 
 `api/memberships/activity/:id/group-admin` Get the memberships of the group admin (displayed as "Group Contacts") for the activity with activity code `id`.
 
@@ -348,7 +348,7 @@ What is it? Resource that respresents the affiliation between a student and a cl
 
 `api/memberships/:id/group-admin` Toggle whether or not a given member is in a group admin role for a given activity. The `id` parameter is the membership id.
 
-`api/memberships/:id/private/:p` Update a given membership to private or not private with boolean vaule `p`. The `id` parameter is the membership id.
+`api/memberships/:id/private/:p` Update a given membership to private or not private with boolean value `p`. The `id` parameter is the membership id.
 
 ##### DELETE
 
@@ -358,7 +358,7 @@ What is it? Resource that respresents the affiliation between a student and a cl
 What is it? Resources to get information on Events from the 25Live system
 - Only confirmed events are pulled
 - Only events ending after the start of the current academic year are requested from 25Live
-- Data from 25Live is retreived every four minutes using a cached request
+- Data from 25Live is retrieved every four minutes using a cached request
 
 ##### GET
 
@@ -409,7 +409,7 @@ What is it? Resource that represents some activity - such as a club, ministry, l
 
 `api/activities/:id` Edit activity information for the club with activity code `id`.
 
-`api/activities/:id/private/:p` Update a given activity to private or not private with boolean vaule `p`. The `id` parameter is the activity id.
+`api/activities/:id/private/:p` Update a given activity to private or not private with boolean value `p`. The `id` parameter is the activity id.
 
 ### Membership Requests
 What is it? Resource that represents a person's application/request to join an activity group.
@@ -447,7 +447,7 @@ What is it? Resource that represents a gordon account.
 
 `api/accounts/:username` Get the account with `username`.
 
-`api/accounts/search/:searchString` Returns the basicinfoviewmodel with a Concatonated attribute matching some or all of the searchstring
+`api/accounts/search/:searchString` Returns the basicinfoviewmodel with a Concatenated attribute matching some or all of the searchstring
 
 ### Sessions
 What is it? Resource that represents the current session. e.g. Fall 2014-2015.
@@ -473,7 +473,7 @@ Who has access? Everyone.
 
 `api/participations` Get all the possible participation levels.
 
-`api/partipations/:id` Get the participation level with code `id`.
+`api/participations/:id` Get the participation level with code `id`.
 
 
 ### Emails
@@ -496,7 +496,7 @@ What is it? Resource that represents emails.
 
 
 ### Admins
-What is it? Ressource that represents admins.
+What is it? Resource that represents admins.
 
 Who has access? Only super admins, except to get a specific admin where all admins have access.
 
@@ -561,13 +561,13 @@ Differences from GoSite:
 
 ### Introduction
 
-A test suite is available at `Tests/ApiEndpoints` to excercise the different endpoints. The most important files here are:
+A test suite is available at `Tests/ApiEndpoints` to exercise the different endpoints. The most important files here are:
 - `gordon_360_tests_leader.py` -- Tests the api endpoints while authorized as an activity leader.
 - `gordon_360_tests_member.py` -- Tests the api endpoints while authorized as a regular member.
 - `test_config.py` -- Configuration options, includes the following variables:
     - `activity_code` -- The activity that will be used for testing. Tests under `gordon_360_tests_leader.py` assume the account used for testing is a leader of this activity. Tests under `gordon_360_tests_member.py` assume the account used for testing is a member of this activity.
     - `random_id_number` -- A random id number that is used when we want to verify if we can do things on behalf of someone else. E.g. An advisor can create memberships for anyone. A regular member can only create a membership for him/herself.
-    - `leadership_positions` -- A list of participation levels considered to be leadership positsions.
+    - `leadership_positions` -- A list of participation levels considered to be leadership positions.
     - `hostURL` -- Base url of the api
 - `test_credentials.py` -- (If you cloned the project, you need to create this file) File with credentials the test program will use.
 	- `username` -- String with the username of a test account that is a member of `activity_code` in `test_config.py`.
@@ -580,10 +580,10 @@ A test suite is available at `Tests/ApiEndpoints` to excercise the different end
 ### Running the Tests
 
 Clone the project from the github site:
-`git clone https://github.com/gordon-cs/Project-Raymond.git`
+`git clone https://github.com/gordon-cs/gordon-360-api.git`
 
 Navigate to the API Tests folder:
-`cd Project-Raymond/Tests/ApiEndpoints/`
+`cd gordon-360-api/Tests/ApiEndpoints/`
 
 Install the py requirement files with this command. This should install the request module as well as other needed modules:
 "pip install -r requirements.txt"
@@ -603,9 +603,10 @@ Run the tests:
 
 ## Manual Testing
 
+<a name="localserver"></a>
 #### Running the server locally
 
-* Before you begin you will have to add the `secrets.config` file to the folder that you are working from. The file is located on the CS-RDSH-02 virtual machine in `C:\Users\Public\Public Documents\` Copy the file `secrets.config` to the same folder in your project that contains the `web.config` file; currently this is in `Project-Raymond\Gordon360`. This will allow you to run the server locally.
+* Before you begin you will have to add the `secrets.config` file to the folder that you are working from. The file is located on the CS-RDSH-02 virtual machine in `C:\Users\Public\Public Documents\` Copy the file `secrets.config` to the same folder in your project that contains the `web.config` file; currently this is in `gordon-360-api\Gordon360`. This will allow you to run the server locally.
 
 * If you are using the virtual machine you will need to run the server on an unused port.  To change the port that the server is running, open the solution file in Visual Studio.  In the solution explorer, right click the name of the project (Gordon360) and select properties.  Choose the Web tab and change the Project Url to an unused port. Then click Create Virtual Directory. Press OK on the dialog box, and you're good to go!
 
@@ -615,12 +616,32 @@ Run the tests:
 
 To manually test the API, use an API development/testing app like [Postman](https://www.getpostman.com/).
 * Here you can create HTTP requests to hit the API endpoints that you want to test, and see what data response you get back.
-* _Before you can call any normal API endpoints_, you must first call the authentication endpoint with a PUT request, which will give you a token.
-	* E.g. Call `localhost:3000/token` with the following (key, value) pairs in the request body: (username, _MYUSERNAME_), (grant_type, password), (password, _MYPASSWORD_). This will give me back a long token string. I then can copy that token and paste it in the Authorization header of another API request I want to make.
-* Making a normal API request:
-	* E.g. Call something like `localhost:3000/api/memberships/activity/AJG` and under Headers you will need two (as key, value pairs):
-		1. (`Content-Type`, `application/x-www-form-urlencoded`) - usually this is the content type. Subject to change, though.
-		2. (`Authorization`, `Bearer  [MYTOKEN]`)
+* _Before you can call any normal API endpoints_, you must first call the authentication endpoint with a PUT request, which will give you a token.  After starting Postman, use the following steps:
+	* Near the top of the workspace window, change the request type from "GET" to "PUT" using the drop-down menu
+	* Enter the local back-end URL with `/token` appended.  It should look something like `http://localhost:5555/token`, but use the port number you selected when carrying out the steps under [Running the server locally](#running-the-server-locally) rather than 5555
+	* Just below the URL you entered, click on "Body"
+	* Check the radio-button for `x-www-form-urlencoded`
+	* Enter the following three pairs in the Key/Value fields, replacing _username_ and _password_ with valid data:
+
+    | Key          | Value         |
+    |--------------|---------------|
+    | `grant_type` | `password` |
+    | `username`   | _username_ |
+    | `password`   | _password_ |
+
+	* Click the blue "Send" button - after a brief pause you should see the returned token appear.
+* You can use this token to make an API request.  For example:
+	* Use the clipboard to make of copy of the _access-token_ value (do not include the double quotes, just copy the long string of characters between the quotes)
+	* Click on the "+" tab near the top of the window to open a new request frame
+	* Leave "GET" as the request type and enter in an appropriate API URL (e.g. `http://localhost:5555/api/memberships/activity/AJG`
+	* Just below the URL, click on "Headers" and enter the following key/value pairs replacing _access-token_ with the token string you copied:
+
+    | Key             | Value                               |
+    |-----------------|-------------------------------------|
+    | `Content-Type`  | `application/x-www-form-urlencoded` |
+	| `Authorization` | `Bearer ` _access-token_            |
+
+	* Click the blue "Send" button
 
 
 ## Troubleshooting
@@ -629,22 +650,22 @@ To manually test the API, use an API development/testing app like [Postman](http
 
 This is usually a folder permissions problem. The Json site runs as the user cct.service@gordon.edu. To solve this issue, edit the permissions to allow the cct.service@gordon.edu user to edit the `browseable` folder. The folder is located in the Api site folder (either 360Api or 360ApiTrain, depending on which is having the problem).
 
-Note that the permissions are reset everytime a new `browseable` folder is created. This should not usually happen because the deployment scripts don't touch the `browseable` folder. However, in the case that you delete the old `browseable` folder and put a new one in, make sure to also edit the permissions.
+Note that the permissions are reset every time a new `browseable` folder is created. This should not usually happen because the deployment scripts don't touch the `browseable` folder. However, in the case that you delete the old `browseable` folder and put a new one in, make sure to also edit the permissions.
 
 
 #### 500 Server errors appear all of a sudden, even when nothing has changed in the code base.
 
-At this point, I think we eleminiated most c#-related problems. Potential c#-related errors will be throwing custom exceptions that will tell you more about what is wrong. If you do get plain 500 error though, the problem might be a database one.
+At this point, I think we eliminated most c#-related problems. Potential c#-related errors will be throwing custom exceptions that will tell you more about what is wrong. If you do get plain 500 error though, the problem might be a database one.
 Check:
 - That the ACT_INFO and ACT_CLUB_DEF tables are in sync.
 - That the stored procedures return exactly what the models expect.
-- That the views are up. Sometimes CTS unexpectedly does maintainance. Try running simple select statements against the Views.
+- That the views are up. Sometimes CTS unexpectedly does maintenance. Try running simple select statements against the Views.
 
 #### 404 Not Found when trying to access the `/token` endpoint:
 
 This error will only pop up when you are testing the server directly by running it with visual studio. When you run the gordon360 server from visual studio it automatically "hosts" it on `localhost:3000`. By default, the server doesn't accept non-HTTPS (anything not on port 443) connections. There are two solutions:
 - Change Visual studio settings to run on `localhost:443` by default. I tried this a bit, but didn't get very far. I don't think it is that hard though, I just didn't have the motivation to continue.
-- Allow non-HTTPS connections by commenting out some code. This is what I did. DON'T FORGET TO REMMOVE THE COMMENT SYMBOLS AFTER YOU FINISH THOUGH.
+- Allow non-HTTPS connections by commenting out some code. This is what I did. DON'T FORGET TO REMOVE THE COMMENT SYMBOLS AFTER YOU FINISH THOUGH.
     - The code that restricts non-HTTPS connections is located under the `Startup.cs` file. Look for the "#if DEBUG" and "#endif" code-blocks. Comment both out.
 
 
