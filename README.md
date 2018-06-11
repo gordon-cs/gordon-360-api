@@ -618,7 +618,7 @@ To manually test the API, use an API development/testing app like [Postman](http
 * Here you can create HTTP requests to hit the API endpoints that you want to test, and see what data response you get back.
 * _Before you can call any normal API endpoints_, you must first call the authentication endpoint with a PUT request, which will give you a token.  After starting Postman, use the following steps:
 	* Near the top of the workspace window, change the request type from "GET" to "PUT" using the drop-down menu
-	* Enter the local back-end URL with `/token` appended.  It should look something like `http://localhost:5555/token`, but use the port number you selected when carrying out the steps under [Running the server locally](#Running-the-server-locally) rather than 5555
+	* Enter the local back-end URL with `/token` appended.  It should look something like `http://localhost:5555/token`, but use the port number you selected when carrying out the steps under [Running the server locally](#running-the-server-locally) rather than 5555
 	* Just below the URL you entered, click on "Body"
 	* Check the radio-button for `x-www-form-urlencoded`
 	* Enter the following three pairs in the Key/Value fields, replacing _username_ and _password_ with valid data:
