@@ -622,6 +622,7 @@ To manually test the API, use an API development/testing app like [Postman](http
 	* Just below the URL you entered, click on "Body"
 	* Check the radio-button for `x-www-form-urlencoded`
 	* Enter the following three pairs in the Key/Value fields, replacing _username_ and _password_ with valid data:
+
     | Key          | Value         |
     |--------------|---------------|
     | `grant_type` | `password` |
