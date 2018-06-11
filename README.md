@@ -629,17 +629,18 @@ To manually test the API, use an API development/testing app like [Postman](http
     | `username`   | _username_ |
     | `password`   | _password_ |
 
-		* `grant_type`	`password`
-		* `username`	_username_
-		* `password`	_password_
 	* Click the blue "Send" button - after a brief pause you should see the returned token appear.
 * You can use this token to make an API request.  For example:
 	* Use the clipboard to make of copy of the _access-token_ value (do not include the double quotes, just copy the long string of characters between the quotes)
 	* Click on the "+" tab near the top of the window to open a new request frame
 	* Leave "GET" as the request type and enter in an appropriate API URL (e.g. `http://localhost:5555/api/memberships/activity/AJG`
 	* Just below the URL, click on "Headers" and enter the following key/value pairs replacing _access-token_ with the token string you copied:
-		* `Content-Type`	`application/x-www-form-urlencoded`
-		* `Authorization`	`Bearer ` _access-token_
+
+    | Key             | Value                               |
+    |-----------------|-------------------------------------|
+    | `Content-Type`  | `application/x-www-form-urlencoded` |
+	| `Authorization` | `Bearer ` _access-token_            |
+
 	* Click the blue "Send" button
 
 
