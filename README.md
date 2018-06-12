@@ -1,6 +1,6 @@
 # Gordon 360
 
-#### The API consumed by [Project Bernard](https://github.com/gordon-cs/Project-Bernard)
+#### The API consumed by [gordon-360-ui](https://github.com/gordon-cs/gordon-360-ui)
 Dive in.
 ## Table of Contents
 - [Machines and Sites](#machines-and-sites)
@@ -30,11 +30,13 @@ Dive in.
 - [API Testing](#api-testing)
     - [Introduction](#introduction)
     - [Running the Tests](#running-the-tests)
-    - [Running the server locally](#running-the-server-locally)
+    - [Manual Testing](#manual-testing)
 - [Troubleshooting](#troubleshooting)
 - [Documentation](#documentation)
 
 ## Machines and Sites
+As of Summer 2018 the virtual machines CS-RDSH-01 and CS-RDSH-02 are used for developing Gordon 360.  Instructions for connecting via Remote Desktop can be found in [RemoteDesktopToVM.md](RemoteDesktopToVM.md).
+
 To work on this project, it is easiest to use the following machines provided by CTS:
 - CCCTrain.gordon.edu - Windows machine.
     - Can be accessed through Remote Desktop Connection.
@@ -259,7 +261,7 @@ Every time a record is inserted into the ACT_CLUB_DEF table, this trigger runs t
 
 ### Introduction
 
-The server was written using ASP.NET and is generally structured as such. As a MVC (Model View Controller) system, the heart of the code is in ApiControllers (which is organized like the API it implements, which is documented later in this file) and in the Models folder. The View is provided by a separate repository, Project-Bernard.
+The server was written using ASP.NET and is generally structured as such. As a MVC (Model View Controller) system, the heart of the code is in ApiControllers (which is organized like the API it implements, which is documented later in this file) and in the Models folder. The View is provided by a separate repository, gordon-360-ui.
 
 Here is a breakdown of the project folder:
 
@@ -601,10 +603,9 @@ Run the tests:
 `python3 gordon_360_tests_member.py` -- This runs the tests for members.
 `python3 gordon_360_tests_leader.py` -- This runs the tests for leaders.
 
-## Manual Testing
+### Manual Testing
 
-<a name="localserver"></a>
-#### Running the server locally
+#### Running the Server Locally
 
 * Before you begin you will have to add the `secrets.config` file to the folder that you are working from. The file is located on the CS-RDSH-02 virtual machine in `C:\Users\Public\Public Documents\` Copy the file `secrets.config` to the same folder in your project that contains the `web.config` file; currently this is in `gordon-360-api\Gordon360`. This will allow you to run the server locally.
 
@@ -612,7 +613,7 @@ Run the tests:
 
 * You can then press the Start button in Visual Studio to run the server. It will open the web browser and (eventually) display an Error 403.14 - Forbidden. This is expected. You can now begin manually testing the API.
 
-#### Manually Testing API
+#### Manually Testing the API
 
 To manually test the API, use an API development/testing app like [Postman](https://www.getpostman.com/).
 * Here you can create HTTP requests to hit the API endpoints that you want to test, and see what data response you get back.
