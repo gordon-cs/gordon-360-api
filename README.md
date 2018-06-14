@@ -38,7 +38,7 @@ Dive in.
 As of Summer 2018 the virtual machines CS-RDSH-01 and CS-RDSH-02 are used for developing Gordon 360.  Instructions for connecting via Remote Desktop can be found in [RemoteDesktopToVM.md](RemoteDesktopToVM.md).
 
 To work on this project, it is easiest to use the following machines provided by CTS:
-- CCCTrain.gordon.edu - Windows machine.
+- 360train.gordon.edu - Windows machine.
     - Can be accessed through Remote Desktop Connection.
     - Has the C# code.
     - Has Visual Studio, MSSQL Server.
@@ -50,19 +50,18 @@ To work on this project, it is easiest to use the following machines provided by
     - Has the User-facing code (HTML, JS and CSS)
 
 
-The folders for these IIS sites can be found on the CCCTrain machine under `F:\sites`.
+The folders for these IIS sites can be found on the 360train machine under `F:\sites`.
 - 360.gordon.edu -- Production Front-end. User-facing code (css, js, html)
 - 360Train.gordon.edu -- Development Front-end. User-facing code (css, js, html)
 - 360Api.gordon.edu -- Production JSON server site. C# using the ASP.NET Framework.
 - 360ApiTrain.gordon.edu -- Development JSON server site. C# using the ASP.NET Framework.
 
 ### Deploying to the Api Site
-**Note: these instructions are out-of-date, since Project Raymond has been renamed to gordon-360-api**
-- Log in to CCCTrain and start Visual Studio as the cct.service user. (Shift + right click)
-- Open an existing project/solution - `C:\users\cct.service\code\Project-Raymond\Gordon360` file. It is a Microsoft Visual Studio Solution file.
+- Log in to 360train and start Visual Studio as the cct.service user. (Shift + right click)
+- Open an existing project/solution - `C:\users\cct.service\code\gordon-360-api\Gordon360` file. It is a Microsoft Visual Studio Solution file.
 - Make a change. Do your thing.
 - Menu Bar -> Build - Publish Gordon360.
-- Choose the right publish profile.  
+- Choose the right publish profile.
     - DEV -- Development ( Connects to the admintrainsql database server, and used for 360train.gordon.edu).
     - Prod -- Production ( Connects to the adminprodsql database server, and used for the real site 360.gordon.edu).
 - Clicking publish pushes your changes to the API for either 360ApiTrain.gordon.edu or 360Api.gordon.edu, depending on which publish profile you used.
@@ -193,7 +192,7 @@ This table is an exact duplicate of the JENZ_ACT_CLUB_DEF view. It is periodical
 
 ### Views
 
-We got access to these views through CTS. They are a direct live feed from the tables they represent. As mentioned earlier, we cannot use primary keys in the views to make foreign keys in other tables.  
+We got access to these views through CTS. They are a direct live feed from the tables they represent. As mentioned earlier, we cannot use primary keys in the views to make foreign keys in other tables.
 
 ###### ACCOUNT
 Account information for all the members of gordon college.
@@ -671,7 +670,7 @@ This error will only pop up when you are testing the server directly by running 
 
 
 ### Documentation
-The documentation folder currently contains the ColdFusion files from go.gordon that contain the logic behind the people search.  
+The documentation folder currently contains the ColdFusion files from go.gordon that contain the logic behind the people search.
 * Index.cfm is the page used to select search criteria.
 * Searchresults.cfm is the list of people you get back based on that criteria.  It selects from a student view, facstaff view, and alumni view all separately and then sorts all the results together.
 * Showperson.cfm is the detail page of the person you select from the searchresults.cfm page.
