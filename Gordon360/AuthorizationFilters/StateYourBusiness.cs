@@ -52,7 +52,7 @@ namespace Gordon360.AuthorizationFilters
                 user_position = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role").Value;
                 user_id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
                 user_name = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-                if (user_position == Position.GOD)
+                if (user_position == Position.SUPERADMIN)
                 {
                     var adminService = new AdministratorService(new UnitOfWork());
                     var admin = adminService.Get(user_id);
@@ -102,7 +102,7 @@ namespace Gordon360.AuthorizationFilters
          private bool canDenyAllow(string resource)
         {
             // User is admin
-            if (user_position == Position.GOD)
+            if (user_position == Position.SUPERADMIN)
                 return true;
 
             switch (resource)
@@ -134,7 +134,7 @@ namespace Gordon360.AuthorizationFilters
          private bool canReadOne(string resource)
         {
             // User is admin
-            if (user_position == Position.GOD)
+            if (user_position == Position.SUPERADMIN)
                 return true;
 
             switch (resource)
@@ -183,7 +183,7 @@ namespace Gordon360.AuthorizationFilters
         private bool canReadPartial(string resource)
         {
             // User is admin
-            if (user_position == Position.GOD)
+            if (user_position == Position.SUPERADMIN)
                 return true;
 
             switch (resource)
@@ -225,7 +225,7 @@ namespace Gordon360.AuthorizationFilters
                             return true;
                         return false;
                     }
-                // No one except god should be able to see all the membership requests a student has
+                // No one except super admin should be able to see all the membership requests a student has
                 case Resource.MEMBERSHIP_REQUEST_BY_STUDENT:
                     {
                         var studentID = (string)context.ActionArguments["id"];
@@ -285,45 +285,45 @@ namespace Gordon360.AuthorizationFilters
             {
                 case Resource.MEMBERSHIP:
                     // User is admin
-                    if (user_position == Position.GOD)
+                    if (user_position == Position.SUPERADMIN)
                         return true;
                     else
                         return false;
                 case Resource.ChapelEvent:
                     // User is admin
-                    if (user_position == Position.GOD)
+                    if (user_position == Position.SUPERADMIN)
                         return true;
                     else
                         return false;
                 case Resource.EVENTS_BY_STUDENT_ID:
                     // User is admin
-                    if (user_position == Position.GOD)
+                    if (user_position == Position.SUPERADMIN)
                         return true;
                     else
                         return false;
 
                 case Resource.MEMBERSHIP_REQUEST:
                     // User is admin
-                    if (user_position == Position.GOD)
+                    if (user_position == Position.SUPERADMIN)
                         return true;
                     else
                         return false;
                 case Resource.STUDENT:
                     // User is admin
-                    if (user_position == Position.GOD)
+                    if (user_position == Position.SUPERADMIN)
                         return true;
                     else
-                        return false; // See reasons for this in CanReadOne(). No one (except for god) should be able to access student records through
+                        return false; // See reasons for this in CanReadOne(). No one (except for super admin) should be able to access student records through
                         // our API.
                 case Resource.ADVISOR:
                     // User is admin
-                    if (user_position == Position.GOD)
+                    if (user_position == Position.SUPERADMIN)
                         return true;
                     else
                         return false;
                 case Resource.GROUP_ADMIN:
                     // User is site-wide admin
-                    if (user_position == Position.GOD)
+                    if (user_position == Position.SUPERADMIN)
                         return true;
                     else
                         return false;
@@ -352,7 +352,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.MEMBERSHIP:
                     {
                         // User is admin
-                        if (user_position == Position.GOD)
+                        if (user_position == Position.SUPERADMIN)
                             return true;
                         var membershipToConsider = (MEMBERSHIP)context.ActionArguments["membership"];
                         // A membership can always be added if it is of type "GUEST"
@@ -372,7 +372,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.MEMBERSHIP_REQUEST:
                     {
                         // User is admin
-                        if (user_position == Position.GOD)
+                        if (user_position == Position.SUPERADMIN)
                             return true;
                         var membershipRequestToConsider = (REQUEST)context.ActionArguments["membershipRequest"];
                         // A membership request belonging to the currently logged in student
@@ -386,10 +386,10 @@ namespace Gordon360.AuthorizationFilters
                     return false; // No one should be able to add students through this API
                 case Resource.ADVISOR:
                     // User is admin
-                    if (user_position == Position.GOD)
+                    if (user_position == Position.SUPERADMIN)
                         return true;
                     else
-                        return false; // Only god can add Advisors through this API
+                        return false; // Only super admin can add Advisors through this API
                 case Resource.ADMIN:
                     return false;
                 default: return false;
@@ -402,7 +402,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.MEMBERSHIP:
                     {
                         // User is admin
-                        if (user_position == Position.GOD)
+                        if (user_position == Position.SUPERADMIN)
                             return true;
                         var membershipToConsider = (MEMBERSHIP)context.ActionArguments["membership"];
                         var activityCode = membershipToConsider.ACT_CDE;
@@ -442,7 +442,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.MEMBERSHIP_PRIVACY:
                     {
                         // User is admin
-                        if (user_position == Position.GOD)
+                        if (user_position == Position.SUPERADMIN)
                             return true;
                         var membershipService = new MembershipService(new UnitOfWork());
                         var membershipID = (int)context.ActionArguments["id"];
@@ -464,7 +464,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.ADVISOR:
                     {
                         // User is admin
-                        if (user_position == Position.GOD)
+                        if (user_position == Position.SUPERADMIN)
                             return true;
 
                         var membershipService = new MembershipService(new UnitOfWork());
@@ -480,7 +480,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.PROFILE:
                     {
                         // User is admin
-                        if (user_position == Position.GOD)
+                        if (user_position == Position.SUPERADMIN)
                             return true;
 
                         var username = (string)context.ActionArguments["username"];
@@ -491,7 +491,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.ACTIVITY_INFO:
                     {
                         // User is admin
-                        if (user_position == Position.GOD)
+                        if (user_position == Position.SUPERADMIN)
                             return true;
                         var activityCode = (string)context.ActionArguments["id"];
                         var membershipService = new MembershipService(new UnitOfWork());
@@ -506,7 +506,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.ACTIVITY_STATUS:
                     {
                         // User is admin
-                        if (user_position == Position.GOD)
+                        if (user_position == Position.SUPERADMIN)
                             return true;
                         var activityCode = (string)context.ActionArguments["id"];
                         var sessionCode = (string)context.ActionArguments["sess_cde"];
@@ -538,7 +538,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.MEMBERSHIP:
                     {
                         // User is admin
-                        if (user_position == Position.GOD)
+                        if (user_position == Position.SUPERADMIN)
                             return true;
                         var membershipService = new MembershipService(new UnitOfWork());
                         var membershipID = (int)context.ActionArguments["id"];
@@ -558,7 +558,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.MEMBERSHIP_REQUEST:
                     {
                         // User is admin
-                        if (user_position == Position.GOD)
+                        if (user_position == Position.SUPERADMIN)
                             return true;
                         // membershipRequest = mr
                         var mrService = new MembershipRequestService(new UnitOfWork());

@@ -77,7 +77,7 @@ namespace Gordon360.ApiControllers
             // Create accounts viewmodel to search
             switch (viewerType)
             { 
-                case Position.GOD:
+                case Position.SUPERADMIN:
                     accounts = Data.AllBasicInfo;
                     break;
 
@@ -128,7 +128,7 @@ namespace Gordon360.ApiControllers
             // Create accounts viewmodel to search
             switch (viewerType)
             {
-                case Position.GOD:
+                case Position.SUPERADMIN:
                     accounts = Data.AllBasicInfo;
                     break;
 

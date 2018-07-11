@@ -435,7 +435,7 @@ namespace Gordon360.Controllers.Api
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var viewerID = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
             var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            bool issuperAdmin = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role").Value.Equals(Position.GOD);
+            bool issuperAdmin = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role").Value.Equals(Position.SUPERADMIN);
             bool isPolice = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role").Value.Equals(Position.POLICE);
             if (issuperAdmin||isPolice)                    //super admin and gordon police reads all
                 return Ok(result);
