@@ -200,7 +200,7 @@ namespace Gordon360.Controllers.Api
             //security control depends on viewer type. apply different views to different viewers.
             switch (viewerType)
             {
-                case Position.GOD:
+                case Position.SUPERADMIN:
                     student = _student;
                     faculty = _faculty;
                     alumni = _alumni;
@@ -430,7 +430,7 @@ namespace Gordon360.Controllers.Api
             //security control depends on viewer type. return both photos for super admin and gordon police.
             switch (viewerType)
             {
-                case Position.GOD:
+                case Position.SUPERADMIN:
                     filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PREF_IMAGE_PATH"];
                     fileName = photoInfo.Pref_Img_Name;
                     if (!string.IsNullOrEmpty(fileName) && File.Exists(filePath + fileName))
