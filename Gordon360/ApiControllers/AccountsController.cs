@@ -19,12 +19,13 @@ namespace Gordon360.ApiControllers
     public class AccountsController : ApiController
     {
         private IRoleCheckingService _roleCheckingService;
-
+        private IProfileService _profileService;
         IAccountService _accountService;
 
         public AccountsController()
         {
             IUnitOfWork _unitOfWork = new UnitOfWork();
+            _profileService = new ProfileService(_unitOfWork);
             _accountService = new AccountService(_unitOfWork);
             _roleCheckingService = new RoleCheckingService(_unitOfWork);
         }
@@ -69,6 +70,8 @@ namespace Gordon360.ApiControllers
         [Route("search/{searchString}")]
         public IHttpActionResult Search(string searchString)
         {
+
+            Console.WriteLine("in regular search");
             //get token data from context, username is the username of current logged in person
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
@@ -119,6 +122,7 @@ namespace Gordon360.ApiControllers
         [Route("search/{searchString}/{secondaryString}")]
         public IHttpActionResult SearchWithSpace(string searchString, string secondaryString)
         {
+            Console.WriteLine("in search with space");
             //get token data from context, username is the username of current logged in person
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
@@ -169,6 +173,7 @@ namespace Gordon360.ApiControllers
         [Route("search-major/{majorSearchString}")]
         public IHttpActionResult searchMajors(string majorSearchString)
         {
+            Console.WriteLine("in searchMajors");
             //get token data from context, username is the username of current logged in person
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
@@ -178,7 +183,7 @@ namespace Gordon360.ApiControllers
             var studentAccounts = Data.StudentData;
             var facStaffAccounts = Data.FacultyStaffData;
             var alumniAccounts = Data.AlumniData;
-            IList<BasicInfoViewModel> basicAccountInfo = new List<BasicInfoViewModel>();
+            IList<PublicStudentProfileViewModel> publicStudentInfo = new List<PublicStudentProfileViewModel>();
 
             // Create accounts viewmodel to search
             switch (viewerType)
@@ -207,30 +212,32 @@ namespace Gordon360.ApiControllers
                     break;
             }
 
+            Console.WriteLine("majorSearchString = ", majorSearchString);
             if (!String.IsNullOrEmpty(majorSearchString))
             {
+
+                Console.WriteLine("studentAccounts = ", studentAccounts);
                 // for every stored account, convert it to lowercase and compare it to the search parameter 
-                studentAccounts = studentAccounts.Where(s => s.Major1Description.ToLower().Contains(majorSearchString) || s.Major2Description.ToLower().Contains(majorSearchString) || s.Major3Description.ToLower().Contains(majorSearchString)) ;
+
+                studentAccounts = studentAccounts.Where(s => s.FirstName.ToLower().Contains(majorSearchString)) ;
                 studentAccounts = studentAccounts.OrderBy(s => s.LastName).ThenBy(s => s.FirstName);
 
                 alumniAccounts = alumniAccounts.Where(s => s.Major1Description.ToLower().Contains(majorSearchString) || s.Major2Description.ToLower().Contains(majorSearchString));
                 alumniAccounts = alumniAccounts.OrderBy(s => s.LastName).ThenBy(s => s.FirstName);
 
-                //foreach (Models.Student student in studentAccounts)
-               // {
+                /*foreach (Models.Student student in studentAccounts)
+               {
+                    PublicStudentProfileViewModel publicStudent = null;
+                    if (_profileService.GetStudentProfileByUsername(student.AD_Username) != null)
+                    {
+                        publicStudent = (PublicStudentProfileViewModel)_profileService.GetStudentProfileByUsername(student.AD_Username);
 
-                 //   BasicInfoViewModel accountViewModel = new BasicInfoViewModel
-                   // {
-                       // FirstName = student.FirstName,
-                     //   LastName = student.LastName,
-                        //UserName = student.AD_Username ?? "",
-                        //ConcatonatedInfo = ""
-                    //};
-
-                    //basicAccountInfo.Add(accountViewModel);
-                //}
+                        publicStudentInfo.Add(publicStudent);
+                    }                    
+                }*/
             }
 
+            Console.WriteLine("what does studentAccounts equal now?", studentAccounts);
             // Return all of the 
             return Ok(studentAccounts);
         }
