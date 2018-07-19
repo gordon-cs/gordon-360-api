@@ -4,6 +4,8 @@ using System.Linq;
 using Gordon360.Static.Data;
 using Gordon360.Static.Names;
 using System.Web.Http;
+using System.Collections.Generic;
+using Gordon360.Models.ViewModels;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
 using Gordon360.Services;
@@ -156,6 +158,83 @@ namespace Gordon360.ApiControllers
             // Return all of the 
             return Ok(accounts);
         }
+
+        /// <summary>
+        /// Return a list of accounts matching some or all of the search parameter: MAJOR
+        /// We are searching through a concatonated string, containing several pieces of info about each user.
+        /// </summary>
+        /// <param name="majorSearchString"> The input to search for </param>
+        /// <returns> All accounts meeting some or all of the parameter</returns>
+        [HttpGet]
+        [Route("search-major/{majorSearchString}")]
+        public IHttpActionResult searchMajors(string majorSearchString)
+        {
+            //get token data from context, username is the username of current logged in person
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var viewerType = _roleCheckingService.getCollegeRole(viewerName);
+
+            // Create accounts viewmodel to search
+            var studentAccounts = Data.StudentData;
+            var facStaffAccounts = Data.FacultyStaffData;
+            var alumniAccounts = Data.AlumniData;
+            IList<BasicInfoViewModel> basicAccountInfo = new List<BasicInfoViewModel>();
+
+            // Create accounts viewmodel to search
+            switch (viewerType)
+            {
+                case Position.SUPERADMIN:
+                    studentAccounts = Data.StudentData;
+                    facStaffAccounts = Data.FacultyStaffData;
+                    alumniAccounts = Data.AlumniData;
+                    break;
+
+                case Position.POLICE:
+                    studentAccounts = Data.StudentData;
+                    facStaffAccounts = Data.FacultyStaffData;
+                    alumniAccounts = Data.AlumniData;
+                    break;
+
+                case Position.STUDENT:
+                    studentAccounts = Data.StudentData;
+                    facStaffAccounts = Data.FacultyStaffData;
+                    break;
+
+                case Position.FACSTAFF:
+                    studentAccounts = Data.StudentData;
+                    facStaffAccounts = Data.FacultyStaffData;
+                    alumniAccounts = Data.AlumniData;
+                    break;
+            }
+
+            if (!String.IsNullOrEmpty(majorSearchString))
+            {
+                // for every stored account, convert it to lowercase and compare it to the search parameter 
+                studentAccounts = studentAccounts.Where(s => s.Major1Description.ToLower().Contains(majorSearchString) || s.Major2Description.ToLower().Contains(majorSearchString) || s.Major3Description.ToLower().Contains(majorSearchString)) ;
+                studentAccounts = studentAccounts.OrderBy(s => s.LastName).ThenBy(s => s.FirstName);
+
+                alumniAccounts = alumniAccounts.Where(s => s.Major1Description.ToLower().Contains(majorSearchString) || s.Major2Description.ToLower().Contains(majorSearchString));
+                alumniAccounts = alumniAccounts.OrderBy(s => s.LastName).ThenBy(s => s.FirstName);
+
+                //foreach (Models.Student student in studentAccounts)
+               // {
+
+                 //   BasicInfoViewModel accountViewModel = new BasicInfoViewModel
+                   // {
+                       // FirstName = student.FirstName,
+                     //   LastName = student.LastName,
+                        //UserName = student.AD_Username ?? "",
+                        //ConcatonatedInfo = ""
+                    //};
+
+                    //basicAccountInfo.Add(accountViewModel);
+                //}
+            }
+
+            // Return all of the 
+            return Ok(studentAccounts);
+        }
+       
 
         // GET: api/Accounts
         [HttpGet]

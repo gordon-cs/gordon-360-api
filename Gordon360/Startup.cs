@@ -37,9 +37,9 @@ namespace Gordon360
                 AccessTokenExpireTimeSpan = TimeSpan.FromDays(365),
                 Provider = new TokenIssuer(),
                 AccessTokenFormat = new CustomJWTFormat(issuer),
-#if DEBUG
+// #if DEBUG
                 AllowInsecureHttp = true
-#endif
+// #endif
 
             });
 
