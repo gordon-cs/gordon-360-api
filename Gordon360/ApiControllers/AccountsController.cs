@@ -172,8 +172,8 @@ namespace Gordon360.ApiControllers
         /// <param name="lastNameSearchParam"> The last name to search for </param>
         /// <returns> All accounts meeting some or all of the parameter</returns>
         [HttpGet]
-        [Route("advanced-people-search/{firstNameSearchParam}/{lastNameSearchParam}")]
-        public IHttpActionResult searchMajors(string firstNameSearchParam, string lastNameSearchParam)
+        [Route("advanced-people-search/{firstNameSearchParam}/{lastNameSearchParam}/{hometownSearchParam}/{zipCodeSearchParam}")]
+        public IHttpActionResult advancedPeopleSearch(string firstNameSearchParam, string lastNameSearchParam, string hometownSearchParam, string zipCodeSearchParam)
         {
             //get token data from context, username is the username of current logged in person
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
@@ -216,17 +216,26 @@ namespace Gordon360.ApiControllers
             
             // Query the SQL database using specific parameters
             String sqlQuery = "SELECT AD_Username from Student WHERE AD_Username is not null ";
-            Console.WriteLine("params equal!!!:", firstNameSearchParam, " & ", lastNameSearchParam);
-            if (!(firstNameSearchParam.Equals("\u266F")))
+            if (!(firstNameSearchParam.Equals("C\u266F")))
             {
                 sqlQuery += "AND FirstName LIKE '" + firstNameSearchParam + "%' ";
             }
 
-            if (!(lastNameSearchParam.Equals("\u266F")))
+            if (!(lastNameSearchParam.Equals("C\u266F")))
             {
                 sqlQuery += "AND LastName LIKE '" + lastNameSearchParam + "%' ";
             }
-            Console.WriteLine("sql query equals = ", sqlQuery);
+
+            if (!(hometownSearchParam.Equals("C\u266F")))
+            {
+                sqlQuery += "AND HomeCity LIKE '" + hometownSearchParam + "%' ";
+            }
+
+            if (!(zipCodeSearchParam.Equals("C\u266F")))
+            {
+                sqlQuery += "AND HomePostalCode LIKE '" + zipCodeSearchParam + "%' ";
+            }
+
 
 
             IEnumerable<String> studentUsernames = Helpers.searchStudentData(sqlQuery);
@@ -238,7 +247,7 @@ namespace Gordon360.ApiControllers
                     publicStudentInfo.Add(profile);
                 }
             }
-            publicStudentInfo.OrderBy(s => s.FirstName).ThenBy(s => s.LastName);
+            
             IEnumerable<PublicStudentProfileViewModel> orderedPublicStudentInfo = publicStudentInfo.OrderBy(s => s.LastName).ThenBy(s => s.FirstName);
             // Return all of the profile views
             return Ok(orderedPublicStudentInfo);
