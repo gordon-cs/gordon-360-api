@@ -10,6 +10,7 @@ using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Exceptions.CustomExceptions;
+using Gordon360.Static.Methods;
 
 namespace Gordon360.ApiControllers
 {
@@ -164,16 +165,16 @@ namespace Gordon360.ApiControllers
         }
 
         /// <summary>
-        /// Return a list of accounts matching some or all of the search parameter: MAJOR
-        /// We are searching through a concatonated string, containing several pieces of info about each user.
+        /// Return a list of accounts matching some or all of the search parameters
+        /// We are searching through all the info of a user, then narrowing it down to get only what we want
         /// </summary>
-        /// <param name="majorSearchString"> The input to search for </param>
+        /// <param name="firstNameSearchParam"> The first name to search for </param>
+        /// <param name="lastNameSearchParam"> The last name to search for </param>
         /// <returns> All accounts meeting some or all of the parameter</returns>
         [HttpGet]
-        [Route("search-major/{majorSearchString}")]
-        public IHttpActionResult searchMajors(string majorSearchString)
+        [Route("advanced-people-search/{firstNameSearchParam}/{lastNameSearchParam}")]
+        public IHttpActionResult searchMajors(string firstNameSearchParam, string lastNameSearchParam)
         {
-            Console.WriteLine("in searchMajors");
             //get token data from context, username is the username of current logged in person
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
@@ -184,6 +185,7 @@ namespace Gordon360.ApiControllers
             var facStaffAccounts = Data.FacultyStaffData;
             var alumniAccounts = Data.AlumniData;
             IList<PublicStudentProfileViewModel> publicStudentInfo = new List<PublicStudentProfileViewModel>();
+            IList<String> StudentAccountsUsernames = new List<String>();
 
             // Create accounts viewmodel to search
             switch (viewerType)
@@ -211,35 +213,35 @@ namespace Gordon360.ApiControllers
                     alumniAccounts = Data.AlumniData;
                     break;
             }
-
-            Console.WriteLine("majorSearchString = ", majorSearchString);
-            if (!String.IsNullOrEmpty(majorSearchString))
+            
+            // Query the SQL database using specific parameters
+            String sqlQuery = "SELECT AD_Username from Student WHERE AD_Username is not null ";
+            Console.WriteLine("params equal!!!:", firstNameSearchParam, " & ", lastNameSearchParam);
+            if (!(firstNameSearchParam.Equals("\u266F")))
             {
-
-                Console.WriteLine("studentAccounts = ", studentAccounts);
-                // for every stored account, convert it to lowercase and compare it to the search parameter 
-
-                studentAccounts = studentAccounts.Where(s => s.FirstName.ToLower().Contains(majorSearchString)) ;
-                studentAccounts = studentAccounts.OrderBy(s => s.LastName).ThenBy(s => s.FirstName);
-
-                alumniAccounts = alumniAccounts.Where(s => s.Major1Description.ToLower().Contains(majorSearchString) || s.Major2Description.ToLower().Contains(majorSearchString));
-                alumniAccounts = alumniAccounts.OrderBy(s => s.LastName).ThenBy(s => s.FirstName);
-
-                /*foreach (Models.Student student in studentAccounts)
-               {
-                    PublicStudentProfileViewModel publicStudent = null;
-                    if (_profileService.GetStudentProfileByUsername(student.AD_Username) != null)
-                    {
-                        publicStudent = (PublicStudentProfileViewModel)_profileService.GetStudentProfileByUsername(student.AD_Username);
-
-                        publicStudentInfo.Add(publicStudent);
-                    }                    
-                }*/
+                sqlQuery += "AND FirstName LIKE '" + firstNameSearchParam + "%' ";
             }
 
-            Console.WriteLine("what does studentAccounts equal now?", studentAccounts);
-            // Return all of the 
-            return Ok(studentAccounts);
+            if (!(lastNameSearchParam.Equals("\u266F")))
+            {
+                sqlQuery += "AND LastName LIKE '" + lastNameSearchParam + "%' ";
+            }
+            Console.WriteLine("sql query equals = ", sqlQuery);
+
+
+            IEnumerable<String> studentUsernames = Helpers.searchStudentData(sqlQuery);
+            foreach (String username in studentUsernames)
+            {
+                PublicStudentProfileViewModel profile = _profileService.GetStudentProfileByUsername(username);
+                if (profile != null)
+                {
+                    publicStudentInfo.Add(profile);
+                }
+            }
+            publicStudentInfo.OrderBy(s => s.FirstName).ThenBy(s => s.LastName);
+            IEnumerable<PublicStudentProfileViewModel> orderedPublicStudentInfo = publicStudentInfo.OrderBy(s => s.LastName).ThenBy(s => s.FirstName);
+            // Return all of the profile views
+            return Ok(orderedPublicStudentInfo);
         }
        
 

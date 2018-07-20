@@ -234,5 +234,20 @@ namespace Gordon360.Static.Methods
             //string[] transcriptWorthyRoles = { "CAPT", "CODIR", "CORD", "DIREC", "PRES", "VICEC", "VICEP", "AC", "RA1", "RA2","RA3", "SEC" };
             return "LEAD";
         }
+
+        public static IEnumerable<String> searchStudentData(String sqlQuery)
+        {
+            IEnumerable<String> result = null;
+            try
+            {
+                // Attempt to query the database
+                result = RawSqlQuery<String>.query(sqlQuery);
+            }
+            catch
+            {
+                //
+            }
+            return result;
+        }
     }
 }
