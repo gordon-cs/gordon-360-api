@@ -8,6 +8,10 @@ using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Exceptions.CustomExceptions;
+using System.Collections.Generic;
+using Gordon360.Models.ViewModels;
+using System.Collections;
+using System.Text.RegularExpressions;
 
 namespace Gordon360.ApiControllers
 {
@@ -74,6 +78,9 @@ namespace Gordon360.ApiControllers
 
             var accounts = Data.AllBasicInfo;
 
+            var BeginningMatches = new SortedDictionary<String, BasicInfoViewModel>();
+            var ContainingMatches = new SortedDictionary<String, BasicInfoViewModel>();
+
             // Create accounts viewmodel to search
             switch (viewerType)
             { 
@@ -93,14 +100,73 @@ namespace Gordon360.ApiControllers
 
                     accounts = Data.AllBasicInfo;
                     break;
-            } 
-
+            }
 
             if (!String.IsNullOrEmpty(searchString)) {
                 // for every stored account, convert it to lowercase and compare it to the search paramter 
-                accounts = accounts.Where(s => s.ConcatonatedInfo.ToLower().Contains(searchString));
-                accounts = accounts.OrderBy(s => s.FirstName.CompareTo(searchString)).ThenBy(s => s.LastName.CompareTo(searchString));
+                //accounts = accounts.Where(s => s.ConcatonatedInfo.ToLower().Contains(searchString));
+                foreach(var match in accounts.Where(s => s.FirstName.ToLower().StartsWith(searchString) || s.LastName.ToLower().StartsWith(searchString)))
+                {
+                    String key;
 
+                    if (match.FirstName.ToLower().StartsWith(searchString)) key = match.FirstName + "1" + match.LastName;
+                    else key = match.LastName + "1" + match.FirstName;
+
+                    if (Regex.Match(match.UserName, "[0-9]+").Success)
+                        key += Regex.Match(match.UserName, "[0-9]+").Value;
+
+                    while (BeginningMatches.ContainsKey(key)) key = key + "1";
+                    System.Diagnostics.Debug.WriteLine(key);
+                    BeginningMatches.Add(key, match);
+                }
+                
+                //var FirstLast = new int[2];
+                foreach(var match in accounts.Where(s => !BeginningMatches.ContainsValue(s)).Where(s=> (s.UserName.Split('.'))[0].ToLower().StartsWith(searchString) || (s.UserName.Split('.'))[1].ToLower().StartsWith(searchString)))
+                {
+                    String key;
+                    if (match.UserName.Split('.')[0].ToLower().StartsWith(searchString)) key = match.UserName.Split('.')[0];
+                    else
+                        key = match.UserName.Split('.')[1];
+
+                    if (Regex.Match(match.UserName, "[0-9]+").Success)
+                        key += Regex.Match(match.UserName, "[0-9]+").Value;
+
+                    key = 'z' + key;
+
+                }
+                
+
+                
+                
+                foreach(var match in accounts.Where(s => !BeginningMatches.ContainsValue(s)).Where(s => s.FirstName.ToLower().Contains(searchString) || s.LastName.ToLower().Contains(searchString) || s.UserName.ToLower().Contains(searchString)))
+                {
+                    System.Diagnostics.Debug.WriteLine(match.UserName);
+                    String key;
+
+                    if (match.FirstName.ToLower().Contains(searchString)) key = match.FirstName + "1" + match.LastName;
+                    else if (match.LastName.ToLower().Contains(searchString)) key = match.LastName + "1" + match.FirstName;
+                    else key = match.UserName;
+
+
+                    if (Regex.Match(match.UserName, "[0-9]+").Success)
+                        key += Regex.Match(match.UserName, "[0-9]+").Value;
+
+                    key = "zz" + key;
+                    
+                    while (BeginningMatches.ContainsKey(key)) key = key + 'a';
+                    System.Diagnostics.Debug.WriteLine(key);
+                    BeginningMatches.Add(key, match);
+
+                }
+                //accounts = accounts.OrderBy(s => s.FirstName.CompareTo(searchString)).ThenBy(s => s.LastName.CompareTo(searchString));
+
+                BeginningMatches.OrderBy(s => s.Key);
+                //ContainingMatches.OrderBy(s => s.Key);
+                System.Diagnostics.Debug.WriteLine("------------");
+                accounts = BeginningMatches.Values;
+                foreach (var x in accounts)
+                    System.Diagnostics.Debug.WriteLine(x.FirstName, x.LastName);
+                
             }
 
             // Return all of the 
