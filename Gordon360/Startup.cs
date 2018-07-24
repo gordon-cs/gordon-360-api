@@ -15,6 +15,7 @@ using System.Diagnostics;
 using System.Web.Caching;
 using System.Collections.Generic;
 using Gordon360.Models;
+using Newtonsoft.Json.Linq;
 
 namespace Gordon360
 {
@@ -129,11 +130,28 @@ namespace Gordon360
             IEnumerable<Alumni> alumni = Helpers.GetAllAlumni();
             IEnumerable<BasicInfoViewModel> basic = Helpers.GetAllBasicInfoExcludeAlumni();
 
+            IEnumerable<PublicStudentProfileViewModel> publicStudent = Helpers.GetAllPublicStudents();
+            IEnumerable<PublicFacultyStaffProfileViewModel> publicFacStaff = Helpers.GetAllPublicFacultyStaff();
+            IList<JObject> allPublicAccounts = new List<JObject>();
+
             // storing in global variab
             Data.StudentData = student;
+            Data.PublicStudentData = publicStudent;
+
             Data.FacultyStaffData = facstaff;
+            Data.PublicFacultyStaffData = publicFacStaff;
+
             Data.AlumniData = alumni;
             Data.AllBasicInfoWithoutAlumni = basic;
+            foreach (PublicStudentProfileViewModel aStudent in Data.PublicStudentData)
+            {
+                allPublicAccounts.Add(JObject.FromObject(aStudent));
+            }
+            foreach (PublicFacultyStaffProfileViewModel aFacStaff in Data.PublicFacultyStaffData)
+            {
+                allPublicAccounts.Add(JObject.FromObject(aFacStaff));
+            }
+            Data.AllPublicAccounts = allPublicAccounts;
         }
 
         // Inside the callback we do all the service work

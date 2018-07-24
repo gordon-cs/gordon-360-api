@@ -11,6 +11,7 @@ using Gordon360.Services;
 using Gordon360.Models;
 using System.Collections.Generic;
 using Gordon360.Static.Names;
+using Newtonsoft.Json.Linq;
 
 namespace Gordon360.Static.Methods
 {
@@ -37,6 +38,25 @@ namespace Gordon360.Static.Methods
             // Filter out results with null or empty active directory names
             return result;
         }
+
+        public static IEnumerable<PublicStudentProfileViewModel> GetAllPublicStudents()
+        {
+            // Create a list to be filled
+            IEnumerable<PublicStudentProfileViewModel> result = null;
+
+            try
+            {
+                // Attempt to query the DB
+                result = RawSqlQuery<PublicStudentProfileViewModel>.query(SQLQuery.ALL_PUBLIC_STUDENT_REQUEST);
+            }
+            catch
+            {
+                //
+            }
+            // Filter out results with null or empty active directory names
+            return result;
+        }
+
         public static IEnumerable<FacStaff> GetAllFacultyStaff()
         {
             IEnumerable<FacStaff> result = null;
@@ -52,6 +72,25 @@ namespace Gordon360.Static.Methods
             // Filter out results with null or empty active directory names
             return result;
         }
+
+        public static IEnumerable<PublicFacultyStaffProfileViewModel> GetAllPublicFacultyStaff()
+        {
+            // Create a list to be filled
+            IEnumerable<PublicFacultyStaffProfileViewModel> result = null;
+
+            try
+            {
+                // Attempt to query the DB
+                result = RawSqlQuery<PublicFacultyStaffProfileViewModel>.query(SQLQuery.ALL_PUBLIC_FACULTY_STAFF_REQUEST);
+            }
+            catch
+            {
+                //
+            }
+            // Filter out results with null or empty active directory names
+            return result;
+        }
+
         public static IEnumerable<Alumni> GetAllAlumni()
         {
             IEnumerable<Alumni> result = null;
@@ -181,6 +220,22 @@ namespace Gordon360.Static.Methods
 
         }
 
+        public static JObject createAccountJSONData(string firstName, string lastName, string nickname, string AD_Username, string type, string classType, string jobTitle, string preferredClassYear, string showName, string personType)
+        {
+            JObject account = new JObject();
+            account.Add("FirstName", firstName);
+            account.Add("LastName", lastName);
+            account.Add("NickName", nickname);
+            account.Add("AD_Username", AD_Username);
+            account.Add("Type", type);
+            account.Add("Class", classType);
+            account.Add("JobTitle", jobTitle);
+            account.Add("PreferredClassYear", preferredClassYear);
+            account.Add("ShowName", showName);
+            account.Add("PersonType", personType);
+            return account;
+        }
+
 
         /// <summary>
         ///  Helper function to determine the current academic year
@@ -235,13 +290,18 @@ namespace Gordon360.Static.Methods
             return "LEAD";
         }
 
-        public static IEnumerable<String> searchStudentData(String sqlQuery)
+        public static IEnumerable<String> searchAccountData(String sqlQuery)
         {
+            System.Diagnostics.Debug.WriteLine("SQL search been called");
             IEnumerable<String> result = null;
             try
             {
                 // Attempt to query the database
                 result = RawSqlQuery<String>.query(sqlQuery);
+                foreach (String row in result)
+                {
+                    System.Diagnostics.Debug.WriteLine(row);
+                }
             }
             catch
             {

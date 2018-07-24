@@ -11,6 +11,7 @@ using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Static.Methods;
+using Newtonsoft.Json.Linq;
 
 namespace Gordon360.ApiControllers
 {
@@ -59,7 +60,7 @@ namespace Gordon360.ApiControllers
 
             return Ok(result);
         }
-    
+
 
         /// <summary>
         /// Return a list of accounts matching some or all of the search parameter
@@ -82,7 +83,7 @@ namespace Gordon360.ApiControllers
 
             // Create accounts viewmodel to search
             switch (viewerType)
-            { 
+            {
                 case Position.SUPERADMIN:
                     accounts = Data.AllBasicInfo;
                     break;
@@ -99,10 +100,11 @@ namespace Gordon360.ApiControllers
 
                     accounts = Data.AllBasicInfo;
                     break;
-            } 
+            }
 
 
-            if (!String.IsNullOrEmpty(searchString)) {
+            if (!String.IsNullOrEmpty(searchString))
+            {
                 // for every stored account, convert it to lowercase and compare it to the search paramter 
                 accounts = accounts.Where(s => s.ConcatonatedInfo.ToLower().Contains(searchString));
                 accounts = accounts.OrderBy(s => s.FirstName.CompareTo(searchString)).ThenBy(s => s.LastName.CompareTo(searchString));
@@ -111,7 +113,7 @@ namespace Gordon360.ApiControllers
 
             // Return all of the 
             return Ok(accounts);
-        } 
+        }
 
         /// <summary>
         /// Return a list of accounts matching some or all of the search parameter
@@ -170,89 +172,105 @@ namespace Gordon360.ApiControllers
         /// </summary>
         /// <param name="firstNameSearchParam"> The first name to search for </param>
         /// <param name="lastNameSearchParam"> The last name to search for </param>
+        /// <param name="hometownSearchParam"></param>
+        /// <param name="zipCodeSearchParam"></param>
         /// <returns> All accounts meeting some or all of the parameter</returns>
         [HttpGet]
         [Route("advanced-people-search/{firstNameSearchParam}/{lastNameSearchParam}/{hometownSearchParam}/{zipCodeSearchParam}")]
         public IHttpActionResult advancedPeopleSearch(string firstNameSearchParam, string lastNameSearchParam, string hometownSearchParam, string zipCodeSearchParam)
         {
+            // If any search params were not entered, set them to empty strings
+            if (firstNameSearchParam == "C\u266F")
+            {
+                firstNameSearchParam = "";
+            }
+            if (lastNameSearchParam == "C\u266F")
+            {
+                lastNameSearchParam = "";
+            }
+            if (hometownSearchParam == "C\u266F")
+            {
+                hometownSearchParam = "";
+            }
+            if (zipCodeSearchParam == "C\u266F")
+            {
+                zipCodeSearchParam = "";
+            }
+
             //get token data from context, username is the username of current logged in person
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             var viewerType = _roleCheckingService.getCollegeRole(viewerName);
 
             // Create accounts viewmodel to search
-            var studentAccounts = Data.StudentData;
-            var facStaffAccounts = Data.FacultyStaffData;
-            var alumniAccounts = Data.AlumniData;
-            IList<PublicStudentProfileViewModel> publicStudentInfo = new List<PublicStudentProfileViewModel>();
-            IList<String> StudentAccountsUsernames = new List<String>();
-
+            var studentAccounts = Data.PublicStudentData;
+            var facStaffAccounts = Data.PublicFacultyStaffData;
+            var alumniAccounts = Data.PublicAlumniData;
+            var accounts = Data.AllPublicAccounts;
+            
             // Create accounts viewmodel to search
             switch (viewerType)
             {
                 case Position.SUPERADMIN:
-                    studentAccounts = Data.StudentData;
-                    facStaffAccounts = Data.FacultyStaffData;
-                    alumniAccounts = Data.AlumniData;
+                    studentAccounts = Data.PublicStudentData; 
+                    facStaffAccounts = Data.PublicFacultyStaffData;
+                    alumniAccounts = Data.PublicAlumniData;
                     break;
 
                 case Position.POLICE:
-                    studentAccounts = Data.StudentData;
-                    facStaffAccounts = Data.FacultyStaffData;
-                    alumniAccounts = Data.AlumniData;
+                    studentAccounts = Data.PublicStudentData;
+                    facStaffAccounts = Data.PublicFacultyStaffData;
+                    alumniAccounts = Data.PublicAlumniData;
                     break;
 
+
                 case Position.STUDENT:
-                    studentAccounts = Data.StudentData;
-                    facStaffAccounts = Data.FacultyStaffData;
+                    studentAccounts = Data.PublicStudentData;
+                    facStaffAccounts = Data.PublicFacultyStaffData;
                     break;
 
                 case Position.FACSTAFF:
-                    studentAccounts = Data.StudentData;
-                    facStaffAccounts = Data.FacultyStaffData;
-                    alumniAccounts = Data.AlumniData;
+                    studentAccounts = Data.PublicStudentData;
+                    facStaffAccounts = Data.PublicFacultyStaffData;
+                    alumniAccounts = Data.PublicAlumniData;
                     break;
+
             }
+
+            System.Diagnostics.Debug.WriteLine("First Name param: " + firstNameSearchParam);
+            System.Diagnostics.Debug.WriteLine("Last Name param: " + lastNameSearchParam);
+
+            IEnumerable<JObject> searchResults = accounts.Where(a => (a["FirstName"].ToString().ToLower().StartsWith(firstNameSearchParam)) && (a["LastName"].ToString().ToLower().StartsWith(lastNameSearchParam)) && (a["HomeCity"].ToString().ToLower().StartsWith(hometownSearchParam))).OrderBy(a => a["LastName"]).ThenBy(a => a["FirstName"]);
             
-            // Query the SQL database using specific parameters
-            String sqlQuery = "SELECT AD_Username from Student WHERE AD_Username is not null ";
-            if (!(firstNameSearchParam.Equals("C\u266F")))
-            {
-                sqlQuery += "AND FirstName LIKE '" + firstNameSearchParam + "%' ";
-            }
-
-            if (!(lastNameSearchParam.Equals("C\u266F")))
-            {
-                sqlQuery += "AND LastName LIKE '" + lastNameSearchParam + "%' ";
-            }
-
-            if (!(hometownSearchParam.Equals("C\u266F")))
-            {
-                sqlQuery += "AND HomeCity LIKE '" + hometownSearchParam + "%' ";
-            }
-
-            if (!(zipCodeSearchParam.Equals("C\u266F")))
-            {
-                sqlQuery += "AND HomePostalCode LIKE '" + zipCodeSearchParam + "%' ";
-            }
-
-
-
-            IEnumerable<String> studentUsernames = Helpers.searchStudentData(sqlQuery);
-            foreach (String username in studentUsernames)
-            {
-                PublicStudentProfileViewModel profile = _profileService.GetStudentProfileByUsername(username);
-                if (profile != null)
-                {
-                    publicStudentInfo.Add(profile);
-                }
-            }
-            
-            IEnumerable<PublicStudentProfileViewModel> orderedPublicStudentInfo = publicStudentInfo.OrderBy(s => s.LastName).ThenBy(s => s.FirstName);
             // Return all of the profile views
-            return Ok(orderedPublicStudentInfo);
+            return Ok(searchResults);
         }
-       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         // GET: api/Accounts
         [HttpGet]
@@ -285,6 +303,6 @@ namespace Gordon360.ApiControllers
 
     }
 
-  
-    
+
+
 }
