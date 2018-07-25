@@ -98,6 +98,9 @@ namespace Gordon360.ApiControllers
 
             var accounts = Data.AllBasicInfo;
 
+            String key;
+            int precedence = 0;
+
             var allMatches = new SortedDictionary<String, BasicInfoViewModel>();
 
             // Create accounts viewmodel to search
@@ -126,62 +129,72 @@ namespace Gordon360.ApiControllers
                 // First name exact match (Highest priority)
                 foreach (var match in accounts.Where(s => s.FirstName.ToLower() == searchString))
                 {
-                    String key = GenerateKey(match.FirstName, match.LastName, match.UserName, 0);
+                    key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
 
                     while (allMatches.ContainsKey(key)) key = key + "1";
                     allMatches.Add(key, match);
                 }
+                precedence++;
 
                 // Last name exact match
                 foreach (var match in accounts.Where(s => !allMatches.ContainsValue(s)).Where(s => s.LastName.ToLower() == searchString))
                 {
-                    String key = GenerateKey(match.LastName, match.FirstName, match.UserName, 1);
+                    key = GenerateKey(match.LastName, match.FirstName, match.UserName, precedence);
 
                     while (allMatches.ContainsKey(key)) key = key + "1";
                     allMatches.Add(key, match);
                 }
+                precedence++;
 
                 // First name starts with
                 foreach (var match in accounts.Where(s => !allMatches.ContainsValue(s)).Where(s => s.FirstName.ToLower().StartsWith(searchString)))
                 {
-                    String key = GenerateKey(match.FirstName, match.LastName, match.UserName, 2);
+                    key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
 
                     while (allMatches.ContainsKey(key)) key = key + "1";
                     allMatches.Add(key, match);
                 }
+                precedence++;
+
+                // Username (first name) starts with
+                foreach (var match in accounts.Where(s => !allMatches.ContainsValue(s)).Where(s => s.UserName.Contains('.') && s.UserName.Split('.')[0].ToLower().StartsWith(searchString)))
+                {
+                    key = GenerateKey(match.UserName.Split('.')[1], match.UserName.Split('.')[0], match.UserName, precedence);
+
+                    while (allMatches.ContainsKey(key)) key = key + "1";
+                    allMatches.Add(key, match);
+                }
+                precedence++;
 
                 // Last name starts with
                 foreach (var match in accounts.Where(s => !allMatches.ContainsValue(s)).Where(s => s.LastName.ToLower().StartsWith(searchString)))
                 {
-                    String key = GenerateKey(match.LastName, match.FirstName, match.UserName, 3);
+                    key = GenerateKey(match.LastName, match.FirstName, match.UserName, precedence);
 
                     while (allMatches.ContainsKey(key)) key = key + "1";
                     allMatches.Add(key, match);
                 }
-                
-                // Username (first or last name) starts with
-                foreach(var match in accounts.Where(s => !allMatches.ContainsValue(s)).Where(s => s.UserName.Contains('.') && (s.UserName.Split('.')[0].ToLower().StartsWith(searchString) || s.UserName.Split('.')[1].ToLower().StartsWith(searchString))))
+                precedence++;
+
+                // Username (last name) starts with
+                foreach (var match in accounts.Where(s => !allMatches.ContainsValue(s)).Where(s => s.UserName.Contains('.') && s.UserName.Split('.')[1].ToLower().StartsWith(searchString)))
                 {
-                    String key;
-                    if (match.UserName.Split('.')[0].ToLower().StartsWith(searchString))
-                        key = GenerateKey(match.UserName.Split('.')[0], match.UserName.Split('.')[1], match.UserName, 4); 
-                    else
-                        key = GenerateKey(match.UserName.Split('.')[1], match.UserName.Split('.')[0], match.UserName, 4);
-
+                    key = GenerateKey(match.UserName.Split('.')[0], match.UserName.Split('.')[1], match.UserName, precedence); 
 
                     while (allMatches.ContainsKey(key)) key = key + "1";
                     allMatches.Add(key, match);
                 }
+                precedence++;
 
                 // First name, last name, or username contains (Lowest priority)
-                foreach(var match in accounts.Where(s => !allMatches.ContainsValue(s)).Where(s => s.FirstName.ToLower().Contains(searchString) || s.LastName.ToLower().Contains(searchString) || s.UserName.ToLower().Contains(searchString)))
+                foreach (var match in accounts.Where(s => !allMatches.ContainsValue(s)).Where(s => s.FirstName.ToLower().Contains(searchString) || s.LastName.ToLower().Contains(searchString) || s.UserName.ToLower().Contains(searchString)))
                 {
                    
                     String key;
 
-                    if (match.FirstName.ToLower().Contains(searchString)) key = GenerateKey(match.FirstName, match.LastName, match.UserName, 5);
-                    else if (match.LastName.ToLower().Contains(searchString)) key = GenerateKey(match.LastName, match.FirstName, match.UserName, 5);
-                    else key = GenerateKey(match.UserName, "", match.UserName, 5);
+                    if (match.FirstName.ToLower().Contains(searchString)) key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
+                    else if (match.LastName.ToLower().Contains(searchString)) key = GenerateKey(match.LastName, match.FirstName, match.UserName, precedence);
+                    else key = GenerateKey(match.UserName, "", match.UserName, precedence);
                     
                     while (allMatches.ContainsKey(key)) key = key + '1';
                     allMatches.Add(key, match);
@@ -209,6 +222,10 @@ namespace Gordon360.ApiControllers
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             var viewerType = _roleCheckingService.getCollegeRole(viewerName);
+
+            String key;
+            int precedence = 0;
+
             var allMatches = new SortedDictionary<String, BasicInfoViewModel>();
             // Create accounts viewmodel to search
             var accounts = Data.AllBasicInfo;
@@ -239,44 +256,48 @@ namespace Gordon360.ApiControllers
                 // Exact match in both first and last name (Highest priority)
                 foreach (var match in accounts.Where(s => s.FirstName.ToLower() == searchString && s.LastName.ToLower() == secondaryString))
                 {
-                    String key = GenerateKey(match.FirstName, match.LastName, match.UserName, 0);
+                    key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
 
                     while (allMatches.ContainsKey(key)) key = key + "1";
                     allMatches.Add(key, match);
                 }
+                precedence++;
 
                 // Exact match in first name
                 foreach (var match in accounts.Where(s => !allMatches.ContainsValue(s)).Where(s => s.FirstName.ToLower() == searchString))
                 {
-                    String key = GenerateKey(match.FirstName, match.LastName, match.UserName, 1);
+                    key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
 
                     while (allMatches.ContainsKey(key)) key = key + "1";
                     allMatches.Add(key, match);
                 }
+                precedence++;
 
                 // Exact match in last name
                 foreach (var match in accounts.Where(s => !allMatches.ContainsValue(s)).Where(s => s.LastName.ToLower() == secondaryString))
                 {
-                    String key = GenerateKey(match.LastName, match.FirstName, match.UserName, 2);
+                    key = GenerateKey(match.LastName, match.FirstName, match.UserName, precedence);
 
                     while (allMatches.ContainsKey(key)) key = key + "1";
                     allMatches.Add(key, match);
                 }
+                precedence++;
 
                 // First name and last name start with
                 foreach (var match in accounts.Where(s => !allMatches.ContainsValue(s)).Where(s => s.FirstName.ToLower().StartsWith(searchString) && s.LastName.ToLower().StartsWith(secondaryString)))
                 {
-                    String key = GenerateKey(match.FirstName, match.LastName, match.UserName, 3);
+                    key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
 
                     while (allMatches.ContainsKey(key)) key = key + '1';
 
                     allMatches.Add(key, match);
                 }
+                precedence++;
 
                 // Username (first and last) starts with
                 foreach (var match in accounts.Where(s => !allMatches.ContainsValue(s)).Where(s => s.UserName.Contains('.') && (s.UserName.Split('.')[0].ToLower().StartsWith(searchString) && s.UserName.Split('.')[1].ToLower().StartsWith(secondaryString))))
                 {
-                    String key = GenerateKey(match.FirstName, match.LastName, match.UserName, 4);
+                    key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
 
                     while (allMatches.ContainsKey(key)) key = key + '1';
 
@@ -320,12 +341,14 @@ namespace Gordon360.ApiControllers
 
             return Ok(result);
         }
-        /*
-         * This function generates a key for each account
-         * 
-         * 
-         * 
-         */
+        /// <Summary>
+        ///   This function generates a key for each account
+        /// </Summary>
+        ///
+        /// <param name="keyPart1">This is what you would want to sort by first, used for first part of key</param>
+        /// <param name="keyPart2">This is what you want to sort by second, used for second part of key</param>
+        /// <param name="precedence">Set where in the dictionary this key group will be ordered</param>
+        /// <param name="userName">The User's Username</param>
         public String GenerateKey (String keyPart1, String keyPart2, String userName, int precedence)
         {
             String key =  keyPart1 + "1" + keyPart2 ;
