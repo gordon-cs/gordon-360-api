@@ -189,9 +189,6 @@ namespace Gordon360.ApiControllers
                 // First name, last name, or username contains (Lowest priority)
                 foreach (var match in accounts.Where(s => !allMatches.ContainsValue(s)).Where(s => s.FirstName.ToLower().Contains(searchString) || s.LastName.ToLower().Contains(searchString) || s.UserName.ToLower().Contains(searchString)))
                 {
-                   
-                    String key;
-
                     if (match.FirstName.ToLower().Contains(searchString)) key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
                     else if (match.LastName.ToLower().Contains(searchString)) key = GenerateKey(match.LastName, match.FirstName, match.UserName, precedence);
                     else key = GenerateKey(match.UserName, "", match.UserName, precedence);
