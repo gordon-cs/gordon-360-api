@@ -57,7 +57,7 @@ namespace Gordon360.Static.Names
     {
         public const string STUDENT = "student";
         public const string FACSTAFF = "facstaff";
-        public const string GOD = "god";
+        public const string SUPERADMIN = "super admin";
         public const string POLICE = "gordon police";
         public const string READONLY = "readonly";
     }
