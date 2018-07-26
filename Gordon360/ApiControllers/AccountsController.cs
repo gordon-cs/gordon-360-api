@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Security.Claims;
 using System.Linq;
 using Gordon360.Static.Data;
@@ -338,6 +338,88 @@ namespace Gordon360.ApiControllers
 
             return Ok(result);
         }
+        
+        /// <summary>
+        /// Return a list of accounts matching some or all of the search parameters
+        /// We are searching through all the info of a user, then narrowing it down to get only what we want
+        /// </summary>
+        /// <param name="firstNameSearchParam"> The first name to search for </param>
+        /// <param name="lastNameSearchParam"> The last name to search for </param>
+        /// <param name="hometownSearchParam"></param>        
+        /// <returns> All accounts meeting some or all of the parameter</returns>
+        [HttpGet]
+        [Route("advanced-people-search/{firstNameSearchParam}/{lastNameSearchParam}/{hometownSearchParam}")]
+        public IHttpActionResult advancedPeopleSearch(string firstNameSearchParam, string lastNameSearchParam, string hometownSearchParam)
+        {
+            System.Diagnostics.Debug.WriteLine("A.P.S. been called");
+            // If any search params were not entered, set them to empty strings
+            if (firstNameSearchParam == "C\u266F")
+            {
+                firstNameSearchParam = "";
+            }
+            if (lastNameSearchParam == "C\u266F")
+            {
+                lastNameSearchParam = "";
+            }
+            if (hometownSearchParam == "C\u266F")
+            {
+                hometownSearchParam = "";
+            }
+
+            //get token data from context, username is the username of current logged in person
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var viewerType = _roleCheckingService.getCollegeRole(viewerName);
+
+            // Create accounts viewmodel to search
+            var studentAccounts = Data.PublicStudentData;
+            var facStaffAccounts = Data.PublicFacultyStaffData;
+            var alumniAccounts = Data.PublicAlumniData;
+            var accountsWithoutAlumni = Data.AllPublicAccountsWithoutAlumni;
+            var accounts = Data.AllPublicAccounts;
+
+            // Create accounts viewmodel to search
+            switch (viewerType)
+            {
+                case Position.SUPERADMIN:
+                    studentAccounts = Data.PublicStudentData;
+                    facStaffAccounts = Data.PublicFacultyStaffData;
+                    alumniAccounts = Data.PublicAlumniData;
+                    break;
+
+                case Position.POLICE:
+                    studentAccounts = Data.PublicStudentData;
+                    facStaffAccounts = Data.PublicFacultyStaffData;
+                    alumniAccounts = Data.PublicAlumniData;
+                    break;
+
+
+                case Position.STUDENT:
+                    studentAccounts = Data.PublicStudentData;
+                    facStaffAccounts = Data.PublicFacultyStaffData;
+                    break;
+
+                case Position.FACSTAFF:
+                    studentAccounts = Data.PublicStudentData;
+                    facStaffAccounts = Data.PublicFacultyStaffData;
+                    alumniAccounts = Data.PublicAlumniData;
+                    break;
+
+            }
+            IEnumerable<JObject> searchResults;
+            if (viewerType != Position.STUDENT)
+            {
+                searchResults = accounts.Where(a => (a["FirstName"].ToString().ToLower().StartsWith(firstNameSearchParam)) && (a["LastName"].ToString().ToLower().StartsWith(lastNameSearchParam)) && (a["HomeCity"].ToString().ToLower().StartsWith(hometownSearchParam))).OrderBy(a => a["LastName"]).ThenBy(a => a["FirstName"]);
+            }
+            else
+            {
+                searchResults = accountsWithoutAlumni.Where(a => (a["FirstName"].ToString().ToLower().StartsWith(firstNameSearchParam)) && (a["LastName"].ToString().ToLower().StartsWith(lastNameSearchParam)) && (a["HomeCity"].ToString().ToLower().StartsWith(hometownSearchParam))).OrderBy(a => a["LastName"]).ThenBy(a => a["FirstName"]);
+            }
+
+            // Return all of the profile views
+            return Ok(searchResults);
+        }
+        
         /// <Summary>
         ///   This function generates a key for each account
         /// </Summary>

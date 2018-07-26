@@ -2,6 +2,7 @@
 using Gordon360.Models.ViewModels;
 using System.Collections.Generic;
 using Gordon360.Models;
+using Newtonsoft.Json.Linq;
 
 namespace Gordon360.Static.Data
 {
@@ -18,6 +19,14 @@ namespace Gordon360.Static.Data
         // Basic info excluding alumni info
         public static IEnumerable<BasicInfoViewModel> AllBasicInfoWithoutAlumni { get; set; }
 
+        // All public account info
+        public static IEnumerable<PublicStudentProfileViewModel> PublicStudentData { get; set; }
+        public static IEnumerable<PublicFacultyStaffProfileViewModel> PublicFacultyStaffData { get; set; }
+        public static IEnumerable<PublicAlumniProfileViewModel> PublicAlumniData { get; set; }
+        public static IEnumerable<JObject> AllPublicAccounts { get; set; }
+        public static IEnumerable<JObject> AllPublicAccountsWithoutAlumni { get; set; }
+
+        // All account info
         public static IEnumerable<Student> StudentData { get; set; }
         public static IEnumerable<FacStaff> FacultyStaffData { get; set; }
         public static IEnumerable<Alumni> AlumniData { get; set; }
