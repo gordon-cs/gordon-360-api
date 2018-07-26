@@ -57,7 +57,7 @@ namespace Gordon360.Static.Names
     {
         public const string STUDENT = "student";
         public const string FACSTAFF = "facstaff";
-        public const string SUPERADMIN = "super admin";
+        public const string SUPERADMIN = "god";      // TODO: change in database to something more reverent
         public const string POLICE = "gordon police";
         public const string READONLY = "readonly";
     }
@@ -83,15 +83,15 @@ namespace Gordon360.Static.Names
         public const string DEFAULT_IMAGE_PATH = "\\\\go\\photos\\";
         public const string DATABASE_IMAGE_PATH = "f:\\inetpub\\pref_photos\\";
     }
-    
+
     public static class URLs
     {
-        // This url makes use of the 25Live API to retrieve events based on the "event_type" parameter. 
+        // This url makes use of the 25Live API to retrieve events based on the "event_type" parameter.
         // We also make use of the "end after" field to get only events from this academic year.
         public static string ALL_EVENTS_REQUEST = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=10+12+13+14+16+17+18+19+51+20+21+22+23+24+25+29+30+31+35&state=2&end_after=" + Helpers.GetDay() + "0810&scope=extended";
 
     }
-   
+
     public static class SQLQuery
     {
         public static string ALL_PUBLIC_STUDENT_REQUEST = "SELECT FirstName, LastName, NickName,  HomeCity, HomeState, HomeCountry, Class, KeepPrivate, Email, AD_Username FROM Student WHERE AD_Username is not null";
