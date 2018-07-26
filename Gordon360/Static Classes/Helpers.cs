@@ -91,6 +91,24 @@ namespace Gordon360.Static.Methods
             return result;
         }
 
+        public static IEnumerable<PublicAlumniProfileViewModel> GetAllPublicAlumni()
+        {
+            // Create a list to be filled
+            IEnumerable<PublicAlumniProfileViewModel> result = null;
+
+            try
+            {
+                // Attempt to query the DB
+                result = RawSqlQuery<PublicAlumniProfileViewModel>.query(SQLQuery.ALL_PUBLIC_ALUMNI_REQUEST);
+            }
+            catch
+            {
+                //
+            }
+            // Filter out results with null or empty active directory names
+            return result;
+        }
+
         public static IEnumerable<Alumni> GetAllAlumni()
         {
             IEnumerable<Alumni> result = null;
@@ -219,23 +237,7 @@ namespace Gordon360.Static.Methods
             }
 
         }
-
-        public static JObject createAccountJSONData(string firstName, string lastName, string nickname, string AD_Username, string type, string classType, string jobTitle, string preferredClassYear, string showName, string personType)
-        {
-            JObject account = new JObject();
-            account.Add("FirstName", firstName);
-            account.Add("LastName", lastName);
-            account.Add("NickName", nickname);
-            account.Add("AD_Username", AD_Username);
-            account.Add("Type", type);
-            account.Add("Class", classType);
-            account.Add("JobTitle", jobTitle);
-            account.Add("PreferredClassYear", preferredClassYear);
-            account.Add("ShowName", showName);
-            account.Add("PersonType", personType);
-            return account;
-        }
-
+        
 
         /// <summary>
         ///  Helper function to determine the current academic year
@@ -288,26 +290,6 @@ namespace Gordon360.Static.Methods
         {
             //string[] transcriptWorthyRoles = { "CAPT", "CODIR", "CORD", "DIREC", "PRES", "VICEC", "VICEP", "AC", "RA1", "RA2","RA3", "SEC" };
             return "LEAD";
-        }
-
-        public static IEnumerable<String> searchAccountData(String sqlQuery)
-        {
-            System.Diagnostics.Debug.WriteLine("SQL search been called");
-            IEnumerable<String> result = null;
-            try
-            {
-                // Attempt to query the database
-                result = RawSqlQuery<String>.query(sqlQuery);
-                foreach (String row in result)
-                {
-                    System.Diagnostics.Debug.WriteLine(row);
-                }
-            }
-            catch
-            {
-                //
-            }
-            return result;
-        }
+        }       
     }
 }

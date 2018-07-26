@@ -172,13 +172,13 @@ namespace Gordon360.ApiControllers
         /// </summary>
         /// <param name="firstNameSearchParam"> The first name to search for </param>
         /// <param name="lastNameSearchParam"> The last name to search for </param>
-        /// <param name="hometownSearchParam"></param>
-        /// <param name="zipCodeSearchParam"></param>
+        /// <param name="hometownSearchParam"></param>        
         /// <returns> All accounts meeting some or all of the parameter</returns>
         [HttpGet]
-        [Route("advanced-people-search/{firstNameSearchParam}/{lastNameSearchParam}/{hometownSearchParam}/{zipCodeSearchParam}")]
-        public IHttpActionResult advancedPeopleSearch(string firstNameSearchParam, string lastNameSearchParam, string hometownSearchParam, string zipCodeSearchParam)
+        [Route("advanced-people-search/{firstNameSearchParam}/{lastNameSearchParam}/{hometownSearchParam}")]
+        public IHttpActionResult advancedPeopleSearch(string firstNameSearchParam, string lastNameSearchParam, string hometownSearchParam)
         {
+            System.Diagnostics.Debug.WriteLine("A.P.S. been called");
             // If any search params were not entered, set them to empty strings
             if (firstNameSearchParam == "C\u266F")
             {
@@ -192,10 +192,6 @@ namespace Gordon360.ApiControllers
             {
                 hometownSearchParam = "";
             }
-            if (zipCodeSearchParam == "C\u266F")
-            {
-                zipCodeSearchParam = "";
-            }
 
             //get token data from context, username is the username of current logged in person
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
@@ -206,13 +202,14 @@ namespace Gordon360.ApiControllers
             var studentAccounts = Data.PublicStudentData;
             var facStaffAccounts = Data.PublicFacultyStaffData;
             var alumniAccounts = Data.PublicAlumniData;
+            var accountsWithoutAlumni = Data.AllPublicAccountsWithoutAlumni;
             var accounts = Data.AllPublicAccounts;
-            
+
             // Create accounts viewmodel to search
             switch (viewerType)
             {
                 case Position.SUPERADMIN:
-                    studentAccounts = Data.PublicStudentData; 
+                    studentAccounts = Data.PublicStudentData;
                     facStaffAccounts = Data.PublicFacultyStaffData;
                     alumniAccounts = Data.PublicAlumniData;
                     break;
@@ -236,41 +233,19 @@ namespace Gordon360.ApiControllers
                     break;
 
             }
+            IEnumerable<JObject> searchResults;
+            if (viewerType != Position.STUDENT)
+            {
+                searchResults = accounts.Where(a => (a["FirstName"].ToString().ToLower().StartsWith(firstNameSearchParam)) && (a["LastName"].ToString().ToLower().StartsWith(lastNameSearchParam)) && (a["HomeCity"].ToString().ToLower().StartsWith(hometownSearchParam))).OrderBy(a => a["LastName"]).ThenBy(a => a["FirstName"]);
+            }
+            else
+            {
+                searchResults = accountsWithoutAlumni.Where(a => (a["FirstName"].ToString().ToLower().StartsWith(firstNameSearchParam)) && (a["LastName"].ToString().ToLower().StartsWith(lastNameSearchParam)) && (a["HomeCity"].ToString().ToLower().StartsWith(hometownSearchParam))).OrderBy(a => a["LastName"]).ThenBy(a => a["FirstName"]);
+            }
 
-            System.Diagnostics.Debug.WriteLine("First Name param: " + firstNameSearchParam);
-            System.Diagnostics.Debug.WriteLine("Last Name param: " + lastNameSearchParam);
-
-            IEnumerable<JObject> searchResults = accounts.Where(a => (a["FirstName"].ToString().ToLower().StartsWith(firstNameSearchParam)) && (a["LastName"].ToString().ToLower().StartsWith(lastNameSearchParam)) && (a["HomeCity"].ToString().ToLower().StartsWith(hometownSearchParam))).OrderBy(a => a["LastName"]).ThenBy(a => a["FirstName"]);
-            
             // Return all of the profile views
             return Ok(searchResults);
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         // GET: api/Accounts
         [HttpGet]
