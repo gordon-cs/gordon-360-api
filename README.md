@@ -57,7 +57,7 @@ The folders for these IIS sites can be found on the 360train machine under `F:\s
 - 360ApiTrain.gordon.edu -- Development JSON server site. C# using the ASP.NET Framework.
 
 ### Deploying to the Api Site
-- Log in to 360train and start Visual Studio as the cct.service user. (Shift + right click)
+- Log in to cts-360.gordon.edu as the cct.service user and start Visual Studio as an administrator (right click).
 - Open an existing project/solution - `C:\users\cct.service\code\gordon-360-api\Gordon360` file. It is a Microsoft Visual Studio Solution file.
 - Make a change. Do your thing.
 - Menu Bar -> Build - Publish Gordon360.
@@ -537,7 +537,7 @@ Differences from GoSite:
 
 `api/profiles/:username` Get profile info of a user with username `username` as a parameter.
 
-`api/profiles/role/:username` Get college role of a user with username `username` as a parameter --- College roles: god(super admin), faculty and staff, student and police.
+`api/profiles/role/:username` Get college role of a user with username `username` as a parameter --- College roles: super admin, faculty and staff, student and police.
 
 `api/profiles/Image/` Get profile image of the current logged in user. Image is stored in a base 64 string.
 

@@ -135,7 +135,7 @@ namespace Gordon360.AuthorizationServer
                             var isAdmin = adminService.Get(personID);
                             if (isAdmin != null)
                             {
-                                collegeRole = Position.GOD;
+                                collegeRole = Position.SUPERADMIN;
                             }
                         }
                         catch(ResourceNotFoundException e)

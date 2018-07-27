@@ -124,6 +124,22 @@ namespace Gordon360.Services
                 nameParam = new SqlParameter("@FILE_NAME", DBNull.Value);
             var context = new CCTEntities1();
             context.Database.ExecuteSqlCommand("UPDATE_PHOTO_PATH @ID, @FILE_PATH, @FILE_NAME", authParam, pathParam, nameParam);   //run stored procedure.
+            // Update value in cached data
+            var student = Data.StudentData.FirstOrDefault(x => x.ID == id);
+            var facStaff = Data.FacultyStaffData.FirstOrDefault(x => x.ID == id);
+            var alum = Data.AlumniData.FirstOrDefault(x => x.ID == id);
+            if (student != null)
+            {
+                student.preferred_photo = (path == null ? 0 : 1);
+            }
+            else if (facStaff != null)
+            {
+                facStaff.preferred_photo = (path == null ? 0 : 1);
+            }
+            else if (alum != null)
+            {
+                alum.preferred_photo = (path == null ? 0 : 1);
+            }
         }
 
 
@@ -188,6 +204,12 @@ namespace Gordon360.Services
             var valueParam = new SqlParameter("@VALUE", value);
             var context = new CCTEntities1();
             context.Database.ExecuteSqlCommand("UPDATE_PHONE_PRIVACY @ID, @VALUE", idParam, valueParam); // run stored procedure.
+            // Update value in cached data
+            var student = Data.StudentData.FirstOrDefault(x => x.ID == id);
+            if (student != null)
+            {
+                student.IsMobilePhonePrivate = (value == "Y" ? 1 : 0);
+            }
 
         }
         /// <summary>
@@ -209,6 +231,21 @@ namespace Gordon360.Services
             var valueParam = new SqlParameter("@VALUE", value);
             var context = new CCTEntities1();
             context.Database.ExecuteSqlCommand("UPDATE_SHOW_PIC @ACCOUNT_ID, @VALUE", idParam, valueParam); //run stored procedure.
+            // Update value in cached data
+            var student = Data.StudentData.FirstOrDefault(x => x.ID == id);
+            var facStaff = Data.FacultyStaffData.FirstOrDefault(x => x.ID == id);
+            var alum = Data.AlumniData.FirstOrDefault(x => x.ID == id);
+            if (student != null)
+            {
+                student.show_pic = (value == "Y" ? 1 : 0);
+            }
+            else if (facStaff != null) {
+                facStaff.show_pic = (value == "Y" ? 1 : 0);
+            }
+            else if (alum != null)
+            {
+                alum.show_pic = (value == "Y" ? 1 : 0);
+            }
         }
 
     }

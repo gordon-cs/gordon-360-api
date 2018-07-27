@@ -28,7 +28,7 @@ namespace Gordon360.Services
 
             if (isAdmin)
             {
-                type = Position.GOD;
+                type = Position.SUPERADMIN;
                 return type;
             }
             else if (isPolice)
