@@ -151,6 +151,8 @@ namespace Gordon360
             {
                 JObject theStu = JObject.FromObject(aStudent);
                 theStu.Add("Type", "Student");
+                theStu.Add("BuildingDescription", null);
+                theStu.Add("OnCampusDepartment", null);
                 allPublicAccounts.Add(theStu);
                 allPublicAccountsWithoutAlumni.Add(theStu);
             }
@@ -163,6 +165,8 @@ namespace Gordon360
             {
                 JObject theAlum = JObject.FromObject(anAlum);
                 theAlum.Add("Type", "Alum");
+                theAlum.Add("BuildingDescription", null);
+                theAlum.Add("OnCampusDepartment", null);
                 allPublicAccounts.Add(theAlum);
             }
             
