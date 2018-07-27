@@ -7,8 +7,28 @@
         <member name="M:Gordon360.ApiControllers.AccountsController.Search(System.String)">
             <summary>
             Return a list of accounts matching some or all of the search parameter
-            We are searching through a concatonated string, containing several pieces of info about each user.
             </summary>
+            
+            
+            Full Explanation:
+            
+            Returns a list of accounts ordered by key of a combination of users first/last/user name in the following order
+                1.first or last name begins with search query,
+                2.first or last name in Username that begins with search query
+                3.first or last name that contains the search query
+                
+            If Full Names of any two accounts are the same the follow happens to the dictionary key to solve this problem
+                1. If there is a number attached to their account this is appened to the end of their key
+                2. Otherwise an '1' is appended to the end
+                
+            Note:
+            A '1' is added inbetween a key's first and last name or first and last username in order to preserve the presedence set by shorter names
+            as both first and last are used as a part of the key in order to order matching first/last names with the remaining part of their name
+            but this resulted in the presedence set by shorter names to be lost
+            
+            Note:
+            "z" s are added in order to keep each case split into each own group in the dictionary
+            
             <param name="searchString"> The input to search for </param>
             <returns> All accounts meeting some or all of the parameter</returns>
         </member>
@@ -19,6 +39,16 @@
             </summary>
             <param name="searchString"> The input to search for </param>
             <returns> All accounts meeting some or all of the parameter</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AccountsController.GenerateKey(System.String,System.String,System.String,System.Int32)">
+             <Summary>
+               This function generates a key for each account
+             </Summary>
+            
+             <param name="keyPart1">This is what you would want to sort by first, used for first part of key</param>
+             <param name="keyPart2">This is what you want to sort by second, used for second part of key</param>
+             <param name="precedence">Set where in the dictionary this key group will be ordered</param>
+             <param name="userName">The User's Username</param>
         </member>
         <member name="M:Gordon360.ApiControllers.AdminsController.GetAll">
             <summary>
@@ -52,6 +82,14 @@
             <summary>Delete an existing admin</summary>
             <param name="id">The identifier for the admin to be deleted</param>
             <remarks>Calls the server to make a call and remove the given admin from the database</remarks>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DiningController.Get(System.Int32,System.String)">
+            <summary>
+             Gets information about student's dining plan and balance
+            </summary>
+            <param name="id">The ID of the student</param>
+            <param name="sessionCode">Current session code</param>
+            <returns>A DiningInfo object</returns>
         </member>
         <member name="M:Gordon360.ApiControllers.EventController.GetAllEvents">
             <summary>
@@ -831,6 +869,27 @@
             </summary>
             <param name="admin">The admin to validate</param>
             <returns>True if the admin is valid. Throws ResourceNotFoundException if not. Exception is cauth in an Exception Filter</returns>
+        </member>
+        <member name="T:Gordon360.Services.DiningService">
+            <summary>
+            Service that allows for meal control
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.DiningService.GetBalance(System.Int32,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="cardHolderID"></param>
+            <param name="planID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.DiningService.GetDiningPlanInfo(System.Int32,System.String)">
+            <summary>
+            Get information about the selected plan for the student user
+            </summary>
+            <param name="cardHolderID">Student's Gordon ID</param>
+            <param name="sessionCode">Current Session Code</param>
+            <returns></returns>
         </member>
         <member name="T:Gordon360.Services.EventService">
             <summary>

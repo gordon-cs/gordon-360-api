@@ -244,16 +244,15 @@ warning 6002: The table/view 'CCT.dbo.CM_SESSION_MSTR' does not have a primary k
 warning 6002: The table/view 'CCT.dbo.DiningInfo' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="DiningInfo">
           <Key>
-            <PropertyRef Name="Student_Id" />
+            <PropertyRef Name="StudentId" />
             <PropertyRef Name="SessionCode" />
-            <PropertyRef Name="PlanIDs" />
+            <PropertyRef Name="PlanId" />
           </Key>
-          <Property Name="Student_Id" Type="int" Nullable="false" />
+          <Property Name="StudentId" Type="int" Nullable="false" />
           <Property Name="SessionCode" Type="char" MaxLength="8" Nullable="false" />
-          <Property Name="MealChoiceID" Type="char" MaxLength="2" />
-          <Property Name="PlanIDs" Type="varchar" MaxLength="6" Nullable="false" />
           <Property Name="ChoiceDescription" Type="char" MaxLength="60" />
           <Property Name="PlanDescriptions" Type="varchar" MaxLength="150" />
+          <Property Name="PlanId" Type="varchar" MaxLength="6" Nullable="false" />
           <Property Name="InitialBalance" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -619,12 +618,11 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           </EntitySet>
           <EntitySet Name="DiningInfo" EntityType="Self.DiningInfo" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [DiningInfo].[Student_Id] AS [Student_Id], 
+    [DiningInfo].[StudentId] AS [StudentId], 
     [DiningInfo].[SessionCode] AS [SessionCode], 
-    [DiningInfo].[MealChoiceID] AS [MealChoiceID], 
-    [DiningInfo].[PlanIDs] AS [PlanIDs], 
     [DiningInfo].[ChoiceDescription] AS [ChoiceDescription], 
     [DiningInfo].[PlanDescriptions] AS [PlanDescriptions], 
+    [DiningInfo].[PlanId] AS [PlanId], 
     [DiningInfo].[InitialBalance] AS [InitialBalance]
     FROM [dbo].[DiningInfo] AS [DiningInfo]</DefiningQuery>
           </EntitySet>
@@ -1533,16 +1531,15 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         </EntityType>
         <EntityType Name="DiningInfo">
           <Key>
-            <PropertyRef Name="Student_Id" />
+            <PropertyRef Name="StudentId" />
             <PropertyRef Name="SessionCode" />
-            <PropertyRef Name="PlanIDs" />
+            <PropertyRef Name="PlanId" />
           </Key>
-          <Property Name="Student_Id" Type="Int32" Nullable="false" />
+          <Property Name="StudentId" Type="Int32" Nullable="false" />
           <Property Name="SessionCode" Type="String" Nullable="false" MaxLength="8" FixedLength="true" Unicode="false" />
-          <Property Name="MealChoiceID" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="PlanIDs" Type="String" Nullable="false" MaxLength="6" FixedLength="false" Unicode="false" />
           <Property Name="ChoiceDescription" Type="String" MaxLength="60" FixedLength="true" Unicode="false" />
           <Property Name="PlanDescriptions" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="PlanId" Type="String" Nullable="false" MaxLength="6" FixedLength="false" Unicode="false" />
           <Property Name="InitialBalance" Type="Int32" />
         </EntityType>
         </Schema>
@@ -2248,12 +2245,11 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <EntityTypeMapping TypeName="Gordon360.DiningInfo">
               <MappingFragment StoreEntitySet="DiningInfo">
                 <ScalarProperty Name="InitialBalance" ColumnName="InitialBalance" />
+                <ScalarProperty Name="PlanId" ColumnName="PlanId" />
                 <ScalarProperty Name="PlanDescriptions" ColumnName="PlanDescriptions" />
                 <ScalarProperty Name="ChoiceDescription" ColumnName="ChoiceDescription" />
-                <ScalarProperty Name="PlanIDs" ColumnName="PlanIDs" />
-                <ScalarProperty Name="MealChoiceID" ColumnName="MealChoiceID" />
                 <ScalarProperty Name="SessionCode" ColumnName="SessionCode" />
-                <ScalarProperty Name="Student_Id" ColumnName="Student_Id" />
+                <ScalarProperty Name="StudentId" ColumnName="StudentId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2272,7 +2268,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
         <DesignerProperty Name="EnablePluralization" Value="false" />
-        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="False" />
         <DesignerProperty Name="UseLegacyProvider" Value="false" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
       </DesignerInfoPropertySet>

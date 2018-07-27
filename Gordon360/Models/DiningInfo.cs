@@ -18,17 +18,15 @@ using System;
 public partial class DiningInfo
 {
 
-    public int Student_Id { get; set; }
+    public int StudentId { get; set; }
 
     public string SessionCode { get; set; }
-
-    public string MealChoiceID { get; set; }
-
-    public string PlanIDs { get; set; }
 
     public string ChoiceDescription { get; set; }
 
     public string PlanDescriptions { get; set; }
+
+    public string PlanId { get; set; }
 
     public Nullable<int> InitialBalance { get; set; }
 

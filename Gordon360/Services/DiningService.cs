@@ -17,6 +17,7 @@ using System.Net;
 using System.Text;
 using System.IO;
 using System.Security.Cryptography;
+using System.Diagnostics;
 
 /// <summary>
 /// We use this service to pull meal data from blackboard and parse it
@@ -33,8 +34,6 @@ namespace Gordon360.Services
         private static string issuerID = "219";
         private static string applicationId = "000001";
         private static string secret = "test";
-
-        private IUnitOfWork _unitOfWork;
 
         public DiningService(IUnitOfWork unitOfWork)
         {
@@ -132,19 +131,20 @@ namespace Gordon360.Services
         /// <param name="cardHolderID">Student's Gordon ID</param>
         /// <param name="sessionCode">Current Session Code</param>
         /// <returns></returns>
-        public DiningViewModel GetDiningPlanInfo(int cardHolderID, string sessionCode)
+        public IEnumerable<DiningViewModel> GetDiningPlanInfo(int cardHolderID, string sessionCode)
         {
             var idParam = new SqlParameter("@STUDENT_ID", cardHolderID);
             var sessionParam = new SqlParameter("@SESS_CDE", sessionCode);
-            var result = RawSqlQuery<DiningViewModel>.query("DINING_INFO_BY_STUDENT_ID @STUDENT_ID, @SESS_CDE", idParam, sessionParam).FirstOrDefault();
+            String query = "SELECT ChoiceDescription, PlanDescriptions, PlanID, InitialBalance FROM DiningInfo WHERE StudentId = @STUDENT_ID AND SessionCode = @SESS_CDE";
+            var result = RawSqlQuery<DiningViewModel>.query(query, idParam, sessionParam);
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The plan was not found." };
             }
 
-            for (int i = 0; i < result.PlanIDs.Length; i++)
+            foreach (var row in result)
             {
-                result.CurrentBalance[i] = GetBalance(cardHolderID, result.PlanIDs[i]);
+                row.CurrentBalance = GetBalance(cardHolderID, row.PlanId);
             }
 
             return result;
