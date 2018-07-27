@@ -57,6 +57,24 @@ namespace Gordon360.Static.Methods
             return result;
         }
 
+        // Fill an iterable list of states from a query to the database
+        public static IEnumerable<String> GetStates()
+        {
+            // Create a list to be filled
+            IEnumerable<String> result = null;
+            try
+            {
+                // Attempt to query the DB
+                result = RawSqlQuery<String>.query(SQLQuery.ALL_ACCOUNTS_STATES);
+            }
+            catch
+            {
+                //
+            }
+            // Filter out results with null or empty active directory names
+            return result;
+        }
+
         public static IEnumerable<FacStaff> GetAllFacultyStaff()
         {
             IEnumerable<FacStaff> result = null;
@@ -309,6 +327,7 @@ namespace Gordon360.Static.Methods
             // Filter out results with null or empty active directory names
             return result;
         }
+        */
 
         // Fill an iterable list of departments from a query to the database
         public static IEnumerable<String> GetMinors()
@@ -324,46 +343,11 @@ namespace Gordon360.Static.Methods
             {
                 //
             }
+            System.Diagnostics.Debug.WriteLine("Helpers: SQL query for minors called");
             // Filter out results with null or empty active directory names
             return result;
         }
 
-        // Fill an iterable list of departments from a query to the database
-        public static IEnumerable<String> GetClasses()
-        {
-            // Create a list to be filled
-            IEnumerable<String> result = null;
-            try
-            {
-                // Attempt to query the DB
-                result = RawSqlQuery<String>.query(SQLQuery.ALL_CLASSES);
-            }
-            catch
-            {
-                //
-            }
-            // Filter out results with null or empty active directory names
-            return result;
-        } 
-
-        // Fill an iterable list of states from a query to the database
-        public static IEnumerable<String> GetStates()
-        {
-            // Create a list to be filled
-            IEnumerable<String> result = null;
-            try
-            {
-                // Attempt to query the DB
-                result = RawSqlQuery<String>.query(SQLQuery.ALL_STATES);
-            }
-            catch
-            {
-                //
-            }
-            // Filter out results with null or empty active directory names
-            return result;
-        }
-        */
 
         // For goStalk/Advanced People Search:
 

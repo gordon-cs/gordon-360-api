@@ -345,15 +345,18 @@ namespace Gordon360.ApiControllers
         /// We are searching through all the info of a user, then narrowing it down to get only what we want
         /// </summary>
         /// <param name="firstNameSearchParam"> The first name to search for </param>
+        /// <param name="minorSearchParam"></param>
+        /// <param name="classTypeSearchParam"></param>
         /// <param name="lastNameSearchParam"> The last name to search for </param>
         /// <param name="hometownSearchParam"></param>
+        /// <param name="stateSearchParam"></param>
         /// <param name="countrySearchParam"></param>
         /// <param name="buildingSearchParam"></param>
         /// <param name="departmentSearchParam"></param>        
         /// <returns> All accounts meeting some or all of the parameter</returns>
         [HttpGet]
-        [Route("advanced-people-search/{firstNameSearchParam}/{lastNameSearchParam}/{hometownSearchParam}/{countrySearchParam}/{buildingSearchParam}/{departmentSearchParam}")]
-        public IHttpActionResult advancedPeopleSearch(string firstNameSearchParam, string lastNameSearchParam, string hometownSearchParam, string countrySearchParam, string buildingSearchParam, string departmentSearchParam)
+        [Route("advanced-people-search/{firstNameSearchParam}/{lastNameSearchParam}/{minorSearchParam}/{classTypeSearchParam}/{hometownSearchParam}/{stateSearchParam}/{countrySearchParam}/{buildingSearchParam}/{departmentSearchParam}")]
+        public IHttpActionResult advancedPeopleSearch(string firstNameSearchParam, string minorSearchParam, string classTypeSearchParam, string lastNameSearchParam, string hometownSearchParam, string stateSearchParam, string countrySearchParam, string buildingSearchParam, string departmentSearchParam)
         {
             System.Diagnostics.Debug.WriteLine("A.P.S. been called");
             // If any search params were not entered, set them to empty strings
@@ -369,7 +372,27 @@ namespace Gordon360.ApiControllers
             {
                 hometownSearchParam = "";
             }
-            System.Diagnostics.Debug.WriteLine("country comes in as: " + countrySearchParam);
+
+            System.Diagnostics.Debug.WriteLine("the value of minorSearchParam " + minorSearchParam);
+            if (minorSearchParam == "C\u266F")
+            {
+                minorSearchParam = "";
+            }
+
+            if (classTypeSearchParam == "C\u266F")
+            {
+                classTypeSearchParam = "";
+            }
+
+
+
+
+            if (stateSearchParam == "C\u266F")
+            {
+                stateSearchParam = "";
+            }
+
+
             if (countrySearchParam == "C\u266F")
             {
                 countrySearchParam = "";
@@ -434,11 +457,12 @@ namespace Gordon360.ApiControllers
             IEnumerable<JObject> searchResults;
             if (viewerType != Position.STUDENT)
             {
-                searchResults = accounts.Where(a => (a["FirstName"].ToString().ToLower().StartsWith(firstNameSearchParam)) && (a["LastName"].ToString().ToLower().StartsWith(lastNameSearchParam)) && (a["HomeCity"].ToString().ToLower().StartsWith(hometownSearchParam)) && (a["Country"].ToString().StartsWith(countrySearchParam)) && (a["BuildingDescription"].ToString().StartsWith(buildingSearchParam)) && (a["OnCampusDepartment"].ToString().StartsWith(departmentSearchParam))).OrderBy(a => a["LastName"]).ThenBy(a => a["FirstName"]);
+                searchResults = accounts.Where(a => (a["FirstName"].ToString().ToLower().StartsWith(firstNameSearchParam)) && (a["LastName"].ToString().ToLower().StartsWith(lastNameSearchParam)) && ((a["Minor1Description"].ToString().StartsWith(minorSearchParam)) || (a["Minor2Description"].ToString().StartsWith(minorSearchParam)) || (a["Minor3Description"].ToString().StartsWith(minorSearchParam))) && (a["Class"].ToString().StartsWith(classTypeSearchParam)) && (a["HomeState"].ToString().StartsWith(stateSearchParam)) && (a["HomeCity"].ToString().ToLower().StartsWith(hometownSearchParam)) && (a["Country"].ToString().StartsWith(countrySearchParam)) && (a["BuildingDescription"].ToString().StartsWith(buildingSearchParam)) && (a["OnCampusDepartment"].ToString().StartsWith(departmentSearchParam))).OrderBy(a => a["LastName"]).ThenBy(a => a["FirstName"]);
             }
             else
             {
-                searchResults = accountsWithoutAlumni.Where(a => (a["FirstName"].ToString().ToLower().StartsWith(firstNameSearchParam)) && (a["LastName"].ToString().ToLower().StartsWith(lastNameSearchParam)) && (a["HomeCity"].ToString().ToLower().StartsWith(hometownSearchParam)) && (a["Country"].ToString().StartsWith(countrySearchParam)) && (a["BuildingDescription"].ToString().StartsWith(buildingSearchParam)) && (a["OnCampusDepartment"].ToString().StartsWith(departmentSearchParam))).OrderBy(a => a["LastName"]).ThenBy(a => a["FirstName"]);
+                searchResults = accountsWithoutAlumni.Where(a => (a["FirstName"].ToString().ToLower().StartsWith(firstNameSearchParam)) && (a["LastName"].ToString().ToLower().StartsWith(lastNameSearchParam)) && ((a["Minor1Description"].ToString().StartsWith(minorSearchParam)) || (a["Minor2Description"].ToString().StartsWith(minorSearchParam)) || (a["Minor3Description"].ToString().StartsWith(minorSearchParam))) && (a["Class"].ToString().StartsWith(classTypeSearchParam)) && (a["HomeState"].ToString().StartsWith(stateSearchParam)) && (a["HomeCity"].ToString().ToLower().StartsWith(hometownSearchParam)) && (a["Country"].ToString().StartsWith(countrySearchParam)) && (a["BuildingDescription"].ToString().StartsWith(buildingSearchParam)) && (a["OnCampusDepartment"].ToString().StartsWith(departmentSearchParam))).OrderBy(a => a["LastName"]).ThenBy(a => a["FirstName"]);
+
             }
 
             // Return all of the profile views

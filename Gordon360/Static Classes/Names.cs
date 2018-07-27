@@ -94,7 +94,7 @@ namespace Gordon360.Static.Names
 
     public static class SQLQuery
     {
-        public static string ALL_PUBLIC_STUDENT_REQUEST = "SELECT FirstName, LastName, NickName,  HomeCity, HomeState, Country, Class, KeepPrivate, Email, AD_Username FROM Student WHERE AD_Username is not null";
+        public static string ALL_PUBLIC_STUDENT_REQUEST = "SELECT FirstName, LastName, NickName, Class, Minor1Description, Minor2Description, Minor3Description, HomeCity, HomeState, Country, KeepPrivate, Email, AD_Username FROM Student WHERE AD_Username is not null";
         public static string ALL_PUBLIC_FACULTY_STAFF_REQUEST = "SELECT FirstName, LastName, NickName, OnCampusDepartment, BuildingDescription, HomeCity, HomeState, Country, KeepPrivate, JobTitle, Email, Type, AD_Username FROM FacStaff WHERE AD_Username is not null";
         public static string ALL_PUBLIC_ALUMNI_REQUEST = "SELECT FirstName, LastName, NickName,  HomeCity, HomeState, Country, Email, ShareName, PreferredClassYear, AD_Username FROM Alumni WHERE AD_Username is not null AND ShareName is null OR ShareName = 'Y';";
 
@@ -106,11 +106,11 @@ namespace Gordon360.Static.Names
         // GoStalk
         /*
         public static string ALL_MAJORS
-        public static string ALL_MINORS
-        public static string ALL_CLASSES */
+        */
+        public static string ALL_MINORS = "SELECT DISTINCT Minor1Description FROM Student WHERE Minor1Description is not null";
 
         public static string ALL_ACCOUNTS_COUNTRIES = "SELECT DISTINCT Country FROM Student WHERE COUNTRY is not null UNION SELECT Country FROM FacStaff WHERE COUNTRY is not null UNION SELECT Country FROM Alumni WHERE COUNTRY is not null ORDER BY Country ASC";
-        public static string ALL_ACCOUNTS_STATES = "SELECT HomeState FROM Student UNION SELECT HomeState FROM FacStaffUNION SELECT HomeState FROM Alumni WHERE HomeState is not null ORDER BY HomeState ASC";
+        public static string ALL_ACCOUNTS_STATES = "SELECT HomeState FROM Student WHERE HomeState is not null UNION SELECT HomeState FROM FacStaff WHERE HomeState is not null UNION SELECT HomeState FROM Alumni WHERE HomeState is not null ORDER BY HomeState ASC";
 
 
         public static string ALL_FACSTAFF_BUILDINGS = "SELECT DISTINCT BuildingDescription FROM FacStaff WHERE OnCampusBuilding is not null ORDER BY BuildingDescription ASC";
