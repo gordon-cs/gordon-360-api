@@ -38,7 +38,7 @@ namespace Gordon360.Services
 
     public interface IDiningService
     {
-        System.Threading.Tasks.Task<string> GetBalanceAsync();
+        DiningViewModel GetDiningPlanInfo(int id, string sessionCode);
     }
 
     public interface IAccountService

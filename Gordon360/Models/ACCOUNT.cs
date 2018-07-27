@@ -18,7 +18,7 @@ using System;
 public partial class ACCOUNT
 {
 
-    public Nullable<int> account_id { get; set; }
+    public int account_id { get; set; }
 
     public string gordon_id { get; set; }
 
@@ -45,6 +45,10 @@ public partial class ACCOUNT
     public int ReadOnly { get; set; }
 
     public int is_police { get; set; }
+
+    public int primary_photo { get; set; }
+
+    public Nullable<int> Chapel_Required { get; set; }
 
 }
 

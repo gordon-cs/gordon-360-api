@@ -133,14 +133,16 @@ warning 6002: The table/view 'CCT.dbo.360_SLIDER' does not have a primary key de
 warning 6002: The table/view 'CCT.dbo.ACCOUNT' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ACCOUNT">
           <Key>
+            
             <PropertyRef Name="gordon_id" />
+            <PropertyRef Name="primary_photo" />
             <PropertyRef Name="preferred_photo" />
             <PropertyRef Name="show_pic" />
             <PropertyRef Name="Private" />
             <PropertyRef Name="ReadOnly" />
             <PropertyRef Name="is_police" />
           </Key>
-          <Property Name="account_id" Type="int" />
+          <Property Name="account_id" Type="int" Nullable="false" />
           <Property Name="gordon_id" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="barcode" Type="varchar" MaxLength="14" />
           <Property Name="firstname" Type="varchar" MaxLength="50" />
@@ -149,11 +151,13 @@ warning 6002: The table/view 'CCT.dbo.ACCOUNT' does not have a primary key defin
           <Property Name="AD_Username" Type="varchar" MaxLength="50" />
           <Property Name="account_type" Type="varchar" MaxLength="20" />
           <Property Name="office_hours" Type="varchar" MaxLength="75" />
+          <Property Name="primary_photo" Type="int" Nullable="false" />
           <Property Name="preferred_photo" Type="int" Nullable="false" />
           <Property Name="show_pic" Type="int" Nullable="false" />
           <Property Name="Private" Type="int" Nullable="false" />
           <Property Name="ReadOnly" Type="int" Nullable="false" />
           <Property Name="is_police" Type="int" Nullable="false" />
+          <Property Name="Chapel_Required" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.Alumni' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -230,9 +234,27 @@ warning 6002: The table/view 'CCT.dbo.CM_SESSION_MSTR' does not have a primary k
             <PropertyRef Name="SESS_CDE" />
           </Key>
           <Property Name="SESS_CDE" Type="char" MaxLength="8" Nullable="false" />
-          <Property Name="SESS_DESC" Type="varchar" MaxLength="60" />
+          <Property Name="SESS_DESC" Type="varchar" MaxLength="1000" />
           <Property Name="SESS_BEGN_DTE" Type="datetime" />
           <Property Name="SESS_END_DTE" Type="datetime" />
+          <Property Name="YRTRM_CDE_2" Type="varchar" MaxLength="32" />
+          <Property Name="YRTRM_CDE_4" Type="varchar" MaxLength="32" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'CCT.dbo.DiningInfo' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="DiningInfo">
+          <Key>
+            <PropertyRef Name="Student_Id" />
+            <PropertyRef Name="SessionCode" />
+            <PropertyRef Name="PlanIDs" />
+          </Key>
+          <Property Name="Student_Id" Type="int" Nullable="false" />
+          <Property Name="SessionCode" Type="char" MaxLength="8" Nullable="false" />
+          <Property Name="MealChoiceID" Type="char" MaxLength="2" />
+          <Property Name="PlanIDs" Type="varchar" MaxLength="6" Nullable="false" />
+          <Property Name="ChoiceDescription" Type="char" MaxLength="60" />
+          <Property Name="PlanDescriptions" Type="varchar" MaxLength="150" />
+          <Property Name="InitialBalance" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.FacStaff' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -516,11 +538,13 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [ACCOUNT].[AD_Username] AS [AD_Username], 
     [ACCOUNT].[account_type] AS [account_type], 
     [ACCOUNT].[office_hours] AS [office_hours], 
+    [ACCOUNT].[primary_photo] AS [primary_photo], 
     [ACCOUNT].[preferred_photo] AS [preferred_photo], 
     [ACCOUNT].[show_pic] AS [show_pic], 
     [ACCOUNT].[Private] AS [Private], 
     [ACCOUNT].[ReadOnly] AS [ReadOnly], 
-    [ACCOUNT].[is_police] AS [is_police]
+    [ACCOUNT].[is_police] AS [is_police], 
+    [ACCOUNT].[Chapel_Required] AS [Chapel_Required]
     FROM [dbo].[ACCOUNT] AS [ACCOUNT]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="Alumni" EntityType="Self.Alumni" store:Type="Views" store:Schema="dbo">
@@ -588,8 +612,21 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [CM_SESSION_MSTR].[SESS_CDE] AS [SESS_CDE], 
     [CM_SESSION_MSTR].[SESS_DESC] AS [SESS_DESC], 
     [CM_SESSION_MSTR].[SESS_BEGN_DTE] AS [SESS_BEGN_DTE], 
-    [CM_SESSION_MSTR].[SESS_END_DTE] AS [SESS_END_DTE]
+    [CM_SESSION_MSTR].[SESS_END_DTE] AS [SESS_END_DTE], 
+    [CM_SESSION_MSTR].[YRTRM_CDE_2] AS [YRTRM_CDE_2], 
+    [CM_SESSION_MSTR].[YRTRM_CDE_4] AS [YRTRM_CDE_4]
     FROM [dbo].[CM_SESSION_MSTR] AS [CM_SESSION_MSTR]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="DiningInfo" EntityType="Self.DiningInfo" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [DiningInfo].[Student_Id] AS [Student_Id], 
+    [DiningInfo].[SessionCode] AS [SessionCode], 
+    [DiningInfo].[MealChoiceID] AS [MealChoiceID], 
+    [DiningInfo].[PlanIDs] AS [PlanIDs], 
+    [DiningInfo].[ChoiceDescription] AS [ChoiceDescription], 
+    [DiningInfo].[PlanDescriptions] AS [PlanDescriptions], 
+    [DiningInfo].[InitialBalance] AS [InitialBalance]
+    FROM [dbo].[DiningInfo] AS [DiningInfo]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="FacStaff" EntityType="Self.FacStaff" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -864,6 +901,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="Student" EntityType="Gordon360.Student" />
           <FunctionImport Name="ALL_BASIC_INFO" ReturnType="Collection(Gordon360.ALL_BASIC_INFO_Result)" />
           <EntitySet Name="sysdiagrams" EntityType="Gordon360.sysdiagrams" />
+          <EntitySet Name="DiningInfo" EntityType="Gordon360.DiningInfo" />
 
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
@@ -1258,8 +1296,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <PropertyRef Name="Private" />
             <PropertyRef Name="ReadOnly" />
             <PropertyRef Name="is_police" />
+            <PropertyRef Name="primary_photo" />
           </Key>
-          <Property Name="account_id" Type="Int32" />
+          <Property Name="account_id" Type="Int32" Nullable="false" />
           <Property Name="gordon_id" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="barcode" Type="String" MaxLength="14" FixedLength="false" Unicode="false" />
           <Property Name="firstname" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -1273,6 +1312,8 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="Private" Type="Int32" Nullable="false" />
           <Property Name="ReadOnly" Type="Int32" Nullable="false" />
           <Property Name="is_police" Type="Int32" Nullable="false" />
+          <Property Name="primary_photo" Type="Int32" Nullable="false" />
+          <Property Name="Chapel_Required" Type="Int32" />
         </EntityType>
         <EntityType Name="Alumni">
           <Key>
@@ -1343,9 +1384,11 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <PropertyRef Name="SESS_CDE" />
           </Key>
           <Property Name="SESS_CDE" Type="String" Nullable="false" MaxLength="8" FixedLength="true" Unicode="false" />
-          <Property Name="SESS_DESC" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="SESS_DESC" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
           <Property Name="SESS_BEGN_DTE" Type="DateTime" Precision="3" />
           <Property Name="SESS_END_DTE" Type="DateTime" Precision="3" />
+          <Property Name="YRTRM_CDE_2" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="YRTRM_CDE_4" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="FacStaff">
           <Key>
@@ -1487,6 +1530,20 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="version" Type="Int32" />
           <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="DiningInfo">
+          <Key>
+            <PropertyRef Name="Student_Id" />
+            <PropertyRef Name="SessionCode" />
+            <PropertyRef Name="PlanIDs" />
+          </Key>
+          <Property Name="Student_Id" Type="Int32" Nullable="false" />
+          <Property Name="SessionCode" Type="String" Nullable="false" MaxLength="8" FixedLength="true" Unicode="false" />
+          <Property Name="MealChoiceID" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="PlanIDs" Type="String" Nullable="false" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="ChoiceDescription" Type="String" MaxLength="60" FixedLength="true" Unicode="false" />
+          <Property Name="PlanDescriptions" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="InitialBalance" Type="Int32" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -1944,6 +2001,8 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="ACCOUNT">
             <EntityTypeMapping TypeName="Gordon360.ACCOUNT">
               <MappingFragment StoreEntitySet="ACCOUNT">
+                <ScalarProperty Name="Chapel_Required" ColumnName="Chapel_Required" />
+                <ScalarProperty Name="primary_photo" ColumnName="primary_photo" />
                 <ScalarProperty Name="is_police" ColumnName="is_police" />
                 <ScalarProperty Name="ReadOnly" ColumnName="ReadOnly" />
                 <ScalarProperty Name="Private" ColumnName="Private" />
@@ -2028,6 +2087,8 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="CM_SESSION_MSTR">
             <EntityTypeMapping TypeName="Gordon360.CM_SESSION_MSTR">
               <MappingFragment StoreEntitySet="CM_SESSION_MSTR">
+                <ScalarProperty Name="YRTRM_CDE_4" ColumnName="YRTRM_CDE_4" />
+                <ScalarProperty Name="YRTRM_CDE_2" ColumnName="YRTRM_CDE_2" />
                 <ScalarProperty Name="SESS_END_DTE" ColumnName="SESS_END_DTE" />
                 <ScalarProperty Name="SESS_BEGN_DTE" ColumnName="SESS_BEGN_DTE" />
                 <ScalarProperty Name="SESS_DESC" ColumnName="SESS_DESC" />
@@ -2180,6 +2241,19 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
                 <ScalarProperty Name="principal_id" ColumnName="principal_id" />
                 <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DiningInfo">
+            <EntityTypeMapping TypeName="Gordon360.DiningInfo">
+              <MappingFragment StoreEntitySet="DiningInfo">
+                <ScalarProperty Name="InitialBalance" ColumnName="InitialBalance" />
+                <ScalarProperty Name="PlanDescriptions" ColumnName="PlanDescriptions" />
+                <ScalarProperty Name="ChoiceDescription" ColumnName="ChoiceDescription" />
+                <ScalarProperty Name="PlanIDs" ColumnName="PlanIDs" />
+                <ScalarProperty Name="MealChoiceID" ColumnName="MealChoiceID" />
+                <ScalarProperty Name="SessionCode" ColumnName="SessionCode" />
+                <ScalarProperty Name="Student_Id" ColumnName="Student_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
