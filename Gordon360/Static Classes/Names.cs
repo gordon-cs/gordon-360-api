@@ -94,9 +94,9 @@ namespace Gordon360.Static.Names
 
     public static class SQLQuery
     {
-        public static string ALL_PUBLIC_STUDENT_REQUEST = "SELECT FirstName, LastName, NickName, Class, Minor1Description, Minor2Description, Minor3Description, HomeCity, HomeState, Country, KeepPrivate, Email, AD_Username FROM Student WHERE AD_Username is not null";
+        public static string ALL_PUBLIC_STUDENT_REQUEST = "SELECT FirstName, LastName, NickName, Class, Major1Description, Major2Description, Major3Description, Minor1Description, Minor2Description, Minor3Description, HomeCity, HomeState, Country, KeepPrivate, Email, AD_Username FROM Student WHERE AD_Username is not null";
         public static string ALL_PUBLIC_FACULTY_STAFF_REQUEST = "SELECT FirstName, LastName, NickName, OnCampusDepartment, BuildingDescription, HomeCity, HomeState, Country, KeepPrivate, JobTitle, Email, Type, AD_Username FROM FacStaff WHERE AD_Username is not null";
-        public static string ALL_PUBLIC_ALUMNI_REQUEST = "SELECT FirstName, LastName, NickName,  HomeCity, HomeState, Country, Email, ShareName, PreferredClassYear, AD_Username FROM Alumni WHERE AD_Username is not null AND ShareName is null OR ShareName = 'Y';";
+        public static string ALL_PUBLIC_ALUMNI_REQUEST = "SELECT FirstName, LastName, NickName, Major1Description, Major2Description, HomeCity, HomeState, Country, Email, ShareName, PreferredClassYear, AD_Username FROM Alumni WHERE AD_Username is not null AND ShareName is null OR ShareName = 'Y';";
 
         public static string ALL_STUDENT_REQUEST = "SELECT * from Student WHERE AD_Username is not null";
         public static string ALL_FACULTY_STAFF_REQUEST = "SELECT * from FacStaff WHERE AD_Username is not null";
@@ -104,9 +104,7 @@ namespace Gordon360.Static.Names
         public static string ALL_BASIC_INFO_NOT_ALUM = "ALL_BASIC_INFO_NOT_ALUMNI";
 
         // GoStalk
-        /*
-        public static string ALL_MAJORS
-        */
+        public static string ALL_MAJORS = "SELECT DISTINCT MajorDescription FROM Majors ORDER BY MajorDescription ASC";
         public static string ALL_MINORS = "SELECT DISTINCT Minor1Description FROM Student WHERE Minor1Description is not null";
 
         public static string ALL_ACCOUNTS_COUNTRIES = "SELECT DISTINCT Country FROM Student WHERE COUNTRY is not null UNION SELECT Country FROM FacStaff WHERE COUNTRY is not null UNION SELECT Country FROM Alumni WHERE COUNTRY is not null ORDER BY Country ASC";

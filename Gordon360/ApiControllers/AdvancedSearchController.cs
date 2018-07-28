@@ -16,6 +16,20 @@ namespace Gordon360.ApiControllers
         {
             IUnitOfWork _unitOfWork = new UnitOfWork();
         }
+
+        /// <summary>
+        /// Return a list majors.
+        /// </summary>
+        /// <returns> All majors</returns>
+        [HttpGet]
+        [Route("majors")]
+        public IHttpActionResult GetMajors()
+        {
+            IEnumerable<String> majors = Helpers.GetMajors();
+            // Return all of the majors
+            return Ok(majors);
+        }
+
         /// <summary>
         /// Return a list minors.
         /// </summary>
@@ -24,9 +38,8 @@ namespace Gordon360.ApiControllers
         [Route("minors")]
         public IHttpActionResult GetMinors()
         {
-            System.Diagnostics.Debug.WriteLine("GetMinors has been called");
             IEnumerable<String> minors = Helpers.GetMinors();
-            // Return all of the minors
+            // Return all of the majors
             return Ok(minors);
         }
 
@@ -38,7 +51,6 @@ namespace Gordon360.ApiControllers
         [Route("states")]
         public IHttpActionResult GetStates()
         {
-            System.Diagnostics.Debug.WriteLine("GetStates has been called");
             IEnumerable<String> states = Helpers.GetStates();
             // Return all of the states
             return Ok(states);
@@ -58,6 +70,19 @@ namespace Gordon360.ApiControllers
             return Ok(countries);
         }
 
+        /// <summary>
+        /// Return a list departments.
+        /// </summary>
+        /// <returns> All departments</returns>
+        [HttpGet]
+        [Route("departments")]
+        public IHttpActionResult GetDepartments()
+        {
+            IEnumerable<String> departments = Helpers.GetDepartments();
+            // Return all of the departments
+            return Ok(departments);
+        }
+
 
         /// <summary>
         /// Return a list buildings.
@@ -72,19 +97,7 @@ namespace Gordon360.ApiControllers
             return Ok(buildings);
         }
 
-        /// <summary>
-        /// Return a list departments.
-        /// </summary>
-        /// <returns> All departments</returns>
-        [HttpGet]
-        [Route("departments")]
-        public IHttpActionResult GetDepartments()
-        {
-            IEnumerable<String> departments = Helpers.GetDepartments();
-            // Return all of the departments
-            return Ok(departments);
-        }
-
+        
 
 
     }

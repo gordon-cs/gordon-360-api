@@ -158,8 +158,16 @@ namespace Gordon360
             }
             foreach (PublicFacultyStaffProfileViewModel aFacStaff in Data.PublicFacultyStaffData)
             {
-                allPublicAccounts.Add(JObject.FromObject(aFacStaff));
-                allPublicAccountsWithoutAlumni.Add(JObject.FromObject(aFacStaff));
+                JObject theFacStaff = JObject.FromObject(aFacStaff);
+                theFacStaff.Add("Class", null);
+                theFacStaff.Add("Major1Description", null);
+                theFacStaff.Add("Major2Description", null);
+                theFacStaff.Add("Major3Description", null);
+                theFacStaff.Add("Minor1Description", null);
+                theFacStaff.Add("Minor2Description", null);
+                theFacStaff.Add("Minor3Description", null);
+                allPublicAccounts.Add(JObject.FromObject(theFacStaff));
+                allPublicAccountsWithoutAlumni.Add(JObject.FromObject(theFacStaff));
             }
             foreach (PublicAlumniProfileViewModel anAlum in Data.PublicAlumniData)
             {
@@ -167,6 +175,11 @@ namespace Gordon360
                 theAlum.Add("Type", "Alum");
                 theAlum.Add("BuildingDescription", null);
                 theAlum.Add("OnCampusDepartment", null);
+                theAlum.Add("Class", null);
+                theAlum.Add("Major3Description", null);
+                theAlum.Add("Minor1Description", null);
+                theAlum.Add("Minor2Description", null);
+                theAlum.Add("Minor3Description", null);
                 allPublicAccounts.Add(theAlum);
             }
             
