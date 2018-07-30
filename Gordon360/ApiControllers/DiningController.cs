@@ -44,8 +44,8 @@ namespace Gordon360.ApiControllers
         /// <param name="sessionCode">Current session code</param>
         /// <returns>A DiningInfo object</returns>
         [HttpGet]
-        [Route("{id}/{sessionCode}")]
-        public IHttpActionResult Get(int id, string sessionCode)
+        [Route("{role}/{id}/{sessionCode}")]
+        public IHttpActionResult Get(string role, int id, string sessionCode)
         {
             if (!ModelState.IsValid)
             {
@@ -60,15 +60,24 @@ namespace Gordon360.ApiControllers
                 }
                 throw new BadInputException() { ExceptionMessage = errors };
             }
-
-            var result = _diningService.GetDiningPlanInfo(id, sessionCode);
-
-            if (result == null)
+            if (role.Equals("student"))
             {
-                return NotFound();
-            }
-
-            return Ok(result);
+                var result = _diningService.GetDiningPlanInfo(id, sessionCode);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result);
+        }
+            else
+            {
+                var result = _diningService.GetBalance(id, "7295");
+                if (result == null)
+                {
+                    return NotFound();
+    }
+                return Ok(result);
+}
         }
     }
 }

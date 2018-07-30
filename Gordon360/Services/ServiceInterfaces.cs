@@ -39,6 +39,7 @@ namespace Gordon360.Services
     public interface IDiningService
     {
         IEnumerable<DiningViewModel> GetDiningPlanInfo(int id, string sessionCode);
+        string GetBalance(int cardHolderID, string planID);
     }
 
     public interface IAccountService
