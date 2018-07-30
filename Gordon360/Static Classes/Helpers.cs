@@ -290,6 +290,117 @@ namespace Gordon360.Static.Methods
         {
             //string[] transcriptWorthyRoles = { "CAPT", "CODIR", "CORD", "DIREC", "PRES", "VICEC", "VICEP", "AC", "RA1", "RA2","RA3", "SEC" };
             return "LEAD";
-        }       
+        }
+
+
+        // For goStalk/Advanced People Search:
+
+        // Fill an iterable list of majors from a query to the database
+        public static IEnumerable<String> GetMajors()
+        {
+            // Create a list to be filled
+            IEnumerable<String> result = null;
+            try
+            {
+                // Attempt to query the DB
+                result = RawSqlQuery<String>.query(SQLQuery.ALL_MAJORS);
+            }
+            catch
+            {
+                //
+            }
+            // Filter out results with null or empty active directory names
+            return result;
+        }
+
+        // Fill an iterable list of minors from a query to the database
+        public static IEnumerable<String> GetMinors()
+        {
+            // Create a list to be filled
+            IEnumerable<String> result = null;
+            try
+            {
+                // Attempt to query the DB
+                result = RawSqlQuery<String>.query(SQLQuery.ALL_MINORS);
+            }
+            catch
+            {
+                //
+            }
+            // Filter out results with null or empty active directory names
+            return result;
+        }
+
+        // Fill an iterable list of states from a query to the database
+        public static IEnumerable<String> GetStates()
+        {
+            // Create a list to be filled
+            IEnumerable<String> result = null;
+            try
+            {
+                // Attempt to query the DB
+                result = RawSqlQuery<String>.query(SQLQuery.ALL_ACCOUNTS_STATES);
+            }
+            catch
+            {
+                //
+            }
+            // Filter out results with null or empty active directory names
+            return result;
+        }
+
+        // Fill an iterable list of countries from a query to the database
+        public static IEnumerable<String> GetCountries()
+        {
+            // Create a list to be filled
+            IEnumerable<String> result = null;
+            try
+            {
+                // Attempt to query the DB
+                result = RawSqlQuery<String>.query(SQLQuery.ALL_ACCOUNTS_COUNTRIES);
+            }
+            catch
+            {
+                //
+            }
+            // Filter out results with null or empty active directory names
+            return result;
+        }
+
+        // Fill an iterable list of departments from a query to the database
+        public static IEnumerable<String> GetDepartments()
+        {
+            // Create a list to be filled
+            IEnumerable<String> result = null;
+            try
+            {
+                // Attempt to query the DB
+                result = RawSqlQuery<String>.query(SQLQuery.ALL_FACSTAFF_DEPARTMENTS);
+            }
+            catch
+            {
+                //
+            }
+            // Filter out results with null or empty active directory names
+            return result;
+        }
+
+        // Fill an iterable list of buildings from a query to the database
+        public static IEnumerable<String> GetBuildings()
+        {
+            // Create a list to be filled
+            IEnumerable<String> result = null;
+            try
+            {
+                // Attempt to query the DB
+                result = RawSqlQuery<String>.query(SQLQuery.ALL_FACSTAFF_BUILDINGS);
+            }
+            catch
+            {
+                //
+            }
+            // Filter out results with null or empty active directory names
+            return result;
+        }
     }
 }
