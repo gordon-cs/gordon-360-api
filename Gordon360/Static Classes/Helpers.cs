@@ -298,7 +298,6 @@ namespace Gordon360.Static.Methods
         // Fill an iterable list of majors from a query to the database
         public static IEnumerable<String> GetMajors()
         {
-            System.Diagnostics.Debug.WriteLine("GetMajors called");
             // Create a list to be filled
             IEnumerable<String> result = null;
             try

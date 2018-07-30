@@ -135,6 +135,7 @@ namespace Gordon360
             IEnumerable<PublicAlumniProfileViewModel> publicAlumni = Helpers.GetAllPublicAlumni();
             IList<JObject> allPublicAccounts = new List<JObject>();
             IList<JObject> allPublicAccountsWithoutAlumni = new List<JObject>();
+            IList<JObject> allPublicAccountsWithoutCurrentStudents = new List<JObject>();
 
             // storing in global variab
             Data.StudentData = student;
@@ -168,6 +169,7 @@ namespace Gordon360
                 theFacStaff.Add("Minor3Description", null);
                 allPublicAccounts.Add(JObject.FromObject(theFacStaff));
                 allPublicAccountsWithoutAlumni.Add(JObject.FromObject(theFacStaff));
+                allPublicAccountsWithoutCurrentStudents.Add(JObject.FromObject(theFacStaff));
             }
             foreach (PublicAlumniProfileViewModel anAlum in Data.PublicAlumniData)
             {
@@ -181,8 +183,9 @@ namespace Gordon360
                 theAlum.Add("Minor2Description", null);
                 theAlum.Add("Minor3Description", null);
                 allPublicAccounts.Add(theAlum);
+                allPublicAccountsWithoutCurrentStudents.Add(theAlum);
             }
-            
+            Data.AllPublicAccountsWithoutCurrentStudents = allPublicAccountsWithoutCurrentStudents;
             Data.AllPublicAccounts = allPublicAccounts;
             Data.AllPublicAccountsWithoutAlumni = allPublicAccountsWithoutAlumni;
         }
