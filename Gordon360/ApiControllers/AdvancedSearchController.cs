@@ -56,7 +56,7 @@ namespace Gordon360.ApiControllers
             return Ok(states);
         }
 
-    
+
         /// <summary>
         /// Return a list countries.
         /// </summary>
@@ -97,7 +97,7 @@ namespace Gordon360.ApiControllers
             return Ok(buildings);
         }
 
-        
+
 
 
     }
