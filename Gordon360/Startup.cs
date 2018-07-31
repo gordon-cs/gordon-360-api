@@ -135,6 +135,7 @@ namespace Gordon360
             IEnumerable<PublicAlumniProfileViewModel> publicAlumni = Helpers.GetAllPublicAlumni();
             IList<JObject> allPublicAccounts = new List<JObject>();
             IList<JObject> allPublicAccountsWithoutAlumni = new List<JObject>();
+            IList<JObject> allPublicAccountsWithoutCurrentStudents = new List<JObject>();
 
             // storing in global variab
             Data.StudentData = student;
@@ -151,21 +152,40 @@ namespace Gordon360
             {
                 JObject theStu = JObject.FromObject(aStudent);
                 theStu.Add("Type", "Student");
+                theStu.Add("BuildingDescription", null);
+                theStu.Add("OnCampusDepartment", null);
                 allPublicAccounts.Add(theStu);
                 allPublicAccountsWithoutAlumni.Add(theStu);
             }
             foreach (PublicFacultyStaffProfileViewModel aFacStaff in Data.PublicFacultyStaffData)
             {
-                allPublicAccounts.Add(JObject.FromObject(aFacStaff));
-                allPublicAccountsWithoutAlumni.Add(JObject.FromObject(aFacStaff));
+                JObject theFacStaff = JObject.FromObject(aFacStaff);
+                theFacStaff.Add("Class", null);
+                theFacStaff.Add("Major1Description", null);
+                theFacStaff.Add("Major2Description", null);
+                theFacStaff.Add("Major3Description", null);
+                theFacStaff.Add("Minor1Description", null);
+                theFacStaff.Add("Minor2Description", null);
+                theFacStaff.Add("Minor3Description", null);
+                allPublicAccounts.Add(JObject.FromObject(theFacStaff));
+                allPublicAccountsWithoutAlumni.Add(JObject.FromObject(theFacStaff));
+                allPublicAccountsWithoutCurrentStudents.Add(JObject.FromObject(theFacStaff));
             }
             foreach (PublicAlumniProfileViewModel anAlum in Data.PublicAlumniData)
             {
                 JObject theAlum = JObject.FromObject(anAlum);
                 theAlum.Add("Type", "Alum");
+                theAlum.Add("BuildingDescription", null);
+                theAlum.Add("OnCampusDepartment", null);
+                theAlum.Add("Class", null);
+                theAlum.Add("Major3Description", null);
+                theAlum.Add("Minor1Description", null);
+                theAlum.Add("Minor2Description", null);
+                theAlum.Add("Minor3Description", null);
                 allPublicAccounts.Add(theAlum);
+                allPublicAccountsWithoutCurrentStudents.Add(theAlum);
             }
-            
+            Data.AllPublicAccountsWithoutCurrentStudents = allPublicAccountsWithoutCurrentStudents;
             Data.AllPublicAccounts = allPublicAccounts;
             Data.AllPublicAccountsWithoutAlumni = allPublicAccountsWithoutAlumni;
         }
