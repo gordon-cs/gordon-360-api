@@ -261,26 +261,6 @@ namespace Gordon360.ApiControllers
                 }
                 precedence++;
 
-                // Exact match in first name
-                foreach (var match in accounts.Where(s => !allMatches.ContainsValue(s)).Where(s => s.FirstName.ToLower() == searchString))
-                {
-                    key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
-
-                    while (allMatches.ContainsKey(key)) key = key + "1";
-                    allMatches.Add(key, match);
-                }
-                precedence++;
-
-                // Exact match in last name
-                foreach (var match in accounts.Where(s => !allMatches.ContainsValue(s)).Where(s => s.LastName.ToLower() == secondaryString))
-                {
-                    key = GenerateKey(match.LastName, match.FirstName, match.UserName, precedence);
-
-                    while (allMatches.ContainsKey(key)) key = key + "1";
-                    allMatches.Add(key, match);
-                }
-                precedence++;
-
                 // First name and last name start with
                 foreach (var match in accounts.Where(s => !allMatches.ContainsValue(s)).Where(s => s.FirstName.ToLower().StartsWith(searchString) && s.LastName.ToLower().StartsWith(secondaryString)))
                 {
