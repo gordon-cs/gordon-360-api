@@ -290,7 +290,7 @@ namespace Gordon360.Static.Methods
         {
             //string[] transcriptWorthyRoles = { "CAPT", "CODIR", "CORD", "DIREC", "PRES", "VICEC", "VICEP", "AC", "RA1", "RA2","RA3", "SEC" };
             return "LEAD";
-        }
+        } 
 
         // For goStalk/Advanced People Search:
 
