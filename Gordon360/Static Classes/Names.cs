@@ -1,4 +1,4 @@
-using Gordon360.Static.Methods;
+﻿using Gordon360.Static.Methods;
 
 namespace Gordon360.Static.Names
 {
