@@ -369,6 +369,7 @@
     <Compile Include="Models\ViewModels\ActivityViewModel.cs" />
     <Compile Include="Models\ViewModels\AlumniProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\AttendedEventViewModel.cs" />
+    <Compile Include="Models\ViewModels\DiningTableViewModel.cs" />
     <Compile Include="Models\ViewModels\DiningViewModel.cs" />
     <Compile Include="Models\ViewModels\EmailContentViewModel.cs" />
     <Compile Include="Models\ViewModels\EventViewModel.cs" />

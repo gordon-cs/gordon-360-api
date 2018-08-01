@@ -253,6 +253,7 @@ warning 6002: The table/view 'CCT.dbo.DiningInfo' does not have a primary key de
           <Property Name="ChoiceDescription" Type="char" MaxLength="60" />
           <Property Name="PlanDescriptions" Type="varchar" MaxLength="150" />
           <Property Name="PlanId" Type="varchar" MaxLength="6" Nullable="false" />
+          <Property Name="PlanType" Type="varchar" MaxLength="10" />
           <Property Name="InitialBalance" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -623,6 +624,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [DiningInfo].[ChoiceDescription] AS [ChoiceDescription], 
     [DiningInfo].[PlanDescriptions] AS [PlanDescriptions], 
     [DiningInfo].[PlanId] AS [PlanId], 
+    [DiningInfo].[PlanType] AS [PlanType], 
     [DiningInfo].[InitialBalance] AS [InitialBalance]
     FROM [dbo].[DiningInfo] AS [DiningInfo]</DefiningQuery>
           </EntitySet>
@@ -1541,6 +1543,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="PlanDescriptions" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
           <Property Name="PlanId" Type="String" Nullable="false" MaxLength="6" FixedLength="false" Unicode="false" />
           <Property Name="InitialBalance" Type="Int32" />
+          <Property Name="PlanType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -2244,6 +2247,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="DiningInfo">
             <EntityTypeMapping TypeName="Gordon360.DiningInfo">
               <MappingFragment StoreEntitySet="DiningInfo">
+                <ScalarProperty Name="PlanType" ColumnName="PlanType" />
                 <ScalarProperty Name="InitialBalance" ColumnName="InitialBalance" />
                 <ScalarProperty Name="PlanId" ColumnName="PlanId" />
                 <ScalarProperty Name="PlanDescriptions" ColumnName="PlanDescriptions" />

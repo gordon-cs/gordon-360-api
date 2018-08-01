@@ -75,52 +75,59 @@ namespace Gordon360.Services
         /// <returns></returns>
         public string GetBalance(int cardHolderID, string planID)
         {
-            ServicePointManager.Expect100Continue = false;
+            string balance = "";
+            try {
+                ServicePointManager.Expect100Continue = false;
 
-            WebRequest request = WebRequest.Create("https://bbapi.campuscardcenter.com/cs/api/mealplanDrCr");
+                WebRequest request = WebRequest.Create("https://bbapi.campuscardcenter.com/cs/api/mealplanDrCr");
 
-            request.Method = "POST";
+                request.Method = "POST";
 
-            string timestamp = getTimestamp();
+                string timestamp = getTimestamp();
 
-            // Create POST data and convert it to a byte array.  
-            string postData = "issuerId=" + issuerID + "&"
-               + "cardholderId=" + cardHolderID + "&"
-               + "planId=" + planID + "&"
-               + "applicationId=" + applicationId + "&"
-               + "valueCmd=bal" + "&" + "value=0" + "&"
-               + "timestamp=" + timestamp + "&"
-               + "hash=" + getHash(cardHolderID, planID, timestamp);
-            byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+                // Create POST data and convert it to a byte array.  
+                string postData = "issuerId=" + issuerID + "&"
+                   + "cardholderId=" + cardHolderID + "&"
+                   + "planId=" + planID + "&"
+                   + "applicationId=" + applicationId + "&"
+                   + "valueCmd=bal" + "&" + "value=0" + "&"
+                   + "timestamp=" + timestamp + "&"
+                   + "hash=" + getHash(cardHolderID, planID, timestamp);
+                byte[] byteArray = Encoding.UTF8.GetBytes(postData);
 
-            request.ContentType = "application/x-www-form-urlencoded";
-            request.ContentLength = byteArray.Length;
+                request.ContentType = "application/x-www-form-urlencoded";
+                request.ContentLength = byteArray.Length;
 
-            Stream dataStream = request.GetRequestStream();
-            dataStream.Write(byteArray, 0, byteArray.Length);
-            dataStream.Close();
+                Stream dataStream = request.GetRequestStream();
+                dataStream.Write(byteArray, 0, byteArray.Length);
+                dataStream.Close();
 
-            // Get the response.  
-            WebResponse response = request.GetResponse();
-            Console.WriteLine(((HttpWebResponse)response).StatusDescription);
+                // Get the response.  
+                WebResponse response = request.GetResponse();
+                Console.WriteLine(((HttpWebResponse)response).StatusDescription);
 
-            // Get the stream containing content returned by the server.  
-            dataStream = response.GetResponseStream();
+                // Get the stream containing content returned by the server.  
+                dataStream = response.GetResponseStream();
 
-            // Read the content. 
-            StreamReader reader = new StreamReader(dataStream);
-            string responseFromServer = reader.ReadToEnd();
-            JObject json = JObject.Parse(responseFromServer);
-            string balance = json["balance"].ToString();
+                // Read the content. 
+                StreamReader reader = new StreamReader(dataStream);
+                string responseFromServer = reader.ReadToEnd();
+                JObject json = JObject.Parse(responseFromServer);
+                balance = json["balance"].ToString();
 
-            // Display the content.  
-            Console.WriteLine(responseFromServer);
-            Console.WriteLine("Balance: " + balance);
+                // Display the content.  
+                Console.WriteLine(responseFromServer);
+                Console.WriteLine("Balance: " + balance);
 
-            // Clean up the streams.  
-            reader.Close();
-            dataStream.Close();
-            response.Close();
+                // Clean up the streams.  
+                reader.Close();
+                dataStream.Close();
+                response.Close();
+            }
+            catch
+            {
+                balance = "0";
+            }
 
             return balance;
         }
@@ -131,12 +138,12 @@ namespace Gordon360.Services
         /// <param name="cardHolderID">Student's Gordon ID</param>
         /// <param name="sessionCode">Current Session Code</param>
         /// <returns></returns>
-        public IEnumerable<DiningViewModel> GetDiningPlanInfo(int cardHolderID, string sessionCode)
+        public DiningViewModel GetDiningPlanInfo(int cardHolderID, string sessionCode)
         {
             var idParam = new SqlParameter("@STUDENT_ID", cardHolderID);
             var sessionParam = new SqlParameter("@SESS_CDE", sessionCode);
-            String query = "SELECT ChoiceDescription, PlanDescriptions, PlanID, InitialBalance FROM DiningInfo WHERE StudentId = @STUDENT_ID AND SessionCode = @SESS_CDE";
-            var result = RawSqlQuery<DiningViewModel>.query(query, idParam, sessionParam);
+            String query = "SELECT ChoiceDescription, PlanDescriptions, PlanID, PlanType, InitialBalance FROM DiningInfo WHERE StudentId = @STUDENT_ID AND SessionCode = @SESS_CDE";
+            var result = RawSqlQuery<DiningTableViewModel>.query(query, idParam, sessionParam);
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The plan was not found." };
@@ -147,7 +154,9 @@ namespace Gordon360.Services
                 row.CurrentBalance = GetBalance(cardHolderID, row.PlanId);
             }
 
-            return result;
+            var return_value = new DiningViewModel(result);
+
+            return return_value;
         }
     }
 }
