@@ -1,3 +1,4 @@
+
 # Gordon 360
 
 #### The API consumed by [gordon-360-ui](https://github.com/gordon-cs/gordon-360-ui)
@@ -14,19 +15,18 @@ Dive in.
 - [Introduction](#introduction)
 - [Caching](#caching)
 - [API Endpoints](#api-endpoints)
-    - [Authentication](#authentication)
-    - [Memberships](#memberships)
-    - [Events](#events)
-    - [Activities](#activities)
-    - [Membership Requests](#membership-requests)
-    - [Students](#students)
     - [Accounts](#accounts)
-    - [Sessions](#sessions)
-    - [Participation Definitions](#participation-definitions)
-    - [Emails](#emails)
+    - [Activities](#activities)
     - [Admins](#admins)
+    - [Authentication](#authentication)
     - [Content Management](#content-management)
+    - [Emails](#emails)
+    - [Events](#events)
+    - [Memberships](#memberships)
+    - [Membership Requests](#membership-requests)
+    - [Participation Definitions](#participation-definitions)
     - [Profiles](#profiles)
+    - [Sessions](#sessions)
 - [API Testing](#api-testing)
     - [Introduction](#introduction)
     - [Running the Tests](#running-the-tests)
@@ -287,6 +287,71 @@ Here is a breakdown of the project folder:
 
 ## API Endpoints
 
+### Accounts
+What is it? Resource that represents a gordon account.
+
+##### GET
+
+`api/accounts/:email` Get the account with email `email`.
+
+`api/accounts/:username` Get the account with `username`.
+
+`api/accounts/search/:searchString` Returns the basicinfoviewmodel with a Concatenated attribute matching some or all of the searchstring
+
+### Activities
+What is it? Resource that represents some activity - such as a club, ministry, leadership program, etc.
+
+##### GET
+
+`api/activities` Get all the activities.
+
+`api/activities/:id` Get the activity with activity code `id`.
+
+`api/activities/session/:id` Get the activity offered during the session with session code `id`.
+
+`api/activities/session/:id/types` Get the different activity types among the activities offered during the session with session code `id`.
+
+`api/activities/{sessionCode}/{id}/status` Get the status of an activity (either open or closed), which indicates whether or not new members can be added to the activity for this session.
+
+`api/activities/open` Get all the open activities for the current session.
+
+`api/activities/:id/open` Get only the open activities for which a given user (identified by their user `id`) is the group admin.
+
+`api/activities/closed` Get all the closed activities for the current session.
+
+`api/activities/:id/closed` Get only the closed activities for which a given user (identified by their user `id`) is the group admin.
+
+##### PUT
+
+`api/activities/:id/session/{sess_cde}/close` Close out an activity for a given session (this is like confirming the final roster of an activity for a given session.
+
+`api/activities/:id/session/{sess_cde}/open` Reopen an activity for a given session.
+
+`api/activities/:id` Edit activity information for the club with activity code `id`.
+
+`api/activities/:id/private/:p` Update a given activity to private or not private with boolean value `p`. The `id` parameter is the activity id.
+
+
+### Admins
+What is it? Resource that represents admins.
+
+Who has access? Only super admins, except to get a specific admin where all admins have access.
+
+##### GET
+
+`api/admins` Get all the admins.
+
+`api/admins/:id` Get a specific admin with the Gordon ID specified.
+
+##### POST
+
+`api/admins` Create a new admin.
+
+##### DELETE
+
+`api/admins/:id` Delete the admin with the admin id `id`.
+
+
 ### Authentication
 
 ##### POST
@@ -307,6 +372,89 @@ Accepts a form encoded object in the body of the request:
 ```
 Response will include an access token which should be included in subsequent request headers.
 Specifically, include it in the `Authorization` header like so `Bearer YOUR-ACCESS-TOKEN`
+
+### Content Management
+What is it? Resource for fetching content that has been stored in the database by Gordon's website [content manager](http://wwwtrain.gordon.edu/).
+
+##### GET
+
+`api/cms/slider` Get the content for the dashboard slide.
+
+### Profiles
+What is it? Resource that represents users' profiles.
+
+Differences from GoSite:
+- Only displaying city and country as home address. (When the viewer is a student. Police, super admin, faculty and staff should still see all the information for home address)
+- Displaying minors.
+- On campus was changed to display more general information rather than completely getting rid of it like GoSite does now. (Shows on/off campus)
+
+##### GET
+
+`api/profiles` Get profile info of the current logged in user.
+
+`api/profiles/:username` Get profile info of a user with username `username` as a parameter.
+
+`api/profiles/role/:username` Get college role of a user with username `username` as a parameter --- College roles: super admin, faculty and staff, student and police.
+
+`api/profiles/Image/` Get profile image of the current logged in user. Image is stored in a base 64 string.
+
+`api/profiles/Image/:username` Get the profile image(s) of a user with username `username` as a parameter. Image is stored in a base 64 string. Police, super admin, faculty and staff can view both default and preferred profile image of students. Only police and super admin can view both images of everyone including faculty and staff.
+
+##### POST
+
+`api/profiles/image` Upload a preferred image for the current logged in user.
+
+`api/profiles/image/reset` Delete preferred image and set profile image to default for the current logged in user.
+
+`api/profiles/:type` Update a social media link of a type(facebook, twitter, linkedin,instagram) of current logged in user.
+
+##### PUT
+
+`api/profiles/mobile_privacy/:value` Update mobile phone number privacy with value(Y or N) for the current logged in user.
+
+`api/profiles/image_privacy/:value` Update profile image privacy with value(Y or N) for the current logged in user.
+
+
+### Emails
+What is it? Resource that represents emails.
+
+
+##### GET
+
+`api/emails/activity/:id` Get the emails for members of the activity with activity code `id` during the current session.
+
+`api/emails/activity/:id/session/:sessionid` Get the emails for the members of the activity with activity code `id` during the session with session code `sessionid`.
+
+`api/emails/activity/:id/leaders` Get the emails for the leaders of the activity with activity code `id` during the current session.
+
+`api/emails/activity/:id/leaders/session/:sessionid` Get the emails for the leaders of the activity with activity code `id` during the session with session code `sessionid`.
+
+`api/emails/activity/:id/advisors` Get the emails for the advisors of the activity with activity code `id` during the current session.
+
+`api/emails/activity/:id/advisors/session/:sessionid` Get the emails for the advisors of the activity with activity code `id` during the session with session code `sessionid`.
+
+
+### Events
+What is it? Resources to get information on Events from the 25Live system
+- Only confirmed events are pulled
+- Only events ending after the start of the current academic year are requested from 25Live
+- Data from 25Live is retrieved every four minutes using a cached request
+
+##### GET
+
+`api/events/chapel/:user_name` Get all events attended by a student (pulls from local database)
+
+`api/events/chapel/:user_name/:term` Get all events attended by a student in a specific term
+
+`api/events/25Live/type/:Type_ID` Get event(s) specified by a type ID (or multiple). A full list can be found here: https://webservices.collegenet.com/r25ws/wrd/gordon/run/evtype.xml?parent_id=9&otransform=browse.xsl
+Multiple types or events are separated by a '$'
+
+`api/events/25Live/:Event_ID` Get event(s) specified by one or multiple Event_ID. Event IDs can be found in the url or resources in a 25Live request in a browser.
+Multiple types or events are separated by a '$'
+
+`api/events/25Live/All` Returns all events in 25Live under predefined categories.
+
+`api/events/25Live/CLAW` Returns all events in 25Live with Category_ID = 85 (CL&W Credit approved)
 
 
 ### Memberships
@@ -355,63 +503,6 @@ What is it? Resource that represents the affiliation between a student and a clu
 
 `api/memberships/:id` Delete the membership with membership id `id`.
 
-### Events
-What is it? Resources to get information on Events from the 25Live system
-- Only confirmed events are pulled
-- Only events ending after the start of the current academic year are requested from 25Live
-- Data from 25Live is retrieved every four minutes using a cached request
-
-##### GET
-
-`api/events/chapel/:user_name` Get all events attended by a student (pulls from local database)
-
-`api/events/chapel/:user_name/:term` Get all events attended by a student in a specific term
-
-`api/events/25Live/type/:Type_ID` Get event(s) specified by a type ID (or multiple). A full list can be found here: https://webservices.collegenet.com/r25ws/wrd/gordon/run/evtype.xml?parent_id=9&otransform=browse.xsl
-Multiple types or events are separated by a '$'
-
-`api/events/25Live/:Event_ID` Get event(s) specified by one or multiple Event_ID. Event IDs can be found in the url or resources in a 25Live request in a browser.
-Multiple types or events are separated by a '$'
-
-`api/events/25Live/All` Returns all events in 25Live under predefined categories.
-
-`api/events/25Live/CLAW` Returns all events in 25Live with Category_ID = 85 (CL&W Credit approved)
-
-
-
-### Activities
-What is it? Resource that represents some activity - such as a club, ministry, leadership program, etc.
-
-##### GET
-
-`api/activities` Get all the activities.
-
-`api/activities/:id` Get the activity with activity code `id`.
-
-`api/activities/session/:id` Get the activity offered during the session with session code `id`.
-
-`api/activities/session/:id/types` Get the different activity types among the activities offered during the session with session code `id`.
-
-`api/activities/{sessionCode}/{id}/status` Get the status of an activity (either open or closed), which indicates whether or not new members can be added to the activity for this session.
-
-`api/activities/open` Get all the open activities for the current session.
-
-`api/activities/:id/open` Get only the open activities for which a given user (identified by their user `id`) is the group admin.
-
-`api/activities/closed` Get all the closed activities for the current session.
-
-`api/activities/:id/closed` Get only the closed activities for which a given user (identified by their user `id`) is the group admin.
-
-##### PUT
-
-`api/activities/:id/session/{sess_cde}/close` Close out an activity for a given session (this is like confirming the final roster of an activity for a given session.
-
-`api/activities/:id/session/{sess_cde}/open` Reopen an activity for a given session.
-
-`api/activities/:id` Edit activity information for the club with activity code `id`.
-
-`api/activities/:id/private/:p` Update a given activity to private or not private with boolean value `p`. The `id` parameter is the activity id.
-
 ### Membership Requests
 What is it? Resource that represents a person's application/request to join an activity group.
 
@@ -439,17 +530,6 @@ What is it? Resource that represents a person's application/request to join an a
 `api/requests/:id` Delete the membership application with id `id`.
 
 
-### Accounts
-What is it? Resource that represents a gordon account.
-
-##### GET
-
-`api/accounts/:email` Get the account with email `email`.
-
-`api/accounts/:username` Get the account with `username`.
-
-`api/accounts/search/:searchString` Returns the basicinfoviewmodel with a Concatenated attribute matching some or all of the searchstring
-
 ### Sessions
 What is it? Resource that represents the current session. e.g. Fall 2014-2015.
 
@@ -476,52 +556,6 @@ Who has access? Everyone.
 
 `api/participations/:id` Get the participation level with code `id`.
 
-
-### Emails
-What is it? Resource that represents emails.
-
-
-##### GET
-
-`api/emails/activity/:id` Get the emails for members of the activity with activity code `id` during the current session.
-
-`api/emails/activity/:id/session/:sessionid` Get the emails for the members of the activity with activity code `id` during the session with session code `sessionid`.
-
-`api/emails/activity/:id/leaders` Get the emails for the leaders of the activity with activity code `id` during the current session.
-
-`api/emails/activity/:id/leaders/session/:sessionid` Get the emails for the leaders of the activity with activity code `id` during the session with session code `sessionid`.
-
-`api/emails/activity/:id/advisors` Get the emails for the advisors of the activity with activity code `id` during the current session.
-
-`api/emails/activity/:id/advisors/session/:sessionid` Get the emails for the advisors of the activity with activity code `id` during the session with session code `sessionid`.
-
-
-### Admins
-What is it? Resource that represents admins.
-
-Who has access? Only super admins, except to get a specific admin where all admins have access.
-
-##### GET
-
-`api/admins` Get all the admins.
-
-`api/admins/:id` Get a specific admin with the Gordon ID specified.
-
-##### POST
-
-`api/admins` Create a new admin.
-
-##### DELETE
-
-`api/admins/:id` Delete the admin with the admin id `id`.
-
-
-### Content Management
-What is it? Resource for fetching content that has been stored in the database by Gordon's website [content manager](http://wwwtrain.gordon.edu/).
-
-##### GET
-
-`api/cms/slider` Get the content for the dashboard slide.
 
 ### Profiles
 What is it? Resource that represents users' profiles.
@@ -556,6 +590,22 @@ Differences from GoSite:
 `api/profiles/mobile_privacy/:value` Update mobile phone number privacy with value(Y or N) for the current logged in user.
 
 `api/profiles/image_privacy/:value` Update profile image privacy with value(Y or N) for the current logged in user.
+
+
+### Sessions
+What is it? Resource that represents the current session. e.g. Fall 2014-2015.
+
+Who has access? Everyone.
+
+##### GET
+
+`api/sessions` Get all the sessions.
+
+`api/sessions/:id` Get the session with session code `id`.
+
+`api/sessions/current` Get the current session.
+
+`api/sessions/daysLeft` Get the days left in the semester and the total days in the semester
 
 
 ## API Testing
