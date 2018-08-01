@@ -298,6 +298,8 @@ What is it? Resource that represents a gordon account.
 
 `api/accounts/search/:searchString` Returns the basicinfoviewmodel with a Concatenated attribute matching some or all of the searchstring
 
+`api/accounts/advanced-people-search/{includeAlumniSearchParam}/{firstNameSearchParam}/{lastNameSearchParam}/{majorSearchParam}/{minorSearchParam}/{classTypeSearchParam}/{hometownSearchParam}/{stateSearchParam}/{countrySearchParam}/{departmentSearchParam}/{buildingSearchParam}` Get all the accounts matching the specified parameters. Access to accounts is based on your account type (e.g. Students can't get Alumni).
+
 ### Activities
 What is it? Resource that represents some activity - such as a club, ministry, leadership program, etc.
 
@@ -350,6 +352,22 @@ Who has access? Only super admins, except to get a specific admin where all admi
 ##### DELETE
 
 `api/admins/:id` Delete the admin with the admin id `id`.
+
+
+### Advanced Search
+##### GET
+`api/advanced-search/majors` Get all majors that are found in the Student table.
+
+`api/advanced-search/minors` Get all minors that are found in the Student table.
+
+`api/advanced-search/states` Get all states that are found in the Student, Alumni, and FacStaff tables.
+
+`api/advanced-search/countries`  Get all countries that are found in the Student, Alumni, and FacStaff tables.
+ 
+`api/advanced-search/departments` Get all the departments from the FacStaff table.
+
+`api/advanced-search/buildings` Get all the buildings from the FacStaff table.
+
 
 
 ### Authentication
