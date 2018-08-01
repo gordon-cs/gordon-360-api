@@ -26,6 +26,7 @@ namespace Gordon360.Repositories
         private IRepository<C360_SLIDER> _SliderRepository;
         private IRepository<CUSTOM_PROFILE> _ProfileCustomRepository;
         private IRepository<ChapelEvent> _ChapelEventRepository;
+        private IRepository<DiningInfo> _DiningInfoRepository;
 
         private CCTEntities1 _context;
 
@@ -100,7 +101,10 @@ namespace Gordon360.Repositories
         {
             get { return _ChapelEventRepository ?? (_ChapelEventRepository = new GenericRepository<ChapelEvent>(_context)); }
         }
-
+        public IRepository<DiningInfo> DiningInfoRepository
+        {
+            get { return _DiningInfoRepository ?? (_DiningInfoRepository = new GenericRepository<DiningInfo>(_context)); }
+        }
         public IRepository<CUSTOM_PROFILE> ProfileCustomRepository
         {
             get { return _ProfileCustomRepository ?? (_ProfileCustomRepository = new GenericRepository<CUSTOM_PROFILE>(_context)); }
