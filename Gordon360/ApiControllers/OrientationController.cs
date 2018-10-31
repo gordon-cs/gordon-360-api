@@ -36,12 +36,10 @@ namespace Gordon360.ApiControllers
 
             if (result == null)
             {
-                return NotFound();
+                return "Account Not Found";
             }
             
-            final = result.primary_photo;
-
-            return Ok(final);
+            return result.primary_photo;
         }
     }
 }
