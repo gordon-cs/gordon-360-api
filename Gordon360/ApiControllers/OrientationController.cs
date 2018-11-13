@@ -29,19 +29,17 @@ namespace Gordon360.ApiControllers
         // GET: Profile Photo Status
         // Uses the Account Service method to retrieve Account information
         [HttpGet]
-        [Route("photo/{id}")]
+        [Route("photo/{username}")]
         public IHttpActionResult GetAccountByUsername(string username)
         {
             result = _accountService.GetAccountByUsername(username);
 
             if (result == null)
             {
-                return NotFound();
+                return "Account Not Found";
             }
             
-            final = result.primary_photo;
-
-            return Ok(final);
+            return result.primary_photo;
         }
     }
 }
