@@ -34,6 +34,44 @@ namespace Gordon360.ApiControllers
 
         // GET: api/Accounts
         [HttpGet]
+        [Route("addMemberEmail/{email}")]
+        public IHttpActionResult GetAccountToAddMembership(string email)
+        {
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(email))
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+            
+            var validation = _accountService.validateAccount(email);
+            object result = null;
+            if(validation == "PASS")
+            {
+                result = _accountService.GetAccountByEmail(email);
+            }
+            else
+            {
+                return Content(System.Net.HttpStatusCode.BadRequest, validation);
+            }
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+        // GET: api/Accounts
+        [HttpGet]
         [Route("email/{email}")]
         public IHttpActionResult GetByAccountEmail(string email)
         {

@@ -26,24 +26,84 @@ namespace Gordon360.Services
             _unitOfWork = unitOfWork;
         }
 
+
         /// <summary>
-        /// Adds a new Membership record to storage. Since we can't establish foreign key constraints and relationships on the database side,
-        /// we do it here by using the validateMembership() method.
+        /// Validate the membership
+        /// </summary>
+        /// <param name="membership">The membership to validate</param>
+        /// <returns>A string indicating the result of the validation</returns>
+        public string Validate(MEMBERSHIP membership)
+        {
+            var personExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id.Trim() == membership.ID_NUM.ToString()).Count() > 0;
+            if (!personExists)
+            {
+                return "Error: The person was not found.";
+            }
+            var participationExists = _unitOfWork.ParticipationRepository.Where(x => x.PART_CDE.Trim() == membership.PART_CDE).Count() > 0;
+            if (!participationExists)
+            {
+                return " error: This participation type does not exist.";
+            }
+            var sessionExists = _unitOfWork.SessionRepository.Where(x => x.SESS_CDE.Trim() == membership.SESS_CDE).Count() > 0;
+            if (!sessionExists)
+            {
+                return "Error: The session was not found.";
+            }
+            var activityExists = _unitOfWork.ActivityInfoRepository.Where(x => x.ACT_CDE.Trim() == membership.ACT_CDE).Count() > 0;
+            if (!activityExists)
+            {
+                return "Error: The Involvement was not found.";
+            }
+
+            var activitiesThisSession = RawSqlQuery<ActivityViewModel>.query("ACTIVE_CLUBS_PER_SESS_ID @SESS_CDE", new SqlParameter("SESS_CDE", SqlDbType.VarChar) { Value = membership.SESS_CDE });
+
+            bool offered = false;
+            foreach (var activityResult in activitiesThisSession)
+            {
+                if (activityResult.ACT_CDE.Trim() == membership.ACT_CDE)
+                {
+                    offered = true;
+                }
+            }
+
+            if (!offered)
+            {
+                return "The Involvement is not available for this session.";
+            }
+
+            // If all of the checks pass, return "pass"
+            return "PASS";
+        }
+
+
+        /// <summary>
+        /// Adds a new Membership record to storage.
         /// </summary>
         /// <param name="membership">The membership to be added</param>
         /// <returns>The newly added Membership object</returns>
         public MEMBERSHIP Add(MEMBERSHIP membership)
         {
             // validate returns a boolean value.
-            validateMembership(membership);
-            isPersonAlreadyInActivity(membership);
+            // bool isMembershipValid = validateMembership(membership);
+            // bool isPersonInActivity = !isPersonAlreadyInActivity(membership);
+            object payload = null;
+
+            // If the membership has been validated and the person is not already in the activity, add the membership
+            // if (isMembershipValid && !isPersonInActivity)
+            // {
 
             // Get session begin date of the membership
             var sessionCode = _unitOfWork.SessionRepository.Find(x => x.SESS_CDE.Equals(membership.SESS_CDE)).FirstOrDefault();
-            membership.BEGIN_DTE = (DateTime) sessionCode.SESS_BEGN_DTE;
+            membership.BEGIN_DTE = (DateTime)sessionCode.SESS_BEGN_DTE;
 
             // The Add() method returns the added membership.
-            var payload = _unitOfWork.MembershipRepository.Add(membership);
+            payload = _unitOfWork.MembershipRepository.Add(membership);
+
+            // }
+            // else if (isPersonInActivity)
+            // {
+                // return ""
+            // }
 
             // There is a unique constraint in the Database on columns (ID_NUM, PART_LVL, SESS_CDE and ACT_CDE)
             if (payload == null)
@@ -52,7 +112,7 @@ namespace Gordon360.Services
             }
             _unitOfWork.Save();
 
-            return payload;
+            return (Gordon360.Models.MEMBERSHIP) payload;
 
         }
 

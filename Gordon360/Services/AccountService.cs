@@ -63,6 +63,23 @@ namespace Gordon360.Services
         /// <param name="email">The email address associated with the account.</param>
         /// <returns></returns>
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
+        public string validateAccount(string email)
+        {
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.email == email);
+            string result = "PASS";
+            if (query == null)
+            {
+                result = "Error: The account was not found.";
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Fetches the account record with the specified email.
+        /// </summary>
+        /// <param name="email">The email address associated with the account.</param>
+        /// <returns></returns>
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
         public AccountViewModel GetAccountByEmail(string email)
         {
             var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.email == email);

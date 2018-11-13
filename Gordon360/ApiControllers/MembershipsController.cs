@@ -336,6 +336,8 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
 
+        // Okay here's the deal: Call the validation method. If the returned string says "pass", add the membership.
+        // Else, return an error message.
         /// <summary>Create a new membership item to be added to database</summary>
         /// <param name="membership">The membership item containing all required and relevant information</param>
         /// <returns></returns>
@@ -346,7 +348,7 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.MEMBERSHIP)]
         public IHttpActionResult Post([FromBody] MEMBERSHIP membership)
         {
-            if(!ModelState.IsValid || membership == null)
+            if (!ModelState.IsValid || membership == null)
             {
                 string errors = "";
                 foreach (var modelstate in ModelState.Values)
@@ -359,7 +361,12 @@ namespace Gordon360.Controllers.Api
                 }
                 throw new BadInputException() { ExceptionMessage = errors };
             }
-
+            
+            string validation = _membershipService.Validate(membership);
+            if (validation != "PASS")
+            {
+                return Content(System.Net.HttpStatusCode.BadRequest, validation);
+            }
             var result = _membershipService.Add(membership);
 
             if ( result == null)

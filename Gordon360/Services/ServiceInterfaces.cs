@@ -45,6 +45,7 @@ namespace Gordon360.Services
     public interface IAccountService
     {
         AccountViewModel Get(string id);
+        string validateAccount(string email);
         IEnumerable<AccountViewModel> GetAll();
         AccountViewModel GetAccountByEmail(string email);
         AccountViewModel GetAccountByUsername(string username);
@@ -129,6 +130,7 @@ namespace Gordon360.Services
         MEMBERSHIP ToggleGroupAdmin(int id, MEMBERSHIP membership);
         void TogglePrivacy(int id, bool p);
         MEMBERSHIP Delete(int id);
+        string Validate(MEMBERSHIP membership);
     }
 
     public interface IParticipationService
