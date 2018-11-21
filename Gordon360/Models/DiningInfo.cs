@@ -10,13 +10,16 @@
 namespace Gordon360.Models
 {
     using System;
+    using System.Collections.Generic;
     
-    public partial class ALL_BASIC_INFO_Result
+    public partial class DiningInfo
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string UserName { get; set; }
-        public string AccountType { get; set; }
-        public string ConcatonatedInfo { get; set; }
+        public int StudentId { get; set; }
+        public string SessionCode { get; set; }
+        public string ChoiceDescription { get; set; }
+        public string PlanDescriptions { get; set; }
+        public string PlanId { get; set; }
+        public Nullable<int> InitialBalance { get; set; }
+        public string PlanType { get; set; }
     }
 }
