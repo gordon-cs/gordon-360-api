@@ -22,6 +22,7 @@
         <EntityTypeShape EntityType="Gordon360.PART_DEF" Width="1.5" PointX="6.75" PointY="10.75" />
         <EntityTypeShape EntityType="Gordon360.Student" Width="1.5" PointX="10.75" PointY="8.75" />
         <EntityTypeShape EntityType="Gordon360.sysdiagrams" Width="1.5" PointX="13.375" PointY="0.75" />
+        <EntityTypeShape EntityType="Gordon360.DiningInfo" Width="1.5" PointX="0.75" PointY="13.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
