@@ -151,6 +151,11 @@ namespace Gordon360.Services
         REQUEST Delete(int id);
     }
 
+    public interface IVictoryPromiseService
+    {
+        VictoryPromiseViewModel GetVPScores(string id);
+    }
+
     public interface IContentManagementService
     {
         IEnumerable<SliderViewModel> GetSliderContent();

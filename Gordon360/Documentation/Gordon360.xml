@@ -486,6 +486,13 @@
             <param name="id">The identifier for the membership to be deleted</param>
             <remarks>Calls the server to make a call and remove the given membership from the database</remarks>
         </member>
+        <member name="M:Gordon360.Controllers.API.VictoryPromiseController.Get(System.String)">
+            <summary>
+             Gets current victory promise scores
+            </summary>
+            <param name="id">The ID of the student</param>
+            <returns>A VP object object</returns>
+        </member>
         <member name="F:Gordon360.Repositories.GenericRepository`1._context">
             <summary>
                 The database context for the repository
@@ -1128,6 +1135,13 @@
             </summary>
             <param name="id">id</param>
             <param name="value">Y or N</param>
+        </member>
+        <member name="M:Gordon360.Services.VictoryPromiseService.GetVPScores(System.String)">
+            <summary>
+            get victory promise scores
+            </summary>
+            <param name="id">id</param>
+            <returns>PhotoPathViewModel if found, null if not found</returns>
         </member>
         <member name="T:Gordon360.Services.JenzibarActivityService">
             <summary>
