@@ -8,6 +8,7 @@ using Gordon360.Repositories;
 using Gordon360.Exceptions.CustomExceptions;
 using System.Data.SqlClient;
 using Gordon360.Services.ComplexQueries;
+using System.Diagnostics;
 
 namespace Gordon360.Services
 {
@@ -32,9 +33,9 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
-
-            var idParam = new SqlParameter("@ID", id);
-            var result = RawSqlQuery<VictoryPromiseViewModel>.query("PHOTO_INFO_PER_USER_NAME @ID", idParam).FirstOrDefault(); //run stored procedure
+            var idParam = new SqlParameter("@ID", Int32.Parse(id));
+            var result = RawSqlQuery<VictoryPromiseViewModel>.query("VICTORY_PROMISE_BY_STUDENT_ID @ID", idParam).FirstOrDefault(); //run stored procedure
+            Debug.WriteLine("RESULTTTTTTT: " + result.cc + result.im + result.lv + result.lw); // debug message
 
             if (result == null)
             {

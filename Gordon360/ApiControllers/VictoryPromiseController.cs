@@ -3,9 +3,9 @@ using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
 using Gordon360.Services;
 
-namespace Gordon360.Controllers.API
+namespace Gordon360.Controllers.Api
 {
-    [RoutePrefix("vpscore")]
+    [RoutePrefix("api/vpscore")]
     [CustomExceptionFilter]
     [Authorize]
     public class VictoryPromiseController : ApiController
