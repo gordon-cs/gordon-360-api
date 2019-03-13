@@ -17,13 +17,13 @@ using System;
 public partial class VICTORY_PROMISE_BY_STUDENT_ID_Result
 {
 
-    public Nullable<int> VP_IM_SCORE { get; set; }
+    public Nullable<int> TOTAL_VP_IM_SCORE { get; set; }
 
-    public Nullable<int> VP_CC_SCORE { get; set; }
+    public Nullable<int> TOTAL_VP_CC_SCORE { get; set; }
 
-    public Nullable<int> VP_LS_SCORE { get; set; }
+    public Nullable<int> TOTAL_VP_LS_SCORE { get; set; }
 
-    public Nullable<int> VP_LW_SCORE { get; set; }
+    public Nullable<int> TOTAL_VP_LW_SCORE { get; set; }
 
 }
 
