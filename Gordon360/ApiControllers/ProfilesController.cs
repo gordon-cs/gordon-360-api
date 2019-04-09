@@ -624,6 +624,69 @@ namespace Gordon360.Controllers.Api
             }
         }
 
+
+        /// <summary>
+        /// Set an IDimage for a user
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("IDimage")]
+        public async Task<HttpResponseMessage> PostIDImage()
+        {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
+            // Want this root variable to be a folder for pictures to be put in
+            string root = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PREF_IMAGE_PATH"];
+            // Want the filename to be of the form username "lastnamefirstnamebarcodejpg"
+            var fileName = _accountService.GetAccountByUsername(username).LastName + _accountService.GetAccountByUsername(username).FirstName + _accountService.GetAccountByUsername(username).Barcode +".jpg";
+            // Is this pathInfo variable setting up a new folder for each image?? That is not what we want.
+            // var pathInfo = _profileService.GetPhotoPath(id);
+            var provider = new CustomMultipartFormDataStreamProvider(root);
+
+            if (!Request.Content.IsMimeMultipartContent())
+            {
+                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+            }
+
+            try
+            {
+                /* Don't need this code -- how could you get here if there was no record of you in the database?
+                if (pathInfo == null) // can't upload IDimage if there is no record for this user in the database
+                    return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error uploading the ID image. Please contact the maintainers");
+                */
+                System.IO.DirectoryInfo di = new DirectoryInfo(root);
+                foreach (FileInfo file in di.GetFiles(fileName))
+                {
+                    file.Delete();                   //delete old ID image file if it exists.
+                }
+
+                // Read the form data.
+                await Request.Content.ReadAsMultipartAsync(provider);
+
+                foreach (MultipartFileData file in provider.FileData)
+                {
+                    var fileContent = provider.Contents.SingleOrDefault();
+                    var oldFileName = fileContent.Headers.ContentDisposition.FileName.Replace("\"", string.Empty);
+
+                    di = new DirectoryInfo(root);
+                    // Put the file in the new location
+                    System.IO.File.Move(di.FullName + oldFileName, di.FullName + fileName); //rename
+
+                    // unecessary _profileService.UpdateProfileImage(id, Defaults.DATABASE_IMAGE_PATH, fileName); //update database
+                }
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (System.Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error uploading the ID image. Please contact the maintainers");
+            }
+        }
+
+
+
+
+
         /// <summary>
         /// Reset the profile Image
         /// </summary>
