@@ -633,15 +633,15 @@ namespace Gordon360.Controllers.Api
         [Route("IDimage")]
         public async Task<HttpResponseMessage> PostIDImage()
         {
+
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
             // Want this root variable to be a folder for pictures to be put in
-            string root = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PREF_IMAGE_PATH"];
+            string root = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_ID_SUBMISSION_PATH"];
             // Want the filename to be of the form username "lastnamefirstnamebarcodejpg"
             var fileName = _accountService.GetAccountByUsername(username).LastName + _accountService.GetAccountByUsername(username).FirstName + _accountService.GetAccountByUsername(username).Barcode +".jpg";
-            // Is this pathInfo variable setting up a new folder for each image?? That is not what we want.
-            // var pathInfo = _profileService.GetPhotoPath(id);
+            var pathInfo = _profileService.GetPhotoPath(id);
             var provider = new CustomMultipartFormDataStreamProvider(root);
 
             if (!Request.Content.IsMimeMultipartContent())
@@ -651,10 +651,6 @@ namespace Gordon360.Controllers.Api
 
             try
             {
-                /* Don't need this code -- how could you get here if there was no record of you in the database?
-                if (pathInfo == null) // can't upload IDimage if there is no record for this user in the database
-                    return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error uploading the ID image. Please contact the maintainers");
-                */
                 System.IO.DirectoryInfo di = new DirectoryInfo(root);
                 foreach (FileInfo file in di.GetFiles(fileName))
                 {
