@@ -16,6 +16,7 @@ using System.Web.Caching;
 using System.Collections.Generic;
 using Gordon360.Models;
 using Newtonsoft.Json.Linq;
+using System.Linq;
 
 namespace Gordon360
 {
@@ -153,6 +154,10 @@ namespace Gordon360
                 JObject theStu = JObject.FromObject(aStudent);
                 theStu.Add("Type", "Student");
                 theStu.Add("BuildingDescription", null);
+
+                // Get each student's dorm and add it to the collection
+                string stuBuildDesc = Gordon360.Services.ComplexQueries.RawSqlQuery<String>.query("SELECT BuildingDescription from STUDENT where AD_Username = 'nathaniel.rudenberg'").Cast<string>().ElementAt(0);
+                theStu.Add("Dorm", stuBuildDesc);
                 theStu.Add("OnCampusDepartment", null);
                 allPublicAccounts.Add(theStu);
                 allPublicAccountsWithoutAlumni.Add(theStu);
@@ -160,6 +165,7 @@ namespace Gordon360
             foreach (PublicFacultyStaffProfileViewModel aFacStaff in Data.PublicFacultyStaffData)
             {
                 JObject theFacStaff = JObject.FromObject(aFacStaff);
+                theFacStaff.Add("Dorm", null);
                 theFacStaff.Add("Class", null);
                 theFacStaff.Add("Major1Description", null);
                 theFacStaff.Add("Major2Description", null);
@@ -176,6 +182,7 @@ namespace Gordon360
                 JObject theAlum = JObject.FromObject(anAlum);
                 theAlum.Add("Type", "Alum");
                 theAlum.Add("BuildingDescription", null);
+                theAlum.Add("Dorm", null);
                 theAlum.Add("OnCampusDepartment", null);
                 theAlum.Add("Class", null);
                 theAlum.Add("Major3Description", null);
