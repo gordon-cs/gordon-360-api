@@ -101,6 +101,42 @@
             <param name="id">The identifier for the admin to be deleted</param>
             <remarks>Calls the server to make a call and remove the given admin from the database</remarks>
         </member>
+        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetMajors">
+            <summary>
+            Return a list majors.
+            </summary>
+            <returns> All majors</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetMinors">
+            <summary>
+            Return a list minors.
+            </summary>
+            <returns> All minors</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetStates">
+            <summary>
+            Return a list states.
+            </summary>
+            <returns> All states</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetCountries">
+            <summary>
+            Return a list countries.
+            </summary>
+            <returns> All countries</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetDepartments">
+            <summary>
+            Return a list departments.
+            </summary>
+            <returns> All departments</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetBuildings">
+            <summary>
+            Return a list buildings.
+            </summary>
+            <returns> All buildings</returns>
+        </member>
         <member name="M:Gordon360.ApiControllers.DiningController.Get(System.String,System.Int32,System.String)">
             <summary>
              Gets information about student's dining plan and balance
