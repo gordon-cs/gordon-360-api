@@ -16,7 +16,7 @@ using System.Web.Caching;
 using System.Collections.Generic;
 using Gordon360.Models;
 using Newtonsoft.Json.Linq;
-//using System.Linq;
+using System.Linq;
 
 namespace Gordon360
 {
@@ -156,8 +156,8 @@ namespace Gordon360
                 theStu.Add("BuildingDescription", null);
 
                 // Get each student's dorm and add it to the collection
-                //string stuBuildDesc = Gordon360.Services.ComplexQueries.RawSqlQuery<String>.query("SELECT BuildingDescription from STUDENT where AD_Username = '" + aStudent.AD_Username + "'").Cast<string>().ElementAt(0);
-                theStu.Add("Hall", null);
+                string stuBuildDesc = Gordon360.Services.ComplexQueries.RawSqlQuery<String>.query("SELECT BuildingDescription from STUDENT where AD_Username = '" + aStudent.AD_Username + "'").Cast<string>().ElementAt(0);
+                theStu.Add("Hall", stuBuildDesc);
                 theStu.Add("OnCampusDepartment", null);
                 allPublicAccounts.Add(theStu);
                 allPublicAccountsWithoutAlumni.Add(theStu);
