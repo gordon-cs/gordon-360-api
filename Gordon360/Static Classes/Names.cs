@@ -81,7 +81,7 @@ namespace Gordon360.Static.Names
         public const string DEFAULT_PROFILE_IMAGE_PATH = "https://360apitrain.gordon.edu/browseable/profile/Default/profile.png";
         public const string DEFAULT_PREF_IMAGE_PATH = "\\\\gotrain\\pref_photos\\";
         public const string DEFAULT_IMAGE_PATH = "\\\\go\\photos\\";
-        public const string DEFAULT_ID_SUBMISSION_PATH = "\\\\go\\ID_photo_submissions\\";
+        public const string DEFAULT_ID_SUBMISSION_PATH = "\\\\360api\\ID_Photo_Submissions\\";
         public const string DATABASE_IMAGE_PATH = "f:\\inetpub\\pref_photos\\";
 
     }

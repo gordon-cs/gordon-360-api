@@ -594,6 +594,7 @@ namespace Gordon360.Controllers.Api
 
             try
             {
+                Debug.WriteLine("HERE HERE");
                 if (pathInfo == null) // can't upload image if there is no record for this user in the database
                     return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error uploading the image. Please contact the maintainers");
 
@@ -633,50 +634,46 @@ namespace Gordon360.Controllers.Api
         [Route("IDimage")]
         public async Task<HttpResponseMessage> PostIDImage()
         {
-
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
-            // Want this root variable to be a folder for pictures to be put in
-            string root = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_ID_SUBMISSION_PATH"];
-            // Want the filename to be of the form username "lastnamefirstnamebarcodejpg"
-            var fileName = _accountService.GetAccountByUsername(username).LastName + _accountService.GetAccountByUsername(username).FirstName + _accountService.GetAccountByUsername(username).Barcode +".jpg";
-            var pathInfo = _profileService.GetPhotoPath(id);
-            var provider = new CustomMultipartFormDataStreamProvider(root);
-
             if (!Request.Content.IsMimeMultipartContent())
             {
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
             }
 
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            string root = HttpContext.Current.Server.MapPath("~/Documents");
+            var provider = new MultipartFormDataStreamProvider(root);
+            var fileName = _accountService.GetAccountByUsername(username).Barcode + ".jpg";
+
+            Debug.WriteLine(root);
+
             try
             {
-                System.IO.DirectoryInfo di = new DirectoryInfo(root);
-                foreach (FileInfo file in di.GetFiles(fileName))
-                {
-                    file.Delete();                   //delete old ID image file if it exists.
-                }
+                
+                Debug.WriteLine("function is called ");
+                Debug.WriteLine(Request.Content.IsMimeMultipartContent());
+                //return Request.CreateResponse(HttpStatusCode.OK); //200 status if photo is received
+
+                
 
                 // Read the form data.
                 await Request.Content.ReadAsMultipartAsync(provider);
 
+                // This illustrates how to get the file names.
                 foreach (MultipartFileData file in provider.FileData)
                 {
-                    var fileContent = provider.Contents.SingleOrDefault();
-                    var oldFileName = fileContent.Headers.ContentDisposition.FileName.Replace("\"", string.Empty);
 
-                    di = new DirectoryInfo(root);
-                    // Put the file in the new location
-                    System.IO.File.Move(di.FullName + oldFileName, di.FullName + fileName); //rename
+                    Debug.WriteLine(file.Headers.ContentDisposition.FileName);
+                    Debug.WriteLine("Server file path: " + file.LocalFileName);
 
-                    // unecessary _profileService.UpdateProfileImage(id, Defaults.DATABASE_IMAGE_PATH, fileName); //update database
                 }
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (System.Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error uploading the ID image. Please contact the maintainers");
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error uploading the ID photo");
             }
+
         }
 
 
