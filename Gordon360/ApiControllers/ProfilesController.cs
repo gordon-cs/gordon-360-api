@@ -641,31 +641,27 @@ namespace Gordon360.Controllers.Api
 
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            string root = HttpContext.Current.Server.MapPath("~/Documents");
+            string root = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_ID_SUBMISSION_PATH"];
             var provider = new MultipartFormDataStreamProvider(root);
-            var fileName = _accountService.GetAccountByUsername(username).Barcode + ".jpg";
-
-            Debug.WriteLine(root);
+            var fileName = username + "_" + _accountService.GetAccountByUsername(username).Barcode + ".jpg";
 
             try
             {
                 
-                Debug.WriteLine("function is called ");
-                Debug.WriteLine(Request.Content.IsMimeMultipartContent());
-                //return Request.CreateResponse(HttpStatusCode.OK); //200 status if photo is received
-
-                
+                DirectoryInfo di = new DirectoryInfo(root);
+                foreach (FileInfo file in di.GetFiles(fileName))
+                {
+                    file.Delete();                   //delete old ID photo
+                }
 
                 // Read the form data.
-                await Request.Content.ReadAsMultipartAsync(provider);
+                var result = await Request.Content.ReadAsMultipartAsync(provider);
 
-                // This illustrates how to get the file names.
+                // Get the file names.
                 foreach (MultipartFileData file in provider.FileData)
                 {
-
-                    Debug.WriteLine(file.Headers.ContentDisposition.FileName);
-                    Debug.WriteLine("Server file path: " + file.LocalFileName);
-
+                    var directory = new DirectoryInfo(root);
+                    File.Move(file.LocalFileName, $"{directory.FullName}\\{fileName}");                    
                 }
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
