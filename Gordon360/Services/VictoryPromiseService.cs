@@ -25,7 +25,7 @@ namespace Gordon360.Services
         /// get victory promise scores
         /// </summary>
         /// <param name="id">id</param>
-        /// <returns>PhotoPathViewModel if found, null if not found</returns>
+        /// <returns>VictoryPromiseViewModel if found, null if not found</returns>
         public VictoryPromiseViewModel GetVPScores(string id)
         {
             var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
@@ -34,15 +34,16 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
             var idParam = new SqlParameter("@ID", Int32.Parse(id));
-            var result = RawSqlQuery<VictoryPromiseViewModel>.query("VICTORY_PROMISE_BY_STUDENT_ID @ID", idParam).FirstOrDefault(); //run stored procedure
-            Debug.WriteLine("RESULTTTTTTT: " + result.cc + result.im + result.lv + result.lw); // debug message
+            var result = RawSqlQuery<VICTORY_PROMISE_BY_STUDENT_ID_Result>.query("VICTORY_PROMISE_BY_STUDENT_ID @ID", idParam).FirstOrDefault(); //run stored procedure
+            //Debug.WriteLine("RESULTTTTTTT: " + result.cc + result.im + result.lv + result.lw); // debug message
 
             if (result == null)
             {
                 return null;
             }
 
-            return result;
+            return (VictoryPromiseViewModel)null;
+            //return result;
         }
     }
 }
