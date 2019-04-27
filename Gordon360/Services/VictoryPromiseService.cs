@@ -34,16 +34,16 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
             var idParam = new SqlParameter("@ID", Int32.Parse(id));
-            var result = RawSqlQuery<VICTORY_PROMISE_BY_STUDENT_ID_Result>.query("VICTORY_PROMISE_BY_STUDENT_ID @ID", idParam).FirstOrDefault(); //run stored procedure
-            //Debug.WriteLine("RESULTTTTTTT: " + result.cc + result.im + result.lv + result.lw); // debug message
+            var result = RawSqlQuery<VictoryPromiseViewModel>.query("VICTORY_PROMISE_BY_STUDENT_ID @ID", idParam).FirstOrDefault(); //run stored procedure
+            Debug.WriteLine("RESULTTTTTTT: " + result.TOTAL_VP_CC_SCORE + result.TOTAL_VP_IM_SCORE + result.TOTAL_VP_LS_SCORE + result.TOTAL_VP_LW_SCORE); // debug message
 
+            
             if (result == null)
             {
                 return null;
             }
 
-            return (VictoryPromiseViewModel)null;
-            //return result;
+            return result;
         }
     }
 }
