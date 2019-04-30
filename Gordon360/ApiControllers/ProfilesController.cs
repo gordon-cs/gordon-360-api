@@ -594,7 +594,6 @@ namespace Gordon360.Controllers.Api
 
             try
             {
-                Debug.WriteLine("HERE HERE");
                 if (pathInfo == null) // can't upload image if there is no record for this user in the database
                     return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error uploading the image. Please contact the maintainers");
 
