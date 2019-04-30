@@ -39,8 +39,21 @@ namespace Gordon360.ApiControllers
         public IHttpActionResult GetMinors()
         {
             IEnumerable<String> minors = Helpers.GetMinors();
-            // Return all of the majors
+            // Return all of the minors
             return Ok(minors);
+        }
+
+        /// <summary>
+        /// Return a list minors.
+        /// </summary>
+        /// <returns> All minors</returns>
+        [HttpGet]
+        [Route("halls")]
+        public IHttpActionResult GetHalls()
+        {
+            IEnumerable<String> halls = Helpers.GetHalls();
+            // Return all of the halls
+            return Ok(halls);
         }
 
         /// <summary>

@@ -65,7 +65,7 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// get photo path
+        /// Get photo path for profile
         /// </summary>
         /// <param name="id">id</param>
         /// <returns>PhotoPathViewModel if found, null if not found</returns>
@@ -87,6 +87,33 @@ namespace Gordon360.Services
 
             return result;
         }
+
+
+        /// <summary>
+        /// Get ID photo path
+        /// </summary>
+        /// <param name="id">id</param>
+        /// <returns>PhotoPathViewModel if found, null if not found</returns>
+        public PhotoPathViewModel GetIDPhotoPath(string id)
+        {
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
+
+            var idParam = new SqlParameter("@ID", id);
+            var result = RawSqlQuery<PhotoPathViewModel>.query("ID_PHOTO_INFO_PER_USER_NAME @ID", idParam).FirstOrDefault(); //run stored procedure
+
+            if (result == null)
+            {
+                return null;
+            }
+
+            return result;
+        }
+
+
         /// <summary>
         /// Fetches a single profile whose username matches the username provided as an argument
         /// </summary>

@@ -202,6 +202,7 @@
   <ItemGroup>
     <Compile Include="ApiControllers\AccountsController.cs" />
     <Compile Include="ApiControllers\AdminsController.cs" />
+    <Compile Include="ApiControllers\AdvancedSearchController.cs" />
     <Compile Include="ApiControllers\DiningController.cs" />
     <Compile Include="ApiControllers\EventController.cs" />
     <Compile Include="ApiControllers\ContentManagementController.cs" />
