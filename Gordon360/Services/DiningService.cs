@@ -42,7 +42,7 @@ namespace Gordon360.Services
 
         private static string getTimestamp()
         {
-            DateTime baseDate = new DateTime(1969, 12, 31, 19, 0, 0);
+            DateTime baseDate = new DateTime(1969, 12, 31, 20, 0, 0);
             TimeSpan diff = DateTime.Now - baseDate;
             Int64 millis = Convert.ToInt64(diff.TotalMilliseconds);
             return millis.ToString();

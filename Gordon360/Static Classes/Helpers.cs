@@ -331,6 +331,24 @@ namespace Gordon360.Static.Methods
             return result;
         }
 
+        // Fill an iterable list of halls from a query to the database
+        public static IEnumerable<String> GetHalls()
+        {
+            // Create a list to be filled
+            IEnumerable<String> result = null;
+            try
+            {
+                // Attempt to query the DB
+                result = RawSqlQuery<String>.query(SQLQuery.ALL_STUDENT_HALLS);
+            }
+            catch
+            {
+                //
+            }
+            // Filter out results with null or empty active directory names
+            return result;
+        }
+
         // Fill an iterable list of states from a query to the database
         public static IEnumerable<String> GetStates()
         {
