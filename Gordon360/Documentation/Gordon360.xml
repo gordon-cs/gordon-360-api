@@ -40,7 +40,7 @@
             <param name="searchString"> The input to search for </param>
             <returns> All accounts meeting some or all of the parameter</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.AccountsController.AdvancedPeopleSearch(System.Boolean,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+        <member name="M:Gordon360.ApiControllers.AccountsController.AdvancedPeopleSearch(System.Boolean,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
             <summary>
             Return a list of accounts matching some or all of the search parameters
             We are searching through all the info of a user, then narrowing it down to get only what we want
@@ -528,6 +528,13 @@
             <summary>Delete an existing membership</summary>
             <param name="id">The identifier for the membership to be deleted</param>
             <remarks>Calls the server to make a call and remove the given membership from the database</remarks>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.VictoryPromiseController.Get(System.String)">
+            <summary>
+             Gets current victory promise scores
+            </summary>
+            <param name="id">The ID of the student</param>
+            <returns>A VP object object</returns>
         </member>
         <member name="F:Gordon360.Repositories.GenericRepository`1._context">
             <summary>
@@ -1171,6 +1178,13 @@
             </summary>
             <param name="id">id</param>
             <param name="value">Y or N</param>
+        </member>
+        <member name="M:Gordon360.Services.VictoryPromiseService.GetVPScores(System.String)">
+            <summary>
+            get victory promise scores
+            </summary>
+            <param name="id">id</param>
+            <returns>PhotoPathViewModel if found, null if not found</returns>
         </member>
         <member name="T:Gordon360.Services.JenzibarActivityService">
             <summary>

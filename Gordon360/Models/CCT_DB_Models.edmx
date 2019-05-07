@@ -304,11 +304,19 @@ warning 6002: The table/view 'CCT.dbo.JENZ_ACT_CLUB_DEF' does not have a primary
         <EntityType Name="JENZ_ACT_CLUB_DEF">
           <Key>
             <PropertyRef Name="ACT_CDE" />
+            <PropertyRef Name="VP_IM" />
+            <PropertyRef Name="VP_CC" />
+            <PropertyRef Name="VP_LS" />
+            <PropertyRef Name="VP_LW" />
           </Key>
           <Property Name="ACT_CDE" Type="char" MaxLength="8" Nullable="false" />
           <Property Name="ACT_DESC" Type="char" MaxLength="45" />
           <Property Name="ACT_TYPE" Type="char" MaxLength="3" />
           <Property Name="ACT_TYPE_DESC" Type="char" MaxLength="60" />
+          <Property Name="VP_IM" Type="int" Nullable="false" />
+          <Property Name="VP_CC" Type="int" Nullable="false" />
+          <Property Name="VP_LS" Type="int" Nullable="false" />
+          <Property Name="VP_LW" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.PART_DEF' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -503,6 +511,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Parameter Name="ACCOUNT_ID" Type="int" Mode="In" />
           <Parameter Name="VALUE" Type="varchar" Mode="In" />
         </Function>
+        <Function Name="VICTORY_PROMISE_BY_STUDENT_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="STUDENT_ID" Type="int" Mode="In" />
+        </Function>
         <EntityContainer Name="Gordon360StoreContainer">
           <EntitySet Name="ACT_INFO" EntityType="Self.ACT_INFO" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ADMIN" EntityType="Self.ADMIN" Schema="dbo" store:Type="Tables" />
@@ -673,7 +684,11 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [JENZ_ACT_CLUB_DEF].[ACT_CDE] AS [ACT_CDE], 
     [JENZ_ACT_CLUB_DEF].[ACT_DESC] AS [ACT_DESC], 
     [JENZ_ACT_CLUB_DEF].[ACT_TYPE] AS [ACT_TYPE], 
-    [JENZ_ACT_CLUB_DEF].[ACT_TYPE_DESC] AS [ACT_TYPE_DESC]
+    [JENZ_ACT_CLUB_DEF].[ACT_TYPE_DESC] AS [ACT_TYPE_DESC], 
+    [JENZ_ACT_CLUB_DEF].[VP_IM] AS [VP_IM], 
+    [JENZ_ACT_CLUB_DEF].[VP_CC] AS [VP_CC], 
+    [JENZ_ACT_CLUB_DEF].[VP_LS] AS [VP_LS], 
+    [JENZ_ACT_CLUB_DEF].[VP_LW] AS [VP_LW]
     FROM [dbo].[JENZ_ACT_CLUB_DEF] AS [JENZ_ACT_CLUB_DEF]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="PART_DEF" EntityType="Self.PART_DEF" store:Type="Views" store:Schema="dbo">
@@ -902,6 +917,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImport Name="ALL_BASIC_INFO" ReturnType="Collection(Gordon360.ALL_BASIC_INFO_Result)" />
           <EntitySet Name="sysdiagrams" EntityType="Gordon360.sysdiagrams" />
           <EntitySet Name="DiningInfo" EntityType="Gordon360.DiningInfo" />
+          <FunctionImport Name="VICTORY_PROMISE_BY_STUDENT_ID" ReturnType="Collection(Gordon360.VICTORY_PROMISE_BY_STUDENT_ID_Result)">
+          <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
+          </FunctionImport>
 
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
@@ -1434,11 +1452,19 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <EntityType Name="JENZ_ACT_CLUB_DEF">
           <Key>
             <PropertyRef Name="ACT_CDE" />
+            <PropertyRef Name="VP_IM" />
+            <PropertyRef Name="VP_CC" />
+            <PropertyRef Name="VP_LS" />
+            <PropertyRef Name="VP_LW" />
           </Key>
           <Property Name="ACT_CDE" Type="String" Nullable="false" MaxLength="8" FixedLength="true" Unicode="false" />
           <Property Name="ACT_DESC" Type="String" MaxLength="45" FixedLength="true" Unicode="false" />
           <Property Name="ACT_TYPE" Type="String" MaxLength="3" FixedLength="true" Unicode="false" />
           <Property Name="ACT_TYPE_DESC" Type="String" MaxLength="60" FixedLength="true" Unicode="false" />
+          <Property Name="VP_IM" Type="Int32" Nullable="false" />
+          <Property Name="VP_CC" Type="Int32" Nullable="false" />
+          <Property Name="VP_LS" Type="Int32" Nullable="false" />
+          <Property Name="VP_LW" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="PART_DEF">
           <Key>
@@ -1545,6 +1571,12 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="InitialBalance" Type="Int32" />
           <Property Name="PlanType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
         </EntityType>
+        <ComplexType Name="VICTORY_PROMISE_BY_STUDENT_ID_Result">
+          <Property Type="Int32" Name="VP_IM_SCORE" Nullable="true" />
+          <Property Type="Int32" Name="VP_CC_SCORE" Nullable="true" />
+          <Property Type="Int32" Name="VP_LS_SCORE" Nullable="true" />
+          <Property Type="Int32" Name="VP_LW_SCORE" Nullable="true" />
+        </ComplexType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2141,6 +2173,10 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySetMapping Name="JENZ_ACT_CLUB_DEF">
             <EntityTypeMapping TypeName="Gordon360.JENZ_ACT_CLUB_DEF">
               <MappingFragment StoreEntitySet="JENZ_ACT_CLUB_DEF">
+                <ScalarProperty Name="VP_LW" ColumnName="VP_LW" />
+                <ScalarProperty Name="VP_LS" ColumnName="VP_LS" />
+                <ScalarProperty Name="VP_CC" ColumnName="VP_CC" />
+                <ScalarProperty Name="VP_IM" ColumnName="VP_IM" />
                 <ScalarProperty Name="ACT_TYPE_DESC" ColumnName="ACT_TYPE_DESC" />
                 <ScalarProperty Name="ACT_TYPE" ColumnName="ACT_TYPE" />
                 <ScalarProperty Name="ACT_DESC" ColumnName="ACT_DESC" />
@@ -2257,6 +2293,16 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="VICTORY_PROMISE_BY_STUDENT_ID" FunctionName="Gordon360.Store.VICTORY_PROMISE_BY_STUDENT_ID">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.VICTORY_PROMISE_BY_STUDENT_ID_Result">
+                <ScalarProperty Name="VP_IM_SCORE" ColumnName="VP_IM_SCORE" />
+                <ScalarProperty Name="VP_CC_SCORE" ColumnName="VP_CC_SCORE" />
+                <ScalarProperty Name="VP_LS_SCORE" ColumnName="VP_LS_SCORE" />
+                <ScalarProperty Name="VP_LW_SCORE" ColumnName="VP_LW_SCORE" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
