@@ -644,6 +644,7 @@ namespace Gordon360.Controllers.Api
             string root = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_ID_SUBMISSION_PATH"];
             var provider = new MultipartFormDataStreamProvider(root);
             var fileName = username + "_" + _accountService.GetAccountByUsername(username).Barcode + ".jpg";
+            //var fileName = _accountService.GetAccountByUsername(username).Barcode + ".jpg";
 
             try
             {
