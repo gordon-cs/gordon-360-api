@@ -654,14 +654,11 @@ Clone the project from the github site:
 Navigate to the API Tests folder:
 `cd gordon-360-api/Tests/ApiEndpoints/`
 
-Install the py requirement files with this command. This should install the request module as well as other needed modules:
-"pip install -r requirements.txt"
+Install the python request module as well as other requirements with the command: `pip install -r requirements.txt`
 
-Create the `test_credentials.py` file and define the six variables mentioned above.
+Create the `test_credentials.py` file (or copy it with `cp /c/users/public/documents/test_credentials.py .` -- notice the trailing dot).  It should define the six variables mentioned above (`username`, `password`, `id_number`, etc.)
 
 Make sure the credentials you enter match the descriptions provided above.
-Install requirements before you run any tests: `pip install -r requirements.txt`
-
 
 Verify that the variables defined in `test_config.py` are correct.
 
@@ -674,7 +671,7 @@ Run the tests:
 
 #### Running the Server Locally
 
-* Before you begin you will have to add the `secrets.config` file to the folder that you are working from. The file is located on the CS-RDSH-02 virtual machine in `C:\Users\Public\Public Documents\` Copy the file `secrets.config` to the same folder in your project that contains the `web.config` file; currently this is in `gordon-360-api\Gordon360`. This will allow you to run the server locally.
+* Before you begin you will have to add the `secrets.config` file to the folder that you are working from. The file is located on the CS-RDSH-02 virtual machine in `C:\Users\Public\Public Documents\` (or `/c/users/public/documents\` when in git-bash). Copy the file `secrets.config` to the same folder in your project that contains the `web.config` file; currently this is in `gordon-360-api\Gordon360`. This will allow you to run the server locally.
 
 * If you are using the virtual machine you will need to run the server on an unused port.  To change the port that the server is running, open the solution file in Visual Studio.  In the solution explorer, right click the name of the project (Gordon360) and select properties.  Choose the Web tab and change the Project Url to an unused port. Then click Create Virtual Directory. Press OK on the dialog box, and you're good to go!
 
