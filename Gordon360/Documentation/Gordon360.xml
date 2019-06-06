@@ -254,6 +254,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.PostIDImage">
+            <summary>
+            Set an IDimage for a user
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.ResetImage">
             <summary>
             Reset the profile Image
@@ -1137,7 +1143,14 @@
         </member>
         <member name="M:Gordon360.Services.ProfileService.GetPhotoPath(System.String)">
             <summary>
-            get photo path
+            Get photo path for profile
+            </summary>
+            <param name="id">id</param>
+            <returns>PhotoPathViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetIDPhotoPath(System.String)">
+            <summary>
+            Get ID photo path
             </summary>
             <param name="id">id</param>
             <returns>PhotoPathViewModel if found, null if not found</returns>
