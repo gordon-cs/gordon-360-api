@@ -661,7 +661,7 @@ namespace Gordon360.Controllers.Api
                 {
 
                     di = new DirectoryInfo(root); //di is declared at beginning of try.
-                    System.IO.File.Move(file.LocalFileName, di.FullName + "\\" + fileName); //upload
+                    System.IO.File.Move(file.LocalFileName, di.FullName + fileName); //upload
                 }
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
