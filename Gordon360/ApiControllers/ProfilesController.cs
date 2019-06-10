@@ -35,6 +35,8 @@ namespace Gordon360.Controllers.Api
         private IProfileService _profileService;
         private IAccountService _accountService;
         private IRoleCheckingService _roleCheckingService;
+        private IEmailService _emailService;
+
 
         public ProfilesController()
         {
@@ -42,6 +44,7 @@ namespace Gordon360.Controllers.Api
             _profileService = new ProfileService(_unitOfWork);
             _accountService = new AccountService(_unitOfWork);
             _roleCheckingService = new RoleCheckingService(_unitOfWork);
+            _emailService = new EmailService(_unitOfWork);
         }
 
         public ProfilesController(IProfileService profileService)
@@ -635,7 +638,7 @@ namespace Gordon360.Controllers.Api
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             string root = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_ID_SUBMISSION_PATH"];
-            var fileName = _accountService.GetAccountByUsername(username).Barcode + ".jpg";
+            var fileName = username + _accountService.GetAccountByUsername(username).Barcode + ".jpg";
             var provider = new CustomMultipartFormDataStreamProvider(root);
 
             if (!Request.Content.IsMimeMultipartContent())
@@ -663,6 +666,13 @@ namespace Gordon360.Controllers.Api
                     di = new DirectoryInfo(root); //di is declared at beginning of try.
                     System.IO.File.Move(file.LocalFileName, di.FullName + "\\" + fileName); //upload
                 }
+
+                Debug.WriteLine("Preparing to send email for: " + username);
+                //Send email notification to IDcard.cts@gordon.edu that new ID photo was submitted
+                string[] toEmail = new string[] { "isaac.bleecker@gordon.edu" };
+                _emailService.SendEmails(toEmail, "cct.service@gordon.edu", "New ID photo submitted by " + username, "", "Gordon16!");
+                Debug.WriteLine("Email sent?");
+
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (System.Exception e)
