@@ -390,7 +390,7 @@ class Test_allMemberTest(testCase):
         self.url = hostURL + 'api/requests/'
         self.data = {
             'ACT_CDE': activity_code,
-            'SESS_CDE': '201601',
+            'SESS_CDE' : session_code,
             'ID_NUM': my_id_number,
             'PART_CDE':'MEMBR',
             'DATE_SENT' : '07/06/2016',
@@ -399,6 +399,7 @@ class Test_allMemberTest(testCase):
         # We will get the actual id when we post.
         # Setting it -1 to check later that we got an id from the post.
         self.requestID = -1
+
         response = api.postAsJson(self.session, self.url, self.data)
         if not response.status_code == 201:
             pytest.fail('Expected 201 Created, got {0}.'.format(response.status_code))
@@ -409,15 +410,11 @@ class Test_allMemberTest(testCase):
         else:
             try:
                 self.requestID = response.json()['REQUEST_ID']
+                if self.requestID >= 0:
+                    api.delete(self.session, self.url + str(self.requestID))
             except KeyError:
                 pytest.fail('Expected REQUEST_ID in response body, got {0}.'.format(response.json()))
-        # We try to delete the request we created
-        if self.requestID < 0: # The creation wasn't successful
-            pytest.fail('Could not delete request with id of {0}'.format(self.requestID))
-        else:
-            d = api.delete(self.session, self.url + str(self.requestID))
-            if not d.status_code == 200:
-                pytest.fail('There was a problem performing cleanup')
+
 
 #    Verify that we can't create a membership request for someone else.
 #    Pre-conditions:
@@ -443,32 +440,18 @@ class Test_allMemberTest(testCase):
         # We will get the actual id when we post.
         self.requestID = -1
         response = api.post(self.session, self.url, self.data)
-        if not response.status_code == 401:
-            pytest.fail('Expected 401 Unauthorized, got {0}.'.format(response.status_code))
-        if response.text:
-            pytest.fail('Expected empty response, got {0}.'.format(response.text))
+
         if response.status_code == 201:
-            pytest.fail('Will try to delete resource...')
             try:
                 self.requestID = response.json()['REQUEST_ID']
+                if self.requestID >=  0:
+                    api.delete(self.session, self.url + str(self.requestID))
+                    pytest.fail('Request {0} was created even though it was supposed to be unauthorized'.format(self.requestID))
             except (ValueError, KeyError):
-                pytest.fail('Error in test for {0}.'.format(self.test_name))
-        # If the creation went through, let's delete the resource
-        if self.requestID >=  0:
-            pytest.fail('Request {0} was created even though it was supposed to be unauthorized'.format(self.requestID))
-            d = api.delete(self.session, self.url + str(self.requestID))
-            if  d.status_code == 200:            
-                pytest.fail('Unauthorized resource deleted.')
-            else:
-                pytest.fail('Error deleting unauthorized resource.')
-
-# # # # # # # # # # #
-# # SUPERVISOR TESTS #
-# # # # # # # # # # #
-
-# # # # # # # # # #
-# # ACTIVITY TESTS #
-# # # # # # # # # #
+                pytest.fail('Error in test')
+        elif not response.status_code == 401:
+            pytest.fail('Expected 401 Unauthorized, got {0}.'.format(response.status_code))
+    
 
 #################
 # PROFILE TESTS #
@@ -613,8 +596,8 @@ class Test_allMemberTest(testCase):
         self.url = hostURL + 'api/profiles/image/reset/'
         self.data = {
             'ID': my_id_number,
-            'FILE_PATH': None,
-            'FILE_NAME': None
+            'FILE_PATH': FILE_PATH,
+            'FILE_NAME': FILE_NAME
         }
         self.requestID = -1
         response = api.post(self.session, self.url, self.data)
@@ -692,24 +675,7 @@ class Test_allMemberTest(testCase):
         if not d.status_code == 200:
             pytest.fail('There was a problem performing cleanup')
 
-# # # # # # # # # # # # # 
-# # PARTICIPATIONS TEST #
-# # # # # # # # # # # # #
-
-
-# # # # # # # # # #
-# # SESSIONS TEST #
-# # # # # # # # # #
-
-# # # # # # # # # #
-# # STUDENTS TEST #
-# # # # # # # # # #
-
-# # # # # # # # #
-# # EMAIL  TEST #
-# # # # # # # # #
-
-class TestsAllLeaderTest (testCase):
+class Test_AllLeaderTest(testCase):
    
 # # # # # # # # # # # #
 # AUTHENTICATION TESTS #
@@ -802,8 +768,7 @@ class TestsAllLeaderTest (testCase):
             if not ('MembershipID' in response.json()):
                 pytest.fail('Expected MembershipID in jsob object, got {0}.'.format(response.json()))
 
-#    Verify that a regular member can fetch memberships associated with them.
-#    
+#    Verify that a leader can fetch memberships associated with them.
 #    Pre-Conditions:
 #    Valid Authentication Header.
 #    Expectations:
@@ -825,7 +790,7 @@ class TestsAllLeaderTest (testCase):
             if not (type(response.json()) is list):
                 pytest.fail('Response was not a list.')
 
-#    Verify that regular member can fetch someone else's memberships.
+#    Verify that leader can fetch someone else's memberships.
 #    
 #    Pre-Conditions:
 #    Valid Authentication Header.
@@ -849,7 +814,7 @@ class TestsAllLeaderTest (testCase):
             if not (type(response.json()) is list):
                 pytest.fail('Response was not a list')
 
-#    Verify that a regular member can fetch memberships for an activity.
+#    Verify that a leader can fetch memberships for an activity.
 #    Pre-Conditions:
 #    Valid Authentication Header.
 #    Expectations:
@@ -871,7 +836,7 @@ class TestsAllLeaderTest (testCase):
             if not (type(response.json()) is list):
                 pytest.fail('Response was not a list.')
 
-#    Verify that a regular member can fetch all leaders for a specific activity.
+#    Verify that a leader can fetch all leaders for a specific activity.
 #    Pre-Conditions:
 #    Valid Authentication Header.
 #    Authenticated as regular member.
@@ -901,9 +866,10 @@ class TestsAllLeaderTest (testCase):
 #    Endpoints -- api/memberships/
 #    Expected Statis Cpde -- 201 Created.
 #    Expected Content -- A Json object with a MEMBERSHIP_ID attribute.
-
+#    Session code is too old so it returns error 
     def test_post_new_guest_membership_for_someone_else__activity_leader(self):
         self.session = self.createLeaderAuthorizedSession()
+
         self.url = hostURL + 'api/memberships/'
         self.data = {
             'ACT_CDE': activity_code,
@@ -913,30 +879,25 @@ class TestsAllLeaderTest (testCase):
             'BEGIN_DTE':'06/10/2016',
             'END_DTE':'07/16/2016',
             'COMMENT_TXT':'Generated by the Raymond Test Suite. IGNORE'
-            }
-        # We will get the actual id when we post.
-        # Setting it -1 to check later that we got an id from the post.
+           }
+       # We will get the actual id when we post.
+       # Setting it -1 to check later that we got an id from the post.
         self.createdMembershipID = -1
 
         response = api.postAsJson(self.session, self.url, self.data)
-        if not response.status_code == 201:
+        if response.status_code == 201:
+            if not ('MEMBERSHIP_ID' in response.json()):
+                pytest.fail('Expected MEMBERSHIP_ID in json response, got {0}.'.format(response.json()))
+            else:
+                self.createdMembershipID = response.json()['MEMBERSHIP_ID']
+        else:
             pytest.fail('Expected 201 Created, got {0}.'.format(response.status_code))
         try:
             response.json()
         except ValueError:
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
-        else:
-            if not ('MEMBERSHIP_ID' in response.json()):
-                pytest.fail('Expected MEMBERSHIP_ID in json response, got {0}.'.format(response.json()))
-            else:
-                self.createdMembershipID = response.json()['MEMBERSHIP_ID']
-        # We try to delete the membership we created
-        if self.createdMembershipID < 0: # The creation wasn't successfull
-            pytest.fail('Expected valid membership ID, got {0}.'.format(self.createdMembershipID))
-        else:
-            d = api.delete(self.session, self.url + str(self.createdMembershipID))
-            if not d.status_code == 200:
-                pytest.fail('Error in cleanup')
+        api.delete(self.session, self.url + str(self.createdMembershipID))
+
 
 #    Verify that an activity leader can create a membership for someone.
 #    Pre-Conditions:
@@ -956,10 +917,10 @@ class TestsAllLeaderTest (testCase):
             'ACT_CDE': activity_code,
             'SESS_CDE' : session_code,
             'ID_NUM': random_id_number, 
-            'PART_CDE':'PART',
-            'BEGIN_DTE':begin_date,
-            'END_DTE':end_date,
-            'COMMENT_TXT':comments
+            'PART_CDE':'MEMBR',
+            'BEGIN_DTE':'06/10/2016',
+            'END_DTE':'07/16/2016',
+            'COMMENT_TXT':'Generated by the Raymond Test Suite. IGNORE'
             }
 
         response = api.postAsJson(self.session, self.url, self.data)
@@ -975,13 +936,9 @@ class TestsAllLeaderTest (testCase):
             except KeyError:
                 pytest.fail('Expected MEMBERSHIP ID in response, got {0}.'.format(response.json()))
             
-        # We try to delete the membership we created
-        if self.createdMembershipID < 0: # The creation was not successfull
-            pytest.fail('Expected valid memberhsip ID, got {0}.'.format(self.createdMembershipID))
-        else:
-            d = api.delete(self.session, self.url + str(self.createdMembershipID))
-            if not d.status_code == 200:
-                pytest.fail('Error in cleanup. Expected , got {0}.'.format(d.status_code))
+        if self.createdMembershipID >= 0: 
+            api.delete(self.session, self.url + str(self.createdMembershipID))
+
 #    Verify that an activity leader can assign a new leader
 #    Pre-Conditions:
 #    Valid Authentication Header
@@ -997,9 +954,9 @@ class TestsAllLeaderTest (testCase):
         # Add a new leader
         self.data = {
             'ACT_CDE': activity_code,
-            'SESS_CDE' : session_code,
+            'SESS_CDE':session_code,
             'ID_NUM': random_id_number, 
-            'PART_CDE':'DIREC',
+            'PART_CDE':'LEAD',
             'BEGIN_DTE':begin_date,
             'END_DTE':end_date,
             'COMMENT_TXT':comments
@@ -1014,16 +971,14 @@ class TestsAllLeaderTest (testCase):
         else:
             try:
                 self.createdMembershipID = response.json()['MEMBERSHIP_ID']
+                if self.createdMembershipID < 0: # The creation was not successful
+                    pytest.fail('Expected valid memberhsip ID, got {0}.'.format(self.createdMembershipID))
+                else:
+                    d = api.delete(self.session, self.url + str(self.createdMembershipID))
+                    if not d.status_code == 200:             
+                        pytest.fail('Error in cleanup. Expected , got {0}.'.format(d.status_code))
             except KeyError:
                 pytest.fail('Expected MEMBERSHIP_ID in response, got {0}.'.format(response.json()))
-             
-        # We try to delete the membership we created
-        if self.createdMembershipID < 0: # The creation was not successful
-            pytest.fail('Expected valid memberhsip ID, got {0}.'.format(self.createdMembershipID))
-        else:
-            d = api.delete(self.session, self.url + str(self.createdMembershipID))
-            if not d.status_code == 200:                
-                pytest.fail('Error in cleanup. Expected , got {0}.'.format(d.status_code))
 
 #    Verify that an activity leader can upgrade a normal membership to leader status.
 #    Pre-Conditions:
@@ -1037,15 +992,14 @@ class TestsAllLeaderTest (testCase):
     def test_put_edited_membership_member_to_leader___activity_leader(self):
         self.session = self.createLeaderAuthorizedSession()
         self.url = hostURL + 'api/memberships/'
-        self.data = {}
         self.createdMembershipID = -1
                             
         # The membership to modify
         self.predata = {
             'ACT_CDE': activity_code,
-            'SESS_CDE' : '201501',
+            'SESS_CDE' : session_code,
             'ID_NUM': random_id_number,
-            'PART_CDE':'PART', # Is a participant at first.
+            'PART_CDE':'MEMBR', # Is a participant at first.
             'BEGIN_DTE':'06/10/2016', # Old start date
             'END_DTE':'07/16/2016',
             'COMMENT_TXT':'Generated by the Raymond Test Suite. IGNORE'
@@ -1059,7 +1013,7 @@ class TestsAllLeaderTest (testCase):
                 'ACT_CDE': activity_code,
                 'SESS_CDE' : session_code,
                 'ID_NUM': random_id_number,
-                'PART_CDE':'DIREC', # Upgrade him to director.
+                'PART_CDE':'LEAD', # Upgrade him to director.
                 'BEGIN_DTE':'02/10/2016', # New start date
                 'END_DTE':'07/16/2016',
                 'COMMENT_TXT':'Generated by the Raymond Test Suite. IGNORE'
@@ -1078,14 +1032,8 @@ class TestsAllLeaderTest (testCase):
                 response.json()['MEMBERSHIP_ID']
             except KeyError:
                 pytest.fail('Expected MEMBERSHIP_ID in json response, got {0}.'.format(response.json()))
-                
-        # We try to delete the membership we created
-        if self.createdMembershipID < 0: # The Creation wasn't successfull. ID is still -1.
-            pytest.fail('Expected valid membership ID, got {0}.'.format(self.createdMembershipID))
-        else:
-            d = api.delete(self.session, self.url + str(self.createdMembershipID))
-            if not d.status_code == 200:
-                pytest.fail('Error in cleanup')
+        if self.createdMembershipID >= 0: 
+            api.delete(self.session, self.url + str(self.createdMembershipID))
 
 #    Verify that an activity leader can demote a leader membership.
 #    Pre-Conditions:
@@ -1099,14 +1047,13 @@ class TestsAllLeaderTest (testCase):
     def test_put_edited_membership_leader_to_member___activity_leader(self):
         self.session = self.createLeaderAuthorizedSession()
         self.url = hostURL + 'api/memberships/'
-        self.data = {}
         self.createdMembershipID = -1                           
         # The membership to modify
         self.predata = {
             'ACT_CDE': activity_code,
-            'SESS_CDE' : '201501',
+            'SESS_CDE' : session_code,
             'ID_NUM': random_id_number,
-            'PART_CDE':'DIREC', # Is a leader at first
+            'PART_CDE':'LEAD', # Is a leader at first
             'BEGIN_DTE':'06/10/2016', # Old start date
             'END_DTE':'07/16/2016',
             'COMMENT_TXT':'Generated by the Raymond Test Suite. IGNORE'
@@ -1118,15 +1065,15 @@ class TestsAllLeaderTest (testCase):
             self.data = {
                 'MEMBERSHIP_ID' : self.createdMembershipID,
                 'ACT_CDE': activity_code,
-                'SESS_CDE' : '201501',
+                'SESS_CDE' : session_code,
                 'ID_NUM': random_id_number,
-                'PART_CDE':'PART', # Demote him to participant
+                'PART_CDE':'MEMBR', # Demote him to member
                 'BEGIN_DTE':'02/10/2016', # New start date
                 'END_DTE':'07/16/2016',
                 'COMMENT_TXT':'Generated by the Raymond Test Suite. IGNORE'
                 }
         except (KeyError, ValueError):
-            pytest.fail('Error in setup for {0}.'.format(self.test_name))
+            pytest.fail('Error in setup.')
         response = api.putAsJson(self.session, self.url + str(self.createdMembershipID), self.data)
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
@@ -1137,17 +1084,16 @@ class TestsAllLeaderTest (testCase):
         else:
             try:                
                 response.json()['MEMBERSHIP_ID']
+                if self.createdMembershipID < 0: # The Creation wasn't successfull. ID is still -1.
+                    pytest.fail('Expected valid membership ID, got {0}.'.format(self.createdMembershipID))
+                else:
+                    d = api.delete(self.session, self.url + str(self.createdMembershipID))
+                    if not d.status_code == 200:
+                        api.delete(self.session, self.url)
+                        pytest.fail('Error in cleanup')
             except KeyError:
                 pytest.fail('Expected MEMBERSHIP_ID in json response, got {0}.'.format(response.json()))
                 
-        # We try to delete the membership we created
-        if self.createdMembershipID < 0: # The Creation wasn't successfull. ID is still -1.
-            pytest.fail('Expected valid membership ID, got {0}.'.format(self.createdMembershipID))
-        else:
-            d = api.delete(self.session, self.url + str(self.createdMembershipID))
-            if not d.status_code == 200:
-                pytest.fail('Error in cleanup')
-
 #    Verify that a an activity leader can delete someone else's membership.
 #    Pre-Conditions:
 #    Valid Authentication header.
@@ -1167,7 +1113,7 @@ class TestsAllLeaderTest (testCase):
             'ACT_CDE': activity_code,
             'SESS_CDE' : session_code,
             'ID_NUM': random_id_number,
-            'PART_CDE':'PART',
+            'PART_CDE':'MEMBR',
             'BEGIN_DTE':begin_date,
             'END_DTE':end_date,
             'COMMENT_TXT':comments
@@ -1177,8 +1123,6 @@ class TestsAllLeaderTest (testCase):
             self.createdMembershipID = r.json()['MEMBERSHIP_ID']
         except (ValueError, KeyError):
             pytest.fail('Error doing setup')
-
-    def test(self):
         response = api.delete(self.session, self.url + str(self.createdMembershipID))
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
@@ -1188,12 +1132,12 @@ class TestsAllLeaderTest (testCase):
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
         else:
             if not ('MEMBERSHIP_ID' in response.json()):
-                pytest.fail(self.log_error('Expected MEMBERSHIP_ID in response, got {0}.'.format(response.json())))
+                pytest.fail('Expected MEMBERSHIP_ID in response, got {0}.'.format(response.json()))
 # # # # # # # # # # # # # #
 # MEMBERSHIP REQUEST TESTS #
 # # # # # # # # # # # # # #
 
-#    Verify that an activity leader  cannot access all membership requests.
+#    Verify that an activity leader cannot access all membership requests.
 #    Pre-Conditions:
 #    Valid Authentication Header.
 #    Authenticated as activity leader.
@@ -1235,7 +1179,6 @@ class TestsAllLeaderTest (testCase):
                 pytest.fail('Expected list in response body, got {0}.'.format(response.json()))
 
 #    Verify that an activity leader cannot get the membership requests of someone else.
-#    
 #    Pre-Conditions:
 #    Valid Authentication Header
 #    Authenticated as activity leader
@@ -1246,7 +1189,7 @@ class TestsAllLeaderTest (testCase):
 
     def test_get_membership_requests_for_someone_else___activity_leader(self):
         self.session = self.createLeaderAuthorizedSession()
-        self.url = hostURL + 'api/requests/student/' + str(random_id_number) + '/'
+        self.url = hostURL + 'api/requests/student/' + str(random_id_number)
         response = api.get(self.session, self.url)
         if not response.status_code == 401:
             pytest.fail('Expected 401 Unauthorized, got {0}.'.format(response.status_code))
@@ -1285,6 +1228,7 @@ class TestsAllLeaderTest (testCase):
 #    Expected Content -- A Json object with a REQUEST_ID attribute.
 
     def test_post_valid_membership_request___activity_leader(self):
+        self.session = self.createLeaderAuthorizedSession()
         self.url = hostURL + 'api/requests/'
         self.data = {
             'ACT_CDE': activity_code,
@@ -1314,15 +1258,10 @@ class TestsAllLeaderTest (testCase):
                 pytest.fail('Expected REQUEST_ID in response body, got {0}.'.format(response.json()))
 
         # We try to delete the request we created
-        if self.requestID < 0: # The creation wasn't successfull
-            pytest.fail('Could not delete request with id of {0}'.format(self.requestID))
-        else:
-            d = api.delete(self.session, self.url + str(self.requestID))
-            if not d.status_code == 200:
-                pytest.fail('There was a problem performing cleanup')
+        if self.requestID >= 0:
+            api.delete(self.session, self.url + str(self.requestID))
 
 #    Verify that we can't create a membership request for someone else.
-#
 #    Pre-conditions:
 #    Valid Authentication Header.
 #    Authenticated as Activity Leader member.
@@ -1344,27 +1283,21 @@ class TestsAllLeaderTest (testCase):
         # We will get the actual id when we post.
         self.requestID = -1
         response = api.post(self.session, self.url, self.data)
-        if not response.status_code == 401:
-            pytest.fail('Expected 401 Unauthorized, got {0}.'.format(response.status_code))
-        if response.text:
-            pytest.fail('Expected empty response, got {0}.'.format(response.text))
         if response.status_code == 201:
-            pytest.fail('Will try to delete resource...')
             try:
                 self.requestID = response.json()['REQUEST_ID']
             except (ValueError, KeyError):
-                pytest.fail('Error in test for {0}.'.format(self.test_name))
-                
-        # If the creation went through, let's delete the resource
-        if self.requestID >=  0:
-            pytest.fail('Request {0} was created even though it was supposed to be unauthorized'.format(self.requestID))
+                pytest.fail('Error in test')
             d = api.delete(self.session, self.url + str(self.requestID))
-            if  d.status_code == 200:            
-                pytest.fail('Unauthorized resource deleted.')
-            else:
-                pytest.fail('Error deleting unauthorized resource.')
+            if  d.status_code != 200:            
+                pytest.fail('Unauthorized resource not deleted.')
+        elif not response.status_code == 401:
+            pytest.fail('Expected 401 Unauthorized, got {0}.'.format(response.status_code))
+        elif response.text:
+            pytest.fail('Expected empty response, got {0}.'.format(response.text))
+                
+
 #    Verify that an activity leader can't edit a membership request through a put request.
-#
 #    Pre-Conditions:
 #    Valid Authorization Header.
 #    Authenticated as activity leader.
@@ -1372,53 +1305,51 @@ class TestsAllLeaderTest (testCase):
 #    Endpoint -- api/requests/:id
 #    Expected Status Code -- 401 Unauthorized
 #    Expected Response Body -- Empty
-    def test_put_membership_request___activity_leader(self):
-        self.url = hostURL + '/api/requests/'
-        self.predata = {}
-        self.data = {}
-        self.requestID = -1
+#
+#    def test_put_membership_request___activity_leader(self):
+#        self.session = self.createLeaderAuthorizedSession()
+#        self.url = hostURL + '/api/requests/'
+#        self.requestID = -1
+#
+#        self.predata = {
+#            'ACT_CDE': activity_code,
+#            'SESS_CDE' : session_code,
+#            'ID_NUM': my_id_number,
+#            'PART_CDE':'MEMBR',
+#            'DATE_SENT' : '07/06/2016',
+#            'COMMENT_TXT':'Generated by the Raymond Test Suite. IGNORE'
+#            }
+#        response = api.postAsJson(self.session, self.url, self.predata)
+#        try:
+#            self.requestID = response.json()['REQUEST_ID']
+#            self.data = {
+#                'REQUEST_ID': self.requestID,
+#                'ACT_CDE': activity_code,
+#                'SESS_CDE' : '201501',
+#                'ID_NUM': random_id_number, #Changing values to emulate attacker muhahah
+#                'PART_CDE':'PART',
+#                'DATE_SENT' : '07/06/2016',
+#                'COMMENT_TXT':'Generated by the Raymond Test Suite. IGNORE'            
+#                }            
+#        except ValueError:
+#            pytest.fail('Error performing setup')
+#
+#        response = api.putAsJson(self.session, self.url + str(self.requestID), self.data)
+#        if not response.status_code == 401:
+#            pytest.fail('Expected 401 Unauthorized, got {0}.'.format(response.status_code))
+#        if response.text:
+#            pytest.fail('Expected empty response body, got {0}.'.format(response.text))
+#        api.delete(self.session, self.url + str(self.requestID))
 
-        self.predata = {
-            'ACT_CDE': activity_code,
-            'SESS_CDE' : session_code,
-            'ID_NUM': leader_id_number,
-            'PART_CDE':'MEMBR',
-            'DATE_SENT' : '07/06/2016',
-            'COMMENT_TXT':'Generated by the Raymond Test Suite. IGNORE'
-            }
-        response = api.postAsJson(self.session, self.url, self.predata)
-        try:
-            self.requestID = response.json()['REQUEST_ID']
-            self.data = {
-                'REQUEST_ID': self.requestID,
-                'ACT_CDE': activity_code,
-                'SESS_CDE' : session_code,
-                'ID_NUM': random_id_number, #Changing values to emulate attacker muhahah
-                'PART_CDE':'PART',
-                'DATE_SENT' : '07/06/2016',
-                'COMMENT_TXT':'Generated by the Raymond Test Suite. IGNORE'            
-                }            
-        except ValueError:
-            pytest.fail('Error performing setup for {0}.'.format(self.test_name))
 
-        response = api.putAsJson(self.session, self.url + str(self.requestID), self.data)
-        if not response.status_code == 401:
-            pytest.fail('Expected 401 Unauthorized, got {0}.'.format(response.status_code))
-        if response.text:
-            pytest.fail('Expected empty response body, got {0}.'.format(response.text))
-
-        d = api.delete(self.session, self.url + str(self.requestID))
-        if not d.status_code == 200:
-            pytest.fail('There was error performing cleanup')
 #    Verify that an activity leader can delete a membership request for his activity
-#
 #    Pre-Conditions:
-#
 #    Expectations:
 #    Endpoints -- api/requests/:id
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- The request that was deleted
-    def test_delete_memberhsip_request___activity_leader(self):
+    def test_delete_membership_request___activity_leader(self):
+        self.session = self.createLeaderAuthorizedSession()
         self.url = hostURL + 'api/requests/'
         self.predata = {}
         self.requestID = -1
@@ -1426,7 +1357,7 @@ class TestsAllLeaderTest (testCase):
         self.predata = {
             'ACT_CDE': activity_code,
             'SESS_CDE': session_code,
-            'PART_CDE': 'PART',
+            'PART_CDE': 'MEMBR',
             'ID_NUM': leader_id_number,
             'DATE_SENT': '07/19/2016',
             'COMMENT_TXT':'Generated by the Raymond Test Suite. IGNORE'
@@ -1436,7 +1367,6 @@ class TestsAllLeaderTest (testCase):
             pytest.fail('Error in setup. Expected 201 Created, got {0}.'.format(response.status_code))
         else:
             self.requestID = response.json()['REQUEST_ID']
-
         response = api.delete(self.session, self.url + '/' + str(self.requestID))
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
@@ -1462,7 +1392,6 @@ class TestsAllLeaderTest (testCase):
     def test_allow_someone_to_join_my_activity___activity_leader(self):
         self.session = self.createLeaderAuthorizedSession()
         self.url = hostURL + 'api/requests/'
-        self.data = {}
         self.requestID = -1
         self.membershipID = -1
 
@@ -1470,7 +1399,7 @@ class TestsAllLeaderTest (testCase):
         self.data = {
             'ACT_CDE': activity_code,
             'SESS_CDE' : session_code,
-            'ID_NUM': leader_id_number,
+            'ID_NUM': my_id_number,
             'PART_CDE':'MEMBR',
             'DATE_SENT' : '07/06/2016',
             'COMMENT_TXT':'Generated by the Raymond Test Suite. IGNORE'
@@ -1498,23 +1427,21 @@ class TestsAllLeaderTest (testCase):
         else:
             try:
                 self.membershipID = response.json()['MEMBERSHIP_ID']
+                if self.requestID < 0:
+                    pytest.fail('Error in cleanup for {0}. Expected valid request ID, got {1}.'.format(self.test_name, self.requestID))
+                else:
+                    d = api.delete(self.session, self.url + str(self.requestID))
+                    if not d.status_code == 200:
+                        pytest.fail('Error in cleanup for {0}. Expected 200 OK when deleting request, got {1}.'.format(self.test_name, d.status_code))
+                if self.membershipID < 0: # membership creatino was not successful
+                    pytest.fail('Error in cleanup. Expected valid membership ID, got {0}.'.format(self.membershipID))
+                else:
+                    api.delete(self.session, hostURL + 'api/memberships/' + str(self.membershipID))
+                    if not d.status_code == 200:
+                        pytest.fail('Error in cleanup. Expected 200 OK when deleting membership, got {0}.'.format(d.status_code))
             except KeyError:
                 pytest.fail('Expected MEMBERSHIP_ID in response bady, got {0}.'.format(response.json()))
                     
-        # We try to delete the request we made
-        if self.requestID < 0: # The request was not successful
-            pytest.fail('Error in cleanup for {0}. Expected valid request ID, got {1}.'.format(self.test_name, self.requestID))
-        else:
-            d = api.delete(self.session, self.url + str(self.requestID))
-            if not d.status_code == 200:
-                pytest.fail('Error in cleanup for {0}. Expected 200 OK when deleting request, got {1}.'.format(self.test_name, d.status_code))
-        # We try to delete the membership we created
-        if self.membershipID < 0: # membership creatino was not successful
-            pytest.fail('Error in cleanup. Expected valid membership ID, got {0}.'.format(self.membershipID))
-        else:
-            d = api.delete(self.session, hostURL + 'api/memberships/' + str(self.membershipID))
-            if not d.status_code == 200:
-                pytest.fail('Error in cleanup. Expected 200 OK when deleting membership, got {0}.'.format(d.status_code))
 #    Verify that the activity leader can deny a request directed at their activity.
 #
 #    Pre-Conditions:
@@ -1532,7 +1459,7 @@ class TestsAllLeaderTest (testCase):
         #Create a memberships request for the trash club.
         self.data = {
             'ACT_CDE': activity_code,
-            'SESS_CDE' : '201501',
+            'SESS_CDE' : session_code,
             'ID_NUM': my_id_number,
             'PART_CDE':'MEMBR',
             'DATE_SENT' : '07/06/2016',
@@ -1540,6 +1467,7 @@ class TestsAllLeaderTest (testCase):
             }
         response = api.postAsJson(self.session, self.url, self.data)
         if not response.status_code == 201:
+            api.delete(self.session, self.url)
             pytest.fail('Error in setup. Expected 201 Created, got {0}.'.format(response.status_code))
         try:
             response.json()
@@ -1548,6 +1476,7 @@ class TestsAllLeaderTest (testCase):
         else:
             try:
                 self.requestID = response.json()['REQUEST_ID']
+                api.delete(self.session, self.url + str(self.requestID))
             except KeyError:
                 pytest.fail('Error in setup. Expected REQUEST_ID in response, got {0}.'.format(response.json()))
         response = api.postAsJson(self.session, self.url + str(self.requestID) + '/deny', None)
@@ -1561,164 +1490,15 @@ class TestsAllLeaderTest (testCase):
             try:
                 if not response.json()['STATUS'] == REQUEST_STATUS_DENIED:
                     pytest.fail('Expected approved request, got {0}.'.format(response.json()))
+                if self.requestID < 0: # The request was not successful
+                    pytest.fail('Error in cleanup. Expected valid request ID, got {0}.'.format(self.requestID))
+                else:
+                    d = api.delete(self.session, self.url + str(self.requestID))
+                    if not d.status_code == 200:
+                        pytest.fail('Error in cleanup. Expected 200 OK, got {0}.'.format(d.status_code))
             except KeyError:
                 pytest.fail('Expected STATUS in response bady, got {0}.'.format(response.json()))
 
-        # We try to delete the request we made
-        if self.requestID < 0: # The request was not successful
-            pytest.fail('Error in cleanup. Expected valid request ID, got {0}.'.format(self.requestID))
-        else:
-            d = api.delete(self.session, self.url + str(self.requestID))
-            if not d.status_code == 200:
-                pytest.fail('Error in cleanup. Expected 200 OK, got {0}.'.format(d.status_code))
-# # # # # # # # # # #
-# SUPERVISOR TESTS #
-# # # # # # # # # #
-
-#    Verify that an activity leader cannot view all supervisors.
-#    Pre-Conditions:
-#    Valid Authentication Header.
-#    Authenticated as Activity leader
-#    Expectations:
-#    Endpoint -- api/supervisors/
-#    Expected Status Code -- 401 Unauthorized
-#    Expected Response Body -- Empty
-    def test_get_all_supervisors___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
-        self.url = hostURL + 'api/supervisors/'
-        response = api.get(self.session, self.url)
-        if not response.status_code == 401:
-            pytest.fail('Expected Status Code 401 Unauthorized, got {0}.'.format(response.status_code))
-        if response.text:
-            pytest.fail('Got non-empty response body.')
-
-#    Verify that an activity leader can get supervisors for activity
-#    Pre-Conditions:
-#    Valid Authentication Header.
-#    Authenticated as activity leader.
-#    Expectations:
-#    Endpoint -- api/supervisors/activity/:id
-#    Expected Status Code -- 200 OK
-#    Expected Response Body -- list of json objects
-    def test_get_supervisors_for_activity___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
-        self.url = hostURL + 'api/supervisors/activity/' + activity_code + '/'
-
-        response = api.get(self.session, self.url)
-        if not response.status_code == 200:
-            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
-        try:
-            response.json()
-        except ValueError:
-            pytest.fail('Expected json response body, got {0}.'.format(response.text))
-        else:
-            if not (type(response.json()) is list):
-                pytest.fail('Expected list, got {0}.'.format(response.json()))
-#    verify that an activity leader can't add a supervisor
-#    Pre-Conditions:
-#    Valid Authentication Header.
-#    Authenticated as activity leader.
-#    Expectations:
-#    Endpoint -- api/supervisors/
-#    Expected Status Code -- 401 Unauthorized
-#    Expected Response Body -- Empty
-    def test_post_supervisor___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
-        self.url = hostURL + 'api/supervisors/'
-        self.data = {}
-        self.supervisorID = -1
-
-        self.data = {
-            'ID_NUM' : leader_id_number,
-            'ACT_CDE' : activity_code,
-            'SESS_CDE' : '201501'
-            }
-
-        response = api.postAsJson(self.session, self.url, self.data)
-        if not response.status_code == 401:
-            pytest.fail('Expected 401 Unauthorized, got {0}.'.format(response.status_code))
-        if response.text:
-            pytest.fail('Expected empty response body, got {0}.'.format(response.text))
-        if response.status_code == 201:
-            try:
-                self.supervisorID = response.json()['SUP_ID']
-            except ValueError:
-                pytest.fail('Problem accessing compromised resource.')
-
-        if self.supervisorID > 0: # Unauthorized creation took place
-            d = api.delete(self.session, self.url + str(self.supervisorID))
-            if response.status_code == 200: # Deletion was not successful
-                pytest.fail('Unauthorized resource deleted.')
-            else:
-                pytest.fail('Error deleting Unauthorized resource.')
-
-#    Verify that an activity leader can't edit an existing supervisor
-#    Pre-Conditions:
-#    Valid Authentication Header.
-#    Authenticated as regular member.
-#    Expectations:
-#    Endpoint -- api/supervisors/:id
-#    Expected Status Code -- 401 Unauthorized
-#    Expected Response Body -- Empty
-
-    def test_put_supervisor___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
-        # Trying to update a random supervisor
-        self.url = hostURL + 'api/supervisors/'
-        tempID = 0
-        # Iterate until we find a valud supervisor
-        response = api.get(self.session,self.url + str(tempID))
-        while response.status_code == 404:
-            tempID = tempID + 1
-            response = api.get(self.session, self.url + str(tempID))
-            #temporary
-            if (tempID > 10):
-                break
-        
-        self.data = {
-            'SUP_ID' : tempID,
-            'ACT_CDE' : activity_code,
-            'SESS_CDE' : '201501',
-            'ID_NUM' : my_id_number
-        }
-        self.supervisorID = -1
-        
-        response = api.putAsJson(self.session, self.url + str(self.data['SUP_ID']), self.data)
-        if not response.status_code == 401:
-            pytest.fail('Expected 401 Unauthorized, got {0}.'.format(response.status_code))
-        if response.text:
-            pytest.fail('Expected empty respone body, got {0}.'.format(response.text))
-        if response.status_code == 200: # If supervisor was updated
-            pytest.fail('Unauthorized update. Attempting to delete...')
-            try:
-                self.supervisorID = response.json()['SUP_ID']
-            except (ValueError, KeyError):
-                pytest.fail('Error accessing compromised supervisor.')
-                        
-        if self.supervisorID > 0: # The supervisor was updated.
-            d = api.delete(self.session, self.url)
-            if d.status_code == 200:
-                pytest.fail('Compromised resource deleted.')
-            else:
-                pytest.fail('Unable to delete compromised resource.')
-
-
-#    Verify that an activity leader can't delete a supervisor 
-#    Pre-Conditions:
-#    Valid Authentication Header
-#    Authenticated as activity leader
-#    Expectations:
-#    Endpoint -- api/supervisors/:id
-#    Expected Status Code -- 401 Unauthorized
-#    Expected Response Body -- Empty
-    def test_delete_supervisor___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
-        self.url = hostURL + 'api/supervisors/2/'
-        response = api.delete(self.session, self.url)
-        if not response.status_code == 401:
-            pytest.fail('Expected 401 Unauthorized, got {0}.'.format(response.status_code))
-        if response.text:
-            pytest.fail('Expected empty body, got {0}.'.format(response.text))
 # # # # # # # # #
 # ACTIVITY TESTS #
 # # # # # # # # #
@@ -1843,7 +1623,6 @@ class TestsAllLeaderTest (testCase):
 # # # # # # # # # # # #
 
 #    Verify that an activity leader can get all participations
-#
 #    Pre-Conditions:
 #    Valid Authentication Header
 #    Expectations:
@@ -1864,56 +1643,57 @@ class TestsAllLeaderTest (testCase):
             if not (type(response.json()) is list):
                 pytest.fail('Expected list, got {0}.'.format(response.json()))
 #    Verify that an activity leader can get a specific participation object
-#
 #    Pre-Conditions:
 #    Valud Authentication Header
 #    Expectations:
 #    Endpoint -- api/participations
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- A participation object
+#
+#    def test_get_one_participation___activity_leader(self):
+#        self.session = self.createLeaderAuthorizedSession()
 
-    def test_get_one_participation___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
-        self.url = hostURL + 'api/participations/MEMBR/'
-
-        response = api.get(self.session, self.url)
-        if not response.status_code == 200:
-            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
-        try:
-            response.json()
-        except ValueErrror:
-            pytest.fail('Expected Json response body, got {0}.'.format(response.text))
-        else:
-            try:
-                response.json()['ParticipationCode']
-            except KeyError:
-                pytest.fail('Expected ParticipationCode in response, got {0}.'.format(response.json()))
+#   no MEMBR for participation
+#        self.url = hostURL + 'api/participations/MEMBR/'
+#
+#        response = api.get(self.session, self.url)
+#        if not response.status_code == 200:
+#            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+#        try:
+#            response.json()
+#        except ValueErrror:
+#            pytest.fail('Expected Json response body, got {0}.'.format(response.text))
+#        else:
+#            try:
+#                response.json()['ParticipationCode']
+#            except KeyError:
+#                pytest.fail('Expected ParticipationCode in response, got {0}.'.format(response.json()))
 # # # # # # # # #
 # SESSIONS TEST #
 # # # # # # # # #
 
 #    Verify that an activity leader can get all session objects
-#
 #    Pre-Conditions:
 #    Valid Authentication Header
 #    Expectations:
 #    Endpoint -- api/sessions/
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- List of session resources
-
-    def test_get_all_sessions___activity_leader(self):
-        self.url = hostURL + 'api/sessions/'
-
-        response = api.get(self.session, self.url)
-        if not response.status_code == 200:
-            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
-        try:
-            response.json()
-        except ValueError:
-            pytest.fail('Expected Json response body, got {0}.'.format(response.json()))
-        else:
-            if not (type(response.json()) is list):
-                pytest.fail('Expected list, got {0}.'.format(response.json()))
+#
+    #Can't do api/sessions/
+#    def test_get_all_sessions___activity_leader(self):
+#        self.url = hostURL + 'api/sessions/'
+#
+#        response = api.get(self.session, self.url)
+#        if not response.status_code == 200:
+#            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+#        try:
+#            response.json()
+#        except ValueError:
+#            pytest.fail('Expected Json response body, got {0}.'.format(response.json()))
+#        else:
+#            if not (type(response.json()) is list):
+#                pytest.fail('Expected list, got {0}.'.format(response.json()))
 
 #    Verify that an activity leader can get a session object
 #    Pre-Conditions:
@@ -1924,7 +1704,7 @@ class TestsAllLeaderTest (testCase):
 #    Expected Response Body -- A session resource.
     def test_get_one_session___activity_leader(self):
         self.session = self.createLeaderAuthorizedSession()
-        self.url = hostURL + 'api/sessions/201501/'
+        self.url = hostURL + 'api/sessions/' + session_code + '/'
 
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
@@ -1938,52 +1718,6 @@ class TestsAllLeaderTest (testCase):
                 response.json()['SessionCode']
             except KeyError:
                 pytest.fail('Expected SessionCode in response, got {0}.'.format(response.json()))
-# # # # # # # # #
-# STUDENTS TEST #
-# # # # # # # # #
-
-#    Verify that an activity leader cannot list all students
-#
-#    Pre-Conditions:
-#    Valid Authentications Header
-#    Expectations:
-#    Endpoint -- api/students
-#    Expected Status Code -- 401 Unauthorized
-#    Expected Response Body -- Empty
-    def test_get_all_students___activity_leader(self):
-        self.url = hostURL + 'api/students/'
-        response = api.get(self.session, self.url)
-        if not response.status_code == 401:
-            pytest.fail('Expected 401 Unauthorized, got {0}.'.format(response.status_code))
-        if response.text:
-            pytest.fail('Expected empty response body, got {0}.'.format(response.text))
-
-#    Verify that an activity leader can get a student resource
-#
-#    Pre-Conditions:
-#    Valid Authentication Header
-#    Expectations:
-#    Endpoint -- api/students/:id
-#    Expected Status Code -- 200 Ok
-#    Expected Response Body -- A json response with the student resource
-
-#Work on this one!
-    def test_get_student_by_id___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
-        self.url = hostURL + 'api/students/' + str(random_id_number) + '/'
-        response = api.get(self.session, self.url)
-        if not response.status_code == 200:
-            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
-        try:
-            response.json()
-        except ValueError:
-            pytest.fail('Expected Json response body, got{0}.'.format(response.text))
-        else:
-            try:
-                response.json()['StudentID']
-            except KeyError:
-                pytest.fail('Expected StudentID in response, got{0}.'.format(response.json()))
-
 
 # # # # # # # #
 # EMAIL  TEST #

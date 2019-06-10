@@ -8,7 +8,7 @@ activity_code = 'AJG'
 # Id number to use for testing
 random_id_number = 50153295
 # Session to use for testing
-session_code = '201501'
+session_code = '201809'
 # Participation Code that correspond to member:
 member_positions = ['MEMBR', 'GUEST', 'PART']
 # Date
@@ -25,12 +25,12 @@ leadership_positions = ['CAPT','CODIR','CORD','DIREC','PRES','VICEC','VICEP']
 
 # Profile image
 # Profile picture for testing
-FILE_PATH = './profile.jpg'
-FILE_NAME = ''
+FILE_PATH = './'
+FILE_NAME = 'profile.jpg'
 
 # API 
 hostURL = 'https://360ApiTrain.gordon.edu/'
-
+#hostURL = 'http://localhost:1025/'
 
 
 
