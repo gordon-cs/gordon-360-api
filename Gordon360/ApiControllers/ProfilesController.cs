@@ -35,8 +35,6 @@ namespace Gordon360.Controllers.Api
         private IProfileService _profileService;
         private IAccountService _accountService;
         private IRoleCheckingService _roleCheckingService;
-        private IEmailService _emailService;
-
 
         public ProfilesController()
         {
@@ -44,7 +42,6 @@ namespace Gordon360.Controllers.Api
             _profileService = new ProfileService(_unitOfWork);
             _accountService = new AccountService(_unitOfWork);
             _roleCheckingService = new RoleCheckingService(_unitOfWork);
-            _emailService = new EmailService(_unitOfWork);
         }
 
         public ProfilesController(IProfileService profileService)
