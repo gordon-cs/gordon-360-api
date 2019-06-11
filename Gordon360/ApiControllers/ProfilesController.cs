@@ -664,15 +664,8 @@ namespace Gordon360.Controllers.Api
                 {
 
                     di = new DirectoryInfo(root); //di is declared at beginning of try.
-                    System.IO.File.Move(file.LocalFileName, di.FullName + "\\" + fileName); //upload
+                    System.IO.File.Move(file.LocalFileName, di.FullName + fileName); //upload
                 }
-
-                Debug.WriteLine("Preparing to send email for: " + username);
-                //Send email notification to IDcard.cts@gordon.edu that new ID photo was submitted
-                string[] toEmail = new string[] { "isaac.bleecker@gordon.edu" };
-                _emailService.SendEmails(toEmail, "cct.service@gordon.edu", "New ID photo submitted by " + username, "", "Gordon16!");
-                Debug.WriteLine("Email sent?");
-
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (System.Exception e)
