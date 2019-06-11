@@ -15,6 +15,7 @@ namespace Gordon360.Repositories
         IRepository<ACT_INFO> ActivityInfoRepository { get; }
         IRepository<CM_SESSION_MSTR> SessionRepository { get; }
         IRepository<JNZB_ACTIVITIES> JenzibarActvityRepository { get; }
+        IRepository<STUDENTEMPLOYMENT> StudentEmploymentRepository {get;}
         IRepository<MEMBERSHIP> MembershipRepository { get; }
         IRepository<PART_DEF> ParticipationRepository { get; }
         IRepository<SUPERVISOR> SupervisorRepository { get; }

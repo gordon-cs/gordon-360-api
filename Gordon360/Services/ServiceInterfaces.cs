@@ -111,6 +111,11 @@ namespace Gordon360.Services
         IEnumerable<JNZB_ACTIVITIES> GetAll();
     }
 
+    public interface IStudentEmploymentService
+    {
+        StudentEmploymentViewModel Get(int id);
+    }
+    
     public interface IMembershipService
     {
         MembershipViewModel Get(int id);

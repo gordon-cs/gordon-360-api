@@ -1569,7 +1569,24 @@ class Test_AllLeaderTest(testCase):
             response.json()['ACT_CDE']
         except ValueError:
             pytest.fail('Expected ACT_CDE in response body, got {0}.'.format(response.json()))
+# # # # # # # # # # # #
+# STUDENTEMPLOYMENT TEST #
+# # # # # # # # # # # # 
 
+    def test_get_all_student_employment___activity_leader(self):
+        self.session = self.createLeaderAuthorizedSession()
+        self.url = hostURL + 'api/studentemployment/'
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json response body, got {0}.'.format(response.text))
+        else:
+            if not (type(response.json()) is list):
+                pytest.fail('Expected list, got {0}.'.format(response.json()))
+                
 # # # # # # # # # # # # 
 # PARTICIPATIONS TEST #
 # # # # # # # # # # # #
