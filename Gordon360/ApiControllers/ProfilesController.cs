@@ -635,7 +635,7 @@ namespace Gordon360.Controllers.Api
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             string root = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_ID_SUBMISSION_PATH"];
-            var fileName = _accountService.GetAccountByUsername(username).Barcode + ".jpg";
+            var fileName = username + "_" + _accountService.GetAccountByUsername(username).account_id + ".jpg";
             var provider = new CustomMultipartFormDataStreamProvider(root);
 
             if (!Request.Content.IsMimeMultipartContent())
