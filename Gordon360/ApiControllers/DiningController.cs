@@ -40,13 +40,15 @@ namespace Gordon360.ApiControllers
         /// <summary>
         ///  Gets information about student's dining plan and balance
         /// </summary>
+        /// <param name="personType">The type of person</param>
         /// <param name="id">The ID of the student</param>
         /// <param name="sessionCode">Current session code</param>
         /// <returns>A DiningInfo object</returns>
         [HttpGet]
-        [Route("{role}/{id}/{sessionCode}")]
-        public IHttpActionResult Get(string role, int id, string sessionCode)
+        [Route("{personType}/{id}/{sessionCode}")]
+        public IHttpActionResult Get(string personType, int id, string sessionCode)
         {
+            System.Diagnostics.Debug.Write("DiningController - personType: " + personType + "\n");
             if (!ModelState.IsValid)
             {
                 string errors = "";
@@ -60,7 +62,7 @@ namespace Gordon360.ApiControllers
                 }
                 throw new BadInputException() { ExceptionMessage = errors };
             }
-            if (role.Equals("student"))
+            if (personType.Contains("stu") || personType.Contains("god"))
             {
                 var result = _diningService.GetDiningPlanInfo(id, sessionCode);
                 if (result == null)
@@ -68,16 +70,16 @@ namespace Gordon360.ApiControllers
                     return NotFound();
                 }
                 return Ok(result);
-        }
+            }
             else
             {
                 var result = _diningService.GetBalance(id, "7295");
                 if (result == null)
                 {
                     return NotFound();
-    }
+                }
                 return Ok(result);
-}
+            }
         }
     }
 }
