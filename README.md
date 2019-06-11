@@ -709,6 +709,18 @@ To manually test the API, use an API development/testing app like [Postman](http
 	* Click the blue "Send" button
 
 
+## Database
+
+It's sometimes useful to look at the database directly, to see the schema or check data.  Here is how.
+* Use remote desktop to get to the Windows server VM
+* If SQL Server Management Studio is not pinned to the task bar, pin it by starting it and right clicking on it in the task bar to pin it)
+* Shift-right-click SSMS (SQL Server Management Studio) and select "Run as ..."
+* Run as "cct.service"
+* Connect to "ADMINTRAINSQL" database server (or "ADMINPRODSQL")
+* Expand "Databases" then "CCT" then "Views"
+* To see schemas, expand "dbo." entries and their "columns"
+* To see data, right-click a view and select "Select top 1000 rows"
+
 ## Troubleshooting
 
 #### 500 Server Error when updating Activity Images
