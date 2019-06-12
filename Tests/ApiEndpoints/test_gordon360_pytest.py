@@ -1575,7 +1575,7 @@ class Test_AllLeaderTest(testCase):
 
     def test_get_all_student_employment___activity_leader(self):
         self.session = self.createLeaderAuthorizedSession()
-        self.url = hostURL + 'api/studentemployment/'
+        self.url = hostURL + 'api/studentemployment/' + str(my_id_number)
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
