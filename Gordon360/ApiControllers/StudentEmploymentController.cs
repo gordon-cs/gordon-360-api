@@ -55,7 +55,7 @@ namespace Gordon360.Controllers.Api
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
             var id = _accountService.GetAccountByUsername(username).GordonID;
-
+            //var id = "50204266";
             var result = _studentEmploymentService.GetEmployment(id);
             if (result == null)
             {
