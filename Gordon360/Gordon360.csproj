@@ -297,6 +297,7 @@
     <Compile Include="Models\GRP_ADMIN_EMAILS_PER_ACT_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs" />
     <Compile Include="Models\JENZ_ACT_CLUB_DEF.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>

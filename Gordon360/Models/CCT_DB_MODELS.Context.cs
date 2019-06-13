@@ -45,6 +45,8 @@ public partial class CCTEntities1 : DbContext
 
     public virtual DbSet<MEMBERSHIP> MEMBERSHIP { get; set; }
 
+    public virtual DbSet<STUDENTEMPLOYMENT> STUDENTEMPLOYMENT { get; set; }
+
     public virtual DbSet<REQUEST> REQUEST { get; set; }
 
     public virtual DbSet<C360_SLIDER> C360_SLIDER { get; set; }
@@ -138,6 +140,15 @@ public partial class CCTEntities1 : DbContext
         return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<MEMBERSHIPS_PER_MEMBERSHIP_ID_Result>("MEMBERSHIPS_PER_MEMBERSHIP_ID", mEMBERSHIP_IDParameter);
     }
 
+    public virtual ObjectResult<STUDENT_JOBS_PER_ID_NUM_Result> STUDENT_JOBS_PER_ID_NUM(Nullable<int> gORDON_ID)
+    {
+        var gORDON_IDParameter = gORDON_ID.HasValue ?
+            new ObjectParameter("GORDON_ID", gORDON_ID) :
+            new ObjectParameter("GORDON_ID", typeof(int));
+
+
+        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<STUDENT_JOBS_PER_ID_NUM_Result>("STUDENT_JOBS_PER_ID_NUM", gORDON_IDParameter);
+    }
 
     public virtual ObjectResult<MEMBERSHIPS_PER_STUDENT_ID_Result> MEMBERSHIPS_PER_STUDENT_ID(Nullable<int> sTUDENT_ID)
     {

@@ -21,12 +21,17 @@ namespace Gordon360.Controllers.Api
     {
 
         private IStudentEmploymentService _studentEmploymentService;
-
+        private IProfileService _profileService;
+        private IAccountService _accountService;
+        private IRoleCheckingService _roleCheckingService;
 
         public StudentEmploymentController()
         {
-            IUnitOfWork _unitOfWork = new UnitOfWork();
+            var _unitOfWork = new UnitOfWork();
             _studentEmploymentService = new StudentEmploymentService(_unitOfWork);
+            _profileService = new ProfileService(_unitOfWork);
+            _accountService = new AccountService(_unitOfWork);
+            _roleCheckingService = new RoleCheckingService(_unitOfWork);
 
         }
         public StudentEmploymentController(IStudentEmploymentService studentEmploymentService)
@@ -42,32 +47,22 @@ namespace Gordon360.Controllers.Api
         /// <returns>The information about one specific membership</returns>
         // GET api/<controller>/5
         [HttpGet]
-        [Route("{id}")]
+        [Route("")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.STUDENTEMPLOYMENT)]
-        public IHttpActionResult Get(int id)
+        public IHttpActionResult Get()
         {
-            if(!ModelState.IsValid)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
-            var result =  _studentEmploymentService.Get(id);
+            var id = _accountService.GetAccountByUsername(username).GordonID;
 
-            if( result == null)
+            var result = _studentEmploymentService.GetEmployment(id);
+            if (result == null)
             {
                 return NotFound();
             }
+            return Ok(result);
 
-            StudentEmploymentViewModel employment = result;
-            return Ok(employment);
         }
 
     }

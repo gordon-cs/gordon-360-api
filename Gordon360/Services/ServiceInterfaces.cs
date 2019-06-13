@@ -113,7 +113,7 @@ namespace Gordon360.Services
 
     public interface IStudentEmploymentService
     {
-        StudentEmploymentViewModel Get(int id);
+        StudentEmploymentViewModel GetEmployment(string id);
     }
     
     public interface IMembershipService

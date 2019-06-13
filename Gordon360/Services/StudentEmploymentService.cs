@@ -32,31 +32,25 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="id">The membership id</param>
         /// <returns>MembershipViewModel if found, null if not found</returns>
-        public StudentEmploymentViewModel Get(int id)
+        public StudentEmploymentViewModel GetEmployment(string id)
         {
-            var query = _unitOfWork.StudentEmploymentRepository.GetById(id);
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
             if (query == null)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Student was not found." };
             }
 
-            var idParam = new SqlParameter("@MEMBERSHIP_ID", id);
-            var result = RawSqlQuery<StudentEmploymentViewModel>.query("MEMBERSHIPS_PER_MEMBERSHIP_ID @MEMBERSHIP_ID", idParam).FirstOrDefault();
+            var idParam = new SqlParameter("@GORDON_ID", Int32.Parse(id));
+            var result = RawSqlQuery<StudentEmploymentViewModel>.query("STUDENT_JOBS_PER_ID_NUM @GORDON_ID", idParam).FirstOrDefault();
 
             if (result == null)
             {
                 return null;
             }
             // Getting rid of database-inherited whitespace
-            result.ActivityCode = result.ActivityCode.Trim();
-            result.ActivityDescription = result.ActivityDescription.Trim();
-            result.SessionCode = result.SessionCode.Trim();
-            result.SessionDescription = result.SessionDescription.Trim();
-            result.IDNumber = result.IDNumber;
-            result.FirstName = result.FirstName.Trim();
-            result.LastName = result.LastName.Trim();
-            result.Participation = result.Participation.Trim();
-            result.ParticipationDescription = result.ParticipationDescription.Trim();
+            result.Job_Title = result.Job_Title.Trim();
+            result.Job_Department = result.Job_Department.Trim();
+            result.Job_Department_Name = result.Job_Department_Name.Trim();
 
             return result;
         }

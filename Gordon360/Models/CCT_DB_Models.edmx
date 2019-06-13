@@ -76,6 +76,17 @@
           <Property Name="GRP_ADMIN" Type="bit" />
           <Property Name="PRIVACY" Type="bit" />
         </EntityType>
+        <EntityType Name="STUDENTEMPLOYMENT">
+          <Key>
+            <PropertyRef Name="Job_Title" />
+          </Key>
+          <Property Name="Job_Title" Type="varchar" MaxLength="512" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Job_Department" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="Job_Department_Name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Job_Start_Date" Type="datetime" Nullable="false" />
+          <Property Name="Job_End_Date" Type="datetime" Nullable="true"/>
+          <Property Name="Job_Expected_End_Date" Type="datetime" Nullable="false" />
+        </EntityType>
         <EntityType Name="REQUEST">
           <Key>
             <PropertyRef Name="REQUEST_ID" />
@@ -443,6 +454,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <Function Name="MEMBERSHIPS_PER_MEMBERSHIP_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="MEMBERSHIP_ID" Type="int" Mode="In" />
         </Function>
+        <Function Name="STUDENT_JOBS_PER_ID_NUM" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="JOB_TITLE" Type="char" Mode="In" />
+        </Function>
         <Function Name="MEMBERSHIPS_PER_STUDENT_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="STUDENT_ID" Type="int" Mode="In" />
         </Function>
@@ -520,6 +534,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="CUSTOM_PROFILE" EntityType="Self.CUSTOM_PROFILE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="JNZB_ACTIVITIES" EntityType="Self.JNZB_ACTIVITIES" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MEMBERSHIP" EntityType="Self.MEMBERSHIP" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="STUDENTEMPLOYMENT" EntityType="Self.STUDENTEMPLOYMENT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="REQUEST" EntityType="Self.REQUEST" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="360_SLIDER" EntityType="Self.360_SLIDER" store:Type="Views" store:Schema="dbo">
@@ -782,6 +797,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImport Name="MEMBERSHIPS_PER_MEMBERSHIP_ID" ReturnType="Collection(Gordon360.MEMBERSHIPS_PER_MEMBERSHIP_ID_Result)">
           <Parameter Name="MEMBERSHIP_ID" Mode="In" Type="Int32" />
           </FunctionImport>
+          <FunctionImport Name="STUDENT_JOBS_PER_ID_NUM" ReturnType="Collection(Gordon360.STUDENT_JOBS_PER_ID_NUM_Result)">
+          <Parameter Name="JOB_TITLE" Mode="In" Type="String" />
+          </FunctionImport>
           <FunctionImport Name="MEMBERSHIPS_PER_STUDENT_ID" ReturnType="Collection(Gordon360.MEMBERSHIPS_PER_STUDENT_ID_Result)">
           <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
           </FunctionImport>
@@ -904,6 +922,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="CUSTOM_PROFILE" EntityType="Gordon360.CUSTOM_PROFILE" />
           <EntitySet Name="JNZB_ACTIVITIES" EntityType="Gordon360.JNZB_ACTIVITIES" />
           <EntitySet Name="MEMBERSHIP" EntityType="Gordon360.MEMBERSHIP" />
+          <EntitySet Name="STUDENTEMPLOYMENT" EntityType="Gordon360.STUDENTEMPLOYMENT" />
           <EntitySet Name="REQUEST" EntityType="Gordon360.REQUEST" />
           <EntitySet Name="C360_SLIDER" EntityType="Gordon360.C360_SLIDER" />
           <EntitySet Name="ACCOUNT" EntityType="Gordon360.ACCOUNT" />
@@ -1026,6 +1045,14 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="DateTime" Name="StartDate" Nullable="false" Precision="23" />
           <Property Type="DateTime" Name="EndDate" Nullable="true" Precision="23" />
           <Property Type="String" Name="Description" Nullable="true" MaxLength="45" />
+        </ComplexType>
+        <ComplexType Name="STUDENT_JOBS_PER_ID_NUM_Result">
+          <Property Type="String" Name="Job_Title" Nullable="false"/>
+          <Property Type="String" Name="Job_Department" Nullable="false"/>
+          <Property Type="String" Name="Job_Department_Name" Nullable="false"/>
+          <Property Type="DateTime" Name="Job_Start_Date" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="Job_End_Date" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="Job_Expected_End_Date" Nullable="false" Precision="23" />
         </ComplexType>
         <ComplexType Name="MEMBERSHIPS_PER_STUDENT_ID_Result">
           <Property Type="Int32" Name="MembershipID" Nullable="false" />
@@ -1264,6 +1291,17 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="JOB_TIME" Type="DateTime" Precision="3" />
           <Property Name="GRP_ADMIN" Type="Boolean" />
           <Property Name="PRIVACY" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="STUDENTEMPLOYMENT">
+          <Key>
+            <PropertyRef Name="Job_Title" />
+          </Key>
+          <Property Name="Job_Title" Type="String" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Job_Department" Type="String" Nullable="false" Unicode="false" />
+          <Property Name="Job_Department_Name" Type="String" Nullable="false" Unicode="false" />
+          <Property Name="Job_Start_Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Job_End_Date" Type="DateTime" Nullable="true" Precision="3" />
+          <Property Name="Job_Expected_End_Date" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
         <EntityType Name="REQUEST">
           <Key>
@@ -1716,6 +1754,18 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="STUDENT_JOBS_PER_ID_NUM" FunctionName="Gordon360.Store.STUDENT_JOBS_PER_ID_NUM">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.STUDENT_JOBS_PER_ID_NUM_Result">
+                <ScalarProperty Name="Job_Title" ColumnName="Job_Title" />
+                <ScalarProperty Name="Job_Department" ColumnName="Job_Department" />
+                <ScalarProperty Name="Job_Department_Name" ColumnName="Job_Department_Name" />
+                <ScalarProperty Name="Job_Start_Date" ColumnName="Job_Start_Date" />
+                <ScalarProperty Name="Job_End_Date" ColumnName="Job_End_Date" />
+                <ScalarProperty Name="Job_Expected_End_Date" ColumnName="Job_Expected_End_Date" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="MEMBERSHIPS_PER_STUDENT_ID" FunctionName="Gordon360.Store.MEMBERSHIPS_PER_STUDENT_ID">
             <ResultMapping>
               <ComplexTypeMapping TypeName="Gordon360.MEMBERSHIPS_PER_STUDENT_ID_Result">
@@ -1995,6 +2045,18 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="SESS_CDE" ColumnName="SESS_CDE" />
                 <ScalarProperty Name="ACT_CDE" ColumnName="ACT_CDE" />
                 <ScalarProperty Name="MEMBERSHIP_ID" ColumnName="MEMBERSHIP_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="STUDENTEMPLOYMENT">
+            <EntityTypeMapping TypeName="Gordon360.STUDENTEMPLOYMENT">
+              <MappingFragment StoreEntitySet="STUDENTEMPLOYMENT">
+                <ScalarProperty Name="Job_Expected_End_Date" ColumnName="Job_Expected_End_Date" />
+                <ScalarProperty Name="Job_End_Date" ColumnName="Job_End_Date" />
+                <ScalarProperty Name="Job_Start_Date" ColumnName="Job_Start_Date" />
+                <ScalarProperty Name="Job_Department_Name" ColumnName="Job_Department_Name" />
+                <ScalarProperty Name="Job_Department" ColumnName="Job_Department" />
+                <ScalarProperty Name="Job_Title" ColumnName="Job_Title" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
