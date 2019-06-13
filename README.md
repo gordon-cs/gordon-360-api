@@ -671,19 +671,19 @@ Run the tests:
 
 #### Running the Server Locally
 
-* As you are probably using one of the Linux machines in the Computer Science lounge, you will need to be on the virtual machine to run the server locally. Follow the directions [here](RemoteDesktopToVM.md) to set up and connect to virtual machine.
+* As you are probably using one of the Linux machines in the Computer Science lounge, you will need to be on the virtual machine to run the server locally. Follow the directions [here](RemoteDesktopToVM.md) to set up and connect to the virtual machine.
 
 * If this is your first time on the virtual machine, you will need to clone the 360 code. You can use something like Git Bash or VS Code to do this.
 
 * Before you open the gordon-360-api folder, you will have to add the `secrets.config` file to it. The file is located on the CS-RDSH-02 virtual machine in `C:\Users\Public\Public Documents\` (or `/c/users/public/documents\` when in git-bash). Copy the file `secrets.config` to the same folder in your project that contains the `web.config` file; currently, this is in `gordon-360-api\Gordon360`. This file is a sort of keyring for the server to authorize itself at various points.
 
-* Now, to open the api, look for the desktop app Visual Code 2017, which has a purple Visual Studio icon. To run the app, you will have to log in to a Microsoft account, which can just be the account provided you by Gordon. 
+* Now, to open the api, look for the desktop app Visual Code 2017, which has a purple Visual Studio icon. To run the app, you will have to log in to a Microsoft account, which can just be the account Gordon made for you. 
 
-* Once you log in, you need to change the port that the server is running. Go to File > Open > Project/Solution. Then, select and Open gordon-360-api/Gordon360.sln (the Type is listed as Visual Studio Solution). In the solution explorer on the right, right click the name of the project (Gordon360) and select properties.  From the tabs on the left, choose the Web tab and change the Project Url to an unused port. For example, if you chose port 5555, change Project Url to "http://localhost:5555". Then click Create Virtual Directory. Press OK on the dialog box, and you're good to go!
+* Once you log in, you need to change the port that the server is running. Go to `File > Open > Project/Solution`. Then, select and Open the file `gordon-360-api/Gordon360.sln`. In the solution explorer on the right, right click the name of the project (Gordon360) and select properties.  From the tabs on the left, choose the Web tab and change the Project Url to an unused port. For example, if you chose port 5555, change Project Url to `"http://localhost:5555"`. Then click Create Virtual Directory. Press OK on the dialog box, and you all configured!
 
-* You can then press the Start button in Visual Studio to run the server (it is a green play button in the top middle of the tool bar). It will open the web browser and, after a period that may last half an hour or more, display an Error 403.14 - Forbidden. This is expected. You can now begin manually testing the API. (When you are all done testing, you can then click the red stop button.)
+* Now, you can press the Start button in Visual Studio to run the server (it is a green play button in the top middle of the tool bar). It will open the web browser and, after a period that may last half an hour or more, display an Error 403.14 - Forbidden. This is expected. You can now begin manually testing the API. (When you are all done testing, you can then click the red stop button.)
 
-* If you want to test the UI, keep the server running and follow the directions [here](https://github.com/gordon-cs/gordon-360-ui/README.md#connect-local-backend-to-react). 
+* If you want to test the UI, keep the server running and follow the directions [here](https://github.com/gordon-cs/gordon-360-ui/blob/develop/README.md#connect-local-backend-to-react). 
 
 #### Manually Testing the API
 
