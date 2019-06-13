@@ -45,8 +45,9 @@ namespace Gordon360.ApiControllers
         /// <param name="sessionCode">Current session code</param>
         /// <returns>A DiningInfo object</returns>
         [HttpGet]
+        [Route("{id}/{sessionCode}")]
         [Route("{personType}/{id}/{sessionCode}")]
-        public IHttpActionResult Get(string personType, int id, string sessionCode)
+        public IHttpActionResult Get( int id, string sessionCode)
         {
             if (!ModelState.IsValid)
             {
