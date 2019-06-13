@@ -40,14 +40,13 @@ namespace Gordon360.ApiControllers
         /// <summary>
         ///  Gets information about student's dining plan and balance
         /// </summary>
-        /// <param name="personType">The type of person</param>
         /// <param name="id">The ID of the student</param>
         /// <param name="sessionCode">Current session code</param>
         /// <returns>A DiningInfo object</returns>
         [HttpGet]
         [Route("{id}/{sessionCode}")]
-        [Route("{personType}/{id}/{sessionCode}")]
-        public IHttpActionResult Get( int id, string sessionCode)
+        [Route("{personType}/{id}/{sessionCode}")] // DEPRECATED: personType is no longer needed
+        public IHttpActionResult Get(int id, string sessionCode)
         {
             if (!ModelState.IsValid)
             {
@@ -62,7 +61,7 @@ namespace Gordon360.ApiControllers
                 }
                 throw new BadInputException() { ExceptionMessage = errors };
             }
-            
+
             var diningInfo = _diningService.GetDiningPlanInfo(id, sessionCode);
             if (diningInfo == null)
             {
@@ -81,7 +80,7 @@ namespace Gordon360.ApiControllers
             {
                 return Ok(diningInfo);
             }
-            
+
         }
     }
 }
