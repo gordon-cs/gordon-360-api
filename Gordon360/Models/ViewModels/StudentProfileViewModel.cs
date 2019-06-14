@@ -56,6 +56,7 @@ namespace Gordon360.Models.ViewModels
         public string Minor3 { get; set; }
         public string MobilePhone { get; set; }
         public int IsMobilePhonePrivate { get; set; }
+        public int IsSchedulePrivate { get; set; }
         public string AD_Username { get; set; }
         public Nullable<int> show_pic { get; set; }
         public Nullable<int> preferred_photo { get; set; }
@@ -123,6 +124,7 @@ namespace Gordon360.Models.ViewModels
                 Gender = stu.Gender ?? "",
                 MobilePhone = stu.MobilePhone ?? "",
                 IsMobilePhonePrivate = stu.IsMobilePhonePrivate,
+                IsSchedulePrivate = stu.IsSchedulePrivate,
                 show_pic = stu.show_pic,
                 preferred_photo = stu.preferred_photo,
                 Country = stu.Country ?? "",

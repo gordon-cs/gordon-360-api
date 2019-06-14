@@ -40,7 +40,7 @@
             <param name="searchString"> The input to search for </param>
             <returns> All accounts meeting some or all of the parameter</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.AccountsController.AdvancedPeopleSearch(System.Boolean,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+        <member name="M:Gordon360.ApiControllers.AccountsController.AdvancedPeopleSearch(System.Boolean,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
             <summary>
             Return a list of accounts matching some or all of the search parameters
             We are searching through all the info of a user, then narrowing it down to get only what we want
@@ -100,48 +100,6 @@
             <summary>Delete an existing admin</summary>
             <param name="id">The identifier for the admin to be deleted</param>
             <remarks>Calls the server to make a call and remove the given admin from the database</remarks>
-        </member>
-        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetMajors">
-            <summary>
-            Return a list majors.
-            </summary>
-            <returns> All majors</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetMinors">
-            <summary>
-            Return a list minors.
-            </summary>
-            <returns> All minors</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetHalls">
-            <summary>
-            Return a list minors.
-            </summary>
-            <returns> All minors</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetStates">
-            <summary>
-            Return a list states.
-            </summary>
-            <returns> All states</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetCountries">
-            <summary>
-            Return a list countries.
-            </summary>
-            <returns> All countries</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetDepartments">
-            <summary>
-            Return a list departments.
-            </summary>
-            <returns> All departments</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetBuildings">
-            <summary>
-            Return a list buildings.
-            </summary>
-            <returns> All buildings</returns>
         </member>
         <member name="M:Gordon360.ApiControllers.DiningController.Get(System.String,System.Int32,System.String)">
             <summary>
@@ -535,11 +493,10 @@
             <param name="id">The identifier for the membership to be deleted</param>
             <remarks>Calls the server to make a call and remove the given membership from the database</remarks>
         </member>
-        <member name="M:Gordon360.Controllers.Api.VictoryPromiseController.Get(System.String)">
+        <member name="M:Gordon360.Controllers.Api.VictoryPromiseController.Get">
             <summary>
              Gets current victory promise scores
             </summary>
-            <param name="id">The ID of the student</param>
             <returns>A VP object object</returns>
         </member>
         <member name="F:Gordon360.Repositories.GenericRepository`1._context">
@@ -1197,7 +1154,7 @@
             get victory promise scores
             </summary>
             <param name="id">id</param>
-            <returns>PhotoPathViewModel if found, null if not found</returns>
+            <returns>VictoryPromiseViewModel if found, null if not found</returns>
         </member>
         <member name="T:Gordon360.Services.JenzibarActivityService">
             <summary>
