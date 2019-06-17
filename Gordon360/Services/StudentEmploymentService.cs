@@ -5,18 +5,13 @@ using System.Web;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
-using Gordon360.Services.ComplexQueries;
-using System.Data.SqlClient;
-using System.Data;
 using Gordon360.Exceptions.CustomExceptions;
-using Gordon360.Static.Methods;
+using System.Data.SqlClient;
+using Gordon360.Services.ComplexQueries;
 using System.Diagnostics;
 
 namespace Gordon360.Services
 {
-    /// <summary>
-    /// Service Class that facilitates data transactions between the StudentEmploymentController and the StudentEmployment database model.
-    /// </summary>
     public class StudentEmploymentService : IStudentEmploymentService
     {
         private IUnitOfWork _unitOfWork;
@@ -26,34 +21,33 @@ namespace Gordon360.Services
             _unitOfWork = unitOfWork;
         }
 
-
         /// <summary>
-        /// Fetch the membership whose id is specified by the parameter
+        /// get victory promise scores
         /// </summary>
-        /// <param name="id">The membership id</param>
-        /// <returns>MembershipViewModel if found, null if not found</returns>
+        /// <param name="id">id</param>
+        /// <returns>VictoryPromiseViewModel if found, null if not found</returns>
         public StudentEmploymentViewModel GetEmployment(string id)
         {
             var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
             if (query == null)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Student was not found." };
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
+            var idParam = new SqlParameter("@GORDON_ID", int.Parse(id));
+            var result = RawSqlQuery<StudentEmploymentViewModel>.query("STUDENT_JOBS_PER_ID_NUM @GORDON_ID", idParam).FirstOrDefault(); //run stored procedure
 
-            var idParam = new SqlParameter("@GORDON_ID", Int32.Parse(id));
-            var result = RawSqlQuery<StudentEmploymentViewModel>.query("STUDENT_JOBS_PER_ID_NUM @GORDON_ID", idParam).FirstOrDefault();
-
-            if (result == null)
+            StudentEmploymentViewModel vm = new StudentEmploymentViewModel
             {
-                return null;
-            }
-            // Getting rid of database-inherited whitespace
-            result.Job_Title = result.Job_Title.Trim();
-            result.Job_Department = result.Job_Department.Trim();
-            result.Job_Department_Name = result.Job_Department_Name.Trim();
-
-            return result;
+                Job_Title = result.Job_Title ?? "",
+                Job_Department = result.Job_Department ?? "",
+                Job_Department_Name = result.Job_Department_Name ?? "",
+                Job_Start_Date = result.Job_Start_Date ?? DateTime.Now,
+                //Need to fix when it is null 
+                Job_End_Date = result.Job_End_Date ?? DateTime.Now,
+                Job_Expected_End_Date = result.Job_Expected_End_Date ?? DateTime.Now
+            
+            };
+            return vm;
         }
-
     }
 }

@@ -11,7 +11,6 @@
         <EntityTypeShape EntityType="Gordon360.CUSTOM_PROFILE" Width="1.5" PointX="2.75" PointY="3.75" />
         <EntityTypeShape EntityType="Gordon360.JNZB_ACTIVITIES" Width="1.5" PointX="4.75" PointY="0.75" />
         <EntityTypeShape EntityType="Gordon360.MEMBERSHIP" Width="1.5" PointX="4.75" PointY="5.75" />
-        <EntityTypeShape EntityType="Gordon360.STUDENTEMPLOYMENT" Width="1.5" PointX="4.75" PointY="5.75" />
         <EntityTypeShape EntityType="Gordon360.REQUEST" Width="1.5" PointX="6.75" PointY="0.75" />
         <EntityTypeShape EntityType="Gordon360.C360_SLIDER" Width="1.5" PointX="0.75" PointY="6.75" />
         <EntityTypeShape EntityType="Gordon360.ACCOUNT" Width="1.5" PointX="6.75" PointY="4.75" />
