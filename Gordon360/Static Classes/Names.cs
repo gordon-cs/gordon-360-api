@@ -7,7 +7,6 @@ namespace Gordon360.Static.Names
         public const string PROFILE = "A new profile resource";
         public const string MEMBERSHIP_REQUEST = "A Membership Request Resource";
         public const string MEMBERSHIP = "A Membership Resource";
-        public const string STUDENTEMPLOYMENT = "A Student employment Resource";
         public const string MEMBERSHIP_PRIVACY = "A Membership privacy";
         public const string STUDENT = "A Student Resource";
         public const string ACCOUNT = "An Account Resource.";

@@ -15,7 +15,6 @@ namespace Gordon360.Repositories
         IRepository<ACT_INFO> ActivityInfoRepository { get; }
         IRepository<CM_SESSION_MSTR> SessionRepository { get; }
         IRepository<JNZB_ACTIVITIES> JenzibarActvityRepository { get; }
-        IRepository<STUDENTEMPLOYMENT> StudentEmploymentRepository {get;}
         IRepository<MEMBERSHIP> MembershipRepository { get; }
         IRepository<PART_DEF> ParticipationRepository { get; }
         IRepository<SUPERVISOR> SupervisorRepository { get; }
@@ -28,6 +27,7 @@ namespace Gordon360.Repositories
 
         // Note -- Only use this repository to call SQL Stored Procedures
         IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> ActivityPerSessionRepository { get;  }
+        IRepository<VICTORY_PROMISE_BY_STUDENT_ID_Result> VictoryPromiseByStudentIDRepository { get; }
         bool Save();
 
 
