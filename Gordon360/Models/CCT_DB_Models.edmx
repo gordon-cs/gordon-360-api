@@ -938,7 +938,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="Int32" Name="VP_LS_SCORE" Nullable="true" />
           <Property Type="Int32" Name="VP_LW_SCORE" Nullable="true" />
         </ComplexType>
-        <ComplexType Name="STUDENT_JOBS_PER_ID_NUM">
+        <ComplexType Name="STUDENT_JOBS_PER_ID_NUM_Result">
           <Property Type="String" Name="Job_Title" Nullable="true" />
           <Property Type="String" Name="Job_Department" Nullable="true" />
           <Property Type="String" Name="Job_Department_Name" Nullable="true" />
