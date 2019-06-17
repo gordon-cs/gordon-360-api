@@ -21,7 +21,7 @@ namespace Gordon360.Controllers.Api
 
         public StudentEmploymentController()
         {
-            IUnitOfWork _unitOfWork = new UnitOfWork();
+            var _unitOfWork = new UnitOfWork();
             _studentEmploymentService = new StudentEmploymentService(_unitOfWork);
             _profileService = new ProfileService(_unitOfWork);
             _accountService = new AccountService(_unitOfWork);
@@ -38,16 +38,17 @@ namespace Gordon360.Controllers.Api
         /// <returns>A VP object object</returns>
         [HttpGet]
         [Route("")]
-        public IHttpActionResult Get()
+        [Route("{username}")]
+        public IHttpActionResult Get(string username)
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            //var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            //var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
+            //var id = _accountService.GetAccountByUsername(username).GordonID;
             var id = _accountService.GetAccountByUsername(username).GordonID;
             var result = _studentEmploymentService.GetEmployment(id);
             if (result == null)
             {
-                System.Diagnostics.Debug.WriteLine("Result is null");
                 return NotFound();
             }
             return Ok(result);

@@ -72,6 +72,10 @@ namespace Gordon360.Services
     {
         IEnumerable<VictoryPromiseViewModel> GetVPScores(string id);
     }
+    public interface IStudentEmploymentService
+    {
+        IEnumerable<StudentEmploymentViewModel> GetEmployment(string id);
+    }
 
     public interface IActivityInfoService
     {
@@ -154,12 +158,6 @@ namespace Gordon360.Services
         MEMBERSHIP ApproveRequest(int id);
         REQUEST DenyRequest(int id);
         REQUEST Delete(int id);
-    }
-
-
-    public interface IStudentEmploymentService
-    {
-        StudentEmploymentViewModel GetEmployment(string id);
     }
 
     public interface IContentManagementService

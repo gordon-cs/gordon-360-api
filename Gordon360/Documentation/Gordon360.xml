@@ -493,7 +493,7 @@
             <param name="id">The identifier for the membership to be deleted</param>
             <remarks>Calls the server to make a call and remove the given membership from the database</remarks>
         </member>
-        <member name="M:Gordon360.Controllers.Api.StudentEmploymentController.Get">
+        <member name="M:Gordon360.Controllers.Api.StudentEmploymentController.Get(System.String)">
             <summary>
              Gets current victory promise scores
             </summary>

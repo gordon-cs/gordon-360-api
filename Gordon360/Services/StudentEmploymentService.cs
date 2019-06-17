@@ -26,28 +26,34 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="id">id</param>
         /// <returns>VictoryPromiseViewModel if found, null if not found</returns>
-        public StudentEmploymentViewModel GetEmployment(string id)
+        public IEnumerable<StudentEmploymentViewModel> GetEmployment(string id)
         {
             var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
-            var idParam = new SqlParameter("@GORDON_ID", int.Parse(id));
-            var result = RawSqlQuery<StudentEmploymentViewModel>.query("STUDENT_JOBS_PER_ID_NUM @GORDON_ID", idParam).FirstOrDefault(); //run stored procedure
 
-            StudentEmploymentViewModel vm = new StudentEmploymentViewModel
+            var idParam = new SqlParameter("@ID", id);
+            var result = RawSqlQuery<StudentEmploymentViewModel>.query("STUDENT_JOBS_PER_ID_NUM @ID", idParam); //run stored procedure
+            if (result == null)
             {
-                Job_Title = result.Job_Title ?? "",
-                Job_Department = result.Job_Department ?? "",
-                Job_Department_Name = result.Job_Department_Name ?? "",
-                Job_Start_Date = result.Job_Start_Date ?? DateTime.Now,
-                //Need to fix when it is null 
-                Job_End_Date = result.Job_End_Date ?? DateTime.Now,
-                Job_Expected_End_Date = result.Job_Expected_End_Date ?? DateTime.Now
-            
-            };
-            return vm;
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+            // Transform the ActivityViewModel (ACT_CLUB_DEF) into ActivityInfoViewModel
+            var studentEmploymentModel = result.Select(x =>
+            {
+                StudentEmploymentViewModel y = new StudentEmploymentViewModel();
+                y.Job_Title = x.Job_Title ?? "";
+                y.Job_Department = x.Job_Department ?? "";
+                y.Job_Department_Name = x.Job_Department_Name ?? "";
+                y.Job_Start_Date = x.Job_Start_Date ?? DateTime.MinValue;
+                y.Job_End_Date = x.Job_End_Date ?? DateTime.Now;
+                y.Job_Expected_End_Date = x.Job_Expected_End_Date ?? DateTime.Now;
+                return y;
+            });
+            return studentEmploymentModel;
+
         }
     }
 }
