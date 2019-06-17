@@ -38,13 +38,11 @@ namespace Gordon360.Controllers.Api
         /// <returns>A VP object object</returns>
         [HttpGet]
         [Route("")]
-        [Route("{username}")]
-        public IHttpActionResult Get(string username)
+        public IHttpActionResult Get()
         {
-            //var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            //var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
-            //var id = _accountService.GetAccountByUsername(username).GordonID;
             var id = _accountService.GetAccountByUsername(username).GordonID;
             var result = _victoryPromiseService.GetVPScores(id);
                 if (result == null)
@@ -52,6 +50,6 @@ namespace Gordon360.Controllers.Api
                     return NotFound();
                 }
                 return Ok(result);
-        }
+            }
         }
 }

@@ -13,4 +13,5 @@ namespace Gordon360.Models.ViewModels
         public Nullable<int> TOTAL_VP_LS_SCORE { get; set; } // Lives of Service
         public Nullable<int> TOTAL_VP_LW_SCORE { get; set; } // Leadership Worldwide
     }
+
 }

@@ -22,10 +22,10 @@ public partial class STUDENTEMPLOYMENT
     public string Job_Department { get; set; }
 
     public string Job_Department_Name { get; set; }
-    public Nullable<System.DateTime> Job_Start_Date { get; set; }
+    public System.DateTime Job_Start_Date { get; set; }
     public Nullable<System.DateTime> Job_End_Date { get; set; }
 
-    public Nullable<System.DateTime> Job_Expected_End_Date { get; set; }
+    public System.DateTime Job_Expected_End_Date { get; set; }
 
 }
 
