@@ -152,6 +152,16 @@ namespace Gordon360.Services
         REQUEST Delete(int id);
     }
 
+    public interface IScheduleService
+    {
+        ScheduleViewModel Get(int id);
+        //IEnumerable<ScheduleViewModel> GetAll();
+        IEnumerable<ScheduleViewModel> GetAllByID(string id);
+        SCHEDULE Add(SCHEDULE schedule);
+        SCHEDULE Delete(int id);
+        IEnumerable<ScheduleViewModel> DeleteAllForID(string id);
+    }
+
     public interface IVictoryPromiseService
     {
         VictoryPromiseViewModel GetVPScores(string id);

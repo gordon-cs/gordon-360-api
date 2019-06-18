@@ -16,6 +16,7 @@ namespace Gordon360.Repositories
         IRepository<CM_SESSION_MSTR> SessionRepository { get; }
         IRepository<JNZB_ACTIVITIES> JenzibarActvityRepository { get; }
         IRepository<MEMBERSHIP> MembershipRepository { get; }
+        IRepository<SCHEDULE> ScheduleRepository { get; }
         IRepository<PART_DEF> ParticipationRepository { get; }
         IRepository<SUPERVISOR> SupervisorRepository { get; }
         IRepository<REQUEST> MembershipRequestRepository { get; }

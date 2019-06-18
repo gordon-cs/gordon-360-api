@@ -209,6 +209,7 @@
     <Compile Include="ApiControllers\MembershipRequestController.cs" />
     <Compile Include="ApiControllers\ProfilesController.cs" />
     <Compile Include="ApiControllers\RolesController.cs" />
+    <Compile Include="ApiControllers\ScheduleController.cs" />
     <Compile Include="ApiControllers\SessionsController.cs" />
     <Compile Include="ApiControllers\ActivitiesController.cs" />
     <Compile Include="ApiControllers\MembershipsController.cs" />
@@ -343,6 +344,7 @@
     <Compile Include="Models\REQUEST_PER_REQUEST_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Schedule.cs" />
     <Compile Include="Models\sp_helpdiagramdefinition_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -390,6 +392,7 @@
     <Compile Include="Models\ViewModels\PublicAlumniProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\PublicFacultyStaffProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\PublicStudentProfileViewModel.cs" />
+    <Compile Include="Models\ViewModels\ScheduleViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\SessionViewModel.cs" />
     <Compile Include="Models\ViewModels\SliderViewModel.cs" />
@@ -410,6 +413,7 @@
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Services\ProfileService.cs" />
     <Compile Include="Services\RoleCheckingService.cs" />
+    <Compile Include="Services\ScheduleService.cs" />
     <Compile Include="Services\VictoryPromiseService.cs" />
     <Compile Include="Static Classes\Data.cs" />
     <Compile Include="Static Classes\Helpers.cs" />

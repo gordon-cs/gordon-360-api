@@ -17,6 +17,7 @@ namespace Gordon360.Repositories
         private IRepository<CM_SESSION_MSTR> _SessionRepository;
         private IRepository<JNZB_ACTIVITIES> _JenzibarActvityRepository;
         private IRepository<MEMBERSHIP> _MembershipRepository;
+        private IRepository<SCHEDULE> _ScheduleRepository;
         private IRepository<PART_DEF> _ParticipationRepository;
         private IRepository<SUPERVISOR> _SupervisorRepository;
         private IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> _ActivityPerSessionRepository;
@@ -65,6 +66,10 @@ namespace Gordon360.Repositories
         public IRepository<MEMBERSHIP> MembershipRepository
         {
             get { return _MembershipRepository ?? (_MembershipRepository = new GenericRepository<MEMBERSHIP>(_context)); }
+        }
+        public IRepository<SCHEDULE> ScheduleRepository
+        {
+            get { return _ScheduleRepository ?? (_ScheduleRepository = new GenericRepository<SCHEDULE>(_context)); }
         }
         public IRepository<PART_DEF> ParticipationRepository
         {

@@ -239,6 +239,13 @@
             <param name="value">Y or N</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateSchedulePrivacy(System.String)">
+            <summary>
+            Update privacy of schedule
+            </summary>
+            <param name="value">Y or N</param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateImagePrivacy(System.String)">
             <summary>
             Update privacy of profile image
@@ -268,6 +275,18 @@
             GEt the participation levels that are considered to be leadership positions.
             </summary>
             <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ScheduleController.Get">
+            <summary>
+             Gets all schedule objects for a user
+            </summary>
+            <returns>A IEnumerable of schedule objects</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ScheduleController.Post(Gordon360.Models.SCHEDULE)">
+            <summary>Create a new schedule to be added to database</summary>
+            <param name="schedule">The schedule item containing all required and relevant information</param>
+            <returns></returns>
+            <remarks>Posts a new schedule to the server to be added into the database</remarks>
         </member>
         <member name="M:Gordon360.Controllers.Api.SessionsController.Get">
             <summary>Get a list of all sessions</summary>
@@ -1142,12 +1161,59 @@
             <param name="id">id</param>
             <param name="value">Y or N</param>
         </member>
+        <member name="M:Gordon360.Services.ProfileService.UpdateSchedulePrivacy(System.String,System.String)">
+            <summary>
+            privacy setting of schedule.
+            </summary>
+            <param name="id">id</param>
+            <param name="value">Y or N</param>
+        </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateImagePrivacy(System.String,System.String)">
             <summary>
             privacy setting user profile photo.
             </summary>
             <param name="id">id</param>
             <param name="value">Y or N</param>
+        </member>
+        <member name="T:Gordon360.Services.ScheduleService">
+            <summary>
+            Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleService.Get(System.Int32)">
+            <summary>
+            Fetch the schedule item whose id is specified by the parameter
+            </summary>
+            <param name="id">The schedule id</param>
+            <returns>ScheduleViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleService.GetAllByID(System.String)">
+            <summary>
+            Fetches all schedule records from storage for an id.
+            </summary>
+            <returns>ScheduleViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleService.Add(Gordon360.Models.SCHEDULE)">
+            <summary>
+            Adds a new Schedule record to storage. Since we can't establish foreign key constraints and relationships on the database side,
+            we might do it here by using something like the validateMembership() method.
+            </summary>
+            <param name="schedule">The membership to be added</param>
+            <returns>The newly added Schedule object</returns>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleService.Delete(System.Int32)">
+            <summary>
+            Delete the schedule whose id is specified by the parameter. Should we have a schedule id?
+            </summary>
+            <param name="id">The schedule id</param>
+            <returns>The schedule that was just deleted</returns>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleService.DeleteAllForID(System.String)">
+            <summary>
+            Delete all schedule items for a student whose id is specified by the parameter. Should we have a schedule id?
+            </summary>
+            <param name="id">The student's id</param>
+            <returns>The schedule that was just deleted</returns>
         </member>
         <member name="M:Gordon360.Services.VictoryPromiseService.GetVPScores(System.String)">
             <summary>
