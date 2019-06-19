@@ -62,6 +62,25 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>
+        ///  Gets all schedule objects for a user
+        /// </summary>
+        /// <returns>A IEnumerable of schedule objects</returns>
+        [HttpGet]
+        [Route("getall/{username}")]
+        public IHttpActionResult Get(string username)
+        {
+            //probably needs privacy stuff like ProfilesController and service
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            var result = _scheduleService.GetAllByID(id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+
+        /// <summary>
         ///  Gets a schedule object by its id
         /// </summary>
         /// <returns>A schedule object</returns>
