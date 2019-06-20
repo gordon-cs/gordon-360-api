@@ -15,14 +15,13 @@ namespace Gordon360.Models.ViewModels
 
         public static implicit operator SessionViewModel(CM_SESSION_MSTR sess)
         {
-            Debug.WriteLine("HEREE",sess);
             SessionViewModel vm = new SessionViewModel
             {
-                
+
                 SessionCode = sess.SESS_CDE.Trim(),
-                SessionDescription = sess.SESS_DESC.Trim(),
-                SessionBeginDate = sess.SESS_BEGN_DTE , 
-                SessionEndDate = sess.SESS_END_DTE
+                SessionDescription = sess.SESS_DESC ?? "",
+                SessionBeginDate = sess.SESS_BEGN_DTE ?? DateTime.MinValue,
+                SessionEndDate = sess.SESS_END_DTE ?? DateTime.MinValue
             };
 
             return vm;
