@@ -366,6 +366,8 @@ What is it? Resource that represents admins.
 
 Who has access? Only super admins, except to get a specific admin where all admins have access.
 
+NOTE: facultytest is a super admins in PRODAPIDATA, stafftest is a super admins in TRAINAPIDATA
+
 ##### GET
 
 `api/admins` Get all the admins.

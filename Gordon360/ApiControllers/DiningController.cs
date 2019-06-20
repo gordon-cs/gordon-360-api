@@ -32,6 +32,7 @@ namespace Gordon360.ApiControllers
     {
         public IDiningService _diningService;
         private IAccountService _accountService;
+        private const string FACSTAFF_MEALPLAN_ID = "7295";
         public DiningController()
         {
             IUnitOfWork _unitOfWork = new UnitOfWork();
@@ -47,15 +48,8 @@ namespace Gordon360.ApiControllers
         /// <returns>A DiningInfo object</returns>
         [HttpGet]
         [Route("")]
-        [Route("{id}/{sessionCode}")]
-        [Route("{personType}/{id}/{sessionCode}")] // DEPRECATED: personType is no longer needed
         public IHttpActionResult Get()
         {
-            var sessionCode = Helpers.GetCurrentSession().SessionCode;
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var id = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID);
-
             if (!ModelState.IsValid)
             {
                 string errors = "";
@@ -70,6 +64,10 @@ namespace Gordon360.ApiControllers
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
+            var sessionCode = Helpers.GetCurrentSession().SessionCode;
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var id = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID);
 
             var diningInfo = _diningService.GetDiningPlanInfo(id, sessionCode);
             if (diningInfo == null)
@@ -78,7 +76,7 @@ namespace Gordon360.ApiControllers
             }
             if (diningInfo.ChoiceDescription == "None")
             {
-                var diningBalance = _diningService.GetBalance(id, "7295");
+                var diningBalance = _diningService.GetBalance(id, "FACSTAFF_MEALPLAN_ID");
                 if (diningBalance == null)
                 {
                     return NotFound();

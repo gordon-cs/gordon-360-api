@@ -64,7 +64,7 @@ namespace Gordon360.Models.ViewModels
                     }
                     else
                     {
-                        this.Swipes.PlanDescription = m.PlanDescriptions;
+                        this.Swipes = m.PlanDescriptions;
                         this.Swipes.PlanId = m.PlanId;
                         this.Swipes.InitialBalance = m.InitialBalance;
                         this.Swipes.CurrentBalance = m.CurrentBalance;
