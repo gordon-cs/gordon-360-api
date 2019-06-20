@@ -160,7 +160,7 @@ namespace Gordon360.Services
             // Declare the variables used
             var idParam = new SqlParameter("@STU_USERNAME", user_name.Trim());
             // Run the query, which returns an iterable json list 
-            var result = RawSqlQuery<ChapelEventViewModel>.query("EVENTS_BY_STUDENT_ID @STU_USERNAME", idParam);
+            var result = RawSqlQuery<ChapelEventViewModel>.query("EVENTS_BY_STUDENT_ID \"@STU_USERNAME\"", idParam);
 
             if (result == null)
             {

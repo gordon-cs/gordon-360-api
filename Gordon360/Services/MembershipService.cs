@@ -189,13 +189,15 @@ namespace Gordon360.Services
                 trim.ActivityDescription = x.ActivityDescription.Trim();
                 trim.SessionCode = x.SessionCode.Trim();
                 trim.SessionDescription = x.SessionDescription.Trim();
-                trim.IDNumber = x.IDNumber;
+                trim.IDNumber = null;
                 trim.FirstName = x.FirstName.Trim();
                 trim.LastName = x.LastName.Trim();
                 trim.Participation = x.Participation.Trim();
                 trim.ParticipationDescription = x.ParticipationDescription.Trim();
                 return trim;
             });
+
+
             
             return trimmedResult;
         }
@@ -291,6 +293,7 @@ namespace Gordon360.Services
                 trim.FirstName = x.FirstName.Trim();
                 trim.LastName = x.LastName.Trim();
                 trim.IDNumber = x.IDNumber;
+                
                 return trim;
             });
 

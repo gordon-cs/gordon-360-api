@@ -24,7 +24,7 @@ public partial class MEMBERSHIP
 
     public string SESS_CDE { get; set; }
 
-    public int ID_NUM { get; set; }
+    public Nullable<int> ID_NUM { get; set; }
 
     public string PART_CDE { get; set; }
 

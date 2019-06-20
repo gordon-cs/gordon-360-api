@@ -51,6 +51,10 @@ public partial class MEMBERSHIPS_PER_STUDENT_ID_Result
 
     public string Description { get; set; }
 
-}
+    public string ActivityType { get; set; }
+
+    public string ActivityTypeDescription { get; set; }
+
+    }
 
 }

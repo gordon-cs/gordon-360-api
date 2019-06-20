@@ -101,11 +101,10 @@
             <param name="id">The identifier for the admin to be deleted</param>
             <remarks>Calls the server to make a call and remove the given admin from the database</remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.DiningController.Get(System.String,System.Int32,System.String)">
+        <member name="M:Gordon360.ApiControllers.DiningController.Get(System.Int32,System.String)">
             <summary>
              Gets information about student's dining plan and balance
             </summary>
-            <param name="personType">The type of person</param>
             <param name="id">The ID of the student</param>
             <param name="sessionCode">Current session code</param>
             <returns>A DiningInfo object</returns>
@@ -493,13 +492,13 @@
             <param name="id">The identifier for the membership to be deleted</param>
             <remarks>Calls the server to make a call and remove the given membership from the database</remarks>
         </member>
-        <member name="M:Gordon360.Controllers.Api.StudentEmploymentController.Get(System.String)">
+        <member name="M:Gordon360.Controllers.Api.StudentEmploymentController.Get">
             <summary>
              Gets current victory promise scores
             </summary>
             <returns>A VP object object</returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.VictoryPromiseController.Get(System.String)">
+        <member name="M:Gordon360.Controllers.Api.VictoryPromiseController.Get">
             <summary>
              Gets current victory promise scores
             </summary>

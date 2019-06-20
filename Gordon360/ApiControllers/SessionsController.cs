@@ -16,7 +16,6 @@ namespace Gordon360.Controllers.Api
 
         private ISessionService _sessionService;
 
-
         public SessionsController()
         {
             var _unitOfWork = new UnitOfWork();
