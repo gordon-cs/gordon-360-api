@@ -291,6 +291,8 @@ namespace Gordon360.Services
                 trim.FirstName = x.FirstName.Trim();
                 trim.LastName = x.LastName.Trim();
                 trim.IDNumber = x.IDNumber;
+                trim.ActivityType = x.ActivityType;
+                trim.ActivityTypeDescription = x.ActivityTypeDescription;
                 return trim;
             });
 

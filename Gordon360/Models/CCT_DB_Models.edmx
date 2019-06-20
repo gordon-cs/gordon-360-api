@@ -1045,6 +1045,8 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="DateTime" Name="StartDate" Nullable="false" Precision="23" />
           <Property Type="DateTime" Name="EndDate" Nullable="true" Precision="23" />
           <Property Type="String" Name="Description" Nullable="true" MaxLength="45" />
+          <Property Type="String" Name="ActivityType" Nullable="false" MaxLength="45" />
+          <Property Type="String" Name="ActivityTypeDescription" Nullable="false" MaxLength="45" />
         </ComplexType>
         <ComplexType Name="REQUEST_PER_REQUEST_ID_Result">
           <Property Type="Int32" Name="RequestID" Nullable="false" />
@@ -1736,6 +1738,8 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="StartDate" ColumnName="StartDate" />
                 <ScalarProperty Name="EndDate" ColumnName="EndDate" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ActivityType" ColumnName="ActivityType" />
+                <ScalarProperty Name="ActivityTypeDescription" ColumnName="ActivityTypeDescription" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
