@@ -234,11 +234,11 @@ warning 6002: The table/view 'CCT.dbo.CM_SESSION_MSTR' does not have a primary k
             <PropertyRef Name="SESS_CDE" />
           </Key>
           <Property Name="SESS_CDE" Type="char" MaxLength="8" Nullable="false" />
-          <Property Name="SESS_DESC" Type="varchar" MaxLength="1000" />
-          <Property Name="SESS_BEGN_DTE" Type="datetime" />
-          <Property Name="SESS_END_DTE" Type="datetime" />
-          <Property Name="YRTRM_CDE_2" Type="varchar" MaxLength="32" />
-          <Property Name="YRTRM_CDE_4" Type="varchar" MaxLength="32" />
+          <Property Name="SESS_DESC" Type="varchar" MaxLength="1000" Nullable="true"/>
+          <Property Name="SESS_BEGN_DTE" Type="datetime" Nullable="true"/>
+          <Property Name="SESS_END_DTE" Type="datetime" Nullable="true"/>
+          <Property Name="YRTRM_CDE_2" Type="varchar" MaxLength="32" Nullable="true"/>
+          <Property Name="YRTRM_CDE_4" Type="varchar" MaxLength="32" Nullable="true"/>
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.DiningInfo' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1402,11 +1402,11 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <PropertyRef Name="SESS_CDE" />
           </Key>
           <Property Name="SESS_CDE" Type="String" Nullable="false" MaxLength="8" FixedLength="true" Unicode="false" />
-          <Property Name="SESS_DESC" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
-          <Property Name="SESS_BEGN_DTE" Type="DateTime" Precision="3" />
-          <Property Name="SESS_END_DTE" Type="DateTime" Precision="3" />
-          <Property Name="YRTRM_CDE_2" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="YRTRM_CDE_4" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="SESS_DESC" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" Nullable="true"/>
+          <Property Name="SESS_BEGN_DTE" Type="DateTime" Precision="3" Nullable="true"/>
+          <Property Name="SESS_END_DTE" Type="DateTime" Precision="3" Nullable="true"/>
+          <Property Name="YRTRM_CDE_2" Type="String" MaxLength="32" FixedLength="false" Unicode="false" Nullable="true"/>
+          <Property Name="YRTRM_CDE_4" Type="String" MaxLength="32" FixedLength="false" Unicode="false" Nullable="true"/>
         </EntityType>
         <EntityType Name="FacStaff">
           <Key>
