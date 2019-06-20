@@ -2,9 +2,9 @@ import requests
 import colors
 
 # Public configuration options
-import test_config
+import configuration
 # Private configuration options
-import test_credentials
+import credentials
 
 # Test Components
 

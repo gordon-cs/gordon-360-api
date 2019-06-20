@@ -5,69 +5,56 @@ import string
 from pytest_components import requests
 
 # Public configuration options
-import test_config
+import configuration
 # Private configuration options
-import test_credentials
+import credentials
 import pytest_components as api
 
 # Constants
-LEADERSHIP_POSITIONS = test_config.leadership_positions
+LEADERSHIP_POSITIONS = configuration.leadership_positions
 REQUEST_STATUS_APPROVED = 'Approved'
 REQUEST_STATUS_DENIED = 'Denied'
 REQUEST_STATUS_PENDING = 'Pending'
 
 # Configuration Details
-username = test_credentials.username
-password = test_credentials.password
-my_id_number = test_credentials.id_number
+username = credentials.username
+password = credentials.password
+my_id_number = credentials.id_number
 grant_payload = { 'username':username, 'password':password, 'grant_type':'password' }
 
-leader_username = test_credentials.username_activity_leader
-leader_password = test_credentials.password_activity_leader
-leader_id_number = test_credentials.id_number_activity_leader
+leader_username = credentials.username_activity_leader
+leader_password = credentials.password_activity_leader
+leader_id_number = credentials.id_number_activity_leader
 leader_grant_payload = { 'username':leader_username, 'password':leader_password, 'grant_type':'password' }
 
-random_id_number = test_config.random_id_number
-activity_code = test_config.activity_code
-session_code = test_config.session_code
-specific_term = test_config.term_code
-member_positions = test_config.member_positions
-date = test_config.date
-begin_date = test_config.begin_date
-end_date = test_config.end_date
-comments = test_config.comments
-hostURL = test_config.hostURL
-FILE_PATH = test_config.FILE_PATH
-FILE_NAME = test_config.FILE_NAME
-email = test_config.email
-search_string = test_config.searchString
-search_string_2 = test_config.searchString2
+random_id_number = configuration.random_id_number
+activity_code = configuration.activity_code
+session_code = configuration.session_code
+specific_term = configuration.term_code
+member_positions = configuration.member_positions
+date = configuration.date
+begin_date = configuration.begin_date
+end_date = configuration.end_date
+comments = configuration.comments
+hostURL = configuration.hostURL
+FILE_PATH = configuration.FILE_PATH
+FILE_NAME = configuration.FILE_NAME
+email = configuration.email
+search_string = configuration.searchString
+search_string_2 = configuration.searchString2
 
 class testCase:
-#   Parent Test Case class to be inherited
-#  Describes attribute references common to all child classes.
-#   Describtes Expectations for the Test Case.
 
-    def createMemberAuthorizedSession(self):
+    def createAuthorizedSession(self, userLogin, userPassword):
         # Create an authorized session to test authorized calls.
-        r = requests.post(hostURL+'token',grant_payload)
+        r = requests.post(hostURL+'token', { 'username':userLogin, 'password':userPassword, 'grant_type':'password' })
         access_token = r.json()["access_token"]
         authorization_header = "Bearer " + access_token
         authorized_session = requests.Session()
         authorized_session.verify = True
         authorized_session.headers.update({ "Authorization":authorization_header })
         return authorized_session
-
-    def createLeaderAuthorizedSession(self):
-        # Create an authorized session to test authorized calls.
-        r = requests.post(hostURL+'token',leader_grant_payload)
-        access_token = r.json()["access_token"]
-        authorization_header = "Bearer " + access_token
-        authorized_session = requests.Session()
-        authorized_session.verify = True
-        authorized_session.headers.update({ "Authorization":authorization_header })
-        return authorized_session
-
+    
 
 class Test_allAuthenticationTest(testCase):
 
@@ -123,15 +110,15 @@ class Test_allAccountTest(testCase):
 #    ACCOUNT TESTS    #
 # # # # # # # # # # # #
 
-#    Verify that a regular member can get account by email
+#    Verify that a user can get account by email
 #    Pre-Conditions:
 #    Valid Authentication header
 #    Expectaions:
 #    Endpoint -- api/accounts/email/{email}
 #    Expected Status Code -- 200 OK
 #    Expected Respones Body -- profile of the email person 
-    def test_get_student_by_email___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+    def test_get_student_by_email(self):
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/accounts/email/' + email + '/'
         response = api.get(self.session, self.url)
 
@@ -141,38 +128,38 @@ class Test_allAccountTest(testCase):
             response.json()
         except ValueError:
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
+        assert response.json()["GordonID"] == str(my_id_number)
 
-#    Verify that a regular member can search by a word 
+#    Verify that a user can search someone by a word 
 #    Pre-Conditions:
 #    Valid Authentication header
 #    Expectaions:
 #    Endpoint -- api/accounts/search/{word}
 #    Expected Status Code -- 200 OK
 #    Expected Respones Body -- any info that has the word 
-    def test_get_search_by_string___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+    def test_get_search_by_string(self):
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/accounts/search/' + search_string + '/'
         response = api.get(self.session, self.url)
-
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
         try:
             response.json()
         except ValueError:
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
+        assert response.json()[0]["FirstName"].lower() == search_string.lower()
 
-#    Verify that a regular member can search by two words 
+#    Verify that a user can search someone by two words 
 #    Pre-Conditions:
 #    Valid Authentication header
 #    Expectaions:
 #    Endpoint -- api/accounts/search/{word}/{word2}
 #    Expected Status Code -- 200 OK
 #    Expected Respones Body -- any info that has both of words 
-    def test_get_search_by_two_string___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+    def test_get_search_by_two_string(self):
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/accounts/search/' + search_string + '/' + search_string_2 + '/'
         response = api.get(self.session, self.url)
-
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
         try:
@@ -180,18 +167,17 @@ class Test_allAccountTest(testCase):
         except ValueError:
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
 
-#    Verify that a regular member can search by username 
+#    Verify that an user can search by username 
 #    Pre-Conditions:
 #    Valid Authentication header
 #    Expectaions:
 #    Endpoint -- api/accounts/username/{username}
 #    Expected Status Code -- 200 OK
 #    Expected Respones Body -- profile info of {username} 
-    def test_get_search_by_username___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+    def test_get_search_by_username(self):
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/accounts/username/' + username + '/'
         response = api.get(self.session, self.url)
-
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
         try:
@@ -199,6 +185,180 @@ class Test_allAccountTest(testCase):
         except ValueError:
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
         assert response.json()["ADUserName"].lower() == username.lower()
+
+class Test_AllEmailTest(testCase):
+# # # # # # # #
+# EMAIL  TEST #
+# # # # # # # #
+
+#    Verify that a student can get a list of the emails for all members in the activity
+#    Pre-Conditions:
+#    Valid Authentication Header
+#    Expectations:
+#    Endpoint -- api/emails/activity/{activity_ID}
+#    Expected Status Code -- 200 OK
+#    Expected Response Body -- A json response with the student resource
+    def test_get_list_of_emails(self):
+        self.session = self.createAuthorizedSession(username, password)
+        self.url = hostURL + 'api/emails/activity/' + activity_code + '/'
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json response body, got{0}.'.format(response.text))
+
+#   Verify that an activity leader can get the emails for the members of an activity in specific session code 
+#   Pre-conditions:
+#   Valid Authentication Header
+#   Authenticated as Activity leader
+#   Expectations:
+#   Endpoint -- api/emails/activity/:id
+#   Expected Status Code -- 200 OK
+#   Expected Response Body -- A list of json objects
+    def test_get_emails_for_activity___activity_leader(self):
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
+        self.url = hostURL + 'api/emails/activity/' + activity_code + '/session/201809/'
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            assert response.json()[0]['Email'] == "Chris.Carlson@gordon.edu"
+            assert response.json()[1]['Email'] == "Emmy.Short@gordon.edu"
+        except ValueError:
+            pytest.fail('Expected Json in response body, got {0}.'.format(response.text))
+        if not (type(response.json()) is list):
+            pytest.fail('Expected list, got {0}.'.format(response.json))
+
+#    Verify that a supervisor can get the emails for any activity leader
+#    Pre-Conditions:
+#    Valid Authentication header
+#    Expectaions:
+#    Endpoint -- api/emails/activity/:id/leaders
+#    Expected Status Code -- 200 OK
+#    Expected Respones Body -- Json response with a list of emails
+    def test_get_all_leader_emailss___activity_leader(self):
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
+        self.url = hostURL + 'api/emails/activity/' + activity_code + '/leaders/'
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json response body, got {0}.'.format(response.text))
+
+#     Verify that a supervisor can get the emails for any group_admin
+#    Pre-Conditions:
+#    Valid Authentication header
+#    Expectaions:
+#    Endpoint -- api/emails/activity/:id/group-admin/session/{sessioncode}
+#    Expected Status Code -- 200 OK
+#    Expected Respones Body -- Json response with a list of emails
+    def test_get_emails_for_group_admin___activity_leader(self):
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
+        self.url = hostURL + 'api/emails/activity/' + activity_code + '/group-admin/session/201809/'
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json response body, got {0}.'.format(response.text))
+        try:
+            assert response.json()[0]['Email'] == "Chris.Carlson@gordon.edu"
+        except KeyError:
+            pytest.fail('Expected Email in response, got{0}.'.format(response.json()))
+
+#    Verify that a supervisor can get the emails for any activity leader
+#    Pre-Conditions:
+#    Valid Authentication header
+#    Expectaions:
+#    Endpoint -- api/emails/activity/:id/leaders
+#    Expected Status Code -- 200 OK
+#    Expected Respones Body -- Json response with a list of emails
+    def test_get_emails_for_leaders___activity_leader(self):
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
+        self.url = hostURL + 'api/emails/activity/' + activity_code + '/leaders/session/201809/'
+
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json response body, got {0}.'.format(response.text))
+        try:
+            assert response.json()[0]['Email'] == "Emmy.Short@gordon.edu"
+            assert response.json()[0]['FirstName'] == "Emmy"
+            assert response.json()[0]['LastName'] == "Short"
+        except KeyError:
+            pytest.fail('Expected Email in response, got{0}.'.format(response.json()))
+
+#    Verify that an advisor get a student resource by email.
+#    Pre-Conditions:
+#    Valid Authentication Header
+#    Expectations:
+#    Endpoint -- api/emails/activity/AJG/advisors/session/201809
+#    Expected Status Code -- 200 OK
+#    Expected Response Body -- A json response with the student resource
+    def test_get_student_by_email___activity_leader(self):
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
+        self.url = hostURL + 'api/emails/activity/AJG/advisors/session/201809'
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json response body, got{0}.'.format(response.text))
+        try:
+            assert response.json()[0]['Email'] == "Chris.Carlson@gordon.edu"
+        except KeyError:
+            pytest.fail('Expected StudentID in response, got{0}.'.format(response.json()))
+
+#     Verify that a supervisor can get the emails for any advisor
+#    Pre-Conditions:
+#    Valid Authentication header
+#    Expectaions:
+#    Endpoint -- api/emails/activity/:id/advisor
+#    Expected Status Code -- 200 OK
+#    Expected Respones Body -- Json response with a list of emails
+    def test_get_all_leader_emailss___activity_leader(self):
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
+        self.url = hostURL + 'api/emails/activity/' + activity_code + '/advisors/'
+
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json response body, got {0}.'.format(response.text))
+
+#     Verify that a supervisor can get the emails for any advisors based on sessioncode
+#    Pre-Conditions:
+#    Valid Authentication header
+#    Expectaions:
+#    Endpoint -- api/emails/activity/:id/advisors/session/{sessioncode}
+#    Expected Status Code -- 200 OK
+#    Expected Respones Body -- Json response with a list of emails
+    def test_get_emails_for_group_admin___activity_leader(self):
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
+        self.url = hostURL + 'api/emails/activity/' + activity_code + '/advisors/session/201809/'
+
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json response body, got {0}.'.format(response.text))
+        try:
+            assert response.json()[0]['Email'] == "Chris.Carlson@gordon.edu"
+        except KeyError:
+            pytest.fail('Expected Email in response, got{0}.'.format(response.json()))
 
 class Test_allEventsTest(testCase):
 
@@ -214,7 +374,7 @@ class Test_allEventsTest(testCase):
 #    Expected Status Code -- 200 OK
 #    Expected Respones Body -- list of all chapel events attended by the user 
     def test_get_all_chapel_events___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/events/chapel/' + username + '/'
         response = api.get(self.session, self.url)
 
@@ -235,7 +395,7 @@ class Test_allEventsTest(testCase):
 #    Expected Status Code -- 200 OK
 #    Expected Respones Body -- list of all chapel events attended by the user during term
     def test_get_all_chapel_events_during_term___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/events/chapel/' + username + '/' + specific_term + '/'
         response = api.get(self.session, self.url)
 
@@ -257,7 +417,7 @@ class Test_allEventsTest(testCase):
 #    Expected Respones Body -- list of all events resources
 #    type_ID 10 does not return any data, but 14 does
     def test_get_all_events___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/events/25Live/type/10'
         response = api.get(self.session, self.url)
 
@@ -278,7 +438,7 @@ class Test_allEventsTest(testCase):
 #    Expected Status Code -- 200 OK
 #    Expected Respones Body -- list of all events resources
     def test_get_all_events_multiple___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         warnings.warn(UserWarning("Type_ID might not give any data"))
         self.url = hostURL + 'api/events/25Live/type/10$11$12$14'
         response = api.get(self.session, self.url)
@@ -300,7 +460,7 @@ class Test_allEventsTest(testCase):
 #    Expected Status Code -- 200 OK
 #    Expected Respones Body -- list of all events resources
     def test_get_all_claw___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/events/25Live/CLAW'
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
@@ -321,7 +481,7 @@ class Test_allEventsTest(testCase):
 #    Expected Respones Body -- list of all events resources
 
     def test_get_all_25Live___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/events/25Live/All'
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
@@ -342,7 +502,7 @@ class Test_allEventsTest(testCase):
 #    Expected Respones Body -- list of all events resources
 
     def test_get_all_25Live_by_event_id___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/events/25Live/2911'
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
@@ -369,7 +529,7 @@ class Test_allActivityTest(testCase):
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- List of activities
     def test_get_all_activities___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/activities/'
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
@@ -380,6 +540,7 @@ class Test_allActivityTest(testCase):
             pytest.fail('Expected Json response body, got {0}.'.format(respons.text))
         if not (type(response.json()) is list):
             pytest.fail('Expected list, got {0}.'.format(response.json()))
+        assert "360" == response.json()[0]["ActivityCode"]
 
 #    Verify that an activity leader can a single activity.
 #    Pre-Conditions:
@@ -389,7 +550,7 @@ class Test_allActivityTest(testCase):
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- Json object with activity resource
     def test_get_one_activity___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/activities/' + activity_code + '/'
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
@@ -402,7 +563,7 @@ class Test_allActivityTest(testCase):
             response.json()['ActivityCode']
         except KeyError:
             pytest.fail('Expected ACT_CDE in response, got {0}.'.format(response.json()))
-
+        assert activity_code in response.json()["ActivityCode"]
 #    Verify that an activity leader can get all activities for specific session.
 #    Pre-Conditions:
 #    Valid Authentication Header
@@ -411,7 +572,7 @@ class Test_allActivityTest(testCase):
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- list of activities
     def test_get_activities_for_session___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/activities/session/' + session_code + '/'
         self.sessionID = -1
 
@@ -424,6 +585,7 @@ class Test_allActivityTest(testCase):
             pytest.fail('Expected Json response body, got {0}.'.format(response.json()))
         if not (type(response.json()) is list):
             pytest.fail('Expected list, got {0}.'.format(response.json()))
+        assert activity_code == response.json()[0]["ActivityCode"]
 
 #    Verify that an activity leader can get all activity types for specific session in a list 
 #    Pre-Conditions:
@@ -433,7 +595,7 @@ class Test_allActivityTest(testCase):
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- list of activities
     def test_get_activities_for_session___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/activities/session/' + session_code + '/types/'
         self.sessionID = -1
 
@@ -446,6 +608,7 @@ class Test_allActivityTest(testCase):
             pytest.fail('Expected Json response body, got {0}.'.format(response.json()))
         if not (type(response.json()) is list):
             pytest.fail('Expected list, got {0}.'.format(response.json()))
+        assert "Student Club" == response.json()[0]
 
 #    Verify that an activity leader can get the status of activity in a session 
 #    Pre-Conditions:
@@ -455,7 +618,7 @@ class Test_allActivityTest(testCase):
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- "closed" or "open"
     def test_get_activities_for_session___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/activities/' + session_code + '/' + activity_code + '/status/'
         self.sessionID = -1
 
@@ -466,6 +629,7 @@ class Test_allActivityTest(testCase):
             response.json()
         except ValueError:
             pytest.fail('Expected string response body, got {0}.'.format(response.json()))
+        assert response.json() == "CLOSED"
 
 #    Verify that an activity leader can get all open status activities
 #    Pre-Conditions:
@@ -475,7 +639,7 @@ class Test_allActivityTest(testCase):
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- "closed" or "open"
     def test_get_activities_for_session___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/activities/open/'
         self.sessionID = -1
 
@@ -496,8 +660,48 @@ class Test_allActivityTest(testCase):
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- "closed" or "open"
     def test_get_activities_for_session___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/activities/closed/'
+        self.sessionID = -1
+
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.json()))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected string response body, got {0}.'.format(response.json()))
+
+#    Verify that an activity leader can get all open status activities per session
+#    Pre-Conditions:
+#    Valid Authentication Header
+#    Expectations:
+#    Endpoint -- api/activities/sessioncode}/open
+#    Expected Status Code -- 200 OK
+#    Expected Response Body -- activities that are open 
+    def test_get_open_activities_for_session___activity_leader(self):
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
+        self.url = hostURL + 'api/activities/' + session_code + '/open/'
+        self.sessionID = -1
+
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.json()))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected string response body, got {0}.'.format(response.json()))
+
+#    Verify that an activity leader can get all closed status activities per session
+#    Pre-Conditions:
+#    Valid Authentication Header
+#    Expectations:
+#    Endpoint -- api/activities/sessioncode}/closed
+#    Expected Status Code -- 200 OK
+#    Expected Response Body -- activities that are closed 
+    def test_get_closed_activities_for_session___activity_leader(self):
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
+        self.url = hostURL + 'api/activities/' + session_code + '/open/'
         self.sessionID = -1
 
         response = api.get(self.session, self.url)
@@ -518,7 +722,7 @@ class Test_allActivityTest(testCase):
 #    Expected Response Body -- Updated activity information
 
     def test_update_activity___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/activities/' + activity_code + '/'
         self.data = {
             "ACT_CDE" : activity_code,
@@ -554,7 +758,7 @@ class Test_allMembershipTest(testCase):
 #    Expected Content -- List
 
     def test_get_all_memberships___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/memberships/'
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
@@ -565,6 +769,8 @@ class Test_allMembershipTest(testCase):
             pytest.fail('Expected Json response, got {0}.'.format(response.text))
         if not (type(response.json()) is list):
             pytest.fail('Response was not a list')
+        assert response.json()[0]["ActivityCode"] == 'AFROHAM'
+
 
 #    Test retrieving all membership resources as a member
 #    Pre-conditions:
@@ -575,7 +781,7 @@ class Test_allMembershipTest(testCase):
 #    Expected Content -- 
 
     def test_get_all_memberships___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/memberships/'
         response = api.get(self.session, self.url)
         if not response.status_code == 401:
@@ -589,7 +795,7 @@ class Test_allMembershipTest(testCase):
 #    Expected Status Code -- 200 OK
 #    Expected Content -- A Json Object with a MembershipID attribute.
     def test_get_one_membership___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/memberships/'
         self.membershipID = -1
         # Find a valid membership id
@@ -623,7 +829,7 @@ class Test_allMembershipTest(testCase):
 #    Expected Status Code -- 401 Unauthorized
 #    Expected Content -- 
     def test_get_one_membership___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/memberships/4873/'
         self.membershipID = -1
         # Find a valid membership id
@@ -641,7 +847,7 @@ class Test_allMembershipTest(testCase):
 #    Expected Response Content -- A list of json Objects.
 
     def test_get_memberships_for_an_activity___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/memberships/activity/' + activity_code + '/'
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
@@ -652,6 +858,8 @@ class Test_allMembershipTest(testCase):
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
         if not (type(response.json()) is list):
             pytest.fail('Response was not a list.')
+        assert response.json()[0]["ActivityCode"] == activity_code 
+        assert "IDNumber" not in response.json()
 
 #    Verify that a member can't fetch memberships for an activity.
 #    Pre-Conditions:
@@ -662,12 +870,35 @@ class Test_allMembershipTest(testCase):
 #    Expected Response Content -- A list of json Objects.
 
     def test_get_memberships_for_an_activity___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/memberships/activity/' + activity_code + '/'
         response = api.get(self.session, self.url)
         if not response.status_code == 401:
             warnings.warn("Security fault")
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+
+#    Verify that a member can get all group admins
+#    Pre-Conditions:
+#    Valid Authentication Header.
+#    Expectations:
+#    Endpoint -- api/memberships/activity/{activityId}/group-admin
+#    Expected Status Code -- 200 OK
+#    Expected Response Content -- A list of json Objects.
+
+    def test_get_memberships_for_an_activity___regular_member(self):
+        self.session = self.createAuthorizedSession(username, password)
+        self.url = hostURL + 'api/memberships/activity/' + activity_code + '/group-admin/'
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json response body, got {0}.'.format(response.text))
+        if not (type(response.json()) is list):
+            pytest.fail('Response was not a list.')
+        assert response.json()[0]["ActivityCode"] == activity_code 
+        assert "IDNumber" not in response.json()
 
 #    Verify that a regular member can fetch all leaders for a specific activity.
 #    Pre-Conditions:
@@ -678,7 +909,7 @@ class Test_allMembershipTest(testCase):
 #    Expected Status Code -- 200 OK
 #    Expected Response Content -- A list of json objects.
     def test_get_leader_memberships_for_an_activity___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/memberships/activity/' + activity_code + '/leaders/'
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
@@ -686,23 +917,45 @@ class Test_allMembershipTest(testCase):
         try:
             response.json()
             assert response.json()[0]['Participation'] == "LEAD"
+            assert "IDNumber" not in response.json()
         except ValueError:
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
         if not (type(response.json()) is list):
             pytest.fail('Response was not a list.')
 
-#    Verify that a leader can fetch all leaders for a specific activity.
+#    Verify that a regular member can fetch all advisors for a specific activity.
 #    Pre-Conditions:
 #    Valid Authentication Header.
 #    Authenticated as regular member.
 #    Expectations:
-#    Endpoint -- api/memberships/activity/:id/leaders
+#    Endpoint -- api/memberships/activity/:id/advisors
 #    Expected Status Code -- 200 OK
 #    Expected Response Content -- A list of json objects.
+    def test_get_leader_memberships_for_an_activity___regular_member(self):
+        self.session = self.createAuthorizedSession(username, password)
+        self.url = hostURL + 'api/memberships/activity/' + activity_code + '/advisors/'
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+            assert "IDNumber" not in response.json()
+        except ValueError:
+            pytest.fail('Expected Json response body, got {0}.'.format(response.text))
+        if not (type(response.json()) is list):
+            pytest.fail('Response was not a list.')
 
-    def test_get_leader_memberships_for_an_activity___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
-        self.url = hostURL + 'api/memberships/activity/' + activity_code + '/leaders'
+#    Verify that a regular member can fetch number of followers for a specific activity.
+#    Pre-Conditions:
+#    Valid Authentication Header.
+#    Authenticated as regular member.
+#    Expectations:
+#    Endpoint -- api/memberships/activity/:id/advisors
+#    Expected Status Code -- 200 OK
+#    Expected Response Content -- A list of json objects.
+    def test_get_leader_memberships_for_an_activity___regular_member(self):
+        self.session = self.createAuthorizedSession(username, password)
+        self.url = hostURL + 'api/memberships/activity/' + activity_code + '/followers/'
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
@@ -710,9 +963,67 @@ class Test_allMembershipTest(testCase):
             response.json()
         except ValueError:
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
-        if not (type(response.json()) is list):
-            pytest.fail('Response was not a list.')
-        assert response.json()[0]['Participation'] == "LEAD"
+        assert response.json() == 4
+
+#    Verify that a regular member can fetch number of followers for a specific activity in a given session
+#    Pre-Conditions:
+#    Valid Authentication Header.
+#    Authenticated as regular member.
+#    Expectations:
+#    Endpoint -- api/memberships/activity/:id/advisors
+#    Expected Status Code -- 200 OK
+#    Expected Response Content -- A list of json objects.
+    def test_get_leader_memberships_for_an_activity___regular_member(self):
+        self.session = self.createAuthorizedSession(username, password)
+        self.url = hostURL + 'api/memberships/activity/' + activity_code + '/followers/' + session_code + '/'
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json response body, got {0}.'.format(response.text))
+        assert response.json() == 0
+
+#    Verify that a regular member can fetch number of members for a specific activity in a given session
+#    Pre-Conditions:
+#    Valid Authentication Header.
+#    Authenticated as regular member.
+#    Expectations:
+#    Endpoint -- api/memberships/activity/:id/advisors
+#    Expected Status Code -- 200 OK
+#    Expected Response Content -- A list of json objects.
+    def test_get_leader_memberships_for_an_activity___regular_member(self):
+        self.session = self.createAuthorizedSession(username, password)
+        self.url = hostURL + 'api/memberships/activity/' + activity_code + '/members/' + session_code + '/'
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json response body, got {0}.'.format(response.text))
+        assert response.json() == 2
+
+#    Verify that a regular member can fetch number of members for a specific activity.
+#    Pre-Conditions:
+#    Valid Authentication Header.
+#    Authenticated as regular member.
+#    Expectations:
+#    Endpoint -- api/memberships/activity/:id/members
+#    Expected Status Code -- 200 OK
+#    Expected Response Content -- A list of json objects.
+    def test_get_leader_memberships_for_an_activity___regular_member(self):
+        self.session = self.createAuthorizedSession(username, password)
+        self.url = hostURL + 'api/memberships/activity/' + activity_code + '/members/'
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json response body, got {0}.'.format(response.text))
+        assert response.json() == 85
 
 #    Verify that a leader can fetch memberships associated with them.
 #    Pre-Conditions:
@@ -723,8 +1034,8 @@ class Test_allMembershipTest(testCase):
 #    Expected Reponse Content -- A list of json objects
 
     def test_get_all_my_memberships___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
-        self.url = hostURL + 'api/memberships/student/' + str(my_id_number)
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
+        self.url = hostURL + 'api/memberships/student/' + str(my_id_number) + '/'
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
@@ -734,9 +1045,33 @@ class Test_allMembershipTest(testCase):
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
         if not (type(response.json()) is list):
             pytest.fail('Response was not a list.')
+        warnings.warn("Security faults")
+        assert my_id_number == response.json()[0]["IDNumber"]
+
+#    Verify that a member can fetch memberships based on username
+#    Pre-Conditions:
+#    Valid Authentication Header.
+#    Expectations:
+#    Endpoints -- api/memberships/student/:id
+#    Expected Status Code -- 200 OK
+#    Expected Reponse Content -- A list of json objects
+
+    def test_get_all_my_memberships___activity_leader(self):
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
+        self.url = hostURL + 'api/memberships/student/username/' + username + '/'
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json response body, got {0}.'.format(response.text))
+        if not (type(response.json()) is list):
+            pytest.fail('Response was not a list.')
+        warnings.warn("Security faults")
+        assert my_id_number == response.json()[0]["IDNumber"]
 
 #    Verify that leader can fetch someone else's memberships.
-#
 #    Pre-Conditions:
 #    Valid Authentication Header.
 #    Authenticated as regular member.
@@ -746,7 +1081,7 @@ class Test_allMembershipTest(testCase):
 #    Expected Response Content --  A list of json objects.
 
     def test_get_all_memberships_for_someone_else___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/memberships/student/' + str(random_id_number)
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
@@ -769,7 +1104,7 @@ class Test_allMembershipTest(testCase):
 #    Expected Content -- A Json object with a MEMBERSHIP_ID attribute.
 #    Session code is too old so it returns error
     def test_post_new_guest_membership_for_someone_else__activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
 
         self.url = hostURL + 'api/memberships/'
         self.data = {
@@ -810,7 +1145,7 @@ class Test_allMembershipTest(testCase):
 #    Expected Content -- A json response with the created membership
 
     def test_post_new_membership_for_someone___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/memberships/'
         self.createdMembershipID = -1
         # Add a new participant
@@ -848,7 +1183,7 @@ class Test_allMembershipTest(testCase):
 #    Expected Status Code -- 200 OK
 #    Expected Content -- A json response with the created membership
     def test_post_new_leader_membership_for_someone___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/memberships/'
         self.createdMembershipID = -1
         # Add a new leader
@@ -889,7 +1224,7 @@ class Test_allMembershipTest(testCase):
 #    Expected Content -- A json object with a MEMBERSHIP_ID attribute.
 
     def test_put_edited_membership_member_to_leader___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/memberships/'
         self.createdMembershipID = -1
 
@@ -943,7 +1278,7 @@ class Test_allMembershipTest(testCase):
 #    Expected Content -- A json object with a MEMBERSHIP_ID attribute.
 
     def test_put_edited_membership_leader_to_member___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/memberships/'
         self.createdMembershipID = -1
         # The membership to modify
@@ -1001,7 +1336,7 @@ class Test_allMembershipTest(testCase):
 #    Expected Response Content -- The membership resource that wad delteed.
 
     def test_delete_valid_membership___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/memberships/'
         self.createdMembershipID = -1
 
@@ -1043,7 +1378,7 @@ class Test_allMembershipRequestTest(testCase):
 #    Expected Response Content -- Empty response content.
 
     def test_get_all_membership_requests___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/requests/'
         response = api.get(self.session, self.url)
         if not response.status_code == 401:
@@ -1060,7 +1395,7 @@ class Test_allMembershipRequestTest(testCase):
 #    Expected Status Code -- 401 Unauthorized
 #    Expected Response Body -- Empty
     def test_get_membership_requests_for_someone_else___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/requests/student/' + str(random_id_number)
         response = api.get(self.session, self.url)
         if not response.status_code == 401:
@@ -1079,7 +1414,7 @@ class Test_allMembershipRequestTest(testCase):
 
 #   Passed with activity code 'TRAS', but not AJG because studenttest is a leader for AJG
     def test_get_membership_requests_for_activity___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/requests/activity/' + 'TRAS'
         # Report if there any current memberships for the Club to avoid false negatives.
         # If I am currently a director of the club, this test should fail.
@@ -1106,7 +1441,7 @@ class Test_allMembershipRequestTest(testCase):
 #    Expected Content -- A Json object with a REQUEST_ID attribute.
 #    session code 201510 does not work
     def test_post_valid_membership_request___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/requests/'
         self.data = {
             'ACT_CDE': activity_code,
@@ -1143,10 +1478,10 @@ class Test_allMembershipRequestTest(testCase):
 #    Endpoints -- api/requests/
 #    Expected Status Code -- 401 Unauthorized.
 #    Expected Response Content -- Empty Response.
-#    look up for test_config.py for the data configuration
+#    look up for configuration.py for the data configuration
 
     def test_post_membership_request_for_someone_else___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/requests/'
         self.data = {
             'ACT_CDE': activity_code,
@@ -1181,7 +1516,7 @@ class Test_allMembershipRequestTest(testCase):
 #    Expected Response Content -- Empty response content.
 
     def test_get_all_membership_requests___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/requests/'
         response = api.get(self.session, self.url)
         if not response.status_code == 401:
@@ -1199,7 +1534,7 @@ class Test_allMembershipRequestTest(testCase):
 #    Expected Response Body -- List of json objects representing the membership requests.
 
     def test_get_membership_requests_for_activity___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/requests/activity/' + activity_code + '/'
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
@@ -1221,7 +1556,7 @@ class Test_allMembershipRequestTest(testCase):
 #    Expected Response Body -- Empty
 
     def test_get_membership_requests_for_someone_else___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/requests/student/' + str(random_id_number)
         response = api.get(self.session, self.url)
         if not response.status_code == 401:
@@ -1239,7 +1574,7 @@ class Test_allMembershipRequestTest(testCase):
 #    Expected Response Body -- A list of membership requests
 
     def test_get_all_my_membership_requests___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/requests/student/' + str(leader_id_number) + '/'
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
@@ -1260,7 +1595,7 @@ class Test_allMembershipRequestTest(testCase):
 #    Expected Content -- A Json object with a REQUEST_ID attribute.
 
     def test_post_valid_membership_request___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/requests/'
         self.data = {
             'ACT_CDE': activity_code,
@@ -1301,7 +1636,7 @@ class Test_allMembershipRequestTest(testCase):
 #    Expected Status Code -- 401 Unauthorized.
 #    Expected Response Content -- Empty Response.
     def test_post_membership_request_for_someone_else___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/requests/'
         self.data = {
             'ACT_CDE': activity_code,
@@ -1338,7 +1673,7 @@ class Test_allMembershipRequestTest(testCase):
 #    Expected Response Body -- Empty
 #
 #    def test_put_membership_request___activity_leader(self):
-#        self.session = self.createLeaderAuthorizedSession()
+#        self.session = self.createAuthorizedSession(leader_username, leader_password)
 #        self.url = hostURL + '/api/requests/'
 #        self.requestID = -1
 #
@@ -1380,7 +1715,7 @@ class Test_allMembershipRequestTest(testCase):
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- The request that was deleted
     def test_delete_membership_request___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/requests/'
         self.predata = {}
         self.requestID = -1
@@ -1420,7 +1755,7 @@ class Test_allMembershipRequestTest(testCase):
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- Json response with the request that was accepted.
     def test_allow_someone_to_join_my_activity___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/requests/'
         self.requestID = -1
         self.membershipID = -1
@@ -1480,7 +1815,7 @@ class Test_allMembershipRequestTest(testCase):
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- Json response with the request that was denied
     def test_deny_someone_joining_my_activity___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/requests/'
         self.requestID = -1
 
@@ -1527,7 +1862,6 @@ class Test_allProfileTest(testCase):
 #################
 
 #    Verify that a regular member can get a profile of the current user
-#
 #    Pre-Conditions:
 #    Valid Authentication header
 #    Expectaions:
@@ -1536,7 +1870,7 @@ class Test_allProfileTest(testCase):
 #    Expected Respones Body -- A json object of information on own profile
 
     def test_get_my_profile___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/profiles/'
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
@@ -1555,13 +1889,14 @@ class Test_allProfileTest(testCase):
 #    Expected Response Body -- list of information on the user without private info
 
     def test_get_profile_by_username___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/profiles/' + username +'/'
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
         try:
             assert response.json()['AD_Username'] == '360.StudentTest'
+            assert "ID" not in response.json()
         except ValueError:
             pytest.fail('Expected Json response body, got{0}.'.format(response.text))
 
@@ -1574,7 +1909,7 @@ class Test_allProfileTest(testCase):
 #   Expected Response Body -- list of information on the user without private info
 
     def test_get_college_role_by_username___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/profiles/role/' + username + '/'
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
@@ -1593,7 +1928,7 @@ class Test_allProfileTest(testCase):
 #    Expected Response Body -- image path of the current user
 
     def test_get_image___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/profiles/image/'
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
@@ -1612,7 +1947,7 @@ class Test_allProfileTest(testCase):
 #    Expected Status Code -- 200 Ok
 #    Expected Response Body -- image path of another user
     def test_get_image_by_username___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/profiles/image/' + username + '/'
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
@@ -1629,10 +1964,10 @@ class Test_allProfileTest(testCase):
 #    Endpoint -- api/profiles/image/
 #    Expected Status Code -- 200 OK
 #    Expected Content --
-#    look up for test_config.py for the data configuration
+#    look up for configuration.py for the data configuration
 
     def test_post_image___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/profiles/image/'
         self.data = {
             'ID': my_id_number,
@@ -1658,10 +1993,10 @@ class Test_allProfileTest(testCase):
 #    Endpoint -- api/profiles/image/reset/
 #    Expected Status Code -- 200 OK
 #    Expected Content --
-#    look up for test_config.py for the data configuration
+#    look up for configuration.py for the data configuration
 
     def test_post_reset_image___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/profiles/image/reset/'
         self.data = {
             'ID': my_id_number,
@@ -1679,10 +2014,10 @@ class Test_allProfileTest(testCase):
 #    Endpoint -- api/profiles/:type
 #    Expected Status Code -- 200 OK
 #    Expected Content --
-#    look up for test_config.py for the data configuration
+#    look up for configuration.py for the data configuration
 
     def test_put_social_media_links___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/profiles/facebook/'
         self.data = {
             'facebook': 'https://www.facebook.com/360.studenttest' #'URL of any SNS including the domain name'
@@ -1706,7 +2041,7 @@ class Test_allProfileTest(testCase):
 #    Expected Content --
 
     def test_put_mobile_privacy___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/profiles/mobile_privacy/Y/'
         self.data = {
             'IsMobilePhonePrivate': 'Y'
@@ -1729,7 +2064,7 @@ class Test_allProfileTest(testCase):
 #    Expected Status Code -- 200 OK
 #    Expected Content --
     def test_put_image_privacy___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/profiles/image_privacy/Y/'
         self.data = {
             'show_pic': 'Y'
@@ -1757,7 +2092,7 @@ class Test_allParticipationTest(testCase):
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- List of all participations
     def test_get_all_participations___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/participations/'
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
@@ -1768,6 +2103,7 @@ class Test_allParticipationTest(testCase):
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
         if not (type(response.json()) is list):
             pytest.fail('Expected list, got {0}.'.format(response.json()))
+        assert "ADV" == response.json()[0]["ParticipationCode"]
 #    Verify that an activity leader can get a specific participation object
 #    Pre-Conditions:
 #    Valud Authentication Header
@@ -1776,24 +2112,22 @@ class Test_allParticipationTest(testCase):
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- A participation object
 #
-#    def test_get_one_participation___activity_leader(self):
-#        self.session = self.createLeaderAuthorizedSession()
+    def test_get_one_participation___activity_leader(self):
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
+        self.url = hostURL + 'api/participations/MEMBR/'
 
-#   no MEMBR for participation
-#        self.url = hostURL + 'api/participations/MEMBR/'
-#
-#        response = api.get(self.session, self.url)
-#        if not response.status_code == 200:
-#            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
-#        try:
-#            response.json()
-#        except ValueErrror:
-#            pytest.fail('Expected Json response body, got {0}.'.format(response.text))
-#        else:
-#            try:
-#                response.json()['ParticipationCode']
-#            except KeyError:
-#                pytest.fail('Expected ParticipationCode in response, got {0}.'.format(response.json()))
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueErrror:
+            pytest.fail('Expected Json response body, got {0}.'.format(response.text))
+        else:
+            try:
+                response.json()['ParticipationCode']
+            except KeyError:
+                pytest.fail('Expected ParticipationCode in response, got {0}.'.format(response.json()))
 
 class Test_allSessionTest(testCase):
 
@@ -1832,7 +2166,7 @@ class Test_allSessionTest(testCase):
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- A session resource.
     def test_get_one_session___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/sessions/' + session_code + '/'
 
         response = api.get(self.session, self.url)
@@ -1846,87 +2180,18 @@ class Test_allSessionTest(testCase):
             response.json()['SessionCode']
         except KeyError:
             pytest.fail('Expected SessionCode in response, got {0}.'.format(response.json()))
+        assert response.json()['SessionCode'] == session_code
 
-class Test_AllEmailTest(testCase):
-# # # # # # # #
-# EMAIL  TEST #
-# # # # # # # #
-
-#    Verify that a student can get a list of the emails for all members in teh activity
+#    Verify that an user can get the current session 
 #    Pre-Conditions:
 #    Valid Authentication Header
 #    Expectations:
-#    Endpoint -- api/emails/activity/{activity_ID}
+#    Endpoint -- api/sessions/current/
 #    Expected Status Code -- 200 OK
-#    Expected Response Body -- A json response with the student resource
-    def test_get_list_of_emails___regular_member(self):
-        self.session = self.createLeaderAuthorizedSession()
-        self.url = hostURL + 'api/emails/activity/' + activity_code + '/'
-        response = api.get(self.session, self.url)
-        if not response.status_code == 200:
-            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
-        try:
-            response.json()
-        except ValueError:
-            pytest.fail('Expected Json response body, got{0}.'.format(response.text))
-
-#    Verify that an advisor get a student resource by email.
-#
-#    Pre-Conditions:
-#    Valid Authentication Header
-#    Expectations:
-#    Endpoint -- api/emails/activity/AJG/advisors/session/201809
-#    Expected Status Code -- 200 OK
-#    Expected Response Body -- A json response with the student resource
-    def test_get_student_by_email___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
-        self.url = hostURL + 'api/emails/activity/AJG/advisors/session/201809'
-        response = api.get(self.session, self.url)
-        if not response.status_code == 200:
-            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
-        try:
-            response.json()
-        except ValueError:
-            pytest.fail('Expected Json response body, got{0}.'.format(response.text))
-        try:
-            assert response.json()[0]['Email'] == "Chris.Carlson@gordon.edu"
-        except KeyError:
-            pytest.fail('Expected StudentID in response, got{0}.'.format(response.json()))
-
-#   Verify that an activity leader can get the emails for the members of an activity
-#
-#   Pre-conditions:
-#   Valid Authentication Header
-#   Authenticated as Activity leader
-#   Expectations:
-#   Endpoint -- api/emails/activity/:id
-#   Expected Status Code -- 200 OK
-#   Expected Response Body -- A list of json objects
-    def test_get_emails_for_activity___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
-        self.url = hostURL + 'api/emails/activity/' + activity_code + '/session/201809/'
-
-        response = api.get(self.session, self.url)
-        if not response.status_code == 200:
-            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
-        try:
-            assert response.json()[0]['Email'] == "Chris.Carlson@gordon.edu"
-            assert response.json()[1]['Email'] == "Emmy.Short@gordon.edu"
-        except ValueError:
-            pytest.fail('Expected Json in response body, got {0}.'.format(response.text))
-        if not (type(response.json()) is list):
-            pytest.fail('Expected list, got {0}.'.format(response.json))
-#     Verify that a supervisor can get the emails for any activity leader
-#
-#    Pre-Conditions:
-#    Valid Authentication header
-#    Expectaions:
-#    Endpoint -- api/emails/activity/:id/leaders
-#    Expected Status Code -- 200 OK
-#    Expected Respones Body -- Json response with a list of emails
-    def test_get_emails_for_leaders___activity_leader(self):
-        self.session = self.createLeaderAuthorizedSession()
-        self.url = hostURL + 'api/emails/activity/' + activity_code + '/leaders/session/201809/'
+#    Expected Response Body -- the current session 
+    def test_get_current_session___activity_leader(self):
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
+        self.url = hostURL + 'api/sessions/current/'
 
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
@@ -1936,11 +2201,32 @@ class Test_AllEmailTest(testCase):
         except ValueError:
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
         try:
-            assert response.json()[0]['Email'] == "Emmy.Short@gordon.edu"
-            assert response.json()[0]['FirstName'] == "Emmy"
-            assert response.json()[0]['LastName'] == "Short"
+            response.json()['SessionCode']
         except KeyError:
-            pytest.fail('Expected Email in response, got{0}.'.format(response.json()))
+            pytest.fail('Expected SessionCode in response, got {0}.'.format(response.json()))
+
+#    Verify that an user can get the days left of the session
+#    Pre-Conditions:
+#    Valid Authentication Header
+#    Expectations:
+#    Endpoint -- api/sessions/daysLeft/
+#    Expected Status Code -- 200 OK
+#    Expected Response Body -- numbers of days left 
+    def test_get_daysLeft_session___activity_leader(self):
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
+        self.url = hostURL + 'api/sessions/daysLeft/'
+
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json response body, got {0}.'.format(response.text))
+        try:
+            response.json()
+        except KeyError:
+            pytest.fail('Expected SessionCode in response, got {0}.'.format(response.json()))
 
 class Test_AllDiningTest(testCase):
 # # # # # # # # #
@@ -1957,7 +2243,7 @@ class Test_AllDiningTest(testCase):
 #    Expected Response Body -- A json response with dict containing the student mealplan data
 
     def test_dining_plan___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/dining/student/' + str(random_id_number) + '/' + session_code
         response = api.get(self.session, self.url)
 
@@ -1967,8 +2253,6 @@ class Test_AllDiningTest(testCase):
             response.json()
         except ValueError:
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
-        if not (type(response.json()) is dict):
-            pytest.fail('Expected dict, got {0}.'.format(response.json()))
 
 class Test_AllStudentEmploymentTest(testCase):
 
@@ -1976,8 +2260,15 @@ class Test_AllStudentEmploymentTest(testCase):
 # STUDENT EMPLOYMENT TEST #
 # # # # # # # # # # # # # #
 
+#    Verify that a student user can get their own student employment information
+#    Pre-Conditions: Need to be logged in as cct.service in visual studio 
+#    Valid Authentication Header
+#    Expectations:
+#    Endpoint -- api/studentemployment/
+#    Expected Status Code -- 200 OK
+#    Expected Response Body -- A json response with student employment info
     def test_student_employment___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/studentemployment/'
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
@@ -1996,7 +2287,7 @@ class Test_AllVictoryPromiseTest(testCase):
 # # # # # # # # # # # # #
 
     def test_victory_promise___regular_member(self):
-        self.session = self.createMemberAuthorizedSession()
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/vpscore/'
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
@@ -2005,5 +2296,5 @@ class Test_AllVictoryPromiseTest(testCase):
             response.json()
         except ValueError:
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
-        if not (type(response.json()) is dict):
-            pytest.fail('Expected dict, got {0}.'.format(response.json()))
+        assert response.json()[0]["TOTAL_VP_IM_SCORE"] == 0 
+        
