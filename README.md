@@ -63,9 +63,9 @@ The folders for these IIS sites can be found on the 360train machine under `F:\s
 
 ### Deploying to the Api Site
 - Access the cts-360.gordon.edu VM (see [RemoteDesktopToVM.md](RemoteDesktopToVM.md) for instructions) as the cct.service user.
-- Open gitbash and cd to `C:\users\cct.service\code\gordon-360-api`. Ensure that it is on the right branch and up to date.
-**Note: If you clone a new repository elsewhere on the VM, the new folder won't have the Publish profiles or secrets.config.**
-- Start Visual Studio as an administrator (right click) and open an existing project/solution - `C:\users\cct.service\code\gordon-360-api\Gordon360.sln` (the solution file). 
+- Open gitbash and cd to `C:\users\cct.service\code\gordon-360-api`. Make sure that you are on the branch you wish to deploy, and that it has been pulled up to date.
+**Note: if you clone a new repository on this VM, it will not have the necessary publish profiles or secrets.config. See [MakePublishProfiles.md](MakePublishProfiles.md) to restore the Publish Profiles.**
+- Start Visual Studio as an administrator (right click) and open the existing project/solution file - `C:\users\cct.service\code\gordon-360-api\Gordon360.sln` (the solution file). 
 - Menu Bar -> Build - Publish Gordon360.
 - Choose the right publish profile.
     - DEV -- Development ( Connects to the admintrainsql database server, and used for 360train.gordon.edu).
