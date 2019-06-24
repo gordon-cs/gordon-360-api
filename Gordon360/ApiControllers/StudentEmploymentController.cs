@@ -33,9 +33,9 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>
-        ///  Gets current victory promise scores
+        ///  Gets current student employmen info
         /// </summary>
-        /// <returns>A VP object object</returns>
+        /// <returns>A studentEmployment object object</returns>
         [HttpGet]
         [Route("")]
         public IHttpActionResult Get()
