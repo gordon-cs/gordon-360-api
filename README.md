@@ -305,13 +305,15 @@ What is it? Resource that represents a gordon account.
 
 ##### GET
 
-`api/accounts/:email` Get the account with email `email`.
+`api/accounts/email/:email` Get the account with email `email`.
 
-`api/accounts/:username` Get the account with `username`.
+`api/accounts/username/:username` Get the account with `username`.
 
 `api/accounts/search/:searchString` Returns the basicinfoviewmodel with a Concatenated attribute matching some or all of the searchstring
 
-`api/accounts/advanced-people-search/{includeAlumniSearchParam}/{firstNameSearchParam}/{lastNameSearchParam}/{majorSearchParam}/{minorSearchParam}/{classTypeSearchParam}/{hometownSearchParam}/{stateSearchParam}/{countrySearchParam}/{departmentSearchParam}/{buildingSearchParam}` Get all the accounts matching the specified parameters. Access to accounts is based on your account type (e.g. Students can't get Alumni).
+`api/accounts/search/:searchString/:secondaryString` The same as above, used when the search string contains a space
+
+`api/accounts/advanced-people-search/{includeAlumniSearchParam}/{firstNameSearchParam}/{lastNameSearchParam}/{majorSearchParam}/{minorSearchParam}/{hallSearchParam}/{classTypeSearchParam}/{hometownSearchParam}/{stateSearchParam}/{countrySearchParam}/{departmentSearchParam}/{buildingSearchParam}` Get all the accounts matching the specified parameters. Access to accounts is based on your account type (e.g. Students can't get Alumni).
 
 ### Activities
 What is it? Resource that represents some activity - such as a club, ministry, leadership program, etc.
@@ -322,7 +324,7 @@ What is it? Resource that represents some activity - such as a club, ministry, l
 
 `api/activities/:id` Get the activity with activity code `id`.
 
-`api/activities/session/:id` Get the activity offered during the session with session code `id`.
+`api/activities/session/:id` Get the activities offered during the session with session code `id`.
 
 `api/activities/session/:id/types` Get the different activity types among the activities offered during the session with session code `id`.
 
@@ -338,13 +340,19 @@ What is it? Resource that represents some activity - such as a club, ministry, l
 
 ##### PUT
 
-`api/activities/:id/session/{sess_cde}/close` Close out an activity for a given session (this is like confirming the final roster of an activity for a given session.
+`api/activities/:id/session/{sess_cde}/close` Close out an activity for a given session (this is like confirming the final roster of an activity for a given session).
 
 `api/activities/:id/session/{sess_cde}/open` Reopen an activity for a given session.
 
 `api/activities/:id` Edit activity information for the club with activity code `id`.
 
-`api/activities/:id/private/:p` Update a given activity to private or not private with boolean value `p`. The `id` parameter is the activity id.
+`api/activities/:id/privacy/:p` Update a given activity to private or not private with boolean value `p`. The `id` parameter is the activity id.
+
+##### POST
+
+`api/activities/:id/image` Set an image for the activity with activity code `id`.
+
+`api/activites/:id/image/reset` Reset the image to default for the activity with activity code `id`.
 
 
 ### Admins
@@ -368,10 +376,14 @@ Who has access? Only super admins, except to get a specific admin where all admi
 
 
 ### Advanced Search
+
 ##### GET
+
 `api/advanced-search/majors` Get all majors that are found in the Student table.
 
 `api/advanced-search/minors` Get all minors that are found in the Student table.
+
+`api/advanced-search/halls` Get all halls that are found in the Student table.
 
 `api/advanced-search/states` Get all states that are found in the Student, Alumni, and FacStaff tables.
 
@@ -405,45 +417,12 @@ Response will include an access token which should be included in subsequent req
 Specifically, include it in the `Authorization` header like so `Bearer YOUR-ACCESS-TOKEN`
 
 ### Content Management
+
 What is it? Resource for fetching content that has been stored in the database by Gordon's website [content manager](http://wwwtrain.gordon.edu/).
 
 ##### GET
 
 `api/cms/slider` Get the content for the dashboard slide.
-
-### Profiles
-What is it? Resource that represents users' profiles.
-
-Differences from GoSite:
-- Only displaying city and country as home address. (When the viewer is a student. Police, super admin, faculty and staff should still see all the information for home address)
-- Displaying minors.
-- On campus was changed to display more general information rather than completely getting rid of it like GoSite does now. (Shows on/off campus)
-
-##### GET
-
-`api/profiles` Get profile info of the current logged in user.
-
-`api/profiles/:username` Get profile info of a user with username `username` as a parameter.
-
-`api/profiles/role/:username` Get college role of a user with username `username` as a parameter --- College roles: super admin, faculty and staff, student and police.
-
-`api/profiles/Image/` Get profile image of the current logged in user. Image is stored in a base 64 string.
-
-`api/profiles/Image/:username` Get the profile image(s) of a user with username `username` as a parameter. Image is stored in a base 64 string. Police, super admin, faculty and staff can view both default and preferred profile image of students. Only police and super admin can view both images of everyone including faculty and staff.
-
-##### POST
-
-`api/profiles/image` Upload a preferred image for the current logged in user.
-
-`api/profiles/image/reset` Delete preferred image and set profile image to default for the current logged in user.
-
-`api/profiles/:type` Update a social media link of a type(facebook, twitter, linkedin,instagram) of current logged in user.
-
-##### PUT
-
-`api/profiles/mobile_privacy/:value` Update mobile phone number privacy with value(Y or N) for the current logged in user.
-
-`api/profiles/image_privacy/:value` Update profile image privacy with value(Y or N) for the current logged in user.
 
 
 ### Emails
@@ -460,9 +439,19 @@ What is it? Resource that represents emails.
 
 `api/emails/activity/:id/leaders/session/:sessionid` Get the emails for the leaders of the activity with activity code `id` during the session with session code `sessionid`.
 
+`api/emails/activity/:id/group-admin/session/:sessionid` Get the emails for the group admins of the activity with activity code `id` during the session with session code `sessionid`.
+
 `api/emails/activity/:id/advisors` Get the emails for the advisors of the activity with activity code `id` during the current session.
 
 `api/emails/activity/:id/advisors/session/:sessionid` Get the emails for the advisors of the activity with activity code `id` during the session with session code `sessionid`.
+
+##### PUT
+
+`api/emails` Sends an email.
+
+`api/emails/activity/:id/session/:sessionid` Sends an email to the participants of the activity with activity code `id` during the session with session code `sessionid`.
+
+`api/emails/activity/:id/leaders/session/:sessionid` Sends an email to the leaders of the activity with activity code `id` during the session with session code `sessionid`.
 
 
 ### Events
@@ -507,11 +496,11 @@ What is it? Resource that represents the affiliation between a student and a clu
 
 `api/memberships/activity/:id/followers` Get the number of followers of an activity with activity code `id`.
 
-`api/memberships/activity/:id/members` Get the number of members of an activity with activity code `id`.
+`api/memberships/activity/:id/members` Get the number of members (excluding followers) of an activity with activity code `id`.
 
 `api/memberships/activity/:id/followers/:sess_cde` Get the number of followers of an activity with activity code `id` in session `:sess_cde`.
 
-`api/memberships/activity/:id/members/:sess_cde` Get the number of members of an activity with activity code `id` in session `:sess_cde`.
+`api/memberships/activity/:id/members/:sess_cde` Get the number of members (excluding followers) of an activity with activity code `id` in session `:sess_cde`.
 
 `api/memberships/student/:id` Get the memberships of the student with student id `id`.
 
@@ -528,7 +517,7 @@ What is it? Resource that represents the affiliation between a student and a clu
 
 `api/memberships/:id/group-admin` Toggle whether or not a given member is in a group admin role for a given activity. The `id` parameter is the membership id.
 
-`api/memberships/:id/private/:p` Update a given membership to private or not private with boolean value `p`. The `id` parameter is the membership id.
+`api/memberships/:id/privacy/:p` Update a given membership to private or not private with boolean value `p`. The `id` parameter is the membership id.
 
 ##### DELETE
 
@@ -543,10 +532,13 @@ What is it? Resource that represents a person's application/request to join an a
 
 `api/requests/:id` Get the membership application with request id `id`.
 
-`api/requests/student/:id` Get all the membership applications for the student with student `id`.
+`api/requests/student/:id` Get all the membership applications for the student with student id `id`.
 
 `api/requests/activity/:id` Get all the membership applications for the club with activity code `id`.
 
+##### PUT
+
+`api/requests/:id` Edits an existing memberships application.
 
 ##### POST
 
@@ -587,6 +579,10 @@ Who has access? Everyone.
 
 `api/participations/:id` Get the participation level with code `id`.
 
+`api/participations/leaders` Get the participation levels that are considered leaders.
+
+`api/participations/transcript-worthy` Get the participation levels that should appear on the cct as leadership. Unfinished: TO DO.
+
 
 ### Profiles
 What is it? Resource that represents users' profiles.
@@ -600,7 +596,7 @@ Differences from GoSite:
 
 `api/profiles` Get profile info of the current logged in user.
 
-`api/profiles/:username` Get profile info of a user with username `username` as a parameter.
+`api/profiles/:username` Get public profile info of a user with username `username` as a parameter.
 
 `api/profiles/role/:username` Get college role of a user with username `username` as a parameter --- College roles: super admin, faculty and staff, student and police.
 
@@ -611,6 +607,8 @@ Differences from GoSite:
 ##### POST
 
 `api/profiles/image` Upload a preferred image for the current logged in user.
+
+`api/profiles/IDimage` Submit an ID image for the current logged in user.
 
 `api/profiles/image/reset` Delete preferred image and set profile image to default for the current logged in user.
 
@@ -638,6 +636,13 @@ Who has access? Everyone.
 
 `api/sessions/daysLeft` Get the days left in the semester and the total days in the semester
 
+
+### Victory Promise
+What is it? Resource that represents the user's scores on the four pillars of the victory promise.
+
+#### GET
+
+`api/vpscore` Get the victory promise scores of the currently logged in user.
 
 ## API Testing
 
