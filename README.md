@@ -19,6 +19,7 @@ Dive in.
     - [Accounts](#accounts)
     - [Activities](#activities)
     - [Admins](#admins)
+    - [Advanced Search](#advanced-search)
     - [Authentication](#authentication)
     - [Content Management](#content-management)
     - [Emails](#emails)
@@ -28,6 +29,8 @@ Dive in.
     - [Participation Definitions](#participation-definitions)
     - [Profiles](#profiles)
     - [Sessions](#sessions)
+    - [Student Employment](#student-employment)
+    - [Victory Promise](#victory-promise)
 - [API Testing](#api-testing)
     - [Introduction](#introduction)
     - [Running the Tests](#running-the-tests)
@@ -635,6 +638,14 @@ Who has access? Everyone.
 `api/sessions/current` Get the current session.
 
 `api/sessions/daysLeft` Get the days left in the semester and the total days in the semester
+
+
+### Student Employment
+What is it? A resource that represents the campus employments of the currently logged in user.
+
+##### GET
+
+`api/studentemployment` Get the record of campus employments for the currently logged in user.
 
 
 ### Victory Promise
