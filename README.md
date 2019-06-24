@@ -29,6 +29,7 @@ Dive in.
     - [Participation Definitions](#participation-definitions)
     - [Profiles](#profiles)
     - [Sessions](#sessions)
+    - [Dining](#dining)    
     - [Student Employment](#student-employment)
     - [Victory Promise](#victory-promise)
 - [API Testing](#api-testing)
@@ -301,6 +302,33 @@ Here is a breakdown of the project folder:
     - Tests/ - Folder for tests
         - ApiEndpoints/ - I talk about this more in the Testing section.
 
+###Adding New Queries 
+
+Step 1: Make a *Controller file under ApiControllers where * is your new title (ex. StudentEmploymentController.cs)
+    - Copy and paste from existing files such as StudentEmploymentController.cs 
+    - Change RoutePrefix to the specific url you are looking into and all names related to StudentEmployment to match up with your *
+    - Add public IHttpActionResult functions (ex. public IHttpActionResult Get(int id))
+Step 2: Go to ServiceInterfaces.cs under Services 
+    - Add a public interface I* (ex. IStudentEmployment)
+    - Add functions you want under the interface (ex. Get(int id), GetAll())
+Step 3: Make a *.cs under Models (ex. StudentEmployment.cs)
+    - Copy and paste from existing files such as StudentEmployment.cs
+    - Change corresponding names 
+Step 3: Make a *ViewModel.cs under Models/ViewModels (ex. StudentEmploymentViewModel.cs)
+    - Copy and paste from existing files such as StudentEmploymentViewModel.cs 
+    - Change correspending names to * and specifiy what information you want from the database (ex. public string FirstName { get; set; })
+    - Attributes under *ViewModel should match with the functions under *.cs 
+Step 4: Make a *Service.cs under Services 
+    - Copy and paste from existing files such as StudentEmploymentService.cs and update names to *
+    - Have same functions that are in *Controller
+Step 5: Go to IUnitOfWork.cs under Repositories
+    - Make corresponding IRepository for * (ex. IRepository<STUDENTEMPLOYMENT> StudentEmploymentRepository {get;}) 
+Step 6: Go to UnitOfWork.cs under Repositories
+    - make private IRepository<*> variable (ex. private IRepository<STUDENTEMPLOYMENT> _StudentEmploymentRepository;)
+    - write public function called *Repository like the other exisiting functions 
+Step 7: Go to Names.cs under Static Classes
+    - Add public const string [All caps]* and specifiy the name like the other functions 
+    
 ## API Endpoints
 
 ### Accounts
@@ -363,6 +391,8 @@ What is it? Resource that represents admins.
 
 Who has access? Only super admins, except to get a specific admin where all admins have access.
 
+NOTE: facultytest is a super admins in PRODAPIDATA, stafftest is a super admins in TRAINAPIDATA
+
 ##### GET
 
 `api/admins` Get all the admins.
@@ -391,7 +421,7 @@ Who has access? Only super admins, except to get a specific admin where all admi
 `api/advanced-search/states` Get all states that are found in the Student, Alumni, and FacStaff tables.
 
 `api/advanced-search/countries`  Get all countries that are found in the Student, Alumni, and FacStaff tables.
- 
+
 `api/advanced-search/departments` Get all the departments from the FacStaff table.
 
 `api/advanced-search/buildings` Get all the buildings from the FacStaff table.
@@ -623,22 +653,17 @@ Differences from GoSite:
 
 `api/profiles/image_privacy/:value` Update profile image privacy with value(Y or N) for the current logged in user.
 
-
-### Sessions
-What is it? Resource that represents the current session. e.g. Fall 2014-2015.
+### Dining
+What is it? Request meal plan info and current balances.
 
 Who has access? Everyone.
 
 ##### GET
 
-`api/sessions` Get all the sessions.
-
-`api/sessions/:id` Get the session with session code `id`.
-
-`api/sessions/current` Get the current session.
-
-`api/sessions/daysLeft` Get the days left in the semester and the total days in the semester
-
+`api/dining` Get all possible meal plan info.
+- If user has one or more meal plans, then current balances for each plan are included in a JSON response.
+- If user does not have a meal plan but has a faculty-staff dining balance, then the balance is returned as a string.
+- If there is no plan or balance then the string "0" (equivalent to no balance) is returned.
 
 ### Student Employment
 What is it? A resource that represents the campus employments of the currently logged in user.
@@ -706,13 +731,13 @@ Run the tests:
 
 * Before you open the gordon-360-api folder, you will have to add the `secrets.config` file to it. The file is located on the CS-RDSH-02 virtual machine in `C:\Users\Public\Public Documents\` (or `/c/users/public/documents\` when in git-bash). Copy the file `secrets.config` to the same folder in your project that contains the `web.config` file; currently, this is in `gordon-360-api\Gordon360`. This file is a sort of keyring for the server to authorize itself at various points.
 
-* Now, to open the api, look for the desktop app Visual Studio 2017, which has a purple Visual Studio icon. You will have to log in to a Microsoft account, which can just be the account Gordon made for you. Once you log in, go to `File > Open > Project/Solution`. Then, select and Open the file `gordon-360-api/Gordon360.sln`. 
+* Now, to open the api, look for the desktop app Visual Studio 2017, which has a purple Visual Studio icon. You will have to log in to a Microsoft account, which can just be the account Gordon made for you. Once you log in, go to `File > Open > Project/Solution`. Then, select and Open the file `gordon-360-api/Gordon360.sln`.
 
 * There is a little configuration you must yet do before running the server. In the solution explorer on the right, right click the name of the project (Gordon360) and select properties.  From the tabs on the left, choose the Web tab and change the Project Url to an unused port. For example, if you chose port 5555, change Project Url to `"http://localhost:5555"`. Then click Create Virtual Directory. Press OK on the dialog box, and you all configured!
 
 * Now, you can press the Start button in Visual Studio to run the server (it is a green play button in the top middle of the tool bar). It will open the web browser and, after a period that may last half an hour or more, display an Error 403.14 - Forbidden. This is expected. You can now begin manually testing the API.
 
-* If you want to test the UI, keep the server running and follow the directions found [here](https://github.com/gordon-cs/gordon-360-ui/blob/develop/README.md#connect-local-backend-to-react) under "Connect Local Backend to React". 
+* If you want to test the UI, keep the server running and follow the directions found [here](https://github.com/gordon-cs/gordon-360-ui/blob/develop/README.md#connect-local-backend-to-react) under "Connect Local Backend to React".
 
 #### Manually Testing the API
 

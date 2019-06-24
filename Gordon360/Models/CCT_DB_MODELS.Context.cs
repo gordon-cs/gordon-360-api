@@ -80,8 +80,25 @@ public partial class CCTEntities1 : DbContext
 
         return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ACTIVE_CLUBS_PER_SESS_ID_Result>("ACTIVE_CLUBS_PER_SESS_ID", sESS_CDEParameter);
     }
+    public virtual ObjectResult<VICTORY_PROMISE_BY_STUDENT_ID_Result> VICTORY_PROMISE_BY_STUDENT_ID(Nullable<int> sTUDENT_ID)
+    {
+
+        var sTUDENT_IDParameter = sTUDENT_ID.HasValue ?
+            new ObjectParameter("STUDENT_ID", sTUDENT_ID) :
+            new ObjectParameter("STUDENT_ID", typeof(int));
 
 
+        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<VICTORY_PROMISE_BY_STUDENT_ID_Result>("VICTORY_PROMISE_BY_STUDENT_ID", sTUDENT_IDParameter);
+    }
+
+    public virtual ObjectResult<STUDENT_JOBS_PER_ID_NUM_Result> STUDENT_JOBS_PER_ID_NUM(Nullable<int> sTUDENT_ID)
+    {
+        var sTUDENT_IDParameter = sTUDENT_ID.HasValue ?
+            new ObjectParameter("STUDENT_ID", sTUDENT_ID) :
+            new ObjectParameter("STUDENT_ID", typeof(int));
+
+        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<STUDENT_JOBS_PER_ID_NUM_Result>("STUDENT_JOBS_PER_ID_NUM", sTUDENT_IDParameter);
+    }
     public virtual ObjectResult<ALL_MEMBERSHIPS_Result> ALL_MEMBERSHIPS()
     {
 
@@ -651,19 +668,7 @@ public partial class CCTEntities1 : DbContext
         return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ALL_BASIC_INFO_Result>("ALL_BASIC_INFO");
     }
 
-
-    public virtual ObjectResult<VICTORY_PROMISE_BY_STUDENT_ID_Result> VICTORY_PROMISE_BY_STUDENT_ID(Nullable<int> sTUDENT_ID)
-    {
-
-        var sTUDENT_IDParameter = sTUDENT_ID.HasValue ?
-            new ObjectParameter("STUDENT_ID", sTUDENT_ID) :
-            new ObjectParameter("STUDENT_ID", typeof(int));
-
-
-        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<VICTORY_PROMISE_BY_STUDENT_ID_Result>("VICTORY_PROMISE_BY_STUDENT_ID", sTUDENT_IDParameter);
     }
-
-}
 
 }
 

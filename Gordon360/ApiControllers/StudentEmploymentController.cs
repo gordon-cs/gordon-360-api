@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Security.Claims;
 using System.Web.Http;
 using Gordon360.Exceptions.ExceptionFilters;
@@ -7,49 +7,48 @@ using Gordon360.Services;
 
 namespace Gordon360.Controllers.Api
 {
-    [RoutePrefix("api/vpscore")]
+    [RoutePrefix("api/studentemployment")]
     [CustomExceptionFilter]
     [Authorize]
-    public class VictoryPromiseController : ApiController
+    public class StudentEmploymentController : ApiController
     {
         //declare services we are going to use.
         private IProfileService _profileService;
         private IAccountService _accountService;
         private IRoleCheckingService _roleCheckingService;
 
-        private IVictoryPromiseService _victoryPromiseService;
+        private IStudentEmploymentService _studentEmploymentService;
 
-        public VictoryPromiseController()
+        public StudentEmploymentController()
         {
             var _unitOfWork = new UnitOfWork();
-            _victoryPromiseService = new VictoryPromiseService(_unitOfWork);
+            _studentEmploymentService = new StudentEmploymentService(_unitOfWork);
             _profileService = new ProfileService(_unitOfWork);
             _accountService = new AccountService(_unitOfWork);
             _roleCheckingService = new RoleCheckingService(_unitOfWork);
         }
-        public VictoryPromiseController(IVictoryPromiseService victoryPromiseService)
+        public StudentEmploymentController(IStudentEmploymentService studentEmploymentService)
         {
-            _victoryPromiseService = victoryPromiseService;
+            _studentEmploymentService = studentEmploymentService;
         }
 
         /// <summary>
-        ///  Gets current victory promise scores
+        ///  Gets current student employmen info
         /// </summary>
-        /// <returns>A VP object object</returns>
+        /// <returns>A studentEmployment object object</returns>
         [HttpGet]
         [Route("")]
         public IHttpActionResult Get()
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-
             var id = _accountService.GetAccountByUsername(username).GordonID;
-            var result = _victoryPromiseService.GetVPScores(id);
-                if (result == null)
-                {
-                    return NotFound();
-                }
-                return Ok(result);
+            var result = _studentEmploymentService.GetEmployment(id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
         }
-        }
+    }
 }

@@ -1570,7 +1570,7 @@ class Test_AllLeaderTest(testCase):
         except ValueError:
             pytest.fail('Expected ACT_CDE in response body, got {0}.'.format(response.json()))
 
-# # # # # # # # # # # #
+# # # # # # # # # # # # 
 # PARTICIPATIONS TEST #
 # # # # # # # # # # # #
 
@@ -1770,4 +1770,55 @@ class Test_AllLeaderTest(testCase):
         except ValueError:
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
         if not (type(response.json()) is dict):
-            pytest.fail('Expected dict, got {0}.'.format(response.json()))
+            pytest.fail('Expected dict, got {0}.'.format(response.json()))  
+
+# # # # # # # #
+# ADMIN  TEST #
+# # # # # # # #
+
+#    Verify that a super admin get information of a specific admin via GorodnId.
+#
+#    Pre-Conditions:
+#    Valid Authentication Header
+#    Logged in as facultytest (as stufftest to test PROD)
+#    Expectations:
+#    Endpoint -- api/admin
+#    Expected Status Code -- 200 OK
+#    Expected Response Body -- A json response with the student resource
+    def test_get_all_admin_as___super_admin(self):
+        self.session = self.createLeaderAuthorizedSession()
+        self.url = hostURL + 'api/admins/' 
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            assert response.json()[3]['EMAIL'] == "360.FacultyTest@gordon.edu"
+        except ValueError:
+            pytest.fail('Expected Json response body, got {0}.'.format(response.text))
+        if not (type(response.json()) is list):
+            pytest.fail('Expected list, got {0}.'.format(response.json))
+       
+
+#    Verify that a super admin get information of all admins.
+#
+#    Pre-Conditions:
+#    Valid Authentication Header
+#    Logged in as facultytest (as stufftest to test PROD)
+#    Expectations:
+#    Endpoint -- api/admin/_id
+#    Expected Status Code -- 200 OK
+#    Expected Response Body -- A json response with the student resource
+    def test_get_admin_as___super_admin(self):
+        self.session = self.createLeaderAuthorizedSession()
+        self.url = hostURL + 'api/admins/8330171/' 
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            assert response.json()['EMAIL'] == "Chris.Carlson@gordon.edu"
+        except ValueError:
+            pytest.fail('Expected Json response body, got {0}.'.format(response.text))
+        
+        
+       
+      

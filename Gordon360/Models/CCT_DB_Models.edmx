@@ -399,6 +399,12 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <Function Name="ACTIVE_CLUBS_PER_SESS_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="SESS_CDE" Type="char" Mode="In" />
         </Function>
+        <Function Name="VICTORY_PROMISE_BY_STUDENT_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="STUDENT_ID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="STUDENT_JOBS_PER_ID_NUM" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="STUDENT_ID" Type="int" Mode="In" />
+        </Function>
         <Function Name="ADVISOR_EMAILS_PER_ACT_CDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ACT_CDE" Type="char" Mode="In" />
           <Parameter Name="SESS_CDE" Type="char" Mode="In" />
@@ -510,9 +516,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <Function Name="UPDATE_SHOW_PIC" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ACCOUNT_ID" Type="int" Mode="In" />
           <Parameter Name="VALUE" Type="varchar" Mode="In" />
-        </Function>
-        <Function Name="VICTORY_PROMISE_BY_STUDENT_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="STUDENT_ID" Type="int" Mode="In" />
         </Function>
         <EntityContainer Name="Gordon360StoreContainer">
           <EntitySet Name="ACT_INFO" EntityType="Self.ACT_INFO" Schema="dbo" store:Type="Tables" />
@@ -770,6 +773,12 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImport Name="ACTIVE_CLUBS_PER_SESS_ID" ReturnType="Collection(Gordon360.ACTIVE_CLUBS_PER_SESS_ID_Result)">
           <Parameter Name="SESS_CDE" Mode="In" Type="String" />
           </FunctionImport>
+          <FunctionImport Name="VICTORY_PROMISE_BY_STUDENT_ID" ReturnType="Collection(Gordon360.VICTORY_PROMISE_BY_STUDENT_ID_Result)">
+            <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="STUDENT_JOBS_PER_ID_NUM" ReturnType="Collection(Gordon360.STUDENT_JOBS_PER_ID_NUM_Result)">
+            <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
+          </FunctionImport>
           <FunctionImport Name="ALL_MEMBERSHIPS" ReturnType="Collection(Gordon360.ALL_MEMBERSHIPS_Result)" />
           <FunctionImport Name="ALL_REQUESTS" ReturnType="Collection(Gordon360.ALL_REQUESTS_Result)" />
           <FunctionImport Name="ALL_SUPERVISORS" ReturnType="Collection(Gordon360.ALL_SUPERVISORS_Result)" />
@@ -917,14 +926,25 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImport Name="ALL_BASIC_INFO" ReturnType="Collection(Gordon360.ALL_BASIC_INFO_Result)" />
           <EntitySet Name="sysdiagrams" EntityType="Gordon360.sysdiagrams" />
           <EntitySet Name="DiningInfo" EntityType="Gordon360.DiningInfo" />
-          <FunctionImport Name="VICTORY_PROMISE_BY_STUDENT_ID" ReturnType="Collection(Gordon360.VICTORY_PROMISE_BY_STUDENT_ID_Result)">
-          <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
-          </FunctionImport>
 
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
           <Property Type="String" Name="ACT_CDE" Nullable="false" MaxLength="8" />
           <Property Type="String" Name="ACT_DESC" Nullable="true" MaxLength="45" />
+        </ComplexType>
+        <ComplexType Name="VICTORY_PROMISE_BY_STUDENT_ID_Result">
+          <Property Type="Int32" Name="VP_IM_SCORE" Nullable="true" />
+          <Property Type="Int32" Name="VP_CC_SCORE" Nullable="true" />
+          <Property Type="Int32" Name="VP_LS_SCORE" Nullable="true" />
+          <Property Type="Int32" Name="VP_LW_SCORE" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="STUDENT_JOBS_PER_ID_NUM_Result">
+          <Property Type="String" Name="Job_Title" Nullable="true" />
+          <Property Type="String" Name="Job_Department" Nullable="true" />
+          <Property Type="String" Name="Job_Department_Name" Nullable="true" />
+          <Property Type="DateTime" Name="Job_Start_Date" Nullable="true" />
+          <Property Type="DateTime" Name="Job_End_Date" Nullable="true" />
+          <Property Type="DateTime" Name="Job_Expected_End_Date" Nullable="true" />
         </ComplexType>
         <ComplexType Name="ALL_MEMBERSHIPS_Result">
           <Property Type="Int32" Name="MembershipID" Nullable="false" />
@@ -1573,13 +1593,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="InitialBalance" Type="Int32" />
           <Property Name="PlanType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
         </EntityType>
-        <ComplexType Name="VICTORY_PROMISE_BY_STUDENT_ID_Result">
-          <Property Type="Int32" Name="VP_IM_SCORE" Nullable="true" />
-          <Property Type="Int32" Name="VP_CC_SCORE" Nullable="true" />
-          <Property Type="Int32" Name="VP_LS_SCORE" Nullable="true" />
-          <Property Type="Int32" Name="VP_LW_SCORE" Nullable="true" />
-        </ComplexType>
-        </Schema>
+      </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -1590,6 +1604,28 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               <ComplexTypeMapping TypeName="Gordon360.ACTIVE_CLUBS_PER_SESS_ID_Result">
                 <ScalarProperty Name="ACT_CDE" ColumnName="ACT_CDE" />
                 <ScalarProperty Name="ACT_DESC" ColumnName="ACT_DESC" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="VICTORY_PROMISE_BY_STUDENT_ID" FunctionName="Gordon360.Store.VICTORY_PROMISE_BY_STUDENT_ID">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.VICTORY_PROMISE_BY_STUDENT_ID_Result">
+                <ScalarProperty Name="VP_IM_SCORE" ColumnName="VP_IM_SCORE" />
+                <ScalarProperty Name="VP_CC_SCORE" ColumnName="VP_CC_SCORE" />
+                <ScalarProperty Name="VP_LS_SCORE" ColumnName="VP_LS_SCORE" />
+                <ScalarProperty Name="VP_LW_SCORE" ColumnName="VP_LW_SCORE" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="STUDENT_JOBS_PER_ID_NUM" FunctionName="Gordon360.Store.STUDENT_JOBS_PER_ID_NUM">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.STUDENT_JOBS_PER_ID_NUM_Result">
+                <ScalarProperty Name="Job_Title" ColumnName="Job_Title" />
+                <ScalarProperty Name="Job_Department" ColumnName="Job_Department" />
+                <ScalarProperty Name="Job_Department_Name" ColumnName="Job_Department_Name" />
+                <ScalarProperty Name="Job_Start_Date" ColumnName="Job_Start_Date" />
+                <ScalarProperty Name="Job_End_Date" ColumnName="Job_End_Date" />
+                <ScalarProperty Name="Job_Expected_End_Date" ColumnName="Job_Expected_End_Date" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
@@ -2297,16 +2333,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="VICTORY_PROMISE_BY_STUDENT_ID" FunctionName="Gordon360.Store.VICTORY_PROMISE_BY_STUDENT_ID">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="Gordon360.VICTORY_PROMISE_BY_STUDENT_ID_Result">
-                <ScalarProperty Name="VP_IM_SCORE" ColumnName="VP_IM_SCORE" />
-                <ScalarProperty Name="VP_CC_SCORE" ColumnName="VP_CC_SCORE" />
-                <ScalarProperty Name="VP_LS_SCORE" ColumnName="VP_LS_SCORE" />
-                <ScalarProperty Name="VP_LW_SCORE" ColumnName="VP_LW_SCORE" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
           </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
