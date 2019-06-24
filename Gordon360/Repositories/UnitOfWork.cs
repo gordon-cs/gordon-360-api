@@ -20,6 +20,8 @@ namespace Gordon360.Repositories
         private IRepository<PART_DEF> _ParticipationRepository;
         private IRepository<SUPERVISOR> _SupervisorRepository;
         private IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> _ActivityPerSessionRepository;
+        private IRepository<VICTORY_PROMISE_BY_STUDENT_ID_Result> _VictoryPromiseByStudentIDRepository;
+        private IRepository<STUDENT_JOBS_PER_ID_NUM_Result> _StudentEmploymentByStudentIDRepository;
         private IRepository<REQUEST> _MembershipRequestRepository;
         private IRepository<ACT_INFO> _ActivityInfoRepository;
         private IRepository<ADMIN> _AdministratorRepository;
@@ -66,6 +68,7 @@ namespace Gordon360.Repositories
         {
             get { return _MembershipRepository ?? (_MembershipRepository = new GenericRepository<MEMBERSHIP>(_context)); }
         }
+
         public IRepository<PART_DEF> ParticipationRepository
         {
             get { return _ParticipationRepository ?? (_ParticipationRepository = new GenericRepository<PART_DEF>(_context)); }
@@ -82,7 +85,20 @@ namespace Gordon360.Repositories
                  return _ActivityPerSessionRepository ?? (_ActivityPerSessionRepository = new GenericRepository<ACTIVE_CLUBS_PER_SESS_ID_Result>(_context)); 
             }
         }
-
+        IRepository<VICTORY_PROMISE_BY_STUDENT_ID_Result> IUnitOfWork.VictoryPromiseByStudentIDRepository
+        {
+            get
+            {
+                return _VictoryPromiseByStudentIDRepository ?? (_VictoryPromiseByStudentIDRepository = new GenericRepository<VICTORY_PROMISE_BY_STUDENT_ID_Result>(_context));
+            }
+        }
+        IRepository<STUDENT_JOBS_PER_ID_NUM_Result> IUnitOfWork.StudentEmploymentByStudentIDRepository
+        {
+            get
+            {
+                return _StudentEmploymentByStudentIDRepository ?? (_StudentEmploymentByStudentIDRepository = new GenericRepository<STUDENT_JOBS_PER_ID_NUM_Result>(_context));
+            }
+        }
         public IRepository<REQUEST> MembershipRequestRepository
         {
             get { return _MembershipRequestRepository ?? (_MembershipRequestRepository = new GenericRepository<REQUEST>(_context)); }

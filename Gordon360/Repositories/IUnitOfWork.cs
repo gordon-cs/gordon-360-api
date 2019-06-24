@@ -27,7 +27,8 @@ namespace Gordon360.Repositories
 
         // Note -- Only use this repository to call SQL Stored Procedures
         IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> ActivityPerSessionRepository { get;  }
-
+        IRepository<VICTORY_PROMISE_BY_STUDENT_ID_Result> VictoryPromiseByStudentIDRepository { get; }
+        IRepository<STUDENT_JOBS_PER_ID_NUM_Result> StudentEmploymentByStudentIDRepository { get; }
         bool Save();
 
 

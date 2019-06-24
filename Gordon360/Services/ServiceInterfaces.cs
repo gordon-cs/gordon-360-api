@@ -68,6 +68,14 @@ namespace Gordon360.Services
         void ResetActivityImage(string id);
         void TogglePrivacy(string id, bool p);
     }
+    public interface IVictoryPromiseService
+    {
+        IEnumerable<VictoryPromiseViewModel> GetVPScores(string id);
+    }
+    public interface IStudentEmploymentService
+    {
+        IEnumerable<StudentEmploymentViewModel> GetEmployment(string id);
+    }
 
     public interface IActivityInfoService
     {
@@ -111,6 +119,7 @@ namespace Gordon360.Services
         IEnumerable<JNZB_ACTIVITIES> GetAll();
     }
 
+    
     public interface IMembershipService
     {
         MembershipViewModel Get(int id);
@@ -149,11 +158,6 @@ namespace Gordon360.Services
         MEMBERSHIP ApproveRequest(int id);
         REQUEST DenyRequest(int id);
         REQUEST Delete(int id);
-    }
-
-    public interface IVictoryPromiseService
-    {
-        VictoryPromiseViewModel GetVPScores(string id);
     }
 
     public interface IContentManagementService

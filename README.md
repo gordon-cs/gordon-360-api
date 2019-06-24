@@ -299,6 +299,33 @@ Here is a breakdown of the project folder:
     - Tests/ - Folder for tests
         - ApiEndpoints/ - I talk about this more in the Testing section.
 
+###Adding New Queries 
+
+Step 1: Make a *Controller file under ApiControllers where * is your new title (ex. StudentEmploymentController.cs)
+    - Copy and paste from existing files such as StudentEmploymentController.cs 
+    - Change RoutePrefix to the specific url you are looking into and all names related to StudentEmployment to match up with your *
+    - Add public IHttpActionResult functions (ex. public IHttpActionResult Get(int id))
+Step 2: Go to ServiceInterfaces.cs under Services 
+    - Add a public interface I* (ex. IStudentEmployment)
+    - Add functions you want under the interface (ex. Get(int id), GetAll())
+Step 3: Make a *.cs under Models (ex. StudentEmployment.cs)
+    - Copy and paste from existing files such as StudentEmployment.cs
+    - Change corresponding names 
+Step 3: Make a *ViewModel.cs under Models/ViewModels (ex. StudentEmploymentViewModel.cs)
+    - Copy and paste from existing files such as StudentEmploymentViewModel.cs 
+    - Change correspending names to * and specifiy what information you want from the database (ex. public string FirstName { get; set; })
+    - Attributes under *ViewModel should match with the functions under *.cs 
+Step 4: Make a *Service.cs under Services 
+    - Copy and paste from existing files such as StudentEmploymentService.cs and update names to *
+    - Have same functions that are in *Controller
+Step 5: Go to IUnitOfWork.cs under Repositories
+    - Make corresponding IRepository for * (ex. IRepository<STUDENTEMPLOYMENT> StudentEmploymentRepository {get;}) 
+Step 6: Go to UnitOfWork.cs under Repositories
+    - make private IRepository<*> variable (ex. private IRepository<STUDENTEMPLOYMENT> _StudentEmploymentRepository;)
+    - write public function called *Repository like the other exisiting functions 
+Step 7: Go to Names.cs under Static Classes
+    - Add public const string [All caps]* and specifiy the name like the other functions 
+    
 ## API Endpoints
 
 ### Accounts
@@ -352,6 +379,8 @@ What is it? Resource that represents some activity - such as a club, ministry, l
 What is it? Resource that represents admins.
 
 Who has access? Only super admins, except to get a specific admin where all admins have access.
+
+NOTE: facultytest is a super admins in PRODAPIDATA, stafftest is a super admins in TRAINAPIDATA
 
 ##### GET
 

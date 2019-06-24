@@ -212,6 +212,7 @@
     <Compile Include="ApiControllers\SessionsController.cs" />
     <Compile Include="ApiControllers\ActivitiesController.cs" />
     <Compile Include="ApiControllers\MembershipsController.cs" />
+    <Compile Include="ApiControllers\StudentEmploymentController.cs" />
     <Compile Include="ApiControllers\VictoryPromiseController.cs" />
     <Compile Include="AuthorizationFilters\StateYourBusiness.cs" />
     <Compile Include="AuthorizationServer\CustomJWTFormat.cs" />
@@ -296,6 +297,7 @@
     <Compile Include="Models\GRP_ADMIN_EMAILS_PER_ACT_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs" />
     <Compile Include="Models\JENZ_ACT_CLUB_DEF.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -352,6 +354,7 @@
     <Compile Include="Models\Student.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\StudentEmployment.cs" />
     <Compile Include="Models\STUDENT_EVENTS_PER_TERM_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -390,6 +393,7 @@
     <Compile Include="Models\ViewModels\PublicAlumniProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\PublicFacultyStaffProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\PublicStudentProfileViewModel.cs" />
+    <Compile Include="Models\ViewModels\StudentEmploymentViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\SessionViewModel.cs" />
     <Compile Include="Models\ViewModels\SliderViewModel.cs" />
@@ -410,6 +414,7 @@
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Services\ProfileService.cs" />
     <Compile Include="Services\RoleCheckingService.cs" />
+    <Compile Include="Services\StudentEmploymentService.cs" />
     <Compile Include="Services\VictoryPromiseService.cs" />
     <Compile Include="Static Classes\Data.cs" />
     <Compile Include="Static Classes\Helpers.cs" />
@@ -489,7 +494,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:6769</IISUrl>
+          <IISUrl>http://localhost:1025</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
