@@ -11,6 +11,7 @@ Dive in.
     - [Tables](#tables)
     - [Stored Procedures](#stored-procedures)
     - [Triggers](#triggers)
+    - [Manual and Debugging Access](#manual-and-debugging-access)
 - [The Code](#the-code)
 - [Introduction](#introduction)
 - [Caching](#caching)
@@ -255,6 +256,18 @@ This stored procedures is pretty simple. It moves all the relevant information f
 ###### ACT_CLUB_DEF_INSERT_TRIGGER
 
 Every time a record is inserted into the ACT_CLUB_DEF table, this trigger runs the UPDATE_ACT_INFO stored procedure. Although not clear in the name, this trigger also runs whenever a row is deleted from ACT_CLUB_DEF.
+
+### Manual and Debugging Access
+
+It's sometimes useful to look at the database directly, to see the schema or check data.  Here is how.
+* Use remote desktop to get to the Windows server VM
+* If SQL Server Management Studio is not pinned to the task bar, pin it by starting it and right clicking on it in the task bar to pin it)
+* Shift-right-click SSMS (SQL Server Management Studio) and select "Run as ..."
+* Run as "cct.service"
+* Connect to "ADMINTRAINSQL" database server (or "ADMINPRODSQL")
+* Expand "Databases" then "CCT" then "Views"
+* To see schemas, expand "dbo." entries and their "columns"
+* To see data, right-click a view and select "Select top 1000 rows"
 
 ## The Code
 
@@ -707,7 +720,6 @@ To manually test the API, use an API development/testing app like [Postman](http
 	| `Authorization` | `Bearer ` _access-token_            |
 
 	* Click the blue "Send" button
-
 
 ## Troubleshooting
 
