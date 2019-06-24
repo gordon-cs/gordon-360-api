@@ -1,13 +1,12 @@
-﻿using System.Security.Claims;
-using System.Web.Http.Controllers;
-using System.Web.Http.Filters;
-using Gordon360.Services;
+﻿using Gordon360.Models;
 using Gordon360.Repositories;
+using Gordon360.Services;
 using Gordon360.Static.Names;
 using System.Linq;
 using System.Net.Http;
-using Gordon360.Models;
-using System.Diagnostics;
+using System.Security.Claims;
+using System.Web.Http.Controllers;
+using System.Web.Http.Filters;
 
 namespace Gordon360.AuthorizationFilters
 {
@@ -24,7 +23,7 @@ namespace Gordon360.AuthorizationFilters
      * 1. Who is to be authorized? 2.What resource are they trying to access? 3. What operation are they trying to make on the resource?
      * This "algorithm" uses those three points and decides through a series of switch statements if the current user
      * is authorized.
-     */ 
+     */
     public class StateYourBusiness : ActionFilterAttribute
     {
         // Resource to be accessed: Will get as parameters to the attribute
@@ -406,6 +405,7 @@ namespace Gordon360.AuthorizationFilters
                             return true;
                         var membershipToConsider = (MEMBERSHIP)context.ActionArguments["membership"];
                         var activityCode = membershipToConsider.ACT_CDE;
+                       
 
                         var membershipService = new MembershipService(new UnitOfWork());
                         //var is_membershipLeader = membershipService.GetLeaderMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
@@ -423,9 +423,9 @@ namespace Gordon360.AuthorizationFilters
                         if (is_membershipOwner)
                         {
                             // Restrict what a regular owner can edit.
-                            var originalMembership = membershipService.Get(membershipToConsider.MEMBERSHIP_ID);
-                            // If they are not trying to change their participation level, then it is ok.
-                            if(originalMembership.Participation == membershipToConsider.PART_CDE)
+                            var originalMembership = membershipService.GetMembershipsForStudent(user_name);
+                            // If they are not trying to change their participation level, then it is ok
+                            if( ((MEMBERSHIP)originalMembership).PART_CDE == membershipToConsider.PART_CDE)
                                 return true;
                         }
                        
@@ -446,12 +446,13 @@ namespace Gordon360.AuthorizationFilters
                             return true;
                         var membershipService = new MembershipService(new UnitOfWork());
                         var membershipID = (int)context.ActionArguments["id"];
-                        var membershipToConsider = membershipService.Get(membershipID);
-                        var is_membershipOwner = membershipToConsider.IDNumber.ToString() == user_id;
+                        
+                        var membershipToConsider = membershipService.GetMembershipsForStudent(user_name);
+                        var is_membershipOwner = ((MEMBERSHIP)membershipToConsider).ID_NUM.ToString() == user_id;
                         if (is_membershipOwner)
                             return true;
 
-                        var activityCode = membershipToConsider.ActivityCode;
+                        var activityCode = ((MEMBERSHIP)membershipToConsider).ACT_CDE;
 
                         var isGroupAdmin = membershipService.GetGroupAdminMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
                         if (isGroupAdmin)
@@ -542,12 +543,12 @@ namespace Gordon360.AuthorizationFilters
                             return true;
                         var membershipService = new MembershipService(new UnitOfWork());
                         var membershipID = (int)context.ActionArguments["id"];
-                        var membershipToConsider = membershipService.Get(membershipID);
-                        var is_membershipOwner = membershipToConsider.IDNumber.ToString() == user_id;
+                        var membershipToConsider = membershipService.GetMembershipsForStudent(user_name);
+                        var is_membershipOwner = ((MEMBERSHIP)membershipToConsider).ID_NUM.ToString() == user_id;
                         if (is_membershipOwner)
                             return true;
 
-                        var activityCode = membershipToConsider.ActivityCode;
+                        var activityCode = ((MEMBERSHIP)membershipToConsider).ACT_CDE;
 
                         var isGroupAdmin = membershipService.GetGroupAdminMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
                         if (isGroupAdmin)

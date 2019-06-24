@@ -122,7 +122,6 @@ namespace Gordon360.Services
     
     public interface IMembershipService
     {
-        MembershipViewModel Get(int id);
         IEnumerable<MembershipViewModel> GetLeaderMembershipsForActivity(string id);
         IEnumerable<MembershipViewModel> GetAdvisorMembershipsForActivity(string id);
         IEnumerable<MembershipViewModel> GetGroupAdminMembershipsForActivity(string id);
