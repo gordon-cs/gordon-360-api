@@ -154,13 +154,10 @@ namespace Gordon360.Services
 
     public interface IScheduleService
     {
-        ScheduleViewModel Get(int id);
-        //IEnumerable<ScheduleViewModel> GetAll();
-        IEnumerable<ScheduleViewModel> GetAllByID(string id);
-        IEnumerable<ScheduleViewModel> GetAllByUsername(string username);
+        IEnumerable<ScheduleViewModel> Get(int id);
         SCHEDULE Add(SCHEDULE schedule);
         SCHEDULE Delete(int id);
-        IEnumerable<ScheduleViewModel> DeleteAllForID(string id);
+        IEnumerable<ScheduleViewModel> DeleteAllForID(int id);
     }
 
     public interface IVictoryPromiseService

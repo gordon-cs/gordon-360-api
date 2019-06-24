@@ -45,15 +45,16 @@ namespace Gordon360.Controllers.Api
         /// </summary>
         /// <returns>A IEnumerable of schedule objects</returns>
         [HttpGet]
-        [Route("getall")]
+        [Route("")]
         public IHttpActionResult Get()
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
             var id = _accountService.GetAccountByUsername(username).GordonID;
+            var idInt = Int32.Parse(id);
 
-            var result = _scheduleService.GetAllByID(id);
+            var result = _scheduleService.Get(idInt);
             if (result == null)
             {
                 return NotFound();
@@ -66,13 +67,14 @@ namespace Gordon360.Controllers.Api
         /// </summary>
         /// <returns>A IEnumerable of schedule objects</returns>
         [HttpGet]
-        [Route("getall/{username}")]
+        [Route("{username}")]
         public IHttpActionResult Get(string username)
         {
             //probably needs privacy stuff like ProfilesController and service
             var id = _accountService.GetAccountByUsername(username).GordonID;
+            var idInt = Int32.Parse(id);
 
-            var result = _scheduleService.GetAllByID(id);
+            var result = _scheduleService.Get(idInt);
             if (result == null)
             {
                 return NotFound();
@@ -80,23 +82,6 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
 
-        /// <summary>
-        ///  Gets a schedule object by its id
-        /// </summary>
-        /// <returns>A schedule object</returns>
-        [HttpGet]
-        [Route("get/{id}")]
-        public IHttpActionResult Get(int id)
-        {
-
-            var result = _scheduleService.Get(id);
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(result);
-        }
 
         /// <summary>Create a new schedule to be added to database</summary>
         /// <param name="schedule">The schedule item containing all required and relevant information</param>
@@ -137,7 +122,7 @@ namespace Gordon360.Controllers.Api
         // DELETE api/<controller>/5
         [HttpDelete]
         [Route("delete/{id}")]
-        public IHttpActionResult Delete(int id)
+        public IHttpActionResult Delete(int id) //TODO: MAKE THIS USE THE KEY OF THE SCHEDULE TABLE
         {
             var result = _scheduleService.Delete(id);
 
@@ -162,7 +147,8 @@ namespace Gordon360.Controllers.Api
 
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
-            var result = _scheduleService.DeleteAllForID(id);
+            var idInt = Int32.Parse(id);
+            var result = _scheduleService.DeleteAllForID(idInt);
 
             if (result == null)
             {

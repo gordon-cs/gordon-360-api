@@ -282,11 +282,33 @@
             </summary>
             <returns>A IEnumerable of schedule objects</returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.ScheduleController.Get(System.String)">
+            <summary>
+             Gets all schedule objects for a user
+            </summary>
+            <returns>A IEnumerable of schedule objects</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ScheduleController.Get(System.Int32)">
+            <summary>
+             Gets a schedule object by its id
+            </summary>
+            <returns>A schedule object</returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ScheduleController.Post(Gordon360.Models.SCHEDULE)">
             <summary>Create a new schedule to be added to database</summary>
             <param name="schedule">The schedule item containing all required and relevant information</param>
             <returns></returns>
             <remarks>Posts a new schedule to the server to be added into the database</remarks>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ScheduleController.Delete(System.Int32)">
+            <summary>Delete an existing schedule item</summary>
+            <param name="id">The identifier for the schedule to be deleted</param>
+            <remarks>Calls the server to make a call and remove the given schedule from the database</remarks>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ScheduleController.Delete">
+            <summary>Delete all schedule items for a user</summary>
+            <param name="id">The identifier for the user whose schedule is to be deleted</param>
+            <remarks>Calls the server to make a call and remove the given schedules from the database</remarks>
         </member>
         <member name="M:Gordon360.Controllers.Api.SessionsController.Get">
             <summary>Get a list of all sessions</summary>

@@ -657,11 +657,11 @@ namespace Gordon360.Controllers.Api
                 // Read the form data.
                 await Request.Content.ReadAsMultipartAsync(provider);
 
-                foreach (MultipartFileData file in provider.FileData)
+                foreach (MultipartFileData fileData in provider.FileData)
                 {
-
+                    Debug.WriteLine(fileData.LocalFileName);
                     di = new DirectoryInfo(root); //di is declared at beginning of try.
-                    System.IO.File.Move(file.LocalFileName, di.FullName + fileName); //upload
+                    System.IO.File.Move(fileData.LocalFileName, Path.Combine(di.FullName, fileName)); //upload
                 }
                 return Request.CreateResponse(HttpStatusCode.OK);
             }

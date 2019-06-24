@@ -26,19 +26,12 @@ namespace Gordon360.Services
             _unitOfWork = unitOfWork;
         }
 
-        //ScheduleViewModel Get(string id) { }
-        //IEnumerable<ScheduleViewModel> GetAll() { }
-        //IEnumerable<ScheduleViewModel> GetScheduleEventsForStudent(string id) { }
-
-
-
-
         /// <summary>
         /// Fetch the schedule item whose id is specified by the parameter
         /// </summary>
         /// <param name="id">The schedule id</param>
         /// <returns>ScheduleViewModel if found, null if not found</returns>
-        public ScheduleViewModel Get(int id)
+        public IEnumerable<ScheduleViewModel> Get(int id)
         {
             var query = _unitOfWork.ScheduleRepository.GetById(id);
             if (query == null)
@@ -47,45 +40,22 @@ namespace Gordon360.Services
             }
 
             var idParam = new SqlParameter("@SCHEDULE_ID", id);
-            var result = RawSqlQuery<ScheduleViewModel>.query("SCHEDULE_PER_SCHEDULE_ID @SCHEDULE_ID", idParam).FirstOrDefault();
+            var result = RawSqlQuery<ScheduleViewModel>.query("SCHEDULE_PER_SCHEDULE_ID @SCHEDULE_ID", idParam); // TODO: write prepared statement
 
             if (result == null)
             {
                 return null;
             }
             // Getting rid of database-inherited whitespace
-            result.ScheduleID = result.ScheduleID;
-            result.IDNumber = result.IDNumber;
-            result.StartTime = result.StartTime;
-            result.EndTime = result.EndTime;
-            result.Title = result.Title.Trim();
-            result.ItemDescription = result.ItemDescription.Trim();
+            foreach (var scheduleItem in result)
+            {
+                scheduleItem.Title = scheduleItem.Title.Trim();
+                scheduleItem.ItemDescription = scheduleItem.ItemDescription.Trim();
+            }
 
             return result;
         }
 
-        /// <summary>
-        /// Fetches all schedule records from storage for an id.
-        /// </summary>
-        /// <returns>ScheduleViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        public IEnumerable<ScheduleViewModel> GetAllByID(string id)
-        {
-
-            var result = RawSqlQuery<ScheduleViewModel>.query("ALL_SCHEDULES_PER_ID");
-            // Trimming database generated whitespace ._.
-            var trimmedResult = result.Select(x =>
-            {
-                var trim = x;
-                trim.ScheduleID = x.ScheduleID;
-                trim.IDNumber = x.IDNumber;
-                trim.StartTime = x.StartTime;
-                trim.EndTime = x.EndTime;
-                trim.Title = x.Title.Trim();
-                trim.ItemDescription = x.ItemDescription.Trim();
-                return trim;
-            });
-            return trimmedResult;
-        }
 
         /// <summary>
         /// Adds a new Schedule record to storage. Since we can't establish foreign key constraints and relationships on the database side,
@@ -136,7 +106,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="id">The student's id</param>
         /// <returns>The schedule that was just deleted</returns>
-        public IEnumerable<ScheduleViewModel> DeleteAllForID(string id)
+        public IEnumerable<ScheduleViewModel> DeleteAllForID(int id)
         {
             // Confirm that student exists
             //var studentExists = _unitOfWork.AccountRepository.Where(x => x.AD_Username.Trim() == user_name.Trim()).Count() > 0;

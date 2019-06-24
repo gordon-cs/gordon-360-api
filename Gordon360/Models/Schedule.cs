@@ -17,9 +17,10 @@ using System;
     
 public partial class SCHEDULE
 {
-        public int SCHD_ID { get; set; }
 
         public int ID_NUM { get; set; }
+
+        public System.DayOfWeek DAY { get; set; }
 
         public System.DateTime BEGIN_DTE { get; set; }
 
