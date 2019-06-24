@@ -2143,20 +2143,22 @@ class Test_allSessionTest(testCase):
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- List of session resources
 #
-    #Can't do api/sessions/
-#    def test_get_all_sessions___activity_leader(self):
-#        self.url = hostURL + 'api/sessions/'
-#
-#        response = api.get(self.session, self.url)
-#        if not response.status_code == 200:
-#            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
-#        try:
-#            response.json()
-#        except ValueError:
-#            pytest.fail('Expected Json response body, got {0}.'.format(response.json()))
-#        else:
-#            if not (type(response.json()) is list):
-#                pytest.fail('Expected list, got {0}.'.format(response.json()))
+    def test_get_all_sessions___activity_leader(self):
+        self.session = self.createAuthorizedSession(username, password)
+        self.url = hostURL + 'api/sessions/'
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json response body, got {0}.'.format(response.json()))
+        if not (type(response.json()) is list):
+            pytest.fail('Expected list, got {0}.'.format(response.json()))
+        assert response.json()[0]["SessionCode"] == "201509"
+        assert response.json()[0]["SessionDescription"] == "Fall 15-16 Academic Year"
+        assert response.json()[0]["SessionBeginDate"] == "2015-08-26T00:00:00"
+        assert response.json()[0]["SessionEndDate"] == "2015-12-18T00:00:00"
 
 #    Verify that an activity leader can get a session object
 #    Pre-Conditions:
@@ -2192,7 +2194,6 @@ class Test_allSessionTest(testCase):
     def test_get_current_session___activity_leader(self):
         self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/sessions/current/'
-
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
@@ -2224,7 +2225,7 @@ class Test_allSessionTest(testCase):
         except ValueError:
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
         try:
-            response.json()
+            response.json()['SessionCode']
         except KeyError:
             pytest.fail('Expected SessionCode in response, got {0}.'.format(response.json()))
 
