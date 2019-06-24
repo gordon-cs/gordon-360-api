@@ -2136,37 +2136,39 @@ class Test_allSessionTest(testCase):
 # # # # # # # # #
 
 #    Verify that an activity leader can get all session objects
-#    Pre-Conditions:
-#    Valid Authentication Header
-#    Expectations:
 #    Endpoint -- api/sessions/
 #    Expected Status Code -- 200 OK
-#    Expected Response Body -- List of session resources
-#
-    #Can't do api/sessions/
-#    def test_get_all_sessions___activity_leader(self):
-#        self.url = hostURL + 'api/sessions/'
-#
-#        response = api.get(self.session, self.url)
-#        if not response.status_code == 200:
-#            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
-#        try:
-#            response.json()
-#        except ValueError:
-#            pytest.fail('Expected Json response body, got {0}.'.format(response.json()))
-#        else:
-#            if not (type(response.json()) is list):
-#                pytest.fail('Expected list, got {0}.'.format(response.json()))
+#    Expected Response Body -- List of all session resources
+    def test_get_all_sessions(self):
+        self.session = self.createAuthorizedSession(username, password)
+        self.url = hostURL + 'api/sessions/'
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json response body, got {0}.'.format(response.json()))
+        if not (type(response.json()) is list):
+            pytest.fail('Expected list, got {0}.'.format(response.json()))
+        assert response.json()[0]["SessionCode"] == "201509"
+        assert response.json()[0]["SessionDescription"] == "Fall 15-16 Academic Year"
+        assert response.json()[0]["SessionBeginDate"] == "2015-08-26T00:00:00"
+        assert response.json()[0]["SessionEndDate"] == "2015-12-18T00:00:00"
+
+        self.url = hostURL + 'api/sessions/current/'
+        current = api.get(self.session, self.url)
+        assert response.json()[-1]["SessionCode"] == current.json()["SessionCode"]
+        assert response.json()[-1]["SessionDescription"] == current.json()["SessionDescription"]
+        assert response.json()[-1]["SessionBeginDate"] == current.json()["SessionBeginDate"]
+        assert response.json()[-1]["SessionEndDate"] == current.json()["SessionEndDate"]
 
 #    Verify that an activity leader can get a session object
-#    Pre-Conditions:
-#    Valid Authentication Header
-#    Expectations:
 #    Endpoint -- api/sessions/:id
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- A session resource.
-    def test_get_one_session___activity_leader(self):
-        self.session = self.createAuthorizedSession(leader_username, leader_password)
+    def test_get_one_session(self):
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/sessions/' + session_code + '/'
 
         response = api.get(self.session, self.url)
@@ -2183,16 +2185,12 @@ class Test_allSessionTest(testCase):
         assert response.json()['SessionCode'] == session_code
 
 #    Verify that an user can get the current session 
-#    Pre-Conditions:
-#    Valid Authentication Header
-#    Expectations:
 #    Endpoint -- api/sessions/current/
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- the current session 
-    def test_get_current_session___activity_leader(self):
-        self.session = self.createAuthorizedSession(leader_username, leader_password)
+    def test_get_current_session(self):
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/sessions/current/'
-
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
@@ -2206,14 +2204,11 @@ class Test_allSessionTest(testCase):
             pytest.fail('Expected SessionCode in response, got {0}.'.format(response.json()))
 
 #    Verify that an user can get the days left of the session
-#    Pre-Conditions:
-#    Valid Authentication Header
-#    Expectations:
 #    Endpoint -- api/sessions/daysLeft/
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- numbers of days left 
-    def test_get_daysLeft_session___activity_leader(self):
-        self.session = self.createAuthorizedSession(leader_username, leader_password)
+    def test_get_daysLeft_session(self):
+        self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/sessions/daysLeft/'
 
         response = api.get(self.session, self.url)
