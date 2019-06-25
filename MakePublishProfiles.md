@@ -13,9 +13,8 @@ The publish profiles are a tool used by Visual Studio to publish the latest buil
 ## Why Don't we have the Publish Profiles
 
 There are a few possibilities:
-1. You cloned the API into a new location. Sinc eht epublish profiles are tracked by Visual Studio and not Git, a new clone of the API won't include the profiles.
+1. You cloned the API into a new location. Since the publish profiles are tracked by Visual Studio and not Git, a new clone of the API won't include the profiles.
 2. They somehow got deleted.
-3. who eve knows???
 
 ## How to Create the Publish Profiles
 
