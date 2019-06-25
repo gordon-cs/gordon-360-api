@@ -329,6 +329,7 @@ namespace Gordon360.ApiControllers
         /// <param name="lastNameSearchParam"> The last name to search for </param>
         /// <param name="majorSearchParam"></param>
         /// <param name="minorSearchParam"></param>
+        /// <param name="hallSearchParam"></param>
         /// <param name="classTypeSearchParam"></param>
         /// <param name="hometownSearchParam"></param>
         /// <param name="stateSearchParam"></param>

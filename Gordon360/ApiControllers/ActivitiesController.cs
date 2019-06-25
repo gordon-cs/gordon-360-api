@@ -192,6 +192,7 @@ namespace Gordon360.Controllers.Api
         /// Get all the activities that have not yet been closed out for the current session for 
         /// which a given user is the group admin
         /// </summary>
+        /// <param name="id">The id of the user who is group admin</param>
         /// <returns></returns>
         [HttpGet]
         [Route("{id}/open")]
@@ -234,8 +235,10 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>
-        /// Get all the activities that are already closed out for the current session
+        /// Get all the activities that are already closed out for the current session for
+        /// which a given user is group admin
         /// </summary>
+        /// <param name="id">The id of the user who is group admin</param>
         /// <returns></returns>
         [HttpGet]
         [Route("{id}/closed")]
