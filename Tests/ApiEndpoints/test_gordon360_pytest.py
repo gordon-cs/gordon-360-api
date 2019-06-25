@@ -366,18 +366,14 @@ class Test_allEventsTest(testCase):
 # EVENTS & CLAW TESTS #
 # # # # # # # # # # # #
 
-#    Verify that a regular member can get all chapel events by username
-#    Pre-Conditions:
-#    Valid Authentication header
-#    Expectaions:
-#    Endpoint -- api/events/chapel/{username}
+#    Verify that a student can get all their own chapel events
+#    Endpoint -- api/events/chapel
 #    Expected Status Code -- 200 OK
 #    Expected Respones Body -- list of all chapel events attended by the user 
-    def test_get_all_chapel_events___regular_member(self):
+    def test_get_all_chapel_events(self):
         self.session = self.createAuthorizedSession(username, password)
-        self.url = hostURL + 'api/events/chapel/' + username + '/'
+        self.url = hostURL + 'api/events/chapel/'
         response = api.get(self.session, self.url)
-
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
         try:
@@ -387,16 +383,13 @@ class Test_allEventsTest(testCase):
         if not (type(response.json()) is list):
             pytest.fail('Expected list, got {0}.'.format(response.json()))
 
-#    Verify that a regular member can get all chapel events by username in specific term (ex: FA16)
-#    Pre-Conditions:
-#    Valid Authentication header
-#    Expectaions:
-#    Endpoint -- api/events/chapel/{username}/{term}
+#    Verify that an user can get all chapel events by username in specific term (ex: FA16)
+#    Endpoint -- api/events/chapel/:username/:term
 #    Expected Status Code -- 200 OK
 #    Expected Respones Body -- list of all chapel events attended by the user during term
-    def test_get_all_chapel_events_during_term___regular_member(self):
+    def test_get_all_chapel_events_during_term(self):
         self.session = self.createAuthorizedSession(username, password)
-        self.url = hostURL + 'api/events/chapel/' + username + '/' + specific_term + '/'
+        self.url = hostURL + 'api/events/chapel/' + specific_term + '/'
         response = api.get(self.session, self.url)
 
         if not response.status_code == 200:
@@ -408,10 +401,7 @@ class Test_allEventsTest(testCase):
         if not (type(response.json()) is list):
             pytest.fail('Expected list, got {0}.'.format(response.json()))
 
-#    Verify that a regular member can get all events by type_ID
-#    Pre-Conditions:
-#    Valid Authentication header
-#    Expectaions:
+#    Verify that an user can get all events by type_ID
 #    Endpoint -- api/events/25Live/type/:Event_OR_Type_ID
 #    Expected Status Code -- 200 OK
 #    Expected Respones Body -- list of all events resources
@@ -430,16 +420,15 @@ class Test_allEventsTest(testCase):
         if not (type(response.json()) is list):
             pytest.fail('Expected list, got {0}.'.format(response.json()))
 
-#    Verify that a regular member can get all events by multiple type_ID
+#    Verify that an user can get all events by multiple type_ID
 #    Pre-Conditions:
 #    Valid Authentication header
 #    Expectaions:
 #    Endpoint -- api/events/25Live/type/:Event_OR_Type_ID
 #    Expected Status Code -- 200 OK
 #    Expected Respones Body -- list of all events resources
-    def test_get_all_events_multiple___regular_member(self):
+    def test_get_all_events_multiple(self):
         self.session = self.createAuthorizedSession(username, password)
-        warnings.warn(UserWarning("Type_ID might not give any data"))
         self.url = hostURL + 'api/events/25Live/type/10$11$12$14'
         response = api.get(self.session, self.url)
 
@@ -453,13 +442,10 @@ class Test_allEventsTest(testCase):
             pytest.fail('Expected list, got {0}.'.format(response.json()))
 
 #    Verify that a regular member can get all upcoming chapel events (category_ID = 85)
-#    Pre-Conditions:
-#    Valid Authentication header
-#    Expectaions:
 #    Endpoint -- api/events/25Live/CLAW
 #    Expected Status Code -- 200 OK
 #    Expected Respones Body -- list of all events resources
-    def test_get_all_claw___regular_member(self):
+    def test_get_all_claw(self):
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/events/25Live/CLAW'
         response = api.get(self.session, self.url)
