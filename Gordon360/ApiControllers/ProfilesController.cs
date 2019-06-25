@@ -323,16 +323,6 @@ namespace Gordon360.Controllers.Api
                 return NotFound();
             }
         }
-        /// <summary>Get college role of a user</summary>
-        /// <param name="username"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("role/{username}")]
-        public IHttpActionResult getRole(string username)
-        {
-            var role  = _roleCheckingService.getCollegeRole(username);
-            return Ok(role);
-        }
 
         /// <summary>Get the profile image of currently logged in user</summary>
         /// <returns></returns>
