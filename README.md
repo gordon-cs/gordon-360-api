@@ -62,13 +62,15 @@ The folders for these IIS sites can be found on the 360train machine under `F:\s
 - 360ApiTrain.gordon.edu -- Development JSON server site. C# using the ASP.NET Framework.
 
 ### Deploying to the Api Site
-- Log in to cts-360.gordon.edu as the cct.service user and start Visual Studio as an administrator (right click).
-- Open an existing project/solution - `C:\users\cct.service\code\gordon-360-api\Gordon360` file. It is a Microsoft Visual Studio Solution file.
-- Make a change. Do your thing.
+- Access the cts-360.gordon.edu VM (see [RemoteDesktopToVM.md](RemoteDesktopToVM.md) for instructions) as the cct.service user.
+- Open gitbash and cd to `C:\users\cct.service\code\gordon-360-api`. Make sure that you are on the branch you wish to deploy, and that it has been pulled up to date.
+**Note: if you clone a new repository on this VM, it will not have the necessary publish profiles or secrets.config. See [MakePublishProfiles.md](MakePublishProfiles.md) to restore the Publish Profiles.**
+- Start Visual Studio as an administrator (right click) and open the existing project/solution file - `C:\users\cct.service\code\gordon-360-api\Gordon360.sln` (the solution file). 
 - Menu Bar -> Build - Publish Gordon360.
 - Choose the right publish profile.
     - DEV -- Development ( Connects to the admintrainsql database server, and used for 360train.gordon.edu).
     - Prod -- Production ( Connects to the adminprodsql database server, and used for the real site 360.gordon.edu).
+    - If you don't see the publish profile you want (or you are automatically taken to the "Pick a Publish Target" Window) see [MakePublishProfiles.md](MakePublishProfiles.md) to restore the Publish Profiles.
 - Clicking publish pushes your changes to the API for either 360ApiTrain.gordon.edu or 360Api.gordon.edu, depending on which publish profile you used.
 
 ### Deploying to the Front-end Site
