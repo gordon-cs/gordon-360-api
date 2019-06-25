@@ -18,18 +18,10 @@ public partial class STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result
 {
     public string IDNumber {get; set;}
 
-    public string YearCode { get; set; }
 
-    public string TermCode {get; set;}
-    
     public string CourseCode {get; set;}
     public string CourseTitle {get; set;}
 
-    public string InstructorID { get; set; }
-
-    public string CourseText { get; set; }
-
-    public string LocationCode { get; set; }
 
     public string BuildingCode { get; set; }
 
@@ -44,9 +36,6 @@ public partial class STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result
     public Nullable<System.DateTime> BeginTime { get; set; }
 
     public Nullable<System.DateTime> EndTime { get; set; }
-
-    public string CourseType { get; set; }
-
 
 }
 

@@ -199,7 +199,7 @@ public partial class CCTEntities1 : DbContext
             new ObjectParameter("SESS_CDE", typeof(string));
 
 
-        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result>("STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE", sTUDENT_IDParameter, sESS_CDEParameter);
+        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result>("STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE", iD_NUMParameter, sESS_CDEParameter);
     }
 
 

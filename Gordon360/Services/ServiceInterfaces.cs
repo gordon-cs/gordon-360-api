@@ -166,7 +166,6 @@ namespace Gordon360.Services
         IEnumerable<MyScheduleViewModel> Get(int id);
         MYSCHEDULE Add(MYSCHEDULE myschedule);
         MYSCHEDULE Delete(int id);
-        IEnumerable<MyScheduleViewModel> DeleteAllForID(int id);
     }
 
 

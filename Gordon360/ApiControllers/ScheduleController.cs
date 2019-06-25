@@ -54,7 +54,7 @@ namespace Gordon360.Controllers.Api
             var id = _accountService.GetAccountByUsername(username).GordonID;
             var idInt = Int32.Parse(id);
 
-            var result = _scheduleService.Get(idInt);
+            var result = _scheduleService.GetScheduleStudent(idInt,"Session code should be here");
             if (result == null)
             {
                 return NotFound();
@@ -74,7 +74,7 @@ namespace Gordon360.Controllers.Api
             var id = _accountService.GetAccountByUsername(username).GordonID;
             var idInt = Int32.Parse(id);
 
-            var result = _scheduleService.Get(idInt);
+            var result = _scheduleService.GetScheduleStudent(idInt, "session code should be here");
             if (result == null)
             {
                 return NotFound();
@@ -83,79 +83,6 @@ namespace Gordon360.Controllers.Api
         }
 
 
-        /// <summary>Create a new schedule to be added to database</summary>
-        /// <param name="schedule">The schedule item containing all required and relevant information</param>
-        /// <returns></returns>
-        /// <remarks>Posts a new schedule to the server to be added into the database</remarks>
-        // POST api/<controller>
-        [HttpPost]
-        [Route("add")]
-        public IHttpActionResult Post([FromBody] SCHEDULE schedule)
-        {
-            if (!ModelState.IsValid || schedule == null)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
-            var result = _scheduleService.Add(schedule);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return Created("schedule", schedule);
-        }
-
-        /// <summary>Delete an existing schedule item</summary>
-        /// <param name="id">The identifier for the schedule to be deleted</param>
-        /// <remarks>Calls the server to make a call and remove the given schedule from the database</remarks>
-        // DELETE api/<controller>/5
-        [HttpDelete]
-        [Route("delete/{id}")]
-        public IHttpActionResult Delete(int id) //TODO: MAKE THIS USE THE KEY OF THE SCHEDULE TABLE
-        {
-            var result = _scheduleService.Delete(id);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(result);
-        }
-
-        /// <summary>Delete all schedule items for a user</summary>
-        /// <param name="id">The identifier for the user whose schedule is to be deleted</param>
-        /// <remarks>Calls the server to make a call and remove the given schedules from the database</remarks>
-        // DELETE api/<controller>/5
-        [HttpDelete]
-        [Route("deleteall")]
-        public IHttpActionResult Delete()
-        {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-
-            var idInt = Int32.Parse(id);
-            var result = _scheduleService.DeleteAllForID(idInt);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(result);
+        
         }
     }
-}
