@@ -17,7 +17,8 @@ namespace Gordon360.Repositories
         private IRepository<CM_SESSION_MSTR> _SessionRepository;
         private IRepository<JNZB_ACTIVITIES> _JenzibarActvityRepository;
         private IRepository<MEMBERSHIP> _MembershipRepository;
-        private IRepository<SCHEDULE> _ScheduleRepository;
+        private IRepository<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> _InstructorScheduleRepository;
+        private IRepository<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> _StudentScheduleRepository;
         private IRepository<MYSCHEDULE> _MyScheduleRepository;
         private IRepository<PART_DEF> _ParticipationRepository;
         private IRepository<SUPERVISOR> _SupervisorRepository;
@@ -68,9 +69,13 @@ namespace Gordon360.Repositories
         {
             get { return _MembershipRepository ?? (_MembershipRepository = new GenericRepository<MEMBERSHIP>(_context)); }
         }
-        public IRepository<SCHEDULE> ScheduleRepository
+        public IRepository<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> StudentScheduleRepository
         {
-            get { return _ScheduleRepository ?? (_ScheduleRepository = new GenericRepository<SCHEDULE>(_context)); }
+            get { return _StudentScheduleRepository ?? (_StudentScheduleRepository = new GenericRepository<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result>(_context)); }
+        }
+        public IRepository<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> FacultyScheduleRepository
+        {
+            get { return _FacultyScheduleRepository ?? (_FacultyScheduleRepository = new GenericRepository<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result>(_context)); }
         }
         public IRepository<MYSCHEDULE> MyScheduleRepository
         {
