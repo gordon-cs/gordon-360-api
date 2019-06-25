@@ -458,15 +458,11 @@ class Test_allEventsTest(testCase):
         if not (type(response.json()) is list):
             pytest.fail('Expected list, got {0}.'.format(response.json()))
 
-#    Verify that a regular member can get all events in 25Live under predefined categories
-#    Pre-Conditions:
-#    Valid Authentication header
-#    Expectaions:
+#    Verify that an user can get all events in 25Live under predefined categories
 #    Endpoint -- api/events/25Live/All
 #    Expected Status Code -- 200 OK
 #    Expected Respones Body -- list of all events resources
-
-    def test_get_all_25Live___regular_member(self):
+    def test_get_all_25Live(self):
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/events/25Live/All'
         response = api.get(self.session, self.url)
@@ -479,15 +475,11 @@ class Test_allEventsTest(testCase):
         if not (type(response.json()) is list):
             pytest.fail('Expected list, got {0}.'.format(response.json()))
 
-#    Verify that a regular member can get information on specific event on 25Live
-#    Pre-Conditions:
-#    Valid Authentication header
-#    Expectaions:
+#    Verify that an user can get information on specific event on 25Live
 #    Endpoint -- api/events/25Live/:Event_ID (2911 = Chapel)
 #    Expected Status Code -- 200 OK
 #    Expected Respones Body -- list of all events resources
-
-    def test_get_all_25Live_by_event_id___regular_member(self):
+    def test_get_all_25Live_by_event_id(self):
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/events/25Live/2911'
         response = api.get(self.session, self.url)
@@ -500,6 +492,11 @@ class Test_allEventsTest(testCase):
         if not (type(response.json()) is list):
             pytest.fail('Expected list, got {0}.'.format(response.json()))
         assert response.json()[0]['Organization'] == "Chapel Office"
+        assert response.json()[0]['Event_ID'] == '2911'
+        assert response.json()[0]['Event_Name'] == 'Chapel'
+        assert response.json()[0]['Event_Title'] == 'Chapel: David Kirika'
+        assert response.json()[0]['Event_Type_Name'] == 'Chapel/Worship'
+
 
 class Test_allActivityTest(testCase):
 
