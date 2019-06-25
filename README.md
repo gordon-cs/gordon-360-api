@@ -70,6 +70,7 @@ The folders for these IIS sites can be found on the 360train machine under `F:\s
 - Choose the right publish profile.
     - DEV -- Development ( Connects to the admintrainsql database server, and used for 360train.gordon.edu).
     - Prod -- Production ( Connects to the adminprodsql database server, and used for the real site 360.gordon.edu).
+    - If you don't see the publish profile you want (or you are automatically taken to the "Pick a Publish Target" Window) see [MakePublishProfiles.md](MakePublishProfiles.md) to restore the Publish Profiles.
 - Clicking publish pushes your changes to the API for either 360ApiTrain.gordon.edu or 360Api.gordon.edu, depending on which publish profile you used.
 
 ### Deploying to the Front-end Site
