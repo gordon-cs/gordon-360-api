@@ -154,10 +154,8 @@ namespace Gordon360.Services
 
     public interface IScheduleService
     {
-        IEnumerable<ScheduleViewModel> GetScheduleStudent(int id, string session_code);
-        IEnumerable<ScheduleViewModel> GetScheduleFaculty(int id, string session_code);
-
-
+        IEnumerable<ScheduleViewModel> GetScheduleStudent(int id);
+        IEnumerable<ScheduleViewModel> GetScheduleFaculty(int id);
     }
 
 

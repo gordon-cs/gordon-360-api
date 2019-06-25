@@ -30,23 +30,27 @@ namespace Gordon360.Services
         /// Fetch the schedule item whose id and session code is specified by the parameter
         /// </summary>
         /// <param name="id">The id of the student</param>
-        /// <param name="session">The session id</param>
         /// <returns>StudentScheduleViewModel if found, null if not found</returns>
-        public IEnumerable<ScheduleViewModel> GetScheduleStudent(int id, string session)
+        public IEnumerable<ScheduleViewModel> GetScheduleStudent(int id)
         {
             var query = _unitOfWork.StudentScheduleRepository.GetById(id);
+            var currentSessionCode = Helpers.GetCurrentSession().SessionCode;
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Schedule was not found." };
             }
             var idParam = new SqlParameter("@id_num", id);
-            var sessParam = new SqlParameter("@sess_cde", session);
+            var sessParam = new SqlParameter("@sess_cde", currentSessionCode);
             var result = RawSqlQuery<ScheduleViewModel>.query("STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE @id_num @sess_cde", idParam, sessParam); // TODO: write prepared statement
 
             if (result == null)
             {
                 return null;
             }
+            // Getting rid of database-inherited whitespace
+            result.CRS_CDE = result.CRS_CDE.Trim();
+            result.CRS_TITLE = result.CRS_TITLE.Trim();
+            result.BLDG_CDE = result.SessionCode.Trim();
 
             return result;
         }
@@ -58,21 +62,27 @@ namespace Gordon360.Services
         /// <param name="id">The id of the instructor</param>
         /// <param name="session">The session id</param>
         /// <returns>StudentScheduleViewModel if found, null if not found</returns>
-        public IEnumerable<ScheduleViewModel> GetScheduleFaculty(int id, string session)
+        public IEnumerable<ScheduleViewModel> GetScheduleFaculty(int id)
         {
             var query = _unitOfWork.FacultyScheduleRepository.GetById(id);
+            var currentSessionCode = Helpers.GetCurrentSession().SessionCode;
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Schedule was not found." };
             }
             var idParam = new SqlParameter("@id_num", id);
-            var sessParam = new SqlParameter("@sess_cde", session);
+            var sessParam = new SqlParameter("@sess_cde", currentSessionCode);
             var result = RawSqlQuery<ScheduleViewModel>.query("INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE @id_num @sess_cde", idParam, sessParam); // TODO: write prepared statement
 
             if (result == null)
             {
                 return null;
             }
+
+            // Getting rid of database-inherited whitespace
+            result.CRS_CDE = result.CRS_CDE.Trim();
+            result.CRS_TITLE = result.CRS_TITLE.Trim();
+            result.BLDG_CDE = result.SessionCode.Trim();
 
             return result;
         }

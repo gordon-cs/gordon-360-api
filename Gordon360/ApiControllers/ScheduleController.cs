@@ -26,6 +26,7 @@ namespace Gordon360.Controllers.Api
 
         private IScheduleService _scheduleService;
 
+
         public ScheduleController()
         {
             var _unitOfWork = new UnitOfWork();
@@ -54,7 +55,17 @@ namespace Gordon360.Controllers.Api
             var id = _accountService.GetAccountByUsername(username).GordonID;
             var idInt = Int32.Parse(id);
 
-            var result = _scheduleService.GetScheduleStudent(idInt,"Session code should be here");
+            var role = _roleCheckingService.getCollegeRole(username);
+
+            if (role=="student"){
+                var result = _scheduleService.GetScheduleStudent(idInt);
+            }
+
+            if (role=="facstaff"){
+                var result = _scheduleService.GetScheduleStudent(idInt);
+            }
+
+            
             if (result == null)
             {
                 return NotFound();
@@ -74,7 +85,15 @@ namespace Gordon360.Controllers.Api
             var id = _accountService.GetAccountByUsername(username).GordonID;
             var idInt = Int32.Parse(id);
 
-            var result = _scheduleService.GetScheduleStudent(idInt, "session code should be here");
+            var role = _roleCheckingService.getCollegeRole(username);
+            
+            if (role=="student"){
+                var result = _scheduleService.GetScheduleStudent(idInt);
+            }
+
+            if (role=="facstaff"){
+                var result = _scheduleService.GetScheduleStudent(idInt);
+            }
             if (result == null)
             {
                 return NotFound();

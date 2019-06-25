@@ -17,24 +17,26 @@ using System;
 public partial class INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result
 {
 
-    public string IDNumber {get; set;}
-    
-    public string CourseCode {get; set;}
-    public string CourseTitle {get; set;}
+    public int STUDENT_ID {get; set;}
 
-    public string BuildingCode { get; set; }
 
-    public string RoomCode { get; set; }
+    public string CRS_CDE {get; set;}
+    public string CRS_TITLE {get; set;}
 
-    public string MonCode { get; set; }
-    public string TueCode { get; set; }
-    public string WedCode { get; set; }
-    public string ThuCode { get; set; }
-    public string FriCode { get; set; }
 
-    public Nullable<System.DateTime> BeginTime { get; set; }
+    public string BLDG_CDE { get; set; }
 
-    public Nullable<System.DateTime> EndTime { get; set; }
+    public int ROOM_CDE { get; set; }
+
+    public string MONDAY_CDE { get; set; }
+    public string TUESDAY_CDE { get; set; }
+    public string WEDNESDAY_CDE { get; set; }
+    public string THURSDAY_CDE { get; set; }
+    public string FRIDAY_CDE { get; set; }
+
+    public Nullable<System.DateTime> BEGIN_TIME { get; set; }
+
+    public Nullable<System.DateTime> END_TIME { get; set; }
 
 }
 
