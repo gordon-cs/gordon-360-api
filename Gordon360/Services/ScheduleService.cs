@@ -32,11 +32,16 @@ namespace Gordon360.Services
         /// <param name="id">The id of the student</param>
         /// <param name="session">The session id</param>
         /// <returns>StudentScheduleViewModel if found, null if not found</returns>
-        public IEnumerable<StudentScheduleViewModel> GetScheduleStudent(int id, string session)
+        public IEnumerable<ScheduleViewModel> GetScheduleStudent(int id, string session)
         {
+            var query = _unitOfWork.StudentScheduleRepository.GetById(id);
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Schedule was not found." };
+            }
             var idParam = new SqlParameter("@id_num", id);
             var sessParam = new SqlParameter("@sess_cde", session);
-            var result = RawSqlQuery<StudentScheduleViewModel>.query("STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE @id_num @sess_cde", idParam, sessParam); // TODO: write prepared statement
+            var result = RawSqlQuery<ScheduleViewModel>.query("STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE @id_num @sess_cde", idParam, sessParam); // TODO: write prepared statement
 
             if (result == null)
             {
@@ -53,11 +58,16 @@ namespace Gordon360.Services
         /// <param name="id">The id of the instructor</param>
         /// <param name="session">The session id</param>
         /// <returns>StudentScheduleViewModel if found, null if not found</returns>
-        public IEnumerable<StudentScheduleViewModel> GetScheduleFaculty(int id, string session)
+        public IEnumerable<ScheduleViewModel> GetScheduleFaculty(int id, string session)
         {
+            var query = _unitOfWork.FacultyScheduleRepository.GetById(id);
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Schedule was not found." };
+            }
             var idParam = new SqlParameter("@id_num", id);
             var sessParam = new SqlParameter("@sess_cde", session);
-            var result = RawSqlQuery<StudentScheduleViewModel>.query("INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE @id_num @sess_cde", idParam, sessParam); // TODO: write prepared statement
+            var result = RawSqlQuery<ScheduleViewModel>.query("INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE @id_num @sess_cde", idParam, sessParam); // TODO: write prepared statement
 
             if (result == null)
             {
@@ -66,3 +76,5 @@ namespace Gordon360.Services
 
             return result;
         }
+    }
+}
