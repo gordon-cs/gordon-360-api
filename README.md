@@ -306,31 +306,36 @@ Here is a breakdown of the project folder:
 
 ###Adding New Queries 
 
-Step 1: Make a *Controller file under ApiControllers where * is your new title (ex. StudentEmploymentController.cs)
-    - Copy and paste from existing files such as StudentEmploymentController.cs 
-    - Change RoutePrefix to the specific url you are looking into and all names related to StudentEmployment to match up with your *
-    - Add public IHttpActionResult functions (ex. public IHttpActionResult Get(int id))
-Step 2: Go to ServiceInterfaces.cs under Services 
-    - Add a public interface I* (ex. IStudentEmployment)
-    - Add functions you want under the interface (ex. Get(int id), GetAll())
-Step 3: Make a *.cs under Models (ex. StudentEmployment.cs)
-    - Copy and paste from existing files such as StudentEmployment.cs
-    - Change corresponding names 
-Step 3: Make a *ViewModel.cs under Models/ViewModels (ex. StudentEmploymentViewModel.cs)
-    - Copy and paste from existing files such as StudentEmploymentViewModel.cs 
-    - Change correspending names to * and specifiy what information you want from the database (ex. public string FirstName { get; set; })
-    - Attributes under *ViewModel should match with the functions under *.cs 
-Step 4: Make a *Service.cs under Services 
-    - Copy and paste from existing files such as StudentEmploymentService.cs and update names to *
-    - Have same functions that are in *Controller
-Step 5: Go to IUnitOfWork.cs under Repositories
-    - Make corresponding IRepository for * (ex. IRepository<STUDENTEMPLOYMENT> StudentEmploymentRepository {get;}) 
-Step 6: Go to UnitOfWork.cs under Repositories
-    - make private IRepository<*> variable (ex. private IRepository<STUDENTEMPLOYMENT> _StudentEmploymentRepository;)
-    - write public function called *Repository like the other exisiting functions 
-Step 7: Go to Names.cs under Static Classes
-    - Add public const string [All caps]* and specifiy the name like the other functions 
-    
+* is your new Title (ex: Membership, Account, Session)
++ is your new stored procedure name (ex: MEMBERSHIPS_PER_STUDENT_ID) 
+New Files: 
+	-*Controller.cs under ApiControllers
+		- create new route 
+		- calls the *service function
+		- returns ok
+	-*Service.cs under Services
+		- calls the stored procedure that returns view model
+	-*.cs under Models
+		- function names correspond to the columns of the data the stored procedure returns (Have to be exact names)
+	-*ViewModel.cs under ViewModels
+		- function names correspond to the columns of the data the stored procedure returns (Does not have to be exact names)
+		- static implicit operator converts * model to *ViewModel
+	-+_Result.cs under Models 
+		- function names correspond to the columns of the data the stored procedure returns (Have to be exact names)
+Update Files:
+	-ServiceInterfaces.cs under Services
+		- Add a public interface I* 
+		- Add all functions you have in *Service under this interface 
+	-IUnitOfWork.cs under Repositories
+		-Make corresponding IRepository for * (ex. IRepository<STUDENTEMPLOYMENT> StudentEmploymentRepository {get;}) 
+	-UnitOfWork.cs under Repositories
+		-Make private IRepository<*> variable
+		-Write public function called *Repository 
+	-Names.cs under Static Classes
+		-Add public const string * 
+	-CCT_DB_MODELS.edmx (Ctrl Shift F and search for CCT_DB_MODELS)
+		-Add all corresponding parts using StudentEmployment or others as an example 
+
 ## API Endpoints
 
 ### Accounts

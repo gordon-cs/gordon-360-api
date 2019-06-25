@@ -76,40 +76,6 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// Fetch the membership whose id is specified by the parameter
-        /// </summary>
-        /// <param name="id">The membership id</param>
-        /// <returns>MembershipViewModel if found, null if not found</returns>
-        public MembershipViewModel Get(int id)
-        {
-            var query = _unitOfWork.MembershipRepository.GetById(id);
-            if (query == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
-            }
-
-            var idParam = new SqlParameter("@MEMBERSHIP_ID", id);
-            var result = RawSqlQuery<MembershipViewModel>.query("MEMBERSHIPS_PER_MEMBERSHIP_ID @MEMBERSHIP_ID", idParam).FirstOrDefault();
-
-            if (result == null)
-            {
-                return null;
-            }
-            // Getting rid of database-inherited whitespace
-            result.ActivityCode = result.ActivityCode.Trim();
-            result.ActivityDescription = result.ActivityDescription.Trim();
-            result.SessionCode = result.SessionCode.Trim();
-            result.SessionDescription = result.SessionDescription.Trim();
-            result.IDNumber = result.IDNumber;
-            result.FirstName = result.FirstName.Trim();
-            result.LastName = result.LastName.Trim();
-            result.Participation = result.Participation.Trim();
-            result.ParticipationDescription = result.ParticipationDescription.Trim();
-
-            return result;
-        }
-
-        /// <summary>
         /// Fetches all membership records from storage.
         /// </summary>
         /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
