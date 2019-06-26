@@ -50,6 +50,7 @@
             <param name="lastNameSearchParam"> The last name to search for </param>
             <param name="majorSearchParam"></param>
             <param name="minorSearchParam"></param>
+            <param name="hallSearchParam"></param>
             <param name="classTypeSearchParam"></param>
             <param name="hometownSearchParam"></param>
             <param name="stateSearchParam"></param>
@@ -101,11 +102,10 @@
             <param name="id">The identifier for the admin to be deleted</param>
             <remarks>Calls the server to make a call and remove the given admin from the database</remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.DiningController.Get(System.String,System.Int32,System.String)">
+        <member name="M:Gordon360.ApiControllers.DiningController.Get">
             <summary>
              Gets information about student's dining plan and balance
             </summary>
-            <param name="personType">The type of person</param>
             <param name="id">The ID of the student</param>
             <param name="sessionCode">Current session code</param>
             <returns>A DiningInfo object</returns>
@@ -193,11 +193,6 @@
             <param name="username">username of the profile info</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.getRole(System.String)">
-            <summary>Get college role of a user</summary>
-            <param name="username"></param>
-            <returns></returns>
-        </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.getMyImg">
             <summary>Get the profile image of currently logged in user</summary>
             <returns></returns>
@@ -244,29 +239,6 @@
             Update privacy of profile image
             </summary>
             <param name="value">Y or N</param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.ParticipationsController.Get">
-            <summary>Get all the roles a person may have within an activity</summary>
-            <returns>A list of all the roles and their coresponding acronyms</returns>
-            <remarks>Queries the database for all the roles that are valid</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.ParticipationsController.Get(System.String)">
-            <summary>Get a single role and the information about it</summary>
-            <param name="id">The identifier for a single role</param>
-            <returns>The information about the specified role</returns>
-            <remarks>Queries the database and returns information about one particular role</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.ParticipationsController.GetLeaderRoles">
-            <summary>
-            Get the participation levels that are considered to be leadership positions.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.ParticipationsController.GetTranscriptWorthyRoles">
-            <summary>
-            GEt the participation levels that are considered to be leadership positions.
-            </summary>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.SessionsController.Get">
@@ -336,6 +308,7 @@
             Get all the activities that have not yet been closed out for the current session for 
             which a given user is the group admin
             </summary>
+            <param name="id">The id of the user who is group admin</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ActivitiesController.GetClosedActivities">
@@ -346,8 +319,10 @@
         </member>
         <member name="M:Gordon360.Controllers.Api.ActivitiesController.GetClosedActivities(System.Int32)">
             <summary>
-            Get all the activities that are already closed out for the current session
+            Get all the activities that are already closed out for the current session for
+            which a given user is group admin
             </summary>
+            <param name="id">The id of the user who is group admin</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ActivitiesController.Put(System.String,Gordon360.Models.ACT_INFO)">
@@ -389,14 +364,6 @@
             Server makes call to the database and returns all current memberships
             </remarks>
         </member>
-        <member name="M:Gordon360.Controllers.Api.MembershipsController.Get(System.Int32)">
-            <summary>
-            Get a single membership based on the id given
-            </summary>
-            <param name="id">The id of a membership within the database</param>
-            <remarks>Queries the database about the specified membership</remarks>
-            <returns>The information about one specific membership</returns>
-        </member>
         <member name="M:Gordon360.Controllers.Api.MembershipsController.GetMembershipsForActivity(System.String)">
             <summary>
             Get all the memberships associated with a given activity
@@ -427,21 +394,21 @@
         </member>
         <member name="M:Gordon360.Controllers.Api.MembershipsController.GetActivityFollowersCount(System.String)">
             <summary>
-            Gets the number of members and followers of an activity
+            Gets the number of followers of an activity
             </summary>
             <param name="id">The activity ID.</param>
             <returns>The number of followers of the activity</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.MembershipsController.GetActivityMembersCount(System.String)">
             <summary>
-            Gets the number of members and followers of an activity
+            Gets the number of members (besides followers) of an activity
             </summary>
             <param name="id">The activity ID.</param>
             <returns>The number of members of the activity</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.MembershipsController.GetActivityFollowersCountForSession(System.String,System.String)">
             <summary>
-            Gets the number of members and followers of an activity
+            Gets the number of followers of an activity
             </summary>
             <param name="id">The activity ID.</param>
             <param name="sess_cde">The session code</param>
@@ -449,7 +416,7 @@
         </member>
         <member name="M:Gordon360.Controllers.Api.MembershipsController.GetActivityMembersCountForSession(System.String,System.String)">
             <summary>
-            Gets the number of members and followers of an activity
+            Gets the number of members (excluding followers) of an activity
             </summary>
             <param name="id">The activity ID.</param>
             <param name="sess_cde">The session code</param>
@@ -493,13 +460,13 @@
             <param name="id">The identifier for the membership to be deleted</param>
             <remarks>Calls the server to make a call and remove the given membership from the database</remarks>
         </member>
-        <member name="M:Gordon360.Controllers.Api.StudentEmploymentController.Get(System.String)">
+        <member name="M:Gordon360.Controllers.Api.StudentEmploymentController.Get">
             <summary>
-             Gets current victory promise scores
+             Gets current student employmen info
             </summary>
-            <returns>A VP object object</returns>
+            <returns>A studentEmployment object object</returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.VictoryPromiseController.Get(System.String)">
+        <member name="M:Gordon360.Controllers.Api.VictoryPromiseController.Get">
             <summary>
              Gets current victory promise scores
             </summary>
@@ -1265,13 +1232,6 @@
             <param name="id">The membership id</param>
             <returns>The membership that was just deleted</returns>
         </member>
-        <member name="M:Gordon360.Services.MembershipService.Get(System.Int32)">
-            <summary>
-            Fetch the membership whose id is specified by the parameter
-            </summary>
-            <param name="id">The membership id</param>
-            <returns>MembershipViewModel if found, null if not found</returns>
-        </member>
         <member name="M:Gordon360.Services.MembershipService.GetAll">
             <summary>
             Fetches all membership records from storage.
@@ -1373,24 +1333,6 @@
             </summary>
             <param name="membership">The membership to validate</param>
             <returns>True if the membership is valid. Throws ResourceNotFoundException if not. Exception is cauth in an Exception Filter</returns>
-        </member>
-        <member name="T:Gordon360.Services.ParticipationService">
-            <summary>
-            Service class that facilitates data passing between the ParticipationsController and the database model.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Services.ParticipationService.Get(System.String)">
-            <summary>
-            Fetches the participation record whose id matches the given parameter.
-            </summary>
-            <param name="id">The participation id.</param>
-            <returns>If found, returns ParticipationViewModel, if not returns null.</returns>
-        </member>
-        <member name="M:Gordon360.Services.ParticipationService.GetAll">
-            <summary>
-            Fetches all the participation records from the database
-            </summary>
-            <returns>Participation IEnumerable. If no records are found, returns an empty IEnumberable</returns>
         </member>
         <member name="T:Gordon360.Services.SessionService">
             <summary>
