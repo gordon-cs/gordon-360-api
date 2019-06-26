@@ -1594,7 +1594,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="Int32" Name="VP_LW_SCORE" Nullable="true" />
         </ComplexType>
         <ComplexType Name="STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result">
-          <Property Type="Int32" Name="STUDENT_ID" Nullable="false" />
+          <Property Type="Int32" Name="ID_NUM" Nullable="false" />
           <Property Type="String" Name="CRS_CDE" Nullable="false" MaxLength="45" />
           <Property Type="String" Name="CRS_TITLE" Nullable="false" MaxLength="45" />
           <Property Type="String" Name="BLDG_CDE" Nullable="true" />
@@ -2351,7 +2351,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImportMapping FunctionImportName="STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE" FunctionName="Gordon360.Store.STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE">
             <ResultMapping>
               <ComplexTypeMapping TypeName="Gordon360.STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result">
-                <ScalarProperty Name="STUDENT_ID" ColumnName="ID_NUM" />
+                <ScalarProperty Name="ID_NUM" ColumnName="ID_NUM" />
                 <ScalarProperty Name="CRS_CDE" ColumnName="CRS_CDE" />
                 <ScalarProperty Name="CRS_TITLE" ColumnName="CRS_TITLE" />
                 <ScalarProperty Name="BLDG_CDE" ColumnName="BLDG_CDE" />
