@@ -143,19 +143,6 @@ public partial class CCTEntities1 : DbContext
         return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<MEMBERSHIPS_PER_ACT_CDE_Result>("MEMBERSHIPS_PER_ACT_CDE", aCT_CDEParameter);
     }
 
-
-    public virtual ObjectResult<MEMBERSHIPS_PER_MEMBERSHIP_ID_Result> MEMBERSHIPS_PER_MEMBERSHIP_ID(Nullable<int> mEMBERSHIP_ID)
-    {
-
-        var mEMBERSHIP_IDParameter = mEMBERSHIP_ID.HasValue ?
-            new ObjectParameter("MEMBERSHIP_ID", mEMBERSHIP_ID) :
-            new ObjectParameter("MEMBERSHIP_ID", typeof(int));
-
-
-        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<MEMBERSHIPS_PER_MEMBERSHIP_ID_Result>("MEMBERSHIPS_PER_MEMBERSHIP_ID", mEMBERSHIP_IDParameter);
-    }
-
-
     public virtual ObjectResult<MEMBERSHIPS_PER_STUDENT_ID_Result> MEMBERSHIPS_PER_STUDENT_ID(Nullable<int> sTUDENT_ID)
     {
 
