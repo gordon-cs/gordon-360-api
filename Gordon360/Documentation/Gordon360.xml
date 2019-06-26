@@ -1185,14 +1185,14 @@
             Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.ScheduleService.GetScheduleStudent(System.Int32)">
+        <member name="M:Gordon360.Services.ScheduleService.GetScheduleStudent(System.String)">
             <summary>
             Fetch the schedule item whose id and session code is specified by the parameter
             </summary>
             <param name="id">The id of the student</param>
             <returns>StudentScheduleViewModel if found, null if not found</returns>
         </member>
-        <member name="M:Gordon360.Services.ScheduleService.GetScheduleFaculty(System.Int32)">
+        <member name="M:Gordon360.Services.ScheduleService.GetScheduleFaculty(System.String)">
             <summary>
             Fetch the schedule item whose id and session code is specified by the parameter
             </summary>

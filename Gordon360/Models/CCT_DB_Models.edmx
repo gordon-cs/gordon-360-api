@@ -1598,28 +1598,28 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="String" Name="CRS_CDE" Nullable="false" MaxLength="45" />
           <Property Type="String" Name="CRS_TITLE" Nullable="false" MaxLength="45" />
           <Property Type="String" Name="BLDG_CDE" Nullable="true" />
-          <Property Type="Int32" Name="ROOM_CDE" Nullable="true" />
+          <Property Type="String" Name="ROOM_CDE" Nullable="true" />
           <Property Type="String" Name="MONDAY_CDE" Nullable="true" MaxLength="5" />
           <Property Type="String" Name="TUESDAY_CDE" Nullable="true" MaxLength="5"/>
           <Property Type="String" Name="WEDNESDAY_CDE" Nullable="true" MaxLength="5" />
           <Property Type="String" Name="THURSDAY_CDE" Nullable="true" MaxLength="5" />
           <Property Type="String" Name="FRIDAY_CDE" Nullable="true" MaxLength="5" />
-          <Property Type="DateTime" Name="BEGIN_TIME" Nullable="false" Precision="23" />
-          <Property Type="DateTime" Name="END_TIME" Nullable="true" Precision="23" />
+          <Property Type="TimeSpan" Name="BEGIN_TIME" Nullable="true" Precision="23" />
+          <Property Type="TimeSpan" Name="END_TIME" Nullable="true" Precision="23" />
         </ComplexType>
                 <ComplexType Name="INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result">
           <Property Type="Int32" Name="INSTRUCTOR_ID" Nullable="false" />
           <Property Type="String" Name="CRS_CDE" Nullable="false" MaxLength="45" />
           <Property Type="String" Name="CRS_TITLE" Nullable="false" MaxLength="45" />
           <Property Type="String" Name="BLDG_CDE" Nullable="true" />
-          <Property Type="Int32" Name="ROOM_CDE" Nullable="true" />
+          <Property Type="String" Name="ROOM_CDE" Nullable="true" />
           <Property Type="String" Name="MONDAY_CDE" Nullable="true" MaxLength="5" />
           <Property Type="String" Name="TUESDAY_CDE" Nullable="true" MaxLength="5"/>
           <Property Type="String" Name="WEDNESDAY_CDE" Nullable="true" MaxLength="5" />
           <Property Type="String" Name="THURSDAY_CDE" Nullable="true" MaxLength="5" />
           <Property Type="String" Name="FRIDAY_CDE" Nullable="true" MaxLength="5" />
-          <Property Type="DateTime" Name="BEGIN_TIME" Nullable="false" Precision="23" />
-          <Property Type="DateTime" Name="END_TIME" Nullable="true" Precision="23" />
+          <Property Type="TimeSpan" Name="BEGIN_TIME" Nullable="true" Precision="23" />
+          <Property Type="TimeSpan" Name="END_TIME" Nullable="true" Precision="23" />
         </ComplexType>
 
         </Schema>

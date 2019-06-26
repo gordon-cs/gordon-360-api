@@ -26,7 +26,7 @@ public partial class INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result
 
     public string BLDG_CDE { get; set; }
 
-    public int ROOM_CDE { get; set; }
+    public string ROOM_CDE { get; set; }
 
     public string MONDAY_CDE { get; set; }
     public string TUESDAY_CDE { get; set; }
@@ -34,9 +34,9 @@ public partial class INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result
     public string THURSDAY_CDE { get; set; }
     public string FRIDAY_CDE { get; set; }
 
-    public Nullable<System.DateTime> BEGIN_TIME { get; set; }
+    public Nullable<System.TimeSpan> BEGIN_TIME { get; set; }
 
-    public Nullable<System.DateTime> END_TIME { get; set; }
+    public Nullable<System.TimeSpan> END_TIME { get; set; }
 
 }
 

@@ -46,19 +46,19 @@ namespace Gordon360.Controllers.Api
         /// </summary>
         /// <returns>A IEnumerable of schedule objects</returns>
         [HttpGet]
-        [Route("")]
+        [Route("get")]
         public IHttpActionResult Get()
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
             var id = _accountService.GetAccountByUsername(username).GordonID;
-            var idInt = Int32.Parse(id);
+            //var idInt = Int32.Parse(id);
 
             var role = _roleCheckingService.getCollegeRole(username);
 
             if (role=="student"){
-                var result = _scheduleService.GetScheduleStudent(idInt);
+                var result = _scheduleService.GetScheduleStudent(id);
                 if (result == null)
                 {
                     return NotFound();
@@ -67,7 +67,7 @@ namespace Gordon360.Controllers.Api
             }
 
             else if (role=="facstaff"){
-                var result = _scheduleService.GetScheduleStudent(idInt);
+                var result = _scheduleService.GetScheduleFaculty(id);
                 if (result == null)
                 {
                     return NotFound();
@@ -88,13 +88,13 @@ namespace Gordon360.Controllers.Api
         {
             //probably needs privacy stuff like ProfilesController and service
             var id = _accountService.GetAccountByUsername(username).GordonID;
-            var idInt = Int32.Parse(id);
+            //var idInt = Int32.Parse(id);
 
             var role = _roleCheckingService.getCollegeRole(username);
 
             if (role == "student")
             {
-                var result = _scheduleService.GetScheduleStudent(idInt);
+                var result = _scheduleService.GetScheduleStudent(id);
                 if (result == null)
                 {
                     return NotFound();
@@ -104,7 +104,7 @@ namespace Gordon360.Controllers.Api
 
             else if (role == "facstaff")
             {
-                var result = _scheduleService.GetScheduleStudent(idInt);
+                var result = _scheduleService.GetScheduleFaculty(id);
                 if (result == null)
                 {
                     return NotFound();
