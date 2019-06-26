@@ -1604,8 +1604,8 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="String" Name="WEDNESDAY_CDE" Nullable="true" MaxLength="5" />
           <Property Type="String" Name="THURSDAY_CDE" Nullable="true" MaxLength="5" />
           <Property Type="String" Name="FRIDAY_CDE" Nullable="true" MaxLength="5" />
-          <Property Type="TimeSpan" Name="BEGIN_TIME" Nullable="true" Precision="23" />
-          <Property Type="TimeSpan" Name="END_TIME" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="BEGIN_TIME" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="END_TIME" Nullable="true" Precision="23" />
         </ComplexType>
                 <ComplexType Name="INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result">
           <Property Type="Int32" Name="INSTRUCTOR_ID" Nullable="false" />
@@ -1618,8 +1618,8 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="String" Name="WEDNESDAY_CDE" Nullable="true" MaxLength="5" />
           <Property Type="String" Name="THURSDAY_CDE" Nullable="true" MaxLength="5" />
           <Property Type="String" Name="FRIDAY_CDE" Nullable="true" MaxLength="5" />
-          <Property Type="TimeSpan" Name="BEGIN_TIME" Nullable="true" Precision="23" />
-          <Property Type="TimeSpan" Name="END_TIME" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="BEGIN_TIME" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="END_TIME" Nullable="true" Precision="23" />
         </ComplexType>
 
         </Schema>
