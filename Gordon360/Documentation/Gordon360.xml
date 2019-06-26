@@ -288,28 +288,6 @@
             </summary>
             <returns>A IEnumerable of schedule objects</returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ScheduleController.Get(System.Int32)">
-            <summary>
-             Gets a schedule object by its id
-            </summary>
-            <returns>A schedule object</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.ScheduleController.Post(Gordon360.Models.SCHEDULE)">
-            <summary>Create a new schedule to be added to database</summary>
-            <param name="schedule">The schedule item containing all required and relevant information</param>
-            <returns></returns>
-            <remarks>Posts a new schedule to the server to be added into the database</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.ScheduleController.Delete(System.Int32)">
-            <summary>Delete an existing schedule item</summary>
-            <param name="id">The identifier for the schedule to be deleted</param>
-            <remarks>Calls the server to make a call and remove the given schedule from the database</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.ScheduleController.Delete">
-            <summary>Delete all schedule items for a user</summary>
-            <param name="id">The identifier for the user whose schedule is to be deleted</param>
-            <remarks>Calls the server to make a call and remove the given schedules from the database</remarks>
-        </member>
         <member name="M:Gordon360.Controllers.Api.SessionsController.Get">
             <summary>Get a list of all sessions</summary>
             <returns>All sessions within the database</returns>
@@ -1118,6 +1096,11 @@
             <param name="password">Password of the email sender</param>
             <returns></returns>
         </member>
+        <member name="T:Gordon360.Services.MyScheduleService">
+            <summary>
+            Service Class that facilitates data transactions between the MySchedulesController and the MySchedule part of the database model.
+            </summary>
+        </member>
         <member name="M:Gordon360.Services.ProfileService.GetStudentProfileByUsername(System.String)">
             <summary>
             get student profile info
@@ -1202,40 +1185,20 @@
             Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.ScheduleService.Get(System.Int32)">
+        <member name="M:Gordon360.Services.ScheduleService.GetScheduleStudent(System.Int32)">
             <summary>
-            Fetch the schedule item whose id is specified by the parameter
+            Fetch the schedule item whose id and session code is specified by the parameter
             </summary>
-            <param name="id">The schedule id</param>
-            <returns>ScheduleViewModel if found, null if not found</returns>
+            <param name="id">The id of the student</param>
+            <returns>StudentScheduleViewModel if found, null if not found</returns>
         </member>
-        <member name="M:Gordon360.Services.ScheduleService.GetAllByID(System.String)">
+        <member name="M:Gordon360.Services.ScheduleService.GetScheduleFaculty(System.Int32)">
             <summary>
-            Fetches all schedule records from storage for an id.
+            Fetch the schedule item whose id and session code is specified by the parameter
             </summary>
-            <returns>ScheduleViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        </member>
-        <member name="M:Gordon360.Services.ScheduleService.Add(Gordon360.Models.SCHEDULE)">
-            <summary>
-            Adds a new Schedule record to storage. Since we can't establish foreign key constraints and relationships on the database side,
-            we might do it here by using something like the validateMembership() method.
-            </summary>
-            <param name="schedule">The membership to be added</param>
-            <returns>The newly added Schedule object</returns>
-        </member>
-        <member name="M:Gordon360.Services.ScheduleService.Delete(System.Int32)">
-            <summary>
-            Delete the schedule whose id is specified by the parameter. Should we have a schedule id?
-            </summary>
-            <param name="id">The schedule id</param>
-            <returns>The schedule that was just deleted</returns>
-        </member>
-        <member name="M:Gordon360.Services.ScheduleService.DeleteAllForID(System.String)">
-            <summary>
-            Delete all schedule items for a student whose id is specified by the parameter. Should we have a schedule id?
-            </summary>
-            <param name="id">The student's id</param>
-            <returns>The schedule that was just deleted</returns>
+            <param name="id">The id of the instructor</param>
+            <param name="session">The session id</param>
+            <returns>StudentScheduleViewModel if found, null if not found</returns>
         </member>
         <member name="M:Gordon360.Services.VictoryPromiseService.GetVPScores(System.String)">
             <summary>

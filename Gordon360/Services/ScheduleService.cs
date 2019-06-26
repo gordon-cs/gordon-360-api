@@ -47,10 +47,6 @@ namespace Gordon360.Services
             {
                 return null;
             }
-            // Getting rid of database-inherited whitespace
-            result.CRS_CDE = result.CRS_CDE.Trim();
-            result.CRS_TITLE = result.CRS_TITLE.Trim();
-            result.BLDG_CDE = result.SessionCode.Trim();
 
             return result;
         }
@@ -78,11 +74,6 @@ namespace Gordon360.Services
             {
                 return null;
             }
-
-            // Getting rid of database-inherited whitespace
-            result.CRS_CDE = result.CRS_CDE.Trim();
-            result.CRS_TITLE = result.CRS_TITLE.Trim();
-            result.BLDG_CDE = result.SessionCode.Trim();
 
             return result;
         }

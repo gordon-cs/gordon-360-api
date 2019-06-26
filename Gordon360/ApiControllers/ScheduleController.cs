@@ -59,18 +59,23 @@ namespace Gordon360.Controllers.Api
 
             if (role=="student"){
                 var result = _scheduleService.GetScheduleStudent(idInt);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result);
             }
 
-            if (role=="facstaff"){
+            else if (role=="facstaff"){
                 var result = _scheduleService.GetScheduleStudent(idInt);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result);
             }
-
-            
-            if (result == null)
-            {
-                return NotFound();
-            }
-            return Ok(result);
+            return NotFound();
+           
         }
 
         /// <summary>
@@ -86,19 +91,27 @@ namespace Gordon360.Controllers.Api
             var idInt = Int32.Parse(id);
 
             var role = _roleCheckingService.getCollegeRole(username);
-            
-            if (role=="student"){
+
+            if (role == "student")
+            {
                 var result = _scheduleService.GetScheduleStudent(idInt);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result);
             }
 
-            if (role=="facstaff"){
-                var result = _scheduleService.GetScheduleStudent(idInt);
-            }
-            if (result == null)
+            else if (role == "facstaff")
             {
-                return NotFound();
+                var result = _scheduleService.GetScheduleStudent(idInt);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result);
             }
-            return Ok(result);
+            return NotFound();
         }
 
 
