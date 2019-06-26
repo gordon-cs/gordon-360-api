@@ -17,13 +17,12 @@ The Remmina control window will open on your desktop and you'll see a new icon f
 1. Click on "New" in the Remmina menu panel and enter the following:
     * Name: `CS-RDSH-02`
     * Group: _leave blank_
-    * Protocol: _make sure this is set to_ `RDP - Remote Desktop Protocol`
+    * Protocol: `RDP - Remote Desktop Protocol`
     * Server: `cs-rdsh-02.gordon.edu`
     * User name: _use firstname.lastname form without @gordon.edu_
-    * Password: _enter your Gordon password, or leave it blank, which would require you to enter this every time
-      you connect_
+    * Password: _enter your Gordon password, or leave it blank, which would require you to enter this every time you connect_
     * Domain: `GORDON`
-    * Resolution: _select_ `Use Client Resolution` 
+    * Resolution: `Use Client Resolution` 
     * Color Depth: change to `True color (24 bpp)`
 2. Click on the "Advanced" tab and change the value of Quality to "Best (slowest)"
 3. Click "Save" at the bottom of the window.
@@ -31,7 +30,7 @@ The Remmina control window will open on your desktop and you'll see a new icon f
 5. If, upon start up, it asks you "Accept Certificate?", just refuse. 
 6. You can close the Server Manager window that automatically opens each time you start the virtual machine.
 
-If you were connecting in order to run the server locally, click [here](https://github.com/gordon-cs/gordon-360-api/blob/develop/README.md#running-the-server-locally) to pick up where you left off.
+If you were connecting in order to run the server locally, click [here](https://github.com/gordon-cs/gordon-360-api/blob/develop/README.md#running-the-server-locally) to return to those instructions.
 
 ## Connect from Windows
 
