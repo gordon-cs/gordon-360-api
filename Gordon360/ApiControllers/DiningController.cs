@@ -68,7 +68,6 @@ namespace Gordon360.ApiControllers
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             var id = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID);
-
             var diningInfo = _diningService.GetDiningPlanInfo(id, sessionCode);
             if (diningInfo == null)
             {
@@ -76,7 +75,7 @@ namespace Gordon360.ApiControllers
             }
             if (diningInfo.ChoiceDescription == "None")
             {
-                var diningBalance = _diningService.GetBalance(id, "FACSTAFF_MEALPLAN_ID");
+                var diningBalance = _diningService.GetBalance(id, FACSTAFF_MEALPLAN_ID);
                 if (diningBalance == null)
                 {
                     return NotFound();
