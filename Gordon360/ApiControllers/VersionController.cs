@@ -25,7 +25,7 @@ namespace Gordon360.Controllers.Api
                     .GetManifestResourceStream("Gordon360." + "version.txt"))
             using (StreamReader reader = new StreamReader(stream))
             {
-                gitVersion = reader.ReadToEnd();
+                gitVersion = reader.ReadLine();
             }
 
             // Console.WriteLine("Version: {0}", gitVersion);
