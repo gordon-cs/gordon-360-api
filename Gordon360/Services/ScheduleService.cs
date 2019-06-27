@@ -35,7 +35,7 @@ namespace Gordon360.Services
         {
             var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
             //var currentSessionCode = Helpers.GetCurrentSession().SessionCode;
-            var currentSessionCode = "201901";
+            var currentSessionCode = "201809";
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Schedule was not found." };
@@ -63,15 +63,16 @@ namespace Gordon360.Services
         public IEnumerable<ScheduleViewModel> GetScheduleFaculty(string id)
         {
             var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
-            var currentSessionCode = Helpers.GetCurrentSession().SessionCode;
+            //var currentSessionCode = Helpers.GetCurrentSession().SessionCode;
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Schedule was not found." };
             }
-            var idInt = Int32.Parse(id);
+            var currentSessionCode = "201809";
+            //var idInt = Int32.Parse(id);
             var idParam = new SqlParameter("@instructor_id", id);
             var sessParam = new SqlParameter("@sess_cde", currentSessionCode);
-            var result = RawSqlQuery<ScheduleViewModel>.query("INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE @instructor_id, @sess_cde", idParam, sessParam); // TODO: write prepared statement
+            var result = RawSqlQuery<ScheduleViewModel>.query("INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE @instructor_id, @sess_cde", idParam, sessParam);
 
             if (result == null)
             {

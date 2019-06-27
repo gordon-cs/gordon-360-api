@@ -52,10 +52,9 @@ namespace Gordon360.Controllers.Api
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-            //var idInt = Int32.Parse(id);
-
             var role = _roleCheckingService.getCollegeRole(username);
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
 
             if (role=="student"){
                 var result = _scheduleService.GetScheduleStudent(id);
@@ -87,34 +86,84 @@ namespace Gordon360.Controllers.Api
         public IHttpActionResult Get(string username)
         {
             //probably needs privacy stuff like ProfilesController and service
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-            //var idInt = Int32.Parse(id);
+            //get token data from context, username is the username of current logged in person
 
             var role = _roleCheckingService.getCollegeRole(username);
+            object _scheduleResult = null;
 
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var viewerType = _roleCheckingService.getCollegeRole(viewerName);
+
+            object scheduleResult = null;
+
+            // Getting student schedule
             if (role == "student")
             {
-                var result = _scheduleService.GetScheduleStudent(id);
-                if (result == null)
+                var id = _accountService.GetAccountByUsername(username).GordonID;
+                _scheduleResult = _scheduleService.GetScheduleStudent(id);
+                // Viewer permissions
+                switch (viewerType)
                 {
-                    return NotFound();
+                    case Position.SUPERADMIN:
+                        scheduleResult = _scheduleResult;
+                        break;
+                    case Position.POLICE:
+                        scheduleResult = _scheduleResult;
+                        break;
+                    case Position.STUDENT:
+                        var stuProfile = _profileService.GetStudentProfileByUsername(username);
+                        if (stuProfile.IsSchedulePrivate == 0)
+                        {
+                            scheduleResult = _scheduleResult;
+                        }
+                        break;
+                    case Position.FACSTAFF:
+                        scheduleResult = _scheduleResult;
+                        break;
                 }
-                return Ok(result);
             }
 
-            else if (role == "facstaff")
+            // Getting faculty / staff schedule
+            else //if (role == "facstaff")
             {
-                var result = _scheduleService.GetScheduleFaculty(id);
-                if (result == null)
+                var id = _accountService.GetAccountByUsername(username).GordonID;
+                //var stuProfile = _profileService.GetStudentProfileByUsername(username);
+                _scheduleResult = _scheduleService.GetScheduleFaculty(id);
+                // Viewer permissions
+                switch (viewerType)
                 {
-                    return NotFound();
+                    case Position.SUPERADMIN:
+                        scheduleResult = _scheduleResult;
+                        break;
+                    case Position.POLICE:
+                        scheduleResult = _scheduleResult;
+                        break;
+                    case Position.STUDENT:
+                        //if (stuProfile.IsSchedulePrivate == 0)
+                        if (true)
+                        {
+                            scheduleResult = _scheduleResult;
+                        }
+                        break;
+                    case Position.FACSTAFF:
+                        //if (stuProfile.IsSchedulePrivate == 0)
+                        if (true)
+                        {
+                            scheduleResult = _scheduleResult;
+                        }
+                        break;
                 }
-                return Ok(result);
+
             }
-            return NotFound();
-        }
 
+            // Can non student or non facstaff have a schedule? Do we want to return that?
+            if (scheduleResult == null)
+            {
+                return NotFound();
+            }
 
-        
+            return Ok(scheduleResult);
         }
     }
+}
