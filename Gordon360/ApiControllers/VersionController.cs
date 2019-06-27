@@ -11,6 +11,13 @@ using Gordon360.Services;
 
 namespace Gordon360.Controllers.Api
 {
+    /// <summary>
+    /// Get the short git SHA-1 and build date for the backend
+    /// </summary>
+    /// <returns>"Git Hash: {hashCode}; Build Time: {date and time}"</returns>
+    /// <remarks></remarks>
+    // GET api/<controller>
+
     [RoutePrefix("api/version")]
     [CustomExceptionFilter]
     [Authorize]
@@ -27,10 +34,6 @@ namespace Gordon360.Controllers.Api
             {
                 gitVersion = reader.ReadLine();
             }
-
-            // Console.WriteLine("Version: {0}", gitVersion);
-            //Console.WriteLine("Hit any key to continue");
-            //Console.ReadKey();
             return Ok(gitVersion);
         }
     }
