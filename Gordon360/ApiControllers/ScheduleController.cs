@@ -46,7 +46,7 @@ namespace Gordon360.Controllers.Api
         /// </summary>
         /// <returns>A IEnumerable of schedule objects</returns>
         [HttpGet]
-        [Route("get")]
+        [Route("")]
         public IHttpActionResult Get()
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
