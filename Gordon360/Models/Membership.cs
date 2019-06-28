@@ -40,6 +40,10 @@ public partial class MEMBERSHIP
 
     public Nullable<System.DateTime> JOB_TIME { get; set; }
 
+    public string ACT_TYPE { get; set; }
+    
+    public string ACT_TYPE_DESC { get; set; }
+
     public Nullable<bool> GRP_ADMIN { get; set; }
 
     public Nullable<bool> PRIVACY { get; set; }

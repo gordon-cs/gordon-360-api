@@ -69,6 +69,14 @@ namespace Gordon360.Services
         void ResetActivityImage(string id);
         void TogglePrivacy(string id, bool p);
     }
+    public interface IVictoryPromiseService
+    {
+        IEnumerable<VictoryPromiseViewModel> GetVPScores(string id);
+    }
+    public interface IStudentEmploymentService
+    {
+        IEnumerable<StudentEmploymentViewModel> GetEmployment(string id);
+    }
 
     public interface IActivityInfoService
     {
@@ -112,9 +120,9 @@ namespace Gordon360.Services
         IEnumerable<JNZB_ACTIVITIES> GetAll();
     }
 
+    
     public interface IMembershipService
     {
-        MembershipViewModel Get(int id);
         IEnumerable<MembershipViewModel> GetLeaderMembershipsForActivity(string id);
         IEnumerable<MembershipViewModel> GetAdvisorMembershipsForActivity(string id);
         IEnumerable<MembershipViewModel> GetGroupAdminMembershipsForActivity(string id);
@@ -151,7 +159,6 @@ namespace Gordon360.Services
         REQUEST DenyRequest(int id);
         REQUEST Delete(int id);
     }
-
     public interface IScheduleService
     {
         IEnumerable<ScheduleViewModel> GetScheduleStudent(string id);
@@ -165,13 +172,6 @@ namespace Gordon360.Services
         //MYSCHEDULE Add(MYSCHEDULE myschedule);
         //MYSCHEDULE Delete(int id);
     }
-
-
-    public interface IVictoryPromiseService
-    {
-        VictoryPromiseViewModel GetVPScores(string id);
-    }
-
     public interface IContentManagementService
     {
         IEnumerable<SliderViewModel> GetSliderContent();

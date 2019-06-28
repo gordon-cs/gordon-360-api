@@ -31,9 +31,9 @@ namespace Gordon360.Services
     {
         // See UnitOfWork class
         private IUnitOfWork _unitOfWork;
-        private static string issuerID = "219";
-        private static string applicationId = "000001";
-        private static string secret = "test";
+        private static string issuerID = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitIssuerID"];
+        private static string applicationId = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitApplicationID"];
+        private static string secret = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitSecret"];
 
         public DiningService(IUnitOfWork unitOfWork)
         {
@@ -42,8 +42,8 @@ namespace Gordon360.Services
 
         private static string getTimestamp()
         {
-            DateTime baseDate = new DateTime(1969, 12, 31, 20, 0, 0);
-            TimeSpan diff = DateTime.Now - baseDate;
+            DateTime baseDate = new DateTime(1970, 1, 1, 0, 0, 0);
+            TimeSpan diff = DateTime.UtcNow - baseDate;
             Int64 millis = Convert.ToInt64(diff.TotalMilliseconds);
             return millis.ToString();
         }
