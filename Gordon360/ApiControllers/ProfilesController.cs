@@ -652,14 +652,22 @@ namespace Gordon360.Controllers.Api
                 {
                     Debug.WriteLine(fileData.LocalFileName);
                     di = new DirectoryInfo(root); //di is declared at beginning of try.
+
                     FileInfo f1 = new FileInfo(fileData.LocalFileName);
                     long size1 = f1.Length;
+                    result.Add("inputlength", f1.Length);
+
                     System.IO.File.Move(fileData.LocalFileName, Path.Combine(di.FullName, fileName)); //upload
+
                     FileInfo f2 = new FileInfo(Path.Combine(di.FullName, fileName));
                     long size2 = f2.Length;
-                    result.Add("inputlength", f1.Length);
                     result.Add("outputlength", f2.Length);
-                    return Ok(result);
+
+
+                    if (size1 < 3000 || size2 < 3000)
+                    {
+                        return BadRequest("This image was lost in transit. Resubmit, fooool!");
+                    }
                 }
                 //return Request.CreateResponse(HttpStatusCode.OK);
                 return Ok(result);
