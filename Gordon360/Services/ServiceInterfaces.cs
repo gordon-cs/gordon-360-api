@@ -24,7 +24,6 @@ namespace Gordon360.Services
         PhotoPathViewModel GetPhotoPath(string id);
         void UpdateProfileLink(string username, string type, CUSTOM_PROFILE path);
         void UpdateMobilePrivacy(string id, string value);
-        void UpdateSchedulePrivacy(string id, string value);
         void UpdateImagePrivacy(string id, string value);
         void UpdateProfileImage(string id, string path, string name);
     }
@@ -159,19 +158,7 @@ namespace Gordon360.Services
         REQUEST DenyRequest(int id);
         REQUEST Delete(int id);
     }
-    public interface IScheduleService
-    {
-        IEnumerable<ScheduleViewModel> GetScheduleStudent(string id);
-        IEnumerable<ScheduleViewModel> GetScheduleFaculty(string id);
-    }
 
-
-        public interface IMyScheduleService
-    {
-        //IEnumerable<MyScheduleViewModel> Get(int id);
-        //MYSCHEDULE Add(MYSCHEDULE myschedule);
-        //MYSCHEDULE Delete(int id);
-    }
     public interface IContentManagementService
     {
         IEnumerable<SliderViewModel> GetSliderContent();
