@@ -1431,7 +1431,6 @@ class Test_allMembershipRequestTest(testCase):
         # We will get the actual id when we post.
         # Setting it -1 to check later that we got an id from the post.
         self.requestID = -1
-
         response = api.postAsJson(self.session, self.url, self.data)
         if not response.status_code == 201:
             pytest.fail('Expected 201 Created, got {0}.'.format(response.status_code))
@@ -1439,21 +1438,26 @@ class Test_allMembershipRequestTest(testCase):
             response.json()
         except ValueError:
             pytest.fail('Expected json response, got {0}.'.format(response.text))
-
-        #checking if the correctness of post
-        response1 = api.get(self.session, hostURL + 'api/memberships/activity/' + str(activity_code))       
+     
+        #checking if the correctness of post\
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
+        getResponse = api.get(self.session, hostURL + 'api/requests/activity/' + str(activity_code))       
         self.requestID = response.json()['REQUEST_ID']
-        req = response1.json()
-        for i in range(0,len(req)):
-            sec = req[i]
-            reqID = list(sec.values())[8]
+        req = getResponse.json()
+        found = False
+        for dic in req:
+            reqID = dic['RequestID']
             if (reqID == self.requestID):
+                found = True      
                 try:
-                    assert response1.json()[i]['ActivityCode'] == activity_code
-                    assert response1.json()[i]['SessionCode'] == session_code
-                    assert response1.json()[i]['IDNumber'] == my_id_number
+                    assert dic['ActivityCode'] == activity_code
+                    assert dic['SessionCode'] == session_code
+                    assert dic['IDNumber'] == my_id_number
                 except ValueError:
                     pytest.fail('Expected Json response body, got{0}.'.format(response1.json))
+        if not found:
+            pytest.fail('requestID not found:', self.requestID)
+
         #delete the test post
         try:
             self.requestID = response.json()['REQUEST_ID']
@@ -1546,7 +1550,7 @@ class Test_allMembershipRequestTest(testCase):
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
         try:
-            assert response.json() == ""
+            assert response.json()[0]['IDNumber'] == random_id_number
         except ValueError:
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
         if not (type(response.json()) is list):
@@ -1580,20 +1584,24 @@ class Test_allMembershipRequestTest(testCase):
         except ValueError:
             pytest.fail('Expected json response, got {0}.'.format(response.text))
 
-        #checking if the correctness of post
-        response1 = api.get(self.session, hostURL + 'api/memberships/activity/' + str(activity_code))       
+        #checking if the correctness of post\
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
+        getResponse = api.get(self.session, hostURL + 'api/requests/activity/' + str(activity_code))       
         self.requestID = response.json()['REQUEST_ID']
-        req = response1.json()
-        for i in range(0,len(req)):
-            sec = req[i]
-            reqID = list(sec.values())[8]
+        req = getResponse.json()
+        found = False
+        for dic in req:
+            reqID = dic['RequestID']
             if (reqID == self.requestID):
+                found = True      
                 try:
-                    assert response1.json()[i]['ActivityCode'] == activity_code
-                    assert response1.json()[i]['SessionCode'] == session_code
-                    assert response1.json()[i]['IDNumber'] == my_id_number
+                    assert dic['ActivityCode'] == activity_code
+                    assert dic['SessionCode'] == session_code
+                    assert dic['IDNumber'] == my_id_number
                 except ValueError:
                     pytest.fail('Expected Json response body, got{0}.'.format(response1.json))
+        if not found:
+            pytest.fail('requestID not found:', self.requestID)
         
         #try:
         #   self.requestID = response.json()['REQUEST_ID']
@@ -1629,30 +1637,32 @@ class Test_allMembershipRequestTest(testCase):
                 self.requestID = response.json()['REQUEST_ID']
             except (ValueError, KeyError):
                 pytest.fail('Error in test')
-                
-            #checking if the correctness of post
-            response1 = api.get(self.session, hostURL + 'api/memberships/activity/' + str(activity_code))       
-            self.requestID = response.json()['REQUEST_ID']
-            req = response1.json()
-            for i in range(0,len(req)):
-                sec = req[i]
-                reqID = list(sec.values())[8]
-                if (reqID == self.requestID):
-                    try:
-                        assert response1.json()[i]['ActivityCode'] == activity_code
-                        assert response1.json()[i]['SessionCode'] == session_code
-                        assert response1.json()[i]['IDNumber'] == my_id_number
-                    except ValueError:
-                        pytest.fail('Expected Json response body, got{0}.'.format(response1.json))
 
-            #delete the test post
-            d = api.delete(self.session, self.url + str(self.requestID))
-            if  d.status_code != 200:
-                pytest.fail('Unauthorized resource not deleted.')
-        elif not response.status_code == 401:
-            pytest.fail('Expected 401 Unauthorized, got {0}.'.format(response.status_code))
-        elif response.text:
-            pytest.fail('Expected empty response, got {0}.'.format(response.text))
+        #checking if the correctness of post\
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
+        getResponse = api.get(self.session, hostURL + 'api/requests/activity/' + str(activity_code))       
+        self.requestID = response.json()['REQUEST_ID']
+        req = getResponse.json()
+        found = False
+        for dic in req:
+            reqID = dic['RequestID']
+            if (reqID == self.requestID):
+                found = True      
+                try:
+                    assert dic['ActivityCode'] == activity_code
+                    assert dic['SessionCode'] == session_code
+                    assert dic['IDNumber'] == random_id_number
+                except ValueError:
+                    pytest.fail('Expected Json response body, got{0}.'.format(response1.json))
+        if not found:
+            pytest.fail('requestID not found:', self.requestID)
+
+
+        #delete the test post
+        d = api.delete(self.session, self.url + str(self.requestID))
+        if  d.status_code != 200:
+            pytest.fail('Unauthorized resource not deleted.')
+
 
 
 #    Verify that an activity leader can't edit a membership request through a put request.
