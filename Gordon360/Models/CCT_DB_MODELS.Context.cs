@@ -206,6 +206,7 @@ public partial class CCTEntities1 : DbContext
         return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result>("STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE", iD_NUMParameter, sESS_CDEParameter);
     }
 
+
     public virtual ObjectResult<SUPERVISOR_PER_SUP_ID_Result> SUPERVISOR_PER_SUP_ID(Nullable<int> sUP_ID)
     {
 
@@ -353,6 +354,7 @@ public partial class CCTEntities1 : DbContext
     {
 
         var iD_NUMParameter = iD_NUM.HasValue ?
+
             new ObjectParameter("instructor_id", iD_NUM) :
             new ObjectParameter("instructor_id", typeof(int));
 
