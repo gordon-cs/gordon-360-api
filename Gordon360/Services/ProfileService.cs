@@ -240,6 +240,31 @@ namespace Gordon360.Services
 
         }
         /// <summary>
+        /// privacy setting of schedule.
+        /// </summary>
+        /// <param name="id">id</param>
+        /// <param name="value">Y or N</param>
+        public void UpdateSchedulePrivacy(string id, string value)
+        {
+            var original = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+
+            if (original == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
+            var idParam = new SqlParameter("@ID", id);
+            var valueParam = new SqlParameter("@VALUE", value);
+            var context = new CCTEntities1();
+            context.Database.ExecuteSqlCommand("UPDATE_SCHEDULE_PRIVACY @ID, @VALUE", idParam, valueParam); // run stored procedure.
+            // Update value in cached data
+            var student = Data.StudentData.FirstOrDefault(x => x.ID == id);
+            if (student != null)
+            {
+                student.IsSchedulePrivate = (value == "Y" ? 1 : 0);
+            }
+
+        }
+        /// <summary>
         /// privacy setting user profile photo.
         /// </summary>
         /// <param name="id">id</param>
