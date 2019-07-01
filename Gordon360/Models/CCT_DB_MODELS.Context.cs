@@ -206,7 +206,6 @@ public partial class CCTEntities1 : DbContext
         return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result>("STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE", iD_NUMParameter, sESS_CDEParameter);
     }
 
-
     public virtual ObjectResult<SUPERVISOR_PER_SUP_ID_Result> SUPERVISOR_PER_SUP_ID(Nullable<int> sUP_ID)
     {
 
@@ -363,8 +362,7 @@ public partial class CCTEntities1 : DbContext
 
 
         return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result>("INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE", iD_NUMParameter, sESS_CDEParameter);
-    }
-
+   
 
     public virtual ObjectResult<ALL_EVENTS_PER_STUDENT_Result> ALL_EVENTS_PER_STUDENT(string sTU_ID, string tERM)
     {

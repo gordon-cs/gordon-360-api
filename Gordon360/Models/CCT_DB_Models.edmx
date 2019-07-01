@@ -525,7 +525,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Parameter Name="instructor_id" Type="int" Mode="In" />
           <Parameter Name="sess_cde" Type="char" Mode="In" />
         </Function>
-
+      
         <EntityContainer Name="Gordon360StoreContainer">
           <EntitySet Name="ACT_INFO" EntityType="Self.ACT_INFO" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ADMIN" EntityType="Self.ADMIN" Schema="dbo" store:Type="Tables" />
@@ -932,19 +932,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImport Name="ALL_BASIC_INFO" ReturnType="Collection(Gordon360.ALL_BASIC_INFO_Result)" />
           <EntitySet Name="sysdiagrams" EntityType="Gordon360.sysdiagrams" />
           <EntitySet Name="DiningInfo" EntityType="Gordon360.DiningInfo" />
-          <FunctionImport Name="VICTORY_PROMISE_BY_STUDENT_ID" ReturnType="Collection(Gordon360.VICTORY_PROMISE_BY_STUDENT_ID_Result)">
-          <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
-          </FunctionImport>
-                    <FunctionImport Name="STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE" ReturnType="Collection(Gordon360.STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result)">
-            <Parameter Name="id_num" Mode="In" Type="Int32" />
-            <Parameter Name="sess_cde" Mode="In" Type="String" />
-          </FunctionImport>
-                    <FunctionImport Name="INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE" ReturnType="Collection(Gordon360.INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result)">
-            <Parameter Name="instructor_id" Mode="In" Type="Int32" />
-            <Parameter Name="sess_cde" Mode="In" Type="String" />
-          </FunctionImport>
-
-
 
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
@@ -1642,6 +1629,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         </ComplexType>
 
         </Schema>
+
 
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->

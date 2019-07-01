@@ -116,8 +116,6 @@ public partial class Student
 
     public int IsMobilePhonePrivate { get; set; }
 
-    public int IsSchedulePrivate { get; set; }
-
     public string AD_Username { get; set; }
 
     public Nullable<int> show_pic { get; set; }

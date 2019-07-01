@@ -234,13 +234,6 @@
             <param name="value">Y or N</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateSchedulePrivacy(System.String)">
-            <summary>
-            Update privacy of schedule
-            </summary>
-            <param name="value">Y or N</param>
-            <returns></returns>
-        </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateImagePrivacy(System.String)">
             <summary>
             Update privacy of profile image
@@ -1076,11 +1069,6 @@
             <param name="password">Password of the email sender</param>
             <returns></returns>
         </member>
-        <member name="T:Gordon360.Services.MyScheduleService">
-            <summary>
-            Service Class that facilitates data transactions between the MySchedulesController and the MySchedule part of the database model.
-            </summary>
-        </member>
         <member name="M:Gordon360.Services.ProfileService.GetStudentProfileByUsername(System.String)">
             <summary>
             get student profile info
@@ -1142,13 +1130,6 @@
         <member name="M:Gordon360.Services.ProfileService.UpdateMobilePrivacy(System.String,System.String)">
             <summary>
             privacy setting of mobile phone.
-            </summary>
-            <param name="id">id</param>
-            <param name="value">Y or N</param>
-        </member>
-        <member name="M:Gordon360.Services.ProfileService.UpdateSchedulePrivacy(System.String,System.String)">
-            <summary>
-            privacy setting of schedule.
             </summary>
             <param name="id">id</param>
             <param name="value">Y or N</param>
