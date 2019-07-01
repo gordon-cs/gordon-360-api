@@ -207,10 +207,6 @@
     <Compile Include="ApiControllers\ContentManagementController.cs" />
     <Compile Include="ApiControllers\EmailsController.cs" />
     <Compile Include="ApiControllers\MembershipRequestController.cs" />
-    <Compile Include="ApiControllers\MyScheduleController.cs" />
-    <Compile Include="ApiControllers\ProfilesController.cs" />
-    <Compile Include="ApiControllers\RolesController.cs" />
-    <Compile Include="ApiControllers\ScheduleController.cs" />
     <Compile Include="ApiControllers\VersionController.cs" />
     <Compile Include="ApiControllers\ProfilesController.cs" />
     <Compile Include="ApiControllers\SessionsController.cs" />
@@ -301,7 +297,6 @@
     <Compile Include="Models\GRP_ADMIN_EMAILS_PER_ACT_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs" />
     <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs" />
     <Compile Include="Models\JENZ_ACT_CLUB_DEF.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
@@ -329,7 +324,6 @@
     </Compile>
     <Compile Include="Models\Metadata.cs" />
     <Compile Include="Models\ModelPartialClasses.cs" />
-    <Compile Include="Models\MySchedule.cs" />
     <Compile Include="Models\PART_DEF.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -357,8 +351,6 @@
     <Compile Include="Models\Student.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs" />
-
     <Compile Include="Models\StudentEmployment.cs" />
     <Compile Include="Models\STUDENT_EVENTS_PER_TERM_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
@@ -398,7 +390,6 @@
     <Compile Include="Models\ViewModels\PublicAlumniProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\PublicFacultyStaffProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\PublicStudentProfileViewModel.cs" />
-    <Compile Include="Models\ViewModels\ScheduleViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentEmploymentViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\SessionViewModel.cs" />
@@ -418,10 +409,8 @@
     <Compile Include="Services\ComplexQueries\RawSqlQuery.cs" />
     <Compile Include="Services\ContentManagementService.cs" />
     <Compile Include="Services\EmailService.cs" />
-    <Compile Include="Services\MyScheduleService.cs" />
     <Compile Include="Services\ProfileService.cs" />
     <Compile Include="Services\RoleCheckingService.cs" />
-    <Compile Include="Services\ScheduleService.cs" />
     <Compile Include="Services\StudentEmploymentService.cs" />
     <Compile Include="Services\VictoryPromiseService.cs" />
     <Compile Include="Static Classes\Data.cs" />

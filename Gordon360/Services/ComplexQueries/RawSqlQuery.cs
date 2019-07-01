@@ -23,7 +23,7 @@ namespace Gordon360.Services.ComplexQueries
             using (var context = new CCTEntities1())
             {
                 var result = context.Database.SqlQuery<T>(query, parameters).AsEnumerable();
-               return result.ToList();
+                return result.ToList();
             }
         }
     }
