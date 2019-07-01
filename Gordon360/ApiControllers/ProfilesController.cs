@@ -660,7 +660,6 @@ namespace Gordon360.Controllers.Api
                     result.Add("inputlength", f1.Length);
                     result.Add("outputlength", f2.Length);
                     return Ok(result);
-
                 }
                 //return Request.CreateResponse(HttpStatusCode.OK);
                 return Ok(result);
@@ -761,6 +760,37 @@ namespace Gordon360.Controllers.Api
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
             _profileService.UpdateMobilePrivacy(id, value);
+
+            return Ok();
+
+        }
+        /// <summary>
+        /// Update privacy of schedule
+        /// </summary>
+        /// <param name="value">Y or N</param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("schedule_privacy/{value}")]
+        public IHttpActionResult UpdateSchedulePrivacy(string value)
+        {
+            // Verify Input
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
+            _profileService.UpdateSchedulePrivacy(id, value);
 
             return Ok();
 
