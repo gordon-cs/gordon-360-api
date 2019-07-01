@@ -195,12 +195,12 @@ public partial class CCTEntities1 : DbContext
     {
 
         var iD_NUMParameter = sTUDENT_ID.HasValue ?
-            new ObjectParameter("ID_NUM", sTUDENT_ID) :
-            new ObjectParameter("ID_NUM", typeof(int));
+            new ObjectParameter("id_num", sTUDENT_ID) :
+            new ObjectParameter("id_num", typeof(int));
 
         var sESS_CDEParameter = sESS_CDE != null ?
-            new ObjectParameter("SESS_CDE", sESS_CDE) :
-            new ObjectParameter("SESS_CDE", typeof(string));
+            new ObjectParameter("sess_cde", sESS_CDE) :
+            new ObjectParameter("sess_cde", typeof(string));
 
 
         return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result>("STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE", iD_NUMParameter, sESS_CDEParameter);
@@ -354,17 +354,17 @@ public partial class CCTEntities1 : DbContext
     {
 
         var iD_NUMParameter = iD_NUM.HasValue ?
-            new ObjectParameter("ID_NUM", iD_NUM) :
-            new ObjectParameter("ID_NUM", typeof(int));
+
+            new ObjectParameter("instructor_id", iD_NUM) :
+            new ObjectParameter("instructor_id", typeof(int));
 
         var sESS_CDEParameter = sESS_CDE != null ?
-            new ObjectParameter("SESS_CDE", sESS_CDE) :
-            new ObjectParameter("SESS_CDE", typeof(string));
+            new ObjectParameter("sess_cde", sESS_CDE) :
+            new ObjectParameter("sess_cde", typeof(string));
 
 
         return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result>("INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE", iD_NUMParameter, sESS_CDEParameter);
-    }
-
+   
 
     public virtual ObjectResult<ALL_EVENTS_PER_STUDENT_Result> ALL_EVENTS_PER_STUDENT(string sTU_ID, string tERM)
     {

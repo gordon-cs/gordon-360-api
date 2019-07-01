@@ -209,10 +209,8 @@
     <Compile Include="ApiControllers\MembershipRequestController.cs" />
     <Compile Include="ApiControllers\MyScheduleController.cs" />
     <Compile Include="ApiControllers\ProfilesController.cs" />
-    <Compile Include="ApiControllers\RolesController.cs" />
     <Compile Include="ApiControllers\ScheduleController.cs" />
     <Compile Include="ApiControllers\VersionController.cs" />
-    <Compile Include="ApiControllers\ProfilesController.cs" />
     <Compile Include="ApiControllers\SessionsController.cs" />
     <Compile Include="ApiControllers\ActivitiesController.cs" />
     <Compile Include="ApiControllers\MembershipsController.cs" />
@@ -480,7 +478,6 @@
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Properties\PublishProfiles\DEV.pubxml" />
     <None Include="Properties\PublishProfiles\PROD.pubxml" />
-    <Content Include="secrets.config" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
