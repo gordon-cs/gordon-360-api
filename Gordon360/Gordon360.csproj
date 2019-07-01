@@ -209,10 +209,8 @@
     <Compile Include="ApiControllers\MembershipRequestController.cs" />
     <Compile Include="ApiControllers\MyScheduleController.cs" />
     <Compile Include="ApiControllers\ProfilesController.cs" />
-    <Compile Include="ApiControllers\RolesController.cs" />
     <Compile Include="ApiControllers\ScheduleController.cs" />
     <Compile Include="ApiControllers\VersionController.cs" />
-    <Compile Include="ApiControllers\ProfilesController.cs" />
     <Compile Include="ApiControllers\SessionsController.cs" />
     <Compile Include="ApiControllers\ActivitiesController.cs" />
     <Compile Include="ApiControllers\MembershipsController.cs" />
@@ -358,7 +356,6 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs" />
-
     <Compile Include="Models\StudentEmployment.cs" />
     <Compile Include="Models\STUDENT_EVENTS_PER_TERM_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
@@ -480,7 +477,6 @@
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Properties\PublishProfiles\DEV.pubxml" />
     <None Include="Properties\PublishProfiles\PROD.pubxml" />
-    <Content Include="secrets.config" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -507,7 +503,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:9000</IISUrl>
+          <IISUrl>http://localhost:4546</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

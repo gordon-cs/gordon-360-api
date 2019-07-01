@@ -184,13 +184,6 @@
             <param name="id">The id of the membership request to delete</param>
             <returns>The deleted object</returns>
         </member>
-        <member name="T:Gordon360.Controllers.Api.VersionController">
-            <summary>
-            Get the short git SHA-1 and build date for the backend
-            </summary>
-            <returns>"Git Hash: {hashCode}; Build Time: {date and time}"</returns>
-            <remarks></remarks>
-        </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.Get">
             <summary>Get profile info of currently logged in user</summary>
             <returns></returns>
@@ -255,29 +248,6 @@
             <param name="value">Y or N</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ParticipationsController.Get">
-            <summary>Get all the roles a person may have within an activity</summary>
-            <returns>A list of all the roles and their coresponding acronyms</returns>
-            <remarks>Queries the database for all the roles that are valid</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.ParticipationsController.Get(System.String)">
-            <summary>Get a single role and the information about it</summary>
-            <param name="id">The identifier for a single role</param>
-            <returns>The information about the specified role</returns>
-            <remarks>Queries the database and returns information about one particular role</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.ParticipationsController.GetLeaderRoles">
-            <summary>
-            Get the participation levels that are considered to be leadership positions.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.ParticipationsController.GetTranscriptWorthyRoles">
-            <summary>
-            GEt the participation levels that are considered to be leadership positions.
-            </summary>
-            <returns></returns>
-        </member>
         <member name="M:Gordon360.Controllers.Api.ScheduleController.Get">
             <summary>
              Gets all schedule objects for a user
@@ -289,6 +259,13 @@
              Gets all schedule objects for a user
             </summary>
             <returns>A IEnumerable of schedule objects</returns>
+        </member>
+        <member name="T:Gordon360.Controllers.Api.VersionController">
+            <summary>
+            Get the short git SHA-1 and build date for the backend
+            </summary>
+            <returns>"Git Hash: {hashCode}; Build Time: {date and time}"</returns>
+            <remarks></remarks>
         </member>
         <member name="M:Gordon360.Controllers.Api.SessionsController.Get">
             <summary>Get a list of all sessions</summary>
@@ -1202,6 +1179,7 @@
             <param name="id">The id of the instructor</param>
             <param name="session">The session id</param>
             <returns>StudentScheduleViewModel if found, null if not found</returns>
+        </member>
         <member name="M:Gordon360.Services.StudentEmploymentService.GetEmployment(System.String)">
             <summary>
             get victory promise scores
