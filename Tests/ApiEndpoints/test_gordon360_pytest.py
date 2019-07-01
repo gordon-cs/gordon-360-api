@@ -2182,6 +2182,12 @@ class Test_AdminTest(testCase):
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
         if not (type(response.json()) is list):
             pytest.fail('Expected list, got {0}.'.format(response.json))
+        assert response.json()[3]['EMAIL'] == "360.FacultyTest@gordon.edu"
+        assert response.json()[0]['EMAIL'] == "Chris.Carlson@gordon.edu"
+        assert response.json()[0]['ADMIN_ID'] == 1
+        assert response.json()[0]['ID_NUM'] == 8330171
+        assert response.json()[0]['USER_NAME'] == "Chris.Carlson"
+        assert response.json()[0]['EMAIL'] == "Chris.Carlson@gordon.edu"
 
 #    Verify that a super admin get information of all admins.
 #    Endpoint -- api/admin/_id
@@ -2197,5 +2203,11 @@ class Test_AdminTest(testCase):
             assert response.json()['EMAIL'] == "Chris.Carlson@gordon.edu"
         except ValueError:
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
+        assert response.json()['EMAIL'] == "Chris.Carlson@gordon.edu"
+        assert response.json()['ADMIN_ID'] == 1
+        assert response.json()['ID_NUM'] == 8330171
+        assert response.json()['USER_NAME'] == "Chris.Carlson"
+        assert response.json()['EMAIL'] == "Chris.Carlson@gordon.edu"
+        assert response.json()['SUPER_ADMIN'] == True
 
 
