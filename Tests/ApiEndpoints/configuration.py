@@ -6,7 +6,7 @@
 # Activity to use for testing
 activity_code = 'AJG'
 # Id number to use for testing
-random_id_number = 50153295
+random_id_number = 50169203
 # Session to use for testing
 session_code = '201809'
 # Specific term to use for testing
@@ -34,8 +34,8 @@ FILE_PATH = '\\gotrain\pref_photos'
 FILE_NAME = 'profile.jpg'
 
 # API 
-#hostURL = 'https://360ApiTrain.gordon.edu/'
-hostURL = 'http://localhost:1025/'
+hostURL = 'https://360ApiTrain.gordon.edu/'
+#hostURL = 'http://localhost:7777/'
 
 
 
