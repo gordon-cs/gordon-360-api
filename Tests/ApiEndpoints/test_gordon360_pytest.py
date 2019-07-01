@@ -2200,7 +2200,7 @@ class Test_AdminTest(testCase):
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
         try:
-            assert response.json()['EMAIL'] == "Chris.Carlson@gordon.edu"
+            response.json()
         except ValueError:
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
         assert response.json()['EMAIL'] == "Chris.Carlson@gordon.edu"
