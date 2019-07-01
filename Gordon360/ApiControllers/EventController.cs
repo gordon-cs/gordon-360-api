@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Claims;
 using System.Linq;
 using System.Web.Http;
 using Gordon360.Exceptions.ExceptionFilters;
@@ -21,9 +22,13 @@ namespace Gordon360.ApiControllers
         }
         
         [HttpGet]
-        [Route("chapel/{user_name}")]
-        public IHttpActionResult GetAllForStudent(string user_name)
+        [Route("chapel/")]
+        public IHttpActionResult GetAllForStudent()
         {
+            //get token data from context, username is the username of current logged in person
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var user_name = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(user_name))
             {
                 string errors = "";
@@ -49,9 +54,12 @@ namespace Gordon360.ApiControllers
         }
 
         [HttpGet]
-        [Route("chapel/{user_name}/{term}")]
-        public IHttpActionResult GetEventsForStudentByTerm(string user_name, string term)
+        [Route("chapel/{term}")]
+        public IHttpActionResult GetEventsForStudentByTerm(string term)
         {
+            //get token data from context, username is the username of current logged in person
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var user_name = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(user_name) || string.IsNullOrWhiteSpace(term))
             {
                 string errors = "";
