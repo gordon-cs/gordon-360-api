@@ -350,11 +350,10 @@ public partial class CCTEntities1 : DbContext
         return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GRP_ADMIN_EMAILS_PER_ACT_CDE_Result>("GRP_ADMIN_EMAILS_PER_ACT_CDE", aCT_CDEParameter, sESS_CDEParameter);
     }
 
-        public virtual ObjectResult<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE(Nullable<int> iD_NUM, string sESS_CDE)
+    public virtual ObjectResult<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE(Nullable<int> iD_NUM, string sESS_CDE)
     {
 
         var iD_NUMParameter = iD_NUM.HasValue ?
-
             new ObjectParameter("instructor_id", iD_NUM) :
             new ObjectParameter("instructor_id", typeof(int));
 
@@ -364,7 +363,7 @@ public partial class CCTEntities1 : DbContext
 
 
         return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result>("INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE", iD_NUMParameter, sESS_CDEParameter);
-   
+    }
 
     public virtual ObjectResult<ALL_EVENTS_PER_STUDENT_Result> ALL_EVENTS_PER_STUDENT(string sTU_ID, string tERM)
     {
