@@ -627,7 +627,6 @@ namespace Gordon360.Controllers.Api
             string root = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_ID_SUBMISSION_PATH"];
             var fileName = username + "_" + _accountService.GetAccountByUsername(username).account_id + ".jpg";
             var provider = new CustomMultipartFormDataStreamProvider(root);
-            JObject result = new JObject();
 
             if (!Request.Content.IsMimeMultipartContent())
             {
@@ -655,27 +654,25 @@ namespace Gordon360.Controllers.Api
 
                     FileInfo f1 = new FileInfo(fileData.LocalFileName);
                     long size1 = f1.Length;
-                    result.Add("inputlength", f1.Length);
 
                     System.IO.File.Move(fileData.LocalFileName, Path.Combine(di.FullName, fileName)); //upload
 
                     FileInfo f2 = new FileInfo(Path.Combine(di.FullName, fileName));
                     long size2 = f2.Length;
-                    result.Add("outputlength", f2.Length);
 
 
                     if (size1 < 3000 || size2 < 3000)
                     {
-                        return BadRequest("This image was lost in transit. Resubmit, fooool!");
+                        return BadRequest("The ID image was lost in transit. Resubmission should attempt automatically.");
                     }
                 }
                 //return Request.CreateResponse(HttpStatusCode.OK);
-                return Ok(result);
+                return Ok();
             }
             catch (System.Exception e)
             {
                 //return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error uploading the ID photo.");
-                return Ok(result);
+                return Ok();
             }
         }
 
