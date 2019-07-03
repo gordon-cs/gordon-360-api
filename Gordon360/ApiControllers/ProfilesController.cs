@@ -630,7 +630,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpPost]
         [Route("IDimage")]
-        public async Task<HttpResponseMessage> PostIDImage()
+        public async Task<IHttpActionResult> PostIDImage()
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
@@ -657,17 +657,30 @@ namespace Gordon360.Controllers.Api
                 // Read the form data.
                 await Request.Content.ReadAsMultipartAsync(provider);
 
-                foreach (MultipartFileData file in provider.FileData)
+                foreach (MultipartFileData fileData in provider.FileData)
                 {
-
+                    Debug.WriteLine(fileData.LocalFileName);
                     di = new DirectoryInfo(root); //di is declared at beginning of try.
-                    System.IO.File.Move(file.LocalFileName, di.FullName + fileName); //upload
+
+                    FileInfo f1 = new FileInfo(fileData.LocalFileName);
+                    long size1 = f1.Length;
+
+                    System.IO.File.Move(fileData.LocalFileName, Path.Combine(di.FullName, fileName)); //upload
+
+                    FileInfo f2 = new FileInfo(Path.Combine(di.FullName, fileName));
+                    long size2 = f2.Length;
+
+
+                    if (size1 < 3000 || size2 < 3000)
+                    {
+                        return BadRequest("The ID image was lost in transit. Resubmission should attempt automatically.");
+                    }
                 }
-                return Request.CreateResponse(HttpStatusCode.OK);
+                return Ok();
             }
             catch (System.Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error uploading the ID photo.");
+                return InternalServerError(e);
             }
         }
 
