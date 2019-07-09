@@ -243,19 +243,19 @@ namespace Gordon360.Static.Methods
         ///  Helper function to determine the current academic year
         /// </summary>
         /// <returns></returns>
-        public static string GetDay()
+        public static string GetFirstEventDate()
         {
             // We need to determine what the current date is
             DateTime today = DateTime.Today;
             if (today.Month < 06)
             {
-                return (today.Year - 1).ToString();
+                return (today.Year - 1).ToString()+"0810";
             }
             else if (today.Month > 07)
             {
-                return (today.Year).ToString();
+                return (today.Year).ToString()+"0810";
             }
-            return today.Year.ToString();
+            return today.Year.ToString()+"0501";
         }
 
         // Fill an iterable list of basicinfo from a query to the database
