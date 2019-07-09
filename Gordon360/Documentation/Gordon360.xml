@@ -190,6 +190,13 @@
             </summary>
             <returns>A IEnumerable of myschedule objects</returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.ScheduleControlController.UpdateSchedulePrivacy(System.String)">
+            <summary>
+            Update privacy of schedule
+            </summary>
+            <param name="value">Y or N</param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.Get">
             <summary>Get profile info of currently logged in user</summary>
             <returns></returns>
@@ -236,13 +243,6 @@
         <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateMobilePrivacy(System.String)">
             <summary>
             Update privacy of mobile phone number
-            </summary>
-            <param name="value">Y or N</param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateSchedulePrivacy(System.String)">
-            <summary>
-            Update privacy of schedule
             </summary>
             <param name="value">Y or N</param>
             <returns></returns>
@@ -1159,19 +1159,38 @@
             <param name="id">id</param>
             <param name="value">Y or N</param>
         </member>
-        <member name="M:Gordon360.Services.ProfileService.UpdateSchedulePrivacy(System.String,System.String)">
-            <summary>
-            privacy setting of schedule.
-            </summary>
-            <param name="id">id</param>
-            <param name="value">Y or N</param>
-        </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateImagePrivacy(System.String,System.String)">
             <summary>
             privacy setting user profile photo.
             </summary>
             <param name="id">id</param>
             <param name="value">Y or N</param>
+        </member>
+        <member name="T:Gordon360.Services.ScheduleControlService">
+            <summary>
+            Service Class that facilitates data transactions between the ScheduleControlController and the ScheduleControl part of the database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleControlService.UpdateSchedulePrivacy(System.String,System.String)">
+            <summary>
+            privacy setting of schedule.
+            </summary>
+            <param name="id">id</param>
+            <param name="value">Y or N</param>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleControlService.UpdateDescription(System.String,System.String)">
+            <summary>
+            description of schedule.
+            </summary>
+            <param name="id">id</param>
+            <param name="value">New description</param>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleControlService.UpdateModifiedTimeStamp(System.String,System.DateTime)">
+            <summary>
+            Update timestamp of modification in schedule.
+            </summary>
+            <param name="id">id</param>
+            <param name="value">Modified Time</param>
         </member>
         <member name="T:Gordon360.Services.ScheduleService">
             <summary>

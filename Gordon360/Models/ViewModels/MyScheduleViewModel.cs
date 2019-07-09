@@ -18,9 +18,9 @@ namespace Gordon360.Models.ViewModels
         public string FriCode { get; set; }
         public string SatCode { get; set; }
         public string SunCode { get; set; }
-        public int IsAllDay { get; set; }
-        public System.TimeSpan BeginTime { get; set; }
-        public System.TimeSpan EndTime { get; set; }
+        public Nullable<int> IsAllDay { get; set; }
+        public Nullable<System.TimeSpan> BeginTime { get; set; }
+        public Nullable<System.TimeSpan> EndTime { get; set; }
 
         // Modeled more like EventViewModel, should this be more like the others that return vm?
         public MyScheduleViewModel(MYSCHEDULE sch)

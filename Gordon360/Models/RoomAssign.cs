@@ -12,13 +12,16 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CM_SESSION_MSTR
+    public partial class RoomAssign
     {
         public string SESS_CDE { get; set; }
-        public string SESS_DESC { get; set; }
-        public Nullable<System.DateTime> SESS_BEGN_DTE { get; set; }
-        public Nullable<System.DateTime> SESS_END_DTE { get; set; }
-        public string YRTRM_CDE_2 { get; set; }
-        public string YRTRM_CDE_4 { get; set; }
+        public string BLDG_LOC_CDE { get; set; }
+        public string BLDG_CDE { get; set; }
+        public string ROOM_CDE { get; set; }
+        public int ROOM_SLOT_NUM { get; set; }
+        public Nullable<int> ID_NUM { get; set; }
+        public string ROOM_TYPE { get; set; }
+        public string ROOM_ASSIGN_STS { get; set; }
+        public Nullable<System.DateTime> ASSIGN_DTE { get; set; }
     }
 }

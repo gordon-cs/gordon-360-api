@@ -11,19 +11,25 @@ namespace Gordon360.Models
 {
     using System;
     
-    public partial class STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result
+    public partial class COURSES_FOR_PROFESSOR_Result
     {
-        public int ID_NUM { get; set; }
+        public string YR_CDE { get; set; }
+        public string TRM_CDE { get; set; }
         public string CRS_CDE { get; set; }
+        public string SUBTERM_CDE { get; set; }
         public string CRS_TITLE { get; set; }
-        public string BLDG_CDE { get; set; }
-        public string ROOM_CDE { get; set; }
         public string MONDAY_CDE { get; set; }
         public string TUESDAY_CDE { get; set; }
         public string WEDNESDAY_CDE { get; set; }
         public string THURSDAY_CDE { get; set; }
         public string FRIDAY_CDE { get; set; }
-        public Nullable<System.TimeSpan> BEGIN_TIME { get; set; }
-        public Nullable<System.TimeSpan> END_TIME { get; set; }
+        public string SATURDAY_CDE { get; set; }
+        public string SUNDAY_CDE { get; set; }
+        public Nullable<System.DateTime> BEGIN_TIM { get; set; }
+        public Nullable<System.DateTime> END_TIM { get; set; }
+        public string LOC_CDE { get; set; }
+        public string BLDG_CDE { get; set; }
+        public string ROOM_CDE { get; set; }
+        public Nullable<int> PROFESSOR_ID_NUM { get; set; }
     }
 }
