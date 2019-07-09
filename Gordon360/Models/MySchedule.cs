@@ -14,21 +14,37 @@ namespace Gordon360.Models
 
 using System;
     using System.Collections.Generic;
-    
-public partial class MYSCHEDULE
-{
 
-        public int ID_NUM { get; set; }
+    public partial class MYSCHEDULE
+    {
 
-        public System.DayOfWeek DAY { get; set; }
+        public string EVENT_ID { get; set; }
 
-        public System.DateTime BEGIN_DTE { get; set; }
+        public string GORDON_ID { get; set; } //should this really be a string? or an int?
 
-        public System.DateTime END_DTE { get; set; }
+        public string LOCATION { get; set; }
 
-        public string TITLE { get; set; }
+        public string DESCRIPTION { get; set; }
 
-        public string DSCRPT_TXT { get; set; }
+        public string MON_CDE { get; set; }
+
+        public string TUE_CDE { get; set; }
+
+        public string WED_CDE { get; set; }
+
+        public string THU_CDE { get; set; }
+
+        public string FRI_CDE { get; set; }
+
+        public string SAT_CDE { get; set; }
+
+        public string SUN_CDE { get; set; }
+
+        public int IS_ALLDAY { get; set; }
+
+        public System.TimeSpan BEGIN_TIME { get; set; }
+
+        public System.TimeSpan END_TIME { get; set; }
         
 }
 

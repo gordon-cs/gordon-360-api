@@ -405,7 +405,10 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <Function Name="STUDENT_JOBS_PER_ID_NUM" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="STUDENT_ID" Type="int" Mode="In" />
         </Function>
-        <Function Name="ADVISOR_EMAILS_PER_ACT_CDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+        <Function Name="
+                  
+
+_PER_ACT_CDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ACT_CDE" Type="char" Mode="In" />
           <Parameter Name="SESS_CDE" Type="char" Mode="In" />
         </Function>
@@ -1639,6 +1642,23 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="DateTime" Name="BEGIN_TIME" Nullable="true" Precision="23" />
           <Property Type="DateTime" Name="END_TIME" Nullable="true" Precision="23" />
         </ComplexType>
+        <ComplexType Name="MySchedule">
+          <Property Type="String" Name="EVENT_ID" Nullable="false" MaxLength="10"/>
+          <Property Type="String" Name="GORDON_ID" Nullable="false" MaxLength="10" />
+          <Property Type="String" Name="LOCATION" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="DESCRIPTION" Nullable="true" MaxLength="50"/>
+          <Property Type="String" Name="MON_CDE" Nullable="true" MaxLength="10"/>
+          <Property Type="String" Name="TUE_CDE" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="WED_CDE" Nullable="true" MaxLength="10"/>
+          <Property Type="String" Name="THU_CDE" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="FRI_CDE" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="SAT_CDE" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="SUN_CDE" Nullable="true" MaxLength="10" />
+          <Property Type="Int32" Name="IS_ALLDAY" Nullable="true" />
+          <Property Type="DateTime" Name="BEGIN_TIME" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="END_TIME" Nullable="true" Precision="23" />
+        </ComplexType>
+        
 
         </Schema>
 
@@ -1933,15 +1953,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="SUPERVISORS_PER_ID_NUM" FunctionName="Gordon360.Store.SUPERVISORS_PER_ID_NUM" />
           <FunctionImportMapping FunctionImportName="UPDATE_ACT_INFO" FunctionName="Gordon360.Store.UPDATE_ACT_INFO" />
-          <FunctionImportMapping FunctionImportName="ADVISOR_EMAILS_PER_ACT_CDE" FunctionName="Gordon360.Store.ADVISOR_EMAILS_PER_ACT_CDE">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="Gordon360.ADVISOR_EMAILS_PER_ACT_CDE_Result">
-                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
-                <ScalarProperty Name="LastName" ColumnName="LastName" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="DISTINCT_ACT_TYPE" FunctionName="Gordon360.Store.DISTINCT_ACT_TYPE">
             <ResultMapping>
               <ComplexTypeMapping TypeName="Gordon360.DISTINCT_ACT_TYPE_Result">

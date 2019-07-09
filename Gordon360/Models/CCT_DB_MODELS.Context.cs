@@ -69,6 +69,8 @@ public partial class CCTEntities1 : DbContext
 
     public virtual DbSet<DiningInfo> DiningInfo { get; set; }
 
+    public virtual DbSet<MYSCHEDULE> MySchedule { get; set; }
+
 
     public virtual ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> ACTIVE_CLUBS_PER_SESS_ID(string sESS_CDE)
     {
@@ -364,7 +366,7 @@ public partial class CCTEntities1 : DbContext
 
 
         return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result>("INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE", iD_NUMParameter, sESS_CDEParameter);
-   
+    }
 
     public virtual ObjectResult<ALL_EVENTS_PER_STUDENT_Result> ALL_EVENTS_PER_STUDENT(string sTU_ID, string tERM)
     {
@@ -686,7 +688,171 @@ public partial class CCTEntities1 : DbContext
         return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ALL_BASIC_INFO_Result>("ALL_BASIC_INFO");
     }
 
+
+    public virtual int CREATE_MYSCHEDULE(string eVENT_ID, string gORDON_ID, string lOCATION, 
+                                        string dESCRIPTION, string mON_CDE, string tUE_CDE,
+                                        string wED_CDE, string tHU_CDE, string fRI_CDE,
+                                        string sAT_CDE, string sUN_CDE, int iS_ALLDAY,
+                                        System.TimeSpan bEGIN_TIME, System.TimeSpan eND_TIME)
+    {
+
+        var eVENT_IDParameter = eVENT_ID != null ?
+            new ObjectParameter("EVENT_ID", eVENT_ID) :
+            new ObjectParameter("EVENT_ID", typeof(string));
+
+        var gORDON_IDParameter = gORDON_ID != null ?
+            new ObjectParameter("GORDON_ID", gORDON_ID) :
+            new ObjectParameter("GORDON_ID", typeof(string));
+
+        var lOCATIONParameter = lOCATION != null ?
+            new ObjectParameter("LOCATION", lOCATION) :
+            new ObjectParameter("LOCATION", typeof(string));
+
+        var dESCRIPTIONParameter = dESCRIPTION != null ?
+            new ObjectParameter("DESCRIPTION", dESCRIPTION) :
+            new ObjectParameter("DESCRIPTION", typeof(string));
+
+        var mON_CDEParameter = mON_CDE != null ?
+            new ObjectParameter("MON_CDE", mON_CDE) :
+            new ObjectParameter("MON_CDE", typeof(string));
+
+        var tUE_CDEParameter = tUE_CDE != null ?
+            new ObjectParameter("TUE_CDE", tUE_CDE) :
+            new ObjectParameter("TUE_CDE", typeof(string));
+
+        var wED_CDEParameter = wED_CDE != null ?
+            new ObjectParameter("WED_CDE", wED_CDE) :
+            new ObjectParameter("WED_CDE", typeof(string));
+
+        var tHU_CDEParameter = tHU_CDE != null ?
+            new ObjectParameter("THU_CDE", tHU_CDE) :
+            new ObjectParameter("THU_CDE", typeof(string));
+
+        var fRI_CDEParameter = fRI_CDE != null ?
+            new ObjectParameter("FRI_CDE", fRI_CDE) :
+            new ObjectParameter("FRI_CDE", typeof(string));
+
+        var sAT_CDEParameter = sAT_CDE != null ?
+            new ObjectParameter("SAT_CDE", sAT_CDE) :
+            new ObjectParameter("SAT_CDE", typeof(string));
+
+        var sUN_CDEParameter = sUN_CDE != null ?
+            new ObjectParameter("SUN_CDE", sUN_CDE) :
+            new ObjectParameter("SUN_CDE", typeof(string));
+
+        var iS_ALLDAYParameter = iS_ALLDAY != null ?
+            new ObjectParameter("IS_ALLDAY", iS_ALLDAY) :
+            new ObjectParameter("IS_ALLDAY", typeof(int));
+
+        var bEGIN_TIMEParameter = bEGIN_TIME != null ?
+            new ObjectParameter("BEGIN_TIME", bEGIN_TIME) :
+            new ObjectParameter("BEGIN_TIME", typeof(System.TimeSpan));
+
+        var eND_TIMEParameter = eND_TIME != null ?
+            new ObjectParameter("END_TIME", eND_TIME) :
+            new ObjectParameter("END_TIME", typeof(System.TimeSpan));
+
+        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("CREATE_MYSCHEDULE", eVENT_IDParameter, gORDON_IDParameter, lOCATIONParameter, dESCRIPTIONParameter, 
+                                                                            mON_CDEParameter, tUE_CDEParameter, wED_CDEParameter, tHU_CDEParameter, fRI_CDEParameter, sAT_CDEParameter,
+                                                                            sUN_CDEParameter, iS_ALLDAYParameter, bEGIN_TIMEParameter, eND_TIMEParameter);
     }
+
+
+    public virtual int UPDATE_MYSCHEDULE(string eVENT_ID, string gORDON_ID, string lOCATION, 
+                                        string dESCRIPTION, string mON_CDE, string tUE_CDE,
+                                        string wED_CDE, string tHU_CDE, string fRI_CDE,
+                                        string sAT_CDE, string sUN_CDE, int iS_ALLDAY,
+                                        System.TimeSpan bEGIN_TIME, System.TimeSpan eND_TIME)
+    {
+
+        var eVENT_IDParameter = eVENT_ID != null ?
+            new ObjectParameter("EVENT_ID", eVENT_ID) :
+            new ObjectParameter("EVENT_ID", typeof(string));
+
+        var gORDON_IDParameter = gORDON_ID != null ?
+            new ObjectParameter("GORDON_ID", gORDON_ID) :
+            new ObjectParameter("GORDON_ID", typeof(string));
+
+        var lOCATIONParameter = lOCATION != null ?
+            new ObjectParameter("LOCATION", lOCATION) :
+            new ObjectParameter("LOCATION", typeof(string));
+
+        var dESCRIPTIONParameter = dESCRIPTION != null ?
+            new ObjectParameter("DESCRIPTION", dESCRIPTION) :
+            new ObjectParameter("DESCRIPTION", typeof(string));
+
+        var mON_CDEParameter = mON_CDE != null ?
+            new ObjectParameter("MON_CDE", mON_CDE) :
+            new ObjectParameter("MON_CDE", typeof(string));
+
+        var tUE_CDEParameter = tUE_CDE != null ?
+            new ObjectParameter("TUE_CDE", tUE_CDE) :
+            new ObjectParameter("TUE_CDE", typeof(string));
+
+        var wED_CDEParameter = wED_CDE != null ?
+            new ObjectParameter("WED_CDE", wED_CDE) :
+            new ObjectParameter("WED_CDE", typeof(string));
+
+        var tHU_CDEParameter = tHU_CDE != null ?
+            new ObjectParameter("THU_CDE", tHU_CDE) :
+            new ObjectParameter("THU_CDE", typeof(string));
+
+        var fRI_CDEParameter = fRI_CDE != null ?
+            new ObjectParameter("FRI_CDE", fRI_CDE) :
+            new ObjectParameter("FRI_CDE", typeof(string));
+
+        var sAT_CDEParameter = sAT_CDE != null ?
+            new ObjectParameter("SAT_CDE", sAT_CDE) :
+            new ObjectParameter("SAT_CDE", typeof(string));
+
+        var sUN_CDEParameter = sUN_CDE != null ?
+            new ObjectParameter("SUN_CDE", sUN_CDE) :
+            new ObjectParameter("SUN_CDE", typeof(string));
+
+        var iS_ALLDAYParameter = iS_ALLDAY != null ? //always true?
+            new ObjectParameter("IS_ALLDAY", iS_ALLDAY) :
+            new ObjectParameter("IS_ALLDAY", typeof(int));
+
+        var bEGIN_TIMEParameter = bEGIN_TIME != null ?
+            new ObjectParameter("BEGIN_TIME", bEGIN_TIME) :
+            new ObjectParameter("BEGIN_TIME", typeof(System.TimeSpan));
+
+        var eND_TIMEParameter = eND_TIME != null ?
+            new ObjectParameter("END_TIME", eND_TIME) :
+            new ObjectParameter("END_TIME", typeof(System.TimeSpan));
+
+        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_MYSCHEDULE", eVENT_IDParameter, gORDON_IDParameter, lOCATIONParameter, dESCRIPTIONParameter, 
+                                                                            mON_CDEParameter, tUE_CDEParameter, wED_CDEParameter, tHU_CDEParameter, fRI_CDEParameter, sAT_CDEParameter,
+                                                                            sUN_CDEParameter, iS_ALLDAYParameter, bEGIN_TIMEParameter, eND_TIMEParameter);
+    }
+
+
+    public virtual int DELETE_MYSCHEDULE(string eVENT_ID, string gORDON_ID)
+    {
+
+        var eVENT_IDParameter = eVENT_ID != null ?
+            new ObjectParameter("EVENT_ID", eVENT_ID) :
+            new ObjectParameter("EVENT_ID", typeof(string));
+
+        var gORDON_IDParameter = gORDON_ID != null ?
+            new ObjectParameter("GORDON_ID", gORDON_ID) :
+            new ObjectParameter("GORDON_ID", typeof(string));
+
+        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DELETE_MYSCHEDULE", eVENT_IDParameter, gORDON_IDParameter);
+    }
+
+
+    public virtual int MYSCHEDULE_BY_ID(string eVENT_ID, string gORDON_ID)
+    {
+
+        var gORDON_IDParameter = gORDON_ID != null ?
+            new ObjectParameter("GORDON_ID", gORDON_ID) :
+            new ObjectParameter("GORDON_ID", typeof(string));
+
+        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("MYSCHEDULE_BY_ID", gORDON_IDParameter);
+    }
+
+}
 
 }
 

@@ -184,6 +184,12 @@
             <param name="id">The id of the membership request to delete</param>
             <returns>The deleted object</returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.MyScheduleController.Get">
+            <summary>
+             Gets all myschedule objects for a user
+            </summary>
+            <returns>A IEnumerable of myschedule objects</returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.Get">
             <summary>Get profile info of currently logged in user</summary>
             <returns></returns>
@@ -246,29 +252,6 @@
             Update privacy of profile image
             </summary>
             <param name="value">Y or N</param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.ParticipationsController.Get">
-            <summary>Get all the roles a person may have within an activity</summary>
-            <returns>A list of all the roles and their coresponding acronyms</returns>
-            <remarks>Queries the database for all the roles that are valid</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.ParticipationsController.Get(System.String)">
-            <summary>Get a single role and the information about it</summary>
-            <param name="id">The identifier for a single role</param>
-            <returns>The information about the specified role</returns>
-            <remarks>Queries the database and returns information about one particular role</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.ParticipationsController.GetLeaderRoles">
-            <summary>
-            Get the participation levels that are considered to be leadership positions.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.ParticipationsController.GetTranscriptWorthyRoles">
-            <summary>
-            GEt the participation levels that are considered to be leadership positions.
-            </summary>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ScheduleController.Get">
@@ -1103,6 +1086,13 @@
             <summary>
             Service Class that facilitates data transactions between the MySchedulesController and the MySchedule part of the database model.
             </summary>
+        </member>
+        <member name="M:Gordon360.Services.MyScheduleService.GetAllForID(System.String)">
+            <summary>
+            Fetch the myschedule item whose id is specified by the parameter
+            </summary>
+            <param name="gordon_id">The myschedule id</param>
+            <returns>MyScheduleViewModel if found, null if not found</returns>
         </member>
         <member name="M:Gordon360.Services.ProfileService.GetStudentProfileByUsername(System.String)">
             <summary>
