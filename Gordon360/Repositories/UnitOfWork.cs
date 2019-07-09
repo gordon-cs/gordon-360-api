@@ -32,6 +32,7 @@ namespace Gordon360.Repositories
         private IRepository<CUSTOM_PROFILE> _ProfileCustomRepository;
         private IRepository<ChapelEvent> _ChapelEventRepository;
         private IRepository<DiningInfo> _DiningInfoRepository;
+        private IRepository<Schedule_Control> _ScheduleControlRepository;
 
         private CCTEntities1 _context;
 
@@ -91,6 +92,10 @@ namespace Gordon360.Repositories
         public IRepository<SUPERVISOR> SupervisorRepository
         {
             get { return _SupervisorRepository ?? (_SupervisorRepository = new GenericRepository<SUPERVISOR>(_context)); }
+        }
+        public IRepository<Schedule_Control> ScheduleControlRepository
+        {
+            get { return _ScheduleControlRepository ?? (_ScheduleControlRepository = new GenericRepository<Schedule_Control>(_context)); }
         }
 
         IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> IUnitOfWork.ActivityPerSessionRepository

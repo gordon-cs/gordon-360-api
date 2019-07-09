@@ -22,6 +22,8 @@ namespace Gordon360.Controllers.Api
     [Authorize]
     public class ScheduleControlController : ApiController
     {
+        private IUnitOfWork _unitOfWork;
+
         //declare services we are going to use.
         private IProfileService _profileService;
         private IAccountService _accountService;
@@ -32,16 +34,103 @@ namespace Gordon360.Controllers.Api
 
         public ScheduleControlController()
         {
-            var _unitOfWork = new UnitOfWork();
+            _unitOfWork = new UnitOfWork();
             _scheduleControlService = new ScheduleControlService(_unitOfWork);
-            _profileService = new ProfileService(_unitOfWork);
             _accountService = new AccountService(_unitOfWork);
-            _roleCheckingService = new RoleCheckingService(_unitOfWork);
         }
 
         public ScheduleControlController(IScheduleControlService scheduleControlService)
         {
             _scheduleControlService = scheduleControlService;
+        }
+
+
+        /// <summary>
+        /// Get schedule information of specific user
+        /// </summary>
+        /// <param name="username">Y or N</param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("{username}")]
+        public IHttpActionResult GetScheduleControl(string username)
+        {
+            object scheduleControlResult = null;
+
+            scheduleControlResult = _unitOfWork.ScheduleControlRepository.GetByUsername(username);
+            
+            if (scheduleControlResult == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(scheduleControlResult);
+
+        }
+
+
+
+        /// <summary>
+        /// Update privacy of schedule
+        /// </summary>
+        /// <param name="value">Y or N</param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("schedule_privacy/update/{value}")]
+        public IHttpActionResult UpdateSchedulePrivacy(string value)
+        {
+            // Verify Input
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
+            _scheduleControlService.UpdateSchedulePrivacy(id, value);
+
+            return Ok();
+
+        }
+
+        /// <summary>
+        /// Update schedule description
+        /// </summary>
+        /// <param name="value">New description</param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("description/update/{value}")]
+        public IHttpActionResult UpdateDescription(string value)
+        {
+            // Verify Input
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
+            _scheduleControlService.UpdateDescription(id, value);
+
+            return Ok();
+
         }
 
         /// <summary>
@@ -50,8 +139,8 @@ namespace Gordon360.Controllers.Api
         /// <param name="value">Y or N</param>
         /// <returns></returns>
         [HttpPut]
-        [Route("schedule_privacy/{value}")]
-        public IHttpActionResult UpdateSchedulePrivacy(string value)
+        [Route("timestamp/update/{value}")]
+        public IHttpActionResult UpdateModifiedTimeStamp(string value)
         {
             // Verify Input
             if (!ModelState.IsValid)
