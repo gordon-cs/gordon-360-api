@@ -10,7 +10,7 @@ namespace Gordon360.Controllers.Api
 {
     [RoutePrefix("api/sessions")]
     [CustomExceptionFilter]
-    //[Authorize]
+    //All Routes made public for Guest View (No authorization needed)
     public class SessionsController : ApiController
     {
 
@@ -33,6 +33,7 @@ namespace Gordon360.Controllers.Api
         // GET: api/Sessions
         [HttpGet]
         [Route("")]
+        //Public Route
         public IHttpActionResult Get()
         {
             var all = _sessionService.GetAll();
@@ -46,6 +47,7 @@ namespace Gordon360.Controllers.Api
         // GET: api/Sessions/5
         [HttpGet]
         [Route("{id}")]
+        //Public Route
         public IHttpActionResult Get(string id)
         {
             if (!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
@@ -78,6 +80,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpGet]
         [Route("current")]
+        //Public Route
         public IHttpActionResult GetCurrentSession()
         {
             var currentSession = Helpers.GetCurrentSession();
@@ -94,6 +97,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpGet]
         [Route("daysLeft")]
+        //Public Route
         public IHttpActionResult GetDaysLeftinSemester()
         {
             var days = Helpers.GetDaysLeft();
