@@ -2,7 +2,7 @@ import pytest
 import warnings
 import string
 import pytest_components as api
-
+from pytest_components import requests
 
 # # # # # # # # #
 # Configuration #
