@@ -15,5 +15,7 @@ namespace Gordon360.Models
     {
         public string ACT_CDE { get; set; }
         public string ACT_DESC { get; set; }
+        public string ACT_TYPE { get; set; }
+        public string ACT_TYPE_DESC { get; set; }
     }
 }

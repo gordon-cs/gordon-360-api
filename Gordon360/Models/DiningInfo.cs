@@ -19,7 +19,7 @@ namespace Gordon360.Models
         public string ChoiceDescription { get; set; }
         public string PlanDescriptions { get; set; }
         public string PlanId { get; set; }
-        public Nullable<int> InitialBalance { get; set; }
         public string PlanType { get; set; }
+        public Nullable<int> InitialBalance { get; set; }
     }
 }

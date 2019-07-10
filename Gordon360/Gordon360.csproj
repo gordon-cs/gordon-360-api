@@ -204,6 +204,7 @@
     <Compile Include="ApiControllers\AdminsController.cs" />
     <Compile Include="ApiControllers\AdvancedSearchController.cs" />
     <Compile Include="ApiControllers\DiningController.cs" />
+    <Compile Include="ApiControllers\ErrorLogController.cs" />
     <Compile Include="ApiControllers\EventController.cs" />
     <Compile Include="ApiControllers\ContentManagementController.cs" />
     <Compile Include="ApiControllers\EmailsController.cs" />
@@ -233,10 +234,10 @@
     <Compile Include="Models\ADVISOR_EMAILS_PER_ACT_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ALL_BASIC_INFO_Result.cs">
+    <Compile Include="Models\ALL_BASIC_INFO_NOT_ALUMNI_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ALL_EVENTS_PER_STUDENT_Result.cs">
+    <Compile Include="Models\ALL_BASIC_INFO_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ALL_MEMBERSHIPS_Result.cs">
@@ -245,10 +246,10 @@
     <Compile Include="Models\ALL_REQUESTS_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ALL_SUPERVISORS_Result.cs">
+    <Compile Include="Models\Alumni.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Alumni.cs">
+    <Compile Include="Models\Buildings.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\C360_SLIDER.cs">
@@ -275,16 +276,34 @@
     <Compile Include="Models\CM_SESSION_MSTR.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Countries.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\COURSES_FOR_PROFESSOR_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\CUSTOM_PROFILE.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DiningInfo.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\DISTINCT_ACT_TYPE_Result.cs">
+    <Compile Include="Models\Dining_Mealplans.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Dining_Meal_Choice_Desc.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Dining_Meal_Plan_Id_Mapping.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Dining_Student_Meal_Choice.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\EMAILS_PER_ACT_CDE_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ERROR_LOG.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\EVENTS_BY_STUDENT_ID_Result.cs">
@@ -294,6 +313,9 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\GRP_ADMIN_EMAILS_PER_ACT_CDE_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\JENZ_ACT_CLUB_DEF.cs">
@@ -311,13 +333,7 @@
     <Compile Include="Models\MEMBERSHIP.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\MEMBERSHIPS_PER_ACT_CDE_AUTHORIZED_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\MEMBERSHIPS_PER_ACT_CDE_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\MEMBERSHIPS_PER_MEMBERSHIP_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MEMBERSHIPS_PER_STUDENT_ID_Result.cs">
@@ -325,6 +341,12 @@
     </Compile>
     <Compile Include="Models\Metadata.cs" />
     <Compile Include="Models\ModelPartialClasses.cs" />
+    <Compile Include="Models\MYSCHEDULE.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\MYSCHEDULE_BY_ID_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\PART_DEF.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -343,6 +365,12 @@
     <Compile Include="Models\REQUEST_PER_REQUEST_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\RoomAssign.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Schedule_Control.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\sp_helpdiagramdefinition_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -352,16 +380,19 @@
     <Compile Include="Models\Student.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\STUDENT_EVENTS_PER_TERM_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\SUPERVISORS_PER_ACT_CDE_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\SUPERVISOR_PER_SUP_ID_Result.cs">
+    <Compile Include="Models\STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sysdiagrams.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Transit_Requests.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Transit_Rides.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\VICTORY_PROMISE_BY_STUDENT_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ViewModels\BasicInfoViewModel.cs" />
@@ -373,9 +404,9 @@
     <Compile Include="Models\ViewModels\DiningTableViewModel.cs" />
     <Compile Include="Models\ViewModels\DiningViewModel.cs" />
     <Compile Include="Models\ViewModels\EmailContentViewModel.cs" />
-    <Compile Include="Models\ViewModels\EventViewModel.cs" />
     <Compile Include="Models\ViewModels\ChapelEventViewModel.cs" />
     <Compile Include="Models\ViewModels\EmailViewModel.cs" />
+    <Compile Include="Models\ViewModels\EventViewModel.cs" />
     <Compile Include="Models\ViewModels\ExtensionMethods\EventViewModelExtension.cs" />
     <Compile Include="Models\ViewModels\FacultyStaffProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\JenzibarActivitiesViewModel.cs" />
@@ -400,6 +431,7 @@
     <Compile Include="Services\ActivityService.cs" />
     <Compile Include="Services\AdministratorService.cs" />
     <Compile Include="Services\DiningService.cs" />
+    <Compile Include="Services\ErrorLogService.cs" />
     <Compile Include="Services\EventService.cs" />
     <Compile Include="Services\ComplexQueries\RawSqlQuery.cs" />
     <Compile Include="Services\ContentManagementService.cs" />
@@ -418,15 +450,18 @@
     <Compile Include="Static Classes\Names.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="browseable\profile\Default\profile.png" />
+    <Content Include="browseable\uploads\Default\activityImage.png" />
     <EntityDeploy Include="Models\CCT_DB_Models.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>CCT_DB_Models.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="browseable\profile\Default\profile.png" />
-    <Content Include="browseable\uploads\Default\activityImage.png" />
     <Content Include="Models\CCT_DB_Models.edmx.diagram">
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
     </Content>
+    <None Include="secrets.config">
+      <SubType>Designer</SubType>
+    </None>
     <Content Include="Models\CCT_DB_Models.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
@@ -437,9 +472,6 @@
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
       <LastGenOutput>CCT_DB_Models.cs</LastGenOutput>
     </Content>
-    <None Include="secrets.config">
-      <SubType>Designer</SubType>
-    </None>
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

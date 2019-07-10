@@ -27,6 +27,7 @@ namespace Gordon360.Repositories
         private IRepository<CUSTOM_PROFILE> _ProfileCustomRepository;
         private IRepository<ChapelEvent> _ChapelEventRepository;
         private IRepository<DiningInfo> _DiningInfoRepository;
+        private IRepository<ERROR_LOG> _ErrorLogRepository;
 
         private CCTEntities1 _context;
 
@@ -108,6 +109,10 @@ namespace Gordon360.Repositories
         public IRepository<CUSTOM_PROFILE> ProfileCustomRepository
         {
             get { return _ProfileCustomRepository ?? (_ProfileCustomRepository = new GenericRepository<CUSTOM_PROFILE>(_context)); }
+        }
+        public IRepository<ERROR_LOG> ErrorLogRepository
+        {
+            get { return _ErrorLogRepository ?? (_ErrorLogRepository = new GenericRepository<ERROR_LOG>(_context)); }
         }
 
         public bool Save()
