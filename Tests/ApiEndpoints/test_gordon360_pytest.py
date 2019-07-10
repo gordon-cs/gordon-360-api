@@ -1,11 +1,6 @@
 import pytest
 import warnings
 import string
-# Regular Member Test Suite for Project Raymond
-from pytest_components import requests
-
-# Private configuration options
-import credentials
 import pytest_components as api
 
 
@@ -46,20 +41,23 @@ hostURL = 'https://360ApiTrain.gordon.edu/'
 #hostURL = 'http://localhost:1025/'
 
 # Constants
-LEADERSHIP_POSITIONS = configuration.leadership_positions
+LEADERSHIP_POSITIONS = ['CAPT','CODIR','CORD','DIREC','PRES','VICEC','VICEP']
 REQUEST_STATUS_APPROVED = 'Approved'
 REQUEST_STATUS_DENIED = 'Denied'
 REQUEST_STATUS_PENDING = 'Pending'
 
-# Configuration Details
-username = credentials.username
-password = credentials.password
-my_id_number = credentials.id_number
+# # # # # # # # #
+#  Credentials  #
+# # # # # # # # #
+
+username = '360.studenttest'
+password = 'Gordon16'
+my_id_number = 999999097
 grant_payload = { 'username':username, 'password':password, 'grant_type':'password' }
 
-leader_username = credentials.username_activity_leader
-leader_password = credentials.password_activity_leader
-leader_id_number = credentials.id_number_activity_leader
+leader_username = '360.facultytest'
+leader_password = 'Gordon16'
+leader_id_number = 999999099
 leader_grant_payload = { 'username':leader_username, 'password':leader_password, 'grant_type':'password' }
 
 class testCase:
