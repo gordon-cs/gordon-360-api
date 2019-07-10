@@ -190,11 +190,44 @@
             </summary>
             <returns>A IEnumerable of myschedule objects</returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.MyScheduleController.Get(System.String)">
+            <summary>
+             Gets all myschedule objects for a user
+            </summary>
+            <returns>A IEnumerable of myschedule objects</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ScheduleControlController.Get">
+            <summary>
+            Get schedule information of local user
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ScheduleControlController.Get(System.String)">
+            <summary>
+            Get schedule information of specific user
+            </summary>
+            <param name="username">username</param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ScheduleControlController.UpdateSchedulePrivacy(System.String)">
             <summary>
             Update privacy of schedule
             </summary>
             <param name="value">Y or N</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ScheduleControlController.UpdateDescription(System.String)">
+            <summary>
+            Update schedule description
+            </summary>
+            <param name="value">New description</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ScheduleControlController.UpdateModifiedTimeStamp(System.String)">
+            <summary>
+            Update timestamp of last modified schedule
+            </summary>
+            <param name="value">Datetime in string</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.Get">

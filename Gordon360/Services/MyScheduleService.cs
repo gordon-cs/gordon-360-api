@@ -47,18 +47,18 @@ namespace Gordon360.Services
                  return null;
              }
              // Getting rid of database-inherited whitespace DO WE NEED THIS? Does the ViewModel do it?
-             foreach (var sch in result)
-             {
-                sch.Location = sch.Location.Trim() ?? ""; // For Null locations;
-                sch.Description = sch.Description.Trim() ?? ""; // For Null descriptions
-                sch.MonCode = sch.MonCode.Trim() ?? ""; // For Null days
-                sch.TueCode = sch.TueCode.Trim() ?? ""; // For Null days
-                sch.WedCode = sch.WedCode.Trim() ?? ""; // For Null days
-                sch.ThuCode = sch.ThuCode.Trim() ?? ""; // For Null days
-                sch.FriCode = sch.FriCode.Trim() ?? ""; // For Null days
-                sch.SatCode = sch.SatCode.Trim() ?? ""; // For Null days
-                sch.SunCode = sch.SunCode.Trim() ?? ""; // For Null days
-            }
+            // foreach (var sch in result)
+            // {
+            //    sch.Location = sch.Location.Trim() ?? ""; // For Null locations;
+            //    sch.Description = sch.Description.Trim() ?? ""; // For Null descriptions
+            //    sch.MonCode = sch.MonCode.Trim() ?? ""; // For Null days
+            //    sch.TueCode = sch.TueCode.Trim() ?? ""; // For Null days
+            //    sch.WedCode = sch.WedCode.Trim() ?? ""; // For Null days
+            //    sch.ThuCode = sch.ThuCode.Trim() ?? ""; // For Null days
+            //    sch.FriCode = sch.FriCode.Trim() ?? ""; // For Null days
+            //    sch.SatCode = sch.SatCode.Trim() ?? ""; // For Null days
+            //    sch.SunCode = sch.SunCode.Trim() ?? ""; // For Null days
+            //}
       
              return result;
          }

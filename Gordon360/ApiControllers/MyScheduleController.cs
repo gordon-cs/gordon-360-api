@@ -61,25 +61,25 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
 
-        //        /// <summary>
-        //        ///  Gets all myschedule objects for a user
-        //        /// </summary>
-        //        /// <returns>A IEnumerable of myschedule objects</returns>
-        //        [HttpGet]
-        //        [Route("{username}")]
-        //        public IHttpActionResult Get(string username)
-        //        {
-        //            //probably needs privacy stuff like ProfilesController and service
-        //            var id = _accountService.GetAccountByUsername(username).GordonID;
-        //
-        //            var result = _myScheduleService.GetAllForID(id);
-        //            if (result == null)
-        //            {
-        //                return NotFound();
-        //            }
-        //            return Ok(result);
-        //        }
-        //
+        /// <summary>
+        ///  Gets all myschedule objects for a user
+        /// </summary>
+        /// <returns>A IEnumerable of myschedule objects</returns>
+        [HttpGet]
+        [Route("{username}")]
+        public IHttpActionResult Get(string username)
+        {
+            //probably needs privacy stuff like ProfilesController and service
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+        
+            var result = _myScheduleService.GetAllForID(id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+                
         //
         //        /// <summary>Create a new myschedule to be added to database</summary>
         //        /// <param name="myschedule">The myschedule item containing all required and relevant information</param>

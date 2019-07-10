@@ -44,19 +44,45 @@ namespace Gordon360.Controllers.Api
             _scheduleControlService = scheduleControlService;
         }
 
+        /// <summary>
+        /// Get schedule information of local user
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("")]
+        public IHttpActionResult Get()
+        {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
+
+            object scheduleControlResult = null;
+            
+            scheduleControlResult = _unitOfWork.ScheduleControlRepository.GetById(id);
+
+            if (scheduleControlResult == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(scheduleControlResult);
+
+        }
+
+
 
         /// <summary>
         /// Get schedule information of specific user
         /// </summary>
-        /// <param name="username">Y or N</param>
+        /// <param name="username">username</param>
         /// <returns></returns>
-        [HttpPut]
+        [HttpGet]
         [Route("{username}")]
-        public IHttpActionResult GetScheduleControl(string username)
+        public IHttpActionResult Get(string username)
         {
             object scheduleControlResult = null;
 
-            scheduleControlResult = _unitOfWork.ScheduleControlRepository.GetByUsername(username);
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+            scheduleControlResult = _unitOfWork.ScheduleControlRepository.GetById(id);
             
             if (scheduleControlResult == null)
             {
@@ -134,9 +160,9 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>
-        /// Update privacy of schedule
+        /// Update timestamp of last modified schedule
         /// </summary>
-        /// <param name="value">Y or N</param>
+        /// <param name="value">Datetime in string</param>
         /// <returns></returns>
         [HttpPut]
         [Route("timestamp/update/{value}")]
