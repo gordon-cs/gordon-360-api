@@ -517,6 +517,14 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Parameter Name="ACCOUNT_ID" Type="int" Mode="In" />
           <Parameter Name="VALUE" Type="varchar" Mode="In" />
         </Function>
+                <Function Name="STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id_num" Type="int" Mode="In" />
+          <Parameter Name="sess_cde" Type="char" Mode="In" />
+        </Function>
+          <Function Name="INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="instructor_id" Type="int" Mode="In" />
+          <Parameter Name="sess_cde" Type="char" Mode="In" />
+        </Function>
         <EntityContainer Name="Gordon360StoreContainer">
           <EntitySet Name="ACT_INFO" EntityType="Self.ACT_INFO" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ADMIN" EntityType="Self.ADMIN" Schema="dbo" store:Type="Tables" />
@@ -773,9 +781,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImport Name="ACTIVE_CLUBS_PER_SESS_ID" ReturnType="Collection(Gordon360.ACTIVE_CLUBS_PER_SESS_ID_Result)">
           <Parameter Name="SESS_CDE" Mode="In" Type="String" />
           </FunctionImport>
-          <FunctionImport Name="VICTORY_PROMISE_BY_STUDENT_ID" ReturnType="Collection(Gordon360.VICTORY_PROMISE_BY_STUDENT_ID_Result)">
-            <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
-          </FunctionImport>
           <FunctionImport Name="STUDENT_JOBS_PER_ID_NUM" ReturnType="Collection(Gordon360.STUDENT_JOBS_PER_ID_NUM_Result)">
             <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
           </FunctionImport>
@@ -926,6 +931,19 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImport Name="ALL_BASIC_INFO" ReturnType="Collection(Gordon360.ALL_BASIC_INFO_Result)" />
           <EntitySet Name="sysdiagrams" EntityType="Gordon360.sysdiagrams" />
           <EntitySet Name="DiningInfo" EntityType="Gordon360.DiningInfo" />
+          <FunctionImport Name="VICTORY_PROMISE_BY_STUDENT_ID" ReturnType="Collection(Gordon360.VICTORY_PROMISE_BY_STUDENT_ID_Result)">
+          <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
+          </FunctionImport>
+                    <FunctionImport Name="STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE" ReturnType="Collection(Gordon360.STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result)">
+            <Parameter Name="id_num" Mode="In" Type="Int32" />
+            <Parameter Name="sess_cde" Mode="In" Type="String" />
+          </FunctionImport>
+                    <FunctionImport Name="INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE" ReturnType="Collection(Gordon360.INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result)">
+            <Parameter Name="instructor_id" Mode="In" Type="Int32" />
+            <Parameter Name="sess_cde" Mode="In" Type="String" />
+          </FunctionImport>
+
+
 
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
@@ -1593,7 +1611,38 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="InitialBalance" Type="Int32" />
           <Property Name="PlanType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
         </EntityType>
-      </Schema>
+        <ComplexType Name="STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result">
+          <Property Type="Int32" Name="ID_NUM" Nullable="false" />
+          <Property Type="String" Name="CRS_CDE" Nullable="false" MaxLength="45" />
+          <Property Type="String" Name="CRS_TITLE" Nullable="false" MaxLength="45" />
+          <Property Type="String" Name="BLDG_CDE" Nullable="true" />
+          <Property Type="String" Name="ROOM_CDE" Nullable="true" />
+          <Property Type="String" Name="MONDAY_CDE" Nullable="true" MaxLength="5" />
+          <Property Type="String" Name="TUESDAY_CDE" Nullable="true" MaxLength="5"/>
+          <Property Type="String" Name="WEDNESDAY_CDE" Nullable="true" MaxLength="5" />
+          <Property Type="String" Name="THURSDAY_CDE" Nullable="true" MaxLength="5" />
+          <Property Type="String" Name="FRIDAY_CDE" Nullable="true" MaxLength="5" />
+          <Property Type="DateTime" Name="BEGIN_TIME" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="END_TIME" Nullable="true" Precision="23" />
+        </ComplexType>
+                <ComplexType Name="INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result">
+          <Property Type="Int32" Name="INSTRUCTOR_ID" Nullable="false" />
+          <Property Type="String" Name="CRS_CDE" Nullable="false" MaxLength="45" />
+          <Property Type="String" Name="CRS_TITLE" Nullable="false" MaxLength="45" />
+          <Property Type="String" Name="BLDG_CDE" Nullable="true" />
+          <Property Type="String" Name="ROOM_CDE" Nullable="true" />
+          <Property Type="String" Name="MONDAY_CDE" Nullable="true" MaxLength="5" />
+          <Property Type="String" Name="TUESDAY_CDE" Nullable="true" MaxLength="5"/>
+          <Property Type="String" Name="WEDNESDAY_CDE" Nullable="true" MaxLength="5" />
+          <Property Type="String" Name="THURSDAY_CDE" Nullable="true" MaxLength="5" />
+          <Property Type="String" Name="FRIDAY_CDE" Nullable="true" MaxLength="5" />
+          <Property Type="DateTime" Name="BEGIN_TIME" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="END_TIME" Nullable="true" Precision="23" />
+        </ComplexType>
+
+        </Schema>
+
+
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -2333,6 +2382,43 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE" FunctionName="Gordon360.Store.STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result">
+                <ScalarProperty Name="ID_NUM" ColumnName="ID_NUM" />
+                <ScalarProperty Name="CRS_CDE" ColumnName="CRS_CDE" />
+                <ScalarProperty Name="CRS_TITLE" ColumnName="CRS_TITLE" />
+                <ScalarProperty Name="BLDG_CDE" ColumnName="BLDG_CDE" />
+                <ScalarProperty Name="ROOM_CDE" ColumnName="ROOM_CDE" />
+                <ScalarProperty Name="MONDAY_CDE" ColumnName="MONDAY_CDE" />
+                <ScalarProperty Name="TUESDAY_CDE" ColumnName="TUESDAY_CDE" />
+                <ScalarProperty Name="WEDNESDAY_CDE" ColumnName="WEDNESDAY_CDE" />
+                <ScalarProperty Name="THURSDAY_CDE" ColumnName="THURSDAY_CDE" />
+                <ScalarProperty Name="FRIDAY_CDE" ColumnName="FRIDAY_CDE" />
+                <ScalarProperty Name="BEGIN_TIME" ColumnName="BEGIN_TIME" />
+                <ScalarProperty Name="END_TIME" ColumnName="END_TIME" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+                    <FunctionImportMapping FunctionImportName="INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE" FunctionName="Gordon360.Store.INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result">
+                <ScalarProperty Name="INSTRUCTOR_ID" ColumnName="ID_NUM" />
+                <ScalarProperty Name="CRS_CDE" ColumnName="CRS_CDE" />
+                <ScalarProperty Name="CRS_TITLE" ColumnName="CRS_TITLE" />
+                <ScalarProperty Name="BLDG_CDE" ColumnName="BLDG_CDE" />
+                <ScalarProperty Name="ROOM_CDE" ColumnName="ROOM_CDE" />
+                <ScalarProperty Name="MONDAY_CDE" ColumnName="MONDAY_CDE" />
+                <ScalarProperty Name="TUESDAY_CDE" ColumnName="TUESDAY_CDE" />
+                <ScalarProperty Name="WEDNESDAY_CDE" ColumnName="WEDNESDAY_CDE" />
+                <ScalarProperty Name="THURSDAY_CDE" ColumnName="THURSDAY_CDE" />
+                <ScalarProperty Name="FRIDAY_CDE" ColumnName="FRIDAY_CDE" />
+                <ScalarProperty Name="BEGIN_TIME" ColumnName="BEGIN_TIME" />
+                <ScalarProperty Name="END_TIME" ColumnName="END_TIME" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+
           </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

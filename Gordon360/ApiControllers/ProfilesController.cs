@@ -620,13 +620,14 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpPost]
         [Route("IDimage")]
-        public async Task<HttpResponseMessage> PostIDImage()
+        public async Task<IHttpActionResult> PostIDImage()
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             string root = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_ID_SUBMISSION_PATH"];
             var fileName = username + "_" + _accountService.GetAccountByUsername(username).account_id + ".jpg";
             var provider = new CustomMultipartFormDataStreamProvider(root);
+            JObject result = new JObject();
 
             if (!Request.Content.IsMimeMultipartContent())
             {
@@ -647,17 +648,34 @@ namespace Gordon360.Controllers.Api
                 // Read the form data.
                 await Request.Content.ReadAsMultipartAsync(provider);
 
-                foreach (MultipartFileData file in provider.FileData)
+                foreach (MultipartFileData fileData in provider.FileData)
                 {
-
+                    Debug.WriteLine(fileData.LocalFileName);
                     di = new DirectoryInfo(root); //di is declared at beginning of try.
-                    System.IO.File.Move(file.LocalFileName, di.FullName + fileName); //upload
+
+                    FileInfo f1 = new FileInfo(fileData.LocalFileName);
+                    long size1 = f1.Length;
+                    result.Add("inputlength", f1.Length);
+
+                    System.IO.File.Move(fileData.LocalFileName, Path.Combine(di.FullName, fileName)); //upload
+
+                    FileInfo f2 = new FileInfo(Path.Combine(di.FullName, fileName));
+                    long size2 = f2.Length;
+                    result.Add("outputlength", f2.Length);
+
+
+                    if (size1 < 3000 || size2 < 3000)
+                    {
+                        return BadRequest("This image was lost in transit. Resubmit, fooool!");
+                    }
                 }
-                return Request.CreateResponse(HttpStatusCode.OK);
+                //return Request.CreateResponse(HttpStatusCode.OK);
+                return Ok(result);
             }
             catch (System.Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error uploading the ID photo.");
+                //return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error uploading the ID photo.");
+                return Ok(result);
             }
         }
 
@@ -750,6 +768,37 @@ namespace Gordon360.Controllers.Api
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
             _profileService.UpdateMobilePrivacy(id, value);
+
+            return Ok();
+
+        }
+        /// <summary>
+        /// Update privacy of schedule
+        /// </summary>
+        /// <param name="value">Y or N</param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("schedule_privacy/{value}")]
+        public IHttpActionResult UpdateSchedulePrivacy(string value)
+        {
+            // Verify Input
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
+            _profileService.UpdateSchedulePrivacy(id, value);
 
             return Ok();
 

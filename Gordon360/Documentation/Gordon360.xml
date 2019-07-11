@@ -234,12 +234,38 @@
             <param name="value">Y or N</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateSchedulePrivacy(System.String)">
+            <summary>
+            Update privacy of schedule
+            </summary>
+            <param name="value">Y or N</param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateImagePrivacy(System.String)">
             <summary>
             Update privacy of profile image
             </summary>
             <param name="value">Y or N</param>
             <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ScheduleController.Get">
+            <summary>
+             Gets all schedule objects for a user
+            </summary>
+            <returns>A IEnumerable of schedule objects</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ScheduleController.Get(System.String)">
+            <summary>
+             Gets all schedule objects for a user
+            </summary>
+            <returns>A IEnumerable of schedule objects</returns>
+        </member>
+        <member name="T:Gordon360.Controllers.Api.VersionController">
+            <summary>
+            Get the short git SHA-1 and build date for the backend
+            </summary>
+            <returns>"Git Hash: {hashCode}; Build Time: {date and time}"</returns>
+            <remarks></remarks>
         </member>
         <member name="M:Gordon360.Controllers.Api.SessionsController.Get">
             <summary>Get a list of all sessions</summary>
@@ -263,19 +289,6 @@
             Gets the days left in the current semester
             </summary>
             <returns></returns>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.ActivitiesController.Get">
-            <summary>
-            Get all available activities
-            </summary>
-            <returns>All the activities in the databse</returns>
-            <remarks></remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.ActivitiesController.Get(System.String)">
-            <summary>Get a single activity based upon the string id entered in the URL</summary>
-            <param name="id">An identifier for a single activity</param>
-            <returns></returns>
-            <remarks>Get a single activity from the database</remarks>
         </member>
         <member name="M:Gordon360.Controllers.Api.ActivitiesController.GetActivitiesForSession(System.String)">
             <summary>Gets the activities taking place during a given session</summary>
@@ -327,7 +340,6 @@
         </member>
         <member name="M:Gordon360.Controllers.Api.ActivitiesController.Put(System.String,Gordon360.Models.ACT_INFO)">
             <summary>
-            
             </summary>
             <param name="id"></param>
             <param name="activity"></param>
@@ -1050,6 +1062,11 @@
             <param name="password">Password of the email sender</param>
             <returns></returns>
         </member>
+        <member name="T:Gordon360.Services.MyScheduleService">
+            <summary>
+            Service Class that facilitates data transactions between the MySchedulesController and the MySchedule part of the database model.
+            </summary>
+        </member>
         <member name="M:Gordon360.Services.ProfileService.GetStudentProfileByUsername(System.String)">
             <summary>
             get student profile info
@@ -1115,12 +1132,39 @@
             <param name="id">id</param>
             <param name="value">Y or N</param>
         </member>
+        <member name="M:Gordon360.Services.ProfileService.UpdateSchedulePrivacy(System.String,System.String)">
+            <summary>
+            privacy setting of schedule.
+            </summary>
+            <param name="id">id</param>
+            <param name="value">Y or N</param>
+        </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateImagePrivacy(System.String,System.String)">
             <summary>
             privacy setting user profile photo.
             </summary>
             <param name="id">id</param>
             <param name="value">Y or N</param>
+        </member>
+        <member name="T:Gordon360.Services.ScheduleService">
+            <summary>
+            Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleService.GetScheduleStudent(System.String)">
+            <summary>
+            Fetch the schedule item whose id and session code is specified by the parameter
+            </summary>
+            <param name="id">The id of the student</param>
+            <returns>StudentScheduleViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleService.GetScheduleFaculty(System.String)">
+            <summary>
+            Fetch the schedule item whose id and session code is specified by the parameter
+            </summary>
+            <param name="id">The id of the instructor</param>
+            <param name="session">The session id</param>
+            <returns>StudentScheduleViewModel if found, null if not found</returns>
         </member>
         <member name="M:Gordon360.Services.StudentEmploymentService.GetEmployment(System.String)">
             <summary>
@@ -1376,7 +1420,7 @@
             <param name="requestUrl"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Static.Methods.Helpers.GetDay">
+        <member name="M:Gordon360.Static.Methods.Helpers.GetFirstEventDate">
             <summary>
              Helper function to determine the current academic year
             </summary>

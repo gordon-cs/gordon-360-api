@@ -1,10 +1,4 @@
 import requests
-import colors
-
-# Public configuration options
-import configuration
-# Private configuration options
-import credentials
 
 # Test Components
 
