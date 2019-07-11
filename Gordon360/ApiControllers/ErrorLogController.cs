@@ -55,7 +55,7 @@ namespace Gordon360.ApiControllers
         }
 
 
-        /// <summary>Create a new membership item to be added to database</summary>
+        /// <summary>Create a new error log item to be added to database</summary>
         /// <param name="error_log">The error log containing the ERROR_TIME, and the LOG_MESSAGE</param>
         /// <returns></returns>
         /// <remarks>Posts a new error_log to the server to be added into the database. Useful if you want to input the datetime in the front end for greater accuracy</remarks>

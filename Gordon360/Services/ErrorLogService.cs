@@ -15,7 +15,7 @@ using System.Diagnostics;
 namespace Gordon360.Services
 {
     /// <summary>
-    /// Service Class that facilitates data transactions between the MembershipsController and the Membership database model.
+    /// Service Class that facilitates data transactions between the ErrorLogController and the ERROR_LOG database model.
     /// </summary>
     public class ErrorLogService : IErrorLogService
     {
@@ -34,10 +34,9 @@ namespace Gordon360.Services
         public ERROR_LOG Add(ERROR_LOG error_log)
         {
 
-            // The Add() method returns the added membership.
+            // The Add() method returns the added error_log.
             var payload = _unitOfWork.ErrorLogRepository.Add(error_log);
 
-            // There is a unique constraint in the Database on columns (ID_NUM, PART_LVL, SESS_CDE and ACT_CDE)
             if (payload == null)
             {
                 throw new ResourceCreationException() { ExceptionMessage = "There was an error creating the error_log. Perhaps the error is a duplicate." };
@@ -68,10 +67,9 @@ namespace Gordon360.Services
                 LOG_MESSAGE = error_message,
             };
 
-            // The Add() method returns the added membership.
+            // The Add() method returns the added error_log.
             var payload = _unitOfWork.ErrorLogRepository.Add(error_log);
 
-            // There is a unique constraint in the Database on columns (ID_NUM, PART_LVL, SESS_CDE and ACT_CDE)
             if (payload == null)
             {
                 throw new ResourceCreationException() { ExceptionMessage = "There was an error creating the error_log. Perhaps the error is a duplicate." };
