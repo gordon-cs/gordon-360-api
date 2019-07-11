@@ -68,7 +68,7 @@ The folders for these IIS sites can be found on the 360train machine under `F:\s
 	- Paste that copy in the same place (`F:\Sites`), and rename it to a backup including the date. For example, if you backed up the Train site on January 1, 2001, then the copy would be named `360ApiTrain_backup 1-01-2001`.
 - Open gitbash and cd to `C:\users\cct.service\code\gordon-360-api`. Make sure that you are on the branch you wish to deploy, and that it has been pulled up to date.
 **Note: if you clone a new repository on this VM, it will not have the necessary publish profiles or secrets.config. See [MakePublishProfiles.md](MakePublishProfiles.md) to restore the Publish Profiles.**
-- Start Visual Studio as an administrator (right click) and open the existing project/solution file - `C:\users\cct.service\code\gordon-360-api\Gordon360.sln` (the solution file). 
+- Start Visual Studio as an administrator (right click) and open the existing project/solution file - `C:\users\cct.service\code\gordon-360-api\Gordon360.sln` (the solution file).
 - Menu Bar -> Build - Publish Gordon360.
 - Choose the right publish profile.
     - DEV -- Development ( Connects to the admintrainsql database server, and used for 360train.gordon.edu).
@@ -307,13 +307,13 @@ Here is a breakdown of the project folder:
     - Tests/ - Folder for tests
         - ApiEndpoints/ - I talk about this more in the Testing section.
 
-###Adding New Queries 
+###Adding New Queries
 
 - (*) is your new Title (ex: Membership, Account, Session)
-- (+) is your new stored procedure name (ex: MEMBERSHIPS_PER_STUDENT_ID) 
+- (+) is your new stored procedure name (ex: MEMBERSHIPS_PER_STUDENT_ID)
 - New Files:
     - *Controller.cs under ApiControllers
-        - create new route 
+        - create new route
         - calls the *service function
         - returns ok
     - *Service.cs under Services
@@ -323,23 +323,25 @@ Here is a breakdown of the project folder:
     - *ViewModel.cs under ViewModels
     	- function names correspond to the columns of the data the stored procedure returns (Does not have to be exact names)
     	- static implicit operator converts * model to *ViewModel
-    - +_Result.cs under Models 
+    - +_Result.cs under Models
     	- function names correspond to the columns of the data the stored procedure returns (Have to be exact names)
 - Update Files:
     - ServiceInterfaces.cs under Services
     	- Add a public interface I*/
-    	- Add all functions you have in *Service under this interface 
+    	- Add all functions you have in *Service under this interface
     - IUnitOfWork.cs under Repositories
-    	- Make corresponding IRepository for * (ex. IRepository<STUDENTEMPLOYMENT> StudentEmploymentRepository {get;}) 
+    	- Make corresponding IRepository for * (ex. IRepository<STUDENTEMPLOYMENT> StudentEmploymentRepository {get;})
     - UnitOfWork.cs under Repositories
     	- Make private IRepository<*> variable
-    	- Write public function called *Repository 
+    	- Write public function called *Repository
     - Names.cs under Static Classes
-    	- Add public const string * 
+    	- Add public const string *
     - CCT_DB_MODELS.edmx and CCT_DB_MODELS.Context (Ctrl Shift F and search for CCT_DB_MODELS)
-    	- Add all corresponding parts using StudentEmployment or others as an example 
+    	- Add all corresponding parts using StudentEmployment or others as an example
 
 ## API Endpoints
+
+*Note:* The shell script `get-route-list.sh` is run with `bash get-route-list.sh` from a linux shell or git-bash.  It provides a list of the API routes that appear in the ApiController files.
 
 ### Accounts
 What is it? Resource that represents a gordon account.
