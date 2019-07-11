@@ -101,7 +101,7 @@ namespace Gordon360.Controllers.Api
         /// <param name="value">Y or N</param>
         /// <returns></returns>
         [HttpPut]
-        [Route("schedule_privacy/update/{value}")]
+        [Route("update/privacy/{value}")]
         public IHttpActionResult UpdateSchedulePrivacy(string value)
         {
             // Verify Input
@@ -133,7 +133,7 @@ namespace Gordon360.Controllers.Api
         /// <param name="value">New description</param>
         /// <returns></returns>
         [HttpPut]
-        [Route("description/update/{value}")]
+        [Route("update/description/{value}")]
         public IHttpActionResult UpdateDescription(string value)
         {
             // Verify Input
@@ -165,7 +165,7 @@ namespace Gordon360.Controllers.Api
         /// <param name="value">Datetime in string</param>
         /// <returns></returns>
         [HttpPut]
-        [Route("timestamp/update/{value}")]
+        [Route("update/timestamp/{value}")]
         public IHttpActionResult UpdateModifiedTimeStamp(string value)
         {
             // Verify Input
