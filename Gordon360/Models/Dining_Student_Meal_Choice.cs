@@ -10,10 +10,12 @@
 namespace Gordon360.Models
 {
     using System;
+    using System.Collections.Generic;
     
-    public partial class sp_helpdiagramdefinition_Result
+    public partial class Dining_Student_Meal_Choice
     {
-        public Nullable<int> version { get; set; }
-        public byte[] definition { get; set; }
+        public int id_num { get; set; }
+        public string Meal_Choice_Id { get; set; }
+        public string sess_cde { get; set; }
     }
 }

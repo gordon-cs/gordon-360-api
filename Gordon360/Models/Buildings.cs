@@ -12,11 +12,9 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Dining_Mealplans
+    public partial class Buildings
     {
-        public string Meal_Plan_Description { get; set; }
-        public string Meal_Plan_Type { get; set; }
-        public string Meal_Plan_ID { get; set; }
-        public Nullable<int> Meal_Plan_Initial_Balance { get; set; }
+        public string BLDG_CDE { get; set; }
+        public string BUILDING_DESC { get; set; }
     }
 }

@@ -11,12 +11,11 @@ namespace Gordon360.Models
 {
     using System;
     
-    public partial class sp_helpdiagrams_Result
+    public partial class VICTORY_PROMISE_BY_STUDENT_ID_Result
     {
-        public string Database { get; set; }
-        public string Name { get; set; }
-        public int ID { get; set; }
-        public string Owner { get; set; }
-        public int OwnerID { get; set; }
+        public Nullable<int> TOTAL_VP_IM_SCORE { get; set; }
+        public Nullable<int> TOTAL_VP_CC_SCORE { get; set; }
+        public Nullable<int> TOTAL_VP_LS_SCORE { get; set; }
+        public Nullable<int> TOTAL_VP_LW_SCORE { get; set; }
     }
 }

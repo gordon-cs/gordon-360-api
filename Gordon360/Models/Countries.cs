@@ -12,12 +12,9 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class sysdiagrams
+    public partial class Countries
     {
-        public string name { get; set; }
-        public int principal_id { get; set; }
-        public int diagram_id { get; set; }
-        public Nullable<int> version { get; set; }
-        public byte[] definition { get; set; }
+        public string CTY { get; set; }
+        public string COUNTRY { get; set; }
     }
 }
