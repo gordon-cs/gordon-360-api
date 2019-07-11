@@ -682,6 +682,54 @@ What is it? A resource that represents the campus employments of the currently l
 
 `api/studentemployment` Get the record of campus employments for the currently logged in user.
 
+### Schedule
+What is it? Resource that represents a course schedule of user.
+
+##### GET
+
+`api/schedule` Get all schedule objects of the currently logged in user.
+
+`api/schedule/:username` Get all schedule objects of a user with username `username` as a parameter.
+
+### MySchedule
+What is it? Resource that represents a customized schedule of user.
+
+##### GET
+
+`api/myschedule` Get all myschedule objects of the currently logged in user.
+
+`api/myschedule/:username` Get all myschedule objects of a user with username `username` as a parameter.
+
+##### PUT
+
+`api/myschedule/update` Update a myschedule object of the currently logged in user.
+
+##### POST
+
+`api/myschedule/add`  Create a myschedule object of the currently logged in user.
+
+##### DELETE
+
+`api/myschedule/delete`  Delete a myschedule object of the currently logged in user.
+
+
+### ScheduleControl
+What is it? Resource that represents information related to schedule.
+
+##### GET
+
+`api/schedulecontrol` Get the schedulecontrol object of the currently logged in user.
+
+`api/schedulecontrol/:username` Get the schedulecontrol object of a user with username `username` as a parameter.
+
+##### PUT
+
+`api/schedulecontrol/update/privacy/:value` Update a schedule privacy of the currently logged in user.
+
+`api/schedulecontrol/update/description/:value` Update a schedule description of the currently logged in user.
+
+`api/schedulecontrol/update/timestamp/:value` Update a timestamp of last modified schedule of the currently logged in user.
+
 
 ### Victory Promise
 What is it? Resource that represents the user's scores on the four pillars of the victory promise.
