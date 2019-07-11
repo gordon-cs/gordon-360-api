@@ -22,24 +22,28 @@ namespace Gordon360.Models.ViewModels
         public Nullable<System.TimeSpan> BeginTime { get; set; }
         public Nullable<System.TimeSpan> EndTime { get; set; }
 
-        // Modeled more like EventViewModel, should this be more like the others that return vm?
-        public MyScheduleViewModel(MYSCHEDULE sch)
-        {
-            EventID = sch.EVENT_ID;
-            GordonID = sch.GORDON_ID;
-            Location = sch.LOCATION ?? ""; // For Null locations;
-            Description = sch.DESCRIPTION ?? ""; // For Null descriptions
-            MonCode = sch.MON_CDE.Trim() ?? ""; // For Null days
-            TueCode = sch.TUE_CDE.Trim() ?? ""; // For Null days
-            WedCode = sch.WED_CDE.Trim() ?? ""; // For Null days
-            ThuCode = sch.THU_CDE.Trim() ?? ""; // For Null days
-            FriCode = sch.FRI_CDE.Trim() ?? ""; // For Null days
-            SatCode = sch.SAT_CDE.Trim() ?? ""; // For Null days
-            SunCode = sch.SUN_CDE.Trim() ?? ""; // For Null days
-            IsAllDay = sch.IS_ALLDAY;
-            BeginTime = sch.BEGIN_TIME;
-            EndTime = sch.END_TIME;
 
+        public static implicit operator MyScheduleViewModel(MYSCHEDULE sch)
+        {
+            MyScheduleViewModel vm = new MyScheduleViewModel
+            {
+                EventID = sch.EVENT_ID,
+            GordonID = sch.GORDON_ID,
+            Location = sch.LOCATION ?? "", // For Null locations;
+            Description = sch.DESCRIPTION ?? "", // For Null descriptions
+            MonCode = sch.MON_CDE.Trim() ?? "", // For Null days
+            TueCode = sch.TUE_CDE.Trim() ?? "", // For Null days
+            WedCode = sch.WED_CDE.Trim() ?? "", // For Null days
+            ThuCode = sch.THU_CDE.Trim() ?? "", // For Null days
+            FriCode = sch.FRI_CDE.Trim() ?? "", // For Null days
+            SatCode = sch.SAT_CDE.Trim() ?? "", // For Null days
+            SunCode = sch.SUN_CDE.Trim() ?? "", // For Null days
+            IsAllDay = sch.IS_ALLDAY,
+            BeginTime = sch.BEGIN_TIME,
+            EndTime = sch.END_TIME,
+        };
+
+            return vm;
         }
     }
 }

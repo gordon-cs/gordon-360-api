@@ -174,10 +174,10 @@ namespace Gordon360.Services
 
         public interface IMyScheduleService
     {
-        IEnumerable<MyScheduleViewModel> GetAllForID(string gordon_id);
-        //MYSCHEDULE Add(MYSCHEDULE myschedule);
-        //MYSCHEDULE Update(MYSCHEDULE myschedule);
-        //MYSCHEDULE Delete(string event_id, string gordon_id);
+        IEnumerable<MYSCHEDULE> GetAllForID(string gordon_id);
+        MYSCHEDULE Add(MYSCHEDULE myschedule);
+        MYSCHEDULE Update(MYSCHEDULE myschedule);
+        MYSCHEDULE Delete(string event_id, string gordon_id);
     }
     public interface IContentManagementService
     {

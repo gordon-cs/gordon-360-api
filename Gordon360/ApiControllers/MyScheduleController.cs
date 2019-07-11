@@ -80,60 +80,94 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
                 
-        //
-        //        /// <summary>Create a new myschedule to be added to database</summary>
-        //        /// <param name="myschedule">The myschedule item containing all required and relevant information</param>
-        //        /// <returns></returns>
-        //        /// <remarks>Posts a new myschedule to the server to be added into the database</remarks>
-        //        // POST api/<controller>
-        //        [HttpPost]
-        //        [Route("add")]
-        //        public IHttpActionResult Post([FromBody] MYSCHEDULE mySchedule)
-        //        {
-        //            if (!ModelState.IsValid || mySchedule == null)
-        //            {
-        //                string errors = "";
-        //                foreach (var modelstate in ModelState.Values)
-        //                {
-        //                    foreach (var error in modelstate.Errors)
-        //                    {
-        //                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-        //                    }
-        //
-        //                }
-        //                throw new BadInputException() { ExceptionMessage = errors };
-        //            }
-        //
-        //            var result = _myScheduleService.Add(mySchedule);
-        //
-        //            if (result == null)
-        //            {
-        //                return NotFound();
-        //            }
-        //
-        //            return Created("myschedule", mySchedule);
-        //        }
-        //
-        //        /// <summary>Delete an existing myschedule item</summary>
-        //        /// <param name="event_id">The identifier for the myschedule to be deleted</param>
-        //        /// <remarks>Calls the server to make a call and remove the given myschedule from the database</remarks>
-        //        // DELETE api/<controller>/5
-        //        [HttpDelete]
-        //        [Route("delete/{event_id}")]
-        //        public IHttpActionResult Delete(string event_id) //TODO: MAKE THIS USE THE KEY OF THE MYSCHEDULE TABLE
-        //        {
-        //            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-        //            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-        //
-        //            var id = _accountService.GetAccountByUsername(username).GordonID;
-        //            var result = _myScheduleService.Delete(event_id,id);
-        //
-        //            if (result == null)
-        //            {
-        //                return NotFound();
-        //            }
-        //
-        //            return Ok(result);
-        //        }
+
+        /// <summary>Create a new myschedule to be added to database</summary>
+        /// <param name="mySchedule">The myschedule item containing all required and relevant information</param>
+        /// <returns>Created schedule</returns>
+        /// <remarks>Posts a new myschedule to the server to be added into the database</remarks>
+        // POST api/<controller>
+        [HttpPost]
+        [Route("add")]
+        public IHttpActionResult Post([FromBody] MYSCHEDULE mySchedule)
+        {
+            if (!ModelState.IsValid || mySchedule == null)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            var result = _myScheduleService.Add(mySchedule);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Created("myschedule", mySchedule);
+        }
+
+        /// <summary>Delete an existing myschedule item</summary>
+        /// <param name="event_id">The identifier for the myschedule to be deleted</param>
+        /// <remarks>Calls the server to make a call and remove the given myschedule from the database</remarks>
+        // DELETE api/<controller>/5
+        [HttpDelete]
+        [Route("delete/{event_id}")]
+        public IHttpActionResult Delete(string event_id) //TODO: MAKE THIS USE THE KEY OF THE MYSCHEDULE TABLE
+        {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+            var result = _myScheduleService.Delete(event_id,id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+        /// <summary>Update the existing myschedule in database</summary>
+        /// <param name="mySchedule">The updated myschedule item containing all required and relevant information</param>
+        /// <returns>Original schedule</returns>
+        /// <remarks>Put a myschedule to the server to be updated</remarks>
+        // POST api/<controller>
+        [HttpPost]
+        [Route("update")]
+        public IHttpActionResult Put([FromBody] MYSCHEDULE mySchedule)
+        {
+            if (!ModelState.IsValid || mySchedule == null)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            var result = _myScheduleService.Update(mySchedule);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
     }
 }

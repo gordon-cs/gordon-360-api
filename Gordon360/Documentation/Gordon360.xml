@@ -196,6 +196,23 @@
             </summary>
             <returns>A IEnumerable of myschedule objects</returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.MyScheduleController.Post(Gordon360.Models.MYSCHEDULE)">
+            <summary>Create a new myschedule to be added to database</summary>
+            <param name="mySchedule">The myschedule item containing all required and relevant information</param>
+            <returns>Created schedule</returns>
+            <remarks>Posts a new myschedule to the server to be added into the database</remarks>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.MyScheduleController.Delete(System.String)">
+            <summary>Delete an existing myschedule item</summary>
+            <param name="event_id">The identifier for the myschedule to be deleted</param>
+            <remarks>Calls the server to make a call and remove the given myschedule from the database</remarks>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.MyScheduleController.Put(Gordon360.Models.MYSCHEDULE)">
+            <summary>Update the existing myschedule in database</summary>
+            <param name="mySchedule">The updated myschedule item containing all required and relevant information</param>
+            <returns>Original schedule</returns>
+            <remarks>Put a myschedule to the server to be updated</remarks>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ScheduleControlController.Get">
             <summary>
             Get schedule information of local user
@@ -1126,6 +1143,28 @@
             </summary>
             <param name="gordon_id">The myschedule id</param>
             <returns>MyScheduleViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.MyScheduleService.Add(Gordon360.Models.MYSCHEDULE)">
+            <summary>
+            Adds a new mySchedule record to storage.
+            </summary>
+            <param name="mySchedule">The membership to be added</param>
+            <returns>The newly added mySchedule object</returns>
+        </member>
+        <member name="M:Gordon360.Services.MyScheduleService.Delete(System.String,System.String)">
+            <summary>
+            Delete the myschedule whose id is specified by the parameter.
+            </summary>
+            <param name="event_id">The myschedule id</param>
+            <param name="gordon_id">The gordon id</param>
+            <returns>The myschedule that was just deleted</returns>
+        </member>
+        <member name="M:Gordon360.Services.MyScheduleService.Update(Gordon360.Models.MYSCHEDULE)">
+            <summary>
+            Update the myschedule item.
+            </summary>
+            <param name="sched">The schedule information</param>
+            <returns>The original schedule</returns>
         </member>
         <member name="M:Gordon360.Services.ProfileService.GetStudentProfileByUsername(System.String)">
             <summary>
