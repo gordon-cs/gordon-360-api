@@ -392,6 +392,8 @@ namespace Gordon360.AuthorizationFilters
                         return false; // Only super admin can add Advisors through this API
                 case Resource.ADMIN:
                     return false;
+                case Resource.ERROR_LOG:
+                    return true;
                 default: return false;
             }
         }

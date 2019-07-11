@@ -18,5 +18,13 @@ namespace Gordon360.Models
         public string ACT_DESC { get; set; }
         public string ACT_TYPE { get; set; }
         public string ACT_TYPE_DESC { get; set; }
+        public int VPM_IM { get; set; }
+        public int VPM_CC { get; set; }
+        public int VPM_LS { get; set; }
+        public int VPM_LW { get; set; }
+        public int VPL_IM { get; set; }
+        public int VPL_CC { get; set; }
+        public int VPL_LS { get; set; }
+        public int VPL_LW { get; set; }
     }
 }

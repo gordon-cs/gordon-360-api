@@ -12,12 +12,9 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class sysdiagrams
+    public partial class Buildings
     {
-        public string name { get; set; }
-        public int principal_id { get; set; }
-        public int diagram_id { get; set; }
-        public Nullable<int> version { get; set; }
-        public byte[] definition { get; set; }
+        public string BLDG_CDE { get; set; }
+        public string BUILDING_DESC { get; set; }
     }
 }

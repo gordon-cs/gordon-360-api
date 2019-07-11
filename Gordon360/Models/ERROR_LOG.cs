@@ -10,10 +10,12 @@
 namespace Gordon360.Models
 {
     using System;
+    using System.Collections.Generic;
     
-    public partial class sp_helpdiagramdefinition_Result
+    public partial class ERROR_LOG
     {
-        public Nullable<int> version { get; set; }
-        public byte[] definition { get; set; }
+        public int LOG_ID { get; set; }
+        public System.DateTime LOG_TIME { get; set; }
+        public string LOG_MESSAGE { get; set; }
     }
 }

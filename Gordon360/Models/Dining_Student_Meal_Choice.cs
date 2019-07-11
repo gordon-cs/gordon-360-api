@@ -10,16 +10,12 @@
 namespace Gordon360.Models
 {
     using System;
+    using System.Collections.Generic;
     
-    public partial class ALL_SUPERVISORS_Result
+    public partial class Dining_Student_Meal_Choice
     {
-        public int SupervisorID { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public int IDNumber { get; set; }
-        public string ActivityCode { get; set; }
-        public string ActivityDescription { get; set; }
-        public string SessionCode { get; set; }
-        public string SessionDescription { get; set; }
+        public int id_num { get; set; }
+        public string Meal_Choice_Id { get; set; }
+        public string sess_cde { get; set; }
     }
 }

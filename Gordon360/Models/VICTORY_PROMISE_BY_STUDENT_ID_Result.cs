@@ -11,10 +11,11 @@ namespace Gordon360.Models
 {
     using System;
     
-    public partial class ALL_EVENTS_PER_STUDENT_Result
+    public partial class VICTORY_PROMISE_BY_STUDENT_ID_Result
     {
-        public Nullable<System.DateTime> Date { get; set; }
-        public Nullable<System.DateTime> Time { get; set; }
-        public string EventID { get; set; }
+        public Nullable<int> TOTAL_VP_IM_SCORE { get; set; }
+        public Nullable<int> TOTAL_VP_CC_SCORE { get; set; }
+        public Nullable<int> TOTAL_VP_LS_SCORE { get; set; }
+        public Nullable<int> TOTAL_VP_LW_SCORE { get; set; }
     }
 }

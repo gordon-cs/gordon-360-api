@@ -12,14 +12,16 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class DiningInfo
+    public partial class RoomAssign
     {
-        public int StudentId { get; set; }
-        public string SessionCode { get; set; }
-        public string ChoiceDescription { get; set; }
-        public string PlanDescriptions { get; set; }
-        public string PlanId { get; set; }
-        public string PlanType { get; set; }
-        public Nullable<int> InitialBalance { get; set; }
+        public string SESS_CDE { get; set; }
+        public string BLDG_LOC_CDE { get; set; }
+        public string BLDG_CDE { get; set; }
+        public string ROOM_CDE { get; set; }
+        public int ROOM_SLOT_NUM { get; set; }
+        public Nullable<int> ID_NUM { get; set; }
+        public string ROOM_TYPE { get; set; }
+        public string ROOM_ASSIGN_STS { get; set; }
+        public Nullable<System.DateTime> ASSIGN_DTE { get; set; }
     }
 }

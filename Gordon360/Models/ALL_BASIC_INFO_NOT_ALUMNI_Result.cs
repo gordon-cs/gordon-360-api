@@ -11,9 +11,11 @@ namespace Gordon360.Models
 {
     using System;
     
-    public partial class DISTINCT_ACT_TYPE_Result
+    public partial class ALL_BASIC_INFO_NOT_ALUMNI_Result
     {
-        public string ACT_TYPE { get; set; }
-        public string ACT_TYPE_DESC { get; set; }
+        public string Firstname { get; set; }
+        public string Lastname { get; set; }
+        public string Username { get; set; }
+        public string ConcatonatedInfo { get; set; }
     }
 }

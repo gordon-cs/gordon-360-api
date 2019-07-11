@@ -74,6 +74,7 @@ namespace Gordon360.Services
         ActivityInfoViewModel Get(string id);
         IEnumerable<ActivityInfoViewModel> GetAll();
     }
+
     public interface IAdministratorService
     {
         ADMIN Get(int id);
@@ -82,6 +83,7 @@ namespace Gordon360.Services
         ADMIN Add(ADMIN admin);
         ADMIN Delete(int id);
     }
+
     public interface IEmailService
     {
         // Get emails for the current session.
@@ -97,8 +99,14 @@ namespace Gordon360.Services
         // Send emails
         void SendEmails(string [] to_emails, string to_email, string subject, string email_content, string password);
         void SendEmailToActivity(string activityCode, string sessionCode, string from_email, string subject, string email_content, string password);
-
     }
+
+    public interface IErrorLogService
+    {
+        ERROR_LOG Add(ERROR_LOG error_log);
+        ERROR_LOG Log(string error_message);
+    }
+
     public interface ISessionService
     {
         SessionViewModel Get(string id);

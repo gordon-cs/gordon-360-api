@@ -13,12 +13,9 @@ namespace Gordon360.Models
     
     public partial class PHOTO_INFO_PER_USER_NAME_Result
     {
-        public string Img_Path { get; set; }
         public string Img_Name { get; set; }
-        public string Pref_Img_Path { get; set; }
+        public string Img_Path { get; set; }
         public string Pref_Img_Name { get; set; }
-        public int preffered_photo { get; set; }
-        public int show_pic { get; set; }
-        public string EmailUserName { get; set; }
+        public string Pref_Img_Path { get; set; }
     }
 }
