@@ -318,13 +318,9 @@ Here is a breakdown of the project folder:
         - returns ok
     - *Service.cs under Services
     	- calls the stored procedure that returns view model
-    - *.cs under Models
-    	- Function names correspond to the columns of the data the stored procedure returns (Have to be exact names)
     - *ViewModel.cs under ViewModels
     	- function names correspond to the columns of the data the stored procedure returns (Does not have to be exact names)
     	- static implicit operator converts * model to *ViewModel
-    - +_Result.cs under Models
-    	- function names correspond to the columns of the data the stored procedure returns (Have to be exact names)
 - Update Files:
     - ServiceInterfaces.cs under Services
     	- Add a public interface I*/
@@ -336,8 +332,6 @@ Here is a breakdown of the project folder:
     	- Write public function called *Repository
     - Names.cs under Static Classes
     	- Add public const string *
-    - CCT_DB_MODELS.edmx and CCT_DB_MODELS.Context (Ctrl Shift F and search for CCT_DB_MODELS)
-    	- Add all corresponding parts using StudentEmployment or others as an example
 
 ## API Endpoints
 
