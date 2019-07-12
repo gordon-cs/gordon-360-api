@@ -697,20 +697,15 @@ What is it? Resource that represents the user's scores on the four pillars of th
 ### Introduction
 
 A test suite is available at `Tests/ApiEndpoints` to exercise the different endpoints. The most important files here are:
-- `gordon_360_tests_leader.py` -- Tests the api endpoints while authorized as an activity leader.
-- `gordon_360_tests_member.py` -- Tests the api endpoints while authorized as a regular member.
-- `test_config.py` -- Configuration options, includes the following variables:
-    - `activity_code` -- The activity that will be used for testing. Tests under `gordon_360_tests_leader.py` assume the account used for testing is a leader of this activity. Tests under `gordon_360_tests_member.py` assume the account used for testing is a member of this activity.
+- `test_gordon360_pytest` -- Stores all the tests.
+    - `activity_code` -- The activity that will be used for testing.
     - `random_id_number` -- A random id number that is used when we want to verify if we can do things on behalf of someone else. E.g. An advisor can create memberships for anyone. A regular member can only create a membership for him/herself.
     - `leadership_positions` -- A list of participation levels considered to be leadership positions.
     - `hostURL` -- Base url of the api
-- `test_credentials.py` -- (If you cloned the project, you need to create this file) File with credentials the test program will use.
-	- `username` -- String with the username of a test account that is a member of `activity_code` in `test_config.py`.
-	- `password` -- String with the password of a test account that is a member of `activity_code` in `test_config.py`.
+	- `username` -- String with the username of a test account that is a member of `activity_code`
+	- `password` -- String with the password of a test account that is a member of `activity_code`
 	- `id_number` -- Integer with the id number of the `username`.
-	- `username_activity_leader` -- String with the username of a test account that is a leader of `activity_code` in `test_config.py`.
-	- `password_activity_leader` -- String with the password of a test account that is a leader of `activity_code` in `test_config.py`.
-	- `id_number_activity_leader` -- Integer with the id number of the `username_leader`.
+	- `username_activity_leader` -- String with the username of a test account that is a leader of `activity_code`
 
 ### Running the Tests
 
@@ -720,18 +715,14 @@ Clone the project from the github site:
 Navigate to the API Tests folder:
 `cd gordon-360-api/Tests/ApiEndpoints/`
 
-Install the python request module as well as other requirements with the command: `pip install -r requirements.txt`
+Install pytest: `pip install -U pytest`
 
-Create the `test_credentials.py` file (or copy it with `cp /c/users/public/documents/test_credentials.py .` -- notice the trailing dot).  It should define the six variables mentioned above (`username`, `password`, `id_number`, etc.)
-
-Make sure the credentials you enter match the descriptions provided above.
-
-Verify that the variables defined in `test_config.py` are correct.
+Check the `hostURL` in test_gordon360_pytest.py if it is pointing to the correct backend 
 
 Run the tests:
-`python3 gordon_360_tests.py` -- This runs all the tests. For both members and leaders.
-`python3 gordon_360_tests_member.py` -- This runs the tests for members.
-`python3 gordon_360_tests_leader.py` -- This runs the tests for leaders.
+`pytest` -- This runs all the tests.
+`pytest test_gordon360_pytest.py -k '{name of def}'` -- This runs a specific test based on {name of def}.
+
 
 ### Manual Testing
 
