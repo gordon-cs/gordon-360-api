@@ -21,7 +21,7 @@ namespace Gordon360.ApiControllers
             _eventService = new EventService(unitOfWork);
         }
         
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         [Route("chapel/")]
         public IHttpActionResult GetAllForStudent()
@@ -54,7 +54,7 @@ namespace Gordon360.ApiControllers
             return Ok(result);
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         [Route("chapel/{term}")]
         public IHttpActionResult GetEventsForStudentByTerm(string term)
@@ -86,7 +86,7 @@ namespace Gordon360.ApiControllers
             return Ok(result);
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         [Route("25Live/type/{Type_ID}")]
         public IHttpActionResult GetEventsByType(string Type_ID)
@@ -119,7 +119,7 @@ namespace Gordon360.ApiControllers
 
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         [Route("25Live/{Event_ID}")]
         public IHttpActionResult GetEventsByID(string Event_ID)
@@ -187,7 +187,7 @@ namespace Gordon360.ApiControllers
 
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         [Route("25Live/CLAW")]
         public IHttpActionResult GetAllChapelEvents()
@@ -222,27 +222,27 @@ namespace Gordon360.ApiControllers
 
         [HttpGet]
         [Route("25Live/Public")]
-        public IHttpActionResult GetAllChapelEvents()
+        public IHttpActionResult GetAllPublicEvents()
         {
-        //    String url = "https://25livepub.collegenet.com/calendars/all-events-calendar";
-        //    XmlReader reader = XmlReader.Create(url);
-        //    SyndicationFeed feed = SyndicationFeed.Load(reader);
-        //    reader.Close();
-        //    String title;
-        //    String pubdate;
-        //    String date;
-        //    String time;
-        //    foreach (SyndicationItem item in feed.Items)
-        //    {
-        //        title = item.title.Text;
-        //        pubdate = item.pubDate;
-        //        date = pubdate.Substring(0,10);
-        //        time = pubdate.Substring(12,16);
-        //    }
-        //    String[] eventsInfo;
-        //    return eventsInfo;
-        //    
-        if (!ModelState.IsValid)
+            //    String url = "https://25livepub.collegenet.com/calendars/all-events-calendar";
+            //    XmlReader reader = XmlReader.Create(url);
+            //    SyndicationFeed feed = SyndicationFeed.Load(reader);
+            //    reader.Close();
+            //    String title;
+            //    String pubdate;
+            //    String date;
+            //    String time;
+            //    foreach (SyndicationItem item in feed.Items)
+            //    {
+            //        title = item.title.Text;
+            //        pubdate = item.pubDate;
+            //        date = pubdate.Substring(0,10);
+            //        time = pubdate.Substring(12,16);
+            //    }
+            //    String[] eventsInfo;
+            //    return eventsInfo;
+            //    
+            if (!ModelState.IsValid)
             {
                 string errors = "";
                 foreach (var modelstate in ModelState.Values)
@@ -257,8 +257,7 @@ namespace Gordon360.ApiControllers
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var result = _eventService.GetAllEvents(Static.Data.Data.AllEvents).Where( x => x.Category_Id == "85");
-
+            var result = _eventService.GetAllEvents(Static.Data.Data.AllEvents);
 
             if (result == null)
             {
