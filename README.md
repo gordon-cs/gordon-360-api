@@ -31,6 +31,9 @@ Dive in.
     - [Sessions](#sessions)
     - [Dining](#dining)    
     - [Student Employment](#student-employment)
+    - [Schedule] (#schedule)
+    - [MySchedule] (#myschedule)
+    - [Schedule Control] (#schedule-control)
     - [Victory Promise](#victory-promise)
 - [API Testing](#api-testing)
     - [Introduction](#introduction)
@@ -156,6 +159,38 @@ A record in this table stores:
 - linkedin - The URL of the user's linkedin without its domain name
 
 Users don't exist in the table unless they add/edit their social media links on 360 site. Once a user adds any links, the user will be added to the table. This logic is done so that there won't be unused users in the table which can possibly slow down the website.
+
+###### MYSCHEDULE
+
+A record in this table stores:
+
+- EVENT_ID - The event id number of this schedule (always has to be above 1000, to differentiate between a course schedule)
+- GORDON_ID - The gordon id number of the user having this event
+- LOCATION - The location of the event
+- DESCRIPTION - The description of the event
+- MON_CDE - Whether or not the event is in monday ('M')
+- TUE_CDE - Whether or not the event is in tuesday ('T')
+- WED_CDE - Whether or not the event is in wednesday ('W')
+- THU_CDE - Whether or not the event is in thursday ('R')
+- FRI_CDE - Whether or not the event is in friday ('F')
+- SAT_CDE - Whether or not the event is in saturday ('S')
+- SUN_CDE - Whether or not the event is in sunday ('N')
+- IS_ALLDAY - Whether or not the event is happening for all day
+- BEGIN_TIME - The start time of the event
+- END_TIME - The end time of the event
+
+Myschedules doesn't exist in the table unless a user add/edit myschedule on 360 site. Once a user adds any customized event, the event will be added to the table. The structure is adopted from the course schedule format stored in other database. There are two primary keys - EVENT_ID and GORDON_ID. They have to match together to get any event schedule
+
+###### Schedule_Control
+
+A record in this table stores:
+
+- IsSchedulePrivate - Whether or not the schedule is private (only applied to students and their course schedule. FacStaff and mySchedule won't be affected)
+- ModifiedTimeStamp - The last time when the user modified the event or description
+- Description - The schedule description for additional links
+- gordon_id - The gordon id number of the current user
+
+Schedule Controls also don't exist in the table unless a user add/edit their settings on 360 site.
 
 ###### JNZB_ACTIVITIES
 
@@ -713,7 +748,7 @@ What is it? Resource that represents a customized schedule of user.
 `api/myschedule/delete`  Delete a myschedule object of the currently logged in user.
 
 
-### ScheduleControl
+### Schedule Control
 What is it? Resource that represents information related to schedule.
 
 ##### GET
