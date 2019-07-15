@@ -313,6 +313,22 @@ It's sometimes useful to look at the database directly, to see the schema or che
 * To see schemas, expand "dbo." entries and their "columns"
 * To see data, right-click a view and select "Select top 1000 rows"
 
+### Updating .edmx
+
+Everytime you update the database with new table, column, view or stored procedure, or modify the existing ones with different parameters or return values, you need to get the corresponding Entity Database Model XML in API. Editing it manually is not recommended, since it may cause unexpected errors such as PublicStudentData error.
+
+Visual Studio provides auto-generation of .edmx file, with the following procedure:
+* Use remote desktop to get to the Windows server VM
+* Open Visual Studio and load the solution file
+* In solution explorer, expand "Models" folder and delete the previous CCT_DB_MODELS.edmx by right-click on it and press delete (It's okay, we can remake it)
+* Right-click "Models", expand "Add" and press "new Item" (If you can see ADO.NET Entity Data Model in here, you may press that as well)
+* Under Visual C# panel, access to "Data" and find ADO.NET Entity Data Model. Name it as "CCT_DB_Models" and create it
+* In the Wizard, default option would be "EF Designer from database". If it is not, changed to this option and head next
+* While you choose your data connection, make sure the connection is "CCTEntities (Gordon360)" and you checked "Save connection setting in Web.Config as:". Also, the saved settings should be named as "CCTEntities1"
+* Next, you will see the wizard retrieving the database objects from our CCT database. check all boxes in the panel but you should uncheck the option "Pluralize or singularize generated object names"
+* Name the Model Namespace as "Gordon360" and press finish
+
+
 ## The Code
 
 ### Introduction
