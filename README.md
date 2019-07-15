@@ -31,6 +31,9 @@ Dive in.
     - [Sessions](#sessions)
     - [Dining](#dining)    
     - [Student Employment](#student-employment)
+    - [Schedule] (#schedule)
+    - [MySchedule] (#myschedule)
+    - [Schedule Control] (#schedule-control)
     - [Victory Promise](#victory-promise)
 - [API Testing](#api-testing)
     - [Introduction](#introduction)
@@ -157,6 +160,38 @@ A record in this table stores:
 
 Users don't exist in the table unless they add/edit their social media links on 360 site. Once a user adds any links, the user will be added to the table. This logic is done so that there won't be unused users in the table which can possibly slow down the website.
 
+###### MYSCHEDULE
+
+A record in this table stores:
+
+- EVENT_ID - The event id number of this schedule (always has to be above 1000, to differentiate between a course schedule)
+- GORDON_ID - The gordon id number of the user having this event
+- LOCATION - The location of the event
+- DESCRIPTION - The description of the event
+- MON_CDE - Whether or not the event is in monday ('M')
+- TUE_CDE - Whether or not the event is in tuesday ('T')
+- WED_CDE - Whether or not the event is in wednesday ('W')
+- THU_CDE - Whether or not the event is in thursday ('R')
+- FRI_CDE - Whether or not the event is in friday ('F')
+- SAT_CDE - Whether or not the event is in saturday ('S')
+- SUN_CDE - Whether or not the event is in sunday ('N')
+- IS_ALLDAY - Whether or not the event is happening for all day
+- BEGIN_TIME - The start time of the event
+- END_TIME - The end time of the event
+
+Myschedules doesn't exist in the table unless a user add/edit myschedule on 360 site. Once a user adds any customized event, the event will be added to the table. The structure is adopted from the course schedule format stored in other database. There are two primary keys - EVENT_ID and GORDON_ID. They have to match together to get any event schedule
+
+###### Schedule_Control
+
+A record in this table stores:
+
+- IsSchedulePrivate - Whether or not the schedule is private (only applied to students and their course schedule. FacStaff and mySchedule won't be affected)
+- ModifiedTimeStamp - The last time when the user modified the event or description
+- Description - The schedule description for additional links
+- gordon_id - The gordon id number of the current user
+
+Schedule Controls also don't exist in the table unless a user add/edit their settings on 360 site.
+
 ###### JNZB_ACTIVITIES
 
 A record in this table stores all the same fields as an Activity table in Jenzabar would.
@@ -277,6 +312,22 @@ It's sometimes useful to look at the database directly, to see the schema or che
 * Expand "Databases" then "CCT" then "Views"
 * To see schemas, expand "dbo." entries and their "columns"
 * To see data, right-click a view and select "Select top 1000 rows"
+
+### Updating .edmx
+
+Everytime you update the database with new table, column, view or stored procedure, or modify the existing ones with different parameters or return values, you need to get the corresponding Entity Database Model XML in API. Editing it manually is not recommended, since it may cause unexpected errors such as PublicStudentData error.
+
+Visual Studio provides auto-generation of .edmx file, with the following procedure:
+* Use remote desktop to get to the Windows server VM
+* Open Visual Studio and load the solution file
+* In solution explorer, expand "Models" folder and delete the previous CCT_DB_MODELS.edmx by right-click on it and press delete (It's okay, we can remake it)
+* Right-click "Models", expand "Add" and press "new Item" (If you can see ADO.NET Entity Data Model in here, you may press that as well)
+* Under Visual C# panel, access to "Data" and find ADO.NET Entity Data Model. Name it as "CCT_DB_Models" and create it
+* In the Wizard, default option would be "EF Designer from database". If it is not, changed to this option and head next
+* While you choose your data connection, make sure the connection is "CCTEntities (Gordon360)" and you checked "Save connection setting in Web.Config as:". Also, the saved settings should be named as "CCTEntities1"
+* Next, you will see the wizard retrieving the database objects from our CCT database. check all boxes in the panel but you should uncheck the option "Pluralize or singularize generated object names"
+* Name the Model Namespace as "Gordon360" and press finish
+
 
 ## The Code
 
@@ -677,6 +728,54 @@ What is it? A resource that represents the campus employments of the currently l
 ##### GET
 
 `api/studentemployment` Get the record of campus employments for the currently logged in user.
+
+### Schedule
+What is it? Resource that represents a course schedule of user.
+
+##### GET
+
+`api/schedule` Get all schedule objects of the currently logged in user.
+
+`api/schedule/:username` Get all schedule objects of a user with username `username` as a parameter.
+
+### MySchedule
+What is it? Resource that represents a customized schedule of user.
+
+##### GET
+
+`api/myschedule` Get all myschedule objects of the currently logged in user.
+
+`api/myschedule/:username` Get all myschedule objects of a user with username `username` as a parameter.
+
+##### PUT
+
+`api/myschedule/` Update a myschedule object of the currently logged in user.
+
+##### POST
+
+`api/myschedule/`  Create a myschedule object of the currently logged in user.
+
+##### DELETE
+
+`api/myschedule/`  Delete a myschedule object of the currently logged in user.
+
+
+### Schedule Control
+What is it? Resource that represents information related to schedule.
+
+##### GET
+
+`api/schedulecontrol` Get the schedulecontrol object of the currently logged in user.
+
+`api/schedulecontrol/:username` Get the schedulecontrol object of a user with username `username` as a parameter.
+
+##### PUT
+
+`api/schedulecontrol/privacy/:value` Update a schedule privacy of the currently logged in user.
+
+`api/schedulecontrol/description/:value` Update a schedule description of the currently logged in user.
+
+`api/schedulecontrol/timestamp/:value` Update a timestamp of last modified schedule of the currently logged in user.
 
 
 ### Victory Promise

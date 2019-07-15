@@ -772,37 +772,7 @@ namespace Gordon360.Controllers.Api
             return Ok();
 
         }
-        /// <summary>
-        /// Update privacy of schedule
-        /// </summary>
-        /// <param name="value">Y or N</param>
-        /// <returns></returns>
-        [HttpPut]
-        [Route("schedule_privacy/{value}")]
-        public IHttpActionResult UpdateSchedulePrivacy(string value)
-        {
-            // Verify Input
-            if (!ModelState.IsValid)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
 
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
-            _profileService.UpdateSchedulePrivacy(id, value);
-
-            return Ok();
-
-        }
         /// <summary>
         /// Update privacy of profile image
         /// </summary>

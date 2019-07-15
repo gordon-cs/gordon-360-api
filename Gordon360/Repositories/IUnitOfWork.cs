@@ -16,7 +16,7 @@ namespace Gordon360.Repositories
         IRepository<CM_SESSION_MSTR> SessionRepository { get; }
         IRepository<JNZB_ACTIVITIES> JenzibarActvityRepository { get; }
         IRepository<MEMBERSHIP> MembershipRepository { get; }
-
+        
         IRepository<MYSCHEDULE> MyScheduleRepository { get; }
         IRepository<PART_DEF> ParticipationRepository { get; }
         IRepository<SUPERVISOR> SupervisorRepository { get; }
@@ -26,6 +26,7 @@ namespace Gordon360.Repositories
         IRepository<CUSTOM_PROFILE> ProfileCustomRepository { get; }
         IRepository<ChapelEvent> ChapelEventRepository { get; }
         IRepository<DiningInfo> DiningInfoRepository { get; }
+        IRepository<Schedule_Control> ScheduleControlRepository { get; }
 
         // Note -- Only use this repository to call SQL Stored Procedures
         IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> ActivityPerSessionRepository { get;  }

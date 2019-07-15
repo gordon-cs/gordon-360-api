@@ -29,119 +29,174 @@ namespace Gordon360.Services
         /// <summary>
         /// Fetch the myschedule item whose id is specified by the parameter
         /// </summary>
-        /// <param name="id">The myschedule id</param>
+        /// <param name="gordon_id">The myschedule id</param>
         /// <returns>MyScheduleViewModel if found, null if not found</returns>
-//       public IEnumerable<MyScheduleViewModel> Get(int id)
-//       {
-//           var query = _unitOfWork.MyScheduleRepository.GetById(id);
-//           if (query == null)
-//           {
-//               throw new ResourceNotFoundException() { ExceptionMessage = "The MySchedule was not found." };
-//           }
-//
-//           var idParam = new SqlParameter("@MYSCHEDULE_ID", id);
-//           var result = RawSqlQuery<MyScheduleViewModel>.query("MYSCHEDULE_PER_MYSCHEDULE_ID @MYSCHEDULE_ID", idParam); // TODO: write prepared statement
-//
-//           if (result == null)
-//           {
-//               return null;
-//           }
-//           // Getting rid of database-inherited whitespace
-//           foreach (var myScheduleItem in result)
-//           {
-//               myScheduleItem.Title = myScheduleItem.Title.Trim();
-//               myScheduleItem.ItemDescription = myScheduleItem.ItemDescription.Trim();
-//           }
-//
-//           return result;
-//       }
-//
-//
-//       /// <summary>
-//       /// Adds a new mySchedule record to storage. Since we can't establish foreign key constraints and relationships on the database side,
-//       /// we might do it here by using something like the validateMembership() method.
-//       /// </summary>
-//       /// <param name="myschedule">The membership to be added</param>
-//       /// <returns>The newly added mySchedule object</returns>
-//       public MYSCHEDULE Add(MYSCHEDULE mySchedule)
-//       {
-//           // validate returns a boolean value.
-//           //validateMembership(membership);
-//
-//           // The Add() method returns the added membership.
-//           var payload = _unitOfWork.MyScheduleRepository.Add(mySchedule);
-//
-//           // There is a unique constraint in the Database on columns (ID_NUM, BEGIN_DTE, END_DTE and DSCRIPT_TXT)
-//           if (payload == null)
-//           {
-//               throw new ResourceCreationException() { ExceptionMessage = "There was an error adding the myschedule event. Verify that a similar schedule doesn't already exist." };
-//           }
-//           _unitOfWork.Save();
-//
-//           return payload;
-//
-//       }
-//
-//       /// <summary>
-//       /// Delete the myschedule whose id is specified by the parameter. Should we have a myschedule id?
-//       /// </summary>
-//       /// <param name="id">The myschedule id</param>
-//       /// <returns>The myschedule that was just deleted</returns>
-//       public MYSCHEDULE Delete(int id)
-//       {
-//           var result = _unitOfWork.MyScheduleRepository.GetById(id);
-//           if (result == null)
-//           {
-//               throw new ResourceNotFoundException() { ExceptionMessage = "The MySchedule was not found." };
-//           }
-//           result = _unitOfWork.MyScheduleRepository.Delete(result);
-//
-//           _unitOfWork.Save();
-//
-//           return result;
-//       }
+         public IEnumerable<MYSCHEDULE> GetAllForID(string gordon_id)
+         {
 
-        // /// <summary>
-        // /// Delete all myschedule items for a student whose id is specified by the parameter. Should we have a schedule id?
-        // /// </summary>
-        // /// <param name="id">The student's id</param>
-        // /// <returns>The schedule that was just deleted</returns>
-        // public IEnumerable<ScheduleViewModel> DeleteAllForID(int id)
-        // {
-        //     // Confirm that student exists
-        //     //var studentExists = _unitOfWork.AccountRepository.Where(x => x.AD_Username.Trim() == user_name.Trim()).Count() > 0;
-        //     //if (!studentExists)
-        //     //{
-        //     //    throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
-        //     //}
+            // Account Verification
+            var account = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == gordon_id);
+
+            if (account == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
+
+            var idParam = new SqlParameter("@GORDON_ID", gordon_id);
+
+            var context = new CCTEntities1();
+            var result = _unitOfWork.MyScheduleRepository.GetAll(x => x.GORDON_ID == gordon_id);
+            if (result == null)
+            {
+                return null;
+            }
+
+            return result;
+         }
+
+
+
+        /// <summary>
+        /// Adds a new mySchedule record to storage.
+        /// </summary>
+        /// <param name="mySchedule">The membership to be added</param>
+        /// <returns>The newly added mySchedule object</returns>
+        public MYSCHEDULE Add(MYSCHEDULE mySchedule)
+        {
+
+            // Account verification
+            var account = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == mySchedule.GORDON_ID);
+
+            if (account == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
+
+
+            // Assign event id
+            var myScheduleList = _unitOfWork.MyScheduleRepository.GetAll(x => x.GORDON_ID == mySchedule.GORDON_ID);
+            int largestEventId = 0;
+            int i = 0;
+            if (myScheduleList == null)
+            {
+                mySchedule.EVENT_ID = "1000";
+            }
+            else
+            {
+                foreach (var schedule in myScheduleList)
+                {
+
+                    if (!Int32.TryParse(schedule.EVENT_ID, out i))
+                    {
+                        i = -1;
+                    }
+                    if (largestEventId < i)
+                    {
+                        largestEventId = i;
+                    }
+                }
+                largestEventId++;
+                mySchedule.EVENT_ID = largestEventId.ToString();
+            }
+
+
+            // The Add() method returns the added schedule
+            var payload = _unitOfWork.MyScheduleRepository.Add(mySchedule);
+
+            // There is a unique constraint in the Database on columns
+            if (payload == null)
+            {
+                throw new ResourceCreationException() { ExceptionMessage = "There was an error adding the myschedule event. Verify that a similar schedule doesn't already exist." };
+            }
+            _unitOfWork.Save();
+
+            return payload;
+
+        }
+
+        /// <summary>
+        /// Delete the myschedule whose id is specified by the parameter.
+        /// </summary>
+        /// <param name="event_id">The myschedule id</param>
+        /// <param name="gordon_id">The gordon id</param>
+        /// <returns>The myschedule that was just deleted</returns>
+        public MYSCHEDULE Delete(string event_id, string gordon_id)
+         {
+            // Account Verification
+            var account = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == gordon_id);
+            if (account == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
+
+            var result = _unitOfWork.MyScheduleRepository.FirstOrDefault(x => x.GORDON_ID == gordon_id && x.EVENT_ID == event_id);
+            if (result == null)
+             {
+                 throw new ResourceNotFoundException() { ExceptionMessage = "The MySchedule was not found." };
+             }
+
+            var idParam = new SqlParameter("@GORDONID", gordon_id);
+            var eventIdParam = new SqlParameter("@EVENTID", event_id);
+            var context = new CCTEntities1();
+            context.Database.ExecuteSqlCommand("DELETE_MYSCHEDULE @GORDONID, @EVENTID", idParam, eventIdParam); // run stored procedure.
+
+            _unitOfWork.Save();
+      
+             return result;
+         }
+
+         /// <summary>
+         /// Update the myschedule item.
+         /// </summary>
+         /// <param name="sched">The schedule information</param>
+         /// <returns>The original schedule</returns>
+         public MYSCHEDULE Update(MYSCHEDULE sched)
+         {
+
+            var gordon_id = sched.GORDON_ID;
+            var event_id = sched.EVENT_ID;
+
+            // Account Verification
+            var account = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == gordon_id);
+            if (account == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
             
-        //     //OR A STORED PROCEDURE TO DELETE?
-        //     //var result = RawSqlQuery<ScheduleViewModel>.query("DELETE_SCHEDULE_BY_ID @ID_NUM", id);
-       
-        //     // Create iterable list to hold the stuff we want
-        //     List<ScheduleViewModel> stuff = new List<ScheduleViewModel>();
+            var original = _unitOfWork.MyScheduleRepository.FirstOrDefault(x => x.GORDON_ID == gordon_id && x.EVENT_ID == event_id);
 
-        //     var scheduleList = _unitOfWork.ScheduleRepository.Find(x => x.ID_NUM.Equals(id));
+            if (original == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The MySchedule was not found." };
+            }
 
-        //     foreach (var scheduleItem in scheduleList)
-        //     {
-        //         try
-        //         {
-        //             ScheduleViewModel vm = new ScheduleViewModel(scheduleItem);
-        //             stuff.Add(vm);
-        //             _unitOfWork.ScheduleRepository.Delete(scheduleItem);
-        //         }
-        //         catch
-        //         {
-        //             //Ignore issue, continue to iterate
-        //         }
-        //     }
+            var eventIdParam = new SqlParameter("@EVENTID", sched.EVENT_ID);
+            var idParam = new SqlParameter("@GORDONID", sched.GORDON_ID);
+            var locationParam = new SqlParameter("@LOCATION", sched.LOCATION);
+            var descriptionParam = new SqlParameter("@DESCRIPTION", sched.DESCRIPTION);
+            var monCdeParam = new SqlParameter("@MON_CDE", sched.MON_CDE);
+            var tueCdeParam = new SqlParameter("@TUE_CDE", sched.TUE_CDE);
+            var wedCdeParam = new SqlParameter("@WED_CDE", sched.WED_CDE);
+            var thuCdeParam = new SqlParameter("@THU_CDE", sched.THU_CDE);
+            var friCdeParam = new SqlParameter("@FRI_CDE", sched.FRI_CDE);
+            var satCdeParam = new SqlParameter("@SAT_CDE", sched.SAT_CDE);
+            var sunCdeParam = new SqlParameter("@SUN_CDE", sched.SUN_CDE);
+            var allDayParam = new SqlParameter("@IS_ALLDAY", sched.IS_ALLDAY);
+            var beginTimeParam = new SqlParameter("@BEGINTIME", sched.BEGIN_TIME);
+            var endTimeParam = new SqlParameter("@ENDTIME", sched.END_TIME);
+            var context = new CCTEntities1();
+            context.Database.ExecuteSqlCommand("UPDATE_MYSCHEDULE " +
+                "@EVENTID, @GORDONID @LOCATION @DESCRIPTION @MON_CDE @TUE_CDE @WED_CDE" +
+                "@THU_CDE @FRI_CDE @SAT_CDE @SUN_CDE @IS_ALLDAY @BEGINTIME @ENDTIME"
+                , eventIdParam, idParam, locationParam, descriptionParam, monCdeParam, tueCdeParam,
+                wedCdeParam, thuCdeParam, friCdeParam,satCdeParam, sunCdeParam, allDayParam,
+                beginTimeParam, endTimeParam); // run stored procedure.
 
-        //     _unitOfWork.Save();
+            _unitOfWork.Save();
 
-        //     return stuff.AsEnumerable<ScheduleViewModel>(); ;
+            return original;
 
-        // }
+         }
+
     }
-
 }
