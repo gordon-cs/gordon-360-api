@@ -71,7 +71,36 @@ class testCase:
         authorized_session.verify = True
         authorized_session.headers.update({ "Authorization":authorization_header })
         return authorized_session
-    
+
+class Test_allScheduleTest(testCase):
+
+# # # # # # # # # 
+# SCHEDULE TESTS #
+# # # # # # # # # 
+
+#    Get all schedule objects of the currently logged in user.
+#    Endpoint --  api/schedule/
+#    Expected Status code -- 200 Ok
+#    Expected Content -- all schedule objects of the currently logged in user.
+    def test_get_all_schedule_objects_of_current_user(self):
+        session = None
+        self.session = self.createAuthorizedSession(username, password)
+        self.url = hostURL + 'api/schedule'
+        self.token_payload = { 'username':username, 'password':password, 'grant_type':'password' }
+        response = api.get(self.session, self.url)
+        print (response.json())
+        print (response.status_code)
+
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json, got {0}.'.format(response.text))
+        if not 'access_token' in response.json():
+            pytest.fail('Expected access token in response, got {0}.'.format(response.json()))
+
+
 
 class Test_allAuthenticationTest(testCase):
 
