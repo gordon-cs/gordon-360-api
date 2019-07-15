@@ -72,7 +72,79 @@ class testCase:
         authorized_session.headers.update({ "Authorization":authorization_header })
         return authorized_session
 
-class Test_allScheduleTest(testCase):
+class Test_allMyScheduleTest(testCase):
+
+# # # # # # # # # # 
+# MYSCHEDULE TESTS #
+# # # # # # # # # # 
+
+#    Get all myschedule objects of the currently logged in user.
+#    Endpoint -- api/myschedule/
+#    Expected Status code -- 200 Ok
+#    Expected Content -- all schedule objects of the currently logged in user.
+    def test_get_all_myschedule_objects_of_current_user(self):
+        session = None
+        self.session = self.createAuthorizedSession(username, password)
+        self.url = hostURL + 'api/myschedule'
+        self.token_payload = { 'username':username, 'password':password, 'grant_type':'password' }
+        response = api.get(self.session, self.url)
+        print (response.json())
+        print (response.status_code)
+
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json, got {0}.'.format(response.text))
+        if not 'access_token' in response.json():
+            pytest.fail('Expected access token in response, got {0}.'.format(response.json()))
+    
+#    Get all myschedule objects of a user with username `username` as a parameter.
+#    Endpoint --  api/schedule/:username
+#    Expected Status code -- 200 Ok
+#    Expected Content -- all schedule objects of a user with username `username` as a parameter
+    def test_get_all_myschedule_objects_of_user(self):
+        session = None
+        self.session = self.createAuthorizedSession(username, password)
+        self.url = hostURL + 'api/myschedule/' + leader_username + '/'
+        response = api.get(self.session, self.url)
+        print (response.json())
+        print (response.status_code)
+
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json, got {0}.'.format(response.text))
+        if not 'access_token' in response.json():
+            pytest.fail('Expected access token in response, got {0}.'.format(response.json()))
+
+#    Update a myschedule object of the currently logged in user.
+#    Endpoint -- api/myschedule/
+#    Expected Status code -- 200 Ok
+#    Expected Response Body -- Updated activity information
+    def test_put_myschedule_object_of_current_user(self):
+        session = None
+        self.session = self.createAuthorizedSession(username, password)
+        self.url = hostURL + 'api/myschedule'
+        self.data = {
+            "DESCRIPTION" : 'DOING TESTS, IGNORE'
+        }
+
+        response = api.putAsJson(self.session, self.url , self.data)
+        print (response.json())
+        print (response.status_code)
+
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json, got {0}.'.format(response.text))
+        if not 'access_token' in response.json():
+            pytest.fail('Expected access token in response, got {0}.'.format(response.json()))
 
 # # # # # # # # # 
 # SCHEDULE TESTS #
@@ -109,7 +181,6 @@ class Test_allScheduleTest(testCase):
         session = None
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/schedule/' + leader_username + '/'
-        #self.token_payload = { 'username':username, 'password':password, 'grant_type':'password' }
         response = api.get(self.session, self.url)
         print (response.json())
         print (response.status_code)
