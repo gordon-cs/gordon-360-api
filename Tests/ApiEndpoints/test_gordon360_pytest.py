@@ -38,7 +38,7 @@ FILE_NAME = 'profile.jpg'
 
 # API 
 hostURL = 'https://360ApiTrain.gordon.edu/'
-#hostURL = 'http://localhost:1025/'
+#hostURL = 'http://localhost:9999/'
 
 # Constants
 LEADERSHIP_POSITIONS = ['CAPT','CODIR','CORD','DIREC','PRES','VICEC','VICEP']
@@ -100,6 +100,28 @@ class Test_allScheduleTest(testCase):
         if not 'access_token' in response.json():
             pytest.fail('Expected access token in response, got {0}.'.format(response.json()))
 
+
+#    Get all schedule objects of a user with username `username` as a parameter.
+#    Endpoint --  api/schedule/:username
+#    Expected Status code -- 200 Ok
+#    Expected Content -- all schedule objects of a user with username `username` as a parameter
+    def test_get_all_schedule_objects_of_user(self):
+        session = None
+        self.session = self.createAuthorizedSession(username, password)
+        self.url = hostURL + 'api/schedule/' + leader_username + '/'
+        #self.token_payload = { 'username':username, 'password':password, 'grant_type':'password' }
+        response = api.get(self.session, self.url)
+        print (response.json())
+        print (response.status_code)
+
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json, got {0}.'.format(response.text))
+        if not 'access_token' in response.json():
+            pytest.fail('Expected access token in response, got {0}.'.format(response.json()))
 
 
 class Test_allAuthenticationTest(testCase):
