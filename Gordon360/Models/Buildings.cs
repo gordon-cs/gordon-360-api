@@ -12,9 +12,9 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Country
+    public partial class Buildings
     {
-        public string CTY { get; set; }
-        public string COUNTRY1 { get; set; }
+        public string BLDG_CDE { get; set; }
+        public string BUILDING_DESC { get; set; }
     }
 }

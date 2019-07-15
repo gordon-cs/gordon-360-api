@@ -39,14 +39,13 @@
           <Property Name="instagram" Type="varchar(max)" />
           <Property Name="linkedin" Type="varchar(max)" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'CCT.dbo.ERROR_LOG' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ERROR_LOG">
           <Key>
-            <PropertyRef Name="LOG_TIME" />
+            <PropertyRef Name="LOG_ID" />
           </Key>
+          <Property Name="LOG_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="LOG_TIME" Type="datetime" Nullable="false" />
-          <Property Name="LOG_MESSAGE" Type="nvarchar(max)" />
+          <Property Name="LOG_MESSAGE" Type="nvarchar(max)" Nullable="false" />
         </EntityType>
         <EntityType Name="JNZB_ACTIVITIES">
           <Key>
@@ -762,6 +761,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="ACT_INFO" EntityType="Self.ACT_INFO" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ADMIN" EntityType="Self.ADMIN" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CUSTOM_PROFILE" EntityType="Self.CUSTOM_PROFILE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ERROR_LOG" EntityType="Self.ERROR_LOG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="JNZB_ACTIVITIES" EntityType="Self.JNZB_ACTIVITIES" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MEMBERSHIP" EntityType="Self.MEMBERSHIP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MYSCHEDULE" EntityType="Self.MYSCHEDULE" Schema="dbo" store:Type="Tables" />
@@ -770,12 +770,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Transit_Requests" EntityType="Self.Transit_Requests" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Transit_Rides" EntityType="Self.Transit_Rides" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ERROR_LOG" EntityType="Self.ERROR_LOG" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [ERROR_LOG].[LOG_TIME] AS [LOG_TIME], 
-    [ERROR_LOG].[LOG_MESSAGE] AS [LOG_MESSAGE]
-    FROM [dbo].[ERROR_LOG] AS [ERROR_LOG]</DefiningQuery>
-          </EntitySet>
           <EntitySet Name="360_SLIDER" EntityType="Self.360_SLIDER" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [360_SLIDER].[strFileName] AS [strFileName], 
@@ -1115,6 +1109,14 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="instagram" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="linkedin" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
+        <EntityType Name="ERROR_LOG">
+          <Key>
+            <PropertyRef Name="LOG_ID" />
+          </Key>
+          <Property Name="LOG_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LOG_TIME" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="LOG_MESSAGE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
         <EntityType Name="JNZB_ACTIVITIES">
           <Key>
             <PropertyRef Name="ENTRY_ID" />
@@ -1194,7 +1196,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="Description" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="gordon_id" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
         </EntityType>
-        <EntityType Name="sysdiagram">
+        <EntityType Name="sysdiagrams">
           <Key>
             <PropertyRef Name="diagram_id" />
           </Key>
@@ -1229,13 +1231,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="departure_datetime" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="driver_note" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Transit_Requests" Relationship="Self.FK_ride_id" FromRole="Transit_Rides" ToRole="Transit_Requests" />
-        </EntityType>
-        <EntityType Name="ERROR_LOG">
-          <Key>
-            <PropertyRef Name="LOG_TIME" />
-          </Key>
-          <Property Name="LOG_TIME" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="LOG_MESSAGE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="C360_SLIDER">
           <Key>
@@ -1293,7 +1288,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="is_police" Type="Int32" Nullable="false" />
           <Property Name="Chapel_Required" Type="Int32" />
         </EntityType>
-        <EntityType Name="Alumnus">
+        <EntityType Name="Alumni">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
@@ -1337,7 +1332,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="Major2Description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Major1Description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="Building">
+        <EntityType Name="Buildings">
           <Key>
             <PropertyRef Name="BLDG_CDE" />
           </Key>
@@ -1375,12 +1370,12 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="YRTRM_CDE_2" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
           <Property Name="YRTRM_CDE_4" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="Country">
+        <EntityType Name="Countries">
           <Key>
             <PropertyRef Name="CTY" />
           </Key>
           <Property Name="CTY" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
-          <Property Name="COUNTRY1" Type="String" MaxLength="60" FixedLength="true" Unicode="false" />
+          <Property Name="COUNTRY" Type="String" MaxLength="60" FixedLength="true" Unicode="false" />
         </EntityType>
         <EntityType Name="Dining_Meal_Choice_Desc">
           <Key>
@@ -1603,36 +1598,36 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="CCTEntities2" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="CCTEntities1" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="ACT_INFO" EntityType="Self.ACT_INFO" />
-          <EntitySet Name="ADMINs" EntityType="Self.ADMIN" />
+          <EntitySet Name="ADMIN" EntityType="Self.ADMIN" />
           <EntitySet Name="CUSTOM_PROFILE" EntityType="Self.CUSTOM_PROFILE" />
+          <EntitySet Name="ERROR_LOG" EntityType="Self.ERROR_LOG" />
           <EntitySet Name="JNZB_ACTIVITIES" EntityType="Self.JNZB_ACTIVITIES" />
-          <EntitySet Name="MEMBERSHIPs" EntityType="Self.MEMBERSHIP" />
-          <EntitySet Name="MYSCHEDULEs" EntityType="Self.MYSCHEDULE" />
-          <EntitySet Name="REQUESTs" EntityType="Self.REQUEST" />
+          <EntitySet Name="MEMBERSHIP" EntityType="Self.MEMBERSHIP" />
+          <EntitySet Name="MYSCHEDULE" EntityType="Self.MYSCHEDULE" />
+          <EntitySet Name="REQUEST" EntityType="Self.REQUEST" />
           <EntitySet Name="Schedule_Control" EntityType="Self.Schedule_Control" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
           <EntitySet Name="Transit_Requests" EntityType="Self.Transit_Requests" />
           <EntitySet Name="Transit_Rides" EntityType="Self.Transit_Rides" />
-          <EntitySet Name="ERROR_LOG" EntityType="Self.ERROR_LOG" />
           <EntitySet Name="C360_SLIDER" EntityType="Self.C360_SLIDER" />
-          <EntitySet Name="ACCOUNTs" EntityType="Self.ACCOUNT" />
-          <EntitySet Name="Alumni" EntityType="Self.Alumnus" />
-          <EntitySet Name="Buildings" EntityType="Self.Building" />
-          <EntitySet Name="ChapelEvents" EntityType="Self.ChapelEvent" />
+          <EntitySet Name="ACCOUNT" EntityType="Self.ACCOUNT" />
+          <EntitySet Name="Alumni" EntityType="Self.Alumni" />
+          <EntitySet Name="Buildings" EntityType="Self.Buildings" />
+          <EntitySet Name="ChapelEvent" EntityType="Self.ChapelEvent" />
           <EntitySet Name="CM_SESSION_MSTR" EntityType="Self.CM_SESSION_MSTR" />
-          <EntitySet Name="Countries" EntityType="Self.Country" />
+          <EntitySet Name="Countries" EntityType="Self.Countries" />
           <EntitySet Name="Dining_Meal_Choice_Desc" EntityType="Self.Dining_Meal_Choice_Desc" />
           <EntitySet Name="Dining_Meal_Plan_Id_Mapping" EntityType="Self.Dining_Meal_Plan_Id_Mapping" />
           <EntitySet Name="Dining_Mealplans" EntityType="Self.Dining_Mealplans" />
           <EntitySet Name="Dining_Student_Meal_Choice" EntityType="Self.Dining_Student_Meal_Choice" />
-          <EntitySet Name="DiningInfoes" EntityType="Self.DiningInfo" />
-          <EntitySet Name="FacStaffs" EntityType="Self.FacStaff" />
+          <EntitySet Name="DiningInfo" EntityType="Self.DiningInfo" />
+          <EntitySet Name="FacStaff" EntityType="Self.FacStaff" />
           <EntitySet Name="JENZ_ACT_CLUB_DEF" EntityType="Self.JENZ_ACT_CLUB_DEF" />
           <EntitySet Name="PART_DEF" EntityType="Self.PART_DEF" />
-          <EntitySet Name="RoomAssigns" EntityType="Self.RoomAssign" />
-          <EntitySet Name="Students" EntityType="Self.Student" />
+          <EntitySet Name="RoomAssign" EntityType="Self.RoomAssign" />
+          <EntitySet Name="Student" EntityType="Self.Student" />
           <AssociationSet Name="FK_ride_id" Association="Self.FK_ride_id">
             <End Role="Transit_Rides" EntitySet="Transit_Rides" />
             <End Role="Transit_Requests" EntitySet="Transit_Requests" />
@@ -2098,7 +2093,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="Gordon360StoreContainer" CdmEntityContainer="CCTEntities2">
+        <EntityContainerMapping StorageEntityContainer="Gordon360StoreContainer" CdmEntityContainer="CCTEntities1">
           <EntitySetMapping Name="ACT_INFO">
             <EntityTypeMapping TypeName="Gordon360.ACT_INFO">
               <MappingFragment StoreEntitySet="ACT_INFO">
@@ -2114,7 +2109,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ADMINs">
+          <EntitySetMapping Name="ADMIN">
             <EntityTypeMapping TypeName="Gordon360.ADMIN">
               <MappingFragment StoreEntitySet="ADMIN">
                 <ScalarProperty Name="ADMIN_ID" ColumnName="ADMIN_ID" />
@@ -2133,6 +2128,15 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="twitter" ColumnName="twitter" />
                 <ScalarProperty Name="instagram" ColumnName="instagram" />
                 <ScalarProperty Name="linkedin" ColumnName="linkedin" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ERROR_LOG">
+            <EntityTypeMapping TypeName="Gordon360.ERROR_LOG">
+              <MappingFragment StoreEntitySet="ERROR_LOG">
+                <ScalarProperty Name="LOG_ID" ColumnName="LOG_ID" />
+                <ScalarProperty Name="LOG_TIME" ColumnName="LOG_TIME" />
+                <ScalarProperty Name="LOG_MESSAGE" ColumnName="LOG_MESSAGE" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2156,7 +2160,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="MEMBERSHIPs">
+          <EntitySetMapping Name="MEMBERSHIP">
             <EntityTypeMapping TypeName="Gordon360.MEMBERSHIP">
               <MappingFragment StoreEntitySet="MEMBERSHIP">
                 <ScalarProperty Name="MEMBERSHIP_ID" ColumnName="MEMBERSHIP_ID" />
@@ -2175,7 +2179,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="MYSCHEDULEs">
+          <EntitySetMapping Name="MYSCHEDULE">
             <EntityTypeMapping TypeName="Gordon360.MYSCHEDULE">
               <MappingFragment StoreEntitySet="MYSCHEDULE">
                 <ScalarProperty Name="EVENT_ID" ColumnName="EVENT_ID" />
@@ -2195,7 +2199,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="REQUESTs">
+          <EntitySetMapping Name="REQUEST">
             <EntityTypeMapping TypeName="Gordon360.REQUEST">
               <MappingFragment StoreEntitySet="REQUEST">
                 <ScalarProperty Name="REQUEST_ID" ColumnName="REQUEST_ID" />
@@ -2220,7 +2224,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="sysdiagrams">
-            <EntityTypeMapping TypeName="Gordon360.sysdiagram">
+            <EntityTypeMapping TypeName="Gordon360.sysdiagrams">
               <MappingFragment StoreEntitySet="sysdiagrams">
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="principal_id" ColumnName="principal_id" />
@@ -2256,14 +2260,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ERROR_LOG">
-            <EntityTypeMapping TypeName="Gordon360.ERROR_LOG">
-              <MappingFragment StoreEntitySet="ERROR_LOG">
-                <ScalarProperty Name="LOG_TIME" ColumnName="LOG_TIME" />
-                <ScalarProperty Name="LOG_MESSAGE" ColumnName="LOG_MESSAGE" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="C360_SLIDER">
             <EntityTypeMapping TypeName="Gordon360.C360_SLIDER">
               <MappingFragment StoreEntitySet="360_SLIDER">
@@ -2282,7 +2278,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ACCOUNTs">
+          <EntitySetMapping Name="ACCOUNT">
             <EntityTypeMapping TypeName="Gordon360.ACCOUNT">
               <MappingFragment StoreEntitySet="ACCOUNT">
                 <ScalarProperty Name="account_id" ColumnName="account_id" />
@@ -2305,7 +2301,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Alumni">
-            <EntityTypeMapping TypeName="Gordon360.Alumnus">
+            <EntityTypeMapping TypeName="Gordon360.Alumni">
               <MappingFragment StoreEntitySet="Alumni">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="WebUpdate" ColumnName="WebUpdate" />
@@ -2350,14 +2346,14 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Buildings">
-            <EntityTypeMapping TypeName="Gordon360.Building">
+            <EntityTypeMapping TypeName="Gordon360.Buildings">
               <MappingFragment StoreEntitySet="Buildings">
                 <ScalarProperty Name="BLDG_CDE" ColumnName="BLDG_CDE" />
                 <ScalarProperty Name="BUILDING_DESC" ColumnName="BUILDING_DESC" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ChapelEvents">
+          <EntitySetMapping Name="ChapelEvent">
             <EntityTypeMapping TypeName="Gordon360.ChapelEvent">
               <MappingFragment StoreEntitySet="ChapelEvent">
                 <ScalarProperty Name="ROWID" ColumnName="ROWID" />
@@ -2389,10 +2385,10 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Countries">
-            <EntityTypeMapping TypeName="Gordon360.Country">
+            <EntityTypeMapping TypeName="Gordon360.Countries">
               <MappingFragment StoreEntitySet="Countries">
                 <ScalarProperty Name="CTY" ColumnName="CTY" />
-                <ScalarProperty Name="COUNTRY1" ColumnName="COUNTRY" />
+                <ScalarProperty Name="COUNTRY" ColumnName="COUNTRY" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2431,7 +2427,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="DiningInfoes">
+          <EntitySetMapping Name="DiningInfo">
             <EntityTypeMapping TypeName="Gordon360.DiningInfo">
               <MappingFragment StoreEntitySet="DiningInfo">
                 <ScalarProperty Name="StudentId" ColumnName="StudentId" />
@@ -2444,7 +2440,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="FacStaffs">
+          <EntitySetMapping Name="FacStaff">
             <EntityTypeMapping TypeName="Gordon360.FacStaff">
               <MappingFragment StoreEntitySet="FacStaff">
                 <ScalarProperty Name="ID" ColumnName="ID" />
@@ -2512,7 +2508,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="RoomAssigns">
+          <EntitySetMapping Name="RoomAssign">
             <EntityTypeMapping TypeName="Gordon360.RoomAssign">
               <MappingFragment StoreEntitySet="RoomAssign">
                 <ScalarProperty Name="SESS_CDE" ColumnName="SESS_CDE" />
@@ -2527,7 +2523,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Students">
+          <EntitySetMapping Name="Student">
             <EntityTypeMapping TypeName="Gordon360.Student">
               <MappingFragment StoreEntitySet="Student">
                 <ScalarProperty Name="ID" ColumnName="ID" />
@@ -2997,7 +2993,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     <Options>
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
-        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
         <DesignerProperty Name="UseLegacyProvider" Value="false" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />

@@ -50,31 +50,19 @@ namespace Gordon360.Services
             {
                 return null;
             }
-            // Getting rid of database-inherited whitespace DO WE NEED THIS? Does the ViewModel do it?
-            // foreach (var sch in result)
-            // {
-            //    sch.Location = sch.Location.Trim() ?? ""; // For Null locations;
-            //    sch.Description = sch.Description.Trim() ?? ""; // For Null descriptions
-            //    sch.MonCode = sch.MonCode.Trim() ?? ""; // For Null days
-            //    sch.TueCode = sch.TueCode.Trim() ?? ""; // For Null days
-            //    sch.WedCode = sch.WedCode.Trim() ?? ""; // For Null days
-            //    sch.ThuCode = sch.ThuCode.Trim() ?? ""; // For Null days
-            //    sch.FriCode = sch.FriCode.Trim() ?? ""; // For Null days
-            //    sch.SatCode = sch.SatCode.Trim() ?? ""; // For Null days
-            //    sch.SunCode = sch.SunCode.Trim() ?? ""; // For Null days
-            //}
 
             return result;
          }
-      
-      
-         /// <summary>
-         /// Adds a new mySchedule record to storage.
-         /// </summary>
-         /// <param name="mySchedule">The membership to be added</param>
-         /// <returns>The newly added mySchedule object</returns>
-         public MYSCHEDULE Add(MYSCHEDULE mySchedule)
-         {
+
+
+
+        /// <summary>
+        /// Adds a new mySchedule record to storage.
+        /// </summary>
+        /// <param name="mySchedule">The membership to be added</param>
+        /// <returns>The newly added mySchedule object</returns>
+        public MYSCHEDULE Add(MYSCHEDULE mySchedule)
+        {
 
             // Account verification
             var account = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == mySchedule.GORDON_ID);
@@ -85,19 +73,46 @@ namespace Gordon360.Services
             }
 
 
-            // The Add() method returns the added membership.
+            // Assign event id
+            var myScheduleList = _unitOfWork.MyScheduleRepository.GetAll(x => x.GORDON_ID == mySchedule.GORDON_ID);
+            int largestEventId = 0;
+            int i = 0;
+            if (myScheduleList == null)
+            {
+                mySchedule.EVENT_ID = "1000";
+            }
+            else
+            {
+                foreach (var schedule in myScheduleList)
+                {
+
+                    if (!Int32.TryParse(schedule.EVENT_ID, out i))
+                    {
+                        i = -1;
+                    }
+                    if (largestEventId < i)
+                    {
+                        largestEventId = i;
+                    }
+                }
+                largestEventId++;
+                mySchedule.EVENT_ID = largestEventId.ToString();
+            }
+
+
+            // The Add() method returns the added schedule
             var payload = _unitOfWork.MyScheduleRepository.Add(mySchedule);
-      
-             // There is a unique constraint in the Database on columns
-             if (payload == null)
-             {
-                 throw new ResourceCreationException() { ExceptionMessage = "There was an error adding the myschedule event. Verify that a similar schedule doesn't already exist." };
-             }
-             _unitOfWork.Save();
-      
-             return payload;
-      
-         }
+
+            // There is a unique constraint in the Database on columns
+            if (payload == null)
+            {
+                throw new ResourceCreationException() { ExceptionMessage = "There was an error adding the myschedule event. Verify that a similar schedule doesn't already exist." };
+            }
+            _unitOfWork.Save();
+
+            return payload;
+
+        }
 
         /// <summary>
         /// Delete the myschedule whose id is specified by the parameter.
@@ -171,7 +186,11 @@ namespace Gordon360.Services
             var endTimeParam = new SqlParameter("@ENDTIME", sched.END_TIME);
             var context = new CCTEntities1();
             context.Database.ExecuteSqlCommand("UPDATE_MYSCHEDULE " +
-                "@GORDONID, @EVENTID", idParam, eventIdParam); // run stored procedure.
+                "@EVENTID, @GORDONID @LOCATION @DESCRIPTION @MON_CDE @TUE_CDE @WED_CDE" +
+                "@THU_CDE @FRI_CDE @SAT_CDE @SUN_CDE @IS_ALLDAY @BEGINTIME @ENDTIME"
+                , eventIdParam, idParam, locationParam, descriptionParam, monCdeParam, tueCdeParam,
+                wedCdeParam, thuCdeParam, friCdeParam,satCdeParam, sunCdeParam, allDayParam,
+                beginTimeParam, endTimeParam); // run stored procedure.
 
             _unitOfWork.Save();
 

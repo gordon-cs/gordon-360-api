@@ -85,9 +85,8 @@ namespace Gordon360.Controllers.Api
         /// <param name="mySchedule">The myschedule item containing all required and relevant information</param>
         /// <returns>Created schedule</returns>
         /// <remarks>Posts a new myschedule to the server to be added into the database</remarks>
-        // POST api/<controller>
         [HttpPost]
-        [Route("add")]
+        [Route("")]
         public IHttpActionResult Post([FromBody] MYSCHEDULE mySchedule)
         {
             if (!ModelState.IsValid || mySchedule == null)
@@ -117,9 +116,8 @@ namespace Gordon360.Controllers.Api
         /// <summary>Delete an existing myschedule item</summary>
         /// <param name="event_id">The identifier for the myschedule to be deleted</param>
         /// <remarks>Calls the server to make a call and remove the given myschedule from the database</remarks>
-        // DELETE api/<controller>/5
         [HttpDelete]
-        [Route("delete/{event_id}")]
+        [Route("{event_id}")]
         public IHttpActionResult Delete(string event_id) //TODO: MAKE THIS USE THE KEY OF THE MYSCHEDULE TABLE
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
@@ -140,9 +138,8 @@ namespace Gordon360.Controllers.Api
         /// <param name="mySchedule">The updated myschedule item containing all required and relevant information</param>
         /// <returns>Original schedule</returns>
         /// <remarks>Put a myschedule to the server to be updated</remarks>
-        // POST api/<controller>
-        [HttpPost]
-        [Route("update")]
+        [HttpPut]
+        [Route("")]
         public IHttpActionResult Put([FromBody] MYSCHEDULE mySchedule)
         {
             if (!ModelState.IsValid || mySchedule == null)

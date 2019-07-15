@@ -14,6 +14,7 @@ namespace Gordon360.Models
     
     public partial class ERROR_LOG
     {
+        public int LOG_ID { get; set; }
         public System.DateTime LOG_TIME { get; set; }
         public string LOG_MESSAGE { get; set; }
     }

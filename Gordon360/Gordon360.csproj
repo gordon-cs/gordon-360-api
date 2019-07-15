@@ -236,8 +236,10 @@
     <Compile Include="Models\ALL_REQUESTS_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Alumni.cs" />
-    <Compile Include="Models\Building.cs">
+    <Compile Include="Models\Alumni.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Buildings.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\C360_SLIDER.cs">
@@ -264,8 +266,7 @@
     <Compile Include="Models\CM_SESSION_MSTR.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs" />
-    <Compile Include="Models\Country.cs">
+    <Compile Include="Models\Countries.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\COURSES_FOR_PROFESSOR_Result.cs">
@@ -370,7 +371,8 @@
     <Compile Include="Models\STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\sysdiagram.cs">
+    <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs" />
+    <Compile Include="Models\sysdiagrams.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Transit_Requests.cs">

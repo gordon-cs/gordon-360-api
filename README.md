@@ -749,15 +749,15 @@ What is it? Resource that represents a customized schedule of user.
 
 ##### PUT
 
-`api/myschedule/update` Update a myschedule object of the currently logged in user.
+`api/myschedule/` Update a myschedule object of the currently logged in user.
 
 ##### POST
 
-`api/myschedule/add`  Create a myschedule object of the currently logged in user.
+`api/myschedule/`  Create a myschedule object of the currently logged in user.
 
 ##### DELETE
 
-`api/myschedule/delete`  Delete a myschedule object of the currently logged in user.
+`api/myschedule/`  Delete a myschedule object of the currently logged in user.
 
 
 ### Schedule Control
@@ -771,11 +771,11 @@ What is it? Resource that represents information related to schedule.
 
 ##### PUT
 
-`api/schedulecontrol/update/privacy/:value` Update a schedule privacy of the currently logged in user.
+`api/schedulecontrol/privacy/:value` Update a schedule privacy of the currently logged in user.
 
-`api/schedulecontrol/update/description/:value` Update a schedule description of the currently logged in user.
+`api/schedulecontrol/description/:value` Update a schedule description of the currently logged in user.
 
-`api/schedulecontrol/update/timestamp/:value` Update a timestamp of last modified schedule of the currently logged in user.
+`api/schedulecontrol/timestamp/:value` Update a timestamp of last modified schedule of the currently logged in user.
 
 
 ### Victory Promise
