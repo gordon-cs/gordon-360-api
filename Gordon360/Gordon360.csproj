@@ -356,7 +356,6 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs" />
-
     <Compile Include="Models\StudentEmployment.cs" />
     <Compile Include="Models\STUDENT_EVENTS_PER_TERM_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
@@ -504,7 +503,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:1998</IISUrl>
+          <IISUrl>http://localhost:7777</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

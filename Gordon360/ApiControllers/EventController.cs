@@ -21,7 +21,7 @@ namespace Gordon360.ApiControllers
             _eventService = new EventService(unitOfWork);
         }
         
-        //[Authorize]
+        [Authorize]
         [HttpGet]
         [Route("chapel/")]
         public IHttpActionResult GetAllForStudent()
@@ -54,7 +54,7 @@ namespace Gordon360.ApiControllers
             return Ok(result);
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpGet]
         [Route("chapel/{term}")]
         public IHttpActionResult GetEventsForStudentByTerm(string term)
@@ -86,7 +86,7 @@ namespace Gordon360.ApiControllers
             return Ok(result);
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpGet]
         [Route("25Live/type/{Type_ID}")]
         public IHttpActionResult GetEventsByType(string Type_ID)
@@ -119,7 +119,7 @@ namespace Gordon360.ApiControllers
 
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpGet]
         [Route("25Live/{Event_ID}")]
         public IHttpActionResult GetEventsByID(string Event_ID)
@@ -187,7 +187,7 @@ namespace Gordon360.ApiControllers
 
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpGet]
         [Route("25Live/CLAW")]
         public IHttpActionResult GetAllChapelEvents()
@@ -257,7 +257,7 @@ namespace Gordon360.ApiControllers
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var result = _eventService.GetAllEvents(Static.Data.Data.AllEvents);
+            var result = _eventService.GetAllEvents(Static.Data.Data.AllEvents).Where(x => x.Requirement_Id == "3");
 
             if (result == null)
             {

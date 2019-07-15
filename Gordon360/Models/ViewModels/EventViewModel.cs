@@ -15,6 +15,7 @@ namespace Gordon360.Models.ViewModels
         public string Event_Title { get; set; }
         public string Event_Type_Name { get; set; }
         public string Category_Id { get; set; }
+        public string Requirement_Id { get; set; }
         public string Description { get; set; }
         public List<Object[]> Occurrences { get; set; }
         public string Organization { get; set; }
@@ -35,6 +36,13 @@ namespace Gordon360.Models.ViewModels
                  if (category.ElementValueNull().Element(r25 + "category_id").ElementValueNull().Value == "85")
                     {
                     Category_Id = "85";
+                    }
+                }
+            foreach (XElement requirement in a.ElementValueNull().Descendants(r25 + "requirement"))
+                {
+                 if (requirement.ElementValueNull().Element(r25 + "requirement_id").ElementValueNull().Value == "3")
+                    {
+                    Requirement_Id = "3";
                     }
                 }
             List<Object[]> placeholder = new List<object[]>();
