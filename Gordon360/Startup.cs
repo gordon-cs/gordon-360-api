@@ -151,6 +151,10 @@ namespace Gordon360
 
             foreach (PublicStudentProfileViewModel aStudent in Data.PublicStudentData)
             {
+                if(aStudent == null)
+                {
+                    break;
+                }
                 JObject theStu = JObject.FromObject(aStudent);
                 theStu.Add("Type", "Student");
                 theStu.Add("BuildingDescription", null);

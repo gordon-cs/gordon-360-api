@@ -71,7 +71,7 @@ The folders for these IIS sites can be found on the 360train machine under `F:\s
 	- Paste that copy in the same place (`F:\Sites`), and rename it to a backup including the date. For example, if you backed up the Train site on January 1, 2001, then the copy would be named `360ApiTrain_backup 1-01-2001`.
 - Open gitbash and cd to `C:\users\cct.service\code\gordon-360-api`. Make sure that you are on the branch you wish to deploy, and that it has been pulled up to date.
 **Note: if you clone a new repository on this VM, it will not have the necessary publish profiles or secrets.config. See [MakePublishProfiles.md](MakePublishProfiles.md) to restore the Publish Profiles.**
-- Start Visual Studio as an administrator (right click) and open the existing project/solution file - `C:\users\cct.service\code\gordon-360-api\Gordon360.sln` (the solution file). 
+- Start Visual Studio as an administrator (right click) and open the existing project/solution file - `C:\users\cct.service\code\gordon-360-api\Gordon360.sln` (the solution file).
 - Menu Bar -> Build - Publish Gordon360.
 - Choose the right publish profile.
     - DEV -- Development ( Connects to the admintrainsql database server, and used for 360train.gordon.edu).
@@ -358,39 +358,35 @@ Here is a breakdown of the project folder:
     - Tests/ - Folder for tests
         - ApiEndpoints/ - I talk about this more in the Testing section.
 
-###Adding New Queries 
+###Adding New Queries
 
 - (*) is your new Title (ex: Membership, Account, Session)
-- (+) is your new stored procedure name (ex: MEMBERSHIPS_PER_STUDENT_ID) 
+- (+) is your new stored procedure name (ex: MEMBERSHIPS_PER_STUDENT_ID)
 - New Files:
     - *Controller.cs under ApiControllers
-        - create new route 
+        - create new route
         - calls the *service function
         - returns ok
     - *Service.cs under Services
     	- calls the stored procedure that returns view model
-    - *.cs under Models
-    	- Function names correspond to the columns of the data the stored procedure returns (Have to be exact names)
     - *ViewModel.cs under ViewModels
     	- function names correspond to the columns of the data the stored procedure returns (Does not have to be exact names)
     	- static implicit operator converts * model to *ViewModel
-    - +_Result.cs under Models 
-    	- function names correspond to the columns of the data the stored procedure returns (Have to be exact names)
 - Update Files:
     - ServiceInterfaces.cs under Services
     	- Add a public interface I*/
-    	- Add all functions you have in *Service under this interface 
+    	- Add all functions you have in *Service under this interface
     - IUnitOfWork.cs under Repositories
-    	- Make corresponding IRepository for * (ex. IRepository<STUDENTEMPLOYMENT> StudentEmploymentRepository {get;}) 
+    	- Make corresponding IRepository for * (ex. IRepository<STUDENTEMPLOYMENT> StudentEmploymentRepository {get;})
     - UnitOfWork.cs under Repositories
     	- Make private IRepository<*> variable
-    	- Write public function called *Repository 
+    	- Write public function called *Repository
     - Names.cs under Static Classes
-    	- Add public const string * 
-    - CCT_DB_MODELS.edmx and CCT_DB_MODELS.Context (Ctrl Shift F and search for CCT_DB_MODELS)
-    	- Add all corresponding parts using StudentEmployment or others as an example 
+    	- Add public const string *
 
 ## API Endpoints
+
+*Note:* The shell script `get-route-list.sh` is run with `bash get-route-list.sh` from a linux shell or git-bash.  It provides a list of the API routes that appear in the ApiController files.
 
 ### Accounts
 What is it? Resource that represents a gordon account.
@@ -794,20 +790,15 @@ What is it? Resource that represents the user's scores on the four pillars of th
 ### Introduction
 
 A test suite is available at `Tests/ApiEndpoints` to exercise the different endpoints. The most important files here are:
-- `gordon_360_tests_leader.py` -- Tests the api endpoints while authorized as an activity leader.
-- `gordon_360_tests_member.py` -- Tests the api endpoints while authorized as a regular member.
-- `test_config.py` -- Configuration options, includes the following variables:
-    - `activity_code` -- The activity that will be used for testing. Tests under `gordon_360_tests_leader.py` assume the account used for testing is a leader of this activity. Tests under `gordon_360_tests_member.py` assume the account used for testing is a member of this activity.
+- `test_gordon360_pytest` -- Stores all the tests.
+    - `activity_code` -- The activity that will be used for testing.
     - `random_id_number` -- A random id number that is used when we want to verify if we can do things on behalf of someone else. E.g. An advisor can create memberships for anyone. A regular member can only create a membership for him/herself.
     - `leadership_positions` -- A list of participation levels considered to be leadership positions.
     - `hostURL` -- Base url of the api
-- `test_credentials.py` -- (If you cloned the project, you need to create this file) File with credentials the test program will use.
-	- `username` -- String with the username of a test account that is a member of `activity_code` in `test_config.py`.
-	- `password` -- String with the password of a test account that is a member of `activity_code` in `test_config.py`.
+	- `username` -- String with the username of a test account that is a member of `activity_code`
+	- `password` -- String with the password of a test account that is a member of `activity_code`
 	- `id_number` -- Integer with the id number of the `username`.
-	- `username_activity_leader` -- String with the username of a test account that is a leader of `activity_code` in `test_config.py`.
-	- `password_activity_leader` -- String with the password of a test account that is a leader of `activity_code` in `test_config.py`.
-	- `id_number_activity_leader` -- Integer with the id number of the `username_leader`.
+	- `username_activity_leader` -- String with the username of a test account that is a leader of `activity_code`
 
 ### Running the Tests
 
@@ -817,18 +808,14 @@ Clone the project from the github site:
 Navigate to the API Tests folder:
 `cd gordon-360-api/Tests/ApiEndpoints/`
 
-Install the python request module as well as other requirements with the command: `pip install -r requirements.txt`
+Install pytest: `pip install -U pytest`
 
-Create the `test_credentials.py` file (or copy it with `cp /c/users/public/documents/test_credentials.py .` -- notice the trailing dot).  It should define the six variables mentioned above (`username`, `password`, `id_number`, etc.)
-
-Make sure the credentials you enter match the descriptions provided above.
-
-Verify that the variables defined in `test_config.py` are correct.
+Check the `hostURL` in test_gordon360_pytest.py if it is pointing to the correct backend 
 
 Run the tests:
-`python3 gordon_360_tests.py` -- This runs all the tests. For both members and leaders.
-`python3 gordon_360_tests_member.py` -- This runs the tests for members.
-`python3 gordon_360_tests_leader.py` -- This runs the tests for leaders.
+`pytest` -- This runs all the tests.
+`pytest test_gordon360_pytest.py -k '{name of def}'` -- This runs a specific test based on {name of def}.
+
 
 ### Manual Testing
 

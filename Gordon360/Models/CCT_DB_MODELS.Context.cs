@@ -685,4 +685,3 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<VICTORY_PROMISE_BY_STUDENT_ID_Result>("VICTORY_PROMISE_BY_STUDENT_ID", sTUDENT_IDParameter);
         }
     }
-}
