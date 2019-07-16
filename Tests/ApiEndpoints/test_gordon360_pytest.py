@@ -85,7 +85,7 @@ class Test_allMyScheduleTest(testCase):
     def test_get_all_myschedule_objects_of_current_user(self):
         session = None
         self.session = self.createAuthorizedSession(username, password)
-        self.url = hostURL + 'api/myschedule'
+        self.url = hostURL + 'api/myschedule/' + username + '/'
         self.token_payload = { 'username':username, 'password':password, 'grant_type':'password' }
         response = api.get(self.session, self.url)
         print (response.json())
@@ -97,8 +97,8 @@ class Test_allMyScheduleTest(testCase):
             response.json()
         except ValueError:
             pytest.fail('Expected Json, got {0}.'.format(response.text))
-        if not 'access_token' in response.json():
-            pytest.fail('Expected access token in response, got {0}.'.format(response.json()))
+        assert response.json()[0]["GORDON_ID"] == str(my_id_number)
+        
     
 #    Get all myschedule objects of a user with username `username` as a parameter.
 #    Endpoint --  api/schedule/:username
@@ -106,8 +106,8 @@ class Test_allMyScheduleTest(testCase):
 #    Expected Content -- all schedule objects of a user with username `username` as a parameter
     def test_get_all_myschedule_objects_of_user(self):
         session = None
-        self.session = self.createAuthorizedSession(username, password)
-        self.url = hostURL + 'api/myschedule/' + leader_username + '/'
+        self.session = self.createAuthorizedSession(leader_username, leader_password)
+        self.url = hostURL + 'api/myschedule/' + 'phil.lee' + '/'
         response = api.get(self.session, self.url)
         print (response.json())
         print (response.status_code)
