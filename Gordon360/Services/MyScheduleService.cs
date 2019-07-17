@@ -164,7 +164,7 @@ namespace Gordon360.Services
             var idParam = new SqlParameter("@GORDONID", gordon_id);
             var eventIdParam = new SqlParameter("@EVENTID", event_id);
             var context = new CCTEntities1();
-            context.Database.ExecuteSqlCommand("DELETE_MYSCHEDULE @GORDONID, @EVENTID", idParam, eventIdParam); // run stored procedure.
+            context.Database.ExecuteSqlCommand("DELETE_MYSCHEDULE @EVENTID, @GORDONID", eventIdParam, idParam); // run stored procedure.
 
             _unitOfWork.Save();
 
