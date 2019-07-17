@@ -113,10 +113,10 @@ namespace Gordon360.Controllers.Api
                         break;
                     case Position.STUDENT:
                         var stuProfile = _profileService.GetStudentProfileByUsername(username);
-                        if (stuProfile.IsSchedulePrivate == 0)
-                        {
+                        // if (stuProfile.IsSchedulePrivate == 0)
+                        // {
                             scheduleResult = _scheduleResult;
-                        }
+                        // }
                         break;
                     case Position.FACSTAFF:
                         scheduleResult = _scheduleResult;

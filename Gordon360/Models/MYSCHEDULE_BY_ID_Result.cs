@@ -10,9 +10,8 @@
 namespace Gordon360.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class MYSCHEDULE
+    public partial class MYSCHEDULE_BY_ID_Result
     {
         public string EVENT_ID { get; set; }
         public string GORDON_ID { get; set; }

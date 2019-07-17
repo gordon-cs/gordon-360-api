@@ -184,6 +184,69 @@
             <param name="id">The id of the membership request to delete</param>
             <returns>The deleted object</returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.MyScheduleController.Get">
+            <summary>
+             Gets all myschedule objects for a user
+            </summary>
+            <returns>A IEnumerable of myschedule objects</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.MyScheduleController.Get(System.String)">
+            <summary>
+             Gets all myschedule objects for a user
+            </summary>
+            <returns>A IEnumerable of myschedule objects</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.MyScheduleController.Post(Gordon360.Models.MYSCHEDULE)">
+            <summary>Create a new myschedule to be added to database</summary>
+            <param name="mySchedule">The myschedule item containing all required and relevant information</param>
+            <returns>Created schedule</returns>
+            <remarks>Posts a new myschedule to the server to be added into the database</remarks>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.MyScheduleController.Delete(System.String)">
+            <summary>Delete an existing myschedule item</summary>
+            <param name="event_id">The identifier for the myschedule to be deleted</param>
+            <remarks>Calls the server to make a call and remove the given myschedule from the database</remarks>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.MyScheduleController.Put(Gordon360.Models.MYSCHEDULE)">
+            <summary>Update the existing myschedule in database</summary>
+            <param name="mySchedule">The updated myschedule item containing all required and relevant information</param>
+            <returns>Original schedule</returns>
+            <remarks>Put a myschedule to the server to be updated</remarks>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ScheduleControlController.Get">
+            <summary>
+            Get schedule information of local user
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ScheduleControlController.Get(System.String)">
+            <summary>
+            Get schedule information of specific user
+            </summary>
+            <param name="username">username</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ScheduleControlController.UpdateSchedulePrivacy(System.String)">
+            <summary>
+            Update privacy of schedule
+            </summary>
+            <param name="value">Y or N</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ScheduleControlController.UpdateDescription(System.String)">
+            <summary>
+            Update schedule description
+            </summary>
+            <param name="value">New description</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ScheduleControlController.UpdateModifiedTimeStamp(System.String)">
+            <summary>
+            Update timestamp of last modified schedule
+            </summary>
+            <param name="value">Datetime in string</param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.Get">
             <summary>Get profile info of currently logged in user</summary>
             <returns></returns>
@@ -230,13 +293,6 @@
         <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateMobilePrivacy(System.String)">
             <summary>
             Update privacy of mobile phone number
-            </summary>
-            <param name="value">Y or N</param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateSchedulePrivacy(System.String)">
-            <summary>
-            Update privacy of schedule
             </summary>
             <param name="value">Y or N</param>
             <returns></returns>
@@ -290,19 +346,6 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ActivitiesController.Get">
-            <summary>
-            Get all available activities
-            </summary>
-            <returns>All the activities in the databse</returns>
-            <remarks></remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.ActivitiesController.Get(System.String)">
-            <summary>Get a single activity based upon the string id entered in the URL</summary>
-            <param name="id">An identifier for a single activity</param>
-            <returns></returns>
-            <remarks>Get a single activity from the database</remarks>
-        </member>
         <member name="M:Gordon360.Controllers.Api.ActivitiesController.GetActivitiesForSession(System.String)">
             <summary>Gets the activities taking place during a given session</summary>
             <param name="id">The session identifier</param>
@@ -353,7 +396,6 @@
         </member>
         <member name="M:Gordon360.Controllers.Api.ActivitiesController.Put(System.String,Gordon360.Models.ACT_INFO)">
             <summary>
-            
             </summary>
             <param name="id"></param>
             <param name="activity"></param>
@@ -1081,6 +1123,35 @@
             Service Class that facilitates data transactions between the MySchedulesController and the MySchedule part of the database model.
             </summary>
         </member>
+        <member name="M:Gordon360.Services.MyScheduleService.GetAllForID(System.String)">
+            <summary>
+            Fetch the myschedule item whose id is specified by the parameter
+            </summary>
+            <param name="gordon_id">The myschedule id</param>
+            <returns>MyScheduleViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.MyScheduleService.Add(Gordon360.Models.MYSCHEDULE)">
+            <summary>
+            Adds a new mySchedule record to storage.
+            </summary>
+            <param name="mySchedule">The membership to be added</param>
+            <returns>The newly added mySchedule object</returns>
+        </member>
+        <member name="M:Gordon360.Services.MyScheduleService.Delete(System.String,System.String)">
+            <summary>
+            Delete the myschedule whose id is specified by the parameter.
+            </summary>
+            <param name="event_id">The myschedule id</param>
+            <param name="gordon_id">The gordon id</param>
+            <returns>The myschedule that was just deleted</returns>
+        </member>
+        <member name="M:Gordon360.Services.MyScheduleService.Update(Gordon360.Models.MYSCHEDULE)">
+            <summary>
+            Update the myschedule item.
+            </summary>
+            <param name="sched">The schedule information</param>
+            <returns>The original schedule</returns>
+        </member>
         <member name="M:Gordon360.Services.ProfileService.GetStudentProfileByUsername(System.String)">
             <summary>
             get student profile info
@@ -1146,19 +1217,38 @@
             <param name="id">id</param>
             <param name="value">Y or N</param>
         </member>
-        <member name="M:Gordon360.Services.ProfileService.UpdateSchedulePrivacy(System.String,System.String)">
-            <summary>
-            privacy setting of schedule.
-            </summary>
-            <param name="id">id</param>
-            <param name="value">Y or N</param>
-        </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateImagePrivacy(System.String,System.String)">
             <summary>
             privacy setting user profile photo.
             </summary>
             <param name="id">id</param>
             <param name="value">Y or N</param>
+        </member>
+        <member name="T:Gordon360.Services.ScheduleControlService">
+            <summary>
+            Service Class that facilitates data transactions between the ScheduleControlController and the ScheduleControl part of the database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleControlService.UpdateSchedulePrivacy(System.String,System.String)">
+            <summary>
+            privacy setting of schedule.
+            </summary>
+            <param name="id">id</param>
+            <param name="value">Y or N</param>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleControlService.UpdateDescription(System.String,System.String)">
+            <summary>
+            description of schedule.
+            </summary>
+            <param name="id">id</param>
+            <param name="value">New description</param>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleControlService.UpdateModifiedTimeStamp(System.String,System.DateTime)">
+            <summary>
+            Update timestamp of modification in schedule.
+            </summary>
+            <param name="id">id</param>
+            <param name="value">Modified Time</param>
         </member>
         <member name="T:Gordon360.Services.ScheduleService">
             <summary>
@@ -1434,7 +1524,7 @@
             <param name="requestUrl"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Static.Methods.Helpers.GetDay">
+        <member name="M:Gordon360.Static.Methods.Helpers.GetFirstEventDate">
             <summary>
              Helper function to determine the current academic year
             </summary>
