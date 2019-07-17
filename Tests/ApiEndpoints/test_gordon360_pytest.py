@@ -121,25 +121,12 @@ class Test_allMyScheduleTest(testCase):
             pytest.fail('Expected Json, got {0}.'.format(response.text))
         assert response.json()[0]["GORDON_ID"] == str(leader_id_number)
 
-    """ Verify that an activity leader can create a Guest membership for someone.
+# Verify that an activity leader can create a Guest membership for someone.
 
-    Expectations:
-    Endpoints -- api/myschedule/
-    Expected Status Code -- 201 Created.
-    Expected Content -- A Json object with a GORDON_ID attribute.
-    """
-    def __init__myschedule_post(self , session=None):
-        super().__init__(session)
-        self.session = self.createAuthorizedSession(username, password)
-        self.url = hostURL + 'api/myschedule/' + username + '/'
-        self.data = {
-            'LOCATION' : 'KOSC 118',
-            'DESCRIPTION' : "Intro to Prog. Lab",
-            'TUE_CDE' : 'T',
-            'IS_ALLDAY' : 0,
-            'BEGIN_TIME' : '09:45:00:0000000',
-            'END_TIME' : '12:45:00:0000000'
-            }
+# Expectations:
+# Endpoints -- api/myschedule/
+# Expected Status Code -- 201 Created.
+# Expected Content -- A Json object with a GORDON_ID attribute.
 
     def test_myschedule_post(self):
         session = None
