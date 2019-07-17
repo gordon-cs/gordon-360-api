@@ -28,34 +28,34 @@ namespace Gordon360.Models
         }
     
         public virtual DbSet<ACT_INFO> ACT_INFO { get; set; }
-        public virtual DbSet<ADMIN> ADMINs { get; set; }
+        public virtual DbSet<ADMIN> ADMIN { get; set; }
         public virtual DbSet<CUSTOM_PROFILE> CUSTOM_PROFILE { get; set; }
+        public virtual DbSet<ERROR_LOG> ERROR_LOG { get; set; }
         public virtual DbSet<JNZB_ACTIVITIES> JNZB_ACTIVITIES { get; set; }
-        public virtual DbSet<MEMBERSHIP> MEMBERSHIPs { get; set; }
-        public virtual DbSet<MYSCHEDULE> MYSCHEDULEs { get; set; }
-        public virtual DbSet<REQUEST> REQUESTs { get; set; }
+        public virtual DbSet<MEMBERSHIP> MEMBERSHIP { get; set; }
+        public virtual DbSet<MYSCHEDULE> MYSCHEDULE { get; set; }
+        public virtual DbSet<REQUEST> REQUEST { get; set; }
         public virtual DbSet<Schedule_Control> Schedule_Control { get; set; }
-        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
+        public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         public virtual DbSet<Transit_Requests> Transit_Requests { get; set; }
         public virtual DbSet<Transit_Rides> Transit_Rides { get; set; }
-        public virtual DbSet<ERROR_LOG> ERROR_LOG { get; set; }
         public virtual DbSet<C360_SLIDER> C360_SLIDER { get; set; }
-        public virtual DbSet<ACCOUNT> ACCOUNTs { get; set; }
+        public virtual DbSet<ACCOUNT> ACCOUNT { get; set; }
         public virtual DbSet<Alumni> Alumni { get; set; }
-        public virtual DbSet<Building> Buildings { get; set; }
-        public virtual DbSet<ChapelEvent> ChapelEvents { get; set; }
+        public virtual DbSet<Buildings> Buildings { get; set; }
+        public virtual DbSet<ChapelEvent> ChapelEvent { get; set; }
         public virtual DbSet<CM_SESSION_MSTR> CM_SESSION_MSTR { get; set; }
-        public virtual DbSet<Country> Countries { get; set; }
+        public virtual DbSet<Countries> Countries { get; set; }
         public virtual DbSet<Dining_Meal_Choice_Desc> Dining_Meal_Choice_Desc { get; set; }
         public virtual DbSet<Dining_Meal_Plan_Id_Mapping> Dining_Meal_Plan_Id_Mapping { get; set; }
         public virtual DbSet<Dining_Mealplans> Dining_Mealplans { get; set; }
         public virtual DbSet<Dining_Student_Meal_Choice> Dining_Student_Meal_Choice { get; set; }
-        public virtual DbSet<DiningInfo> DiningInfoes { get; set; }
-        public virtual DbSet<FacStaff> FacStaffs { get; set; }
+        public virtual DbSet<DiningInfo> DiningInfo { get; set; }
+        public virtual DbSet<FacStaff> FacStaff { get; set; }
         public virtual DbSet<JENZ_ACT_CLUB_DEF> JENZ_ACT_CLUB_DEF { get; set; }
         public virtual DbSet<PART_DEF> PART_DEF { get; set; }
-        public virtual DbSet<RoomAssign> RoomAssigns { get; set; }
-        public virtual DbSet<Student> Students { get; set; }
+        public virtual DbSet<RoomAssign> RoomAssign { get; set; }
+        public virtual DbSet<Student> Student { get; set; }
     
         public virtual ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> ACTIVE_CLUBS_PER_SESS_ID(string sESS_CDE)
         {

@@ -45,7 +45,7 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>
-        /// Get schedule information of local user
+        /// Get schedule information of logged in user
         /// </summary>
         /// <returns></returns>
         [HttpGet]
