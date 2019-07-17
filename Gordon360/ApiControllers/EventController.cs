@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Linq;
 using System.Web.Http;
+using System.ServiceModel;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
 using Gordon360.Services;
@@ -9,7 +10,6 @@ using Gordon360.Exceptions.CustomExceptions;
 
 namespace Gordon360.ApiControllers
 {
-    [Authorize]
     [CustomExceptionFilter]
     [RoutePrefix("api/events")]
     public class EventController : ApiController
@@ -21,6 +21,7 @@ namespace Gordon360.ApiControllers
             _eventService = new EventService(unitOfWork);
         }
         
+        [Authorize]
         [HttpGet]
         [Route("chapel/")]
         public IHttpActionResult GetAllForStudent()
@@ -53,6 +54,7 @@ namespace Gordon360.ApiControllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpGet]
         [Route("chapel/{term}")]
         public IHttpActionResult GetEventsForStudentByTerm(string term)
@@ -84,6 +86,7 @@ namespace Gordon360.ApiControllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpGet]
         [Route("25Live/type/{Type_ID}")]
         public IHttpActionResult GetEventsByType(string Type_ID)
@@ -116,6 +119,7 @@ namespace Gordon360.ApiControllers
 
         }
 
+        [Authorize]
         [HttpGet]
         [Route("25Live/{Event_ID}")]
         public IHttpActionResult GetEventsByID(string Event_ID)
@@ -151,6 +155,7 @@ namespace Gordon360.ApiControllers
         /// This makes use of our cached request to 25Live, which stores AllEvents
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         [HttpGet]
         [Route("25Live/All")]
         public IHttpActionResult GetAllEvents()
@@ -182,6 +187,7 @@ namespace Gordon360.ApiControllers
 
         }
 
+        [Authorize]
         [HttpGet]
         [Route("25Live/CLAW")]
         public IHttpActionResult GetAllChapelEvents()
@@ -213,6 +219,55 @@ namespace Gordon360.ApiControllers
             return Ok(result);
 
         }
+
+        [HttpGet]
+        [Route("25Live/Public")]
+        public IHttpActionResult GetAllPublicEvents()
+        {
+            //    String url = "https://25livepub.collegenet.com/calendars/all-events-calendar";
+            //    XmlReader reader = XmlReader.Create(url);
+            //    SyndicationFeed feed = SyndicationFeed.Load(reader);
+            //    reader.Close();
+            //    String title;
+            //    String pubdate;
+            //    String date;
+            //    String time;
+            //    foreach (SyndicationItem item in feed.Items)
+            //    {
+            //        title = item.title.Text;
+            //        pubdate = item.pubDate;
+            //        date = pubdate.Substring(0,10);
+            //        time = pubdate.Substring(12,16);
+            //    }
+            //    String[] eventsInfo;
+            //    return eventsInfo;
+            //    
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            var result = _eventService.GetAllEvents(Static.Data.Data.AllEvents).Where(x => x.Requirement_Id == "3");
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+        
 
     }
 
