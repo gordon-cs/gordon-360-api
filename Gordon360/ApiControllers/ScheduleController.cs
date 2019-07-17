@@ -19,19 +19,20 @@ namespace Gordon360.Controllers.Api
     [Authorize]
     public class ScheduleController : ApiController
     {
+        private IUnitOfWork _unitOfWork;
+
         //declare services we are going to use.
-        private IProfileService _profileService;
         private IAccountService _accountService;
         private IRoleCheckingService _roleCheckingService;
+        private IScheduleControlService _scheduleControlService;
 
         private IScheduleService _scheduleService;
 
 
         public ScheduleController()
         {
-            var _unitOfWork = new UnitOfWork();
+            _unitOfWork = new UnitOfWork();
             _scheduleService = new ScheduleService(_unitOfWork);
-            _profileService = new ProfileService(_unitOfWork);
             _accountService = new AccountService(_unitOfWork);
             _roleCheckingService = new RoleCheckingService(_unitOfWork);
         }
@@ -97,10 +98,12 @@ namespace Gordon360.Controllers.Api
 
             object scheduleResult = null;
 
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+            var scheduleControl = _unitOfWork.ScheduleControlRepository.GetById(id);
+            Nullable<int> schedulePrivacy = scheduleControl.IsSchedulePrivate;
             // Getting student schedule
             if (role == "student")
             {
-                var id = _accountService.GetAccountByUsername(username).GordonID;
                 _scheduleResult = _scheduleService.GetScheduleStudent(id);
                 // Viewer permissions
                 switch (viewerType)
@@ -112,11 +115,10 @@ namespace Gordon360.Controllers.Api
                         scheduleResult = _scheduleResult;
                         break;
                     case Position.STUDENT:
-                        var stuProfile = _profileService.GetStudentProfileByUsername(username);
-                        // if (stuProfile.IsSchedulePrivate == 0)
-                        // {
+                        if (schedulePrivacy == 0)
+                        {
                             scheduleResult = _scheduleResult;
-                        // }
+                         }
                         break;
                     case Position.FACSTAFF:
                         scheduleResult = _scheduleResult;
@@ -125,36 +127,10 @@ namespace Gordon360.Controllers.Api
             }
 
             // Getting faculty / staff schedule
-            else //if (role == "facstaff")
+            else if (role == "facstaff")
             {
-                var id = _accountService.GetAccountByUsername(username).GordonID;
-                //var stuProfile = _profileService.GetStudentProfileByUsername(username);
                 _scheduleResult = _scheduleService.GetScheduleFaculty(id);
-                // Viewer permissions
-                switch (viewerType)
-                {
-                    case Position.SUPERADMIN:
-                        scheduleResult = _scheduleResult;
-                        break;
-                    case Position.POLICE:
-                        scheduleResult = _scheduleResult;
-                        break;
-                    case Position.STUDENT:
-                        //if (stuProfile.IsSchedulePrivate == 0)
-                        if (true)
-                        {
-                            scheduleResult = _scheduleResult;
-                        }
-                        break;
-                    case Position.FACSTAFF:
-                        //if (stuProfile.IsSchedulePrivate == 0)
-                        if (true)
-                        {
-                            scheduleResult = _scheduleResult;
-                        }
-                        break;
-                }
-
+                 scheduleResult = _scheduleResult;
             }
 
             // Can non student or non facstaff have a schedule? Do we want to return that?

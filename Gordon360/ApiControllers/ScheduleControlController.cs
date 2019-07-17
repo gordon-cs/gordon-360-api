@@ -185,7 +185,7 @@ namespace Gordon360.Controllers.Api
 
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
-            _scheduleControlService.UpdateSchedulePrivacy(id, value);
+            _scheduleControlService.UpdateModifiedTimeStamp(id, Convert.ToDateTime(value));
 
             return Ok();
 
