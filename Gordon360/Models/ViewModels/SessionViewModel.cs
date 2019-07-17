@@ -17,11 +17,12 @@ namespace Gordon360.Models.ViewModels
         {
             SessionViewModel vm = new SessionViewModel
             {
-                
+
                 SessionCode = sess.SESS_CDE.Trim(),
                 SessionDescription = sess.SESS_DESC ?? "",
-                SessionBeginDate = sess.SESS_BEGN_DTE ?? DateTime.MinValue, 
-                SessionEndDate = sess.SESS_END_DTE ?? DateTime.MaxValue
+                SessionBeginDate = sess.SESS_BEGN_DTE ?? DateTime.MinValue,
+                SessionEndDate = sess.SESS_END_DTE ?? DateTime.MaxValue,
+
             };
 
             return vm;

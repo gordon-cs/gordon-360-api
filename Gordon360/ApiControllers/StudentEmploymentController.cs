@@ -33,9 +33,10 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>
-        ///  Gets current student employmen info
+        ///  Gets student employment information about the user
         /// </summary>
-        /// <returns>A studentEmployment object object</returns>
+        /// <returns>A Student Employment Json </returns>
+
         [HttpGet]
         [Route("")]
         public IHttpActionResult Get()
