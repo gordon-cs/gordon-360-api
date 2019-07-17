@@ -35,7 +35,7 @@ namespace Gordon360.Controllers.Api
         /// <summary>
         ///  Gets current victory promise scores
         /// </summary>
-        /// <returns>A VP object object</returns>
+        /// <returns>A VP Json</returns>
         [HttpGet]
         [Route("")]
         public IHttpActionResult Get()
@@ -44,13 +44,15 @@ namespace Gordon360.Controllers.Api
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
             var id = _accountService.GetAccountByUsername(username).GordonID;
-            //var id = _accountService.GetAccountByUsername(username).GordonID;
+
             var result = _victoryPromiseService.GetVPScores(id);
-                if (result == null)
-                {
-                    return NotFound();
-                }
-                return Ok(result);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
         }
-        }
+    }
 }

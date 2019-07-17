@@ -125,6 +125,8 @@ AutoTest.Net/
 
 # Web workbench (sass)
 .sass-cache/
+
+# Pytest Cache
 .pytest_cache/
 
 # Installshield output folder
