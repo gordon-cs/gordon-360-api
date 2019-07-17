@@ -9,6 +9,7 @@ using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using Gordon360.Static.Data;
+using System.Data.SqlClient;
 
 namespace Gordon360.Services
 {
@@ -90,5 +91,10 @@ namespace Gordon360.Services
             AccountViewModel result = query; // Implicit conversion happening here, see ViewModels.
             return result;
         }
+
+
+
+        
     }
+
 }

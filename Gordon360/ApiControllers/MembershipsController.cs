@@ -57,43 +57,6 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>
-        /// Get a single membership based on the id given
-        /// </summary>
-        /// <param name="id">The id of a membership within the database</param>
-        /// <remarks>Queries the database about the specified membership</remarks>
-        /// <returns>The information about one specific membership</returns>
-        // GET api/<controller>/5
-        [HttpGet]
-        [Route("{id}")]
-        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
-        public IHttpActionResult Get(int id)
-        {
-            if(!ModelState.IsValid)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
-            var result =  _membershipService.Get(id);
-
-            if( result == null)
-            {
-                return NotFound();
-            }
-
-            MembershipViewModel membership = result;
-            return Ok(membership);
-        }
-
-        /// <summary>
         /// Get all the memberships associated with a given activity
         /// </summary>
         /// <param name="id">The activity ID</param>
@@ -223,7 +186,7 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>
-        /// Gets the number of members and followers of an activity
+        /// Gets the number of followers of an activity
         /// </summary>
         /// <param name="id">The activity ID.</param>
         /// <returns>The number of followers of the activity</returns>
@@ -251,7 +214,7 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>
-        /// Gets the number of members and followers of an activity
+        /// Gets the number of members (besides followers) of an activity
         /// </summary>
         /// <param name="id">The activity ID.</param>
         /// <returns>The number of members of the activity</returns>
@@ -279,7 +242,7 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>
-        /// Gets the number of members and followers of an activity
+        /// Gets the number of followers of an activity
         /// </summary>
         /// <param name="id">The activity ID.</param>
         /// <param name="sess_cde">The session code</param>
@@ -308,7 +271,7 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>
-        /// Gets the number of members and followers of an activity
+        /// Gets the number of members (excluding followers) of an activity
         /// </summary>
         /// <param name="id">The activity ID.</param>
         /// <param name="sess_cde">The session code</param>
