@@ -176,9 +176,9 @@ A record in this table stores:
 - FRI_CDE - Whether or not the event is in friday ('F')
 - SAT_CDE - Whether or not the event is in saturday ('S')
 - SUN_CDE - Whether or not the event is in sunday ('N')
-- IS_ALLDAY - Whether or not the event is happening for all day
-- BEGIN_TIME - The start time of the event
-- END_TIME - The end time of the event
+- IS_ALLDAY - Whether or not the event is happening for all day '0' for no and '1' for all day.
+- BEGIN_TIME - The start time of the event in Timespan format
+- END_TIME - The end time of the event in Timespan format
 
 Myschedules doesn't exist in the table unless a user add/edit myschedule on 360 site. Once a user adds any customized event, the event will be added to the table. The structure is adopted from the course schedule format stored in other database. There are two primary keys - EVENT_ID and GORDON_ID. They have to match together to get any event schedule
 
