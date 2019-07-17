@@ -21,6 +21,8 @@ namespace Gordon360.Models.ViewModels
         public DateTime StartDate { get; set; }
         public Nullable<DateTime> EndDate { get; set; }
         public string Description { get; set; }
+        public string ActivityType { get; set; }
+        public string ActivityTypeDescription { get; set; }
         public bool? Privacy { get; set; }
         public int AccountPrivate { get; set; }
 
@@ -38,6 +40,8 @@ namespace Gordon360.Models.ViewModels
                 StartDate = m.BEGIN_DTE, 
                 EndDate = m.END_DTE,
                 Description = m.COMMENT_TXT ?? "", // For Null comments
+                ActivityType = m.ACT_TYPE,
+                ActivityDescription = m.ACT_TYPE_DESC,
                 Privacy = m.PRIVACY ?? false,
             };
 
