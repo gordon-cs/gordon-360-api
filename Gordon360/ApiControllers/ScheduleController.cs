@@ -93,37 +93,16 @@ namespace Gordon360.Controllers.Api
             object _scheduleResult = null;
 
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var viewerType = _roleCheckingService.getCollegeRole(viewerName);
 
             object scheduleResult = null;
 
             var id = _accountService.GetAccountByUsername(username).GordonID;
-            var scheduleControl = _unitOfWork.ScheduleControlRepository.GetById(id);
-            Nullable<int> schedulePrivacy = scheduleControl.IsSchedulePrivate;
             // Getting student schedule
             if (role == "student")
             {
                 _scheduleResult = _scheduleService.GetScheduleStudent(id);
-                // Viewer permissions
-                switch (viewerType)
-                {
-                    case Position.SUPERADMIN:
-                        scheduleResult = _scheduleResult;
-                        break;
-                    case Position.POLICE:
-                        scheduleResult = _scheduleResult;
-                        break;
-                    case Position.STUDENT:
-                        if (schedulePrivacy == 0)
-                        {
-                            scheduleResult = _scheduleResult;
-                         }
-                        break;
-                    case Position.FACSTAFF:
-                        scheduleResult = _scheduleResult;
-                        break;
-                }
+                 scheduleResult = _scheduleResult;
+
             }
 
             // Getting faculty / staff schedule
@@ -132,8 +111,7 @@ namespace Gordon360.Controllers.Api
                 _scheduleResult = _scheduleService.GetScheduleFaculty(id);
                  scheduleResult = _scheduleResult;
             }
-
-            // Can non student or non facstaff have a schedule? Do we want to return that?
+            
             if (scheduleResult == null)
             {
                 return NotFound();
