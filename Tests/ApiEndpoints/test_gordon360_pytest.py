@@ -133,7 +133,7 @@ class Test_allMyScheduleTest(testCase):
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/myschedule/'
         self.data = {
-            'GORDON_ID' : 999999097,
+            'GORDON_ID' : '999999097',
             'LOCATION' : 'KOSC 118',
             'DESCRIPTION' : "Intro to Prog. Lab",
             'TUE_CDE' : 'T',
@@ -149,6 +149,52 @@ class Test_allMyScheduleTest(testCase):
         except ValueError:
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
         assert response.json()["GORDON_ID"] == str(my_id_number)
+
+# Update a myschedule object of the currently logged in user.
+#    500 Error
+#    Expectations:
+#    Endpoints -- api/myschedule/
+#    Expected Status Code -- 200 OK.
+#    Expected Content -- The Json object with a GORDON_ID attribute.
+
+    def test_myschedule_put(self , session=None):
+        session = None
+        self.session = self.createAuthorizedSession(username, password)
+        self.url = hostURL + 'api/myschedule/'
+        # The event to modify
+        self.predata = {
+            'EVENT_ID' : '10',
+            'GORDON_ID' : '999999097',
+            'LOCATION' : 'KOSC 118',
+            'DESCRIPTION' : "Intro to Prog. Lab",
+            'TUE_CDE' : 'T',
+            'IS_ALLDAY' : 1
+        }
+        r = api.postAsJson(self.session, self.url, self.predata)
+        try:
+            self.GordonID = r.json()['GORDON_ID']
+            # Updated Data
+            self.data = {
+                'EVENT_ID' : '10',
+                'GORDON_ID' : '999999097',
+                'LOCATION' : 'KOSC 118',
+                'DESCRIPTION' : "TESTING - JUST IGNORE",
+                'TUE_CDE' : 'T',
+                'IS_ALLDAY' : 1,
+            }
+        except (KeyError, ValueError):
+            pytest.fail('Error in setup.')
+        response = api.putAsJson(self.session, self.url, self.data)
+        print (response.json())
+        print (response.status_code)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json response body, got {0}.'.format(response.text))
+        assert response.json()["GORDON_ID"] == str(my_id_number)
+
 
 class Test_allScheduleTest(testCase):
 
