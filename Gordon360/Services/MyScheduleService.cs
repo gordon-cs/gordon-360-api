@@ -29,10 +29,35 @@ namespace Gordon360.Services
         /// <summary>
         /// Fetch the myschedule item whose id is specified by the parameter
         /// </summary>
-        /// <param name="gordon_id">The myschedule id</param>
-        /// <returns>MyScheduleViewModel if found, null if not found</returns>
-         public IEnumerable<MYSCHEDULE> GetAllForID(string gordon_id)
-         {
+        /// <param name="event_id">The myschedule id</param>
+        /// <param name="gordon_id">The gordon id</param>
+        /// <returns>Myschedule if found, null if not found</returns>
+        public MYSCHEDULE GetForID(string event_id, string gordon_id)
+        {
+            // Account Verification
+            var account = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == gordon_id);
+            if (account == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
+
+            var result = _unitOfWork.MyScheduleRepository.FirstOrDefault(x => x.GORDON_ID == gordon_id && x.EVENT_ID == event_id);
+            if (result == null)
+            {
+                return null;
+            }
+
+            return result;
+        }
+
+
+        /// <summary>
+        /// Fetch all myschedule items whose id is specified by the parameter
+        /// </summary>
+        /// <param name="gordon_id">The gordon id</param>
+        /// <returns>Array of Myschedule if found, null if not found</returns>
+        public IEnumerable<MYSCHEDULE> GetAllForID(string gordon_id)
+        {
 
             // Account Verification
             var account = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == gordon_id);
@@ -52,7 +77,8 @@ namespace Gordon360.Services
             }
 
             return result;
-         }
+        }
+
 
 
 
@@ -121,7 +147,7 @@ namespace Gordon360.Services
         /// <param name="gordon_id">The gordon id</param>
         /// <returns>The myschedule that was just deleted</returns>
         public MYSCHEDULE Delete(string event_id, string gordon_id)
-         {
+        {
             // Account Verification
             var account = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == gordon_id);
             if (account == null)
@@ -131,9 +157,9 @@ namespace Gordon360.Services
 
             var result = _unitOfWork.MyScheduleRepository.FirstOrDefault(x => x.GORDON_ID == gordon_id && x.EVENT_ID == event_id);
             if (result == null)
-             {
-                 throw new ResourceNotFoundException() { ExceptionMessage = "The MySchedule was not found." };
-             }
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The MySchedule was not found." };
+            }
 
             var idParam = new SqlParameter("@GORDONID", gordon_id);
             var eventIdParam = new SqlParameter("@EVENTID", event_id);
@@ -141,17 +167,17 @@ namespace Gordon360.Services
             context.Database.ExecuteSqlCommand("DELETE_MYSCHEDULE @GORDONID, @EVENTID", idParam, eventIdParam); // run stored procedure.
 
             _unitOfWork.Save();
-      
-             return result;
-         }
 
-         /// <summary>
-         /// Update the myschedule item.
-         /// </summary>
-         /// <param name="sched">The schedule information</param>
-         /// <returns>The original schedule</returns>
-         public MYSCHEDULE Update(MYSCHEDULE sched)
-         {
+            return result;
+        }
+
+        /// <summary>
+        /// Update the myschedule item.
+        /// </summary>
+        /// <param name="sched">The schedule information</param>
+        /// <returns>The original schedule</returns>
+        public MYSCHEDULE Update(MYSCHEDULE sched)
+        {
 
             var gordon_id = sched.GORDON_ID;
             var event_id = sched.EVENT_ID;
@@ -162,7 +188,7 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
-            
+
             var original = _unitOfWork.MyScheduleRepository.FirstOrDefault(x => x.GORDON_ID == gordon_id && x.EVENT_ID == event_id);
 
             if (original == null)
@@ -189,14 +215,14 @@ namespace Gordon360.Services
                 "@EVENTID, @GORDONID @LOCATION @DESCRIPTION @MON_CDE @TUE_CDE @WED_CDE" +
                 "@THU_CDE @FRI_CDE @SAT_CDE @SUN_CDE @IS_ALLDAY @BEGINTIME @ENDTIME"
                 , eventIdParam, idParam, locationParam, descriptionParam, monCdeParam, tueCdeParam,
-                wedCdeParam, thuCdeParam, friCdeParam,satCdeParam, sunCdeParam, allDayParam,
+                wedCdeParam, thuCdeParam, friCdeParam, satCdeParam, sunCdeParam, allDayParam,
                 beginTimeParam, endTimeParam); // run stored procedure.
 
             _unitOfWork.Save();
 
             return original;
 
-         }
+        }
 
     }
 }

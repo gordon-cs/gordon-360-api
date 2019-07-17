@@ -12,6 +12,7 @@ Dive in.
     - [Stored Procedures](#stored-procedures)
     - [Triggers](#triggers)
     - [Manual and Debugging Access](#manual-and-debugging-access)
+    - [Updating .edmx](#updating-.edmx)
 - [The Code](#the-code)
 - [Introduction](#introduction)
 - [Caching](#caching)
@@ -746,6 +747,8 @@ What is it? Resource that represents a customized schedule of user.
 `api/myschedule` Get all myschedule objects of the currently logged in user.
 
 `api/myschedule/:username` Get all myschedule objects of a user with username `username` as a parameter.
+
+`api/myschedule/event/:eventId` Get a specific myschedule object of the currently logged in user with `eventId` as a parameter
 
 ##### PUT
 
