@@ -20,13 +20,9 @@ namespace Gordon360.Models.ViewModels
 
                 SessionCode = sess.SESS_CDE.Trim(),
                 SessionDescription = sess.SESS_DESC ?? "",
-<<<<<<< HEAD
                 SessionBeginDate = sess.SESS_BEGN_DTE ?? DateTime.MinValue,
                 SessionEndDate = sess.SESS_END_DTE ?? DateTime.MaxValue,
-=======
-                SessionBeginDate = sess.SESS_BEGN_DTE ?? DateTime.MinValue, 
-                SessionEndDate = sess.SESS_END_DTE ?? DateTime.MaxValue
->>>>>>> 1617cf65c2793bfc3d7eeabe7ad7e0989b934060
+
             };
 
             return vm;

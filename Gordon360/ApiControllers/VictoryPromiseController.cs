@@ -44,10 +44,7 @@ namespace Gordon360.Controllers.Api
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
             var id = _accountService.GetAccountByUsername(username).GordonID;
-<<<<<<< HEAD
 
-=======
->>>>>>> 1617cf65c2793bfc3d7eeabe7ad7e0989b934060
             var result = _victoryPromiseService.GetVPScores(id);
 
             if (result == null)
