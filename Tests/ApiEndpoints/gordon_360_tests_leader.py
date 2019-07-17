@@ -776,7 +776,7 @@ class post_valid_membership_request___activity_leader(TestCase):
             try:
                 self.requestID = response.json()['REQUEST_ID']
                 if not response.json()['STATUS'] == REQUEST_STATUS_PENDING:
-                    self.log_error('Expected Pending status , got {0}.'.format(resposne.json()))
+                    self.log_error('Expected Pending status , got {0}.'.format(response.json()))
             except KeyError:
                 self.log_error('Expected REQUEST_ID in response body, got {0}.'.format(response.json()))
 
