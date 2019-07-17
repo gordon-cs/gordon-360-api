@@ -149,15 +149,21 @@ class Test_allMyScheduleTest(testCase):
         except ValueError:
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
         assert response.json()["GORDON_ID"] == str(my_id_number)
+        # Get the object to double check the test actually worked
+        # Expected Status Code -- 200 OK.
 
-        #delete the test post
-        try:
-            self.GordonID = response.json()["GORDON_ID"]
-            print(self.GordonID)
-            if self.GordonID == str(my_id_number):
-               api.delete(self.session, self.url + str(self.GordonID))
-        except KeyError:
-            pytest.fail('Expected REQUEST_ID in response body, got {0}.'.format(response.json()))
+        # delete the test post
+        # Expectations:
+        # Expected Status Code -- 200 OK.
+        #try:
+        #    self.GordonID = response.json()["GORDON_ID"]
+        #    print(self.GordonID)
+        #    if self.GordonID == str(my_id_number):
+        #       api.delete(self.session, self.url + str(self.GordonID))
+        #except KeyError:
+        #    pytest.fail('Expected REQUEST_ID in response body, got {0}.'.format(response.json()))
+        #if not response.status_code == 200:
+        #    pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
 
 # Update a myschedule object of the currently logged in user.
 #    500 Error
