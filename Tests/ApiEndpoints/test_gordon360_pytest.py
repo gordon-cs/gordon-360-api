@@ -89,7 +89,6 @@ class Test_allMyScheduleTest(testCase):
         self.url = hostURL + 'api/myschedule/'
         self.token_payload = { 'username':username, 'password':password, 'grant_type':'password' }
         response = api.get(self.session, self.url)
-        print (response.json())
         print (response.status_code)
 
         if not response.status_code == 200:
@@ -98,7 +97,7 @@ class Test_allMyScheduleTest(testCase):
             response.json()
         except ValueError:
             pytest.fail('Expected Json, got {0}.'.format(response.text))
-        assert response.json()[0]["GORDON_ID"] == str(my_id_number)
+        assert response.json()[0]["EVENT_ID"] == '10000'
         
     
 #    Get all myschedule objects of a user with username `username` as a parameter.
@@ -119,7 +118,7 @@ class Test_allMyScheduleTest(testCase):
             response.json()
         except ValueError:
             pytest.fail('Expected Json, got {0}.'.format(response.text))
-        assert response.json()[0]["GORDON_ID"] == str(leader_id_number)
+        assert response.json()[0]["EVENT_ID"] == '1100'
 
 # Verify that an activity leader can create a Guest membership for someone.
 
