@@ -72,6 +72,52 @@ class testCase:
         authorized_session.headers.update({ "Authorization":authorization_header })
         return authorized_session
 
+
+class Test_allScheduleControlTest(testCase):
+
+# # # # # # # # # # # # #
+# SCHEDULECONTROL TESTS #
+# # # # # # # # # # # # #
+
+#    Get the schedulecontrol object of the currently logged in user.
+#    Endpoint -- api/schedulecontrol
+#    Expected Status code -- 200 Ok
+#    Expected Content -- all schedule objects of the currently logged in user.
+
+    def test_get_all_schedulecontrol_objects_of_current_user(self):
+        self.session = self.createAuthorizedSession(username, password)
+        self.url = hostURL + 'api/schedulecontrol/'
+        self.token_payload = { 'username':username, 'password':password, 'grant_type':'password' }
+        response = api.get(self.session, self.url)
+
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json, got {0}.'.format(response.text))
+
+#    Get the schedulecontrol object of a user with username `username` as a parameter.
+#    Endpoint -- api/schedulecontrol/{username}
+#    Expected Status code -- 200 Ok
+#    Expected Content -- all schedule objects of the currently logged in user.
+
+    def test_get_all_schedulecontrol_objects_of_user(self):
+        self.session = self.createAuthorizedSession(username, password)
+        self.url = hostURL + 'api/schedulecontrol/' + leader_username + '/'
+        self.token_payload = { 'username':username, 'password':password, 'grant_type':'password' }
+        response = api.get(self.session, self.url)
+        print(response.json())
+        print(response.status_code)
+
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json, got {0}.'.format(response.text))
+
+
 class Test_allMyScheduleTest(testCase):
 
 
@@ -80,7 +126,7 @@ class Test_allMyScheduleTest(testCase):
 # # # # # # # # # # 
 
 #    Get all myschedule objects of the currently logged in user.
-#    Endpoint -- api/myschedule/{username}
+#    Endpoint -- api/myschedule/
 #    Expected Status code -- 200 Ok
 #    Expected Content -- all schedule objects of the currently logged in user.
     def test_get_all_myschedule_objects_of_current_user(self):
