@@ -107,8 +107,6 @@ class Test_allScheduleControlTest(testCase):
         self.url = hostURL + 'api/schedulecontrol/' + leader_username + '/'
         self.token_payload = { 'username':username, 'password':password, 'grant_type':'password' }
         response = api.get(self.session, self.url)
-        print(response.json())
-        print(response.status_code)
 
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
