@@ -37,8 +37,8 @@ FILE_PATH = '\\gotrain\pref_photos'
 FILE_NAME = 'profile.jpg'
 
 # API 
-hostURL = 'https://360ApiTrain.gordon.edu/'
-#hostURL = 'http://localhost:1025/'
+#hostURL = 'https://360ApiTrain.gordon.edu/'
+hostURL = 'http://localhost:9999/'
 
 # Constants
 LEADERSHIP_POSITIONS = ['CAPT','CODIR','CORD','DIREC','PRES','VICEC','VICEP']
@@ -71,7 +71,209 @@ class testCase:
         authorized_session.verify = True
         authorized_session.headers.update({ "Authorization":authorization_header })
         return authorized_session
+
+class Test_allMyScheduleTest(testCase):
+
+
+# # # # # # # # # # 
+# MYSCHEDULE TESTS #
+# # # # # # # # # # 
+
+#    Get all myschedule objects of the currently logged in user.
+#    Endpoint -- api/myschedule/{username}
+#    Expected Status code -- 200 Ok
+#    Expected Content -- all schedule objects of the currently logged in user.
+    def test_get_all_myschedule_objects_of_current_user(self):
+        session = None
+        self.session = self.createAuthorizedSession(username, password)
+        self.url = hostURL + 'api/myschedule/'
+        self.token_payload = { 'username':username, 'password':password, 'grant_type':'password' }
+        response = api.get(self.session, self.url)
+        print (response.status_code)
+
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json, got {0}.'.format(response.text))
+        assert response.json()[0]["EVENT_ID"] == '10000'
+        
     
+#    Get all myschedule objects of a user with username `username` as a parameter.
+#    Endpoint --  api/myschedule/{username}
+#    Expected Status code -- 200 Ok
+#    Expected Content -- all schedule objects of a user with username `username` as a parameter
+    def test_get_all_myschedule_objects_of_user(self):
+        session = None
+        self.session = self.createAuthorizedSession(username, password)
+        self.url = hostURL + 'api/myschedule/' + leader_username + '/'
+        response = api.get(self.session, self.url)
+        print (response.json())
+        print (response.status_code)
+
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json, got {0}.'.format(response.text))
+        assert response.json()[0]["EVENT_ID"] == '1100'
+
+# Verify that an activity leader can create a Guest membership for someone.
+
+# Expectations:
+# Endpoints -- api/myschedule/
+# Expected Status Code -- 201 Created.
+# Expected Content -- A Json object with a GORDON_ID attribute.
+
+    def test_myschedule_post(self):
+        session = None
+        self.session = self.createAuthorizedSession(username, password)
+        self.url = hostURL + 'api/myschedule/'
+        self.data = {
+            'GORDON_ID' : '999999097',
+            'LOCATION' : 'KOSC 118',
+            'DESCRIPTION' : "Intro to Prog. Lab",
+            'TUE_CDE' : 'T',
+            'IS_ALLDAY' : 1,
+        }
+        response = api.postAsJson(self.session, self.url, self.data)
+        print (response.json())
+        print (response.status_code)
+        if not response.status_code == 201:
+            pytest.fail('Expected 201 Created, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json response body, got {0}.'.format(response.text))
+        assert response.json()["GORDON_ID"] == str(my_id_number)
+        # Get the object to double check the test actually worked
+        # Expected Status Code -- 200 OK.
+
+        # delete the test post
+        # Expectations:
+        # Expected Status Code -- 200 OK.
+        print (response.json()["GORDON_ID"])
+        print (response.json()["EVENT_ID"])
+        try:
+            self.GordonID = response.json()["GORDON_ID"]
+            print(self.GordonID)
+            if self.GordonID == str(my_id_number):
+                response = api.delete(self.session, self.url + str(response.json()["EVENT_ID"]))
+        except KeyError:
+            pytest.fail('Expected REQUEST_ID in response body, got {0}.'.format(response.json()))
+        print (response.status_code)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+
+# Update a myschedule object of the currently logged in user.
+#    500 Error
+#    Expectations:
+#    Endpoints -- api/myschedule/
+#    Expected Status Code -- 200 OK.
+#    Expected Content -- The Json object with a GORDON_ID attribute.
+
+    def test_myschedule_put(self , session=None):
+        session = None
+        self.session = self.createAuthorizedSession(username, password)
+        self.url = hostURL + 'api/myschedule/'
+        # The event to modify
+        self.predata = {
+            'EVENT_ID' : '9999',
+            'GORDON_ID' : '999999097',
+            'LOCATION' : 'KOSC 244',
+            'DESCRIPTION' : 'Summer Practicum',
+            'MON_CDE' : 'M',
+            'TUE_CDE' : 'T',
+            'WED_CDE' : 'W',
+            'THU_CDE' : 'R',
+            'FRI_CDE' : 'F',
+            'IS_ALLDAY' : 0,
+            'BEGIN_TIME' : '09:00:00.0000000',
+            'END_TIME' : '17:00:00.0000000',
+        }
+        r = api.postAsJson(self.session, self.url, self.predata)
+        try:
+            self.GordonID = r.json()['GORDON_ID']
+            # Updated Data
+            self.data = {
+            'EVENT_ID' : '9999',
+            'GORDON_ID' : '999999097',
+            'LOCATION' : 'KOSC 244',
+            'DESCRIPTION' : 'TESTING - JUST IGNORE',
+            'MON_CDE' : 'M',
+            'TUE_CDE' : 'T',
+            'WED_CDE' : 'W',
+            'THU_CDE' : 'R',
+            'FRI_CDE' : 'F',
+            'IS_ALLDAY' : 0,
+            'BEGIN_TIME' : '09:00:00.0000000',
+            'END_TIME' : '17:00:00.0000000',
+            }
+        except (KeyError, ValueError):
+            pytest.fail('Error in setup.')
+        response = api.putAsJson(self.session, self.url, self.data)
+        print (response.json())
+        print (response.status_code)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json response body, got {0}.'.format(response.text))
+        assert response.json()["GORDON_ID"] == str(my_id_number)
+
+
+class Test_allScheduleTest(testCase):
+
+
+# # # # # # # # # 
+# SCHEDULE TESTS #
+# # # # # # # # # 
+
+#    Get all schedule objects of the currently logged in user.
+#    Endpoint --  api/schedule/:username
+#    Expected Status code -- 200 Ok
+#    Expected Content -- all schedule objects of the currently logged in user.
+    def test_get_all_schedule_objects_of_current_user(self):
+        session = None
+        self.session = self.createAuthorizedSession(username, password)
+        self.url = hostURL + 'api/schedule/' + username + '/'
+        response = api.get(self.session, self.url)
+        print (response.json())
+        print (response.status_code)
+
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json, got {0}.'.format(response.text))
+        assert response.json()[0]["GORDON_ID"] == str(my_id_number)
+
+
+#    Get all schedule objects of a user with username `username` as a parameter.
+#    Endpoint --  api/schedule/:username
+#    Expected Status code -- 200 Ok
+#    Expected Content -- all schedule objects of a user with username `username` as a parameter
+    def test_get_all_schedule_objects_of_user(self):
+        session = None
+        self.session = self.createAuthorizedSession(username, password)
+        self.url = hostURL + 'api/schedule/' + leader_username + '/'
+        response = api.get(self.session, self.url)
+        print (response.json())
+        print (response.status_code)
+
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json, got {0}.'.format(response.text))
+        assert response.json()[0]["GORDON_ID"] == str(leader_id_number)
+    
+
 
 class Test_allAuthenticationTest(testCase):
 
