@@ -760,7 +760,7 @@ What is it? Resource that represents a customized schedule of user.
 
 ##### DELETE
 
-`api/myschedule/`  Delete a myschedule object of the currently logged in user.
+`api/myschedule/:eventID`  Delete a myschedule object of the currently logged in user.
 
 
 ### Schedule Control

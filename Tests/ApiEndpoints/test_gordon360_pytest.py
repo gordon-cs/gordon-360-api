@@ -155,15 +155,18 @@ class Test_allMyScheduleTest(testCase):
         # delete the test post
         # Expectations:
         # Expected Status Code -- 200 OK.
-        #try:
-        #    self.GordonID = response.json()["GORDON_ID"]
-        #    print(self.GordonID)
-        #    if self.GordonID == str(my_id_number):
-        #       api.delete(self.session, self.url + str(self.GordonID))
-        #except KeyError:
-        #    pytest.fail('Expected REQUEST_ID in response body, got {0}.'.format(response.json()))
-        #if not response.status_code == 200:
-        #    pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        print (response.json()["GORDON_ID"])
+        print (response.json()["EVENT_ID"])
+        try:
+            self.GordonID = response.json()["GORDON_ID"]
+            print(self.GordonID)
+            if self.GordonID == str(my_id_number):
+                response = api.delete(self.session, self.url + str(response.json()["EVENT_ID"]))
+        except KeyError:
+            pytest.fail('Expected REQUEST_ID in response body, got {0}.'.format(response.json()))
+        print (response.status_code)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
 
 # Update a myschedule object of the currently logged in user.
 #    500 Error
@@ -179,7 +182,7 @@ class Test_allMyScheduleTest(testCase):
         # The event to modify
         self.predata = {
             'EVENT_ID' : '10',
-            'GORDON_ID' : '999999097',
+            'GORDON_ID' : '50191298',
             'LOCATION' : 'KOSC 118',
             'DESCRIPTION' : "Intro to Prog. Lab",
             'TUE_CDE' : 'T',
@@ -191,7 +194,7 @@ class Test_allMyScheduleTest(testCase):
             # Updated Data
             self.data = {
                 'EVENT_ID' : '10',
-                'GORDON_ID' : '999999097',
+                'GORDON_ID' : '50191298',
                 'LOCATION' : 'KOSC 118',
                 'DESCRIPTION' : "TESTING - JUST IGNORE",
                 'TUE_CDE' : 'T',
