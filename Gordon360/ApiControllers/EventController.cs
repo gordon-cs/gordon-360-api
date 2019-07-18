@@ -224,24 +224,6 @@ namespace Gordon360.ApiControllers
         [Route("25Live/Public")]
         public IHttpActionResult GetAllPublicEvents()
         {
-            //    String url = "https://25livepub.collegenet.com/calendars/all-events-calendar";
-            //    XmlReader reader = XmlReader.Create(url);
-            //    SyndicationFeed feed = SyndicationFeed.Load(reader);
-            //    reader.Close();
-            //    String title;
-            //    String pubdate;
-            //    String date;
-            //    String time;
-            //    foreach (SyndicationItem item in feed.Items)
-            //    {
-            //        title = item.title.Text;
-            //        pubdate = item.pubDate;
-            //        date = pubdate.Substring(0,10);
-            //        time = pubdate.Substring(12,16);
-            //    }
-            //    String[] eventsInfo;
-            //    return eventsInfo;
-            //    
             if (!ModelState.IsValid)
             {
                 string errors = "";
