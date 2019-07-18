@@ -9,6 +9,7 @@ using Gordon360.Models.ViewModels;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using System;
+using Newtonsoft.Json.Linq;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Exceptions.CustomExceptions;
 using System.Collections.Generic;
@@ -64,7 +65,12 @@ namespace Gordon360.Controllers.Api
                 return NotFound();
             }
 
-            return Ok(scheduleControlResult);
+            JObject jresult = JObject.FromObject(scheduleControlResult);
+
+            jresult.Property("gordon_id").Remove();
+
+            return Ok(jresult);
+            
 
         }
 
