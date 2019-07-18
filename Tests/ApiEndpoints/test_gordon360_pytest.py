@@ -3,6 +3,7 @@ import warnings
 import string
 import pytest_components as api
 from pytest_components import requests
+from datetime import datetime
 
 # # # # # # # # #
 # Configuration #
@@ -115,6 +116,44 @@ class Test_allScheduleControlTest(testCase):
         except ValueError:
             pytest.fail('Expected Json, got {0}.'.format(response.text))
 
+#    Update a schedule privacy of the currently logged in user.
+#    Endpoint -- api/schedulecontrol/privacy/{value}
+#    Expected Status code -- 200 Ok
+#    Expected Content -- all schedule objects of the currently logged in user.
+
+    def test_schedulecontrol_put_privacy(self):
+        self.session = self.createAuthorizedSession(username, password)
+        self.url = hostURL + 'api/schedulecontrol/privacy/N/'
+        response = api.put(self.session, self.url, 'N')
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+
+#    Update a schedule description of the currently logged in user.
+#    Endpoint -- api/schedulecontrol/description/{value}
+#    Expected Status code -- 200 Ok
+#    Expected Content -- all schedule objects of the currently logged in user.
+
+    def test_schedulecontrol_put_description(self):
+        self.session = self.createAuthorizedSession(username, password)
+        self.url = hostURL + 'api/schedulecontrol/description/DOING_TESTS_IGNORE/'
+        response = api.put(self.session, self.url, 'DOING_TESTS_IGNORE')
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+
+#    Update a timestamp of last modified schedule of the currently logged in user.
+#    Endpoint -- api/schedulecontrol/timestamp/{value}
+#    Expected Status code -- 200 Ok
+#    Expected Content -- all schedule objects of the currently logged in user.
+
+    def test_schedulecontrol_put_timestamp(self):
+        self.session = self.createAuthorizedSession(username, password)
+        print(str(datetime.now()))
+        self.url = hostURL + 'api/schedulecontrol/timestamp/2019-07-16_14:56:59.000/'
+        response = api.put(self.session, self.url, '2019-07-16_14:56:59.000')
+        print(response.status_code)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+
 
 class Test_allMyScheduleTest(testCase):
 
@@ -161,7 +200,7 @@ class Test_allMyScheduleTest(testCase):
             pytest.fail('Expected Json, got {0}.'.format(response.text))
         assert response.json()[0]["EVENT_ID"] == '1100'
 
-# Verify that an activity leader can create a Guest membership for someone.
+# Create a myschedule object of the currently logged in user.
 
 # Expectations:
 # Endpoints -- api/myschedule/
