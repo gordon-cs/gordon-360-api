@@ -5,6 +5,7 @@ using Gordon360.Repositories;
 using Gordon360.Models.ViewModels;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
+using Newtonsoft.Json.Linq;
 using System;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Exceptions.CustomExceptions;
@@ -90,26 +91,55 @@ namespace Gordon360.Controllers.Api
             //get token data from context, username is the username of current logged in person
 
             var role = _roleCheckingService.getCollegeRole(username);
-            object _scheduleResult = null;
+
 
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var viewerRole = _roleCheckingService.getCollegeRole(viewerName);
 
             object scheduleResult = null;
 
             var id = _accountService.GetAccountByUsername(username).GordonID;
+            var scheduleControl = _unitOfWork.ScheduleControlRepository.GetById(id);
+
+            int schedulePrivacy = 1;
+
             // Getting student schedule
             if (role == "student")
             {
-                _scheduleResult = _scheduleService.GetScheduleStudent(id);
-                 scheduleResult = _scheduleResult;
-
+                try
+                {
+                    schedulePrivacy = scheduleControl.IsSchedulePrivate;
+                }
+                catch
+                {
+                    schedulePrivacy = 1;
+                }
+                // Viewer permissions
+                switch (viewerRole)
+                {
+                    case Position.SUPERADMIN:
+                        scheduleResult = _scheduleService.GetScheduleStudent(id);
+                        break;
+                    case Position.POLICE:
+                        scheduleResult = _scheduleService.GetScheduleStudent(id);
+                        break;
+                    case Position.STUDENT:
+                        if (schedulePrivacy == 0)
+                        {
+                            scheduleResult = _scheduleService.GetScheduleStudent(id);
+                        }
+                        break;
+                    case Position.FACSTAFF:
+                        scheduleResult = _scheduleService.GetScheduleStudent(id);
+                        break;
+                }
             }
 
             // Getting faculty / staff schedule
             else if (role == "facstaff")
             {
-                _scheduleResult = _scheduleService.GetScheduleFaculty(id);
-                 scheduleResult = _scheduleResult;
+                scheduleResult = _scheduleService.GetScheduleFaculty(id);
             }
             
             if (scheduleResult == null)
@@ -117,7 +147,14 @@ namespace Gordon360.Controllers.Api
                 return NotFound();
             }
 
-            return Ok(scheduleResult);
+            JArray result = JArray.FromObject(scheduleResult);
+
+            foreach(JObject elem in result)
+            {
+                elem.Property("ID_NUM").Remove();
+            }
+
+            return Ok(result);
         }
     }
 }
