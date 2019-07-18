@@ -536,15 +536,15 @@
         </member>
         <member name="M:Gordon360.Controllers.Api.StudentEmploymentController.Get">
             <summary>
-             Gets current student employmen info
+             Gets student employment information about the user
             </summary>
-            <returns>A studentEmployment object object</returns>
+            <returns>A Student Employment Json </returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.VictoryPromiseController.Get">
             <summary>
              Gets current victory promise scores
             </summary>
-            <returns>A VP object object</returns>
+            <returns>A VP Json</returns>
         </member>
         <member name="F:Gordon360.Repositories.GenericRepository`1._context">
             <summary>
