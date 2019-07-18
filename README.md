@@ -565,7 +565,10 @@ Multiple types or events are separated by a '$'
 
 `api/events/25Live/All` Returns all events in 25Live under predefined categories.
 
-`api/events/25Live/CLAW` Returns all events in 25Live with Category_ID = 85 (CL&W Credit approved)
+`api/events/25Live/CLAW` Returns all events in 25Live with Category_ID = 85 (CL&W Credit approved).
+
+`api/events/25Live/Public` Returns all events in 25Live marked to promote on public calendars (Reuirement_ID = 3).
+
 
 
 ### Memberships
