@@ -37,8 +37,8 @@ FILE_PATH = '\\gotrain\pref_photos'
 FILE_NAME = 'profile.jpg'
 
 # API 
-hostURL = 'https://360ApiTrain.gordon.edu/'
-#hostURL = 'http://localhost:9999/'
+#hostURL = 'https://360ApiTrain.gordon.edu/'
+hostURL = 'http://localhost:9999/'
 
 # Constants
 LEADERSHIP_POSITIONS = ['CAPT','CODIR','CORD','DIREC','PRES','VICEC','VICEP']
@@ -181,24 +181,36 @@ class Test_allMyScheduleTest(testCase):
         self.url = hostURL + 'api/myschedule/'
         # The event to modify
         self.predata = {
-            'EVENT_ID' : '10',
-            'GORDON_ID' : '50191298',
-            'LOCATION' : 'KOSC 118',
-            'DESCRIPTION' : "Intro to Prog. Lab",
+            'EVENT_ID' : '9999',
+            'GORDON_ID' : '999999097',
+            'LOCATION' : 'KOSC 244',
+            'DESCRIPTION' : 'Summer Practicum',
+            'MON_CDE' : 'M',
             'TUE_CDE' : 'T',
-            'IS_ALLDAY' : 1
+            'WED_CDE' : 'W',
+            'THU_CDE' : 'R',
+            'FRI_CDE' : 'F',
+            'IS_ALLDAY' : 0,
+            'BEGIN_TIME' : '09:00:00.0000000',
+            'END_TIME' : '17:00:00.0000000',
         }
         r = api.postAsJson(self.session, self.url, self.predata)
         try:
             self.GordonID = r.json()['GORDON_ID']
             # Updated Data
             self.data = {
-                'EVENT_ID' : '10',
-                'GORDON_ID' : '50191298',
-                'LOCATION' : 'KOSC 118',
-                'DESCRIPTION' : "TESTING - JUST IGNORE",
-                'TUE_CDE' : 'T',
-                'IS_ALLDAY' : 1,
+            'EVENT_ID' : '9999',
+            'GORDON_ID' : '999999097',
+            'LOCATION' : 'KOSC 244',
+            'DESCRIPTION' : 'TESTING - JUST IGNORE',
+            'MON_CDE' : 'M',
+            'TUE_CDE' : 'T',
+            'WED_CDE' : 'W',
+            'THU_CDE' : 'R',
+            'FRI_CDE' : 'F',
+            'IS_ALLDAY' : 0,
+            'BEGIN_TIME' : '09:00:00.0000000',
+            'END_TIME' : '17:00:00.0000000',
             }
         except (KeyError, ValueError):
             pytest.fail('Error in setup.')
