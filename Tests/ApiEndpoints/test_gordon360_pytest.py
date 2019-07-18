@@ -89,7 +89,6 @@ class Test_allMyScheduleTest(testCase):
         self.url = hostURL + 'api/myschedule/'
         self.token_payload = { 'username':username, 'password':password, 'grant_type':'password' }
         response = api.get(self.session, self.url)
-        print (response.status_code)
 
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
@@ -109,8 +108,6 @@ class Test_allMyScheduleTest(testCase):
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/myschedule/' + leader_username + '/'
         response = api.get(self.session, self.url)
-        print (response.json())
-        print (response.status_code)
 
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
@@ -139,8 +136,6 @@ class Test_allMyScheduleTest(testCase):
             'IS_ALLDAY' : 1,
         }
         response = api.postAsJson(self.session, self.url, self.data)
-        print (response.json())
-        print (response.status_code)
         if not response.status_code == 201:
             pytest.fail('Expected 201 Created, got {0}.'.format(response.status_code))
         try:
@@ -154,16 +149,12 @@ class Test_allMyScheduleTest(testCase):
         # delete the test post
         # Expectations:
         # Expected Status Code -- 200 OK.
-        print (response.json()["GORDON_ID"])
-        print (response.json()["EVENT_ID"])
         try:
             self.GordonID = response.json()["GORDON_ID"]
-            print(self.GordonID)
             if self.GordonID == str(my_id_number):
                 response = api.delete(self.session, self.url + str(response.json()["EVENT_ID"]))
         except KeyError:
             pytest.fail('Expected REQUEST_ID in response body, got {0}.'.format(response.json()))
-        print (response.status_code)
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
 
@@ -214,8 +205,6 @@ class Test_allMyScheduleTest(testCase):
         except (KeyError, ValueError):
             pytest.fail('Error in setup.')
         response = api.putAsJson(self.session, self.url, self.data)
-        print (response.json())
-        print (response.status_code)
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
         try:
@@ -241,8 +230,6 @@ class Test_allScheduleTest(testCase):
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/schedule/' + username + '/'
         response = api.get(self.session, self.url)
-        print (response.json())
-        print (response.status_code)
 
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
@@ -262,8 +249,6 @@ class Test_allScheduleTest(testCase):
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/schedule/' + leader_username + '/'
         response = api.get(self.session, self.url)
-        print (response.json())
-        print (response.status_code)
 
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
