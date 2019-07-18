@@ -29,10 +29,35 @@ namespace Gordon360.Services
         /// <summary>
         /// Fetch the myschedule item whose id is specified by the parameter
         /// </summary>
-        /// <param name="gordon_id">The myschedule id</param>
-        /// <returns>MyScheduleViewModel if found, null if not found</returns>
-         public IEnumerable<MYSCHEDULE> GetAllForID(string gordon_id)
-         {
+        /// <param name="event_id">The myschedule id</param>
+        /// <param name="gordon_id">The gordon id</param>
+        /// <returns>Myschedule if found, null if not found</returns>
+        public MYSCHEDULE GetForID(string event_id, string gordon_id)
+        {
+            // Account Verification
+            var account = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == gordon_id);
+            if (account == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
+
+            var result = _unitOfWork.MyScheduleRepository.FirstOrDefault(x => x.GORDON_ID == gordon_id && x.EVENT_ID == event_id);
+            if (result == null)
+            {
+                return null;
+            }
+
+            return result;
+        }
+
+
+        /// <summary>
+        /// Fetch all myschedule items whose id is specified by the parameter
+        /// </summary>
+        /// <param name="gordon_id">The gordon id</param>
+        /// <returns>Array of Myschedule if found, null if not found</returns>
+        public IEnumerable<MYSCHEDULE> GetAllForID(string gordon_id)
+        {
 
             // Account Verification
             var account = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == gordon_id);
@@ -52,7 +77,8 @@ namespace Gordon360.Services
             }
 
             return result;
-         }
+        }
+
 
 
 
@@ -75,14 +101,8 @@ namespace Gordon360.Services
 
             // Assign event id
             var myScheduleList = _unitOfWork.MyScheduleRepository.GetAll(x => x.GORDON_ID == mySchedule.GORDON_ID);
-            int largestEventId = 0;
+            int largestEventId = 1000;
             int i = 0;
-            if (myScheduleList == null)
-            {
-                mySchedule.EVENT_ID = "1000";
-            }
-            else
-            {
                 foreach (var schedule in myScheduleList)
                 {
 
@@ -97,7 +117,6 @@ namespace Gordon360.Services
                 }
                 largestEventId++;
                 mySchedule.EVENT_ID = largestEventId.ToString();
-            }
 
 
             // The Add() method returns the added schedule
@@ -121,7 +140,7 @@ namespace Gordon360.Services
         /// <param name="gordon_id">The gordon id</param>
         /// <returns>The myschedule that was just deleted</returns>
         public MYSCHEDULE Delete(string event_id, string gordon_id)
-         {
+        {
             // Account Verification
             var account = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == gordon_id);
             if (account == null)
@@ -131,27 +150,27 @@ namespace Gordon360.Services
 
             var result = _unitOfWork.MyScheduleRepository.FirstOrDefault(x => x.GORDON_ID == gordon_id && x.EVENT_ID == event_id);
             if (result == null)
-             {
-                 throw new ResourceNotFoundException() { ExceptionMessage = "The MySchedule was not found." };
-             }
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The MySchedule was not found." };
+            }
 
             var idParam = new SqlParameter("@GORDONID", gordon_id);
             var eventIdParam = new SqlParameter("@EVENTID", event_id);
             var context = new CCTEntities1();
-            context.Database.ExecuteSqlCommand("DELETE_MYSCHEDULE @GORDONID, @EVENTID", idParam, eventIdParam); // run stored procedure.
+            context.Database.ExecuteSqlCommand("DELETE_MYSCHEDULE @EVENTID, @GORDONID", eventIdParam, idParam); // run stored procedure.
 
             _unitOfWork.Save();
-      
-             return result;
-         }
 
-         /// <summary>
-         /// Update the myschedule item.
-         /// </summary>
-         /// <param name="sched">The schedule information</param>
-         /// <returns>The original schedule</returns>
-         public MYSCHEDULE Update(MYSCHEDULE sched)
-         {
+            return result;
+        }
+
+        /// <summary>
+        /// Update the myschedule item.
+        /// </summary>
+        /// <param name="sched">The schedule information</param>
+        /// <returns>The original schedule</returns>
+        public MYSCHEDULE Update(MYSCHEDULE sched)
+        {
 
             var gordon_id = sched.GORDON_ID;
             var event_id = sched.EVENT_ID;
@@ -162,7 +181,7 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
-            
+
             var original = _unitOfWork.MyScheduleRepository.FirstOrDefault(x => x.GORDON_ID == gordon_id && x.EVENT_ID == event_id);
 
             if (original == null)
@@ -172,31 +191,36 @@ namespace Gordon360.Services
 
             var eventIdParam = new SqlParameter("@EVENTID", sched.EVENT_ID);
             var idParam = new SqlParameter("@GORDONID", sched.GORDON_ID);
-            var locationParam = new SqlParameter("@LOCATION", sched.LOCATION);
-            var descriptionParam = new SqlParameter("@DESCRIPTION", sched.DESCRIPTION);
-            var monCdeParam = new SqlParameter("@MON_CDE", sched.MON_CDE);
-            var tueCdeParam = new SqlParameter("@TUE_CDE", sched.TUE_CDE);
-            var wedCdeParam = new SqlParameter("@WED_CDE", sched.WED_CDE);
-            var thuCdeParam = new SqlParameter("@THU_CDE", sched.THU_CDE);
-            var friCdeParam = new SqlParameter("@FRI_CDE", sched.FRI_CDE);
-            var satCdeParam = new SqlParameter("@SAT_CDE", sched.SAT_CDE);
-            var sunCdeParam = new SqlParameter("@SUN_CDE", sched.SUN_CDE);
-            var allDayParam = new SqlParameter("@IS_ALLDAY", sched.IS_ALLDAY);
-            var beginTimeParam = new SqlParameter("@BEGINTIME", sched.BEGIN_TIME);
-            var endTimeParam = new SqlParameter("@ENDTIME", sched.END_TIME);
+            var locationParam = sched.LOCATION == null ? 
+                new SqlParameter("@LOCATION", original.LOCATION): new SqlParameter("@LOCATION", sched.LOCATION);
+            var descriptionParam = sched.DESCRIPTION == null ? 
+                new SqlParameter("@DESCRIPTION", original.DESCRIPTION) : new SqlParameter("@DESCRIPTION", sched.DESCRIPTION);
+            var monCdeParam = new SqlParameter("@MON_CDE", (object)sched.MON_CDE ?? DBNull.Value);
+            var tueCdeParam = new SqlParameter("@TUE_CDE", (object) sched.TUE_CDE ?? DBNull.Value);
+            var wedCdeParam = new SqlParameter("@WED_CDE", (object) sched.WED_CDE ?? DBNull.Value);
+            var thuCdeParam = new SqlParameter("@THU_CDE", (object) sched.THU_CDE ?? DBNull.Value);
+            var friCdeParam = new SqlParameter("@FRI_CDE", (object) sched.FRI_CDE ?? DBNull.Value);
+            var satCdeParam = new SqlParameter("@SAT_CDE", (object) sched.SAT_CDE ?? DBNull.Value);
+            var sunCdeParam = new SqlParameter("@SUN_CDE", (object) sched.SUN_CDE ?? DBNull.Value);
+            var allDayParam = sched.IS_ALLDAY == null ? 
+                new SqlParameter("@IS_ALLDAY", original.IS_ALLDAY) : new SqlParameter("@IS_ALLDAY", sched.IS_ALLDAY);
+            var beginTimeParam = sched.BEGIN_TIME == null ? 
+                new SqlParameter("@BEGINTIME",original.BEGIN_TIME) : new SqlParameter("@BEGINTIME", sched.BEGIN_TIME);
+            var endTimeParam = sched.END_TIME == null ? 
+                new SqlParameter("@ENDTIME", original.END_TIME) : new SqlParameter("@ENDTIME", sched.END_TIME);
             var context = new CCTEntities1();
             context.Database.ExecuteSqlCommand("UPDATE_MYSCHEDULE " +
-                "@EVENTID, @GORDONID @LOCATION @DESCRIPTION @MON_CDE @TUE_CDE @WED_CDE" +
-                "@THU_CDE @FRI_CDE @SAT_CDE @SUN_CDE @IS_ALLDAY @BEGINTIME @ENDTIME"
+                "@EVENTID, @GORDONID, @LOCATION, @DESCRIPTION, @MON_CDE, @TUE_CDE, @WED_CDE, " +
+                "@THU_CDE, @FRI_CDE, @SAT_CDE, @SUN_CDE, @IS_ALLDAY, @BEGINTIME, @ENDTIME"
                 , eventIdParam, idParam, locationParam, descriptionParam, monCdeParam, tueCdeParam,
-                wedCdeParam, thuCdeParam, friCdeParam,satCdeParam, sunCdeParam, allDayParam,
+                wedCdeParam, thuCdeParam, friCdeParam, satCdeParam, sunCdeParam, allDayParam,
                 beginTimeParam, endTimeParam); // run stored procedure.
 
             _unitOfWork.Save();
 
             return original;
 
-         }
+        }
 
     }
 }

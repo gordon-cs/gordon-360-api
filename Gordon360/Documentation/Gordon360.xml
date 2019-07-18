@@ -190,6 +190,12 @@
             </summary>
             <returns>A IEnumerable of myschedule objects</returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.MyScheduleController.GetByEventId(System.String)">
+            <summary>
+             Gets specific myschedule object for a user
+            </summary>
+            <returns>The requested myschedule object</returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.MyScheduleController.Get(System.String)">
             <summary>
              Gets all myschedule objects for a user
@@ -215,7 +221,7 @@
         </member>
         <member name="M:Gordon360.Controllers.Api.ScheduleControlController.Get">
             <summary>
-            Get schedule information of local user
+            Get schedule information of logged in user
             </summary>
             <returns></returns>
         </member>
@@ -530,15 +536,15 @@
         </member>
         <member name="M:Gordon360.Controllers.Api.StudentEmploymentController.Get">
             <summary>
-             Gets current student employmen info
+             Gets student employment information about the user
             </summary>
-            <returns>A studentEmployment object object</returns>
+            <returns>A Student Employment Json </returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.VictoryPromiseController.Get">
             <summary>
              Gets current victory promise scores
             </summary>
-            <returns>A VP object object</returns>
+            <returns>A VP Json</returns>
         </member>
         <member name="F:Gordon360.Repositories.GenericRepository`1._context">
             <summary>
@@ -1123,12 +1129,20 @@
             Service Class that facilitates data transactions between the MySchedulesController and the MySchedule part of the database model.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.MyScheduleService.GetAllForID(System.String)">
+        <member name="M:Gordon360.Services.MyScheduleService.GetForID(System.String,System.String)">
             <summary>
             Fetch the myschedule item whose id is specified by the parameter
             </summary>
-            <param name="gordon_id">The myschedule id</param>
-            <returns>MyScheduleViewModel if found, null if not found</returns>
+            <param name="event_id">The myschedule id</param>
+            <param name="gordon_id">The gordon id</param>
+            <returns>Myschedule if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.MyScheduleService.GetAllForID(System.String)">
+            <summary>
+            Fetch all myschedule items whose id is specified by the parameter
+            </summary>
+            <param name="gordon_id">The gordon id</param>
+            <returns>Array of Myschedule if found, null if not found</returns>
         </member>
         <member name="M:Gordon360.Services.MyScheduleService.Add(Gordon360.Models.MYSCHEDULE)">
             <summary>

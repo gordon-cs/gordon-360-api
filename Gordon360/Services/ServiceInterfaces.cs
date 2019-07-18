@@ -174,6 +174,7 @@ namespace Gordon360.Services
 
         public interface IMyScheduleService
     {
+        MYSCHEDULE GetForID(string event_id, string gordon_id);
         IEnumerable<MYSCHEDULE> GetAllForID(string gordon_id);
         MYSCHEDULE Add(MYSCHEDULE myschedule);
         MYSCHEDULE Update(MYSCHEDULE myschedule);

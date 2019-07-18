@@ -101,7 +101,7 @@ namespace Gordon360.Controllers.Api
         /// <param name="value">Y or N</param>
         /// <returns></returns>
         [HttpPut]
-        [Route("update/privacy/{value}")]
+        [Route("privacy/{value}")]
         public IHttpActionResult UpdateSchedulePrivacy(string value)
         {
             // Verify Input
@@ -133,7 +133,7 @@ namespace Gordon360.Controllers.Api
         /// <param name="value">New description</param>
         /// <returns></returns>
         [HttpPut]
-        [Route("update/description/{value}")]
+        [Route("description/{value}")]
         public IHttpActionResult UpdateDescription(string value)
         {
             // Verify Input
@@ -165,7 +165,7 @@ namespace Gordon360.Controllers.Api
         /// <param name="value">Datetime in string</param>
         /// <returns></returns>
         [HttpPut]
-        [Route("update/timestamp/{value}")]
+        [Route("timestamp/{value}")]
         public IHttpActionResult UpdateModifiedTimeStamp(string value)
         {
             // Verify Input
@@ -185,7 +185,7 @@ namespace Gordon360.Controllers.Api
 
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
-            _scheduleControlService.UpdateSchedulePrivacy(id, value);
+            _scheduleControlService.UpdateModifiedTimeStamp(id, Convert.ToDateTime(value));
 
             return Ok();
 
