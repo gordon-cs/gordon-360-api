@@ -10,6 +10,7 @@ using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Exceptions.CustomExceptions;
 using System.Collections.Generic;
 using System.Security.Claims;
+using Newtonsoft.Json.Linq;
 using System.Linq;
 
 namespace Gordon360.Controllers.Api
@@ -23,6 +24,7 @@ namespace Gordon360.Controllers.Api
         private IProfileService _profileService;
         private IAccountService _accountService;
         private IRoleCheckingService _roleCheckingService;
+
 
         private IMyScheduleService _myScheduleService;
 
@@ -53,12 +55,20 @@ namespace Gordon360.Controllers.Api
 
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
-            var result = _myScheduleService.GetAllForID(id);
+            object result = _myScheduleService.GetAllForID(id);
             if (result == null)
             {
                 return NotFound();
             }
-            return Ok(result);
+
+            JArray jresult = JArray.FromObject(result);
+
+            foreach (JObject elem in jresult)
+            {
+                elem.Property("GORDON_ID").Remove();
+            }
+
+            return Ok(jresult);
         }
 
 
@@ -75,12 +85,17 @@ namespace Gordon360.Controllers.Api
 
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
-            var result = _myScheduleService.GetForID(event_Id, id);
+            object result = _myScheduleService.GetForID(event_Id, id);
             if (result == null)
             {
                 return NotFound();
             }
-            return Ok(result);
+
+            JObject jresult = JObject.FromObject(result);
+
+                jresult.Property("GORDON_ID").Remove();
+
+            return Ok(jresult);
         }
 
         /// <summary>
@@ -111,6 +126,9 @@ namespace Gordon360.Controllers.Api
         [Route("")]
         public IHttpActionResult Post([FromBody] MYSCHEDULE mySchedule)
         {
+            const int MAX = 50;
+
+            // Verify Input
             if (!ModelState.IsValid || mySchedule == null)
             {
                 string errors = "";
@@ -124,6 +142,23 @@ namespace Gordon360.Controllers.Api
                 }
                 throw new BadInputException() { ExceptionMessage = errors };
             }
+
+            // Check if maximum
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            object existingEvents = _myScheduleService.GetAllForID(id);
+
+            JArray jEvents = JArray.FromObject(existingEvents);
+
+            if (jEvents.Count > MAX)
+            {
+                return Unauthorized();
+            }
+
+
 
             var result = _myScheduleService.Add(mySchedule);
 
