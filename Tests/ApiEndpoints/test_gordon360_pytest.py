@@ -135,6 +135,11 @@ class Test_allScheduleControlTest(testCase):
         response = api.put(self.session, self.url, 'N')
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        self.url = hostURL + 'api/schedulecontrol/'
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        assert response.json()["IsSchedulePrivate"] == 0
 
 #    Update a schedule description of the currently logged in user.
 #    Endpoint -- api/schedulecontrol/description/{value}
