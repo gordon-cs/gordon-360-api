@@ -61,6 +61,11 @@ leader_password = 'Gordon16'
 leader_id_number = 999999099
 leader_grant_payload = { 'username':leader_username, 'password':leader_password, 'grant_type':'password' }
 
+location = 'KOSC 244'
+description = 'Summer Practicum'
+begintime = '09:00:00.0000000'
+endtime = '17:00:00.0000000'
+
 class testCase:
 
     def createAuthorizedSession(self, userLogin, userPassword):
@@ -140,20 +145,6 @@ class Test_allScheduleControlTest(testCase):
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
 
-#    Update a timestamp of last modified schedule of the currently logged in user.
-#    Endpoint -- api/schedulecontrol/timestamp/{value}
-#    Expected Status code -- 200 Ok
-#    Expected Content -- all schedule objects of the currently logged in user.
-
-    def test_schedulecontrol_put_timestamp(self):
-        self.session = self.createAuthorizedSession(username, password)
-        print(str(datetime.now()))
-        self.url = hostURL + 'api/schedulecontrol/timestamp/2019-07-16_14:56:59.000/'
-        response = api.put(self.session, self.url, '2019-07-16_14:56:59.000')
-        print(response.status_code)
-        if not response.status_code == 200:
-            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
-
 
 class Test_allMyScheduleTest(testCase):
 
@@ -170,7 +161,6 @@ class Test_allMyScheduleTest(testCase):
         session = None
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/myschedule/'
-        self.token_payload = { 'username':username, 'password':password, 'grant_type':'password' }
         response = api.get(self.session, self.url)
 
         if not response.status_code == 200:
@@ -207,14 +197,16 @@ class Test_allMyScheduleTest(testCase):
 # Expected Status Code -- 201 Created.
 # Expected Content -- A Json object with a GORDON_ID attribute.
 
+    
+
     def test_myschedule_post(self):
         session = None
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/myschedule/'
         self.data = {
-            'GORDON_ID' : '999999097',
-            'LOCATION' : 'KOSC 118',
-            'DESCRIPTION' : "Intro to Prog. Lab",
+            'GORDON_ID' : str(my_id_number),
+            'LOCATION' : location,
+            'DESCRIPTION' : description,
             'TUE_CDE' : 'T',
             'IS_ALLDAY' : 1,
         }
