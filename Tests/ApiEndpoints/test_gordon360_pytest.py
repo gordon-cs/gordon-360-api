@@ -201,6 +201,24 @@ class Test_allMyScheduleTest(testCase):
         except ValueError:
             pytest.fail('Expected Json, got {0}.'.format(response.text))
         assert response.json()[0]["EVENT_ID"] == '1100'
+        
+#    Get a specific custom event of the currently logged in user with `eventId` as a parameter
+#    Endpoint --  api/myschedule/event/{eventID}
+#    Expected Status code -- 200 Ok
+#    Expected Content -- a specific custom event of the currently logged in user with `eventId` as a parameter
+    def test_get_myschedule_objects_of_id(self):
+        session = None
+        self.session = self.createAuthorizedSession(username, password)
+        self.url = hostURL + 'api/myschedule/event/' + event_id + '/'
+        response = api.get(self.session, self.url)
+
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json, got {0}.'.format(response.text))
+        assert response.json()["EVENT_ID"] == event_id
 
 # Create a custom event of the currently logged in user.
 # Expectations:
