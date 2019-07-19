@@ -72,6 +72,10 @@ class testCase:
         authorized_session.headers.update({ "Authorization":authorization_header })
         return authorized_session
 
+    def createGuestSession(self):
+        authorized_session = requests.Session()
+        return authorized_session
+
 class Test_allMyScheduleTest(testCase):
 
 
@@ -672,6 +676,24 @@ class Test_allEventsTest(testCase):
         assert response.json()[0]['Event_Title'] == 'Chapel: David Kirika'
         assert response.json()[0]['Event_Type_Name'] == 'Chapel/Worship'
 
+#     Verify that a Guest can only get the public events on 25Live
+#     Endpoint -- api/events/25Live/Public
+#     Expected Status Code -- 200 OK
+#     Expected Respones Body -- list of all guest events resources
+    def test_get_all_public_events(self):
+        self.session = self.createGuestSession()
+        self.url = hostURL + 'api/events/25Live/Public'
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            pytest.fail('Expect 200 OK, got {0}.'.format(response.status_code))
+        try:
+            response.json()
+        except ValueError:
+            pytest.fail('Expected Json response body, got {0}.'.format(response.text))
+        if not (type(response.json()) is list):
+            pytest.fail('Expected list, got {0}.'.format(response,json()))
+        for i in range(len(response.json())):
+            assert response.json()[i]['Requirement_Id'] == '3'
 
 class Test_allActivityTest(testCase):
 
@@ -704,6 +726,31 @@ class Test_allActivityTest(testCase):
         assert response.json()[0]["ActivityTypeDescription"] == "Student Life"
         assert response.json()[0]["Privacy"] == False
         assert response.json()[0]["ActivityJoinInfo"] == ""
+
+#    Verify that a Guest can get all activities but only public info.
+#    Endpoint -- api/activities/
+#    Expected Status Code -- 200 OK
+#    Expected Response Body -- List of activities
+    def test_get_all_activities___Guest(self):
+        self.session = self.createGuestSession()
+        self.url = hostURL + 'api/activities/360'
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK , got {0}.'.format(response.status_code))
+            try:
+                response.json()
+            except ValueError:
+                pytest.fail('Expected Json response body, got {0}.'.format(respons.text))
+        assert response.json()["ActivityCode"] == "360"
+        assert response.json()["ActivityDescription"] == "360.gordon.edu"
+        assert response.json()["ActivityImagePath"] == "https://360api.gordon.edu/browseable/uploads/Default/activityImage.png"
+        assert response.json()["ActivityBlurb"] == ""
+        assert response.json()["ActivityURL"] == ""
+        assert response.json()["ActivityType"] == "STU"
+        assert response.json()["ActivityTypeDescription"] == "Student Life"
+        assert response.json()["Privacy"] == False
+        assert response.json()["ActivityJoinInfo"] == ""
+        
 
 #    Verify that an activity leader can a single activity.
 #    Endpoint -- api/activities/{activityCode}
@@ -1267,6 +1314,25 @@ class Test_allMembershipTest(testCase):
             self.createdMembershipID = response.json()['MEMBERSHIP_ID']
         except KeyError:
             pytest.fail('Expected MEMBERSHIP ID in response, got {0}.'.format(response.json()))
+
+        #checking if the correctness of post
+        getResponse = api.get(self.session, hostURL + 'api/memberships/activity/' + str(activity_code))       
+        self.membershipID = response.json()['MEMBERSHIP_ID']
+        req = getResponse.json()
+        found = False
+        for dic in req:
+            reqID = dic['MembershipID']
+            if (reqID == self.membershipID):
+                found = True      
+                try:
+                    assert dic['ActivityCode'] == activity_code
+                    assert dic['SessionCode'] == session_code
+                    assert dic['IDNumber'] == random_id_number
+                except ValueError:
+                    pytest.fail('Expected Json response body, got{0}.'.format(getResponse.json))
+        if not found:
+            pytest.fail('requestID not found:', self.requestID)
+
         if self.createdMembershipID >= 0:
             api.delete(self.session, self.url + str(self.createdMembershipID))
 
@@ -1304,7 +1370,29 @@ class Test_allMembershipTest(testCase):
                 if not d.status_code == 200:
                     pytest.fail('Error in cleanup. Expected , got {0}.'.format(d.status_code))
         except KeyError:
-            pytest.fail('Expected MEMBERSHIP_ID in response, got {0}.'.format(response.json()))
+            pytest.fail('Expected MEMBERSHIP ID in response, got {0}.'.format(response.json()))
+
+        #checking if the correctness of post
+        getResponse = api.get(self.session, hostURL + 'api/memberships/activity/' + str(activity_code))       
+        self.membershipID = response.json()['MEMBERSHIP_ID']
+        req = getResponse.json()
+        found = False
+        for dic in req:
+            reqID = dic['MembershipID']
+            if (reqID == self.membershipID):
+                found = True      
+                try:
+                    assert dic['ActivityCode'] == activity_code
+                    assert dic['SessionCode'] == session_code
+                    assert dic['IDNumber'] == random_id_number
+                except ValueError:
+                    pytest.fail('Expected Json response body, got{0}.'.format(getResponse.json))
+        if not found:
+            pytest.fail('requestID not found:', self.requestID)
+
+        if self.createdMembershipID >= 0:
+            api.delete(self.session, self.url + str(self.createdMembershipID))
+        
 
 #    Verify that an activity leader can upgrade a normal membership to leader status.
 #    Endpoint -- api/memberships/:id
@@ -2034,14 +2122,16 @@ class Test_allProfileTest(testCase):
             'FILE_PATH': "", #File path of the image on the user's computer,
             'FILE_NAME': ""  #Barcode ID of the user
         }
-        response = api.post(self.session, self.url, self.data)
+        response = api.postAsFormData(self.session, self.url, self.data)
+        #from pprint import pprint
+        #pprint(response.json()['headers'])
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
-        self.data = {
-            'ID': my_id_number,
-            'FILE_PATH': "",
-            'FILE_NAME': ""
-        }
+        #self.data = {
+        #    'ID': my_id_number,
+        #    'FILE_PATH': FILE_PATH,
+        #    'FILE_NAME': FILE_NAME
+        #}
         d = api.post(self.session, self.url + 'reset/', self.data)
         if not d.status_code == 200:
             pytest.fail('There was a problem performing cleanup')
