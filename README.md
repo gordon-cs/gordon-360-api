@@ -781,8 +781,6 @@ What is it? Resource that represents information related to schedule.
 
 `api/schedulecontrol/description/:value` Update a schedule description of the currently logged in user.
 
-`api/schedulecontrol/timestamp/:value` Update a timestamp of last modified schedule of the currently logged in user.
-
 
 ### Victory Promise
 What is it? Resource that represents the user's scores on the four pillars of the victory promise.
