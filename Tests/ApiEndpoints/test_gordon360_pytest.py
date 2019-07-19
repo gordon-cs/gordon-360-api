@@ -94,7 +94,6 @@ class Test_allScheduleControlTest(testCase):
 #    Endpoint -- api/schedulecontrol
 #    Expected Status code -- 200 Ok
 #    Expected Content -- all schedule objects of the currently logged in user.
-
     def test_get_all_schedulecontrol_objects_of_current_user(self):
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/schedulecontrol/'
@@ -113,7 +112,6 @@ class Test_allScheduleControlTest(testCase):
 #    Endpoint -- api/schedulecontrol/{username}
 #    Expected Status code -- 200 Ok
 #    Expected Content -- all schedule objects of the currently logged in user.
-
     def test_get_all_schedulecontrol_objects_of_user(self):
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/schedulecontrol/' + leader_username + '/'
@@ -127,11 +125,10 @@ class Test_allScheduleControlTest(testCase):
         except ValueError:
             pytest.fail('Expected Json, got {0}.'.format(response.text))
 
-#    Update a schedule privacy of the currently logged in user.
+#    Update schedule privacy of the currently logged in user.
 #    Endpoint -- api/schedulecontrol/privacy/{value}
 #    Expected Status code -- 200 Ok
 #    Expected Content -- all schedule objects of the currently logged in user.
-
     def test_schedulecontrol_put_privacy(self):
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/schedulecontrol/privacy/N/'
@@ -144,11 +141,10 @@ class Test_allScheduleControlTest(testCase):
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
         assert response.json()["IsSchedulePrivate"] == 0
 
-#    Update a schedule description of the currently logged in user.
+#    Update the schedule description of the currently logged in user.
 #    Endpoint -- api/schedulecontrol/description/{value}
 #    Expected Status code -- 200 Ok
 #    Expected Content -- all schedule objects of the currently logged in user.
-
     def test_schedulecontrol_put_description(self):
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/schedulecontrol/description/' + controldescription + '/'
@@ -170,7 +166,7 @@ class Test_allMyScheduleTest(testCase):
 # MYSCHEDULE TESTS #
 # # # # # # # # # # 
 
-#    Get all myschedule objects of the currently logged in user.
+#    Get all custom events of the currently logged in user.
 #    Endpoint -- api/myschedule/
 #    Expected Status code -- 200 Ok
 #    Expected Content -- all schedule objects of the currently logged in user.
@@ -188,8 +184,7 @@ class Test_allMyScheduleTest(testCase):
             pytest.fail('Expected Json, got {0}.'.format(response.text))
         assert response.json()[0]["EVENT_ID"] == event_id
         
-    
-#    Get all myschedule objects of a user with username `username` as a parameter.
+#    Get all custom events of a user with username `username` as a parameter.
 #    Endpoint --  api/myschedule/{username}
 #    Expected Status code -- 200 Ok
 #    Expected Content -- all schedule objects of a user with username `username` as a parameter
@@ -207,15 +202,11 @@ class Test_allMyScheduleTest(testCase):
             pytest.fail('Expected Json, got {0}.'.format(response.text))
         assert response.json()[0]["EVENT_ID"] == '1100'
 
-# Create a myschedule object of the currently logged in user.
-
+# Create a custom event of the currently logged in user.
 # Expectations:
 # Endpoints -- api/myschedule/
 # Expected Status Code -- 201 Created.
 # Expected Content -- A Json object with a GORDON_ID attribute.
-
-    
-
     def test_myschedule_post(self):
         session = None
         self.session = self.createAuthorizedSession(username, password)
@@ -248,13 +239,12 @@ class Test_allMyScheduleTest(testCase):
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
 
-# Update a myschedule object of the currently logged in user.
+# Update a custom event of the currently logged in user.
 #    500 Error
 #    Expectations:
 #    Endpoints -- api/myschedule/
 #    Expected Status Code -- 200 OK.
 #    Expected Content -- The Json object with a GORDON_ID attribute.
-
     def test_myschedule_put(self , session=None):
         session = None
         self.session = self.createAuthorizedSession(username, password)

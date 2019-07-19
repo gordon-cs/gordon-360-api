@@ -747,23 +747,23 @@ What is it? Resource that represents a customized schedule of user.
 
 ##### GET
 
-`api/myschedule` Get all myschedule objects of the currently logged in user.
+`api/myschedule` Get all custom events of the currently logged in user.
 
-`api/myschedule/:username` Get all myschedule objects of a user with username `username` as a parameter.
+`api/myschedule/:username` Get all custom events of a user with username `username` as a parameter.
 
-`api/myschedule/event/:eventId` Get a specific myschedule object of the currently logged in user with `eventId` as a parameter
+`api/myschedule/event/:eventId` Get a specific custom event of the currently logged in user with `eventId` as a parameter
 
 ##### PUT
 
-`api/myschedule/` Update a myschedule object of the currently logged in user.
+`api/myschedule/` Update a custom event of the currently logged in user.
 
 ##### POST
 
-`api/myschedule/`  Create a myschedule object of the currently logged in user.
+`api/myschedule/`  Create a custom event of the currently logged in user.
 
 ##### DELETE
 
-`api/myschedule/:eventID`  Delete a myschedule object of the currently logged in user.
+`api/myschedule/:eventID`  Delete a custom event of the currently logged in user.
 
 
 ### Schedule Control
