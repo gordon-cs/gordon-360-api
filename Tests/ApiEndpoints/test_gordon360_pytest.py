@@ -70,6 +70,8 @@ endtime = '17:00:00.0000000'
 
 #Global variable for new description for test events
 put_description = 'DOING TESTS - IGNORE'
+shortened_begintime = '09:00:00'
+shortened_endtime = '17:00:00'
 
 class testCase:
 
@@ -295,6 +297,8 @@ class Test_allMyScheduleTest(testCase):
         assert response.json()["GORDON_ID"] == str(my_id_number)
         assert response.json()["LOCATION"] == location
         assert response.json()["DESCRIPTION"] == put_description
+        assert response.json()["BEGIN_TIME"] == shortened_begintime
+        assert response.json()["END_TIME"] == shortened_endtime
 
 
 class Test_allScheduleTest(testCase):
