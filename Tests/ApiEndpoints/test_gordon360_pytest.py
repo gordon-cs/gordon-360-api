@@ -62,6 +62,7 @@ leader_id_number = 999999099
 leader_grant_payload = { 'username':leader_username, 'password':leader_password, 'grant_type':'password' }
 
 # Global variables for myschedule test events
+event_id = '10000'
 location = 'KOSC 244'
 description = 'Summer Practicum'
 begintime = '09:00:00.0000000'
@@ -103,6 +104,7 @@ class Test_allScheduleControlTest(testCase):
             response.json()
         except ValueError:
             pytest.fail('Expected Json, got {0}.'.format(response.text))
+        
 
 #    Get the schedulecontrol object of a user with username `username` as a parameter.
 #    Endpoint -- api/schedulecontrol/{username}
@@ -170,7 +172,7 @@ class Test_allMyScheduleTest(testCase):
             response.json()
         except ValueError:
             pytest.fail('Expected Json, got {0}.'.format(response.text))
-        assert response.json()[0]["EVENT_ID"] == '10000'
+        assert response.json()[0]["EVENT_ID"] == event_id
         
     
 #    Get all myschedule objects of a user with username `username` as a parameter.
@@ -243,12 +245,12 @@ class Test_allMyScheduleTest(testCase):
         session = None
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/myschedule/'
-        # The event to modify
-        self.predata = {
-            'EVENT_ID' : '9999',
+        try:
+            self.data = {
+            'EVENT_ID' : event_id,
             'GORDON_ID' : str(my_id_number),
             'LOCATION' : location,
-            'DESCRIPTION' : description,
+            'DESCRIPTION' : 'DOING TESTS - IGNORE',
             'MON_CDE' : 'M',
             'TUE_CDE' : 'T',
             'WED_CDE' : 'W',
@@ -257,24 +259,6 @@ class Test_allMyScheduleTest(testCase):
             'IS_ALLDAY' : 0,
             'BEGIN_TIME' : begintime,
             'END_TIME' : endtime,
-        }
-        r = api.postAsJson(self.session, self.url, self.predata)
-        try:
-            self.GordonID = r.json()['GORDON_ID']
-            # Updated Data
-            self.data = {
-            'EVENT_ID' : '9999',
-            'GORDON_ID' : '999999097',
-            'LOCATION' : 'KOSC 244',
-            'DESCRIPTION' : 'TESTING - JUST IGNORE',
-            'MON_CDE' : 'M',
-            'TUE_CDE' : 'T',
-            'WED_CDE' : 'W',
-            'THU_CDE' : 'R',
-            'FRI_CDE' : 'F',
-            'IS_ALLDAY' : 0,
-            'BEGIN_TIME' : '09:00:00.0000000',
-            'END_TIME' : '17:00:00.0000000',
             }
         except (KeyError, ValueError):
             pytest.fail('Error in setup.')
