@@ -68,6 +68,9 @@ description = 'Summer Practicum'
 begintime = '09:00:00.0000000'
 endtime = '17:00:00.0000000'
 
+#Global variable for schedulecontrol test events
+controldescription = "DOING TESTS - IGNORE"
+
 class testCase:
 
     def createAuthorizedSession(self, userLogin, userPassword):
@@ -148,10 +151,16 @@ class Test_allScheduleControlTest(testCase):
 
     def test_schedulecontrol_put_description(self):
         self.session = self.createAuthorizedSession(username, password)
-        self.url = hostURL + 'api/schedulecontrol/description/DOING_TESTS_IGNORE/'
-        response = api.put(self.session, self.url, 'DOING_TESTS_IGNORE')
+        self.url = hostURL + 'api/schedulecontrol/description/' + controldescription + '/'
+        response = api.put(self.session, self.url, controldescription)
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        self.url = hostURL + 'api/schedulecontrol/'
+        response = api.get(self.session, self.url)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
+        assert response.json()["Description"] == controldescription
+
 
 
 class Test_allMyScheduleTest(testCase):
