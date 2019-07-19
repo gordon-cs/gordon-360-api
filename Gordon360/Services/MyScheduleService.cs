@@ -67,9 +67,6 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            var idParam = new SqlParameter("@GORDON_ID", gordon_id);
-
-            var context = new CCTEntities1();
             var result = _unitOfWork.MyScheduleRepository.GetAll(x => x.GORDON_ID == gordon_id);
             if (result == null)
             {

@@ -24,6 +24,7 @@ namespace Gordon360.Controllers.Api
         private IProfileService _profileService;
         private IAccountService _accountService;
         private IRoleCheckingService _roleCheckingService;
+        private IScheduleControlService _scheduleControlService;
 
 
         private IMyScheduleService _myScheduleService;
@@ -35,6 +36,7 @@ namespace Gordon360.Controllers.Api
             _profileService = new ProfileService(_unitOfWork);
             _accountService = new AccountService(_unitOfWork);
             _roleCheckingService = new RoleCheckingService(_unitOfWork);
+            _scheduleControlService = new ScheduleControlService(_unitOfWork);
         }
 
         public MyScheduleController(IMyScheduleService myScheduleService)
@@ -127,6 +129,7 @@ namespace Gordon360.Controllers.Api
         public IHttpActionResult Post([FromBody] MYSCHEDULE mySchedule)
         {
             const int MAX = 50;
+            DateTime localDate = DateTime.Now;
 
             // Verify Input
             if (!ModelState.IsValid || mySchedule == null)
@@ -167,6 +170,9 @@ namespace Gordon360.Controllers.Api
                 return NotFound();
             }
 
+
+            _scheduleControlService.UpdateModifiedTimeStamp(id, localDate);
+
             return Created("myschedule", mySchedule);
         }
 
@@ -177,6 +183,7 @@ namespace Gordon360.Controllers.Api
         [Route("{event_id}")]
         public IHttpActionResult Delete(string event_id)
         {
+            DateTime localDate = DateTime.Now;
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
@@ -187,6 +194,8 @@ namespace Gordon360.Controllers.Api
             {
                 return NotFound();
             }
+
+            _scheduleControlService.UpdateModifiedTimeStamp(id, localDate);
 
             return Ok(result);
         }
@@ -199,6 +208,7 @@ namespace Gordon360.Controllers.Api
         [Route("")]
         public IHttpActionResult Put([FromBody] MYSCHEDULE mySchedule)
         {
+            DateTime localDate = DateTime.Now;
             if (!ModelState.IsValid || mySchedule == null)
             {
                 string errors = "";
@@ -219,6 +229,13 @@ namespace Gordon360.Controllers.Api
             {
                 return NotFound();
             }
+
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            _scheduleControlService.UpdateModifiedTimeStamp(id, localDate);
 
             return Ok(result);
         }

@@ -142,6 +142,9 @@ namespace Gordon360.Controllers.Api
         [Route("description/{value}")]
         public IHttpActionResult UpdateDescription(string value)
         {
+
+            DateTime localDate = DateTime.Now;
+
             // Verify Input
             if (!ModelState.IsValid)
             {
@@ -160,42 +163,12 @@ namespace Gordon360.Controllers.Api
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
             _scheduleControlService.UpdateDescription(id, value);
+            _scheduleControlService.UpdateModifiedTimeStamp(id, localDate);
 
             return Ok();
 
         }
 
-        /// <summary>
-        /// Update timestamp of last modified schedule
-        /// </summary>
-        /// <param name="value">Datetime in string</param>
-        /// <returns></returns>
-        [HttpPut]
-        [Route("timestamp/{value}")]
-        public IHttpActionResult UpdateModifiedTimeStamp(string value)
-        {
-            // Verify Input
-            if (!ModelState.IsValid)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
-            _scheduleControlService.UpdateModifiedTimeStamp(id, Convert.ToDateTime(value));
-
-            return Ok();
-
-        }
 
     }
 
