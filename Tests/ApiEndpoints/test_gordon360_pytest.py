@@ -1,8 +1,10 @@
 import pytest
 import warnings
 import string
-import pytest_components as api
 from pytest_components import requests
+
+import credentials
+import pytest_components as api
 
 # # # # # # # # #
 # Configuration #
@@ -12,7 +14,7 @@ from pytest_components import requests
 # Activity to use for testing
 activity_code = 'AJG'
 # Id number to use for testing
-random_id_number = 50153295
+valid_id_number = 50153295
 # Session to use for testing
 session_code = '201809'
 # Specific term to use for testing
@@ -37,8 +39,8 @@ FILE_PATH = '\\gotrain\pref_photos'
 FILE_NAME = 'profile.jpg'
 
 # API 
-#hostURL = 'https://360ApiTrain.gordon.edu/'
-hostURL = 'http://localhost:9999/'
+hostURL = 'https://360ApiTrain.gordon.edu/'
+#hostURL = 'http://localhost:9999/'
 
 # Constants
 LEADERSHIP_POSITIONS = ['CAPT','CODIR','CORD','DIREC','PRES','VICEC','VICEP']
@@ -46,18 +48,15 @@ REQUEST_STATUS_APPROVED = 'Approved'
 REQUEST_STATUS_DENIED = 'Denied'
 REQUEST_STATUS_PENDING = 'Pending'
 
-# # # # # # # # #
-#  Credentials  #
-# # # # # # # # #
-
-username = '360.studenttest'
-password = 'Gordon16'
-my_id_number = 999999097
+# Configuration Details
+username = credentials.username
+password = credentials.password
+my_id_number = credentials.id_number
 grant_payload = { 'username':username, 'password':password, 'grant_type':'password' }
 
-leader_username = '360.facultytest'
-leader_password = 'Gordon16'
-leader_id_number = 999999099
+leader_username = credentials.username_activity_leader
+leader_password = credentials.password_activity_leader
+leader_id_number = credentials.id_number_activity_leader
 leader_grant_payload = { 'username':leader_username, 'password':leader_password, 'grant_type':'password' }
 
 class testCase:
@@ -367,8 +366,8 @@ class Test_allAccountTest(testCase):
             response.json()
         except ValueError:
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
-        assert response.json()[0]["FirstName"].lower() == '360'
-        assert response.json()[0]["LastName"].lower() == 'StudentTest'.lower()
+        assert response.json()[0]["FirstName"].lower() == 'd. michael'
+        assert response.json()[0]["LastName"].lower() == searchString2.lower()
 
 #    Verify that an user can search by username 
 #    Endpoint -- api/accounts/username/{username}
@@ -1188,7 +1187,7 @@ class Test_allMembershipTest(testCase):
 #    Expected Response Content --  A list of json objects.
     def test_get_all_memberships_for_someone_else___activity_leader(self):
         self.session = self.createAuthorizedSession(leader_username, leader_password)
-        self.url = hostURL + 'api/memberships/student/' + str(random_id_number)
+        self.url = hostURL + 'api/memberships/student/' + str(valid_id_number)
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
@@ -1211,7 +1210,7 @@ class Test_allMembershipTest(testCase):
         self.data = {
             'ACT_CDE': activity_code,
             'SESS_CDE' : session_code,
-            'ID_NUM': random_id_number,
+            'ID_NUM': valid_id_number,
             'PART_CDE':'GUEST',
             'BEGIN_DTE':'06/10/2016',
             'END_DTE':'07/16/2016',
@@ -1249,7 +1248,7 @@ class Test_allMembershipTest(testCase):
         self.data = {
             'ACT_CDE': activity_code,
             'SESS_CDE' : session_code,
-            'ID_NUM': random_id_number,
+            'ID_NUM': valid_id_number,
             'PART_CDE':'MEMBR',
             'BEGIN_DTE':'06/10/2016',
             'END_DTE':'07/16/2016',
@@ -1282,7 +1281,7 @@ class Test_allMembershipTest(testCase):
         self.data = {
             'ACT_CDE': activity_code,
             'SESS_CDE':session_code,
-            'ID_NUM': random_id_number,
+            'ID_NUM': valid_id_number,
             'PART_CDE':'LEAD',
             'BEGIN_DTE':begin_date,
             'END_DTE':end_date,
@@ -1319,7 +1318,7 @@ class Test_allMembershipTest(testCase):
         self.predata = {
             'ACT_CDE': activity_code,
             'SESS_CDE' : session_code,
-            'ID_NUM': random_id_number,
+            'ID_NUM': valid_id_number,
             'PART_CDE':'MEMBR', # Is a participant at first.
             'BEGIN_DTE':'06/10/2016', # Old start date
             'END_DTE':'07/16/2016',
@@ -1333,7 +1332,7 @@ class Test_allMembershipTest(testCase):
                 'MEMBERSHIP_ID' : self.createdMembershipID,
                 'ACT_CDE': activity_code,
                 'SESS_CDE' : session_code,
-                'ID_NUM': random_id_number,
+                'ID_NUM': valid_id_number,
                 'PART_CDE':'LEAD', # Upgrade him to director.
                 'BEGIN_DTE':'02/10/2016', # New start date
                 'END_DTE':'07/16/2016',
@@ -1369,7 +1368,7 @@ class Test_allMembershipTest(testCase):
         self.predata = {
             'ACT_CDE': activity_code,
             'SESS_CDE' : session_code,
-            'ID_NUM': random_id_number,
+            'ID_NUM': valid_id_number,
             'PART_CDE':'LEAD', # Is a leader at first
             'BEGIN_DTE':'06/10/2016', # Old start date
             'END_DTE':'07/16/2016',
@@ -1383,7 +1382,7 @@ class Test_allMembershipTest(testCase):
                 'MEMBERSHIP_ID' : self.createdMembershipID,
                 'ACT_CDE': activity_code,
                 'SESS_CDE' : session_code,
-                'ID_NUM': random_id_number,
+                'ID_NUM': valid_id_number,
                 'PART_CDE':'MEMBR', # Demote him to member
                 'BEGIN_DTE':'02/10/2016', # New start date
                 'END_DTE':'07/16/2016',
@@ -1419,7 +1418,7 @@ class Test_allMembershipTest(testCase):
         self.predata = {
             'ACT_CDE': activity_code,
             'SESS_CDE' : session_code,
-            'ID_NUM': random_id_number,
+            'ID_NUM': valid_id_number,
             'PART_CDE':'MEMBR',
             'BEGIN_DTE':begin_date,
             'END_DTE':end_date,
@@ -1469,7 +1468,7 @@ class Test_allMembershipRequestTest(testCase):
 #    Expected Response Body -- Empty
     def test_not_get_membership_requests_for_someone_else(self):
         self.session = self.createAuthorizedSession(username, password)
-        self.url = hostURL + 'api/requests/student/' + str(random_id_number)
+        self.url = hostURL + 'api/requests/student/' + str(valid_id_number)
         response = api.get(self.session, self.url)
         if not response.status_code == 401:
             pytest.fail('Expected 401 Unauthorized, got {0}.'.format(response.status_code))
@@ -1571,7 +1570,7 @@ class Test_allMembershipRequestTest(testCase):
         self.data = {
             'ACT_CDE': activity_code,
             'SESS_CDE' : session_code,
-            'ID_NUM': random_id_number,
+            'ID_NUM': valid_id_number,
             'PART_CDE': member_positions,
             'DATE_SENT' : '07/06/2016',
             'COMMENT_TXT': comments
@@ -1637,7 +1636,7 @@ class Test_allMembershipRequestTest(testCase):
 
     def test_get_membership_requests_for_someone_else___activity_leader(self):
         self.session = self.createAuthorizedSession(leader_username, leader_password)
-        self.url = hostURL + 'api/requests/student/' + str(random_id_number)
+        self.url = hostURL + 'api/requests/student/' + str(valid_id_number)
         response = api.get(self.session, self.url)
         if not response.status_code == 401:
             pytest.fail('Expected 401 Unauthorized, got {0}.'.format(response.status_code))
@@ -1651,12 +1650,12 @@ class Test_allMembershipRequestTest(testCase):
 
     def test_get_membership_requests_for_someone_else(self):
         self.session = self.createAuthorizedSession(leader_username, leader_password)
-        self.url = hostURL + 'api/requests/student/' + str(random_id_number)
+        self.url = hostURL + 'api/requests/student/' + str(valid_id_number)
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
         try:
-            assert response.json()[0]['IDNumber'] == random_id_number
+            assert response.json()[0]['IDNumber'] == valid_id_number
         except ValueError:
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
         if not (type(response.json()) is list):
@@ -1731,7 +1730,7 @@ class Test_allMembershipRequestTest(testCase):
         self.data = {
             'ACT_CDE': activity_code,
             'SESS_CDE' : session_code,
-            'ID_NUM': random_id_number,
+            'ID_NUM': valid_id_number,
             'PART_CDE':'MEMBR',
             'DATE_SENT' : '07/06/2016',
             'COMMENT_TXT':comments
@@ -1758,7 +1757,7 @@ class Test_allMembershipRequestTest(testCase):
                 try:
                     assert dic['ActivityCode'] == activity_code
                     assert dic['SessionCode'] == session_code
-                    assert dic['IDNumber'] == random_id_number
+                    assert dic['IDNumber'] == valid_id_number
                 except ValueError:
                     pytest.fail('Expected Json response body, got{0}.'.format(response1.json))
         if not found:
@@ -1801,7 +1800,7 @@ class Test_allMembershipRequestTest(testCase):
 #                'REQUEST_ID': self.requestID,
 #                'ACT_CDE': activity_code,
 #                'SESS_CDE' : '201501',
-#                'ID_NUM': random_id_number, #Changing values to emulate attacker muhahah
+#                'ID_NUM': valid_id_number, #Changing values to emulate attacker muhahah
 #                'PART_CDE':'PART',
 #                'DATE_SENT' : '07/06/2016',
 #                'COMMENT_TXT':comments
