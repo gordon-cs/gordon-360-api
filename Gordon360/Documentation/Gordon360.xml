@@ -246,11 +246,10 @@
             <param name="value">New description</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ScheduleControlController.UpdateModifiedTimeStamp(System.String)">
+        <member name="M:Gordon360.Controllers.Api.ScheduleControlController.UpdateModifiedTimeStamp">
             <summary>
             Update timestamp of last modified schedule
             </summary>
-            <param name="value">Datetime in string</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.Get">
