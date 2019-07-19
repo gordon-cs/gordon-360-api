@@ -218,8 +218,6 @@ class Test_allMyScheduleTest(testCase):
         except ValueError:
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
         assert response.json()["GORDON_ID"] == str(my_id_number)
-        # Get the object to double check the test actually worked
-        # Expected Status Code -- 200 OK.
 
         # delete the test post
         # Expectations:
