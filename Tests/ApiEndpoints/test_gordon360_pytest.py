@@ -245,17 +245,17 @@ class Test_allMyScheduleTest(testCase):
         # The event to modify
         self.predata = {
             'EVENT_ID' : '9999',
-            'GORDON_ID' : '999999097',
-            'LOCATION' : 'KOSC 244',
-            'DESCRIPTION' : 'Summer Practicum',
+            'GORDON_ID' : str(my_id_number),
+            'LOCATION' : location,
+            'DESCRIPTION' : description,
             'MON_CDE' : 'M',
             'TUE_CDE' : 'T',
             'WED_CDE' : 'W',
             'THU_CDE' : 'R',
             'FRI_CDE' : 'F',
             'IS_ALLDAY' : 0,
-            'BEGIN_TIME' : '09:00:00.0000000',
-            'END_TIME' : '17:00:00.0000000',
+            'BEGIN_TIME' : begintime,
+            'END_TIME' : endtime,
         }
         r = api.postAsJson(self.session, self.url, self.predata)
         try:
