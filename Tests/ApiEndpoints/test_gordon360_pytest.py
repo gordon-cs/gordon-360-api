@@ -61,6 +61,7 @@ leader_password = 'Gordon16'
 leader_id_number = 999999099
 leader_grant_payload = { 'username':leader_username, 'password':leader_password, 'grant_type':'password' }
 
+# Global variables for myschedule test events
 location = 'KOSC 244'
 description = 'Summer Practicum'
 begintime = '09:00:00.0000000'
