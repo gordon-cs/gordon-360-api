@@ -45,9 +45,9 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>
-        ///  Gets all myschedule objects for a user
+        ///  Gets all custom events for a user
         /// </summary>
-        /// <returns>A IEnumerable of myschedule objects</returns>
+        /// <returns>A IEnumerable of custom events</returns>
         [HttpGet]
         [Route("")]
         public IHttpActionResult Get()
@@ -75,9 +75,9 @@ namespace Gordon360.Controllers.Api
 
 
         /// <summary>
-        ///  Gets specific myschedule object for a user
+        ///  Gets specific custom event for a user
         /// </summary>
-        /// <returns>The requested myschedule object</returns>
+        /// <returns>The requested custom event</returns>
         [HttpGet]
         [Route("event/{event_id}")]
         public IHttpActionResult GetByEventId(string event_Id)

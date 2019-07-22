@@ -47,6 +47,7 @@ namespace Gordon360.Controllers.Api
 
         /// <summary>
         /// Get schedule information of logged in user
+        /// Info one gets: privacy, time last updated, description, and Gordon ID 
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -78,6 +79,7 @@ namespace Gordon360.Controllers.Api
 
         /// <summary>
         /// Get schedule information of specific user
+        /// Info one gets: privacy, time last updated, description, and Gordon ID 
         /// </summary>
         /// <param name="username">username</param>
         /// <returns></returns>

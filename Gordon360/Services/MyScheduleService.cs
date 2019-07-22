@@ -83,7 +83,7 @@ namespace Gordon360.Services
         /// Adds a new mySchedule record to storage.
         /// </summary>
         /// <param name="mySchedule">The membership to be added</param>
-        /// <returns>The newly added mySchedule object</returns>
+        /// <returns>The newly added custom event</returns>
         public MYSCHEDULE Add(MYSCHEDULE mySchedule)
         {
 

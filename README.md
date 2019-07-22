@@ -771,9 +771,9 @@ What is it? Resource that represents information related to schedule.
 
 ##### GET
 
-`api/schedulecontrol` Get the schedulecontrol object of the currently logged in user.
+`api/schedulecontrol` Get the schedulecontrol object of the currently logged in user. Specifically, get the privacy, time last updated, description, and Gordon ID of the currently logged in user's schedule.
 
-`api/schedulecontrol/:username` Get the schedulecontrol object of a user with username `username` as a parameter.
+`api/schedulecontrol/:username` Get the schedulecontrol object of a user with username `username` as a parameter. Specifically, Get the privacy, time last updated, description, and Gordon ID of the user's schedule.
 
 ##### PUT
 
