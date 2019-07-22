@@ -3,7 +3,6 @@ import warnings
 import string
 from pytest_components import requests
 
-import credentials
 import pytest_components as api
 
 # # # # # # # # #
@@ -50,14 +49,14 @@ REQUEST_STATUS_DENIED = 'Denied'
 REQUEST_STATUS_PENDING = 'Pending'
 
 # Configuration Details
-username = credentials.username
-password = credentials.password
-my_id_number = credentials.id_number
+username = '360.studenttest'
+password = 'Gordon16'
+my_id_number = 999999097
 grant_payload = { 'username':username, 'password':password, 'grant_type':'password' }
 
-leader_username = credentials.username_activity_leader
-leader_password = credentials.password_activity_leader
-leader_id_number = credentials.id_number_activity_leader
+leader_username = '360.facultytest'
+leader_password = 'Gordon16'
+leader_id_number = 999999099
 leader_grant_payload = { 'username':leader_username, 'password':leader_password, 'grant_type':'password' }
 
 class testCase:
@@ -371,8 +370,8 @@ class Test_allAccountTest(testCase):
             response.json()
         except ValueError:
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
-        assert response.json()[0]["FirstName"].lower() == 'd. michael'
-        assert response.json()[0]["LastName"].lower() == searchString2.lower()
+        assert searchString in response.json()[0]["FirstName"].lower()
+        assert searchString2 in response.json()[0]["LastName"].lower()
 
 #    Verify that an user can search by username 
 #    Endpoint -- api/accounts/username/{username}
