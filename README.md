@@ -33,7 +33,7 @@ Dive in.
     - [Dining](#dining)    
     - [Student Employment](#student-employment)
     - [Schedule](#schedule)
-    - [MySchedule](##myschedule)
+    - [MySchedule](#my-schedule)
     - [ScheduleControl](#schedule-control)
     - [Victory Promise](#victory-promise)
 - [API Testing](#api-testing)
@@ -742,7 +742,7 @@ What is it? Resource that represents a course schedule of user.
 
 `api/schedule/:username` Get all schedule objects of a user with username `username` as a parameter.
 
-### MySchedule
+### My Schedule
 What is it? Resource that represents a customized schedule of user.
 
 ##### GET
