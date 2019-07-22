@@ -33,7 +33,7 @@ Dive in.
     - [Dining](#dining)    
     - [Student Employment](#student-employment)
     - [Schedule](#schedule)
-    - [MySchedule](#myschedule)
+    - [MySchedule](##myschedule)
     - [ScheduleControl](#schedule-control)
     - [Victory Promise](#victory-promise)
 - [API Testing](#api-testing)
