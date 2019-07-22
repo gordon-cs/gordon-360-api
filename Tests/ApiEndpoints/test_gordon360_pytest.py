@@ -14,7 +14,7 @@ import pytest_components as api
 # Activity to use for testing
 activity_code = 'AJG'
 # Id number to use for testing
-valid_id_number = 50153295
+valid_id_number = 50146557
 # Session to use for testing
 session_code = '201809'
 # Specific term to use for testing
@@ -1004,8 +1004,9 @@ class Test_allMembershipTest(testCase):
         except ValueError:
             pytest.fail('Error in setup for {0}. Expected json response body, got {1}.'.format(self.test_name, response.text))
         try:
-            self.membershipID = response.json()[0]['MembershipID']
-            self.url = self.url + str(self.membershipID)
+            self.IDNumber = response.json()[0]['IDNumber']
+            #pytest.fail(response.json()[0]['MembershipID'])
+            self.url = self.url + 'student/' + str(self.IDNumber)
         except KeyError:
             pytest.fail('Error in setup for {0}. Expected MembershipID in response body, got {1}.'.format(self.test_name, self.response.json()))
         response = api.get(self.session, self.url)
@@ -1015,26 +1016,6 @@ class Test_allMembershipTest(testCase):
             response.json()
         except ValueError:
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
-        if not ('MembershipID' in response.json()):
-            pytest.fail('Expected MembershipID in jsob object, got {0}.'.format(response.json()))
-            
-#    Retrieve a specific membership resource as a member
-#    Pre-conditions:
-#    Valid Authentication header
-#    Expectations:
-#    Endpoint -- api/memberships/:id
-#    Expected Status Code -- 401 Unauthorized
-#    Expected Content -- 
-    def test_get_one_membership___regular_member(self):
-        self.session = self.createAuthorizedSession(username, password)
-        self.url = hostURL + 'api/memberships/4873/'
-        self.membershipID = -1
-        # Find a valid membership id
-        response = api.get(self.session, self.url)
-        if not response.status_code == 401:
-            warnings.warn("Security fault")
-            pytest.fail('Expected 401 Unauthorized, got {0}.'.format(response.status_code))
-
 
 #    Verify that a leader can fetch memberships for an activity.
 #    Endpoint -- api/memberships/activity/{activityId}
@@ -1327,7 +1308,7 @@ class Test_allMembershipTest(testCase):
                 try:
                     assert dic['ActivityCode'] == activity_code
                     assert dic['SessionCode'] == session_code
-                    assert dic['IDNumber'] == random_id_number
+                    assert dic['IDNumber'] == valid_id_number
                 except ValueError:
                     pytest.fail('Expected Json response body, got{0}.'.format(getResponse.json))
         if not found:
@@ -1366,32 +1347,29 @@ class Test_allMembershipTest(testCase):
             if self.createdMembershipID < 0: # The creation was not successful
                 pytest.fail('Expected valid memberhsip ID, got {0}.'.format(self.createdMembershipID))
             else:
+                 #checking if the correctness of post
+                getResponse = api.get(self.session, hostURL + 'api/memberships/activity/' + str(activity_code))       
+                self.membershipID = response.json()['MEMBERSHIP_ID']
+                req = getResponse.json()
+                found = False
+                for dic in req:
+                    reqID = dic['MembershipID']
+                    if (reqID == self.membershipID):
+                        found = True      
+                        try:
+                            assert dic['ActivityCode'] == activity_code
+                            assert dic['SessionCode'] == session_code
+                            assert dic['IDNumber'] == valid_id_number
+                        except ValueError:
+                            pytest.fail('Expected Json response body, got{0}.'.format(getResponse.json))
+                if not found:
+                    pytest.fail('MembershipID not found:', self.membershipID)
                 d = api.delete(self.session, self.url + str(self.createdMembershipID))
                 if not d.status_code == 200:
                     pytest.fail('Error in cleanup. Expected , got {0}.'.format(d.status_code))
         except KeyError:
             pytest.fail('Expected MEMBERSHIP ID in response, got {0}.'.format(response.json()))
 
-        #checking if the correctness of post
-        getResponse = api.get(self.session, hostURL + 'api/memberships/activity/' + str(activity_code))       
-        self.membershipID = response.json()['MEMBERSHIP_ID']
-        req = getResponse.json()
-        found = False
-        for dic in req:
-            reqID = dic['MembershipID']
-            if (reqID == self.membershipID):
-                found = True      
-                try:
-                    assert dic['ActivityCode'] == activity_code
-                    assert dic['SessionCode'] == session_code
-                    assert dic['IDNumber'] == random_id_number
-                except ValueError:
-                    pytest.fail('Expected Json response body, got{0}.'.format(getResponse.json))
-        if not found:
-            pytest.fail('requestID not found:', self.requestID)
-
-        if self.createdMembershipID >= 0:
-            api.delete(self.session, self.url + str(self.createdMembershipID))
         
 
 #    Verify that an activity leader can upgrade a normal membership to leader status.
@@ -1744,6 +1722,7 @@ class Test_allMembershipRequestTest(testCase):
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
         try:
+            #pytest.fail(response.json()[0]['IDNumber'])
             assert response.json()[0]['IDNumber'] == valid_id_number
         except ValueError:
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
@@ -2280,10 +2259,10 @@ class Test_allSessionTest(testCase):
 
         self.url = hostURL + 'api/sessions/current/'
         current = api.get(self.session, self.url)
-        assert response.json()[-1]["SessionCode"] == current.json()["SessionCode"]
-        assert response.json()[-1]["SessionDescription"] == current.json()["SessionDescription"]
-        assert response.json()[-1]["SessionBeginDate"] == current.json()["SessionBeginDate"]
-        assert response.json()[-1]["SessionEndDate"] == current.json()["SessionEndDate"]
+        assert response.json()[-3]["SessionCode"] == current.json()["SessionCode"]
+        assert response.json()[-3]["SessionDescription"] == current.json()["SessionDescription"]
+        assert response.json()[-3]["SessionBeginDate"] == current.json()["SessionBeginDate"]
+        assert response.json()[-3]["SessionEndDate"] == current.json()["SessionEndDate"]
 
 #    Verify that an activity leader can get a session object
 #    Endpoint -- api/sessions/:id
