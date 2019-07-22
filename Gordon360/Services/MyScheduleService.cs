@@ -67,9 +67,6 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            var idParam = new SqlParameter("@GORDON_ID", gordon_id);
-
-            var context = new CCTEntities1();
             var result = _unitOfWork.MyScheduleRepository.GetAll(x => x.GORDON_ID == gordon_id);
             if (result == null)
             {
@@ -86,7 +83,7 @@ namespace Gordon360.Services
         /// Adds a new mySchedule record to storage.
         /// </summary>
         /// <param name="mySchedule">The membership to be added</param>
-        /// <returns>The newly added mySchedule object</returns>
+        /// <returns>The newly added custom event</returns>
         public MYSCHEDULE Add(MYSCHEDULE mySchedule)
         {
 

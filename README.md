@@ -747,23 +747,23 @@ What is it? Resource that represents a customized schedule of user.
 
 ##### GET
 
-`api/myschedule` Get all myschedule objects of the currently logged in user.
+`api/myschedule` Get all custom events of the currently logged in user.
 
-`api/myschedule/:username` Get all myschedule objects of a user with username `username` as a parameter.
+`api/myschedule/:username` Get all custom events of a user with username `username` as a parameter.
 
-`api/myschedule/event/:eventId` Get a specific myschedule object of the currently logged in user with `eventId` as a parameter
+`api/myschedule/event/:eventId` Get a specific custom event of the currently logged in user with `eventId` as a parameter
 
 ##### PUT
 
-`api/myschedule/` Update a myschedule object of the currently logged in user.
+`api/myschedule/` Update a custom event of the currently logged in user.
 
 ##### POST
 
-`api/myschedule/`  Create a myschedule object of the currently logged in user.
+`api/myschedule/`  Create a custom event of the currently logged in user.
 
 ##### DELETE
 
-`api/myschedule/:eventID`  Delete a myschedule object of the currently logged in user.
+`api/myschedule/:eventID`  Delete a custom event of the currently logged in user.
 
 
 ### Schedule Control
@@ -771,17 +771,15 @@ What is it? Resource that represents information related to schedule.
 
 ##### GET
 
-`api/schedulecontrol` Get the schedulecontrol object of the currently logged in user.
+`api/schedulecontrol` Get the schedulecontrol object of the currently logged in user. Specifically, get the privacy, time last updated, description, and Gordon ID of the currently logged in user's schedule.
 
-`api/schedulecontrol/:username` Get the schedulecontrol object of a user with username `username` as a parameter.
+`api/schedulecontrol/:username` Get the schedulecontrol object of a user with username `username` as a parameter. Specifically, Get the privacy, time last updated, description, and Gordon ID of the user's schedule.
 
 ##### PUT
 
 `api/schedulecontrol/privacy/:value` Update a schedule privacy of the currently logged in user.
 
 `api/schedulecontrol/description/:value` Update a schedule description of the currently logged in user.
-
-`api/schedulecontrol/timestamp/:value` Update a timestamp of last modified schedule of the currently logged in user.
 
 
 ### Victory Promise
