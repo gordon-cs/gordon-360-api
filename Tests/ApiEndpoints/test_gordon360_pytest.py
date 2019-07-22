@@ -92,7 +92,8 @@ class Test_allScheduleControlTest(testCase):
 # SCHEDULECONTROL TESTS #
 # # # # # # # # # # # # #
 
-#    Get the schedulecontrol object of the currently logged in user.
+#    Get the privacy, time last updated, description, and Gordon ID 
+#    of the currently logged in user's schedule.
 #    Endpoint -- api/schedulecontrol
 #    Expected Status code -- 200 Ok
 #    Expected Content -- all schedule objects of the currently logged in user.
@@ -109,8 +110,8 @@ class Test_allScheduleControlTest(testCase):
         except ValueError:
             pytest.fail('Expected Json, got {0}.'.format(response.text))
         
-
-#    Get the schedulecontrol object of a user with username `username` as a parameter.
+#    Get the privacy, time last updated, description, and Gordon ID of a user's schedule
+#    with username `username` as a parameter.
 #    Endpoint -- api/schedulecontrol/{username}
 #    Expected Status code -- 200 Ok
 #    Expected Content -- all schedule objects of the currently logged in user.
