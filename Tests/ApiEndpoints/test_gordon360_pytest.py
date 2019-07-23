@@ -3,6 +3,7 @@ import warnings
 import string
 from pytest_components import requests
 
+import credentials
 import pytest_components as api
 
 # # # # # # # # #
@@ -49,14 +50,14 @@ REQUEST_STATUS_DENIED = 'Denied'
 REQUEST_STATUS_PENDING = 'Pending'
 
 # Configuration Details
-username = '360.studenttest'
-password = 'Gordon16'
-my_id_number = 999999097
+username = credentials.username
+password = credentials.password
+my_id_number = credentials.id_number
 grant_payload = { 'username':username, 'password':password, 'grant_type':'password' }
 
-leader_username = '360.facultytest'
-leader_password = 'Gordon16'
-leader_id_number = 999999099
+leader_username = credentials.leader_username
+leader_password = credentials.leader_password
+leader_id_number = credentials.leader_id_number
 leader_grant_payload = { 'username':leader_username, 'password':leader_password, 'grant_type':'password' }
 
 class testCase:
