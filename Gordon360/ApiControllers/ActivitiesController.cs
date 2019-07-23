@@ -40,6 +40,15 @@ namespace Gordon360.Controllers.Api
         }
 
         [HttpGet]
+        [Route("")]
+        //Public Route
+        public IHttpActionResult Get()
+        {
+            var all = _activityService.GetAll();
+            return Ok(all);
+        }
+
+        [HttpGet]
         [Route("{id}")]
         //Public Route 
         public IHttpActionResult Get(string id)
