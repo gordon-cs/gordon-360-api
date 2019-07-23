@@ -1619,16 +1619,14 @@ class Test_allMembershipRequestTest(testCase):
 
 #    Verify that a regular member cannot get the membership requests of somone else.
 #    Endpoint -- api/requests/student/:id
-#    Expected Status Code -- 401 Unauthorized
+#    Expected Status Code -- 404 Not Found
 #    Expected Response Body -- Empty
     def test_not_get_membership_requests_for_someone_else(self):
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/requests/student/' + str(valid_id_number)
         response = api.get(self.session, self.url)
-        if not response.status_code == 401:
-            pytest.fail('Expected 401 Unauthorized, got {0}.'.format(response.status_code))
-        if response.text:
-            pytest.fail('Expected empty response bodty, got {0}.'.format(response.text))
+        if not response.status_code == 404:
+            pytest.fail('Expected 404 Not Found, got {0}.'.format(response.status_code))
 
 #    Verify that a regular member can't access memberships requests for activity.
 #    Endpoint -- api/requests/activity/:id
@@ -1786,17 +1784,16 @@ class Test_allMembershipRequestTest(testCase):
 
 #    Verify that an activity leader cannot get the membership requests of someone else.
 #    Endpoint -- api/requests/student/:id
-#    Expected Status Code -- 401 Unauthorized
+#    Expected Status Code -- 404 Not Found
 #    Expected Response Body -- Empty
 
     def test_get_membership_requests_for_someone_else___activity_leader(self):
         self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/requests/student/' + str(valid_id_number)
         response = api.get(self.session, self.url)
-        if not response.status_code == 401:
-            pytest.fail('Expected 401 Unauthorized, got {0}.'.format(response.status_code))
-        if response.text:
-            pytest.fail('Expected empty response bodty, got {0}.'.format(response.text))
+        if not response.status_code == 404:
+            pytest.fail('Expected 404 Not Found, got {0}.'.format(response.status_code))
+
 
 #    Verify that an activity leader can retrieve all requests belonging to them.
 #    Endpoint -- api/requests/student/:id
