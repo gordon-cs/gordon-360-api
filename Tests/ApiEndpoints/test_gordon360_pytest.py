@@ -424,7 +424,7 @@ class Test_allAccountTest(testCase):
         assert response.json()["Email"] == "360.StudentTest@gordon.edu"
         assert response.json()["ADUserName"] == "360.StudentTest"
         assert response.json()["AccountType"] == "STUDENT"
-        assert response.json()["Barcode"] == ""
+        assert response.json()["Barcode"] == "21607000485992"
         assert response.json()["show_pic"] == 0
         assert response.json()["ReadOnly"] == 0
         assert response.json()["account_id"] == 30578
@@ -483,7 +483,7 @@ class Test_allAccountTest(testCase):
         assert response.json()["Email"] == "360.FacultyTest@gordon.edu"
         assert response.json()["ADUserName"] == "360.FacultyTest"
         assert response.json()["AccountType"] == "FACULTY"
-        assert response.json()["Barcode"] == ""
+        assert response.json()["Barcode"] == "21607000486016"
         assert response.json()["show_pic"] == 1
         assert response.json()["ReadOnly"] == 0
         assert response.json()["account_id"] == 30580
