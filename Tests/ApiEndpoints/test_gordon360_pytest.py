@@ -56,9 +56,9 @@ password = credentials.password
 my_id_number = credentials.id_number
 grant_payload = { 'username':username, 'password':password, 'grant_type':'password' }
 
-leader_username = credentials.leader_username
-leader_password = credentials.leader_password
-leader_id_number = credentials.leader_id_number
+leader_username = credentials.username_activity_leader
+leader_password = credentials.password_activity_leader
+leader_id_number = credentials.id_number_activity_leader
 leader_grant_payload = { 'username':leader_username, 'password':leader_password, 'grant_type':'password' }
 
 # Global variables for myschedule test events
