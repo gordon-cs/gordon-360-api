@@ -41,8 +41,8 @@ FILE_PATH = '\\gotrain\pref_photos'
 FILE_NAME = 'profile.jpg'
 
 # API 
-hostURL = 'https://360ApiTrain.gordon.edu/'
-#hostURL = 'http://localhost:9999/'
+#hostURL = 'https://360ApiTrain.gordon.edu/'
+hostURL = 'http://localhost:7777/'
 
 # Constants
 LEADERSHIP_POSITIONS = ['CAPT','CODIR','CORD','DIREC','PRES','VICEC','VICEP']
