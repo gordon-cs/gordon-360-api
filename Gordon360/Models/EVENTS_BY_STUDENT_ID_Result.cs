@@ -20,15 +20,9 @@ namespace Gordon360.Models
         public string CHCheckerID { get; set; }
         public Nullable<System.DateTime> CHDate { get; set; }
         public Nullable<System.DateTime> CHTime { get; set; }
-<<<<<<< HEAD
-        public string LiveID { get; set; }
-        public string CHSource { get; set; }
-        public string CHTermCD { get; set; }
-=======
         public string CHSource { get; set; }
         public string CHTermCD { get; set; }
         public string LiveID { get; set; }
->>>>>>> develop
         public Nullable<int> Required { get; set; }
     }
 }

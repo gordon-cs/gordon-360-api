@@ -13,19 +13,9 @@ namespace Gordon360.Models
     
     public partial class INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result
     {
-<<<<<<< HEAD
-        public Nullable<int> INSTRUCTOR_ID { get; set; }
-        public string YR_CDE { get; set; }
-        public string TRM_CDE { get; set; }
-        public string CRS_CDE { get; set; }
-        public string CRS_TITLE { get; set; }
-        public string COURSE_TEXT { get; set; }
-        public string LOC_CDE { get; set; }
-=======
         public Nullable<int> ID_NUM { get; set; }
         public string CRS_CDE { get; set; }
         public string CRS_TITLE { get; set; }
->>>>>>> develop
         public string BLDG_CDE { get; set; }
         public string ROOM_CDE { get; set; }
         public string MONDAY_CDE { get; set; }
@@ -35,9 +25,5 @@ namespace Gordon360.Models
         public string FRIDAY_CDE { get; set; }
         public Nullable<System.TimeSpan> BEGIN_TIME { get; set; }
         public Nullable<System.TimeSpan> END_TIME { get; set; }
-<<<<<<< HEAD
-        public string CRS_TYPE { get; set; }
-=======
->>>>>>> develop
     }
 }

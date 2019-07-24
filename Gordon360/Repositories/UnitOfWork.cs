@@ -32,11 +32,8 @@ namespace Gordon360.Repositories
         private IRepository<CUSTOM_PROFILE> _ProfileCustomRepository;
         private IRepository<ChapelEvent> _ChapelEventRepository;
         private IRepository<DiningInfo> _DiningInfoRepository;
-<<<<<<< HEAD
         private IRepository<ERROR_LOG> _ErrorLogRepository;
-=======
         private IRepository<Schedule_Control> _ScheduleControlRepository;
->>>>>>> develop
 
         private CCTEntities1 _context;
 

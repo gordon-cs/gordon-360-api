@@ -47,11 +47,8 @@ namespace Gordon360.Models
         public virtual DbSet<CM_SESSION_MSTR> CM_SESSION_MSTR { get; set; }
         public virtual DbSet<Countries> Countries { get; set; }
         public virtual DbSet<Dining_Meal_Choice_Desc> Dining_Meal_Choice_Desc { get; set; }
-<<<<<<< HEAD
-=======
         public virtual DbSet<Dining_Meal_Plan_Id_Mapping> Dining_Meal_Plan_Id_Mapping { get; set; }
         public virtual DbSet<Dining_Mealplans> Dining_Mealplans { get; set; }
->>>>>>> develop
         public virtual DbSet<Dining_Student_Meal_Choice> Dining_Student_Meal_Choice { get; set; }
         public virtual DbSet<DiningInfo> DiningInfo { get; set; }
         public virtual DbSet<FacStaff> FacStaff { get; set; }
@@ -70,8 +67,6 @@ namespace Gordon360.Models
         }
     
         public virtual ObjectResult<ADVISOR_EMAILS_PER_ACT_CDE_Result> ADVISOR_EMAILS_PER_ACT_CDE(string aCT_CDE, string sESS_CDE)
-<<<<<<< HEAD
-=======
         {
             var aCT_CDEParameter = aCT_CDE != null ?
                 new ObjectParameter("ACT_CDE", aCT_CDE) :
@@ -89,31 +84,6 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ALL_BASIC_INFO_Result>("ALL_BASIC_INFO");
         }
     
-        public virtual ObjectResult<ALL_BASIC_INFO_NOT_ALUMNI_Result> ALL_BASIC_INFO_NOT_ALUMNI()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ALL_BASIC_INFO_NOT_ALUMNI_Result>("ALL_BASIC_INFO_NOT_ALUMNI");
-        }
-    
-        public virtual ObjectResult<ALL_MEMBERSHIPS_Result> ALL_MEMBERSHIPS()
->>>>>>> develop
-        {
-            var aCT_CDEParameter = aCT_CDE != null ?
-                new ObjectParameter("ACT_CDE", aCT_CDE) :
-                new ObjectParameter("ACT_CDE", typeof(string));
-    
-            var sESS_CDEParameter = sESS_CDE != null ?
-                new ObjectParameter("SESS_CDE", sESS_CDE) :
-                new ObjectParameter("SESS_CDE", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ADVISOR_EMAILS_PER_ACT_CDE_Result>("ADVISOR_EMAILS_PER_ACT_CDE", aCT_CDEParameter, sESS_CDEParameter);
-        }
-    
-        public virtual ObjectResult<ALL_BASIC_INFO_Result> ALL_BASIC_INFO()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ALL_BASIC_INFO_Result>("ALL_BASIC_INFO");
-        }
-    
-<<<<<<< HEAD
         public virtual ObjectResult<ALL_BASIC_INFO_NOT_ALUMNI_Result> ALL_BASIC_INFO_NOT_ALUMNI()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ALL_BASIC_INFO_NOT_ALUMNI_Result>("ALL_BASIC_INFO_NOT_ALUMNI");
@@ -129,53 +99,6 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ALL_REQUESTS_Result>("ALL_REQUESTS");
         }
     
-        public virtual int ALL_SUPERVISORS()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("ALL_SUPERVISORS");
-        }
-    
-        public virtual ObjectResult<COURSES_FOR_PROFESSOR_Result> COURSES_FOR_PROFESSOR(Nullable<int> professor_id, string sess_cde)
-        {
-            var professor_idParameter = professor_id.HasValue ?
-                new ObjectParameter("professor_id", professor_id) :
-                new ObjectParameter("professor_id", typeof(int));
-    
-            var sess_cdeParameter = sess_cde != null ?
-                new ObjectParameter("sess_cde", sess_cde) :
-                new ObjectParameter("sess_cde", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<COURSES_FOR_PROFESSOR_Result>("COURSES_FOR_PROFESSOR", professor_idParameter, sess_cdeParameter);
-        }
-    
-        public virtual int CREATE_SOCIAL_LINKS(string uSERNAME, string fACEBOOK, string tWITTER, string iNSTAGRAM, string lINKEDIN)
-        {
-            var uSERNAMEParameter = uSERNAME != null ?
-                new ObjectParameter("USERNAME", uSERNAME) :
-                new ObjectParameter("USERNAME", typeof(string));
-    
-            var fACEBOOKParameter = fACEBOOK != null ?
-                new ObjectParameter("FACEBOOK", fACEBOOK) :
-                new ObjectParameter("FACEBOOK", typeof(string));
-    
-            var tWITTERParameter = tWITTER != null ?
-                new ObjectParameter("TWITTER", tWITTER) :
-                new ObjectParameter("TWITTER", typeof(string));
-    
-            var iNSTAGRAMParameter = iNSTAGRAM != null ?
-                new ObjectParameter("INSTAGRAM", iNSTAGRAM) :
-                new ObjectParameter("INSTAGRAM", typeof(string));
-    
-            var lINKEDINParameter = lINKEDIN != null ?
-                new ObjectParameter("LINKEDIN", lINKEDIN) :
-                new ObjectParameter("LINKEDIN", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("CREATE_SOCIAL_LINKS", uSERNAMEParameter, fACEBOOKParameter, tWITTERParameter, iNSTAGRAMParameter, lINKEDINParameter);
-        }
-    
-        public virtual ObjectResult<string> CURRENT_SESSION()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("CURRENT_SESSION");
-=======
         public virtual int ALL_SUPERVISORS()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("ALL_SUPERVISORS");
@@ -296,7 +219,6 @@ namespace Gordon360.Models
                 new ObjectParameter("GORDONID", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DELETE_MYSCHEDULE", eVENTIDParameter, gORDONIDParameter);
->>>>>>> develop
         }
     
         public virtual ObjectResult<string> DINING_INFO_BY_STUDENT_ID(Nullable<int> sTUDENT_ID, string sESS_CDE)
@@ -356,21 +278,6 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GRP_ADMIN_EMAILS_PER_ACT_CDE_Result>("GRP_ADMIN_EMAILS_PER_ACT_CDE", aCT_CDEParameter, sESS_CDEParameter);
         }
     
-<<<<<<< HEAD
-        public virtual ObjectResult<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE(Nullable<int> id_num, string sess_cde)
-        {
-            var id_numParameter = id_num.HasValue ?
-                new ObjectParameter("id_num", id_num) :
-                new ObjectParameter("id_num", typeof(int));
-    
-            var sess_cdeParameter = sess_cde != null ?
-                new ObjectParameter("sess_cde", sess_cde) :
-                new ObjectParameter("sess_cde", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result>("INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE", id_numParameter, sess_cdeParameter);
-        }
-    
-=======
         public virtual ObjectResult<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE(Nullable<int> instructor_id, string sess_cde)
         {
             var instructor_idParameter = instructor_id.HasValue ?
@@ -384,7 +291,6 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result>("INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE", instructor_idParameter, sess_cdeParameter);
         }
     
->>>>>>> develop
         public virtual ObjectResult<LEADER_EMAILS_PER_ACT_CDE_Result> LEADER_EMAILS_PER_ACT_CDE(string aCT_CDE, string sESS_CDE)
         {
             var aCT_CDEParameter = aCT_CDE != null ?
@@ -414,35 +320,6 @@ namespace Gordon360.Models
                 new ObjectParameter("ACT_CDE", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<MEMBERSHIPS_PER_ACT_CDE_Result>("MEMBERSHIPS_PER_ACT_CDE", aCT_CDEParameter);
-<<<<<<< HEAD
-        }
-    
-        public virtual ObjectResult<MEMBERSHIPS_PER_STUDENT_ID_Result> MEMBERSHIPS_PER_STUDENT_ID(Nullable<int> sTUDENT_ID)
-        {
-            var sTUDENT_IDParameter = sTUDENT_ID.HasValue ?
-                new ObjectParameter("STUDENT_ID", sTUDENT_ID) :
-                new ObjectParameter("STUDENT_ID", typeof(int));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<MEMBERSHIPS_PER_STUDENT_ID_Result>("MEMBERSHIPS_PER_STUDENT_ID", sTUDENT_IDParameter);
-        }
-    
-        public virtual ObjectResult<PHOTO_INFO_PER_USER_NAME_Result> PHOTO_INFO_PER_USER_NAME(Nullable<int> iD)
-        {
-            var iDParameter = iD.HasValue ?
-                new ObjectParameter("ID", iD) :
-                new ObjectParameter("ID", typeof(int));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<PHOTO_INFO_PER_USER_NAME_Result>("PHOTO_INFO_PER_USER_NAME", iDParameter);
-        }
-    
-        public virtual ObjectResult<REQUEST_PER_REQUEST_ID_Result> REQUEST_PER_REQUEST_ID(Nullable<int> rEQUEST_ID)
-        {
-            var rEQUEST_IDParameter = rEQUEST_ID.HasValue ?
-                new ObjectParameter("REQUEST_ID", rEQUEST_ID) :
-                new ObjectParameter("REQUEST_ID", typeof(int));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<REQUEST_PER_REQUEST_ID_Result>("REQUEST_PER_REQUEST_ID", rEQUEST_IDParameter);
-=======
         }
     
         public virtual ObjectResult<MEMBERSHIPS_PER_STUDENT_ID_Result> MEMBERSHIPS_PER_STUDENT_ID(Nullable<int> sTUDENT_ID)
@@ -497,25 +374,109 @@ namespace Gordon360.Models
                 new ObjectParameter("STUDENT_ID", typeof(int));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<REQUESTS_PER_STUDENT_ID_Result>("REQUESTS_PER_STUDENT_ID", sTUDENT_IDParameter);
->>>>>>> develop
         }
     
-        public virtual ObjectResult<REQUESTS_PER_ACT_CDE_Result> REQUESTS_PER_ACT_CDE(string aCT_CDE)
+        public virtual int sp_alterdiagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)
         {
-            var aCT_CDEParameter = aCT_CDE != null ?
-                new ObjectParameter("ACT_CDE", aCT_CDE) :
-                new ObjectParameter("ACT_CDE", typeof(string));
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<REQUESTS_PER_ACT_CDE_Result>("REQUESTS_PER_ACT_CDE", aCT_CDEParameter);
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            var versionParameter = version.HasValue ?
+                new ObjectParameter("version", version) :
+                new ObjectParameter("version", typeof(int));
+    
+            var definitionParameter = definition != null ?
+                new ObjectParameter("definition", definition) :
+                new ObjectParameter("definition", typeof(byte[]));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_alterdiagram", diagramnameParameter, owner_idParameter, versionParameter, definitionParameter);
         }
     
-        public virtual ObjectResult<REQUESTS_PER_STUDENT_ID_Result> REQUESTS_PER_STUDENT_ID(Nullable<int> sTUDENT_ID)
+        public virtual int sp_creatediagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)
         {
-            var sTUDENT_IDParameter = sTUDENT_ID.HasValue ?
-                new ObjectParameter("STUDENT_ID", sTUDENT_ID) :
-                new ObjectParameter("STUDENT_ID", typeof(int));
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<REQUESTS_PER_STUDENT_ID_Result>("REQUESTS_PER_STUDENT_ID", sTUDENT_IDParameter);
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            var versionParameter = version.HasValue ?
+                new ObjectParameter("version", version) :
+                new ObjectParameter("version", typeof(int));
+    
+            var definitionParameter = definition != null ?
+                new ObjectParameter("definition", definition) :
+                new ObjectParameter("definition", typeof(byte[]));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_creatediagram", diagramnameParameter, owner_idParameter, versionParameter, definitionParameter);
+        }
+    
+        public virtual int sp_dropdiagram(string diagramname, Nullable<int> owner_id)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_dropdiagram", diagramnameParameter, owner_idParameter);
+        }
+    
+        public virtual ObjectResult<sp_helpdiagramdefinition_Result> sp_helpdiagramdefinition(string diagramname, Nullable<int> owner_id)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_helpdiagramdefinition_Result>("sp_helpdiagramdefinition", diagramnameParameter, owner_idParameter);
+        }
+    
+        public virtual ObjectResult<sp_helpdiagrams_Result> sp_helpdiagrams(string diagramname, Nullable<int> owner_id)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_helpdiagrams_Result>("sp_helpdiagrams", diagramnameParameter, owner_idParameter);
+        }
+    
+        public virtual int sp_renamediagram(string diagramname, Nullable<int> owner_id, string new_diagramname)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            var new_diagramnameParameter = new_diagramname != null ?
+                new ObjectParameter("new_diagramname", new_diagramname) :
+                new ObjectParameter("new_diagramname", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_renamediagram", diagramnameParameter, owner_idParameter, new_diagramnameParameter);
+        }
+    
+        public virtual int sp_upgraddiagrams()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_upgraddiagrams");
         }
     
         public virtual ObjectResult<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE(Nullable<int> id_num, string sess_cde)
@@ -558,74 +519,6 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SUPERVISORS_PER_ACT_CDE", aCT_CDEParameter);
         }
     
-        public virtual int SUPERVISORS_PER_ID_NUM(Nullable<int> iD_NUM)
-        {
-            var iD_NUMParameter = iD_NUM.HasValue ?
-                new ObjectParameter("ID_NUM", iD_NUM) :
-                new ObjectParameter("ID_NUM", typeof(int));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SUPERVISORS_PER_ID_NUM", iD_NUMParameter);
-        }
-    
-<<<<<<< HEAD
-        public virtual int UPDATE_ACT_INFO()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_ACT_INFO");
-        }
-    
-        public virtual int UPDATE_PHONE_PRIVACY(Nullable<int> iD, string vALUE)
-=======
-        public virtual ObjectResult<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE(Nullable<int> id_num, string sess_cde)
-        {
-            var id_numParameter = id_num.HasValue ?
-                new ObjectParameter("id_num", id_num) :
-                new ObjectParameter("id_num", typeof(int));
-    
-            var sess_cdeParameter = sess_cde != null ?
-                new ObjectParameter("sess_cde", sess_cde) :
-                new ObjectParameter("sess_cde", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result>("STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE", id_numParameter, sess_cdeParameter);
-        }
-    
-        public virtual int STUDENT_JOBS_PER_ID_NUM(Nullable<int> iD_NUM)
->>>>>>> develop
-        {
-            var iD_NUMParameter = iD_NUM.HasValue ?
-                new ObjectParameter("ID_NUM", iD_NUM) :
-                new ObjectParameter("ID_NUM", typeof(int));
-    
-<<<<<<< HEAD
-            var vALUEParameter = vALUE != null ?
-                new ObjectParameter("VALUE", vALUE) :
-                new ObjectParameter("VALUE", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_PHONE_PRIVACY", iDParameter, vALUEParameter);
-=======
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("STUDENT_JOBS_PER_ID_NUM", iD_NUMParameter);
->>>>>>> develop
-        }
-    
-        public virtual int SUPERVISOR_PER_SUP_ID(Nullable<int> sUP_ID)
-        {
-            var sUP_IDParameter = sUP_ID.HasValue ?
-                new ObjectParameter("SUP_ID", sUP_ID) :
-                new ObjectParameter("SUP_ID", typeof(int));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SUPERVISOR_PER_SUP_ID", sUP_IDParameter);
-        }
-    
-        public virtual int SUPERVISORS_PER_ACT_CDE(string aCT_CDE)
-        {
-            var aCT_CDEParameter = aCT_CDE != null ?
-                new ObjectParameter("ACT_CDE", aCT_CDE) :
-                new ObjectParameter("ACT_CDE", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SUPERVISORS_PER_ACT_CDE", aCT_CDEParameter);
-        }
-    
-<<<<<<< HEAD
-=======
         public virtual int SUPERVISORS_PER_ID_NUM(Nullable<int> iD_NUM)
         {
             var iD_NUMParameter = iD_NUM.HasValue ?
@@ -757,7 +650,6 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_SCHEDULE_PRIVACY", iDParameter, vALUEParameter);
         }
     
->>>>>>> develop
         public virtual int UPDATE_SHOW_PIC(Nullable<int> aCCOUNT_ID, string vALUE)
         {
             var aCCOUNT_IDParameter = aCCOUNT_ID.HasValue ?
@@ -771,10 +663,6 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_SHOW_PIC", aCCOUNT_IDParameter, vALUEParameter);
         }
     
-<<<<<<< HEAD
-        public virtual ObjectResult<VICTORY_PROMISE_BY_STUDENT_ID_Result> VICTORY_PROMISE_BY_STUDENT_ID(Nullable<int> sTUDENT_ID)
-        {
-=======
         public virtual int UPDATE_TIMESTAMP(Nullable<int> iD, Nullable<System.DateTime> vALUE)
         {
             var iDParameter = iD.HasValue ?
@@ -790,7 +678,6 @@ namespace Gordon360.Models
     
         public virtual ObjectResult<VICTORY_PROMISE_BY_STUDENT_ID_Result> VICTORY_PROMISE_BY_STUDENT_ID(Nullable<int> sTUDENT_ID)
         {
->>>>>>> develop
             var sTUDENT_IDParameter = sTUDENT_ID.HasValue ?
                 new ObjectParameter("STUDENT_ID", sTUDENT_ID) :
                 new ObjectParameter("STUDENT_ID", typeof(int));

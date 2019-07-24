@@ -280,11 +280,6 @@
     <Compile Include="Models\DiningInfo.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-<<<<<<< HEAD
-    <Compile Include="Models\Dining_Meal_Choice_Desc.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-=======
     <Compile Include="Models\Dining_Mealplans.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -294,7 +289,6 @@
     <Compile Include="Models\Dining_Meal_Plan_Id_Mapping.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
->>>>>>> develop
     <Compile Include="Models\Dining_Student_Meal_Choice.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -332,11 +326,6 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MEMBERSHIPS_PER_ACT_CDE_Result.cs">
-<<<<<<< HEAD
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\MEMBERSHIPS_PER_STUDENT_ID_Result.cs">
-=======
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MEMBERSHIPS_PER_STUDENT_ID_Result.cs">
@@ -346,7 +335,6 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MYSCHEDULE_BY_ID_Result.cs">
->>>>>>> develop
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PART_DEF.cs">
@@ -368,8 +356,6 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\RoomAssign.cs">
-<<<<<<< HEAD
-=======
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Schedule_Control.cs">
@@ -379,19 +365,15 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sp_helpdiagrams_Result.cs">
->>>>>>> develop
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Student.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-<<<<<<< HEAD
+    <Compile Include="Models\StudentEmployment.cs" />
     <Compile Include="Models\STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-=======
-    <Compile Include="Models\STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs" />
-    <Compile Include="Models\StudentEmployment.cs" />
     <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs" />
     <Compile Include="Models\sysdiagrams.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
@@ -402,7 +384,6 @@
     <Compile Include="Models\Transit_Rides.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
->>>>>>> develop
     <Compile Include="Models\VICTORY_PROMISE_BY_STUDENT_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -496,12 +477,9 @@
     <None Include="secrets.config">
       <SubType>Designer</SubType>
     </None>
-<<<<<<< HEAD
-=======
     <EmbeddedResource Include="version.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
->>>>>>> develop
     <Content Include="Models\CCT_DB_Models.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
@@ -559,7 +537,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:9000</IISUrl>
+          <IISUrl>http://localhost:6769</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
