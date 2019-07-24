@@ -14,6 +14,7 @@ using Gordon360.Models.ViewModels;
 
 namespace Gordon360.ApiControllers
 {
+
     [Authorize]
     [CustomExceptionFilter]
     [RoutePrefix("api/emails")]

@@ -11,6 +11,8 @@ Dive in.
     - [Tables](#tables)
     - [Stored Procedures](#stored-procedures)
     - [Triggers](#triggers)
+    - [Manual and Debugging Access](#manual-and-debugging-access)
+    - [Updating .edmx](#updating-.edmx)
 - [The Code](#the-code)
 - [Introduction](#introduction)
 - [Caching](#caching)
@@ -18,6 +20,7 @@ Dive in.
     - [Accounts](#accounts)
     - [Activities](#activities)
     - [Admins](#admins)
+    - [Advanced Search](#advanced-search)
     - [Authentication](#authentication)
     - [Content Management](#content-management)
     - [Emails](#emails)
@@ -27,6 +30,12 @@ Dive in.
     - [Participation Definitions](#participation-definitions)
     - [Profiles](#profiles)
     - [Sessions](#sessions)
+    - [Dining](#dining)    
+    - [Student Employment](#student-employment)
+    - [Schedule](#schedule)
+    - [MySchedule](#my-schedule)
+    - [ScheduleControl](#schedule-control)
+    - [Victory Promise](#victory-promise)
 - [API Testing](#api-testing)
     - [Introduction](#introduction)
     - [Running the Tests](#running-the-tests)
@@ -57,13 +66,18 @@ The folders for these IIS sites can be found on the 360train machine under `F:\s
 - 360ApiTrain.gordon.edu -- Development JSON server site. C# using the ASP.NET Framework.
 
 ### Deploying to the Api Site
-- Log in to cts-360.gordon.edu as the cct.service user and start Visual Studio as an administrator (right click).
-- Open an existing project/solution - `C:\users\cct.service\code\gordon-360-api\Gordon360` file. It is a Microsoft Visual Studio Solution file.
-- Make a change. Do your thing.
+- Access the cts-360.gordon.edu VM (see [RemoteDesktopToVM.md](RemoteDesktopToVM.md) for instructions) as the cct.service user.
+- Before you publish your new version, be sure to copy the current stable version to make a backup. To do so:
+	- Navigate in File Explorer to `F:\Sites` and copy either 360Api or 360ApiTrain, whichever you're planning to publish to.
+	- Paste that copy in the same place (`F:\Sites`), and rename it to a backup including the date. For example, if you backed up the Train site on January 1, 2001, then the copy would be named `360ApiTrain_backup 1-01-2001`.
+- Open gitbash and cd to `C:\users\cct.service\code\gordon-360-api`. Make sure that you are on the branch you wish to deploy, and that it has been pulled up to date.
+**Note: if you clone a new repository on this VM, it will not have the necessary publish profiles or secrets.config. See [MakePublishProfiles.md](MakePublishProfiles.md) to restore the Publish Profiles.**
+- Start Visual Studio as an administrator (right click) and open the existing project/solution file - `C:\users\cct.service\code\gordon-360-api\Gordon360.sln` (the solution file).
 - Menu Bar -> Build - Publish Gordon360.
 - Choose the right publish profile.
     - DEV -- Development ( Connects to the admintrainsql database server, and used for 360train.gordon.edu).
     - Prod -- Production ( Connects to the adminprodsql database server, and used for the real site 360.gordon.edu).
+    - If you don't see the publish profile you want (or you are automatically taken to the "Pick a Publish Target" Window) see [MakePublishProfiles.md](MakePublishProfiles.md) to restore the Publish Profiles.
 - Clicking publish pushes your changes to the API for either 360ApiTrain.gordon.edu or 360Api.gordon.edu, depending on which publish profile you used.
 
 ### Deploying to the Front-end Site
@@ -146,6 +160,38 @@ A record in this table stores:
 - linkedin - The URL of the user's linkedin without its domain name
 
 Users don't exist in the table unless they add/edit their social media links on 360 site. Once a user adds any links, the user will be added to the table. This logic is done so that there won't be unused users in the table which can possibly slow down the website.
+
+###### MYSCHEDULE
+
+A record in this table stores:
+
+- EVENT_ID - The event id number of this schedule (always has to be above 1000, to differentiate between a course schedule)
+- GORDON_ID - The gordon id number of the user having this event
+- LOCATION - The location of the event
+- DESCRIPTION - The description of the event
+- MON_CDE - Whether or not the event is in monday ('M')
+- TUE_CDE - Whether or not the event is in tuesday ('T')
+- WED_CDE - Whether or not the event is in wednesday ('W')
+- THU_CDE - Whether or not the event is in thursday ('R')
+- FRI_CDE - Whether or not the event is in friday ('F')
+- SAT_CDE - Whether or not the event is in saturday ('S')
+- SUN_CDE - Whether or not the event is in sunday ('N')
+- IS_ALLDAY - Whether or not the event is happening for all day '0' for no and '1' for all day.
+- BEGIN_TIME - The start time of the event in Timespan format
+- END_TIME - The end time of the event in Timespan format
+
+Myschedules doesn't exist in the table unless a user add/edit myschedule on 360 site. Once a user adds any customized event, the event will be added to the table. The structure is adopted from the course schedule format stored in other database. There are two primary keys - EVENT_ID and GORDON_ID. They have to match together to get any event schedule
+
+###### Schedule_Control
+
+A record in this table stores:
+
+- IsSchedulePrivate - Whether or not the schedule is private (only applied to students and their course schedule. FacStaff and mySchedule won't be affected)
+- ModifiedTimeStamp - The last time when the user modified the event or description
+- Description - The schedule description for additional links
+- gordon_id - The gordon id number of the current user
+
+Schedule Controls also don't exist in the table unless a user add/edit their settings on 360 site.
 
 ###### JNZB_ACTIVITIES
 
@@ -256,6 +302,34 @@ This stored procedures is pretty simple. It moves all the relevant information f
 
 Every time a record is inserted into the ACT_CLUB_DEF table, this trigger runs the UPDATE_ACT_INFO stored procedure. Although not clear in the name, this trigger also runs whenever a row is deleted from ACT_CLUB_DEF.
 
+### Manual and Debugging Access
+
+It's sometimes useful to look at the database directly, to see the schema or check data.  Here is how.
+* Use remote desktop to get to the Windows server VM
+* If SQL Server Management Studio is not pinned to the task bar, pin it by starting it and right clicking on it in the task bar to pin it)
+* Shift-right-click SSMS (SQL Server Management Studio) and select "Run as ..."
+* Run as "cct.service"
+* Connect to "ADMINTRAINSQL" database server (or "ADMINPRODSQL")
+* Expand "Databases" then "CCT" then "Views"
+* To see schemas, expand "dbo." entries and their "columns"
+* To see data, right-click a view and select "Select top 1000 rows"
+
+### Updating .edmx
+
+Everytime you update the database with new table, column, view or stored procedure, or modify the existing ones with different parameters or return values, you need to get the corresponding Entity Database Model XML in API. Editing it manually is not recommended, since it may cause unexpected errors such as PublicStudentData error.
+
+Visual Studio provides auto-generation of .edmx file, with the following procedure:
+* Use remote desktop to get to the Windows server VM
+* Open Visual Studio and load the solution file
+* In solution explorer, expand "Models" folder and delete the previous CCT_DB_MODELS.edmx by right-click on it and press delete (It's okay, we can remake it)
+* Right-click "Models", expand "Add" and press "new Item" (If you can see ADO.NET Entity Data Model in here, you may press that as well)
+* Under Visual C# panel, access to "Data" and find ADO.NET Entity Data Model. Name it as "CCT_DB_Models" and create it
+* In the Wizard, default option would be "EF Designer from database". If it is not, changed to this option and head next
+* While you choose your data connection, make sure the connection is "CCTEntities (Gordon360)" and you checked "Save connection setting in Web.Config as:". Also, the saved settings should be named as "CCTEntities1"
+* Next, you will see the wizard retrieving the database objects from our CCT database. check all boxes in the panel but you should uncheck the option "Pluralize or singularize generated object names"
+* Name the Model Namespace as "Gordon360" and press finish
+
+
 ## The Code
 
 ### Introduction
@@ -285,20 +359,50 @@ Here is a breakdown of the project folder:
     - Tests/ - Folder for tests
         - ApiEndpoints/ - I talk about this more in the Testing section.
 
+###Adding New Queries
+
+- (*) is your new Title (ex: Membership, Account, Session)
+- (+) is your new stored procedure name (ex: MEMBERSHIPS_PER_STUDENT_ID)
+- New Files:
+    - *Controller.cs under ApiControllers
+        - create new route
+        - calls the *service function
+        - returns ok
+    - *Service.cs under Services
+    	- calls the stored procedure that returns view model
+    - *ViewModel.cs under ViewModels
+    	- function names correspond to the columns of the data the stored procedure returns (Does not have to be exact names)
+    	- static implicit operator converts * model to *ViewModel
+- Update Files:
+    - ServiceInterfaces.cs under Services
+    	- Add a public interface I*/
+    	- Add all functions you have in *Service under this interface
+    - IUnitOfWork.cs under Repositories
+    	- Make corresponding IRepository for * (ex. IRepository<STUDENTEMPLOYMENT> StudentEmploymentRepository {get;})
+    - UnitOfWork.cs under Repositories
+    	- Make private IRepository<*> variable
+    	- Write public function called *Repository
+    - Names.cs under Static Classes
+    	- Add public const string *
+
 ## API Endpoints
+
+*Note:* The shell script `get-route-list.sh` is run with `bash get-route-list.sh` from a linux shell or git-bash.  It provides a list of the API routes that appear in the ApiController files.
 
 ### Accounts
 What is it? Resource that represents a gordon account.
 
 ##### GET
 
-`api/accounts/:email` Get the account with email `email`.
+`api/accounts/email/:email` Get the account with email `email`.
 
-`api/accounts/:username` Get the account with `username`.
+`api/accounts/username/:username` Get the account with `username`.
 
 `api/accounts/search/:searchString` Returns the basicinfoviewmodel with a Concatenated attribute matching some or all of the searchstring
 
-`api/accounts/advanced-people-search/{includeAlumniSearchParam}/{firstNameSearchParam}/{lastNameSearchParam}/{majorSearchParam}/{minorSearchParam}/{classTypeSearchParam}/{hometownSearchParam}/{stateSearchParam}/{countrySearchParam}/{departmentSearchParam}/{buildingSearchParam}` Get all the accounts matching the specified parameters. Access to accounts is based on your account type (e.g. Students can't get Alumni).
+`api/accounts/search/:searchString/:secondaryString` The same as above, used when the search string contains a space
+
+`api/accounts/advanced-people-search/{includeAlumniSearchParam}/{firstNameSearchParam}/{lastNameSearchParam}/{majorSearchParam}/{minorSearchParam}/{hallSearchParam}/{classTypeSearchParam}/{hometownSearchParam}/{stateSearchParam}/{countrySearchParam}/{departmentSearchParam}/{buildingSearchParam}` Get all the accounts matching the specified parameters. Access to accounts is based on your account type (e.g. Students can't get Alumni).
 
 ### Activities
 What is it? Resource that represents some activity - such as a club, ministry, leadership program, etc.
@@ -309,7 +413,7 @@ What is it? Resource that represents some activity - such as a club, ministry, l
 
 `api/activities/:id` Get the activity with activity code `id`.
 
-`api/activities/session/:id` Get the activity offered during the session with session code `id`.
+`api/activities/session/:id` Get the activities offered during the session with session code `id`.
 
 `api/activities/session/:id/types` Get the different activity types among the activities offered during the session with session code `id`.
 
@@ -325,19 +429,27 @@ What is it? Resource that represents some activity - such as a club, ministry, l
 
 ##### PUT
 
-`api/activities/:id/session/{sess_cde}/close` Close out an activity for a given session (this is like confirming the final roster of an activity for a given session.
+`api/activities/:id/session/{sess_cde}/close` Close out an activity for a given session (this is like confirming the final roster of an activity for a given session).
 
 `api/activities/:id/session/{sess_cde}/open` Reopen an activity for a given session.
 
 `api/activities/:id` Edit activity information for the club with activity code `id`.
 
-`api/activities/:id/private/:p` Update a given activity to private or not private with boolean value `p`. The `id` parameter is the activity id.
+`api/activities/:id/privacy/:p` Update a given activity to private or not private with boolean value `p`. The `id` parameter is the activity id.
+
+##### POST
+
+`api/activities/:id/image` Set an image for the activity with activity code `id`.
+
+`api/activites/:id/image/reset` Reset the image to default for the activity with activity code `id`.
 
 
 ### Admins
 What is it? Resource that represents admins.
 
 Who has access? Only super admins, except to get a specific admin where all admins have access.
+
+NOTE: facultytest is a super admins in PRODAPIDATA, stafftest is a super admins in TRAINAPIDATA
 
 ##### GET
 
@@ -355,15 +467,19 @@ Who has access? Only super admins, except to get a specific admin where all admi
 
 
 ### Advanced Search
+
 ##### GET
+
 `api/advanced-search/majors` Get all majors that are found in the Student table.
 
 `api/advanced-search/minors` Get all minors that are found in the Student table.
 
+`api/advanced-search/halls` Get all halls that are found in the Student table.
+
 `api/advanced-search/states` Get all states that are found in the Student, Alumni, and FacStaff tables.
 
 `api/advanced-search/countries`  Get all countries that are found in the Student, Alumni, and FacStaff tables.
- 
+
 `api/advanced-search/departments` Get all the departments from the FacStaff table.
 
 `api/advanced-search/buildings` Get all the buildings from the FacStaff table.
@@ -392,45 +508,12 @@ Response will include an access token which should be included in subsequent req
 Specifically, include it in the `Authorization` header like so `Bearer YOUR-ACCESS-TOKEN`
 
 ### Content Management
+
 What is it? Resource for fetching content that has been stored in the database by Gordon's website [content manager](http://wwwtrain.gordon.edu/).
 
 ##### GET
 
 `api/cms/slider` Get the content for the dashboard slide.
-
-### Profiles
-What is it? Resource that represents users' profiles.
-
-Differences from GoSite:
-- Only displaying city and country as home address. (When the viewer is a student. Police, super admin, faculty and staff should still see all the information for home address)
-- Displaying minors.
-- On campus was changed to display more general information rather than completely getting rid of it like GoSite does now. (Shows on/off campus)
-
-##### GET
-
-`api/profiles` Get profile info of the current logged in user.
-
-`api/profiles/:username` Get profile info of a user with username `username` as a parameter.
-
-`api/profiles/role/:username` Get college role of a user with username `username` as a parameter --- College roles: super admin, faculty and staff, student and police.
-
-`api/profiles/Image/` Get profile image of the current logged in user. Image is stored in a base 64 string.
-
-`api/profiles/Image/:username` Get the profile image(s) of a user with username `username` as a parameter. Image is stored in a base 64 string. Police, super admin, faculty and staff can view both default and preferred profile image of students. Only police and super admin can view both images of everyone including faculty and staff.
-
-##### POST
-
-`api/profiles/image` Upload a preferred image for the current logged in user.
-
-`api/profiles/image/reset` Delete preferred image and set profile image to default for the current logged in user.
-
-`api/profiles/:type` Update a social media link of a type(facebook, twitter, linkedin,instagram) of current logged in user.
-
-##### PUT
-
-`api/profiles/mobile_privacy/:value` Update mobile phone number privacy with value(Y or N) for the current logged in user.
-
-`api/profiles/image_privacy/:value` Update profile image privacy with value(Y or N) for the current logged in user.
 
 
 ### Emails
@@ -447,9 +530,19 @@ What is it? Resource that represents emails.
 
 `api/emails/activity/:id/leaders/session/:sessionid` Get the emails for the leaders of the activity with activity code `id` during the session with session code `sessionid`.
 
+`api/emails/activity/:id/group-admin/session/:sessionid` Get the emails for the group admins of the activity with activity code `id` during the session with session code `sessionid`.
+
 `api/emails/activity/:id/advisors` Get the emails for the advisors of the activity with activity code `id` during the current session.
 
 `api/emails/activity/:id/advisors/session/:sessionid` Get the emails for the advisors of the activity with activity code `id` during the session with session code `sessionid`.
+
+##### PUT
+
+`api/emails` Sends an email.
+
+`api/emails/activity/:id/session/:sessionid` Sends an email to the participants of the activity with activity code `id` during the session with session code `sessionid`.
+
+`api/emails/activity/:id/leaders/session/:sessionid` Sends an email to the leaders of the activity with activity code `id` during the session with session code `sessionid`.
 
 
 ### Events
@@ -472,7 +565,10 @@ Multiple types or events are separated by a '$'
 
 `api/events/25Live/All` Returns all events in 25Live under predefined categories.
 
-`api/events/25Live/CLAW` Returns all events in 25Live with Category_ID = 85 (CL&W Credit approved)
+`api/events/25Live/CLAW` Returns all events in 25Live with Category_ID = 85 (CL&W Credit approved).
+
+`api/events/25Live/Public` Returns all events in 25Live marked to promote on public calendars (Reuirement_ID = 3).
+
 
 
 ### Memberships
@@ -494,11 +590,11 @@ What is it? Resource that represents the affiliation between a student and a clu
 
 `api/memberships/activity/:id/followers` Get the number of followers of an activity with activity code `id`.
 
-`api/memberships/activity/:id/members` Get the number of members of an activity with activity code `id`.
+`api/memberships/activity/:id/members` Get the number of members (excluding followers) of an activity with activity code `id`.
 
 `api/memberships/activity/:id/followers/:sess_cde` Get the number of followers of an activity with activity code `id` in session `:sess_cde`.
 
-`api/memberships/activity/:id/members/:sess_cde` Get the number of members of an activity with activity code `id` in session `:sess_cde`.
+`api/memberships/activity/:id/members/:sess_cde` Get the number of members (excluding followers) of an activity with activity code `id` in session `:sess_cde`.
 
 `api/memberships/student/:id` Get the memberships of the student with student id `id`.
 
@@ -515,7 +611,7 @@ What is it? Resource that represents the affiliation between a student and a clu
 
 `api/memberships/:id/group-admin` Toggle whether or not a given member is in a group admin role for a given activity. The `id` parameter is the membership id.
 
-`api/memberships/:id/private/:p` Update a given membership to private or not private with boolean value `p`. The `id` parameter is the membership id.
+`api/memberships/:id/privacy/:p` Update a given membership to private or not private with boolean value `p`. The `id` parameter is the membership id.
 
 ##### DELETE
 
@@ -530,10 +626,13 @@ What is it? Resource that represents a person's application/request to join an a
 
 `api/requests/:id` Get the membership application with request id `id`.
 
-`api/requests/student/:id` Get all the membership applications for the student with student `id`.
+`api/requests/student/:id` Get all the membership applications for the student with student id `id`.
 
 `api/requests/activity/:id` Get all the membership applications for the club with activity code `id`.
 
+##### PUT
+
+`api/requests/:id` Edits an existing memberships application.
 
 ##### POST
 
@@ -574,6 +673,10 @@ Who has access? Everyone.
 
 `api/participations/:id` Get the participation level with code `id`.
 
+`api/participations/leaders` Get the participation levels that are considered leaders.
+
+`api/participations/transcript-worthy` Get the participation levels that should appear on the cct as leadership. Unfinished: TO DO.
+
 
 ### Profiles
 What is it? Resource that represents users' profiles.
@@ -587,7 +690,7 @@ Differences from GoSite:
 
 `api/profiles` Get profile info of the current logged in user.
 
-`api/profiles/:username` Get profile info of a user with username `username` as a parameter.
+`api/profiles/:username` Get public profile info of a user with username `username` as a parameter.
 
 `api/profiles/role/:username` Get college role of a user with username `username` as a parameter --- College roles: super admin, faculty and staff, student and police.
 
@@ -599,6 +702,8 @@ Differences from GoSite:
 
 `api/profiles/image` Upload a preferred image for the current logged in user.
 
+`api/profiles/IDimage` Submit an ID image for the current logged in user.
+
 `api/profiles/image/reset` Delete preferred image and set profile image to default for the current logged in user.
 
 `api/profiles/:type` Update a social media link of a type(facebook, twitter, linkedin,instagram) of current logged in user.
@@ -609,42 +714,95 @@ Differences from GoSite:
 
 `api/profiles/image_privacy/:value` Update profile image privacy with value(Y or N) for the current logged in user.
 
-
-### Sessions
-What is it? Resource that represents the current session. e.g. Fall 2014-2015.
+### Dining
+What is it? Request meal plan info and current balances.
 
 Who has access? Everyone.
 
 ##### GET
 
-`api/sessions` Get all the sessions.
+`api/dining` Get all possible meal plan info.
+- If user has one or more meal plans, then current balances for each plan are included in a JSON response.
+- If user does not have a meal plan but has a faculty-staff dining balance, then the balance is returned as a string.
+- If there is no plan or balance then the string "0" (equivalent to no balance) is returned.
 
-`api/sessions/:id` Get the session with session code `id`.
+### Student Employment
+What is it? A resource that represents the campus employments of the currently logged in user.
 
-`api/sessions/current` Get the current session.
+##### GET
 
-`api/sessions/daysLeft` Get the days left in the semester and the total days in the semester
+`api/studentemployment` Get the record of campus employments for the currently logged in user.
 
+### Schedule
+What is it? Resource that represents a course schedule of user.
+
+##### GET
+
+`api/schedule` Get all schedule objects of the currently logged in user.
+
+`api/schedule/:username` Get all schedule objects of a user with username `username` as a parameter.
+
+### My Schedule
+What is it? Resource that represents a customized schedule of user.
+
+##### GET
+
+`api/myschedule` Get all custom events of the currently logged in user.
+
+`api/myschedule/:username` Get all custom events of a user with username `username` as a parameter.
+
+`api/myschedule/event/:eventId` Get a specific custom event of the currently logged in user with `eventId` as a parameter
+
+##### PUT
+
+`api/myschedule/` Update a custom event of the currently logged in user.
+
+##### POST
+
+`api/myschedule/`  Create a custom event of the currently logged in user.
+
+##### DELETE
+
+`api/myschedule/:eventID`  Delete a custom event of the currently logged in user.
+
+
+### Schedule Control
+What is it? Resource that represents information related to schedule.
+
+##### GET
+
+`api/schedulecontrol` Get the schedulecontrol object of the currently logged in user. Specifically, get the privacy, time last updated, description, and Gordon ID of the currently logged in user's schedule.
+
+`api/schedulecontrol/:username` Get the schedulecontrol object of a user with username `username` as a parameter. Specifically, Get the privacy, time last updated, description, and Gordon ID of the user's schedule.
+
+##### PUT
+
+`api/schedulecontrol/privacy/:value` Update a schedule privacy of the currently logged in user.
+
+`api/schedulecontrol/description/:value` Update a schedule description of the currently logged in user.
+
+
+### Victory Promise
+What is it? Resource that represents the user's scores on the four pillars of the victory promise.
+
+#### GET
+
+`api/vpscore` Get the victory promise scores of the currently logged in user.
 
 ## API Testing
 
 ### Introduction
 
 A test suite is available at `Tests/ApiEndpoints` to exercise the different endpoints. The most important files here are:
-- `gordon_360_tests_leader.py` -- Tests the api endpoints while authorized as an activity leader.
-- `gordon_360_tests_member.py` -- Tests the api endpoints while authorized as a regular member.
-- `test_config.py` -- Configuration options, includes the following variables:
-    - `activity_code` -- The activity that will be used for testing. Tests under `gordon_360_tests_leader.py` assume the account used for testing is a leader of this activity. Tests under `gordon_360_tests_member.py` assume the account used for testing is a member of this activity.
+- `test_gordon360_pytest` -- Stores all the tests.
+    - `activity_code` -- The activity that will be used for testing.
     - `random_id_number` -- A random id number that is used when we want to verify if we can do things on behalf of someone else. E.g. An advisor can create memberships for anyone. A regular member can only create a membership for him/herself.
     - `leadership_positions` -- A list of participation levels considered to be leadership positions.
     - `hostURL` -- Base url of the api
-- `test_credentials.py` -- (If you cloned the project, you need to create this file) File with credentials the test program will use.
-	- `username` -- String with the username of a test account that is a member of `activity_code` in `test_config.py`.
-	- `password` -- String with the password of a test account that is a member of `activity_code` in `test_config.py`.
+	- `username` -- String with the username of a test account that is a member of `activity_code`
+	- `password` -- String with the password of a test account that is a member of `activity_code`
 	- `id_number` -- Integer with the id number of the `username`.
-	- `username_activity_leader` -- String with the username of a test account that is a leader of `activity_code` in `test_config.py`.
-	- `password_activity_leader` -- String with the password of a test account that is a leader of `activity_code` in `test_config.py`.
-	- `id_number_activity_leader` -- Integer with the id number of the `username_leader`.
+	- `username_activity_leader` -- String with the username of a test account that is a leader of `activity_code`
 
 ### Running the Tests
 
@@ -654,31 +812,32 @@ Clone the project from the github site:
 Navigate to the API Tests folder:
 `cd gordon-360-api/Tests/ApiEndpoints/`
 
-Install the py requirement files with this command. This should install the request module as well as other needed modules:
-"pip install -r requirements.txt"
+Install pytest: `pip install -U pytest`
 
-Create the `test_credentials.py` file and define the six variables mentioned above.
-
-Make sure the credentials you enter match the descriptions provided above.
-Install requirements before you run any tests: `pip install -r requirements.txt`
-
-
-Verify that the variables defined in `test_config.py` are correct.
+Check the `hostURL` in test_gordon360_pytest.py if it is pointing to the correct backend 
 
 Run the tests:
-`python3 gordon_360_tests.py` -- This runs all the tests. For both members and leaders.
-`python3 gordon_360_tests_member.py` -- This runs the tests for members.
-`python3 gordon_360_tests_leader.py` -- This runs the tests for leaders.
+`pytest` -- This runs all the tests.
+`pytest test_gordon360_pytest.py -k '{name of def}'` -- This runs a specific test based on {name of def}.
+
 
 ### Manual Testing
 
 #### Running the Server Locally
 
-* Before you begin you will have to add the `secrets.config` file to the folder that you are working from. The file is located on the CS-RDSH-02 virtual machine in `C:\Users\Public\Public Documents\` Copy the file `secrets.config` to the same folder in your project that contains the `web.config` file; currently this is in `gordon-360-api\Gordon360`. This will allow you to run the server locally.
+* As you are probably using one of the Linux machines in the Computer Science lounge, you will need to be on the virtual machine to run the server locally. Follow the directions [here](RemoteDesktopToVM.md) to set up and connect to the virtual machine.
 
-* If you are using the virtual machine you will need to run the server on an unused port.  To change the port that the server is running, open the solution file in Visual Studio.  In the solution explorer, right click the name of the project (Gordon360) and select properties.  Choose the Web tab and change the Project Url to an unused port. Then click Create Virtual Directory. Press OK on the dialog box, and you're good to go!
+* If this is your first time on the virtual machine, you will need to clone the 360 code. You can use something like Git Bash or VS Code to do this.
 
-* You can then press the Start button in Visual Studio to run the server. It will open the web browser and (eventually) display an Error 403.14 - Forbidden. This is expected. You can now begin manually testing the API.
+* Before you open the gordon-360-api folder, you will have to add the `secrets.config` file to it. The file is located on the CS-RDSH-02 virtual machine in `C:\Users\Public\Public Documents\` (or `/c/users/public/documents\` when in git-bash). Copy the file `secrets.config` to the same folder in your project that contains the `web.config` file; currently, this is in `gordon-360-api\Gordon360`. This file is a sort of keyring for the server to authorize itself at various points.
+
+* Now, to open the api, look for the desktop app Visual Studio 2017, which has a purple Visual Studio icon. You will have to log in to a Microsoft account, which can just be the account Gordon made for you. Once you log in, go to `File > Open > Project/Solution`. Then, select and Open the file `gordon-360-api/Gordon360.sln`.
+
+* There is a little configuration you must yet do before running the server. In the solution explorer on the right, right click the name of the project (Gordon360) and select properties.  From the tabs on the left, choose the Web tab and change the Project Url to an unused port. For example, if you chose port 5555, change Project Url to `"http://localhost:5555"`. Then click Create Virtual Directory. Press OK on the dialog box, and you all configured!
+
+* Now, you can press the Start button in Visual Studio to run the server (it is a green play button in the top middle of the tool bar). It will open the web browser and, after a period that may last half an hour or more, display an Error 403.14 - Forbidden. This is expected. You can now begin manually testing the API.
+
+* If you want to test the UI, keep the server running and follow the directions found [here](https://github.com/gordon-cs/gordon-360-ui/blob/develop/README.md#connect-local-backend-to-react) under "Connect Local Backend to React".
 
 #### Manually Testing the API
 
@@ -710,7 +869,6 @@ To manually test the API, use an API development/testing app like [Postman](http
 	| `Authorization` | `Bearer ` _access-token_            |
 
 	* Click the blue "Send" button
-
 
 ## Troubleshooting
 

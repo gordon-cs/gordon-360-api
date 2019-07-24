@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Security.Claims;
 using System.Linq;
 using System.Web.Http;
+using System.ServiceModel;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
 using Gordon360.Services;
@@ -8,7 +10,6 @@ using Gordon360.Exceptions.CustomExceptions;
 
 namespace Gordon360.ApiControllers
 {
-    [Authorize]
     [CustomExceptionFilter]
     [RoutePrefix("api/events")]
     public class EventController : ApiController
@@ -20,10 +21,15 @@ namespace Gordon360.ApiControllers
             _eventService = new EventService(unitOfWork);
         }
         
+        [Authorize]
         [HttpGet]
-        [Route("chapel/{user_name}")]
-        public IHttpActionResult GetAllForStudent(string user_name)
+        [Route("chapel/")]
+        public IHttpActionResult GetAllForStudent()
         {
+            //get token data from context, username is the username of current logged in person
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var user_name = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(user_name))
             {
                 string errors = "";
@@ -48,10 +54,14 @@ namespace Gordon360.ApiControllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpGet]
-        [Route("chapel/{user_name}/{term}")]
-        public IHttpActionResult GetEventsForStudentByTerm(string user_name, string term)
+        [Route("chapel/{term}")]
+        public IHttpActionResult GetEventsForStudentByTerm(string term)
         {
+            //get token data from context, username is the username of current logged in person
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var user_name = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(user_name) || string.IsNullOrWhiteSpace(term))
             {
                 string errors = "";
@@ -76,6 +86,7 @@ namespace Gordon360.ApiControllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpGet]
         [Route("25Live/type/{Type_ID}")]
         public IHttpActionResult GetEventsByType(string Type_ID)
@@ -108,6 +119,7 @@ namespace Gordon360.ApiControllers
 
         }
 
+        [Authorize]
         [HttpGet]
         [Route("25Live/{Event_ID}")]
         public IHttpActionResult GetEventsByID(string Event_ID)
@@ -143,6 +155,7 @@ namespace Gordon360.ApiControllers
         /// This makes use of our cached request to 25Live, which stores AllEvents
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         [HttpGet]
         [Route("25Live/All")]
         public IHttpActionResult GetAllEvents()
@@ -174,6 +187,7 @@ namespace Gordon360.ApiControllers
 
         }
 
+        [Authorize]
         [HttpGet]
         [Route("25Live/CLAW")]
         public IHttpActionResult GetAllChapelEvents()
@@ -205,6 +219,37 @@ namespace Gordon360.ApiControllers
             return Ok(result);
 
         }
+
+        [HttpGet]
+        [Route("25Live/Public")]
+        public IHttpActionResult GetAllPublicEvents()
+        {
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            var result = _eventService.GetAllEvents(Static.Data.Data.AllEvents).Where(x => x.Requirement_Id == "3");
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+        
 
     }
 

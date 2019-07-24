@@ -209,16 +209,8 @@
     <Compile Include="ApiControllers\ContentManagementController.cs" />
     <Compile Include="ApiControllers\EmailsController.cs" />
     <Compile Include="ApiControllers\MembershipRequestController.cs" />
-    <Compile Include="ApiControllers\ProfilesController.cs" />
-    <Compile Include="ApiControllers\RolesController.cs" />
-    <Compile Include="ApiControllers\SessionsController.cs" />
-    <Compile Include="ApiControllers\ActivitiesController.cs" />
-    <Compile Include="ApiControllers\MembershipsController.cs" />
-    <Compile Include="AuthorizationFilters\StateYourBusiness.cs" />
-    <Compile Include="AuthorizationServer\CustomJWTFormat.cs" />
-    <Compile Include="AuthorizationServer\TokenIssuer.cs" />
-    <Compile Include="Exceptions\CustomExceptions.cs" />
-    <Compile Include="Exceptions\CustomExcpetionFilter.cs" />
+    <Compile Include="ApiControllers\MyScheduleController.cs" />
+    <Compile Include="ApiControllers\ScheduleControlController.cs" />
     <Compile Include="Models\ACCOUNT.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -288,7 +280,13 @@
     <Compile Include="Models\DiningInfo.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Dining_Mealplans.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Dining_Meal_Choice_Desc.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Dining_Meal_Plan_Id_Mapping.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Dining_Student_Meal_Choice.cs">
@@ -333,8 +331,12 @@
     <Compile Include="Models\MEMBERSHIPS_PER_STUDENT_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Metadata.cs" />
-    <Compile Include="Models\ModelPartialClasses.cs" />
+    <Compile Include="Models\MYSCHEDULE.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\MYSCHEDULE_BY_ID_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\PART_DEF.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -356,15 +358,51 @@
     <Compile Include="Models\RoomAssign.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Schedule_Control.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\sp_helpdiagramdefinition_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\sp_helpdiagrams_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Student.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\StudentEmployment.cs" />
     <Compile Include="Models\STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs" />
+    <Compile Include="Models\sysdiagrams.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Transit_Requests.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Transit_Rides.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\VICTORY_PROMISE_BY_STUDENT_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModels\MyScheduleViewModel.cs" />
+    <Compile Include="ApiControllers\ProfilesController.cs" />
+    <Compile Include="ApiControllers\ScheduleController.cs" />
+    <Compile Include="ApiControllers\VersionController.cs" />
+    <Compile Include="ApiControllers\SessionsController.cs" />
+    <Compile Include="ApiControllers\ActivitiesController.cs" />
+    <Compile Include="ApiControllers\MembershipsController.cs" />
+    <Compile Include="ApiControllers\StudentEmploymentController.cs" />
+    <Compile Include="ApiControllers\VictoryPromiseController.cs" />
+    <Compile Include="AuthorizationFilters\StateYourBusiness.cs" />
+    <Compile Include="AuthorizationServer\CustomJWTFormat.cs" />
+    <Compile Include="AuthorizationServer\TokenIssuer.cs" />
+    <Compile Include="Exceptions\CustomExceptions.cs" />
+    <Compile Include="Exceptions\CustomExcpetionFilter.cs" />
+    <Compile Include="Models\Metadata.cs" />
+    <Compile Include="Models\ModelPartialClasses.cs" />
     <Compile Include="Models\ViewModels\BasicInfoViewModel.cs" />
     <Compile Include="Models\ViewModels\AccountViewModel.cs" />
     <Compile Include="Models\ViewModels\ActivityInfoViewModel.cs" />
@@ -388,9 +426,12 @@
     <Compile Include="Models\ViewModels\PublicAlumniProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\PublicFacultyStaffProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\PublicStudentProfileViewModel.cs" />
+    <Compile Include="Models\ViewModels\ScheduleViewModel.cs" />
+    <Compile Include="Models\ViewModels\StudentEmploymentViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\SessionViewModel.cs" />
     <Compile Include="Models\ViewModels\SliderViewModel.cs" />
+    <Compile Include="Models\ViewModels\VictoryPromiseViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\CustomMultiPartFormDataStreamProvider.cs" />
     <Compile Include="Repositories\GenericRepository.cs" />
@@ -406,14 +447,18 @@
     <Compile Include="Services\ComplexQueries\RawSqlQuery.cs" />
     <Compile Include="Services\ContentManagementService.cs" />
     <Compile Include="Services\EmailService.cs" />
+    <Compile Include="Services\MyScheduleService.cs" />
     <Compile Include="Services\ProfileService.cs" />
     <Compile Include="Services\RoleCheckingService.cs" />
+    <Compile Include="Services\ScheduleControlService.cs" />
+    <Compile Include="Services\ScheduleService.cs" />
+    <Compile Include="Services\StudentEmploymentService.cs" />
+    <Compile Include="Services\VictoryPromiseService.cs" />
     <Compile Include="Static Classes\Data.cs" />
     <Compile Include="Static Classes\Helpers.cs" />
     <Compile Include="Services\JenzibarActivityService.cs" />
     <Compile Include="Services\MembershipRequestService.cs" />
     <Compile Include="Services\MembershipService.cs" />
-    <Compile Include="Services\ParticipationService.cs" />
     <Compile Include="Services\ServiceInterfaces.cs" />
     <Compile Include="Services\SessionService.cs" />
     <Compile Include="Startup.cs" />
@@ -432,6 +477,9 @@
     <None Include="secrets.config">
       <SubType>Designer</SubType>
     </None>
+    <EmbeddedResource Include="version.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <Content Include="Models\CCT_DB_Models.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
@@ -462,8 +510,8 @@
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Properties\PublishProfiles\DEV.pubxml" />
     <None Include="Properties\PublishProfiles\PROD.pubxml" />
-    <Content Include="secrets.config" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -471,6 +519,9 @@
   <PropertyGroup>
     <StartupObject>
     </StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
@@ -487,8 +538,6 @@
           <DevelopmentServerPort>49645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost:6769</IISUrl>
-          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
-          <IISAppRootUrl>http://localhost:6769/</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
@@ -508,6 +557,19 @@
     <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
   </Target>
+  <PropertyGroup>
+    <PreBuildEvent>"C:\Program Files\Git\bin\git.exe" rev-parse --short HEAD &gt; %25tmp%25\hash.txt
+echo %25date%25 %25time%25 &gt; %25tmp%25\date.txt
+set /p hashvar=&lt;%25tmp%25\hash.txt
+set /p datevar=&lt;%25tmp%25\date.txt
+echo Git Hash: %25hashvar%25; Build Time: %25datevar%25 &gt; "$(ProjectDir)\version.txt"
+del %25tmp%25\hash.txt
+del %25tmp%25\date.txt</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

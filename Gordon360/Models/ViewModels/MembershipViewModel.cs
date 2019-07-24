@@ -21,6 +21,8 @@ namespace Gordon360.Models.ViewModels
         public DateTime StartDate { get; set; }
         public Nullable<DateTime> EndDate { get; set; }
         public string Description { get; set; }
+        public string ActivityType { get; set; }
+        public string ActivityTypeDescription { get; set; }
         public bool? Privacy { get; set; }
         public int AccountPrivate { get; set; }
 

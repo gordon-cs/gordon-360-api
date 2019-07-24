@@ -31,7 +31,7 @@ namespace Gordon360.Models.ViewModels
                 Barcode = a.barcode ?? "",
                 show_pic = a.show_pic,
                 ReadOnly = a.ReadOnly,
-                account_id = a.account_id
+                account_id = a.account_id,
             };
 
             return vm;

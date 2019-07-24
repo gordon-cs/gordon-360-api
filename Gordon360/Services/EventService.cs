@@ -47,7 +47,7 @@ namespace Gordon360.Services
         public string GetRoute(string EventID, string type)
         {
             // Get the current year
-            string year = Helpers.GetDay();
+            string year = Helpers.GetFirstEventDate();
             // Make an empty url string
             string requestUrl = "";
 
@@ -55,7 +55,7 @@ namespace Gordon360.Services
             if (EventID == "All")
             {
                 // Set our api route and fill in the event information we would like
-                requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=10+12+13+14+16+17+18+19+51+20+21+22+23+24+25+29+30+33&state=2&end_after=" + year + "0820&scope=extended";
+                requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=10+12+13+14+16+17+18+19+51+20+21+22+23+24+25+29+30+33&state=2&end_after=" + year + "&scope=extended";
             }
 
             // If the type is "s", then it is a single event request, "m" is multiple event IDs
@@ -81,7 +81,7 @@ namespace Gordon360.Services
                 {
                     EventID = EventID.Replace('$', '+');
                 }
-                requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=" + EventID + "&state=2&end_after=" + year + "0820&scope=extended";
+                requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=" + EventID + "&state=2&end_after=" + year + "&scope=extended";
             }
 
             return requestUrl;
