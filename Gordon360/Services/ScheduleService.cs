@@ -34,12 +34,23 @@ namespace Gordon360.Services
         public IEnumerable<ScheduleViewModel> GetScheduleStudent(string id)
         {
             var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
-            //var currentSessionCode = Helpers.GetCurrentSession().SessionCode;
-            var currentSessionCode = "201809";
+
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Schedule was not found." };
             }
+
+
+            var currentSessionCode = Helpers.GetCurrentSession().SessionCode;
+
+            // This is a test code for 2019 Summer. Next time you see this, delete this part
+            if (currentSessionCode == "201907")
+            {
+                currentSessionCode = "201909";
+            }
+
+
+
             var idInt = Int32.Parse(id);
             var idParam = new SqlParameter("@stu_num", idInt);
             var sessParam = new SqlParameter("@sess_cde", currentSessionCode);
@@ -58,7 +69,6 @@ namespace Gordon360.Services
         /// Fetch the schedule item whose id and session code is specified by the parameter
         /// </summary>
         /// <param name="id">The id of the instructor</param>
-        /// <param name="session">The session id</param>
         /// <returns>StudentScheduleViewModel if found, null if not found</returns>
         public IEnumerable<ScheduleViewModel> GetScheduleFaculty(string id)
         {
@@ -68,7 +78,14 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Schedule was not found." };
             }
-            var currentSessionCode = "201809";
+
+            var currentSessionCode = Helpers.GetCurrentSession().SessionCode;
+            // This is a test code for 2019 Summer. Next time you see this, delete this part
+            if (currentSessionCode == "201907")
+            {
+                currentSessionCode = "201909";
+            }
+
             //var idInt = Int32.Parse(id);
             var idParam = new SqlParameter("@instructor_id", id);
             var sessParam = new SqlParameter("@sess_cde", currentSessionCode);
