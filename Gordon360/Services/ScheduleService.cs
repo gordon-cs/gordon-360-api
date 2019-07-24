@@ -34,8 +34,15 @@ namespace Gordon360.Services
         public IEnumerable<ScheduleViewModel> GetScheduleStudent(string id)
         {
             var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Schedule was not found." };
+            }
+
+
             var currentSessionCode = Helpers.GetCurrentSession().SessionCode;
-            
+
             // This is a test code for 2019 Summer. Next time you see this, delete this part
             if (currentSessionCode == "201907")
             {
@@ -43,10 +50,7 @@ namespace Gordon360.Services
             }
 
 
-            if (query == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Schedule was not found." };
-            }
+
             var idInt = Int32.Parse(id);
             var idParam = new SqlParameter("@stu_num", idInt);
             var sessParam = new SqlParameter("@sess_cde", currentSessionCode);
@@ -75,6 +79,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Schedule was not found." };
             }
 
+            var currentSessionCode = Helpers.GetCurrentSession().SessionCode;
             // This is a test code for 2019 Summer. Next time you see this, delete this part
             if (currentSessionCode == "201907")
             {
