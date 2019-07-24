@@ -41,8 +41,8 @@ FILE_PATH = '\\gotrain\pref_photos'
 FILE_NAME = 'profile.jpg'
 
 # API 
-hostURL = 'https://360ApiTrain.gordon.edu/'
-#hostURL = 'http://localhost:9999/'
+#hostURL = 'https://360ApiTrain.gordon.edu/'
+hostURL = 'http://localhost:7777/'
 
 # Constants
 LEADERSHIP_POSITIONS = ['CAPT','CODIR','CORD','DIREC','PRES','VICEC','VICEP']
@@ -1618,16 +1618,14 @@ class Test_allMembershipRequestTest(testCase):
 
 #    Verify that a regular member cannot get the membership requests of somone else.
 #    Endpoint -- api/requests/student/:id
-#    Expected Status Code -- 401 Unauthorized
+#    Expected Status Code -- 404 Not Found
 #    Expected Response Body -- Empty
     def test_not_get_membership_requests_for_someone_else(self):
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/requests/student/' + str(valid_id_number)
         response = api.get(self.session, self.url)
-        if not response.status_code == 401:
-            pytest.fail('Expected 401 Unauthorized, got {0}.'.format(response.status_code))
-        if response.text:
-            pytest.fail('Expected empty response bodty, got {0}.'.format(response.text))
+        if not response.status_code == 404:
+            pytest.fail('Expected 404 Not Found, got {0}.'.format(response.status_code))
 
 #    Verify that a regular member can't access memberships requests for activity.
 #    Endpoint -- api/requests/activity/:id
@@ -1785,36 +1783,15 @@ class Test_allMembershipRequestTest(testCase):
 
 #    Verify that an activity leader cannot get the membership requests of someone else.
 #    Endpoint -- api/requests/student/:id
-#    Expected Status Code -- 401 Unauthorized
+#    Expected Status Code -- 404 Not Found
 #    Expected Response Body -- Empty
 
     def test_get_membership_requests_for_someone_else___activity_leader(self):
         self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/requests/student/' + str(valid_id_number)
         response = api.get(self.session, self.url)
-        if not response.status_code == 401:
-            pytest.fail('Expected 401 Unauthorized, got {0}.'.format(response.status_code))
-        if response.text:
-            pytest.fail('Expected empty response bodty, got {0}.'.format(response.text))
-
-#    Verify that an activity leader can retrieve all requests belonging to them.
-#    Endpoint -- api/requests/student/:id
-#    Expected Status Code -- 200 OK
-#    Expected Response Body -- List of json objects representing the membership requests for a student.
-
-    def test_get_membership_requests_for_someone_else(self):
-        self.session = self.createAuthorizedSession(leader_username, leader_password)
-        self.url = hostURL + 'api/requests/student/' + str(valid_id_number)
-        response = api.get(self.session, self.url)
-        if not response.status_code == 200:
-            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
-        try:
-            #pytest.fail(response.json()[0]['IDNumber'])
-            assert response.json()[0]['IDNumber'] == valid_id_number
-        except ValueError:
-            pytest.fail('Expected Json response body, got {0}.'.format(response.text))
-        if not (type(response.json()) is list):
-            pytest.fail('Expected list in response body, got {0}.'.format(response.json()))
+        if not response.status_code == 404:
+            pytest.fail('Expected 404 Not Found, got {0}.'.format(response.status_code))
 
 
 #    Verify that we can create a membership request as leader.
