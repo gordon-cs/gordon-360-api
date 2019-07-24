@@ -17,9 +17,9 @@ namespace Gordon360.Static.Names
         public const string ACTIVITY_STATUS = "The open or closed status of an activity";
         public const string ChapelEvent = "The info of chapel events";
         public const string DINING = "Info related to dining service";
+        public const string ERROR_LOG = "The error log resource";
         public const string MYSCHEDULE = "A custom schedule resource";
         public const string SCHEDULE = "A course schedule resource";
-
 
         // Partial resources, to be targetted by Operation.READ_PARTIAL
         public const string MEMBERSHIP_REQUEST_BY_ACTIVITY = "Membership Request Resources associated with an activity";
@@ -80,10 +80,10 @@ namespace Gordon360.Static.Names
     public static class Defaults
     {
         public const string DEFAULT_ACTIVITY_IMAGE_PATH = "https://360api.gordon.edu/browseable/uploads/Default/activityImage.png";
-        public const string DEFAULT_PROFILE_IMAGE_PATH = "https://360apitrain.gordon.edu/browseable/profile/Default/profile.png";
-        public const string DEFAULT_PREF_IMAGE_PATH = "\\\\gotrain\\pref_photos\\";
+        public const string DEFAULT_PROFILE_IMAGE_PATH = "https://360api.gordon.edu/browseable/profile/Default/profile.png";
+        public const string DEFAULT_PREF_IMAGE_PATH = "\\\\go\\pref_photos\\";
         public const string DEFAULT_IMAGE_PATH = "\\\\go\\photos\\";
-        public const string DEFAULT_ID_SUBMISSION_PATH = "\\\\360api\\ID_Photo_Submissions\\";
+        public const string DEFAULT_ID_SUBMISSION_PATH = "\\\\go\\ID_Photo_Submissions\\";
         public const string DATABASE_IMAGE_PATH = "f:\\inetpub\\pref_photos\\";
 
     }

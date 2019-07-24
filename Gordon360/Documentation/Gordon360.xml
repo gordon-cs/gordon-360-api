@@ -102,6 +102,48 @@
             <param name="id">The identifier for the admin to be deleted</param>
             <remarks>Calls the server to make a call and remove the given admin from the database</remarks>
         </member>
+        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetMajors">
+            <summary>
+            Return a list majors.
+            </summary>
+            <returns> All majors</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetMinors">
+            <summary>
+            Return a list minors.
+            </summary>
+            <returns> All minors</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetHalls">
+            <summary>
+            Return a list minors.
+            </summary>
+            <returns> All minors</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetStates">
+            <summary>
+            Return a list states.
+            </summary>
+            <returns> All states</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetCountries">
+            <summary>
+            Return a list countries.
+            </summary>
+            <returns> All countries</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetDepartments">
+            <summary>
+            Return a list departments.
+            </summary>
+            <returns> All departments</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetBuildings">
+            <summary>
+            Return a list buildings.
+            </summary>
+            <returns> All buildings</returns>
+        </member>
         <member name="M:Gordon360.ApiControllers.DiningController.Get">
             <summary>
              Gets information about student's dining plan and balance
@@ -109,6 +151,18 @@
             <param name="id">The ID of the student</param>
             <param name="sessionCode">Current session code</param>
             <returns>A DiningInfo object</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.ErrorLogController.Post(System.String)">
+            <summary>Create a new error log item to be added to database</summary>
+            <param name="error_message">The error message containing all required and relevant information</param>
+            <returns></returns>
+            <remarks>Posts a new message to the service to be added into the database</remarks>
+        </member>
+        <member name="M:Gordon360.ApiControllers.ErrorLogController.Post(Gordon360.Models.ERROR_LOG)">
+            <summary>Create a new error log item to be added to database</summary>
+            <param name="error_log">The error log containing the ERROR_TIME, and the LOG_MESSAGE</param>
+            <returns></returns>
+            <remarks>Posts a new error_log to the server to be added into the database. Useful if you want to input the datetime in the front end for greater accuracy</remarks>
         </member>
         <member name="M:Gordon360.ApiControllers.EventController.GetAllEvents">
             <summary>
@@ -186,15 +240,15 @@
         </member>
         <member name="M:Gordon360.Controllers.Api.MyScheduleController.Get">
             <summary>
-             Gets all myschedule objects for a user
+             Gets all custom events for a user
             </summary>
-            <returns>A IEnumerable of myschedule objects</returns>
+            <returns>A IEnumerable of custom events</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.MyScheduleController.GetByEventId(System.String)">
             <summary>
-             Gets specific myschedule object for a user
+             Gets specific custom event for a user
             </summary>
-            <returns>The requested myschedule object</returns>
+            <returns>The requested custom event</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.MyScheduleController.Get(System.String)">
             <summary>
@@ -222,12 +276,14 @@
         <member name="M:Gordon360.Controllers.Api.ScheduleControlController.Get">
             <summary>
             Get schedule information of logged in user
+            Info one gets: privacy, time last updated, description, and Gordon ID 
             </summary>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ScheduleControlController.Get(System.String)">
             <summary>
             Get schedule information of specific user
+            Info one gets: privacy, time last updated, description, and Gordon ID 
             </summary>
             <param name="username">username</param>
             <returns></returns>
@@ -244,12 +300,6 @@
             Update schedule description
             </summary>
             <param name="value">New description</param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.ScheduleControlController.UpdateModifiedTimeStamp">
-            <summary>
-            Update timestamp of last modified schedule
-            </summary>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.Get">
@@ -968,6 +1018,25 @@
             <param name="sessionCode">Current Session Code</param>
             <returns></returns>
         </member>
+        <member name="T:Gordon360.Services.ErrorLogService">
+            <summary>
+            Service Class that facilitates data transactions between the ErrorLogController and the ERROR_LOG database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.ErrorLogService.Add(Gordon360.Models.ERROR_LOG)">
+            <summary>
+            Adds a new error log to storage.
+            </summary>
+            <param name="error_log">The error log to be added</param>
+            <returns>The newly added error_log object</returns>
+        </member>
+        <member name="M:Gordon360.Services.ErrorLogService.Log(System.String)">
+            <summary>
+            Adds a new error log to storage, after creating the timestamp.
+            </summary>
+            <param name="error_message">The error message for the error log to be added</param>
+            <returns>The newly added error_log object</returns>
+        </member>
         <member name="T:Gordon360.Services.EventService">
             <summary>
             Service that allows for event control
@@ -1148,7 +1217,7 @@
             Adds a new mySchedule record to storage.
             </summary>
             <param name="mySchedule">The membership to be added</param>
-            <returns>The newly added mySchedule object</returns>
+            <returns>The newly added custom event</returns>
         </member>
         <member name="M:Gordon360.Services.MyScheduleService.Delete(System.String,System.String)">
             <summary>
