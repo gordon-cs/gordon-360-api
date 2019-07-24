@@ -195,13 +195,6 @@
             <param name="id">The activity code</param>
             <returns>All membership requests associated with the activity</returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.MembershipRequestController.GetMembershipsRequestsForStudent(System.String)">
-            <summary>
-            Gets the memberships requests for the specified student
-            </summary>
-            <param name="id">The student id</param>
-            <returns>All membership requests associated with the student</returns>
-        </member>
         <member name="M:Gordon360.Controllers.Api.MembershipRequestController.Post(Gordon360.Models.REQUEST)">
             <summary>
             Creates a new membership request
@@ -1349,7 +1342,6 @@
             Fetch the schedule item whose id and session code is specified by the parameter
             </summary>
             <param name="id">The id of the instructor</param>
-            <param name="session">The session id</param>
             <returns>StudentScheduleViewModel if found, null if not found</returns>
         </member>
         <member name="M:Gordon360.Services.StudentEmploymentService.GetEmployment(System.String)">
