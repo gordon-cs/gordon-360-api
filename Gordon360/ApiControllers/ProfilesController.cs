@@ -323,16 +323,6 @@ namespace Gordon360.Controllers.Api
                 return NotFound();
             }
         }
-        /// <summary>Get college role of a user</summary>
-        /// <param name="username"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("role/{username}")]
-        public IHttpActionResult getRole(string username)
-        {
-            var role  = _roleCheckingService.getCollegeRole(username);
-            return Ok(role);
-        }
 
         /// <summary>Get the profile image of currently logged in user</summary>
         /// <returns></returns>
@@ -637,6 +627,7 @@ namespace Gordon360.Controllers.Api
             string root = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_ID_SUBMISSION_PATH"];
             var fileName = username + "_" + _accountService.GetAccountByUsername(username).account_id + ".jpg";
             var provider = new CustomMultipartFormDataStreamProvider(root);
+            JObject result = new JObject();
 
             if (!Request.Content.IsMimeMultipartContent())
             {
@@ -664,15 +655,24 @@ namespace Gordon360.Controllers.Api
 
                     FileInfo f1 = new FileInfo(fileData.LocalFileName);
                     long size1 = f1.Length;
+<<<<<<< HEAD
+=======
+                    result.Add("inputlength", f1.Length);
+>>>>>>> develop
 
                     System.IO.File.Move(fileData.LocalFileName, Path.Combine(di.FullName, fileName)); //upload
 
                     FileInfo f2 = new FileInfo(Path.Combine(di.FullName, fileName));
                     long size2 = f2.Length;
+<<<<<<< HEAD
+=======
+                    result.Add("outputlength", f2.Length);
+>>>>>>> develop
 
 
                     if (size1 < 3000 || size2 < 3000)
                     {
+<<<<<<< HEAD
                         return BadRequest("The ID image was lost in transit. Resubmission should attempt automatically.");
                     }
                 }
@@ -681,6 +681,18 @@ namespace Gordon360.Controllers.Api
             catch (System.Exception e)
             {
                 return InternalServerError(e);
+=======
+                        return BadRequest("This image was lost in transit. Resubmit, fooool!");
+                    }
+                }
+                //return Request.CreateResponse(HttpStatusCode.OK);
+                return Ok(result);
+            }
+            catch (System.Exception e)
+            {
+                //return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error uploading the ID photo.");
+                return Ok(result);
+>>>>>>> develop
             }
         }
 
@@ -777,6 +789,7 @@ namespace Gordon360.Controllers.Api
             return Ok();
 
         }
+
         /// <summary>
         /// Update privacy of profile image
         /// </summary>

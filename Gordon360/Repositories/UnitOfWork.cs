@@ -17,9 +17,14 @@ namespace Gordon360.Repositories
         private IRepository<CM_SESSION_MSTR> _SessionRepository;
         private IRepository<JNZB_ACTIVITIES> _JenzibarActvityRepository;
         private IRepository<MEMBERSHIP> _MembershipRepository;
+        private IRepository<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> _FacultyScheduleRepository;
+        private IRepository<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> _StudentScheduleRepository;
+        private IRepository<MYSCHEDULE> _MyScheduleRepository;
         private IRepository<PART_DEF> _ParticipationRepository;
         private IRepository<SUPERVISOR> _SupervisorRepository;
         private IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> _ActivityPerSessionRepository;
+        private IRepository<VICTORY_PROMISE_BY_STUDENT_ID_Result> _VictoryPromiseByStudentIDRepository;
+        private IRepository<STUDENT_JOBS_PER_ID_NUM_Result> _StudentEmploymentByStudentIDRepository;
         private IRepository<REQUEST> _MembershipRequestRepository;
         private IRepository<ACT_INFO> _ActivityInfoRepository;
         private IRepository<ADMIN> _AdministratorRepository;
@@ -27,7 +32,11 @@ namespace Gordon360.Repositories
         private IRepository<CUSTOM_PROFILE> _ProfileCustomRepository;
         private IRepository<ChapelEvent> _ChapelEventRepository;
         private IRepository<DiningInfo> _DiningInfoRepository;
+<<<<<<< HEAD
         private IRepository<ERROR_LOG> _ErrorLogRepository;
+=======
+        private IRepository<Schedule_Control> _ScheduleControlRepository;
+>>>>>>> develop
 
         private CCTEntities1 _context;
 
@@ -67,6 +76,19 @@ namespace Gordon360.Repositories
         {
             get { return _MembershipRepository ?? (_MembershipRepository = new GenericRepository<MEMBERSHIP>(_context)); }
         }
+        public IRepository<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> StudentScheduleRepository
+        {
+            get { return _StudentScheduleRepository ?? (_StudentScheduleRepository = new GenericRepository<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result>(_context)); }
+        }
+        public IRepository<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> FacultyScheduleRepository
+        {
+            get { return _FacultyScheduleRepository ?? (_FacultyScheduleRepository = new GenericRepository<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result>(_context)); }
+        }
+        public IRepository<MYSCHEDULE> MyScheduleRepository
+        {
+            get { return _MyScheduleRepository ?? (_MyScheduleRepository = new GenericRepository<MYSCHEDULE>(_context)); }
+        }
+
         public IRepository<PART_DEF> ParticipationRepository
         {
             get { return _ParticipationRepository ?? (_ParticipationRepository = new GenericRepository<PART_DEF>(_context)); }
@@ -74,6 +96,10 @@ namespace Gordon360.Repositories
         public IRepository<SUPERVISOR> SupervisorRepository
         {
             get { return _SupervisorRepository ?? (_SupervisorRepository = new GenericRepository<SUPERVISOR>(_context)); }
+        }
+        public IRepository<Schedule_Control> ScheduleControlRepository
+        {
+            get { return _ScheduleControlRepository ?? (_ScheduleControlRepository = new GenericRepository<Schedule_Control>(_context)); }
         }
 
         IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> IUnitOfWork.ActivityPerSessionRepository
@@ -83,7 +109,20 @@ namespace Gordon360.Repositories
                  return _ActivityPerSessionRepository ?? (_ActivityPerSessionRepository = new GenericRepository<ACTIVE_CLUBS_PER_SESS_ID_Result>(_context)); 
             }
         }
-
+        IRepository<VICTORY_PROMISE_BY_STUDENT_ID_Result> IUnitOfWork.VictoryPromiseByStudentIDRepository
+        {
+            get
+            {
+                return _VictoryPromiseByStudentIDRepository ?? (_VictoryPromiseByStudentIDRepository = new GenericRepository<VICTORY_PROMISE_BY_STUDENT_ID_Result>(_context));
+            }
+        }
+        IRepository<STUDENT_JOBS_PER_ID_NUM_Result> IUnitOfWork.StudentEmploymentByStudentIDRepository
+        {
+            get
+            {
+                return _StudentEmploymentByStudentIDRepository ?? (_StudentEmploymentByStudentIDRepository = new GenericRepository<STUDENT_JOBS_PER_ID_NUM_Result>(_context));
+            }
+        }
         public IRepository<REQUEST> MembershipRequestRepository
         {
             get { return _MembershipRequestRepository ?? (_MembershipRequestRepository = new GenericRepository<REQUEST>(_context)); }

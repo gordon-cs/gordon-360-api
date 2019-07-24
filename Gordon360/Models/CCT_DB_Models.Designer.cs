@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿// T4 code generation is enabled for model 'C:\Users\Evan.Platzer\gordon-360-api\Gordon360\Models\CCT_DB_Models.edmx'. 
+=======
+﻿// T4 code generation is enabled for model 'C:\Users\Yerang.Lim\gordon-360-api\Gordon360\Models\CCT_DB_Models.edmx'. 
+>>>>>>> develop
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.

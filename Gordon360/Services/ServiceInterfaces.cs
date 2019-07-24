@@ -68,6 +68,14 @@ namespace Gordon360.Services
         void ResetActivityImage(string id);
         void TogglePrivacy(string id, bool p);
     }
+    public interface IVictoryPromiseService
+    {
+        IEnumerable<VictoryPromiseViewModel> GetVPScores(string id);
+    }
+    public interface IStudentEmploymentService
+    {
+        IEnumerable<StudentEmploymentViewModel> GetEmployment(string id);
+    }
 
     public interface IActivityInfoService
     {
@@ -119,9 +127,9 @@ namespace Gordon360.Services
         IEnumerable<JNZB_ACTIVITIES> GetAll();
     }
 
+    
     public interface IMembershipService
     {
-        MembershipViewModel Get(int id);
         IEnumerable<MembershipViewModel> GetLeaderMembershipsForActivity(string id);
         IEnumerable<MembershipViewModel> GetAdvisorMembershipsForActivity(string id);
         IEnumerable<MembershipViewModel> GetGroupAdminMembershipsForActivity(string id);
@@ -158,7 +166,28 @@ namespace Gordon360.Services
         REQUEST DenyRequest(int id);
         REQUEST Delete(int id);
     }
+    public interface IScheduleService
+    {
+        IEnumerable<ScheduleViewModel> GetScheduleStudent(string id);
+        IEnumerable<ScheduleViewModel> GetScheduleFaculty(string id);
+    }
 
+    public interface IScheduleControlService
+    {
+        void UpdateSchedulePrivacy(string id, string value);
+        void UpdateDescription(string id, string value);
+        void UpdateModifiedTimeStamp(string id, DateTime value);
+    }
+
+
+        public interface IMyScheduleService
+    {
+        MYSCHEDULE GetForID(string event_id, string gordon_id);
+        IEnumerable<MYSCHEDULE> GetAllForID(string gordon_id);
+        MYSCHEDULE Add(MYSCHEDULE myschedule);
+        MYSCHEDULE Update(MYSCHEDULE myschedule);
+        MYSCHEDULE Delete(string event_id, string gordon_id);
+    }
     public interface IContentManagementService
     {
         IEnumerable<SliderViewModel> GetSliderContent();
