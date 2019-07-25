@@ -14,6 +14,10 @@ def postAsJson(session, url, resource):
     response = session.post(url, json=resource)
     return response
 
+def postAsFormData(session, url, resource):
+    response = session.post(url,json=resource)
+    return response
+
 def put(session, url, resource):
     response = session.put(url, resource)
     return response

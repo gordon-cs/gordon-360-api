@@ -40,8 +40,6 @@ namespace Gordon360.Models.ViewModels
                 StartDate = m.BEGIN_DTE, 
                 EndDate = m.END_DTE,
                 Description = m.COMMENT_TXT ?? "", // For Null comments
-                ActivityType = m.ACT_TYPE,
-                ActivityDescription = m.ACT_TYPE_DESC,
                 Privacy = m.PRIVACY ?? false,
             };
 

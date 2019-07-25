@@ -32,9 +32,9 @@ Dive in.
     - [Sessions](#sessions)
     - [Dining](#dining)    
     - [Student Employment](#student-employment)
-    - [Schedule] (#schedule)
-    - [MySchedule] (#myschedule)
-    - [Schedule Control] (#schedule-control)
+    - [Schedule](#schedule)
+    - [MySchedule](#my-schedule)
+    - [ScheduleControl](#schedule-control)
     - [Victory Promise](#victory-promise)
 - [API Testing](#api-testing)
     - [Introduction](#introduction)
@@ -742,7 +742,7 @@ What is it? Resource that represents a course schedule of user.
 
 `api/schedule/:username` Get all schedule objects of a user with username `username` as a parameter.
 
-### MySchedule
+### My Schedule
 What is it? Resource that represents a customized schedule of user.
 
 ##### GET
@@ -808,6 +808,8 @@ A test suite is available at `Tests/ApiEndpoints` to exercise the different endp
 
 Clone the project from the github site:
 `git clone https://github.com/gordon-cs/gordon-360-api.git`
+
+Copy credentials.py into gordon-360-api/Tests/ApiEndpoints/. The file is located on the CS-RDSH-02 virtual machine in `C:\Users\Public\Public Documents\` (or `/c/users/public/documents\` when in git-bash). It is the same location where secrets.config is located. 
 
 Navigate to the API Tests folder:
 `cd gordon-360-api/Tests/ApiEndpoints/`

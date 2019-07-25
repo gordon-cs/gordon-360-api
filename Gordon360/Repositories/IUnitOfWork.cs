@@ -26,6 +26,7 @@ namespace Gordon360.Repositories
         IRepository<CUSTOM_PROFILE> ProfileCustomRepository { get; }
         IRepository<ChapelEvent> ChapelEventRepository { get; }
         IRepository<DiningInfo> DiningInfoRepository { get; }
+        IRepository<ERROR_LOG> ErrorLogRepository { get; }
         IRepository<Schedule_Control> ScheduleControlRepository { get; }
 
         // Note -- Only use this repository to call SQL Stored Procedures
