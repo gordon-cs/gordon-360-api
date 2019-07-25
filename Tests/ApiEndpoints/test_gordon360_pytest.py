@@ -52,7 +52,7 @@ REQUEST_STATUS_PENDING = 'Pending'
 # # # # # # # # #
 
 username = '360.studenttest'
-password = 'Gordon16'
+password = 'Proverbs17'
 my_id_number = 999999097
 grant_payload = { 'username':username, 'password':password, 'grant_type':'password' }
 
@@ -307,6 +307,8 @@ class Test_allScheduleTest(testCase):
 # # # # # # # # # 
 # SCHEDULE TESTS #
 # # # # # # # # # 
+
+#    IMPORTANT: Schedule tests do not work yet
 
 #    Get all schedule objects of the currently logged in user.
 #    Endpoint --  api/schedule/:username
