@@ -1,6 +1,7 @@
 ﻿using Owin;
 using Microsoft.Owin;
 using System.Web.Http;
+using System.Net.Http.Headers;
 using Microsoft.Owin.Security.OAuth;
 using Microsoft.Owin.Security.Jwt;
 using System;
@@ -68,6 +69,7 @@ namespace Gordon360
             // Configure the options for the WebApi Component.
             HttpConfiguration config = new HttpConfiguration();
             config.MapHttpAttributeRoutes();
+            config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/plain"));
             appBuilder.UseWebApi(config);
         }
 

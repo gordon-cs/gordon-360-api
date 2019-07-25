@@ -24,8 +24,6 @@ namespace Gordon360.Models
         public string COMMENT_TXT { get; set; }
         public string USER_NAME { get; set; }
         public string JOB_NAME { get; set; }
-        public string ACT_TYPE { get; set; }
-        public string ACT_TYPE_DESC { get; set; }
         public Nullable<System.DateTime> JOB_TIME { get; set; }
         public Nullable<bool> GRP_ADMIN { get; set; }
         public Nullable<bool> PRIVACY { get; set; }

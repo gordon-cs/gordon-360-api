@@ -202,7 +202,9 @@
   <ItemGroup>
     <Compile Include="ApiControllers\AccountsController.cs" />
     <Compile Include="ApiControllers\AdminsController.cs" />
+    <Compile Include="ApiControllers\AdvancedSearchController.cs" />
     <Compile Include="ApiControllers\DiningController.cs" />
+    <Compile Include="ApiControllers\ErrorLogController.cs" />
     <Compile Include="ApiControllers\EventController.cs" />
     <Compile Include="ApiControllers\ContentManagementController.cs" />
     <Compile Include="ApiControllers\EmailsController.cs" />
@@ -368,8 +370,10 @@
     <Compile Include="Models\Student.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs" />
     <Compile Include="Models\StudentEmployment.cs" />
+    <Compile Include="Models\STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs" />
     <Compile Include="Models\sysdiagrams.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
@@ -408,9 +412,9 @@
     <Compile Include="Models\ViewModels\DiningTableViewModel.cs" />
     <Compile Include="Models\ViewModels\DiningViewModel.cs" />
     <Compile Include="Models\ViewModels\EmailContentViewModel.cs" />
-    <Compile Include="Models\ViewModels\EventViewModel.cs" />
     <Compile Include="Models\ViewModels\ChapelEventViewModel.cs" />
     <Compile Include="Models\ViewModels\EmailViewModel.cs" />
+    <Compile Include="Models\ViewModels\EventViewModel.cs" />
     <Compile Include="Models\ViewModels\ExtensionMethods\EventViewModelExtension.cs" />
     <Compile Include="Models\ViewModels\FacultyStaffProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\JenzibarActivitiesViewModel.cs" />
@@ -438,6 +442,7 @@
     <Compile Include="Services\ActivityService.cs" />
     <Compile Include="Services\AdministratorService.cs" />
     <Compile Include="Services\DiningService.cs" />
+    <Compile Include="Services\ErrorLogService.cs" />
     <Compile Include="Services\EventService.cs" />
     <Compile Include="Services\ComplexQueries\RawSqlQuery.cs" />
     <Compile Include="Services\ContentManagementService.cs" />
@@ -532,7 +537,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:9000</IISUrl>
+          <IISUrl>http://localhost:6769</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
