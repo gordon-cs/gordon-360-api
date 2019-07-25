@@ -224,14 +224,11 @@ namespace Gordon360.AuthorizationFilters
                             return true;
                         return false;
                     }
-                // No one except super admin should be able to see all the membership requests a student has
+                // No one except super admin should be able to see all the membership requests a student has.
+                // Api only supports asking for your own requests
                 case Resource.MEMBERSHIP_REQUEST_BY_STUDENT:
                     {
-                        var studentID = (string)context.ActionArguments["id"];
-                        var is_student = studentID == user_id;
-                        if (is_student)
-                            return true;
-                        return false;
+                        return true;
                     }
                  // Only activity leaders/advisors should be to get emails for his/her members.
                 case Resource.EMAILS_BY_ACTIVITY:
