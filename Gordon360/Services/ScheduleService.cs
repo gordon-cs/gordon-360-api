@@ -44,7 +44,7 @@ namespace Gordon360.Services
             var currentSessionCode = Helpers.GetCurrentSession().SessionCode;
 
             // This is a test code for 2019 Summer. Next time you see this, delete this part
-            if (currentSessionCode == "201907")
+            if (currentSessionCode == "201905" && id != "999999097")
             {
                 currentSessionCode = "201909";
             }
@@ -81,7 +81,7 @@ namespace Gordon360.Services
 
             var currentSessionCode = Helpers.GetCurrentSession().SessionCode;
             // This is a test code for 2019 Summer. Next time you see this, delete this part
-            if (currentSessionCode == "201907")
+            if (currentSessionCode == "201905" && id != "999999099")
             {
                 currentSessionCode = "201909";
             }
