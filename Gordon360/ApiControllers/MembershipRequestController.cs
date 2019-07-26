@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Security.Claims;
 using Gordon360.Models;
 using Gordon360.Repositories;
 using Gordon360.Services;
@@ -19,12 +20,15 @@ namespace Gordon360.Controllers.Api
     [CustomExceptionFilter]
     public class MembershipRequestController : ApiController
     {
+        private IAccountService _accountService;
+
         public IMembershipRequestService _membershipRequestService;
 
         public MembershipRequestController()
         {
             var _unitOfWork = new UnitOfWork();
             _membershipRequestService = new MembershipRequestService(_unitOfWork);
+            _accountService = new AccountService(_unitOfWork);
         }
 
         public MembershipRequestController(IMembershipRequestService membershipRequestService)
@@ -114,6 +118,41 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
 
+        /// <summary>
+        /// Gets the memberships requests for the person making the request
+        /// </summary>
+        /// <returns>All membership requests associated with the student</returns>
+        [HttpGet]
+        [Route("student")]
+        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_REQUEST_BY_STUDENT)]
+        public IHttpActionResult GetMembershipsRequestsForStudent()
+        {
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var studentId = _accountService.GetAccountByUsername(username).GordonID;
+            var result = _membershipRequestService.GetMembershipRequestsForStudent(studentId);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
 
         /// <summary>
         /// Creates a new membership request
