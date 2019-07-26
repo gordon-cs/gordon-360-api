@@ -889,6 +889,11 @@ Check:
 - That the stored procedures return exactly what the models expect.
 - That the views are up. Sometimes CTS unexpectedly does maintenance. Try running simple select statements against the Views.
 
+#### 500 Internal Server Error in pytest
+
+500 Internal Server Error could occur anywhere while running pytest. Be careful with all the test inputs, a too long comment might cause 500 error as well. So, try be as neat and clean as possible.
+
+
 #### 404 Not Found when trying to access the `/token` endpoint:
 
 This error will only pop up when you are testing the server directly by running it with visual studio. When you run the gordon360 server from visual studio it automatically "hosts" it on `localhost:3000`. By default, the server doesn't accept non-HTTPS (anything not on port 443) connections. There are two solutions:
@@ -896,6 +901,9 @@ This error will only pop up when you are testing the server directly by running 
 - Allow non-HTTPS connections by commenting out some code. This is what I did. DON'T FORGET TO REMOVE THE COMMENT SYMBOLS AFTER YOU FINISH THOUGH.
     - The code that restricts non-HTTPS connections is located under the `Startup.cs` file. Look for the "#if DEBUG" and "#endif" code-blocks. Comment both out.
 
+#### 415 Unsupported Media Error
+
+This error might occurs while testing 'test_post_profile_image' and 'test_post_ID_image', the reason causes this is that method 'PostAsFormData()' doesn't post it as form data, it is still JSON, fix should be happened in pytest_components.py. However, even if 415 error was fixed, it would still possibly cause error 500, potentail solutions are above.
 
 ### Documentation
 The documentation folder currently contains the ColdFusion files from go.gordon that contain the logic behind the people search.
