@@ -224,8 +224,7 @@ namespace Gordon360.AuthorizationFilters
                             return true;
                         return false;
                     }
-                // No one except super admin should be able to see all the membership requests a student has.
-                // Api only supports asking for your own requests
+                // Since the API only allows asking for your requests (no ID argument), it's always OK.
                 case Resource.MEMBERSHIP_REQUEST_BY_STUDENT:
                     {
                         return true;

@@ -119,7 +119,7 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>
-        /// Gets the memberships requests for the specified student
+        /// Gets the memberships requests for the person making the request
         /// </summary>
         /// <returns>All membership requests associated with the student</returns>
         [HttpGet]
@@ -138,6 +138,7 @@ namespace Gordon360.Controllers.Api
                     }
 
                 }
+                
                 throw new BadInputException() { ExceptionMessage = errors };
             }
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
