@@ -170,6 +170,13 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.GetTestData">
+            <summary>
+            This is just an end-to-end proof of concept.
+            It will return Dr. Tuck's soul.
+            <returns> Dr. Tuck's soul </returns>
+            </summary>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ContentManagementController.GetSliderContent">
             <summary>Get all the slider content for the dashboard slider</summary>
             <returns>A list of all the slides for the slider</returns>
@@ -194,6 +201,12 @@
             </summary>
             <param name="id">The activity code</param>
             <returns>All membership requests associated with the activity</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.MembershipRequestController.GetMembershipsRequestsForStudent">
+            <summary>
+            Gets the memberships requests for the person making the request
+            </summary>
+            <returns>All membership requests associated with the student</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.MembershipRequestController.Post(Gordon360.Models.REQUEST)">
             <summary>
