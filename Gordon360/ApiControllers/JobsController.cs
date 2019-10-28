@@ -22,8 +22,8 @@ namespace Gordon360.ApiControllers
 
         /// <summary>
         /// This is just an end-to-end proof of concept.
-        /// It will return Dr. Tuck's soul.
-        /// <returns> Dr. Tuck's soul </returns>
+        /// It will return some dummy text.
+        /// <returns> A dummy string </returns>
         /// </summary>
         [HttpGet]
         [Route("hello-world")]
