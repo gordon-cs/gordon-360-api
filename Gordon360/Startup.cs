@@ -162,7 +162,9 @@ namespace Gordon360
                 theStu.Add("BuildingDescription", null);
 
                 // Get each student's dorm and add it to the collection
-                string stuBuildDesc = Gordon360.Services.ComplexQueries.RawSqlQuery<String>.query("SELECT BuildingDescription from STUDENT where AD_Username = '" + aStudent.AD_Username + "'").Cast<string>().ElementAt(0);
+                System.Collections.Generic.IEnumerable<string> stuBuildAndMail = Gordon360.Services.ComplexQueries.RawSqlQuery<String>.query("SELECT BuildingDescription, Mail_Location, STUDENT.AD_Username from STUDENT join ACCOUNT on (STUDENT.AD_Username = ACCOUNT.AD_Username) where STUDENT.AD_Username = '" + aStudent.AD_Username + "'").Cast<string>();
+                string stuBuildDesc = stuBuildAndMail.ElementAt(0);
+                string stuMailLoc = stuBuildAndMail.ElementAt(1);
                 theStu.Add("Hall", stuBuildDesc);
                 theStu.Add("OnCampusDepartment", null);
                 allPublicAccounts.Add(theStu);
