@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using Microsoft.Owin.Security.OAuth;
 using Microsoft.Owin.Security.Jwt;
 using System;
+using Gordon360.Services.ComplexQueries;
 using Gordon360.AuthorizationServer;
 using Gordon360.Models.ViewModels;
 using Gordon360.Static.Data;
@@ -162,11 +163,33 @@ namespace Gordon360
                 theStu.Add("BuildingDescription", null);
 
                 // Get each student's dorm and add it to the collection
-                IEnumerable<string> stuBuildAndMail = Gordon360.Services.ComplexQueries.RawSqlQuery<String>.query("SELECT BuildingDescription, Mail_Location, STUDENT.AD_Username from STUDENT join ACCOUNT on (STUDENT.AD_Username = ACCOUNT.AD_Username) where STUDENT.AD_Username = '" + aStudent.AD_Username + "'").Cast<string>();
-                string stuBuildDesc = stuBuildAndMail.ElementAt(0);
-                string stuMailLoc = stuBuildAndMail.ElementAt(1);
-                theStu.Add("Hall", stuBuildDesc);
-                theStu.Add("Mail_Location", stuMailLoc);
+                string stuBuildAndMail = RawSqlQuery<string>.query("SELECT BuildingDescription, Mail_Location, S.AD_Username FROM STUDENT S LEFT JOIN ACCOUNT A on S.AD_Username = A.AD_Username WHERE S.AD_Username = '" + aStudent.AD_Username + "' FOR JSON PATH").Cast<string>().ElementAt(0);
+                stuBuildAndMail = "{\"Student\":" + stuBuildAndMail + "}";
+                JObject hallAndMailData = JObject.Parse(stuBuildAndMail);
+                Debug.WriteLine(hallAndMailData.ToString());
+                string stuBuildDesc = null;
+                string stuMailLoc = null;
+                try
+                {
+                    // Get BuildingDescription from JObject
+                    stuBuildDesc = hallAndMailData["Student"]["BuildingDescription"].ToString();
+                }
+                catch
+                {
+                    // The object has no BuildingDescription, so stuBuildDesc will remain null
+                }
+
+                try
+                {
+                    // Get Mail_Location from JObject
+                    stuBuildDesc = hallAndMailData["Student"]["Mail_Location"].ToString();
+                    Debug.WriteLine(stuMailLoc);
+                }
+                catch
+                {
+                    // The object has no BuildingDescription, so stuBuildDesc will remain null
+                }
+                
                 theStu.Add("OnCampusDepartment", null);
                 allPublicAccounts.Add(theStu);
                 allPublicAccountsWithoutAlumni.Add(theStu);
