@@ -12,6 +12,7 @@ using Gordon360.Models;
 using System.Collections.Generic;
 using Gordon360.Static.Names;
 using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 
 namespace Gordon360.Static.Methods
 {
@@ -39,22 +40,26 @@ namespace Gordon360.Static.Methods
             return result;
         }
 
-        public static IEnumerable<PublicStudentProfileViewModel> GetAllPublicStudents()
+        public static JObject GetAllPublicStudents()
         {
-            // Create a list to be filled
-            IEnumerable<PublicStudentProfileViewModel> result = null;
-
+            // JSON string result
+            string result = null;
+            JObject publicStudentData = null;
             try
             {
                 // Attempt to query the DB
-                result = RawSqlQuery<PublicStudentProfileViewModel>.query(SQLQuery.ALL_PUBLIC_STUDENT_REQUEST);
+                result = RawSqlQuery<string>.query(SQLQuery.ALL_PUBLIC_STUDENT_REQUEST).Cast<string>().ElementAt(0);
+                string wrappedResult = "{\"Students\":" + result + "}";
+                publicStudentData = JObject.Parse(wrappedResult);
+                Debug.WriteLine(wrappedResult);
             }
             catch
             {
                 //
+                Debug.WriteLine("Litty hitty you failed this bitty");
             }
             // Filter out results with null or empty active directory names
-            return result;
+            return publicStudentData;
         }
 
         public static IEnumerable<FacStaff> GetAllFacultyStaff()

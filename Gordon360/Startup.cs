@@ -134,7 +134,7 @@ namespace Gordon360
             IEnumerable<Alumni> alumni = Helpers.GetAllAlumni();
             IEnumerable<BasicInfoViewModel> basic = Helpers.GetAllBasicInfoExcludeAlumni();
 
-            IEnumerable<PublicStudentProfileViewModel> publicStudent = Helpers.GetAllPublicStudents();
+            JObject publicStudent = Helpers.GetAllPublicStudents();
             IEnumerable<PublicFacultyStaffProfileViewModel> publicFacStaff = Helpers.GetAllPublicFacultyStaff();
             IEnumerable<PublicAlumniProfileViewModel> publicAlumni = Helpers.GetAllPublicAlumni();
             IList<JObject> allPublicAccounts = new List<JObject>();
@@ -152,7 +152,7 @@ namespace Gordon360
             Data.PublicAlumniData = publicAlumni;
             Data.AllBasicInfoWithoutAlumni = basic;
 
-            foreach (PublicStudentProfileViewModel aStudent in Data.PublicStudentData)
+            foreach (JToken aStudent in Data.PublicStudentData.SelectToken("Students"))
             {
                 if(aStudent == null)
                 {
@@ -163,16 +163,16 @@ namespace Gordon360
                 theStu.Add("BuildingDescription", null);
 
                 // Get each student's dorm and add it to the collection
-                string stuBuildAndMail = RawSqlQuery<string>.query("SELECT BuildingDescription, Mail_Location, S.AD_Username FROM STUDENT S LEFT JOIN ACCOUNT A on S.AD_Username = A.AD_Username WHERE S.AD_Username = '" + aStudent.AD_Username + "' FOR JSON PATH").Cast<string>().ElementAt(0);
-                stuBuildAndMail = "{\"Student\":" + stuBuildAndMail + "}";
-                JObject hallAndMailData = JObject.Parse(stuBuildAndMail);
-                Debug.WriteLine(hallAndMailData.ToString());
+                //string stuBuildAndMail = RawSqlQuery<string>.query("SELECT BuildingDescription, Mail_Location, S.AD_Username FROM STUDENT S LEFT JOIN ACCOUNT A on S.AD_Username = A.AD_Username WHERE S.AD_Username = '" + aStudent.AD_Username + "' FOR JSON PATH").Cast<string>().ElementAt(0);
+                //stuBuildAndMail = "{\"Student\":" + stuBuildAndMail + "}";
+                //JObject hallAndMailData = JObject.Parse(stuBuildAndMail);
+                // Debug.WriteLine(hallAndMailData.ToString());
                 string stuBuildDesc = null;
                 string stuMailLoc = null;
                 try
                 {
                     // Get BuildingDescription from JObject
-                    stuBuildDesc = hallAndMailData["Student"]["BuildingDescription"].ToString();
+                    //stuBuildDesc = hallAndMailData["Student"]["BuildingDescription"].ToString();
                 }
                 catch
                 {
@@ -182,8 +182,8 @@ namespace Gordon360
                 try
                 {
                     // Get Mail_Location from JObject
-                    stuBuildDesc = hallAndMailData["Student"]["Mail_Location"].ToString();
-                    Debug.WriteLine(stuMailLoc);
+                   // stuBuildDesc = hallAndMailData["Student"]["Mail_Location"].ToString();
+                    //Debug.WriteLine(stuMailLoc);
                 }
                 catch
                 {
