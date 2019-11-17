@@ -194,6 +194,7 @@ namespace Gordon360
                 allPublicAccounts.Add(theStu);
                 allPublicAccountsWithoutAlumni.Add(theStu);
             }
+
             foreach (PublicFacultyStaffProfileViewModel aFacStaff in Data.PublicFacultyStaffData)
             {
                 JObject theFacStaff = JObject.FromObject(aFacStaff);

@@ -43,20 +43,24 @@ namespace Gordon360.Static.Methods
         public static JObject GetAllPublicStudents()
         {
             // JSON string result
+            IEnumerable<string> fragmentedString = null;
             string result = null;
             JObject publicStudentData = null;
             try
             {
                 // Attempt to query the DB
-                result = RawSqlQuery<string>.query(SQLQuery.ALL_PUBLIC_STUDENT_REQUEST).Cast<string>().ElementAt(0);
-                string wrappedResult = "{\"Students\":" + result + "}";
-                publicStudentData = JObject.Parse(wrappedResult);
-                Debug.WriteLine(wrappedResult);
+                fragmentedString = RawSqlQuery<string>.query(SQLQuery.ALL_PUBLIC_STUDENT_REQUEST).Cast<string>();
+                foreach (string fragment in fragmentedString)
+                {
+                    result = result + fragment;
+                }
+                publicStudentData = JObject.Parse(result);
             }
-            catch
+            catch (Exception e)
             {
                 //
-                Debug.WriteLine("Litty hitty you failed this bitty");
+                Debug.WriteLine("Failed to parse JSON data:");
+                Debug.WriteLine(e.Message);
             }
             // Filter out results with null or empty active directory names
             return publicStudentData;

@@ -98,7 +98,7 @@ namespace Gordon360.Static.Names
 
     public static class SQLQuery
     {
-        public static string ALL_PUBLIC_STUDENT_REQUEST = "SELECT Mail_Location, BuildingDescription, S.FirstName, S.LastName, NickName, Class, Major1Description, Major2Description, Major3Description, Minor1Description, Minor2Description, Minor3Description, HomeCity, HomeState, Country, KeepPrivate, S.Email, S.AD_Username FROM STUDENT S LEFT JOIN ACCOUNT A on S.AD_Username = A.AD_Username AND S.AD_Username is not null FOR JSON PATH";
+        public static string ALL_PUBLIC_STUDENT_REQUEST = "SELECT Mail_Location, BuildingDescription as Hall, FirstName, LastName, NickName, Class, Major1Description, Major2Description, Major3Description, Minor1Description, Minor2Description, Minor3Description, HomeCity, HomeState, Country, KeepPrivate, Email, AD_Username FROM STUDENT S WHERE AD_Username is not null FOR JSON PATH, ROOT('Students')";
         public static string ALL_PUBLIC_FACULTY_STAFF_REQUEST = "SELECT FirstName, LastName, NickName, OnCampusDepartment, BuildingDescription, HomeCity, HomeState, Country, KeepPrivate, JobTitle, Email, Type, AD_Username FROM FacStaff WHERE AD_Username is not null";
         public static string ALL_PUBLIC_ALUMNI_REQUEST = "SELECT FirstName, LastName, NickName, Major1Description, Major2Description, HomeCity, HomeState, Country, Email, ShareName, PreferredClassYear, AD_Username FROM Alumni WHERE AD_Username is not null AND ShareName is null OR ShareName = 'Y';";
 
