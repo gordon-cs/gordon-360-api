@@ -67,6 +67,7 @@ namespace Gordon360.Models.ViewModels
         public string Minor1Description { get; set; }
         public string Minor2Description { get; set; }
         public string Minor3Description { get; set; }
+        public string Mail_Location { get; set; }
 
 
         public static implicit operator StudentProfileViewModel(Student stu)

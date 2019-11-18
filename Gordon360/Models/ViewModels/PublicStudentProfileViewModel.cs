@@ -15,6 +15,7 @@ namespace Gordon360.Models.ViewModels
         public string MaidenName { get; set; }
         public string NickName { get; set; }
         public string OnOffCampus { get; set; }
+        public string Mail_Location { get; set; }
         public string HomeCity { get; set; }
         public string HomeState { get; set; }
         public string HomeCountry { get; set; }
@@ -52,6 +53,7 @@ namespace Gordon360.Models.ViewModels
                 NickName = stu.NickName ?? "", // Just in case some random record has a null user_name 
                 AD_Username = stu.AD_Username ?? "", // Just in case some random record has a null email field
                 OnOffCampus = stu.OnOffCampus ?? "",
+                Mail_Location = stu.Mail_Location ?? "",
                 HomeCity = stu.HomeCity ?? "",
                 HomeState = stu.HomeState ?? "",
                 HomeCountry = stu.HomeCountry ?? "",
