@@ -133,7 +133,8 @@ namespace Gordon360.Models.ViewModels
                 Major3Description = stu.Major3Description ?? "",
                 Minor1Description = stu.Minor1Description ?? "",
                 Minor2Description = stu.Minor2Description ?? "",
-                Minor3Description = stu.Minor3Description ?? ""
+                Minor3Description = stu.Minor3Description ?? "",
+                Mail_Location = stu.Mail_Location ?? "",
             };
 
             return vm;
