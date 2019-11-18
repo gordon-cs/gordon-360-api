@@ -20,6 +20,7 @@ namespace Gordon360.Models.ViewModels
         public string HomeCountry { get; set; }
         public string Cohort { get; set; }
         public string Class { get; set; }
+        public string Hall { get; set; }
         public string KeepPrivate { get; set; }
         public string Email { get; set; }
         public string Gender { get; set; }
@@ -55,6 +56,7 @@ namespace Gordon360.Models.ViewModels
                 HomeState = stu.HomeState ?? "",
                 HomeCountry = stu.HomeCountry ?? "",
                 Class = stu.Class ?? "",
+                Hall = stu.BuildingDescription ?? "",
                 Cohort = stu.Cohort ?? "",
                 grad_student = stu.grad_student ?? "",
                 KeepPrivate = stu.KeepPrivate ?? "",
