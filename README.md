@@ -359,7 +359,7 @@ Here is a breakdown of the project folder:
     - Tests/ - Folder for tests
         - ApiEndpoints/ - I talk about this more in the Testing section.
 
-###Adding New Queries
+### Adding New Queries
 
 - (*) is your new Title (ex: Membership, Account, Session)
 - (+) is your new stored procedure name (ex: MEMBERSHIPS_PER_STUDENT_ID)
