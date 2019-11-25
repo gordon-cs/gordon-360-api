@@ -12,7 +12,7 @@ Dive in.
     - [Stored Procedures](#stored-procedures)
     - [Triggers](#triggers)
     - [Manual and Debugging Access](#manual-and-debugging-access)
-    - [Updating .edmx](#updating-.edmx)
+    - [Updating .edmx](#updating-edmx)
 - [The Code](#the-code)
 - [Introduction](#introduction)
 - [Caching](#caching)
@@ -314,7 +314,7 @@ It's sometimes useful to look at the database directly, to see the schema or che
 * To see schemas, expand "dbo." entries and their "columns"
 * To see data, right-click a view and select "Select top 1000 rows"
 
-### Updating .edmx
+### Updating edmx
 
 Everytime you update the database with new table, column, view or stored procedure, or modify the existing ones with different parameters or return values, you need to get the corresponding Entity Database Model XML in API. Editing it manually is not recommended, since it may cause unexpected errors such as PublicStudentData error.
 
