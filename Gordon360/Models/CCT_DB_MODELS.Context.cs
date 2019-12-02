@@ -35,6 +35,8 @@ namespace Gordon360.Models
         public virtual DbSet<MEMBERSHIP> MEMBERSHIP { get; set; }
         public virtual DbSet<MYSCHEDULE> MYSCHEDULE { get; set; }
         public virtual DbSet<REQUEST> REQUEST { get; set; }
+        public virtual DbSet<Save_Bookings> Save_Bookings { get; set; }
+        public virtual DbSet<Save_Rides> Save_Rides { get; set; }
         public virtual DbSet<Schedule_Control> Schedule_Control { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         public virtual DbSet<Transit_Requests> Transit_Requests { get; set; }
@@ -234,13 +236,13 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("DINING_INFO_BY_STUDENT_ID", sTUDENT_IDParameter, sESS_CDEParameter);
         }
     
-        public virtual int DISTINCT_ACT_TYPE(string sESS_CDE)
+        public virtual ObjectResult<string> DISTINCT_ACT_TYPE(string sESS_CDE)
         {
             var sESS_CDEParameter = sESS_CDE != null ?
                 new ObjectParameter("SESS_CDE", sESS_CDE) :
                 new ObjectParameter("SESS_CDE", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DISTINCT_ACT_TYPE", sESS_CDEParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("DISTINCT_ACT_TYPE", sESS_CDEParameter);
         }
     
         public virtual ObjectResult<EMAILS_PER_ACT_CDE_Result> EMAILS_PER_ACT_CDE(string aCT_CDE, string sESS_CDE)
@@ -492,13 +494,13 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result>("STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE", id_numParameter, sess_cdeParameter);
         }
     
-        public virtual int STUDENT_JOBS_PER_ID_NUM(Nullable<int> iD_NUM)
+        public virtual ObjectResult<STUDENT_JOBS_PER_ID_NUM_Result> STUDENT_JOBS_PER_ID_NUM(Nullable<int> iD_NUM)
         {
             var iD_NUMParameter = iD_NUM.HasValue ?
                 new ObjectParameter("ID_NUM", iD_NUM) :
                 new ObjectParameter("ID_NUM", typeof(int));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("STUDENT_JOBS_PER_ID_NUM", iD_NUMParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<STUDENT_JOBS_PER_ID_NUM_Result>("STUDENT_JOBS_PER_ID_NUM", iD_NUMParameter);
         }
     
         public virtual int SUPERVISOR_PER_SUP_ID(Nullable<int> sUP_ID)

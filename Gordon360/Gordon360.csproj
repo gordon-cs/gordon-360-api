@@ -358,6 +358,12 @@
     <Compile Include="Models\RoomAssign.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Save_Bookings.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Save_Rides.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Schedule_Control.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -374,7 +380,9 @@
     <Compile Include="Models\STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs" />
+    <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\sysdiagrams.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
