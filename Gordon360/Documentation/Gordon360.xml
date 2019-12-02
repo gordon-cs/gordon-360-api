@@ -1098,6 +1098,14 @@
             <param name="parameters">Parameters to pass into the stored procedure</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Services.ComplexQueries.RawSqlQuery`1.StudentTimesheetQuery(System.String,System.Object[])">
+            <summary>
+            Execute the sql query on the StudentTimesheets database
+            </summary>
+            <param name="query">An sql statment. Can be a stored procedure or even a simple SELECT statment</param>
+            <param name="parameters">Parameters to pass into the stored procedure</param>
+            <returns></returns>
+        </member>
         <member name="T:Gordon360.Services.ContentManagementService">
             <summary>
             Service class that facilitates data (specifically, site content) passing between the ContentManagementController and the database model.

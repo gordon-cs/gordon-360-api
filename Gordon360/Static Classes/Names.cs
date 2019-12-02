@@ -118,5 +118,8 @@ namespace Gordon360.Static.Names
         public static string ALL_FACSTAFF_BUILDINGS = "SELECT DISTINCT BuildingDescription FROM FacStaff WHERE OnCampusBuilding is not null ORDER BY BuildingDescription ASC";
         public static string ALL_FACSTAFF_DEPARTMENTS = "SELECT DISTINCT OnCampusDepartment FROM FacStaff WHERE OnCampusDepartment is not null ORDER BY OnCampusDepartment ASC";
 
+        // Timesheets
+        public static string ALL_STUDENT_TIMESHEETS_INFO = "SELECT * FROM student_timesheets for json path";
+
     }
 }
