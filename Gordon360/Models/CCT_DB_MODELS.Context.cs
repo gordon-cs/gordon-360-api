@@ -234,13 +234,13 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("DINING_INFO_BY_STUDENT_ID", sTUDENT_IDParameter, sESS_CDEParameter);
         }
     
-        public virtual int DISTINCT_ACT_TYPE(string sESS_CDE)
+        public virtual ObjectResult<string> DISTINCT_ACT_TYPE(string sESS_CDE)
         {
             var sESS_CDEParameter = sESS_CDE != null ?
                 new ObjectParameter("SESS_CDE", sESS_CDE) :
                 new ObjectParameter("SESS_CDE", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DISTINCT_ACT_TYPE", sESS_CDEParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("DISTINCT_ACT_TYPE", sESS_CDEParameter);
         }
     
         public virtual ObjectResult<EMAILS_PER_ACT_CDE_Result> EMAILS_PER_ACT_CDE(string aCT_CDE, string sESS_CDE)
