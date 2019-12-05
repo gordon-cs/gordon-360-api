@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using Microsoft.Owin.Security.OAuth;
 using Microsoft.Owin.Security.Jwt;
 using System;
+using Gordon360.Services.ComplexQueries;
 using Gordon360.AuthorizationServer;
 using Gordon360.Models.ViewModels;
 using Gordon360.Static.Data;
@@ -133,7 +134,7 @@ namespace Gordon360
             IEnumerable<Alumni> alumni = Helpers.GetAllAlumni();
             IEnumerable<BasicInfoViewModel> basic = Helpers.GetAllBasicInfoExcludeAlumni();
 
-            IEnumerable<PublicStudentProfileViewModel> publicStudent = Helpers.GetAllPublicStudents();
+            JObject publicStudent = Helpers.GetAllPublicStudents();
             IEnumerable<PublicFacultyStaffProfileViewModel> publicFacStaff = Helpers.GetAllPublicFacultyStaff();
             IEnumerable<PublicAlumniProfileViewModel> publicAlumni = Helpers.GetAllPublicAlumni();
             IList<JObject> allPublicAccounts = new List<JObject>();
@@ -151,7 +152,7 @@ namespace Gordon360
             Data.PublicAlumniData = publicAlumni;
             Data.AllBasicInfoWithoutAlumni = basic;
 
-            foreach (PublicStudentProfileViewModel aStudent in Data.PublicStudentData)
+            foreach (JToken aStudent in Data.PublicStudentData.SelectToken("Students"))
             {
                 if(aStudent == null)
                 {
@@ -160,18 +161,16 @@ namespace Gordon360
                 JObject theStu = JObject.FromObject(aStudent);
                 theStu.Add("Type", "Student");
                 theStu.Add("BuildingDescription", null);
-
-                // Get each student's dorm and add it to the collection
-                string stuBuildDesc = Gordon360.Services.ComplexQueries.RawSqlQuery<String>.query("SELECT BuildingDescription from STUDENT where AD_Username = '" + aStudent.AD_Username + "'").Cast<string>().ElementAt(0);
-                theStu.Add("Hall", stuBuildDesc);
                 theStu.Add("OnCampusDepartment", null);
                 allPublicAccounts.Add(theStu);
                 allPublicAccountsWithoutAlumni.Add(theStu);
             }
+
             foreach (PublicFacultyStaffProfileViewModel aFacStaff in Data.PublicFacultyStaffData)
             {
                 JObject theFacStaff = JObject.FromObject(aFacStaff);
                 theFacStaff.Add("Hall", null);
+                theFacStaff.Add("Mail_Location", null);
                 theFacStaff.Add("Class", null);
                 theFacStaff.Add("Major1Description", null);
                 theFacStaff.Add("Major2Description", null);
@@ -189,6 +188,7 @@ namespace Gordon360
                 theAlum.Add("Type", "Alum");
                 theAlum.Add("BuildingDescription", null);
                 theAlum.Add("Hall", null);
+                theAlum.Add("Mail_Location", null);
                 theAlum.Add("OnCampusDepartment", null);
                 theAlum.Add("Class", null);
                 theAlum.Add("Major3Description", null);

@@ -195,6 +195,12 @@
             <param name="id">The activity code</param>
             <returns>All membership requests associated with the activity</returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.MembershipRequestController.GetMembershipsRequestsForStudent">
+            <summary>
+            Gets the memberships requests for the person making the request
+            </summary>
+            <returns>All membership requests associated with the student</returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.MembershipRequestController.Post(Gordon360.Models.REQUEST)">
             <summary>
             Creates a new membership request
