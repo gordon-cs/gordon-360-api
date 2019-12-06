@@ -11,13 +11,13 @@ namespace Gordon360.Models.ViewModels
         public int ID_NUM { get; set; }
         public int EML { get; set; }
         public string EML_DESCRIPTION { get; set; }
-        public Nullable<System.DateTime> SHIFT_START_DATETIME { get; set; }
-        public Nullable<System.DateTime> SHIFT_END_DATETIME { get; set; }
-        public float HOURLY_RATE { get; set; }
-        public float HOURS_WORKED { get; set; }
+        public System.DateTime SHIFT_START_DATETIME { get; set; }
+        public System.DateTime SHIFT_END_DATETIME { get; set; }
+        public Decimal HOURLY_RATE { get; set; }
+        public Decimal HOURS_WORKED { get; set; }
         public int SUPERVISOR { get; set; }
         public int COMP_SUPERVISOR { get; set; }
-        public string STATUS { get; set }
+        public string STATUS { get; set; }
         public Nullable<int> SUBMITTED_TO { get; set; }
         public string SHIFT_NOTES { get; set; }
         public string COMMENTS { get; set; }
@@ -25,6 +25,6 @@ namespace Gordon360.Models.ViewModels
         public Nullable<System.DateTime> PAY_PERIOD_DATE { get; set; }
         public Nullable<int> PAY_PERIOD_ID { get; set; }
         public string LAST_CHANGED_BY { get; set; }
-        public Nullable<System.DateTime> DATETIME_ENTERED { get; set; }
+        public System.DateTime DATETIME_ENTERED { get; set; }
     }
 }
