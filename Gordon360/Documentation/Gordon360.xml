@@ -173,8 +173,8 @@
         <member name="M:Gordon360.ApiControllers.JobsController.GetTestData">
             <summary>
             This is just an end-to-end proof of concept.
-            It will return Dr. Tuck's soul.
-            <returns> Dr. Tuck's soul </returns>
+            It will return some dummy text.
+            <returns> A dummy string </returns>
             </summary>
         </member>
         <member name="M:Gordon360.Controllers.Api.ContentManagementController.GetSliderContent">
