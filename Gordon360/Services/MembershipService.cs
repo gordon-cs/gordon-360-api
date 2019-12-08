@@ -218,6 +218,7 @@ namespace Gordon360.Services
                 trim.IDNumber = x.IDNumber;
                 trim.FirstName = x.FirstName.Trim();
                 trim.LastName = x.LastName.Trim();
+                trim.Mail_Location = x.Mail_Location.Trim();
                 trim.Participation = x.Participation.Trim();
                 trim.ParticipationDescription = x.ParticipationDescription.Trim();
                 trim.GroupAdmin = x.GroupAdmin;
