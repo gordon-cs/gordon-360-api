@@ -15,6 +15,7 @@ Dive in.
     - [Updating .edmx](#updating-edmx)
 - [The Code](#the-code)
 - [Introduction](#introduction)
+- [Adding New Queries](#adding-new-queries)
 - [Caching](#caching)
 - [API Endpoints](#api-endpoints)
     - [Accounts](#accounts)
