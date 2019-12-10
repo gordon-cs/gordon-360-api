@@ -43,7 +43,6 @@ namespace Gordon360.ApiControllers
         [Route("getJobs/{userID}")]
         public IHttpActionResult getJobsForUser(string userID)
         {
-            System.Diagnostics.Debug.WriteLine("Jobs query called");
             string query = "SELECT * from student_timesheets where ID_NUM = " + userID + ";";
             IEnumerable<StudentTimesheetsViewModel> queryResult = null;
             try
