@@ -19,6 +19,7 @@ namespace Gordon360.Static.Names
         public const string DINING = "Info related to dining service";
         public const string ERROR_LOG = "The error log resource";
         public const string MYSCHEDULE = "A custom schedule resource";
+        public const string RIDE = "A ride resource";
         public const string SCHEDULE = "A course schedule resource";
 
         // Partial resources, to be targetted by Operation.READ_PARTIAL
