@@ -10,14 +10,14 @@ namespace Gordon360.Models.ViewModels
         public string rideID { get; set; }
         public string destination { get; set; } //should this really be a string? or an int?
         public string meetingPoint { get; set; }
-        public Nullable<System.TimeSpan> startTime { get; set; }
-        public Nullable<System.TimeSpan> endTime { get; set; }
+        public Nullable<System.DateTime> startTime { get; set; }
+        public Nullable<System.DateTime> endTime { get; set; }
         public int capacity { get; set; }
         public string notes { get; set; }
         public int isCanceled { get; set; }
 
 
-        public static implicit operator RideViewModel(RIDE ride)
+        public static implicit operator RideViewModel(Save_Rides ride)
         {
             RideViewModel vm = new RideViewModel
             {

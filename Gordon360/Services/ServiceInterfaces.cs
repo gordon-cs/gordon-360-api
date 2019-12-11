@@ -191,7 +191,7 @@ namespace Gordon360.Services
 
     public interface ISaveService
     {
-        IEnumerable<RIDE> GetUpcoming();
+        IEnumerable<RideViewModel> GetUpcoming();
     }
 
     public interface IContentManagementService

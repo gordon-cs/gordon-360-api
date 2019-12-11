@@ -28,7 +28,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="rideID">The ride id</param>
         /// <returns> ride item if found, null if not found</returns>
-        public IEnumerable<RIDE> GetUpcoming()
+        public IEnumerable<RideViewModel> GetUpcoming()
         {
             var result = RawSqlQuery<RideViewModel>.query("UPCOMING_RIDES"); //run stored procedure
 

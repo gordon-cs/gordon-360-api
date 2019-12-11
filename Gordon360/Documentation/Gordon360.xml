@@ -170,6 +170,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.ApiControllers.SaveController.GetUpcomingRides">
+            <summary>
+             Gets all upcoming ride objects
+            </summary>
+            <returns>A IEnumerable of rides objects</returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ContentManagementController.GetSliderContent">
             <summary>Get all the slider content for the dashboard slider</summary>
             <returns>A list of all the slides for the slider</returns>
@@ -1304,6 +1310,13 @@
             </summary>
             <param name="id">id</param>
             <param name="value">Y or N</param>
+        </member>
+        <member name="M:Gordon360.Services.SaveService.GetUpcoming">
+            <summary>
+            Fetch the ride item whose id is specified by the parameter
+            </summary>
+            <param name="rideID">The ride id</param>
+            <returns> ride item if found, null if not found</returns>
         </member>
         <member name="T:Gordon360.Services.ScheduleControlService">
             <summary>
