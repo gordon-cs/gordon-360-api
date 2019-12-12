@@ -20,6 +20,7 @@ namespace Gordon360.Static.Names
         public const string ERROR_LOG = "The error log resource";
         public const string MYSCHEDULE = "A custom schedule resource";
         public const string SCHEDULE = "A course schedule resource";
+        public const string SHIFT = "A shift that a student has worked";
 
         // Partial resources, to be targetted by Operation.READ_PARTIAL
         public const string MEMBERSHIP_REQUEST_BY_ACTIVITY = "Membership Request Resources associated with an activity";
