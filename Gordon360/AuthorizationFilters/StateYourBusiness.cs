@@ -344,6 +344,13 @@ namespace Gordon360.AuthorizationFilters
         {
             switch (resource)
             {
+                case Resource.SHIFT:
+                    {
+                        if (user_position == Position.STUDENT)
+                            return true;
+                        return false;
+                    }
+
                 case Resource.MEMBERSHIP:
                     {
                         // User is admin

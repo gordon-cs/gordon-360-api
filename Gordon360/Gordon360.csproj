@@ -421,6 +421,7 @@
     <Compile Include="Models\VICTORY_PROMISE_BY_STUDENT_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModels\ShiftViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentTimesheetsViewModel.cs" />
     <Compile Include="Models\ViewModels\MyScheduleViewModel.cs" />
     <Compile Include="ApiControllers\ProfilesController.cs" />
@@ -476,6 +477,7 @@
     <Compile Include="Services\AccountService.cs" />
     <Compile Include="Services\ActivityService.cs" />
     <Compile Include="Services\AdministratorService.cs" />
+    <Compile Include="Services\JobsService.cs" />
     <Compile Include="Services\DiningService.cs" />
     <Compile Include="Services\ErrorLogService.cs" />
     <Compile Include="Services\EventService.cs" />

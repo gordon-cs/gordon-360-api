@@ -184,6 +184,13 @@
             <param name="userID">The user's Gordon ID</param>
             <returns>The user's active jobs</returns>
         </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.submitShiftForUser(Gordon360.Models.ViewModels.ShiftViewModel)">
+            <summary>
+            Get a user's active jobs
+            </summary>
+            <param name="shiftDetails"></param>
+            <returns>The user's active jobs</returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ContentManagementController.GetSliderContent">
             <summary>Get all the slider content for the dashboard slider</summary>
             <returns>A list of all the slides for the slider</returns>
@@ -1009,6 +1016,11 @@
             </summary>
             <param name="admin">The admin to validate</param>
             <returns>True if the admin is valid. Throws ResourceNotFoundException if not. Exception is cauth in an Exception Filter</returns>
+        </member>
+        <member name="T:Gordon360.Services.JobsService">
+            <summary>
+            Service Class that facilitates data transactions between the JobsController and the student_timesheets + paid_shifts database model.
+            </summary>
         </member>
         <member name="T:Gordon360.Services.DiningService">
             <summary>

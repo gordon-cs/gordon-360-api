@@ -9,6 +9,10 @@ using Gordon360.Repositories;
 using Gordon360.Static.Methods;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services.ComplexQueries;
+using Gordon360.Services;
+using Newtonsoft.Json.Linq;
+using Gordon360.AuthorizationFilters;
+using Gordon360.Static.Names;
 
 namespace Gordon360.ApiControllers
 {
@@ -17,9 +21,12 @@ namespace Gordon360.ApiControllers
     [RoutePrefix("api/jobs")]
     public class JobsController : ApiController
     {
+        private IJobsService _jobsService;
+
         public JobsController()
         {
-            IUnitOfWork _uniteOfWork = new UnitOfWork();
+            IUnitOfWork _unitOfWork = new UnitOfWork();
+            _jobsService = new JobsService(_unitOfWork);
         }
 
         /// <summary>
@@ -55,6 +62,30 @@ namespace Gordon360.ApiControllers
                 System.Diagnostics.Debug.WriteLine(e.Message);
             }
             return Ok(queryResult);
+        }
+
+        /// <summary>
+        /// Get a user's active jobs
+        /// </summary>
+        /// <param name="shiftDetails"></param>
+        /// <returns>The user's active jobs</returns>
+        [HttpPost]
+        [Route("submitShift")]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.SHIFT)]
+        public IHttpActionResult submitShiftForUser([FromBody] ShiftViewModel shiftDetails)
+        {
+            IEnumerable<StudentTimesheetsViewModel> result = null;
+
+            try
+            {
+                result = _jobsService.saveShiftsForUser(shiftDetails.ID_NUM, shiftDetails.EML, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, shiftDetails.SHIFT_NOTES, shiftDetails.LAST_CHANGED_BY);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                return InternalServerError();
+            }
+            return Ok(result);
         }
     }
 }
