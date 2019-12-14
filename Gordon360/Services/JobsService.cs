@@ -26,17 +26,8 @@ namespace Gordon360.Services
             _unitOfWork = unitOfWork;
         }
 
-        public IEnumerable<StudentTimesheetsViewModel> saveShiftsForUser(int studentID, int jobID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string shiftNotes, string lastChangedBy)
+        public IEnumerable<StudentTimesheetsViewModel> saveShiftForUser(int studentID, int jobID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string shiftNotes, string lastChangedBy)
         {
-            Debug.WriteLine("Writing all values in shift object to console: \n");
-            Debug.WriteLine(studentID);
-            Debug.WriteLine(jobID);
-            Debug.WriteLine(shiftStart);
-            Debug.WriteLine(shiftEnd);
-            Debug.WriteLine(hoursWorked);
-            Debug.WriteLine(shiftNotes);
-            Debug.WriteLine(lastChangedBy);
-
             IEnumerable<StudentTimesheetsViewModel> result = null;
 
             var id_num = new SqlParameter("@ID_NUM", studentID);
@@ -47,9 +38,53 @@ namespace Gordon360.Services
             var notes = new SqlParameter("@shift_notes", shiftNotes);
             var changedBy = new SqlParameter("@last_changed_by", lastChangedBy);
 
+            Debug.WriteLine("Time in: " + shiftStart);
+            Debug.WriteLine("Time out: " + shiftEnd);
+
             try
             {
                 result = RawSqlQuery<StudentTimesheetsViewModel>.StudentTimesheetQuery("student_timesheets_insert_shift @ID_NUM, @eml, @shift_start_datetime, @shift_end_datetime, @hours_worked, @shift_notes, @last_changed_by", id_num, eml, shiftStartDateTime, shiftEndDateTime, hours_worked, notes, changedBy);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+
+            return result;
+        }
+
+        public IEnumerable<StudentTimesheetsViewModel> deleteShiftForUser(int rowID, int studentID)
+        {
+            IEnumerable<StudentTimesheetsViewModel> result = null;
+
+            var row_id = new SqlParameter("@row_num", rowID);
+            var ID_NUM = new SqlParameter("@ID_NUM", studentID);
+
+            try
+            {
+                result = RawSqlQuery<StudentTimesheetsViewModel>.StudentTimesheetQuery("student_timesheets_delete_shift @row_num, @ID_NUM", row_id, ID_NUM);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+
+            return result;
+        }
+
+        public IEnumerable<StudentTimesheetsViewModel> submitShiftForUser(int studentID, int jobID, DateTime shiftEnd, int submittedTo, string lastChangedBy)
+        {
+            IEnumerable<StudentTimesheetsViewModel> result = null;
+
+            var ID_NUM = new SqlParameter("@ID_NUM", studentID);
+            var eml = new SqlParameter("@eml", jobID);
+            var shiftEndDateTime = new SqlParameter("@shift_end_datetime", shiftEnd);
+            var submitted_to = new SqlParameter("@submitted_to", submittedTo);
+            var changedBy = new SqlParameter("@last_changed_by", lastChangedBy);
+
+            try
+            {
+                result = RawSqlQuery<StudentTimesheetsViewModel>.StudentTimesheetQuery("student_timesheets_submit_job_shift @ID_NUM, @eml, @shift_end_datetime, @submitted_to, @last_changed_by", ID_NUM, eml, shiftEndDateTime, submitted_to, changedBy);
             }
             catch (Exception e)
             {
