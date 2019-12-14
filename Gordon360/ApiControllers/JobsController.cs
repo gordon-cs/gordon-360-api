@@ -93,9 +93,9 @@ namespace Gordon360.ApiControllers
         /// <param name="shiftDetails"></param>
         /// <returns>The user's active jobs</returns>
         [HttpPost]
-        [Route("submitShift")]
+        [Route("saveShift")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.SHIFT)]
-        public IHttpActionResult submitShiftForUser([FromBody] ShiftViewModel shiftDetails)
+        public IHttpActionResult saveShiftForUser([FromBody] ShiftViewModel shiftDetails)
         {
             IEnumerable<StudentTimesheetsViewModel> result = null;
 
@@ -114,8 +114,7 @@ namespace Gordon360.ApiControllers
         /// <summary>
         /// Get a user's active jobs
         /// </summary>
-        /// <param name="shiftDetails"></param>
-        /// <returns>The user's active jobs</returns>
+        /// <returns>The result of deleting the shift</returns>
         [HttpDelete]
         [Route("deleteShift/{rowID}/{userID}")]
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.SHIFT)]
@@ -130,6 +129,56 @@ namespace Gordon360.ApiControllers
             try
             {
                 result = _jobsService.deleteShiftForUser(rowID, userID);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                return InternalServerError();
+            }
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Submit shifts
+        /// </summary>
+        /// <returns>The result of deleting the shift</returns>
+        [HttpPost]
+        [Route("submitShifts")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.SHIFT)]
+        public IHttpActionResult submitShiftsForUser([FromBody] IEnumerable<ShiftToSubmitViewModel> shifts)
+        {
+            System.Diagnostics.Debug.WriteLine("submitting shifts");
+            IEnumerable<StudentTimesheetsViewModel> result = null;
+
+            try
+            {
+                foreach (ShiftToSubmitViewModel shift in shifts)
+                {
+                    result = _jobsService.submitShiftForUser(shift.ID_NUM, shift.EML, shift.SHIFT_END_DATETIME, shift.SUBMITTED_TO, shift.LAST_CHANGED_BY);
+                }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                return InternalServerError();
+            }
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Submit shifts
+        /// </summary>
+        /// <returns>The result of deleting the shift</returns>
+        [HttpGet]
+        [Route("supervisorName/{supervisorID}")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.SHIFT)]
+        public IHttpActionResult submitShiftsForUser(int supervisorID)
+        {
+            IEnumerable<SupervisorViewModel> result = null;
+
+            try
+            {
+                result = _jobsService.getsupervisorNameForJob(supervisorID);
             }
             catch (Exception e)
             {

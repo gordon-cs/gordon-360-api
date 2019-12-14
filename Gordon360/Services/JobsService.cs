@@ -93,5 +93,22 @@ namespace Gordon360.Services
 
             return result;
         }
+
+        public IEnumerable<SupervisorViewModel> getsupervisorNameForJob(int supervisorID)
+        {
+            IEnumerable<SupervisorViewModel> result = null;
+
+            var supervisor = new SqlParameter("@supervisor", supervisorID);
+
+            try
+            {
+                result = RawSqlQuery<SupervisorViewModel>.StudentTimesheetQuery("student_timesheets_select_supervisor_name @supervisor", supervisor);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+            return result;
+        }
     }
 }

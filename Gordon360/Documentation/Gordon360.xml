@@ -191,7 +191,7 @@
             <param name="userID">The user's Gordon ID</param>
             <returns>The user's active jobs</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.submitShiftForUser(Gordon360.Models.ViewModels.ShiftViewModel)">
+        <member name="M:Gordon360.ApiControllers.JobsController.saveShiftForUser(Gordon360.Models.ViewModels.ShiftViewModel)">
             <summary>
             Get a user's active jobs
             </summary>
@@ -202,8 +202,19 @@
             <summary>
             Get a user's active jobs
             </summary>
-            <param name="shiftDetails"></param>
-            <returns>The user's active jobs</returns>
+            <returns>The result of deleting the shift</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.submitShiftsForUser(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.ShiftToSubmitViewModel})">
+            <summary>
+            Submit shifts
+            </summary>
+            <returns>The result of deleting the shift</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.submitShiftsForUser(System.Int32)">
+            <summary>
+            Submit shifts
+            </summary>
+            <returns>The result of deleting the shift</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ContentManagementController.GetSliderContent">
             <summary>Get all the slider content for the dashboard slider</summary>
