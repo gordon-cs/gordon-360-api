@@ -67,6 +67,29 @@ namespace Gordon360.ApiControllers
         /// <summary>
         /// Get a user's active jobs
         /// </summary>
+        /// <param name="userID">The user's Gordon ID</param>
+        /// <returns>The user's active jobs</returns>
+        [HttpGet]
+        [Route("getSavedShifts/{userID}")]
+        public IHttpActionResult getSavedShiftsForUser(string userID)
+        {
+            string query = "SELECT * from student_timesheets where ID_NUM = " + userID + ";";
+            IEnumerable<StudentTimesheetsViewModel> queryResult = null;
+            try
+            {
+                queryResult = RawSqlQuery<StudentTimesheetsViewModel>.StudentTimesheetQuery(query);
+            }
+            catch (Exception e)
+            {
+                //
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
+            return Ok(queryResult);
+        }
+
+        /// <summary>
+        /// Get a user's active jobs
+        /// </summary>
         /// <param name="shiftDetails"></param>
         /// <returns>The user's active jobs</returns>
         [HttpPost]
@@ -78,7 +101,35 @@ namespace Gordon360.ApiControllers
 
             try
             {
-                result = _jobsService.saveShiftsForUser(shiftDetails.ID_NUM, shiftDetails.EML, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, shiftDetails.SHIFT_NOTES, shiftDetails.LAST_CHANGED_BY);
+                result = _jobsService.saveShiftForUser(shiftDetails.ID_NUM, shiftDetails.EML, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, shiftDetails.SHIFT_NOTES, shiftDetails.LAST_CHANGED_BY);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                return InternalServerError();
+            }
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Get a user's active jobs
+        /// </summary>
+        /// <param name="shiftDetails"></param>
+        /// <returns>The user's active jobs</returns>
+        [HttpDelete]
+        [Route("deleteShift/{rowID}/{userID}")]
+        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.SHIFT)]
+        public IHttpActionResult deleteShiftForUser(int rowID, int userID)
+        {
+            System.Diagnostics.Debug.WriteLine("deleting shift");
+            IEnumerable<StudentTimesheetsViewModel> result = null;
+
+            System.Diagnostics.Debug.WriteLine("Row id: " + rowID);
+            System.Diagnostics.Debug.WriteLine("Student id: " + userID);
+
+            try
+            {
+                result = _jobsService.deleteShiftForUser(rowID, userID);
             }
             catch (Exception e)
             {

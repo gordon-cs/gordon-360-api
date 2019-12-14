@@ -184,7 +184,21 @@
             <param name="userID">The user's Gordon ID</param>
             <returns>The user's active jobs</returns>
         </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.getSavedShiftsForUser(System.String)">
+            <summary>
+            Get a user's active jobs
+            </summary>
+            <param name="userID">The user's Gordon ID</param>
+            <returns>The user's active jobs</returns>
+        </member>
         <member name="M:Gordon360.ApiControllers.JobsController.submitShiftForUser(Gordon360.Models.ViewModels.ShiftViewModel)">
+            <summary>
+            Get a user's active jobs
+            </summary>
+            <param name="shiftDetails"></param>
+            <returns>The user's active jobs</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.deleteShiftForUser(System.Int32,System.Int32)">
             <summary>
             Get a user's active jobs
             </summary>
