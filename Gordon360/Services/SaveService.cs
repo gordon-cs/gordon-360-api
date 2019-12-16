@@ -24,10 +24,9 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// Fetch the ride item whose id is specified by the parameter
+        /// Fetch all upcoming ride items
         /// </summary>
-        /// <param name="rideID">The ride id</param>
-        /// <returns> ride item if found, null if not found</returns>
+        /// <returns> IEnumerable of ride items if found, null if not found</returns>
         public IEnumerable<RideViewModel> GetUpcoming()
         {
             var result = RawSqlQuery<RideViewModel>.query("UPCOMING_RIDES"); //run stored procedure
@@ -38,13 +37,206 @@ namespace Gordon360.Services
             }
 
             return result;
-            //var result = _unitOfWork.SaveRepository.FirstOrDefault(x => x.Ride_ID == rideID);
-            //if (result == null)
-            //{
-            //    return null;
-            //}
+        }
 
-            //return result;
+        /// <summary>
+        /// Fetch the ride items a user is part of
+        /// </summary>
+        /// <param name="gordon_id">The ride id</param>
+        /// <returns> ride items if found, null if not found</returns>
+        public IEnumerable<RideViewModel> GetUpcomingForUser(string gordon_id)
+        {
+            var idParam = new SqlParameter("@STUDENT_ID", gordon_id);
+            var result = RawSqlQuery<RideViewModel>.query("UPCOMING_RIDES_BY_STUDENT_ID", idParam); //run stored procedure
+
+            if (result == null)
+            {
+                return null;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Fetch users in a ride specified by a ride_id
+        /// </summary>
+        /// <param name="rideID">The ride id</param>
+        /// <returns> IEnumerable of user items if found, null if not found</returns>
+        public IEnumerable<RideViewModel> GetUsersInRide(string rideID)
+        {
+            var idParam = new SqlParameter("@RIDE_ID", rideID);
+            var result = RawSqlQuery<RideViewModel>.query("RIDERS_BY_RIDE_ID", idParam); //run stored procedure
+
+            if (result == null)
+            {
+                return null;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Adds a new ride record to storage.
+        /// </summary>
+        /// <param name="rideID">The Save_Rides object to be added</param>
+        /// <returns>The newly added custom event</returns>
+        public Save_Rides GetRide(string rideID)
+        {
+
+            // Assign event id
+            var ride = _unitOfWork.RideRepository.FirstOrDefault(x => x.rideID == rideID);
+            if (ride == null)
+            {
+                throw new ResourceCreationException() { ExceptionMessage = "Ride event with this ID does not exist." };
+            }
+            return ride;
+        }
+
+            /// <summary>
+            /// Adds a new ride record to storage.
+            /// </summary>
+            /// <param name="newRide">The Save_Rides object to be added</param>
+            /// <param name="gordon_id">The gordon_id of the user creating the ride</param>
+            /// <returns>The newly added custom event</returns>
+            public Save_Rides AddRide(Save_Rides newRide, string gordon_id)
+        {
+
+            // Assign event id
+            var rideList = _unitOfWork.RideRepository.GetAll(x => x.rideID == newRide.rideID);
+            int highestRideID = 1;
+            foreach (var ride in rideList)
+            {
+                highestRideID += 1;
+            }
+            var newRideID = highestRideID.ToString();
+            newRide.rideID = newRideID;
+
+            var newBooking = new Save_Bookings { };
+            newBooking.isDriver = 1;
+            newBooking.ID = gordon_id;
+            newBooking.rideID = newRideID;
+
+            // The Add() method returns the added ride
+            var payload = _unitOfWork.RideRepository.Add(newRide);
+
+            // There is a unique constraint in the Database on columns
+            if (payload == null)
+            {
+                throw new ResourceCreationException() { ExceptionMessage = "There was an error adding the ride event. Verify that a similar ride doesn't already exist." };
+            }
+            _unitOfWork.Save();
+
+            var payload2 = _unitOfWork.BookingRepository.Add(newBooking);
+
+            _unitOfWork.Save();
+
+            return payload;
+
+        }
+
+        /// <summary>
+        /// Delete the ride whose id is specified by the parameter.
+        /// </summary>
+        /// <param name="rideID">The myschedule id</param>
+        /// <param name="gordon_id">The gordon id</param>
+        /// <returns>The myschedule that was just deleted</returns>
+        public Save_Rides DeleteRide(string rideID, string gordon_id)
+        {
+            //make get first or default then use generic repository delete on result
+            var result = _unitOfWork.RideRepository.FirstOrDefault(x => x.rideID == rideID);
+            var booking = _unitOfWork.BookingRepository.FirstOrDefault(x => x.ID == gordon_id && x.isDriver == 1);
+            if (!(booking == null))
+            {
+                if (result == null)
+                {
+                    throw new ResourceNotFoundException() { ExceptionMessage = "The ride was not found." };
+                }
+                var idParam = new SqlParameter("@RIDE_ID", rideID);
+                var context = new CCTEntities1();
+
+                context.Database.ExecuteSqlCommand("DELETE_RIDE @RIDE_ID", idParam); // run stored procedure.
+                _unitOfWork.Save();
+                context.Database.ExecuteSqlCommand("DELETE_BOOKINGS @RIDE_ID", idParam); // run stored procedure.
+                _unitOfWork.Save();
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Adds a new booking record to storage.
+        /// </summary>
+        /// <param name="newBooking">The Save_Bookings object to be added</param>
+        /// <returns>The newly added custom event</returns>
+        public Save_Bookings AddBooking(Save_Bookings newBooking)
+        {
+            var ride = _unitOfWork.RideRepository.FirstOrDefault(x => x.rideID == newBooking.rideID);
+            var bookings = _unitOfWork.BookingRepository.GetAll(x => x.rideID == newBooking.rideID);
+            int bookedCount = 0;
+            foreach (var booking in bookings)
+            {
+                bookedCount += 1;
+            }
+
+            if (ride.capacity < bookedCount)
+            {
+                throw new ResourceCreationException() { ExceptionMessage = "Ride is full!" };
+            }
+
+            // The Add() method returns the added ride
+            var payload = _unitOfWork.BookingRepository.Add(newBooking);
+
+            // There is a unique constraint in the Database on columns
+            if (payload == null)
+            {
+                throw new ResourceCreationException() { ExceptionMessage = "There was an error adding the booking. Verify that a similar booking doesn't already exist." };
+            }
+            _unitOfWork.Save();
+
+            return payload;
+        }
+
+
+        /// <summary>
+        /// Delete the booking whose ids are specified by the parameter.
+        /// </summary>
+        /// <param name="rideID">The myschedule id</param>
+        /// <param name="gordon_id">The gordon id</param>
+        /// <returns>The myschedule that was just deleted</returns>
+        public Save_Bookings DeleteBooking(string rideID, string gordon_id)
+        {
+            var result = _unitOfWork.BookingRepository.FirstOrDefault(x => x.ID == gordon_id && x.rideID == rideID);
+            if (result != null)
+            {
+                var rideIDParam = new SqlParameter("@RIDE_ID", rideID);
+                var gordonIDParam = new SqlParameter("@ID", gordon_id);
+                var context = new CCTEntities1();
+                // If driver booking is deleted, ride is deleted
+                // TODO: notify users
+                if (result.isDriver == 1)
+                {
+                    context.Database.ExecuteSqlCommand("DELETE_RIDE @RIDE_ID", rideIDParam); // run stored procedure.
+                    _unitOfWork.Save();
+                }
+                context.Database.ExecuteSqlCommand("DELETE_BOOKING @RIDE_ID, @ID", rideIDParam, gordonIDParam); // run stored procedure.
+                _unitOfWork.Save();
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Fetch number of valid drives (1 or more passengers) by ID
+        /// </summary>
+        /// <param name="gordon_id">The gordon id</param>
+        /// <returns> IEnumerable of user items if found, null if not found</returns>
+        public int GetValidDrives(string gordon_id)
+        {
+            var idParam = new SqlParameter("@DRIVER_ID", gordon_id);
+            var context = new CCTEntities1();
+            var result = context.Database.ExecuteSqlCommand("VALID_DRIVES_BY_ID @DRIVER_ID", idParam); //run stored procedure
+        
+            return result;
         }
 
     }

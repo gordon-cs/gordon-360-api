@@ -23,6 +23,7 @@ namespace Gordon360.Repositories
         IRepository<REQUEST> MembershipRequestRepository { get; }
         IRepository<ADMIN> AdministratorRepository { get; }
         IRepository<Save_Rides> RideRepository { get; }
+        IRepository<Save_Bookings> BookingRepository { get; }
         IRepository<C360_SLIDER> SliderRepository { get; }
         IRepository<CUSTOM_PROFILE> ProfileCustomRepository { get; }
         IRepository<ChapelEvent> ChapelEventRepository { get; }

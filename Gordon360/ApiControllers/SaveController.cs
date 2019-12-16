@@ -36,28 +36,6 @@ namespace Gordon360.ApiControllers
             _saveService = saveService;
         }
 
-        ///// <summary>
-        /////  Gets all ride objects for a user
-        ///// </summary>
-        ///// <returns>A IEnumerable of rides objects</returns>
-        //[HttpGet]
-        //[Route("rides/{username}")]
-        //public IHttpActionResult GetUpcomingUserRides(string username)
-        //{
-        //    var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-        //    var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-
-        //    var id = _accountService.GetAccountByUsername(username).GordonID;
-
-        //    var result = _saveService.GetUpcomingUserRides(id);
-        //    if (result == null)
-        //        {
-        //            return NotFound();
-        //        }
-        //    return Ok(result);
-
-        //}
-
         /// <summary>
         ///  Gets all upcoming ride objects
         /// </summary>
@@ -68,6 +46,43 @@ namespace Gordon360.ApiControllers
         {
 
             var result = _saveService.GetUpcoming();
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+
+        }
+
+        /// <summary>
+        ///  Gets all upcoming ride objects for a user
+        /// </summary>
+        /// <returns>A IEnumerable of rides objects</returns>
+        [HttpGet]
+        [Route("rides/{username}")]
+        public IHttpActionResult GetUpcomingRidesForUser(string username)
+        {
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            var result = _saveService.GetUpcomingForUser(id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+
+        }
+
+        /// <summary>
+        ///  Gets all users in a ride
+        /// </summary>
+        /// <returns>A IEnumerable of riders objects</returns>
+        [HttpGet]
+        [Route("rides/{ride_id}")]
+        public IHttpActionResult GetUsersInRide(string ride_id)
+        {
+
+            var result = _saveService.GetUsersInRide(ride_id);
             if (result == null)
             {
                 return NotFound();
@@ -124,7 +139,7 @@ namespace Gordon360.ApiControllers
         //[Route("rides/create")]
         //public IHttpActionResult Post([FromBody] RIDE newRide)
         //{
- 
+
         //    // Verify Input
         //    if (!ModelState.IsValid || newRide == null)
         //    {
