@@ -47,7 +47,7 @@ namespace Gordon360.Services
         public IEnumerable<RideViewModel> GetUpcomingForUser(string gordon_id)
         {
             var idParam = new SqlParameter("@STUDENT_ID", gordon_id);
-            var result = RawSqlQuery<RideViewModel>.query("UPCOMING_RIDES_BY_STUDENT_ID", idParam); //run stored procedure
+            var result = RawSqlQuery<RideViewModel>.query("UPCOMING_RIDES_BY_STUDENT_ID @STUDENT_ID", idParam); //run stored procedure
 
             if (result == null)
             {
@@ -65,7 +65,7 @@ namespace Gordon360.Services
         public IEnumerable<RideViewModel> GetUsersInRide(string rideID)
         {
             var idParam = new SqlParameter("@RIDE_ID", rideID);
-            var result = RawSqlQuery<RideViewModel>.query("RIDERS_BY_RIDE_ID", idParam); //run stored procedure
+            var result = RawSqlQuery<RideViewModel>.query("RIDERS_BY_RIDE_ID @RIDE_ID", idParam); //run stored procedure
 
             if (result == null)
             {
@@ -144,7 +144,7 @@ namespace Gordon360.Services
         {
             //make get first or default then use generic repository delete on result
             var result = _unitOfWork.RideRepository.FirstOrDefault(x => x.rideID == rideID);
-            var booking = _unitOfWork.BookingRepository.FirstOrDefault(x => x.ID == gordon_id && x.isDriver == 1);
+            var booking = _unitOfWork.BookingRepository.FirstOrDefault(x => x.ID == gordon_id && x.rideID == rideID && x.isDriver == 1);
             if (!(booking == null))
             {
                 if (result == null)
@@ -156,7 +156,8 @@ namespace Gordon360.Services
 
                 context.Database.ExecuteSqlCommand("DELETE_RIDE @RIDE_ID", idParam); // run stored procedure.
                 _unitOfWork.Save();
-                context.Database.ExecuteSqlCommand("DELETE_BOOKINGS @RIDE_ID", idParam); // run stored procedure.
+                var idParam2 = new SqlParameter("@RIDE_ID", rideID);
+                context.Database.ExecuteSqlCommand("DELETE_BOOKINGS @RIDE_ID", idParam2); // run stored procedure.
                 _unitOfWork.Save();
             }
 

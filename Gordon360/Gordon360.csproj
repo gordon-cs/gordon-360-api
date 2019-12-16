@@ -356,6 +356,9 @@
     <Compile Include="Models\REQUEST_PER_REQUEST_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\RIDERS_BY_RIDE_ID_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\RoomAssign.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -381,9 +384,6 @@
     <Compile Include="Models\STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\sysdiagrams.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -391,6 +391,12 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Transit_Rides.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UPCOMING_RIDES_BY_STUDENT_ID_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UPCOMING_RIDES_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\VICTORY_PROMISE_BY_STUDENT_ID_Result.cs">

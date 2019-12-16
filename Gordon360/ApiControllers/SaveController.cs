@@ -59,9 +59,11 @@ namespace Gordon360.ApiControllers
         /// </summary>
         /// <returns>A IEnumerable of rides objects</returns>
         [HttpGet]
-        [Route("rides/{username}")]
-        public IHttpActionResult GetUpcomingRidesForUser(string username)
+        [Route("myrides")]
+        public IHttpActionResult GetUpcomingRidesForUser()
         {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
             var result = _saveService.GetUpcomingForUser(id);
@@ -74,15 +76,18 @@ namespace Gordon360.ApiControllers
         }
 
         /// <summary>
-        ///  Gets all users in a ride
+        ///  Create new ride object for a user
         /// </summary>
-        /// <returns>A IEnumerable of riders objects</returns>
-        [HttpGet]
-        [Route("rides/{ride_id}")]
-        public IHttpActionResult GetUsersInRide(string ride_id)
+        /// <returns>Successfully posted ride object</returns>
+        [HttpPost]
+        [Route("rides/add")]
+        public IHttpActionResult PostRide([FromBody] Save_Rides newRide)
         {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var id = _accountService.GetAccountByUsername(username).GordonID;
 
-            var result = _saveService.GetUsersInRide(ride_id);
+            var result = _saveService.AddRide(newRide, id);
             if (result == null)
             {
                 return NotFound();
@@ -90,6 +95,88 @@ namespace Gordon360.ApiControllers
             return Ok(result);
 
         }
+
+        /// <summary>Delete an existing ride item</summary>
+        /// <param name="rideID">The identifier for the ride to be deleted</param>
+        /// <remarks>Calls the server to make a call and remove the given ride from the database</remarks>
+        [HttpDelete]
+        [Route("rides/del/{rideID}")]
+        public IHttpActionResult DeleteRide(string rideID)
+        {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            var result = _saveService.DeleteRide(rideID, id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        ///  Create new booking object for a user
+        /// </summary>
+        /// <returns>Successfully posted booking object</returns>
+        [HttpPost]
+        [Route("books/add")]
+        public IHttpActionResult PostBooking([FromBody] Save_Bookings newBooking)
+        {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+            newBooking.ID = id;
+
+            var result = _saveService.AddBooking(newBooking);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+
+        }
+
+        /// <summary>Delete an existing booking item</summary>
+        /// <param name="rideID">The identifier for the booking to be deleted</param>
+        /// <remarks>Calls the server to make a call and remove the given booking from the database</remarks>
+        [HttpDelete]
+        [Route("books/del/{rideID}")]
+        public IHttpActionResult DeleteBooking(string rideID)
+        {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            var result = _saveService.DeleteBooking(rideID, id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+        ///// <summary>
+        /////  Gets all users in a ride
+        ///// </summary>
+        ///// <returns>A IEnumerable of riders objects</returns>
+        //[HttpGet]
+        //[Route("book/{ride_id}")]
+        //public IHttpActionResult GetUsersInRide(string ride_id)
+        //{
+        //
+        //    var result = _saveService.GetUsersInRide(ride_id);
+        //    if (result == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return Ok(result);
+        //
+        //}
 
         ///// <summary>
         /////  Gets all users in a ride
