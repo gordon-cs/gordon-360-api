@@ -176,6 +176,34 @@
             </summary>
             <returns>A IEnumerable of rides objects</returns>
         </member>
+        <member name="M:Gordon360.ApiControllers.SaveController.GetUpcomingRidesForUser">
+            <summary>
+             Gets all upcoming ride objects for a user
+            </summary>
+            <returns>A IEnumerable of rides objects</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.SaveController.PostRide(Gordon360.Models.Save_Rides)">
+            <summary>
+             Create new ride object for a user
+            </summary>
+            <returns>Successfully posted ride object</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.SaveController.DeleteRide(System.String)">
+            <summary>Delete an existing ride item</summary>
+            <param name="rideID">The identifier for the ride to be deleted</param>
+            <remarks>Calls the server to make a call and remove the given ride from the database</remarks>
+        </member>
+        <member name="M:Gordon360.ApiControllers.SaveController.PostBooking(Gordon360.Models.Save_Bookings)">
+            <summary>
+             Create new booking object for a user
+            </summary>
+            <returns>Successfully posted booking object</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.SaveController.DeleteBooking(System.String)">
+            <summary>Delete an existing booking item</summary>
+            <param name="rideID">The identifier for the booking to be deleted</param>
+            <remarks>Calls the server to make a call and remove the given booking from the database</remarks>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ContentManagementController.GetSliderContent">
             <summary>Get all the slider content for the dashboard slider</summary>
             <returns>A list of all the slides for the slider</returns>
@@ -1313,10 +1341,68 @@
         </member>
         <member name="M:Gordon360.Services.SaveService.GetUpcoming">
             <summary>
-            Fetch the ride item whose id is specified by the parameter
+            Fetch all upcoming ride items
+            </summary>
+            <returns> IEnumerable of ride items if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.SaveService.GetUpcomingForUser(System.String)">
+            <summary>
+            Fetch the ride items a user is part of
+            </summary>
+            <param name="gordon_id">The ride id</param>
+            <returns> ride items if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.SaveService.GetUsersInRide(System.String)">
+            <summary>
+            Fetch users in a ride specified by a ride_id
             </summary>
             <param name="rideID">The ride id</param>
-            <returns> ride item if found, null if not found</returns>
+            <returns> IEnumerable of user items if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.SaveService.GetRide(System.String)">
+            <summary>
+            Adds a new ride record to storage.
+            </summary>
+            <param name="rideID">The Save_Rides object to be added</param>
+            <returns>The newly added custom event</returns>
+        </member>
+        <member name="M:Gordon360.Services.SaveService.AddRide(Gordon360.Models.Save_Rides,System.String)">
+            <summary>
+            Adds a new ride record to storage.
+            </summary>
+            <param name="newRide">The Save_Rides object to be added</param>
+            <param name="gordon_id">The gordon_id of the user creating the ride</param>
+            <returns>The newly added custom event</returns>
+        </member>
+        <member name="M:Gordon360.Services.SaveService.DeleteRide(System.String,System.String)">
+            <summary>
+            Delete the ride whose id is specified by the parameter.
+            </summary>
+            <param name="rideID">The myschedule id</param>
+            <param name="gordon_id">The gordon id</param>
+            <returns>The myschedule that was just deleted</returns>
+        </member>
+        <member name="M:Gordon360.Services.SaveService.AddBooking(Gordon360.Models.Save_Bookings)">
+            <summary>
+            Adds a new booking record to storage.
+            </summary>
+            <param name="newBooking">The Save_Bookings object to be added</param>
+            <returns>The newly added custom event</returns>
+        </member>
+        <member name="M:Gordon360.Services.SaveService.DeleteBooking(System.String,System.String)">
+            <summary>
+            Delete the booking whose ids are specified by the parameter.
+            </summary>
+            <param name="rideID">The myschedule id</param>
+            <param name="gordon_id">The gordon id</param>
+            <returns>The myschedule that was just deleted</returns>
+        </member>
+        <member name="M:Gordon360.Services.SaveService.GetValidDrives(System.String)">
+            <summary>
+            Fetch number of valid drives (1 or more passengers) by ID
+            </summary>
+            <param name="gordon_id">The gordon id</param>
+            <returns> IEnumerable of user items if found, null if not found</returns>
         </member>
         <member name="T:Gordon360.Services.ScheduleControlService">
             <summary>

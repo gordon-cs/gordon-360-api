@@ -583,7 +583,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="Mail_Location" Type="varchar" MaxLength="20" />
         </EntityType>
         <Association Name="FK_booking_rides">
-          <End Role="Save_Rides" Type="Self.Save_Rides" Multiplicity="1" />
+          <End Role="Save_Rides" Type="Self.Save_Rides" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Save_Bookings" Type="Self.Save_Bookings" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Save_Rides">
@@ -640,6 +642,16 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Parameter Name="BEGINTIME" Type="time" Mode="In" />
           <Parameter Name="ENDTIME" Type="time" Mode="In" />
         </Function>
+        <Function Name="CREATE_RIDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="RIDEID" Type="varchar" Mode="In" />
+          <Parameter Name="DESTINATION" Type="varchar" Mode="In" />
+          <Parameter Name="MEETINGPOINT" Type="varchar" Mode="In" />
+          <Parameter Name="STARTTIME" Type="datetime" Mode="In" />
+          <Parameter Name="ENDTIME" Type="datetime" Mode="In" />
+          <Parameter Name="CAPACITY" Type="int" Mode="In" />
+          <Parameter Name="NOTES" Type="varchar" Mode="In" />
+          <Parameter Name="CANCELED" Type="tinyint" Mode="In" />
+        </Function>
         <Function Name="CREATE_SOCIAL_LINKS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="USERNAME" Type="varchar" Mode="In" />
           <Parameter Name="FACEBOOK" Type="varchar(max)" Mode="In" />
@@ -648,9 +660,19 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Parameter Name="LINKEDIN" Type="varchar(max)" Mode="In" />
         </Function>
         <Function Name="CURRENT_SESSION" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="DELETE_BOOKING" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="RIDE_ID" Type="varchar" Mode="In" />
+          <Parameter Name="ID" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="DELETE_BOOKINGS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="RIDE_ID" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="DELETE_MYSCHEDULE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="EVENTID" Type="varchar" Mode="In" />
           <Parameter Name="GORDONID" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="DELETE_RIDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="RIDE_ID" Type="varchar" Mode="In" />
         </Function>
         <Function Name="DINING_INFO_BY_STUDENT_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="STUDENT_ID" Type="int" Mode="In" />
@@ -703,6 +725,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <Function Name="REQUESTS_PER_STUDENT_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="STUDENT_ID" Type="int" Mode="In" />
         </Function>
+        <Function Name="RIDERS_BY_RIDE_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="RIDE_ID" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
           <Parameter Name="owner_id" Type="int" Mode="In" />
@@ -749,6 +774,10 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <Function Name="SUPERVISORS_PER_ID_NUM" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ID_NUM" Type="int" Mode="In" />
         </Function>
+        <Function Name="UPCOMING_RIDES" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="UPCOMING_RIDES_BY_STUDENT_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="STUDENT_ID" Type="int" Mode="In" />
+        </Function>
         <Function Name="UPDATE_ACT_INFO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="UPDATE_DESCRIPTION" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ID" Type="int" Mode="In" />
@@ -790,6 +819,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <Function Name="UPDATE_TIMESTAMP" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ID" Type="int" Mode="In" />
           <Parameter Name="VALUE" Type="datetime" Mode="In" />
+        </Function>
+        <Function Name="VALID_DRIVES_BY_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="DRIVERID" Type="varchar" Mode="In" />
         </Function>
         <Function Name="VICTORY_PROMISE_BY_STUDENT_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="STUDENT_ID" Type="int" Mode="In" />
@@ -1658,7 +1690,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="Mail_Location" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
         </EntityType>
         <Association Name="FK_booking_rides">
-          <End Role="Save_Rides" Type="Self.Save_Rides" Multiplicity="1" />
+          <End Role="Save_Rides" Type="Self.Save_Rides" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Save_Bookings" Type="Self.Save_Bookings" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Save_Rides">
@@ -1755,6 +1789,16 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="BEGINTIME" Mode="In" Type="Time" />
             <Parameter Name="ENDTIME" Mode="In" Type="Time" />
           </FunctionImport>
+          <FunctionImport Name="CREATE_RIDE">
+            <Parameter Name="RIDEID" Mode="In" Type="String" />
+            <Parameter Name="DESTINATION" Mode="In" Type="String" />
+            <Parameter Name="MEETINGPOINT" Mode="In" Type="String" />
+            <Parameter Name="STARTTIME" Mode="In" Type="DateTime" />
+            <Parameter Name="ENDTIME" Mode="In" Type="DateTime" />
+            <Parameter Name="CAPACITY" Mode="In" Type="Int32" />
+            <Parameter Name="NOTES" Mode="In" Type="String" />
+            <Parameter Name="CANCELED" Mode="In" Type="Byte" />
+          </FunctionImport>
           <FunctionImport Name="CREATE_SOCIAL_LINKS">
             <Parameter Name="USERNAME" Mode="In" Type="String" />
             <Parameter Name="FACEBOOK" Mode="In" Type="String" />
@@ -1763,9 +1807,19 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="LINKEDIN" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="CURRENT_SESSION" ReturnType="Collection(String)" />
+          <FunctionImport Name="DELETE_BOOKING">
+            <Parameter Name="RIDE_ID" Mode="In" Type="String" />
+            <Parameter Name="ID" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="DELETE_BOOKINGS">
+            <Parameter Name="RIDE_ID" Mode="In" Type="String" />
+          </FunctionImport>
           <FunctionImport Name="DELETE_MYSCHEDULE">
             <Parameter Name="EVENTID" Mode="In" Type="String" />
             <Parameter Name="GORDONID" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="DELETE_RIDE">
+            <Parameter Name="RIDE_ID" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="DINING_INFO_BY_STUDENT_ID" ReturnType="Collection(String)">
             <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
@@ -1817,6 +1871,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImport Name="REQUESTS_PER_STUDENT_ID" ReturnType="Collection(Gordon360.REQUESTS_PER_STUDENT_ID_Result)">
             <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
           </FunctionImport>
+          <FunctionImport Name="RIDERS_BY_RIDE_ID" ReturnType="Collection(Gordon360.RIDERS_BY_RIDE_ID_Result)">
+            <Parameter Name="RIDE_ID" Mode="In" Type="String" />
+          </FunctionImport>
           <FunctionImport Name="sp_alterdiagram">
             <Parameter Name="diagramname" Mode="In" Type="String" />
             <Parameter Name="owner_id" Mode="In" Type="Int32" />
@@ -1851,7 +1908,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="id_num" Mode="In" Type="Int32" />
             <Parameter Name="sess_cde" Mode="In" Type="String" />
           </FunctionImport>
-          <FunctionImport Name="STUDENT_JOBS_PER_ID_NUM" ReturnType="Collection(Gordon360.STUDENT_JOBS_PER_ID_NUM_Result)">
+          <FunctionImport Name="STUDENT_JOBS_PER_ID_NUM">
             <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="SUPERVISOR_PER_SUP_ID">
@@ -1862,6 +1919,10 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           </FunctionImport>
           <FunctionImport Name="SUPERVISORS_PER_ID_NUM">
             <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="UPCOMING_RIDES" ReturnType="Collection(Gordon360.UPCOMING_RIDES_Result)" />
+          <FunctionImport Name="UPCOMING_RIDES_BY_STUDENT_ID" ReturnType="Collection(Gordon360.UPCOMING_RIDES_BY_STUDENT_ID_Result)">
+            <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="UPDATE_ACT_INFO" />
           <FunctionImport Name="UPDATE_DESCRIPTION">
@@ -1904,6 +1965,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImport Name="UPDATE_TIMESTAMP">
             <Parameter Name="ID" Mode="In" Type="Int32" />
             <Parameter Name="VALUE" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="VALID_DRIVES_BY_ID" ReturnType="Collection(Int32)">
+            <Parameter Name="DRIVERID" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="VICTORY_PROMISE_BY_STUDENT_ID" ReturnType="Collection(Gordon360.VICTORY_PROMISE_BY_STUDENT_ID_Result)">
             <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
@@ -2052,6 +2116,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="Int32" Name="IDNumber" Nullable="false" />
           <Property Type="String" Name="FirstName" Nullable="true" MaxLength="50" />
           <Property Type="String" Name="LastName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Mail_Location" Nullable="false" MaxLength="20" />
           <Property Type="String" Name="Participation" Nullable="false" MaxLength="5" />
           <Property Type="String" Name="ParticipationDescription" Nullable="false" MaxLength="45" />
           <Property Type="DateTime" Name="StartDate" Nullable="false" Precision="23" />
@@ -2148,6 +2213,11 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="DateTime" Name="DateSent" Nullable="false" Precision="23" />
           <Property Type="String" Name="RequestApproved" Nullable="false" MaxLength="20" />
         </ComplexType>
+        <ComplexType Name="RIDERS_BY_RIDE_ID_Result">
+          <Property Type="String" Name="rideID" Nullable="false" MaxLength="10" />
+          <Property Type="String" Name="ID" Nullable="false" MaxLength="25" />
+          <Property Type="Byte" Name="isDriver" Nullable="false" />
+        </ComplexType>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
           <Property Type="Int32" Name="version" Nullable="true" />
           <Property Type="Binary" Name="definition" Nullable="true" />
@@ -2173,13 +2243,24 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="Time" Name="BEGIN_TIME" Nullable="true" />
           <Property Type="Time" Name="END_TIME" Nullable="true" />
         </ComplexType>
-        <ComplexType Name="STUDENT_JOBS_PER_ID_NUM_Result">
-          <Property Type="String" Name="Job_Title" Nullable="true" MaxLength="512" />
-          <Property Type="String" Name="Job_Department" Nullable="true" MaxLength="15" />
-          <Property Type="String" Name="Job_Department_Name" Nullable="true" MaxLength="50" />
-          <Property Type="DateTime" Name="Job_Start_Date" Nullable="false" Precision="23" />
-          <Property Type="DateTime" Name="Job_End_Date" Nullable="true" Precision="23" />
-          <Property Type="DateTime" Name="Job_Expected_End_Date" Nullable="true" Precision="23" />
+        <ComplexType Name="UPCOMING_RIDES_Result">
+          <Property Type="String" Name="rideID" Nullable="false" MaxLength="10" />
+          <Property Type="String" Name="destination" Nullable="false" MaxLength="72" />
+          <Property Type="String" Name="meetingPoint" Nullable="false" MaxLength="72" />
+          <Property Type="DateTime" Name="startTime" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="endTime" Nullable="false" Precision="23" />
+          <Property Type="Int32" Name="capacity" Nullable="false" />
+          <Property Type="String" Name="notes" Nullable="false" MaxLength="500" />
+          <Property Type="Byte" Name="canceled" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="UPCOMING_RIDES_BY_STUDENT_ID_Result">
+          <Property Type="String" Name="rideID" Nullable="false" MaxLength="10" />
+          <Property Type="Int32" Name="capacity" Nullable="false" />
+          <Property Type="String" Name="destination" Nullable="false" MaxLength="72" />
+          <Property Type="String" Name="meetingPoint" Nullable="false" MaxLength="72" />
+          <Property Type="DateTime" Name="startPoint" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="endTime" Nullable="false" Precision="23" />
+          <Property Type="Byte" Name="isCanceled" Nullable="false" />
         </ComplexType>
         <ComplexType Name="VICTORY_PROMISE_BY_STUDENT_ID_Result">
           <Property Type="Int32" Name="TOTAL_VP_IM_SCORE" Nullable="true" />
@@ -2820,9 +2901,13 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             </ResultMapping>
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="CREATE_MYSCHEDULE" FunctionName="Gordon360.Store.CREATE_MYSCHEDULE" />
+          <FunctionImportMapping FunctionImportName="CREATE_RIDE" FunctionName="Gordon360.Store.CREATE_RIDE" />
           <FunctionImportMapping FunctionImportName="CREATE_SOCIAL_LINKS" FunctionName="Gordon360.Store.CREATE_SOCIAL_LINKS" />
           <FunctionImportMapping FunctionImportName="CURRENT_SESSION" FunctionName="Gordon360.Store.CURRENT_SESSION" />
+          <FunctionImportMapping FunctionImportName="DELETE_BOOKING" FunctionName="Gordon360.Store.DELETE_BOOKING" />
+          <FunctionImportMapping FunctionImportName="DELETE_BOOKINGS" FunctionName="Gordon360.Store.DELETE_BOOKINGS" />
           <FunctionImportMapping FunctionImportName="DELETE_MYSCHEDULE" FunctionName="Gordon360.Store.DELETE_MYSCHEDULE" />
+          <FunctionImportMapping FunctionImportName="DELETE_RIDE" FunctionName="Gordon360.Store.DELETE_RIDE" />
           <FunctionImportMapping FunctionImportName="DINING_INFO_BY_STUDENT_ID" FunctionName="Gordon360.Store.DINING_INFO_BY_STUDENT_ID" />
           <FunctionImportMapping FunctionImportName="DISTINCT_ACT_TYPE" FunctionName="Gordon360.Store.DISTINCT_ACT_TYPE" />
           <FunctionImportMapping FunctionImportName="EMAILS_PER_ACT_CDE" FunctionName="Gordon360.Store.EMAILS_PER_ACT_CDE">
@@ -2918,6 +3003,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="IDNumber" ColumnName="IDNumber" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Mail_Location" ColumnName="Mail_Location" />
                 <ScalarProperty Name="Participation" ColumnName="Participation" />
                 <ScalarProperty Name="ParticipationDescription" ColumnName="ParticipationDescription" />
                 <ScalarProperty Name="StartDate" ColumnName="StartDate" />
@@ -3040,6 +3126,15 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="RIDERS_BY_RIDE_ID" FunctionName="Gordon360.Store.RIDERS_BY_RIDE_ID">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.RIDERS_BY_RIDE_ID_Result">
+                <ScalarProperty Name="rideID" ColumnName="rideID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="isDriver" ColumnName="isDriver" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="Gordon360.Store.sp_alterdiagram" />
           <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="Gordon360.Store.sp_creatediagram" />
           <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="Gordon360.Store.sp_dropdiagram" />
@@ -3082,21 +3177,37 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="STUDENT_JOBS_PER_ID_NUM" FunctionName="Gordon360.Store.STUDENT_JOBS_PER_ID_NUM">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="Gordon360.STUDENT_JOBS_PER_ID_NUM_Result">
-                <ScalarProperty Name="Job_Title" ColumnName="Job_Title" />
-                <ScalarProperty Name="Job_Department" ColumnName="Job_Department" />
-                <ScalarProperty Name="Job_Department_Name" ColumnName="Job_Department_Name" />
-                <ScalarProperty Name="Job_Start_Date" ColumnName="Job_Start_Date" />
-                <ScalarProperty Name="Job_End_Date" ColumnName="Job_End_Date" />
-                <ScalarProperty Name="Job_Expected_End_Date" ColumnName="Job_Expected_End_Date" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="STUDENT_JOBS_PER_ID_NUM" FunctionName="Gordon360.Store.STUDENT_JOBS_PER_ID_NUM" />
           <FunctionImportMapping FunctionImportName="SUPERVISOR_PER_SUP_ID" FunctionName="Gordon360.Store.SUPERVISOR_PER_SUP_ID" />
           <FunctionImportMapping FunctionImportName="SUPERVISORS_PER_ACT_CDE" FunctionName="Gordon360.Store.SUPERVISORS_PER_ACT_CDE" />
           <FunctionImportMapping FunctionImportName="SUPERVISORS_PER_ID_NUM" FunctionName="Gordon360.Store.SUPERVISORS_PER_ID_NUM" />
+          <FunctionImportMapping FunctionImportName="UPCOMING_RIDES" FunctionName="Gordon360.Store.UPCOMING_RIDES">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.UPCOMING_RIDES_Result">
+                <ScalarProperty Name="rideID" ColumnName="rideID" />
+                <ScalarProperty Name="destination" ColumnName="destination" />
+                <ScalarProperty Name="meetingPoint" ColumnName="meetingPoint" />
+                <ScalarProperty Name="startTime" ColumnName="startTime" />
+                <ScalarProperty Name="endTime" ColumnName="endTime" />
+                <ScalarProperty Name="capacity" ColumnName="capacity" />
+                <ScalarProperty Name="notes" ColumnName="notes" />
+                <ScalarProperty Name="canceled" ColumnName="canceled" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="UPCOMING_RIDES_BY_STUDENT_ID" FunctionName="Gordon360.Store.UPCOMING_RIDES_BY_STUDENT_ID">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.UPCOMING_RIDES_BY_STUDENT_ID_Result">
+                <ScalarProperty Name="rideID" ColumnName="rideID" />
+                <ScalarProperty Name="capacity" ColumnName="capacity" />
+                <ScalarProperty Name="destination" ColumnName="destination" />
+                <ScalarProperty Name="meetingPoint" ColumnName="meetingPoint" />
+                <ScalarProperty Name="startPoint" ColumnName="startPoint" />
+                <ScalarProperty Name="endTime" ColumnName="endTime" />
+                <ScalarProperty Name="isCanceled" ColumnName="isCanceled" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="UPDATE_ACT_INFO" FunctionName="Gordon360.Store.UPDATE_ACT_INFO" />
           <FunctionImportMapping FunctionImportName="UPDATE_DESCRIPTION" FunctionName="Gordon360.Store.UPDATE_DESCRIPTION" />
           <FunctionImportMapping FunctionImportName="UPDATE_MYSCHEDULE" FunctionName="Gordon360.Store.UPDATE_MYSCHEDULE" />
@@ -3105,6 +3216,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImportMapping FunctionImportName="UPDATE_SCHEDULE_PRIVACY" FunctionName="Gordon360.Store.UPDATE_SCHEDULE_PRIVACY" />
           <FunctionImportMapping FunctionImportName="UPDATE_SHOW_PIC" FunctionName="Gordon360.Store.UPDATE_SHOW_PIC" />
           <FunctionImportMapping FunctionImportName="UPDATE_TIMESTAMP" FunctionName="Gordon360.Store.UPDATE_TIMESTAMP" />
+          <FunctionImportMapping FunctionImportName="VALID_DRIVES_BY_ID" FunctionName="Gordon360.Store.VALID_DRIVES_BY_ID" />
           <FunctionImportMapping FunctionImportName="VICTORY_PROMISE_BY_STUDENT_ID" FunctionName="Gordon360.Store.VICTORY_PROMISE_BY_STUDENT_ID">
             <ResultMapping>
               <ComplexTypeMapping TypeName="Gordon360.VICTORY_PROMISE_BY_STUDENT_ID_Result">

@@ -14,7 +14,7 @@ namespace Gordon360.Models.ViewModels
         public Nullable<System.DateTime> endTime { get; set; }
         public int capacity { get; set; }
         public string notes { get; set; }
-        public int isCanceled { get; set; }
+        public byte isCanceled { get; set; }
 
 
         public static implicit operator RideViewModel(Save_Rides ride)
