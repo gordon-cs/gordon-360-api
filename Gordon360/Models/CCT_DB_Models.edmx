@@ -117,6 +117,28 @@
           <Property Name="COMMENT_TXT" Type="varchar" MaxLength="45" />
           <Property Name="STATUS" Type="varchar" MaxLength="20" Nullable="false" />
         </EntityType>
+        <EntityType Name="Save_Bookings">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="rideID" />
+          </Key>
+          <Property Name="ID" Type="varchar" MaxLength="25" Nullable="false" />
+          <Property Name="rideID" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="isDriver" Type="tinyint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Save_Rides">
+          <Key>
+            <PropertyRef Name="rideID" />
+          </Key>
+          <Property Name="rideID" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="destination" Type="varchar" MaxLength="72" Nullable="false" />
+          <Property Name="meetingPoint" Type="varchar" MaxLength="72" Nullable="false" />
+          <Property Name="startTime" Type="datetime" Nullable="false" />
+          <Property Name="endTime" Type="datetime" Nullable="false" />
+          <Property Name="capacity" Type="int" Nullable="false" />
+          <Property Name="notes" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="canceled" Type="tinyint" Nullable="false" />
+        </EntityType>
         <EntityType Name="Schedule_Control">
           <Key>
             <PropertyRef Name="gordon_id" />
@@ -560,6 +582,18 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="Minor3Description" Type="varchar" MaxLength="50" />
           <Property Name="Mail_Location" Type="varchar" MaxLength="20" />
         </EntityType>
+        <Association Name="FK_booking_rides">
+          <End Role="Save_Rides" Type="Self.Save_Rides" Multiplicity="1" />
+          <End Role="Save_Bookings" Type="Self.Save_Bookings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Save_Rides">
+              <PropertyRef Name="rideID" />
+            </Principal>
+            <Dependent Role="Save_Bookings">
+              <PropertyRef Name="rideID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK-ride_id">
           <End Role="Transit_Rides" Type="Self.Transit_Rides" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -769,6 +803,8 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="MEMBERSHIP" EntityType="Self.MEMBERSHIP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MYSCHEDULE" EntityType="Self.MYSCHEDULE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="REQUEST" EntityType="Self.REQUEST" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Save_Bookings" EntityType="Self.Save_Bookings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Save_Rides" EntityType="Self.Save_Rides" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Schedule_Control" EntityType="Self.Schedule_Control" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Transit_Requests" EntityType="Self.Transit_Requests" Schema="dbo" store:Type="Tables" />
@@ -1071,6 +1107,10 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [Student].[Mail_Location] AS [Mail_Location]
     FROM [dbo].[Student] AS [Student]</DefiningQuery>
           </EntitySet>
+          <AssociationSet Name="FK_booking_rides" Association="Self.FK_booking_rides">
+            <End Role="Save_Rides" EntitySet="Save_Rides" />
+            <End Role="Save_Bookings" EntitySet="Save_Bookings" />
+          </AssociationSet>
           <AssociationSet Name="FK-ride_id" Association="Self.FK-ride_id">
             <End Role="Transit_Rides" EntitySet="Transit_Rides" />
             <End Role="Transit_Requests" EntitySet="Transit_Requests" />
@@ -1192,6 +1232,30 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="DATE_SENT" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="COMMENT_TXT" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
           <Property Name="STATUS" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Save_Bookings">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="rideID" />
+          </Key>
+          <Property Name="ID" Type="String" MaxLength="25" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="rideID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="isDriver" Type="Byte" Nullable="false" />
+          <NavigationProperty Name="Save_Rides" Relationship="Self.FK_booking_rides" FromRole="Save_Bookings" ToRole="Save_Rides" />
+        </EntityType>
+        <EntityType Name="Save_Rides">
+          <Key>
+            <PropertyRef Name="rideID" />
+          </Key>
+          <Property Name="rideID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="destination" Type="String" MaxLength="72" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="meetingPoint" Type="String" MaxLength="72" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="startTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="endTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="capacity" Type="Int32" Nullable="false" />
+          <Property Name="notes" Type="String" MaxLength="500" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="canceled" Type="Byte" Nullable="false" />
+          <NavigationProperty Name="Save_Bookings" Relationship="Self.FK_booking_rides" FromRole="Save_Rides" ToRole="Save_Bookings" />
         </EntityType>
         <EntityType Name="Schedule_Control">
           <Key>
@@ -1593,6 +1657,18 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="Minor3Description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Mail_Location" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
         </EntityType>
+        <Association Name="FK_booking_rides">
+          <End Role="Save_Rides" Type="Self.Save_Rides" Multiplicity="1" />
+          <End Role="Save_Bookings" Type="Self.Save_Bookings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Save_Rides">
+              <PropertyRef Name="rideID" />
+            </Principal>
+            <Dependent Role="Save_Bookings">
+              <PropertyRef Name="rideID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ride_id">
           <End Role="Transit_Rides" Type="Self.Transit_Rides" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -1616,6 +1692,8 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="MEMBERSHIP" EntityType="Self.MEMBERSHIP" />
           <EntitySet Name="MYSCHEDULE" EntityType="Self.MYSCHEDULE" />
           <EntitySet Name="REQUEST" EntityType="Self.REQUEST" />
+          <EntitySet Name="Save_Bookings" EntityType="Self.Save_Bookings" />
+          <EntitySet Name="Save_Rides" EntityType="Self.Save_Rides" />
           <EntitySet Name="Schedule_Control" EntityType="Self.Schedule_Control" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
           <EntitySet Name="Transit_Requests" EntityType="Self.Transit_Requests" />
@@ -1637,6 +1715,10 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="PART_DEF" EntityType="Self.PART_DEF" />
           <EntitySet Name="RoomAssign" EntityType="Self.RoomAssign" />
           <EntitySet Name="Student" EntityType="Self.Student" />
+          <AssociationSet Name="FK_booking_rides" Association="Self.FK_booking_rides">
+            <End Role="Save_Rides" EntitySet="Save_Rides" />
+            <End Role="Save_Bookings" EntitySet="Save_Bookings" />
+          </AssociationSet>
           <AssociationSet Name="FK_ride_id" Association="Self.FK_ride_id">
             <End Role="Transit_Rides" EntitySet="Transit_Rides" />
             <End Role="Transit_Requests" EntitySet="Transit_Requests" />
@@ -1769,7 +1851,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="id_num" Mode="In" Type="Int32" />
             <Parameter Name="sess_cde" Mode="In" Type="String" />
           </FunctionImport>
-          <FunctionImport Name="STUDENT_JOBS_PER_ID_NUM">
+          <FunctionImport Name="STUDENT_JOBS_PER_ID_NUM" ReturnType="Collection(Gordon360.STUDENT_JOBS_PER_ID_NUM_Result)">
             <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="SUPERVISOR_PER_SUP_ID">
@@ -2091,6 +2173,14 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="Time" Name="BEGIN_TIME" Nullable="true" />
           <Property Type="Time" Name="END_TIME" Nullable="true" />
         </ComplexType>
+        <ComplexType Name="STUDENT_JOBS_PER_ID_NUM_Result">
+          <Property Type="String" Name="Job_Title" Nullable="true" MaxLength="512" />
+          <Property Type="String" Name="Job_Department" Nullable="true" MaxLength="15" />
+          <Property Type="String" Name="Job_Department_Name" Nullable="true" MaxLength="50" />
+          <Property Type="DateTime" Name="Job_Start_Date" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="Job_End_Date" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="Job_Expected_End_Date" Nullable="true" Precision="23" />
+        </ComplexType>
         <ComplexType Name="VICTORY_PROMISE_BY_STUDENT_ID_Result">
           <Property Type="Int32" Name="TOTAL_VP_IM_SCORE" Nullable="true" />
           <Property Type="Int32" Name="TOTAL_VP_CC_SCORE" Nullable="true" />
@@ -2219,6 +2309,29 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="DATE_SENT" ColumnName="DATE_SENT" />
                 <ScalarProperty Name="COMMENT_TXT" ColumnName="COMMENT_TXT" />
                 <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Save_Bookings">
+            <EntityTypeMapping TypeName="Gordon360.Save_Bookings">
+              <MappingFragment StoreEntitySet="Save_Bookings">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="rideID" ColumnName="rideID" />
+                <ScalarProperty Name="isDriver" ColumnName="isDriver" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Save_Rides">
+            <EntityTypeMapping TypeName="Gordon360.Save_Rides">
+              <MappingFragment StoreEntitySet="Save_Rides">
+                <ScalarProperty Name="rideID" ColumnName="rideID" />
+                <ScalarProperty Name="destination" ColumnName="destination" />
+                <ScalarProperty Name="meetingPoint" ColumnName="meetingPoint" />
+                <ScalarProperty Name="startTime" ColumnName="startTime" />
+                <ScalarProperty Name="endTime" ColumnName="endTime" />
+                <ScalarProperty Name="capacity" ColumnName="capacity" />
+                <ScalarProperty Name="notes" ColumnName="notes" />
+                <ScalarProperty Name="canceled" ColumnName="canceled" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2969,7 +3082,18 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="STUDENT_JOBS_PER_ID_NUM" FunctionName="Gordon360.Store.STUDENT_JOBS_PER_ID_NUM" />
+          <FunctionImportMapping FunctionImportName="STUDENT_JOBS_PER_ID_NUM" FunctionName="Gordon360.Store.STUDENT_JOBS_PER_ID_NUM">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.STUDENT_JOBS_PER_ID_NUM_Result">
+                <ScalarProperty Name="Job_Title" ColumnName="Job_Title" />
+                <ScalarProperty Name="Job_Department" ColumnName="Job_Department" />
+                <ScalarProperty Name="Job_Department_Name" ColumnName="Job_Department_Name" />
+                <ScalarProperty Name="Job_Start_Date" ColumnName="Job_Start_Date" />
+                <ScalarProperty Name="Job_End_Date" ColumnName="Job_End_Date" />
+                <ScalarProperty Name="Job_Expected_End_Date" ColumnName="Job_Expected_End_Date" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="SUPERVISOR_PER_SUP_ID" FunctionName="Gordon360.Store.SUPERVISOR_PER_SUP_ID" />
           <FunctionImportMapping FunctionImportName="SUPERVISORS_PER_ACT_CDE" FunctionName="Gordon360.Store.SUPERVISORS_PER_ACT_CDE" />
           <FunctionImportMapping FunctionImportName="SUPERVISORS_PER_ID_NUM" FunctionName="Gordon360.Store.SUPERVISORS_PER_ID_NUM" />

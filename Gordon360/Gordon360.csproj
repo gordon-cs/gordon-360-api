@@ -210,6 +210,7 @@
     <Compile Include="ApiControllers\EmailsController.cs" />
     <Compile Include="ApiControllers\MembershipRequestController.cs" />
     <Compile Include="ApiControllers\MyScheduleController.cs" />
+    <Compile Include="ApiControllers\SaveController.cs" />
     <Compile Include="ApiControllers\ScheduleControlController.cs" />
     <Compile Include="Models\ACCOUNT.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
@@ -358,6 +359,12 @@
     <Compile Include="Models\RoomAssign.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Save_Bookings.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Save_Rides.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Schedule_Control.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -374,7 +381,9 @@
     <Compile Include="Models\STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs" />
+    <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\sysdiagrams.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -426,6 +435,7 @@
     <Compile Include="Models\ViewModels\PublicAlumniProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\PublicFacultyStaffProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\PublicStudentProfileViewModel.cs" />
+    <Compile Include="Models\ViewModels\RideViewModel.cs" />
     <Compile Include="Models\ViewModels\ScheduleViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentEmploymentViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentProfileViewModel.cs" />
@@ -450,6 +460,7 @@
     <Compile Include="Services\MyScheduleService.cs" />
     <Compile Include="Services\ProfileService.cs" />
     <Compile Include="Services\RoleCheckingService.cs" />
+    <Compile Include="Services\SaveService.cs" />
     <Compile Include="Services\ScheduleControlService.cs" />
     <Compile Include="Services\ScheduleService.cs" />
     <Compile Include="Services\StudentEmploymentService.cs" />
@@ -537,7 +548,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:6769</IISUrl>
+          <IISUrl>http://localhost:6069</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

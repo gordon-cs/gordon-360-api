@@ -188,6 +188,12 @@ namespace Gordon360.Services
         MYSCHEDULE Update(MYSCHEDULE myschedule);
         MYSCHEDULE Delete(string event_id, string gordon_id);
     }
+
+    public interface ISaveService
+    {
+        IEnumerable<RideViewModel> GetUpcoming();
+    }
+
     public interface IContentManagementService
     {
         IEnumerable<SliderViewModel> GetSliderContent();
