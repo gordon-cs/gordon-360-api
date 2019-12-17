@@ -110,5 +110,30 @@ namespace Gordon360.Services
             }
             return result;
         }
+
+        public IEnumerable<ActiveJobViewModel> getActiveJobs(DateTime shiftStart, DateTime shiftEnd, int studentID)
+        {
+            IEnumerable<ActiveJobViewModel> result = null;
+
+            var start_datetime = new SqlParameter("@start_datetime", shiftStart);
+            var end_datetime = new SqlParameter("@end_datetime", shiftEnd);
+            var id_num = new SqlParameter("@ID_NUM", studentID);
+
+            try
+            {
+                Debug.WriteLine("\n start: " + shiftStart);
+                Debug.WriteLine("end " + shiftEnd);
+                Debug.WriteLine("ID: " + studentID + "\n");
+                Debug.WriteLine("executing jobs query");
+                result = RawSqlQuery<ActiveJobViewModel>.StudentTimesheetQuery("student_timesheets_select_emls_for_ajax_selectbox @start_datetime, @end_datetime, @ID_NUM", start_datetime, end_datetime, id_num);
+                Debug.WriteLine("postitle: " + result);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+
+            return result;
+        }
     }
 }
