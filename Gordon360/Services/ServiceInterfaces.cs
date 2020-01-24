@@ -153,6 +153,7 @@ namespace Gordon360.Services
         IEnumerable<StudentTimesheetsViewModel> deleteShiftForUser(int rowID, int studentID);
         IEnumerable<StudentTimesheetsViewModel> submitShiftForUser(int studentID, int jobID, DateTime shiftEnd, int submittedTo, string lastChangedBy);
         IEnumerable<SupervisorViewModel> getsupervisorNameForJob(int supervisorID);
+        IEnumerable<ActiveJobViewModel> getActiveJobs(DateTime shiftStart, DateTime shiftEnd, int studentID);
     }
 
     public interface IParticipationService

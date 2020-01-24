@@ -44,28 +44,29 @@ namespace Gordon360.ApiControllers
         /// <summary>
         /// Get a user's active jobs
         /// </summary>
-        /// <param name="userID">The user's Gordon ID</param>
+        /// <param name="details"></param>
         /// <returns>The user's active jobs</returns>
-        [HttpGet]
-        [Route("getJobs/{userID}")]
-        public IHttpActionResult getJobsForUser(string userID)
+        [HttpPost]
+        [Route("getJobs")]
+        public IHttpActionResult getJobsForUser([FromBody] ActiveJobSelectionParametersModel details)
         {
-            string query = "SELECT * from student_timesheets where ID_NUM = " + userID + ";";
-            IEnumerable<StudentTimesheetsViewModel> queryResult = null;
+            System.Diagnostics.Debug.WriteLine("getting jobs");
+            IEnumerable<ActiveJobViewModel> result = null;
             try
             {
-                queryResult = RawSqlQuery<StudentTimesheetsViewModel>.StudentTimesheetQuery(query);
+                result = _jobsService.getActiveJobs(details.SHIFT_START_DATETIME, details.SHIFT_END_DATETIME, details.ID_NUM);
             }
             catch (Exception e)
             {
                 //
                 System.Diagnostics.Debug.WriteLine(e.Message);
+                return InternalServerError();
             }
-            return Ok(queryResult);
+            return Ok(result);
         }
 
         /// <summary>
-        /// Get a user's active jobs
+        /// Get a user's saved shifts
         /// </summary>
         /// <param name="userID">The user's Gordon ID</param>
         /// <returns>The user's active jobs</returns>
