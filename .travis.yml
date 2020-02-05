@@ -2,6 +2,6 @@ language: csharp
 solution: Gordon360.sln
 os: windows
 mono: none
-dotnet: 2.1.502
+dotnet: 2.1.4
 script:
  - dotnet restore
