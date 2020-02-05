@@ -1,6 +1,5 @@
 language: csharp
-solution: Gordon360.sln
 mono: none
 dotnet: 2.1.4
 script:
- - dotnet restore
+ - dotnet build Gordon360.sln -c Release
