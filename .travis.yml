@@ -1,7 +1,5 @@
 language: csharp
 mono: none
-dotnet: 2.1.4
+dotnet: 4.5.2
 script:
- - dotnet add package Microsoft.AspNetCore
- - dotnet add package Microsoft.AspNetCore.All
  - dotnet build Gordon360.sln -c Release
