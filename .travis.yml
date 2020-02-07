@@ -2,4 +2,5 @@ language: csharp
 os: windows
 mono: none
 script: 
+  - choco install nuget.commandline
   - scripts/build.bat
