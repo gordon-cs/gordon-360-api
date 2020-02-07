@@ -1,3 +1,2 @@
-choco install visualstudio2017buildtools /y
-choco install visualstudio2017-workload-webbuildtools /y
-msbuild
+cd "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\"
+dir
