@@ -2,4 +2,4 @@ language: csharp
 os: windows
 mono: none
 script: 
-  - scripts\build.bat
+  - scripts/build.bat
