@@ -2,4 +2,4 @@ language: csharp
 os: windows
 mono: none
 script:
- - "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\msbuild Gordon360.sln"
+ - 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\msbuild Gordon360.sln'
