@@ -1,6 +1,13 @@
+# Tell Travis what language to compile in
 language: csharp
+
+# Use Windows for the build since the API runs in IIS
 os: windows
+
+# Do not use Mono
 mono: none
+
+# Install NuGet, then build the solution
 script: 
   - choco install nuget.commandline
   - scripts/build.bat
