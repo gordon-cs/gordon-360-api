@@ -2,5 +2,5 @@ language: csharp
 os: windows
 mono: none
 script:
- - set path=%path%;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin
+ - $Env:path += ";c:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin"
  - msbuild Gordon360.sln
