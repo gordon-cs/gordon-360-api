@@ -12,9 +12,10 @@ Dive in.
     - [Stored Procedures](#stored-procedures)
     - [Triggers](#triggers)
     - [Manual and Debugging Access](#manual-and-debugging-access)
-    - [Updating .edmx](#updating-.edmx)
+    - [Updating .edmx](#updating-edmx)
 - [The Code](#the-code)
 - [Introduction](#introduction)
+- [Adding New Queries](#adding-new-queries)
 - [Caching](#caching)
 - [API Endpoints](#api-endpoints)
     - [Accounts](#accounts)
@@ -314,7 +315,7 @@ It's sometimes useful to look at the database directly, to see the schema or che
 * To see schemas, expand "dbo." entries and their "columns"
 * To see data, right-click a view and select "Select top 1000 rows"
 
-### Updating .edmx
+### Updating edmx
 
 Everytime you update the database with new table, column, view or stored procedure, or modify the existing ones with different parameters or return values, you need to get the corresponding Entity Database Model XML in API. Editing it manually is not recommended, since it may cause unexpected errors such as PublicStudentData error.
 
@@ -359,7 +360,7 @@ Here is a breakdown of the project folder:
     - Tests/ - Folder for tests
         - ApiEndpoints/ - I talk about this more in the Testing section.
 
-###Adding New Queries
+### Adding New Queries
 
 - (*) is your new Title (ex: Membership, Account, Session)
 - (+) is your new stored procedure name (ex: MEMBERSHIPS_PER_STUDENT_ID)

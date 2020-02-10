@@ -40,22 +40,30 @@ namespace Gordon360.Static.Methods
             return result;
         }
 
-        public static IEnumerable<PublicStudentProfileViewModel> GetAllPublicStudents()
+        public static JObject GetAllPublicStudents()
         {
-            // Create a list to be filled
-            IEnumerable<PublicStudentProfileViewModel> result = null;
-
+            // JSON string result
+            IEnumerable<string> fragmentedString = null;
+            string result = null;
+            JObject publicStudentData = null;
             try
             {
                 // Attempt to query the DB
-                result = RawSqlQuery<PublicStudentProfileViewModel>.query(SQLQuery.ALL_PUBLIC_STUDENT_REQUEST);
+                fragmentedString = RawSqlQuery<string>.query(SQLQuery.ALL_PUBLIC_STUDENT_REQUEST).Cast<string>();
+                foreach (string fragment in fragmentedString)
+                {
+                    result = result + fragment;
+                }
+                publicStudentData = JObject.Parse(result);
             }
-            catch
+            catch (Exception e)
             {
                 //
+                Debug.WriteLine("Failed to parse JSON data:");
+                Debug.WriteLine(e.Message);
             }
             // Filter out results with null or empty active directory names
-            return result;
+            return publicStudentData;
         }
 
         public static IEnumerable<FacStaff> GetAllFacultyStaff()
@@ -362,7 +370,7 @@ namespace Gordon360.Static.Methods
             IEnumerable<String> result = null;
             try
             {
-                // Attempt to query the DB
+                // Attempt to query the DB for data
                 result = RawSqlQuery<String>.query(SQLQuery.ALL_ACCOUNTS_STATES);
             }
             catch
