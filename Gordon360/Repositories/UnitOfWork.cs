@@ -20,11 +20,13 @@ namespace Gordon360.Repositories
         private IRepository<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> _FacultyScheduleRepository;
         private IRepository<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> _StudentScheduleRepository;
         private IRepository<MYSCHEDULE> _MyScheduleRepository;
+        private IRepository<Save_Rides> _RideRepository;
+        private IRepository<Save_Bookings> _BookingRepository;
         private IRepository<PART_DEF> _ParticipationRepository;
         private IRepository<SUPERVISOR> _SupervisorRepository;
         private IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> _ActivityPerSessionRepository;
         private IRepository<VICTORY_PROMISE_BY_STUDENT_ID_Result> _VictoryPromiseByStudentIDRepository;
-        private IRepository<STUDENT_JOBS_PER_ID_NUM_Result> _StudentEmploymentByStudentIDRepository;
+        //private IRepository<STUDENT_JOBS_PER_ID_NUM_Result> _StudentEmploymentByStudentIDRepository;
         private IRepository<REQUEST> _MembershipRequestRepository;
         private IRepository<ACT_INFO> _ActivityInfoRepository;
         private IRepository<ADMIN> _AdministratorRepository;
@@ -113,13 +115,13 @@ namespace Gordon360.Repositories
                 return _VictoryPromiseByStudentIDRepository ?? (_VictoryPromiseByStudentIDRepository = new GenericRepository<VICTORY_PROMISE_BY_STUDENT_ID_Result>(_context));
             }
         }
-        IRepository<STUDENT_JOBS_PER_ID_NUM_Result> IUnitOfWork.StudentEmploymentByStudentIDRepository
-        {
-            get
-            {
-                return _StudentEmploymentByStudentIDRepository ?? (_StudentEmploymentByStudentIDRepository = new GenericRepository<STUDENT_JOBS_PER_ID_NUM_Result>(_context));
-            }
-        }
+       //IRepository<STUDENT_JOBS_PER_ID_NUM_Result> IUnitOfWork.StudentEmploymentByStudentIDRepository
+       //{
+       //    get
+       //    {
+       //        return _StudentEmploymentByStudentIDRepository ?? (_StudentEmploymentByStudentIDRepository = new GenericRepository<STUDENT_JOBS_PER_ID_NUM_Result>(_context));
+       //    }
+       //}
         public IRepository<REQUEST> MembershipRequestRepository
         {
             get { return _MembershipRequestRepository ?? (_MembershipRequestRepository = new GenericRepository<REQUEST>(_context)); }
@@ -149,6 +151,14 @@ namespace Gordon360.Repositories
         public IRepository<ERROR_LOG> ErrorLogRepository
         {
             get { return _ErrorLogRepository ?? (_ErrorLogRepository = new GenericRepository<ERROR_LOG>(_context)); }
+        }
+        public IRepository<Save_Rides> RideRepository
+        {
+            get { return _RideRepository ?? (_RideRepository = new GenericRepository<Save_Rides>(_context)); }
+        }
+        public IRepository<Save_Bookings> BookingRepository
+        {
+            get { return _BookingRepository ?? (_BookingRepository = new GenericRepository<Save_Bookings>(_context)); }
         }
 
         public bool Save()

@@ -74,5 +74,6 @@ namespace Gordon360.Models
         public string Minor1Description { get; set; }
         public string Minor2Description { get; set; }
         public string Minor3Description { get; set; }
+        public string Mail_Location { get; set; }
     }
 }
