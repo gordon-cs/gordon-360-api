@@ -23,8 +23,8 @@ namespace Gordon360.Models
         public string AD_Username { get; set; }
         public string account_type { get; set; }
         public string office_hours { get; set; }
-        public int Primary_Photo { get; set; }
-        public int Preferred_Photo { get; set; }
+        public int primary_photo { get; set; }
+        public int preferred_photo { get; set; }
         public int show_pic { get; set; }
         public int Private { get; set; }
         public int ReadOnly { get; set; }
