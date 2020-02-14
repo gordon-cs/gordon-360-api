@@ -117,6 +117,28 @@
           <Property Name="COMMENT_TXT" Type="varchar" MaxLength="45" />
           <Property Name="STATUS" Type="varchar" MaxLength="20" Nullable="false" />
         </EntityType>
+        <EntityType Name="Save_Bookings">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="rideID" />
+          </Key>
+          <Property Name="ID" Type="varchar" MaxLength="25" Nullable="false" />
+          <Property Name="rideID" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="isDriver" Type="tinyint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Save_Rides">
+          <Key>
+            <PropertyRef Name="rideID" />
+          </Key>
+          <Property Name="rideID" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="destination" Type="varchar" MaxLength="72" Nullable="false" />
+          <Property Name="meetingPoint" Type="varchar" MaxLength="72" Nullable="false" />
+          <Property Name="startTime" Type="datetime" Nullable="false" />
+          <Property Name="endTime" Type="datetime" Nullable="false" />
+          <Property Name="capacity" Type="int" Nullable="false" />
+          <Property Name="notes" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="canceled" Type="tinyint" Nullable="false" />
+        </EntityType>
         <EntityType Name="Schedule_Control">
           <Key>
             <PropertyRef Name="gordon_id" />
@@ -185,6 +207,7 @@ warning 6002: The table/view 'CCT.dbo.ACCOUNT' does not have a primary key defin
           <Property Name="ReadOnly" Type="int" Nullable="false" />
           <Property Name="is_police" Type="int" Nullable="false" />
           <Property Name="Chapel_Required" Type="int" />
+          <Property Name="Mail_Location" Type="varchar" MaxLength="100" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.Alumni' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -378,6 +401,7 @@ warning 6002: The table/view 'CCT.dbo.FacStaff' does not have a primary key defi
           <Property Name="show_pic" Type="int" />
           <Property Name="BuildingDescription" Type="char" MaxLength="45" />
           <Property Name="Country" Type="char" MaxLength="60" />
+          <Property Name="Mail_Location" Type="varchar" MaxLength="20" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.JENZ_ACT_CLUB_DEF' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -455,54 +479,54 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <PropertyRef Name="ID" />
             <PropertyRef Name="IsMobilePhonePrivate" />
           </Key>
-          <Property Name="ID" Type="varchar" MaxLength="255" Nullable="false" />
-          <Property Name="Title" Type="varchar" MaxLength="255" />
-          <Property Name="FirstName" Type="varchar" MaxLength="255" />
-          <Property Name="MiddleName" Type="varchar" MaxLength="255" />
-          <Property Name="LastName" Type="varchar" MaxLength="255" />
-          <Property Name="Suffix" Type="varchar" MaxLength="255" />
-          <Property Name="MaidenName" Type="varchar" MaxLength="255" />
-          <Property Name="NickName" Type="varchar" MaxLength="255" />
-          <Property Name="OnOffCampus" Type="varchar" MaxLength="255" />
-          <Property Name="OnCampusBuilding" Type="varchar" MaxLength="255" />
-          <Property Name="OnCampusRoom" Type="varchar" MaxLength="255" />
-          <Property Name="OnCampusPhone" Type="varchar" MaxLength="255" />
-          <Property Name="OnCampusPrivatePhone" Type="varchar" MaxLength="255" />
-          <Property Name="OnCampusFax" Type="varchar" MaxLength="255" />
-          <Property Name="OffCampusStreet1" Type="varchar" MaxLength="255" />
-          <Property Name="OffCampusStreet2" Type="varchar" MaxLength="255" />
-          <Property Name="OffCampusCity" Type="varchar" MaxLength="255" />
-          <Property Name="OffCampusState" Type="varchar" MaxLength="255" />
-          <Property Name="OffCampusPostalCode" Type="varchar" MaxLength="255" />
-          <Property Name="OffCampusCountry" Type="varchar" MaxLength="255" />
-          <Property Name="OffCampusPhone" Type="varchar" MaxLength="255" />
-          <Property Name="OffCampusFax" Type="varchar" MaxLength="255" />
-          <Property Name="HomeStreet1" Type="varchar" MaxLength="255" />
-          <Property Name="HomeStreet2" Type="varchar" MaxLength="255" />
-          <Property Name="HomeCity" Type="varchar" MaxLength="255" />
-          <Property Name="HomeState" Type="varchar" MaxLength="255" />
-          <Property Name="HomePostalCode" Type="varchar" MaxLength="255" />
-          <Property Name="HomeCountry" Type="varchar" MaxLength="255" />
-          <Property Name="HomePhone" Type="varchar" MaxLength="255" />
-          <Property Name="HomeFax" Type="varchar" MaxLength="255" />
-          <Property Name="Cohort" Type="varchar" MaxLength="255" />
-          <Property Name="Class" Type="varchar" MaxLength="255" />
-          <Property Name="KeepPrivate" Type="char" MaxLength="2" />
-          <Property Name="Barcode" Type="varchar" MaxLength="255" />
-          <Property Name="AdvisorIDs" Type="varchar" MaxLength="255" />
-          <Property Name="Married" Type="char" MaxLength="1" />
-          <Property Name="Commuter" Type="char" MaxLength="1" />
-          <Property Name="Major" Type="varchar" MaxLength="255" />
-          <Property Name="Major2" Type="varchar" MaxLength="255" />
-          <Property Name="Major3" Type="varchar" MaxLength="255" />
-          <Property Name="Email" Type="varchar" MaxLength="255" />
-          <Property Name="Gender" Type="char" MaxLength="1" />
-          <Property Name="grad_student" Type="char" MaxLength="1" />
+          <Property Name="ID" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Title" Type="varchar" MaxLength="3" />
+          <Property Name="FirstName" Type="varchar" MaxLength="50" />
+          <Property Name="MiddleName" Type="varchar" MaxLength="15" />
+          <Property Name="LastName" Type="varchar" MaxLength="50" />
+          <Property Name="Suffix" Type="varchar" MaxLength="3" />
+          <Property Name="MaidenName" Type="varchar" MaxLength="30" />
+          <Property Name="NickName" Type="varchar" MaxLength="30" />
+          <Property Name="OnOffCampus" Type="varchar" MaxLength="1" />
+          <Property Name="OnCampusBuilding" Type="varchar" MaxLength="5" />
+          <Property Name="OnCampusRoom" Type="varchar" MaxLength="5" />
+          <Property Name="OnCampusPhone" Type="varchar" MaxLength="1" />
+          <Property Name="OnCampusPrivatePhone" Type="varchar" MaxLength="1" />
+          <Property Name="OnCampusFax" Type="varchar" MaxLength="1" />
+          <Property Name="OffCampusStreet1" Type="varchar" MaxLength="60" />
+          <Property Name="OffCampusStreet2" Type="varchar" MaxLength="60" />
+          <Property Name="OffCampusCity" Type="varchar" MaxLength="25" />
+          <Property Name="OffCampusState" Type="varchar" MaxLength="2" />
+          <Property Name="OffCampusPostalCode" Type="varchar" MaxLength="12" />
+          <Property Name="OffCampusCountry" Type="varchar" MaxLength="3" />
+          <Property Name="OffCampusPhone" Type="varchar" MaxLength="41" />
+          <Property Name="OffCampusFax" Type="varchar" MaxLength="1" />
+          <Property Name="HomeStreet1" Type="varchar" MaxLength="60" />
+          <Property Name="HomeStreet2" Type="varchar" MaxLength="60" />
+          <Property Name="HomeCity" Type="varchar" MaxLength="25" />
+          <Property Name="HomeState" Type="varchar" MaxLength="2" />
+          <Property Name="HomePostalCode" Type="varchar" MaxLength="12" />
+          <Property Name="HomeCountry" Type="varchar" MaxLength="3" />
+          <Property Name="HomePhone" Type="varchar" MaxLength="41" />
+          <Property Name="HomeFax" Type="varchar" MaxLength="1" />
+          <Property Name="Cohort" Type="varchar" MaxLength="5" />
+          <Property Name="Class" Type="varchar" MaxLength="1" />
+          <Property Name="KeepPrivate" Type="varchar" MaxLength="10" />
+          <Property Name="Barcode" Type="varchar" MaxLength="14" />
+          <Property Name="AdvisorIDs" Type="varchar" MaxLength="92" />
+          <Property Name="Married" Type="varchar" MaxLength="1" />
+          <Property Name="Commuter" Type="varchar" MaxLength="1" />
+          <Property Name="Major" Type="varchar" MaxLength="5" />
+          <Property Name="Major2" Type="varchar" MaxLength="5" />
+          <Property Name="Major3" Type="varchar" MaxLength="5" />
+          <Property Name="Email" Type="varchar" MaxLength="50" />
+          <Property Name="Gender" Type="varchar" MaxLength="1" />
+          <Property Name="grad_student" Type="varchar" MaxLength="1" />
           <Property Name="GradDate" Type="varchar" MaxLength="255" />
-          <Property Name="Minor1" Type="varchar" MaxLength="50" />
-          <Property Name="Minor2" Type="varchar" MaxLength="50" />
-          <Property Name="Minor3" Type="varchar" MaxLength="50" />
-          <Property Name="MobilePhone" Type="varchar" MaxLength="20" />
+          <Property Name="Minor1" Type="varchar" MaxLength="5" />
+          <Property Name="Minor2" Type="varchar" MaxLength="5" />
+          <Property Name="Minor3" Type="varchar" MaxLength="5" />
+          <Property Name="MobilePhone" Type="varchar" MaxLength="15" />
           <Property Name="IsMobilePhonePrivate" Type="int" Nullable="false" />
           <Property Name="AD_Username" Type="varchar" MaxLength="50" />
           <Property Name="show_pic" Type="int" />
@@ -515,7 +539,36 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="Minor1Description" Type="varchar" MaxLength="50" />
           <Property Name="Minor2Description" Type="varchar" MaxLength="50" />
           <Property Name="Minor3Description" Type="varchar" MaxLength="50" />
+          <Property Name="Mail_Location" Type="varchar" MaxLength="20" />
         </EntityType>
+        <Association Name="FK_booking_rides">
+          <End Role="Save_Rides" Type="Self.Save_Rides" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Save_Bookings" Type="Self.Save_Bookings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Save_Rides">
+              <PropertyRef Name="rideID" />
+            </Principal>
+            <Dependent Role="Save_Bookings">
+              <PropertyRef Name="rideID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK-ride_id">
+          <End Role="Transit_Rides" Type="Self.Transit_Rides" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Transit_Requests" Type="Self.Transit_Requests" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Transit_Rides">
+              <PropertyRef Name="ride_id" />
+            </Principal>
+            <Dependent Role="Transit_Requests">
+              <PropertyRef Name="ride_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Function Name="ACTIVE_CLUBS_PER_SESS_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="SESS_CDE" Type="char" Mode="In" />
         </Function>
@@ -548,6 +601,16 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Parameter Name="BEGINTIME" Type="time" Mode="In" />
           <Parameter Name="ENDTIME" Type="time" Mode="In" />
         </Function>
+        <Function Name="CREATE_RIDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="RIDEID" Type="varchar" Mode="In" />
+          <Parameter Name="DESTINATION" Type="varchar" Mode="In" />
+          <Parameter Name="MEETINGPOINT" Type="varchar" Mode="In" />
+          <Parameter Name="STARTTIME" Type="datetime" Mode="In" />
+          <Parameter Name="ENDTIME" Type="datetime" Mode="In" />
+          <Parameter Name="CAPACITY" Type="int" Mode="In" />
+          <Parameter Name="NOTES" Type="varchar" Mode="In" />
+          <Parameter Name="CANCELED" Type="tinyint" Mode="In" />
+        </Function>
         <Function Name="CREATE_SOCIAL_LINKS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="USERNAME" Type="varchar" Mode="In" />
           <Parameter Name="FACEBOOK" Type="varchar(max)" Mode="In" />
@@ -556,9 +619,19 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Parameter Name="LINKEDIN" Type="varchar(max)" Mode="In" />
         </Function>
         <Function Name="CURRENT_SESSION" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="DELETE_BOOKING" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="RIDE_ID" Type="varchar" Mode="In" />
+          <Parameter Name="ID" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="DELETE_BOOKINGS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="RIDE_ID" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="DELETE_MYSCHEDULE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="EVENTID" Type="varchar" Mode="In" />
           <Parameter Name="GORDONID" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="DELETE_RIDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="RIDE_ID" Type="varchar" Mode="In" />
         </Function>
         <Function Name="DINING_INFO_BY_STUDENT_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="STUDENT_ID" Type="int" Mode="In" />
@@ -610,6 +683,39 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <Function Name="REQUESTS_PER_STUDENT_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="STUDENT_ID" Type="int" Mode="In" />
         </Function>
+        <Function Name="RIDERS_BY_RIDE_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="RIDE_ID" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_creatediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_dropdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagramdefinition" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_renamediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="id_num" Type="int" Mode="In" />
           <Parameter Name="sess_cde" Type="char" Mode="In" />
@@ -625,6 +731,10 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         </Function>
         <Function Name="SUPERVISORS_PER_ID_NUM" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ID_NUM" Type="int" Mode="In" />
+        </Function>
+        <Function Name="UPCOMING_RIDES" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="UPCOMING_RIDES_BY_STUDENT_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="STUDENT_ID" Type="int" Mode="In" />
         </Function>
         <Function Name="UPDATE_ACT_INFO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="UPDATE_DESCRIPTION" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
@@ -668,6 +778,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Parameter Name="ID" Type="int" Mode="In" />
           <Parameter Name="VALUE" Type="datetime" Mode="In" />
         </Function>
+        <Function Name="VALID_DRIVES_BY_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="DRIVERID" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="VICTORY_PROMISE_BY_STUDENT_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="STUDENT_ID" Type="int" Mode="In" />
         </Function>
@@ -680,6 +793,8 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="MEMBERSHIP" EntityType="Self.MEMBERSHIP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MYSCHEDULE" EntityType="Self.MYSCHEDULE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="REQUEST" EntityType="Self.REQUEST" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Save_Bookings" EntityType="Self.Save_Bookings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Save_Rides" EntityType="Self.Save_Rides" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Schedule_Control" EntityType="Self.Schedule_Control" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="360_SLIDER" EntityType="Self.360_SLIDER" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -714,7 +829,8 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [ACCOUNT].[Private] AS [Private], 
     [ACCOUNT].[ReadOnly] AS [ReadOnly], 
     [ACCOUNT].[is_police] AS [is_police], 
-    [ACCOUNT].[Chapel_Required] AS [Chapel_Required]
+    [ACCOUNT].[Chapel_Required] AS [Chapel_Required], 
+    [ACCOUNT].[Mail_Location] AS [Mail_Location]
     FROM [dbo].[ACCOUNT] AS [ACCOUNT]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="Alumni" EntityType="Self.Alumni" store:Type="Views" store:Schema="dbo">
@@ -860,7 +976,8 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [FacStaff].[preferred_photo] AS [preferred_photo], 
     [FacStaff].[show_pic] AS [show_pic], 
     [FacStaff].[BuildingDescription] AS [BuildingDescription], 
-    [FacStaff].[Country] AS [Country]
+    [FacStaff].[Country] AS [Country], 
+    [FacStaff].[Mail_Location] AS [Mail_Location]
     FROM [dbo].[FacStaff] AS [FacStaff]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="JENZ_ACT_CLUB_DEF" EntityType="Self.JENZ_ACT_CLUB_DEF" store:Type="Views" store:Schema="dbo">
@@ -959,9 +1076,18 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [Student].[Major3Description] AS [Major3Description], 
     [Student].[Minor1Description] AS [Minor1Description], 
     [Student].[Minor2Description] AS [Minor2Description], 
-    [Student].[Minor3Description] AS [Minor3Description]
+    [Student].[Minor3Description] AS [Minor3Description], 
+    [Student].[Mail_Location] AS [Mail_Location]
     FROM [dbo].[Student] AS [Student]</DefiningQuery>
           </EntitySet>
+          <AssociationSet Name="FK_booking_rides" Association="Self.FK_booking_rides">
+            <End Role="Save_Rides" EntitySet="Save_Rides" />
+            <End Role="Save_Bookings" EntitySet="Save_Bookings" />
+          </AssociationSet>
+          <AssociationSet Name="FK-ride_id" Association="Self.FK-ride_id">
+            <End Role="Transit_Rides" EntitySet="Transit_Rides" />
+            <End Role="Transit_Requests" EntitySet="Transit_Requests" />
+          </AssociationSet>
         </EntityContainer>
       </Schema>
     </edmx:StorageModels>
@@ -1080,6 +1206,30 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="COMMENT_TXT" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
           <Property Name="STATUS" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
         </EntityType>
+        <EntityType Name="Save_Bookings">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="rideID" />
+          </Key>
+          <Property Name="ID" Type="String" MaxLength="25" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="rideID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="isDriver" Type="Byte" Nullable="false" />
+          <NavigationProperty Name="Save_Rides" Relationship="Self.FK_booking_rides" FromRole="Save_Bookings" ToRole="Save_Rides" />
+        </EntityType>
+        <EntityType Name="Save_Rides">
+          <Key>
+            <PropertyRef Name="rideID" />
+          </Key>
+          <Property Name="rideID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="destination" Type="String" MaxLength="72" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="meetingPoint" Type="String" MaxLength="72" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="startTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="endTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="capacity" Type="Int32" Nullable="false" />
+          <Property Name="notes" Type="String" MaxLength="500" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="canceled" Type="Byte" Nullable="false" />
+          <NavigationProperty Name="Save_Bookings" Relationship="Self.FK_booking_rides" FromRole="Save_Rides" ToRole="Save_Bookings" />
+        </EntityType>
         <EntityType Name="Schedule_Control">
           <Key>
             <PropertyRef Name="gordon_id" />
@@ -1144,6 +1294,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="ReadOnly" Type="Int32" Nullable="false" />
           <Property Name="is_police" Type="Int32" Nullable="false" />
           <Property Name="Chapel_Required" Type="Int32" />
+          <Property Name="Mail_Location" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Alumni">
           <Key>
@@ -1305,6 +1456,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="show_pic" Type="Int32" />
           <Property Name="BuildingDescription" Type="String" MaxLength="45" FixedLength="true" Unicode="false" />
           <Property Name="Country" Type="String" MaxLength="60" FixedLength="true" Unicode="false" />
+          <Property Name="Mail_Location" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="JENZ_ACT_CLUB_DEF">
           <Key>
@@ -1363,54 +1515,54 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <PropertyRef Name="ID" />
             <PropertyRef Name="IsMobilePhonePrivate" />
           </Key>
-          <Property Name="ID" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Title" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="FirstName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="MiddleName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="LastName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="Suffix" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="MaidenName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="NickName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="OnOffCampus" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="OnCampusBuilding" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="OnCampusRoom" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="OnCampusPhone" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="OnCampusPrivatePhone" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="OnCampusFax" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="OffCampusStreet1" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="OffCampusStreet2" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="OffCampusCity" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="OffCampusState" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="OffCampusPostalCode" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="OffCampusCountry" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="OffCampusPhone" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="OffCampusFax" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="HomeStreet1" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="HomeStreet2" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="HomeCity" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="HomeState" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="HomePostalCode" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="HomeCountry" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="HomePhone" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="HomeFax" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="Cohort" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="Class" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="KeepPrivate" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="Barcode" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="AdvisorIDs" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="Married" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
-          <Property Name="Commuter" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
-          <Property Name="Major" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="Major2" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="Major3" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="Email" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="Gender" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
-          <Property Name="grad_student" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="ID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MiddleName" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Suffix" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="MaidenName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="NickName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="OnOffCampus" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="OnCampusBuilding" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="OnCampusRoom" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="OnCampusPhone" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="OnCampusPrivatePhone" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="OnCampusFax" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="OffCampusStreet1" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="OffCampusStreet2" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="OffCampusCity" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="OffCampusState" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="OffCampusPostalCode" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
+          <Property Name="OffCampusCountry" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="OffCampusPhone" Type="String" MaxLength="41" FixedLength="false" Unicode="false" />
+          <Property Name="OffCampusFax" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="HomeStreet1" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="HomeStreet2" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="HomeCity" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="HomeState" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="HomePostalCode" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
+          <Property Name="HomeCountry" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="HomePhone" Type="String" MaxLength="41" FixedLength="false" Unicode="false" />
+          <Property Name="HomeFax" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="Cohort" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="Class" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="KeepPrivate" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Barcode" Type="String" MaxLength="14" FixedLength="false" Unicode="false" />
+          <Property Name="AdvisorIDs" Type="String" MaxLength="92" FixedLength="false" Unicode="false" />
+          <Property Name="Married" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="Commuter" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="Major" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="Major2" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="Major3" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Gender" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="grad_student" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="GradDate" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="Minor1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Minor2" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Minor3" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="MobilePhone" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Minor1" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="Minor2" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="Minor3" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="MobilePhone" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
           <Property Name="IsMobilePhonePrivate" Type="Int32" Nullable="false" />
           <Property Name="AD_Username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="show_pic" Type="Int32" />
@@ -1423,7 +1575,36 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="Minor1Description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Minor2Description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Minor3Description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Mail_Location" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
         </EntityType>
+        <Association Name="FK_booking_rides">
+          <End Role="Save_Rides" Type="Self.Save_Rides" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Save_Bookings" Type="Self.Save_Bookings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Save_Rides">
+              <PropertyRef Name="rideID" />
+            </Principal>
+            <Dependent Role="Save_Bookings">
+              <PropertyRef Name="rideID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ride_id">
+          <End Role="Transit_Rides" Type="Self.Transit_Rides" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Transit_Requests" Type="Self.Transit_Requests" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Transit_Rides">
+              <PropertyRef Name="ride_id" />
+            </Principal>
+            <Dependent Role="Transit_Requests">
+              <PropertyRef Name="ride_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="CCTEntities1" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="ACT_INFO" EntityType="Self.ACT_INFO" />
           <EntitySet Name="ADMIN" EntityType="Self.ADMIN" />
@@ -1433,6 +1614,8 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="MEMBERSHIP" EntityType="Self.MEMBERSHIP" />
           <EntitySet Name="MYSCHEDULE" EntityType="Self.MYSCHEDULE" />
           <EntitySet Name="REQUEST" EntityType="Self.REQUEST" />
+          <EntitySet Name="Save_Bookings" EntityType="Self.Save_Bookings" />
+          <EntitySet Name="Save_Rides" EntityType="Self.Save_Rides" />
           <EntitySet Name="Schedule_Control" EntityType="Self.Schedule_Control" />
           <EntitySet Name="C360_SLIDER" EntityType="Self.C360_SLIDER" />
           <EntitySet Name="ACCOUNT" EntityType="Self.ACCOUNT" />
@@ -1449,6 +1632,14 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="PART_DEF" EntityType="Self.PART_DEF" />
           <EntitySet Name="RoomAssign" EntityType="Self.RoomAssign" />
           <EntitySet Name="Student" EntityType="Self.Student" />
+          <AssociationSet Name="FK_booking_rides" Association="Self.FK_booking_rides">
+            <End Role="Save_Rides" EntitySet="Save_Rides" />
+            <End Role="Save_Bookings" EntitySet="Save_Bookings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ride_id" Association="Self.FK_ride_id">
+            <End Role="Transit_Rides" EntitySet="Transit_Rides" />
+            <End Role="Transit_Requests" EntitySet="Transit_Requests" />
+          </AssociationSet>
           <FunctionImport Name="ACTIVE_CLUBS_PER_SESS_ID" ReturnType="Collection(Gordon360.ACTIVE_CLUBS_PER_SESS_ID_Result)">
             <Parameter Name="SESS_CDE" Mode="In" Type="String" />
           </FunctionImport>
@@ -1481,6 +1672,16 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="BEGINTIME" Mode="In" Type="Time" />
             <Parameter Name="ENDTIME" Mode="In" Type="Time" />
           </FunctionImport>
+          <FunctionImport Name="CREATE_RIDE">
+            <Parameter Name="RIDEID" Mode="In" Type="String" />
+            <Parameter Name="DESTINATION" Mode="In" Type="String" />
+            <Parameter Name="MEETINGPOINT" Mode="In" Type="String" />
+            <Parameter Name="STARTTIME" Mode="In" Type="DateTime" />
+            <Parameter Name="ENDTIME" Mode="In" Type="DateTime" />
+            <Parameter Name="CAPACITY" Mode="In" Type="Int32" />
+            <Parameter Name="NOTES" Mode="In" Type="String" />
+            <Parameter Name="CANCELED" Mode="In" Type="Byte" />
+          </FunctionImport>
           <FunctionImport Name="CREATE_SOCIAL_LINKS">
             <Parameter Name="USERNAME" Mode="In" Type="String" />
             <Parameter Name="FACEBOOK" Mode="In" Type="String" />
@@ -1489,15 +1690,25 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="LINKEDIN" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="CURRENT_SESSION" ReturnType="Collection(String)" />
+          <FunctionImport Name="DELETE_BOOKING">
+            <Parameter Name="RIDE_ID" Mode="In" Type="String" />
+            <Parameter Name="ID" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="DELETE_BOOKINGS">
+            <Parameter Name="RIDE_ID" Mode="In" Type="String" />
+          </FunctionImport>
           <FunctionImport Name="DELETE_MYSCHEDULE">
             <Parameter Name="EVENTID" Mode="In" Type="String" />
             <Parameter Name="GORDONID" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="DELETE_RIDE">
+            <Parameter Name="RIDE_ID" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="DINING_INFO_BY_STUDENT_ID" ReturnType="Collection(String)">
             <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
             <Parameter Name="SESS_CDE" Mode="In" Type="String" />
           </FunctionImport>
-          <FunctionImport Name="DISTINCT_ACT_TYPE">
+          <FunctionImport Name="DISTINCT_ACT_TYPE" ReturnType="Collection(String)">
             <Parameter Name="SESS_CDE" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="EMAILS_PER_ACT_CDE" ReturnType="Collection(Gordon360.EMAILS_PER_ACT_CDE_Result)">
@@ -1543,6 +1754,39 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImport Name="REQUESTS_PER_STUDENT_ID" ReturnType="Collection(Gordon360.REQUESTS_PER_STUDENT_ID_Result)">
             <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
           </FunctionImport>
+          <FunctionImport Name="RIDERS_BY_RIDE_ID" ReturnType="Collection(Gordon360.RIDERS_BY_RIDE_ID_Result)">
+            <Parameter Name="RIDE_ID" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_alterdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_creatediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_dropdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(Gordon360.sp_helpdiagramdefinition_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(Gordon360.sp_helpdiagrams_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_renamediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="new_diagramname" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_upgraddiagrams" />
           <FunctionImport Name="STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE" ReturnType="Collection(Gordon360.STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result)">
             <Parameter Name="id_num" Mode="In" Type="Int32" />
             <Parameter Name="sess_cde" Mode="In" Type="String" />
@@ -1558,6 +1802,10 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           </FunctionImport>
           <FunctionImport Name="SUPERVISORS_PER_ID_NUM">
             <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="UPCOMING_RIDES" ReturnType="Collection(Gordon360.UPCOMING_RIDES_Result)" />
+          <FunctionImport Name="UPCOMING_RIDES_BY_STUDENT_ID" ReturnType="Collection(Gordon360.UPCOMING_RIDES_BY_STUDENT_ID_Result)">
+            <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="UPDATE_ACT_INFO" />
           <FunctionImport Name="UPDATE_DESCRIPTION">
@@ -1600,6 +1848,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImport Name="UPDATE_TIMESTAMP">
             <Parameter Name="ID" Mode="In" Type="Int32" />
             <Parameter Name="VALUE" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="VALID_DRIVES_BY_ID" ReturnType="Collection(Int32)">
+            <Parameter Name="DRIVERID" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="VICTORY_PROMISE_BY_STUDENT_ID" ReturnType="Collection(Gordon360.VICTORY_PROMISE_BY_STUDENT_ID_Result)">
             <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
@@ -1748,6 +1999,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="Int32" Name="IDNumber" Nullable="false" />
           <Property Type="String" Name="FirstName" Nullable="true" MaxLength="50" />
           <Property Type="String" Name="LastName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Mail_Location" Nullable="false" MaxLength="20" />
           <Property Type="String" Name="Participation" Nullable="false" MaxLength="5" />
           <Property Type="String" Name="ParticipationDescription" Nullable="false" MaxLength="45" />
           <Property Type="DateTime" Name="StartDate" Nullable="false" Precision="23" />
@@ -1844,6 +2096,22 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="DateTime" Name="DateSent" Nullable="false" Precision="23" />
           <Property Type="String" Name="RequestApproved" Nullable="false" MaxLength="20" />
         </ComplexType>
+        <ComplexType Name="RIDERS_BY_RIDE_ID_Result">
+          <Property Type="String" Name="rideID" Nullable="false" MaxLength="10" />
+          <Property Type="String" Name="ID" Nullable="false" MaxLength="25" />
+          <Property Type="Byte" Name="isDriver" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="sp_helpdiagramdefinition_Result">
+          <Property Type="Int32" Name="version" Nullable="true" />
+          <Property Type="Binary" Name="definition" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_helpdiagrams_Result">
+          <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+          <Property Type="Int32" Name="OwnerID" Nullable="false" />
+        </ComplexType>
         <ComplexType Name="STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result">
           <Property Type="Int32" Name="ID_NUM" Nullable="false" />
           <Property Type="String" Name="CRS_CDE" Nullable="false" MaxLength="30" />
@@ -1857,6 +2125,25 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="String" Name="FRIDAY_CDE" Nullable="true" MaxLength="1" />
           <Property Type="Time" Name="BEGIN_TIME" Nullable="true" />
           <Property Type="Time" Name="END_TIME" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="UPCOMING_RIDES_Result">
+          <Property Type="String" Name="rideID" Nullable="false" MaxLength="10" />
+          <Property Type="String" Name="destination" Nullable="false" MaxLength="72" />
+          <Property Type="String" Name="meetingPoint" Nullable="false" MaxLength="72" />
+          <Property Type="DateTime" Name="startTime" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="endTime" Nullable="false" Precision="23" />
+          <Property Type="Int32" Name="capacity" Nullable="false" />
+          <Property Type="String" Name="notes" Nullable="false" MaxLength="500" />
+          <Property Type="Byte" Name="canceled" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="UPCOMING_RIDES_BY_STUDENT_ID_Result">
+          <Property Type="String" Name="rideID" Nullable="false" MaxLength="10" />
+          <Property Type="Int32" Name="capacity" Nullable="false" />
+          <Property Type="String" Name="destination" Nullable="false" MaxLength="72" />
+          <Property Type="String" Name="meetingPoint" Nullable="false" MaxLength="72" />
+          <Property Type="DateTime" Name="startPoint" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="endTime" Nullable="false" Precision="23" />
+          <Property Type="Byte" Name="isCanceled" Nullable="false" />
         </ComplexType>
         <ComplexType Name="VICTORY_PROMISE_BY_STUDENT_ID_Result">
           <Property Type="Int32" Name="TOTAL_VP_IM_SCORE" Nullable="true" />
@@ -1989,6 +2276,29 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Save_Bookings">
+            <EntityTypeMapping TypeName="Gordon360.Save_Bookings">
+              <MappingFragment StoreEntitySet="Save_Bookings">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="rideID" ColumnName="rideID" />
+                <ScalarProperty Name="isDriver" ColumnName="isDriver" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Save_Rides">
+            <EntityTypeMapping TypeName="Gordon360.Save_Rides">
+              <MappingFragment StoreEntitySet="Save_Rides">
+                <ScalarProperty Name="rideID" ColumnName="rideID" />
+                <ScalarProperty Name="destination" ColumnName="destination" />
+                <ScalarProperty Name="meetingPoint" ColumnName="meetingPoint" />
+                <ScalarProperty Name="startTime" ColumnName="startTime" />
+                <ScalarProperty Name="endTime" ColumnName="endTime" />
+                <ScalarProperty Name="capacity" ColumnName="capacity" />
+                <ScalarProperty Name="notes" ColumnName="notes" />
+                <ScalarProperty Name="canceled" ColumnName="canceled" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Schedule_Control">
             <EntityTypeMapping TypeName="Gordon360.Schedule_Control">
               <MappingFragment StoreEntitySet="Schedule_Control">
@@ -2036,6 +2346,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="ReadOnly" ColumnName="ReadOnly" />
                 <ScalarProperty Name="is_police" ColumnName="is_police" />
                 <ScalarProperty Name="Chapel_Required" ColumnName="Chapel_Required" />
+                <ScalarProperty Name="Mail_Location" ColumnName="Mail_Location" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2200,6 +2511,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="show_pic" ColumnName="show_pic" />
                 <ScalarProperty Name="BuildingDescription" ColumnName="BuildingDescription" />
                 <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="Mail_Location" ColumnName="Mail_Location" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2307,6 +2619,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="Minor1Description" ColumnName="Minor1Description" />
                 <ScalarProperty Name="Minor2Description" ColumnName="Minor2Description" />
                 <ScalarProperty Name="Minor3Description" ColumnName="Minor3Description" />
+                <ScalarProperty Name="Mail_Location" ColumnName="Mail_Location" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2416,9 +2729,13 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             </ResultMapping>
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="CREATE_MYSCHEDULE" FunctionName="Gordon360.Store.CREATE_MYSCHEDULE" />
+          <FunctionImportMapping FunctionImportName="CREATE_RIDE" FunctionName="Gordon360.Store.CREATE_RIDE" />
           <FunctionImportMapping FunctionImportName="CREATE_SOCIAL_LINKS" FunctionName="Gordon360.Store.CREATE_SOCIAL_LINKS" />
           <FunctionImportMapping FunctionImportName="CURRENT_SESSION" FunctionName="Gordon360.Store.CURRENT_SESSION" />
+          <FunctionImportMapping FunctionImportName="DELETE_BOOKING" FunctionName="Gordon360.Store.DELETE_BOOKING" />
+          <FunctionImportMapping FunctionImportName="DELETE_BOOKINGS" FunctionName="Gordon360.Store.DELETE_BOOKINGS" />
           <FunctionImportMapping FunctionImportName="DELETE_MYSCHEDULE" FunctionName="Gordon360.Store.DELETE_MYSCHEDULE" />
+          <FunctionImportMapping FunctionImportName="DELETE_RIDE" FunctionName="Gordon360.Store.DELETE_RIDE" />
           <FunctionImportMapping FunctionImportName="DINING_INFO_BY_STUDENT_ID" FunctionName="Gordon360.Store.DINING_INFO_BY_STUDENT_ID" />
           <FunctionImportMapping FunctionImportName="DISTINCT_ACT_TYPE" FunctionName="Gordon360.Store.DISTINCT_ACT_TYPE" />
           <FunctionImportMapping FunctionImportName="EMAILS_PER_ACT_CDE" FunctionName="Gordon360.Store.EMAILS_PER_ACT_CDE">
@@ -2514,6 +2831,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="IDNumber" ColumnName="IDNumber" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Mail_Location" ColumnName="Mail_Location" />
                 <ScalarProperty Name="Participation" ColumnName="Participation" />
                 <ScalarProperty Name="ParticipationDescription" ColumnName="ParticipationDescription" />
                 <ScalarProperty Name="StartDate" ColumnName="StartDate" />
@@ -2636,6 +2954,39 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="RIDERS_BY_RIDE_ID" FunctionName="Gordon360.Store.RIDERS_BY_RIDE_ID">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.RIDERS_BY_RIDE_ID_Result">
+                <ScalarProperty Name="rideID" ColumnName="rideID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="isDriver" ColumnName="isDriver" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="Gordon360.Store.sp_alterdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="Gordon360.Store.sp_creatediagram" />
+          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="Gordon360.Store.sp_dropdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="Gordon360.Store.sp_helpdiagramdefinition">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.sp_helpdiagramdefinition_Result">
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="Gordon360.Store.sp_helpdiagrams">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.sp_helpdiagrams_Result">
+                <ScalarProperty Name="Database" ColumnName="Database" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Owner" ColumnName="Owner" />
+                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="Gordon360.Store.sp_renamediagram" />
+          <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="Gordon360.Store.sp_upgraddiagrams" />
           <FunctionImportMapping FunctionImportName="STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE" FunctionName="Gordon360.Store.STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE">
             <ResultMapping>
               <ComplexTypeMapping TypeName="Gordon360.STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result">
@@ -2658,6 +3009,33 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImportMapping FunctionImportName="SUPERVISOR_PER_SUP_ID" FunctionName="Gordon360.Store.SUPERVISOR_PER_SUP_ID" />
           <FunctionImportMapping FunctionImportName="SUPERVISORS_PER_ACT_CDE" FunctionName="Gordon360.Store.SUPERVISORS_PER_ACT_CDE" />
           <FunctionImportMapping FunctionImportName="SUPERVISORS_PER_ID_NUM" FunctionName="Gordon360.Store.SUPERVISORS_PER_ID_NUM" />
+          <FunctionImportMapping FunctionImportName="UPCOMING_RIDES" FunctionName="Gordon360.Store.UPCOMING_RIDES">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.UPCOMING_RIDES_Result">
+                <ScalarProperty Name="rideID" ColumnName="rideID" />
+                <ScalarProperty Name="destination" ColumnName="destination" />
+                <ScalarProperty Name="meetingPoint" ColumnName="meetingPoint" />
+                <ScalarProperty Name="startTime" ColumnName="startTime" />
+                <ScalarProperty Name="endTime" ColumnName="endTime" />
+                <ScalarProperty Name="capacity" ColumnName="capacity" />
+                <ScalarProperty Name="notes" ColumnName="notes" />
+                <ScalarProperty Name="canceled" ColumnName="canceled" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="UPCOMING_RIDES_BY_STUDENT_ID" FunctionName="Gordon360.Store.UPCOMING_RIDES_BY_STUDENT_ID">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.UPCOMING_RIDES_BY_STUDENT_ID_Result">
+                <ScalarProperty Name="rideID" ColumnName="rideID" />
+                <ScalarProperty Name="capacity" ColumnName="capacity" />
+                <ScalarProperty Name="destination" ColumnName="destination" />
+                <ScalarProperty Name="meetingPoint" ColumnName="meetingPoint" />
+                <ScalarProperty Name="startPoint" ColumnName="startPoint" />
+                <ScalarProperty Name="endTime" ColumnName="endTime" />
+                <ScalarProperty Name="isCanceled" ColumnName="isCanceled" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="UPDATE_ACT_INFO" FunctionName="Gordon360.Store.UPDATE_ACT_INFO" />
           <FunctionImportMapping FunctionImportName="UPDATE_DESCRIPTION" FunctionName="Gordon360.Store.UPDATE_DESCRIPTION" />
           <FunctionImportMapping FunctionImportName="UPDATE_MYSCHEDULE" FunctionName="Gordon360.Store.UPDATE_MYSCHEDULE" />
@@ -2666,6 +3044,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImportMapping FunctionImportName="UPDATE_SCHEDULE_PRIVACY" FunctionName="Gordon360.Store.UPDATE_SCHEDULE_PRIVACY" />
           <FunctionImportMapping FunctionImportName="UPDATE_SHOW_PIC" FunctionName="Gordon360.Store.UPDATE_SHOW_PIC" />
           <FunctionImportMapping FunctionImportName="UPDATE_TIMESTAMP" FunctionName="Gordon360.Store.UPDATE_TIMESTAMP" />
+          <FunctionImportMapping FunctionImportName="VALID_DRIVES_BY_ID" FunctionName="Gordon360.Store.VALID_DRIVES_BY_ID" />
           <FunctionImportMapping FunctionImportName="VICTORY_PROMISE_BY_STUDENT_ID" FunctionName="Gordon360.Store.VICTORY_PROMISE_BY_STUDENT_ID">
             <ResultMapping>
               <ComplexTypeMapping TypeName="Gordon360.VICTORY_PROMISE_BY_STUDENT_ID_Result">

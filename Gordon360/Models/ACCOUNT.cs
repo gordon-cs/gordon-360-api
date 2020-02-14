@@ -30,5 +30,6 @@ namespace Gordon360.Models
         public int ReadOnly { get; set; }
         public int is_police { get; set; }
         public Nullable<int> Chapel_Required { get; set; }
+        public string Mail_Location { get; set; }
     }
 }

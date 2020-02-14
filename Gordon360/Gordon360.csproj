@@ -355,6 +355,8 @@
     <Compile Include="Models\Schedule_Control.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\sp_helpdiagramdefinition_Result.cs" />
+    <Compile Include="Models\sp_helpdiagrams_Result.cs" />
     <Compile Include="Models\Student.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -362,7 +364,9 @@
     <Compile Include="Models\STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs" />
+    <Compile Include="Models\sysdiagrams.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\VICTORY_PROMISE_BY_STUDENT_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -516,7 +520,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:6769</IISUrl>
+          <IISUrl>http://localhost:6069</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
