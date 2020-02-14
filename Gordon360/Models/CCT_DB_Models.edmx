@@ -148,6 +148,40 @@
           <Property Name="Description" Type="varchar" MaxLength="200" />
           <Property Name="gordon_id" Type="varchar" MaxLength="10" Nullable="false" />
         </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="Transit_Requests">
+          <Key>
+            <PropertyRef Name="request_id" />
+          </Key>
+          <Property Name="transaction_datetime" Type="datetime" Nullable="false" />
+          <Property Name="request_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="requester_username" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ride_id" Type="int" Nullable="false" />
+          <Property Name="requester_note" Type="varchar(max)" />
+          <Property Name="is_confirmed" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Transit_Rides">
+          <Key>
+            <PropertyRef Name="ride_id" />
+          </Key>
+          <Property Name="transaction_datetime" Type="datetime" Nullable="false" />
+          <Property Name="ride_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="driver_username" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="max_capacity" Type="int" Nullable="false" />
+          <Property Name="origin" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="destination" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="departure_datetime" Type="datetime" Nullable="false" />
+          <Property Name="driver_note" Type="varchar(max)" />
+        </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.360_SLIDER' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="360_SLIDER">
@@ -184,8 +218,8 @@ warning 6002: The table/view 'CCT.dbo.ACCOUNT' does not have a primary key defin
           <Key>
             <PropertyRef Name="account_id" />
             <PropertyRef Name="gordon_id" />
-            <PropertyRef Name="primary_photo" />
-            <PropertyRef Name="preferred_photo" />
+            <PropertyRef Name="Primary_Photo" />
+            <PropertyRef Name="Preferred_Photo" />
             <PropertyRef Name="show_pic" />
             <PropertyRef Name="Private" />
             <PropertyRef Name="ReadOnly" />
@@ -200,8 +234,8 @@ warning 6002: The table/view 'CCT.dbo.ACCOUNT' does not have a primary key defin
           <Property Name="AD_Username" Type="varchar" MaxLength="50" />
           <Property Name="account_type" Type="varchar" MaxLength="20" />
           <Property Name="office_hours" Type="varchar" MaxLength="75" />
-          <Property Name="primary_photo" Type="int" Nullable="false" />
-          <Property Name="preferred_photo" Type="int" Nullable="false" />
+          <Property Name="Primary_Photo" Type="int" Nullable="false" />
+          <Property Name="Preferred_Photo" Type="int" Nullable="false" />
           <Property Name="show_pic" Type="int" Nullable="false" />
           <Property Name="Private" Type="int" Nullable="false" />
           <Property Name="ReadOnly" Type="int" Nullable="false" />
@@ -647,6 +681,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <Function Name="EVENTS_BY_STUDENT_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="STU_USERNAME" Type="char" Mode="In" />
         </Function>
+        <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
         <Function Name="GRP_ADMIN_EMAILS_PER_ACT_CDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ACT_CDE" Type="char" Mode="In" />
           <Parameter Name="SESS_CDE" Type="char" Mode="In" />
@@ -796,6 +831,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="Save_Bookings" EntityType="Self.Save_Bookings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Save_Rides" EntityType="Self.Save_Rides" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Schedule_Control" EntityType="Self.Schedule_Control" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="360_SLIDER" EntityType="Self.360_SLIDER" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [360_SLIDER].[strFileName] AS [strFileName], 
@@ -823,8 +859,8 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [ACCOUNT].[AD_Username] AS [AD_Username], 
     [ACCOUNT].[account_type] AS [account_type], 
     [ACCOUNT].[office_hours] AS [office_hours], 
-    [ACCOUNT].[primary_photo] AS [primary_photo], 
-    [ACCOUNT].[preferred_photo] AS [preferred_photo], 
+    [ACCOUNT].[Primary_Photo] AS [Primary_Photo], 
+    [ACCOUNT].[Preferred_Photo] AS [Preferred_Photo], 
     [ACCOUNT].[show_pic] AS [show_pic], 
     [ACCOUNT].[Private] AS [Private], 
     [ACCOUNT].[ReadOnly] AS [ReadOnly], 
@@ -920,6 +956,20 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [Dining_Meal_Choice_Desc].[Meal_Choice_Id] AS [Meal_Choice_Id], 
     [Dining_Meal_Choice_Desc].[Meal_Choice_Desc] AS [Meal_Choice_Desc]
     FROM [dbo].[Dining_Meal_Choice_Desc] AS [Dining_Meal_Choice_Desc]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Dining_Meal_Plan_Id_Mapping" EntityType="Self.Dining_Meal_Plan_Id_Mapping" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Dining_Meal_Plan_Id_Mapping].[meal_plan_id] AS [meal_plan_id], 
+    [Dining_Meal_Plan_Id_Mapping].[meal_choice_id] AS [meal_choice_id]
+    FROM [dbo].[Dining_Meal_Plan_Id_Mapping] AS [Dining_Meal_Plan_Id_Mapping]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Dining_Mealplans" EntityType="Self.Dining_Mealplans" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Dining_Mealplans].[Meal_Plan_Description] AS [Meal_Plan_Description], 
+    [Dining_Mealplans].[Meal_Plan_Type] AS [Meal_Plan_Type], 
+    [Dining_Mealplans].[Meal_Plan_ID] AS [Meal_Plan_ID], 
+    [Dining_Mealplans].[Meal_Plan_Initial_Balance] AS [Meal_Plan_Initial_Balance]
+    FROM [dbo].[Dining_Mealplans] AS [Dining_Mealplans]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="Dining_Student_Meal_Choice" EntityType="Self.Dining_Student_Meal_Choice" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -1238,6 +1288,42 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="ModifiedTimeStamp" Type="DateTime" Precision="3" />
           <Property Name="Description" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="gordon_id" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Transit_Requests">
+          <Key>
+            <PropertyRef Name="request_id" />
+          </Key>
+          <Property Name="transaction_datetime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="request_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="requester_username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ride_id" Type="Int32" Nullable="false" />
+          <Property Name="requester_note" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="is_confirmed" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Transit_Rides" Relationship="Self.FK_ride_id" FromRole="Transit_Requests" ToRole="Transit_Rides" />
+        </EntityType>
+        <EntityType Name="Transit_Rides">
+          <Key>
+            <PropertyRef Name="ride_id" />
+          </Key>
+          <Property Name="transaction_datetime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ride_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="driver_username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="max_capacity" Type="Int32" Nullable="false" />
+          <Property Name="origin" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="destination" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="departure_datetime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="driver_note" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Transit_Requests" Relationship="Self.FK_ride_id" FromRole="Transit_Rides" ToRole="Transit_Requests" />
         </EntityType>
         <EntityType Name="C360_SLIDER">
           <Key>
