@@ -36,6 +36,7 @@ namespace Gordon360.Models
         public virtual DbSet<MYSCHEDULE> MYSCHEDULE { get; set; }
         public virtual DbSet<REQUEST> REQUEST { get; set; }
         public virtual DbSet<Schedule_Control> Schedule_Control { get; set; }
+        public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         public virtual DbSet<C360_SLIDER> C360_SLIDER { get; set; }
         public virtual DbSet<ACCOUNT> ACCOUNT { get; set; }
         public virtual DbSet<Alumni> Alumni { get; set; }
@@ -44,6 +45,8 @@ namespace Gordon360.Models
         public virtual DbSet<CM_SESSION_MSTR> CM_SESSION_MSTR { get; set; }
         public virtual DbSet<Countries> Countries { get; set; }
         public virtual DbSet<Dining_Meal_Choice_Desc> Dining_Meal_Choice_Desc { get; set; }
+        public virtual DbSet<Dining_Meal_Plan_Id_Mapping> Dining_Meal_Plan_Id_Mapping { get; set; }
+        public virtual DbSet<Dining_Mealplans> Dining_Mealplans { get; set; }
         public virtual DbSet<Dining_Student_Meal_Choice> Dining_Student_Meal_Choice { get; set; }
         public virtual DbSet<DiningInfo> DiningInfo { get; set; }
         public virtual DbSet<FacStaff> FacStaff { get; set; }
