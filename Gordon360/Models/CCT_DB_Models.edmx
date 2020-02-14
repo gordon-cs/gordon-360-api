@@ -839,6 +839,8 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="Save_Rides" EntityType="Self.Save_Rides" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Schedule_Control" EntityType="Self.Schedule_Control" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Transit_Requests" EntityType="Self.Transit_Requests" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Transit_Rides" EntityType="Self.Transit_Rides" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="360_SLIDER" EntityType="Self.360_SLIDER" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [360_SLIDER].[strFileName] AS [strFileName], 
@@ -1293,7 +1295,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           </Key>
           <Property Name="IsSchedulePrivate" Type="Int32" Nullable="false" />
           <Property Name="ModifiedTimeStamp" Type="DateTime" Precision="3" />
-          <Property Name="Description" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="gordon_id" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
         </EntityType>
         <EntityType Name="sysdiagrams">
@@ -1728,6 +1730,8 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="Save_Rides" EntityType="Self.Save_Rides" />
           <EntitySet Name="Schedule_Control" EntityType="Self.Schedule_Control" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+          <EntitySet Name="Transit_Requests" EntityType="Self.Transit_Requests" />
+          <EntitySet Name="Transit_Rides" EntityType="Self.Transit_Rides" />
           <EntitySet Name="C360_SLIDER" EntityType="Self.C360_SLIDER" />
           <EntitySet Name="ACCOUNT" EntityType="Self.ACCOUNT" />
           <EntitySet Name="Alumni" EntityType="Self.Alumni" />
@@ -2430,6 +2434,32 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
                 <ScalarProperty Name="version" ColumnName="version" />
                 <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Transit_Requests">
+            <EntityTypeMapping TypeName="Gordon360.Transit_Requests">
+              <MappingFragment StoreEntitySet="Transit_Requests">
+                <ScalarProperty Name="transaction_datetime" ColumnName="transaction_datetime" />
+                <ScalarProperty Name="request_id" ColumnName="request_id" />
+                <ScalarProperty Name="requester_username" ColumnName="requester_username" />
+                <ScalarProperty Name="ride_id" ColumnName="ride_id" />
+                <ScalarProperty Name="requester_note" ColumnName="requester_note" />
+                <ScalarProperty Name="is_confirmed" ColumnName="is_confirmed" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Transit_Rides">
+            <EntityTypeMapping TypeName="Gordon360.Transit_Rides">
+              <MappingFragment StoreEntitySet="Transit_Rides">
+                <ScalarProperty Name="transaction_datetime" ColumnName="transaction_datetime" />
+                <ScalarProperty Name="ride_id" ColumnName="ride_id" />
+                <ScalarProperty Name="driver_username" ColumnName="driver_username" />
+                <ScalarProperty Name="max_capacity" ColumnName="max_capacity" />
+                <ScalarProperty Name="origin" ColumnName="origin" />
+                <ScalarProperty Name="destination" ColumnName="destination" />
+                <ScalarProperty Name="departure_datetime" ColumnName="departure_datetime" />
+                <ScalarProperty Name="driver_note" ColumnName="driver_note" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
