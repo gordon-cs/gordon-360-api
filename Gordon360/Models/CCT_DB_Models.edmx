@@ -145,7 +145,7 @@
           </Key>
           <Property Name="IsSchedulePrivate" Type="int" Nullable="false" />
           <Property Name="ModifiedTimeStamp" Type="datetime" />
-          <Property Name="Description" Type="varchar" MaxLength="200" />
+          <Property Name="Description" Type="varchar" MaxLength="100" />
           <Property Name="gordon_id" Type="varchar" MaxLength="10" Nullable="false" />
         </EntityType>
         <EntityType Name="sysdiagrams">
@@ -352,19 +352,26 @@ warning 6002: The table/view 'CCT.dbo.Dining_Meal_Choice_Desc' does not have a p
           <Property Name="Meal_Choice_Desc" Type="char" MaxLength="60" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6013: The table/view 'CCT.dbo.Dining_Meal_Plan_Id_Mapping' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+warning 6002: The table/view 'CCT.dbo.Dining_Meal_Plan_Id_Mapping' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Dining_Meal_Plan_Id_Mapping">
-          <Property Name="meal_plan_id" Type="varchar" MaxLength="6" />
-          <Property Name="meal_choice_id" Type="varchar" MaxLength="2" />
-        </EntityType>-->
+          <Key>
+            <PropertyRef Name="meal_plan_id" />
+            <PropertyRef Name="meal_choice_id" />
+          </Key>
+          <Property Name="meal_plan_id" Type="varchar" MaxLength="6" Nullable="false" />
+          <Property Name="meal_choice_id" Type="varchar" MaxLength="2" Nullable="false" />
+        </EntityType>
         <!--Errors Found During Generation:
-warning 6013: The table/view 'CCT.dbo.Dining_Mealplans' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+warning 6002: The table/view 'CCT.dbo.Dining_Mealplans' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Dining_Mealplans">
+          <Key>
+            <PropertyRef Name="Meal_Plan_ID" />
+          </Key>
           <Property Name="Meal_Plan_Description" Type="varchar" MaxLength="150" />
           <Property Name="Meal_Plan_Type" Type="varchar" MaxLength="10" />
-          <Property Name="Meal_Plan_ID" Type="varchar" MaxLength="6" />
+          <Property Name="Meal_Plan_ID" Type="varchar" MaxLength="6" Nullable="false" />
           <Property Name="Meal_Plan_Initial_Balance" Type="int" />
-        </EntityType>-->
+        </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.Dining_Student_Meal_Choice' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Dining_Student_Meal_Choice">
@@ -2456,8 +2463,8 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="AD_Username" ColumnName="AD_Username" />
                 <ScalarProperty Name="account_type" ColumnName="account_type" />
                 <ScalarProperty Name="office_hours" ColumnName="office_hours" />
-                <ScalarProperty Name="Primary_Photo" ColumnName="primary_photo" />
-                <ScalarProperty Name="Preferred_Photo" ColumnName="preferred_photo" />
+                <ScalarProperty Name="Primary_Photo" ColumnName="Primary_Photo" />
+                <ScalarProperty Name="Preferred_Photo" ColumnName="Preferred_Photo" />
                 <ScalarProperty Name="show_pic" ColumnName="show_pic" />
                 <ScalarProperty Name="Private" ColumnName="Private" />
                 <ScalarProperty Name="ReadOnly" ColumnName="ReadOnly" />
