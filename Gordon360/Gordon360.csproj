@@ -439,6 +439,7 @@
     </Compile>
     <Compile Include="Models\ViewModels\ActiveJobSelectionParametersModel.cs" />
     <Compile Include="Models\ViewModels\ActiveJobViewModel.cs" />
+    <Compile Include="Models\ViewModels\OverlappingShiftIdViewModel.cs" />
     <Compile Include="Models\ViewModels\ShiftToDeleteViewModel.cs" />
     <Compile Include="Models\ViewModels\ShiftToSubmitViewModel.cs" />
     <Compile Include="Models\ViewModels\ShiftViewModel.cs" />

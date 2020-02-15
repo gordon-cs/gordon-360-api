@@ -216,6 +216,45 @@
             </summary>
             <returns>The result of deleting the shift</returns>
         </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.checkForOverlap(Gordon360.Models.ViewModels.ShiftViewModel)">
+            <summary>
+            Check for shift overlapping with entered time
+            </summary>
+        </member>
+        <member name="M:Gordon360.ApiControllers.SaveController.GetUpcomingRides">
+            <summary>
+             Gets all upcoming ride objects
+            </summary>
+            <returns>A IEnumerable of rides objects</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.SaveController.GetUpcomingRidesForUser">
+            <summary>
+             Gets all upcoming ride objects for a user
+            </summary>
+            <returns>A IEnumerable of rides objects</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.SaveController.PostRide(Gordon360.Models.Save_Rides)">
+            <summary>
+             Create new ride object for a user
+            </summary>
+            <returns>Successfully posted ride object</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.SaveController.DeleteRide(System.String)">
+            <summary>Delete an existing ride item</summary>
+            <param name="rideID">The identifier for the ride to be deleted</param>
+            <remarks>Calls the server to make a call and remove the given ride from the database</remarks>
+        </member>
+        <member name="M:Gordon360.ApiControllers.SaveController.PostBooking(Gordon360.Models.Save_Bookings)">
+            <summary>
+             Create new booking object for a user
+            </summary>
+            <returns>Successfully posted booking object</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.SaveController.DeleteBooking(System.String)">
+            <summary>Delete an existing booking item</summary>
+            <param name="rideID">The identifier for the booking to be deleted</param>
+            <remarks>Calls the server to make a call and remove the given booking from the database</remarks>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ContentManagementController.GetSliderContent">
             <summary>Get all the slider content for the dashboard slider</summary>
             <returns>A list of all the slides for the slider</returns>

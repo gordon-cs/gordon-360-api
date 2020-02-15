@@ -188,5 +188,27 @@ namespace Gordon360.ApiControllers
             }
             return Ok(result);
         }
+
+        /// <summary>
+        /// Check for shift overlapping with entered time
+        /// </summary>
+        [HttpPost]
+        [Route("overlapShiftCheck")]
+        public IHttpActionResult checkForOverlap([FromBody] ShiftViewModel shiftDetails)
+        {
+            IEnumerable<OverlappingShiftIdViewModel> result = null;
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("Checking for overlapping shifts");
+                result = _jobsService.checkForOverlappingShift(shiftDetails.ID_NUM, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME);
+            }
+            catch(Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                return InternalServerError();
+            }
+
+            return Ok(result);
+        }
     }
 }
