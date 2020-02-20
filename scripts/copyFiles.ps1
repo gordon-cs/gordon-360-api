@@ -6,7 +6,7 @@ $cctpass = ConvertTo-SecureString $env:DEPLOY_PASSWORD -AsPlainText -Force
 $credential = New-Object System.Management.Automation.PSCredential ($env:DEPLOY_PASSWORD, $cctpass)
 echo "Adding deployment server to trusted hosts file..."
 $trustedHosts = (Get-Item WSMan:\localhost\Client\TrustedHosts).Value
-Set-Item wsman:\localhost\client\trustedhosts "$trustedHosts, $env:DEPLOY_SERVER" -Force
+Set-Item wsman:\localhost\client\trustedhosts "$env:DEPLOY_SERVER" -Force
 echo "Opening remote session..."
 $session = New-PSSession -ComputerName $env:DEPLOY-_SERVER -Credential $credential -SessionOption (New-PSSessionOption -SkipCACheck -SkipCNCheck -SkipRevocationCheck)
 echo "Copying files to remote destination..."
