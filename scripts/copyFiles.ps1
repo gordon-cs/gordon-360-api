@@ -8,9 +8,16 @@ echo "Adding deployment server to trusted hosts file..."
 $trustedHosts = (Get-Item WSMan:\localhost\Client\TrustedHosts).Value
 Set-Item wsman:\localhost\client\trustedhosts "$env:DEPLOY_SERVER" -Force
 echo "Opening remote session..."
-$session = New-PSSession -ComputerName $env:DEPLOY_SERVER -Credential $credential -SessionOption (New-PSSessionOption -SkipCACheck -SkipCNCheck -SkipRevocationCheck)
-echo "Copying files to remote destination..."
-cp -Path .\* -Destination $env:TEST_COPY_DESTINATION -ToSession $session
-echo "Closing remote Powershell session..."
-$session | Remove-PSSession
-echo "Done"
+try {
+  $session = New-PSSession -ComputerName $env:DEPLOY_SERVER -Credential $credential -SessionOption (New-PSSessionOption -SkipCACheck -SkipCNCheck -SkipRevocationCheck)
+  echo "Copying files to remote destination..."
+  cp -Path .\* -Destination $env:TEST_COPY_DESTINATION -ToSession $session
+  echo "Closing remote Powershell session..."
+  $session | Remove-PSSession
+  echo "Done"
+  exit 0
+}
+catch {
+    echo "Copy failed"
+    exit 1
+}
