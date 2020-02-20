@@ -1,3 +1,4 @@
+echo $env:TEST_COPY_DESTINATION
 echo "Entering build directory..."
 cd $env:TRAVIS_BUILD_DIR
 echo "Creating credential object..."
