@@ -9,4 +9,4 @@ REM Execute MSBuild to build the solution
 
 echo "Testing ability to copy to remote server..."
 @ECHO off
-powershell -File ./scripts/copyFiles.ps1
+powershell -ExecutionPolicy Bypass -File ./scripts/copyFiles.ps1
