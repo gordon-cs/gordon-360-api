@@ -1,5 +1,5 @@
 echo "Build directory:"
-echo %TRAVIS_BUILD_DIR
+echo $TRAVIS_BUILD_DIR
 
 REM Restore dependencies needed to build the solution
 nuget restore Gordon360.sln
