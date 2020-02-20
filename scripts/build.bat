@@ -9,4 +9,4 @@ REM Execute MSBuild to build the solution
 
 echo "Testing ability to copy to remote server..."
 @ECHO off
-powershell -File ./copyFiles.ps1
+powershell -File './copyFiles.ps1'
