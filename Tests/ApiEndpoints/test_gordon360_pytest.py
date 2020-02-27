@@ -41,8 +41,8 @@ FILE_PATH = '\\gotrain\pref_photos'
 FILE_NAME = 'profile.jpg'
 
 # API 
-#hostURL = 'https://360ApiTrain.gordon.edu/'
-hostURL = 'http://localhost:7777/'
+hostURL = 'https://360ApiTrain.gordon.edu/'
+#hostURL = 'http://localhost:7777/'
 
 # Constants
 LEADERSHIP_POSITIONS = ['CAPT','CODIR','CORD','DIREC','PRES','VICEC','VICEP']
@@ -328,7 +328,7 @@ class Test_allScheduleTest(testCase):
             response.json()
         except ValueError:
             pytest.fail('Expected Json, got {0}.'.format(response.text))
-        assert response.json()[0]["GORDON_ID"] == str(my_id_number)
+        assert response.json()[0]["CRS_TITLE"] == "SUMMER PRACTICUM COMPUTER SCIENCE"
 
 
 #    Get all schedule objects of a user with username `username` as a parameter.
@@ -806,9 +806,9 @@ class Test_allActivityTest(testCase):
             pytest.fail('Expected list, got {0}.'.format(response.json()))
         assert response.json()[0]["ActivityCode"] == "360"
         assert response.json()[0]["ActivityDescription"] == "360.gordon.edu"
-        assert response.json()[0]["ActivityImagePath"] == "https://360api.gordon.edu/browseable/uploads/Default/activityImage.png"
+        assert response.json()[0]["ActivityImagePath"] == "https://360apitrain.gordon.edu/browseable/uploads/360/canvasImage.png"
         assert response.json()[0]["ActivityBlurb"] == ""
-        assert response.json()[0]["ActivityURL"] == ""
+        assert response.json()[0]["ActivityURL"] == "http://360.gordon.edu"
         assert response.json()[0]["ActivityType"] == "STU"
         assert response.json()[0]["ActivityTypeDescription"] == "Student Life"
         assert response.json()[0]["Privacy"] == False
@@ -830,9 +830,9 @@ class Test_allActivityTest(testCase):
                 pytest.fail('Expected Json response body, got {0}.'.format(respons.text))
         assert response.json()["ActivityCode"] == "360"
         assert response.json()["ActivityDescription"] == "360.gordon.edu"
-        assert response.json()["ActivityImagePath"] == "https://360api.gordon.edu/browseable/uploads/Default/activityImage.png"
+        assert response.json()["ActivityImagePath"] == "https://360apitrain.gordon.edu/browseable/uploads/360/canvasImage.png"
         assert response.json()["ActivityBlurb"] == ""
-        assert response.json()["ActivityURL"] == ""
+        assert response.json()["ActivityURL"] == "http://360.gordon.edu"
         assert response.json()["ActivityType"] == "STU"
         assert response.json()["ActivityTypeDescription"] == "Student Life"
         assert response.json()["Privacy"] == False
@@ -1061,7 +1061,7 @@ class Test_allMembershipTest(testCase):
             pytest.fail('Expected Json response, got {0}.'.format(response.text))
         if not (type(response.json()) is list):
             pytest.fail('Response was not a list')
-        assert response.json()[0]["ActivityCode"] == 'AFROHAM'
+        assert response.json()[0]["ActivityCode"] == '360'
 
 #    Test retrieving all membership resources as a member
 #    Endpoint -- memberships/
@@ -2323,10 +2323,10 @@ class Test_allSessionTest(testCase):
 
         self.url = hostURL + 'api/sessions/current/'
         current = api.get(self.session, self.url)
-        assert response.json()[-3]["SessionCode"] == current.json()["SessionCode"]
-        assert response.json()[-3]["SessionDescription"] == current.json()["SessionDescription"]
-        assert response.json()[-3]["SessionBeginDate"] == current.json()["SessionBeginDate"]
-        assert response.json()[-3]["SessionEndDate"] == current.json()["SessionEndDate"]
+        assert response.json()[-2]["SessionCode"] == current.json()["SessionCode"]
+        assert response.json()[-2]["SessionDescription"] == current.json()["SessionDescription"]
+        assert response.json()[-2]["SessionBeginDate"] == current.json()["SessionBeginDate"]
+        assert response.json()[-2]["SessionEndDate"] == current.json()["SessionEndDate"]
 
 #    Verify that an activity leader can get a session object
 #    Endpoint -- api/sessions/:id

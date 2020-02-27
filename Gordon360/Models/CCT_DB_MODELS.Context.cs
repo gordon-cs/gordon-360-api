@@ -36,6 +36,7 @@ namespace Gordon360.Models
         public virtual DbSet<MYSCHEDULE> MYSCHEDULE { get; set; }
         public virtual DbSet<REQUEST> REQUEST { get; set; }
         public virtual DbSet<Schedule_Control> Schedule_Control { get; set; }
+        public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         public virtual DbSet<C360_SLIDER> C360_SLIDER { get; set; }
         public virtual DbSet<ACCOUNT> ACCOUNT { get; set; }
         public virtual DbSet<Alumni> Alumni { get; set; }
@@ -44,6 +45,8 @@ namespace Gordon360.Models
         public virtual DbSet<CM_SESSION_MSTR> CM_SESSION_MSTR { get; set; }
         public virtual DbSet<Countries> Countries { get; set; }
         public virtual DbSet<Dining_Meal_Choice_Desc> Dining_Meal_Choice_Desc { get; set; }
+        public virtual DbSet<Dining_Meal_Plan_Id_Mapping> Dining_Meal_Plan_Id_Mapping { get; set; }
+        public virtual DbSet<Dining_Mealplans> Dining_Mealplans { get; set; }
         public virtual DbSet<Dining_Student_Meal_Choice> Dining_Student_Meal_Choice { get; set; }
         public virtual DbSet<DiningInfo> DiningInfo { get; set; }
         public virtual DbSet<FacStaff> FacStaff { get; set; }
@@ -173,6 +176,43 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("CREATE_MYSCHEDULE", eVENTIDParameter, gORDONIDParameter, lOCATIONParameter, dESCRIPTIONParameter, mON_CDEParameter, tUE_CDEParameter, wED_CDEParameter, tHU_CDEParameter, fRI_CDEParameter, sAT_CDEParameter, sUN_CDEParameter, iS_ALLDAYParameter, bEGINTIMEParameter, eNDTIMEParameter);
         }
     
+        public virtual int CREATE_RIDE(string rIDEID, string dESTINATION, string mEETINGPOINT, Nullable<System.DateTime> sTARTTIME, Nullable<System.DateTime> eNDTIME, Nullable<int> cAPACITY, string nOTES, Nullable<byte> cANCELED)
+        {
+            var rIDEIDParameter = rIDEID != null ?
+                new ObjectParameter("RIDEID", rIDEID) :
+                new ObjectParameter("RIDEID", typeof(string));
+    
+            var dESTINATIONParameter = dESTINATION != null ?
+                new ObjectParameter("DESTINATION", dESTINATION) :
+                new ObjectParameter("DESTINATION", typeof(string));
+    
+            var mEETINGPOINTParameter = mEETINGPOINT != null ?
+                new ObjectParameter("MEETINGPOINT", mEETINGPOINT) :
+                new ObjectParameter("MEETINGPOINT", typeof(string));
+    
+            var sTARTTIMEParameter = sTARTTIME.HasValue ?
+                new ObjectParameter("STARTTIME", sTARTTIME) :
+                new ObjectParameter("STARTTIME", typeof(System.DateTime));
+    
+            var eNDTIMEParameter = eNDTIME.HasValue ?
+                new ObjectParameter("ENDTIME", eNDTIME) :
+                new ObjectParameter("ENDTIME", typeof(System.DateTime));
+    
+            var cAPACITYParameter = cAPACITY.HasValue ?
+                new ObjectParameter("CAPACITY", cAPACITY) :
+                new ObjectParameter("CAPACITY", typeof(int));
+    
+            var nOTESParameter = nOTES != null ?
+                new ObjectParameter("NOTES", nOTES) :
+                new ObjectParameter("NOTES", typeof(string));
+    
+            var cANCELEDParameter = cANCELED.HasValue ?
+                new ObjectParameter("CANCELED", cANCELED) :
+                new ObjectParameter("CANCELED", typeof(byte));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("CREATE_RIDE", rIDEIDParameter, dESTINATIONParameter, mEETINGPOINTParameter, sTARTTIMEParameter, eNDTIMEParameter, cAPACITYParameter, nOTESParameter, cANCELEDParameter);
+        }
+    
         public virtual int CREATE_SOCIAL_LINKS(string uSERNAME, string fACEBOOK, string tWITTER, string iNSTAGRAM, string lINKEDIN)
         {
             var uSERNAMEParameter = uSERNAME != null ?
@@ -203,6 +243,28 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("CURRENT_SESSION");
         }
     
+        public virtual int DELETE_BOOKING(string rIDE_ID, string iD)
+        {
+            var rIDE_IDParameter = rIDE_ID != null ?
+                new ObjectParameter("RIDE_ID", rIDE_ID) :
+                new ObjectParameter("RIDE_ID", typeof(string));
+    
+            var iDParameter = iD != null ?
+                new ObjectParameter("ID", iD) :
+                new ObjectParameter("ID", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DELETE_BOOKING", rIDE_IDParameter, iDParameter);
+        }
+    
+        public virtual int DELETE_BOOKINGS(string rIDE_ID)
+        {
+            var rIDE_IDParameter = rIDE_ID != null ?
+                new ObjectParameter("RIDE_ID", rIDE_ID) :
+                new ObjectParameter("RIDE_ID", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DELETE_BOOKINGS", rIDE_IDParameter);
+        }
+    
         public virtual int DELETE_MYSCHEDULE(string eVENTID, string gORDONID)
         {
             var eVENTIDParameter = eVENTID != null ?
@@ -214,6 +276,15 @@ namespace Gordon360.Models
                 new ObjectParameter("GORDONID", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DELETE_MYSCHEDULE", eVENTIDParameter, gORDONIDParameter);
+        }
+    
+        public virtual int DELETE_RIDE(string rIDE_ID)
+        {
+            var rIDE_IDParameter = rIDE_ID != null ?
+                new ObjectParameter("RIDE_ID", rIDE_ID) :
+                new ObjectParameter("RIDE_ID", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DELETE_RIDE", rIDE_IDParameter);
         }
     
         public virtual ObjectResult<string> DINING_INFO_BY_STUDENT_ID(Nullable<int> sTUDENT_ID, string sESS_CDE)
@@ -229,13 +300,13 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("DINING_INFO_BY_STUDENT_ID", sTUDENT_IDParameter, sESS_CDEParameter);
         }
     
-        public virtual int DISTINCT_ACT_TYPE(string sESS_CDE)
+        public virtual ObjectResult<string> DISTINCT_ACT_TYPE(string sESS_CDE)
         {
             var sESS_CDEParameter = sESS_CDE != null ?
                 new ObjectParameter("SESS_CDE", sESS_CDE) :
                 new ObjectParameter("SESS_CDE", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DISTINCT_ACT_TYPE", sESS_CDEParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("DISTINCT_ACT_TYPE", sESS_CDEParameter);
         }
     
         public virtual ObjectResult<EMAILS_PER_ACT_CDE_Result> EMAILS_PER_ACT_CDE(string aCT_CDE, string sESS_CDE)
@@ -369,6 +440,109 @@ namespace Gordon360.Models
                 new ObjectParameter("STUDENT_ID", typeof(int));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<REQUESTS_PER_STUDENT_ID_Result>("REQUESTS_PER_STUDENT_ID", sTUDENT_IDParameter);
+        }
+    
+        public virtual int sp_alterdiagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            var versionParameter = version.HasValue ?
+                new ObjectParameter("version", version) :
+                new ObjectParameter("version", typeof(int));
+    
+            var definitionParameter = definition != null ?
+                new ObjectParameter("definition", definition) :
+                new ObjectParameter("definition", typeof(byte[]));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_alterdiagram", diagramnameParameter, owner_idParameter, versionParameter, definitionParameter);
+        }
+    
+        public virtual int sp_creatediagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            var versionParameter = version.HasValue ?
+                new ObjectParameter("version", version) :
+                new ObjectParameter("version", typeof(int));
+    
+            var definitionParameter = definition != null ?
+                new ObjectParameter("definition", definition) :
+                new ObjectParameter("definition", typeof(byte[]));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_creatediagram", diagramnameParameter, owner_idParameter, versionParameter, definitionParameter);
+        }
+    
+        public virtual int sp_dropdiagram(string diagramname, Nullable<int> owner_id)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_dropdiagram", diagramnameParameter, owner_idParameter);
+        }
+    
+        public virtual ObjectResult<sp_helpdiagramdefinition_Result> sp_helpdiagramdefinition(string diagramname, Nullable<int> owner_id)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_helpdiagramdefinition_Result>("sp_helpdiagramdefinition", diagramnameParameter, owner_idParameter);
+        }
+    
+        public virtual ObjectResult<sp_helpdiagrams_Result> sp_helpdiagrams(string diagramname, Nullable<int> owner_id)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_helpdiagrams_Result>("sp_helpdiagrams", diagramnameParameter, owner_idParameter);
+        }
+    
+        public virtual int sp_renamediagram(string diagramname, Nullable<int> owner_id, string new_diagramname)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            var new_diagramnameParameter = new_diagramname != null ?
+                new ObjectParameter("new_diagramname", new_diagramname) :
+                new ObjectParameter("new_diagramname", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_renamediagram", diagramnameParameter, owner_idParameter, new_diagramnameParameter);
+        }
+    
+        public virtual int sp_upgraddiagrams()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_upgraddiagrams");
         }
     
         public virtual ObjectResult<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE(Nullable<int> id_num, string sess_cde)
@@ -566,6 +740,15 @@ namespace Gordon360.Models
                 new ObjectParameter("VALUE", typeof(System.DateTime));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_TIMESTAMP", iDParameter, vALUEParameter);
+        }
+    
+        public virtual ObjectResult<Nullable<int>> VALID_DRIVES_BY_ID(string dRIVERID)
+        {
+            var dRIVERIDParameter = dRIVERID != null ?
+                new ObjectParameter("DRIVERID", dRIVERID) :
+                new ObjectParameter("DRIVERID", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("VALID_DRIVES_BY_ID", dRIVERIDParameter);
         }
     
         public virtual ObjectResult<VICTORY_PROMISE_BY_STUDENT_ID_Result> VICTORY_PROMISE_BY_STUDENT_ID(Nullable<int> sTUDENT_ID)

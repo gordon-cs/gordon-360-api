@@ -15,6 +15,7 @@ namespace Gordon360.Models.ViewModels
         public int IDNumber { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string Mail_Location { get; set; }
         public string Participation { get; set; }
         public string ParticipationDescription { get; set; }
         public bool? GroupAdmin { get; set; }

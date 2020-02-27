@@ -50,5 +50,6 @@ namespace Gordon360.Models
         public Nullable<int> show_pic { get; set; }
         public string BuildingDescription { get; set; }
         public string Country { get; set; }
+        public string Mail_Location { get; set; }
     }
 }
