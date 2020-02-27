@@ -3,7 +3,7 @@ echo "Entering build directory..."
 cd $env:TRAVIS_BUILD_DIR
 echo "Creating credential object..."
 $cctpass = ConvertTo-SecureString $env:DEPLOY_PASSWORD -AsPlainText -Force
-$credential = New-Object System.Management.Automation.PSCredential ($env:DEPLOY_PASSWORD, $cctpass)
+$credential = New-Object System.Management.Automation.PSCredential ($env:DEPLOY_USER, $cctpass)
 echo "Adding deployment server to trusted hosts file..."
 $trustedHosts = (Get-Item WSMan:\localhost\Client\TrustedHosts).Value
 Set-Item wsman:\localhost\client\trustedhosts "$env:DEPLOY_SERVER" -Force
