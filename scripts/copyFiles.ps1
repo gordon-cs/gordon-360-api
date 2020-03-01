@@ -10,6 +10,8 @@ Set-Item wsman:\localhost\client\trustedhosts "$env:DEPLOY_SERVER" -Force
 echo "Opening remote session..."
 try {
   $session = New-PSSession -ComputerName $env:DEPLOY_SERVER -Credential $credential -SessionOption (New-PSSessionOption -SkipCACheck -SkipCNCheck -SkipRevocationCheck)
+  echo "Creating copytest folder..."
+  Invoke-Command -Session $session {mkdir {0} -Force $(using:env:TEST_COPY_DESTINATION)}
   echo "Copying files to remote destination..."
   cp -Path VSOutput\360ApiTrain -Destination $env:TEST_COPY_DESTINATION -ToSession $session -Recurse -Force
   echo "Closing remote Powershell session..."
