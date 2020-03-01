@@ -13,7 +13,7 @@ try {
   echo "Creating copytest folder..."
   Invoke-Command -Session $session {mkdir {0} -Force $($using:env:TEST_COPY_DESTINATION)}
   echo "Copying files to remote destination..."
-  cp -Path VSOutput\360ApiTrain -Destination $env:TEST_COPY_DESTINATION -ToSession $session -Recurse -Force
+  cp -Path "VSOutput\360ApiTrain" -Destination $env:TEST_COPY_DESTINATION -ToSession $session -Recurse -Force
   echo "Closing remote Powershell session..."
   $session | Remove-PSSession
   echo "Done"
