@@ -10,4 +10,6 @@ mono: none
 # Install NuGet, then build the solution
 script: 
   - choco install nuget.commandline
+  - choco install visualstudio2017-workload-manageddesktop
+  - choco install visualstudio2017-workload-netweb
   - scripts/build.bat
