@@ -15,7 +15,7 @@ try {
   Invoke-Command -Session $session {cd $($using:env:TEST_COPY_DESTINATION)}
   echo "Creating backup directory..."
   $renamedDirName = "./360ApiTrain_" + (Get-Date -Format "MM-dd-yyyy_HH-mm-ss")
-  Invoke-Command -Session $session {Rename-Item ./Gordon360Api $($using:newDirName)}
+  Invoke-Command -Session $session {Rename-Item ./Gordon360Api $($using:newDirName) -Force}
   echo "Copying files to remote destination..."
   cp -Path "VSOutput\360ApiTrain" -Destination $env:TEST_COPY_DESTINATION -ToSession $session -Recurse -Force
   echo "Closing remote Powershell session..."
