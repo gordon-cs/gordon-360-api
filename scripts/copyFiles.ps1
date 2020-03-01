@@ -12,7 +12,7 @@ echo "Opening remote session..."
 try {
   $session = New-PSSession -ComputerName $env:DEPLOY_SERVER -Credential $credential -SessionOption (New-PSSessionOption -SkipCACheck -SkipCNCheck -SkipRevocationCheck)
   echo "Copying files to remote destination..."
-  cp -Path .\* -Destination $env:TEST_COPY_DESTINATION -ToSession $session -Recurse
+  cp -Path .\* -Destination $env:TEST_COPY_DESTINATION -ToSession $session -Recurse -Force
   echo "Closing remote Powershell session..."
   $session | Remove-PSSession
   echo "Done"
