@@ -38,6 +38,8 @@ Dive in.
     - [ScheduleControl](#schedule-control)
     - [Victory Promise](#victory-promise)
 - [Running the API](#running-the-api)
+    - [Preliminary setup](#preliminary-setup)
+    - [Building and running](#building-and-running)
 - [API Testing](#api-testing)
     - [Introduction](#introduction)
     - [Running the Tests](#running-the-tests)
