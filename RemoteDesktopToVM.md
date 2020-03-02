@@ -3,7 +3,7 @@
 ## Table of Contents
 
 - [Connect from Ubuntu Linux](#connect-from-ubuntu-linux)
-- [Connect from Windows](#connnect-from-windows)
+- [Connect from Windows](#connect-from-windows)
 - [Connect from MacOS](#connect-from-macos)
 
 ## Connect from Ubuntu Linux
