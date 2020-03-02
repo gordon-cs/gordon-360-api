@@ -130,7 +130,7 @@ Data which is stored upon startup includes:
 
 ### Building and running
 
-* Now, you can press the Start button in Visual Studio to run the server (it is a green play button in the top middle of the tool bar). It will open the web browser and, after a period that may last half an hour or more, display an Error 403.14 - Forbidden. This is expected. You can now begin manually testing the API.
+* Now, you can press the Start button in Visual Studio to run the server (it is a green play button in the top middle of the tool bar). It will open the web browser and, after a period that should just be a few minutes long but sometimes lasts half an hour or more, display an Error 403.14 - Forbidden. This is expected. You can now begin manually testing the API.
 
 * If you want to test the UI, keep the server running and follow the directions found [here](https://github.com/gordon-cs/gordon-360-ui/blob/develop/README.md#connect-local-backend-to-react) under "Connect Local Backend to React".
 
