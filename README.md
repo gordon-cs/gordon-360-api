@@ -7,6 +7,9 @@ Dive in.
 - [Machines and Sites](#machines-and-sites)
     - [Deploying to the Api Site](#deploying-to-the-api-site)
     - [Deploying to the Front-end site](#deploying-to-the-front-end-site)
+- [Running the API locally](#running-the-api-locally)
+    - [Preliminary setup](#preliminary-setup)
+    - [Building and running](#building-and-running)
 - [The Database](#the-database)
     - [Tables](#tables)
     - [Stored Procedures](#stored-procedures)
@@ -37,9 +40,6 @@ Dive in.
     - [MySchedule](#my-schedule)
     - [ScheduleControl](#schedule-control)
     - [Victory Promise](#victory-promise)
-- [Running the API locally](#running-the-api-locally)
-    - [Preliminary setup](#preliminary-setup)
-    - [Building and running](#building-and-running)
 - [API Testing](#api-testing)
     - [Introduction](#introduction)
     - [Running the Tests](#running-the-tests)
@@ -113,6 +113,26 @@ Data which is stored upon startup includes:
 - All events in 25Live ending after the start of the current academic year
 - All basic information on every account with an AD Username
 - All student, faculty, staff and alumni profile info
+
+## Running the API locally
+
+### Preliminary setup
+
+* It is easiest to use the development virtual machine to work on this project. Follow [these instructions](RemoteDesktopToVM.md) to set up and connect to the virtual machine using your Gordon account.
+
+* If this is your first time on the virtual machine, you will need to clone this repository. You can do this by using Git Bash or the integrated terminal in VS Code.
+
+* Before you open the gordon-360-api folder, you will have to add the `secrets.config` file to it. The file is located on the CS-RDSH-02 virtual machine in `C:\Users\Public\Public Documents\` (or `/c/users/public/documents\` when in git-bash). Copy the file `secrets.config` to the same folder in your project that contains the `web.config` file; currently, this is in `gordon-360-api\Gordon360`. This file is a sort of keyring for the server to authorize itself at various points.
+
+* Look for the desktop app Visual Studio 2017, which has a purple Visual Studio icon. You will have to log in to a Microsoft account. Your Gordon email will work for this. Once you log in, go to `File > Open > Project/Solution`. In the navigation box that pops up, navigate to the directory where you cloned this repo, and select and open the file `/Gordon360.sln`.
+
+* In the solution explorer on the right, right click the name of the project (Gordon360) and select properties. From the tabs on the left, choose the Web tab and change the Project Url so it contains a port that is unused on the machine. For example, if you chose port 5555, change Project Url to `"http://localhost:5555"`. Then click Create Virtual Directory. Make sure that the protocol is `http`, not `https`. Press OK on the dialog box, and you all configured!
+
+### Building and running
+
+* Now, you can press the Start button in Visual Studio to run the server (it is a green play button in the top middle of the tool bar). It will open the web browser and, after a period that may last half an hour or more, display an Error 403.14 - Forbidden. This is expected. You can now begin manually testing the API.
+
+* If you want to test the UI, keep the server running and follow the directions found [here](https://github.com/gordon-cs/gordon-360-ui/blob/develop/README.md#connect-local-backend-to-react) under "Connect Local Backend to React".
 
 ## The Database
 
@@ -791,26 +811,6 @@ What is it? Resource that represents the user's scores on the four pillars of th
 #### GET
 
 `api/vpscore` Get the victory promise scores of the currently logged in user.
-
-## Running the API locally
-
-### Preliminary setup
-
-* It is easiest to use the development virtual machine to work on this project. Follow [these instructions](RemoteDesktopToVM.md) to set up and connect to the virtual machine using your Gordon account.
-
-* If this is your first time on the virtual machine, you will need to clone this repository. You can do this by using Git Bash or the integrated terminal in VS Code.
-
-* Before you open the gordon-360-api folder, you will have to add the `secrets.config` file to it. The file is located on the CS-RDSH-02 virtual machine in `C:\Users\Public\Public Documents\` (or `/c/users/public/documents\` when in git-bash). Copy the file `secrets.config` to the same folder in your project that contains the `web.config` file; currently, this is in `gordon-360-api\Gordon360`. This file is a sort of keyring for the server to authorize itself at various points.
-
-* Look for the desktop app Visual Studio 2017, which has a purple Visual Studio icon. You will have to log in to a Microsoft account. Your Gordon email will work for this. Once you log in, go to `File > Open > Project/Solution`. In the navigation box that pops up, navigate to the directory where you cloned this repo, and select and open the file `/Gordon360.sln`.
-
-* In the solution explorer on the right, right click the name of the project (Gordon360) and select properties. From the tabs on the left, choose the Web tab and change the Project Url so it contains a port that is unused on the machine. For example, if you chose port 5555, change Project Url to `"http://localhost:5555"`. Then click Create Virtual Directory. Make sure that the protocol is `http`, not `https`. Press OK on the dialog box, and you all configured!
-
-### Building and running
-
-* Now, you can press the Start button in Visual Studio to run the server (it is a green play button in the top middle of the tool bar). It will open the web browser and, after a period that may last half an hour or more, display an Error 403.14 - Forbidden. This is expected. You can now begin manually testing the API.
-
-* If you want to test the UI, keep the server running and follow the directions found [here](https://github.com/gordon-cs/gordon-360-ui/blob/develop/README.md#connect-local-backend-to-react) under "Connect Local Backend to React".
 
 ## API Testing
 
