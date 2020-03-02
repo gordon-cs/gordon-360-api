@@ -37,7 +37,7 @@ Dive in.
     - [MySchedule](#my-schedule)
     - [ScheduleControl](#schedule-control)
     - [Victory Promise](#victory-promise)
-- [Running the API](#running-the-api)
+- [Running the API locally](#running-the-api-locally)
     - [Preliminary setup](#preliminary-setup)
     - [Building and running](#building-and-running)
 - [API Testing](#api-testing)
