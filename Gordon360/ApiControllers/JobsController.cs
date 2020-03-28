@@ -50,7 +50,6 @@ namespace Gordon360.ApiControllers
         [Route("getJobs")]
         public IHttpActionResult getJobsForUser([FromBody] ActiveJobSelectionParametersModel details)
         {
-            System.Diagnostics.Debug.WriteLine("getting jobs");
             IEnumerable<ActiveJobViewModel> result = null;
             try
             {
@@ -127,11 +126,7 @@ namespace Gordon360.ApiControllers
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.SHIFT)]
         public IHttpActionResult deleteShiftForUser(int rowID, int userID)
         {
-            System.Diagnostics.Debug.WriteLine("deleting shift");
             IEnumerable<StudentTimesheetsViewModel> result = null;
-
-            System.Diagnostics.Debug.WriteLine("Row id: " + rowID);
-            System.Diagnostics.Debug.WriteLine("Student id: " + userID);
 
             try
             {
@@ -154,7 +149,6 @@ namespace Gordon360.ApiControllers
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.SHIFT)]
         public IHttpActionResult submitShiftsForUser([FromBody] IEnumerable<ShiftToSubmitViewModel> shifts)
         {
-            System.Diagnostics.Debug.WriteLine("submitting shifts");
             IEnumerable<StudentTimesheetsViewModel> result = null;
 
             try
