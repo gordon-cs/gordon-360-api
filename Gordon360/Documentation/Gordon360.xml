@@ -216,11 +216,6 @@
             </summary>
             <returns>The result of deleting the shift</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.checkForOverlap(Gordon360.Models.ViewModels.ShiftViewModel)">
-            <summary>
-            Check for shift overlapping with entered time
-            </summary>
-        </member>
         <member name="M:Gordon360.ApiControllers.SaveController.GetUpcomingRides">
             <summary>
              Gets all upcoming ride objects

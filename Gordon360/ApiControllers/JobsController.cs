@@ -50,7 +50,6 @@ namespace Gordon360.ApiControllers
         [Route("getJobs")]
         public IHttpActionResult getJobsForUser([FromBody] ActiveJobSelectionParametersModel details)
         {
-            System.Diagnostics.Debug.WriteLine("getting jobs");
             IEnumerable<ActiveJobViewModel> result = null;
             try
             {
@@ -96,20 +95,26 @@ namespace Gordon360.ApiControllers
         [HttpPost]
         [Route("saveShift")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.SHIFT)]
-        public IHttpActionResult saveShiftForUser([FromBody] ShiftViewModel shiftDetails)
+        public HttpResponseMessage saveShiftForUser([FromBody] ShiftViewModel shiftDetails)
         {
             IEnumerable<StudentTimesheetsViewModel> result = null;
+            IEnumerable<OverlappingShiftIdViewModel> overlapCheckResult = null;
 
             try
             {
+                overlapCheckResult = _jobsService.checkForOverlappingShift(shiftDetails.ID_NUM, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME);
+                if (overlapCheckResult.Count() > 0)
+                {
+                    return Request.CreateResponse(HttpStatusCode.Conflict, "Error: shift overlap detected");
+                }
                 result = _jobsService.saveShiftForUser(shiftDetails.ID_NUM, shiftDetails.EML, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, shiftDetails.SHIFT_NOTES, shiftDetails.LAST_CHANGED_BY);
             }
             catch (Exception e)
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
-                return InternalServerError();
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, e);
             }
-            return Ok(result);
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         /// <summary>
@@ -121,11 +126,7 @@ namespace Gordon360.ApiControllers
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.SHIFT)]
         public IHttpActionResult deleteShiftForUser(int rowID, int userID)
         {
-            System.Diagnostics.Debug.WriteLine("deleting shift");
             IEnumerable<StudentTimesheetsViewModel> result = null;
-
-            System.Diagnostics.Debug.WriteLine("Row id: " + rowID);
-            System.Diagnostics.Debug.WriteLine("Student id: " + userID);
 
             try
             {
@@ -148,7 +149,6 @@ namespace Gordon360.ApiControllers
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.SHIFT)]
         public IHttpActionResult submitShiftsForUser([FromBody] IEnumerable<ShiftToSubmitViewModel> shifts)
         {
-            System.Diagnostics.Debug.WriteLine("submitting shifts");
             IEnumerable<StudentTimesheetsViewModel> result = null;
 
             try
@@ -186,28 +186,6 @@ namespace Gordon360.ApiControllers
                 System.Diagnostics.Debug.WriteLine(e.Message);
                 return InternalServerError();
             }
-            return Ok(result);
-        }
-
-        /// <summary>
-        /// Check for shift overlapping with entered time
-        /// </summary>
-        [HttpPost]
-        [Route("overlapShiftCheck")]
-        public IHttpActionResult checkForOverlap([FromBody] ShiftViewModel shiftDetails)
-        {
-            IEnumerable<OverlappingShiftIdViewModel> result = null;
-            try
-            {
-                System.Diagnostics.Debug.WriteLine("Checking for overlapping shifts");
-                result = _jobsService.checkForOverlappingShift(shiftDetails.ID_NUM, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME);
-            }
-            catch(Exception e)
-            {
-                System.Diagnostics.Debug.WriteLine(e.Message);
-                return InternalServerError();
-            }
-
             return Ok(result);
         }
     }

@@ -38,9 +38,6 @@ namespace Gordon360.Services
             var notes = new SqlParameter("@shift_notes", shiftNotes);
             var changedBy = new SqlParameter("@last_changed_by", lastChangedBy);
 
-            Debug.WriteLine("Time in: " + shiftStart);
-            Debug.WriteLine("Time out: " + shiftEnd);
-
             try
             {
                 result = RawSqlQuery<StudentTimesheetsViewModel>.StudentTimesheetQuery("student_timesheets_insert_shift @ID_NUM, @eml, @shift_start_datetime, @shift_end_datetime, @hours_worked, @shift_notes, @last_changed_by", id_num, eml, shiftStartDateTime, shiftEndDateTime, hours_worked, notes, changedBy);
@@ -121,12 +118,7 @@ namespace Gordon360.Services
 
             try
             {
-                Debug.WriteLine("\n start: " + shiftStart);
-                Debug.WriteLine("end " + shiftEnd);
-                Debug.WriteLine("ID: " + studentID + "\n");
-                Debug.WriteLine("executing jobs query");
                 result = RawSqlQuery<ActiveJobViewModel>.StudentTimesheetQuery("student_timesheets_select_emls_for_ajax_selectbox @start_datetime, @end_datetime, @ID_NUM", start_datetime, end_datetime, id_num);
-                Debug.WriteLine("postitle: " + result);
             }
             catch (Exception e)
             {
