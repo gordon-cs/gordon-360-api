@@ -96,20 +96,26 @@ namespace Gordon360.ApiControllers
         [HttpPost]
         [Route("saveShift")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.SHIFT)]
-        public IHttpActionResult saveShiftForUser([FromBody] ShiftViewModel shiftDetails)
+        public HttpResponseMessage saveShiftForUser([FromBody] ShiftViewModel shiftDetails)
         {
             IEnumerable<StudentTimesheetsViewModel> result = null;
+            IEnumerable<OverlappingShiftIdViewModel> overlapCheckResult = null;
 
             try
             {
+                overlapCheckResult = _jobsService.checkForOverlappingShift(shiftDetails.ID_NUM, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME);
+                if (overlapCheckResult.Count() > 0)
+                {
+                    return Request.CreateResponse(HttpStatusCode.Conflict, "Error: shift overlap detected");
+                }
                 result = _jobsService.saveShiftForUser(shiftDetails.ID_NUM, shiftDetails.EML, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, shiftDetails.SHIFT_NOTES, shiftDetails.LAST_CHANGED_BY);
             }
             catch (Exception e)
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
-                return InternalServerError();
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, e);
             }
-            return Ok(result);
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         /// <summary>
