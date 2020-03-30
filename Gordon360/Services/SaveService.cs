@@ -109,28 +109,33 @@ namespace Gordon360.Services
                 highestRideID += 1;
             }
             var newRideID = highestRideID.ToString();
-            newRide.rideID = newRideID;
 
-            var newBooking = new Save_Bookings { };
-            newBooking.isDriver = 1;
-            newBooking.ID = gordon_id;
-            newBooking.rideID = newRideID;
+            var idParam = new SqlParameter("@ID", gordon_id);
+            var rideIdParam = new SqlParameter("@RIDEID", newRide.rideID);
+            var isDriverParam = new SqlParameter("@ISDRIVER", 1);
 
-            // The Add() method returns the added ride
-            var payload = _unitOfWork.RideRepository.Add(newRide);
+            var context = new CCTEntities1();
 
-            // There is a unique constraint in the Database on columns
-            if (payload == null)
+            var rideIdParam2 = new SqlParameter("@RIDEID", newRide.rideID);
+            var destinationParam = new SqlParameter("@DESTINATION", newRide.destination);
+            var meetingPointParam = new SqlParameter("@MEETINGPOINT", newRide.meetingPoint);
+            var startTimeParam = new SqlParameter("@STARTTIME", newRide.startTime);
+            var endTimeParam = new SqlParameter("@ENDTIME", newRide.endTime);
+            var capacityParam = new SqlParameter("@CAPACITY", newRide.capacity);
+            var notesParam = new SqlParameter("@NOTES", newRide.notes);
+            var canceledParam = new SqlParameter("@CANCELED", newRide.canceled);
+            var result = context.Database.ExecuteSqlCommand("CREATE_RIDE @RIDEID, @DESTINATION, @MEETINGPOINT, @STARTTIME, @ENDTIME, @CAPACITY, @NOTES, @CANCELED", rideIdParam2, destinationParam, meetingPointParam, startTimeParam, endTimeParam, capacityParam, notesParam, canceledParam);
+
+            if (result == null)
             {
-                throw new ResourceCreationException() { ExceptionMessage = "There was an error adding the ride event. Verify that a similar ride doesn't already exist." };
+                throw new ResourceNotFoundException() { ExceptionMessage = "The ride could not be created." };
             }
+
+            context.Database.ExecuteSqlCommand("CREATE_BOOKING @ID, @RIDEID, @ISDRIVER", idParam, rideIdParam, isDriverParam); // run stored procedure.
+
             _unitOfWork.Save();
 
-            var payload2 = _unitOfWork.BookingRepository.Add(newBooking);
-
-            _unitOfWork.Save();
-
-            return payload;
+            return newRide;
 
         }
 
@@ -184,17 +189,15 @@ namespace Gordon360.Services
                 throw new ResourceCreationException() { ExceptionMessage = "Ride is full!" };
             }
 
-            // The Add() method returns the added ride
-            var payload = _unitOfWork.BookingRepository.Add(newBooking);
+            var idParam = new SqlParameter("@ID", newBooking.ID);
+            var rideIdParam = new SqlParameter("@RIDEID", newBooking.rideID);
+            var isDriverParam = new SqlParameter("@ISDRIVER", newBooking.isDriver);
+            var context = new CCTEntities1();
+            context.Database.ExecuteSqlCommand("CREATE_BOOKING @ID, @RIDEID, @ISDRIVER", idParam, rideIdParam, isDriverParam);
 
-            // There is a unique constraint in the Database on columns
-            if (payload == null)
-            {
-                throw new ResourceCreationException() { ExceptionMessage = "There was an error adding the booking. Verify that a similar booking doesn't already exist." };
-            }
             _unitOfWork.Save();
 
-            return payload;
+            return newBooking;
         }
 
 
