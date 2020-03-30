@@ -124,7 +124,12 @@ namespace Gordon360.Services
             var capacityParam = new SqlParameter("@CAPACITY", newRide.capacity);
             var notesParam = new SqlParameter("@NOTES", newRide.notes);
             var canceledParam = new SqlParameter("@CANCELED", newRide.canceled);
-            context.Database.ExecuteSqlCommand("CREATE_RIDE @RIDEID, @DESTINATION, @MEETINGPOINT, @STARTTIME, @ENDTIME, @CAPACITY, @NOTES, @CANCELED", rideIdParam2, destinationParam, meetingPointParam, startTimeParam, endTimeParam, capacityParam, notesParam, canceledParam);
+            var result = context.Database.ExecuteSqlCommand("CREATE_RIDE @RIDEID, @DESTINATION, @MEETINGPOINT, @STARTTIME, @ENDTIME, @CAPACITY, @NOTES, @CANCELED", rideIdParam2, destinationParam, meetingPointParam, startTimeParam, endTimeParam, capacityParam, notesParam, canceledParam);
+
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The ride could not be created." };
+            }
 
             context.Database.ExecuteSqlCommand("CREATE_BOOKING @ID, @RIDEID, @ISDRIVER", idParam, rideIdParam, isDriverParam); // run stored procedure.
 
