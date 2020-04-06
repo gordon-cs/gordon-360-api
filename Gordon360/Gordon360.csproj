@@ -208,6 +208,7 @@
     <Compile Include="ApiControllers\EventController.cs" />
     <Compile Include="ApiControllers\ContentManagementController.cs" />
     <Compile Include="ApiControllers\EmailsController.cs" />
+    <Compile Include="ApiControllers\JobsController.cs" />
     <Compile Include="ApiControllers\MembershipRequestController.cs" />
     <Compile Include="ApiControllers\MyScheduleController.cs" />
     <Compile Include="ApiControllers\SaveController.cs" />
@@ -275,6 +276,9 @@
     <Compile Include="Models\COURSES_FOR_PROFESSOR_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CSVStringsToTable_fn_Result.cs">
+      <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\CUSTOM_PROFILE.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -338,6 +342,9 @@
     <Compile Include="Models\MYSCHEDULE_BY_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\paid_shifts.cs">
+      <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\PART_DEF.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -381,8 +388,36 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\StudentEmployment.cs" />
+    <Compile Include="Models\StudentTimesheet_DB_Models.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StudentTimesheet_DB_Models.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\StudentTimesheet_DB_Models.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\StudentTimesheet_DB_Models.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
+    </Compile>
     <Compile Include="Models\STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs" />
+    <Compile Include="Models\student_timesheets.cs">
+      <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\student_timesheets_select_active_status_shifts_Result.cs">
+      <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\student_timesheets_select_emls_for_ajax_selectbox_Result.cs">
+      <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\student_timesheets_select_fixed_status_shifts_Result.cs">
+      <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sysdiagrams.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
@@ -402,6 +437,13 @@
     <Compile Include="Models\VICTORY_PROMISE_BY_STUDENT_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModels\ActiveJobSelectionParametersModel.cs" />
+    <Compile Include="Models\ViewModels\ActiveJobViewModel.cs" />
+    <Compile Include="Models\ViewModels\OverlappingShiftIdViewModel.cs" />
+    <Compile Include="Models\ViewModels\ShiftToDeleteViewModel.cs" />
+    <Compile Include="Models\ViewModels\ShiftToSubmitViewModel.cs" />
+    <Compile Include="Models\ViewModels\ShiftViewModel.cs" />
+    <Compile Include="Models\ViewModels\StudentTimesheetsViewModel.cs" />
     <Compile Include="Models\ViewModels\MyScheduleViewModel.cs" />
     <Compile Include="ApiControllers\ProfilesController.cs" />
     <Compile Include="ApiControllers\ScheduleController.cs" />
@@ -447,6 +489,7 @@
     <Compile Include="Models\ViewModels\StudentProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\SessionViewModel.cs" />
     <Compile Include="Models\ViewModels\SliderViewModel.cs" />
+    <Compile Include="Models\ViewModels\SupervisorViewModel.cs" />
     <Compile Include="Models\ViewModels\VictoryPromiseViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\CustomMultiPartFormDataStreamProvider.cs" />
@@ -457,6 +500,7 @@
     <Compile Include="Services\AccountService.cs" />
     <Compile Include="Services\ActivityService.cs" />
     <Compile Include="Services\AdministratorService.cs" />
+    <Compile Include="Services\JobsService.cs" />
     <Compile Include="Services\DiningService.cs" />
     <Compile Include="Services\ErrorLogService.cs" />
     <Compile Include="Services\EventService.cs" />
@@ -491,6 +535,13 @@
     <Content Include="Models\CCT_DB_Models.edmx.diagram">
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
     </Content>
+    <EntityDeploy Include="Models\StudentTimesheet_DB_Models.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>StudentTimesheet_DB_Models.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\StudentTimesheet_DB_Models.edmx.diagram">
+      <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
+    </Content>
     <None Include="secrets.config">
       <SubType>Designer</SubType>
     </None>
@@ -506,6 +557,16 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
       <LastGenOutput>CCT_DB_Models.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\StudentTimesheet_DB_Models.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
+      <LastGenOutput>StudentTimesheet_DB_Models.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\StudentTimesheet_DB_Models.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
+      <LastGenOutput>StudentTimesheet_DB_Models.cs</LastGenOutput>
     </Content>
     <Content Include="Web.config">
       <SubType>Designer</SubType>

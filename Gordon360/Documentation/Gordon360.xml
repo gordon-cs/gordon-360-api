@@ -170,6 +170,51 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.GetTestData">
+            <summary>
+            This is just an end-to-end proof of concept.
+            It will return some dummy text.
+            <returns> A dummy string </returns>
+            </summary>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.getJobsForUser(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
+            <summary>
+            Get a user's active jobs
+            </summary>
+            <param name="details"></param>
+            <returns>The user's active jobs</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.getSavedShiftsForUser">
+            <summary>
+            Get a user's saved shifts
+            </summary>
+            <returns>The user's active jobs</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.saveShiftForUser(Gordon360.Models.ViewModels.ShiftViewModel)">
+            <summary>
+            Get a user's active jobs
+            </summary>
+            <param name="shiftDetails"></param>
+            <returns>The user's active jobs</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.deleteShiftForUser(System.Int32)">
+            <summary>
+            Get a user's active jobs
+            </summary>
+            <returns>The result of deleting the shift</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.submitShiftsForUser(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.ShiftToSubmitViewModel})">
+            <summary>
+            Submit shifts
+            </summary>
+            <returns>The result of deleting the shift</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.submitShiftsForUser(System.Int32)">
+            <summary>
+            Submit shifts
+            </summary>
+            <returns>The result of deleting the shift</returns>
+        </member>
         <member name="M:Gordon360.ApiControllers.SaveController.GetUpcomingRides">
             <summary>
              Gets all upcoming ride objects
@@ -1030,6 +1075,11 @@
             <param name="admin">The admin to validate</param>
             <returns>True if the admin is valid. Throws ResourceNotFoundException if not. Exception is cauth in an Exception Filter</returns>
         </member>
+        <member name="T:Gordon360.Services.JobsService">
+            <summary>
+            Service Class that facilitates data transactions between the JobsController and the student_timesheets + paid_shifts database model.
+            </summary>
+        </member>
         <member name="T:Gordon360.Services.DiningService">
             <summary>
             Service that allows for meal control
@@ -1120,6 +1170,14 @@
         <member name="M:Gordon360.Services.ComplexQueries.RawSqlQuery`1.query(System.String,System.Object[])">
             <summary>
             Execute the sql query
+            </summary>
+            <param name="query">An sql statment. Can be a stored procedure or even a simple SELECT statment</param>
+            <param name="parameters">Parameters to pass into the stored procedure</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.ComplexQueries.RawSqlQuery`1.StudentTimesheetQuery(System.String,System.Object[])">
+            <summary>
+            Execute the sql query on the StudentTimesheets database
             </summary>
             <param name="query">An sql statment. Can be a stored procedure or even a simple SELECT statment</param>
             <param name="parameters">Parameters to pass into the stored procedure</param>

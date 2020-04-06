@@ -370,7 +370,7 @@ namespace Gordon360.Static.Methods
             IEnumerable<String> result = null;
             try
             {
-                // Attempt to query the DB
+                // Attempt to query the DB for data
                 result = RawSqlQuery<String>.query(SQLQuery.ALL_ACCOUNTS_STATES);
             }
             catch

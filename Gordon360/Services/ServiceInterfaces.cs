@@ -147,6 +147,16 @@ namespace Gordon360.Services
         MEMBERSHIP Delete(int id);
     }
 
+    public interface IJobsService
+    {
+        IEnumerable<StudentTimesheetsViewModel> saveShiftForUser(int studentID, int jobID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string shiftNotes, string lastChangedBy);
+        IEnumerable<StudentTimesheetsViewModel> deleteShiftForUser(int rowID, int studentID);
+        IEnumerable<StudentTimesheetsViewModel> submitShiftForUser(int studentID, int jobID, DateTime shiftEnd, int submittedTo, string lastChangedBy);
+        IEnumerable<SupervisorViewModel> getsupervisorNameForJob(int supervisorID);
+        IEnumerable<ActiveJobViewModel> getActiveJobs(DateTime shiftStart, DateTime shiftEnd, int studentID);
+        IEnumerable<OverlappingShiftIdViewModel> checkForOverlappingShift(int studentID, DateTime shiftStart, DateTime shiftEnd);
+    }
+
     public interface IParticipationService
     {
         ParticipationViewModel Get(string id);
