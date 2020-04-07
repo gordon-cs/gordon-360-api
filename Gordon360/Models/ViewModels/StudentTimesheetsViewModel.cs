@@ -13,8 +13,8 @@ namespace Gordon360.Models.ViewModels
         public string EML_DESCRIPTION { get; set; }
         public System.DateTime SHIFT_START_DATETIME { get; set; }
         public System.DateTime SHIFT_END_DATETIME { get; set; }
-        public Decimal HOURLY_RATE { get; set; }
-        public Decimal HOURS_WORKED { get; set; }
+        public decimal HOURLY_RATE { get; set; }
+        public decimal HOURS_WORKED { get; set; }
         public int SUPERVISOR { get; set; }
         public int COMP_SUPERVISOR { get; set; }
         public string STATUS { get; set; }
