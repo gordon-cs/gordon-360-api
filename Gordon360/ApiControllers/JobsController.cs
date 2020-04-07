@@ -78,7 +78,7 @@ namespace Gordon360.ApiControllers
         /// <returns>The user's active jobs</returns>
         [HttpGet]
         [Route("getSavedShifts/")]
-        public IHttpActionResult getSavedShiftsForUser()
+        public HttpResponseMessage getSavedShiftsForUser()
         {
             int userID = -1;
 
@@ -86,22 +86,19 @@ namespace Gordon360.ApiControllers
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             var id = _accountService.GetAccountByUsername(username).GordonID;
             userID = Convert.ToInt32(id);
-
-
-            string query = "SELECT ID, ID_NUM, EML, EML_DESCRIPTION, SHIFT_START_DATETIME, SHIFT_END_DATETIME, HOURLY_RATE, HOURS_WORKED, SUPERVISOR, COMP_SUPERVISOR, STATUS, SUBMITTED_TO, SHIFT_NOTES, COMMENTS, PAY_WEEK_DATE, PAY_PERIOD_DATE, PAY_PERIOD_ID, LAST_CHANGED_BY, DATETIME_ENTERED from student_timesheets where ID_NUM = " + userID + " AND STATUS != 'PAID';";
-            System.Diagnostics.Debug.WriteLine("query: " + query);
-            IEnumerable<StudentTimesheetsViewModel> queryResult = null;
+            
+            IEnumerable<StudentTimesheetsViewModel> result = null;
 
             try
             {
-                queryResult = RawSqlQuery<StudentTimesheetsViewModel>.StudentTimesheetQuery(query);
+                result = _jobsService.getSavedShiftsForUser(userID);
             }
             catch (Exception e)
             {
-                //
                 System.Diagnostics.Debug.WriteLine(e.Message);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, e);
             }
-            return Ok(queryResult);
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         /// <summary>
