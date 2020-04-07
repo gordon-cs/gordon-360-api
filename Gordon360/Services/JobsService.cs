@@ -39,12 +39,6 @@ namespace Gordon360.Services
             catch (Exception e)
             {
                 Debug.WriteLine(e.Message);
-                List<StudentTimesheetsViewModel> errorResult = new List<StudentTimesheetsViewModel>();
-                Debug.WriteLine(e.Message);
-                StudentTimesheetsViewModel errorCarrier = new StudentTimesheetsViewModel();
-                errorCarrier.COMMENTS = e.Message;
-                errorResult.Add(errorCarrier);
-                return errorResult;
             }
 
             return result;
