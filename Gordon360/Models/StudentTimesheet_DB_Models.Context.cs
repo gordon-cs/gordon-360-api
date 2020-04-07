@@ -27,7 +27,6 @@ namespace Gordon360.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<paid_shifts> paid_shifts { get; set; }
         public virtual DbSet<student_timesheets> student_timesheets { get; set; }
     
         [DbFunction("StudentTimesheetsEntities", "CSVStringsToTable_fn")]
@@ -160,13 +159,13 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("student_timesheets_select_if_student_has_paid_shifts", iD_NUMParameter);
         }
     
-        public virtual int student_timesheets_select_supervisor_name(Nullable<int> supervisor)
+        public virtual ObjectResult<student_timesheets_select_supervisor_name_Result> student_timesheets_select_supervisor_name(Nullable<int> supervisor)
         {
             var supervisorParameter = supervisor.HasValue ?
                 new ObjectParameter("supervisor", supervisor) :
                 new ObjectParameter("supervisor", typeof(int));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("student_timesheets_select_supervisor_name", supervisorParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<student_timesheets_select_supervisor_name_Result>("student_timesheets_select_supervisor_name", supervisorParameter);
         }
     
         public virtual int student_timesheets_submit_job_shift(Nullable<int> iD_NUM, Nullable<int> eml, Nullable<System.DateTime> shift_end_datetime, Nullable<int> submitted_to, string last_changed_by)

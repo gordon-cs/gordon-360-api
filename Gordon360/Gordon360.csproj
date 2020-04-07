@@ -342,9 +342,6 @@
     <Compile Include="Models\MYSCHEDULE_BY_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\paid_shifts.cs">
-      <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\PART_DEF.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -417,6 +414,9 @@
       <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\student_timesheets_select_fixed_status_shifts_Result.cs">
+      <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\student_timesheets_select_supervisor_name_Result.cs">
       <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sysdiagrams.cs">
@@ -576,6 +576,7 @@
     </Content>
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <ItemGroup>

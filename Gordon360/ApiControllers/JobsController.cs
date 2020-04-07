@@ -78,7 +78,7 @@ namespace Gordon360.ApiControllers
         /// <returns>The user's active jobs</returns>
         [HttpGet]
         [Route("getSavedShifts/")]
-        public IHttpActionResult getSavedShiftsForUser()
+        public HttpResponseMessage getSavedShiftsForUser()
         {
             int userID = -1;
 
@@ -86,21 +86,19 @@ namespace Gordon360.ApiControllers
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             var id = _accountService.GetAccountByUsername(username).GordonID;
             userID = Convert.ToInt32(id);
-
-
-            string query = "SELECT * from student_timesheets where ID_NUM = " + userID + ";";
-            IEnumerable<StudentTimesheetsViewModel> queryResult = null;
+            
+            IEnumerable<StudentTimesheetsViewModel> result = null;
 
             try
             {
-                queryResult = RawSqlQuery<StudentTimesheetsViewModel>.StudentTimesheetQuery(query);
+                result = _jobsService.getSavedShiftsForUser(userID);
             }
             catch (Exception e)
             {
-                //
                 System.Diagnostics.Debug.WriteLine(e.Message);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, e);
             }
-            return Ok(queryResult);
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         /// <summary>
