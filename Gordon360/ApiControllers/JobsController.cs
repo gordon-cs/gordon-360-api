@@ -88,7 +88,8 @@ namespace Gordon360.ApiControllers
             userID = Convert.ToInt32(id);
 
 
-            string query = "SELECT * from student_timesheets where ID_NUM = " + userID + ";";
+            string query = "SELECT ID, ID_NUM, EML, EML_DESCRIPTION, SHIFT_START_DATETIME, SHIFT_END_DATETIME, HOURLY_RATE, HOURS_WORKED, SUPERVISOR, COMP_SUPERVISOR, STATUS, SUBMITTED_TO, SHIFT_NOTES, COMMENTS, PAY_WEEK_DATE, PAY_PERIOD_DATE, PAY_PERIOD_ID, LAST_CHANGED_BY, DATETIME_ENTERED from student_timesheets where ID_NUM = " + userID + " AND STATUS != 'PAID';";
+            System.Diagnostics.Debug.WriteLine("query: " + query);
             IEnumerable<StudentTimesheetsViewModel> queryResult = null;
 
             try
