@@ -14,9 +14,9 @@ try {
   Invoke-Command -Session $session {mkdir $($using:env:TEST_COPY_DESTINATION) -Force}
   Invoke-Command -Session $session {cd $($using:env:TEST_COPY_DESTINATION)}
   echo "Creating backup directory..."
-  $renamedDirName = "./360ApiTrain_" + (Get-Date -Format "MM-dd-yyyy_HH-mm-ss")
+  $renamedDirName = $env:TEST_COPY_DESTINATION + "_" + (Get-Date -Format "MM-dd-yyyy_HH-mm-ss")
   if (Test-Path -Path "./360ApiTrain") {
-    Invoke-Command -Session $session {Rename-Item ./360ApiTrain $($using:newDirName) -Force}
+    Invoke-Command -Session $session {Copy-Item ./360ApiTrain $($using:renamedDirName) -Force}
   }
   echo "Copying files to remote destination..."
   cp -Path "VSOutput\360ApiTrain" -Destination $env:TEST_COPY_DESTINATION -ToSession $session -Recurse -Force
