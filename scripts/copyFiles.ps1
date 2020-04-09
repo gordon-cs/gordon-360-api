@@ -17,7 +17,8 @@ try {
   $renamedDirName = $env:TEST_COPY_DESTINATION + "\360ApiTrain_backup_" + (Get-Date -Format "MM-dd-yyyy_HH-mm-ss")
   echo "Backing up to " + $renamedDirName
   if (Test-Path -Path "./360ApiTrain") {
-    Invoke-Command -Session $session {Copy-Item ./360ApiTrain -Destination $($using:renamedDirName) -Recurse -Force}
+    Invoke-Command -Session $session {mkdir $($using:renamedDirName) -Force}
+    Invoke-Command -Session $session {Copy-Item ./360ApiTrain/* -Destination $($using:renamedDirName) -Recurse -Force}
   }
   echo "Copying files to remote destination..."
   cp -Path "VSOutput\360ApiTrain" -Destination $env:TEST_COPY_DESTINATION -ToSession $session -Recurse -Force
