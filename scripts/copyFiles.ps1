@@ -13,8 +13,8 @@ try {
   echo "Creating copytest folder..."
   Invoke-Command -Session $session {mkdir $($using:env:TEST_COPY_DESTINATION) -Force}
   Invoke-Command -Session $session {cd $($using:env:TEST_COPY_DESTINATION)}
-  echo ("Testing the existence of " + ($env:TEST_COPY_DESTINATION + "\360ApiTrain"))
-  $apiFolderExists = Test-Path -Path ($env:TEST_COPY_DESTINATION + "\360ApiTrain")
+  echo ("Testing the existence of " + ($env:TEST_COPY_DESTINATION + "\360ApiTrain\"))
+  $apiFolderExists = Test-Path -Path ($env:TEST_COPY_DESTINATION + "\360ApiTrain\")
   echo $apiFolderExists
   if ($apiFolderExists) {
     echo "It exists!"
