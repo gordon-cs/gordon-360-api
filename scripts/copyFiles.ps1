@@ -13,14 +13,11 @@ try {
   echo "Creating copytest folder..."
   Invoke-Command -Session $session {mkdir $($using:env:TEST_COPY_DESTINATION) -Force}
   Invoke-Command -Session $session {cd $($using:env:TEST_COPY_DESTINATION)}
-  echo ("Testing the existence of " + ($env:TEST_COPY_DESTINATION + "\360ApiTrain"))
   $apiFolderExists = (Invoke-Command -Session $session {Test-Path -Path ($using:env:TEST_COPY_DESTINATION + "\360ApiTrain") -PathType Container})
-  echo $apiFolderExists
   if ($apiFolderExists) {
-    echo "It exists!"
     echo "Creating backup directory..."
     $renamedDirName = ($env:TEST_COPY_DESTINATION + "\360ApiTrain_backup_" + (Get-Date -Format "MM-dd-yyyy_HH-mm-ss"))
-    echo ("Backing up previous build to " + $renamedDirName)
+    echo ("Backing up previous build...")
     Invoke-Command -Session $session {mkdir $($using:renamedDirName) -Force}
     Invoke-Command -Session $session {Copy-Item ./360ApiTrain/* -Destination $($using:renamedDirName) -Recurse -Force}
   }
