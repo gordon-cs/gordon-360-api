@@ -14,9 +14,9 @@ try {
   Invoke-Command -Session $session {mkdir $($using:env:TEST_COPY_DESTINATION) -Force}
   Invoke-Command -Session $session {cd $($using:env:TEST_COPY_DESTINATION)}
   echo "Creating backup directory..."
-  $renamedDirName = $env:TEST_COPY_DESTINATION + "\360ApiTrain_backup_" + (Get-Date -Format "MM-dd-yyyy_HH-mm-ss")
-  echo "Backing up to " + $renamedDirName
+  $renamedDirName = ($env:TEST_COPY_DESTINATION + "\360ApiTrain_backup_" + (Get-Date -Format "MM-dd-yyyy_HH-mm-ss"))
   if (Test-Path -Path "./360ApiTrain") {
+    echo ("Backing up previous build to " + $renamedDirName)
     Invoke-Command -Session $session {mkdir $($using:renamedDirName) -Force}
     Invoke-Command -Session $session {Copy-Item ./360ApiTrain/* -Destination $($using:renamedDirName) -Recurse -Force}
   }
