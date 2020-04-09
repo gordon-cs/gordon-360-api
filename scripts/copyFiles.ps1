@@ -13,7 +13,7 @@ try {
   echo "Creating copytest folder..."
   Invoke-Command -Session $session {mkdir $($using:env:TEST_COPY_DESTINATION) -Force}
   Invoke-Command -Session $session {cd $($using:env:TEST_COPY_DESTINATION)}
-  if (Test-Path -Path "./360ApiTrain") {
+  if (Test-Path -Path ($env:TEST_COPY_DESTINATION + "\360ApiTrain")) {
     echo "It exists!"
     echo "Creating backup directory..."
     $renamedDirName = ($env:TEST_COPY_DESTINATION + "\360ApiTrain_backup_" + (Get-Date -Format "MM-dd-yyyy_HH-mm-ss"))
