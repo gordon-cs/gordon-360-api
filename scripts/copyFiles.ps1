@@ -10,12 +10,14 @@ try {
   $session = New-PSSession -ComputerName $env:DEPLOY_SERVER -Credential $credential -SessionOption (New-PSSessionOption -SkipCACheck -SkipCNCheck -SkipRevocationCheck)
   Write-Output "Entering deploy destination on remote server..."
   Invoke-Command -Session $session {Set-Location $($using:env:DEPLOY_DESTINATION)}
+#   The SITE_DIR environment variable will be set according to the branch being deployed
   $apiFolderExists = (Invoke-Command -Session $session {Test-Path -Path ($($using:env:DEPLOY_DESTINATION) + "\" + $($using:env:SITE_DIR)) -PathType Container})
   if ($apiFolderExists) {
     Write-Output "Creating backup directory..."
     $backupDir = ($env:DEPLOY_DESTINATION + "\" + $env:SITE_DIR + "_backup_" + (Get-Date -Format "MM-dd-yyyy_HH-mm-ss"))
     Write-Output ("Backing up previous build...")
-    Invoke-Command -Session $session {mkdir $($using:backupDir) -Force}
+    # Piping to Out-Null suppresses output, which would otherwise reveal the api location on the console
+    Invoke-Command -Session $session {mkdir $($using:backupDir) -Force | Out-Null}
     Invoke-Command -Session $session {Copy-Item ("./" + $($using:env:SITE_DIR) + "/*") -Destination $($using:backupDir) -Recurse -Force}
   }
   Write-Output "Copying API files to remote destination..."
