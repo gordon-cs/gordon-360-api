@@ -9,4 +9,4 @@ REM Publish the solution to a local directory
 
 echo "Testing ability to copy to remote server..."
 @echo off
-powershell -ExecutionPolicy Bypass -File ./scripts/copyFiles.ps1
+powershell -ExecutionPolicy Bypass -File ./scripts/copyFiles-test.ps1
