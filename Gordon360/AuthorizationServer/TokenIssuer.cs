@@ -125,8 +125,8 @@ namespace Gordon360.AuthorizationServer
                         }
                         catch (ResourceNotFoundException e)
                         {
-                            // Silent catch. 
                             // This is ok because we know this exception means the user is not an admin
+                            System.Diagnostics.Debug.WriteLine(e.Message);
                         }
                         try
                         {
@@ -140,8 +140,8 @@ namespace Gordon360.AuthorizationServer
                         }
                         catch(ResourceNotFoundException e)
                         {
-                            // Silent catch. 
                             // This is ok because we know this exception means the user is not an admin
+                            System.Diagnostics.Debug.WriteLine(e.Message);
                         }
                         
 
