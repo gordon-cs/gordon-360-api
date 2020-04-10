@@ -11,14 +11,14 @@ echo "Opening remote session..."
 try {
   $session = New-PSSession -ComputerName $env:DEPLOY_SERVER -Credential $credential -SessionOption (New-PSSessionOption -SkipCACheck -SkipCNCheck -SkipRevocationCheck)
   echo "Creating copytest folder..."
-  Invoke-Command -Session $session {mkdir $($using:env:TEST_COPY_DESTINATION) -Force}
+  Invoke-Command -Session $session {mkdir $($using:env:TEST_COPY_DESTINATION) -Force | Out-Null}
   Invoke-Command -Session $session {cd $($using:env:TEST_COPY_DESTINATION)}
   $apiFolderExists = (Invoke-Command -Session $session {Test-Path -Path ($using:env:TEST_COPY_DESTINATION + "\360ApiTrain") -PathType Container})
   if ($apiFolderExists) {
     echo "Creating backup directory..."
     $renamedDirName = ($env:TEST_COPY_DESTINATION + "\360ApiTrain_backup_" + (Get-Date -Format "MM-dd-yyyy_HH-mm-ss"))
     echo ("Backing up previous build...")
-    Invoke-Command -Session $session {mkdir $($using:renamedDirName) -Force}
+    Invoke-Command -Session $session {mkdir $($using:renamedDirName) -Force | Out-Null}
     Invoke-Command -Session $session {Copy-Item ./360ApiTrain/* -Destination $($using:renamedDirName) -Recurse -Force}
   }
   echo "Copying files to remote destination..."
