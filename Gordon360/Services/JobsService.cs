@@ -31,7 +31,7 @@ namespace Gordon360.Services
             IEnumerable<StudentTimesheetsViewModel> result = null;
 
             var id_num = new SqlParameter("@ID_NUM", ID_NUM);
-            string query = "SELECT ID, ID_NUM, EML, EML_DESCRIPTION, SHIFT_START_DATETIME, SHIFT_END_DATETIME, HOURLY_RATE, HOURS_WORKED, SUPERVISOR, COMP_SUPERVISOR, STATUS, SUBMITTED_TO, SHIFT_NOTES, COMMENTS, PAY_WEEK_DATE, PAY_PERIOD_DATE, PAY_PERIOD_ID, LAST_CHANGED_BY, DATETIME_ENTERED from student_timesheets where ID_NUM = @ID_NUM AND STATUS != 'PAID'";
+            string query = "SELECT ID, ID_NUM, EML, EML_DESCRIPTION, SHIFT_START_DATETIME, SHIFT_END_DATETIME, HOURLY_RATE, HOURS_WORKED, SUPERVISOR, COMP_SUPERVISOR, STATUS, SUBMITTED_TO, SHIFT_NOTES, COMMENTS, PAY_WEEK_DATE, PAY_PERIOD_DATE, PAY_PERIOD_ID, LAST_CHANGED_BY, DATETIME_ENTERED from student_timesheets where ID_NUM = @ID_NUM AND STATUS != 'Paid' order by EML, SHIFT_START_DATETIME, STATUS";
             try
             {
                 result = RawSqlQuery<StudentTimesheetsViewModel>.StudentTimesheetQuery(query, id_num);
