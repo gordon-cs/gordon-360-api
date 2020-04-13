@@ -19,9 +19,9 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Diagnostics;
 
-/// <summary>
-/// We use this service to pull meal data from blackboard and parse it
-/// </summary>
+// <summary>
+// We use this service to pull meal data from blackboard and parse it
+// </summary>
 namespace Gordon360.Services
 {
     /// <summary>
