@@ -140,6 +140,27 @@ namespace Gordon360.ApiControllers
         }
 
         /// <summary>
+        /// Edit a shift
+        /// <param name="shiftDetails">The details that will be changed</param>
+        /// </summary>
+        [HttpPut]
+        [Route("editShift/{rowID}")]
+        public IHttpActionResult editShiftForUser([FromBody] ShiftViewModel shiftDetails)
+        {
+            IEnumerable<StudentTimesheetsViewModel> result = null;
+            try
+            {
+                result = _jobsService.editShift(shiftDetails.ID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                return InternalServerError();
+            }
+            return Ok(result);
+        }
+
+        /// <summary>
         /// Get a user's active jobs
         /// </summary>
         /// <returns>The result of deleting the shift</returns>

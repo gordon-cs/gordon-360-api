@@ -7,7 +7,7 @@ namespace Gordon360.Models.ViewModels
 {
     public class ShiftViewModel
     {
-        public int ID_NUM { get; set; }
+        public int ID { get; set; }
         public int EML { get; set; }
         public System.DateTime SHIFT_START_DATETIME { get; set; }
         public System.DateTime SHIFT_END_DATETIME { get; set; }
