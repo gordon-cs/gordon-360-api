@@ -124,12 +124,45 @@ namespace Gordon360.ApiControllers
             try
             {
                 overlapCheckResult = _jobsService.checkForOverlappingShift(userID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME);
-                System.Diagnostics.Debug.WriteLine("overlap check result: " + overlapCheckResult.Count());
                 if (overlapCheckResult.Count() > 0)
                 {
                     return Request.CreateResponse(HttpStatusCode.Conflict, "Error: shift overlap detected");
                 }
                 result = _jobsService.saveShiftForUser(userID, shiftDetails.EML, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, shiftDetails.SHIFT_NOTES, username);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, e);
+            }
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        /// <summary>
+        /// Edit a shift
+        /// <param name="shiftDetails">The details that will be changed</param>
+        /// </summary>
+        [HttpPut]
+        [Route("editShift/")]
+        public HttpResponseMessage editShiftForUser([FromBody] ShiftViewModel shiftDetails)
+        {
+            IEnumerable<StudentTimesheetsViewModel> result = null;
+            IEnumerable<OverlappingShiftIdViewModel> overlapCheckResult = null;
+
+            int userID = -1;
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+            userID = Convert.ToInt32(id);
+
+            try
+            {
+                overlapCheckResult = _jobsService.checkForOverlappingShift(userID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME);
+                if (overlapCheckResult.Count() > 0)
+                {
+                    return Request.CreateResponse(HttpStatusCode.Conflict, "Error: shift overlap detected");
+                }
+                result = _jobsService.editShift(shiftDetails.ID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, username);
             }
             catch (Exception e)
             {
@@ -183,7 +216,6 @@ namespace Gordon360.ApiControllers
             {
                 foreach (ShiftToSubmitViewModel shift in shifts)
                 {
-                    System.Diagnostics.Debug.WriteLine("Submitting shift to " + shift.SUBMITTED_TO);
                     result = _jobsService.submitShiftForUser(shift.ID_NUM, shift.EML, shift.SHIFT_END_DATETIME, shift.SUBMITTED_TO, shift.LAST_CHANGED_BY);
                 }
             }

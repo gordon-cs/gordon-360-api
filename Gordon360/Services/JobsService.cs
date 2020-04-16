@@ -68,6 +68,27 @@ namespace Gordon360.Services
             return result;
         }
 
+        public IEnumerable<StudentTimesheetsViewModel> editShift(int rowID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string username)
+        {
+            IEnumerable<StudentTimesheetsViewModel> result = null;
+            var id = new SqlParameter("@ID", rowID);
+            var newStart = new SqlParameter("@newStart", shiftStart);
+            var newEnd = new SqlParameter("@newEnd", shiftEnd);
+            var newHours = new SqlParameter("@newHours", hoursWorked);
+            var lastChangedBy = new SqlParameter("@lastChangedBy", username);
+
+            try
+            {
+                result = RawSqlQuery<StudentTimesheetsViewModel>.StudentTimesheetQuery("UPDATE student_timesheets SET STATUS = 'Saved', SHIFT_START_DATETIME = @newStart, SHIFT_END_DATETIME = @newEnd, HOURS_WORKED = @newHours, LAST_CHANGED_BY = @lastChangedBy WHERE ID = @ID;", newStart, newEnd, newHours, id, lastChangedBy);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+
+            return result;
+        }
+
         public IEnumerable<StudentTimesheetsViewModel> deleteShiftForUser(int rowID, int studentID)
         {
             IEnumerable<StudentTimesheetsViewModel> result = null;
