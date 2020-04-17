@@ -157,7 +157,7 @@ namespace Gordon360.ApiControllers
 
             try
             {
-                overlapCheckResult = _jobsService.checkForOverlappingShift(userID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME);
+                overlapCheckResult = _jobsService.editShiftOverlapCheck(userID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.ID);
                 if (overlapCheckResult.Count() > 0)
                 {
                     return Request.CreateResponse(HttpStatusCode.Conflict, "Error: shift overlap detected");
