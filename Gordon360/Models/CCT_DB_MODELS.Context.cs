@@ -35,6 +35,8 @@ namespace Gordon360.Models
         public virtual DbSet<MEMBERSHIP> MEMBERSHIP { get; set; }
         public virtual DbSet<MYSCHEDULE> MYSCHEDULE { get; set; }
         public virtual DbSet<REQUEST> REQUEST { get; set; }
+        public virtual DbSet<Save_Bookings> Save_Bookings { get; set; }
+        public virtual DbSet<Save_Rides> Save_Rides { get; set; }
         public virtual DbSet<Schedule_Control> Schedule_Control { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         public virtual DbSet<C360_SLIDER> C360_SLIDER { get; set; }
@@ -442,6 +444,15 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<REQUESTS_PER_STUDENT_ID_Result>("REQUESTS_PER_STUDENT_ID", sTUDENT_IDParameter);
         }
     
+        public virtual ObjectResult<RIDERS_BY_RIDE_ID_Result> RIDERS_BY_RIDE_ID(string rIDE_ID)
+        {
+            var rIDE_IDParameter = rIDE_ID != null ?
+                new ObjectParameter("RIDE_ID", rIDE_ID) :
+                new ObjectParameter("RIDE_ID", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<RIDERS_BY_RIDE_ID_Result>("RIDERS_BY_RIDE_ID", rIDE_IDParameter);
+        }
+    
         public virtual int sp_alterdiagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)
         {
             var diagramnameParameter = diagramname != null ?
@@ -592,6 +603,20 @@ namespace Gordon360.Models
                 new ObjectParameter("ID_NUM", typeof(int));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SUPERVISORS_PER_ID_NUM", iD_NUMParameter);
+        }
+    
+        public virtual ObjectResult<UPCOMING_RIDES_Result> UPCOMING_RIDES()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<UPCOMING_RIDES_Result>("UPCOMING_RIDES");
+        }
+    
+        public virtual ObjectResult<UPCOMING_RIDES_BY_STUDENT_ID_Result> UPCOMING_RIDES_BY_STUDENT_ID(Nullable<int> sTUDENT_ID)
+        {
+            var sTUDENT_IDParameter = sTUDENT_ID.HasValue ?
+                new ObjectParameter("STUDENT_ID", sTUDENT_ID) :
+                new ObjectParameter("STUDENT_ID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<UPCOMING_RIDES_BY_STUDENT_ID_Result>("UPCOMING_RIDES_BY_STUDENT_ID", sTUDENT_IDParameter);
         }
     
         public virtual int UPDATE_ACT_INFO()

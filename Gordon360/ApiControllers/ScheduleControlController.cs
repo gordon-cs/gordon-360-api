@@ -26,9 +26,7 @@ namespace Gordon360.Controllers.Api
         private IUnitOfWork _unitOfWork;
 
         //declare services we are going to use.
-        private IProfileService _profileService;
         private IAccountService _accountService;
-        private IRoleCheckingService _roleCheckingService;
 
         private IScheduleControlService _scheduleControlService;
 

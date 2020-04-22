@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 
-/// <summary>
-/// Namespace with all the Service Interfaces that are to be implemented. I don't think making this interface is required, the services can work find on their own.
-/// However, building the interfaces first does give a general sense of structure to their implementations. A certian cohesiveness :p.
-/// </summary>
+// <summary>
+// Namespace with all the Service Interfaces that are to be implemented. I don't think making this interface is required, the services can work find on their own.
+// However, building the interfaces first does give a general sense of structure to their implementations. A certian cohesiveness :p.
+// </summary>
 namespace Gordon360.Services
 {
 
@@ -147,6 +147,19 @@ namespace Gordon360.Services
         MEMBERSHIP Delete(int id);
     }
 
+    public interface IJobsService
+    {
+        IEnumerable<StudentTimesheetsViewModel> getSavedShiftsForUser(int ID_NUM);
+        IEnumerable<StudentTimesheetsViewModel> saveShiftForUser(int studentID, int jobID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string shiftNotes, string lastChangedBy);
+        IEnumerable<StudentTimesheetsViewModel> editShift(int rowID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string username);
+        IEnumerable<StudentTimesheetsViewModel> deleteShiftForUser(int rowID, int studentID);
+        IEnumerable<StudentTimesheetsViewModel> submitShiftForUser(int studentID, int jobID, DateTime shiftEnd, int submittedTo, string lastChangedBy);
+        IEnumerable<SupervisorViewModel> getsupervisorNameForJob(int supervisorID);
+        IEnumerable<ActiveJobViewModel> getActiveJobs(DateTime shiftStart, DateTime shiftEnd, int studentID);
+        IEnumerable<OverlappingShiftIdViewModel> editShiftOverlapCheck(int studentID, DateTime shiftStart, DateTime shiftEnd, int rowID);
+        IEnumerable<OverlappingShiftIdViewModel> checkForOverlappingShift(int studentID, DateTime shiftStart, DateTime shiftEnd);
+    }
+
     public interface IParticipationService
     {
         ParticipationViewModel Get(string id);
@@ -188,6 +201,21 @@ namespace Gordon360.Services
         MYSCHEDULE Update(MYSCHEDULE myschedule);
         MYSCHEDULE Delete(string event_id, string gordon_id);
     }
+
+    public interface ISaveService
+    {
+        IEnumerable<RideViewModel> GetUpcoming(); // done
+        IEnumerable<RideViewModel> GetUpcomingForUser(string gordon_id); //done
+        //IEnumerable<RideViewModel> GetUsersInRide(string ride_id); // make SaveUserViewModel
+        Save_Rides GetRide(string ride_id);
+        Save_Rides AddRide(Save_Rides newRide, string gordon_id); //done
+        Save_Rides DeleteRide(string rideID, string gordon_id); //done
+        int GetValidDrives(string ride_id);
+        Save_Bookings AddBooking(Save_Bookings newBooking); //done
+        Save_Bookings DeleteBooking(string rideID, string gordon_id); //done
+
+    }
+
     public interface IContentManagementService
     {
         IEnumerable<SliderViewModel> GetSliderContent();

@@ -43,8 +43,6 @@ namespace Gordon360.ApiControllers
         /// <summary>
         ///  Gets information about student's dining plan and balance
         /// </summary>
-        /// <param name="id">The ID of the student</param>
-        /// <param name="sessionCode">Current session code</param>
         /// <returns>A DiningInfo object</returns>
         [HttpGet]
         [Route("")]
