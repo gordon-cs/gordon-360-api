@@ -167,6 +167,25 @@ namespace Gordon360.Services
             return result;
         }
 
+        public IEnumerable<OverlappingShiftIdViewModel> editShiftOverlapCheck(int studentID, DateTime shiftStart, DateTime shiftEnd, int rowID)
+        {
+            IEnumerable<OverlappingShiftIdViewModel> result = null;
+            var id_num = new SqlParameter("@ID_NUM", studentID);
+            var start_datetime = new SqlParameter("@start_datetime", shiftStart);
+            var end_datetime = new SqlParameter("@end_datetime", shiftEnd);
+            var shift_being_edited = new SqlParameter("@shift_being_edited", rowID);
+
+            try
+            {
+                result = RawSqlQuery<OverlappingShiftIdViewModel>.StudentTimesheetQuery("student_timesheets_edit_shift_already_worked_these_hours @ID_NUM, @start_datetime, @end_datetime, @shift_being_edited", id_num, start_datetime, end_datetime, shift_being_edited);
+            }
+            catch(Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+            return result;
+        }
+
         public IEnumerable<OverlappingShiftIdViewModel> checkForOverlappingShift(int studentID, DateTime shiftStart, DateTime shiftEnd)
         {
             IEnumerable<OverlappingShiftIdViewModel> result = null;
