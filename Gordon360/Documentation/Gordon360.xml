@@ -169,13 +169,6 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.GetTestData">
-            <summary>
-            This is just an end-to-end proof of concept.
-            It will return some dummy text.
-            <returns> A dummy string </returns>
-            </summary>
-        </member>
         <member name="M:Gordon360.ApiControllers.JobsController.getJobsForUser(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
             <summary>
             Get a user's active jobs
@@ -187,14 +180,14 @@
             <summary>
             Get a user's saved shifts
             </summary>
-            <returns>The user's active jobs</returns>
+            <returns>The user's saved shifts</returns>
         </member>
         <member name="M:Gordon360.ApiControllers.JobsController.saveShiftForUser(Gordon360.Models.ViewModels.ShiftViewModel)">
             <summary>
             Get a user's active jobs
             </summary>
             <param name="shiftDetails"></param>
-            <returns>The user's active jobs</returns>
+            <returns>The result of saving a shift</returns>
         </member>
         <member name="M:Gordon360.ApiControllers.JobsController.editShiftForUser(Gordon360.Models.ViewModels.ShiftViewModel)">
             <summary>
@@ -212,13 +205,13 @@
             <summary>
             Submit shifts
             </summary>
-            <returns>The result of deleting the shift</returns>
+            <returns>The result of submitting the shifts</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.submitShiftsForUser(System.Int32)">
+        <member name="M:Gordon360.ApiControllers.JobsController.getSupervisorName(System.Int32)">
             <summary>
-            Submit shifts
+            Gets the name of a supervisor based on their ID number
             </summary>
-            <returns>The result of deleting the shift</returns>
+            <returns>The name of the supervisor</returns>
         </member>
         <member name="M:Gordon360.ApiControllers.SaveController.GetUpcomingRides">
             <summary>
