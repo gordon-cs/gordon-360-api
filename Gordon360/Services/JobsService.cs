@@ -79,7 +79,7 @@ namespace Gordon360.Services
 
             try
             {
-                result = RawSqlQuery<StudentTimesheetsViewModel>.StudentTimesheetQuery("UPDATE student_timesheets SET STATUS = 'Saved', SHIFT_START_DATETIME = @newStart, SHIFT_END_DATETIME = @newEnd, HOURS_WORKED = @newHours, LAST_CHANGED_BY = @lastChangedBy WHERE ID = @ID;", newStart, newEnd, newHours, id, lastChangedBy);
+                result = RawSqlQuery<StudentTimesheetsViewModel>.StudentTimesheetQuery("UPDATE student_timesheets SET STATUS = 'Saved', SHIFT_START_DATETIME = @newStart, SHIFT_END_DATETIME = @newEnd, HOURS_WORKED = @newHours, LAST_CHANGED_BY = @lastChangedBy, COMMENTS = null WHERE ID = @ID;", newStart, newEnd, newHours, id, lastChangedBy);
             }
             catch (Exception e)
             {

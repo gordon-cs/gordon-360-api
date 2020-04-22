@@ -32,16 +32,15 @@ namespace Gordon360.ApiControllers
             _accountService = new AccountService(_unitOfWork);
         }
 
-        /// <summary>
-        /// This is just an end-to-end proof of concept.
-        /// It will return some dummy text.
-        /// <returns> A dummy string </returns>
-        /// </summary>
-        [HttpGet]
-        [Route("hello-world")]
-        public IHttpActionResult GetTestData()
+        private int GetCurrentUserID()
         {
-            return Ok("Hello World! We connected to the back-end.");
+            int userID = -1;
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            string id = _accountService.GetAccountByUsername(username).GordonID;
+            userID = Convert.ToInt32(id);
+
+            return userID;
         }
 
         /// <summary>
@@ -54,11 +53,7 @@ namespace Gordon360.ApiControllers
         public IHttpActionResult getJobsForUser([FromBody] ActiveJobSelectionParametersModel details)
         {
             IEnumerable<ActiveJobViewModel> result = null;
-            int userID = -1;
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-            userID = Convert.ToInt32(id);
+            int userID = GetCurrentUserID();
             try
             {
                 result = _jobsService.getActiveJobs(details.SHIFT_START_DATETIME, details.SHIFT_END_DATETIME, userID);
@@ -75,17 +70,12 @@ namespace Gordon360.ApiControllers
         /// <summary>
         /// Get a user's saved shifts
         /// </summary>
-        /// <returns>The user's active jobs</returns>
+        /// <returns>The user's saved shifts</returns>
         [HttpGet]
         [Route("getSavedShifts/")]
         public HttpResponseMessage getSavedShiftsForUser()
         {
-            int userID = -1;
-
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-            userID = Convert.ToInt32(id);
+            int userID = GetCurrentUserID();
             
             IEnumerable<StudentTimesheetsViewModel> result = null;
 
@@ -105,7 +95,7 @@ namespace Gordon360.ApiControllers
         /// Get a user's active jobs
         /// </summary>
         /// <param name="shiftDetails"></param>
-        /// <returns>The user's active jobs</returns>
+        /// <returns>The result of saving a shift</returns>
         [HttpPost]
         [Route("saveShift")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.SHIFT)]
@@ -114,12 +104,9 @@ namespace Gordon360.ApiControllers
             IEnumerable<StudentTimesheetsViewModel> result = null;
             IEnumerable<OverlappingShiftIdViewModel> overlapCheckResult = null;
 
-            int userID = -1;
-
+            int userID = GetCurrentUserID();
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-            userID = Convert.ToInt32(id);
 
             try
             {
@@ -182,12 +169,7 @@ namespace Gordon360.ApiControllers
         public IHttpActionResult deleteShiftForUser(int rowID)
         {
             IEnumerable<StudentTimesheetsViewModel> result = null;
-            int userID = -1;
-
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-            userID = Convert.ToInt32(id);
+            int userID = GetCurrentUserID();
 
             try
             {
@@ -204,19 +186,20 @@ namespace Gordon360.ApiControllers
         /// <summary>
         /// Submit shifts
         /// </summary>
-        /// <returns>The result of deleting the shift</returns>
+        /// <returns>The result of submitting the shifts</returns>
         [HttpPost]
         [Route("submitShifts")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.SHIFT)]
         public IHttpActionResult submitShiftsForUser([FromBody] IEnumerable<ShiftToSubmitViewModel> shifts)
         {
             IEnumerable<StudentTimesheetsViewModel> result = null;
+            int userID = GetCurrentUserID();
 
             try
             {
                 foreach (ShiftToSubmitViewModel shift in shifts)
                 {
-                    result = _jobsService.submitShiftForUser(shift.ID_NUM, shift.EML, shift.SHIFT_END_DATETIME, shift.SUBMITTED_TO, shift.LAST_CHANGED_BY);
+                    result = _jobsService.submitShiftForUser(userID, shift.EML, shift.SHIFT_END_DATETIME, shift.SUBMITTED_TO, shift.LAST_CHANGED_BY);
                 }
             }
             catch (Exception e)
@@ -228,13 +211,13 @@ namespace Gordon360.ApiControllers
         }
 
         /// <summary>
-        /// Submit shifts
+        /// Gets the name of a supervisor based on their ID number
         /// </summary>
-        /// <returns>The result of deleting the shift</returns>
+        /// <returns>The name of the supervisor</returns>
         [HttpGet]
         [Route("supervisorName/{supervisorID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.SHIFT)]
-        public IHttpActionResult submitShiftsForUser(int supervisorID)
+        public IHttpActionResult getSupervisorName(int supervisorID)
         {
             IEnumerable<SupervisorViewModel> result = null;
 
