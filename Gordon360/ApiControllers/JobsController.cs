@@ -139,8 +139,6 @@ namespace Gordon360.ApiControllers
             int userID = -1;
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-            userID = Convert.ToInt32(id);
 
             try
             {
