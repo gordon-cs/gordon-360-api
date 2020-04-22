@@ -203,6 +203,7 @@
     <Compile Include="ApiControllers\AccountsController.cs" />
     <Compile Include="ApiControllers\AdminsController.cs" />
     <Compile Include="ApiControllers\AdvancedSearchController.cs" />
+    <Compile Include="ApiControllers\NewsController.cs" />
     <Compile Include="ApiControllers\DiningController.cs" />
     <Compile Include="ApiControllers\ErrorLogController.cs" />
     <Compile Include="ApiControllers\EventController.cs" />
