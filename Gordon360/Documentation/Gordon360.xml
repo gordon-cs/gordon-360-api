@@ -189,6 +189,12 @@
             <param name="shiftDetails"></param>
             <returns>The result of saving a shift</returns>
         </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.editShiftForUser(Gordon360.Models.ViewModels.ShiftViewModel)">
+            <summary>
+            Edit a shift
+            <param name="shiftDetails">The details that will be changed</param>
+            </summary>
+        </member>
         <member name="M:Gordon360.ApiControllers.JobsController.deleteShiftForUser(System.Int32)">
             <summary>
             Get a user's active jobs

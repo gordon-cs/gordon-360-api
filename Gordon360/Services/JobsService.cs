@@ -31,7 +31,7 @@ namespace Gordon360.Services
             IEnumerable<StudentTimesheetsViewModel> result = null;
 
             var id_num = new SqlParameter("@ID_NUM", ID_NUM);
-            string query = "SELECT ID, ID_NUM, EML, EML_DESCRIPTION, SHIFT_START_DATETIME, SHIFT_END_DATETIME, HOURLY_RATE, HOURS_WORKED, SUPERVISOR, COMP_SUPERVISOR, STATUS, SUBMITTED_TO, SHIFT_NOTES, COMMENTS, PAY_WEEK_DATE, PAY_PERIOD_DATE, PAY_PERIOD_ID, LAST_CHANGED_BY, DATETIME_ENTERED from student_timesheets where ID_NUM = @ID_NUM AND STATUS != 'PAID'";
+            string query = "SELECT ID, ID_NUM, EML, EML_DESCRIPTION, SHIFT_START_DATETIME, SHIFT_END_DATETIME, HOURLY_RATE, HOURS_WORKED, SUPERVISOR, COMP_SUPERVISOR, STATUS, SUBMITTED_TO, SHIFT_NOTES, COMMENTS, PAY_WEEK_DATE, PAY_PERIOD_DATE, PAY_PERIOD_ID, LAST_CHANGED_BY, DATETIME_ENTERED from student_timesheets where ID_NUM = @ID_NUM AND STATUS != 'Paid' order by EML, SHIFT_START_DATETIME, STATUS";
             try
             {
                 result = RawSqlQuery<StudentTimesheetsViewModel>.StudentTimesheetQuery(query, id_num);
@@ -59,6 +59,27 @@ namespace Gordon360.Services
             try
             {
                 result = RawSqlQuery<StudentTimesheetsViewModel>.StudentTimesheetQuery("student_timesheets_insert_shift @ID_NUM, @eml, @shift_start_datetime, @shift_end_datetime, @hours_worked, @shift_notes, @last_changed_by", id_num, eml, shiftStartDateTime, shiftEndDateTime, hours_worked, notes, changedBy);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+
+            return result;
+        }
+
+        public IEnumerable<StudentTimesheetsViewModel> editShift(int rowID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string username)
+        {
+            IEnumerable<StudentTimesheetsViewModel> result = null;
+            var id = new SqlParameter("@ID", rowID);
+            var newStart = new SqlParameter("@newStart", shiftStart);
+            var newEnd = new SqlParameter("@newEnd", shiftEnd);
+            var newHours = new SqlParameter("@newHours", hoursWorked);
+            var lastChangedBy = new SqlParameter("@lastChangedBy", username);
+
+            try
+            {
+                result = RawSqlQuery<StudentTimesheetsViewModel>.StudentTimesheetQuery("UPDATE student_timesheets SET STATUS = 'Saved', SHIFT_START_DATETIME = @newStart, SHIFT_END_DATETIME = @newEnd, HOURS_WORKED = @newHours, LAST_CHANGED_BY = @lastChangedBy, COMMENTS = null WHERE ID = @ID;", newStart, newEnd, newHours, id, lastChangedBy);
             }
             catch (Exception e)
             {
@@ -143,6 +164,25 @@ namespace Gordon360.Services
                 Debug.WriteLine(e.Message);
             }
 
+            return result;
+        }
+
+        public IEnumerable<OverlappingShiftIdViewModel> editShiftOverlapCheck(int studentID, DateTime shiftStart, DateTime shiftEnd, int rowID)
+        {
+            IEnumerable<OverlappingShiftIdViewModel> result = null;
+            var id_num = new SqlParameter("@ID_NUM", studentID);
+            var start_datetime = new SqlParameter("@start_datetime", shiftStart);
+            var end_datetime = new SqlParameter("@end_datetime", shiftEnd);
+            var shift_being_edited = new SqlParameter("@shift_being_edited", rowID);
+
+            try
+            {
+                result = RawSqlQuery<OverlappingShiftIdViewModel>.StudentTimesheetQuery("student_timesheets_edit_shift_already_worked_these_hours @ID_NUM, @start_datetime, @end_datetime, @shift_being_edited", id_num, start_datetime, end_datetime, shift_being_edited);
+            }
+            catch(Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
             return result;
         }
 
