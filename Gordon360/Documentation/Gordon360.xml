@@ -1615,6 +1615,13 @@
             <param name="id">The membership id</param>
             <returns>The membership that was just deleted</returns>
         </member>
+        <member name="M:Gordon360.Services.MembershipService.GetSpecificMembership(System.Int32)">
+            <summary>	
+            Fetch the membership whose id is specified by the parameter	
+            </summary>	
+            <param name="id">The membership id</param>	
+            <returns>MembershipViewModel if found, null if not found</returns>	
+        </member>
         <member name="M:Gordon360.Services.MembershipService.GetAll">
             <summary>
             Fetches all membership records from storage.
