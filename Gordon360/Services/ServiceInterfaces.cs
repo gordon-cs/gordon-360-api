@@ -138,6 +138,7 @@ namespace Gordon360.Services
         int GetActivityFollowersCountForSession(string id, string sess_cde);
         int GetActivityMembersCountForSession(string id, string sess_cde);
         IEnumerable<MembershipViewModel> GetAll();
+        MEMBERSHIP GetSpecificMembership(int id);
         int GetActivityFollowersCount(string id);
         int GetActivityMembersCount(string id);
         MEMBERSHIP Add(MEMBERSHIP membership);
