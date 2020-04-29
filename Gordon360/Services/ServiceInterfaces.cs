@@ -180,7 +180,7 @@ namespace Gordon360.Services
     }
 
 
-        public interface IMyScheduleService
+    public interface IMyScheduleService
     {
         MYSCHEDULE GetForID(string event_id, string gordon_id);
         IEnumerable<MYSCHEDULE> GetAllForID(string gordon_id);
@@ -188,9 +188,16 @@ namespace Gordon360.Services
         MYSCHEDULE Update(MYSCHEDULE myschedule);
         MYSCHEDULE Delete(string event_id, string gordon_id);
     }
+
     public interface IContentManagementService
     {
         IEnumerable<SliderViewModel> GetSliderContent();
+    }
+
+    public interface INewsService
+    {
+        //IEnumerable<NewsViewModel> GetNewsNotExpired();
+        //IEnumerable<NewsViewModel> GetNewsForDay(string date);
     }
 
 }

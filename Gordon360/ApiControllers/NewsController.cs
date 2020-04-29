@@ -1,5 +1,6 @@
 ﻿using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Repositories;
+using Gordon360.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,37 +28,27 @@ namespace Gordon360.Controllers.Api
             _newsService = newsService;
         }
 
-
-        /** Get all approved student news entries for the specified session
-         * id: the identifier of a specific session
+        /** Get all approved student news entries not yet expired
          */
         [HttpGet]
-        [Route("session/{id}")]
-        public IHttpActionResult GetNewsForSession(string id)
+        [Route("not-expired")]
+        public IHttpActionResult GetNotExpired()
         {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
-            var result = _activityService.GetNewsForSession(id);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(result);
-
+            return Ok();
         }
+
+        /** Get all approved student news entries for the current day that are not expired
+         * date: today's date
+         */
+        [HttpGet]
+        [Route("day/{date}")]
+        public IHttpActionResult GetForDay(string date)
+        {
+            return Ok();
+        }
+
+
+
+        
     }
 }
