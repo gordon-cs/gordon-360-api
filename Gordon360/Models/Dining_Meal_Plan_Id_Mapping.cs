@@ -11,7 +11,7 @@ namespace Gordon360.Models
 {
     using System;
     using System.Collections.Generic;
-
+    
     public partial class Dining_Meal_Plan_Id_Mapping
     {
         public string meal_plan_id { get; set; }

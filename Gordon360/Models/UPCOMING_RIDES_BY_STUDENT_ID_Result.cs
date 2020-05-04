@@ -17,8 +17,11 @@ namespace Gordon360.Models
         public int capacity { get; set; }
         public string destination { get; set; }
         public string meetingPoint { get; set; }
-        public System.DateTime startPoint { get; set; }
+        public System.DateTime startTime { get; set; }
         public System.DateTime endTime { get; set; }
         public byte isCanceled { get; set; }
+        public string notes { get; set; }
+        public byte isDriver { get; set; }
+        public Nullable<int> seatsTaken { get; set; }
     }
 }

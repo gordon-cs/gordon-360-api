@@ -205,13 +205,11 @@ namespace Gordon360.Services
 
     public interface ISaveService
     {
-        IEnumerable<RideViewModel> GetUpcoming(); // done
-        IEnumerable<RideViewModel> GetUpcomingForUser(string gordon_id); //done
-        //IEnumerable<RideViewModel> GetUsersInRide(string ride_id); // make SaveUserViewModel
-        Save_Rides GetRide(string ride_id);
+        IEnumerable<UPCOMING_RIDES_Result> GetUpcoming(string gordon_id); // done
+        IEnumerable<UPCOMING_RIDES_BY_STUDENT_ID_Result> GetUpcomingForUser(string gordon_id); //done
         Save_Rides AddRide(Save_Rides newRide, string gordon_id); //done
         Save_Rides DeleteRide(string rideID, string gordon_id); //done
-        int GetValidDrives(string ride_id);
+        int CancelRide(string rideID, string gordon_id);
         Save_Bookings AddBooking(Save_Bookings newBooking); //done
         Save_Bookings DeleteBooking(string rideID, string gordon_id); //done
 
