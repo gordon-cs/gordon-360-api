@@ -17,6 +17,7 @@ namespace Gordon360.Models.ViewModels
         public byte isCanceled { get; set; }
 
 
+
         public static implicit operator RideViewModel(Save_Rides ride)
         {
             RideViewModel vm = new RideViewModel

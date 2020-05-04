@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="0b8608e1a2d343bda00700d23ce0f936" Name="Diagram1">
+      <Diagram DiagramId="772417ce3bd74ee8b41a32cdbf3841b9" Name="Diagram1">
         <EntityTypeShape EntityType="Gordon360.ACT_INFO" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.ADMIN" Width="1.5" PointX="5.75" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.CUSTOM_PROFILE" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
@@ -36,6 +36,8 @@
         <EntityTypeShape EntityType="Gordon360.PART_DEF" Width="1.5" PointX="15.75" PointY="5.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.RoomAssign" Width="1.5" PointX="15.75" PointY="8.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.Student" Width="1.5" PointX="15.75" PointY="12.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Gordon360.StudentNews" Width="1.5" PointX="10.75" PointY="16.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Gordon360.StudentNewsCategory" Width="1.5" PointX="12.75" PointY="16.75" IsExpanded="true" />
         <AssociationConnector Association="Gordon360.FK_booking_rides" ManuallyRouted="false" />
         <AssociationConnector Association="Gordon360.FK_ride_id" ManuallyRouted="false" />
       </Diagram>
