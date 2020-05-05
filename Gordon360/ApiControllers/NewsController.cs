@@ -28,7 +28,8 @@ namespace Gordon360.Controllers.Api
             _newsService = newsService;
         }
 
-        /** Get all approved student news entries not yet expired
+        /** Get all approved student news entries not yet expired, filtering
+         * out the expired by comparing 2 weeks past date entered to current date
          */
         [HttpGet]
         [Route("not-expired")]
@@ -37,12 +38,12 @@ namespace Gordon360.Controllers.Api
             return Ok();
         }
 
-        /** Get all approved student news entries for the current day that are not expired
-         * date: today's date
+        /** Get all new and approved student news entries,
+         * checking novelty by comparing an entry's date entered to 10am on the current day
          */
         [HttpGet]
-        [Route("day/{date}")]
-        public IHttpActionResult GetForDay(string date)
+        [Route("new")]
+        public IHttpActionResult GetNew()
         {
             return Ok();
         }

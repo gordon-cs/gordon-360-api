@@ -19,7 +19,7 @@ namespace Gordon360.Services
         //{}
 
 
-        //public IEnumerable<NewsViewModel> GetNewsForDay(string date);
+        //public IEnumerable<NewsViewModel> GetNewsNew();
         //{}
     }
 }

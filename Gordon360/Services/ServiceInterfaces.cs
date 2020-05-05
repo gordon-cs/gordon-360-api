@@ -197,7 +197,7 @@ namespace Gordon360.Services
     public interface INewsService
     {
         //IEnumerable<NewsViewModel> GetNewsNotExpired();
-        //IEnumerable<NewsViewModel> GetNewsForDay(string date);
+        //IEnumerable<NewsViewModel> GetNewsNew();
     }
 
 }

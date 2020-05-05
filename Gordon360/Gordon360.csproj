@@ -438,6 +438,7 @@
     <Compile Include="Services\ContentManagementService.cs" />
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Services\MyScheduleService.cs" />
+    <Compile Include="Services\NewsService.cs" />
     <Compile Include="Services\ProfileService.cs" />
     <Compile Include="Services\RoleCheckingService.cs" />
     <Compile Include="Services\ScheduleControlService.cs" />
