@@ -18,5 +18,9 @@ namespace Gordon360.Models.ViewModels
         public Nullable<DateTime> Entered { get; set; }
         public string fname { get; set; }
         public string lname { get; set; }
+        public string categoryName { get; set; }
+        public Nullable<int> SortOrder { get; set; }
+        public Nullable<DateTime> ManualExpirationDate { get; set; }
+
     }
 }

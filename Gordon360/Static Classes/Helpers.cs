@@ -434,5 +434,54 @@ namespace Gordon360.Static.Methods
             // Filter out results with null or empty active directory names
             return result;
         }
+
+        // Get student news information: query the database and format result according to view model type given
+        public static IEnumerable<StudentNewsViewModel> GetNewsNotExpired()
+        {
+            IEnumerable<StudentNewsViewModel> result = null;
+            try
+            {
+                // Attempt to query the DB
+                result = RawSqlQuery<StudentNewsViewModel>.query(SQLQuery.NEWS_NOT_EXPIRED);
+            }
+            catch
+            {
+                //
+            }
+
+            return result;
+        }
+
+        public static IEnumerable<StudentNewsViewModel> GetNewsNew()
+        {
+            IEnumerable<StudentNewsViewModel> result = null;
+            try
+            {
+                // Attempt to query the DB
+                result = RawSqlQuery<StudentNewsViewModel>.query(SQLQuery.NEWS_NEW);
+            }
+            catch
+            {
+                //
+            }
+
+            return result;
+        }
+
+        public static IEnumerable<StudentNewsCategory> GetNewsCategories()
+        {
+            IEnumerable<StudentNewsCategory> result = null;
+            try
+            {
+                // Attempt to query the DB
+                result = RawSqlQuery<StudentNewsCategory>.query(SQLQuery.NEWS_NEW);
+            }
+            catch
+            {
+                //
+            }
+
+            return result;
+        }
     }
 }

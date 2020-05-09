@@ -15,11 +15,10 @@ namespace Gordon360.Services
             _unitOfWork = unitOfWork;
         }
 
-        //public IEnumerable<NewsViewModel> GetNewsNotExpired();
-        //{}
+        public IEnumerable<StudentNewsViewModel> GetNewsNotExpired();
 
+        public IEnumerable<StudentNewsViewModel> GetNewsNew();
 
-        //public IEnumerable<NewsViewModel> GetNewsNew();
-        //{}
+        public IEnumerable<StudentNewsCategory> GetNewsCategories();
     }
 }
