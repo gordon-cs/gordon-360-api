@@ -119,8 +119,8 @@ namespace Gordon360.Static.Names
         public static string ALL_FACSTAFF_BUILDINGS = "SELECT DISTINCT BuildingDescription FROM FacStaff WHERE OnCampusBuilding is not null ORDER BY BuildingDescription ASC";
         public static string ALL_FACSTAFF_DEPARTMENTS = "SELECT DISTINCT OnCampusDepartment FROM FacStaff WHERE OnCampusDepartment is not null ORDER BY OnCampusDepartment ASC";
 
-        public static string NEWS_NOT_EXPIRED = "";
+        public static string NEWS_NOT_EXPIRED = "SELECT sn.SNID, ADUN, sn.categoryID, Subject, Body, Accepted, Sent, thisPastMailing, Entered, fname, lname, categoryName, SortOrder, ManualExpirationDate FROM StudentNews sn INNER JOIN StudentNewsCategory snc ON sn.categoryID = snc.categoryID LEFT JOIN StudentNewsExpiration sne ON sn.SNID = sne.SNID WHERE Accepted = 1 AND Entered > '20190503 11:00:00 am' ORDER BY snc.SortOrder ";
         public static string NEWS_NEW = "";
-        public static string NEWS_CATEGORIES = "";
+        public static string NEWS_CATEGORIES = "SELECT categoryID, categoryName FROM StudentNewsCategory ORDER BY SortOrder";
     }
 }
