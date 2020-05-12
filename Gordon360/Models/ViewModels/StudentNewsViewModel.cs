@@ -12,7 +12,6 @@ namespace Gordon360.Models.ViewModels
         public int categoryID { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
-        public bool? Accepted { get; set; }
         public bool? Sent { get; set; }
         public bool? thisPastMailing { get; set; }
         public Nullable<DateTime> Entered { get; set; }
@@ -23,4 +22,5 @@ namespace Gordon360.Models.ViewModels
         public Nullable<DateTime> ManualExpirationDate { get; set; }
 
     }
+    // TODO may need static implicit operater
 }

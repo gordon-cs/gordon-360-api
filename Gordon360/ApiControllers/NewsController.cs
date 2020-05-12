@@ -75,7 +75,7 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
 
-        /** Call teh service that gets the list of categories
+        /** Call the service that gets the list of categories
          */
         [HttpGet]
         [Route("categories")]
