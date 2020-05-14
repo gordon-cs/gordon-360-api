@@ -60,7 +60,8 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
 
-        /** Call the service that gets all new and approved student news entries,
+        /** Call the service that gets all new and approved student news entries
+         * which have not already expired,
          * checking novelty by comparing an entry's date entered to 10am on the previous day
          */
         [HttpGet]
