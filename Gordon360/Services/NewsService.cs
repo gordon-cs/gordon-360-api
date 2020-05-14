@@ -1,4 +1,7 @@
-﻿using Gordon360.Repositories;
+﻿using Gordon360.Models;
+using Gordon360.Models.ViewModels;
+using Gordon360.Repositories;
+using Gordon360.Services.ComplexQueries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,28 +20,27 @@ namespace Gordon360.Services
 
         public IEnumerable<StudentNewsViewModel> GetNewsNotExpired()
         {
-            //TODO change to correct stored procedure and parameter
-            var idParam = new SqlParameter("@ACT_CDE", id);
-            var result = RawSqlQuery<StudentNewsViewModel>.query("MEMBERSHIPS_PER_ACT_CDE @ACT_CDE", idParam);
+            //TODO change to correct stored procedure
+            var result = RawSqlQuery<StudentNewsViewModel>.query("NEWS_NOT_EXPIRED");
 
             // Getting rid of whitespace inherited from the database o_o 
             // TODO (I want to see what would happen if I didn't do this)
             var trimmedResult = result.Select(x =>
             {
                 var trim = x;
-                trim.SNID = x.SNID.Trim();
+                trim.SNID = x.SNID;
                 trim.ADUN = x.ADUN.Trim();
-                trim.categoryID = x.categoryID.Trim();
+                trim.categoryID = x.categoryID;
                 trim.Subject = x.Subject.Trim();
                 trim.Body = x.Body;
-                trim.Sent = x.Sent.Trim();
-                trim.thisPastMailing = x.thisPastMailing.Trim();
-                trim.Entered = x.Entered.Trim();
+                trim.Sent = x.Sent;
+                trim.thisPastMailing = x.thisPastMailing;
+                trim.Entered = x.Entered;
                 trim.fname = x.fname.Trim();
                 trim.lname = x.lname.Trim();
                 trim.categoryName = x.categoryName.Trim();
-                trim.SortOrder = x.SortOrder.Trim();
-                trim.ManualExpirationDate = x.ManualExpirationDate.Trim();
+                trim.SortOrder = x.SortOrder;
+                trim.ManualExpirationDate = x.ManualExpirationDate;
                 return trim;
             });
 
@@ -47,31 +49,26 @@ namespace Gordon360.Services
 
         public IEnumerable<StudentNewsViewModel> GetNewsNew()
         {
-            //TODO change to correct stored procedure and check whether parameter needs to be string or DateTime
-            DateTime yesterday = DateTime.Today.AddDays(-1);
-            DateTime yestAt10 = yesterday.AddHours(10);
-
-            var timeParam = new SqlParameter("@CUTOFF_TIME", yestAt10.ToString());
-            var result = RawSqlQuery<StudentNewsViewModel>.query("MEMBERSHIPS_PER_ACT_CDE @CUTOFF_TIME", timeParam);
+            var result = RawSqlQuery<StudentNewsViewModel>.query("NEWS_NEW");
 
             // Getting rid of whitespace inherited from the database o_o 
             // TODO (I want to see what would happen if I didn't do this)
             var trimmedResult = result.Select(x =>
             {
                 var trim = x;
-                trim.SNID = x.SNID.Trim();
+                trim.SNID = x.SNID;
                 trim.ADUN = x.ADUN.Trim();
-                trim.categoryID = x.categoryID.Trim();
+                trim.categoryID = x.categoryID;
                 trim.Subject = x.Subject.Trim();
                 trim.Body = x.Body;
-                trim.Sent = x.Sent.Trim();
-                trim.thisPastMailing = x.thisPastMailing.Trim();
-                trim.Entered = x.Entered.Trim();
+                trim.Sent = x.Sent;
+                trim.thisPastMailing = x.thisPastMailing;
+                trim.Entered = x.Entered;
                 trim.fname = x.fname.Trim();
                 trim.lname = x.lname.Trim();
                 trim.categoryName = x.categoryName.Trim();
-                trim.SortOrder = x.SortOrder.Trim();
-                trim.ManualExpirationDate = x.ManualExpirationDate.Trim();
+                trim.SortOrder = x.SortOrder;
+                trim.ManualExpirationDate = x.ManualExpirationDate;
                 return trim;
             });
 
@@ -80,17 +77,16 @@ namespace Gordon360.Services
 
         public IEnumerable<StudentNewsCategory> GetNewsCategories()
         {
-            //TODO change to correct stored procedure
-            var result = RawSqlQuery<StudentNewsCategory>.query("MEMBERSHIPS_PER_ACT_CDE @ACT_CDE");
+            var result = RawSqlQuery<StudentNewsCategory>.query("NEWS_CATEGORIES");
 
             // Getting rid of whitespace inherited from the database o_o 
             // TODO (I want to see what would happen if I didn't do this)
             var trimmedResult = result.Select(x =>
             {
                 var trim = x;
-                trim.categoryID = x.categoryID.Trim();
+                trim.categoryID = x.categoryID;
                 trim.categoryName = x.categoryName.Trim();
-                trim.SortOrder = x.SortOrder.Trim();
+                trim.SortOrder = x.SortOrder;
                 return trim;
             });
 

@@ -15,10 +15,10 @@ namespace Gordon360.Models
     using System.Data.Entity.Core.Objects;
     using System.Linq;
     
-    public partial class CCTEntitiesTrain : DbContext
+    public partial class CCTEntities1 : DbContext
     {
-        public CCTEntitiesTrain()
-            : base("name=CCTEntitiesTrain")
+        public CCTEntities1()
+            : base("name=CCTEntities1")
         {
         }
     
@@ -440,6 +440,16 @@ namespace Gordon360.Models
                 new ObjectParameter("ID_NUM", typeof(int));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<MYSCHEDULE_BY_ID_Result>("MYSCHEDULE_BY_ID", iD_NUMParameter);
+        }
+    
+        public virtual ObjectResult<NEWS_CATEGORIES_Result> NEWS_CATEGORIES()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<NEWS_CATEGORIES_Result>("NEWS_CATEGORIES");
+        }
+    
+        public virtual ObjectResult<NEWS_NEW_Result> NEWS_NEW()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<NEWS_NEW_Result>("NEWS_NEW");
         }
     
         public virtual ObjectResult<PHOTO_INFO_PER_USER_NAME_Result> PHOTO_INFO_PER_USER_NAME(Nullable<int> iD)

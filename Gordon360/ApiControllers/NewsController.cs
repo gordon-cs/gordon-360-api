@@ -15,7 +15,7 @@ namespace Gordon360.Controllers.Api
     {
         private INewsService _newsService;
 
-        private void catchBadInput()
+        /**private void catchBadInput()
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(user_name))
             {
@@ -30,7 +30,7 @@ namespace Gordon360.Controllers.Api
                 }
                 throw new BadInputException() { ExceptionMessage = errors };
             }
-        }
+        }*/
 
         // Constructor
         public NewsController()
