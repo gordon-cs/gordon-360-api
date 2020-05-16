@@ -21,6 +21,26 @@ namespace Gordon360.Models.ViewModels
         public Nullable<int> SortOrder { get; set; }
         public Nullable<DateTime> ManualExpirationDate { get; set; }
 
+        public static implicit operator StudentNewsViewModel(NEWS_NEW_Result n)
+        {
+            StudentNewsViewModel vm = new StudentNewsViewModel
+            {
+                SNID = n.SNID,
+                ADUN = n.ADUN,
+                categoryID = n.categoryID,
+                Subject = n.Subject,
+                Body = n.Body,
+                Sent = n.Sent,
+                thisPastMailing = n.thisPastMailing,
+                Entered = n.Entered,
+                fname = n.fname,
+                lname = n.lname,
+                categoryName = n.categoryName,
+                SortOrder = n.SortOrder,
+                ManualExpirationDate = n.ManualExpirationDate,
+            };
+
+            return vm;
+        }
     }
-    // TODO may need static implicit operater
 }

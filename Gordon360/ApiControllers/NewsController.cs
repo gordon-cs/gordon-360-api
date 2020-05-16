@@ -17,7 +17,7 @@ namespace Gordon360.Controllers.Api
 
         /**private void catchBadInput()
         {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(user_name))
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(variable))
             {
                 string errors = "";
                 foreach (var modelstate in ModelState.Values)

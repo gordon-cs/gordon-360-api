@@ -36,7 +36,7 @@ namespace Gordon360.Repositories
         private IRepository<ERROR_LOG> _ErrorLogRepository;
         private IRepository<Schedule_Control> _ScheduleControlRepository;
         private IRepository<StudentNewsViewModel> _StudentNewsRepository;
-        private IRepository<StudentNewsCategory> _StudentNewsCategoryRepository;
+        private IRepository<StudentNewsCategoryViewModel> _StudentNewsCategoryRepository;
 
         private CCTEntities1 _context;
 
@@ -157,9 +157,9 @@ namespace Gordon360.Repositories
         {
             get { return _StudentNewsRepository ?? (_StudentNewsRepository = new GenericRepository<StudentNewsViewModel>(_context)); }
         }
-        public IRepository<StudentNewsCategory> StudentNewsCategoryRepository 
+        public IRepository<StudentNewsCategoryViewModel> StudentNewsCategoryRepository 
         {
-            get { return _StudentNewsCategoryRepository ?? (_StudentNewsCategoryRepository = new GenericRepository<StudentNewsCategory>(_context)); }
+            get { return _StudentNewsCategoryRepository ?? (_StudentNewsCategoryRepository = new GenericRepository<StudentNewsCategoryViewModel>(_context)); }
         }
 
 

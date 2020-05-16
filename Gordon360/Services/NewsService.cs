@@ -20,7 +20,6 @@ namespace Gordon360.Services
 
         public IEnumerable<StudentNewsViewModel> GetNewsNotExpired()
         {
-            //TODO change to correct stored procedure
             var result = RawSqlQuery<StudentNewsViewModel>.query("NEWS_NOT_EXPIRED");
 
             // Getting rid of whitespace inherited from the database o_o 
@@ -75,9 +74,9 @@ namespace Gordon360.Services
             return trimmedResult;
         }
 
-        public IEnumerable<StudentNewsCategory> GetNewsCategories()
+        public IEnumerable<StudentNewsCategoryViewModel> GetNewsCategories()
         {
-            var result = RawSqlQuery<StudentNewsCategory>.query("NEWS_CATEGORIES");
+            var result = RawSqlQuery<StudentNewsCategoryViewModel>.query("NEWS_CATEGORIES");
 
             // Getting rid of whitespace inherited from the database o_o 
             // TODO (I want to see what would happen if I didn't do this)

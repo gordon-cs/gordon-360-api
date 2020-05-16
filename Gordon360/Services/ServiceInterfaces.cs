@@ -198,7 +198,7 @@ namespace Gordon360.Services
     {
         IEnumerable<StudentNewsViewModel> GetNewsNotExpired();
         IEnumerable<StudentNewsViewModel> GetNewsNew();
-        IEnumerable<StudentNewsCategory> GetNewsCategories();
+        IEnumerable<StudentNewsCategoryViewModel> GetNewsCategories();
     }
 
 }

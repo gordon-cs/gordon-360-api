@@ -37,7 +37,7 @@ namespace Gordon360.Repositories
         IRepository<VICTORY_PROMISE_BY_STUDENT_ID_Result> VictoryPromiseByStudentIDRepository { get; }
         //IRepository<STUDENT_JOBS_PER_ID_NUM_Result> StudentEmploymentByStudentIDRepository { get; }
         IRepository<StudentNewsViewModel> StudentNewsRepository { get; }
-        IRepository<StudentNewsCategory> StudentNewsCategoryRepository { get; }
+        IRepository<StudentNewsCategoryViewModel> StudentNewsCategoryRepository { get; }
 
         bool Save();
 

@@ -10,21 +10,21 @@
 namespace Gordon360.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class StudentNewsCategory
+    public partial class NEWS_NOT_EXPIRED_Result
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public StudentNewsCategory()
-        {
-            this.StudentNews = new HashSet<StudentNews>();
-        }
-    
+        public int SNID { get; set; }
+        public string ADUN { get; set; }
         public int categoryID { get; set; }
+        public string Subject { get; set; }
+        public string Body { get; set; }
+        public Nullable<bool> Sent { get; set; }
+        public Nullable<bool> thisPastMailing { get; set; }
+        public Nullable<System.DateTime> Entered { get; set; }
+        public string fname { get; set; }
+        public string lname { get; set; }
         public string categoryName { get; set; }
         public Nullable<int> SortOrder { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<StudentNews> StudentNews { get; set; }
+        public Nullable<System.DateTime> ManualExpirationDate { get; set; }
     }
 }
