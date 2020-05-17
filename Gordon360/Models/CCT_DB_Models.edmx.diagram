@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="30eeb9a624384a5faf8ad0dbeccf4e1d" Name="Diagram1">
+      <Diagram DiagramId="59a47402e11e4ec489adbbb3bfb52480" Name="Diagram1">
         <EntityTypeShape EntityType="Gordon360.ACT_INFO" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.ADMIN" Width="1.5" PointX="5.75" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.CUSTOM_PROFILE" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
