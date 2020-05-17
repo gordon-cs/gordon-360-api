@@ -326,6 +326,8 @@ namespace Gordon360.AuthorizationFilters
                     return false;
                 case Resource.ADMIN:
                     return false;
+                case Resource.NEWS:
+                    return true;
                 default: return false;
             }
         }
@@ -389,6 +391,8 @@ namespace Gordon360.AuthorizationFilters
                     return false;
                 case Resource.ERROR_LOG:
                     return true;
+                case Resource.NEWS:
+                    return true;  
                 default: return false;
             }
         }
@@ -527,6 +531,8 @@ namespace Gordon360.AuthorizationFilters
 
                         return false;
                     }
+                case Resource.NEWS:
+                    return true; // TODO only allow the poster of a news entry to update it 
                 default: return false;
             }
         }
