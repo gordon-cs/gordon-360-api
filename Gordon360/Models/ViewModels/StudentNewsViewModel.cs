@@ -15,13 +15,11 @@ namespace Gordon360.Models.ViewModels
         public bool? Sent { get; set; }
         public bool? thisPastMailing { get; set; }
         public Nullable<DateTime> Entered { get; set; }
-        public string fname { get; set; }
-        public string lname { get; set; }
         public string categoryName { get; set; }
         public Nullable<int> SortOrder { get; set; }
         public Nullable<DateTime> ManualExpirationDate { get; set; }
 
-        public static implicit operator StudentNewsViewModel(NEWS_NEW_Result n)
+        public static implicit operator StudentNewsViewModel(StudentNews n)
         {
             StudentNewsViewModel vm = new StudentNewsViewModel
             {
@@ -33,10 +31,8 @@ namespace Gordon360.Models.ViewModels
                 Sent = n.Sent,
                 thisPastMailing = n.thisPastMailing,
                 Entered = n.Entered,
-                fname = n.fname,
-                lname = n.lname,
-                categoryName = n.categoryName,
-                SortOrder = n.SortOrder,
+                categoryName = n.StudentNewsCategory.categoryName,
+                SortOrder = n.StudentNewsCategory.SortOrder,
                 ManualExpirationDate = n.ManualExpirationDate,
             };
 

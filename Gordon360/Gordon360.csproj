@@ -273,7 +273,7 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Countries.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\COURSES_FOR_PROFESSOR_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
@@ -408,10 +408,10 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sp_helpdiagramdefinition_Result.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sp_helpdiagrams_Result.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Student.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
@@ -542,26 +542,10 @@
   <ItemGroup>
     <Content Include="browseable\profile\Default\profile.png" />
     <Content Include="browseable\uploads\Default\activityImage.png" />
-    <EntityDeploy Include="Models\CCT_DB_Models.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>CCT_DB_Models.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\CCT_DB_Models.edmx.diagram">
-      <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
-    </Content>
     <EntityDeploy Include="Models\MyGordon_DB_Models.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>MyGordon_DB_Models.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="Models\MyGordon_DB_Models.edmx.diagram">
-      <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
-    </Content>
-    <None Include="secrets.config">
-      <SubType>Designer</SubType>
-    </None>
-    <EmbeddedResource Include="version.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
     <Content Include="Models\CCT_DB_Models.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
@@ -572,6 +556,22 @@
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
       <LastGenOutput>CCT_DB_Models.cs</LastGenOutput>
     </Content>
+    <Content Include="Models\MyGordon_DB_Models.edmx.diagram">
+      <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
+    </Content>
+    <EntityDeploy Include="Models\CCT_DB_Models.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>CCT_DB_Models.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\CCT_DB_Models.edmx.diagram">
+      <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
+    </Content>
+    <None Include="secrets.config">
+      <SubType>Designer</SubType>
+    </None>
+    <EmbeddedResource Include="version.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <Content Include="Models\MyGordon_DB_Models.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>

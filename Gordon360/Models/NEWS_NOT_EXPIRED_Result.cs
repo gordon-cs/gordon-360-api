@@ -21,8 +21,6 @@ namespace Gordon360.Models
         public Nullable<bool> Sent { get; set; }
         public Nullable<bool> thisPastMailing { get; set; }
         public Nullable<System.DateTime> Entered { get; set; }
-        public string fname { get; set; }
-        public string lname { get; set; }
         public string categoryName { get; set; }
         public Nullable<int> SortOrder { get; set; }
         public Nullable<System.DateTime> ManualExpirationDate { get; set; }

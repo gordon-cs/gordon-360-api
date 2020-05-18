@@ -2220,8 +2220,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="Boolean" Name="Sent" Nullable="true" />
           <Property Type="Boolean" Name="thisPastMailing" Nullable="true" />
           <Property Type="DateTime" Name="Entered" Nullable="true" Precision="23" />
-          <Property Type="String" Name="fname" Nullable="true" MaxLength="30" />
-          <Property Type="String" Name="lname" Nullable="true" MaxLength="30" />
           <Property Type="String" Name="categoryName" Nullable="false" MaxLength="30" />
           <Property Type="Int32" Name="SortOrder" Nullable="true" />
           <Property Type="DateTime" Name="ManualExpirationDate" Nullable="true" Precision="23" />
@@ -2235,8 +2233,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="Boolean" Name="Sent" Nullable="true" />
           <Property Type="Boolean" Name="thisPastMailing" Nullable="true" />
           <Property Type="DateTime" Name="Entered" Nullable="true" Precision="23" />
-          <Property Type="String" Name="fname" Nullable="true" MaxLength="30" />
-          <Property Type="String" Name="lname" Nullable="true" MaxLength="30" />
           <Property Type="String" Name="categoryName" Nullable="false" MaxLength="30" />
           <Property Type="Int32" Name="SortOrder" Nullable="true" />
           <Property Type="DateTime" Name="ManualExpirationDate" Nullable="true" Precision="23" />
@@ -3173,8 +3169,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="Sent" ColumnName="Sent" />
                 <ScalarProperty Name="thisPastMailing" ColumnName="thisPastMailing" />
                 <ScalarProperty Name="Entered" ColumnName="Entered" />
-                <ScalarProperty Name="fname" ColumnName="fname" />
-                <ScalarProperty Name="lname" ColumnName="lname" />
                 <ScalarProperty Name="categoryName" ColumnName="categoryName" />
                 <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
                 <ScalarProperty Name="ManualExpirationDate" ColumnName="ManualExpirationDate" />
@@ -3192,8 +3186,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="Sent" ColumnName="Sent" />
                 <ScalarProperty Name="thisPastMailing" ColumnName="thisPastMailing" />
                 <ScalarProperty Name="Entered" ColumnName="Entered" />
-                <ScalarProperty Name="fname" ColumnName="fname" />
-                <ScalarProperty Name="lname" ColumnName="lname" />
                 <ScalarProperty Name="categoryName" ColumnName="categoryName" />
                 <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
                 <ScalarProperty Name="ManualExpirationDate" ColumnName="ManualExpirationDate" />

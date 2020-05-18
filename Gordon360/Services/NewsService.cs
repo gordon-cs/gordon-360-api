@@ -34,9 +34,6 @@ namespace Gordon360.Services
                 trim.Body = x.Body;
                 trim.Sent = x.Sent;
                 trim.thisPastMailing = x.thisPastMailing;
-                trim.Entered = x.Entered;
-                trim.fname = x.fname.Trim();
-                trim.lname = x.lname.Trim();
                 trim.categoryName = x.categoryName.Trim();
                 trim.SortOrder = x.SortOrder;
                 trim.ManualExpirationDate = x.ManualExpirationDate;
@@ -63,8 +60,6 @@ namespace Gordon360.Services
                 trim.Sent = x.Sent;
                 trim.thisPastMailing = x.thisPastMailing;
                 trim.Entered = x.Entered;
-                trim.fname = x.fname.Trim();
-                trim.lname = x.lname.Trim();
                 trim.categoryName = x.categoryName.Trim();
                 trim.SortOrder = x.SortOrder;
                 trim.ManualExpirationDate = x.ManualExpirationDate;
