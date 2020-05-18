@@ -4,11 +4,16 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="d92c2f017a554344b01465e80a90b6c2" Name="Diagram1">
+      <Diagram DiagramId="3f366f0efdf04264a3f5d1bffba9186d" Name="Diagram1">
         <EntityTypeShape EntityType="Gordon360.ChapelSummary" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.dtproperties" Width="1.5" PointX="0.75" PointY="5.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.StudentNews" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="Gordon360.StudentNewsCategory" Width="1.5" PointX="0.75" PointY="1.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Gordon360.StudentNewsCategory" Width="1.5" PointX="0.75" PointY="1.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Gordon360.Countries" Width="1.5" PointX="2.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Gordon360.view_cct_alumni" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Gordon360.view_cct_ChapelEvent" Width="1.5" PointX="4.75" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Gordon360.view_cct_facstaff" Width="1.5" PointX="9.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Gordon360.view_cct_student" Width="1.5" PointX="0.75" PointY="9.75" IsExpanded="true" />
         <AssociationConnector Association="Gordon360.FK_StudentNews_StudentNewsCategory" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
