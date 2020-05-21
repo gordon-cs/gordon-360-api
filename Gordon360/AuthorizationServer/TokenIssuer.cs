@@ -21,9 +21,12 @@ namespace Gordon360.AuthorizationServer
             // but we're not using client authentication, so validate and move on...
             await Task.FromResult(context.Validated());
         }
-
-
+        
+// Someone should figure out where the await should go. Until then, I'm suppressing the warning because
+// it has been working just fine so far.
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public override async Task GrantResourceOwnerCredentials(
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
             OAuthGrantResourceOwnerCredentialsContext context)
         {
 
@@ -125,8 +128,8 @@ namespace Gordon360.AuthorizationServer
                         }
                         catch (ResourceNotFoundException e)
                         {
-                            // Silent catch. 
                             // This is ok because we know this exception means the user is not an admin
+                            System.Diagnostics.Debug.WriteLine(e.Message);
                         }
                         try
                         {
@@ -140,8 +143,8 @@ namespace Gordon360.AuthorizationServer
                         }
                         catch(ResourceNotFoundException e)
                         {
-                            // Silent catch. 
                             // This is ok because we know this exception means the user is not an admin
+                            System.Diagnostics.Debug.WriteLine(e.Message);
                         }
                         
 

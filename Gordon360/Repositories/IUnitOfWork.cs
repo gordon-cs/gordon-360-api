@@ -23,6 +23,8 @@ namespace Gordon360.Repositories
         IRepository<SUPERVISOR> SupervisorRepository { get; }
         IRepository<REQUEST> MembershipRequestRepository { get; }
         IRepository<ADMIN> AdministratorRepository { get; }
+        IRepository<Save_Rides> RideRepository { get; }
+        IRepository<Save_Bookings> BookingRepository { get; }
         IRepository<C360_SLIDER> SliderRepository { get; }
         IRepository<CUSTOM_PROFILE> ProfileCustomRepository { get; }
         IRepository<ChapelEvent> ChapelEventRepository { get; }
@@ -36,8 +38,6 @@ namespace Gordon360.Repositories
         IRepository<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> FacultyScheduleRepository { get; }
         IRepository<VICTORY_PROMISE_BY_STUDENT_ID_Result> VictoryPromiseByStudentIDRepository { get; }
         //IRepository<STUDENT_JOBS_PER_ID_NUM_Result> StudentEmploymentByStudentIDRepository { get; }
-        IRepository<StudentNewsViewModel> StudentNewsRepository { get; }
-        IRepository<StudentNewsCategoryViewModel> StudentNewsCategoryRepository { get; }
 
         bool Save();
 

@@ -362,7 +362,9 @@ namespace Gordon360.Controllers.Api
                         file.Delete();
                     }
                 }
-                catch (System.Exception e) {}
+                catch (System.Exception e) {
+                    System.Diagnostics.Debug.WriteLine(e.Message);
+                }
             }
 
             string root = HttpContext.Current.Server.MapPath("~" + uploadsFolder);
@@ -400,6 +402,7 @@ namespace Gordon360.Controllers.Api
             }
             catch (System.Exception e)
             {
+                System.Diagnostics.Debug.WriteLine(e.Message);
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error uploading the image. Please contact the maintainers");
             }
         }

@@ -2,9 +2,9 @@
 
 ## Table of Contents
 
-- [Connect from Ubuntu Linux](connect-from-ubuntu-linux)
-- [Connect from Windows](connnect-from-windows)
-- [Connect from MacOS](connect-from-macos)
+- [Connect from Ubuntu Linux](#connect-from-ubuntu-linux)
+- [Connect from Windows](#connect-from-windows)
+- [Connect from MacOS](#connect-from-macos)
 
 ## Connect from Ubuntu Linux
 
@@ -34,9 +34,19 @@ If you were connecting in order to run the server locally, click [here](https://
 
 ## Connect from Windows
 
-1. Use a web browser to connect to [desktops.gordon.edu](https://desktops.gordon.edu) and log in with your Gordon email address and password.
+~~1. Use a web browser to connect to [desktops.gordon.edu](https://desktops.gordon.edu) and log in with your Gordon email address and password.
 2. Click on "VDI-ComputerScience" to download the Remote Desktop configuration file.
-3. Click on the downloaded file and follow the prompts to make the connection.
+3. Open the downloaded file and follow the prompts to make the connection.~~
+
+The above instructions are not working as of 03/02/2020. Follow these instructions instead:
+
+1. Open Remote Desktop Connection.
+   - Search "RDC" in the start menu and it will appear there.
+2. In the address bar, type `cs-rdsh-02`.
+3. To enter your Gordon credentials:
+   - If this is your first time connecting, click "Connect." Your computer might try to use your local account by default. In that case you'll need to select "More choices" at the bottom of the dialog box and then enter your Gordon account details as `gordon.edu\firstname.lastname` and your account password.
+   - If you have connected to the machine before, ensure that the listed account is the one you want to use. If it isn't, click "edit" and then follow the step above.
+4. Click "Connect."
 
 ## Connect from MacOS
 
