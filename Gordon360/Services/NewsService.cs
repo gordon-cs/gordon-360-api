@@ -1,4 +1,5 @@
 ﻿using Gordon360.Repositories;
+using Gordon360.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -95,6 +96,15 @@ namespace Gordon360.Services
             });
 
             return trimmedResult;
+        }
+
+        public StudentNews Add(StudentNews newsItem)
+        {
+
+            // TODO validate the news item?
+
+            // TODO add stored procedure
+            return null;
         }
     }
 }
