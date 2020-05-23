@@ -637,7 +637,6 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
       <LastGenOutput>MyGordon_DB_Models.cs</LastGenOutput>
-    </Content>
     <Content Include="Models\StudentTimesheet_DB_Models.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
