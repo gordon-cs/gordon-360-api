@@ -25,6 +25,7 @@ namespace Gordon360.Controllers.Api
         //declare services we are going to use.
         private IAccountService _accountService;
         private IRoleCheckingService _roleCheckingService;
+        private IScheduleControlService _scheduleControlService;
 
         private IScheduleService _scheduleService;
 

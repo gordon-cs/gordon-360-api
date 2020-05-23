@@ -364,7 +364,6 @@ namespace Gordon360.Controllers.Api
                 }
                 catch (FileNotFoundException e)
                 {
-                    System.Diagnostics.Debug.WriteLine(e.Message);
                     var webClient = new WebClient();
                     imageBytes = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
                 }
@@ -380,7 +379,6 @@ namespace Gordon360.Controllers.Api
                 }
                 catch (FileNotFoundException e)
                 {
-                    System.Diagnostics.Debug.WriteLine(e.Message);
                     var webClient = new WebClient();
                     imageBytes = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
                 }
@@ -433,7 +431,6 @@ namespace Gordon360.Controllers.Api
                         }
                         catch (FileNotFoundException e)
                         {
-                            System.Diagnostics.Debug.WriteLine(e.Message);
                             var webClient = new WebClient();
                             pref_image = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
                         }
@@ -447,7 +444,6 @@ namespace Gordon360.Controllers.Api
                     }
                     catch (FileNotFoundException e)
                     {
-                        System.Diagnostics.Debug.WriteLine(e.Message);
                         var webClient = new WebClient();
                         default_image = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
                     }
@@ -466,7 +462,6 @@ namespace Gordon360.Controllers.Api
                         }
                         catch (FileNotFoundException e)
                         {
-                            System.Diagnostics.Debug.WriteLine(e.Message);
                             var webClient = new WebClient();
                             pref_image = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
                         }
@@ -480,7 +475,6 @@ namespace Gordon360.Controllers.Api
                     }
                     catch (FileNotFoundException e)
                     {
-                        System.Diagnostics.Debug.WriteLine(e.Message);
                         var webClient = new WebClient();
                         default_image = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
                     }
@@ -503,7 +497,6 @@ namespace Gordon360.Controllers.Api
                             }
                             catch (FileNotFoundException e)
                             {
-                                System.Diagnostics.Debug.WriteLine(e.Message);
                                 var webClient = new WebClient();
                                 default_image = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
                             }
@@ -517,7 +510,6 @@ namespace Gordon360.Controllers.Api
                         }
                         catch (FileNotFoundException e)
                         {
-                            System.Diagnostics.Debug.WriteLine(e.Message);
                             var webClient = new WebClient();
                             pref_image = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
                         }
@@ -544,7 +536,6 @@ namespace Gordon360.Controllers.Api
                         }
                         catch (FileNotFoundException e)
                         {
-                            System.Diagnostics.Debug.WriteLine(e.Message);
                             var webClient = new WebClient();
                             pref_image = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
                         }
@@ -558,7 +549,6 @@ namespace Gordon360.Controllers.Api
                     }
                     catch (FileNotFoundException e)
                     {
-                        System.Diagnostics.Debug.WriteLine(e.Message);
                         var webClient = new WebClient();
                         default_image = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
                     }
@@ -620,7 +610,6 @@ namespace Gordon360.Controllers.Api
             }
             catch (System.Exception e)
             {
-                System.Diagnostics.Debug.WriteLine(e.Message);
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error uploading the image. Please contact the maintainers");
             }
         }
@@ -712,10 +701,7 @@ namespace Gordon360.Controllers.Api
                     file.Delete();                  //delete old image file if it exists.
                 }
             }
-            catch (System.Exception e)
-            {
-                System.Diagnostics.Debug.WriteLine(e.Message);
-            }
+            catch (System.Exception e) { }
            _profileService.UpdateProfileImage(id, null, null);  //update database
             return Ok();
         }

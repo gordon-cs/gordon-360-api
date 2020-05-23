@@ -20,71 +20,71 @@ namespace Gordon360.Services
 
         public IEnumerable<StudentNewsViewModel> GetNewsNotExpired()
         {
-            return RawSqlQuery<StudentNewsViewModel>.query("NEWS_NOT_EXPIRED");
+            var result = RawSqlQuery<StudentNewsViewModel>.query("NEWS_NOT_EXPIRED");
 
-            // TODO Postman showed no extra whitespace in the result, so
-            // if there is also no extra whitespace in the result the frontend retrieves,
-            // this commented code can be removed.
-            // var trimmedResult = result.Select(x =>
-            // {
-            //     var trim = x;
-            //     trim.SNID = x.SNID;
-            //     trim.ADUN = x.ADUN.Trim();
-            //     trim.categoryID = x.categoryID;
-            //     trim.Subject = x.Subject.Trim();
-            //     trim.Body = x.Body;
-            //     trim.Sent = x.Sent;
-            //     trim.thisPastMailing = x.thisPastMailing;
-            //     trim.categoryName = x.categoryName.Trim();
-            //     trim.SortOrder = x.SortOrder;
-            //     trim.ManualExpirationDate = x.ManualExpirationDate;
-            //     return trim;
-            // });
-            // return trimmedResult;
+            // Getting rid of whitespace inherited from the database o_o 
+            // TODO (I want to see what would happen if I didn't do this)
+            var trimmedResult = result.Select(x =>
+            {
+                var trim = x;
+                trim.SNID = x.SNID;
+                trim.ADUN = x.ADUN.Trim();
+                trim.categoryID = x.categoryID;
+                trim.Subject = x.Subject.Trim();
+                trim.Body = x.Body;
+                trim.Sent = x.Sent;
+                trim.thisPastMailing = x.thisPastMailing;
+                trim.categoryName = x.categoryName.Trim();
+                trim.SortOrder = x.SortOrder;
+                trim.ManualExpirationDate = x.ManualExpirationDate;
+                return trim;
+            });
+
+            return trimmedResult;
         }
 
         public IEnumerable<StudentNewsViewModel> GetNewsNew()
         {
-            return RawSqlQuery<StudentNewsViewModel>.query("NEWS_NEW");
+            var result = RawSqlQuery<StudentNewsViewModel>.query("NEWS_NEW");
 
-            // TODO Postman showed no extra whitespace in the result, so
-            // if there is also no extra whitespace in the result the frontend retrieves,
-            // this commented code can be removed.
-            // var trimmedResult = result.Select(x =>
-            // {
-            //     var trim = x;
-            //     trim.SNID = x.SNID;
-            //     trim.ADUN = x.ADUN.Trim();
-            //     trim.categoryID = x.categoryID;
-            //     trim.Subject = x.Subject.Trim();
-            //     trim.Body = x.Body;
-            //     trim.Sent = x.Sent;
-            //     trim.thisPastMailing = x.thisPastMailing;
-            //     trim.Entered = x.Entered;
-            //     trim.categoryName = x.categoryName.Trim();
-            //     trim.SortOrder = x.SortOrder;
-            //     trim.ManualExpirationDate = x.ManualExpirationDate;
-            //     return trim;
-            // });
-            // return trimmedResult;
+            // Getting rid of whitespace inherited from the database o_o 
+            // TODO (I want to see what would happen if I didn't do this)
+            var trimmedResult = result.Select(x =>
+            {
+                var trim = x;
+                trim.SNID = x.SNID;
+                trim.ADUN = x.ADUN.Trim();
+                trim.categoryID = x.categoryID;
+                trim.Subject = x.Subject.Trim();
+                trim.Body = x.Body;
+                trim.Sent = x.Sent;
+                trim.thisPastMailing = x.thisPastMailing;
+                trim.Entered = x.Entered;
+                trim.categoryName = x.categoryName.Trim();
+                trim.SortOrder = x.SortOrder;
+                trim.ManualExpirationDate = x.ManualExpirationDate;
+                return trim;
+            });
+
+            return trimmedResult;
         }
 
         public IEnumerable<StudentNewsCategoryViewModel> GetNewsCategories()
         {
-            return RawSqlQuery<StudentNewsCategoryViewModel>.query("NEWS_CATEGORIES");
+            var result = RawSqlQuery<StudentNewsCategoryViewModel>.query("NEWS_CATEGORIES");
 
-            // TODO Postman showed no extra whitespace in the result, so
-            // if there is also no extra whitespace in the result the frontend retrieves,
-            // this commented code can be removed.
-            // var trimmedResult = result.Select(x =>
-            // {
-            //     var trim = x;
-            //     trim.categoryID = x.categoryID;
-            //     trim.categoryName = x.categoryName.Trim();
-            //     trim.SortOrder = x.SortOrder;
-            //     return trim;
-            // });
-            // return trimmedResult;
+            // Getting rid of whitespace inherited from the database o_o 
+            // TODO (I want to see what would happen if I didn't do this)
+            var trimmedResult = result.Select(x =>
+            {
+                var trim = x;
+                trim.categoryID = x.categoryID;
+                trim.categoryName = x.categoryName.Trim();
+                trim.SortOrder = x.SortOrder;
+                return trim;
+            });
+
+            return trimmedResult;
         }
     }
 }

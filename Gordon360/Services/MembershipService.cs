@@ -75,22 +75,6 @@ namespace Gordon360.Services
             return result;
         }
 
-        /// <summary>	
-        /// Fetch the membership whose id is specified by the parameter	
-        /// </summary>	
-        /// <param name="id">The membership id</param>	
-        /// <returns>MembershipViewModel if found, null if not found</returns>	
-        public MEMBERSHIP GetSpecificMembership(int id)
-        {
-            MEMBERSHIP result = _unitOfWork.MembershipRepository.GetById(id);
-            if (result == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
-            }
-
-            return result;
-        }
-
         /// <summary>
         /// Fetches all membership records from storage.
         /// </summary>

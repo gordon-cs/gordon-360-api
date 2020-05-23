@@ -14,11 +14,11 @@ using Gordon360.Static.Methods;
 using System.Xml.Linq;
 
 
-// <summary>
-// We use this service to pull data from 25Live as well as parsing it
-// For the most part, we use the data which is pulled and cached in the Startup.cs file
-// However, there are functions included in this service to manually pull data from 25Live
-// </summary>
+/// <summary>
+/// We use this service to pull data from 25Live as well as parsing it
+/// For the most part, we use the data which is pulled and cached in the Startup.cs file
+/// However, there are functions included in this service to manually pull data from 25Live
+/// </summary>
 namespace Gordon360.Services
 {
     /// <summary>
@@ -214,7 +214,6 @@ namespace Gordon360.Services
                 }
                 catch (InvalidOperationException e)
                 {
-                    System.Diagnostics.Debug.WriteLine(e.Message);
                     // time value is null -- don't worry bout it
                 }
             }
@@ -227,9 +226,7 @@ namespace Gordon360.Services
 
             catch (Exception c)
             {
-                // Note - 04/10/2020: Front end handles this, but we need to do something with the exception variable to suppress a warning
                 // Do Nothing -- Let the Front End handle a return containing 0 Events
-                System.Diagnostics.Debug.WriteLine(c.Message);
             }
             return vm;
         }
@@ -314,7 +311,6 @@ namespace Gordon360.Services
                 catch (InvalidOperationException e)
                 {
                     // time value is null -- don't worry bout it
-                    System.Diagnostics.Debug.WriteLine(e.Message);
                 }
             }
 
@@ -326,7 +322,6 @@ namespace Gordon360.Services
             catch (Exception c)
             {
                 // Do Nothing -- Let the Front End handle a return containing 0 Events
-                System.Diagnostics.Debug.WriteLine(c.Message);
             }
             return vm;
         }
