@@ -7,6 +7,9 @@ Dive in.
 - [Machines and Sites](#machines-and-sites)
     - [Deploying to the Api Site](#deploying-to-the-api-site)
     - [Deploying to the Front-end site](#deploying-to-the-front-end-site)
+- [Running the API locally](#running-the-api-locally)
+    - [Preliminary setup](#preliminary-setup)
+    - [Building and running](#building-and-running)
 - [The Database](#the-database)
     - [Tables](#tables)
     - [Stored Procedures](#stored-procedures)
@@ -40,7 +43,6 @@ Dive in.
 - [API Testing](#api-testing)
     - [Introduction](#introduction)
     - [Running the Tests](#running-the-tests)
-    - [Manual Testing](#manual-testing)
 - [Troubleshooting](#troubleshooting)
 - [Documentation](#documentation)
 
@@ -112,13 +114,33 @@ Data which is stored upon startup includes:
 - All basic information on every account with an AD Username
 - All student, faculty, staff and alumni profile info
 
+## Running the API locally
+
+### Preliminary setup
+
+* It is easiest to use the development virtual machine to work on this project. Follow [these instructions](RemoteDesktopToVM.md) to set up and connect to the virtual machine using your Gordon account.
+
+* If this is your first time on the virtual machine, you will need to clone this repository. You can do this by using Git Bash.
+
+  * Before you open the gordon-360-api folder, you will have to add the `secrets.config` file to it. The file is located on the CS-RDSH-02 virtual machine in `C:\Users\Public\Public Documents\` (or `/c/users/public/documents\` when in git-bash). Copy the file `secrets.config` to the same folder in your project that contains the `web.config` file; currently, this is in `gordon-360-api\Gordon360`. This file is a sort of keyring for the server to authorize itself at various points.
+
+  * Look for the desktop app Visual Studio 2017, which has a purple Visual Studio icon. You might have to search for it through the start menu. You will have to log in to a Microsoft account. Your Gordon email will work for this. Once you log in, go to `File > Open > Project/Solution`. In the navigation box that pops up, navigate to the directory where you cloned this repo, and select and open the file `/Gordon360.sln`.
+
+  * In the solution explorer on the right, right click the name of the project (Gordon360) and select properties. From the tabs on the left, choose the Web tab and change the Project Url so it contains a port that is unused on the machine. For example, if you chose port 5555, change Project Url to `"http://localhost:5555"`. Then click Create Virtual Directory. Make sure that the protocol is `http`, not `https`. Press OK on the dialog box, and you all configured!
+
+### Building and running
+
+* Now, you can press the Start button in Visual Studio to run the server (it is a green play button in the top middle of the tool bar). It will open the web browser and, after a period that should just be a few minutes long but sometimes lasts half an hour or more, display an Error 403.14 - Forbidden. This is expected. You can now begin manually testing the API.
+
+* If you want to test the UI, keep the server running and follow the directions found [here](https://github.com/gordon-cs/gordon-360-ui/blob/develop/README.md#connect-local-backend-to-react) under "Connect Local Backend to React".
+
 ## The Database
 
-The `CCT` database exists in:
+The `CCT`and `MyGordon` databases exist in:
 - `admintrainsql.gordon.edu` - The development/test database server
 - `adminprodsql.gordon.edu` -  The production/live database server.
 
-### Tables
+### CCT Tables
 
 All the tables were created from scratch by our team.
 
@@ -236,8 +258,36 @@ A record in this table stores
 
 This table is an exact duplicate of the JENZ_ACT_CLUB_DEF view. It is periodically updated by making sure what is in it corresponds to what is in JENZ_ACT_CLUB_DEF. When a new activity is found in JENZ_ACT_CLUB_DEF, it is inserted into ACT_CLUB_DEF and the stored procedure UPDATE_ACT_INFO is run.
 
+### MyGordon Tables
 
-### Views
+These are just the MyGordon tables used by 360. They were originally not made for this site.
+
+##### StudentNews
+
+A record in this table stores
+
+- SNID - unique integer identifier for a news entry
+- ADUN - username (first.last) of the person who posted the entry
+- categoryID - foreign key that links this entry to its category
+- Subject - subject, written by the poster, of the news entry
+- Body - the actual text of the news entry, written by the poster
+- Accepted - whether this entry has been approved to be shown publicly
+- Sent - unknown what this is for
+- thisPastMailing - unknown what this is for
+- Entered - when, in datetime format, the post was submitted by the poster
+- fname - not used
+- lname - not used
+- ManualExpirationDate - given by the poster, the last day on which this entry should be displayed publicly
+
+##### StudentNewsCategory
+
+A record in this table stores
+
+- categoryID - a unique integer identifier
+- categoryName - the name of a category, ex. "Found Items"
+- SortOrder - an integer representing the category's placement in the preferred display order
+
+### CCT Views
 
 We got access to these views through CTS. They are a direct live feed from the tables they represent. As mentioned earlier, we cannot use primary keys in the views to make foreign keys in other tables.
 
@@ -270,7 +320,7 @@ A subset of `ACCOUNT` that has only student records.
 ###### 360_SLIDER
 Content (images, captions, and links) for the slider on the dashboard page.
 
-### Stored Procedures
+### CCT Stored Procedures
 
 Stored procedures have been written to make some database accesses and administrative tasks easier.
 Here are the most important ones.
@@ -297,7 +347,7 @@ In non-sql terms, this procedure makes sure all the activities defined in ACT_CL
 This stored procedures is pretty simple. It moves all the relevant information from the MEMBERSHIP table and puts it in the JNZB_ACTIVITIES table. To prevent duplication, it will only add records that are present in the MEMBERSHIP table, but missing the JNZB_ACTIVITIES table.
 
 
-### Triggers
+### CCT Triggers
 
 ###### ACT_CLUB_DEF_INSERT_TRIGGER
 
@@ -790,6 +840,21 @@ What is it? Resource that represents the user's scores on the four pillars of th
 
 `api/vpscore` Get the victory promise scores of the currently logged in user.
 
+### News
+What is it? Resource that represents accepted student news entries and news categories.
+
+### GET 
+
+`api/news/category` Gets the full list of category names used to categorize student news as well as category ids and sort order. 
+
+### GET
+
+`api/news/not-expired`Gets every student news entry that has been accepted and has not yet been in the database 2 weeks or, if the poster set a specific date of expiration, has an expiration date later than the current day.
+
+### GET
+
+`api/news/new`Gets every student news entry that has been accepted, has not expired (as described above), and is new since 10am on the day before.
+
 ## API Testing
 
 ### Introduction
@@ -822,25 +887,6 @@ Check the `hostURL` in test_gordon360_pytest.py if it is pointing to the correct
 Run the tests:
 `pytest` -- This runs all the tests.
 `pytest test_gordon360_pytest.py -k '{name of def}'` -- This runs a specific test based on {name of def}.
-
-
-### Manual Testing
-
-#### Running the Server Locally
-
-* As you are probably using one of the Linux machines in the Computer Science lounge, you will need to be on the virtual machine to run the server locally. Follow the directions [here](RemoteDesktopToVM.md) to set up and connect to the virtual machine.
-
-* If this is your first time on the virtual machine, you will need to clone the 360 code. You can use something like Git Bash or VS Code to do this.
-
-* Before you open the gordon-360-api folder, you will have to add the `secrets.config` file to it. The file is located on the CS-RDSH-02 virtual machine in `C:\Users\Public\Public Documents\` (or `/c/users/public/documents\` when in git-bash). Copy the file `secrets.config` to the same folder in your project that contains the `web.config` file; currently, this is in `gordon-360-api\Gordon360`. This file is a sort of keyring for the server to authorize itself at various points.
-
-* Now, to open the api, look for the desktop app Visual Studio 2017, which has a purple Visual Studio icon. You will have to log in to a Microsoft account, which can just be the account Gordon made for you. Once you log in, go to `File > Open > Project/Solution`. Then, select and Open the file `gordon-360-api/Gordon360.sln`.
-
-* There is a little configuration you must yet do before running the server. In the solution explorer on the right, right click the name of the project (Gordon360) and select properties.  From the tabs on the left, choose the Web tab and change the Project Url to an unused port. For example, if you chose port 5555, change Project Url to `"http://localhost:5555"`. Then click Create Virtual Directory. Press OK on the dialog box, and you all configured!
-
-* Now, you can press the Start button in Visual Studio to run the server (it is a green play button in the top middle of the tool bar). It will open the web browser and, after a period that may last half an hour or more, display an Error 403.14 - Forbidden. This is expected. You can now begin manually testing the API.
-
-* If you want to test the UI, keep the server running and follow the directions found [here](https://github.com/gordon-cs/gordon-360-ui/blob/develop/README.md#connect-local-backend-to-react) under "Connect Local Backend to React".
 
 #### Manually Testing the API
 
