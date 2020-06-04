@@ -10,23 +10,19 @@
 namespace Gordon360.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class StudentNews
+    public partial class NEWS_NEW_Result
     {
         public int SNID { get; set; }
         public string ADUN { get; set; }
         public int categoryID { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
-        public Nullable<bool> Accepted { get; set; }
         public Nullable<bool> Sent { get; set; }
         public Nullable<bool> thisPastMailing { get; set; }
         public Nullable<System.DateTime> Entered { get; set; }
-        public string fname { get; set; }
-        public string lname { get; set; }
+        public string categoryName { get; set; }
+        public Nullable<int> SortOrder { get; set; }
         public Nullable<System.DateTime> ManualExpirationDate { get; set; }
-    
-        public virtual StudentNewsCategory StudentNewsCategory { get; set; }
     }
 }

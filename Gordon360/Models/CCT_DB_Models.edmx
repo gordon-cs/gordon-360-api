@@ -148,12 +148,13 @@
           <Property Name="Description" Type="varchar" MaxLength="100" />
           <Property Name="gordon_id" Type="varchar" MaxLength="10" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6013: The table/view 'CCT.dbo.StudentNewsExpiration' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
         <EntityType Name="StudentNewsExpiration">
-          <Property Name="SNID" Type="int" />
+          <Key>
+            <PropertyRef Name="SNID" />
+          </Key>
+          <Property Name="SNID" Type="int" Nullable="false" />
           <Property Name="ManualExpirationDate" Type="datetime" />
-        </EntityType>-->
+        </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
             <PropertyRef Name="diagram_id" />
@@ -588,39 +589,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="Minor3Description" Type="varchar" MaxLength="50" />
           <Property Name="Mail_Location" Type="varchar" MaxLength="20" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'CCT.dbo.StudentNews' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <EntityType Name="StudentNews">
-          <Key>
-            <PropertyRef Name="SNID" />
-            <PropertyRef Name="ADUN" />
-            <PropertyRef Name="categoryID" />
-            <PropertyRef Name="Subject" />
-            <PropertyRef Name="Body" />
-          </Key>
-          <Property Name="SNID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ADUN" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="categoryID" Type="int" Nullable="false" />
-          <Property Name="Subject" Type="varchar" MaxLength="60" Nullable="false" />
-          <Property Name="Body" Type="varchar" MaxLength="6000" Nullable="false" />
-          <Property Name="Accepted" Type="bit" />
-          <Property Name="Sent" Type="bit" />
-          <Property Name="thisPastMailing" Type="bit" />
-          <Property Name="Entered" Type="datetime" />
-          <Property Name="fname" Type="varchar" MaxLength="30" />
-          <Property Name="lname" Type="varchar" MaxLength="30" />
-        </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'CCT.dbo.StudentNewsCategory' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <EntityType Name="StudentNewsCategory">
-          <Key>
-            <PropertyRef Name="categoryID" />
-            <PropertyRef Name="categoryName" />
-          </Key>
-          <Property Name="categoryID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="categoryName" Type="varchar" MaxLength="30" Nullable="false" />
-          <Property Name="SortOrder" Type="int" />
-        </EntityType>
         <Association Name="FK_booking_rides">
           <End Role="Save_Rides" Type="Self.Save_Rides" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -761,6 +729,9 @@ warning 6002: The table/view 'CCT.dbo.StudentNewsCategory' does not have a prima
         <Function Name="MYSCHEDULE_BY_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ID_NUM" Type="int" Mode="In" />
         </Function>
+        <Function Name="NEWS_CATEGORIES" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="NEWS_NEW" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="NEWS_NOT_EXPIRED" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="PHOTO_INFO_PER_USER_NAME" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ID" Type="int" Mode="In" />
         </Function>
@@ -888,6 +859,7 @@ warning 6002: The table/view 'CCT.dbo.StudentNewsCategory' does not have a prima
           <EntitySet Name="Save_Bookings" EntityType="Self.Save_Bookings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Save_Rides" EntityType="Self.Save_Rides" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Schedule_Control" EntityType="Self.Schedule_Control" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StudentNewsExpiration" EntityType="Self.StudentNewsExpiration" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Transit_Requests" EntityType="Self.Transit_Requests" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Transit_Rides" EntityType="Self.Transit_Rides" Schema="dbo" store:Type="Tables" />
@@ -1189,28 +1161,6 @@ warning 6002: The table/view 'CCT.dbo.StudentNewsCategory' does not have a prima
     [Student].[Mail_Location] AS [Mail_Location]
     FROM [dbo].[Student] AS [Student]</DefiningQuery>
           </EntitySet>
-          <EntitySet Name="StudentNews" EntityType="Self.StudentNews" store:Type="Views" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [StudentNews].[SNID] AS [SNID], 
-    [StudentNews].[ADUN] AS [ADUN], 
-    [StudentNews].[categoryID] AS [categoryID], 
-    [StudentNews].[Subject] AS [Subject], 
-    [StudentNews].[Body] AS [Body], 
-    [StudentNews].[Accepted] AS [Accepted], 
-    [StudentNews].[Sent] AS [Sent], 
-    [StudentNews].[thisPastMailing] AS [thisPastMailing], 
-    [StudentNews].[Entered] AS [Entered], 
-    [StudentNews].[fname] AS [fname], 
-    [StudentNews].[lname] AS [lname]
-    FROM [dbo].[StudentNews] AS [StudentNews]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="StudentNewsCategory" EntityType="Self.StudentNewsCategory" store:Type="Views" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [StudentNewsCategory].[categoryID] AS [categoryID], 
-    [StudentNewsCategory].[categoryName] AS [categoryName], 
-    [StudentNewsCategory].[SortOrder] AS [SortOrder]
-    FROM [dbo].[StudentNewsCategory] AS [StudentNewsCategory]</DefiningQuery>
-          </EntitySet>
           <AssociationSet Name="FK_booking_rides" Association="Self.FK_booking_rides">
             <End Role="Save_Rides" EntitySet="Save_Rides" />
             <End Role="Save_Bookings" EntitySet="Save_Bookings" />
@@ -1369,6 +1319,13 @@ warning 6002: The table/view 'CCT.dbo.StudentNewsCategory' does not have a prima
           <Property Name="ModifiedTimeStamp" Type="DateTime" Precision="3" />
           <Property Name="Description" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="gordon_id" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="StudentNewsExpiration">
+          <Key>
+            <PropertyRef Name="SNID" />
+          </Key>
+          <Property Name="SNID" Type="Int32" Nullable="false" />
+          <Property Name="ManualExpirationDate" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -1761,35 +1718,6 @@ warning 6002: The table/view 'CCT.dbo.StudentNewsCategory' does not have a prima
           <Property Name="Minor3Description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Mail_Location" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="StudentNews">
-          <Key>
-            <PropertyRef Name="SNID" />
-            <PropertyRef Name="ADUN" />
-            <PropertyRef Name="categoryID" />
-            <PropertyRef Name="Subject" />
-            <PropertyRef Name="Body" />
-          </Key>
-          <Property Name="SNID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ADUN" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="categoryID" Type="Int32" Nullable="false" />
-          <Property Name="Subject" Type="String" MaxLength="60" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Body" Type="String" MaxLength="6000" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Accepted" Type="Boolean" />
-          <Property Name="Sent" Type="Boolean" />
-          <Property Name="thisPastMailing" Type="Boolean" />
-          <Property Name="Entered" Type="DateTime" Precision="3" />
-          <Property Name="fname" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="lname" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="StudentNewsCategory">
-          <Key>
-            <PropertyRef Name="categoryID" />
-            <PropertyRef Name="categoryName" />
-          </Key>
-          <Property Name="categoryID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="categoryName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="SortOrder" Type="Int32" />
-        </EntityType>
         <Association Name="FK_booking_rides">
           <End Role="Save_Rides" Type="Self.Save_Rides" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -1830,6 +1758,7 @@ warning 6002: The table/view 'CCT.dbo.StudentNewsCategory' does not have a prima
           <EntitySet Name="Save_Bookings" EntityType="Self.Save_Bookings" />
           <EntitySet Name="Save_Rides" EntityType="Self.Save_Rides" />
           <EntitySet Name="Schedule_Control" EntityType="Self.Schedule_Control" />
+          <EntitySet Name="StudentNewsExpiration" EntityType="Self.StudentNewsExpiration" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
           <EntitySet Name="Transit_Requests" EntityType="Self.Transit_Requests" />
           <EntitySet Name="Transit_Rides" EntityType="Self.Transit_Rides" />
@@ -1850,8 +1779,6 @@ warning 6002: The table/view 'CCT.dbo.StudentNewsCategory' does not have a prima
           <EntitySet Name="PART_DEF" EntityType="Self.PART_DEF" />
           <EntitySet Name="RoomAssign" EntityType="Self.RoomAssign" />
           <EntitySet Name="Student" EntityType="Self.Student" />
-          <EntitySet Name="StudentNews" EntityType="Self.StudentNews" />
-          <EntitySet Name="StudentNewsCategory" EntityType="Self.StudentNewsCategory" />
           <AssociationSet Name="FK_booking_rides" Association="Self.FK_booking_rides">
             <End Role="Save_Rides" EntitySet="Save_Rides" />
             <End Role="Save_Bookings" EntitySet="Save_Bookings" />
@@ -1971,6 +1898,9 @@ warning 6002: The table/view 'CCT.dbo.StudentNewsCategory' does not have a prima
           <FunctionImport Name="MYSCHEDULE_BY_ID" ReturnType="Collection(Gordon360.MYSCHEDULE_BY_ID_Result)">
             <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
           </FunctionImport>
+          <FunctionImport Name="NEWS_CATEGORIES" ReturnType="Collection(Gordon360.NEWS_CATEGORIES_Result)" />
+          <FunctionImport Name="NEWS_NEW" ReturnType="Collection(Gordon360.NEWS_NEW_Result)" />
+          <FunctionImport Name="NEWS_NOT_EXPIRED" ReturnType="Collection(Gordon360.NEWS_NOT_EXPIRED_Result)" />
           <FunctionImport Name="PHOTO_INFO_PER_USER_NAME" ReturnType="Collection(Gordon360.PHOTO_INFO_PER_USER_NAME_Result)">
             <Parameter Name="ID" Mode="In" Type="Int32" />
           </FunctionImport>
@@ -2276,6 +2206,37 @@ warning 6002: The table/view 'CCT.dbo.StudentNewsCategory' does not have a prima
           <Property Type="Time" Name="BEGIN_TIME" Nullable="true" />
           <Property Type="Time" Name="END_TIME" Nullable="true" />
         </ComplexType>
+        <ComplexType Name="NEWS_CATEGORIES_Result">
+          <Property Type="Int32" Name="categoryID" Nullable="false" />
+          <Property Type="String" Name="categoryName" Nullable="false" MaxLength="30" />
+          <Property Type="Int32" Name="SortOrder" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="NEWS_NEW_Result">
+          <Property Type="Int32" Name="SNID" Nullable="false" />
+          <Property Type="String" Name="ADUN" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="categoryID" Nullable="false" />
+          <Property Type="String" Name="Subject" Nullable="false" MaxLength="60" />
+          <Property Type="String" Name="Body" Nullable="false" MaxLength="6000" />
+          <Property Type="Boolean" Name="Sent" Nullable="true" />
+          <Property Type="Boolean" Name="thisPastMailing" Nullable="true" />
+          <Property Type="DateTime" Name="Entered" Nullable="true" Precision="23" />
+          <Property Type="String" Name="categoryName" Nullable="false" MaxLength="30" />
+          <Property Type="Int32" Name="SortOrder" Nullable="true" />
+          <Property Type="DateTime" Name="ManualExpirationDate" Nullable="true" Precision="23" />
+        </ComplexType>
+        <ComplexType Name="NEWS_NOT_EXPIRED_Result">
+          <Property Type="Int32" Name="SNID" Nullable="false" />
+          <Property Type="String" Name="ADUN" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="categoryID" Nullable="false" />
+          <Property Type="String" Name="Subject" Nullable="false" MaxLength="60" />
+          <Property Type="String" Name="Body" Nullable="false" MaxLength="6000" />
+          <Property Type="Boolean" Name="Sent" Nullable="true" />
+          <Property Type="Boolean" Name="thisPastMailing" Nullable="true" />
+          <Property Type="DateTime" Name="Entered" Nullable="true" Precision="23" />
+          <Property Type="String" Name="categoryName" Nullable="false" MaxLength="30" />
+          <Property Type="Int32" Name="SortOrder" Nullable="true" />
+          <Property Type="DateTime" Name="ManualExpirationDate" Nullable="true" Precision="23" />
+        </ComplexType>
         <ComplexType Name="PHOTO_INFO_PER_USER_NAME_Result">
           <Property Type="String" Name="Img_Name" Nullable="true" MaxLength="100" />
           <Property Type="String" Name="Img_Path" Nullable="true" MaxLength="100" />
@@ -2542,6 +2503,14 @@ warning 6002: The table/view 'CCT.dbo.StudentNewsCategory' does not have a prima
                 <ScalarProperty Name="ModifiedTimeStamp" ColumnName="ModifiedTimeStamp" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="gordon_id" ColumnName="gordon_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StudentNewsExpiration">
+            <EntityTypeMapping TypeName="Gordon360.StudentNewsExpiration">
+              <MappingFragment StoreEntitySet="StudentNewsExpiration">
+                <ScalarProperty Name="SNID" ColumnName="SNID" />
+                <ScalarProperty Name="ManualExpirationDate" ColumnName="ManualExpirationDate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2914,32 +2883,6 @@ warning 6002: The table/view 'CCT.dbo.StudentNewsCategory' does not have a prima
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="StudentNews">
-            <EntityTypeMapping TypeName="Gordon360.StudentNews">
-              <MappingFragment StoreEntitySet="StudentNews">
-                <ScalarProperty Name="SNID" ColumnName="SNID" />
-                <ScalarProperty Name="ADUN" ColumnName="ADUN" />
-                <ScalarProperty Name="categoryID" ColumnName="categoryID" />
-                <ScalarProperty Name="Subject" ColumnName="Subject" />
-                <ScalarProperty Name="Body" ColumnName="Body" />
-                <ScalarProperty Name="Accepted" ColumnName="Accepted" />
-                <ScalarProperty Name="Sent" ColumnName="Sent" />
-                <ScalarProperty Name="thisPastMailing" ColumnName="thisPastMailing" />
-                <ScalarProperty Name="Entered" ColumnName="Entered" />
-                <ScalarProperty Name="fname" ColumnName="fname" />
-                <ScalarProperty Name="lname" ColumnName="lname" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="StudentNewsCategory">
-            <EntityTypeMapping TypeName="Gordon360.StudentNewsCategory">
-              <MappingFragment StoreEntitySet="StudentNewsCategory">
-                <ScalarProperty Name="categoryID" ColumnName="categoryID" />
-                <ScalarProperty Name="categoryName" ColumnName="categoryName" />
-                <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <FunctionImportMapping FunctionImportName="ACTIVE_CLUBS_PER_SESS_ID" FunctionName="Gordon360.Store.ACTIVE_CLUBS_PER_SESS_ID">
             <ResultMapping>
               <ComplexTypeMapping TypeName="Gordon360.ACTIVE_CLUBS_PER_SESS_ID_Result">
@@ -3203,6 +3146,49 @@ warning 6002: The table/view 'CCT.dbo.StudentNewsCategory' does not have a prima
                 <ScalarProperty Name="IS_ALLDAY" ColumnName="IS_ALLDAY" />
                 <ScalarProperty Name="BEGIN_TIME" ColumnName="BEGIN_TIME" />
                 <ScalarProperty Name="END_TIME" ColumnName="END_TIME" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="NEWS_CATEGORIES" FunctionName="Gordon360.Store.NEWS_CATEGORIES">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.NEWS_CATEGORIES_Result">
+                <ScalarProperty Name="categoryID" ColumnName="categoryID" />
+                <ScalarProperty Name="categoryName" ColumnName="categoryName" />
+                <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="NEWS_NEW" FunctionName="Gordon360.Store.NEWS_NEW">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.NEWS_NEW_Result">
+                <ScalarProperty Name="SNID" ColumnName="SNID" />
+                <ScalarProperty Name="ADUN" ColumnName="ADUN" />
+                <ScalarProperty Name="categoryID" ColumnName="categoryID" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="Body" ColumnName="Body" />
+                <ScalarProperty Name="Sent" ColumnName="Sent" />
+                <ScalarProperty Name="thisPastMailing" ColumnName="thisPastMailing" />
+                <ScalarProperty Name="Entered" ColumnName="Entered" />
+                <ScalarProperty Name="categoryName" ColumnName="categoryName" />
+                <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
+                <ScalarProperty Name="ManualExpirationDate" ColumnName="ManualExpirationDate" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="NEWS_NOT_EXPIRED" FunctionName="Gordon360.Store.NEWS_NOT_EXPIRED">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.NEWS_NOT_EXPIRED_Result">
+                <ScalarProperty Name="SNID" ColumnName="SNID" />
+                <ScalarProperty Name="ADUN" ColumnName="ADUN" />
+                <ScalarProperty Name="categoryID" ColumnName="categoryID" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="Body" ColumnName="Body" />
+                <ScalarProperty Name="Sent" ColumnName="Sent" />
+                <ScalarProperty Name="thisPastMailing" ColumnName="thisPastMailing" />
+                <ScalarProperty Name="Entered" ColumnName="Entered" />
+                <ScalarProperty Name="categoryName" ColumnName="categoryName" />
+                <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
+                <ScalarProperty Name="ManualExpirationDate" ColumnName="ManualExpirationDate" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>

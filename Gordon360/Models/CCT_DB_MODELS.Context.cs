@@ -38,6 +38,7 @@ namespace Gordon360.Models
         public virtual DbSet<Save_Bookings> Save_Bookings { get; set; }
         public virtual DbSet<Save_Rides> Save_Rides { get; set; }
         public virtual DbSet<Schedule_Control> Schedule_Control { get; set; }
+        public virtual DbSet<StudentNewsExpiration> StudentNewsExpiration { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         public virtual DbSet<Transit_Requests> Transit_Requests { get; set; }
         public virtual DbSet<Transit_Rides> Transit_Rides { get; set; }
@@ -58,8 +59,6 @@ namespace Gordon360.Models
         public virtual DbSet<PART_DEF> PART_DEF { get; set; }
         public virtual DbSet<RoomAssign> RoomAssign { get; set; }
         public virtual DbSet<Student> Student { get; set; }
-        public virtual DbSet<StudentNews> StudentNews { get; set; }
-        public virtual DbSet<StudentNewsCategory> StudentNewsCategory { get; set; }
     
         public virtual ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> ACTIVE_CLUBS_PER_SESS_ID(string sESS_CDE)
         {
@@ -440,6 +439,21 @@ namespace Gordon360.Models
                 new ObjectParameter("ID_NUM", typeof(int));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<MYSCHEDULE_BY_ID_Result>("MYSCHEDULE_BY_ID", iD_NUMParameter);
+        }
+    
+        public virtual ObjectResult<NEWS_CATEGORIES_Result> NEWS_CATEGORIES()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<NEWS_CATEGORIES_Result>("NEWS_CATEGORIES");
+        }
+    
+        public virtual ObjectResult<NEWS_NEW_Result> NEWS_NEW()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<NEWS_NEW_Result>("NEWS_NEW");
+        }
+    
+        public virtual ObjectResult<NEWS_NOT_EXPIRED_Result> NEWS_NOT_EXPIRED()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<NEWS_NOT_EXPIRED_Result>("NEWS_NOT_EXPIRED");
         }
     
         public virtual ObjectResult<PHOTO_INFO_PER_USER_NAME_Result> PHOTO_INFO_PER_USER_NAME(Nullable<int> iD)

@@ -21,7 +21,7 @@ namespace Gordon360.Static.Names
         public const string MYSCHEDULE = "A custom schedule resource";
         public const string Save_Rides = "A ride resource";
         public const string SCHEDULE = "A course schedule resource";
-        public const string SHIFT = "A shift that a student has worked";
+        public const string NEWS = "A student news resource";
 
         // Partial resources, to be targetted by Operation.READ_PARTIAL
         public const string MEMBERSHIP_REQUEST_BY_ACTIVITY = "Membership Request Resources associated with an activity";
@@ -119,9 +119,5 @@ namespace Gordon360.Static.Names
 
         public static string ALL_FACSTAFF_BUILDINGS = "SELECT DISTINCT BuildingDescription FROM FacStaff WHERE OnCampusBuilding is not null ORDER BY BuildingDescription ASC";
         public static string ALL_FACSTAFF_DEPARTMENTS = "SELECT DISTINCT OnCampusDepartment FROM FacStaff WHERE OnCampusDepartment is not null ORDER BY OnCampusDepartment ASC";
-
-        // Timesheets
-        public static string ALL_STUDENT_TIMESHEETS_INFO = "SELECT * FROM student_timesheets for json path";
-
     }
 }

@@ -211,7 +211,6 @@ namespace Gordon360.ApiControllers
         /// We are searching through a concatonated string, containing several pieces of info about each user.
         /// </summary>
         /// <param name="searchString"> The input to search for </param>
-        /// <param name="secondaryString"> The second piece of the search terms </param>
         /// <returns> All accounts meeting some or all of the parameter</returns>
         [HttpGet]
         [Route("search/{searchString}/{secondaryString}")]

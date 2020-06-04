@@ -11,10 +11,11 @@ namespace Gordon360.Models
 {
     using System;
     
-    public partial class student_timesheets_select_supervisor_name_Result
+    public partial class dt_getpropertiesbyid_Result
     {
-        public string first_name { get; set; }
-        public string last_name { get; set; }
-        public string preferred_name { get; set; }
+        public string property { get; set; }
+        public int version { get; set; }
+        public string value { get; set; }
+        public byte[] lvalue { get; set; }
     }
 }

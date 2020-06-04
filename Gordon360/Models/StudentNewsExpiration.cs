@@ -10,10 +10,11 @@
 namespace Gordon360.Models
 {
     using System;
+    using System.Collections.Generic;
     
-    public partial class student_timesheets_select_emls_for_ajax_selectbox_Result
+    public partial class StudentNewsExpiration
     {
-        public int EmlID { get; set; }
-        public string postitle { get; set; }
+        public int SNID { get; set; }
+        public Nullable<System.DateTime> ManualExpirationDate { get; set; }
     }
 }
