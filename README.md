@@ -15,7 +15,7 @@ Dive in.
     - [Stored Procedures](#stored-procedures)
     - [Triggers](#triggers)
     - [Manual and Debugging Access](#manual-and-debugging-access)
-    - [Updating .edmx](#updating-edmx)
+    - [Updating or creating .edmx](#updating-or-creating-edmx)
 - [The Code](#the-code)
 - [Introduction](#introduction)
 - [Adding New Queries](#adding-new-queries)
@@ -40,6 +40,7 @@ Dive in.
     - [MySchedule](#my-schedule)
     - [ScheduleControl](#schedule-control)
     - [Victory Promise](#victory-promise)
+    - [News](#news)
 - [API Testing](#api-testing)
     - [Introduction](#introduction)
     - [Running the Tests](#running-the-tests)
@@ -365,21 +366,32 @@ It's sometimes useful to look at the database directly, to see the schema or che
 * To see schemas, expand "dbo." entries and their "columns"
 * To see data, right-click a view and select "Select top 1000 rows"
 
-### Updating edmx
+### Updating or Creating edmx
 
-Everytime you update the database with new table, column, view or stored procedure, or modify the existing ones with different parameters or return values, you need to get the corresponding Entity Database Model XML in API. Editing it manually is not recommended, since it may cause unexpected errors such as PublicStudentData error.
+Everytime you update the one of the databases with a new table, column, view or stored procedure, or modify the existing ones with different parameters or return values, you need to get the corresponding Entity Database Model XML in the API. Editing it manually is not recommended, since it may cause unexpected errors such as PublicStudentData error.
 
-Visual Studio provides auto-generation of .edmx file, with the following procedure:
+Visual Studio provides auto-generation of .edmx files, with the following procedure:
 * Use remote desktop to get to the Windows server VM
 * Open Visual Studio and load the solution file
-* In solution explorer, expand "Models" folder and delete the previous CCT_DB_MODELS.edmx by right-click on it and press delete (It's okay, we can remake it)
-* Right-click "Models", expand "Add" and press "new Item" (If you can see ADO.NET Entity Data Model in here, you may press that as well)
-* Under Visual C# panel, access to "Data" and find ADO.NET Entity Data Model. Name it as "CCT_DB_Models" and create it
-* In the Wizard, default option would be "EF Designer from database". If it is not, changed to this option and head next
-* While you choose your data connection, make sure the connection is "CCTEntities (Gordon360)" and you checked "Save connection setting in Web.Config as:". Also, the saved settings should be named as "CCTEntities1"
-* Next, you will see the wizard retrieving the database objects from our CCT database. check all boxes in the panel but you should uncheck the option "Pluralize or singularize generated object names"
-* Name the Model Namespace as "Gordon360" and press finish
-
+* In the solution explorer, expand the "Models" folder and delete the previous <database name>_DB_MODELS.edmx which represents the database to which you made changes; for example, if it was the CCT database that was changed, delete CCT_DB_MODELS.edmx, right-click on it and press delete (It's okay, we can remake it)
+* Right-click "Models", expand "Add" and press "New Item" (If you can see ADO.NET Entity Data Model in here, you may press that as well)
+* Under Visual C# panel, access "Data" and find ADO.NET Entity Data Model. Name it `<database name>_DB_Models` and create it
+* In the Wizard, the default option should be "EF Designer from database". If it is not, change to this option and head next
+* Choose the data connection "<database name>Entities (Gordon360)" (though, if it is CCT, then put a "1" after "Entities")
+* Make sure you check "Save connection setting in Web.Config as:" and name the saved settings `<database name>Entities` (again, if it is CCT, it should be "CCTEntities1" with that additional "1")
+* Next, you will see the wizard retrieving the database objects from our CCT database; check all boxes in the panel but you should uncheck the option "Pluralize or singularize generated object names"
+* Name the Model Namespace as `Gordon360` and press finish
+	
+If you are attempting to connect the API to a database other than the ones to which it is already connected, you will need to create an entirely new edmx. To do this, follow the instructions above for updating, taking note of the following points:
+* You do not need to delete any edmx files, since you are now creating the first instance of a different edmx
+* None of the options for data connection will fit your needs, so you will need to create a new option: 
+	* Click "New Connection..."
+	* If prompted "Choose Data Source", choose "Microsoft SQL Server"
+	* For "Server name", put `admintrainsql.gordon.edu`
+	* Under "Connect to a Database", make sure "Select or enter a database name:" is selected and enter `<database name>`
+	* Go to Advanced settings, scroll to the top, and make sure "MultipleActiveResultSets" is set to True; then, scroll towards the bottom to find "Integrated Security" and make sure that is set to True
+	* Click OK to close Advanced settings, then OK again to save the data connection you have just made
+* Now, you can select the data connection you just made from the drop down and pick up with the above directions at 'Make sure you check "Save connection...'
 
 ## The Code
 
