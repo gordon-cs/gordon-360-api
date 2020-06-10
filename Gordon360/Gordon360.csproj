@@ -212,6 +212,7 @@
     <Compile Include="ApiControllers\MembershipRequestController.cs" />
     <Compile Include="ApiControllers\MyScheduleController.cs" />
     <Compile Include="ApiControllers\ScheduleControlController.cs" />
+    <Compile Include="ApiControllers\WellnessController.cs" />
     <Compile Include="Models\ACCOUNT.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -506,6 +507,7 @@
     <Compile Include="Models\view_cct_student.cs">
       <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModels\WellnessViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\CustomMultiPartFormDataStreamProvider.cs" />
     <Compile Include="Repositories\GenericRepository.cs" />
@@ -529,6 +531,7 @@
     <Compile Include="Services\ScheduleService.cs" />
     <Compile Include="Services\StudentEmploymentService.cs" />
     <Compile Include="Services\VictoryPromiseService.cs" />
+    <Compile Include="Services\WellnessService.cs" />
     <Compile Include="Static Classes\Data.cs" />
     <Compile Include="Static Classes\Helpers.cs" />
     <Compile Include="Services\JenzibarActivityService.cs" />
@@ -630,6 +633,7 @@
           <DevelopmentServerPort>49645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost:2474</IISUrl>
+          <IISUrl>http://localhost:5849</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
