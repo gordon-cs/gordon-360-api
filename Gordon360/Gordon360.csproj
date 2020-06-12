@@ -267,13 +267,13 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ChapelSummary.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+      <DependentUpon>MyGordon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CM_SESSION_MSTR.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Countries.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+      <DependentUpon>MyGordon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\COURSES_FOR_PROFESSOR_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
@@ -297,13 +297,13 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\dtproperties.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+      <DependentUpon>MyGordon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\dt_getpropertiesbyid_Result.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+      <DependentUpon>MyGordon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\dt_getpropertiesbyid_u_Result.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+      <DependentUpon>MyGordon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\EMAILS_PER_ACT_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
@@ -344,20 +344,20 @@
     <Compile Include="Models\MEMBERSHIPS_PER_STUDENT_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\MyGordon_DB_Models.Context.cs">
+    <Compile Include="Models\MyGordon.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>MyGordon_DB_Models.Context.tt</DependentUpon>
+      <DependentUpon>MyGordon.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\MyGordon_DB_Models.cs">
+    <Compile Include="Models\MyGordon.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+      <DependentUpon>MyGordon.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\MyGordon_DB_Models.Designer.cs">
+    <Compile Include="Models\MyGordon.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
+      <DependentUpon>MyGordon.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\MYSCHEDULE.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
@@ -408,20 +408,20 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sp_helpdiagramdefinition_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+      <DependentUpon>MyGordon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sp_helpdiagrams_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+      <DependentUpon>MyGordon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Student.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\StudentEmployment.cs" />
     <Compile Include="Models\StudentNews.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+      <DependentUpon>MyGordon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\StudentNewsCategory.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+      <DependentUpon>MyGordon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\StudentNewsExpiration.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
@@ -495,16 +495,16 @@
     <Compile Include="Models\ViewModels\SliderViewModel.cs" />
     <Compile Include="Models\ViewModels\VictoryPromiseViewModel.cs" />
     <Compile Include="Models\view_cct_alumni.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+      <DependentUpon>MyGordon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\view_cct_ChapelEvent.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+      <DependentUpon>MyGordon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\view_cct_facstaff.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+      <DependentUpon>MyGordon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\view_cct_student.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+      <DependentUpon>MyGordon.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\CustomMultiPartFormDataStreamProvider.cs" />
@@ -542,10 +542,6 @@
   <ItemGroup>
     <Content Include="browseable\profile\Default\profile.png" />
     <Content Include="browseable\uploads\Default\activityImage.png" />
-    <EntityDeploy Include="Models\MyGordon_DB_Models.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>MyGordon_DB_Models.Designer.cs</LastGenOutput>
-    </EntityDeploy>
     <Content Include="Models\CCT_DB_Models.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
@@ -556,9 +552,6 @@
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
       <LastGenOutput>CCT_DB_Models.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\MyGordon_DB_Models.edmx.diagram">
-      <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
-    </Content>
     <EntityDeploy Include="Models\CCT_DB_Models.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>CCT_DB_Models.Designer.cs</LastGenOutput>
@@ -566,21 +559,28 @@
     <Content Include="Models\CCT_DB_Models.edmx.diagram">
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
     </Content>
+    <EntityDeploy Include="Models\MyGordon.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>MyGordon.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\MyGordon.edmx.diagram">
+      <DependentUpon>MyGordon.edmx</DependentUpon>
+    </Content>
     <None Include="secrets.config">
       <SubType>Designer</SubType>
     </None>
     <EmbeddedResource Include="version.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <Content Include="Models\MyGordon_DB_Models.Context.tt">
+    <Content Include="Models\MyGordon.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
-      <LastGenOutput>MyGordon_DB_Models.Context.cs</LastGenOutput>
+      <DependentUpon>MyGordon.edmx</DependentUpon>
+      <LastGenOutput>MyGordon.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\MyGordon_DB_Models.tt">
+    <Content Include="Models\MyGordon.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
-      <LastGenOutput>MyGordon_DB_Models.cs</LastGenOutput>
+      <DependentUpon>MyGordon.edmx</DependentUpon>
+      <LastGenOutput>MyGordon.cs</LastGenOutput>
     </Content>
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -629,7 +629,9 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:2474</IISUrl>
+          <IISUrl>http://localhost:3417</IISUrl>
+          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
+          <IISAppRootUrl>http://localhost:3417</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
