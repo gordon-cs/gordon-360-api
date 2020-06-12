@@ -15,10 +15,10 @@ namespace Gordon360.Models
     using System.Data.Entity.Core.Objects;
     using System.Linq;
     
-    public partial class Entities : DbContext
+    public partial class MyGordonEntities : DbContext
     {
-        public Entities()
-            : base("name=Entities")
+        public MyGordonEntities()
+            : base("name=MyGordonEntities")
         {
         }
     
