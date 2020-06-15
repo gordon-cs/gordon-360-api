@@ -137,7 +137,7 @@ Data which is stored upon startup includes:
 
 ## The Database
 
-The `CCT`and `MyGordon` databases exist in:
+The `CCT` and `MyGordon` databases exist in:
 - `admintrainsql.gordon.edu` - The development/test database server
 - `adminprodsql.gordon.edu` -  The production/live database server.
 
@@ -362,13 +362,17 @@ It's sometimes useful to look at the database directly, to see the schema or che
 * Shift-right-click SSMS (SQL Server Management Studio) and select "Run as ..."
 * Run as "cct.service"
 * Connect to "ADMINTRAINSQL" database server (or "ADMINPRODSQL")
-* Expand "Databases" then "CCT" then "Views"
+* Expand "Databases" then "CCT" or "MyGordon" (the two currently used databases) then "Views"
 * To see schemas, expand "dbo." entries and their "columns"
 * To see data, right-click a view and select "Select top 1000 rows"
 
 ### Updating or Creating edmx
 
 Everytime you update the one of the databases with a new table, column, view or stored procedure, or modify the existing ones with different parameters or return values, you need to get the corresponding Entity Database Model XML in the API. Editing it manually is not recommended, since it may cause unexpected errors such as PublicStudentData error.
+
+<div style="background-color:#eee;padding:10px 20px">
+<i><strong>Permissions Note:</strong></i>
+<br>If data tables appears to be missing from edmx generation or if some kind of "SELECT permission denied" error occurs during testing, you may need to be running Visual Studio as the cct.service user (or obtain the appropriate permissions for yourself) before generating these files. (Summer 2020 note)</div>
 
 #### UPDATE EDMX FILES
 Visual Studio provides auto-generation of .edmx files, with the following procedure:
