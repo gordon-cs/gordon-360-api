@@ -860,24 +860,20 @@ What is it? Resource that represents information related to schedule.
 ### Victory Promise
 What is it? Resource that represents the user's scores on the four pillars of the victory promise.
 
-#### GET
+##### GET
 
 `api/vpscore` Get the victory promise scores of the currently logged in user.
 
 ### News
 What is it? Resource that represents accepted student news entries and news categories.
 
-### GET 
+##### GET 
 
 `api/news/category` Gets the full list of category names used to categorize student news as well as category ids and sort order. 
 
-### GET
+`api/news/not-expired` Gets every student news entry that has been accepted and has not yet been in the database 2 weeks or, if the poster set a specific date of expiration, has an expiration date later than the current day.
 
-`api/news/not-expired`Gets every student news entry that has been accepted and has not yet been in the database 2 weeks or, if the poster set a specific date of expiration, has an expiration date later than the current day.
-
-### GET
-
-`api/news/new`Gets every student news entry that has been accepted, has not expired (as described above), and is new since 10am on the day before.
+`api/news/new` Gets every student news entry that has been accepted, has not expired (as described above), and is new since 10am on the day before.
 
 ## API Testing
 
@@ -905,6 +901,8 @@ Navigate to the API Tests folder:
 `cd gordon-360-api/Tests/ApiEndpoints/`
 
 Install pytest: `pip install -U pytest`
+
+*Note: If you encounter an error of a missing requests import, you may need to install it with `pip install requests` (Summer 2020 fix)*
 
 Check the `hostURL` in test_gordon360_pytest.py if it is pointing to the correct backend 
 
