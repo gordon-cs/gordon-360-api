@@ -6,7 +6,7 @@ Dive in.
 ## Table of Contents
 - [Machines and Sites](#machines-and-sites)
     - [Deploying to the Api Site](#deploying-to-the-api-site)
-    - [Deploying to the Front-end site](#deploying-to-the-front-end-site)
+    - [Deploying to the Front-end site (deprecated)](#deploying-to-the-front-end-site)
 - [Running the API locally](#running-the-api-locally)
     - [Preliminary setup](#preliminary-setup)
     - [Building and running](#building-and-running)
@@ -569,6 +569,8 @@ In OAuth, there are two servers including the one running your app. The server r
 
 In our project, the Authentication Server and the App Server are actually the same. They are only separated code-wise. You could say that the *App* is the ApiControllers folder and the *Authentication Server* is the AuthorizationServer folder (Recall that it is currently named incorrectly, sorry. We haven't changed the name because it would require changing multiple import statements, and we don't have time to debug after the change).
 
+*__Note: See the section on <a href="#manual-test">Manually Testing the API</a> for most up-to-date instructions on authenticating your test HTTP requests.__*
+
 Accepts a form encoded object in the body of the request:
 ```
 {
@@ -910,6 +912,7 @@ Run the tests:
 `pytest` -- This runs all the tests.
 `pytest test_gordon360_pytest.py -k '{name of def}'` -- This runs a specific test based on {name of def}.
 
+<span id="manual-test"><!--anchor--></span>
 #### Manually Testing the API
 
 To manually test the API, use an API development/testing app like [Postman](https://www.getpostman.com/).
