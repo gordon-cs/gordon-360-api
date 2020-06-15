@@ -1,9 +1,13 @@
 ﻿using System.Linq;
 using System.Security.Claims;
 using System.Web.Http;
+using System.Net;
+using System.Net.Http;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
 using Gordon360.Services;
+using Gordon360.Models;
+using Gordon360.Exceptions.CustomExceptions;
 
 namespace Gordon360.Controllers.Api
 {
@@ -53,6 +57,37 @@ namespace Gordon360.Controllers.Api
             }
 
             return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("")]
+        public IHttpActionResult PostAnswer([FromBody] string answer)
+        {
+
+            if (!ModelState.IsValid || answer == null)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            var result = _wellnessService.PostStatus(answer);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+
+            return Created("Recorded answer :", result);
+
         }
     }
 }

@@ -28,6 +28,36 @@ namespace Gordon360.Services
 
         public WellnessViewModel GetStatus(string id)
         {
+            var _unitOfWork = new UnitOfWork();
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
+
+            var idParam = new SqlParameter("@ID", id);
+            //var result = RawSqlQuery<WellnessViewModel>.query("VICTORY_PROMISE_BY_STUDENT_ID @ID", idParam); //run stored procedure
+            var result = false;
+            if (result == null)
+            {
+                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+
+
+
+            WellnessViewModel y = new WellnessViewModel()
+            {
+                currentStatus = null
+            };
+                
+            
+
+            return y;
+
+        }
+
+        public WellnessViewModel PostStatus(string answer)
+        {
             // var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
             // if (query == null)
             // {
@@ -47,22 +77,20 @@ namespace Gordon360.Services
             //     y.currentStatus = x.currentStatus ?? null;
             //     return y;
             // });
-
+            var UserAnswer = answer;
 
             WellnessViewModel y = new WellnessViewModel()
             {
-                currentStatus = true
+                userAnswer = UserAnswer
             };
-                
-            
+
+
 
             return y;
 
         }
 
-       //WellnessViewModel IWellnessService.GetStatus(string id)
-       // {
-       //     throw new NotImplementedException();
-       // }
+
+
     }
 }
