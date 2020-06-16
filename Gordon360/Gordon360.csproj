@@ -596,6 +596,7 @@
     <EntityDeploy Include="Models\MyGordon_DB_Models.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>MyGordon_DB_Models.Designer.cs</LastGenOutput>
+    </EntityDeploy>
     <EntityDeploy Include="Models\StudentTimesheet_DB_Models.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>StudentTimesheet_DB_Models.Designer.cs</LastGenOutput>
@@ -612,6 +613,7 @@
     </Content>
     <Content Include="Models\MyGordon_DB_Models.edmx.diagram">
       <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
+    </Content>
     <Content Include="Models\StudentTimesheet_DB_Models.edmx.diagram">
       <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
     </Content>
