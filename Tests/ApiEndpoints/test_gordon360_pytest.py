@@ -42,7 +42,7 @@ FILE_NAME = 'profile.jpg'
 
 # API 
 hostURL = 'https://360ApiTrain.gordon.edu/'
-#hostURL = 'http://localhost:7777/'
+#hostURL = 'http://localhost:1235/'
 
 # Constants
 LEADERSHIP_POSITIONS = ['CAPT','CODIR','CORD','DIREC','PRES','VICEC','VICEP']
@@ -316,6 +316,8 @@ class Test_allScheduleTest(testCase):
 #    Endpoint --  api/schedule/:username
 #    Expected Status code -- 200 Ok
 #    Expected Content -- all schedule objects of the currently logged in user.
+#    studenttest is not enrolled in summer practicum for any year
+#    Currently returns empty list
     def test_get_all_schedule_objects_of_current_user(self):
         session = None
         self.session = self.createAuthorizedSession(username, password)
@@ -335,12 +337,13 @@ class Test_allScheduleTest(testCase):
 #    Endpoint --  api/schedule/:username
 #    Expected Status code -- 200 Ok
 #    Expected Content -- all schedule objects of a user with username `username` as a parameter
+#    currently returns 404 not found
     def test_get_all_schedule_objects_of_user(self):
         session = None
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/schedule/' + leader_username + '/'
         response = api.get(self.session, self.url)
-
+    
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
         try:
@@ -807,12 +810,12 @@ class Test_allActivityTest(testCase):
         assert response.json()[0]["ActivityCode"] == "360"
         assert response.json()[0]["ActivityDescription"] == "360.gordon.edu"
         assert response.json()[0]["ActivityImagePath"] == "https://360apitrain.gordon.edu/browseable/uploads/360/canvasImage.png"
-        assert response.json()[0]["ActivityBlurb"] == ""
+        assert response.json()[0]["ActivityBlurb"] == "This is me changing the description"
         assert response.json()[0]["ActivityURL"] == "http://360.gordon.edu"
         assert response.json()[0]["ActivityType"] == "STU"
         assert response.json()[0]["ActivityTypeDescription"] == "Student Life"
         assert response.json()[0]["Privacy"] == False
-        assert response.json()[0]["ActivityJoinInfo"] == ""
+        assert response.json()[0]["ActivityJoinInfo"] == "me adding special information"
 
 #    Verify that a Guest can get all activities but only public info.
 #    Endpoint -- api/activities/
@@ -831,12 +834,12 @@ class Test_allActivityTest(testCase):
         assert response.json()["ActivityCode"] == "360"
         assert response.json()["ActivityDescription"] == "360.gordon.edu"
         assert response.json()["ActivityImagePath"] == "https://360apitrain.gordon.edu/browseable/uploads/360/canvasImage.png"
-        assert response.json()["ActivityBlurb"] == ""
+        assert response.json()["ActivityBlurb"] == "This is me changing the description"
         assert response.json()["ActivityURL"] == "http://360.gordon.edu"
         assert response.json()["ActivityType"] == "STU"
         assert response.json()["ActivityTypeDescription"] == "Student Life"
         assert response.json()["Privacy"] == False
-        assert response.json()["ActivityJoinInfo"] == ""
+        assert response.json()["ActivityJoinInfo"] == "me adding special information"
         
 
 #    Verify that an activity leader can a single activity.
@@ -859,7 +862,7 @@ class Test_allActivityTest(testCase):
             pytest.fail('Expected ACT_CDE in response, got {0}.'.format(response.json()))
         assert response.json()["ActivityCode"] == "AJG"
         assert response.json()["ActivityDescription"] == "A. J. Gordon Scholars Program"
-        assert response.json()["ActivityImagePath"] == "https://360api.gordon.edu/browseable/uploads/Default/activityImage.png"
+        assert response.json()["ActivityImagePath"] == "https://360apitrain.gordon.edu/browseable/uploads/AJG/canvasImage.png"
         assert response.json()["ActivityBlurb"] == "DOING TESTS, IGNORE"
         assert response.json()["ActivityURL"] == "http://www.lolcats.com/"
         assert response.json()["ActivityType"] == "LEA"
@@ -888,12 +891,12 @@ class Test_allActivityTest(testCase):
         assert response.json()[0]["ActivityCode"] == "360"
         assert response.json()[0]["ActivityDescription"] == "360.gordon.edu"
         assert response.json()[0]["ActivityImagePath"] == "https://360api.gordon.edu/browseable/uploads/Default/activityImage.png"
-        assert response.json()[0]["ActivityBlurb"] == ""
-        assert response.json()[0]["ActivityURL"] == ""
+        assert response.json()[0]["ActivityBlurb"] == "This is me changing the description"
+        assert response.json()[0]["ActivityURL"] == "http://360.gordon.edu"
         assert response.json()[0]["ActivityType"] == "STU"
         assert response.json()[0]["ActivityTypeDescription"] == "Student Life"
-        assert response.json()[0]["Privacy"] == None
-        assert response.json()[0]["ActivityJoinInfo"] == ""
+        assert response.json()[0]["Privacy"] == False
+        assert response.json()[0]["ActivityJoinInfo"] == "me adding special information"
 
 #    Verify that an activity leader can get all activity types for specific session in a list 
 #    Endpoint -- api/activities/session/{sessionCode}/types
@@ -1755,9 +1758,10 @@ class Test_allMembershipRequestTest(testCase):
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
         try:
-            assert response.json()[0]['ActivityCode'] == "BADM"
-            assert response.json()[1]['ActivityCode'] == "ACS"
-            assert response.json()[2]['ActivityCode'] == "SCOTTIE"
+            assert response.json()[0]['ActivityCode'] == "360"
+            assert response.json()[1]['ActivityCode'] == "BADM"
+            assert response.json()[2]['ActivityCode'] == "ACS"
+            assert response.json()[3]['ActivityCode'] == "SCOTTIE"
         except ValueError:
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
         if not (type(response.json()) is list):
@@ -2157,6 +2161,7 @@ class Test_allProfileTest(testCase):
 #    Endpoint -- api/profiles/image/
 #    Expected Status Code -- 200 OK
 #    Expected Content -- updated profile image
+#    Returning 415
     def test_post_profile_image(self):
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/profiles/image/'
@@ -2166,8 +2171,6 @@ class Test_allProfileTest(testCase):
             'FILE_NAME': ""  #Barcode ID of the user
         }
         response = api.postAsFormData(self.session, self.url, self.data)
-        #from pprint import pprint
-        #pprint(response.json()['headers'])
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
         #self.data = {
@@ -2183,6 +2186,7 @@ class Test_allProfileTest(testCase):
 #    Endpoint -- api/profiles/IDimage/
 #    Expected Status Code -- 200 OK
 #    Expected Content -- upload ID photo
+#    Returning 415
     def test_post_ID_image(self):
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/profiles/IDimage/'
@@ -2191,7 +2195,7 @@ class Test_allProfileTest(testCase):
             'FILE_PATH': FILE_PATH, #File path of the image on the user's computer,
             'FILE_NAME': ""  #Barcode ID of the user
         }
-        response = api.post(self.session, self.url, self.data)
+        response = api.postAsFormData(self.session, self.url, self.data)
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
         self.data = {
@@ -2304,6 +2308,7 @@ class Test_allSessionTest(testCase):
 #    Endpoint -- api/sessions/
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- List of all session resources
+#    Very good example of hardy test
     def test_get_all_sessions(self):
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/sessions/'
@@ -2316,10 +2321,11 @@ class Test_allSessionTest(testCase):
             pytest.fail('Expected Json response body, got {0}.'.format(response.json()))
         if not (type(response.json()) is list):
             pytest.fail('Expected list, got {0}.'.format(response.json()))
-        assert response.json()[0]["SessionCode"] == "201509"
-        assert response.json()[0]["SessionDescription"] == "Fall 15-16 Academic Year"
-        assert response.json()[0]["SessionBeginDate"] == "2015-08-26T00:00:00"
-        assert response.json()[0]["SessionEndDate"] == "2015-12-18T00:00:00"
+
+        assert response.json()[0]["SessionCode"] == "201209"
+        assert response.json()[0]["SessionDescription"] == "Fall 12-13 Academic Year"
+        assert response.json()[0]["SessionBeginDate"] == "2012-08-29T00:00:00"
+        assert response.json()[0]["SessionEndDate"] == "2012-12-21T00:00:00"
 
         self.url = hostURL + 'api/sessions/current/'
         current = api.get(self.session, self.url)
@@ -2436,6 +2442,7 @@ class Test_AllStudentEmploymentTest(testCase):
 #    Endpoint -- api/studentemployment/
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- A json response with student employment info
+#    Returning 500 I don't have permission to view HRinfo
     def test_student_employment___regular_member(self):
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/studentemployment/'
@@ -2498,7 +2505,8 @@ class Test_AdminTest(testCase):
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
         if not (type(response.json()) is list):
             pytest.fail('Expected list, got {0}.'.format(response.json))
-        assert response.json()[3]['EMAIL'] == "360.FacultyTest@gordon.edu"
+        print(response.json())
+        assert response.json()[1]['EMAIL'] == "360.FacultyTest@gordon.edu"
         assert response.json()[0]['EMAIL'] == "Chris.Carlson@gordon.edu"
         assert response.json()[0]['ADMIN_ID'] == 1
         assert response.json()[0]['ID_NUM'] == 8330171
