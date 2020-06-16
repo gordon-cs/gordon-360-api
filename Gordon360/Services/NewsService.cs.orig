@@ -22,12 +22,18 @@ namespace Gordon360.Services
         {
             return RawSqlQuery<StudentNewsViewModel>.query("NEWS_NOT_EXPIRED");
 
+<<<<<<< HEAD
             // TODO This trimming code was apparently used in services
             // to remove whitespace inherited from the database.
             // Postman showed no extra whitespace in the result, so
             // if there is also no extra whitespace in the result the frontend retrieves,
             // this commented code can be removed. Else, uncomment this code. It is 
             // likely the solution.
+=======
+            // TODO Postman showed no extra whitespace in the result, so
+            // if there is also no extra whitespace in the result the frontend retrieves,
+            // this commented code can be removed.
+>>>>>>> parent of f61c38c... Revert "Merge in develop, removing or noting unnecessary code"
             // var trimmedResult = result.Select(x =>
             // {
             //     var trim = x;
@@ -50,12 +56,18 @@ namespace Gordon360.Services
         {
             return RawSqlQuery<StudentNewsViewModel>.query("NEWS_NEW");
 
+<<<<<<< HEAD
             // TODO This trimming code was apparently used in services
             // to remove whitespace inherited from the database.
             // Postman showed no extra whitespace in the result, so
             // if there is also no extra whitespace in the result the frontend retrieves,
             // this commented code can be removed. Else, uncomment this code. It is 
             // likely the solution.
+=======
+            // TODO Postman showed no extra whitespace in the result, so
+            // if there is also no extra whitespace in the result the frontend retrieves,
+            // this commented code can be removed.
+>>>>>>> parent of f61c38c... Revert "Merge in develop, removing or noting unnecessary code"
             // var trimmedResult = result.Select(x =>
             // {
             //     var trim = x;
@@ -79,12 +91,18 @@ namespace Gordon360.Services
         {
             return RawSqlQuery<StudentNewsCategoryViewModel>.query("NEWS_CATEGORIES");
 
+<<<<<<< HEAD
             // TODO This trimming code was apparently used in services
             // to remove whitespace inherited from the database.
             // Postman showed no extra whitespace in the result, so
             // if there is also no extra whitespace in the result the frontend retrieves,
             // this commented code can be removed. Else, uncomment this code. It is 
             // likely the solution.
+=======
+            // TODO Postman showed no extra whitespace in the result, so
+            // if there is also no extra whitespace in the result the frontend retrieves,
+            // this commented code can be removed.
+>>>>>>> parent of f61c38c... Revert "Merge in develop, removing or noting unnecessary code"
             // var trimmedResult = result.Select(x =>
             // {
             //     var trim = x;

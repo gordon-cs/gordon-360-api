@@ -153,6 +153,8 @@ namespace Gordon360.Repositories
         {
             get { return _ErrorLogRepository ?? (_ErrorLogRepository = new GenericRepository<ERROR_LOG>(_context)); }
         }
+<<<<<<< HEAD
+=======
         public IRepository<Save_Rides> RideRepository
         {
             get { return _RideRepository ?? (_RideRepository = new GenericRepository<Save_Rides>(_context)); }
@@ -161,6 +163,7 @@ namespace Gordon360.Repositories
         {
             get { return _BookingRepository ?? (_BookingRepository = new GenericRepository<Save_Bookings>(_context)); }
         }
+>>>>>>> parent of f61c38c... Revert "Merge in develop, removing or noting unnecessary code"
 
         public bool Save()
         {
