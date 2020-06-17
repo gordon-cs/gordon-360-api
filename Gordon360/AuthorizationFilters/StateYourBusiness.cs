@@ -12,7 +12,7 @@ namespace Gordon360.AuthorizationFilters
 {
     /* Authorization Filter.
      * It is actually an action filter masquerading as an authorization filter. This is because I need access to the 
-     * parameters passed to the controller. Authorizatoin Filters don't have that access. Action Filters do.
+     * parameters passed to the controller. Authorization Filters don't have that access. Action Filters do.
      * 
      * Because of the nature of how we authorize people, this code might seem very odd, so I'll try to explain. 
      * Proceed at your own risk. If you can understand this code, you can understand the whole project. 
