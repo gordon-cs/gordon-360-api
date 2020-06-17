@@ -2,9 +2,9 @@
 
 ## Table of Contents
 
-- [Connect from Ubuntu Linux](connect-from-ubuntu-linux)
-- [Connect from Windows](connnect-from-windows)
-- [Connect from MacOS](connect-from-macos)
+- [Connect from Ubuntu Linux](#connect-from-ubuntu-linux)
+- [Connect from Windows](#connect-from-windows)
+- [Connect from MacOS](#connect-from-macos)
 
 ## Connect from Ubuntu Linux
 
@@ -34,9 +34,17 @@ If you were connecting in order to run the server locally, click [here](https://
 
 ## Connect from Windows
 
-1. Use a web browser to connect to [desktops.gordon.edu](https://desktops.gordon.edu) and log in with your Gordon email address and password.
-2. Click on "VDI-ComputerScience" to download the Remote Desktop configuration file.
-3. Click on the downloaded file and follow the prompts to make the connection.
+1. Go to search bar, on the left side of the taskbar on your machine and type in 'Remote Desktop'.
+2. Click on the Remote Desktop app. Not the Remote Desktop Connection app.
+3. In the Remote Desktop window, click on 'Add' at the top right of the window.
+4. Click on 'Desktop'.
+5. Under 'PC name', type in 'CS-RDSH-02' (not case-sensitive).
+6. Steps 7 through 9 are optional.
+7. Under 'User account', you may enter your Gordon username ('@gordon.edu' is not needed).
+8. Under 'Password', enter your Gordon password.
+9. 'Display name' is optional.
+10. Click on the saved desktop you just created.
+11. A pop-up will be shown asking 'Accept Certificate?'. You may check the one available option to never see the pop-up again and click     on 'accept'.
 
 ## Connect from MacOS
 
