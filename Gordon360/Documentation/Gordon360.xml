@@ -38,6 +38,7 @@
             We are searching through a concatonated string, containing several pieces of info about each user.
             </summary>
             <param name="searchString"> The input to search for </param>
+            <param name="secondaryString"> The second piece of the search terms </param>
             <returns> All accounts meeting some or all of the parameter</returns>
         </member>
         <member name="M:Gordon360.ApiControllers.AccountsController.AdvancedPeopleSearch(System.Boolean,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
@@ -148,8 +149,6 @@
             <summary>
              Gets information about student's dining plan and balance
             </summary>
-            <param name="id">The ID of the student</param>
-            <param name="sessionCode">Current session code</param>
             <returns>A DiningInfo object</returns>
         </member>
         <member name="M:Gordon360.ApiControllers.ErrorLogController.Post(System.String)">
@@ -199,6 +198,89 @@
         </member>
         <member name="M:Gordon360.Controllers.Api.NewsController.GetCategories">
             Call the service that gets the list of categories
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.getJobsForUser(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
+            <summary>
+            Get a user's active jobs
+            </summary>
+            <param name="details"></param>
+            <returns>The user's active jobs</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.getSavedShiftsForUser">
+            <summary>
+            Get a user's saved shifts
+            </summary>
+            <returns>The user's saved shifts</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.saveShiftForUser(Gordon360.Models.ViewModels.ShiftViewModel)">
+            <summary>
+            Get a user's active jobs
+            </summary>
+            <param name="shiftDetails"></param>
+            <returns>The result of saving a shift</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.editShiftForUser(Gordon360.Models.ViewModels.ShiftViewModel)">
+            <summary>
+            Edit a shift
+            <param name="shiftDetails">The details that will be changed</param>
+            </summary>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.deleteShiftForUser(System.Int32)">
+            <summary>
+            Get a user's active jobs
+            </summary>
+            <returns>The result of deleting the shift</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.submitShiftsForUser(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.ShiftToSubmitViewModel})">
+            <summary>
+            Submit shifts
+            </summary>
+            <returns>The result of submitting the shifts</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.getSupervisorName(System.Int32)">
+            <summary>
+            Gets the name of a supervisor based on their ID number
+            </summary>
+            <returns>The name of the supervisor</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.SaveController.GetUpcomingRides">
+            <summary>
+             Gets all upcoming ride objects
+            </summary>
+            <returns>A IEnumerable of rides objects</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.SaveController.GetUpcomingRidesForUser">
+            <summary>
+             Gets all upcoming ride objects for a user
+            </summary>
+            <returns>A IEnumerable of rides objects</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.SaveController.PostRide(Gordon360.Models.Save_Rides)">
+            <summary>
+             Create new ride object for a user
+            </summary>
+            <returns>Successfully posted ride object</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.SaveController.CancelRide(System.String)">
+            <summary>Cancel an existing ride item</summary>
+            <param name="rideID">The identifier for the ride to be cancel</param>
+            <remarks>Calls the server to make a call and remove the given ride from the database</remarks>
+        </member>
+        <member name="M:Gordon360.ApiControllers.SaveController.DeleteRide(System.String)">
+            <summary>Delete an existing ride item</summary>
+            <param name="rideID">The identifier for the ride to be deleted</param>
+            <remarks>Calls the server to make a call and remove the given ride from the database</remarks>
+        </member>
+        <member name="M:Gordon360.ApiControllers.SaveController.PostBooking(Gordon360.Models.Save_Bookings)">
+            <summary>
+             Create new booking object for a user
+            </summary>
+            <returns>Successfully posted booking object</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.SaveController.DeleteBooking(System.String)">
+            <summary>Delete an existing booking item</summary>
+            <param name="rideID">The identifier for the booking to be deleted</param>
+            <remarks>Calls the server to make a call and remove the given booking from the database</remarks>
         </member>
         <member name="M:Gordon360.Controllers.Api.ContentManagementController.GetSliderContent">
             <summary>Get all the slider content for the dashboard slider</summary>
@@ -1026,6 +1108,11 @@
             <param name="admin">The admin to validate</param>
             <returns>True if the admin is valid. Throws ResourceNotFoundException if not. Exception is cauth in an Exception Filter</returns>
         </member>
+        <member name="T:Gordon360.Services.JobsService">
+            <summary>
+            Service Class that facilitates data transactions between the JobsController and the student_timesheets + paid_shifts database model.
+            </summary>
+        </member>
         <member name="T:Gordon360.Services.DiningService">
             <summary>
             Service that allows for meal control
@@ -1118,6 +1205,14 @@
             Execute the sql query
             </summary>
             <param name="query">An sql statement. Can be a stored procedure or even a simple SELECT statement</param>
+            <param name="parameters">Parameters to pass into the stored procedure</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.ComplexQueries.RawSqlQuery`1.StudentTimesheetQuery(System.String,System.Object[])">
+            <summary>
+            Execute the sql query on the StudentTimesheets database
+            </summary>
+            <param name="query">An sql statment. Can be a stored procedure or even a simple SELECT statment</param>
             <param name="parameters">Parameters to pass into the stored procedure</param>
             <returns></returns>
         </member>
@@ -1335,6 +1430,58 @@
             <param name="id">id</param>
             <param name="value">Y or N</param>
         </member>
+        <member name="M:Gordon360.Services.SaveService.GetUpcoming(System.String)">
+            <summary>
+            Fetch all upcoming ride items
+            </summary>
+            <returns> IEnumerable of ride items if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.SaveService.GetUpcomingForUser(System.String)">
+            <summary>
+            Fetch the ride items a user is part of
+            </summary>
+            <param name="gordon_id">The ride id</param>
+            <returns> ride items if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.SaveService.AddRide(Gordon360.Models.Save_Rides,System.String)">
+            <summary>
+            Adds a new ride record to storage.
+            </summary>
+            <param name="newRide">The Save_Rides object to be added</param>
+            <param name="gordon_id">The gordon_id of the user creating the ride</param>
+            <returns>The newly added custom event</returns>
+        </member>
+        <member name="M:Gordon360.Services.SaveService.DeleteRide(System.String,System.String)">
+            <summary>
+            Delete the ride whose id is specified by the parameter.
+            </summary>
+            <param name="rideID">The myschedule id</param>
+            <param name="gordon_id">The gordon id</param>
+            <returns>The myschedule that was just deleted</returns>
+        </member>
+        <member name="M:Gordon360.Services.SaveService.CancelRide(System.String,System.String)">
+            <summary>
+            Cancel the ride whose id is specified by the parameter.
+            </summary>
+            <param name="rideID">The ride id</param>
+            <param name="gordon_id">The gordon id</param>
+            <returns>The ride that was just deleted</returns>
+        </member>
+        <member name="M:Gordon360.Services.SaveService.AddBooking(Gordon360.Models.Save_Bookings)">
+            <summary>
+            Adds a new booking record to storage.
+            </summary>
+            <param name="newBooking">The Save_Bookings object to be added</param>
+            <returns>The newly added custom event</returns>
+        </member>
+        <member name="M:Gordon360.Services.SaveService.DeleteBooking(System.String,System.String)">
+            <summary>
+            Delete the booking whose ids are specified by the parameter.
+            </summary>
+            <param name="rideID">The myschedule id</param>
+            <param name="gordon_id">The gordon id</param>
+            <returns>The myschedule that was just deleted</returns>
+        </member>
         <member name="T:Gordon360.Services.ScheduleControlService">
             <summary>
             Service Class that facilitates data transactions between the ScheduleControlController and the ScheduleControl part of the database model.
@@ -1489,6 +1636,13 @@
             </summary>
             <param name="id">The membership id</param>
             <returns>The membership that was just deleted</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.GetSpecificMembership(System.Int32)">
+            <summary>	
+            Fetch the membership whose id is specified by the parameter	
+            </summary>	
+            <param name="id">The membership id</param>	
+            <returns>MembershipViewModel if found, null if not found</returns>	
         </member>
         <member name="M:Gordon360.Services.MembershipService.GetAll">
             <summary>
