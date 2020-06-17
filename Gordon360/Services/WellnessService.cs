@@ -26,7 +26,7 @@ namespace Gordon360.Services
         /// <param name="id">id</param>
         /// <returns>boolean if found, null if not found</returns>
 
-        public WellnessViewModel GetStatus(string id)
+        public IEnumerable<WellnessViewModel> GetStatus(string id)
         {
             var _unitOfWork = new UnitOfWork();
             var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
@@ -35,48 +35,79 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            var idParam = new SqlParameter("@ID", id);
-            //var result = RawSqlQuery<WellnessViewModel>.query("VICTORY_PROMISE_BY_STUDENT_ID @ID", idParam); //run stored procedure
-            var result = false;
+            var idParam = new SqlParameter("@ID_NUM", id);
+            var result = RawSqlQuery<WellnessViewModel>.query("GET_HEALTH_CHECK_BY_ID @ID_NUM", idParam); //run stored procedure
+         
             if (result == null)
             {
                  throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
             }
 
 
-
-            WellnessViewModel y = new WellnessViewModel()
+            var wellnessModel = result.Select(x =>
             {
-                currentStatus = null
-            };
-                
-            
+                WellnessViewModel y = new WellnessViewModel();
 
-            return y;
+                DateTime currentTime = DateTime.Now;
+                
+                DateTime changeTime = new DateTime(currentTime.Year, currentTime.Month, currentTime.Day, 5, 0, 0);
+
+                // Answer is good until 5am the next day, so changeTime is most recent 5am
+                // which might be yesterday.
+                if(changeTime > currentTime)
+                {
+                    TimeSpan day = new TimeSpan(24, 0, 0);
+                    changeTime = new DateTime(changeTime.Ticks - day.Ticks);
+                }
+
+                if (x.timestamp >= changeTime)
+                {
+                    y.currentStatus = true;
+                    y.userAnswer = x.userAnswer;
+                    y.timestamp = x.timestamp;
+                    return y;
+                }
+
+                y.currentStatus = false;
+                y.userAnswer = x.userAnswer;
+                y.timestamp = x.timestamp;
+                
+                return y;
+            });
+
+
+
+            return wellnessModel;
 
         }
 
-        public WellnessViewModel PostStatus(string answer)
+        /// <summary>
+        ///  Gets answer to the wellness check answer and sends it to the back end.
+        ///     If answer boolean is true: student is feeling symptomatic
+        ///     If answer boolean is false: student is not feeling symptomatic
+        /// </summary>
+        /// <param name="id">id</param>
+        /// <param name="answer">answer</param>
+        /// <returns>Ok if message was recorded</returns>
+
+        public WellnessViewModel PostStatus(bool answer, string id)
         {
-            // var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
-            // if (query == null)
-            // {
-            //     throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
-            // }
+            var _unitOfWork = new UnitOfWork();
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            if (query == null)
+            {
+                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
 
-            // var idParam = new SqlParameter("@ID", id);
-            // var result = true //RawSqlQuery<WellnessViewModel>.query("VICTORY_PROMISE_BY_STUDENT_ID @ID", idParam); //run stored procedure
-            // if (result == null)
-            // {
-            //     throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
-            // }
+            var idParam = new SqlParameter("@ID_NUM", id);
+            var answerParam = new SqlParameter("@Answer", answer);
 
-            // var wellnessModel = result.Select(x =>
-            // {
-            //     WellnessViewModel y = new WellnessViewModel();
-            //     y.currentStatus = x.currentStatus ?? null;
-            //     return y;
-            // });
+            var result = RawSqlQuery<WellnessViewModel>.query("INSERT_HEALTH_CHECK @ID_NUM, @Answer", idParam, answerParam); //run stored procedure
+            if (result == null)
+            {
+                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+
             var UserAnswer = answer;
 
             WellnessViewModel y = new WellnessViewModel()

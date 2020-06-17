@@ -59,9 +59,16 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
 
+
+        /// <summary>
+        ///  Gets answer to the wellness check answer and sends it to the back end.
+        ///  If answer boolean is true: student is feeling symptomatic
+        ///  If answer boolean is false: student is not feeling symptomatic
+        /// </summary>
+        /// <returns>Ok if message was recorded</returns>
         [HttpPost]
         [Route("")]
-        public IHttpActionResult PostAnswer([FromBody] string answer)
+        public IHttpActionResult PostAnswer([FromBody] bool answer)
         {
 
             if (!ModelState.IsValid || answer == null)
@@ -78,7 +85,12 @@ namespace Gordon360.Controllers.Api
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var result = _wellnessService.PostStatus(answer);
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            var result = _wellnessService.PostStatus(answer, id);
 
             if (result == null)
             {
