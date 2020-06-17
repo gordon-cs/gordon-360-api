@@ -1,0 +1,1233 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="MyGordonModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ChapelSummary">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="TermCD" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="TermCD" Type="varchar" MaxLength="4" Nullable="false" />
+          <Property Name="BarCode" Type="varchar" MaxLength="20" />
+          <Property Name="Name" Type="varchar" MaxLength="50" />
+          <Property Name="Class" Type="varchar" MaxLength="5" />
+          <Property Name="Exception" Type="int" />
+          <Property Name="Married" Type="varchar" MaxLength="1" />
+          <Property Name="CreditHrs" Type="numeric" Precision="5" Scale="2" />
+          <Property Name="GEO" Type="varchar" MaxLength="5" />
+          <Property Name="Commuter" Type="varchar" MaxLength="1" />
+          <Property Name="GradFlag" Type="varchar" MaxLength="5" />
+          <Property Name="Required" Type="int" />
+          <Property Name="Attended" Type="int" />
+          <Property Name="DeferredDate" Type="datetime" />
+          <Property Name="WithdrawnDate" Type="datetime" />
+          <Property Name="GraduatedDate" Type="datetime" />
+          <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="Waived" Type="varchar" MaxLength="1" />
+          <Property Name="WaivedBy" Type="varchar" MaxLength="50" />
+          <Property Name="WaivedDate" Type="datetime" />
+          <Property Name="Basis" Type="varchar" MaxLength="50" />
+          <Property Name="Defaulted" Type="varchar" MaxLength="1" />
+          <Property Name="Status" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="dtproperties">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="property" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="objectid" Type="int" />
+          <Property Name="property" Type="varchar" MaxLength="64" Nullable="false" />
+          <Property Name="value" Type="varchar" MaxLength="255" />
+          <Property Name="uvalue" Type="nvarchar" MaxLength="255" />
+          <Property Name="lvalue" Type="image" />
+          <Property Name="version" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'MyGordon.dbo.view_cct_alumni' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="view_cct_alumni">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="varchar" MaxLength="25" Nullable="false" />
+          <Property Name="WebUpdate" Type="varchar" MaxLength="25" />
+          <Property Name="Title" Type="varchar" MaxLength="50" />
+          <Property Name="FirstName" Type="varchar" MaxLength="50" />
+          <Property Name="MiddleName" Type="varchar" MaxLength="50" />
+          <Property Name="LastName" Type="varchar" MaxLength="50" />
+          <Property Name="Suffix" Type="varchar" MaxLength="50" />
+          <Property Name="MaidenName" Type="varchar" MaxLength="50" />
+          <Property Name="NickName" Type="varchar" MaxLength="50" />
+          <Property Name="HomeStreet1" Type="varchar" MaxLength="60" />
+          <Property Name="HomeStreet2" Type="varchar" MaxLength="60" />
+          <Property Name="HomeCity" Type="varchar" MaxLength="50" />
+          <Property Name="HomeState" Type="varchar" MaxLength="50" />
+          <Property Name="HomePostalCode" Type="varchar" MaxLength="50" />
+          <Property Name="HomeCountry" Type="varchar" MaxLength="50" />
+          <Property Name="HomePhone" Type="varchar" MaxLength="41" />
+          <Property Name="HomeFax" Type="varchar" MaxLength="25" />
+          <Property Name="HomeEmail" Type="varchar" MaxLength="255" />
+          <Property Name="JobTitle" Type="varchar" MaxLength="50" />
+          <Property Name="MaritalStatus" Type="varchar" MaxLength="50" />
+          <Property Name="SpouseName" Type="varchar" MaxLength="60" />
+          <Property Name="College" Type="varchar" MaxLength="50" />
+          <Property Name="ClassYear" Type="varchar" MaxLength="25" />
+          <Property Name="PreferredClassYear" Type="varchar" MaxLength="25" />
+          <Property Name="Major1" Type="varchar" MaxLength="50" />
+          <Property Name="Major2" Type="varchar" MaxLength="50" />
+          <Property Name="ShareName" Type="varchar" MaxLength="25" />
+          <Property Name="ShareAddress" Type="varchar" MaxLength="25" />
+          <Property Name="Gender" Type="varchar" MaxLength="10" />
+          <Property Name="GradDate" Type="varchar" MaxLength="50" />
+          <Property Name="Email" Type="varchar" MaxLength="255" />
+          <Property Name="grad_student" Type="char" MaxLength="1" />
+          <Property Name="Barcode" Type="varchar" MaxLength="15" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'MyGordon.dbo.view_cct_ChapelEvent' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="view_cct_ChapelEvent">
+          <Key>
+            <PropertyRef Name="ROWID" />
+            <PropertyRef Name="CHBarEventID" />
+            <PropertyRef Name="ID_NUM" />
+          </Key>
+          <Property Name="ROWID" Type="int" Nullable="false" />
+          <Property Name="CHBarEventID" Type="nvarchar" MaxLength="25" Nullable="false" />
+          <Property Name="ID_NUM" Type="int" Nullable="false" />
+          <Property Name="CHBarcode" Type="nvarchar" MaxLength="14" />
+          <Property Name="CHEventID" Type="nvarchar" MaxLength="10" />
+          <Property Name="CHCheckerID" Type="nvarchar" MaxLength="14" />
+          <Property Name="CHDate" Type="datetime" />
+          <Property Name="CHTime" Type="datetime" />
+          <Property Name="CHSource" Type="nvarchar" MaxLength="1" />
+          <Property Name="CHTermCD" Type="nvarchar" MaxLength="4" />
+          <Property Name="Attended" Type="int" />
+          <Property Name="Required" Type="int" />
+          <Property Name="LiveID" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'MyGordon.dbo.view_cct_facstaff' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="view_cct_facstaff">
+          <Key>
+            <PropertyRef Name="KeepPrivate" />
+          </Key>
+          <Property Name="ID" Type="nvarchar" MaxLength="15" />
+          <Property Name="Title" Type="varchar" MaxLength="255" />
+          <Property Name="FirstName" Type="varchar" MaxLength="255" />
+          <Property Name="MiddleName" Type="varchar" MaxLength="255" />
+          <Property Name="LastName" Type="varchar" MaxLength="255" />
+          <Property Name="Suffix" Type="varchar" MaxLength="255" />
+          <Property Name="MaidenName" Type="varchar" MaxLength="255" />
+          <Property Name="Nickname" Type="nvarchar" MaxLength="255" />
+          <Property Name="OnCampusDepartment" Type="varchar" MaxLength="255" />
+          <Property Name="OnCampusBuilding" Type="varchar" MaxLength="255" />
+          <Property Name="OnCampusRoom" Type="varchar" MaxLength="255" />
+          <Property Name="OnCampusPhone" Type="varchar" MaxLength="255" />
+          <Property Name="OnCampusPrivatePhone" Type="varchar" MaxLength="255" />
+          <Property Name="OnCampusFax" Type="varchar" MaxLength="255" />
+          <Property Name="HomeStreet1" Type="varchar" MaxLength="1000" />
+          <Property Name="HomeStreet2" Type="varchar" MaxLength="1000" />
+          <Property Name="HomeCity" Type="varchar" MaxLength="255" />
+          <Property Name="HomeState" Type="varchar" MaxLength="255" />
+          <Property Name="HomePostalCode" Type="varchar" MaxLength="255" />
+          <Property Name="HomeCountry" Type="varchar" MaxLength="255" />
+          <Property Name="HomePhone" Type="varchar" MaxLength="255" />
+          <Property Name="HomeFax" Type="varchar" MaxLength="255" />
+          <Property Name="KeepPrivate" Type="varchar" MaxLength="1" Nullable="false" />
+          <Property Name="JobTitle" Type="varchar" MaxLength="255" />
+          <Property Name="SpouseName" Type="varchar" MaxLength="255" />
+          <Property Name="Dept" Type="varchar" MaxLength="255" />
+          <Property Name="Barcode" Type="nvarchar" MaxLength="14" />
+          <Property Name="Gender" Type="varchar" MaxLength="255" />
+          <Property Name="Email" Type="varchar" MaxLength="255" />
+          <Property Name="Type" Type="varchar" MaxLength="255" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="view_cct_student">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="IsMobilePhonePrivate" />
+          </Key>
+          <Property Name="ID" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Title" Type="varchar" MaxLength="3" />
+          <Property Name="FirstName" Type="varchar" MaxLength="50" />
+          <Property Name="MiddleName" Type="varchar" MaxLength="15" />
+          <Property Name="LastName" Type="varchar" MaxLength="50" />
+          <Property Name="Suffix" Type="varchar" MaxLength="3" />
+          <Property Name="MaidenName" Type="varchar" MaxLength="30" />
+          <Property Name="NickName" Type="varchar" MaxLength="30" />
+          <Property Name="OnOffCampus" Type="varchar" MaxLength="1" />
+          <Property Name="OnCampusBuilding" Type="varchar" MaxLength="5" />
+          <Property Name="OnCampusRoom" Type="varchar" MaxLength="5" />
+          <Property Name="OnCampusPhone" Type="varchar" MaxLength="1" />
+          <Property Name="OnCampusPrivatePhone" Type="varchar" MaxLength="1" />
+          <Property Name="OnCampusFax" Type="varchar" MaxLength="1" />
+          <Property Name="OffCampusStreet1" Type="varchar" MaxLength="60" />
+          <Property Name="OffCampusStreet2" Type="varchar" MaxLength="60" />
+          <Property Name="OffCampusCity" Type="varchar" MaxLength="25" />
+          <Property Name="OffCampusState" Type="varchar" MaxLength="2" />
+          <Property Name="OffCampusPostalCode" Type="varchar" MaxLength="12" />
+          <Property Name="OffCampusCountry" Type="varchar" MaxLength="3" />
+          <Property Name="OffCampusPhone" Type="varchar" MaxLength="41" />
+          <Property Name="OffCampusFax" Type="varchar" MaxLength="1" />
+          <Property Name="HomeStreet1" Type="varchar" MaxLength="60" />
+          <Property Name="HomeStreet2" Type="varchar" MaxLength="60" />
+          <Property Name="HomeCity" Type="varchar" MaxLength="25" />
+          <Property Name="HomeState" Type="varchar" MaxLength="2" />
+          <Property Name="HomePostalCode" Type="varchar" MaxLength="12" />
+          <Property Name="HomeCountry" Type="varchar" MaxLength="3" />
+          <Property Name="HomePhone" Type="varchar" MaxLength="41" />
+          <Property Name="HomeFax" Type="varchar" MaxLength="1" />
+          <Property Name="Cohort" Type="varchar" MaxLength="5" />
+          <Property Name="Class" Type="varchar" MaxLength="1" />
+          <Property Name="KeepPrivate" Type="varchar" MaxLength="10" />
+          <Property Name="Major" Type="varchar" MaxLength="5" />
+          <Property Name="Barcode" Type="varchar" MaxLength="14" />
+          <Property Name="AdvisorIDs" Type="varchar" MaxLength="92" />
+          <Property Name="Married" Type="varchar" MaxLength="1" />
+          <Property Name="Commuter" Type="varchar" MaxLength="1" />
+          <Property Name="Major2" Type="varchar" MaxLength="5" />
+          <Property Name="Email" Type="varchar" MaxLength="50" />
+          <Property Name="Gender" Type="varchar" MaxLength="1" />
+          <Property Name="grad_student" Type="varchar" MaxLength="1" />
+          <Property Name="GradDate" Type="datetime" />
+          <Property Name="Major3" Type="varchar" MaxLength="5" />
+          <Property Name="Minor1" Type="varchar" MaxLength="5" />
+          <Property Name="Minor2" Type="varchar" MaxLength="5" />
+          <Property Name="Minor3" Type="varchar" MaxLength="5" />
+          <Property Name="MobilePhone" Type="varchar" MaxLength="15" />
+          <Property Name="IsMobilePhonePrivate" Type="int" Nullable="false" />
+        </EntityType>
+        <Function Name="dt_addtosourcecontrol" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="vchSourceSafeINI" Type="varchar" Mode="In" />
+          <Parameter Name="vchProjectName" Type="varchar" Mode="In" />
+          <Parameter Name="vchComment" Type="varchar" Mode="In" />
+          <Parameter Name="vchLoginName" Type="varchar" Mode="In" />
+          <Parameter Name="vchPassword" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="dt_addtosourcecontrol_u" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="vchSourceSafeINI" Type="nvarchar" Mode="In" />
+          <Parameter Name="vchProjectName" Type="nvarchar" Mode="In" />
+          <Parameter Name="vchComment" Type="nvarchar" Mode="In" />
+          <Parameter Name="vchLoginName" Type="nvarchar" Mode="In" />
+          <Parameter Name="vchPassword" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="dt_adduserobject" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="dt_adduserobject_vcs" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="vchProperty" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="dt_checkinobject" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="chObjectType" Type="char" Mode="In" />
+          <Parameter Name="vchObjectName" Type="varchar" Mode="In" />
+          <Parameter Name="vchComment" Type="varchar" Mode="In" />
+          <Parameter Name="vchLoginName" Type="varchar" Mode="In" />
+          <Parameter Name="vchPassword" Type="varchar" Mode="In" />
+          <Parameter Name="iVCSFlags" Type="int" Mode="In" />
+          <Parameter Name="iActionFlag" Type="int" Mode="In" />
+          <Parameter Name="txStream1" Type="text" Mode="In" />
+          <Parameter Name="txStream2" Type="text" Mode="In" />
+          <Parameter Name="txStream3" Type="text" Mode="In" />
+        </Function>
+        <Function Name="dt_checkinobject_u" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="chObjectType" Type="char" Mode="In" />
+          <Parameter Name="vchObjectName" Type="nvarchar" Mode="In" />
+          <Parameter Name="vchComment" Type="nvarchar" Mode="In" />
+          <Parameter Name="vchLoginName" Type="nvarchar" Mode="In" />
+          <Parameter Name="vchPassword" Type="nvarchar" Mode="In" />
+          <Parameter Name="iVCSFlags" Type="int" Mode="In" />
+          <Parameter Name="iActionFlag" Type="int" Mode="In" />
+          <Parameter Name="txStream1" Type="text" Mode="In" />
+          <Parameter Name="txStream2" Type="text" Mode="In" />
+          <Parameter Name="txStream3" Type="text" Mode="In" />
+        </Function>
+        <Function Name="dt_checkoutobject" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="chObjectType" Type="char" Mode="In" />
+          <Parameter Name="vchObjectName" Type="varchar" Mode="In" />
+          <Parameter Name="vchComment" Type="varchar" Mode="In" />
+          <Parameter Name="vchLoginName" Type="varchar" Mode="In" />
+          <Parameter Name="vchPassword" Type="varchar" Mode="In" />
+          <Parameter Name="iVCSFlags" Type="int" Mode="In" />
+          <Parameter Name="iActionFlag" Type="int" Mode="In" />
+        </Function>
+        <Function Name="dt_checkoutobject_u" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="chObjectType" Type="char" Mode="In" />
+          <Parameter Name="vchObjectName" Type="nvarchar" Mode="In" />
+          <Parameter Name="vchComment" Type="nvarchar" Mode="In" />
+          <Parameter Name="vchLoginName" Type="nvarchar" Mode="In" />
+          <Parameter Name="vchPassword" Type="nvarchar" Mode="In" />
+          <Parameter Name="iVCSFlags" Type="int" Mode="In" />
+          <Parameter Name="iActionFlag" Type="int" Mode="In" />
+        </Function>
+        <Function Name="dt_displayoaerror" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="iObject" Type="int" Mode="In" />
+          <Parameter Name="iresult" Type="int" Mode="In" />
+        </Function>
+        <Function Name="dt_displayoaerror_u" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="iObject" Type="int" Mode="In" />
+          <Parameter Name="iresult" Type="int" Mode="In" />
+        </Function>
+        <Function Name="dt_droppropertiesbyid" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+          <Parameter Name="property" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="dt_dropuserobjectbyid" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="dt_generateansiname" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="name" Type="varchar" Mode="InOut" />
+        </Function>
+        <Function Name="dt_getobjwithprop" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="property" Type="varchar" Mode="In" />
+          <Parameter Name="value" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="dt_getobjwithprop_u" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="property" Type="varchar" Mode="In" />
+          <Parameter Name="uvalue" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="dt_getpropertiesbyid" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+          <Parameter Name="property" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="dt_getpropertiesbyid_u" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+          <Parameter Name="property" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="dt_getpropertiesbyid_vcs" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+          <Parameter Name="property" Type="varchar" Mode="In" />
+          <Parameter Name="value" Type="varchar" Mode="InOut" />
+        </Function>
+        <Function Name="dt_getpropertiesbyid_vcs_u" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+          <Parameter Name="property" Type="varchar" Mode="In" />
+          <Parameter Name="value" Type="nvarchar" Mode="InOut" />
+        </Function>
+        <Function Name="dt_isundersourcecontrol" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="vchLoginName" Type="varchar" Mode="In" />
+          <Parameter Name="vchPassword" Type="varchar" Mode="In" />
+          <Parameter Name="iWhoToo" Type="int" Mode="In" />
+        </Function>
+        <Function Name="dt_isundersourcecontrol_u" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="vchLoginName" Type="nvarchar" Mode="In" />
+          <Parameter Name="vchPassword" Type="nvarchar" Mode="In" />
+          <Parameter Name="iWhoToo" Type="int" Mode="In" />
+        </Function>
+        <Function Name="dt_removefromsourcecontrol" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="dt_setpropertybyid" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+          <Parameter Name="property" Type="varchar" Mode="In" />
+          <Parameter Name="value" Type="varchar" Mode="In" />
+          <Parameter Name="lvalue" Type="image" Mode="In" />
+        </Function>
+        <Function Name="dt_setpropertybyid_u" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+          <Parameter Name="property" Type="varchar" Mode="In" />
+          <Parameter Name="uvalue" Type="nvarchar" Mode="In" />
+          <Parameter Name="lvalue" Type="image" Mode="In" />
+        </Function>
+        <Function Name="dt_validateloginparams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="vchLoginName" Type="varchar" Mode="In" />
+          <Parameter Name="vchPassword" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="dt_validateloginparams_u" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="vchLoginName" Type="nvarchar" Mode="In" />
+          <Parameter Name="vchPassword" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="dt_vcsenabled" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="dt_verstamp006" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="dt_verstamp007" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="dt_whocheckedout" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="chObjectType" Type="char" Mode="In" />
+          <Parameter Name="vchObjectName" Type="varchar" Mode="In" />
+          <Parameter Name="vchLoginName" Type="varchar" Mode="In" />
+          <Parameter Name="vchPassword" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="dt_whocheckedout_u" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="chObjectType" Type="char" Mode="In" />
+          <Parameter Name="vchObjectName" Type="nvarchar" Mode="In" />
+          <Parameter Name="vchLoginName" Type="nvarchar" Mode="In" />
+          <Parameter Name="vchPassword" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
+        <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_creatediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_dropdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagramdefinition" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_renamediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="UserHasPersonaLike" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="bit">
+          <Parameter Name="UserID" Type="varchar" Mode="In" />
+          <Parameter Name="Role" Type="varchar" Mode="In" />
+          <Parameter Name="Active" Type="bit" Mode="In" />
+        </Function>
+        <EntityContainer Name="MyGordonModelStoreContainer">
+          <EntitySet Name="ChapelSummary" EntityType="Self.ChapelSummary" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="dtproperties" EntityType="Self.dtproperties" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="view_cct_alumni" EntityType="Self.view_cct_alumni" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [view_cct_alumni].[ID] AS [ID], 
+    [view_cct_alumni].[WebUpdate] AS [WebUpdate], 
+    [view_cct_alumni].[Title] AS [Title], 
+    [view_cct_alumni].[FirstName] AS [FirstName], 
+    [view_cct_alumni].[MiddleName] AS [MiddleName], 
+    [view_cct_alumni].[LastName] AS [LastName], 
+    [view_cct_alumni].[Suffix] AS [Suffix], 
+    [view_cct_alumni].[MaidenName] AS [MaidenName], 
+    [view_cct_alumni].[NickName] AS [NickName], 
+    [view_cct_alumni].[HomeStreet1] AS [HomeStreet1], 
+    [view_cct_alumni].[HomeStreet2] AS [HomeStreet2], 
+    [view_cct_alumni].[HomeCity] AS [HomeCity], 
+    [view_cct_alumni].[HomeState] AS [HomeState], 
+    [view_cct_alumni].[HomePostalCode] AS [HomePostalCode], 
+    [view_cct_alumni].[HomeCountry] AS [HomeCountry], 
+    [view_cct_alumni].[HomePhone] AS [HomePhone], 
+    [view_cct_alumni].[HomeFax] AS [HomeFax], 
+    [view_cct_alumni].[HomeEmail] AS [HomeEmail], 
+    [view_cct_alumni].[JobTitle] AS [JobTitle], 
+    [view_cct_alumni].[MaritalStatus] AS [MaritalStatus], 
+    [view_cct_alumni].[SpouseName] AS [SpouseName], 
+    [view_cct_alumni].[College] AS [College], 
+    [view_cct_alumni].[ClassYear] AS [ClassYear], 
+    [view_cct_alumni].[PreferredClassYear] AS [PreferredClassYear], 
+    [view_cct_alumni].[Major1] AS [Major1], 
+    [view_cct_alumni].[Major2] AS [Major2], 
+    [view_cct_alumni].[ShareName] AS [ShareName], 
+    [view_cct_alumni].[ShareAddress] AS [ShareAddress], 
+    [view_cct_alumni].[Gender] AS [Gender], 
+    [view_cct_alumni].[GradDate] AS [GradDate], 
+    [view_cct_alumni].[Email] AS [Email], 
+    [view_cct_alumni].[grad_student] AS [grad_student], 
+    [view_cct_alumni].[Barcode] AS [Barcode]
+    FROM [dbo].[view_cct_alumni] AS [view_cct_alumni]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="view_cct_ChapelEvent" EntityType="Self.view_cct_ChapelEvent" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [view_cct_ChapelEvent].[ROWID] AS [ROWID], 
+    [view_cct_ChapelEvent].[CHBarEventID] AS [CHBarEventID], 
+    [view_cct_ChapelEvent].[ID_NUM] AS [ID_NUM], 
+    [view_cct_ChapelEvent].[CHBarcode] AS [CHBarcode], 
+    [view_cct_ChapelEvent].[CHEventID] AS [CHEventID], 
+    [view_cct_ChapelEvent].[CHCheckerID] AS [CHCheckerID], 
+    [view_cct_ChapelEvent].[CHDate] AS [CHDate], 
+    [view_cct_ChapelEvent].[CHTime] AS [CHTime], 
+    [view_cct_ChapelEvent].[CHSource] AS [CHSource], 
+    [view_cct_ChapelEvent].[CHTermCD] AS [CHTermCD], 
+    [view_cct_ChapelEvent].[Attended] AS [Attended], 
+    [view_cct_ChapelEvent].[Required] AS [Required], 
+    [view_cct_ChapelEvent].[LiveID] AS [LiveID]
+    FROM [dbo].[view_cct_ChapelEvent] AS [view_cct_ChapelEvent]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="view_cct_facstaff" EntityType="Self.view_cct_facstaff" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [view_cct_facstaff].[ID] AS [ID], 
+    [view_cct_facstaff].[Title] AS [Title], 
+    [view_cct_facstaff].[FirstName] AS [FirstName], 
+    [view_cct_facstaff].[MiddleName] AS [MiddleName], 
+    [view_cct_facstaff].[LastName] AS [LastName], 
+    [view_cct_facstaff].[Suffix] AS [Suffix], 
+    [view_cct_facstaff].[MaidenName] AS [MaidenName], 
+    [view_cct_facstaff].[Nickname] AS [Nickname], 
+    [view_cct_facstaff].[OnCampusDepartment] AS [OnCampusDepartment], 
+    [view_cct_facstaff].[OnCampusBuilding] AS [OnCampusBuilding], 
+    [view_cct_facstaff].[OnCampusRoom] AS [OnCampusRoom], 
+    [view_cct_facstaff].[OnCampusPhone] AS [OnCampusPhone], 
+    [view_cct_facstaff].[OnCampusPrivatePhone] AS [OnCampusPrivatePhone], 
+    [view_cct_facstaff].[OnCampusFax] AS [OnCampusFax], 
+    [view_cct_facstaff].[HomeStreet1] AS [HomeStreet1], 
+    [view_cct_facstaff].[HomeStreet2] AS [HomeStreet2], 
+    [view_cct_facstaff].[HomeCity] AS [HomeCity], 
+    [view_cct_facstaff].[HomeState] AS [HomeState], 
+    [view_cct_facstaff].[HomePostalCode] AS [HomePostalCode], 
+    [view_cct_facstaff].[HomeCountry] AS [HomeCountry], 
+    [view_cct_facstaff].[HomePhone] AS [HomePhone], 
+    [view_cct_facstaff].[HomeFax] AS [HomeFax], 
+    [view_cct_facstaff].[KeepPrivate] AS [KeepPrivate], 
+    [view_cct_facstaff].[JobTitle] AS [JobTitle], 
+    [view_cct_facstaff].[SpouseName] AS [SpouseName], 
+    [view_cct_facstaff].[Dept] AS [Dept], 
+    [view_cct_facstaff].[Barcode] AS [Barcode], 
+    [view_cct_facstaff].[Gender] AS [Gender], 
+    [view_cct_facstaff].[Email] AS [Email], 
+    [view_cct_facstaff].[Type] AS [Type]
+    FROM [dbo].[view_cct_facstaff] AS [view_cct_facstaff]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="view_cct_student" EntityType="Self.view_cct_student" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [view_cct_student].[ID] AS [ID], 
+    [view_cct_student].[Title] AS [Title], 
+    [view_cct_student].[FirstName] AS [FirstName], 
+    [view_cct_student].[MiddleName] AS [MiddleName], 
+    [view_cct_student].[LastName] AS [LastName], 
+    [view_cct_student].[Suffix] AS [Suffix], 
+    [view_cct_student].[MaidenName] AS [MaidenName], 
+    [view_cct_student].[NickName] AS [NickName], 
+    [view_cct_student].[OnOffCampus] AS [OnOffCampus], 
+    [view_cct_student].[OnCampusBuilding] AS [OnCampusBuilding], 
+    [view_cct_student].[OnCampusRoom] AS [OnCampusRoom], 
+    [view_cct_student].[OnCampusPhone] AS [OnCampusPhone], 
+    [view_cct_student].[OnCampusPrivatePhone] AS [OnCampusPrivatePhone], 
+    [view_cct_student].[OnCampusFax] AS [OnCampusFax], 
+    [view_cct_student].[OffCampusStreet1] AS [OffCampusStreet1], 
+    [view_cct_student].[OffCampusStreet2] AS [OffCampusStreet2], 
+    [view_cct_student].[OffCampusCity] AS [OffCampusCity], 
+    [view_cct_student].[OffCampusState] AS [OffCampusState], 
+    [view_cct_student].[OffCampusPostalCode] AS [OffCampusPostalCode], 
+    [view_cct_student].[OffCampusCountry] AS [OffCampusCountry], 
+    [view_cct_student].[OffCampusPhone] AS [OffCampusPhone], 
+    [view_cct_student].[OffCampusFax] AS [OffCampusFax], 
+    [view_cct_student].[HomeStreet1] AS [HomeStreet1], 
+    [view_cct_student].[HomeStreet2] AS [HomeStreet2], 
+    [view_cct_student].[HomeCity] AS [HomeCity], 
+    [view_cct_student].[HomeState] AS [HomeState], 
+    [view_cct_student].[HomePostalCode] AS [HomePostalCode], 
+    [view_cct_student].[HomeCountry] AS [HomeCountry], 
+    [view_cct_student].[HomePhone] AS [HomePhone], 
+    [view_cct_student].[HomeFax] AS [HomeFax], 
+    [view_cct_student].[Cohort] AS [Cohort], 
+    [view_cct_student].[Class] AS [Class], 
+    [view_cct_student].[KeepPrivate] AS [KeepPrivate], 
+    [view_cct_student].[Major] AS [Major], 
+    [view_cct_student].[Barcode] AS [Barcode], 
+    [view_cct_student].[AdvisorIDs] AS [AdvisorIDs], 
+    [view_cct_student].[Married] AS [Married], 
+    [view_cct_student].[Commuter] AS [Commuter], 
+    [view_cct_student].[Major2] AS [Major2], 
+    [view_cct_student].[Email] AS [Email], 
+    [view_cct_student].[Gender] AS [Gender], 
+    [view_cct_student].[grad_student] AS [grad_student], 
+    [view_cct_student].[GradDate] AS [GradDate], 
+    [view_cct_student].[Major3] AS [Major3], 
+    [view_cct_student].[Minor1] AS [Minor1], 
+    [view_cct_student].[Minor2] AS [Minor2], 
+    [view_cct_student].[Minor3] AS [Minor3], 
+    [view_cct_student].[MobilePhone] AS [MobilePhone], 
+    [view_cct_student].[IsMobilePhonePrivate] AS [IsMobilePhonePrivate]
+    FROM [dbo].[view_cct_student] AS [view_cct_student]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="MyGordonModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="ChapelSummary">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="TermCD" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="TermCD" Type="String" MaxLength="4" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="BarCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Class" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="Exception" Type="Int32" />
+          <Property Name="Married" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="CreditHrs" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="GEO" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="Commuter" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="GradFlag" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="Required" Type="Int32" />
+          <Property Name="Attended" Type="Int32" />
+          <Property Name="DeferredDate" Type="DateTime" Precision="3" />
+          <Property Name="WithdrawnDate" Type="DateTime" Precision="3" />
+          <Property Name="GraduatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="Waived" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="WaivedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="WaivedDate" Type="DateTime" Precision="3" />
+          <Property Name="Basis" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Defaulted" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="dtproperties">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="property" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="objectid" Type="Int32" />
+          <Property Name="property" Type="String" MaxLength="64" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="value" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="uvalue" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="lvalue" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="version" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="view_cct_alumni">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="String" MaxLength="25" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="WebUpdate" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MiddleName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Suffix" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MaidenName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="NickName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="HomeStreet1" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="HomeStreet2" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="HomeCity" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="HomeState" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="HomePostalCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="HomeCountry" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="HomePhone" Type="String" MaxLength="41" FixedLength="false" Unicode="false" />
+          <Property Name="HomeFax" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="HomeEmail" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="JobTitle" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MaritalStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SpouseName" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="College" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ClassYear" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="PreferredClassYear" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="Major1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Major2" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ShareName" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="ShareAddress" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="Gender" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="GradDate" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="grad_student" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="Barcode" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="view_cct_ChapelEvent">
+          <Key>
+            <PropertyRef Name="ROWID" />
+            <PropertyRef Name="CHBarEventID" />
+            <PropertyRef Name="ID_NUM" />
+          </Key>
+          <Property Name="ROWID" Type="Int32" Nullable="false" />
+          <Property Name="CHBarEventID" Type="String" MaxLength="25" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ID_NUM" Type="Int32" Nullable="false" />
+          <Property Name="CHBarcode" Type="String" MaxLength="14" FixedLength="false" Unicode="true" />
+          <Property Name="CHEventID" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CHCheckerID" Type="String" MaxLength="14" FixedLength="false" Unicode="true" />
+          <Property Name="CHDate" Type="DateTime" Precision="3" />
+          <Property Name="CHTime" Type="DateTime" Precision="3" />
+          <Property Name="CHSource" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="CHTermCD" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="Attended" Type="Int32" />
+          <Property Name="Required" Type="Int32" />
+          <Property Name="LiveID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="view_cct_facstaff">
+          <Key>
+            <PropertyRef Name="KeepPrivate" />
+          </Key>
+          <Property Name="ID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="Title" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="FirstName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="MiddleName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="LastName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Suffix" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="MaidenName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Nickname" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="OnCampusDepartment" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="OnCampusBuilding" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="OnCampusRoom" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="OnCampusPhone" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="OnCampusPrivatePhone" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="OnCampusFax" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="HomeStreet1" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="HomeStreet2" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="HomeCity" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="HomeState" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="HomePostalCode" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="HomeCountry" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="HomePhone" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="HomeFax" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="KeepPrivate" Type="String" MaxLength="1" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="JobTitle" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="SpouseName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Dept" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Barcode" Type="String" MaxLength="14" FixedLength="false" Unicode="true" />
+          <Property Name="Gender" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Type" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="view_cct_student">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="IsMobilePhonePrivate" />
+          </Key>
+          <Property Name="ID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MiddleName" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Suffix" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="MaidenName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="NickName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="OnOffCampus" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="OnCampusBuilding" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="OnCampusRoom" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="OnCampusPhone" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="OnCampusPrivatePhone" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="OnCampusFax" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="OffCampusStreet1" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="OffCampusStreet2" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="OffCampusCity" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="OffCampusState" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="OffCampusPostalCode" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
+          <Property Name="OffCampusCountry" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="OffCampusPhone" Type="String" MaxLength="41" FixedLength="false" Unicode="false" />
+          <Property Name="OffCampusFax" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="HomeStreet1" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="HomeStreet2" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="HomeCity" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="HomeState" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="HomePostalCode" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
+          <Property Name="HomeCountry" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="HomePhone" Type="String" MaxLength="41" FixedLength="false" Unicode="false" />
+          <Property Name="HomeFax" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="Cohort" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="Class" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="KeepPrivate" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Major" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="Barcode" Type="String" MaxLength="14" FixedLength="false" Unicode="false" />
+          <Property Name="AdvisorIDs" Type="String" MaxLength="92" FixedLength="false" Unicode="false" />
+          <Property Name="Married" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="Commuter" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="Major2" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Gender" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="grad_student" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="GradDate" Type="DateTime" Precision="3" />
+          <Property Name="Major3" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="Minor1" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="Minor2" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="Minor3" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="MobilePhone" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="IsMobilePhonePrivate" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="MyGordonEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ChapelSummary" EntityType="Self.ChapelSummary" />
+          <EntitySet Name="dtproperties" EntityType="Self.dtproperties" />
+          <EntitySet Name="view_cct_alumni" EntityType="Self.view_cct_alumni" />
+          <EntitySet Name="view_cct_ChapelEvent" EntityType="Self.view_cct_ChapelEvent" />
+          <EntitySet Name="view_cct_facstaff" EntityType="Self.view_cct_facstaff" />
+          <EntitySet Name="view_cct_student" EntityType="Self.view_cct_student" />
+          <FunctionImport Name="dt_addtosourcecontrol">
+            <Parameter Name="vchSourceSafeINI" Mode="In" Type="String" />
+            <Parameter Name="vchProjectName" Mode="In" Type="String" />
+            <Parameter Name="vchComment" Mode="In" Type="String" />
+            <Parameter Name="vchLoginName" Mode="In" Type="String" />
+            <Parameter Name="vchPassword" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="dt_addtosourcecontrol_u">
+            <Parameter Name="vchSourceSafeINI" Mode="In" Type="String" />
+            <Parameter Name="vchProjectName" Mode="In" Type="String" />
+            <Parameter Name="vchComment" Mode="In" Type="String" />
+            <Parameter Name="vchLoginName" Mode="In" Type="String" />
+            <Parameter Name="vchPassword" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="dt_adduserobject" />
+          <FunctionImport Name="dt_adduserobject_vcs">
+            <Parameter Name="vchProperty" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="dt_checkinobject">
+            <Parameter Name="chObjectType" Mode="In" Type="String" />
+            <Parameter Name="vchObjectName" Mode="In" Type="String" />
+            <Parameter Name="vchComment" Mode="In" Type="String" />
+            <Parameter Name="vchLoginName" Mode="In" Type="String" />
+            <Parameter Name="vchPassword" Mode="In" Type="String" />
+            <Parameter Name="iVCSFlags" Mode="In" Type="Int32" />
+            <Parameter Name="iActionFlag" Mode="In" Type="Int32" />
+            <Parameter Name="txStream1" Mode="In" Type="String" />
+            <Parameter Name="txStream2" Mode="In" Type="String" />
+            <Parameter Name="txStream3" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="dt_checkinobject_u">
+            <Parameter Name="chObjectType" Mode="In" Type="String" />
+            <Parameter Name="vchObjectName" Mode="In" Type="String" />
+            <Parameter Name="vchComment" Mode="In" Type="String" />
+            <Parameter Name="vchLoginName" Mode="In" Type="String" />
+            <Parameter Name="vchPassword" Mode="In" Type="String" />
+            <Parameter Name="iVCSFlags" Mode="In" Type="Int32" />
+            <Parameter Name="iActionFlag" Mode="In" Type="Int32" />
+            <Parameter Name="txStream1" Mode="In" Type="String" />
+            <Parameter Name="txStream2" Mode="In" Type="String" />
+            <Parameter Name="txStream3" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="dt_checkoutobject">
+            <Parameter Name="chObjectType" Mode="In" Type="String" />
+            <Parameter Name="vchObjectName" Mode="In" Type="String" />
+            <Parameter Name="vchComment" Mode="In" Type="String" />
+            <Parameter Name="vchLoginName" Mode="In" Type="String" />
+            <Parameter Name="vchPassword" Mode="In" Type="String" />
+            <Parameter Name="iVCSFlags" Mode="In" Type="Int32" />
+            <Parameter Name="iActionFlag" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="dt_checkoutobject_u">
+            <Parameter Name="chObjectType" Mode="In" Type="String" />
+            <Parameter Name="vchObjectName" Mode="In" Type="String" />
+            <Parameter Name="vchComment" Mode="In" Type="String" />
+            <Parameter Name="vchLoginName" Mode="In" Type="String" />
+            <Parameter Name="vchPassword" Mode="In" Type="String" />
+            <Parameter Name="iVCSFlags" Mode="In" Type="Int32" />
+            <Parameter Name="iActionFlag" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="dt_displayoaerror">
+            <Parameter Name="iObject" Mode="In" Type="Int32" />
+            <Parameter Name="iresult" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="dt_displayoaerror_u">
+            <Parameter Name="iObject" Mode="In" Type="Int32" />
+            <Parameter Name="iresult" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="dt_droppropertiesbyid">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+            <Parameter Name="property" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="dt_dropuserobjectbyid">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="dt_generateansiname">
+            <Parameter Name="name" Mode="InOut" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="dt_getobjwithprop" ReturnType="Collection(Int32)">
+            <Parameter Name="property" Mode="In" Type="String" />
+            <Parameter Name="value" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="dt_getobjwithprop_u" ReturnType="Collection(Int32)">
+            <Parameter Name="property" Mode="In" Type="String" />
+            <Parameter Name="uvalue" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="dt_getpropertiesbyid" ReturnType="Collection(MyGordonModel.dt_getpropertiesbyid_Result)">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+            <Parameter Name="property" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="dt_getpropertiesbyid_u" ReturnType="Collection(MyGordonModel.dt_getpropertiesbyid_u_Result)">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+            <Parameter Name="property" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="dt_getpropertiesbyid_vcs">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+            <Parameter Name="property" Mode="In" Type="String" />
+            <Parameter Name="value" Mode="InOut" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="dt_getpropertiesbyid_vcs_u">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+            <Parameter Name="property" Mode="In" Type="String" />
+            <Parameter Name="value" Mode="InOut" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="dt_isundersourcecontrol">
+            <Parameter Name="vchLoginName" Mode="In" Type="String" />
+            <Parameter Name="vchPassword" Mode="In" Type="String" />
+            <Parameter Name="iWhoToo" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="dt_isundersourcecontrol_u">
+            <Parameter Name="vchLoginName" Mode="In" Type="String" />
+            <Parameter Name="vchPassword" Mode="In" Type="String" />
+            <Parameter Name="iWhoToo" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="dt_removefromsourcecontrol" />
+          <FunctionImport Name="dt_setpropertybyid">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+            <Parameter Name="property" Mode="In" Type="String" />
+            <Parameter Name="value" Mode="In" Type="String" />
+            <Parameter Name="lvalue" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="dt_setpropertybyid_u">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+            <Parameter Name="property" Mode="In" Type="String" />
+            <Parameter Name="uvalue" Mode="In" Type="String" />
+            <Parameter Name="lvalue" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="dt_validateloginparams">
+            <Parameter Name="vchLoginName" Mode="In" Type="String" />
+            <Parameter Name="vchPassword" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="dt_validateloginparams_u">
+            <Parameter Name="vchLoginName" Mode="In" Type="String" />
+            <Parameter Name="vchPassword" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="dt_vcsenabled" />
+          <FunctionImport Name="dt_verstamp006" ReturnType="Collection(Int32)" />
+          <FunctionImport Name="dt_verstamp007" ReturnType="Collection(Int32)" />
+          <FunctionImport Name="dt_whocheckedout">
+            <Parameter Name="chObjectType" Mode="In" Type="String" />
+            <Parameter Name="vchObjectName" Mode="In" Type="String" />
+            <Parameter Name="vchLoginName" Mode="In" Type="String" />
+            <Parameter Name="vchPassword" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="dt_whocheckedout_u">
+            <Parameter Name="chObjectType" Mode="In" Type="String" />
+            <Parameter Name="vchObjectName" Mode="In" Type="String" />
+            <Parameter Name="vchLoginName" Mode="In" Type="String" />
+            <Parameter Name="vchPassword" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_alterdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_creatediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_dropdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(MyGordonModel.sp_helpdiagramdefinition_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(MyGordonModel.sp_helpdiagrams_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_renamediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="new_diagramname" Mode="In" Type="String" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="dt_getpropertiesbyid_Result">
+          <Property Type="String" Name="property" Nullable="false" MaxLength="64" />
+          <Property Type="Int32" Name="version" Nullable="false" />
+          <Property Type="String" Name="value" Nullable="true" MaxLength="255" />
+          <Property Type="Binary" Name="lvalue" Nullable="true" MaxLength="Max" />
+        </ComplexType>
+        <ComplexType Name="dt_getpropertiesbyid_u_Result">
+          <Property Type="String" Name="property" Nullable="false" MaxLength="64" />
+          <Property Type="Int32" Name="version" Nullable="false" />
+          <Property Type="String" Name="uvalue" Nullable="true" MaxLength="255" />
+          <Property Type="Binary" Name="lvalue" Nullable="true" MaxLength="Max" />
+        </ComplexType>
+        <ComplexType Name="sp_helpdiagramdefinition_Result">
+          <Property Type="Int32" Name="version" Nullable="true" />
+          <Property Type="Binary" Name="definition" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_helpdiagrams_Result">
+          <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+          <Property Type="Int32" Name="OwnerID" Nullable="false" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="MyGordonModelStoreContainer" CdmEntityContainer="MyGordonEntities">
+          <EntitySetMapping Name="ChapelSummary">
+            <EntityTypeMapping TypeName="MyGordonModel.ChapelSummary">
+              <MappingFragment StoreEntitySet="ChapelSummary">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="TermCD" ColumnName="TermCD" />
+                <ScalarProperty Name="BarCode" ColumnName="BarCode" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Class" ColumnName="Class" />
+                <ScalarProperty Name="Exception" ColumnName="Exception" />
+                <ScalarProperty Name="Married" ColumnName="Married" />
+                <ScalarProperty Name="CreditHrs" ColumnName="CreditHrs" />
+                <ScalarProperty Name="GEO" ColumnName="GEO" />
+                <ScalarProperty Name="Commuter" ColumnName="Commuter" />
+                <ScalarProperty Name="GradFlag" ColumnName="GradFlag" />
+                <ScalarProperty Name="Required" ColumnName="Required" />
+                <ScalarProperty Name="Attended" ColumnName="Attended" />
+                <ScalarProperty Name="DeferredDate" ColumnName="DeferredDate" />
+                <ScalarProperty Name="WithdrawnDate" ColumnName="WithdrawnDate" />
+                <ScalarProperty Name="GraduatedDate" ColumnName="GraduatedDate" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="Waived" ColumnName="Waived" />
+                <ScalarProperty Name="WaivedBy" ColumnName="WaivedBy" />
+                <ScalarProperty Name="WaivedDate" ColumnName="WaivedDate" />
+                <ScalarProperty Name="Basis" ColumnName="Basis" />
+                <ScalarProperty Name="Defaulted" ColumnName="Defaulted" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="dtproperties">
+            <EntityTypeMapping TypeName="MyGordonModel.dtproperties">
+              <MappingFragment StoreEntitySet="dtproperties">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="objectid" ColumnName="objectid" />
+                <ScalarProperty Name="property" ColumnName="property" />
+                <ScalarProperty Name="value" ColumnName="value" />
+                <ScalarProperty Name="uvalue" ColumnName="uvalue" />
+                <ScalarProperty Name="lvalue" ColumnName="lvalue" />
+                <ScalarProperty Name="version" ColumnName="version" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="view_cct_alumni">
+            <EntityTypeMapping TypeName="MyGordonModel.view_cct_alumni">
+              <MappingFragment StoreEntitySet="view_cct_alumni">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="WebUpdate" ColumnName="WebUpdate" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Suffix" ColumnName="Suffix" />
+                <ScalarProperty Name="MaidenName" ColumnName="MaidenName" />
+                <ScalarProperty Name="NickName" ColumnName="NickName" />
+                <ScalarProperty Name="HomeStreet1" ColumnName="HomeStreet1" />
+                <ScalarProperty Name="HomeStreet2" ColumnName="HomeStreet2" />
+                <ScalarProperty Name="HomeCity" ColumnName="HomeCity" />
+                <ScalarProperty Name="HomeState" ColumnName="HomeState" />
+                <ScalarProperty Name="HomePostalCode" ColumnName="HomePostalCode" />
+                <ScalarProperty Name="HomeCountry" ColumnName="HomeCountry" />
+                <ScalarProperty Name="HomePhone" ColumnName="HomePhone" />
+                <ScalarProperty Name="HomeFax" ColumnName="HomeFax" />
+                <ScalarProperty Name="HomeEmail" ColumnName="HomeEmail" />
+                <ScalarProperty Name="JobTitle" ColumnName="JobTitle" />
+                <ScalarProperty Name="MaritalStatus" ColumnName="MaritalStatus" />
+                <ScalarProperty Name="SpouseName" ColumnName="SpouseName" />
+                <ScalarProperty Name="College" ColumnName="College" />
+                <ScalarProperty Name="ClassYear" ColumnName="ClassYear" />
+                <ScalarProperty Name="PreferredClassYear" ColumnName="PreferredClassYear" />
+                <ScalarProperty Name="Major1" ColumnName="Major1" />
+                <ScalarProperty Name="Major2" ColumnName="Major2" />
+                <ScalarProperty Name="ShareName" ColumnName="ShareName" />
+                <ScalarProperty Name="ShareAddress" ColumnName="ShareAddress" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="GradDate" ColumnName="GradDate" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="grad_student" ColumnName="grad_student" />
+                <ScalarProperty Name="Barcode" ColumnName="Barcode" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="view_cct_ChapelEvent">
+            <EntityTypeMapping TypeName="MyGordonModel.view_cct_ChapelEvent">
+              <MappingFragment StoreEntitySet="view_cct_ChapelEvent">
+                <ScalarProperty Name="ROWID" ColumnName="ROWID" />
+                <ScalarProperty Name="CHBarEventID" ColumnName="CHBarEventID" />
+                <ScalarProperty Name="ID_NUM" ColumnName="ID_NUM" />
+                <ScalarProperty Name="CHBarcode" ColumnName="CHBarcode" />
+                <ScalarProperty Name="CHEventID" ColumnName="CHEventID" />
+                <ScalarProperty Name="CHCheckerID" ColumnName="CHCheckerID" />
+                <ScalarProperty Name="CHDate" ColumnName="CHDate" />
+                <ScalarProperty Name="CHTime" ColumnName="CHTime" />
+                <ScalarProperty Name="CHSource" ColumnName="CHSource" />
+                <ScalarProperty Name="CHTermCD" ColumnName="CHTermCD" />
+                <ScalarProperty Name="Attended" ColumnName="Attended" />
+                <ScalarProperty Name="Required" ColumnName="Required" />
+                <ScalarProperty Name="LiveID" ColumnName="LiveID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="view_cct_facstaff">
+            <EntityTypeMapping TypeName="MyGordonModel.view_cct_facstaff">
+              <MappingFragment StoreEntitySet="view_cct_facstaff">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Suffix" ColumnName="Suffix" />
+                <ScalarProperty Name="MaidenName" ColumnName="MaidenName" />
+                <ScalarProperty Name="Nickname" ColumnName="Nickname" />
+                <ScalarProperty Name="OnCampusDepartment" ColumnName="OnCampusDepartment" />
+                <ScalarProperty Name="OnCampusBuilding" ColumnName="OnCampusBuilding" />
+                <ScalarProperty Name="OnCampusRoom" ColumnName="OnCampusRoom" />
+                <ScalarProperty Name="OnCampusPhone" ColumnName="OnCampusPhone" />
+                <ScalarProperty Name="OnCampusPrivatePhone" ColumnName="OnCampusPrivatePhone" />
+                <ScalarProperty Name="OnCampusFax" ColumnName="OnCampusFax" />
+                <ScalarProperty Name="HomeStreet1" ColumnName="HomeStreet1" />
+                <ScalarProperty Name="HomeStreet2" ColumnName="HomeStreet2" />
+                <ScalarProperty Name="HomeCity" ColumnName="HomeCity" />
+                <ScalarProperty Name="HomeState" ColumnName="HomeState" />
+                <ScalarProperty Name="HomePostalCode" ColumnName="HomePostalCode" />
+                <ScalarProperty Name="HomeCountry" ColumnName="HomeCountry" />
+                <ScalarProperty Name="HomePhone" ColumnName="HomePhone" />
+                <ScalarProperty Name="HomeFax" ColumnName="HomeFax" />
+                <ScalarProperty Name="KeepPrivate" ColumnName="KeepPrivate" />
+                <ScalarProperty Name="JobTitle" ColumnName="JobTitle" />
+                <ScalarProperty Name="SpouseName" ColumnName="SpouseName" />
+                <ScalarProperty Name="Dept" ColumnName="Dept" />
+                <ScalarProperty Name="Barcode" ColumnName="Barcode" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="view_cct_student">
+            <EntityTypeMapping TypeName="MyGordonModel.view_cct_student">
+              <MappingFragment StoreEntitySet="view_cct_student">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Suffix" ColumnName="Suffix" />
+                <ScalarProperty Name="MaidenName" ColumnName="MaidenName" />
+                <ScalarProperty Name="NickName" ColumnName="NickName" />
+                <ScalarProperty Name="OnOffCampus" ColumnName="OnOffCampus" />
+                <ScalarProperty Name="OnCampusBuilding" ColumnName="OnCampusBuilding" />
+                <ScalarProperty Name="OnCampusRoom" ColumnName="OnCampusRoom" />
+                <ScalarProperty Name="OnCampusPhone" ColumnName="OnCampusPhone" />
+                <ScalarProperty Name="OnCampusPrivatePhone" ColumnName="OnCampusPrivatePhone" />
+                <ScalarProperty Name="OnCampusFax" ColumnName="OnCampusFax" />
+                <ScalarProperty Name="OffCampusStreet1" ColumnName="OffCampusStreet1" />
+                <ScalarProperty Name="OffCampusStreet2" ColumnName="OffCampusStreet2" />
+                <ScalarProperty Name="OffCampusCity" ColumnName="OffCampusCity" />
+                <ScalarProperty Name="OffCampusState" ColumnName="OffCampusState" />
+                <ScalarProperty Name="OffCampusPostalCode" ColumnName="OffCampusPostalCode" />
+                <ScalarProperty Name="OffCampusCountry" ColumnName="OffCampusCountry" />
+                <ScalarProperty Name="OffCampusPhone" ColumnName="OffCampusPhone" />
+                <ScalarProperty Name="OffCampusFax" ColumnName="OffCampusFax" />
+                <ScalarProperty Name="HomeStreet1" ColumnName="HomeStreet1" />
+                <ScalarProperty Name="HomeStreet2" ColumnName="HomeStreet2" />
+                <ScalarProperty Name="HomeCity" ColumnName="HomeCity" />
+                <ScalarProperty Name="HomeState" ColumnName="HomeState" />
+                <ScalarProperty Name="HomePostalCode" ColumnName="HomePostalCode" />
+                <ScalarProperty Name="HomeCountry" ColumnName="HomeCountry" />
+                <ScalarProperty Name="HomePhone" ColumnName="HomePhone" />
+                <ScalarProperty Name="HomeFax" ColumnName="HomeFax" />
+                <ScalarProperty Name="Cohort" ColumnName="Cohort" />
+                <ScalarProperty Name="Class" ColumnName="Class" />
+                <ScalarProperty Name="KeepPrivate" ColumnName="KeepPrivate" />
+                <ScalarProperty Name="Major" ColumnName="Major" />
+                <ScalarProperty Name="Barcode" ColumnName="Barcode" />
+                <ScalarProperty Name="AdvisorIDs" ColumnName="AdvisorIDs" />
+                <ScalarProperty Name="Married" ColumnName="Married" />
+                <ScalarProperty Name="Commuter" ColumnName="Commuter" />
+                <ScalarProperty Name="Major2" ColumnName="Major2" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="grad_student" ColumnName="grad_student" />
+                <ScalarProperty Name="GradDate" ColumnName="GradDate" />
+                <ScalarProperty Name="Major3" ColumnName="Major3" />
+                <ScalarProperty Name="Minor1" ColumnName="Minor1" />
+                <ScalarProperty Name="Minor2" ColumnName="Minor2" />
+                <ScalarProperty Name="Minor3" ColumnName="Minor3" />
+                <ScalarProperty Name="MobilePhone" ColumnName="MobilePhone" />
+                <ScalarProperty Name="IsMobilePhonePrivate" ColumnName="IsMobilePhonePrivate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="dt_addtosourcecontrol" FunctionName="MyGordonModel.Store.dt_addtosourcecontrol" />
+          <FunctionImportMapping FunctionImportName="dt_addtosourcecontrol_u" FunctionName="MyGordonModel.Store.dt_addtosourcecontrol_u" />
+          <FunctionImportMapping FunctionImportName="dt_adduserobject" FunctionName="MyGordonModel.Store.dt_adduserobject" />
+          <FunctionImportMapping FunctionImportName="dt_adduserobject_vcs" FunctionName="MyGordonModel.Store.dt_adduserobject_vcs" />
+          <FunctionImportMapping FunctionImportName="dt_checkinobject" FunctionName="MyGordonModel.Store.dt_checkinobject" />
+          <FunctionImportMapping FunctionImportName="dt_checkinobject_u" FunctionName="MyGordonModel.Store.dt_checkinobject_u" />
+          <FunctionImportMapping FunctionImportName="dt_checkoutobject" FunctionName="MyGordonModel.Store.dt_checkoutobject" />
+          <FunctionImportMapping FunctionImportName="dt_checkoutobject_u" FunctionName="MyGordonModel.Store.dt_checkoutobject_u" />
+          <FunctionImportMapping FunctionImportName="dt_displayoaerror" FunctionName="MyGordonModel.Store.dt_displayoaerror" />
+          <FunctionImportMapping FunctionImportName="dt_displayoaerror_u" FunctionName="MyGordonModel.Store.dt_displayoaerror_u" />
+          <FunctionImportMapping FunctionImportName="dt_droppropertiesbyid" FunctionName="MyGordonModel.Store.dt_droppropertiesbyid" />
+          <FunctionImportMapping FunctionImportName="dt_dropuserobjectbyid" FunctionName="MyGordonModel.Store.dt_dropuserobjectbyid" />
+          <FunctionImportMapping FunctionImportName="dt_generateansiname" FunctionName="MyGordonModel.Store.dt_generateansiname" />
+          <FunctionImportMapping FunctionImportName="dt_getobjwithprop" FunctionName="MyGordonModel.Store.dt_getobjwithprop" />
+          <FunctionImportMapping FunctionImportName="dt_getobjwithprop_u" FunctionName="MyGordonModel.Store.dt_getobjwithprop_u" />
+          <FunctionImportMapping FunctionImportName="dt_getpropertiesbyid" FunctionName="MyGordonModel.Store.dt_getpropertiesbyid">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="MyGordonModel.dt_getpropertiesbyid_Result">
+                <ScalarProperty Name="property" ColumnName="property" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="value" ColumnName="value" />
+                <ScalarProperty Name="lvalue" ColumnName="lvalue" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="dt_getpropertiesbyid_u" FunctionName="MyGordonModel.Store.dt_getpropertiesbyid_u">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="MyGordonModel.dt_getpropertiesbyid_u_Result">
+                <ScalarProperty Name="property" ColumnName="property" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="uvalue" ColumnName="uvalue" />
+                <ScalarProperty Name="lvalue" ColumnName="lvalue" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="dt_getpropertiesbyid_vcs" FunctionName="MyGordonModel.Store.dt_getpropertiesbyid_vcs" />
+          <FunctionImportMapping FunctionImportName="dt_getpropertiesbyid_vcs_u" FunctionName="MyGordonModel.Store.dt_getpropertiesbyid_vcs_u" />
+          <FunctionImportMapping FunctionImportName="dt_isundersourcecontrol" FunctionName="MyGordonModel.Store.dt_isundersourcecontrol" />
+          <FunctionImportMapping FunctionImportName="dt_isundersourcecontrol_u" FunctionName="MyGordonModel.Store.dt_isundersourcecontrol_u" />
+          <FunctionImportMapping FunctionImportName="dt_removefromsourcecontrol" FunctionName="MyGordonModel.Store.dt_removefromsourcecontrol" />
+          <FunctionImportMapping FunctionImportName="dt_setpropertybyid" FunctionName="MyGordonModel.Store.dt_setpropertybyid" />
+          <FunctionImportMapping FunctionImportName="dt_setpropertybyid_u" FunctionName="MyGordonModel.Store.dt_setpropertybyid_u" />
+          <FunctionImportMapping FunctionImportName="dt_validateloginparams" FunctionName="MyGordonModel.Store.dt_validateloginparams" />
+          <FunctionImportMapping FunctionImportName="dt_validateloginparams_u" FunctionName="MyGordonModel.Store.dt_validateloginparams_u" />
+          <FunctionImportMapping FunctionImportName="dt_vcsenabled" FunctionName="MyGordonModel.Store.dt_vcsenabled" />
+          <FunctionImportMapping FunctionImportName="dt_verstamp006" FunctionName="MyGordonModel.Store.dt_verstamp006" />
+          <FunctionImportMapping FunctionImportName="dt_verstamp007" FunctionName="MyGordonModel.Store.dt_verstamp007" />
+          <FunctionImportMapping FunctionImportName="dt_whocheckedout" FunctionName="MyGordonModel.Store.dt_whocheckedout" />
+          <FunctionImportMapping FunctionImportName="dt_whocheckedout_u" FunctionName="MyGordonModel.Store.dt_whocheckedout_u" />
+          <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="MyGordonModel.Store.sp_alterdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="MyGordonModel.Store.sp_creatediagram" />
+          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="MyGordonModel.Store.sp_dropdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="MyGordonModel.Store.sp_helpdiagramdefinition">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="MyGordonModel.sp_helpdiagramdefinition_Result">
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="MyGordonModel.Store.sp_helpdiagrams">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="MyGordonModel.sp_helpdiagrams_Result">
+                <ScalarProperty Name="Database" ColumnName="Database" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Owner" ColumnName="Owner" />
+                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="MyGordonModel.Store.sp_renamediagram" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
