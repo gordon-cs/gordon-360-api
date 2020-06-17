@@ -273,7 +273,7 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Countries.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\COURSES_FOR_PROFESSOR_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
