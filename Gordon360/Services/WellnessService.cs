@@ -62,13 +62,13 @@ namespace Gordon360.Services
 
                 if (x.timestamp >= changeTime)
                 {
-                    y.currentStatus = true;
+                    y.answerValid = true;
                     y.userAnswer = x.userAnswer;
                     y.timestamp = x.timestamp;
                     return y;
                 }
 
-                y.currentStatus = false;
+                y.answerValid = false;
                 y.userAnswer = x.userAnswer;
                 y.timestamp = x.timestamp;
                 

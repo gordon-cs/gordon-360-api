@@ -8,7 +8,7 @@ namespace Gordon360.Models.ViewModels
     public class WellnessViewModel
     {
 
-        public Nullable<bool> currentStatus { get; set; } //wether student is feeling symptomatic or not
+        public Nullable<bool> answerValid { get; set; } //returns true if last answered question is still valid
 
         public Nullable<bool> userAnswer { get; set; } //answer to wellness question
 
