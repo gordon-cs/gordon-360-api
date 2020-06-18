@@ -32,21 +32,39 @@ The Remmina control window will open on your desktop and you'll see a new icon f
 
 If you were connecting in order to run the server locally, click [here](https://github.com/gordon-cs/gordon-360-api/blob/develop/README.md#running-the-server-locally) to return to those instructions.
 
+
 ## Connect from Windows
 
-~~1. Use a web browser to connect to [desktops.gordon.edu](https://desktops.gordon.edu) and log in with your Gordon email address and password.
-2. Click on "VDI-ComputerScience" to download the Remote Desktop configuration file.
-3. Open the downloaded file and follow the prompts to make the connection.~~
+Ensure that you are connected to the Gordon network (either locally or through a VPN)
 
-The above instructions are not working as of 03/02/2020. Follow these instructions instead:
-
-1. Open Remote Desktop Connection.
-   - Search "RDC" in the start menu and it will appear there.
-2. In the address bar, type `cs-rdsh-02`.
+*Option 1: If you have RDC installed by default (might work better remotely)*
+1. Open Remote Desktop Connection
+   - Search "RDC" in the start menu and it will appear there
+   - Note: Might be the Remote Desktop app, and not the Remote Desktop Connection app.
+2. In the address bar (under "Computer" or "PC Name"), type in `CS-RDSH-02` (not case-sensitive).
 3. To enter your Gordon credentials:
-   - If this is your first time connecting, click "Connect." Your computer might try to use your local account by default. In that case you'll need to select "More choices" at the bottom of the dialog box and then enter your Gordon account details as `gordon.edu\firstname.lastname` and your account password.
-   - If you have connected to the machine before, ensure that the listed account is the one you want to use. If it isn't, click "edit" and then follow the step above.
-4. Click "Connect."
+   - If this is your first time connecting:
+    - Click "Connect." Your computer might try to use your local account by default. In that case you'll need to select "More choices" at the bottom of the dialog box and then enter your Gordon account details as `gordon.edu\firstname.lastname` and your account password.
+   - If you have connected to the machine before:
+    - ensure that the listed account is the one you want to use. If it isn't, click "edit" and then follow the step above.
+4. Click "Connect"
+
+*Option 2: If you have Remote Desktop installed by default (might work better on campus)*
+1. Open Remote Desktop
+   - Go to search bar, on the left side of the taskbar on your machine and type in 'Remote Desktop'.
+   - Click on the Remote Desktop app. Not the Remote Desktop Connection app.
+2. Add the PC
+   - In the Remote Desktop window, click on 'Add' at the top right of the window.
+   - Click on 'Desktop'.
+   - Under 'PC name', type in `CS-RDSH-02` (not case-sensitive).
+3. Optional: Enter credentials
+   - Under 'User account', you may enter your Gordon username ('@gordon.edu' is not needed).
+   - Under 'Password', enter your Gordon password.
+   - 'Display name' is optional.
+4. Run and connect
+   - Click on the saved desktop you just created.
+   - A pop-up will be shown asking 'Accept Certificate?'. You may check the one available option to never see the pop-up again and click on 'accept'.
+
 
 ## Connect from MacOS
 
