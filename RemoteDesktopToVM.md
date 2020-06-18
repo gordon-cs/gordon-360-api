@@ -44,9 +44,9 @@ Ensure that you are connected to the Gordon network (either locally or through a
 2. In the address bar (under "Computer" or "PC Name"), type in `CS-RDSH-02` (not case-sensitive).
 3. To enter your Gordon credentials:
    - If this is your first time connecting:
-    - Click "Connect." Your computer might try to use your local account by default. In that case you'll need to select "More choices" at the bottom of the dialog box and then enter your Gordon account details as `gordon.edu\firstname.lastname` and your account password.
+     - Click "Connect." Your computer might try to use your local account by default. In that case you'll need to select "More choices" at the bottom of the dialog box and then enter your Gordon account details as `gordon.edu\firstname.lastname` and your account password.
    - If you have connected to the machine before:
-    - ensure that the listed account is the one you want to use. If it isn't, click "edit" and then follow the step above.
+     - Ensure that the listed account is the one you want to use. If it isn't, click "edit" and then follow the step above
 4. Click "Connect"
 
 *Option 2: If you have Remote Desktop installed by default (might work better on campus)*
