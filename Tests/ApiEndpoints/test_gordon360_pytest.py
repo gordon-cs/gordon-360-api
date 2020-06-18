@@ -35,12 +35,12 @@ searchString2 = 'lindsay'
 #Event or Type ID used for events testing
 Event_OR_Type_ID = '10'
 
-# Profile image
-# Profile picture for testing
-FILE_PATH = '\\gotrain\pref_photos'
-FILE_NAME = 'profile.jpg'
+# Profile image path
+FILE_PATH_PROFILE = r'..\..\Gordon360\browseable\profile\Default\profile.png'
+FILE_PATH_PROFILE_SMALL = r'..\..\Gordon360\browseable\profile\Default\profile.ico'
+FILE_PATH_ID = r'..\..\Gordon360\browseable\profile\Default\ID.png'
 
-# API 
+# API. XOR
 hostURL = 'https://360ApiTrain.gordon.edu/'
 #hostURL = 'http://localhost:1235/'
 
@@ -49,6 +49,7 @@ LEADERSHIP_POSITIONS = ['CAPT','CODIR','CORD','DIREC','PRES','VICEC','VICEP']
 REQUEST_STATUS_APPROVED = 'Approved'
 REQUEST_STATUS_DENIED = 'Denied'
 REQUEST_STATUS_PENDING = 'Pending'
+AUTHORIZATION_DENIED = 'Authorization has been denied for this request.'
 
 # Configuration Details
 username = credentials.username
@@ -2097,7 +2098,6 @@ class Test_allProfileTest(testCase):
 #    Endpoint -- api/profiles/
 #    Expected Status Code -- 200 OK
 #    Expected Respones Body -- A json object of information on own profile
-
     def test_get_my_profile(self):
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/profiles/'
@@ -2110,11 +2110,25 @@ class Test_allProfileTest(testCase):
         except ValueError:
             pytest.fail('Expected Json response body, got {0}.'.format(response.text))
 
+#    Verify that an user can get their own profile
+#    Endpoint -- api/profiles/
+#    Expected Status Code -- 401 Authorization Error
+#    Expected Respones Body -- An authorization denied message
+    def test_get_guest_my_profile(self):
+        self.session = self.createGuestSession()
+        self.url = hostURL + 'api/profiles/'
+        response = api.get(self.session, self.url)
+        if not response.status_code == 401:
+            pytest.fail('Expected 401 OK, got {0}.'.format(response.status_code))
+        try:
+            assert response.json()['Message'] == AUTHORIZATION_DENIED
+        except ValueError:
+            pytest.fail('Expected Json response body, got {0}.'.format(response.text))
+
 #    Verify that an user can get another person's profile, filtering private information
 #    Endpoint -- api/profiles/:username
 #    Expected Status Code -- 200 Ok
 #    Expected Response Body -- list of information on the user without private info
-
     def test_get_profile_by_username(self):
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/profiles/' + leader_username +'/'
@@ -2124,6 +2138,22 @@ class Test_allProfileTest(testCase):
         try:
             assert response.json()['AD_Username'] == '360.FacultyTest'
             assert "ID" not in response.json()
+        except ValueError:
+            pytest.fail('Expected Json response body, got{0}.'.format(response.text))
+
+#    Verify that a guest can't get another person's profile
+#    Endpoint -- api/profiles/:username
+#    Expected Status Code -- 401 Unauthorized Error
+#    Expected Response Body -- An authorization denied message
+    def test_get_guest_profile_by_username(self):
+        self.session = self.createGuestSession()
+        self.url = hostURL + 'api/profiles/' + leader_username +'/'
+        response = api.get(self.session, self.url)
+        print(response.json())
+        if not response.status_code == 401:
+            pytest.fail('Expected 401 OK, got {0}.'.format(response.status_code))
+        try:
+            assert response.json()['Message'] == AUTHORIZATION_DENIED
         except ValueError:
             pytest.fail('Expected Json response body, got{0}.'.format(response.text))
 
@@ -2142,7 +2172,23 @@ class Test_allProfileTest(testCase):
         except ValueError:
             pytest.fail('Expected Json response body, got{0}.'.format(response.text))
 
-#    Verify that an user can get a profile image of someone else
+#    Verify that a guest can't get a profile image of the current user
+#    Endpoint -- api/profiles/image
+#    Expected Status Code -- 401 Unauthorized Error
+#    Expected Response Body -- An authorization denied message
+    def test_get_guest_image(self):
+        self.session = self.createGuestSession()
+        self.url = hostURL + 'api/profiles/image/'
+        response = api.get(self.session, self.url)
+        if not response.status_code == 401:
+            pytest.fail('Expected 401 Unauthorized Error, got {0}.'.format(response.status_code))
+        try:
+            assert response.json()['Message'] == AUTHORIZATION_DENIED
+        except ValueError:
+            pytest.fail('Expected Json response body, got{0}.'.format(response.text))
+
+
+#    Verify that a user can get a profile image of someone else
 #    Endpoint -- api/profiles/image/:username
 #    Expected Status Code -- 200 Ok
 #    Expected Response Body -- image path of another user
@@ -2157,19 +2203,32 @@ class Test_allProfileTest(testCase):
         except ValueError:
             pytest.fail('Expected Json response body, got{0}.'.format(response.text))
 
+#    Verify that a guest can't get a profile image of someone else
+#    Endpoint -- api/profiles/image/:username
+#    Expected Status Code -- 401 Unauthorized Error
+#    Expected Response Body -- An authorization denied message
+    def test_get_guest_image_by_username(self):
+        self.session = self.createGuestSession()
+        self.url = hostURL + 'api/profiles/image/' + username + '/'
+        response = api.get(self.session, self.url)
+        if not response.status_code == 401:
+            pytest.fail('Expected 401 Unauthorized Error, got {0}.'.format(response.status_code))
+        try:
+            assert response.json()['Message'] == AUTHORIZATION_DENIED
+        except ValueError:
+            pytest.fail('Expected Json response body, got{0}.'.format(response.text))
+
 #    Verify that a user can upload a profile image
 #    Endpoint -- api/profiles/image/
 #    Expected Status Code -- 200 OK
 #    Expected Content -- updated profile image
-#    Returning 415
     def test_post_profile_image(self):
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/profiles/image/'
         self.data = {
-            'ID': my_id_number,
-            'FILE_PATH': "", #File path of the image on the user's computer,
-            'FILE_NAME': ""  #Barcode ID of the user
+            'file': open(FILE_PATH_PROFILE, 'r')
         }
+        
         response = api.postAsFormData(self.session, self.url, self.data)
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
@@ -2182,6 +2241,26 @@ class Test_allProfileTest(testCase):
         if not d.status_code == 200:
             pytest.fail('There was a problem performing cleanup')
 
+#    Verify that a guest cannot upload a profile image
+#    Endpoint -- api/profiles/image/
+#    Expected Status Code -- 401 Unauthorized Error
+#    Expected Content -- An authorization denied message
+    def test_post_guest_profile_image(self):
+        self.session = self.createGuestSession()
+        self.url = hostURL + 'api/profiles/image/'
+        self.data = {
+            'file': open(FILE_PATH_PROFILE, 'r')
+        }
+
+        response = api.postAsFormData(self.session, self.url, self.data)
+        print(response.json())
+        if not response.status_code == 401:
+            pytest.fail('Expected 401 Unauthorized Error, got {0}.'.format(response.status_code))
+        try:
+            assert response.json()['Message'] == AUTHORIZATION_DENIED
+        except ValueError:
+            pytest.fail('Expected Json response body, got{0}.'.format(response.text))
+
 #    Verify that a user can upload an ID image
 #    Endpoint -- api/profiles/IDimage/
 #    Expected Status Code -- 200 OK
@@ -2191,21 +2270,34 @@ class Test_allProfileTest(testCase):
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/profiles/IDimage/'
         self.data = {
-            'ID': my_id_number,
-            'FILE_PATH': FILE_PATH, #File path of the image on the user's computer,
-            'FILE_NAME': ""  #Barcode ID of the user
+            'file': open(FILE_PATH_ID, 'r')
         }
+        
         response = api.postAsFormData(self.session, self.url, self.data)
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
-        self.data = {
-            'ID': my_id_number,
-            'FILE_PATH': FILE_PATH,
-            'FILE_NAME': ""
-        }
+            
         d = api.post(self.session, self.url + 'reset/', self.data)
         if not d.status_code == 200:
             pytest.fail('There was a problem performing cleanup')
+
+#    Verify that a guest can't upload an ID image
+#    Endpoint -- api/profiles/IDimage/
+#    Expected Status Code -- 401 Unauthorized Error
+#    Expected Content -- An authorization denied message
+    def test_post_guest_ID_image(self):
+        self.session = self.createGuestSession()
+        self.url = hostURL + 'api/profiles/IDimage/'
+        self.data = {
+            'file': open(FILE_PATH_ID, 'r')
+        }
+        response = api.postAsFormData(self.session, self.url, self.data)
+        if not response.status_code == 401:
+            pytest.fail('Expected 401 OK, got {0}.'.format(response.status_code))
+        try:
+            assert response.json()['Message'] == AUTHORIZATION_DENIED
+        except ValueError:
+            pytest.fail('Expected Json response body, got{0}.'.format(response.text))
 
 #    Verify that a user can reset a profile image
 #    Endpoint -- api/profiles/image/reset/
@@ -2216,13 +2308,34 @@ class Test_allProfileTest(testCase):
         self.url = hostURL + 'api/profiles/image/reset/'
         self.data = {
             'ID': my_id_number,
-            'FILE_PATH': FILE_PATH,
+            'FILE_PATH': FILE_PATH_PROFILE,
             'FILE_NAME': ""
         }
         self.requestID = -1
         response = api.post(self.session, self.url, self.data)
         if not response.status_code == 200:
             pytest.fail('Expected 200 Created, got {0}.'.format(response.status_code))
+
+#    Verify that a guest can't reset a profile image
+#    Endpoint -- api/profiles/image/reset/
+#    Expected Status Code -- 401 Unauthorized Error
+#    Expected Content -- An authorization denied message
+    def test_post_guest_reset_image(self):
+        self.session = self.createGuestSession()
+        self.url = hostURL + 'api/profiles/image/reset/'
+        self.data = {
+            'ID': my_id_number,
+            'FILE_PATH': FILE_PATH_PROFILE,
+            'FILE_NAME': ""
+        }
+        self.requestID = -1
+        response = api.post(self.session, self.url, self.data)
+        if not response.status_code == 401:
+            pytest.fail('Expected 401 Created, got {0}.'.format(response.status_code))
+        try:
+            assert response.json()['Message'] == AUTHORIZATION_DENIED
+        except ValueError:
+            pytest.fail('Expected Json response body, got{0}.'.format(response.text))
 
 #    Verify that a user can add and edit social media links
 #    Endpoint -- api/profiles/:type
@@ -2244,7 +2357,26 @@ class Test_allProfileTest(testCase):
         if not d.status_code == 200:
             pytest.fail('There was a problem performing cleanup')
 
-#    Verify that a user can add and edit social media links
+#    Verify that a guest can't add and edit social media links
+#    Endpoint -- api/profiles/:type
+#    Expected Status Code -- 401 Unauthorized Error
+#    Expected Content -- An authorization denied message
+    def test_put_guest_social_media_links(self):
+        self.session = self.createGuestSession()
+        self.url = hostURL + 'api/profiles/facebook/'
+        self.data = {
+            'facebook': 'https://www.facebook.com/360.studenttest'
+        }
+        response = api.put(self.session, self.url, self.data)
+        if not response.status_code == 401:
+            pytest.fail('Expected 401 OK, got {0}.'.format(response.status_code))
+        try:
+            assert response.json()['Message'] == AUTHORIZATION_DENIED
+        except ValueError:
+            pytest.fail('Expected Json response body, got{0}.'.format(response.text))
+            
+
+#    Verify that a user can turn on and off mobile privacy
 #    Endpoint -- api/profiles/mobile_privacy/:value (Y or N)
 #    Expected Status Code -- 200 OK
 #    Expected Content -- Make mobile privacy 0 or 1
@@ -2270,85 +2402,7 @@ class Test_allProfileTest(testCase):
         check_response = api.get(self.session,profile_url)
         assert check_response.json()['IsMobilePhonePrivate'] == 0
 
-#    Verify that a user can add and edit social media links
-#    Endpoint -- api/profiles/image_privacy/:value (Y or N)
-#    Expected Status Code -- 200 OK
-#    Expected Content --
-    def test_put_image_privacy(self):
-        self.session = self.createAuthorizedSession(username, password)
-        self.url = hostURL + 'api/profiles/image_privacy/Y/'
-        self.data = {
-            'show_pic': 'Y'
-        }
-        response = api.put(self.session, self.url, self.data)
-        if not response.status_code == 200:
-            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
-        profile_url = hostURL + 'api/profiles/'
-        check_response = api.get(self.session,profile_url)
-        assert check_response.json()['show_pic'] == 1
-        self.url = hostURL + 'api/profiles/image_privacy/N/'
-        self.resetdata = {
-            'show_pic': 'N'
-        }
-        d = api.put(self.session, self.url, self.resetdata)
-        if not d.status_code == 200:
-            pytest.fail('There was a problem performing cleanup')
 
-        check_response = api.get(self.session,profile_url)
-        assert check_response.json()['show_pic'] == 0
-
-
-class Test_allSessionTest(testCase):
-
-# # # # # # # # #
-# SESSIONS TEST #
-# # # # # # # # #
-
-#    Verify that an activity leader can get all session objects
-#    Endpoint -- api/sessions/
-#    Expected Status Code -- 200 OK
-#    Expected Response Body -- List of all session resources
-#    Very good example of hardy test
-    def test_get_all_sessions(self):
-        self.session = self.createAuthorizedSession(username, password)
-        self.url = hostURL + 'api/sessions/'
-        response = api.get(self.session, self.url)
-        if not response.status_code == 200:
-            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
-        try:
-            response.json()
-        except ValueError:
-            pytest.fail('Expected Json response body, got {0}.'.format(response.json()))
-        if not (type(response.json()) is list):
-            pytest.fail('Expected list, got {0}.'.format(response.json()))
-
-        assert response.json()[0]["SessionCode"] == "201209"
-        assert response.json()[0]["SessionDescription"] == "Fall 12-13 Academic Year"
-        assert response.json()[0]["SessionBeginDate"] == "2012-08-29T00:00:00"
-        assert response.json()[0]["SessionEndDate"] == "2012-12-21T00:00:00"
-
-        self.url = hostURL + 'api/sessions/current/'
-        current = api.get(self.session, self.url)
-        assert response.json()[-2]["SessionCode"] == current.json()["SessionCode"]
-        assert response.json()[-2]["SessionDescription"] == current.json()["SessionDescription"]
-        assert response.json()[-2]["SessionBeginDate"] == current.json()["SessionBeginDate"]
-        assert response.json()[-2]["SessionEndDate"] == current.json()["SessionEndDate"]
-
-#    Verify that an activity leader can get a session object
-#    Endpoint -- api/sessions/:id
-#    Expected Status Code -- 200 OK
-#    Expected Response Body -- A session resource.
-    def test_get_one_session(self):
-        self.session = self.createAuthorizedSession(username, password)
-        self.url = hostURL + 'api/sessions/' + session_code + '/'
-
-        response = api.get(self.session, self.url)
-        if not response.status_code == 200:
-            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code))
-        try:
-            response.json()
-        except ValueError:
-            pytest.fail('Expected Json response body, got {0}.'.format(response.text))
         try:
             response.json()['SessionCode']
         except KeyError:
@@ -2459,7 +2513,7 @@ class Test_AllStudentEmploymentTest(testCase):
 class Test_AllVictoryPromiseTest(testCase):
 
 # # # # # # # # # # # # #
-# VICTORY PROMISE TEST #
+# VICTORY PROMISE TEST  #
 # # # # # # # # # # # # #
 
 #    Verify that a student user can get their own victory promise information
@@ -2489,7 +2543,7 @@ class Test_AdminTest(testCase):
 # ADMIN  TEST #
 # # # # # # # #
 
-#    Verify that a super admin get information of a specific admin via GorodnId.
+#    Verify that a super admin get information of a specific admin via GordonId.
 #    Endpoint -- api/admins
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- A json response with the student resource
@@ -2513,6 +2567,18 @@ class Test_AdminTest(testCase):
         assert response.json()[0]['USER_NAME'] == "Chris.Carlson"
         assert response.json()[0]['EMAIL'] == "Chris.Carlson@gordon.edu"
 
+#    Verify that a user can't get information of a specific admin via GordonId.
+#    Endpoint -- api/admins
+#    Expected Status Code -- 401 Unauthorized Error
+#    Expected Response Body -- Null
+    def test_get_all_admin_as_user(self):
+        self.session = self.createAuthorizedSession(username, password)
+        self.url = hostURL + 'api/admins/'
+        response = api.get(self.session, self.url)
+
+        if not response.status_code == '':
+            pytest.fail('Expected NULL, got{0}'.format(response.text))
+
 #    Verify that a super admin get information of all admins.
 #    Endpoint -- api/admin/_id
 #    Expected Status Code -- 200 OK
@@ -2534,4 +2600,11 @@ class Test_AdminTest(testCase):
         assert response.json()['EMAIL'] == "Chris.Carlson@gordon.edu"
         assert response.json()['SUPER_ADMIN'] == True
 
+#class Test_WellnessTest(testCase):
+
+# # # # # # # # #
+# WELLNESS TEST #
+# # # # # # # # #
+
+#    Verify that a student 
 
