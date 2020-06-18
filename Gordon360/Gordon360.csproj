@@ -432,9 +432,6 @@
     <Compile Include="Models\StudentNewsExpiration.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\StudentNewsCategory.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\StudentTimesheet_DB_Models.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
