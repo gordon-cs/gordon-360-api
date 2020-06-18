@@ -6,7 +6,7 @@ using Gordon360.Models.ViewModels;
 
 // <summary>
 // Namespace with all the Service Interfaces that are to be implemented. I don't think making this interface is required, the services can work find on their own.
-// However, building the interfaces first does give a general sense of structure to their implementations. A certian cohesiveness :p.
+// However, building the interfaces first does give a general sense of structure to their implementations. A certain cohesiveness :p.
 // </summary>
 namespace Gordon360.Services
 {

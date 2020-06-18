@@ -414,10 +414,10 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sp_helpdiagramdefinition_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sp_helpdiagrams_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Student.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
@@ -590,10 +590,6 @@
   <ItemGroup>
     <Content Include="browseable\profile\Default\profile.png" />
     <Content Include="browseable\uploads\Default\activityImage.png" />
-    <EntityDeploy Include="Models\MyGordon_DB_Models.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>MyGordon_DB_Models.Designer.cs</LastGenOutput>
-    </EntityDeploy>
     <EntityDeploy Include="Models\StudentTimesheet_DB_Models.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>StudentTimesheet_DB_Models.Designer.cs</LastGenOutput>
@@ -608,9 +604,6 @@
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
       <LastGenOutput>CCT_DB_Models.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\MyGordon_DB_Models.edmx.diagram">
-      <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
-    </Content>
     <Content Include="Models\StudentTimesheet_DB_Models.edmx.diagram">
       <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
     </Content>
@@ -620,6 +613,13 @@
     </EntityDeploy>
     <Content Include="Models\CCT_DB_Models.edmx.diagram">
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
+    </Content>
+    <EntityDeploy Include="Models\MyGordon_DB_Models.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>MyGordon_DB_Models.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\MyGordon_DB_Models.edmx.diagram">
+      <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
     </Content>
     <None Include="secrets.config">
       <SubType>Designer</SubType>
@@ -695,7 +695,9 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:2474</IISUrl>
+          <IISUrl>http://localhost:3417</IISUrl>
+          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
+          <IISAppRootUrl>http://localhost:3417</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
