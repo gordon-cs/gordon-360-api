@@ -1,0 +1,326 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="StudentTimesheetsModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="student_timesheets">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ID_NUM" Type="int" Nullable="false" />
+          <Property Name="eml" Type="int" Nullable="false" />
+          <Property Name="eml_description" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="shift_start_datetime" Type="datetime" Nullable="false" />
+          <Property Name="shift_end_datetime" Type="datetime" Nullable="false" />
+          <Property Name="hourly_rate" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="hours_worked" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="supervisor" Type="int" Nullable="false" />
+          <Property Name="comp_supervisor" Type="int" Nullable="false" />
+          <Property Name="status" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="submitted_to" Type="int" />
+          <Property Name="shift_notes" Type="text" />
+          <Property Name="comments" Type="text" />
+          <Property Name="pay_week_date" Type="datetime" />
+          <Property Name="pay_period_date" Type="datetime" />
+          <Property Name="pay_period_id" Type="int" />
+          <Property Name="last_changed_by" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="datetime_entered" Type="datetime" Nullable="false" />
+        </EntityType>
+        <Function Name="CSVStringsToTable_fn" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="array" Type="varchar" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="value" Type="varchar" MaxLength="100" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
+        <Function Name="student_timesheets_already_worked_these_hours" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID_NUM" Type="int" Mode="In" />
+          <Parameter Name="shift_start_datetime" Type="datetime" Mode="In" />
+          <Parameter Name="shift_end_datetime" Type="datetime" Mode="In" />
+        </Function>
+        <Function Name="student_timesheets_delete_shift" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="row_num" Type="int" Mode="In" />
+          <Parameter Name="ID_NUM" Type="int" Mode="In" />
+        </Function>
+        <Function Name="student_timesheets_insert_shift" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID_NUM" Type="int" Mode="In" />
+          <Parameter Name="eml" Type="int" Mode="In" />
+          <Parameter Name="shift_start_datetime" Type="datetime" Mode="In" />
+          <Parameter Name="shift_end_datetime" Type="datetime" Mode="In" />
+          <Parameter Name="hours_worked" Type="varchar" Mode="In" />
+          <Parameter Name="shift_notes" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="last_changed_by" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="student_timesheets_select_active_status_shifts" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID_NUM" Type="int" Mode="In" />
+        </Function>
+        <Function Name="student_timesheets_select_emls_for_ajax_selectbox" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="start_datetime" Type="datetime" Mode="In" />
+          <Parameter Name="end_datetime" Type="datetime" Mode="In" />
+          <Parameter Name="ID_NUM" Type="int" Mode="In" />
+        </Function>
+        <Function Name="student_timesheets_select_end_datetimes" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="eml" Type="int" Mode="In" />
+          <Parameter Name="ID_NUM" Type="int" Mode="In" />
+        </Function>
+        <Function Name="student_timesheets_select_fixed_status_shifts" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID_NUM" Type="int" Mode="In" />
+        </Function>
+        <Function Name="student_timesheets_select_if_student_has_paid_shifts" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID_NUM" Type="int" Mode="In" />
+        </Function>
+        <Function Name="student_timesheets_select_supervisor_name" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="supervisor" Type="int" Mode="In" />
+        </Function>
+        <Function Name="student_timesheets_submit_job_shift" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID_NUM" Type="int" Mode="In" />
+          <Parameter Name="eml" Type="int" Mode="In" />
+          <Parameter Name="shift_end_datetime" Type="datetime" Mode="In" />
+          <Parameter Name="submitted_to" Type="int" Mode="In" />
+          <Parameter Name="last_changed_by" Type="varchar" Mode="In" />
+        </Function>
+        <EntityContainer Name="StudentTimesheetsModelStoreContainer">
+          <EntitySet Name="student_timesheets" EntityType="Self.student_timesheets" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="StudentTimesheetsModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <ComplexType Name="CSVStringsToTable_fn_Result">
+          <Property Name="value" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+        </ComplexType>
+        <EntityType Name="student_timesheets">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID_NUM" Type="Int32" Nullable="false" />
+          <Property Name="eml" Type="Int32" Nullable="false" />
+          <Property Name="eml_description" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="shift_start_datetime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="shift_end_datetime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="hourly_rate" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="hours_worked" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="supervisor" Type="Int32" Nullable="false" />
+          <Property Name="comp_supervisor" Type="Int32" Nullable="false" />
+          <Property Name="status" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="submitted_to" Type="Int32" />
+          <Property Name="shift_notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="pay_week_date" Type="DateTime" Precision="3" />
+          <Property Name="pay_period_date" Type="DateTime" Precision="3" />
+          <Property Name="pay_period_id" Type="Int32" />
+          <Property Name="last_changed_by" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="datetime_entered" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityContainer Name="StudentTimesheetsEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="student_timesheets" EntityType="Self.student_timesheets" />
+          <FunctionImport Name="CSVStringsToTable_fn" IsComposable="true" ReturnType="Collection(StudentTimesheetsModel.CSVStringsToTable_fn_Result)">
+            <Parameter Name="array" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="student_timesheets_already_worked_these_hours" ReturnType="Collection(Int32)">
+            <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
+            <Parameter Name="shift_start_datetime" Mode="In" Type="DateTime" />
+            <Parameter Name="shift_end_datetime" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="student_timesheets_delete_shift">
+            <Parameter Name="row_num" Mode="In" Type="Int32" />
+            <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="student_timesheets_insert_shift">
+            <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
+            <Parameter Name="eml" Mode="In" Type="Int32" />
+            <Parameter Name="shift_start_datetime" Mode="In" Type="DateTime" />
+            <Parameter Name="shift_end_datetime" Mode="In" Type="DateTime" />
+            <Parameter Name="hours_worked" Mode="In" Type="String" />
+            <Parameter Name="shift_notes" Mode="In" Type="String" />
+            <Parameter Name="last_changed_by" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="student_timesheets_select_active_status_shifts" ReturnType="Collection(StudentTimesheetsModel.student_timesheets_select_active_status_shifts_Result)">
+            <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="student_timesheets_select_emls_for_ajax_selectbox" ReturnType="Collection(StudentTimesheetsModel.student_timesheets_select_emls_for_ajax_selectbox_Result)">
+            <Parameter Name="start_datetime" Mode="In" Type="DateTime" />
+            <Parameter Name="end_datetime" Mode="In" Type="DateTime" />
+            <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="student_timesheets_select_end_datetimes" ReturnType="Collection(DateTime)">
+            <Parameter Name="eml" Mode="In" Type="Int32" />
+            <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="student_timesheets_select_fixed_status_shifts" ReturnType="Collection(StudentTimesheetsModel.student_timesheets_select_fixed_status_shifts_Result)">
+            <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="student_timesheets_select_if_student_has_paid_shifts" ReturnType="Collection(Int32)">
+            <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="student_timesheets_select_supervisor_name" ReturnType="Collection(StudentTimesheetsModel.student_timesheets_select_supervisor_name_Result)">
+            <Parameter Name="supervisor" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="student_timesheets_submit_job_shift">
+            <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
+            <Parameter Name="eml" Mode="In" Type="Int32" />
+            <Parameter Name="shift_end_datetime" Mode="In" Type="DateTime" />
+            <Parameter Name="submitted_to" Mode="In" Type="Int32" />
+            <Parameter Name="last_changed_by" Mode="In" Type="String" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="student_timesheets_select_active_status_shifts_Result">
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="Int32" Name="eml" Nullable="false" />
+          <Property Type="String" Name="eml_description" Nullable="false" MaxLength="100" />
+          <Property Type="DateTime" Name="shift_start_datetime" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="shift_end_datetime" Nullable="false" Precision="23" />
+          <Property Type="Decimal" Name="hours_worked" Nullable="false" Precision="10" Scale="2" />
+          <Property Type="String" Name="shift_notes" Nullable="true" MaxLength="Max" />
+          <Property Type="Decimal" Name="hourly_rate" Nullable="false" Precision="10" Scale="2" />
+          <Property Type="Int32" Name="supervisor" Nullable="false" />
+          <Property Type="Int32" Name="comp_supervisor" Nullable="false" />
+          <Property Type="String" Name="status" Nullable="false" MaxLength="30" />
+          <Property Type="String" Name="comments" Nullable="true" MaxLength="Max" />
+        </ComplexType>
+        <ComplexType Name="student_timesheets_select_emls_for_ajax_selectbox_Result">
+          <Property Type="Int32" Name="EmlID" Nullable="false" />
+          <Property Type="String" Name="postitle" Nullable="true" MaxLength="512" />
+        </ComplexType>
+        <ComplexType Name="student_timesheets_select_fixed_status_shifts_Result">
+          <Property Type="String" Name="eml_description" Nullable="false" MaxLength="100" />
+          <Property Type="DateTime" Name="shift_start_datetime" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="shift_end_datetime" Nullable="false" Precision="23" />
+          <Property Type="Decimal" Name="hours_worked" Nullable="false" Precision="10" Scale="2" />
+          <Property Type="String" Name="shift_notes" Nullable="true" MaxLength="Max" />
+          <Property Type="Decimal" Name="hourly_rate" Nullable="false" Precision="10" Scale="2" />
+          <Property Type="Int32" Name="submitted_to" Nullable="true" />
+          <Property Type="String" Name="status" Nullable="false" MaxLength="30" />
+          <Property Type="DateTime" Name="pay_week_date" Nullable="true" Precision="23" />
+        </ComplexType>
+        <ComplexType Name="student_timesheets_select_supervisor_name_Result">
+          <Property Type="String" Name="first_name" Nullable="true" MaxLength="15" />
+          <Property Type="String" Name="last_name" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="preferred_name" Nullable="true" MaxLength="30" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="StudentTimesheetsModelStoreContainer" CdmEntityContainer="StudentTimesheetsEntities">
+          <EntitySetMapping Name="student_timesheets">
+            <EntityTypeMapping TypeName="StudentTimesheetsModel.student_timesheets">
+              <MappingFragment StoreEntitySet="student_timesheets">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ID_NUM" ColumnName="ID_NUM" />
+                <ScalarProperty Name="eml" ColumnName="eml" />
+                <ScalarProperty Name="eml_description" ColumnName="eml_description" />
+                <ScalarProperty Name="shift_start_datetime" ColumnName="shift_start_datetime" />
+                <ScalarProperty Name="shift_end_datetime" ColumnName="shift_end_datetime" />
+                <ScalarProperty Name="hourly_rate" ColumnName="hourly_rate" />
+                <ScalarProperty Name="hours_worked" ColumnName="hours_worked" />
+                <ScalarProperty Name="supervisor" ColumnName="supervisor" />
+                <ScalarProperty Name="comp_supervisor" ColumnName="comp_supervisor" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="submitted_to" ColumnName="submitted_to" />
+                <ScalarProperty Name="shift_notes" ColumnName="shift_notes" />
+                <ScalarProperty Name="comments" ColumnName="comments" />
+                <ScalarProperty Name="pay_week_date" ColumnName="pay_week_date" />
+                <ScalarProperty Name="pay_period_date" ColumnName="pay_period_date" />
+                <ScalarProperty Name="pay_period_id" ColumnName="pay_period_id" />
+                <ScalarProperty Name="last_changed_by" ColumnName="last_changed_by" />
+                <ScalarProperty Name="datetime_entered" ColumnName="datetime_entered" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionName="StudentTimesheetsModel.Store.CSVStringsToTable_fn" FunctionImportName="CSVStringsToTable_fn">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="StudentTimesheetsModel.CSVStringsToTable_fn_Result">
+                <ScalarProperty Name="value" ColumnName="value" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="student_timesheets_already_worked_these_hours" FunctionName="StudentTimesheetsModel.Store.student_timesheets_already_worked_these_hours" />
+          <FunctionImportMapping FunctionImportName="student_timesheets_delete_shift" FunctionName="StudentTimesheetsModel.Store.student_timesheets_delete_shift" />
+          <FunctionImportMapping FunctionImportName="student_timesheets_insert_shift" FunctionName="StudentTimesheetsModel.Store.student_timesheets_insert_shift" />
+          <FunctionImportMapping FunctionImportName="student_timesheets_select_active_status_shifts" FunctionName="StudentTimesheetsModel.Store.student_timesheets_select_active_status_shifts">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="StudentTimesheetsModel.student_timesheets_select_active_status_shifts_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="eml" ColumnName="eml" />
+                <ScalarProperty Name="eml_description" ColumnName="eml_description" />
+                <ScalarProperty Name="shift_start_datetime" ColumnName="shift_start_datetime" />
+                <ScalarProperty Name="shift_end_datetime" ColumnName="shift_end_datetime" />
+                <ScalarProperty Name="hours_worked" ColumnName="hours_worked" />
+                <ScalarProperty Name="shift_notes" ColumnName="shift_notes" />
+                <ScalarProperty Name="hourly_rate" ColumnName="hourly_rate" />
+                <ScalarProperty Name="supervisor" ColumnName="supervisor" />
+                <ScalarProperty Name="comp_supervisor" ColumnName="comp_supervisor" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="comments" ColumnName="comments" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="student_timesheets_select_emls_for_ajax_selectbox" FunctionName="StudentTimesheetsModel.Store.student_timesheets_select_emls_for_ajax_selectbox">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="StudentTimesheetsModel.student_timesheets_select_emls_for_ajax_selectbox_Result">
+                <ScalarProperty Name="EmlID" ColumnName="EmlID" />
+                <ScalarProperty Name="postitle" ColumnName="postitle" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="student_timesheets_select_end_datetimes" FunctionName="StudentTimesheetsModel.Store.student_timesheets_select_end_datetimes" />
+          <FunctionImportMapping FunctionImportName="student_timesheets_select_fixed_status_shifts" FunctionName="StudentTimesheetsModel.Store.student_timesheets_select_fixed_status_shifts">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="StudentTimesheetsModel.student_timesheets_select_fixed_status_shifts_Result">
+                <ScalarProperty Name="eml_description" ColumnName="eml_description" />
+                <ScalarProperty Name="shift_start_datetime" ColumnName="shift_start_datetime" />
+                <ScalarProperty Name="shift_end_datetime" ColumnName="shift_end_datetime" />
+                <ScalarProperty Name="hours_worked" ColumnName="hours_worked" />
+                <ScalarProperty Name="shift_notes" ColumnName="shift_notes" />
+                <ScalarProperty Name="hourly_rate" ColumnName="hourly_rate" />
+                <ScalarProperty Name="submitted_to" ColumnName="submitted_to" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="pay_week_date" ColumnName="pay_week_date" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="student_timesheets_select_if_student_has_paid_shifts" FunctionName="StudentTimesheetsModel.Store.student_timesheets_select_if_student_has_paid_shifts" />
+          <FunctionImportMapping FunctionImportName="student_timesheets_select_supervisor_name" FunctionName="StudentTimesheetsModel.Store.student_timesheets_select_supervisor_name">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="StudentTimesheetsModel.student_timesheets_select_supervisor_name_Result">
+                <ScalarProperty Name="first_name" ColumnName="first_name" />
+                <ScalarProperty Name="last_name" ColumnName="last_name" />
+                <ScalarProperty Name="preferred_name" ColumnName="preferred_name" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="student_timesheets_submit_job_shift" FunctionName="StudentTimesheetsModel.Store.student_timesheets_submit_job_shift" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

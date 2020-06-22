@@ -3,7 +3,6 @@
 ## From Github https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 # Avoid database files
-*.edmx
 */Metadata.cs
 */ModelPartialClasses.cs
 
@@ -150,7 +149,9 @@ publish/
 *.azurePubxml
 # TODO: Comment the next line if you want to checkin your web deploy settings
 # but database connection strings (with potential passwords) will be unencrypted
-*.pubxml
+# NOTE 2/7/20: This was changed to only ignore local publish profiles in preparation
+# for Travis-CI support
+Gordon360/Properties/PublishProfiles/*.pubxml
 *.publishproj
 
 # Microsoft Azure Web App publish settings. Comment the next line if you want to
