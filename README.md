@@ -6,7 +6,7 @@ Dive in.
 ## Table of Contents
 - [Machines and Sites](#machines-and-sites)
     - [Deploying to the Api Site](#deploying-to-the-api-site)
-    - [Deploying to the Front-end site](#deploying-to-the-front-end-site)
+    - [Deploying to the Front-end site (deprecated)](#deploying-to-the-front-end-site)
 - [Running the API locally](#running-the-api-locally)
     - [Preliminary setup](#preliminary-setup)
     - [Building and running](#building-and-running)
@@ -137,7 +137,7 @@ Data which is stored upon startup includes:
 
 ## The Database
 
-The `CCT`and `MyGordon` databases exist in:
+The `CCT` and `MyGordon` databases exist in:
 - `admintrainsql.gordon.edu` - The development/test database server
 - `adminprodsql.gordon.edu` -  The production/live database server.
 
@@ -362,7 +362,7 @@ It's sometimes useful to look at the database directly, to see the schema or che
 * Shift-right-click SSMS (SQL Server Management Studio) and select "Run as ..."
 * Run as "cct.service"
 * Connect to "ADMINTRAINSQL" database server (or "ADMINPRODSQL")
-* Expand "Databases" then "CCT" then "Views"
+* Expand "Databases" then "CCT" or "MyGordon" (the two currently used databases) then "Views"
 * To see schemas, expand "dbo." entries and their "columns"
 * To see data, right-click a view and select "Select top 1000 rows"
 
@@ -370,21 +370,35 @@ It's sometimes useful to look at the database directly, to see the schema or che
 
 Everytime you update the one of the databases with a new table, column, view or stored procedure, or modify the existing ones with different parameters or return values, you need to get the corresponding Entity Database Model XML in the API. Editing it manually is not recommended, since it may cause unexpected errors such as PublicStudentData error.
 
+<div style="background-color:#eee;padding:10px 20px">
+<i><strong>Permissions Note:</strong></i>
+<br>If data tables appears to be missing from edmx generation or if some kind of "SELECT permission denied" error occurs during testing, you may need to be running Visual Studio as the cct.service user (or obtain the appropriate permissions for yourself) before generating these files. (Summer 2020 note)</div>
+
+#### UPDATE EDMX FILES
 Visual Studio provides auto-generation of .edmx files, with the following procedure:
-* Use remote desktop to get to the Windows server VM
-* Open Visual Studio and load the solution file
-* In the solution explorer, expand the "Models" folder and delete the previous <database name>_DB_MODELS.edmx which represents the database to which you made changes; for example, if it was the CCT database that was changed, delete CCT_DB_MODELS.edmx, right-click on it and press delete (It's okay, we can remake it)
-* Right-click "Models", expand "Add" and press "New Item" (If you can see ADO.NET Entity Data Model in here, you may press that as well)
-* Under Visual C# panel, access "Data" and find ADO.NET Entity Data Model. Name it `<database name>_DB_Models` and create it
-* In the Wizard, the default option should be "EF Designer from database". If it is not, change to this option and head next
-* Choose the data connection "<database name>Entities (Gordon360)" (though, if it is CCT, then put a "1" after "Entities")
-* Make sure you check "Save connection setting in Web.Config as:" and name the saved settings `<database name>Entities` (again, if it is CCT, it should be "CCTEntities1" with that additional "1")
-* Next, you will see the wizard retrieving the database objects from our CCT database; check all boxes in the panel but you should uncheck the option "Pluralize or singularize generated object names"
-* Name the Model Namespace as `Gordon360` and press finish
-	
+* *Setup*
+  * Use remote desktop to get to the Windows server VM
+  * Open Visual Studio and load the solution file
+
+* *Deleting the old edmx files*
+  * In the solution explorer, expand the "Models" folder and delete the previous `<database name>_DB_MODELS.edmx` which represents the database to which you made changes; for example, if it was the CCT database that was changed, delete CCT_DB_MODELS.edmx by right clicking and selecting 'delete' (it's okay, we can remake it)
+  * At the bottom of the `web.config` file there is a `<connectionStrings>` tag with an `<add ...>` tag for every connection string nested within. Delete the connection string (the `<add ...>` tag) for the DB connection you are regenerating (if this is confusing, [this step](#connection-string) explains why you may need it deleted)
+  
+* *Generating the new edmx files*
+  * Right-click "Models", expand "Add" and press "New Item" (If you can see ADO.NET Entity Data Model in here, you may press that as well)
+  * Under Visual C# panel, access "Data" and find ADO.NET Entity Data Model. Name it `<database name>_DB_Models` and create it
+  * In the Wizard, the default option should be "EF Designer from database". If it is not, change to this option and head next
+  * Choose the data connection "`<database name>Entities` (Gordon360)" (though, if it is CCT, there should be a "1" after "Entities"). If the appropriate connection does not exist, see <a href="#create-connection">below</a> to create one
+  * <span id="connection-string"><!--anchor--></span>
+  Make sure you check "Save connection setting in Web.Config as:" and name the saved settings `<database name>Entities` (again, if it is CCT, it should be "CCTEntities1" with that additional "1"). If there is an error that the name already exists, it is because the connection string needs to be removed from `web.config` (see above)
+  * Next, you will see the wizard retrieving the database objects from our CCT database; check all boxes in the panel but you should uncheck the option "Pluralize or singularize generated object names"
+  * Name the Model Namespace as `Gordon360` and press finish
+
+#### CREATE NEW EDMX FILES
 If you are attempting to connect the API to a database other than the ones to which it is already connected, you will need to create an entirely new edmx. To do this, follow the instructions above for updating, taking note of the following points:
 * You do not need to delete any edmx files, since you are now creating the first instance of a different edmx
-* None of the options for data connection will fit your needs, so you will need to create a new option: 
+* <span id="create-connection"><!--anchor--></span>
+None of the options for data connection will fit your needs, so you will need to create a new option: 
 	* Click "New Connection..."
 	* If prompted "Choose Data Source", choose "Microsoft SQL Server"
 	* For "Server name", put `admintrainsql.gordon.edu`
@@ -558,6 +572,8 @@ NOTE: facultytest is a super admins in PRODAPIDATA, stafftest is a super admins 
 In OAuth, there are two servers including the one running your app. The server running your app doesn't authenticate people directly, it relies on the second server to tell it if a given person is allowed access. This second server is called the Authentication Server.
 
 In our project, the Authentication Server and the App Server are actually the same. They are only separated code-wise. You could say that the *App* is the ApiControllers folder and the *Authentication Server* is the AuthorizationServer folder (Recall that it is currently named incorrectly, sorry. We haven't changed the name because it would require changing multiple import statements, and we don't have time to debug after the change).
+
+*__Note: See the section on <a href="#manual-test">Manually Testing the API</a> for most up-to-date instructions on authenticating your test HTTP requests.__*
 
 Accepts a form encoded object in the body of the request:
 ```
@@ -848,24 +864,20 @@ What is it? Resource that represents information related to schedule.
 ### Victory Promise
 What is it? Resource that represents the user's scores on the four pillars of the victory promise.
 
-#### GET
+##### GET
 
 `api/vpscore` Get the victory promise scores of the currently logged in user.
 
 ### News
 What is it? Resource that represents accepted student news entries and news categories.
 
-### GET 
+##### GET 
 
 `api/news/category` Gets the full list of category names used to categorize student news as well as category ids and sort order. 
 
-### GET
+`api/news/not-expired` Gets every student news entry that has been accepted and has not yet been in the database 2 weeks or, if the poster set a specific date of expiration, has an expiration date later than the current day.
 
-`api/news/not-expired`Gets every student news entry that has been accepted and has not yet been in the database 2 weeks or, if the poster set a specific date of expiration, has an expiration date later than the current day.
-
-### GET
-
-`api/news/new`Gets every student news entry that has been accepted, has not expired (as described above), and is new since 10am on the day before.
+`api/news/new` Gets every student news entry that has been accepted, has not expired (as described above), and is new since 10am on the day before.
 
 ## API Testing
 
@@ -894,12 +906,15 @@ Navigate to the API Tests folder:
 
 Install pytest: `pip install -U pytest`
 
+*Note: If you encounter an error of a missing requests import, you may need to install it with `pip install requests` (Summer 2020 fix)*
+
 Check the `hostURL` in test_gordon360_pytest.py if it is pointing to the correct backend 
 
 Run the tests:
 `pytest` -- This runs all the tests.
 `pytest test_gordon360_pytest.py -k '{name of def}'` -- This runs a specific test based on {name of def}.
 
+<span id="manual-test"><!--anchor--></span>
 #### Manually Testing the API
 
 To manually test the API, use an API development/testing app like [Postman](https://www.getpostman.com/).
