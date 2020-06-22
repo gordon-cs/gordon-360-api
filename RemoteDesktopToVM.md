@@ -69,22 +69,21 @@ Ensure that you are connected to the Gordon network (either locally or through a
 ## Connect from MacOS
 
 1.	Open Microsoft Remote Desktop
-o	Go to search bar, on the left side of the taskbar on your machine and type in 'Remote'.
-o	Launch the Microsoft Remote Desktop app.
+   -	Go to search bar, on the left side of the taskbar on your machine and type in 'Remote'.
+   -	Launch the Microsoft Remote Desktop app.
 2.	Add the PC
-o	In the Microsoft Remote Desktop window, click on 'Preferences'.
-o	Press the '+' sign in the bottom left.
-o	Name the Gateway name whatever you’d like.
-o	For 'Server', type in CS-RDSH-02.gordon.edu (not case-sensitive).
-o	Enter your Gordon credentials for 'User name' and 'Password'.
-o	Close the Preferences window.
+   -	In the Microsoft Remote Desktop window, click on 'Preferences'.
+   -	Press the '+' sign in the bottom left.
+   -	Name the Gateway name whatever you’d like.
+   -	For 'Server', type in CS-RDSH-02.gordon.edu (not case-sensitive).
+   -	Enter your Gordon credentials for 'User name' and 'Password'.
+   -	Close the Preferences window.
 3.	Run and connect
-o	In the Microsoft Remote Desktop window, click on 'New'.
-o	Name the Connection name whatever you’d like (I recommend the as the Gateway name’
-o	Under 'PC name', type in CS-RDSH-02 (not case-sensitive).
-o	Select the Gateway you created from the dropdown.
-o	Enter your Gordon credentials for 'User name' and 'Password'.
-o	Close the Edit Remote Desktops window
-o	Select the remote connection you just created under 'My Desktops' and press 'Start' (or double click).
-o	A pop-up will be shown asking 'Accept Certificate?'. You may check the one available option to never see the pop-up again and click on 'accept'.
-
+   -	In the Microsoft Remote Desktop window, click on 'New'. 
+   -	Name the Connection name whatever you’d like (I recommend the as the Gateway name’
+   -	Under 'PC name', type in CS-RDSH-02 (not case-sensitive).
+   -	Select the Gateway you created from the dropdown.
+   -	Enter your Gordon credentials for 'User name' and 'Password'.
+   -	Close the Edit Remote Desktops window
+   -	Select the remote connection you just created under 'My Desktops' and press 'Start' (or double click).
+   -	A pop-up will be shown asking 'Accept Certificate?'. You may check the one available option to never see the pop-up again and click on 'accept'.
