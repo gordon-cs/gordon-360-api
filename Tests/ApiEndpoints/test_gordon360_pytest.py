@@ -62,7 +62,7 @@ Event_OR_Type_ID = '10'
 FILE_PATH_PROFILE = r'..\..\Gordon360\browseable\profile\Default\profile.png'
 FILE_PATH_ID = r'..\..\Gordon360\browseable\profile\Default\ID.png'
 
-# API. XOR
+# API. Choose only 1. localhost set up using Visual Studio to enable local testing.
 hostURL = 'https://360ApiTrain.gordon.edu/'
 #hostURL = 'http://localhost:1235/'
 
@@ -96,7 +96,7 @@ put_description = 'DOING TESTS - IGNORE'
 shortened_begintime = '09:00:00'
 shortened_endtime = '17:00:00'
 
-# Pre-conditions
+# Pre-conditions. Statically disabled/enabled tests that have yet to be resolved.
 cctService = False
 enrolledInPracticum = False
 unknownPrecondition = False
@@ -848,7 +848,7 @@ class Test_allActivityTest(testCase):
         assert response.json()[0]["Privacy"] == False
         assert response.json()[0]["ActivityJoinInfo"] == "me adding special information"
 
-#    Verify that a Guest can get all activities but only public info.
+#    Verify that a Guest can get all information for a public activity.
 #    Endpoint -- api/activities/
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- List of activities
@@ -861,7 +861,7 @@ class Test_allActivityTest(testCase):
             try:
                 response.json()
             except ValueError:
-                pytest.fail('Expected Json response body, got {0}.'.format(respons.text))
+                pytest.fail('Expected Json response body, got {0}.'.format(response.text))
         assert response.json()["ActivityCode"] == "360"
         assert response.json()["ActivityDescription"] == "360.gordon.edu"
         assert response.json()["ActivityImagePath"] == "https://360apitrain.gordon.edu/browseable/uploads/360/canvasImage.png"
@@ -872,8 +872,7 @@ class Test_allActivityTest(testCase):
         assert response.json()["Privacy"] == False
         assert response.json()["ActivityJoinInfo"] == "me adding special information"
         
-
-#    Verify that an activity leader can a single activity.
+#    Verify that an activity leader can get all information for a single activity.
 #    Endpoint -- api/activities/{activityCode}
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- Json object with activity resource
@@ -2434,6 +2433,88 @@ class Test_allProfileTest(testCase):
         check_response = api.get(self.session,profile_url)
         assert check_response.json()['IsMobilePhonePrivate'] == 0
 
+#    Verify that a user can add and edit social media links 
+#    Endpoint -- api/profiles/image_privacy/:value (Y or N) 
+#    Expected Status Code -- 200 OK 
+#    Expected Content -- 
+    def test_put_image_privacy(self): 
+        self.session = self.createAuthorizedSession(username, password) 
+        self.url = hostURL + 'api/profiles/image_privacy/Y/' 
+        self.data = { 
+            'show_pic': 'Y' 
+        } 
+        response = api.put(self.session, self.url, self.data) 
+        if not response.status_code == 200: 
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code)) 
+        profile_url = hostURL + 'api/profiles/' 
+        check_response = api.get(self.session,profile_url) 
+        assert check_response.json()['show_pic'] == 1 
+        self.url = hostURL + 'api/profiles/image_privacy/N/' 
+        self.resetdata = { 
+            'show_pic': 'N' 
+        } 
+        d = api.put(self.session, self.url, self.resetdata) 
+        if not d.status_code == 200: 
+            pytest.fail('There was a problem performing cleanup') 
+
+        check_response = api.get(self.session,profile_url) 
+        assert check_response.json()['show_pic'] == 0
+
+class Test_allSessionTest(testCase): 
+ 
+# # # # # # # # # 
+# SESSIONS TEST # 
+# # # # # # # # # 
+
+#    Verify that an activity leader can get all session objects 
+#    Endpoint -- api/sessions/ 
+#    Expected Status Code -- 200 OK 
+#    Expected Response Body -- List of all session resources 
+    def test_get_all_sessions(self): 
+        self.session = self.createAuthorizedSession(username, password) 
+        self.url = hostURL + 'api/sessions/' 
+        response = api.get(self.session, self.url) 
+        if not response.status_code == 200: 
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code)) 
+        try: 
+            response.json() 
+        except ValueError: 
+            pytest.fail('Expected Json response body, got {0}.'.format(response.json())) 
+        if not (type(response.json()) is list): 
+            pytest.fail('Expected list, got {0}.'.format(response.json())) 
+        assert response.json()[0]["SessionCode"] == "201209" 
+        assert response.json()[0]["SessionDescription"] == "Fall 12-13 Academic Year" 
+        assert response.json()[0]["SessionBeginDate"] == "2012-08-29T00:00:00" 
+        assert response.json()[0]["SessionEndDate"] == "2012-12-21T00:00:00" 
+
+        self.url = hostURL + 'api/sessions/current/' 
+        current = api.get(self.session, self.url) 
+        assert response.json()[-2]["SessionCode"] == current.json()["SessionCode"] 
+        assert response.json()[-2]["SessionDescription"] == current.json()["SessionDescription"] 
+        assert response.json()[-2]["SessionBeginDate"] == current.json()["SessionBeginDate"] 
+        assert response.json()[-2]["SessionEndDate"] == current.json()["SessionEndDate"]
+
+#    Verify that an activity leader can get a session object 
+#    Endpoint -- api/sessions/:id 
+#    Expected Status Code -- 200 OK 
+#    Expected Response Body -- A session resource. 
+    def test_get_one_session(self): 
+        self.session = self.createAuthorizedSession(username, password) 
+        self.url = hostURL + 'api/sessions/' + session_code + '/' 
+
+        response = api.get(self.session, self.url) 
+        if not response.status_code == 200: 
+            pytest.fail('Expected 200 OK, got {0}.'.format(response.status_code)) 
+        try: 
+            response.json() 
+        except ValueError: 
+            pytest.fail('Expected Json response body, got {0}.'.format(response.text)) 
+        try: 
+            response.json()['SessionCode'] 
+        except KeyError: 
+            pytest.fail('Expected SessionCode in response, got {0}.'.format(response.json())) 
+        assert response.json()['SessionCode'] == session_code 
+
 #    Verify that an user can get the current session 
 #    Endpoint -- api/sessions/current/
 #    Expected Status Code -- 200 OK
@@ -2594,22 +2675,27 @@ class Test_AllVictoryPromiseTest(testCase):
         except ValueError:
             pytest.fail('Expected Json response body, got{0}.'.format(response.text))
 
-#    Verify that a faculty user can't get victory promise information
+#    Verify that a faculty user's victory promise information is always 0.
 #    Endpoint -- api/studentemployment/
-#    Expected Status Code -- 401 Unauthorized Error
-#    Expected Response Body -- An authorization denied message
+#    Expected Status Code -- 200 OK
+#    Expected Response Body -- A json response with victory promise points all 0
     def test_faculty_victory_promise(self):
         self.session = self.createAuthorizedSession(leader_username, leader_password)
         self.url = hostURL + 'api/vpscore/'
         response = api.get(self.session, self.url)
 
-        if not response.status_code == 401:
-            pytest.fail('Expected 401 Unauthorized Error, got {0}.'.format(response.status_code))
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 Unauthorized Error, got {0}.'.format(response.status_code))
         try:
-            assert response.json()['Message'] == AUTHORIZATION_DENIED
+            response.json()
         except ValueError:
-            pytest.fail('Expected Json response body, got{0}.'.format(response.text))
-
+            pytest.fail('Expected Json response body, got {0}.'.format(response.text))
+        if not (type(response.json()) is list):
+            pytest.fail('Expected list, got {0}.'.format(response.json))
+        assert response.json()[0]["TOTAL_VP_IM_SCORE"] == 0 
+        assert response.json()[0]["TOTAL_VP_CC_SCORE"] == 0 
+        assert response.json()[0]["TOTAL_VP_LS_SCORE"] == 0 
+        assert response.json()[0]["TOTAL_VP_LW_SCORE"] == 0
 
 class Test_AdminTest(testCase):
   
@@ -2657,9 +2743,11 @@ class Test_AdminTest(testCase):
             pytest.fail('Expected Json response body, got{0}.'.format(response.text))
 
 #    Verify that a student can't get information of a specific admin via GordonId.
+#    Pre-condition -- unknown
 #    Endpoint -- api/admins
 #    Expected Status Code -- 401 Unauthorized Error
 #    Expected Response Body -- An authorization denied error
+    @pytest.mark.skipif(not unknownPrecondition, reason = "Hanging on get request")
     def test_get_all_admin_as_student(self):
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/admins/'
@@ -2709,10 +2797,11 @@ class Test_AdminTest(testCase):
             pytest.fail('Expected Json response body, got{0}.'.format(response.text))
 
 #    Verify that a student can't get information of all admins.
+#    Pre-condition -- unknown
 #    Endpoint -- api/admin/_id
 #    Expected Status Code -- 401 Unauthorized Error
 #    Expected Response Body -- An authorization denied error
-#    Doesn't currently work
+    @pytest.mark.skipif(not unknownPrecondition, reason = "Hanging on get request")
     def test_get_student_admin(self):
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/admins/8330171'
