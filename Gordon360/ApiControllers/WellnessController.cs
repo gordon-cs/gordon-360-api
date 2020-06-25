@@ -37,9 +37,9 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>
-        ///  Gets current status os student
+        ///  Gets current wellness status of student
         /// </summary>
-        /// <returns>A boolean</returns>
+        /// <returns>Json WellnessViewModel</returns>
         [HttpGet]
         [Route("")]
         public IHttpActionResult Get()
@@ -59,11 +59,29 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
 
+        /// <summary>
+        ///  Gets question for wellness check from the back end
+        /// </summary>
+        /// <returns> json WellnessQuestionViewModel</returns>
+        [HttpGet]
+        [Route("question")]
+        public IHttpActionResult GetQuestion()
+        {
+            var result = _wellnessService.GetQuestion();
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
 
         /// <summary>
-        ///  Gets answer to the wellness check answer and sends it to the back end.
-        ///  If answer boolean is true: student is feeling symptomatic
-        ///  If answer boolean is false: student is not feeling symptomatic
+        ///  Stores the user's wellness check answer, with a timestamp.
+        ///  If answer boolean is true: student is feeling symptomatic(feeling sick).
+        ///  If answer boolean is false: student is not feeling symptomatic(feeling fine).
         /// </summary>
         /// <returns>Ok if message was recorded</returns>
         [HttpPost]

@@ -7,12 +7,16 @@ namespace Gordon360.Models.ViewModels
 {
     public class WellnessViewModel
     {
+        //returns true if last answered question is still valid
+        public Nullable<bool> answerValid { get; set; }
 
-        public Nullable<bool> answerValid { get; set; } //returns true if last answered question is still valid
+        //user's answer to wellness question. either true or false. 
+        // True: "I am symptomatic"
+        // false: "I am not symptomatic"
+        public Nullable<bool> userAnswer { get; set; }
 
-        public Nullable<bool> userAnswer { get; set; } //answer to wellness question
-
-        public DateTime timestamp { get; set; } //time stamp of when student last answered the question
+        //time stamp of when user last answered the wellness question
+        public DateTime timestamp { get; set; }
 
     }
 }

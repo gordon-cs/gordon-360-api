@@ -76,7 +76,6 @@ namespace Gordon360.Services
             });
 
 
-
             return wellnessModel;
 
         }
@@ -121,7 +120,42 @@ namespace Gordon360.Services
 
         }
 
+        /// <summary>
+        /// gets the question for the wellness check from the back end
+        /// </summary>
+        /// <returns>list of strings with questions and prompts</returns>
 
+        public IEnumerable<WellnessQuestionViewModel> GetQuestion()
+        {
+
+            var result = RawSqlQuery<WellnessQuestionViewModel>.query("GET_HEALTH_CHECK_QUESTION"); //run stored procedure
+
+
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+
+
+            var wellnessQuestionModel = result.Select(x =>
+            {
+                WellnessQuestionViewModel y = new WellnessQuestionViewModel();
+
+                y.question = x.question;
+
+                y.yesPrompt = x.yesPrompt;
+
+                y.noPrompt = x.noPrompt;
+
+                return y;
+            });
+
+
+
+            return wellnessQuestionModel;
+
+        }
 
     }
+
 }

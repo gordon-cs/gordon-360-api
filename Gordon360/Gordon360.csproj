@@ -495,6 +495,7 @@
     <Compile Include="Models\ViewModels\SessionViewModel.cs" />
     <Compile Include="Models\ViewModels\SliderViewModel.cs" />
     <Compile Include="Models\ViewModels\VictoryPromiseViewModel.cs" />
+    <Compile Include="Models\ViewModels\WellnessQuestionViewModel.cs" />
     <Compile Include="Models\view_cct_alumni.cs">
       <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
     </Compile>
@@ -632,7 +633,6 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:2474</IISUrl>
           <IISUrl>http://localhost:5849</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
