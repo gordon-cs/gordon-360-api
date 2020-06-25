@@ -883,7 +883,7 @@ What is it? Resource that represents accepted student news entries and news cate
 
 
 ### Wellness Check
-Back endpoint responsible for fetching and sending information to the databse reguarding the answers to the wellness check.
+Back endpoint responsible for fetching and sending information to the database regarding the answers to the wellness check.
 
 ##### GET 
 
