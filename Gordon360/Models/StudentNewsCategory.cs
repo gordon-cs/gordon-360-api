@@ -14,8 +14,17 @@ namespace Gordon360.Models
     
     public partial class StudentNewsCategory
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public StudentNewsCategory()
+        {
+            this.StudentNews = new HashSet<StudentNews>();
+        }
+    
         public int categoryID { get; set; }
         public string categoryName { get; set; }
         public Nullable<int> SortOrder { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<StudentNews> StudentNews { get; set; }
     }
 }

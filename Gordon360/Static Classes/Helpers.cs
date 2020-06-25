@@ -218,10 +218,12 @@ namespace Gordon360.Static.Methods
                 catch (ArgumentNullException e)
                 {
                     // The DownloadData function didn't return anything!
+                    System.Diagnostics.Debug.WriteLine(e.Message);
                 }
                 catch (WebException e)
                 {
                     // The DownloadData function wasn't able to connect to the source!
+                    System.Diagnostics.Debug.WriteLine(e.Message);
                 }
 
                 // Begin to read contents with correct encoding
@@ -240,6 +242,7 @@ namespace Gordon360.Static.Methods
                 catch (ArgumentException e)
                 {
                     // Something was wrong with the memory stream
+                    System.Diagnostics.Debug.WriteLine(e.Message);
                 }
 
                 return xmlDoc;
@@ -370,7 +373,7 @@ namespace Gordon360.Static.Methods
             IEnumerable<String> result = null;
             try
             {
-                // Attempt to query the DB
+                // Attempt to query the DB for data
                 result = RawSqlQuery<String>.query(SQLQuery.ALL_ACCOUNTS_STATES);
             }
             catch
@@ -432,55 +435,6 @@ namespace Gordon360.Static.Methods
                 //
             }
             // Filter out results with null or empty active directory names
-            return result;
-        }
-
-        // Get student news information: query the database and format result according to view model type given
-        public static IEnumerable<StudentNewsViewModel> GetNewsNotExpired()
-        {
-            IEnumerable<StudentNewsViewModel> result = null;
-            try
-            {
-                // Attempt to query the DB
-                result = RawSqlQuery<StudentNewsViewModel>.query(SQLQuery.NEWS_NOT_EXPIRED);
-            }
-            catch
-            {
-                //
-            }
-
-            return result;
-        }
-
-        public static IEnumerable<StudentNewsViewModel> GetNewsNew()
-        {
-            IEnumerable<StudentNewsViewModel> result = null;
-            try
-            {
-                // Attempt to query the DB
-                result = RawSqlQuery<StudentNewsViewModel>.query(SQLQuery.NEWS_NEW);
-            }
-            catch
-            {
-                //
-            }
-
-            return result;
-        }
-
-        public static IEnumerable<StudentNewsCategory> GetNewsCategories()
-        {
-            IEnumerable<StudentNewsCategory> result = null;
-            try
-            {
-                // Attempt to query the DB
-                result = RawSqlQuery<StudentNewsCategory>.query(SQLQuery.NEWS_NEW);
-            }
-            catch
-            {
-                //
-            }
-
             return result;
         }
     }
