@@ -892,7 +892,7 @@ Back endpoint responsible for fetching and sending information to the database r
 
 ##### POST
 
-`api/wellness` Sends an answer boolean to the database that specifies whether a student is symptomatic or not, true =  Symptomatic, false = not symptomatic
+`api/wellness` Sends an answer boolean to the database that specifies whether a student is symptomatic or not: true = symptomatic, false = not symptomatic.
 
 
 
