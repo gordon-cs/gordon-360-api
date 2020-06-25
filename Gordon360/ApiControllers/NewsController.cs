@@ -1,6 +1,7 @@
 ﻿using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Repositories;
 using Gordon360.Services;
+using Gordon360.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -90,7 +91,33 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
 
+        /** Create a new news item to be added to the database
+         */
+        [HttpPost]
+        [Route("", Name="News")] //?
+        public IHttpActionResult Post([FromBody] StudentNews newsItem)
+        {
+            if (!ModelState.IsValid /*|| validate input from newsItem here??*/ )
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
 
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+            
+            var result = _newsService.Add(newsItem);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Created("News", result);
+        }
 
 
     }

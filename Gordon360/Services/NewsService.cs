@@ -95,5 +95,14 @@ namespace Gordon360.Services
             // });
             // return trimmedResult;
         }
+
+        public StudentNews Add(StudentNews newsItem)
+        {
+
+            // TODO validate the news item?
+
+            // TODO add stored procedure
+            return null;
+        }
     }
 }
