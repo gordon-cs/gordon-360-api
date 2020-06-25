@@ -881,6 +881,23 @@ What is it? Resource that represents accepted student news entries and news cate
 
 `api/news/new` Gets every student news entry that has been accepted, has not expired (as described above), and is new since 10am on the day before.
 
+
+### Wellness Check
+Back endpoint responsible for fetching and sending information to the database regarding the answers to the wellness check.
+
+##### GET 
+
+`api/wellness` Gets the latest answer a student has sent, as well as a boolean that specifies whether the answer is still valid based on when the answer was submitted.  
+
+`api/wellness/Question` Gets the wellness check question to be displayed on the front end from the Data base.
+
+
+##### POST
+
+`api/wellness` Sends an answer boolean to the database that specifies whether a student is symptomatic or not: true = symptomatic, false = not symptomatic.
+
+
+
 ## API Testing
 
 ### Introduction
