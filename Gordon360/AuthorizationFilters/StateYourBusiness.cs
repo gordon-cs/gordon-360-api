@@ -12,7 +12,7 @@ namespace Gordon360.AuthorizationFilters
 {
     /* Authorization Filter.
      * It is actually an action filter masquerading as an authorization filter. This is because I need access to the 
-     * parameters passed to the controller. Authorizatoin Filters don't have that access. Action Filters do.
+     * parameters passed to the controller. Authorization Filters don't have that access. Action Filters do.
      * 
      * Because of the nature of how we authorize people, this code might seem very odd, so I'll try to explain. 
      * Proceed at your own risk. If you can understand this code, you can understand the whole project. 
@@ -346,6 +346,13 @@ namespace Gordon360.AuthorizationFilters
         {
             switch (resource)
             {
+                case Resource.SHIFT:
+                    {
+                        if (user_position == Position.STUDENT)
+                            return true;
+                        return false;
+                    }
+
                 case Resource.MEMBERSHIP:
                     {
                         // User is admin
@@ -400,6 +407,12 @@ namespace Gordon360.AuthorizationFilters
         {
             switch (resource)
             {
+                case Resource.SHIFT:
+                    {
+                        if (user_position == Position.STUDENT)
+                            return true;
+                        return false;
+                    }
                 case Resource.MEMBERSHIP:
                     {
                         // User is admin
@@ -540,6 +553,10 @@ namespace Gordon360.AuthorizationFilters
         {
             switch (resource)
             {
+                case Resource.SHIFT:
+                    if (user_position == Position.STUDENT)
+                        return true;
+                    return false;
                 case Resource.MEMBERSHIP:
                     {
                         // User is admin
@@ -547,17 +564,17 @@ namespace Gordon360.AuthorizationFilters
                             return true;
                         var membershipService = new MembershipService(new UnitOfWork());
                         var membershipID = (int)context.ActionArguments["id"];
-                        var membershipToConsider = membershipService.GetMembershipsForStudent(user_name);
-                        var is_membershipOwner = ((MEMBERSHIP)membershipToConsider).ID_NUM.ToString() == user_id;
+                        var membershipToConsider = membershipService.GetSpecificMembership(membershipID);
+                        var is_membershipOwner = membershipToConsider.ID_NUM.ToString() == user_id;
                         if (is_membershipOwner)
                             return true;
 
-                        var activityCode = ((MEMBERSHIP)membershipToConsider).ACT_CDE;
+                        var activityCode = membershipToConsider.ACT_CDE;
 
                         var isGroupAdmin = membershipService.GetGroupAdminMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
                         if (isGroupAdmin)
                             return true;
-
+                        
                         return false;
                     }
                 case Resource.MEMBERSHIP_REQUEST:

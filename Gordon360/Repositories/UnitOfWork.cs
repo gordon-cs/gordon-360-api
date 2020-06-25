@@ -21,6 +21,8 @@ namespace Gordon360.Repositories
         private IRepository<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> _FacultyScheduleRepository;
         private IRepository<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> _StudentScheduleRepository;
         private IRepository<MYSCHEDULE> _MyScheduleRepository;
+        private IRepository<Save_Rides> _RideRepository;
+        private IRepository<Save_Bookings> _BookingRepository;
         private IRepository<PART_DEF> _ParticipationRepository;
         private IRepository<SUPERVISOR> _SupervisorRepository;
         private IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> _ActivityPerSessionRepository;
@@ -35,6 +37,8 @@ namespace Gordon360.Repositories
         private IRepository<DiningInfo> _DiningInfoRepository;
         private IRepository<ERROR_LOG> _ErrorLogRepository;
         private IRepository<Schedule_Control> _ScheduleControlRepository;
+        private IRepository<StudentNewsViewModel> _StudentNewsRepository;
+        private IRepository<StudentNewsCategoryViewModel> _StudentNewsCategoryRepository;
 
         private CCTEntities1 _context;
 
@@ -151,7 +155,22 @@ namespace Gordon360.Repositories
         {
             get { return _ErrorLogRepository ?? (_ErrorLogRepository = new GenericRepository<ERROR_LOG>(_context)); }
         }
-
+        public IRepository<StudentNewsViewModel> StudentNewsRepository
+        {
+            get { return _StudentNewsRepository ?? (_StudentNewsRepository = new GenericRepository<StudentNewsViewModel>(_context)); }
+        }
+        public IRepository<StudentNewsCategoryViewModel> StudentNewsCategoryRepository
+        {
+            get { return _StudentNewsCategoryRepository ?? (_StudentNewsCategoryRepository = new GenericRepository<StudentNewsCategoryViewModel>(_context)); }
+        }
+        public IRepository<Save_Rides> RideRepository
+        {
+            get { return _RideRepository ?? (_RideRepository = new GenericRepository<Save_Rides>(_context)); }
+        }
+        public IRepository<Save_Bookings> BookingRepository
+        {
+            get { return _BookingRepository ?? (_BookingRepository = new GenericRepository<Save_Bookings>(_context)); }
+        }
 
         public bool Save()
         {
