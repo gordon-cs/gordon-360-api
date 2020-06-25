@@ -889,6 +889,8 @@ Back endpoint responsible for fetching and sending information to the database r
 
 `api/wellness` Gets the latest answer a student has sent, as well as a boolean that specifies whether the answer is still valid based on when the answer was submitted.  
 
+`api/wellness/Question` Gets the wellness check question to be displayed on the front end from the Data base.
+
 
 ##### POST
 
