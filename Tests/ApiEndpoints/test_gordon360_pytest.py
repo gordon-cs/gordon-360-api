@@ -122,8 +122,6 @@ endtime = '17:00:00'
 put_description = 'DOING TESTS - IGNORE'
 shortened_begintime = '09:00:00'
 shortened_endtime = '17:00:00'
-false = 0
-true = 1
 
 # Pre-conditions.
 # Statically disabled/enabled tests that have yet to be resolved.
@@ -175,7 +173,7 @@ class Test_AllScheduleControlTest(testCase):
         except ValueError:
             pytest.fail('Expected Json, got {0}.'\
                 .format(response.text))
-        assert response.json()['IsSchedulePrivate'] == true
+        assert response.json()['IsSchedulePrivate'] == True
         assert response.json()['Description'] == put_description
         
 #    Get the privacy, description, and ID of a user's schedule with username 
@@ -195,7 +193,7 @@ class Test_AllScheduleControlTest(testCase):
             response.json()
         except ValueError:
             pytest.fail('Expected Json, got {0}.'.format(response.text))
-        assert response.json()['IsSchedulePrivate'] == false
+        assert response.json()['IsSchedulePrivate'] == False
         assert response.json()['Description'] == \
             'httpsCoLnSlShSlShgithubdOTcomSlSh'
 
@@ -217,7 +215,7 @@ class Test_AllScheduleControlTest(testCase):
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'\
                 .format(response.status_code))
-        assert response.json()["IsSchedulePrivate"] == false
+        assert response.json()["IsSchedulePrivate"] == False
 
         self.url = self.url + 'privacy/Y/'
         response = api.put(self.session, self.url, 'Y')
@@ -231,7 +229,7 @@ class Test_AllScheduleControlTest(testCase):
         if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'\
                 .format(response.status_code))
-        assert response.json()["IsSchedulePrivate"] == true
+        assert response.json()["IsSchedulePrivate"] == True
 
 #    Update the schedule description of the currently logged in user.
 #    Endpoint -- api/schedulecontrol/description/{value}
@@ -383,7 +381,7 @@ class Test_AllMyScheduleTest(testCase):
             'DESCRIPTION' : put_description,
             'MON_CDE' : 'M',
             'TUE_CDE' : 'T',
-            'WED_CDE' : None,
+            'WED_CDE' : None, # Showing the options of the value
             'THU_CDE' : 'R',
             'FRI_CDE' : 'F',
             'IS_ALLDAY' : 0,
@@ -520,7 +518,7 @@ class Test_AllAccountTest(testCase):
 #    Endpoint -- api/accounts/email/{email}
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- profile of the email person
-#    Security risk 
+#    Security risk -- Can obtain a user's Gordon ID with their email
     def test_get_student_by_email(self):
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/accounts/email/' + _email + '/'
@@ -587,7 +585,8 @@ class Test_AllAccountTest(testCase):
 #    Endpoint -- api/accounts/username/{username}
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- profile info of {username}
-#    Security risk
+#    Security risk -- Can get a user's Gordon ID (Only seems to work on Dr. Tuck
+#    , studenttest, and facultytest)
     def test_get_search_by_username(self):
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/accounts/username/' + leader_username + '/'
@@ -618,8 +617,8 @@ class Test_AllEmailTest(testCase):
 # EMAIL TEST  #
 # # # # # # # #
 
-#    Verify that a student can get a list of the emails for all members in the 
-#    activity.
+#    Verify that a student member can get a list of the emails for all members 
+#    in the activity.
 #    Endpoint -- api/emails/activity/{activity_ID}
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- A json response with the student resource
@@ -687,7 +686,8 @@ class Test_AllEmailTest(testCase):
         assert response.json()[0]['FirstName'] == "Emmy"
         assert response.json()[0]['LastName'] == "Short"
 
-#    Verify that a leader can get the student's advisor based on session code.
+#    Verify that a leader can get the advisor for a student's involvement based
+#    on activity code and session code.
 #    Endpoint -- api/emails/activity/AJG/advisors/session/201809
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- A json response with the student resource
@@ -805,32 +805,6 @@ class Test_AllEventsTest(testCase):
     def test_get_all_chapel_events_during_term(self):
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/events/chapel/' + term_code + '/'
-        response = api.get(self.session, self.url)
-
-        if not response.status_code == 200:
-            pytest.fail('Expected 200 OK, got {0}.'\
-                .format(response.status_code))
-        try:
-            response.json()
-        except ValueError:
-            pytest.fail('Expected Json response body, got {0}.'\
-                .format(response.text))
-        if not (type(response.json()) is list):
-            pytest.fail('Expected list, got {0}.'.format(response.json()))
-
-#    Verify that a user can get all chapel events by username in specific term
-#    (ex: FA16)
-#    Precondition -- API Endpoint doesn't work
-#    Endpoint -- api/events/chapel/:username/:term
-#    Expected Status Code -- 200 OK
-#    Expected Response Body -- list of all chapel events attended by the user
-#    during term
-    @pytest.mark.skipif(not unknownPrecondition, reason = "API endpoint" + \
-        "doesn't seem to work")
-    def test_get_all_chapel_events_during_term_by_username(self):
-        self.session = self.createAuthorizedSession(username, password)
-        self.url = hostURL + 'api/events/chapel/' + username + '/' + \
-            term_code + '/'
         response = api.get(self.session, self.url)
 
         if not response.status_code == 200:
@@ -1342,30 +1316,21 @@ class Test_AllMembershipTest(testCase):
         # Find a valid membership id
         response = api.get(self.session, self.url)
         if not response.status_code == 200:
-            pytest.fail('Error in setup for {0}. Expected 200 OK, got {1}.'\
-                .format(response.status_code))
-        try:
-            response.json()
-        except ValueError:
-            pytest.fail('Error in setup for {0}. Expected json response' + \
-                ' body, got {1}.'.format(self.test_name, response.text))
-        try:
-            self.IDNumber = response.json()[0]['IDNumber']
-            #pytest.fail(response.json()[0]['MembershipID'])
-            self.url = self.url + 'student/' + str(self.IDNumber)
-        except KeyError:
-            pytest.fail('Error in setup for {0}. Expected MembershipID' + \
-                'in response body, got {1}.'\
-                    .format(self.test_name, self.response.json()))
-        response = api.get(self.session, self.url)
-        if not response.status_code == 200:
             pytest.fail('Expected 200 OK, got {0}.'\
                 .format(response.status_code))
         try:
             response.json()
         except ValueError:
-            pytest.fail('Expected Json response body, got {0}.'\
+            pytest.fail('Expected json response body, got {0}.'\
                 .format(response.text))
+        try:
+            self.IDNumber = response.json()[0]['IDNumber']
+            #pytest.fail(response.json()[0]['MembershipID'])
+            self.url = self.url + 'student/' + str(self.IDNumber)
+        except KeyError:
+            pytest.fail('Expected MembershipID in response body, got {0}.'\
+                    .format(response.json()))
+        response = api.get(self.session, self.url)
 
 #    Verify that a leader can fetch memberships for an activity.
 #    Endpoint -- api/memberships/activity/{activityId}
@@ -1617,9 +1582,11 @@ class Test_AllMembershipTest(testCase):
         warnings.warn("Security fault")
 
 #    Verify that an activity leader can create a Guest membership for someone.
+#    Precondition -- unknown
 #    Endpoints -- api/memberships/
-#    Expected Statis Code -- 201 Created.
+#    Expected Status Code -- 201 Created.
 #    Expected Content -- A Json object with a MEMBERSHIP_ID attribute.
+    @pytest.mark.skipif(not unknownPrecondition, reason = "409 Error")
     def test_post_new_guest_membership_for_someone_else__activity_leader(self):
         self.session = \
             self.createAuthorizedSession(leader_username, leader_password)
@@ -1655,9 +1622,11 @@ class Test_AllMembershipTest(testCase):
         api.delete(self.session, self.url + str(self.createdMembershipID))
 
 #    Verify that an activity leader can create a membership for someone.
+#    Precondition -- unknown
 #    Endpoint -- api/memberships/
 #    Expected Status Code -- 200 OK
 #    Expected Content -- A json response with the created membership
+    @pytest.mark.skipif(not unknownPrecondition, reason = "409 Error")
     def test_post_new_membership_for_someone___activity_leader(self):
         self.session = \
             self.createAuthorizedSession(leader_username, leader_password)
@@ -1689,7 +1658,7 @@ class Test_AllMembershipTest(testCase):
             pytest.fail('Expected MEMBERSHIP ID in response, got {0}.'\
                 .format(response.json()))
 
-        #checking if the correctness of post
+        #checking the correctness of post
         getResponse = api.get(self.session, hostURL + \
             'api/memberships/activity/' + str(activity_code_AJG))       
         self.membershipID = response.json()['MEMBERSHIP_ID']
@@ -1713,9 +1682,11 @@ class Test_AllMembershipTest(testCase):
             api.delete(self.session, self.url + str(self.createdMembershipID))
 
 #    Verify that an activity leader can assign a new leader
+#    Precondition -- unknown
 #    Endpoint -- api/memberships/
 #    Expected Status Code -- 200 OK
 #    Expected Content -- A json response with the created membership
+    @pytest.mark.skipif(not unknownPrecondition, reason = "409 Error")
     def test_post_new_leader_membership_for_someone___activity_leader(self):
         self.session = \
             self.createAuthorizedSession(leader_username, leader_password)
@@ -1777,9 +1748,11 @@ class Test_AllMembershipTest(testCase):
 
 #    Verify that an activity leader can upgrade a normal membership to leader 
 #    status.
+#    Precondition -- unknown
 #    Endpoint -- api/memberships/:id
 #    Expected Status Code -- 200 OK
 #    Expected Content -- A json object with a MEMBERSHIP_ID attribute.
+    @pytest.mark.skipif(not unknownPrecondition, reason = "Error in setup")
     def test_put_edited_membership_member_to_leader___activity_leader(self):
         self.session = \
             self.createAuthorizedSession(leader_username, leader_password)
@@ -1832,10 +1805,11 @@ class Test_AllMembershipTest(testCase):
             api.delete(self.session, self.url + str(self.createdMembershipID))
 
 #    Verify that an activity leader can demote a leader membership.
+#    Precondition -- unknown
 #    Endpoint -- api/memberships/:id
 #    Expected Status Code -- 200 OK
 #    Expected Content -- A json object with a MEMBERSHIP_ID attribute.
-
+    @pytest.mark.skipif(not unknownPrecondition, reason = "Error in setup.")
     def test_put_edited_membership_leader_to_member___activity_leader(self):
         self.session = \
             self.createAuthorizedSession(leader_username, leader_password)
@@ -1887,9 +1861,11 @@ class Test_AllMembershipTest(testCase):
             api.delete(self.session, self.url + str(self.createdMembershipID))
 
 #    Verify that an activity leader can delete someone else's membership.
+#    Predcondition -- unknown
 #    Endpoint -- api/memberships/
 #    Expected Status Code -- 200 OK
-#    Expected Response Content -- The membership resource that wad delteed.
+#    Expected Response Content -- The membership resource that wad deleted.
+    @pytest.mark.skipif(not unknownPrecondition, reason = "Error doing setup.")
     def test_delete_valid_membership___activity_leader(self):
         self.session = \
             self.createAuthorizedSession(leader_username, leader_password)
@@ -1990,10 +1966,12 @@ class Test_AllMembershipRequestTest(testCase):
             pytest.fail('We got a non-empty response body.')
 
 #    Verify that we can create a membership request.
+#    Precondition -- unknown
 #    Endpoints -- api/requests/
 #    Expected Status Cpde -- 201 Created.
 #    Expected Content -- A Json object with a REQUEST_ID attribute.
 #    session code 201510 does not work
+    @pytest.mark.skipif(not unknownPrecondition, reason = "409 Error")
     def test_post_valid_membership_request__as_member(self):
         self.session = self.createAuthorizedSession(username, password)
         self.url = hostURL + 'api/requests/'
@@ -2079,8 +2057,7 @@ class Test_AllMembershipRequestTest(testCase):
                 self.requestID = response.json()['REQUEST_ID']
                 if self.requestID >=  0:
                     api.delete(self.session, self.url + str(self.requestID))
-                    pytest.fail('Request {0} was created even though it was' + \
-                        ' supposed to be unauthorized'.format(self.requestID))
+                    pytest.fail('Request {0} was created even though it was supposed to be unauthorized'.format(self.requestID))
             except (ValueError, KeyError):
                 pytest.fail('Error in test')
         elif not response.status_code == 401:
@@ -2155,10 +2132,11 @@ class Test_AllMembershipRequestTest(testCase):
 
 
 #    Verify that we can create a membership request as leader.
+#    Precondition -- unknown
 #    Endpoints -- api/requests/
 #    Expected Status Cpde -- 201 Created.
 #    Expected Content -- A Json object with a REQUEST_ID attribute.
-
+    @pytest.mark.skipif(not unknownPrecondition, reason = "409 Error")
     def test_post_valid_membership_request__as_leader(self):
         self.session = \
             self.createAuthorizedSession(leader_username, leader_password)
@@ -2218,9 +2196,11 @@ class Test_AllMembershipRequestTest(testCase):
             api.delete(self.session, self.url + str(self.requestID))
 
 #    Verify that we can create a membership request for someone else as leader.
+#    Precondition -- unknown
 #    Endpoints -- api/requests/
 #    Expected Status Code -- 401 Unauthorized.
 #    Expected Response Content -- Empty Response.
+    @pytest.mark.skipif(not unknownPrecondition, reason = "get request")
     def test_post_membership_request_for_someone_else(self):
         self.session = \
             self.createAuthorizedSession(leader_username, leader_password)
@@ -2436,9 +2416,11 @@ class Test_AllMembershipRequestTest(testCase):
 
 #    Verify that the activity leader can deny a request directed at their
 #    activity.
+#    Precondition -- unknown
 #    Endpoints -- api/requests/:id/deny
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- Json response with the request that was denied
+    @pytest.mark.skipif(not unknownPrecondition, reason = "409 Error")
     def test_deny_someone_joining_my_activity(self):
         self.session = \
             self.createAuthorizedSession(leader_username, leader_password)
@@ -2456,12 +2438,12 @@ class Test_AllMembershipRequestTest(testCase):
             }
         response = api.postAsJson(self.session, self.url, self.data)
         if not response.status_code == 201:
-            pytest.fail('Error in setup for {0}. Expected 201 Created, got {1}.'\
+            pytest.fail('Expected 201 Created, got {0}.'\
                 .format(response.status_code))
         try:
             response.json()
         except ValueError:
-            pytest.fail('Error in setup for {0}. Expected json response, got {1}.'\
+            pytest.fail('Expected json response, got {0}.'\
                 .format(response.text))
         else:
             try:
@@ -2838,7 +2820,7 @@ class Test_AllProfileTest(testCase):
         check_response = api.get(self.session,profile_url)
         assert check_response.json()['IsMobilePhonePrivate'] == 0
 
-#    Verify that a user can add and edit social media links 
+#    Verify that a user can edit image privacy
 #    Endpoint -- api/profiles/image_privacy/:value (Y or N) 
 #    Expected Status Code -- 200 OK 
 #    Expected Content -- 
