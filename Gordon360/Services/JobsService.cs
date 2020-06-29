@@ -205,5 +205,101 @@ namespace Gordon360.Services
 
             return result;
         }
+
+
+        public ClockInViewModel ClockIn(bool state, string id)
+        {
+
+            var _unitOfWork = new UnitOfWork();
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
+
+            var idParam = new SqlParameter("@ID_Num", id);
+            var stateParam = new SqlParameter("@CurrentState", state);
+
+            var result = RawSqlQuery<ClockInViewModel>.query("INSERT_TIMESHEETS_CLOCK_IN_OUT @ID_Num, @CurrentState", idParam, stateParam); //run stored procedure
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+
+            var currentState = state;
+
+            ClockInViewModel y = new ClockInViewModel()
+            {
+                currentState = currentState
+            };
+
+            return y;
+        }
+
+        public IEnumerable<ClockInViewModel> ClockOut(string id )
+        {
+            var _unitOfWork = new UnitOfWork();
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
+
+            var idParam = new SqlParameter("@ID_Num", id);
+
+            var result = RawSqlQuery<ClockInViewModel>.query("GET_TIMESHEETS_CLOCK_IN_OUT @ID_NUM", idParam); //run stored procedure
+
+
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+
+
+            var clockOutModel = result.Select(x =>
+            {
+                ClockInViewModel y = new ClockInViewModel();
+
+                y.currentState = x.currentState;
+
+                y.timestamp = x.timestamp;
+
+
+                return y;
+            });
+
+
+
+            return clockOutModel;
+
+        }
+
+        public ClockInViewModel DeleteClockIn(string id)
+        {
+            var _unitOfWork = new UnitOfWork();
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
+
+            var idParam = new SqlParameter("@ID_Num", id);
+
+            var result = RawSqlQuery<ClockInViewModel>.query("DELETE_CLOCK_IN @ID_NUM", idParam); //run stored procedure
+
+
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+
+
+            
+            ClockInViewModel y = new ClockInViewModel();
+
+            return y;
+
+        }
+
     }
 }
