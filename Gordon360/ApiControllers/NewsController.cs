@@ -7,14 +7,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
+using System.Security.Claims;
+using Gordon360.Exceptions.ExceptionFilters;
 
 namespace Gordon360.Controllers.Api
 {
-
+    [Authorize]
+    [CustomExceptionFilter]
     [RoutePrefix("api/news")]
     public class NewsController : ApiController
     {
         private INewsService _newsService;
+        private IAccountService _accountService;
 
         /**private void catchBadInput()
         {
@@ -39,6 +43,7 @@ namespace Gordon360.Controllers.Api
             // Connect to service through which data (from the database) can be accessed 
             IUnitOfWork _unitOfWork = new UnitOfWork();
             _newsService = new NewsService(_unitOfWork);
+            _accountService = new AccountService(_unitOfWork);
         }
 
         public NewsController(INewsService newsService)
@@ -91,13 +96,47 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
 
+        /** Call the service that gets all unapproved student news entries (by a particular user)
+         * not yet expired, filtering
+         * out the expired by comparing 2 weeks past date entered to current date
+         */
+        [HttpGet]
+        [Route("personal-unapproved")]
+        public IHttpActionResult GetNewsPersonalUnapproved()
+        {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+            
+            var result = _newsService.GetNewsPersonalUnapproved(id, username);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+
         /** Create a new news item to be added to the database
          */
         [HttpPost]
-        [Route("", Name="News")] //?
+        [Route("", Name="News")]
         public IHttpActionResult Post([FromBody] StudentNews newsItem)
         {
-            if (!ModelState.IsValid /*|| validate input from newsItem here??*/ )
+            //try
+            //{
+            //    return _newsService.Add(newsItem);
+            //}
+            //// on error, return failed http response with the exception
+            //catch (Exception x)
+            //{
+            //    var resp = new HttpResponseMessage(HttpStatusCode.BadRequest)
+            //    {
+            //        Content = new StringContent(string.Format(x.InnerException.ToString())),
+            //    };
+            //    throw new HttpResponseException(resp);
+            //}
+
+            if (!ModelState.IsValid || newsItem == null )
             {
                 string errors = "";
                 foreach (var modelstate in ModelState.Values)
@@ -106,12 +145,15 @@ namespace Gordon360.Controllers.Api
                     {
                         errors += "|" + error.ErrorMessage + "|" + error.Exception;
                     }
-
                 }
                 throw new BadInputException() { ExceptionMessage = errors };
             }
-            
-            var result = _newsService.Add(newsItem);
+
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            var result = _newsService.SubmitNews(newsItem, username, id);
             if (result == null)
             {
                 return NotFound();
