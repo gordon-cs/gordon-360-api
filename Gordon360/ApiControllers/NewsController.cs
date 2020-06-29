@@ -97,17 +97,18 @@ namespace Gordon360.Controllers.Api
         }
 
         /** Call the service that gets all unapproved student news entries (by a particular user)
-         * not yet expired, filtering
-         * out the expired by comparing 2 weeks past date entered to current date
+         * not yet expired, filtering out the expired news
          */
         [HttpGet]
         [Route("personal-unapproved")]
         public IHttpActionResult GetNewsPersonalUnapproved()
         {
+            // Get authenticated username/id
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             var id = _accountService.GetAccountByUsername(username).GordonID;
             
+            // Call appropriate service
             var result = _newsService.GetNewsPersonalUnapproved(id, username);
             if (result == null)
             {
@@ -122,20 +123,7 @@ namespace Gordon360.Controllers.Api
         [Route("", Name="News")]
         public IHttpActionResult Post([FromBody] StudentNews newsItem)
         {
-            //try
-            //{
-            //    return _newsService.Add(newsItem);
-            //}
-            //// on error, return failed http response with the exception
-            //catch (Exception x)
-            //{
-            //    var resp = new HttpResponseMessage(HttpStatusCode.BadRequest)
-            //    {
-            //        Content = new StringContent(string.Format(x.InnerException.ToString())),
-            //    };
-            //    throw new HttpResponseException(resp);
-            //}
-
+            // Check for bad input
             if (!ModelState.IsValid || newsItem == null )
             {
                 string errors = "";
@@ -149,10 +137,12 @@ namespace Gordon360.Controllers.Api
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
+            // Get authenticated username/id
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
+            // Call appropriate service
             var result = _newsService.SubmitNews(newsItem, username, id);
             if (result == null)
             {

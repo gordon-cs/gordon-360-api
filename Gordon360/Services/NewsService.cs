@@ -99,8 +99,15 @@ namespace Gordon360.Services
             // return trimmedResult;
         }
 
+        /// <summary>
+        /// Gets unapproved unexpired news submitted by user.
+        /// </summary>
+        /// <param name="id">user id</param>
+        /// <param name="username">username</param>
+        /// <returns>Result of query</returns>
         public IEnumerable<StudentNewsViewModel> GetNewsPersonalUnapproved(string id, string username)
         {
+            // Verify account
             var _unitOfWork = new UnitOfWork();
             var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
             if (query == null)
@@ -108,6 +115,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
+            // Query the database
             var usernameParam = new SqlParameter("@Username", username);
             return RawSqlQuery<StudentNewsViewModel>.query("NEWS_PERSONAL_UNAPPROVED @Username", usernameParam);
         }
@@ -122,8 +130,10 @@ namespace Gordon360.Services
             /// <returns>The newly added Membership object</returns>
             public StudentNews SubmitNews(StudentNews newsItem, string username, string id)
         {
+            // Not currently used
             ValidateNewsItem(newsItem);
 
+            // Verify account
             var _unitOfWork = new UnitOfWork();
             var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
             if (query == null)
@@ -131,12 +141,13 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
+            // SQL Parameters
             var usernameParam = new SqlParameter("@Username", username);
             var categoryIDParam = new SqlParameter("@CategoryID", newsItem.categoryID);
             var subjectParam = new SqlParameter("@Subject", newsItem.Subject);
             var bodyParam = new SqlParameter("@Body", newsItem.Body);
 
-            // run stored procedure
+            // Run stored procedure
             var result = RawSqlQuery<StudentNewsViewModel>.query("INSERT_NEWS_ITEM @Username, @CategoryID, @Subject, @Body", usernameParam, categoryIDParam, subjectParam, bodyParam);
             if (result == null)
             {
@@ -144,7 +155,6 @@ namespace Gordon360.Services
             }
 
             return newsItem;
-
         }
 
         /// <summary>
@@ -154,7 +164,7 @@ namespace Gordon360.Services
         /// <returns>True if valid. Throws ResourceNotFoundException if not. Exception is caught in an Exception Filter</returns>
         private bool ValidateNewsItem(StudentNews newsItem)
         {
-            // need to sanitize inputs? Or stored procedures safe enough as is
+            // any input sanitization should go here
 
             return true;
         }
