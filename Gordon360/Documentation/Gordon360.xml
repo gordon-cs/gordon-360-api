@@ -421,6 +421,26 @@
             <param name="value">New description</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.WellnessController.Get">
+            <summary>
+             Gets current wellness status of student
+            </summary>
+            <returns>Json WellnessViewModel</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.WellnessController.GetQuestion">
+            <summary>
+             Gets question for wellness check from the back end
+            </summary>
+            <returns> json WellnessQuestionViewModel</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.WellnessController.PostAnswer(System.Boolean)">
+            <summary>
+             Stores the user's wellness check answer, with a timestamp.
+             If answer boolean is true: student is feeling symptomatic(feeling sick).
+             If answer boolean is false: student is not feeling symptomatic(feeling fine).
+            </summary>
+            <returns>Ok if message was recorded</returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.Get">
             <summary>Get profile info of currently logged in user</summary>
             <returns></returns>
@@ -1564,6 +1584,29 @@
             </summary>
             <param name="id">id</param>
             <returns>VictoryPromiseViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.WellnessService.GetStatus(System.String)">
+            <summary>
+            gets status of wellness check
+            </summary>
+            <param name="id">id</param>
+            <returns>boolean if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.WellnessService.PostStatus(System.Boolean,System.String)">
+            <summary>
+             Gets answer to the wellness check answer and sends it to the back end.
+                If answer boolean is true: student is feeling symptomatic
+                If answer boolean is false: student is not feeling symptomatic
+            </summary>
+            <param name="id">id</param>
+            <param name="answer">answer</param>
+            <returns>Ok if message was recorded</returns>
+        </member>
+        <member name="M:Gordon360.Services.WellnessService.GetQuestion">
+            <summary>
+            gets the question for the wellness check from the back end
+            </summary>
+            <returns>list of strings with questions and prompts</returns>
         </member>
         <member name="T:Gordon360.Services.JenzibarActivityService">
             <summary>

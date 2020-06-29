@@ -50,6 +50,13 @@ namespace Gordon360.Services
         AccountViewModel GetAccountByUsername(string username);
     }
 
+    public interface IWellnessService
+    {
+        IEnumerable<WellnessViewModel> GetStatus(string id);
+        IEnumerable<WellnessQuestionViewModel> GetQuestion();
+        WellnessViewModel PostStatus(bool answer, string id);
+    }
+
     public interface IActivityService
     {
         ActivityInfoViewModel Get(string id);

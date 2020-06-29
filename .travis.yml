@@ -35,3 +35,4 @@ deploy:
 notifications:
   email:
     on_success: never
+

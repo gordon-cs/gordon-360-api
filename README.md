@@ -121,9 +121,9 @@ Data which is stored upon startup includes:
 
 * It is easiest to use the development virtual machine to work on this project. Follow [these instructions](RemoteDesktopToVM.md) to set up and connect to the virtual machine using your Gordon account.
 
-* If this is your first time on the virtual machine, you will need to clone this repository. You can do this by using Git Bash.
+* If this is your first time on the virtual machine, you will need to clone this repository. You can do this by using Git Bash. It is possible that you will need to [add the SSH key to your Git account](https://help.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh), it will guide you to `cd .ssh` then `cat id_rsa.pub`, copy the output and go to your github settings and paste it in your SSH keys.
 
-  * Before you open the gordon-360-api folder, you will have to add the `secrets.config` file to it. The file is located on the CS-RDSH-02 virtual machine in `C:\Users\Public\Public Documents\` (or `/c/users/public/documents\` when in git-bash). Copy the file `secrets.config` to the same folder in your project that contains the `web.config` file; currently, this is in `gordon-360-api\Gordon360`. This file is a sort of keyring for the server to authorize itself at various points.
+  * Before you open the gordon-360-api folder, you will have to add the `secrets.config` file to it. The file is located on the CS-RDSH-02 virtual machine in `C:\Users\Public\Public Documents\` (or `/c/users/public/documents\` when in git-bash). Copy the file `secrets.config` to the same folder in your project that contains the `web.config` file; currently, this is in `gordon-360-api\Gordon360`. This file is a sort of keyring for the server to authorize itself at various points. You can do this by CDing into the Gordon360 folder and typing `cp /C/users/public/documents/secrets.config .`
 
   * Look for the desktop app Visual Studio 2017, which has a purple Visual Studio icon. You might have to search for it through the start menu. You will have to log in to a Microsoft account. Your Gordon email will work for this. Once you log in, go to `File > Open > Project/Solution`. In the navigation box that pops up, navigate to the directory where you cloned this repo, and select and open the file `/Gordon360.sln`.
 
@@ -132,6 +132,8 @@ Data which is stored upon startup includes:
 ### Building and running
 
 * Now, you can press the Start button in Visual Studio to run the server (it is a green play button in the top middle of the tool bar). It will open the web browser and, after a period that should just be a few minutes long but sometimes lasts half an hour or more, display an Error 403.14 - Forbidden. This is expected. You can now begin manually testing the API.
+
+* If you haven't already, you'll need to `npm install` in the gordon-360-ui repo. This only needs to be done once, then you can just `npm start`.
 
 * If you want to test the UI, keep the server running and follow the directions found [here](https://github.com/gordon-cs/gordon-360-ui/blob/develop/README.md#connect-local-backend-to-react) under "Connect Local Backend to React".
 
@@ -273,11 +275,11 @@ A record in this table stores
 - Subject - subject, written by the poster, of the news entry
 - Body - the actual text of the news entry, written by the poster
 - Accepted - whether this entry has been approved to be shown publicly
-- Sent - unknown what this is for
-- thisPastMailing - unknown what this is for
+- Sent - whether the item has been sent
+- thisPastMailing - whether it belongs to this past mailing
 - Entered - when, in datetime format, the post was submitted by the poster
-- fname - not used
-- lname - not used
+- fname - not used (NULL)
+- lname - not used (NULL)
 - ManualExpirationDate - given by the poster, the last day on which this entry should be displayed publicly
 
 ##### StudentNewsCategory
@@ -884,6 +886,21 @@ What is it? Resource that represents accepted student news entries and news cate
 ##### POST
 
 `api/news` Submits a news item into the database (initally unapproved)
+
+### Wellness Check
+Back endpoint responsible for fetching and sending information to the database regarding the answers to the wellness check.
+
+##### GET 
+
+`api/wellness` Gets the latest answer a student has sent, as well as a boolean that specifies whether the answer is still valid based on when the answer was submitted.  
+
+`api/wellness/Question` Gets the wellness check question to be displayed on the front end from the Data base.
+
+
+##### POST
+
+`api/wellness` Sends an answer boolean to the database that specifies whether a student is symptomatic or not: true = symptomatic, false = not symptomatic.
+
 
 ## API Testing
 
