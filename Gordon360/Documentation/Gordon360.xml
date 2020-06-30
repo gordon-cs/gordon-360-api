@@ -213,6 +213,26 @@
             </summary>
             <returns>The name of the supervisor</returns>
         </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.ClockIn(System.Boolean)">
+            <summary>
+             sends the current clock in status to the back end
+             true if user is clocked in and false if clocked out
+            </summary>
+            <returns>returns confirmation that the answer was recorded </returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.ClockOut">
+            <summary>
+             gets the the clock in status from the back end
+             true if user is clocked in and false if clocked out
+            </summary>
+            <returns>ClockInViewModel</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.DeleteClockIn">
+            <summary>
+            deletes the last clocked in status of a user
+            </summary>
+            <returns>returns confirmation that clock in status was deleted</returns>
+        </member>
         <member name="M:Gordon360.ApiControllers.SaveController.GetUpcomingRides">
             <summary>
              Gets all upcoming ride objects

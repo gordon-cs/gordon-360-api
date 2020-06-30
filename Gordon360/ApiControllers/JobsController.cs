@@ -234,6 +234,11 @@ namespace Gordon360.ApiControllers
             return Ok(result);
         }
 
+        /// <summary>
+        ///  sends the current clock in status to the back end
+        ///  true if user is clocked in and false if clocked out
+        /// </summary>
+        /// <returns>returns confirmation that the answer was recorded </returns>
         [HttpPost]
         [Route("clockIn")]
         public IHttpActionResult ClockIn([FromBody] bool state)
@@ -270,6 +275,11 @@ namespace Gordon360.ApiControllers
 
         }
 
+        /// <summary>
+        ///  gets the the clock in status from the back end
+        ///  true if user is clocked in and false if clocked out
+        /// </summary>
+        /// <returns>ClockInViewModel</returns>
         [HttpGet]
         [Route("clockOut")]
         public IHttpActionResult ClockOut()
@@ -289,7 +299,10 @@ namespace Gordon360.ApiControllers
             return Ok(result);
         }
 
-
+        /// <summary>
+        /// deletes the last clocked in status of a user
+        /// </summary>
+        /// <returns>returns confirmation that clock in status was deleted</returns>
         [HttpGet]
         [Route("deleteClockIn")]
         public IHttpActionResult DeleteClockIn()
