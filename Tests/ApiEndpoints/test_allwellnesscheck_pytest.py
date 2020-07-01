@@ -16,7 +16,7 @@ class Test_AllWellnessCheckTest(control.testCase):
 #    Endpoint -- api/wellness/
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- A list of one dictionary with user answer
-    def test_get_wellness_student_asymptomatic_student(self):
+    def test_get_wellness_asymptomatic_student(self):
         self.session = self.createAuthorizedSession(control.username, control.password)
         self.url = control.hostURL + 'api/wellness/'
         response = api.get(self.session, self.url)
@@ -115,7 +115,7 @@ class Test_AllWellnessCheckTest(control.testCase):
 #    Endpoint -- api/wellness/
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- A list of one dictionary with user answer
-    def test_get_wellness_student_asymptomatic_faculty(self):
+    def test_get_wellness_asymptomatic_faculty(self):
         self.session = \
             self.createAuthorizedSession(control.leader_username, control.leader_password)
         self.url = control.hostURL + 'api/wellness/'
@@ -217,7 +217,7 @@ class Test_AllWellnessCheckTest(control.testCase):
 #    Endpoint -- api/wellness/
 #    Expected Status Code -- 401 Unauthorized Error
 #    Expected Response Body -- An authorization denied error
-    def test_get_wellness_student_asymptomatic_guest(self):
+    def test_get_wellness_asymptomatic_guest(self):
         self.session = self.createGuestSession()
         self.url = control.hostURL + 'api/wellness/'
         response = api.get(self.session, self.url)
