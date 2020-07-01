@@ -44,6 +44,7 @@ Dive in.
 - [API Testing](#api-testing)
     - [Introduction](#introduction)
     - [Running the Tests](#running-the-tests)
+    - [Writing the Tests](#writing-the-tests)
 - [Troubleshooting](#troubleshooting)
 - [Documentation](#documentation)
 
@@ -903,7 +904,7 @@ Back endpoint responsible for fetching and sending information to the database r
 ### Introduction
 
 A test suite is available at `Tests/ApiEndpoints` to exercise the different endpoints. The most important files here are:
-- `test_gordon360_pytest` -- Stores all the tests.
+- `test_gordon360_pytest` -- Stores all the necessary variables and authentication.
     - `activity_code` -- The activity that will be used for testing.
     - `random_id_number` -- A random id number that is used when we want to verify if we can do things on behalf of someone else. E.g. An advisor can create memberships for anyone. A regular member can only create a membership for him/herself.
     - `leadership_positions` -- A list of participation levels considered to be leadership positions.
@@ -912,6 +913,24 @@ A test suite is available at `Tests/ApiEndpoints` to exercise the different endp
 	- `password` -- String with the password of a test account that is a member of `activity_code`
 	- `id_number` -- Integer with the id number of the `username`.
 	- `username_activity_leader` -- String with the username of a test account that is a leader of `activity_code`
+- `test_allaccount_pytest` -- Tests for api/accounts/ endpoint
+- `test_allactivities_pytest` -- Tests for api/activities/ endpoint
+- `test_alladmin_pytest` -- Tests for api/admins/ endpoint
+- `test_allauthentication_pytest` -- Tests for token/ endpoint
+- `test_alldining_pytest` -- Tests for api/dining/ endpoint
+- `test_allemail_pytest` -- Tests for api/emails/activity/ endpoint
+- `test_allevents_pytest` -- Tests for api/events/ endpoint
+- `test_allmembership_pytest` -- Tests for api/memberships/ endpoint
+- `test_allmembershiprequest_pytest` -- Tests for api/requests/ endpoint
+- `test_allmyschedule_pytest` -- Tests for api/myschedule/ endpoint
+- `test_allnews_pytest` -- Tests for api/news/ endpoint
+- `test_allprofile_pytest` -- Tests for api/profiles/ endpoint
+- `test_allschedule_pytest` -- Tests for api/schedule/:username/ endpoint
+- `test_allschedulecontrol_pytest` -- Tests for api/schedulecontrol/ endpoint
+- `test_allsession_pytest` -- Tests for api/sessions/ endpoint
+- `test_allstudentemployment_pytest` -- Tests for api/studentemployment/ endpoint
+- `test_allvictorypromise_pytest` -- Tests for api/vpscore/ endpoint
+- `test_allwellnesscheck_pytest` -- Tests for api/wellness/ endpoint
 
 ### Running the Tests
 
@@ -931,7 +950,17 @@ Check the `hostURL` in test_gordon360_pytest.py if it is pointing to the correct
 
 Run the tests:
 `pytest` -- This runs all the tests.
-`pytest test_gordon360_pytest.py -k '{name of def}'` -- This runs a specific test based on {name of def}.
+`pytest '{name of test file}'` -- This runs a specific test file based on {name of test file}. 
+`pytest '{name of test file}' -k '{name of def}'` -- This runs a specific test in a specific file based on {name of test file} and {name of def}.
+
+### Writing the Tests
+
+To ensure fewer assertion errors due to future value changes, asserts should avoid values that change frequently over time unless other tests change the values accordingly or the test is set on a specific time.
+
+Suggestions to make tests more robust:
+- Check to see that the response is a list
+- Assert that one of the dictionaries in the list has a certain key
+- Check that the list isn't empty before checking for its content
 
 <span id="manual-test"><!--anchor--></span>
 #### Manually Testing the API
@@ -966,6 +995,12 @@ To manually test the API, use an API development/testing app like [Postman](http
 	* Click the blue "Send" button
 
 ## Troubleshooting
+
+#### Assertion Errors
+
+Some values are dependant on other tests being run after the failed test. To fix this, run the all test files using `pytest` on the command line twice.
+
+Some values are updated frequently over time, to ensure compatibility of tests in the future, value assertions are discouraged. To fix issues from value changes, manually updating or removing the assertions are necessary. 
 
 #### 500 Server Error when updating Activity Images
 
