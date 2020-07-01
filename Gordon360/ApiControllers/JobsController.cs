@@ -238,6 +238,7 @@ namespace Gordon360.ApiControllers
         ///  sends the current clock in status to the back end
         ///  true if user is clocked in and false if clocked out
         /// </summary>
+        /// <param name="state">detail to be saved in the back end, true if user just clocked in</param>
         /// <returns>returns confirmation that the answer was recorded </returns>
         [HttpPost]
         [Route("clockIn")]
@@ -303,7 +304,7 @@ namespace Gordon360.ApiControllers
         /// deletes the last clocked in status of a user
         /// </summary>
         /// <returns>returns confirmation that clock in status was deleted</returns>
-        [HttpGet]
+        [HttpPut]
         [Route("deleteClockIn")]
         public IHttpActionResult DeleteClockIn()
         {

@@ -218,6 +218,7 @@
              sends the current clock in status to the back end
              true if user is clocked in and false if clocked out
             </summary>
+            <param name="state">detail to be saved in the back end, true if user just clocked in</param>
             <returns>returns confirmation that the answer was recorded </returns>
         </member>
         <member name="M:Gordon360.ApiControllers.JobsController.ClockOut">
