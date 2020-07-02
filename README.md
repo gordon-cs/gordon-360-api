@@ -881,6 +881,11 @@ What is it? Resource that represents accepted student news entries and news cate
 
 `api/news/new` Gets every student news entry that has been accepted, has not expired (as described above), and is new since 10am on the day before.
 
+`api/news/personal-unapproved` Gets all of the unexpired and unapproved news submissions by the authenticated user
+
+##### POST
+
+`api/news` Submits a news item into the database (initally unapproved)
 
 ### Wellness Check
 Back endpoint responsible for fetching and sending information to the database regarding the answers to the wellness check.
@@ -895,7 +900,6 @@ Back endpoint responsible for fetching and sending information to the database r
 ##### POST
 
 `api/wellness` Sends an answer boolean to the database that specifies whether a student is symptomatic or not: true = symptomatic, false = not symptomatic.
-
 
 
 ## API Testing

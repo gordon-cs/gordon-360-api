@@ -420,7 +420,7 @@ namespace Gordon360.Services
         /// Helper method to Validate a membership
         /// </summary>
         /// <param name="membership">The membership to validate</param>
-        /// <returns>True if the membership is valid. Throws ResourceNotFoundException if not. Exception is cauth in an Exception Filter</returns>
+        /// <returns>True if the membership is valid. Throws ResourceNotFoundException if not. Exception is caught in an Exception Filter</returns>
         private bool validateMembership(MEMBERSHIP membership)
         {
             var personExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id.Trim() == membership.ID_NUM.ToString()).Count() > 0;

@@ -169,36 +169,6 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.NewsController.#ctor">
-            private void catchBadInput()
-                    {
-                        if (!ModelState.IsValid || string.IsNullOrWhiteSpace(variable))
-                        {
-                            string errors = "";
-                            foreach (var modelstate in ModelState.Values)
-                            {
-                                foreach (var error in modelstate.Errors)
-                                {
-                                    errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                                }
-            
-                            }
-                            throw new BadInputException() { ExceptionMessage = errors };
-                        }
-                    }
-        </member>
-        <member name="M:Gordon360.Controllers.Api.NewsController.GetNotExpired">
-            Call the service that gets all approved student news entries not yet expired, filtering
-            out the expired by comparing 2 weeks past date entered to current date
-        </member>
-        <member name="M:Gordon360.Controllers.Api.NewsController.GetNew">
-            Call the service that gets all new and approved student news entries
-            which have not already expired,
-            checking novelty by comparing an entry's date entered to 10am on the previous day
-        </member>
-        <member name="M:Gordon360.Controllers.Api.NewsController.GetCategories">
-            Call the service that gets the list of categories
-        </member>
         <member name="M:Gordon360.ApiControllers.JobsController.getJobsForUser(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
             <summary>
             Get a user's active jobs
@@ -281,6 +251,44 @@
             <summary>Delete an existing booking item</summary>
             <param name="rideID">The identifier for the booking to be deleted</param>
             <remarks>Calls the server to make a call and remove the given booking from the database</remarks>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.NewsController.#ctor">
+            private void catchBadInput()
+                    {
+                        if (!ModelState.IsValid || string.IsNullOrWhiteSpace(variable))
+                        {
+                            string errors = "";
+                            foreach (var modelstate in ModelState.Values)
+                            {
+                                foreach (var error in modelstate.Errors)
+                                {
+                                    errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                                }
+            
+                            }
+                            throw new BadInputException() { ExceptionMessage = errors };
+                        }
+                    }
+        </member>
+        <member name="M:Gordon360.Controllers.Api.NewsController.GetNotExpired">
+            Call the service that gets all approved student news entries not yet expired, filtering
+            out the expired by comparing 2 weeks past date entered to current date
+        </member>
+        <member name="M:Gordon360.Controllers.Api.NewsController.GetNew">
+            Call the service that gets all new and approved student news entries
+            which have not already expired,
+            checking novelty by comparing an entry's date entered to 10am on the previous day
+        </member>
+        <member name="M:Gordon360.Controllers.Api.NewsController.GetCategories">
+            Call the service that gets the list of categories
+        </member>
+        <member name="M:Gordon360.Controllers.Api.NewsController.GetNewsPersonalUnapproved">
+            Call the service that gets all unapproved student news entries (by a particular user)
+            not yet expired, filtering
+            out the expired by comparing 2 weeks past date entered to current date
+        </member>
+        <member name="M:Gordon360.Controllers.Api.NewsController.Post(Gordon360.Models.StudentNews)">
+            Create a new news item to be added to the database
         </member>
         <member name="M:Gordon360.Controllers.Api.ContentManagementController.GetSliderContent">
             <summary>Get all the slider content for the dashboard slider</summary>
@@ -1378,6 +1386,22 @@
             <param name="sched">The schedule information</param>
             <returns>The original schedule</returns>
         </member>
+        <member name="M:Gordon360.Services.NewsService.SubmitNews(Gordon360.Models.StudentNews,System.String,System.String)">
+            <summary>
+            Adds a news item record to storage.
+            </summary>
+            <param name="newsItem">The news item to be added</param>
+            <param name="username">username</param>
+            <param name="id">id</param>
+            <returns>The newly added Membership object</returns>
+        </member>
+        <member name="M:Gordon360.Services.NewsService.ValidateNewsItem(Gordon360.Models.StudentNews)">
+            <summary>
+            Helper method to validate a news item
+            </summary>
+            <param name="newsItem">The news item to validate</param>
+            <returns>True if valid. Throws ResourceNotFoundException if not. Exception is caught in an Exception Filter</returns>
+        </member>
         <member name="M:Gordon360.Services.ProfileService.GetStudentProfileByUsername(System.String)">
             <summary>
             get student profile info
@@ -1787,7 +1811,7 @@
             Helper method to Validate a membership
             </summary>
             <param name="membership">The membership to validate</param>
-            <returns>True if the membership is valid. Throws ResourceNotFoundException if not. Exception is cauth in an Exception Filter</returns>
+            <returns>True if the membership is valid. Throws ResourceNotFoundException if not. Exception is caught in an Exception Filter</returns>
         </member>
         <member name="T:Gordon360.Services.SessionService">
             <summary>

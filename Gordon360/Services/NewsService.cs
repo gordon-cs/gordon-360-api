@@ -1,9 +1,12 @@
-﻿using Gordon360.Models;
+﻿using Gordon360.Exceptions.CustomExceptions;
+using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using Gordon360.Services.ComplexQueries;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 
@@ -94,6 +97,76 @@ namespace Gordon360.Services
             //     return trim;
             // });
             // return trimmedResult;
+        }
+
+        /// <summary>
+        /// Gets unapproved unexpired news submitted by user.
+        /// </summary>
+        /// <param name="id">user id</param>
+        /// <param name="username">username</param>
+        /// <returns>Result of query</returns>
+        public IEnumerable<StudentNewsViewModel> GetNewsPersonalUnapproved(string id, string username)
+        {
+            // Verify account
+            var _unitOfWork = new UnitOfWork();
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
+
+            // Query the database
+            var usernameParam = new SqlParameter("@Username", username);
+            return RawSqlQuery<StudentNewsViewModel>.query("NEWS_PERSONAL_UNAPPROVED @Username", usernameParam);
+        }
+
+
+            /// <summary>
+            /// Adds a news item record to storage.
+            /// </summary>
+            /// <param name="newsItem">The news item to be added</param>
+            /// <param name="username">username</param>
+            /// <param name="id">id</param>
+            /// <returns>The newly added Membership object</returns>
+            public StudentNews SubmitNews(StudentNews newsItem, string username, string id)
+        {
+            // Not currently used
+            ValidateNewsItem(newsItem);
+
+            // Verify account
+            var _unitOfWork = new UnitOfWork();
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
+
+            // SQL Parameters
+            var usernameParam = new SqlParameter("@Username", username);
+            var categoryIDParam = new SqlParameter("@CategoryID", newsItem.categoryID);
+            var subjectParam = new SqlParameter("@Subject", newsItem.Subject);
+            var bodyParam = new SqlParameter("@Body", newsItem.Body);
+
+            // Run stored procedure
+            var result = RawSqlQuery<StudentNewsViewModel>.query("INSERT_NEWS_ITEM @Username, @CategoryID, @Subject, @Body", usernameParam, categoryIDParam, subjectParam, bodyParam);
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+
+            return newsItem;
+        }
+
+        /// <summary>
+        /// Helper method to validate a news item
+        /// </summary>
+        /// <param name="newsItem">The news item to validate</param>
+        /// <returns>True if valid. Throws ResourceNotFoundException if not. Exception is caught in an Exception Filter</returns>
+        private bool ValidateNewsItem(StudentNews newsItem)
+        {
+            // any input sanitization should go here
+
+            return true;
         }
     }
 }
