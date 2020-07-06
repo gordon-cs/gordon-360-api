@@ -41,6 +41,7 @@ Dive in.
     - [ScheduleControl](#schedule-control)
     - [Victory Promise](#victory-promise)
     - [News](#news)
+    - [Wellness Check](#wellness-check)
 - [API Testing](#api-testing)
     - [Introduction](#introduction)
     - [Running the Tests](#running-the-tests)
