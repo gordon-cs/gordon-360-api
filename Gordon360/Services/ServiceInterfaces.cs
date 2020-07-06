@@ -166,6 +166,9 @@ namespace Gordon360.Services
         IEnumerable<ActiveJobViewModel> getActiveJobs(DateTime shiftStart, DateTime shiftEnd, int studentID);
         IEnumerable<OverlappingShiftIdViewModel> editShiftOverlapCheck(int studentID, DateTime shiftStart, DateTime shiftEnd, int rowID);
         IEnumerable<OverlappingShiftIdViewModel> checkForOverlappingShift(int studentID, DateTime shiftStart, DateTime shiftEnd);
+        IEnumerable<ClockInViewModel> ClockOut(string id);
+        ClockInViewModel ClockIn(bool state, string id);
+        ClockInViewModel DeleteClockIn(string id);
     }
 
     public interface IParticipationService

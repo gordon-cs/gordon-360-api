@@ -14,6 +14,7 @@ using Gordon360.Services;
 using Newtonsoft.Json.Linq;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
+using Gordon360.Exceptions.CustomExceptions;
 
 namespace Gordon360.ApiControllers
 {
@@ -232,5 +233,95 @@ namespace Gordon360.ApiControllers
             }
             return Ok(result);
         }
+
+        /// <summary>
+        ///  sends the current clock in status to the back end
+        ///  true if user is clocked in and false if clocked out
+        /// </summary>
+        /// <param name="state">detail to be saved in the back end, true if user just clocked in</param>
+        /// <returns>returns confirmation that the answer was recorded </returns>
+        [HttpPost]
+        [Route("clockIn")]
+        public IHttpActionResult ClockIn([FromBody] bool state)
+        {
+
+            if (!ModelState.IsValid || state == null)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            var result = _jobsService.ClockIn(state, id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+
+            return Created("Recorded answer :", result);
+
+        }
+
+        /// <summary>
+        ///  gets the the clock in status from the back end
+        ///  true if user is clocked in and false if clocked out
+        /// </summary>
+        /// <returns>ClockInViewModel</returns>
+        [HttpGet]
+        [Route("clockOut")]
+        public IHttpActionResult ClockOut()
+        {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            var result = _jobsService.ClockOut(id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// deletes the last clocked in status of a user
+        /// </summary>
+        /// <returns>returns confirmation that clock in status was deleted</returns>
+        [HttpPut]
+        [Route("deleteClockIn")]
+        public IHttpActionResult DeleteClockIn()
+        {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            var result = _jobsService.DeleteClockIn(id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
     }
 }
