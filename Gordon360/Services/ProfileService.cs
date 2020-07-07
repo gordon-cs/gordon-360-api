@@ -64,6 +64,23 @@ namespace Gordon360.Services
             return result;
         }
 
+        public MyAdvisorViewModel GetAdvisor(string id)
+        {
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
+            var idParam = new SqlParameter("@ID", id);
+            var result = RawSqlQuery<MyAdvisorViewModel>.query("ADVISOR_SEPARATE @ID", idParam).FirstOrDefault(); //run stored procedure
+
+            if (result == null)
+            {
+                return null;
+            }
+
+            return result;
+        }
         /// <summary>
         /// Get photo path for profile
         /// </summary>

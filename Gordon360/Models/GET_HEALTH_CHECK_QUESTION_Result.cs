@@ -11,10 +11,10 @@ namespace Gordon360.Models
 {
     using System;
     
-    public partial class NEWS_CATEGORIES_Result
+    public partial class GET_HEALTH_CHECK_QUESTION_Result
     {
-        public int categoryID { get; set; }
-        public string categoryName { get; set; }
-        public Nullable<int> SortOrder { get; set; }
+        public string question { get; set; }
+        public string yesPrompt { get; set; }
+        public string noPrompt { get; set; }
     }
 }

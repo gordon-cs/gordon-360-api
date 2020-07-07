@@ -12,15 +12,10 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Transit_Requests
+    public partial class Health_Check
     {
-        public System.DateTime transaction_datetime { get; set; }
-        public int request_id { get; set; }
-        public string requester_username { get; set; }
-        public int ride_id { get; set; }
-        public string requester_note { get; set; }
-        public bool is_confirmed { get; set; }
-    
-        public virtual Transit_Rides Transit_Rides { get; set; }
+        public int ID_Num { get; set; }
+        public Nullable<bool> Answer { get; set; }
+        public Nullable<System.DateTime> Timestamp { get; set; }
     }
 }

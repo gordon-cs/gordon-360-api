@@ -40,8 +40,9 @@ namespace Gordon360.Models
         public virtual DbSet<Schedule_Control> Schedule_Control { get; set; }
         public virtual DbSet<StudentNewsExpiration> StudentNewsExpiration { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
-        public virtual DbSet<Transit_Requests> Transit_Requests { get; set; }
-        public virtual DbSet<Transit_Rides> Transit_Rides { get; set; }
+        public virtual DbSet<Health_Check> Health_Check { get; set; }
+        public virtual DbSet<Health_Question> Health_Question { get; set; }
+        public virtual DbSet<Timesheets_Clock_In_Out> Timesheets_Clock_In_Out { get; set; }
         public virtual DbSet<C360_SLIDER> C360_SLIDER { get; set; }
         public virtual DbSet<ACCOUNT> ACCOUNT { get; set; }
         public virtual DbSet<Alumni> Alumni { get; set; }
@@ -80,6 +81,15 @@ namespace Gordon360.Models
                 new ObjectParameter("SESS_CDE", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ADVISOR_EMAILS_PER_ACT_CDE_Result>("ADVISOR_EMAILS_PER_ACT_CDE", aCT_CDEParameter, sESS_CDEParameter);
+        }
+    
+        public virtual ObjectResult<ADVISOR_SEPARATE_Result> ADVISOR_SEPARATE(Nullable<int> sTUDENT_ID)
+        {
+            var sTUDENT_IDParameter = sTUDENT_ID.HasValue ?
+                new ObjectParameter("STUDENT_ID", sTUDENT_ID) :
+                new ObjectParameter("STUDENT_ID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ADVISOR_SEPARATE_Result>("ADVISOR_SEPARATE", sTUDENT_IDParameter);
         }
     
         public virtual ObjectResult<ALL_BASIC_INFO_Result> ALL_BASIC_INFO()
@@ -300,6 +310,15 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DELETE_BOOKINGS", rIDE_IDParameter);
         }
     
+        public virtual int DELETE_CLOCK_IN(string iD_Num)
+        {
+            var iD_NumParameter = iD_Num != null ?
+                new ObjectParameter("ID_Num", iD_Num) :
+                new ObjectParameter("ID_Num", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DELETE_CLOCK_IN", iD_NumParameter);
+        }
+    
         public virtual int DELETE_MYSCHEDULE(string eVENTID, string gORDONID)
         {
             var eVENTIDParameter = eVENTID != null ?
@@ -311,6 +330,19 @@ namespace Gordon360.Models
                 new ObjectParameter("GORDONID", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DELETE_MYSCHEDULE", eVENTIDParameter, gORDONIDParameter);
+        }
+    
+        public virtual int DELETE_NEWS_ITEM(Nullable<int> sNID, string username)
+        {
+            var sNIDParameter = sNID.HasValue ?
+                new ObjectParameter("SNID", sNID) :
+                new ObjectParameter("SNID", typeof(int));
+    
+            var usernameParameter = username != null ?
+                new ObjectParameter("Username", username) :
+                new ObjectParameter("Username", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DELETE_NEWS_ITEM", sNIDParameter, usernameParameter);
         }
     
         public virtual int DELETE_RIDE(string rIDE_ID)
@@ -366,6 +398,29 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<EVENTS_BY_STUDENT_ID_Result>("EVENTS_BY_STUDENT_ID", sTU_USERNAMEParameter);
         }
     
+        public virtual ObjectResult<GET_HEALTH_CHECK_BY_ID_Result> GET_HEALTH_CHECK_BY_ID(Nullable<int> iD_NUM)
+        {
+            var iD_NUMParameter = iD_NUM.HasValue ?
+                new ObjectParameter("ID_NUM", iD_NUM) :
+                new ObjectParameter("ID_NUM", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GET_HEALTH_CHECK_BY_ID_Result>("GET_HEALTH_CHECK_BY_ID", iD_NUMParameter);
+        }
+    
+        public virtual ObjectResult<GET_HEALTH_CHECK_QUESTION_Result> GET_HEALTH_CHECK_QUESTION()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GET_HEALTH_CHECK_QUESTION_Result>("GET_HEALTH_CHECK_QUESTION");
+        }
+    
+        public virtual ObjectResult<GET_TIMESHEETS_CLOCK_IN_OUT_Result> GET_TIMESHEETS_CLOCK_IN_OUT(Nullable<int> iD_NUM)
+        {
+            var iD_NUMParameter = iD_NUM.HasValue ?
+                new ObjectParameter("ID_NUM", iD_NUM) :
+                new ObjectParameter("ID_NUM", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GET_TIMESHEETS_CLOCK_IN_OUT_Result>("GET_TIMESHEETS_CLOCK_IN_OUT", iD_NUMParameter);
+        }
+    
         public virtual ObjectResult<GRP_ADMIN_EMAILS_PER_ACT_CDE_Result> GRP_ADMIN_EMAILS_PER_ACT_CDE(string aCT_CDE, string sESS_CDE)
         {
             var aCT_CDEParameter = aCT_CDE != null ?
@@ -377,6 +432,70 @@ namespace Gordon360.Models
                 new ObjectParameter("SESS_CDE", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GRP_ADMIN_EMAILS_PER_ACT_CDE_Result>("GRP_ADMIN_EMAILS_PER_ACT_CDE", aCT_CDEParameter, sESS_CDEParameter);
+        }
+    
+        public virtual int INSERT_HEALTH_CHECK(Nullable<int> iD_NUM, Nullable<bool> answer)
+        {
+            var iD_NUMParameter = iD_NUM.HasValue ?
+                new ObjectParameter("ID_NUM", iD_NUM) :
+                new ObjectParameter("ID_NUM", typeof(int));
+    
+            var answerParameter = answer.HasValue ?
+                new ObjectParameter("Answer", answer) :
+                new ObjectParameter("Answer", typeof(bool));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("INSERT_HEALTH_CHECK", iD_NUMParameter, answerParameter);
+        }
+    
+        public virtual int INSERT_HEALTH_QUESTION(string question, string yesPrompt, string noPrompt)
+        {
+            var questionParameter = question != null ?
+                new ObjectParameter("Question", question) :
+                new ObjectParameter("Question", typeof(string));
+    
+            var yesPromptParameter = yesPrompt != null ?
+                new ObjectParameter("YesPrompt", yesPrompt) :
+                new ObjectParameter("YesPrompt", typeof(string));
+    
+            var noPromptParameter = noPrompt != null ?
+                new ObjectParameter("NoPrompt", noPrompt) :
+                new ObjectParameter("NoPrompt", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("INSERT_HEALTH_QUESTION", questionParameter, yesPromptParameter, noPromptParameter);
+        }
+    
+        public virtual int INSERT_NEWS_ITEM(string username, Nullable<int> categoryID, string subject, string body)
+        {
+            var usernameParameter = username != null ?
+                new ObjectParameter("Username", username) :
+                new ObjectParameter("Username", typeof(string));
+    
+            var categoryIDParameter = categoryID.HasValue ?
+                new ObjectParameter("CategoryID", categoryID) :
+                new ObjectParameter("CategoryID", typeof(int));
+    
+            var subjectParameter = subject != null ?
+                new ObjectParameter("Subject", subject) :
+                new ObjectParameter("Subject", typeof(string));
+    
+            var bodyParameter = body != null ?
+                new ObjectParameter("Body", body) :
+                new ObjectParameter("Body", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("INSERT_NEWS_ITEM", usernameParameter, categoryIDParameter, subjectParameter, bodyParameter);
+        }
+    
+        public virtual int INSERT_TIMESHEETS_CLOCK_IN_OUT(Nullable<int> iD_NUM, Nullable<bool> state)
+        {
+            var iD_NUMParameter = iD_NUM.HasValue ?
+                new ObjectParameter("ID_NUM", iD_NUM) :
+                new ObjectParameter("ID_NUM", typeof(int));
+    
+            var stateParameter = state.HasValue ?
+                new ObjectParameter("State", state) :
+                new ObjectParameter("State", typeof(bool));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("INSERT_TIMESHEETS_CLOCK_IN_OUT", iD_NUMParameter, stateParameter);
         }
     
         public virtual ObjectResult<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE(Nullable<int> instructor_id, string sess_cde)
@@ -441,19 +560,28 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<MYSCHEDULE_BY_ID_Result>("MYSCHEDULE_BY_ID", iD_NUMParameter);
         }
     
-        public virtual ObjectResult<NEWS_CATEGORIES_Result> NEWS_CATEGORIES()
+        public virtual int NEWS_CATEGORIES()
         {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<NEWS_CATEGORIES_Result>("NEWS_CATEGORIES");
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NEWS_CATEGORIES");
         }
     
-        public virtual ObjectResult<NEWS_NEW_Result> NEWS_NEW()
+        public virtual int NEWS_NEW()
         {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<NEWS_NEW_Result>("NEWS_NEW");
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NEWS_NEW");
         }
     
-        public virtual ObjectResult<NEWS_NOT_EXPIRED_Result> NEWS_NOT_EXPIRED()
+        public virtual int NEWS_NOT_EXPIRED()
         {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<NEWS_NOT_EXPIRED_Result>("NEWS_NOT_EXPIRED");
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NEWS_NOT_EXPIRED");
+        }
+    
+        public virtual int NEWS_PERSONAL_UNAPPROVED(string username)
+        {
+            var usernameParameter = username != null ?
+                new ObjectParameter("Username", username) :
+                new ObjectParameter("Username", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NEWS_PERSONAL_UNAPPROVED", usernameParameter);
         }
     
         public virtual ObjectResult<PHOTO_INFO_PER_USER_NAME_Result> PHOTO_INFO_PER_USER_NAME(Nullable<int> iD)
@@ -748,6 +876,31 @@ namespace Gordon360.Models
                 new ObjectParameter("ENDTIME", typeof(System.TimeSpan));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_MYSCHEDULE", eVENTIDParameter, gORDONIDParameter, lOCATIONParameter, dESCRIPTIONParameter, mON_CDEParameter, tUE_CDEParameter, wED_CDEParameter, tHU_CDEParameter, fRI_CDEParameter, sAT_CDEParameter, sUN_CDEParameter, iS_ALLDAYParameter, bEGINTIMEParameter, eNDTIMEParameter);
+        }
+    
+        public virtual int UPDATE_NEWS_ITEM(Nullable<int> sNID, string username, Nullable<int> categoryID, string subject, string body)
+        {
+            var sNIDParameter = sNID.HasValue ?
+                new ObjectParameter("SNID", sNID) :
+                new ObjectParameter("SNID", typeof(int));
+    
+            var usernameParameter = username != null ?
+                new ObjectParameter("Username", username) :
+                new ObjectParameter("Username", typeof(string));
+    
+            var categoryIDParameter = categoryID.HasValue ?
+                new ObjectParameter("CategoryID", categoryID) :
+                new ObjectParameter("CategoryID", typeof(int));
+    
+            var subjectParameter = subject != null ?
+                new ObjectParameter("Subject", subject) :
+                new ObjectParameter("Subject", typeof(string));
+    
+            var bodyParameter = body != null ?
+                new ObjectParameter("Body", body) :
+                new ObjectParameter("Body", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_NEWS_ITEM", sNIDParameter, usernameParameter, categoryIDParameter, subjectParameter, bodyParameter);
         }
     
         public virtual int UPDATE_PHONE_PRIVACY(Nullable<int> iD, string vALUE)

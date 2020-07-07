@@ -340,6 +340,10 @@
             <param name="username">username of the profile info</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.getAdvisor(System.String)">
+            <summary>Get the advisor of particular student</summary>
+             <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.getMyImg">
             <summary>Get the profile image of currently logged in user</summary>
             <returns></returns>

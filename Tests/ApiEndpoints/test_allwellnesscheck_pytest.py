@@ -27,7 +27,7 @@ class Test_AllWellnessCheckTest(control.testCase):
         try:
             response.json()
         except ValueError:
-            pytest.fail('Expected Json respone body, got {0}.'\
+            pytest.fail('Expected Json response body, got {0}.'\
                 .format(response.text))
         if not (type(response.json()) is list):
             warnings.warn("Response is not a list.")
@@ -127,7 +127,7 @@ class Test_AllWellnessCheckTest(control.testCase):
         try:
             response.json()
         except ValueError:
-            pytest.fail('Expected Json respone body, got {0}.'\
+            pytest.fail('Expected Json response body, got {0}.'\
                 .format(response.text))
         if not (type(response.json()) is list):
             warnings.warn("Response is not a list.")
