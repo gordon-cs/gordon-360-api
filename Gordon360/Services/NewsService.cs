@@ -1,4 +1,5 @@
 ﻿using Gordon360.Exceptions.CustomExceptions;
+using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
@@ -6,9 +7,6 @@ using Gordon360.Services.ComplexQueries;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Diagnostics;
-using System.Linq;
-using System.Web;
 
 namespace Gordon360.Services
 {
@@ -133,13 +131,7 @@ namespace Gordon360.Services
             // Not currently used
             ValidateNewsItem(newsItem);
 
-            // Verify account
-            var _unitOfWork = new UnitOfWork();
-            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
-            if (query == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
-            }
+            VerifyAccount(id);
 
             // SQL Parameters
             var usernameParam = new SqlParameter("@Username", username);
@@ -158,6 +150,48 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// (Service) Deletes a news item from the database
+        /// </summary>
+        /// <param name="id">The id of the requester</param>
+        /// <param name="newsID">The id of the news item to delete</param>
+        /// <returns></returns>
+        public StudentNewsViewModel DeleteNews(string id, int newsID)
+        {
+            //VerifyAccount(id);
+
+            var newsItem = _unitOfWork.StudentNewsRepository.GetById(newsID);
+            if(newsItem == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The news item does not exist" };
+            }
+            //if(newsItem.ADUN != username)
+            //{
+
+            //}
+            //var result = _unitOfWork.StudentNewsRepository.Delete(newsItem);
+            //return result;
+            return newsItem;
+
+            // TODO: Eventually, there should be a check that the user has authored this posting
+            // so that the API can return a 403 Forbidden instead of just doing nothing
+            // (the SQL procedure itself safeguards that this cannot be done)
+            // to do this a NEWS_ITEM procedure of some sort will need to be made to select single item by SNID
+
+            // SQL Parameters
+            //var SNIDParam = new SqlParameter("@SNID", newsID);
+            //var usernameParam = new SqlParameter("@Username", username);
+
+            // Run stored procedure
+            //var result = RawSqlQuery<StudentNewsViewModel>.query("DELETE_NEWS_ITEM @SNID, @Username", SNIDParam, usernameParam);
+            //if (result == null)
+            //{
+            //    throw new ResourceNotFoundException() { ExceptionMessage = "The news item does not exist" };
+            //}
+
+            //return new StudentNewsViewModel();
+        }
+
+        /// <summary>
         /// Helper method to validate a news item
         /// </summary>
         /// <param name="newsItem">The news item to validate</param>
@@ -166,6 +200,23 @@ namespace Gordon360.Services
         {
             // any input sanitization should go here
 
+            return true;
+        }
+
+        /// <summary>
+        /// Verifies that a student account exists
+        /// </summary>
+        /// <param name="id">The id of the student</param>
+        /// <returns>true if account exists, ResourceNotFoundException if null</returns>
+        private bool VerifyAccount(string id)
+        {
+            // Verify account
+            var _unitOfWork = new UnitOfWork();
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
             return true;
         }
     }

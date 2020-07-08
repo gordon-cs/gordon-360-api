@@ -450,7 +450,7 @@
     <Compile Include="Models\STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-	    <!-- <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs" /> -->
+    <!-- <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs" /> -->
     <Compile Include="Models\student_timesheets.cs">
       <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
     </Compile>
@@ -506,7 +506,7 @@
     <Compile Include="AuthorizationServer\CustomJWTFormat.cs" />
     <Compile Include="AuthorizationServer\TokenIssuer.cs" />
     <Compile Include="Exceptions\CustomExceptions.cs" />
-    <Compile Include="Exceptions\CustomExcpetionFilter.cs" />
+    <Compile Include="Exceptions\CustomExceptionFilter.cs" />
     <Compile Include="Models\Metadata.cs" />
     <Compile Include="Models\ModelPartialClasses.cs" />
     <Compile Include="Models\ViewModels\BasicInfoViewModel.cs" />

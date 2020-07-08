@@ -18,7 +18,7 @@ namespace Gordon360.AuthorizationFilters
      * Proceed at your own risk. If you can understand this code, you can understand the whole project. 
      * 
      * 1st Observation: You can't authorize access to a resource that isn't owned by someone. Resources like Sessions, Participations,
-     * and Activity Definitions are accessbile by anyone.
+     * and Activity Definitions are accessibile by anyone.
      * 2nd Observation: To Authorize someone to perform an action on a resource, you need to know the following:
      * 1. Who is to be authorized? 2.What resource are they trying to access? 3. What operation are they trying to make on the resource?
      * This "algorithm" uses those three points and decides through a series of switch statements if the current user
@@ -65,12 +65,11 @@ namespace Gordon360.AuthorizationFilters
                 }
             }
            
-            // Can the user perfom the operation on the resource?
+            // Can the user perform the operation on the resource?
             isAuthorized = canPerformOperation(resource, operation);
             if(!isAuthorized)
             {
                 actionContext.Response = new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
-                
             }
 
             base.OnActionExecuting(actionContext);
@@ -174,6 +173,8 @@ namespace Gordon360.AuthorizationFilters
                     {
                         return true;
                     }
+                case Resource.NEWS:
+                    return true;
                 default: return false;
                     
             }
@@ -268,6 +269,10 @@ namespace Gordon360.AuthorizationFilters
                         return true;
                     }
                 case Resource.GROUP_ADMIN_BY_ACTIVITY:
+                    {
+                        return true;
+                    }
+                case Resource.NEWS:
                     {
                         return true;
                     }
@@ -606,6 +611,8 @@ namespace Gordon360.AuthorizationFilters
                     return false;
                 case Resource.ADMIN:
                     return false;
+                case Resource.NEWS:
+                    return false; // temporary
                 default: return false;
             }
         }

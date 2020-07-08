@@ -2,19 +2,17 @@
 using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Models;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Http;
 using System.Security.Claims;
 using Gordon360.Exceptions.ExceptionFilters;
+using Gordon360.AuthorizationFilters;
 
 namespace Gordon360.Controllers.Api
 {
-    [Authorize]
-    [CustomExceptionFilter]
     [RoutePrefix("api/news")]
+    [CustomExceptionFilter]
+    [StateYourBusiness]
     public class NewsController : ApiController
     {
         private INewsService _newsService;
@@ -151,6 +149,32 @@ namespace Gordon360.Controllers.Api
             return Created("News", result);
         }
 
+        /// <summary>
+        /// Deletes a news item from the database
+        /// </summary>
+        /// <param name="newsID">The id of the news item to delete</param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("")]
+        public IHttpActionResult Delete([FromBody] int newsID)
+        {
+            // Get authenticated username/id
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+            
+            
+            var result = _newsService.DeleteNews(id, newsID);
+            return Ok(result);
 
+            // Call appropriate service
+            //var result = _newsService.DeleteNews(newsID, username, id);
+            //if (result == null)
+            //{
+            //    return NotFound();
+            //}
+            //return Ok(result);
+        }
+        
     }
 }

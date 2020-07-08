@@ -37,14 +37,16 @@ namespace Gordon360.Repositories
         private IRepository<DiningInfo> _DiningInfoRepository;
         private IRepository<ERROR_LOG> _ErrorLogRepository;
         private IRepository<Schedule_Control> _ScheduleControlRepository;
-        private IRepository<StudentNewsViewModel> _StudentNewsRepository;
-        private IRepository<StudentNewsCategoryViewModel> _StudentNewsCategoryRepository;
+        private IRepository<StudentNews> _StudentNewsRepository;
+        private IRepository<StudentNewsCategory> _StudentNewsCategoryRepository;
 
         private CCTEntities1 _context;
+        private MyGordonEntities _myGordonCtx;
 
         public UnitOfWork()
         {
             _context = new CCTEntities1();
+            _myGordonCtx = new MyGordonEntities();
         }
         public IRepository<Student> StudentRepository
         {
@@ -155,13 +157,13 @@ namespace Gordon360.Repositories
         {
             get { return _ErrorLogRepository ?? (_ErrorLogRepository = new GenericRepository<ERROR_LOG>(_context)); }
         }
-        public IRepository<StudentNewsViewModel> StudentNewsRepository
+        public IRepository<StudentNews> StudentNewsRepository
         {
-            get { return _StudentNewsRepository ?? (_StudentNewsRepository = new GenericRepository<StudentNewsViewModel>(_context)); }
+            get { return _StudentNewsRepository ?? (_StudentNewsRepository = new GenericRepository<StudentNews>(_myGordonCtx)); }
         }
-        public IRepository<StudentNewsCategoryViewModel> StudentNewsCategoryRepository
+        public IRepository<StudentNewsCategory> StudentNewsCategoryRepository
         {
-            get { return _StudentNewsCategoryRepository ?? (_StudentNewsCategoryRepository = new GenericRepository<StudentNewsCategoryViewModel>(_context)); }
+            get { return _StudentNewsCategoryRepository ?? (_StudentNewsCategoryRepository = new GenericRepository<StudentNewsCategory>(_myGordonCtx)); }
         }
         public IRepository<Save_Rides> RideRepository
         {
@@ -178,6 +180,7 @@ namespace Gordon360.Repositories
             try
             {
                 _context.SaveChanges();
+                _myGordonCtx.SaveChanges();
             }
             catch (DbEntityValidationException ex)
             {

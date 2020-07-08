@@ -1,6 +1,6 @@
 ﻿using System;
 // <summary>
-// Namespace where we will define custom exceptions to be throwl later on.
+// Namespace where we will define custom exceptions to be thrown later on.
 // </summary>
 namespace Gordon360.Exceptions.CustomExceptions
 {
@@ -8,7 +8,6 @@ namespace Gordon360.Exceptions.CustomExceptions
     {
         public string ExceptionMessage { get; set; }
     }
-
     public class ResourceCreationException : Exception
     {
         public string ExceptionMessage { get; set; }
