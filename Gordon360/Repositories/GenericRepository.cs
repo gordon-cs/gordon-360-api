@@ -30,7 +30,6 @@ namespace Gordon360.Repositories
         {
             _context = context;
             _dbSet = _context.Set<T>();
-            System.Diagnostics.Debug.WriteLine("CCT Context");
         }
 
         /// <summary>
@@ -41,7 +40,6 @@ namespace Gordon360.Repositories
         {
             _myGordonCtx = context;
             _dbSet = _myGordonCtx.Set<T>();
-            System.Diagnostics.Debug.WriteLine("MyGordon Context");
         }
 
         /// <summary>
@@ -50,8 +48,6 @@ namespace Gordon360.Repositories
         /// <returns>All entities</returns>
         public T GetById(int id)
         {
-            System.Diagnostics.Debug.WriteLine("_dbSet: ");
-            System.Diagnostics.Debug.WriteLine(_dbSet);
             return _dbSet.Find(id);
         }
 

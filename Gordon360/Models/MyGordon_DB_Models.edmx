@@ -50,7 +50,6 @@
         <EntityType Name="StudentNews">
           <Key>
             <PropertyRef Name="SNID" />
-            <PropertyRef Name="categoryID" />
           </Key>
           <Property Name="SNID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ADUN" Type="varchar" MaxLength="50" Nullable="false" />
@@ -642,7 +641,6 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
         <EntityType Name="StudentNews">
           <Key>
             <PropertyRef Name="SNID" />
-            <PropertyRef Name="categoryID" />
           </Key>
           <Property Name="SNID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ADUN" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
