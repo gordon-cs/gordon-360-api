@@ -45,6 +45,17 @@ namespace Gordon360.Exceptions.ExceptionFilters
                     Content = new StringContent(exception.ExceptionMessage)
                 };
             }
+
+            // UNAUTHORIZED ACCESS EXCEPTION
+            else if (actionExecutedContext.Exception is UnauthorizedAccessException)
+            {
+                var exception = actionExecutedContext.Exception as UnauthorizedAccessException;
+                actionExecutedContext.Response = new HttpResponseMessage()
+                {
+                    StatusCode = System.Net.HttpStatusCode.Unauthorized,
+                    Content = new StringContent(exception.ExceptionMessage)
+                };
+            }
         }
     }
 }
