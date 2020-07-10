@@ -164,6 +164,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="newsID">The id of the news item to delete</param>
         /// <returns>The deleted news item</returns>
+        /// <remarks>The news item must be authored by the user and must not be expired</remarks>
         public StudentNews DeleteNews(int newsID)
         {
             var newsItem = _unitOfWork.StudentNewsRepository.GetById(newsID);
@@ -172,6 +173,11 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The news item was not found." };
             }
+            // DateTime of date entered is nullable, so we need to check that here before comparing
+            // If the entered date is null we shouldn't allow deletion to be safe
+            // Note: This check has been duplicated from StateYourBusiness because we do not SuperAdmins
+            //    to be able to delete expired news, this should be fixed eventually by removing some of
+            //    the SuperAdmin permissions that are not explicitly given
             if(newsItem.Entered == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The news item date could not be verified." };
@@ -186,39 +192,6 @@ namespace Gordon360.Services
             var result = _unitOfWork.StudentNewsRepository.Delete(newsItem);
             _unitOfWork.Save();
             return result;
-
-            //VerifyAccount(id);
-
-            //var newsItem = _unitOfWork.StudentNewsRepository.GetById(newsID);
-            //if(newsItem == null)
-            //{
-            //    throw new ResourceNotFoundException() { ExceptionMessage = "The news item does not exist" };
-            //}
-            //if(newsItem.ADUN != username)
-            //{
-
-            //}
-            //var result = _unitOfWork.StudentNewsRepository.Delete(newsItem);
-            //return result;
-            //return newsItem;
-
-            // TODO: Eventually, there should be a check that the user has authored this posting
-            // so that the API can return a 403 Forbidden instead of just doing nothing
-            // (the SQL procedure itself safeguards that this cannot be done)
-            // to do this a NEWS_ITEM procedure of some sort will need to be made to select single item by SNID
-
-            // SQL Parameters
-            //var SNIDParam = new SqlParameter("@SNID", newsID);
-            //var usernameParam = new SqlParameter("@Username", username);
-
-            // Run stored procedure
-            //var result = RawSqlQuery<StudentNewsViewModel>.query("DELETE_NEWS_ITEM @SNID, @Username", SNIDParam, usernameParam);
-            //if (result == null)
-            //{
-            //    throw new ResourceNotFoundException() { ExceptionMessage = "The news item does not exist" };
-            //}
-
-            //return new StudentNewsViewModel();
         }
 
         /// <summary>

@@ -52,8 +52,9 @@ namespace Gordon360.AuthorizationFilters
                 user_id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
                 user_name = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
-                System.Diagnostics.Debug.WriteLine("User name: " + user_name);
-                System.Diagnostics.Debug.WriteLine("User Position: " + user_position);
+                // Keeping these for now commented out as more permissions testing needs to be done in future
+                //System.Diagnostics.Debug.WriteLine("User name: " + user_name);
+                //System.Diagnostics.Debug.WriteLine("User Position: " + user_position);
 
                 if (user_position == Position.SUPERADMIN)
                 {
@@ -71,7 +72,6 @@ namespace Gordon360.AuthorizationFilters
            
             // Can the user perform the operation on the resource?
             isAuthorized = canPerformOperation(resource, operation);
-            System.Diagnostics.Debug.WriteLine(isAuthorized);
             if (!isAuthorized)
             {
                 actionContext.Response = new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
@@ -563,7 +563,6 @@ namespace Gordon360.AuthorizationFilters
         }
         private bool canDelete(string resource)
         {
-            System.Diagnostics.Debug.WriteLine("can delete resource?: " + resource);
             switch (resource)
             {
                 case Resource.SHIFT:

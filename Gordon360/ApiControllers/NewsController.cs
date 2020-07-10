@@ -153,6 +153,7 @@ namespace Gordon360.Controllers.Api
         /// <summary>Deletes a news item from the database</summary>
         /// <param name="newsID">The id of the news item to delete</param>
         /// <returns>The deleted news item</returns>
+        /// <remarks>The news item must be authored by the user and must not be expired</remarks>
         [HttpDelete]
         [Route("{newsID}")]
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.NEWS)]
