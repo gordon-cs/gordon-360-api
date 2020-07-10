@@ -290,11 +290,9 @@
             Create a new news item to be added to the database
         </member>
         <member name="M:Gordon360.Controllers.Api.NewsController.Delete(System.Int32)">
-            <summary>
-            Deletes a news item from the database
-            </summary>
+            <summary>Deletes a news item from the database</summary>
             <param name="newsID">The id of the news item to delete</param>
-            <returns></returns>
+            <returns>The deleted news item</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ContentManagementController.GetSliderContent">
             <summary>Get all the slider content for the dashboard slider</summary>
@@ -353,12 +351,12 @@
             <summary>
             Sets the membership request to Denied
             </summary>
-            <param name="id">The id of the membership reuqest in question.</param>
-            <returns>If successful: THe updated membership request wrapped in an OK Http status code.</returns>
+            <param name="id">The id of the membership request in question.</param>
+            <returns>If successful: The updated membership request wrapped in an OK Http status code.</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.MembershipRequestController.Delete(System.Int32)">
             <summary>
-            Delets a membership request
+            Deletes a membership request
             </summary>
             <param name="id">The id of the membership request to delete</param>
             <returns>The deleted object</returns>
@@ -1378,6 +1376,13 @@
             <param name="sched">The schedule information</param>
             <returns>The original schedule</returns>
         </member>
+        <member name="M:Gordon360.Services.NewsService.Get(System.Int32)">
+            <summary>
+            Gets a news item entity by id
+            </summary>
+            <param name="newsID">The SNID (id of news item)</param>
+            <returns>The news item</returns>
+        </member>
         <member name="M:Gordon360.Services.NewsService.GetNewsPersonalUnapproved(System.String,System.String)">
             <summary>
             Gets unapproved unexpired news submitted by user.
@@ -1395,13 +1400,12 @@
             <param name="id">id</param>
             <returns>The newly added Membership object</returns>
         </member>
-        <member name="M:Gordon360.Services.NewsService.DeleteNews(System.String,System.Int32)">
+        <member name="M:Gordon360.Services.NewsService.DeleteNews(System.Int32)">
             <summary>
             (Service) Deletes a news item from the database
             </summary>
-            <param name="id">The id of the requester</param>
             <param name="newsID">The id of the news item to delete</param>
-            <returns></returns>
+            <returns>The deleted news item</returns>
         </member>
         <member name="M:Gordon360.Services.NewsService.ValidateNewsItem(Gordon360.Models.StudentNews)">
             <summary>

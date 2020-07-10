@@ -1,5 +1,4 @@
 ﻿using Gordon360.Exceptions.CustomExceptions;
-using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
@@ -17,6 +16,17 @@ namespace Gordon360.Services
         public NewsService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
+        }
+
+        /// <summary>
+        /// Gets a news item entity by id
+        /// </summary>
+        /// <param name="newsID">The SNID (id of news item)</param>
+        /// <returns>The news item</returns>
+        public StudentNewsViewModel Get(int newsID)
+        {
+            var newsItem = _unitOfWork.StudentNewsRepository.GetById(newsID);
+            return newsItem;
         }
 
         public IEnumerable<StudentNewsViewModel> GetNewsNotExpired()
@@ -152,25 +162,45 @@ namespace Gordon360.Services
         /// <summary>
         /// (Service) Deletes a news item from the database
         /// </summary>
-        /// <param name="id">The id of the requester</param>
         /// <param name="newsID">The id of the news item to delete</param>
-        /// <returns></returns>
-        public StudentNewsViewModel DeleteNews(string id, int newsID)
+        /// <returns>The deleted news item</returns>
+        public StudentNews DeleteNews(int newsID)
         {
+            var newsItem = _unitOfWork.StudentNewsRepository.GetById(newsID);
+            // Thrown exceptions will be converted to HTTP Responses by the CustomExceptionFilter
+            if (newsItem == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The news item was not found." };
+            }
+            if(newsItem.Entered == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The news item date could not be verified." };
+            }
+            var todaysDate = DateTime.Now;
+            var newsDate = (DateTime)newsItem.Entered;
+            var dateDiff = (todaysDate - newsDate).Days;
+            if (dateDiff >= 14)
+            {
+                throw new Exceptions.CustomExceptions.UnauthorizedAccessException() { ExceptionMessage = "Unauthorized to delete expired news items." };
+            }
+            var result = _unitOfWork.StudentNewsRepository.Delete(newsItem);
+            _unitOfWork.Save();
+            return result;
+
             //VerifyAccount(id);
 
-            var newsItem = _unitOfWork.StudentNewsRepository.GetById(newsID);
-            if(newsItem == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The news item does not exist" };
-            }
+            //var newsItem = _unitOfWork.StudentNewsRepository.GetById(newsID);
+            //if(newsItem == null)
+            //{
+            //    throw new ResourceNotFoundException() { ExceptionMessage = "The news item does not exist" };
+            //}
             //if(newsItem.ADUN != username)
             //{
 
             //}
             //var result = _unitOfWork.StudentNewsRepository.Delete(newsItem);
             //return result;
-            return newsItem;
+            //return newsItem;
 
             // TODO: Eventually, there should be a check that the user has authored this posting
             // so that the API can return a 403 Forbidden instead of just doing nothing

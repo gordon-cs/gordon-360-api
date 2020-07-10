@@ -7,12 +7,13 @@ using System.Web.Http;
 using System.Security.Claims;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.AuthorizationFilters;
+using Gordon360.Static.Names;
 
 namespace Gordon360.Controllers.Api
 {
     [RoutePrefix("api/news")]
+    [Authorize]
     [CustomExceptionFilter]
-    [StateYourBusiness]
     public class NewsController : ApiController
     {
         private INewsService _newsService;
@@ -118,7 +119,7 @@ namespace Gordon360.Controllers.Api
         /** Create a new news item to be added to the database
          */
         [HttpPost]
-        [Route("", Name="News")]
+        [Route("")]
         public IHttpActionResult Post([FromBody] StudentNews newsItem)
         {
             // Check for bad input
@@ -149,31 +150,25 @@ namespace Gordon360.Controllers.Api
             return Created("News", result);
         }
 
-        /// <summary>
-        /// Deletes a news item from the database
-        /// </summary>
+        /// <summary>Deletes a news item from the database</summary>
         /// <param name="newsID">The id of the news item to delete</param>
-        /// <returns></returns>
+        /// <returns>The deleted news item</returns>
         [HttpDelete]
-        [Route("")]
-        public IHttpActionResult Delete([FromBody] int newsID)
+        [Route("{newsID}")]
+        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.NEWS)]
+        // Private route to authenticated authors of the news entity
+        public IHttpActionResult Delete(int newsID)
         {
-            // Get authenticated username/id
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-            
-            
-            var result = _newsService.DeleteNews(id, newsID);
+            // StateYourBusiness verfies that user is authenticated
+            // Delete permission should be allowed only to authors of the news item
+            // News item must not have already expired
+            var result = _newsService.DeleteNews(newsID);
+            // Shouldn't be necessary
+            if(result == null)
+            {
+                return NotFound();
+            }
             return Ok(result);
-
-            // Call appropriate service
-            //var result = _newsService.DeleteNews(newsID, username, id);
-            //if (result == null)
-            //{
-            //    return NotFound();
-            //}
-            //return Ok(result);
         }
         
     }

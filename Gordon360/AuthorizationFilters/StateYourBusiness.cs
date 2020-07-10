@@ -51,6 +51,10 @@ namespace Gordon360.AuthorizationFilters
                 user_position = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role").Value;
                 user_id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
                 user_name = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+                System.Diagnostics.Debug.WriteLine("User name: " + user_name);
+                System.Diagnostics.Debug.WriteLine("User Position: " + user_position);
+
                 if (user_position == Position.SUPERADMIN)
                 {
                     var adminService = new AdministratorService(new UnitOfWork());
@@ -67,7 +71,8 @@ namespace Gordon360.AuthorizationFilters
            
             // Can the user perform the operation on the resource?
             isAuthorized = canPerformOperation(resource, operation);
-            if(!isAuthorized)
+            System.Diagnostics.Debug.WriteLine(isAuthorized);
+            if (!isAuthorized)
             {
                 actionContext.Response = new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
             }
@@ -343,6 +348,8 @@ namespace Gordon360.AuthorizationFilters
             {
                 case Resource.SLIDER:
                     return true;
+                case Resource.NEWS:
+                    return false;
                 default: return false;
 
             }
@@ -556,6 +563,7 @@ namespace Gordon360.AuthorizationFilters
         }
         private bool canDelete(string resource)
         {
+            System.Diagnostics.Debug.WriteLine("can delete resource?: " + resource);
             switch (resource)
             {
                 case Resource.SHIFT:
@@ -612,7 +620,27 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.ADMIN:
                     return false;
                 case Resource.NEWS:
-                    return false; // temporary
+                    {
+                        var newsID = context.ActionArguments["newsID"];
+                        var newsService = new NewsService(new UnitOfWork());
+                        var newsItem = newsService.Get((int)newsID);
+                        // only expired news items may be deleted
+                        var todaysDate = System.DateTime.Now;
+                        var newsDate = (System.DateTime)newsItem.Entered;
+                        var dateDiff = (todaysDate - newsDate).Days;
+                        if (dateDiff >= 14)
+                        {
+                            return false;
+                        }
+                        // user is admin
+                        if (user_position == Position.SUPERADMIN)
+                            return true;
+                        // user is news item author
+                        string newsAuthor = newsItem.ADUN;
+                        if (user_name == newsAuthor)
+                            return true;
+                        return false;
+                    }
                 default: return false;
             }
         }
