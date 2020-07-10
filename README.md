@@ -880,10 +880,21 @@ What is it? Resource that represents accepted student news entries and news cate
 `api/news/new` Gets every student news entry that has been accepted, has not expired (as described above), and is new since 10am on the day before.
 
 `api/news/personal-unapproved` Gets all of the unexpired and unapproved news submissions by the authenticated user
+_(uses stored procedure)_
 
 ##### POST
 
 `api/news` Submits a news item into the database (initally unapproved)
+_(uses stored procedure)_
+
+##### DELETE
+
+`api/news/:id` Deletes a news item from the database by its id (SNID = student news id). In order to delete, the following conditions must be met:
+
+- news item is unexpired
+- user is author of news item or SUPER_ADMIN (perhaps should be changed in future)
+
+_(uses repository)_
 
 ## API Testing
 
