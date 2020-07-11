@@ -270,6 +270,7 @@ paket-files/
 ## Secret Files
 secrets.config
 test_credentials.py
+credentials.py
 
 
 ## Python
