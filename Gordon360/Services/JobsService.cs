@@ -301,5 +301,51 @@ namespace Gordon360.Services
 
         }
 
+        //staff functions
+
+        public IEnumerable<StaffTimesheetsViewModel> saveShiftForStaff(int staffID, int jobID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string shiftNotes, string lastChangedBy)
+        {
+            IEnumerable<StaffTimesheetsViewModel> result = null;
+
+            var id_num = new SqlParameter("@ID_NUM", staffID);
+            var eml = new SqlParameter("@eml", jobID);
+            var shiftStartDateTime = new SqlParameter("@shift_start_datetime", shiftStart);
+            var shiftEndDateTime = new SqlParameter("@shift_end_datetime", shiftEnd);
+            var hours_worked = new SqlParameter("@hours_worked", hoursWorked);
+            var notes = new SqlParameter("@shift_notes", shiftNotes);
+            var changedBy = new SqlParameter("@last_changed_by", lastChangedBy);
+
+            try
+            {
+                result = RawSqlQuery<StaffTimesheetsViewModel>.StudentTimesheetQuery("staff_timesheets_insert_shift @ID_NUM, @eml, @shift_start_datetime, @shift_end_datetime, @hours_worked, @shift_notes, @last_changed_by", id_num, eml, shiftStartDateTime, shiftEndDateTime, hours_worked, notes, changedBy);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+
+            return result;
+        }
+
+
+        public IEnumerable<StaffTimesheetsViewModel> getSavedShiftsForStaff(int ID_NUM)
+        {
+            IEnumerable<StaffTimesheetsViewModel> result = null;
+
+            var id_num = new SqlParameter("@ID_NUM", ID_NUM);
+            string query = "SELECT ID_NUM, EML, EML_DESCRIPTION, SHIFT_START_DATETIME, SHIFT_END_DATETIME, HOURLY_RATE, HOURS_WORKED, SUPERVISOR, COMP_SUPERVISOR, STATUS, SUBMITTED_TO, SHIFT_NOTES, COMMENTS, PAY_WEEK_DATE, PAY_PERIOD_DATE, PAY_PERIOD_ID, LAST_CHANGED_BY, DATETIME_ENTERED from staff_timesheets where ID_NUM = @ID_NUM AND STATUS != 'Paid' order by EML, SHIFT_START_DATETIME, STATUS";
+            try
+            {
+                result = RawSqlQuery<StaffTimesheetsViewModel>.StudentTimesheetQuery(query, id_num);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+
+            return result;
+        }
+
+
     }
 }
