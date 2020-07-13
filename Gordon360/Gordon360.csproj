@@ -277,7 +277,7 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Countries.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\COURSES_FOR_PROFESSOR_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
@@ -508,7 +508,7 @@
     <Compile Include="AuthorizationServer\CustomJWTFormat.cs" />
     <Compile Include="AuthorizationServer\TokenIssuer.cs" />
     <Compile Include="Exceptions\CustomExceptions.cs" />
-    <Compile Include="Exceptions\CustomExcpetionFilter.cs" />
+    <Compile Include="Exceptions\CustomExceptionFilter.cs" />
     <Compile Include="Models\Metadata.cs" />
     <Compile Include="Models\ModelPartialClasses.cs" />
     <Compile Include="Models\ViewModels\BasicInfoViewModel.cs" />
@@ -609,6 +609,16 @@
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
       <LastGenOutput>CCT_DB_Models.cs</LastGenOutput>
     </Content>
+    <Content Include="Models\MyGordon_DB_Models.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
+      <LastGenOutput>MyGordon_DB_Models.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\MyGordon_DB_Models.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
+      <LastGenOutput>MyGordon_DB_Models.cs</LastGenOutput>
+    </Content>
     <Content Include="Models\StudentTimesheet_DB_Models.edmx.diagram">
       <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
     </Content>
@@ -632,16 +642,6 @@
     <EmbeddedResource Include="version.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <Content Include="Models\MyGordon_DB_Models.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
-      <LastGenOutput>MyGordon_DB_Models.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\MyGordon_DB_Models.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
-      <LastGenOutput>MyGordon_DB_Models.cs</LastGenOutput>
-    </Content>
     <Content Include="Models\StudentTimesheet_DB_Models.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>

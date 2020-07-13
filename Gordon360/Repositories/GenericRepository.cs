@@ -15,6 +15,7 @@ namespace Gordon360.Repositories
         ///     The database context for the repository
         /// </summary>
         private readonly CCTEntities1 _context;
+        private readonly MyGordonEntities _myGordonCtx;
 
         /// <summary>
         ///     The data set of the repository
@@ -29,6 +30,16 @@ namespace Gordon360.Repositories
         {
             _context = context;
             _dbSet = _context.Set<T>();
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="GenericRepository{T}" /> class.
+        /// </summary>
+        /// <param name="context">The context for the repository</param>
+        public GenericRepository(MyGordonEntities context)
+        {
+            _myGordonCtx = context;
+            _dbSet = _myGordonCtx.Set<T>();
         }
 
         /// <summary>

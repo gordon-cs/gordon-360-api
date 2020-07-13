@@ -6,9 +6,6 @@ using Gordon360.Services.ComplexQueries;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Diagnostics;
-using System.Linq;
-using System.Web;
 
 namespace Gordon360.Services
 {
@@ -19,6 +16,17 @@ namespace Gordon360.Services
         public NewsService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
+        }
+
+        /// <summary>
+        /// Gets a news item entity by id
+        /// </summary>
+        /// <param name="newsID">The SNID (id of news item)</param>
+        /// <returns>The news item</returns>
+        public StudentNewsViewModel Get(int newsID)
+        {
+            var newsItem = _unitOfWork.StudentNewsRepository.GetById(newsID);
+            return newsItem;
         }
 
         public IEnumerable<StudentNewsViewModel> GetNewsNotExpired()
@@ -133,13 +141,7 @@ namespace Gordon360.Services
             // Not currently used
             ValidateNewsItem(newsItem);
 
-            // Verify account
-            var _unitOfWork = new UnitOfWork();
-            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
-            if (query == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
-            }
+            VerifyAccount(id);
 
             // SQL Parameters
             var usernameParam = new SqlParameter("@Username", username);
@@ -158,6 +160,41 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// (Service) Deletes a news item from the database
+        /// </summary>
+        /// <param name="newsID">The id of the news item to delete</param>
+        /// <returns>The deleted news item</returns>
+        /// <remarks>The news item must be authored by the user and must not be expired</remarks>
+        public StudentNews DeleteNews(int newsID)
+        {
+            var newsItem = _unitOfWork.StudentNewsRepository.GetById(newsID);
+            // Thrown exceptions will be converted to HTTP Responses by the CustomExceptionFilter
+            if (newsItem == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The news item was not found." };
+            }
+            // DateTime of date entered is nullable, so we need to check that here before comparing
+            // If the entered date is null we shouldn't allow deletion to be safe
+            // Note: This check has been duplicated from StateYourBusiness because we do not SuperAdmins
+            //    to be able to delete expired news, this should be fixed eventually by removing some of
+            //    the SuperAdmin permissions that are not explicitly given
+            if(newsItem.Entered == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The news item date could not be verified." };
+            }
+            var todaysDate = DateTime.Now;
+            var newsDate = (DateTime)newsItem.Entered;
+            var dateDiff = (todaysDate - newsDate).Days;
+            if (dateDiff >= 14)
+            {
+                throw new Exceptions.CustomExceptions.UnauthorizedAccessException() { ExceptionMessage = "Unauthorized to delete expired news items." };
+            }
+            var result = _unitOfWork.StudentNewsRepository.Delete(newsItem);
+            _unitOfWork.Save();
+            return result;
+        }
+
+        /// <summary>
         /// Helper method to validate a news item
         /// </summary>
         /// <param name="newsItem">The news item to validate</param>
@@ -166,6 +203,23 @@ namespace Gordon360.Services
         {
             // any input sanitization should go here
 
+            return true;
+        }
+
+        /// <summary>
+        /// Verifies that a student account exists
+        /// </summary>
+        /// <param name="id">The id of the student</param>
+        /// <returns>true if account exists, ResourceNotFoundException if null</returns>
+        private bool VerifyAccount(string id)
+        {
+            // Verify account
+            var _unitOfWork = new UnitOfWork();
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
             return true;
         }
     }

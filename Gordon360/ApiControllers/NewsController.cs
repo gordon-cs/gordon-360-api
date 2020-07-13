@@ -2,19 +2,18 @@
 using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Models;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Http;
 using System.Security.Claims;
 using Gordon360.Exceptions.ExceptionFilters;
+using Gordon360.AuthorizationFilters;
+using Gordon360.Static.Names;
 
 namespace Gordon360.Controllers.Api
 {
+    [RoutePrefix("api/news")]
     [Authorize]
     [CustomExceptionFilter]
-    [RoutePrefix("api/news")]
     public class NewsController : ApiController
     {
         private INewsService _newsService;
@@ -120,7 +119,7 @@ namespace Gordon360.Controllers.Api
         /** Create a new news item to be added to the database
          */
         [HttpPost]
-        [Route("", Name="News")]
+        [Route("")]
         public IHttpActionResult Post([FromBody] StudentNews newsItem)
         {
             // Check for bad input
@@ -151,6 +150,27 @@ namespace Gordon360.Controllers.Api
             return Created("News", result);
         }
 
-
+        /// <summary>Deletes a news item from the database</summary>
+        /// <param name="newsID">The id of the news item to delete</param>
+        /// <returns>The deleted news item</returns>
+        /// <remarks>The news item must be authored by the user and must not be expired</remarks>
+        [HttpDelete]
+        [Route("{newsID}")]
+        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.NEWS)]
+        // Private route to authenticated authors of the news entity
+        public IHttpActionResult Delete(int newsID)
+        {
+            // StateYourBusiness verfies that user is authenticated
+            // Delete permission should be allowed only to authors of the news item
+            // News item must not have already expired
+            var result = _newsService.DeleteNews(newsID);
+            // Shouldn't be necessary
+            if(result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+        
     }
 }
