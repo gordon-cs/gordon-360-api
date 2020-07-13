@@ -301,5 +301,35 @@ namespace Gordon360.Services
 
         }
 
+        public IEnumerable<StaffTimesheet> CanUsePage(string id)
+        {
+            var _unitOfWork = new UnitOfWork();
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
+            var idParam = new SqlParameter("@ID_Num", id);
+
+            var result = RawSqlQuery<StaffTimesheet>.query("staff_timesheets_can_use_this_page @ID_NUM", idParam); // run stored procedure
+
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+
+            var staffTimesheet = result.Select(x =>
+            {
+                StaffTimesheet y = new StaffTimesheet();
+
+                y.EmIID = x.EmIID;
+
+                return y;
+            });
+
+            return staffTimesheet;
+
+        }
+
     }
 }

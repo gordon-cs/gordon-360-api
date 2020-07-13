@@ -323,5 +323,27 @@ namespace Gordon360.ApiControllers
             return Ok(result);
         }
 
+        /// <summary>
+        ///  gets the response as to whether the user can use staff timesheets
+        ///  returns true if the staff member has at least one qualifying active job as hourly staff
+        /// </summary>
+        /// <returns>Boolean</returns>
+        [HttpGet]
+        [Route("canUsePage")]
+        public IHttpActionResult CanUsePage()
+        {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            var result = _jobsService.CanUsePage(id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
     }
 }
