@@ -311,7 +311,7 @@ namespace Gordon360.Services
             }
             var idParam = new SqlParameter("@ID_Num", id);
 
-            var result = RawSqlQuery<StaffTimesheet>.query("staff_timesheets_can_use_this_page @ID_NUM", idParam); // run stored procedure
+            var result = RawSqlQuery<StaffTimesheet>.StaffTimesheetQuery("staff_timesheets_can_use_this_page @ID_NUM", idParam); // run stored procedure
 
             if (result == null)
             {
