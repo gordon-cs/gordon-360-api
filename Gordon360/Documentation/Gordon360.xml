@@ -314,6 +314,7 @@
             <summary>Deletes a news item from the database</summary>
             <param name="newsID">The id of the news item to delete</param>
             <returns>The deleted news item</returns>
+            <remarks>The news item must be authored by the user and must not be expired</remarks>
         </member>
         <member name="M:Gordon360.Controllers.Api.ContentManagementController.GetSliderContent">
             <summary>Get all the slider content for the dashboard slider</summary>
@@ -1447,6 +1448,7 @@
             </summary>
             <param name="newsID">The id of the news item to delete</param>
             <returns>The deleted news item</returns>
+            <remarks>The news item must be authored by the user and must not be expired</remarks>
         </member>
         <member name="M:Gordon360.Services.NewsService.ValidateNewsItem(Gordon360.Models.StudentNews)">
             <summary>

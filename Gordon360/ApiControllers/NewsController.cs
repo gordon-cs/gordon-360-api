@@ -50,6 +50,25 @@ namespace Gordon360.Controllers.Api
             _newsService = newsService;
         }
 
+        /// <summary>Gets a news item by id from the database</summary>
+        /// <param name="newsID">The id of the news item to retrieve</param>
+        /// <returns>The news item</returns>
+        [HttpGet]
+        [Route("{newsID}")]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.NEWS)]
+        // Private route to authenticated users
+        public IHttpActionResult GetByID(int newsID)
+        {
+            // StateYourBusiness verifies that user is authenticate
+            var result = _newsService.Get(newsID);
+            // Shouldn't be necessary
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+
         /** Call the service that gets all approved student news entries not yet expired, filtering
          * out the expired by comparing 2 weeks past date entered to current date
          */
@@ -160,7 +179,7 @@ namespace Gordon360.Controllers.Api
         // Private route to authenticated authors of the news entity
         public IHttpActionResult Delete(int newsID)
         {
-            // StateYourBusiness verfies that user is authenticated
+            // StateYourBusiness verifies that user is authenticated
             // Delete permission should be allowed only to authors of the news item
             // News item must not have already expired
             var result = _newsService.DeleteNews(newsID);

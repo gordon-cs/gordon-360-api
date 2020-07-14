@@ -232,6 +232,7 @@ namespace Gordon360.Services
 
     public interface INewsService
     {
+        StudentNews Get(int newsID);
         IEnumerable<StudentNewsViewModel> GetNewsNotExpired();
         IEnumerable<StudentNewsViewModel> GetNewsNew();
         IEnumerable<StudentNewsCategoryViewModel> GetNewsCategories();
@@ -241,4 +242,3 @@ namespace Gordon360.Services
     }
 
 }
-

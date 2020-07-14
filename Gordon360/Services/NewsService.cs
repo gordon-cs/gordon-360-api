@@ -23,9 +23,14 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="newsID">The SNID (id of news item)</param>
         /// <returns>The news item</returns>
-        public StudentNewsViewModel Get(int newsID)
+        public StudentNews Get(int newsID)
         {
             var newsItem = _unitOfWork.StudentNewsRepository.GetById(newsID);
+            // Thrown exceptions will be converted to HTTP Responses by the CustomExceptionFilter
+            if (newsItem == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The news item was not found." };
+            }
             return newsItem;
         }
 
@@ -167,12 +172,9 @@ namespace Gordon360.Services
         /// <remarks>The news item must be authored by the user and must not be expired</remarks>
         public StudentNews DeleteNews(int newsID)
         {
-            var newsItem = _unitOfWork.StudentNewsRepository.GetById(newsID);
-            // Thrown exceptions will be converted to HTTP Responses by the CustomExceptionFilter
-            if (newsItem == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The news item was not found." };
-            }
+            // Service method 'Get' throws its own exceptions
+            var newsItem = Get(newsID);
+
             // DateTime of date entered is nullable, so we need to check that here before comparing
             // If the entered date is null we shouldn't allow deletion to be safe
             // Note: This check has been duplicated from StateYourBusiness because we do not SuperAdmins
