@@ -166,6 +166,15 @@ namespace Gordon360.Services
         IEnumerable<ActiveJobViewModel> getActiveJobs(DateTime shiftStart, DateTime shiftEnd, int studentID);
         IEnumerable<OverlappingShiftIdViewModel> editShiftOverlapCheck(int studentID, DateTime shiftStart, DateTime shiftEnd, int rowID);
         IEnumerable<OverlappingShiftIdViewModel> checkForOverlappingShift(int studentID, DateTime shiftStart, DateTime shiftEnd);
+        IEnumerable<StaffTimesheetsViewModel> saveShiftForStaff(int staffID, int jobID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string shiftNotes, string lastChangedBy);
+        IEnumerable<StaffTimesheetsViewModel> getSavedShiftsForStaff(int ID_NUM);
+        IEnumerable<StaffTimesheetsViewModel> editShiftStaff(int rowID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string username);
+        IEnumerable<StaffTimesheetsViewModel> deleteShiftForStaff(int rowID, int staffID);
+        IEnumerable<StaffTimesheetsViewModel> submitShiftForStaff(int staffID, int jobID, DateTime shiftEnd, int submittedTo, string lastChangedBy);
+        IEnumerable<ActiveJobViewModel> getActiveJobsStaff(DateTime shiftStart, DateTime shiftEnd, int staffID);
+        IEnumerable<SupervisorViewModel> getStaffSupervisorNameForJob(int supervisorID);
+        IEnumerable<OverlappingShiftIdViewModel> editShiftOverlapCheckStaff(int staffID, DateTime shiftStart, DateTime shiftEnd, int rowID);
+        IEnumerable<OverlappingShiftIdViewModel> checkForOverlappingShiftStaff(int staffID, DateTime shiftStart, DateTime shiftEnd);
         IEnumerable<ClockInViewModel> ClockOut(string id);
         ClockInViewModel ClockIn(bool state, string id);
         ClockInViewModel DeleteClockIn(string id);
