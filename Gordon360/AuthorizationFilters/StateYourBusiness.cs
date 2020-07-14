@@ -557,7 +557,21 @@ namespace Gordon360.AuthorizationFilters
                         return false;
                     }
                 case Resource.NEWS:
-                    return true; // TODO only allow the poster of a news entry to update it 
+                    var newsID = context.ActionArguments["newsID"];
+                    var newsService = new NewsService(new UnitOfWork());
+                    var newsItem = newsService.Get((int)newsID);
+                    // only unapproved posts may be updated
+                    var approved = newsItem.Accepted;
+                    if (approved == null || approved == true)
+                        return false;
+                    // can update if user is admin
+                    if (user_position == Position.SUPERADMIN)
+                        return true;
+                    // can update if user is news item author
+                    string newsAuthor = newsItem.ADUN;
+                    if (user_name == newsAuthor)
+                        return true;
+                    return false;
                 default: return false;
             }
         }
@@ -627,7 +641,7 @@ namespace Gordon360.AuthorizationFilters
                         var todaysDate = System.DateTime.Now;
                         var newsDate = (System.DateTime)newsItem.Entered;
                         var dateDiff = (todaysDate - newsDate).Days;
-                        if (dateDiff >= 14)
+                        if (newsDate == null || dateDiff >= 14)
                         {
                             return false;
                         }

@@ -239,6 +239,7 @@ namespace Gordon360.Services
         IEnumerable<StudentNewsViewModel> GetNewsPersonalUnapproved(string id, string username);
         StudentNews SubmitNews(StudentNews newsItem, string username, string id);
         StudentNews DeleteNews(int newsID);
+        StudentNews EditPosting(int newsID, StudentNews newsItem);
     }
 
 }

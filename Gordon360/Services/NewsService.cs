@@ -174,13 +174,83 @@ namespace Gordon360.Services
         {
             // Service method 'Get' throws its own exceptions
             var newsItem = Get(newsID);
+            
+            // Note: This check has been duplicated from StateYourBusiness because we do not SuperAdmins
+            //    to be able to delete expired news, this should be fixed eventually by removing some of
+            //    the SuperAdmin permissions that are not explicitly given
+            VerifyUnexpired(newsItem);
 
+            var result = _unitOfWork.StudentNewsRepository.Delete(newsItem);
+            _unitOfWork.Save();
+            return result;
+        }
+
+        /// <summary>
+        /// (Service) Edits a news item in the database
+        /// </summary>
+        /// <param name="newsID">The id of the news item to edit</param>
+        /// <param name="newData">The news object that contains updated values</param>
+        /// <returns>The updated news item</returns>
+        /// <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
+        public StudentNews EditPosting(int newsID, StudentNews newData)
+        {
+            // Service method 'Get' throws its own exceptions
+            var newsItem = Get(newsID);
+
+            // Note: These checks have been duplicated from StateYourBusiness because we do not SuperAdmins
+            //    to be able to delete expired news, this should be fixed eventually by removing some of
+            //    the SuperAdmin permissions that are not explicitly given
+            VerifyUnexpired(newsItem);
+            VerifyUnapproved(newsItem);
+
+            try {
+                newsItem.categoryID = newData.categoryID;
+                newsItem.Subject = newData.Subject;
+                newsItem.Body = newData.Body;
+            }
+            catch (NullReferenceException)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The new data to update the news item is missing some entries." };
+            }
+            
+            return newsItem;
+        }
+
+        /// <summary>
+        /// Helper method to verify that a given news item has not yet been approved
+        /// </summary>
+        /// <param name="newsItem">The news item to verify</param>
+        /// <returns>true if unapproved, otherwise throws some kind of meaningful exception</returns>
+        private bool VerifyUnapproved(StudentNews newsItem)
+        {
+            // Note: This check has been duplicated from StateYourBusiness because we do not SuperAdmins
+            //    to be able to delete expired news, this should be fixed eventually by removing some of
+            //    the SuperAdmin permissions that are not explicitly given
+            if (newsItem.Accepted == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The news item acceptance status could not be verified." };
+            }
+            if(newsItem.Accepted == true)
+            {
+                throw new BadInputException() { ExceptionMessage = "The news item has already been approved." };
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Helper method to verify that a given news item has not expired 
+        /// (see documentation for expiration definition)
+        /// </summary>
+        /// <param name="newsItem">The news item to verify</param>
+        /// <returns>true if unexpired, otherwise throws some kind of meaningful exception</returns>
+        private bool VerifyUnexpired(StudentNews newsItem)
+        {
             // DateTime of date entered is nullable, so we need to check that here before comparing
             // If the entered date is null we shouldn't allow deletion to be safe
             // Note: This check has been duplicated from StateYourBusiness because we do not SuperAdmins
             //    to be able to delete expired news, this should be fixed eventually by removing some of
             //    the SuperAdmin permissions that are not explicitly given
-            if(newsItem.Entered == null)
+            if (newsItem.Entered == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The news item date could not be verified." };
             }
@@ -191,9 +261,7 @@ namespace Gordon360.Services
             {
                 throw new Exceptions.CustomExceptions.UnauthorizedAccessException() { ExceptionMessage = "Unauthorized to delete expired news items." };
             }
-            var result = _unitOfWork.StudentNewsRepository.Delete(newsItem);
-            _unitOfWork.Save();
-            return result;
+            return true;
         }
 
         /// <summary>

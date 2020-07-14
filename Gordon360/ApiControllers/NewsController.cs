@@ -59,7 +59,7 @@ namespace Gordon360.Controllers.Api
         // Private route to authenticated users
         public IHttpActionResult GetByID(int newsID)
         {
-            // StateYourBusiness verifies that user is authenticate
+            // StateYourBusiness verifies that user is authenticated
             var result = _newsService.Get(newsID);
             // Shouldn't be necessary
             if (result == null)
@@ -190,6 +190,24 @@ namespace Gordon360.Controllers.Api
             }
             return Ok(result);
         }
-        
+
+        /// <summary>
+        /// (Controller) Edits a news item in the database
+        /// </summary>
+        /// <param name="newsID">The id of the news item to edit</param>
+        /// <param name="newData">The news object that contains updated values</param>
+        /// <returns>The updated news item</returns>
+        /// <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
+        [HttpPut]
+        [Route("{newsID}")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.NEWS)]
+        // Private route to authenticated users - authors of posting or admins
+        public IHttpActionResult EditPosting(int newsID, StudentNews newData)
+        {
+            // StateYourBusiness verifies that user is authenticated
+            var result = _newsService.EditPosting(newsID, newData);
+            return Ok(result);
+        }
+
     }
 }
