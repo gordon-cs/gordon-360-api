@@ -234,6 +234,50 @@
             </summary>
             <returns>returns confirmation that clock in status was deleted</returns>
         </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.getJobsForStaff(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
+            <summary>
+            Get a user's active jobs
+            </summary>
+            <param name="details"></param>
+            <returns>The Staff's active jobs</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.getSavedShiftsForStaff">
+            <summary>
+            Get a user's saved shifts
+            </summary>
+            <returns>The staff's saved shifts</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.saveShiftForStaff(Gordon360.Models.ViewModels.ShiftViewModel)">
+            <summary>
+            Get a user's active jobs
+            </summary>
+            <param name="shiftDetails"></param>
+            <returns>The result of saving a shift for a staff</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.editShiftForStaff(Gordon360.Models.ViewModels.ShiftViewModel)">
+            <summary>
+            Edit a shift for staff
+            <param name="shiftDetails">The details that will be changed</param>
+            </summary>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.deleteShiftForStaff(System.Int32)">
+            <summary>
+            Get a user's active jobs
+            </summary>
+            <returns>The result of deleting the shift for a Staff</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.submitShiftsForStaff(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.ShiftToSubmitViewModel})">
+            <summary>
+            Submit shift for staff
+            </summary>
+            <returns>The result of submitting the shifts for staff</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.getSupervisorNameStaff(System.Int32)">
+            <summary>
+            Gets the name of a supervisor based on their ID number for Staff
+            </summary>
+            <returns>The name of the supervisor</returns>
+        </member>
         <member name="M:Gordon360.ApiControllers.SaveController.GetUpcomingRides">
             <summary>
              Gets all upcoming ride objects
