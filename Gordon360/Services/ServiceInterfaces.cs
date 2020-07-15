@@ -232,13 +232,14 @@ namespace Gordon360.Services
 
     public interface INewsService
     {
+        StudentNews Get(int newsID);
         IEnumerable<StudentNewsViewModel> GetNewsNotExpired();
         IEnumerable<StudentNewsViewModel> GetNewsNew();
         IEnumerable<StudentNewsCategoryViewModel> GetNewsCategories();
         IEnumerable<StudentNewsViewModel> GetNewsPersonalUnapproved(string id, string username);
         StudentNews SubmitNews(StudentNews newsItem, string username, string id);
         StudentNews DeleteNews(int newsID);
+        StudentNewsViewModel EditPosting(int newsID, StudentNews newsItem);
     }
 
 }
-

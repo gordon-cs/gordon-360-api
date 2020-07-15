@@ -8,6 +8,7 @@ using System.Security.Claims;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
+using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Controllers.Api
 {
@@ -48,6 +49,24 @@ namespace Gordon360.Controllers.Api
         public NewsController(INewsService newsService)
         {
             _newsService = newsService;
+        }
+
+        /// <summary>Gets a news item by id from the database</summary>
+        /// <param name="newsID">The id of the news item to retrieve</param>
+        /// <returns>The news item</returns>
+        [HttpGet]
+        [Route("{newsID}")]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.NEWS)]
+        // Private route to authenticated users
+        public IHttpActionResult GetByID(int newsID)
+        {
+            // StateYourBusiness verifies that user is authenticated
+            var result = (StudentNewsViewModel)_newsService.Get(newsID);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
         }
 
         /** Call the service that gets all approved student news entries not yet expired, filtering
@@ -160,7 +179,7 @@ namespace Gordon360.Controllers.Api
         // Private route to authenticated authors of the news entity
         public IHttpActionResult Delete(int newsID)
         {
-            // StateYourBusiness verfies that user is authenticated
+            // StateYourBusiness verifies that user is authenticated
             // Delete permission should be allowed only to authors of the news item
             // News item must not have already expired
             var result = _newsService.DeleteNews(newsID);
@@ -171,6 +190,24 @@ namespace Gordon360.Controllers.Api
             }
             return Ok(result);
         }
-        
+
+        /// <summary>
+        /// (Controller) Edits a news item in the database
+        /// </summary>
+        /// <param name="newsID">The id of the news item to edit</param>
+        /// <param name="newData">The news object that contains updated values</param>
+        /// <returns>The updated news item</returns>
+        /// <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
+        [HttpPut]
+        [Route("{newsID}")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.NEWS)]
+        // Private route to authenticated users - authors of posting or admins
+        public IHttpActionResult EditPosting(int newsID,[FromBody] StudentNews newData)
+        {
+            // StateYourBusiness verifies that user is authenticated
+            var result = _newsService.EditPosting(newsID, newData);
+            return Ok(result);
+        }
+
     }
 }
