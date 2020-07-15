@@ -900,6 +900,16 @@ _(uses stored procedure)_
 
 _(uses repository)_
 
+##### PUT
+
+`api/news/:id` Edits a news item in the database by its id. In order to edit, the following conditions must be met:
+
+- news item is unexpired
+- user is author of news item or SUPER_ADMIN (perhaps should be changed in future)
+- news item has not yet been approved
+
+_(uses repository)_
+
 ### Wellness Check
 Back endpoint responsible for fetching and sending information to the database regarding the answers to the wellness check.
 
