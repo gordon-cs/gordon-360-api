@@ -283,7 +283,7 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CSVStringsToTable_fn_Result.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
+      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CUSTOM_PROFILE.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
@@ -328,7 +328,7 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\hour_types.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
+      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
@@ -353,21 +353,6 @@
     </Compile>
     <Compile Include="Models\MEMBERSHIPS_PER_STUDENT_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Model1.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Model1.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Model1.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\StaffTimesheet_DB_Models.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>StaffTimesheet_DB_Models.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\MyGordon_DB_Models.Context.cs">
       <AutoGen>True</AutoGen>
@@ -400,7 +385,7 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\paid_shifts.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
+      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PART_DEF.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
@@ -441,23 +426,38 @@
     <Compile Include="Models\sp_helpdiagrams_Result.cs">
       <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\StaffTimesheets_DB_Models.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StaffTimesheets_DB_Models.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\StaffTimesheets_DB_Models.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\StaffTimesheets_DB_Models.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StaffTimesheets_DB_Models.edmx</DependentUpon>
+    </Compile>
     <Compile Include="Models\staff_timesheets.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
+      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\staff_timesheets_select_active_status_shifts_Result.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
+      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\staff_timesheets_select_emls_for_ajax_selectbox_Result.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
+      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\staff_timesheets_select_fixed_status_shifts_Result.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
+      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\staff_timesheets_select_hour_types_Result.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
+      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\staff_timesheets_select_supervisor_name_Result.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
+      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Student.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
@@ -649,16 +649,6 @@
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
       <LastGenOutput>CCT_DB_Models.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\Model1.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>StaffTimesheet_DB_Models.edmx</DependentUpon>
-      <LastGenOutput>Model1.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\Model1.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>StaffTimesheet_DB_Models.edmx</DependentUpon>
-      <LastGenOutput>Model1.cs</LastGenOutput>
-    </Content>
     <Content Include="Models\MyGordon_DB_Models.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
@@ -668,6 +658,16 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
       <LastGenOutput>MyGordon_DB_Models.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\StaffTimesheets_DB_Models.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>StaffTimesheets_DB_Models.edmx</DependentUpon>
+      <LastGenOutput>StaffTimesheets_DB_Models.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\StaffTimesheets_DB_Models.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>StaffTimesheets_DB_Models.edmx</DependentUpon>
+      <LastGenOutput>StaffTimesheets_DB_Models.cs</LastGenOutput>
     </Content>
     <Content Include="Models\StudentTimesheet_DB_Models.edmx.diagram">
       <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
@@ -686,12 +686,12 @@
     <Content Include="Models\MyGordon_DB_Models.edmx.diagram">
       <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
     </Content>
-    <EntityDeploy Include="Models\StaffTimesheet_DB_Models.edmx">
+    <EntityDeploy Include="Models\StaffTimesheets_DB_Models.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>StaffTimesheet_DB_Models.Designer.cs</LastGenOutput>
+      <LastGenOutput>StaffTimesheets_DB_Models.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="Models\StaffTimesheet_DB_Models.edmx.diagram">
-      <DependentUpon>StaffTimesheet_DB_Models.edmx</DependentUpon>
+    <Content Include="Models\StaffTimesheets_DB_Models.edmx.diagram">
+      <DependentUpon>StaffTimesheets_DB_Models.edmx</DependentUpon>
     </Content>
     <None Include="secrets.config">
       <SubType>Designer</SubType>
