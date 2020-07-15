@@ -20,91 +20,36 @@ namespace Gordon360.Services
 
         /// <summary>
         /// Gets a news item entity by id
+        /// NOTE: Also a helper method, hence why it returns a StudentNews model
+        /// rather than a StudentNewsViewModel - must be casted as the latter in its own
+        /// controller
         /// </summary>
         /// <param name="newsID">The SNID (id of news item)</param>
         /// <returns>The news item</returns>
-        public StudentNewsViewModel Get(int newsID)
+        public StudentNews Get(int newsID)
         {
             var newsItem = _unitOfWork.StudentNewsRepository.GetById(newsID);
+            // Thrown exceptions will be converted to HTTP Responses by the CustomExceptionFilter
+            if (newsItem == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The news item was not found." };
+            }
             return newsItem;
         }
 
         public IEnumerable<StudentNewsViewModel> GetNewsNotExpired()
         {
             return RawSqlQuery<StudentNewsViewModel>.query("NEWS_NOT_EXPIRED");
-
-            // TODO This trimming code was apparently used in services
-            // to remove whitespace inherited from the database.
-            // Postman showed no extra whitespace in the result, so
-            // if there is also no extra whitespace in the result the frontend retrieves,
-            // this commented code can be removed. Else, uncomment this code. It is 
-            // likely the solution.
-            // var trimmedResult = result.Select(x =>
-            // {
-            //     var trim = x;
-            //     trim.SNID = x.SNID;
-            //     trim.ADUN = x.ADUN.Trim();
-            //     trim.categoryID = x.categoryID;
-            //     trim.Subject = x.Subject.Trim();
-            //     trim.Body = x.Body;
-            //     trim.Sent = x.Sent;
-            //     trim.thisPastMailing = x.thisPastMailing;
-            //     trim.categoryName = x.categoryName.Trim();
-            //     trim.SortOrder = x.SortOrder;
-            //     trim.ManualExpirationDate = x.ManualExpirationDate;
-            //     return trim;
-            // });
-            // return trimmedResult;
         }
 
         public IEnumerable<StudentNewsViewModel> GetNewsNew()
         {
             return RawSqlQuery<StudentNewsViewModel>.query("NEWS_NEW");
-
-            // TODO This trimming code was apparently used in services
-            // to remove whitespace inherited from the database.
-            // Postman showed no extra whitespace in the result, so
-            // if there is also no extra whitespace in the result the frontend retrieves,
-            // this commented code can be removed. Else, uncomment this code. It is 
-            // likely the solution.
-            // var trimmedResult = result.Select(x =>
-            // {
-            //     var trim = x;
-            //     trim.SNID = x.SNID;
-            //     trim.ADUN = x.ADUN.Trim();
-            //     trim.categoryID = x.categoryID;
-            //     trim.Subject = x.Subject.Trim();
-            //     trim.Body = x.Body;
-            //     trim.Sent = x.Sent;
-            //     trim.thisPastMailing = x.thisPastMailing;
-            //     trim.Entered = x.Entered;
-            //     trim.categoryName = x.categoryName.Trim();
-            //     trim.SortOrder = x.SortOrder;
-            //     trim.ManualExpirationDate = x.ManualExpirationDate;
-            //     return trim;
-            // });
-            // return trimmedResult;
         }
 
         public IEnumerable<StudentNewsCategoryViewModel> GetNewsCategories()
         {
             return RawSqlQuery<StudentNewsCategoryViewModel>.query("NEWS_CATEGORIES");
-
-            // TODO This trimming code was apparently used in services
-            // to remove whitespace inherited from the database.
-            // Postman showed no extra whitespace in the result, so
-            // if there is also no extra whitespace in the result the frontend retrieves,
-            // this commented code can be removed. Else, uncomment this code. It is 
-            // likely the solution.
-            // var trimmedResult = result.Select(x =>
-            // {
-            //     var trim = x;
-            //     trim.categoryID = x.categoryID;
-            //     trim.categoryName = x.categoryName.Trim();
-            //     trim.SortOrder = x.SortOrder;
-            //     return trim;
-            // });
-            // return trimmedResult;
         }
 
         /// <summary>
@@ -129,14 +74,14 @@ namespace Gordon360.Services
         }
 
 
-            /// <summary>
-            /// Adds a news item record to storage.
-            /// </summary>
-            /// <param name="newsItem">The news item to be added</param>
-            /// <param name="username">username</param>
-            /// <param name="id">id</param>
-            /// <returns>The newly added Membership object</returns>
-            public StudentNews SubmitNews(StudentNews newsItem, string username, string id)
+        /// <summary>
+        /// Adds a news item record to storage.
+        /// </summary>
+        /// <param name="newsItem">The news item to be added</param>
+        /// <param name="username">username</param>
+        /// <param name="id">id</param>
+        /// <returns>The newly added Membership object</returns>
+        public StudentNews SubmitNews(StudentNews newsItem, string username, string id)
         {
             // Not currently used
             ValidateNewsItem(newsItem);
@@ -167,18 +112,87 @@ namespace Gordon360.Services
         /// <remarks>The news item must be authored by the user and must not be expired</remarks>
         public StudentNews DeleteNews(int newsID)
         {
-            var newsItem = _unitOfWork.StudentNewsRepository.GetById(newsID);
-            // Thrown exceptions will be converted to HTTP Responses by the CustomExceptionFilter
-            if (newsItem == null)
+            // Service method 'Get' throws its own exceptions
+            var newsItem = Get(newsID);
+            
+            // Note: This check has been duplicated from StateYourBusiness because we do not SuperAdmins
+            //    to be able to delete expired news, this should be fixed eventually by removing some of
+            //    the SuperAdmin permissions that are not explicitly given
+            VerifyUnexpired(newsItem);
+
+            var result = _unitOfWork.StudentNewsRepository.Delete(newsItem);
+            _unitOfWork.Save();
+            return result;
+        }
+
+        /// <summary>
+        /// (Service) Edits a news item in the database
+        /// </summary>
+        /// <param name="newsID">The id of the news item to edit</param>
+        /// <param name="newData">The news object that contains updated values</param>
+        /// <returns>The updated news item's view model</returns>
+        /// <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
+        public StudentNewsViewModel EditPosting(int newsID, StudentNews newData)
+        {
+            // Service method 'Get' throws its own exceptions
+            var newsItem = Get(newsID);
+
+            // Note: These checks have been duplicated from StateYourBusiness because we do not SuperAdmins
+            //    to be able to delete expired news, this should be fixed eventually by removing some of
+            //    the SuperAdmin permissions that are not explicitly given
+            VerifyUnexpired(newsItem);
+            VerifyUnapproved(newsItem);
+            
+            // categoryID is required, not nullable in StudentNews model
+            if(newData.Subject == null || newData.Body == null)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The news item was not found." };
+                throw new ResourceNotFoundException() { ExceptionMessage = "The new data to update the news item is missing some entries." };
             }
+
+            newsItem.categoryID = newData.categoryID;
+            newsItem.Subject = newData.Subject;
+            newsItem.Body = newData.Body;
+
+            _unitOfWork.Save();
+            
+            return (StudentNewsViewModel)newsItem;
+        }
+
+        /// <summary>
+        /// Helper method to verify that a given news item has not yet been approved
+        /// </summary>
+        /// <param name="newsItem">The news item to verify</param>
+        /// <returns>true if unapproved, otherwise throws some kind of meaningful exception</returns>
+        private bool VerifyUnapproved(StudentNews newsItem)
+        {
+            // Note: This check has been duplicated from StateYourBusiness because we do not SuperAdmins
+            //    to be able to delete expired news, this should be fixed eventually by removing some of
+            //    the SuperAdmin permissions that are not explicitly given
+            if (newsItem.Accepted == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The news item acceptance status could not be verified." };
+            }
+            if(newsItem.Accepted == true)
+            {
+                throw new BadInputException() { ExceptionMessage = "The news item has already been approved." };
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Helper method to verify that a given news item has not expired 
+        /// (see documentation for expiration definition)
+        /// </summary>
+        /// <param name="newsItem">The news item to verify</param>
+        /// <returns>true if unexpired, otherwise throws some kind of meaningful exception</returns>
+        private bool VerifyUnexpired(StudentNews newsItem)
+        {
             // DateTime of date entered is nullable, so we need to check that here before comparing
             // If the entered date is null we shouldn't allow deletion to be safe
             // Note: This check has been duplicated from StateYourBusiness because we do not SuperAdmins
             //    to be able to delete expired news, this should be fixed eventually by removing some of
             //    the SuperAdmin permissions that are not explicitly given
-            if(newsItem.Entered == null)
+            if (newsItem.Entered == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The news item date could not be verified." };
             }
@@ -189,9 +203,7 @@ namespace Gordon360.Services
             {
                 throw new Exceptions.CustomExceptions.UnauthorizedAccessException() { ExceptionMessage = "Unauthorized to delete expired news items." };
             }
-            var result = _unitOfWork.StudentNewsRepository.Delete(newsItem);
-            _unitOfWork.Save();
-            return result;
+            return true;
         }
 
         /// <summary>
