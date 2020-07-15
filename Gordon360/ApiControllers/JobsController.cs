@@ -377,7 +377,7 @@ namespace Gordon360.ApiControllers
         /// <summary>
         /// Get a user's active jobs
         /// </summary>
-        /// <param name="shiftDetails"></param>
+        /// <param name="shiftDetails">The details that will be changed</param>
         /// <returns>The result of saving a shift for a staff</returns>
         [HttpPost]
         [Route("saveShiftStaff")]
@@ -517,4 +517,6 @@ namespace Gordon360.ApiControllers
         }
 
     }
+
 }
+
