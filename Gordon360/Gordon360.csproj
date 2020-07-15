@@ -525,6 +525,7 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ViewModels\ClockInViewModel.cs" />
+    <Compile Include="Models\ViewModels\StaffCheckViewModel.cs" />
     <Compile Include="Models\ViewModels\StaffTimesheetsViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentNewsCategoryViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentNewsViewModel.cs" />
@@ -583,7 +584,6 @@
     <Compile Include="Models\ViewModels\SupervisorViewModel.cs" />
     <Compile Include="Models\ViewModels\VictoryPromiseViewModel.cs" />
     <Compile Include="Models\ViewModels\WellnessQuestionViewModel.cs" />
-    <Compile Include="Models\ViewModels\StaffTimesheetsViewModel.cs" />
     <Compile Include="Models\view_cct_alumni.cs">
       <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
     </Compile>

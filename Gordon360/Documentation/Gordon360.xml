@@ -240,12 +240,12 @@
              returns true if the staff member has at least one qualifying active job as hourly staff
             </summary>
             <returns>Boolean</returns>
-
+        </member>
         <member name="M:Gordon360.ApiControllers.JobsController.getJobsForStaff(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
             <summary>
             Get a user's active jobs
             </summary>
-            <param name="details"></param>
+            <param name="details"> deatils of the current Staff</param>
             <returns>The Staff's active jobs</returns>
         </member>
         <member name="M:Gordon360.ApiControllers.JobsController.getSavedShiftsForStaff">
@@ -258,7 +258,7 @@
             <summary>
             Get a user's active jobs
             </summary>
-            <param name="shiftDetails"></param>
+            <param name="shiftDetails">The details that will be changed</param>
             <returns>The result of saving a shift for a staff</returns>
         </member>
         <member name="M:Gordon360.ApiControllers.JobsController.editShiftForStaff(Gordon360.Models.ViewModels.ShiftViewModel)">
@@ -284,7 +284,6 @@
             Gets the name of a supervisor based on their ID number for Staff
             </summary>
             <returns>The name of the supervisor</returns>
-
         </member>
         <member name="M:Gordon360.ApiControllers.SaveController.GetUpcomingRides">
             <summary>

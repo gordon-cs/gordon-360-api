@@ -178,7 +178,7 @@ namespace Gordon360.Services
         IEnumerable<ClockInViewModel> ClockOut(string id);
         ClockInViewModel ClockIn(bool state, string id);
         ClockInViewModel DeleteClockIn(string id);
-        IEnumerable<StaffTimesheet> CanUsePage(string id);
+        IEnumerable<StaffCheckViewModel> CanUsePage(string id);
     }
 
     public interface IParticipationService
