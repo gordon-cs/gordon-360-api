@@ -8,6 +8,7 @@ using System.Security.Claims;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
+using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Controllers.Api
 {
@@ -60,8 +61,7 @@ namespace Gordon360.Controllers.Api
         public IHttpActionResult GetByID(int newsID)
         {
             // StateYourBusiness verifies that user is authenticated
-            var result = _newsService.Get(newsID);
-            // Shouldn't be necessary
+            var result = (StudentNewsViewModel)_newsService.Get(newsID);
             if (result == null)
             {
                 return NotFound();
@@ -202,7 +202,7 @@ namespace Gordon360.Controllers.Api
         [Route("{newsID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.NEWS)]
         // Private route to authenticated users - authors of posting or admins
-        public IHttpActionResult EditPosting(int newsID, StudentNews newData)
+        public IHttpActionResult EditPosting(int newsID,[FromBody] StudentNews newData)
         {
             // StateYourBusiness verifies that user is authenticated
             var result = _newsService.EditPosting(newsID, newData);

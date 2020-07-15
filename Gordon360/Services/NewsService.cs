@@ -20,6 +20,9 @@ namespace Gordon360.Services
 
         /// <summary>
         /// Gets a news item entity by id
+        /// NOTE: Also a helper method, hence why it returns a StudentNews model
+        /// rather than a StudentNewsViewModel - must be casted as the latter in its own
+        /// controller
         /// </summary>
         /// <param name="newsID">The SNID (id of news item)</param>
         /// <returns>The news item</returns>
@@ -37,79 +40,16 @@ namespace Gordon360.Services
         public IEnumerable<StudentNewsViewModel> GetNewsNotExpired()
         {
             return RawSqlQuery<StudentNewsViewModel>.query("NEWS_NOT_EXPIRED");
-
-            // TODO This trimming code was apparently used in services
-            // to remove whitespace inherited from the database.
-            // Postman showed no extra whitespace in the result, so
-            // if there is also no extra whitespace in the result the frontend retrieves,
-            // this commented code can be removed. Else, uncomment this code. It is 
-            // likely the solution.
-            // var trimmedResult = result.Select(x =>
-            // {
-            //     var trim = x;
-            //     trim.SNID = x.SNID;
-            //     trim.ADUN = x.ADUN.Trim();
-            //     trim.categoryID = x.categoryID;
-            //     trim.Subject = x.Subject.Trim();
-            //     trim.Body = x.Body;
-            //     trim.Sent = x.Sent;
-            //     trim.thisPastMailing = x.thisPastMailing;
-            //     trim.categoryName = x.categoryName.Trim();
-            //     trim.SortOrder = x.SortOrder;
-            //     trim.ManualExpirationDate = x.ManualExpirationDate;
-            //     return trim;
-            // });
-            // return trimmedResult;
         }
 
         public IEnumerable<StudentNewsViewModel> GetNewsNew()
         {
             return RawSqlQuery<StudentNewsViewModel>.query("NEWS_NEW");
-
-            // TODO This trimming code was apparently used in services
-            // to remove whitespace inherited from the database.
-            // Postman showed no extra whitespace in the result, so
-            // if there is also no extra whitespace in the result the frontend retrieves,
-            // this commented code can be removed. Else, uncomment this code. It is 
-            // likely the solution.
-            // var trimmedResult = result.Select(x =>
-            // {
-            //     var trim = x;
-            //     trim.SNID = x.SNID;
-            //     trim.ADUN = x.ADUN.Trim();
-            //     trim.categoryID = x.categoryID;
-            //     trim.Subject = x.Subject.Trim();
-            //     trim.Body = x.Body;
-            //     trim.Sent = x.Sent;
-            //     trim.thisPastMailing = x.thisPastMailing;
-            //     trim.Entered = x.Entered;
-            //     trim.categoryName = x.categoryName.Trim();
-            //     trim.SortOrder = x.SortOrder;
-            //     trim.ManualExpirationDate = x.ManualExpirationDate;
-            //     return trim;
-            // });
-            // return trimmedResult;
         }
 
         public IEnumerable<StudentNewsCategoryViewModel> GetNewsCategories()
         {
             return RawSqlQuery<StudentNewsCategoryViewModel>.query("NEWS_CATEGORIES");
-
-            // TODO This trimming code was apparently used in services
-            // to remove whitespace inherited from the database.
-            // Postman showed no extra whitespace in the result, so
-            // if there is also no extra whitespace in the result the frontend retrieves,
-            // this commented code can be removed. Else, uncomment this code. It is 
-            // likely the solution.
-            // var trimmedResult = result.Select(x =>
-            // {
-            //     var trim = x;
-            //     trim.categoryID = x.categoryID;
-            //     trim.categoryName = x.categoryName.Trim();
-            //     trim.SortOrder = x.SortOrder;
-            //     return trim;
-            // });
-            // return trimmedResult;
         }
 
         /// <summary>
@@ -134,14 +74,14 @@ namespace Gordon360.Services
         }
 
 
-            /// <summary>
-            /// Adds a news item record to storage.
-            /// </summary>
-            /// <param name="newsItem">The news item to be added</param>
-            /// <param name="username">username</param>
-            /// <param name="id">id</param>
-            /// <returns>The newly added Membership object</returns>
-            public StudentNews SubmitNews(StudentNews newsItem, string username, string id)
+        /// <summary>
+        /// Adds a news item record to storage.
+        /// </summary>
+        /// <param name="newsItem">The news item to be added</param>
+        /// <param name="username">username</param>
+        /// <param name="id">id</param>
+        /// <returns>The newly added Membership object</returns>
+        public StudentNews SubmitNews(StudentNews newsItem, string username, string id)
         {
             // Not currently used
             ValidateNewsItem(newsItem);
@@ -190,9 +130,9 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="newsID">The id of the news item to edit</param>
         /// <param name="newData">The news object that contains updated values</param>
-        /// <returns>The updated news item</returns>
+        /// <returns>The updated news item's view model</returns>
         /// <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
-        public StudentNews EditPosting(int newsID, StudentNews newData)
+        public StudentNewsViewModel EditPosting(int newsID, StudentNews newData)
         {
             // Service method 'Get' throws its own exceptions
             var newsItem = Get(newsID);
@@ -202,18 +142,20 @@ namespace Gordon360.Services
             //    the SuperAdmin permissions that are not explicitly given
             VerifyUnexpired(newsItem);
             VerifyUnapproved(newsItem);
-
-            try {
-                newsItem.categoryID = newData.categoryID;
-                newsItem.Subject = newData.Subject;
-                newsItem.Body = newData.Body;
-            }
-            catch (NullReferenceException)
+            
+            // categoryID is required, not nullable in StudentNews model
+            if(newData.Subject == null || newData.Body == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The new data to update the news item is missing some entries." };
             }
+
+            newsItem.categoryID = newData.categoryID;
+            newsItem.Subject = newData.Subject;
+            newsItem.Body = newData.Body;
+
+            _unitOfWork.Save();
             
-            return newsItem;
+            return (StudentNewsViewModel)newsItem;
         }
 
         /// <summary>

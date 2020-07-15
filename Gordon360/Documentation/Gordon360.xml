@@ -291,6 +291,11 @@
                         }
                     }
         </member>
+        <member name="M:Gordon360.Controllers.Api.NewsController.GetByID(System.Int32)">
+            <summary>Gets a news item by id from the database</summary>
+            <param name="newsID">The id of the news item to retrieve</param>
+            <returns>The news item</returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.NewsController.GetNotExpired">
             Call the service that gets all approved student news entries not yet expired, filtering
             out the expired by comparing 2 weeks past date entered to current date
@@ -315,6 +320,15 @@
             <param name="newsID">The id of the news item to delete</param>
             <returns>The deleted news item</returns>
             <remarks>The news item must be authored by the user and must not be expired</remarks>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.NewsController.EditPosting(System.Int32,Gordon360.Models.StudentNews)">
+            <summary>
+            (Controller) Edits a news item in the database
+            </summary>
+            <param name="newsID">The id of the news item to edit</param>
+            <param name="newData">The news object that contains updated values</param>
+            <returns>The updated news item</returns>
+            <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
         </member>
         <member name="M:Gordon360.Controllers.Api.ContentManagementController.GetSliderContent">
             <summary>Get all the slider content for the dashboard slider</summary>
@@ -1421,6 +1435,9 @@
         <member name="M:Gordon360.Services.NewsService.Get(System.Int32)">
             <summary>
             Gets a news item entity by id
+            NOTE: Also a helper method, hence why it returns a StudentNews model
+            rather than a StudentNewsViewModel - must be casted as the latter in its own
+            controller
             </summary>
             <param name="newsID">The SNID (id of news item)</param>
             <returns>The news item</returns>
@@ -1449,6 +1466,30 @@
             <param name="newsID">The id of the news item to delete</param>
             <returns>The deleted news item</returns>
             <remarks>The news item must be authored by the user and must not be expired</remarks>
+        </member>
+        <member name="M:Gordon360.Services.NewsService.EditPosting(System.Int32,Gordon360.Models.StudentNews)">
+            <summary>
+            (Service) Edits a news item in the database
+            </summary>
+            <param name="newsID">The id of the news item to edit</param>
+            <param name="newData">The news object that contains updated values</param>
+            <returns>The updated news item's view model</returns>
+            <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
+        </member>
+        <member name="M:Gordon360.Services.NewsService.VerifyUnapproved(Gordon360.Models.StudentNews)">
+            <summary>
+            Helper method to verify that a given news item has not yet been approved
+            </summary>
+            <param name="newsItem">The news item to verify</param>
+            <returns>true if unapproved, otherwise throws some kind of meaningful exception</returns>
+        </member>
+        <member name="M:Gordon360.Services.NewsService.VerifyUnexpired(Gordon360.Models.StudentNews)">
+            <summary>
+            Helper method to verify that a given news item has not expired 
+            (see documentation for expiration definition)
+            </summary>
+            <param name="newsItem">The news item to verify</param>
+            <returns>true if unexpired, otherwise throws some kind of meaningful exception</returns>
         </member>
         <member name="M:Gordon360.Services.NewsService.ValidateNewsItem(Gordon360.Models.StudentNews)">
             <summary>
