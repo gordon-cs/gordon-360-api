@@ -7,6 +7,7 @@ namespace Gordon360.Models.ViewModels
 {
     public class StaffTimesheetsViewModel
     {
+        public int ID { get; set; }
         public int ID_NUM { get; set; }
         public int EML { get; set; }
         public string EML_DESCRIPTION { get; set; }
