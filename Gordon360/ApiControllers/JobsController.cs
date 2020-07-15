@@ -329,7 +329,7 @@ namespace Gordon360.ApiControllers
         /// <summary>
         /// Get a user's active jobs
         /// </summary>
-        /// <param name="details"></param>
+        /// <param name="details"> deatils of the current Staff</param>
         /// <returns>The Staff's active jobs</returns>
         [HttpPost]
         [Route("getJobsStaff")]
@@ -343,7 +343,6 @@ namespace Gordon360.ApiControllers
             }
             catch (Exception e)
             {
-                //
                 System.Diagnostics.Debug.WriteLine(e.Message);
                 return InternalServerError();
             }
@@ -355,7 +354,7 @@ namespace Gordon360.ApiControllers
         /// </summary>
         /// <returns>The staff's saved shifts</returns>
         [HttpGet]
-        [Route("getSavedShiftsStaff/")]
+        [Route("getSavedShiftsStaff")]
         public HttpResponseMessage getSavedShiftsForStaff()
         {
             int userID = GetCurrentUserID();
@@ -413,7 +412,7 @@ namespace Gordon360.ApiControllers
         /// <param name="shiftDetails">The details that will be changed</param>
         /// </summary>
         [HttpPut]
-        [Route("editShiftStaff/")]
+        [Route("editShiftStaff")]
         public HttpResponseMessage editShiftForStaff([FromBody] ShiftViewModel shiftDetails)
         {
             IEnumerable<StaffTimesheetsViewModel> result = null;
