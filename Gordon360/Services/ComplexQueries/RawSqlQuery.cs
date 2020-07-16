@@ -41,5 +41,20 @@ namespace Gordon360.Services.ComplexQueries
                 return result.ToList();
             }
         }
+
+        /// <summary>
+        /// Execute the sql query on the StaffTimesheets database
+        /// </summary>
+        /// <param name="query">An sql statement. Can be a stored procedure or even a simple SELECT statment</param>
+        /// <param name="parameters">Parameters to pass into the stored procedure</param>
+        /// <returns></returns>
+        public static IEnumerable<T> StaffTimesheetQuery(string query, params object[] parameters)
+        {
+            using (var context = new StaffTimesheetsEntities())
+            {
+                var result = context.Database.SqlQuery<T>(query, parameters).AsEnumerable();
+                return result.ToList();
+            }
+        }
     }
 }

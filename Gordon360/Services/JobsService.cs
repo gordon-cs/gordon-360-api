@@ -301,6 +301,38 @@ namespace Gordon360.Services
 
         }
 
+
+        public IEnumerable<StaffCheckViewModel> CanUsePage(string id)
+        {
+            var _unitOfWork = new UnitOfWork();
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
+            var idParam = new SqlParameter("@ID_Num", id);
+
+            var result = RawSqlQuery<StaffCheckViewModel>.StaffTimesheetQuery("staff_timesheets_can_use_this_page @ID_NUM", idParam); // run stored procedure
+
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+
+            var staffTimesheet = result.Select(x =>
+            {
+                StaffCheckViewModel y = new StaffCheckViewModel();
+
+                y.EmIID = x.EmIID;
+
+                return y;
+            });
+
+            return staffTimesheet;
+
+        }
+
+
         //staff functions
 
         public IEnumerable<StaffTimesheetsViewModel> saveShiftForStaff(int staffID, int jobID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string shiftNotes, string lastChangedBy)
@@ -317,7 +349,7 @@ namespace Gordon360.Services
 
             try
             {
-                result = RawSqlQuery<StaffTimesheetsViewModel>.query("staff_timesheets_insert_shift @ID_NUM, @eml, @shift_start_datetime, @shift_end_datetime, @hours_worked, @shift_notes, @last_changed_by", id_num, eml, shiftStartDateTime, shiftEndDateTime, hours_worked, notes, changedBy);
+                result = RawSqlQuery<StaffTimesheetsViewModel>.StaffTimesheetQuery("staff_timesheets_insert_shift @ID_NUM, @eml, @shift_start_datetime, @shift_end_datetime, @hours_worked, @shift_notes, @last_changed_by", id_num, eml, shiftStartDateTime, shiftEndDateTime, hours_worked, notes, changedBy);
             }
             catch (Exception e)
             {
@@ -336,7 +368,7 @@ namespace Gordon360.Services
             string query = "SELECT ID_NUM, EML, EML_DESCRIPTION, SHIFT_START_DATETIME, SHIFT_END_DATETIME, HOURLY_RATE, HOURS_WORKED, SUPERVISOR, COMP_SUPERVISOR, STATUS, SUBMITTED_TO, SHIFT_NOTES, COMMENTS, PAY_WEEK_DATE, PAY_PERIOD_DATE, PAY_PERIOD_ID, LAST_CHANGED_BY, DATETIME_ENTERED from staff_timesheets where ID_NUM = @ID_NUM AND STATUS != 'Paid' order by EML, SHIFT_START_DATETIME, STATUS";
             try
             {
-                result = RawSqlQuery<StaffTimesheetsViewModel>.query(query, id_num);
+                result = RawSqlQuery<StaffTimesheetsViewModel>.StaffTimesheetQuery(query, id_num);
             }
             catch (Exception e)
             {
@@ -357,7 +389,7 @@ namespace Gordon360.Services
 
             try
             {
-                result = RawSqlQuery<StaffTimesheetsViewModel>.query("UPDATE staff_timesheets SET STATUS = 'Saved', SHIFT_START_DATETIME = @newStart, SHIFT_END_DATETIME = @newEnd, HOURS_WORKED = @newHours, LAST_CHANGED_BY = @lastChangedBy, COMMENTS = null WHERE ID = @ID;", newStart, newEnd, newHours, id, lastChangedBy);
+                result = RawSqlQuery<StaffTimesheetsViewModel>.StaffTimesheetQuery("UPDATE staff_timesheets SET STATUS = 'Saved', SHIFT_START_DATETIME = @newStart, SHIFT_END_DATETIME = @newEnd, HOURS_WORKED = @newHours, LAST_CHANGED_BY = @lastChangedBy, COMMENTS = null WHERE ID = @ID;", newStart, newEnd, newHours, id, lastChangedBy);
             }
             catch (Exception e)
             {
@@ -376,7 +408,7 @@ namespace Gordon360.Services
 
             try
             {
-                result = RawSqlQuery<StaffTimesheetsViewModel>.query("staff_timesheets_delete_shift @row_num, @ID_NUM", row_id, ID_NUM);
+                result = RawSqlQuery<StaffTimesheetsViewModel>.StaffTimesheetQuery("staff_timesheets_delete_shift @row_num, @ID_NUM", row_id, ID_NUM);
             }
             catch (Exception e)
             {
@@ -398,7 +430,7 @@ namespace Gordon360.Services
 
             try
             {
-                result = RawSqlQuery<StaffTimesheetsViewModel>.query("staff_timesheets_submit_job_shift @ID_NUM, @eml, @shift_end_datetime, @submitted_to, @last_changed_by", ID_NUM, eml, shiftEndDateTime, submitted_to, changedBy);
+                result = RawSqlQuery<StaffTimesheetsViewModel>.StaffTimesheetQuery("staff_timesheets_submit_job_shift @ID_NUM, @eml, @shift_end_datetime, @submitted_to, @last_changed_by", ID_NUM, eml, shiftEndDateTime, submitted_to, changedBy);
             }
             catch (Exception e)
             {
@@ -418,7 +450,7 @@ namespace Gordon360.Services
 
             try
             {
-                result = RawSqlQuery<ActiveJobViewModel>.query("staff_timesheets_select_emls_for_ajax_selectbox @start_datetime, @end_datetime, @ID_NUM", start_datetime, end_datetime, id_num);
+                result = RawSqlQuery<ActiveJobViewModel>.StaffTimesheetQuery("staff_timesheets_select_emls_for_ajax_selectbox @start_datetime, @end_datetime, @ID_NUM", start_datetime, end_datetime, id_num);
             }
             catch (Exception e)
             {
@@ -436,7 +468,7 @@ namespace Gordon360.Services
 
             try
             {
-                result = RawSqlQuery<SupervisorViewModel>.query("staff_timesheets_select_supervisor_name @supervisor", supervisor);
+                result = RawSqlQuery<SupervisorViewModel>.StaffTimesheetQuery("staff_timesheets_select_supervisor_name @supervisor", supervisor);
             }
             catch (Exception e)
             {
@@ -455,7 +487,7 @@ namespace Gordon360.Services
 
             try
             {
-                result = RawSqlQuery<OverlappingShiftIdViewModel>.query("staff_timesheets_edit_shift_already_worked_these_hours @ID_NUM, @start_datetime, @end_datetime, @shift_being_edited", id_num, start_datetime, end_datetime, shift_being_edited);
+                result = RawSqlQuery<OverlappingShiftIdViewModel>.StaffTimesheetQuery("staff_timesheets_edit_shift_already_worked_these_hours @ID_NUM, @start_datetime, @end_datetime, @shift_being_edited", id_num, start_datetime, end_datetime, shift_being_edited);
             }
             catch (Exception e)
             {
@@ -474,7 +506,7 @@ namespace Gordon360.Services
 
             try
             {
-                result = RawSqlQuery<OverlappingShiftIdViewModel>.query("staff_timesheets_already_worked_these_hours @ID_NUM, @start_datetime, @end_datetime", id_num, start_datetime, end_datetime);
+                result = RawSqlQuery<OverlappingShiftIdViewModel>.StaffTimesheetQuery("staff_timesheets_already_worked_these_hours @ID_NUM, @start_datetime, @end_datetime", id_num, start_datetime, end_datetime);
             }
             catch (Exception e)
             {
@@ -483,7 +515,6 @@ namespace Gordon360.Services
 
             return result;
         }
-
 
     }
 }
