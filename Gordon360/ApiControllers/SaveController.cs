@@ -100,8 +100,6 @@ namespace Gordon360.ApiControllers
 
         }
 
-<<<<<<< HEAD
-=======
         /// <summary>Cancel an existing ride item</summary>
         /// <param name="rideID">The identifier for the ride to be cancel</param>
         /// <remarks>Calls the server to make a call and remove the given ride from the database</remarks>
@@ -123,7 +121,6 @@ namespace Gordon360.ApiControllers
             return Ok(result);
         }
 
->>>>>>> develop
         /// <summary>Delete an existing ride item</summary>
         /// <param name="rideID">The identifier for the ride to be deleted</param>
         /// <remarks>Calls the server to make a call and remove the given ride from the database</remarks>
