@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Gordon360.Models;
+using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Repositories
 {
@@ -37,6 +38,9 @@ namespace Gordon360.Repositories
         IRepository<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> FacultyScheduleRepository { get; }
         IRepository<VICTORY_PROMISE_BY_STUDENT_ID_Result> VictoryPromiseByStudentIDRepository { get; }
         //IRepository<STUDENT_JOBS_PER_ID_NUM_Result> StudentEmploymentByStudentIDRepository { get; }
+
+        IRepository<StudentNews> StudentNewsRepository { get; }
+        IRepository<StudentNewsCategory> StudentNewsCategoryRepository { get; }
 
         bool Save();
 

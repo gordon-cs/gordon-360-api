@@ -27,9 +27,10 @@ namespace Gordon360.Services
         /// Fetch all upcoming ride items
         /// </summary>
         /// <returns> IEnumerable of ride items if found, null if not found</returns>
-        public IEnumerable<RideViewModel> GetUpcoming()
+        public IEnumerable<UPCOMING_RIDES_Result> GetUpcoming(string gordon_id)
         {
-            var result = RawSqlQuery<RideViewModel>.query("UPCOMING_RIDES"); //run stored procedure
+            var idParam = new SqlParameter("@STUDENT_ID", gordon_id);
+            var result = RawSqlQuery<UPCOMING_RIDES_Result>.query("UPCOMING_RIDES @STUDENT_ID", idParam); //run stored procedure
 
             if (result == null)
             {
@@ -44,10 +45,10 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="gordon_id">The ride id</param>
         /// <returns> ride items if found, null if not found</returns>
-        public IEnumerable<RideViewModel> GetUpcomingForUser(string gordon_id)
+        public IEnumerable<UPCOMING_RIDES_BY_STUDENT_ID_Result> GetUpcomingForUser(string gordon_id)
         {
             var idParam = new SqlParameter("@STUDENT_ID", gordon_id);
-            var result = RawSqlQuery<RideViewModel>.query("UPCOMING_RIDES_BY_STUDENT_ID @STUDENT_ID", idParam); //run stored procedure
+            var result = RawSqlQuery<UPCOMING_RIDES_BY_STUDENT_ID_Result>.query("UPCOMING_RIDES_BY_STUDENT_ID @STUDENT_ID", idParam); //run stored procedure
 
             if (result == null)
             {
@@ -57,40 +58,6 @@ namespace Gordon360.Services
             return result;
         }
 
-        /// <summary>
-        /// Fetch users in a ride specified by a ride_id
-        /// </summary>
-        /// <param name="rideID">The ride id</param>
-        /// <returns> IEnumerable of user items if found, null if not found</returns>
-        public IEnumerable<RideViewModel> GetUsersInRide(string rideID)
-        {
-            var idParam = new SqlParameter("@RIDE_ID", rideID);
-            var result = RawSqlQuery<RideViewModel>.query("RIDERS_BY_RIDE_ID @RIDE_ID", idParam); //run stored procedure
-
-            if (result == null)
-            {
-                return null;
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Adds a new ride record to storage.
-        /// </summary>
-        /// <param name="rideID">The Save_Rides object to be added</param>
-        /// <returns>The newly added custom event</returns>
-        public Save_Rides GetRide(string rideID)
-        {
-
-            // Assign event id
-            var ride = _unitOfWork.RideRepository.FirstOrDefault(x => x.rideID == rideID);
-            if (ride == null)
-            {
-                throw new ResourceCreationException() { ExceptionMessage = "Ride event with this ID does not exist." };
-            }
-            return ride;
-        }
 
             /// <summary>
             /// Adds a new ride record to storage.
@@ -170,6 +137,24 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// Cancel the ride whose id is specified by the parameter.
+        /// </summary>
+        /// <param name="rideID">The ride id</param>
+        /// <param name="gordon_id">The gordon id</param>
+        /// <returns>The ride that was just deleted</returns>
+        public int CancelRide(string rideID, string gordon_id)
+        {
+            var idParam = new SqlParameter("@STUDENT_ID", gordon_id);
+            var rideIdParam = new SqlParameter("@RIDE_ID", rideID);
+            var context = new CCTEntities1();
+
+            var result = context.Database.ExecuteSqlCommand("CANCEL_RIDE @STUDENT_ID, @RIDE_ID", idParam, rideIdParam); // run stored procedure.
+            _unitOfWork.Save();
+
+            return result;
+        }
+
+        /// <summary>
         /// Adds a new booking record to storage.
         /// </summary>
         /// <param name="newBooking">The Save_Bookings object to be added</param>
@@ -226,20 +211,6 @@ namespace Gordon360.Services
                 _unitOfWork.Save();
             }
 
-            return result;
-        }
-
-        /// <summary>
-        /// Fetch number of valid drives (1 or more passengers) by ID
-        /// </summary>
-        /// <param name="gordon_id">The gordon id</param>
-        /// <returns> IEnumerable of user items if found, null if not found</returns>
-        public int GetValidDrives(string gordon_id)
-        {
-            var idParam = new SqlParameter("@DRIVER_ID", gordon_id);
-            var context = new CCTEntities1();
-            var result = context.Database.ExecuteSqlCommand("VALID_DRIVES_BY_ID @DRIVER_ID", idParam); //run stored procedure
-        
             return result;
         }
 

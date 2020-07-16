@@ -12,7 +12,7 @@ namespace Gordon360.Static.Names
         public const string ACCOUNT = "An Account Resource.";
         public const string ADVISOR = "An Advisor Resource";
         public const string GROUP_ADMIN = "A Group Admin Resource";
-        public const string ADMIN = "An admininistrator Ressource";
+        public const string ADMIN = "An admininistrator Resource";
         public const string ACTIVITY_INFO = "An Activity Info Service.";
         public const string ACTIVITY_STATUS = "The open or closed status of an activity";
         public const string ChapelEvent = "The info of chapel events";
@@ -21,6 +21,7 @@ namespace Gordon360.Static.Names
         public const string MYSCHEDULE = "A custom schedule resource";
         public const string Save_Rides = "A ride resource";
         public const string SCHEDULE = "A course schedule resource";
+        public const string NEWS = "A student news resource";
         public const string SHIFT = "A shift that a student has worked";
 
         // Partial resources, to be targetted by Operation.READ_PARTIAL

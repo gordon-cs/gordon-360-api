@@ -15,7 +15,7 @@ namespace Gordon360.Services.ComplexQueries
         /// <summary>
         /// Execute the sql query
         /// </summary>
-        /// <param name="query">An sql statment. Can be a stored procedure or even a simple SELECT statment</param>
+        /// <param name="query">An sql statement. Can be a stored procedure or even a simple SELECT statement</param>
         /// <param name="parameters">Parameters to pass into the stored procedure</param>
         /// <returns></returns>
         public static IEnumerable<T> query(string query, params object[] parameters)
@@ -30,7 +30,7 @@ namespace Gordon360.Services.ComplexQueries
         /// <summary>
         /// Execute the sql query on the StudentTimesheets database
         /// </summary>
-        /// <param name="query">An sql statment. Can be a stored procedure or even a simple SELECT statment</param>
+        /// <param name="query">An sql statement. Can be a stored procedure or even a simple SELECT statment</param>
         /// <param name="parameters">Parameters to pass into the stored procedure</param>
         /// <returns></returns>
         public static IEnumerable<T> StudentTimesheetQuery(string query, params object[] parameters)

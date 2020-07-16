@@ -259,8 +259,8 @@ namespace Gordon360.Controllers.Api
         /// <summary>
         /// Sets the membership request to Denied
         /// </summary>
-        /// <param name="id">The id of the membership reuqest in question.</param>
-        /// <returns>If successful: THe updated membership request wrapped in an OK Http status code.</returns>
+        /// <param name="id">The id of the membership request in question.</param>
+        /// <returns>If successful: The updated membership request wrapped in an OK Http status code.</returns>
         [HttpPost]
         [Route("{id}/deny")]
         [StateYourBusiness(operation = Operation.DENY_ALLOW, resource = Resource.MEMBERSHIP_REQUEST)]
@@ -290,7 +290,7 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
         /// <summary>
-        /// Delets a membership request
+        /// Deletes a membership request
         /// </summary>
         /// <param name="id">The id of the membership request to delete</param>
         /// <returns>The deleted object</returns>

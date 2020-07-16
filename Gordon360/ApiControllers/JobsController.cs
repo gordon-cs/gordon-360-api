@@ -14,6 +14,7 @@ using Gordon360.Services;
 using Newtonsoft.Json.Linq;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
+using Gordon360.Exceptions.CustomExceptions;
 
 namespace Gordon360.ApiControllers
 {
@@ -76,7 +77,7 @@ namespace Gordon360.ApiControllers
         public HttpResponseMessage getSavedShiftsForUser()
         {
             int userID = GetCurrentUserID();
-            
+
             IEnumerable<StudentTimesheetsViewModel> result = null;
 
             try
@@ -139,6 +140,8 @@ namespace Gordon360.ApiControllers
             int userID = -1;
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+            userID = Convert.ToInt32(id);
 
             try
             {
@@ -230,5 +233,288 @@ namespace Gordon360.ApiControllers
             }
             return Ok(result);
         }
+
+        /// <summary>
+        ///  sends the current clock in status to the back end
+        ///  true if user is clocked in and false if clocked out
+        /// </summary>
+        /// <param name="state">detail to be saved in the back end, true if user just clocked in</param>
+        /// <returns>returns confirmation that the answer was recorded </returns>
+        [HttpPost]
+        [Route("clockIn")]
+        public IHttpActionResult ClockIn([FromBody] bool state)
+        {
+
+            if (!ModelState.IsValid || state == null)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            var result = _jobsService.ClockIn(state, id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+
+            return Created("Recorded answer :", result);
+
+        }
+
+        /// <summary>
+        ///  gets the the clock in status from the back end
+        ///  true if user is clocked in and false if clocked out
+        /// </summary>
+        /// <returns>ClockInViewModel</returns>
+        [HttpGet]
+        [Route("clockOut")]
+        public IHttpActionResult ClockOut()
+        {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            var result = _jobsService.ClockOut(id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// deletes the last clocked in status of a user
+        /// </summary>
+        /// <returns>returns confirmation that clock in status was deleted</returns>
+        [HttpPut]
+        [Route("deleteClockIn")]
+        public IHttpActionResult DeleteClockIn()
+        {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            var result = _jobsService.DeleteClockIn(id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+        //staff routes
+
+
+        /// <summary>
+        /// Get a user's active jobs
+        /// </summary>
+        /// <param name="details"> deatils of the current Staff</param>
+        /// <returns>The Staff's active jobs</returns>
+        [HttpPost]
+        [Route("getJobsStaff")]
+        public IHttpActionResult getJobsForStaff([FromBody] ActiveJobSelectionParametersModel details)
+        {
+            IEnumerable<ActiveJobViewModel> result = null;
+            int userID = GetCurrentUserID();
+            try
+            {
+                result = _jobsService.getActiveJobsStaff(details.SHIFT_START_DATETIME, details.SHIFT_END_DATETIME, userID);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                return InternalServerError();
+            }
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Get a user's saved shifts
+        /// </summary>
+        /// <returns>The staff's saved shifts</returns>
+        [HttpGet]
+        [Route("getSavedShiftsStaff")]
+        public HttpResponseMessage getSavedShiftsForStaff()
+        {
+            int userID = GetCurrentUserID();
+
+            IEnumerable<StaffTimesheetsViewModel> result = null;
+
+            try
+            {
+                result = _jobsService.getSavedShiftsForStaff(userID);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, e);
+            }
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        /// <summary>
+        /// Get a user's active jobs
+        /// </summary>
+        /// <param name="shiftDetails">The details that will be changed</param>
+        /// <returns>The result of saving a shift for a staff</returns>
+        [HttpPost]
+        [Route("saveShiftStaff")]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.SHIFT)]
+        public HttpResponseMessage saveShiftForStaff([FromBody] ShiftViewModel shiftDetails)
+        {
+            IEnumerable<StaffTimesheetsViewModel> result = null;
+            IEnumerable<OverlappingShiftIdViewModel> overlapCheckResult = null;
+
+            int userID = GetCurrentUserID();
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+            try
+            {
+                overlapCheckResult = _jobsService.checkForOverlappingShiftStaff(userID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME);
+                if (overlapCheckResult.Count() > 0)
+                {
+                    return Request.CreateResponse(HttpStatusCode.Conflict, "Error: shift overlap detected");
+                }
+                result = _jobsService.saveShiftForStaff(userID, shiftDetails.EML, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, shiftDetails.SHIFT_NOTES, username);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, e);
+            }
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        /// <summary>
+        /// Edit a shift for staff
+        /// <param name="shiftDetails">The details that will be changed</param>
+        /// </summary>
+        [HttpPut]
+        [Route("editShiftStaff")]
+        public HttpResponseMessage editShiftForStaff([FromBody] ShiftViewModel shiftDetails)
+        {
+            IEnumerable<StaffTimesheetsViewModel> result = null;
+            IEnumerable<OverlappingShiftIdViewModel> overlapCheckResult = null;
+
+            int userID = -1;
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+            userID = Convert.ToInt32(id);
+
+            try
+            {
+                overlapCheckResult = _jobsService.editShiftOverlapCheck(userID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.ID);
+                if (overlapCheckResult.Count() > 0)
+                {
+                    return Request.CreateResponse(HttpStatusCode.Conflict, "Error: shift overlap detected");
+                }
+                result = _jobsService.editShiftStaff(shiftDetails.ID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, username);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, e);
+            }
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        /// <summary>
+        /// Get a user's active jobs
+        /// </summary>
+        /// <returns>The result of deleting the shift for a Staff</returns>
+        [HttpDelete]
+        [Route("deleteShiftStaff/{rowID}")]
+        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.SHIFT)]
+        public IHttpActionResult deleteShiftForStaff(int rowID)
+        {
+            IEnumerable<StaffTimesheetsViewModel> result = null;
+            int userID = GetCurrentUserID();
+
+            try
+            {
+                result = _jobsService.deleteShiftForStaff(rowID, userID);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                return InternalServerError();
+            }
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Submit shift for staff
+        /// </summary>
+        /// <returns>The result of submitting the shifts for staff</returns>
+        [HttpPost]
+        [Route("submitShiftsStaff")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.SHIFT)]
+        public IHttpActionResult submitShiftsForStaff([FromBody] IEnumerable<ShiftToSubmitViewModel> shifts)
+        {
+            IEnumerable<StaffTimesheetsViewModel> result = null;
+            int userID = GetCurrentUserID();
+
+            try
+            {
+                foreach (ShiftToSubmitViewModel shift in shifts)
+                {
+                    result = _jobsService.submitShiftForStaff(userID, shift.EML, shift.SHIFT_END_DATETIME, shift.SUBMITTED_TO, shift.LAST_CHANGED_BY);
+                }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                return InternalServerError();
+            }
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Gets the name of a supervisor based on their ID number for Staff
+        /// </summary>
+        /// <returns>The name of the supervisor</returns>
+        [HttpGet]
+        [Route("supervisorNameStaff/{supervisorID}")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.SHIFT)]
+        public IHttpActionResult getSupervisorNameStaff(int supervisorID)
+        {
+            IEnumerable<SupervisorViewModel> result = null;
+
+            try
+            {
+                result = _jobsService.getStaffSupervisorNameForJob(supervisorID);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                return InternalServerError();
+            }
+            return Ok(result);
+        }
+
     }
+
 }

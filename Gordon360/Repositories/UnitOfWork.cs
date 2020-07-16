@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Gordon360.Models.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -36,12 +37,16 @@ namespace Gordon360.Repositories
         private IRepository<DiningInfo> _DiningInfoRepository;
         private IRepository<ERROR_LOG> _ErrorLogRepository;
         private IRepository<Schedule_Control> _ScheduleControlRepository;
+        private IRepository<StudentNews> _StudentNewsRepository;
+        private IRepository<StudentNewsCategory> _StudentNewsCategoryRepository;
 
         private CCTEntities1 _context;
+        private MyGordonEntities _myGordonCtx;
 
         public UnitOfWork()
         {
             _context = new CCTEntities1();
+            _myGordonCtx = new MyGordonEntities();
         }
         public IRepository<Student> StudentRepository
         {
@@ -105,7 +110,7 @@ namespace Gordon360.Repositories
         {
             get
             {
-                 return _ActivityPerSessionRepository ?? (_ActivityPerSessionRepository = new GenericRepository<ACTIVE_CLUBS_PER_SESS_ID_Result>(_context)); 
+                return _ActivityPerSessionRepository ?? (_ActivityPerSessionRepository = new GenericRepository<ACTIVE_CLUBS_PER_SESS_ID_Result>(_context));
             }
         }
         IRepository<VICTORY_PROMISE_BY_STUDENT_ID_Result> IUnitOfWork.VictoryPromiseByStudentIDRepository
@@ -115,13 +120,13 @@ namespace Gordon360.Repositories
                 return _VictoryPromiseByStudentIDRepository ?? (_VictoryPromiseByStudentIDRepository = new GenericRepository<VICTORY_PROMISE_BY_STUDENT_ID_Result>(_context));
             }
         }
-       //IRepository<STUDENT_JOBS_PER_ID_NUM_Result> IUnitOfWork.StudentEmploymentByStudentIDRepository
-       //{
-       //    get
-       //    {
-       //        return _StudentEmploymentByStudentIDRepository ?? (_StudentEmploymentByStudentIDRepository = new GenericRepository<STUDENT_JOBS_PER_ID_NUM_Result>(_context));
-       //    }
-       //}
+        //IRepository<STUDENT_JOBS_PER_ID_NUM_Result> IUnitOfWork.StudentEmploymentByStudentIDRepository
+        //{
+        //    get
+        //    {
+        //        return _StudentEmploymentByStudentIDRepository ?? (_StudentEmploymentByStudentIDRepository = new GenericRepository<STUDENT_JOBS_PER_ID_NUM_Result>(_context));
+        //    }
+        //}
         public IRepository<REQUEST> MembershipRequestRepository
         {
             get { return _MembershipRequestRepository ?? (_MembershipRequestRepository = new GenericRepository<REQUEST>(_context)); }
@@ -129,12 +134,12 @@ namespace Gordon360.Repositories
 
         public IRepository<ADMIN> AdministratorRepository
         {
-            get { return _AdministratorRepository ?? (_AdministratorRepository = new GenericRepository<ADMIN>(_context));  }
+            get { return _AdministratorRepository ?? (_AdministratorRepository = new GenericRepository<ADMIN>(_context)); }
         }
 
         public IRepository<C360_SLIDER> SliderRepository
         {
-            get { return _SliderRepository ?? (_SliderRepository = new GenericRepository<C360_SLIDER>(_context));  }
+            get { return _SliderRepository ?? (_SliderRepository = new GenericRepository<C360_SLIDER>(_context)); }
         }
         public IRepository<ChapelEvent> ChapelEventRepository
         {
@@ -152,6 +157,14 @@ namespace Gordon360.Repositories
         {
             get { return _ErrorLogRepository ?? (_ErrorLogRepository = new GenericRepository<ERROR_LOG>(_context)); }
         }
+        public IRepository<StudentNews> StudentNewsRepository
+        {
+            get { return _StudentNewsRepository ?? (_StudentNewsRepository = new GenericRepository<StudentNews>(_myGordonCtx)); }
+        }
+        public IRepository<StudentNewsCategory> StudentNewsCategoryRepository
+        {
+            get { return _StudentNewsCategoryRepository ?? (_StudentNewsCategoryRepository = new GenericRepository<StudentNewsCategory>(_myGordonCtx)); }
+        }
         public IRepository<Save_Rides> RideRepository
         {
             get { return _RideRepository ?? (_RideRepository = new GenericRepository<Save_Rides>(_context)); }
@@ -167,6 +180,7 @@ namespace Gordon360.Repositories
             try
             {
                 _context.SaveChanges();
+                _myGordonCtx.SaveChanges();
             }
             catch (DbEntityValidationException ex)
             {

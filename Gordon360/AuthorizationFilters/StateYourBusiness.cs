@@ -12,13 +12,13 @@ namespace Gordon360.AuthorizationFilters
 {
     /* Authorization Filter.
      * It is actually an action filter masquerading as an authorization filter. This is because I need access to the 
-     * parameters passed to the controller. Authorizatoin Filters don't have that access. Action Filters do.
+     * parameters passed to the controller. Authorization Filters don't have that access. Action Filters do.
      * 
      * Because of the nature of how we authorize people, this code might seem very odd, so I'll try to explain. 
      * Proceed at your own risk. If you can understand this code, you can understand the whole project. 
      * 
      * 1st Observation: You can't authorize access to a resource that isn't owned by someone. Resources like Sessions, Participations,
-     * and Activity Definitions are accessbile by anyone.
+     * and Activity Definitions are accessibile by anyone.
      * 2nd Observation: To Authorize someone to perform an action on a resource, you need to know the following:
      * 1. Who is to be authorized? 2.What resource are they trying to access? 3. What operation are they trying to make on the resource?
      * This "algorithm" uses those three points and decides through a series of switch statements if the current user
@@ -51,6 +51,11 @@ namespace Gordon360.AuthorizationFilters
                 user_position = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role").Value;
                 user_id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
                 user_name = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+                // Keeping these for now commented out as more permissions testing needs to be done in future
+                //System.Diagnostics.Debug.WriteLine("User name: " + user_name);
+                //System.Diagnostics.Debug.WriteLine("User Position: " + user_position);
+
                 if (user_position == Position.SUPERADMIN)
                 {
                     var adminService = new AdministratorService(new UnitOfWork());
@@ -65,12 +70,11 @@ namespace Gordon360.AuthorizationFilters
                 }
             }
            
-            // Can the user perfom the operation on the resource?
+            // Can the user perform the operation on the resource?
             isAuthorized = canPerformOperation(resource, operation);
-            if(!isAuthorized)
+            if (!isAuthorized)
             {
                 actionContext.Response = new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
-                
             }
 
             base.OnActionExecuting(actionContext);
@@ -174,6 +178,8 @@ namespace Gordon360.AuthorizationFilters
                     {
                         return true;
                     }
+                case Resource.NEWS:
+                    return true;
                 default: return false;
                     
             }
@@ -271,6 +277,10 @@ namespace Gordon360.AuthorizationFilters
                     {
                         return true;
                     }
+                case Resource.NEWS:
+                    {
+                        return true;
+                    }
                 default: return false;
             }
         }
@@ -326,6 +336,8 @@ namespace Gordon360.AuthorizationFilters
                     return false;
                 case Resource.ADMIN:
                     return false;
+                case Resource.NEWS:
+                    return true;
                 default: return false;
             }
         }
@@ -336,6 +348,8 @@ namespace Gordon360.AuthorizationFilters
             {
                 case Resource.SLIDER:
                     return true;
+                case Resource.NEWS:
+                    return false;
                 default: return false;
 
             }
@@ -396,6 +410,8 @@ namespace Gordon360.AuthorizationFilters
                     return false;
                 case Resource.ERROR_LOG:
                     return true;
+                case Resource.NEWS:
+                    return true;  
                 default: return false;
             }
         }
@@ -540,6 +556,22 @@ namespace Gordon360.AuthorizationFilters
 
                         return false;
                     }
+                case Resource.NEWS:
+                    var newsID = context.ActionArguments["newsID"];
+                    var newsService = new NewsService(new UnitOfWork());
+                    var newsItem = newsService.Get((int)newsID);
+                    // only unapproved posts may be updated
+                    var approved = newsItem.Accepted;
+                    if (approved == null || approved == true)
+                        return false;
+                    // can update if user is admin
+                    if (user_position == Position.SUPERADMIN)
+                        return true;
+                    // can update if user is news item author
+                    string newsAuthor = newsItem.ADUN;
+                    if (user_name == newsAuthor)
+                        return true;
+                    return false;
                 default: return false;
             }
         }
@@ -558,17 +590,17 @@ namespace Gordon360.AuthorizationFilters
                             return true;
                         var membershipService = new MembershipService(new UnitOfWork());
                         var membershipID = (int)context.ActionArguments["id"];
-                        var membershipToConsider = membershipService.GetMembershipsForStudent(user_name);
-                        var is_membershipOwner = ((MEMBERSHIP)membershipToConsider).ID_NUM.ToString() == user_id;
+                        var membershipToConsider = membershipService.GetSpecificMembership(membershipID);
+                        var is_membershipOwner = membershipToConsider.ID_NUM.ToString() == user_id;
                         if (is_membershipOwner)
                             return true;
 
-                        var activityCode = ((MEMBERSHIP)membershipToConsider).ACT_CDE;
+                        var activityCode = membershipToConsider.ACT_CDE;
 
                         var isGroupAdmin = membershipService.GetGroupAdminMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
                         if (isGroupAdmin)
                             return true;
-
+                        
                         return false;
                     }
                 case Resource.MEMBERSHIP_REQUEST:
@@ -600,6 +632,28 @@ namespace Gordon360.AuthorizationFilters
                     return false;
                 case Resource.ADMIN:
                     return false;
+                case Resource.NEWS:
+                    {
+                        var newsID = context.ActionArguments["newsID"];
+                        var newsService = new NewsService(new UnitOfWork());
+                        var newsItem = newsService.Get((int)newsID);
+                        // only expired news items may be deleted
+                        var todaysDate = System.DateTime.Now;
+                        var newsDate = (System.DateTime)newsItem.Entered;
+                        var dateDiff = (todaysDate - newsDate).Days;
+                        if (newsDate == null || dateDiff >= 14)
+                        {
+                            return false;
+                        }
+                        // user is admin
+                        if (user_position == Position.SUPERADMIN)
+                            return true;
+                        // user is news item author
+                        string newsAuthor = newsItem.ADUN;
+                        if (user_name == newsAuthor)
+                            return true;
+                        return false;
+                    }
                 default: return false;
             }
         }
