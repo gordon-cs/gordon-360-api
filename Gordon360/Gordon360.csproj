@@ -525,6 +525,7 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ViewModels\ClockInViewModel.cs" />
+    <Compile Include="Models\ViewModels\HourTypesViewModel.cs" />
     <Compile Include="Models\ViewModels\StaffCheckViewModel.cs" />
     <Compile Include="Models\ViewModels\StaffTimesheetsViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentNewsCategoryViewModel.cs" />

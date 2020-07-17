@@ -285,6 +285,12 @@
             </summary>
             <returns>The name of the supervisor</returns>
         </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.getHourTypes(System.Int32)">
+            <summary>
+            Gets the hour types for Staff
+            </summary>
+            <returns>The hour types for staff</returns>
+        </member>
         <member name="M:Gordon360.ApiControllers.SaveController.GetUpcomingRides">
             <summary>
              Gets all upcoming ride objects

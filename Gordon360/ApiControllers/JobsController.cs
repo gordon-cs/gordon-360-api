@@ -539,6 +539,28 @@ namespace Gordon360.ApiControllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Gets the hour types for Staff
+        /// </summary>
+        /// <returns>The hour types for staff</returns>
+        [HttpGet]
+        [Route("hourTypes")]
+        public IHttpActionResult getHourTypes(int supervisorID)
+        {
+            IEnumerable<HourTypesViewModel> result = null;
+
+            try
+            {
+                result = _jobsService.GetHourTypes();
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                return InternalServerError();
+            }
+            return Ok(result);
+        }
+
     }
 
 }

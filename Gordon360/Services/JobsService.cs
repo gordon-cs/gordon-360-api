@@ -322,8 +322,7 @@ namespace Gordon360.Services
             var staffTimesheet = result.Select(x =>
             {
                 StaffCheckViewModel y = new StaffCheckViewModel();
-
-                y.EmIID = x.EmIID;
+                y.EmIID = true;
 
                 return y;
             });
@@ -514,6 +513,27 @@ namespace Gordon360.Services
             }
 
             return result;
+        }
+
+        public IEnumerable<HourTypesViewModel> GetHourTypes()
+        {
+            var result = RawSqlQuery<HourTypesViewModel>.StaffTimesheetQuery("staff_timesheets_select_hour_types"); // run stored procedure
+
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+
+            var staffTimesheet = result.Select(x =>
+            {
+                HourTypesViewModel y = new HourTypesViewModel();
+                y.type_id = x.type_id;
+                y.type_description = x.type_description;
+
+                return y;
+            });
+
+            return staffTimesheet;
         }
 
     }

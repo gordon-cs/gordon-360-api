@@ -5,8 +5,9 @@ using System.Web;
 
 namespace Gordon360.Models.ViewModels
 {
-    public class StaffCheckViewModel
+    public class HourTypesViewModel
     {
-        public Boolean EmIID { get; set; }
+        public String type_id { get; set; }
+        public String type_description { get; set; }
     }
 }
