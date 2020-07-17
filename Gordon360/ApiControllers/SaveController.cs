@@ -45,7 +45,11 @@ namespace Gordon360.ApiControllers
         public IHttpActionResult GetUpcomingRides()
         {
 
-            var result = _saveService.GetUpcoming();
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            var result = _saveService.GetUpcoming(id);
             if (result == null)
             {
                 return NotFound();
@@ -94,6 +98,27 @@ namespace Gordon360.ApiControllers
             }
             return Ok(result);
 
+        }
+
+        /// <summary>Cancel an existing ride item</summary>
+        /// <param name="rideID">The identifier for the ride to be cancel</param>
+        /// <remarks>Calls the server to make a call and remove the given ride from the database</remarks>
+        [HttpPut]
+        [Route("rides/cancel/{rideID}")]
+        public IHttpActionResult CancelRide(string rideID)
+        {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            var result = _saveService.CancelRide(rideID, id);
+
+            if (result != 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
         }
 
         /// <summary>Delete an existing ride item</summary>

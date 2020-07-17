@@ -3,7 +3,6 @@
 ## From Github https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 # Avoid database files
-*.edmx
 */Metadata.cs
 */ModelPartialClasses.cs
 
@@ -271,6 +270,7 @@ paket-files/
 ## Secret Files
 secrets.config
 test_credentials.py
+credentials.py
 
 
 ## Python

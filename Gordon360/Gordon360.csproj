@@ -204,6 +204,7 @@
     <Compile Include="ApiControllers\AccountsController.cs" />
     <Compile Include="ApiControllers\AdminsController.cs" />
     <Compile Include="ApiControllers\AdvancedSearchController.cs" />
+    <Compile Include="ApiControllers\NewsController.cs" />
     <Compile Include="ApiControllers\DiningController.cs" />
     <Compile Include="ApiControllers\ErrorLogController.cs" />
     <Compile Include="ApiControllers\EventController.cs" />
@@ -214,6 +215,7 @@
     <Compile Include="ApiControllers\MyScheduleController.cs" />
     <Compile Include="ApiControllers\SaveController.cs" />
     <Compile Include="ApiControllers\ScheduleControlController.cs" />
+    <Compile Include="ApiControllers\WellnessController.cs" />
     <Compile Include="Models\ACCOUNT.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -268,11 +270,14 @@
     <Compile Include="Models\ChapelEvent.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ChapelSummary.cs">
+      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\CM_SESSION_MSTR.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Countries.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\COURSES_FOR_PROFESSOR_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
@@ -297,6 +302,15 @@
     </Compile>
     <Compile Include="Models\Dining_Student_Meal_Choice.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\dtproperties.cs">
+      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\dt_getpropertiesbyid_Result.cs">
+      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\dt_getpropertiesbyid_u_Result.cs">
+      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\EMAILS_PER_ACT_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
@@ -337,10 +351,34 @@
     <Compile Include="Models\MEMBERSHIPS_PER_STUDENT_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\MyGordon_DB_Models.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MyGordon_DB_Models.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\MyGordon_DB_Models.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\MyGordon_DB_Models.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
+    </Compile>
     <Compile Include="Models\MYSCHEDULE.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MYSCHEDULE_BY_ID_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NEWS_CATEGORIES_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NEWS_NEW_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NEWS_NOT_EXPIRED_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PART_DEF.cs">
@@ -376,12 +414,25 @@
     <Compile Include="Models\Schedule_Control.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\sp_helpdiagramdefinition_Result.cs" />
-    <Compile Include="Models\sp_helpdiagrams_Result.cs" />
+    <Compile Include="Models\sp_helpdiagramdefinition_Result.cs">
+      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\sp_helpdiagrams_Result.cs">
+      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Student.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\StudentEmployment.cs" />
+    <Compile Include="Models\StudentNews.cs">
+      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\StudentNewsCategory.cs">
+      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\StudentNewsExpiration.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\StudentTimesheet_DB_Models.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -400,7 +451,7 @@
     <Compile Include="Models\STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs" />
+    <!-- <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs" /> -->
     <Compile Include="Models\student_timesheets.cs">
       <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
     </Compile>
@@ -434,6 +485,10 @@
     <Compile Include="Models\VICTORY_PROMISE_BY_STUDENT_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModels\ClockInViewModel.cs" />
+    <Compile Include="Models\ViewModels\StaffTimesheetsViewModel.cs" />
+    <Compile Include="Models\ViewModels\StudentNewsCategoryViewModel.cs" />
+    <Compile Include="Models\ViewModels\StudentNewsViewModel.cs" />
     <Compile Include="Models\ViewModels\ActiveJobSelectionParametersModel.cs" />
     <Compile Include="Models\ViewModels\ActiveJobViewModel.cs" />
     <Compile Include="Models\ViewModels\OverlappingShiftIdViewModel.cs" />
@@ -454,7 +509,7 @@
     <Compile Include="AuthorizationServer\CustomJWTFormat.cs" />
     <Compile Include="AuthorizationServer\TokenIssuer.cs" />
     <Compile Include="Exceptions\CustomExceptions.cs" />
-    <Compile Include="Exceptions\CustomExcpetionFilter.cs" />
+    <Compile Include="Exceptions\CustomExceptionFilter.cs" />
     <Compile Include="Models\Metadata.cs" />
     <Compile Include="Models\ModelPartialClasses.cs" />
     <Compile Include="Models\ViewModels\BasicInfoViewModel.cs" />
@@ -488,6 +543,20 @@
     <Compile Include="Models\ViewModels\SliderViewModel.cs" />
     <Compile Include="Models\ViewModels\SupervisorViewModel.cs" />
     <Compile Include="Models\ViewModels\VictoryPromiseViewModel.cs" />
+    <Compile Include="Models\ViewModels\WellnessQuestionViewModel.cs" />
+    <Compile Include="Models\view_cct_alumni.cs">
+      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\view_cct_ChapelEvent.cs">
+      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\view_cct_facstaff.cs">
+      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\view_cct_student.cs">
+      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ViewModels\WellnessViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\CustomMultiPartFormDataStreamProvider.cs" />
     <Compile Include="Repositories\GenericRepository.cs" />
@@ -505,6 +574,7 @@
     <Compile Include="Services\ContentManagementService.cs" />
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Services\MyScheduleService.cs" />
+    <Compile Include="Services\NewsService.cs" />
     <Compile Include="Services\ProfileService.cs" />
     <Compile Include="Services\RoleCheckingService.cs" />
     <Compile Include="Services\SaveService.cs" />
@@ -512,6 +582,7 @@
     <Compile Include="Services\ScheduleService.cs" />
     <Compile Include="Services\StudentEmploymentService.cs" />
     <Compile Include="Services\VictoryPromiseService.cs" />
+    <Compile Include="Services\WellnessService.cs" />
     <Compile Include="Static Classes\Data.cs" />
     <Compile Include="Static Classes\Helpers.cs" />
     <Compile Include="Services\JenzibarActivityService.cs" />
@@ -525,26 +596,10 @@
   <ItemGroup>
     <Content Include="browseable\profile\Default\profile.png" />
     <Content Include="browseable\uploads\Default\activityImage.png" />
-    <EntityDeploy Include="Models\CCT_DB_Models.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>CCT_DB_Models.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\CCT_DB_Models.edmx.diagram">
-      <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
-    </Content>
     <EntityDeploy Include="Models\StudentTimesheet_DB_Models.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>StudentTimesheet_DB_Models.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="Models\StudentTimesheet_DB_Models.edmx.diagram">
-      <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
-    </Content>
-    <None Include="secrets.config">
-      <SubType>Designer</SubType>
-    </None>
-    <EmbeddedResource Include="version.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
     <Content Include="Models\CCT_DB_Models.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
@@ -554,6 +609,49 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
       <LastGenOutput>CCT_DB_Models.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\MyGordon_DB_Models.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
+      <LastGenOutput>MyGordon_DB_Models.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\MyGordon_DB_Models.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
+      <LastGenOutput>MyGordon_DB_Models.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\StudentTimesheet_DB_Models.edmx.diagram">
+      <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
+    </Content>
+    <EntityDeploy Include="Models\CCT_DB_Models.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>CCT_DB_Models.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\CCT_DB_Models.edmx.diagram">
+      <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
+    </Content>
+    <EntityDeploy Include="Models\MyGordon_DB_Models.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>MyGordon_DB_Models.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\MyGordon_DB_Models.edmx.diagram">
+      <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
+    </Content>
+    <None Include="secrets.config">
+      <SubType>Designer</SubType>
+    </None>
+    <EmbeddedResource Include="version.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <Content Include="Models\StudentTimesheet_DB_Models.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
+      <LastGenOutput>StudentTimesheet_DB_Models.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\StudentTimesheet_DB_Models.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
+      <LastGenOutput>StudentTimesheet_DB_Models.cs</LastGenOutput>
     </Content>
     <Content Include="Models\StudentTimesheet_DB_Models.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
