@@ -7,6 +7,6 @@ namespace Gordon360.Models.ViewModels
 {
     public class StaffCheckViewModel
     {
-        public Nullable<int> EmIID { get; set; }
+        public Boolean EmIID { get; set; }
     }
 }

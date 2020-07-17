@@ -322,8 +322,7 @@ namespace Gordon360.Services
             var staffTimesheet = result.Select(x =>
             {
                 StaffCheckViewModel y = new StaffCheckViewModel();
-
-                y.EmIID = x.EmIID;
+                y.EmIID = true;
 
                 return y;
             });
