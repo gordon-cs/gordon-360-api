@@ -545,7 +545,7 @@ namespace Gordon360.ApiControllers
         /// <returns>The hour types for staff</returns>
         [HttpGet]
         [Route("hourTypes")]
-        public IHttpActionResult getHourTypes(int supervisorID)
+        public IHttpActionResult getHourTypes()
         {
             IEnumerable<HourTypesViewModel> result = null;
 

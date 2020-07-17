@@ -285,7 +285,7 @@
             </summary>
             <returns>The name of the supervisor</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.getHourTypes(System.Int32)">
+        <member name="M:Gordon360.ApiControllers.JobsController.getHourTypes">
             <summary>
             Gets the hour types for Staff
             </summary>

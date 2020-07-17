@@ -7,7 +7,7 @@ namespace Gordon360.Models.ViewModels
 {
     public class HourTypesViewModel
     {
-        public String type_id { get; set; }
-        public String type_description { get; set; }
+        public string type_id { get; set; }
+        public string type_description { get; set; }
     }
 }
