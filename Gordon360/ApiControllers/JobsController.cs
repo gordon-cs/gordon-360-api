@@ -49,7 +49,7 @@ namespace Gordon360.ApiControllers
         /// </summary>
         /// <param name="details"></param>
         /// <returns>The user's active jobs</returns>
-        [HttpPost]
+        [HttpGet]
         [Route("getJobs")]
         public IHttpActionResult getJobsForUser([FromBody] ActiveJobSelectionParametersModel details)
         {
@@ -355,7 +355,7 @@ namespace Gordon360.ApiControllers
         /// </summary>
         /// <param name="details"> deatils of the current Staff</param>
         /// <returns>The Staff's active jobs</returns>
-        [HttpPost]
+        [HttpGet]
         [Route("getJobsStaff")]
         public IHttpActionResult getJobsForStaff([FromBody] ActiveJobSelectionParametersModel details)
         {
@@ -421,7 +421,7 @@ namespace Gordon360.ApiControllers
                 {
                     return Request.CreateResponse(HttpStatusCode.Conflict, "Error: shift overlap detected");
                 }
-                result = _jobsService.saveShiftForStaff(userID, shiftDetails.EML, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, shiftDetails.SHIFT_NOTES, username);
+                result = _jobsService.saveShiftForStaff(userID, shiftDetails.EML, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, shiftDetails.HOURS_TYPE, shiftDetails.SHIFT_NOTES, username);
             }
             catch (Exception e)
             {
@@ -466,7 +466,7 @@ namespace Gordon360.ApiControllers
         }
 
         /// <summary>
-        /// Get a user's active jobs
+        /// Delee a user's active job
         /// </summary>
         /// <returns>The result of deleting the shift for a Staff</returns>
         [HttpDelete]

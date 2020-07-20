@@ -166,7 +166,7 @@ namespace Gordon360.Services
         IEnumerable<ActiveJobViewModel> getActiveJobs(DateTime shiftStart, DateTime shiftEnd, int studentID);
         IEnumerable<OverlappingShiftIdViewModel> editShiftOverlapCheck(int studentID, DateTime shiftStart, DateTime shiftEnd, int rowID);
         IEnumerable<OverlappingShiftIdViewModel> checkForOverlappingShift(int studentID, DateTime shiftStart, DateTime shiftEnd);
-        IEnumerable<StaffTimesheetsViewModel> saveShiftForStaff(int staffID, int jobID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string shiftNotes, string lastChangedBy);
+        IEnumerable<StaffTimesheetsViewModel> saveShiftForStaff(int staffID, int jobID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, char hoursType, string shiftNotes, string lastChangedBy);
         IEnumerable<StaffTimesheetsViewModel> getSavedShiftsForStaff(int ID_NUM);
         IEnumerable<StaffTimesheetsViewModel> editShiftStaff(int rowID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string username);
         IEnumerable<StaffTimesheetsViewModel> deleteShiftForStaff(int rowID, int staffID);

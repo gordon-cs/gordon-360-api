@@ -334,7 +334,7 @@ namespace Gordon360.Services
 
         //staff functions
 
-        public IEnumerable<StaffTimesheetsViewModel> saveShiftForStaff(int staffID, int jobID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string shiftNotes, string lastChangedBy)
+        public IEnumerable<StaffTimesheetsViewModel> saveShiftForStaff(int staffID, int jobID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, char hoursType, string shiftNotes, string lastChangedBy)
         {
             IEnumerable<StaffTimesheetsViewModel> result = null;
 
@@ -343,12 +343,13 @@ namespace Gordon360.Services
             var shiftStartDateTime = new SqlParameter("@shift_start_datetime", shiftStart);
             var shiftEndDateTime = new SqlParameter("@shift_end_datetime", shiftEnd);
             var hours_worked = new SqlParameter("@hours_worked", hoursWorked);
+            var hours_type = new SqlParameter("@hours_type", hoursType);
             var notes = new SqlParameter("@shift_notes", shiftNotes);
             var changedBy = new SqlParameter("@last_changed_by", lastChangedBy);
 
             try
             {
-                result = RawSqlQuery<StaffTimesheetsViewModel>.StaffTimesheetQuery("staff_timesheets_insert_shift @ID_NUM, @eml, @shift_start_datetime, @shift_end_datetime, @hours_worked, @shift_notes, @last_changed_by", id_num, eml, shiftStartDateTime, shiftEndDateTime, hours_worked, notes, changedBy);
+                result = RawSqlQuery<StaffTimesheetsViewModel>.StaffTimesheetQuery("staff_timesheets_insert_shift @ID_NUM, @eml, @shift_start_datetime, @shift_end_datetime, @hours_worked, @hours_type, @shift_notes, @last_changed_by", id_num, eml, shiftStartDateTime, shiftEndDateTime, hours_worked, hours_type, notes, changedBy);
             }
             catch (Exception e)
             {
@@ -364,7 +365,8 @@ namespace Gordon360.Services
             IEnumerable<StaffTimesheetsViewModel> result = null;
 
             var id_num = new SqlParameter("@ID_NUM", ID_NUM);
-            string query = "SELECT ID_NUM, EML, EML_DESCRIPTION, SHIFT_START_DATETIME, SHIFT_END_DATETIME, HOURLY_RATE, HOURS_WORKED, SUPERVISOR, COMP_SUPERVISOR, STATUS, SUBMITTED_TO, SHIFT_NOTES, COMMENTS, PAY_WEEK_DATE, PAY_PERIOD_DATE, PAY_PERIOD_ID, LAST_CHANGED_BY, DATETIME_ENTERED from staff_timesheets where ID_NUM = @ID_NUM AND STATUS != 'Paid' order by EML, SHIFT_START_DATETIME, STATUS";
+            // HOURLY_RATE taken out as it doesn't seem to be in database when running query in SSMS
+            string query = "SELECT ID_NUM, EML, EML_DESCRIPTION, SHIFT_START_DATETIME, SHIFT_END_DATETIME, HOURS_WORKED, SUPERVISOR, COMP_SUPERVISOR, STATUS, SUBMITTED_TO, SHIFT_NOTES, COMMENTS, PAY_WEEK_DATE, PAY_PERIOD_DATE, PAY_PERIOD_ID, LAST_CHANGED_BY, DATETIME_ENTERED from staff_timesheets where ID_NUM = @ID_NUM AND STATUS != 'Paid' order by EML, SHIFT_START_DATETIME, STATUS";
             try
             {
                 result = RawSqlQuery<StaffTimesheetsViewModel>.StaffTimesheetQuery(query, id_num);
@@ -388,7 +390,7 @@ namespace Gordon360.Services
 
             try
             {
-                result = RawSqlQuery<StaffTimesheetsViewModel>.StaffTimesheetQuery("UPDATE staff_timesheets SET STATUS = 'Saved', SHIFT_START_DATETIME = @newStart, SHIFT_END_DATETIME = @newEnd, HOURS_WORKED = @newHours, LAST_CHANGED_BY = @lastChangedBy, COMMENTS = null WHERE ID = @ID;", newStart, newEnd, newHours, id, lastChangedBy);
+                result = RawSqlQuery<StaffTimesheetsViewModel>.StaffTimesheetQuery("UPDATE staff_timesheets SET STATUS = 'Saved', SHIFT_START_DATETIME = @newStart, SHIFT_END_DATETIME = @newEnd, HOURS_WORKED = @newHours, LAST_CHANGED_BY = @lastChangedBy, COMMENTS = null WHERE ID = @ID;", newStart, newEnd, newHours, lastChangedBy, id);
             }
             catch (Exception e)
             {
