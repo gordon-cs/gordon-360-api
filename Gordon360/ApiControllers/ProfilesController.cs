@@ -328,18 +328,18 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         
         [HttpGet]
-        [Route("Advisor/{username}")]
+        [Route("Advisors/{username}")]
        
-        public IHttpActionResult getAdvisor(string username)
+        public IHttpActionResult getAdvisors(string username)
         {
            
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var _student = _profileService.GetStudentProfileByUsername(username);
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
-            var _advisor= _profileService.GetAdvisor(id);
+            var _advisors = _profileService.GetAdvisors(id);
 
-            JObject adv = JObject.FromObject(_advisor);
+            JObject adv = JObject.FromObject(_advisors);
 
             if(adv != null)
             {

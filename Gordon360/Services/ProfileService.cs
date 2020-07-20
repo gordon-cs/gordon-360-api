@@ -10,12 +10,14 @@ using Gordon360.Static.Names;
 using System.Data.SqlClient;
 using Gordon360.Services.ComplexQueries;
 using Gordon360.Static.Data;
+using System.Data;
 
 namespace Gordon360.Services
 {
     public class ProfileService : IProfileService
     {
         private IUnitOfWork _unitOfWork;
+        private IAccountService _accountService;
 
         public ProfileService(IUnitOfWork unitOfWork)
         {
@@ -63,23 +65,35 @@ namespace Gordon360.Services
                 result = alumni;
             return result;
         }
-
-        public MyAdvisorViewModel GetAdvisor(string id)
+        /// <summary>
+        /// get advisors for particular student
+        /// </summary>
+        /// <param name="id">student id</param>
+        /// <returns></returns>
+        public IEnumerable<AdvisorViewModel> GetAdvisors(string id)
         {
+            //var query = RawSqlQuery<ADVISOR_SEPARATE_Result>.query("ADVISOR_SEPARATE @ID", new SqlParameter("ID", SqlDbType.VarChar) { Value = id });
             var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
-            if (query == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
-            }
             var idParam = new SqlParameter("@ID", id);
-            var result = RawSqlQuery<MyAdvisorViewModel>.query("ADVISOR_SEPARATE @ID", idParam).FirstOrDefault(); //run stored procedure
-
-            if (result == null)
+            // Stored procedure returns row containing advisor1 ID, advisor2 ID, advisor3 ID 
+            var idResult = RawSqlQuery<ADVISOR_SEPARATE_Result>.query("ADVISOR_SEPARATE @ID", idParam).FirstOrDefault();
+            //Array to store advisors' ID
+            AdvisorViewModel[] advisorsID = new AdvisorViewModel[3]
             {
-                return null;
+                  new AdvisorViewModel(_accountService.Get(idResult.Advisor1).FirstName,_accountService.Get(idResult.Advisor1).LastName,_accountService.Get(idResult.Advisor1).ADUserName),
+                  new AdvisorViewModel(_accountService.Get(idResult.Advisor2).FirstName,_accountService.Get(idResult.Advisor2).LastName,_accountService.Get(idResult.Advisor2).ADUserName),
+                  new AdvisorViewModel(_accountService.Get(idResult.Advisor3).FirstName,_accountService.Get(idResult.Advisor3).LastName,_accountService.Get(idResult.Advisor3).ADUserName),
+            };
+
+            if (idResult == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "No advisor for this id" };
             }
 
-            return result;
+            //Put advisor info in a array
+
+
+            return advisorsID;
         }
         /// <summary>
         /// Get photo path for profile
