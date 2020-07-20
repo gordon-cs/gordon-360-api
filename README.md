@@ -925,6 +925,59 @@ Back endpoint responsible for fetching and sending information to the database r
 `api/wellness` Sends an answer boolean to the database that specifies whether a student is symptomatic or not: true = symptomatic, false = not symptomatic.
 
 
+### Jobs
+Back endpoint responsible for fetching and sending information to the database regarding Jobs and timesheet used to clock shifts.
+
+##### GET 
+
+`api/jobs/getJobs` Gets the users current active jobs and returns them in a list.  
+
+`api/jobs/getSavedShifts/` Gets the users active shifts that have yet to be approved.
+
+`api/jobs/supervisorName/{supervisorID}`Gets the name of the supervisors associated with the user ID numbers.
+
+`api/jobs/clockOut` Gets the current status of the users shift from the back end. returns bool of status along with timestamp.
+
+`api/jobs/canUsePage` Gets the status of the user's account. if returns anything, user is a staff, Else user is a student.
+
+`api/jobs/getJobsStaff` Gets the staff's current active jobs and returns them in a list.
+
+`api/jobs/getSavedShiftsStaff`Gets the staff's active shifts that have yet to be approved.
+
+`api/jobs/supervisorNameStaff/{supervisorID}`Gets the name of the supervisors associated with the staff ID numbers.
+
+`api/jobs/hourTypes`Gets the hours types for staff in order to submit a shift.
+
+##### POST
+
+`api/jobs/saveShift` Sends user's shift information to the backend in order to save a job shift.
+
+`api/jobs/submitShifts` Sends user's shift information to the backend in order to submit a job shift.
+
+`api/jobs/clockIn` Sends user's shift starting time and bollean indicating that the user is clocked in.
+
+`api/jobs/saveShiftStaff` Sends staff's shift information to the backend in order to save a job shift.
+
+`api/jobs/submitShiftsStaff` Sends staff's shift information to the backend in order to submit a job shift.
+
+##### PUT
+
+`api/jobs/editShift/` Sends user's shift information to the backend in order to save a job shift.
+
+`api/jobs/deleteClockIn` deletes the user's clocked infromation from the last time they clocked in.
+
+`api/jobs/editShiftStaff` Sends staff's shift information to the backend in order to save a job shift.
+
+##### DELETE
+
+`api/jobs/deleteShift/{rowID}` Deletes a submitted shift for users.
+
+`api/jobs/deleteShiftStaff/{rowID}` Deletes a submitted shift for staff.
+
+
+
+
+
 ## API Testing
 
 ### Introduction
