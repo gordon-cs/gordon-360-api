@@ -21,7 +21,7 @@ try {
     Invoke-Command -Session $session {Copy-Item ("./" + $($using:env:SITE_DIR) + "/*") -Destination $($using:backupDir) -Recurse -Force}
   }
   Write-Output "Debugging info..."
-  Write-Output $($using:env:SITE_DIR))
+  Write-Output $($using:env:SITE_DIR)
   Write-Output $env:DEPLOY_DESTINATION
   Write-Output "Copying API files to remote destination..."
   Copy-Item -Path ("VSOutput\" + $($using:env:SITE_DIR)) -Destination $env:DEPLOY_DESTINATION -ToSession $session -Recurse -Force
