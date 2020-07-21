@@ -6,5 +6,5 @@ echo "pubProfile is: "
 echo $pubProfile
 echo ${PUB_PROFILE}
 echo "Preparing to copy API to remote server..."
-@echo off
+@echo on
 powershell -ExecutionPolicy Bypass -File ./scripts/copyFiles.ps1
