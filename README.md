@@ -6,6 +6,8 @@ Dive in.
 ## Table of Contents
 - [Machines and Sites](#machines-and-sites)
     - [Deploying to the Api Site](#deploying-to-the-api-site)
+      - [Normal Case: Deploying Automatically via Travis](#normal-case-deploying-automatically-via-travis)
+      - [Unusual Case: Deploying Manually](#unusual-case-deploying-manually)
     - [Deploying to the Front-end site (deprecated)](#deploying-to-the-front-end-site)
 - [Running the API locally](#running-the-api-locally)
     - [Preliminary setup](#preliminary-setup)
@@ -72,6 +74,12 @@ The folders for these IIS sites can be found on the 360train machine under `F:\s
 - 360ApiTrain.gordon.edu -- Development JSON server site. C# using the ASP.NET Framework.
 
 ### Deploying to the Api Site
+#### Normal Case: Deploying Automatically via Travis
+When a pull request is merged into "develop", Travis will automatically build it and deploy it to 360apitrain.gordon.edu (for testing).
+
+When a pull request is merged into "master", Travis will automatically build it and deploy it to 360api.gordon.edu (for production).
+#### Unusual Case: Deploying Manually
+If there are problems with automatic deployment, or a specific need to revert or push manually, then this older procedure can be used.
 - Access the cts-360.gordon.edu VM (see [RemoteDesktopToVM.md](RemoteDesktopToVM.md) for instructions) as the cct.service user.
 - Before you publish your new version, be sure to copy the current stable version to make a backup. To do so:
 	- Navigate in File Explorer to `F:\Sites` and copy either 360Api or 360ApiTrain, whichever you're planning to publish to.
