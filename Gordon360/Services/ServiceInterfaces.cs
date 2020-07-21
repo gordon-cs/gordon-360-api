@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 
-/// <summary>
-/// Namespace with all the Service Interfaces that are to be implemented. I don't think making this interface is required, the services can work find on their own.
-/// However, building the interfaces first does give a general sense of structure to their implementations. A certian cohesiveness :p.
-/// </summary>
+// <summary>
+// Namespace with all the Service Interfaces that are to be implemented. I don't think making this interface is required, the services can work find on their own.
+// However, building the interfaces first does give a general sense of structure to their implementations. A certain cohesiveness :p.
+// </summary>
 namespace Gordon360.Services
 {
 
@@ -49,6 +49,13 @@ namespace Gordon360.Services
         IEnumerable<AccountViewModel> GetAll();
         AccountViewModel GetAccountByEmail(string email);
         AccountViewModel GetAccountByUsername(string username);
+    }
+
+    public interface IWellnessService
+    {
+        IEnumerable<WellnessViewModel> GetStatus(string id);
+        IEnumerable<WellnessQuestionViewModel> GetQuestion();
+        WellnessViewModel PostStatus(bool answer, string id);
     }
 
     public interface IActivityService
@@ -139,6 +146,7 @@ namespace Gordon360.Services
         int GetActivityFollowersCountForSession(string id, string sess_cde);
         int GetActivityMembersCountForSession(string id, string sess_cde);
         IEnumerable<MembershipViewModel> GetAll();
+        MEMBERSHIP GetSpecificMembership(int id);
         int GetActivityFollowersCount(string id);
         int GetActivityMembersCount(string id);
         MEMBERSHIP Add(MEMBERSHIP membership);
@@ -146,6 +154,33 @@ namespace Gordon360.Services
         MEMBERSHIP ToggleGroupAdmin(int id, MEMBERSHIP membership);
         void TogglePrivacy(int id, bool p);
         MEMBERSHIP Delete(int id);
+    }
+
+    public interface IJobsService
+    {
+        IEnumerable<StudentTimesheetsViewModel> getSavedShiftsForUser(int ID_NUM);
+        IEnumerable<StudentTimesheetsViewModel> saveShiftForUser(int studentID, int jobID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string shiftNotes, string lastChangedBy);
+        IEnumerable<StudentTimesheetsViewModel> editShift(int rowID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string username);
+        IEnumerable<StudentTimesheetsViewModel> deleteShiftForUser(int rowID, int studentID);
+        IEnumerable<StudentTimesheetsViewModel> submitShiftForUser(int studentID, int jobID, DateTime shiftEnd, int submittedTo, string lastChangedBy);
+        IEnumerable<SupervisorViewModel> getsupervisorNameForJob(int supervisorID);
+        IEnumerable<ActiveJobViewModel> getActiveJobs(DateTime shiftStart, DateTime shiftEnd, int studentID);
+        IEnumerable<OverlappingShiftIdViewModel> editShiftOverlapCheck(int studentID, DateTime shiftStart, DateTime shiftEnd, int rowID);
+        IEnumerable<OverlappingShiftIdViewModel> checkForOverlappingShift(int studentID, DateTime shiftStart, DateTime shiftEnd);
+        IEnumerable<StaffTimesheetsViewModel> saveShiftForStaff(int staffID, int jobID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, char hoursType, string shiftNotes, string lastChangedBy);
+        IEnumerable<StaffTimesheetsViewModel> getSavedShiftsForStaff(int ID_NUM);
+        IEnumerable<StaffTimesheetsViewModel> editShiftStaff(int rowID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string username);
+        IEnumerable<StaffTimesheetsViewModel> deleteShiftForStaff(int rowID, int staffID);
+        IEnumerable<StaffTimesheetsViewModel> submitShiftForStaff(int staffID, int jobID, DateTime shiftEnd, int submittedTo, string lastChangedBy);
+        IEnumerable<ActiveJobViewModel> getActiveJobsStaff(DateTime shiftStart, DateTime shiftEnd, int staffID);
+        IEnumerable<SupervisorViewModel> getStaffSupervisorNameForJob(int supervisorID);
+        IEnumerable<OverlappingShiftIdViewModel> editShiftOverlapCheckStaff(int staffID, DateTime shiftStart, DateTime shiftEnd, int rowID);
+        IEnumerable<OverlappingShiftIdViewModel> checkForOverlappingShiftStaff(int staffID, DateTime shiftStart, DateTime shiftEnd);
+        IEnumerable<ClockInViewModel> ClockOut(string id);
+        ClockInViewModel ClockIn(bool state, string id);
+        ClockInViewModel DeleteClockIn(string id);
+        IEnumerable<StaffCheckViewModel> CanUsePage(string id);
+        IEnumerable<HourTypesViewModel> GetHourTypes();
     }
 
     public interface IParticipationService
@@ -190,6 +225,18 @@ namespace Gordon360.Services
         MYSCHEDULE Delete(string event_id, string gordon_id);
     }
 
+    public interface ISaveService
+    {
+        IEnumerable<UPCOMING_RIDES_Result> GetUpcoming(string gordon_id); // done
+        IEnumerable<UPCOMING_RIDES_BY_STUDENT_ID_Result> GetUpcomingForUser(string gordon_id); //done
+        Save_Rides AddRide(Save_Rides newRide, string gordon_id); //done
+        Save_Rides DeleteRide(string rideID, string gordon_id); //done
+        int CancelRide(string rideID, string gordon_id);
+        Save_Bookings AddBooking(Save_Bookings newBooking); //done
+        Save_Bookings DeleteBooking(string rideID, string gordon_id); //done
+
+    }
+
     public interface IContentManagementService
     {
         IEnumerable<SliderViewModel> GetSliderContent();
@@ -197,10 +244,14 @@ namespace Gordon360.Services
 
     public interface INewsService
     {
+        StudentNews Get(int newsID);
         IEnumerable<StudentNewsViewModel> GetNewsNotExpired();
         IEnumerable<StudentNewsViewModel> GetNewsNew();
         IEnumerable<StudentNewsCategoryViewModel> GetNewsCategories();
+        IEnumerable<StudentNewsViewModel> GetNewsPersonalUnapproved(string id, string username);
+        StudentNews SubmitNews(StudentNews newsItem, string username, string id);
+        StudentNews DeleteNews(int newsID);
+        StudentNewsViewModel EditPosting(int newsID, StudentNews newsItem);
     }
 
 }
-

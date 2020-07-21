@@ -13,7 +13,7 @@ class Test_AllMembershipTest(control.testCase):
 # # # # # # # # # # #
 
 #    Test retrieving all membership resources as a leader
-#    Endpoint -- api/memberships/
+#    Endpoint -- memberships/
 #    Expected Status code -- 200 Ok
 #    Expected Content -- List of all memberships
     def test_get_all_memberships___activity_leader(self):
@@ -36,7 +36,7 @@ class Test_AllMembershipTest(control.testCase):
             control.activity_description_360
 
 #    Test retrieving all membership resources as a member
-#    Endpoint -- api/memberships/
+#    Endpoint -- memberships/
 #    Expected Status code -- 401 Unauthorized
     def test_get_all_memberships___regular_member(self):
         self.session = self.createAuthorizedSession(control.username, control.password)

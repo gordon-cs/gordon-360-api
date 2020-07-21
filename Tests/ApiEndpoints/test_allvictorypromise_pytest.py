@@ -14,7 +14,7 @@ class Test_AllVictoryPromiseTest(control.testCase):
 # # # # # # # # # # # # #
 
 #    Verify that a student user can get their own victory promise information
-#    Endpoint -- api/vpscore/
+#    Endpoint -- api/studentemployment/
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- A json response with victory promise points
     def test_victory_promise(self):
@@ -37,7 +37,7 @@ class Test_AllVictoryPromiseTest(control.testCase):
         assert response.json()[0]["TOTAL_VP_LW_SCORE"] == 0
 
 #    Verify that a guest can't get victory promise information
-#    Endpoint -- api/vpscore/
+#    Endpoint -- api/studentemployment/
 #    Expected Status Code -- 401 Unauthorized Error
 #    Expected Response Body -- An authorization denied message
     def test_guest_victory_promise(self):
@@ -55,7 +55,7 @@ class Test_AllVictoryPromiseTest(control.testCase):
                 .format(response.text))
 
 #    Verify that a faculty user's victory promise information is always 0.
-#    Endpoint -- api/vpscore/
+#    Endpoint -- api/studentemployment/
 #    Expected Status Code -- 200 OK
 #    Expected Response Body -- A json response with victory promise points all 0
     def test_faculty_victory_promise(self):
