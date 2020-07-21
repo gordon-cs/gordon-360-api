@@ -7,7 +7,7 @@ using System.Web;
 namespace Gordon360.Models.ViewModels
 {
     public class AdvisorViewModel
-    {   
+    {
         public AdvisorViewModel(string fname, string lname, string adname)
         {
             Firstname = fname;
@@ -23,103 +23,83 @@ namespace Gordon360.Models.ViewModels
     // implements IEnumerable so that it can be used
     // with ForEach syntax.
     public class AdvisorIDEnumerable : IEnumerable
-    { 
+    {
         private AdvisorViewModel[] _advisorID;
 
-        public AdvisorIDEnumerable(AdvisorViewModel[] advisorID)
+        public AdvisorIDEnumerable(AdvisorViewModel[] advisorsID)
         {
-            _advisorID = new AdvisorViewModel[advisorID.Length];
-            _advisorID[0] = advisorID[0];
-
-            if (advisorID[1] != null)
+            _advisorID = new AdvisorViewModel[advisorsID.Length];
+            for (int i = 0; i < advisorsID.Length; i++)
             {
-                _advisorID[1] = advisorID[1];
-
-                  if (advisorID[2] != null)
-                    {
-                        _advisorID[2] = advisorID[2];
-
-                    }
-
-                }
-            }
-
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return (IEnumerator)GetEnumerator();
-            }
-
-            public AdvisorsIDEnumerator GetEnumerator()
-            {
-                return new AdvisorsIDEnumerator(_advisorID);
+                _advisorID[i] = advisorsID[i];
             }
         }
-        // When you implement IEnumerable(T), you must also implement IEnumerator(T),
-        // which will walk through the contents of the file one line at a time.
-        // Implementing IEnumerator(T) requires that you implement IEnumerator and IDisposable.
-        public class AdvisorsIDEnumerator : IEnumerator
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            private AdvisorViewModel[] _aID;
+            return (IEnumerator)GetEnumerator();
+        }
 
-            // Enumerators are positioned before the first element
-            // until the first MoveNext() call.
-            int position = -1;
-
-            public AdvisorsIDEnumerator(AdvisorViewModel[] advisors)
-            {
-                //Make a string array equal advisor array when it's not empty    
-                _aID = new AdvisorViewModel[advisors.Length];
-
-                _aID[0] = advisors[0];
-
-                
-                if(advisors[1] != null)
-                {
-                    _aID[1] = advisors[1];
-
-                    if(advisors[2] != null)
-                    {
-                        _aID[2] = advisors[2];
-
-                    }
-
-                }
-
-            }
-
-            // Implement the IEnumerator(T).Current publicly, but implement
-            // IEnumerator.Current, which is also required, privately.
-            public AdvisorViewModel Current
-            {
-
-                get
-                {
-                    try
-                    {
-                        return _aID[position];
-                    }
-                    catch (IndexOutOfRangeException)
-                    {
-                        throw new InvalidOperationException();
-                    }
-                }
-            }
-
-            object IEnumerator.Current
-            {
-                get { return Current; }
-            }
-
-            // Implement MoveNext and Reset, which are required by IEnumerator.
-            public bool MoveNext()
-            {
-                position++;
-                return (position < _aID.Length);
-            }
-
-            public void Reset()
-            {
-                position = -1;
-            }
+        public AdvisorsIDEnumerator GetEnumerator()
+        {
+            return new AdvisorsIDEnumerator(_advisorID);
         }
     }
+    // When you implement IEnumerable(T), you must also implement IEnumerator(T),
+    // which will walk through the contents of the file one line at a time.
+    // Implementing IEnumerator(T) requires that you implement IEnumerator and IDisposable.
+    public class AdvisorsIDEnumerator : IEnumerator
+    {
+        private AdvisorViewModel[] _aID;
+
+        // Enumerators are positioned before the first element
+        // until the first MoveNext() call.
+        int position = -1;
+
+        public AdvisorsIDEnumerator(AdvisorViewModel[] advisorsID)
+        {
+            //Make a string array equal advisor array when it's not empty    
+            _aID = new AdvisorViewModel[advisorsID.Length];
+
+            for (int i = 0; i < advisorsID.Length; i++)
+            {
+                _aID[i] = advisorsID[i];
+            }
+
+        }
+
+        // Implement the IEnumerator(T).Current publicly, but implement
+        // IEnumerator.Current, which is also required, privately.
+        public AdvisorViewModel Current
+        {
+
+            get
+            {
+                try
+                {
+                    return _aID[position];
+                }
+                catch (IndexOutOfRangeException)
+                {
+                    throw new InvalidOperationException();
+                }
+            }
+        }
+
+        object IEnumerator.Current
+        {
+            get { return Current; }
+        }
+
+        // Implement MoveNext and Reset, which are required by IEnumerator.
+        public bool MoveNext()
+        {
+            position++;
+            return (position < _aID.Length);
+        }
+
+        public void Reset()
+        {
+            position = -1;
+        }
+    }
+}

@@ -340,7 +340,7 @@
             <param name="username">username of the profile info</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.getAdvisor(System.String)">
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.getAdvisors(System.String)">
             <summary>Get the advisor of particular student</summary>
              <returns></returns>
         </member>
@@ -1288,8 +1288,15 @@
             <param name="username">username</param>
             <returns>AlumniProfileViewModel if found, null if not found</returns>
         </member>
-        <member name="M:Gordon360.Services.ProfileService.GetPhotoPath(System.String)">
+        <member name="M:Gordon360.Services.ProfileService.GetAdvisors(System.String)">
             <summary>
+            get advisors for particular student
+            </summary>
+            <param name="id">student id</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetPhotoPath(System.String)">
+            <summary>v
             Get photo path for profile
             </summary>
             <param name="id">id</param>

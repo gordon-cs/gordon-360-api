@@ -337,15 +337,9 @@ namespace Gordon360.Controllers.Api
             var _student = _profileService.GetStudentProfileByUsername(username);
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
-            var _advisors = _profileService.GetAdvisors(id);
-
-            JObject adv = JObject.FromObject(_advisors);
-
-            if(adv != null)
-            {
-                return Ok(adv);
-            }
-            return NotFound();
+            var advisors = _profileService.GetAdvisors(id);
+            
+            return Ok(advisors);
            
         }
 

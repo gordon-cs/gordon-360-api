@@ -21,7 +21,8 @@ namespace Gordon360.Services
 
         public ProfileService(IUnitOfWork unitOfWork)
         {
-            _unitOfWork = unitOfWork;
+            _unitOfWork = unitOfWork; 
+            _accountService = new AccountService(_unitOfWork);
         }
         /// <summary>
         /// get student profile info
@@ -77,25 +78,28 @@ namespace Gordon360.Services
             var idParam = new SqlParameter("@ID", id);
             // Stored procedure returns row containing advisor1 ID, advisor2 ID, advisor3 ID 
             var idResult = RawSqlQuery<ADVISOR_SEPARATE_Result>.query("ADVISOR_SEPARATE @ID", idParam).FirstOrDefault();
-            //Array to store advisors' ID
-            AdvisorViewModel[] advisorsID = new AdvisorViewModel[3]
-            {
-                  new AdvisorViewModel(_accountService.Get(idResult.Advisor1).FirstName,_accountService.Get(idResult.Advisor1).LastName,_accountService.Get(idResult.Advisor1).ADUserName),
-                  new AdvisorViewModel(_accountService.Get(idResult.Advisor2).FirstName,_accountService.Get(idResult.Advisor2).LastName,_accountService.Get(idResult.Advisor2).ADUserName),
-                  new AdvisorViewModel(_accountService.Get(idResult.Advisor3).FirstName,_accountService.Get(idResult.Advisor3).LastName,_accountService.Get(idResult.Advisor3).ADUserName),
-            };
 
             if (idResult == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "No advisor for this id" };
             }
-
-            //Put advisor info in a array
-
-
-            return advisorsID;
+            //Obeject Array to store advisors information
+            AdvisorViewModel[] advisorsID = new AdvisorViewModel[2]
+            {
+                  new AdvisorViewModel(_accountService.Get(idResult.Advisor1).FirstName,_accountService.Get(idResult.Advisor1).LastName,_accountService.Get(idResult.Advisor1).ADUserName),
+                  new AdvisorViewModel(_accountService.Get(idResult.Advisor2).FirstName,_accountService.Get(idResult.Advisor2).LastName,_accountService.Get(idResult.Advisor2).ADUserName),
+                  //new AdvisorViewModel(_accountService.Get(idResult.Advisor3).FirstName,_accountService.Get(idResult.Advisor3).LastName,_accountService.Get(idResult.Advisor3).ADUserName),
+            };
+            AdvisorIDEnumerable advisors = new AdvisorIDEnumerable(advisorsID);
+            List<AdvisorViewModel> a = new List<AdvisorViewModel>();
+            foreach (AdvisorViewModel p in advisors)
+            {
+                a.Add(p);
+            }
+        
+            return a;
         }
-        /// <summary>
+        /// <summary>v
         /// Get photo path for profile
         /// </summary>
         /// <param name="id">id</param>
