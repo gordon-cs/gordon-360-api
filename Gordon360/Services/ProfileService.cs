@@ -79,24 +79,49 @@ namespace Gordon360.Services
             // Stored procedure returns row containing advisor1 ID, advisor2 ID, advisor3 ID 
             var idResult = RawSqlQuery<ADVISOR_SEPARATE_Result>.query("ADVISOR_SEPARATE @ID", idParam).FirstOrDefault();
 
+            //Obeject Array to store advisors information
+            AdvisorViewModel[] advisorsID = new AdvisorViewModel[3];
+
+            // If idResult equal null, it means this user do not have advisor
             if (idResult == null)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "No advisor for this id" };
+                //return 0 array advisor list
+                AdvisorIDEnumerable zeroAdvisor = new AdvisorIDEnumerable(advisorsID);
+                List<AdvisorViewModel> zero = new List<AdvisorViewModel>();
+
+                foreach (AdvisorViewModel p in zeroAdvisor)
+                {
+                    if (p != null)
+                    {
+                        zero.Add(p);
+                    }
+                }
+                return zero;
             }
-            //Obeject Array to store advisors information
-            AdvisorViewModel[] advisorsID = new AdvisorViewModel[2]
+            else
             {
-                  new AdvisorViewModel(_accountService.Get(idResult.Advisor1).FirstName,_accountService.Get(idResult.Advisor1).LastName,_accountService.Get(idResult.Advisor1).ADUserName),
-                  new AdvisorViewModel(_accountService.Get(idResult.Advisor2).FirstName,_accountService.Get(idResult.Advisor2).LastName,_accountService.Get(idResult.Advisor2).ADUserName),
-                  //new AdvisorViewModel(_accountService.Get(idResult.Advisor3).FirstName,_accountService.Get(idResult.Advisor3).LastName,_accountService.Get(idResult.Advisor3).ADUserName),
-            };
+                advisorsID[0] = new AdvisorViewModel(_accountService.Get(idResult.Advisor1).FirstName, _accountService.Get(idResult.Advisor1).LastName, _accountService.Get(idResult.Advisor1).ADUserName);
+                if (!string.IsNullOrEmpty(idResult.Advisor2))
+                {
+                    advisorsID[1] = new AdvisorViewModel(_accountService.Get(idResult.Advisor2).FirstName, _accountService.Get(idResult.Advisor2).LastName, _accountService.Get(idResult.Advisor2).ADUserName);
+                }
+                if (!string.IsNullOrEmpty(idResult.Advisor3))
+                {
+                    advisorsID[2] = new AdvisorViewModel(_accountService.Get(idResult.Advisor3).FirstName, _accountService.Get(idResult.Advisor3).LastName, _accountService.Get(idResult.Advisor3).ADUserName);
+                }
+            }
+            //Set a list to return not null object in array
             AdvisorIDEnumerable advisors = new AdvisorIDEnumerable(advisorsID);
             List<AdvisorViewModel> a = new List<AdvisorViewModel>();
+            
             foreach (AdvisorViewModel p in advisors)
             {
-                a.Add(p);
+                if (p != null)
+                {
+                    a.Add(p);
+                }
             }
-        
+
             return a;
         }
         /// <summary>v

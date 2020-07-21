@@ -31,6 +31,7 @@ namespace Gordon360.Models.ViewModels
             _advisorID = new AdvisorViewModel[advisorsID.Length];
             for (int i = 0; i < advisorsID.Length; i++)
             {
+                //Make a obeject array equal object advisor array     
                 _advisorID[i] = advisorsID[i];
             }
         }
@@ -57,7 +58,7 @@ namespace Gordon360.Models.ViewModels
 
         public AdvisorsIDEnumerator(AdvisorViewModel[] advisorsID)
         {
-            //Make a string array equal advisor array when it's not empty    
+            //Make a obeject array equal object advisor array     
             _aID = new AdvisorViewModel[advisorsID.Length];
 
             for (int i = 0; i < advisorsID.Length; i++)
