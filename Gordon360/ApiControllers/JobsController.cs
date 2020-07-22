@@ -49,7 +49,7 @@ namespace Gordon360.ApiControllers
         /// </summary>
         /// <param name="details"></param>
         /// <returns>The user's active jobs</returns>
-        [HttpGet]
+        [HttpPost]
         [Route("getJobs")]
         public IHttpActionResult getJobsForUser([FromBody] ActiveJobSelectionParametersModel details)
         {
@@ -355,7 +355,7 @@ namespace Gordon360.ApiControllers
         /// </summary>
         /// <param name="details"> deatils of the current Staff</param>
         /// <returns>The Staff's active jobs</returns>
-        [HttpGet]
+        [HttpPost]
         [Route("getJobsStaff")]
         public IHttpActionResult getJobsForStaff([FromBody] ActiveJobSelectionParametersModel details)
         {
