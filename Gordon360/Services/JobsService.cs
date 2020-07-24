@@ -366,7 +366,7 @@ namespace Gordon360.Services
 
             var id_num = new SqlParameter("@ID_NUM", ID_NUM);
             // HOURLY_RATE taken out as it doesn't seem to be in database when running query in SSMS
-            string query = "SELECT ID_NUM, EML, EML_DESCRIPTION, SHIFT_START_DATETIME, SHIFT_END_DATETIME, HOURS_WORKED, SUPERVISOR, COMP_SUPERVISOR, STATUS, SUBMITTED_TO, SHIFT_NOTES, COMMENTS, PAY_WEEK_DATE, PAY_PERIOD_DATE, PAY_PERIOD_ID, LAST_CHANGED_BY, DATETIME_ENTERED from staff_timesheets where ID_NUM = @ID_NUM AND STATUS != 'Paid' order by EML, SHIFT_START_DATETIME, STATUS";
+            string query = "SELECT ID_NUM, EML, EML_DESCRIPTION, SHIFT_START_DATETIME, SHIFT_END_DATETIME, HOURS_WORKED, SUPERVISOR, COMP_SUPERVISOR, STATUS, SUBMITTED_TO, SHIFT_NOTES, COMMENTS, PAY_WEEK_DATE, PAY_PERIOD_DATE, PAY_PERIOD_ID, LAST_CHANGED_BY, DATETIME_ENTERED, HOURS_TYPE from staff_timesheets where ID_NUM = @ID_NUM AND STATUS != 'Paid' order by EML, SHIFT_START_DATETIME, STATUS";
             try
             {
                 result = RawSqlQuery<StaffTimesheetsViewModel>.StaffTimesheetQuery(query, id_num);
