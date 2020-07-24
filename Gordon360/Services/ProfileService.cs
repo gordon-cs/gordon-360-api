@@ -16,10 +16,12 @@ namespace Gordon360.Services
     public class ProfileService : IProfileService
     {
         private IUnitOfWork _unitOfWork;
+        private IAccountService _accountService;
 
         public ProfileService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
+            _accountService = new AccountService(_unitOfWork);
         }
         /// <summary>
         /// get student profile info
@@ -63,7 +65,60 @@ namespace Gordon360.Services
                 result = alumni;
             return result;
         }
+        /// <summary>
+        /// get advisors for particular student
+        /// </summary>
+        /// <param name="id">student id</param>
+        /// <returns></returns>
+        public IEnumerable<AdvisorViewModel> GetAdvisors(string id)
+        {
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
 
+            var idParam = new SqlParameter("@ID", id);
+            // Stored procedure returns row containing advisor1 ID, advisor2 ID, advisor3 ID 
+            var idResult = RawSqlQuery<ADVISOR_SEPARATE_Result>.query("ADVISOR_SEPARATE @ID", idParam).FirstOrDefault();
+
+            // Create empty advisor list to fill in and return.           
+            List<AdvisorViewModel> resultList = new List<AdvisorViewModel>();
+            
+            // If idResult equal null, it means this user do not have advisor
+            if (idResult == null)
+            {
+                //return empty list
+                return resultList;
+            }
+            else
+            {
+                // Add advisors to resultList, then return the list
+                if (!string.IsNullOrEmpty(idResult.Advisor1))
+                {
+                    resultList.Add(new AdvisorViewModel(
+                        _accountService.Get(idResult.Advisor1).FirstName,
+                        _accountService.Get(idResult.Advisor1).LastName,
+                        _accountService.Get(idResult.Advisor1).ADUserName));
+                }
+                if (!string.IsNullOrEmpty(idResult.Advisor2))
+                {
+                    resultList.Add(new AdvisorViewModel(
+                        _accountService.Get(idResult.Advisor2).FirstName, 
+                        _accountService.Get(idResult.Advisor2).LastName, 
+                        _accountService.Get(idResult.Advisor2).ADUserName));
+                }
+                if (!string.IsNullOrEmpty(idResult.Advisor3))
+                {
+                    resultList.Add(new AdvisorViewModel(
+                        _accountService.Get(idResult.Advisor3).FirstName, 
+                        _accountService.Get(idResult.Advisor3).LastName, 
+                        _accountService.Get(idResult.Advisor3).ADUserName));
+                }
+            }
+            //Set a list to return not null object in array
+            return resultList;
+        }
         /// <summary>
         /// Get photo path for profile
         /// </summary>

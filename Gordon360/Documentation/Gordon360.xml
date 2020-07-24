@@ -547,6 +547,10 @@
             <param name="username">username of the profile info</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.getAdvisors(System.String)">
+            <summary>Get the advisor of particular student</summary>
+             <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.getMyImg">
             <summary>Get the profile image of currently logged in user</summary>
             <returns></returns>
@@ -1590,6 +1594,13 @@
             </summary>
             <param name="username">username</param>
             <returns>AlumniProfileViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetAdvisors(System.String)">
+            <summary>
+            get advisors for particular student
+            </summary>
+            <param name="id">student id</param>
+            <returns></returns>
         </member>
         <member name="M:Gordon360.Services.ProfileService.GetPhotoPath(System.String)">
             <summary>

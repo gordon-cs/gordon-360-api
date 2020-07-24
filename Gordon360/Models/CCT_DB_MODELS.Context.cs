@@ -83,7 +83,16 @@ namespace Gordon360.Models
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ADVISOR_EMAILS_PER_ACT_CDE_Result>("ADVISOR_EMAILS_PER_ACT_CDE", aCT_CDEParameter, sESS_CDEParameter);
         }
-    
+
+        public virtual ObjectResult<ADVISOR_SEPARATE_Result> ADVISOR_SEPARATE(Nullable<int> sTUDENT_ID)
+        {
+            var sTUDENT_IDParameter = sTUDENT_ID.HasValue ?
+                new ObjectParameter("STUDENT_ID", sTUDENT_ID) :
+                new ObjectParameter("STUDENT_ID", typeof(int));
+
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ADVISOR_SEPARATE_Result>("ADVISOR_SEPARATE", sTUDENT_IDParameter);
+        }
+
         public virtual ObjectResult<ALL_BASIC_INFO_Result> ALL_BASIC_INFO()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ALL_BASIC_INFO_Result>("ALL_BASIC_INFO");
