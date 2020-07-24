@@ -324,8 +324,11 @@ namespace Gordon360.Controllers.Api
             }
         }
 
-        ///<summary>Get the advisor of particular student</summary>
-        /// <returns></returns>
+        ///<summary>Get the advisor(s) of a particular student</summary>
+        /// <returns>
+        /// All advisors of the given student.  For each advisor,
+        /// provides first name, last name, and username.
+        /// </returns>
         [HttpGet]
         [Route("Advisors/{username}")]
         public IHttpActionResult getAdvisors(string username)
