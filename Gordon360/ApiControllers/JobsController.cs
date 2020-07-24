@@ -356,7 +356,7 @@ namespace Gordon360.ApiControllers
         /// <param name="details"> deatils of the current Staff</param>
         /// <returns>The Staff's active jobs</returns>
         [HttpPost]
-        [Route("getJobsStaff")]
+        [Route("JobsStaff")]
         public IHttpActionResult getJobsForStaff([FromBody] ActiveJobSelectionParametersModel details)
         {
             IEnumerable<ActiveJobViewModel> result = null;
@@ -378,7 +378,7 @@ namespace Gordon360.ApiControllers
         /// </summary>
         /// <returns>The staff's saved shifts</returns>
         [HttpGet]
-        [Route("getSavedShiftsStaff")]
+        [Route("savedShiftsForStaff")]
         public HttpResponseMessage getSavedShiftsForStaff()
         {
             int userID = GetCurrentUserID();

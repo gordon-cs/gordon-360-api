@@ -269,7 +269,7 @@
         </member>
         <member name="M:Gordon360.ApiControllers.JobsController.deleteShiftForStaff(System.Int32)">
             <summary>
-            Get a user's active jobs
+            Delee a user's active job
             </summary>
             <returns>The result of deleting the shift for a Staff</returns>
         </member>
