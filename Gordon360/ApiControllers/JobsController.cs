@@ -356,7 +356,7 @@ namespace Gordon360.ApiControllers
         /// <param name="details"> deatils of the current Staff</param>
         /// <returns>The Staff's active jobs</returns>
         [HttpPost]
-        [Route("JobsStaff")]
+        [Route("jobsStaff")]
         public IHttpActionResult getJobsForStaff([FromBody] ActiveJobSelectionParametersModel details)
         {
             IEnumerable<ActiveJobViewModel> result = null;
@@ -466,7 +466,7 @@ namespace Gordon360.ApiControllers
         }
 
         /// <summary>
-        /// Delee a user's active job
+        /// Delete a user's active job
         /// </summary>
         /// <returns>The result of deleting the shift for a Staff</returns>
         [HttpDelete]
