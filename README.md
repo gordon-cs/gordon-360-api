@@ -344,6 +344,9 @@ Returns all events which a student has attended based upon their AD_Username
 ###### ALL_BASIC_INFO
 Pulls firstname, lastname, category (student, staff, faculty), and AD_Username (if it exists!) and then makes a concatenated string to be searched through
 
+###### ADVISOR_SEPARATE
+This stored procedures is simple. It returns separate advisor(s) ID (Max is 3, Advisor1, Advisor2, and Advisor 3) for a particular student based upon their ID. 
+
 ###### UPDATE_ACT_CLUB_DEF
 
 This keeps the ACT_CLUB_DEF table in sync with the JENZ_ACT_CLUB_DEF view. It should be run periodically.
@@ -784,6 +787,8 @@ Differences from GoSite:
 `api/profiles/:username` Get public profile info of a user with username `username` as a parameter.
 
 `api/profiles/role/:username` Get college role of a user with username `username` as a parameter --- College roles: super admin, faculty and staff, student and police.
+
+`api/profiles/Advisors/:username` Get advisor(s) info of a user with username `username` as a parameter.
 
 `api/profiles/Image/` Get profile image of the current logged in user. Image is stored in a base 64 string.
 
