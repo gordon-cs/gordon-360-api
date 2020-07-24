@@ -324,6 +324,22 @@ namespace Gordon360.Controllers.Api
             }
         }
 
+        ///<summary>Get the advisor of particular student</summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("Advisors/{username}")]
+        public IHttpActionResult getAdvisors(string username)
+        {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var _student = _profileService.GetStudentProfileByUsername(username);
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            var advisors = _profileService.GetAdvisors(id);
+
+            return Ok(advisors);
+
+        }
+
         /// <summary>Get the profile image of currently logged in user</summary>
         /// <returns></returns>
         [HttpGet]

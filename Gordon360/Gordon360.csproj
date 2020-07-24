@@ -222,6 +222,9 @@
     <Compile Include="Models\ACTIVE_CLUBS_PER_SESS_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ADVISOR_SEPARATE_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ACT_INFO.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -557,6 +560,7 @@
     <Compile Include="Models\ViewModels\AccountViewModel.cs" />
     <Compile Include="Models\ViewModels\ActivityInfoViewModel.cs" />
     <Compile Include="Models\ViewModels\ActivityViewModel.cs" />
+    <Compile Include="Models\ViewModels\AdvisorViewModel.cs" />
     <Compile Include="Models\ViewModels\AlumniProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\AttendedEventViewModel.cs" />
     <Compile Include="Models\ViewModels\DiningTableViewModel.cs" />
