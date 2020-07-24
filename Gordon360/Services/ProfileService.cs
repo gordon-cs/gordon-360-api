@@ -78,7 +78,7 @@ namespace Gordon360.Services
             // Stored procedure returns row containing advisor1 ID, advisor2 ID, advisor3 ID 
             var idResult = RawSqlQuery<ADVISOR_SEPARATE_Result>.query("ADVISOR_SEPARATE @ID", idParam).FirstOrDefault();
 
-            //Obeject Array to store advisors information
+            //Object Array to store advisors information
             AdvisorViewModel[] advisorsID = new AdvisorViewModel[3];
 
             // If idResult equal null, it means this user do not have advisor
