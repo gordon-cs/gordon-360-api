@@ -302,7 +302,7 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CSVStringsToTable_fn_Result.cs">
-      <DependentUpon>StudentTimesheets_DB_Models.tt</DependentUpon>
+      <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CUSTOM_PROFILE.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
