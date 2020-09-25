@@ -36,7 +36,7 @@ Dive in.
     - [Participation Definitions](#participation-definitions)
     - [Profiles](#profiles)
     - [Sessions](#sessions)
-    - [Dining](#dining)    
+    - [Dining](#dining)
     - [Student Employment](#student-employment)
     - [Schedule](#schedule)
     - [MySchedule](#my-schedule)
@@ -398,7 +398,7 @@ Visual Studio provides auto-generation of .edmx files, with the following proced
 * *Deleting the old edmx files*
   * In the solution explorer, expand the "Models" folder and delete the previous `<database name>_DB_MODELS.edmx` which represents the database to which you made changes; for example, if it was the CCT database that was changed, delete CCT_DB_MODELS.edmx by right clicking and selecting 'delete' (it's okay, we can remake it)
   * At the bottom of the `web.config` file there is a `<connectionStrings>` tag with an `<add ...>` tag for every connection string nested within. Delete the connection string (the `<add ...>` tag) for the DB connection you are regenerating (if this is confusing, [this step](#connection-string) explains why you may need it deleted)
-  
+
 * *Generating the new edmx files*
   * Right-click "Models", expand "Add" and press "New Item" (If you can see ADO.NET Entity Data Model in here, you may press that as well)
   * Under Visual C# panel, access "Data" and find ADO.NET Entity Data Model. Name it `<database name>_DB_Models` and create it
@@ -413,7 +413,7 @@ Visual Studio provides auto-generation of .edmx files, with the following proced
 If you are attempting to connect the API to a database other than the ones to which it is already connected, you will need to create an entirely new edmx. To do this, follow the instructions above for updating, taking note of the following points:
 * You do not need to delete any edmx files, since you are now creating the first instance of a different edmx
 * <span id="create-connection"><!--anchor--></span>
-None of the options for data connection will fit your needs, so you will need to create a new option: 
+None of the options for data connection will fit your needs, so you will need to create a new option:
 	* Click "New Connection..."
 	* If prompted "Choose Data Source", choose "Microsoft SQL Server"
 	* For "Server name", put `admintrainsql.gordon.edu`
@@ -888,9 +888,9 @@ What is it? Resource that represents the user's scores on the four pillars of th
 ### News
 What is it? Resource that represents accepted student news entries and news categories.
 
-##### GET 
+##### GET
 
-`api/news/category` Gets the full list of category names used to categorize student news as well as category ids and sort order. 
+`api/news/category` Gets the full list of category names used to categorize student news as well as category ids and sort order.
 
 `api/news/not-expired` Gets every student news entry that has been accepted and has not yet been in the database 2 weeks or, if the poster set a specific date of expiration, has an expiration date later than the current day.
 
@@ -926,9 +926,9 @@ _(uses repository)_
 ### Wellness Check
 Back endpoint responsible for fetching and sending information to the database regarding the answers to the wellness check.
 
-##### GET 
+##### GET
 
-`api/wellness` Gets the latest answer a student has sent, as well as a boolean that specifies whether the answer is still valid based on when the answer was submitted.  
+`api/wellness` Gets the latest answer a student has sent, as well as a boolean that specifies whether the answer is still valid based on when the answer was submitted.
 
 `api/wellness/Question` Gets the wellness check question to be displayed on the front end from the Data base.
 
@@ -976,7 +976,7 @@ A test suite is available at `Tests/ApiEndpoints` to exercise the different endp
 Clone the project from the github site:
 `git clone https://github.com/gordon-cs/gordon-360-api.git`
 
-Copy credentials.py into gordon-360-api/Tests/ApiEndpoints/. The file is located on the CS-RDSH-02 virtual machine in `C:\Users\Public\Public Documents\` (or `/c/users/public/documents\` when in git-bash). It is the same location where secrets.config is located. 
+Copy credentials.py into gordon-360-api/Tests/ApiEndpoints/. The file is located on the CS-RDSH-02 virtual machine in `C:\Users\Public\Public Documents\` (or `/c/users/public/documents\` when in git-bash). It is the same location where secrets.config is located.
 
 Navigate to the API Tests folder:
 `cd gordon-360-api/Tests/ApiEndpoints/`
@@ -985,11 +985,11 @@ Install pytest: `pip install -U pytest`
 
 *Note: If you encounter an error of a missing requests import, you may need to install it with `pip install requests` (Summer 2020 fix)*
 
-Check the `hostURL` in test_gordon360_pytest.py if it is pointing to the correct backend 
+Check the `hostURL` in test_gordon360_pytest.py if it is pointing to the correct backend
 
 Run the tests:
 `pytest` -- This runs all the tests.
-`pytest '{name of test file}'` -- This runs a specific test file based on {name of test file}. 
+`pytest '{name of test file}'` -- This runs a specific test file based on {name of test file}.
 `pytest '{name of test file}' -k '{name of def}'` -- This runs a specific test in a specific file based on {name of test file} and {name of def}.
 
 ### Writing the Tests
@@ -1039,7 +1039,7 @@ To manually test the API, use an API development/testing app like [Postman](http
 
 Some values are dependant on other tests being run after the failed test. To fix this, run the all test files using `pytest` on the command line twice.
 
-Some values are updated frequently over time, to ensure compatibility of tests in the future, value assertions are discouraged. To fix issues from value changes, manually updating or removing the assertions are necessary. 
+Some values are updated frequently over time, to ensure compatibility of tests in the future, value assertions are discouraged. To fix issues from value changes, manually updating or removing the assertions are necessary.
 
 #### 500 Server Error when updating Activity Images
 

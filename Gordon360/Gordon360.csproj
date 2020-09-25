@@ -204,6 +204,7 @@
     <Compile Include="ApiControllers\AccountsController.cs" />
     <Compile Include="ApiControllers\AdminsController.cs" />
     <Compile Include="ApiControllers\AdvancedSearchController.cs" />
+    <Compile Include="ApiControllers\DirectMessageController.cs" />
     <Compile Include="ApiControllers\NewsController.cs" />
     <Compile Include="ApiControllers\DiningController.cs" />
     <Compile Include="ApiControllers\ErrorLogController.cs" />
@@ -611,6 +612,7 @@
     <Compile Include="Services\AccountService.cs" />
     <Compile Include="Services\ActivityService.cs" />
     <Compile Include="Services\AdministratorService.cs" />
+    <Compile Include="Services\DirectMessageService.cs" />
     <Compile Include="Services\JobsService.cs" />
     <Compile Include="Services\DiningService.cs" />
     <Compile Include="Services\ErrorLogService.cs" />
@@ -715,6 +717,16 @@
       <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
       <LastGenOutput>StudentTimesheet_DB_Models.cs</LastGenOutput>
     </Content>
+    <Content Include="Models\StudentTimesheet_DB_Models.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
+      <LastGenOutput>StudentTimesheet_DB_Models.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\StudentTimesheet_DB_Models.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
+      <LastGenOutput>StudentTimesheet_DB_Models.cs</LastGenOutput>
+    </Content>
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -763,9 +775,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:3417</IISUrl>
-          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
-          <IISAppRootUrl>http://localhost:3417/</IISAppRootUrl>
+          <IISUrl>http://localhost:6969</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

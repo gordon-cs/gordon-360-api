@@ -22,12 +22,12 @@ The Remmina control window will open on your desktop and you'll see a new icon f
     * User name: _use firstname.lastname form without @gordon.edu_
     * Password: _enter your Gordon password, or leave it blank, which would require you to enter this every time you connect_
     * Domain: `GORDON`
-    * Resolution: `Use Client Resolution` 
+    * Resolution: `Use Client Resolution`
     * Color Depth: change to `True color (24 bpp)`
 2. Click on the "Advanced" tab and change the value of Quality to "Best (slowest)"
 3. Click "Save" at the bottom of the window.
 4. Double click on `CS-RDSH-02` to initiate a connection to the virtual machine.
-5. If, upon start up, it asks you "Accept Certificate?", just refuse. 
+5. If, upon start up, it asks you "Accept Certificate?", just refuse.
 6. You can close the Server Manager window that automatically opens each time you start the virtual machine.
 
 If you were connecting in order to run the server locally, click [here](https://github.com/gordon-cs/gordon-360-api/blob/develop/README.md#running-the-server-locally) to return to those instructions.
@@ -65,7 +65,6 @@ Ensure that you are connected to the Gordon network (either locally or through a
    - Click on the saved desktop you just created.
    - A pop-up will be shown asking 'Accept Certificate?'. You may check the one available option to never see the pop-up again and click on 'accept'.
 
-
 ## Connect from MacOS
 
 1.	Open Microsoft Remote Desktop
@@ -79,7 +78,7 @@ Ensure that you are connected to the Gordon network (either locally or through a
       -	Enter your Gordon credentials for 'User name' and 'Password'.
       -	Close the Preferences window.
 3.	Run and connect
-      - In the Microsoft Remote Desktop window, click on 'New'. 
+      - In the Microsoft Remote Desktop window, click on 'New'.
       - Name the 'Connection name' whatever you’d like (I recommend the same as the 'Gateway name')
       - Under 'PC name', type in `CS-RDSH-02` (not case-sensitive).
       - Select the Gateway you created from the dropdown.

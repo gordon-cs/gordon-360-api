@@ -294,7 +294,7 @@ namespace Gordon360.Services
             }
 
 
-            
+
             ClockInViewModel y = new ClockInViewModel();
 
             return y;

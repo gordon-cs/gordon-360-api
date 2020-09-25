@@ -145,6 +145,12 @@
             </summary>
             <returns> All buildings</returns>
         </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.Get">
+            <summary>
+             returns hello world example
+            </summary>
+            <returns>string and date</returns>
+        </member>
         <member name="M:Gordon360.ApiControllers.DiningController.Get">
             <summary>
              Gets information about student's dining plan and balance

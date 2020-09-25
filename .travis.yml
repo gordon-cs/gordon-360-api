@@ -8,7 +8,7 @@ os: windows
 mono: none
 
 # Install NuGet, then build the solution
-script: 
+script:
   - choco install nuget.commandline
   - choco install visualstudio2017-workload-manageddesktop
   - choco install visualstudio2017-workload-netweb
@@ -35,4 +35,3 @@ deploy:
 notifications:
   email:
     on_success: never
-

@@ -77,7 +77,7 @@ namespace Gordon360.ApiControllers
         public HttpResponseMessage getSavedShiftsForUser()
         {
             int userID = GetCurrentUserID();
-            
+
             IEnumerable<StudentTimesheetsViewModel> result = null;
 
             try
@@ -488,7 +488,7 @@ namespace Gordon360.ApiControllers
             }
             return Ok(result);
         }
-        
+
         /// <summary>
         /// Submit shift for staff
         /// </summary>
@@ -564,4 +564,3 @@ namespace Gordon360.ApiControllers
     }
 
 }
-

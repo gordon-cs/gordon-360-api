@@ -58,6 +58,10 @@ namespace Gordon360.Services
         WellnessViewModel PostStatus(bool answer, string id);
     }
 
+    public interface IDirectMessageService
+    {
+    }
+
     public interface IActivityService
     {
         ActivityInfoViewModel Get(string id);
@@ -135,7 +139,7 @@ namespace Gordon360.Services
         IEnumerable<JNZB_ACTIVITIES> GetAll();
     }
 
-    
+
     public interface IMembershipService
     {
         IEnumerable<MembershipViewModel> GetLeaderMembershipsForActivity(string id);
