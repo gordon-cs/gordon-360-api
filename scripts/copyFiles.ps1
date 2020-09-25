@@ -21,7 +21,8 @@ try {
     Invoke-Command -Session $session {Copy-Item ("./" + $($using:env:SITE_DIR) + "/*") -Destination $($using:backupDir) -Recurse -Force}
   }
   Write-Output "Copying API files to remote destination..."
-  Copy-Item -Path "VSOutput\360ApiTrain" -Destination $env:DEPLOY_DESTINATION -ToSession $session -Recurse -Force
+  Write-Output "Copying API files from VSOutput\$env:SITE_DIR --> $env:DEPLOY_DESTINATION"
+  Copy-Item -Path "VSOutput\$env:SITE_DIR" -Destination $env:DEPLOY_DESTINATION -ToSession $session -Recurse -Force
   Write-Output "Closing remote Powershell session..."
   $session | Remove-PSSession
   Write-Output "Done"
