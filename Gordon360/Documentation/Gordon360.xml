@@ -8,27 +8,27 @@
             <summary>
             Return a list of accounts matching some or all of the search parameter
             </summary>
-
-
+            
+            
             Full Explanation:
-
+            
             Returns a list of accounts ordered by key of a combination of users first/last/user name in the following order
                 1.first or last name begins with search query,
                 2.first or last name in Username that begins with search query
                 3.first or last name that contains the search query
-
+                
             If Full Names of any two accounts are the same the follow happens to the dictionary key to solve this problem
                 1. If there is a number attached to their account this is appened to the end of their key
                 2. Otherwise an '1' is appended to the end
-
+                
             Note:
             A '1' is added inbetween a key's first and last name or first and last username in order to preserve the presedence set by shorter names
             as both first and last are used as a part of the key in order to order matching first/last names with the remaining part of their name
             but this resulted in the presedence set by shorter names to be lost
-
+            
             Note:
             "z" s are added in order to keep each case split into each own group in the dictionary
-
+            
             <param name="searchString"> The input to search for </param>
             <returns> All accounts meeting some or all of the parameter</returns>
         </member>
@@ -56,15 +56,15 @@
             <param name="hometownSearchParam"></param>
             <param name="stateSearchParam"></param>
             <param name="countrySearchParam"></param>
-            <param name="departmentSearchParam"></param>
-            <param name="buildingSearchParam"></param>
+            <param name="departmentSearchParam"></param>   
+            <param name="buildingSearchParam"></param>     
             <returns> All accounts meeting some or all of the parameter</returns>
         </member>
         <member name="M:Gordon360.ApiControllers.AccountsController.GenerateKey(System.String,System.String,System.String,System.Int32)">
              <Summary>
                This function generates a key for each account
              </Summary>
-
+            
              <param name="keyPart1">This is what you would want to sort by first, used for first part of key</param>
              <param name="keyPart2">This is what you want to sort by second, used for second part of key</param>
              <param name="precedence">Set where in the dictionary this key group will be ordered</param>
@@ -144,6 +144,12 @@
             Return a list buildings.
             </summary>
             <returns> All buildings</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.Get">
+            <summary>
+             returns hello world example
+            </summary>
+            <returns>string and date</returns>
         </member>
         <member name="M:Gordon360.ApiControllers.DiningController.Get">
             <summary>
@@ -238,7 +244,7 @@
             <summary>
             Get a user's active jobs
             </summary>
-            <param name="details"></param>
+            <param name="details"> deatils of the current Staff</param>
             <returns>The Staff's active jobs</returns>
         </member>
         <member name="M:Gordon360.ApiControllers.JobsController.getSavedShiftsForStaff">
@@ -251,7 +257,7 @@
             <summary>
             Get a user's active jobs
             </summary>
-            <param name="shiftDetails"></param>
+            <param name="shiftDetails">The details that will be changed</param>
             <returns>The result of saving a shift for a staff</returns>
         </member>
         <member name="M:Gordon360.ApiControllers.JobsController.editShiftForStaff(Gordon360.Models.ViewModels.ShiftViewModel)">
@@ -329,7 +335,7 @@
                                 {
                                     errors += "|" + error.ErrorMessage + "|" + error.Exception;
                                 }
-
+            
                             }
                             throw new BadInputException() { ExceptionMessage = errors };
                         }
@@ -479,14 +485,14 @@
         <member name="M:Gordon360.Controllers.Api.ScheduleControlController.Get">
             <summary>
             Get schedule information of logged in user
-            Info one gets: privacy, time last updated, description, and Gordon ID
+            Info one gets: privacy, time last updated, description, and Gordon ID 
             </summary>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ScheduleControlController.Get(System.String)">
             <summary>
             Get schedule information of specific user
-            Info one gets: privacy, time last updated, description, and Gordon ID
+            Info one gets: privacy, time last updated, description, and Gordon ID 
             </summary>
             <param name="username">username</param>
             <returns></returns>
@@ -652,7 +658,7 @@
         </member>
         <member name="M:Gordon360.Controllers.Api.ActivitiesController.GetOpenActivities(System.Int32)">
             <summary>
-            Get all the activities that have not yet been closed out for the current session for
+            Get all the activities that have not yet been closed out for the current session for 
             which a given user is the group admin
             </summary>
             <param name="id">The id of the user who is group admin</param>
@@ -934,13 +940,13 @@
         <member name="M:Gordon360.Repositories.IRepository`1.GetById(System.Int32)">
             <summary>
             Gets entity by Id
-            </summary>
+            </summary>        
             <returns>Specific enitity</returns>
         </member>
         <member name="M:Gordon360.Repositories.IRepository`1.GetById(System.String)">
             <summary>
             Gets entity by Id
-            </summary>
+            </summary>        
             <returns>Specific enitity</returns>
         </member>
         <member name="M:Gordon360.Repositories.IRepository`1.GetByUsername(System.String)">
@@ -952,7 +958,7 @@
         <member name="M:Gordon360.Repositories.IRepository`1.GetAll">
             <summary>
             Gets all entities
-            </summary>
+            </summary>        
             <returns>All entities</returns>
         </member>
         <member name="M:Gordon360.Repositories.IRepository`1.GetAll(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
@@ -1109,28 +1115,28 @@
         </member>
         <member name="M:Gordon360.Services.ActivityService.GetOpenActivities(System.String)">
             <summary>
-            Gets a collection of all the current open activities, by finding which activities have
+            Gets a collection of all the current open activities, by finding which activities have 
             memberships with an END_DTE that is null
             </summary>
             <returns>The collection of activity codes for open activities</returns>
         </member>
         <member name="M:Gordon360.Services.ActivityService.GetOpenActivities(System.String,System.Int32)">
             <summary>
-            Gets a collection of all the current open activities for which a given user is group admin, by finding which activities have
+            Gets a collection of all the current open activities for which a given user is group admin, by finding which activities have 
             memberships with an END_DTE that is null
             </summary>
             <returns>The collection of activity codes for open activities</returns>
         </member>
         <member name="M:Gordon360.Services.ActivityService.GetClosedActivities(System.String)">
             <summary>
-            Gets a collection of all the current activitie already closed out, by finding which activities have
+            Gets a collection of all the current activitie already closed out, by finding which activities have 
             memberships with an END_DTE that is not null
             </summary>
             <returns>The collection of activity codes for open activities</returns>
         </member>
         <member name="M:Gordon360.Services.ActivityService.GetClosedActivities(System.String,System.Int32)">
             <summary>
-            Gets a collection of all the current closed activities for which a given user is group admin, by finding which activities have
+            Gets a collection of all the current closed activities for which a given user is group admin, by finding which activities have 
             memberships with an END_DTE that is not null
             </summary>
             <param name="id">The user's id</param>
@@ -1139,7 +1145,7 @@
         </member>
         <member name="M:Gordon360.Services.ActivityService.Update(System.String,Gordon360.Models.ACT_INFO)">
             <summary>
-            Updates the Activity Info
+            Updates the Activity Info 
             </summary>
             <param name="activity">The activity info resource with the updated information</param>
             <param name="id">The id of the activity info to be updated</param>
@@ -1238,7 +1244,7 @@
         </member>
         <member name="M:Gordon360.Services.DiningService.GetBalance(System.Int32,System.String)">
             <summary>
-
+            
             </summary>
             <param name="cardHolderID"></param>
             <param name="planID"></param>
@@ -1334,14 +1340,6 @@
             <param name="parameters">Parameters to pass into the stored procedure</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Services.ComplexQueries.RawSqlQuery`1.StudentTimesheetQuery(System.String,System.Object[])">
-            <summary>
-            Execute the sql query on the StudentTimesheets database
-            </summary>
-            <param name="query">An sql statment. Can be a stored procedure or even a simple SELECT statment</param>
-            <param name="parameters">Parameters to pass into the stored procedure</param>
-            <returns></returns>
-        </member>
         <member name="T:Gordon360.Services.ContentManagementService">
             <summary>
             Service class that facilitates data (specifically, site content) passing between the ContentManagementController and the database model.
@@ -1351,7 +1349,7 @@
             <summary>
             Fetches the dashboard slider content from the database.
             </summary>
-            <returns>If found, returns a set of SliderViewModel's, based on each slide entry in the db.
+            <returns>If found, returns a set of SliderViewModel's, based on each slide entry in the db. 
             If not returns an empty IEnumerable.</returns>
         </member>
         <member name="T:Gordon360.Services.EmailService">
@@ -1537,7 +1535,7 @@
         </member>
         <member name="M:Gordon360.Services.NewsService.VerifyUnexpired(Gordon360.Models.StudentNews)">
             <summary>
-            Helper method to verify that a given news item has not expired
+            Helper method to verify that a given news item has not expired 
             (see documentation for expiration definition)
             </summary>
             <param name="newsItem">The news item to verify</param>
@@ -1766,7 +1764,7 @@
         <member name="T:Gordon360.Services.JenzibarActivityService">
             <summary>
             Service class to faclitate data transfers between in and out of the JNZB_ACTIVITIES table.
-            This is a special class whose contents might not end up being exposed. The original idea
+            This is a special class whose contents might not end up being exposed. The original idea 
             was for this class to represent all the memberships that would be moved to Jenzibar.
             We have not reached that point yet though.
             </summary>
@@ -1792,7 +1790,7 @@
         </member>
         <member name="M:Gordon360.Services.MembershipRequestService.Delete(System.Int32)">
             <summary>
-            Delete the membershipRequest object whose id is given in the parameters
+            Delete the membershipRequest object whose id is given in the parameters 
             </summary>
             <param name="id">The membership request id</param>
             <returns>A copy of the deleted membership request</returns>
@@ -1860,11 +1858,11 @@
             <returns>The membership that was just deleted</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.GetSpecificMembership(System.Int32)">
-            <summary>
-            Fetch the membership whose id is specified by the parameter
-            </summary>
-            <param name="id">The membership id</param>
-            <returns>MembershipViewModel if found, null if not found</returns>
+            <summary>	
+            Fetch the membership whose id is specified by the parameter	
+            </summary>	
+            <param name="id">The membership id</param>	
+            <returns>MembershipViewModel if found, null if not found</returns>	
         </member>
         <member name="M:Gordon360.Services.MembershipService.GetAll">
             <summary>
@@ -2004,7 +2002,7 @@
         </member>
         <member name="M:Gordon360.Static.Methods.Helpers.GetLiveStream(System.String)">
             <summary>
-            Return an XDocument from a URL containing XML.
+            Return an XDocument from a URL containing XML. 
             This is used to retrieve data from 25Live specifically.
             </summary>
             <param name="requestUrl"></param>

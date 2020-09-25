@@ -57,6 +57,10 @@ namespace Gordon360.Services
         WellnessViewModel PostStatus(bool answer, string id);
     }
 
+    public interface IDirectMessageService
+    {
+    }
+
     public interface IActivityService
     {
         ActivityInfoViewModel Get(string id);
