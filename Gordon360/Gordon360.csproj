@@ -205,6 +205,7 @@
     <Compile Include="ApiControllers\AdminsController.cs" />
     <Compile Include="ApiControllers\AdvancedSearchController.cs" />
     <Compile Include="ApiControllers\DirectMessageController.cs" />
+    <Compile Include="ApiControllers\StudentHousingInfoControllerr.cs" />
     <Compile Include="ApiControllers\NewsController.cs" />
     <Compile Include="ApiControllers\DiningController.cs" />
     <Compile Include="ApiControllers\ErrorLogController.cs" />
@@ -533,6 +534,7 @@
     <Compile Include="Models\ViewModels\StaffCheckViewModel.cs" />
     <Compile Include="Models\ViewModels\StaffTimesheetsViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentNewsCategoryViewModel.cs" />
+    <Compile Include="Models\ViewModels\StudentHousingInfoViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentNewsViewModel.cs" />
     <Compile Include="Models\ViewModels\ActiveJobSelectionParametersModel.cs" />
     <Compile Include="Models\ViewModels\ActiveJobViewModel.cs" />
@@ -629,6 +631,7 @@
     <Compile Include="Services\ScheduleService.cs" />
     <Compile Include="Services\StudentEmploymentService.cs" />
     <Compile Include="Services\VictoryPromiseService.cs" />
+    <Compile Include="Services\ApartmentInfoService.cs" />
     <Compile Include="Services\WellnessService.cs" />
     <Compile Include="Static Classes\Data.cs" />
     <Compile Include="Static Classes\Helpers.cs" />
