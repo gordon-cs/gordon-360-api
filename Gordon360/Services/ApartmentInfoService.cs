@@ -18,8 +18,6 @@ namespace Gordon360.Services
 {
     public class ApartmentInfoService : IApartmentInfoService
     {
-        // TODO talk styling and removing random spaces
-
         private IUnitOfWork _unitOfWork;
 
         public ApartmentInfoService(IUnitOfWork unitOfWork)
@@ -29,17 +27,13 @@ namespace Gordon360.Services
 
         /// <summary>
         /// Gets student housing info
-        /// TODO list what exactly we mean by houding info
         /// </summary>
-        /// TODO remove next line and parameter newsID
-        /// <param name="ID">The ID (id of student)</param>
-        /// <returns>The news item</returns>
-        public IEnumerable Get(int newsID) //TODO IEnumerable needs <StudentHousingInfoViewModel>
+        /// <returns>TODO list what exactly we mean by houding info</returns>
+        public IEnumerable<StudentHousingInfoViewModel> GetAll()
         {
             var studentHousingItem = _unitOfWork.ApartmentInfoRepository.Get();
-            //TODO just return what's to the right of the '=' since it was only two lines in order to check for null
-            // scratch THAT, I led you in the wrong direction: we didn't call the stored procedure we made!!
-            // we should call this getAll and make it like News_Not_Expired
+            // TODO  I led you in the wrong direction: we didn't call the stored procedure we made!!
+            // we should make it like News_Not_Expired
             return studentHousingItem;
         }
     }

@@ -12,18 +12,18 @@ using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Controllers.Api
 {
-    [RoutePrefix("api/ApartmentApp")] 
+    [RoutePrefix("api/housing")] 
     [Authorize]
     [CustomExceptionFilter]
-    public class StudentHousingInfoController : ApiController
+    public class housingController : ApiController
     {
-        private IStudentHousingInfoService _studentHousingInfoService;
+        private IHousingService _housingService;
 
         /** Call the service that gets all student housing information
          */
         [HttpGet]
-        [Route("End-to-End")] //TODO follow convention of lowercase
-        public IHttpActionResult GetStudentHousingInfo()
+        [Route("end-to-end")]
+        public IHttpActionResult GetStudentInfo()
         {
             var result = _studentHousingInfoService.Get();
             return Ok(result);
