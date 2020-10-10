@@ -240,6 +240,13 @@
             </summary>
             <returns>returns confirmation that clock in status was deleted</returns>
         </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.CanUsePage">
+            <summary>
+             gets the response as to whether the user can use staff timesheets
+             returns true if the staff member has at least one qualifying active job as hourly staff
+            </summary>
+            <returns>Boolean</returns>
+        </member>
         <member name="M:Gordon360.ApiControllers.JobsController.getJobsForStaff(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
             <summary>
             Get a user's active jobs
@@ -268,7 +275,7 @@
         </member>
         <member name="M:Gordon360.ApiControllers.JobsController.deleteShiftForStaff(System.Int32)">
             <summary>
-            Get a user's active jobs
+            Delee a user's active job
             </summary>
             <returns>The result of deleting the shift for a Staff</returns>
         </member>
@@ -283,6 +290,12 @@
             Gets the name of a supervisor based on their ID number for Staff
             </summary>
             <returns>The name of the supervisor</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.getHourTypes">
+            <summary>
+            Gets the hour types for Staff
+            </summary>
+            <returns>The hour types for staff</returns>
         </member>
         <member name="M:Gordon360.ApiControllers.SaveController.GetUpcomingRides">
             <summary>
@@ -539,6 +552,10 @@
             <summary>Get public profile info for a user</summary>
             <param name="username">username of the profile info</param>
             <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.getAdvisors(System.String)">
+            <summary>Get the advisor of particular student</summary>
+             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.getMyImg">
             <summary>Get the profile image of currently logged in user</summary>
@@ -1340,6 +1357,14 @@
             <param name="parameters">Parameters to pass into the stored procedure</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Services.ComplexQueries.RawSqlQuery`1.StaffTimesheetQuery(System.String,System.Object[])">
+            <summary>
+            Execute the sql query on the StaffTimesheets database
+            </summary>
+            <param name="query">An sql statement. Can be a stored procedure or even a simple SELECT statment</param>
+            <param name="parameters">Parameters to pass into the stored procedure</param>
+            <returns></returns>
+        </member>
         <member name="T:Gordon360.Services.ContentManagementService">
             <summary>
             Service class that facilitates data (specifically, site content) passing between the ContentManagementController and the database model.
@@ -1575,6 +1600,13 @@
             </summary>
             <param name="username">username</param>
             <returns>AlumniProfileViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetAdvisors(System.String)">
+            <summary>
+            get advisors for particular student
+            </summary>
+            <param name="id">student id</param>
+            <returns></returns>
         </member>
         <member name="M:Gordon360.Services.ProfileService.GetPhotoPath(System.String)">
             <summary>

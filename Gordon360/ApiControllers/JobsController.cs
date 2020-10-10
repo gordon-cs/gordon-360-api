@@ -323,6 +323,30 @@ namespace Gordon360.ApiControllers
             return Ok(result);
         }
 
+
+        /// <summary>
+        ///  gets the response as to whether the user can use staff timesheets
+        ///  returns true if the staff member has at least one qualifying active job as hourly staff
+        /// </summary>
+        /// <returns>Boolean</returns>
+        [HttpGet]
+        [Route("canUsePage")]
+        public IHttpActionResult CanUsePage()
+        {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            var result = _jobsService.CanUsePage(id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+        
         //staff routes
 
 
@@ -332,7 +356,7 @@ namespace Gordon360.ApiControllers
         /// <param name="details"> deatils of the current Staff</param>
         /// <returns>The Staff's active jobs</returns>
         [HttpPost]
-        [Route("getJobsStaff")]
+        [Route("jobsStaff")]
         public IHttpActionResult getJobsForStaff([FromBody] ActiveJobSelectionParametersModel details)
         {
             IEnumerable<ActiveJobViewModel> result = null;
@@ -354,7 +378,7 @@ namespace Gordon360.ApiControllers
         /// </summary>
         /// <returns>The staff's saved shifts</returns>
         [HttpGet]
-        [Route("getSavedShiftsStaff")]
+        [Route("savedShiftsForStaff")]
         public HttpResponseMessage getSavedShiftsForStaff()
         {
             int userID = GetCurrentUserID();
@@ -397,7 +421,7 @@ namespace Gordon360.ApiControllers
                 {
                     return Request.CreateResponse(HttpStatusCode.Conflict, "Error: shift overlap detected");
                 }
-                result = _jobsService.saveShiftForStaff(userID, shiftDetails.EML, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, shiftDetails.SHIFT_NOTES, username);
+                result = _jobsService.saveShiftForStaff(userID, shiftDetails.EML, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, shiftDetails.HOURS_TYPE, shiftDetails.SHIFT_NOTES, username);
             }
             catch (Exception e)
             {
@@ -442,7 +466,7 @@ namespace Gordon360.ApiControllers
         }
 
         /// <summary>
-        /// Get a user's active jobs
+        /// Delete a user's active job
         /// </summary>
         /// <returns>The result of deleting the shift for a Staff</returns>
         [HttpDelete]
@@ -506,6 +530,28 @@ namespace Gordon360.ApiControllers
             try
             {
                 result = _jobsService.getStaffSupervisorNameForJob(supervisorID);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                return InternalServerError();
+            }
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Gets the hour types for Staff
+        /// </summary>
+        /// <returns>The hour types for staff</returns>
+        [HttpGet]
+        [Route("hourTypes")]
+        public IHttpActionResult getHourTypes()
+        {
+            IEnumerable<HourTypesViewModel> result = null;
+
+            try
+            {
+                result = _jobsService.GetHourTypes();
             }
             catch (Exception e)
             {
