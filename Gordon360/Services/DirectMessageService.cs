@@ -21,6 +21,68 @@ namespace Gordon360.Services
         {
         }
 
+        public IEnumerable<MessageViewModel> GetMessages(string roomId)
+        {
+
+            var roomIdParam = new SqlParameter("@room_id", roomId);
+            var result = RawSqlQuery<MessageViewModel>.query("GET_ALL_MESSAGES_BY_ID @room_id", roomIdParam); //run stored procedure
+
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+
+
+            var messageModel = result.Select(x =>
+            {
+                MessageViewModel y = new MessageViewModel();
+
+                y.message_id = x.message_id;
+                y.text = x.text;
+                y.createdAt = x.createdAt;
+                y.user_id = x.user_id;
+                y.image = x.image;
+                y.video = x.video;
+                y.audio = x.audio;
+                y.system = x.system;
+                y.image = x.image;
+                y.received = x.received;
+                y.pending = x.pending;
+                return y;
+            });
+
+
+            return messageModel;
+
+        }
+
+        public IEnumerable<GroupViewModel> GetRooms(string userId)
+        {
+
+            var userIdParam = new SqlParameter("@user_id", userId);
+
+            var result = RawSqlQuery<GroupViewModel>.query("GET_ALL_ROOMS_BY_ID @user_id", userIdParam); //run stored procedure
+
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+
+
+            var GroupModel = result.Select(x =>
+            {
+                GroupViewModel y = new GroupViewModel();
+
+                y.room_id = x.room_id;
+
+                return y;
+            });
+
+
+            return GroupModel;
+
+        }
+
         public bool CreateGroup(String id, String name, bool group, DateTime lastUpdated)
         {
             DateTime createdAt = DateTime.Now;
