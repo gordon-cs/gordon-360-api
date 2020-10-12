@@ -258,4 +258,9 @@ namespace Gordon360.Services
         StudentNewsViewModel EditPosting(int newsID, StudentNews newsItem);
     }
 
+    public interface IHousingService
+    {
+        IEnumerable<HousingViewModel> GetAll();
+    }
+
 }

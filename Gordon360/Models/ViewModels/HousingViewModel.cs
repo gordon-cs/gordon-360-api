@@ -10,19 +10,19 @@ using System;
 
 namespace Gordon360.Models.ViewModels
 {
-    public class StudentHousingInfoViewModel
+    public class HousingViewModel
     {
-        public int ID { get; set; } //TODO change type to string, since this is type used in studentProfileViewModel
+        public string ID { get; set; } 
         public string Title { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public char OnOffCampus { get; set; } //TODO change type to string, since this is type used in studentProfileViewModel
+        public string OnOffCampus { get; set; }
         public string BuildingDescription { get; set; }
         public string OnCampusRoom { get; set; }
-        public char Gender { get; set; } //TODO change type to string, since this is type used in studentProfileViewModel
+        public string Gender { get; set; }
         public string Email { get; set; }
        
-        public static implicit operator StudentHousingInfoViewModel(HousingInfo h)
+        /**public static implicit operator HousingViewModel(HousingInfo h)
         {
             StudentHousingInfoViewModel vm = new StudentHousingInfoViewModel
             {
@@ -38,6 +38,6 @@ namespace Gordon360.Models.ViewModels
             };
 
             return vm;
-        }
+        }*/
     }
 }

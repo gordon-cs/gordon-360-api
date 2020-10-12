@@ -275,7 +275,7 @@
         </member>
         <member name="M:Gordon360.ApiControllers.JobsController.deleteShiftForStaff(System.Int32)">
             <summary>
-            Delee a user's active job
+            Delete a user's active job
             </summary>
             <returns>The result of deleting the shift for a Staff</returns>
         </member>
@@ -335,6 +335,9 @@
             <summary>Delete an existing booking item</summary>
             <param name="rideID">The identifier for the booking to be deleted</param>
             <remarks>Calls the server to make a call and remove the given booking from the database</remarks>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.GetApartmentInfo">
+            Call the service that gets all student housing information
         </member>
         <member name="M:Gordon360.Controllers.Api.NewsController.#ctor">
             private void catchBadInput()
@@ -554,8 +557,11 @@
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.getAdvisors(System.String)">
-            <summary>Get the advisor of particular student</summary>
-             <returns></returns>
+            <summary>Get the advisor(s) of a particular student</summary>
+             <returns>
+             All advisors of the given student.  For each advisor,
+             provides first name, last name, and username.
+             </returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.getMyImg">
             <summary>Get the profile image of currently logged in user</summary>
@@ -1769,6 +1775,13 @@
             </summary>
             <param name="id">id</param>
             <returns>VictoryPromiseViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetAll">
+            <summary>
+            Gets student housing info
+            TODO list what exactly we mean by houding info
+            </summary>
+            <returns>The news item</returns>
         </member>
         <member name="M:Gordon360.Services.WellnessService.GetStatus(System.String)">
             <summary>
