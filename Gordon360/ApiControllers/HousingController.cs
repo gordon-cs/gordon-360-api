@@ -17,7 +17,15 @@ namespace Gordon360.Controllers.Api
     [CustomExceptionFilter]
     public class HousingController : ApiController
     {
+        private IUnitOfWork _unitOfWork;
         private IHousingService _housingService;
+
+
+        public HousingController()
+        {
+            _unitOfWork = new UnitOfWork();
+            _housingService = new HousingService(_unitOfWork);
+        }
 
         /** Call the service that gets all student housing information
          */
