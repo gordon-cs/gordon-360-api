@@ -13,7 +13,9 @@ Dive in.
     - [Preliminary setup](#preliminary-setup)
     - [Building and running](#building-and-running)
 - [The Database](#the-database)
-    - [Tables](#tables)
+    - [CCT Tables](#cct-tables)
+    - [MyGordon Tables](#mygordon-tables)
+    - [CCT Views](#cct-views)
     - [Stored Procedures](#stored-procedures)
     - [Triggers](#triggers)
     - [Manual and Debugging Access](#manual-and-debugging-access)
@@ -31,6 +33,7 @@ Dive in.
     - [Content Management](#content-management)
     - [Emails](#emails)
     - [Events](#events)
+    - [Housing](#housing)
     - [Memberships](#memberships)
     - [Membership Requests](#membership-requests)
     - [Participation Definitions](#participation-definitions)
@@ -348,18 +351,14 @@ Pulls firstname, lastname, category (student, staff, faculty), and AD_Username (
 This stored procedures is simple. It returns separate advisor(s) ID (Max is 3, Advisor1, Advisor2, and Advisor 3) for a particular student based upon their ID. 
 
 ###### UPDATE_ACT_CLUB_DEF
-
 This keeps the ACT_CLUB_DEF table in sync with the JENZ_ACT_CLUB_DEF view. It should be run periodically.
 
 ###### UPDATE_ACT_INFO
-
 Because ACT_INFO is basically a duplicate of ACT_CLUB_DEF, this stored procedure tries to keep them synced. Ideally it should be run automatically anytime ACT_CLUB_DEF changes.
 
 In non-sql terms, this procedure makes sure all the activities defined in ACT_CLUB_DEF are also present in ACT_INFO. If something has been added/removed to ACT_CLUB_DEF but not in ACT_INFO, it adds/removes the corresponding record to ACT_INFO.
 
-
 ###### UPDATE_JNZB_ACTIVITIES
-
 This stored procedures is pretty simple. It moves all the relevant information from the MEMBERSHIP table and puts it in the JNZB_ACTIVITIES table. To prevent duplication, it will only add records that are present in the MEMBERSHIP table, but missing the JNZB_ACTIVITIES table.
 
 
@@ -663,7 +662,12 @@ Multiple types or events are separated by a '$'
 
 `api/events/25Live/Public` Returns all events in 25Live marked to promote on public calendars (Reuirement_ID = 3).
 
+### Housing
+What is it? Resource that represents residence hall information that would concern the residents or housing director.
 
+##### GET
+
+`api/housing/apartmentInfo` Calls the CCT 'GET_STU__HOUSING_INFO' stored procedure, which currently selects ID, Title, Firstname, Lastname, OnOffCampus, BuildingDescription, OnCampusRoom, Gender, and Email from CCT.dbo.Student for Josua Rogers.
 
 ### Memberships
 What is it? Resource that represents the affiliation between a student and a club.
