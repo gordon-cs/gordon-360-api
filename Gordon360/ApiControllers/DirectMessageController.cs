@@ -8,6 +8,8 @@ using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Models;
 using Gordon360.Exceptions.CustomExceptions;
+using System.Linq;
+
 namespace Gordon360.ApiControllers
 {
         [RoutePrefix("api/dm")]
@@ -49,5 +51,81 @@ namespace Gordon360.ApiControllers
                 return Ok(result);
             }
 
-        }
+
+
+            [HttpPost]
+            [Route("")]
+            public IHttpActionResult CreateGroup([FromBody] String name, bool group, DateTime lastUpdated)
+            {
+
+                Random rnd = new Random();
+                int raw_id = rnd.Next(10000000, 99999999);
+                var id = raw_id.ToString();
+
+                var result = _DirectMessageService.CreateGroup(id ,name, group, lastUpdated);
+
+                if (result == false)
+                {
+                    return NotFound();
+                }
+
+
+                return Created("Status of created group ", result);
+
+            }
+
+            [HttpPost]
+            [Route("userRooms")]
+            public IHttpActionResult StoreUserRooms([FromBody] String roomId)
+            {
+
+                var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+                var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+                var userId = _accountService.GetAccountByUsername(username).GordonID;
+
+                var result = _DirectMessageService.StoreUserRooms(userId, roomId);
+
+                if (result == false)
+                {
+                    return NotFound();
+                }
+
+
+                return Created("Status of Saved User Rooms ", result);
+
+            }
+
+        [HttpPost]
+            [Route("sendMessage")]
+            public IHttpActionResult SendMessage([FromBody] String room_id, String text, bool system, bool sent, bool received, bool pending)
+            {
+
+                var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+                var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+                var userId = _accountService.GetAccountByUsername(username).GordonID;
+
+                Random rnd = new Random();
+                int raw_id = rnd.Next(10000000, 99999999);
+
+                var id = raw_id.ToString();
+                
+                var result = _DirectMessageService.SendMessage(id, room_id, text, userId, system, sent, received, pending);
+
+                if (result == false)
+                {
+                    return NotFound();
+                }
+
+
+                return Created("message was sent: ", result);
+
+            }
+
+
+
+
+    }
+
 }
