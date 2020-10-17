@@ -23,7 +23,7 @@ namespace Gordon360.Controllers.Api
 
         public HousingController()
         {
-            _unitOfWork = new UnitOfWork();
+            IUnitOfWork _unitOfWork = new UnitOfWork();
             _housingService = new HousingService(_unitOfWork);
         }
 
@@ -31,6 +31,7 @@ namespace Gordon360.Controllers.Api
          */
         [HttpGet]
         [Route("apartmentInfo")]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.STUDENT)]
         public IHttpActionResult GetApartmentInfo()
         {
             var result = _housingService.GetAll();
