@@ -151,6 +151,36 @@
             </summary>
             <returns>string and date</returns>
         </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetMessages(System.String)">
+            <summary>
+             returns messages from a specified group
+            </summary>
+            <returns>MessageViewModel</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetRooms">
+            <summary>
+             returns rooms associated with this user
+            </summary>
+            <returns>MessageViewModel</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.CreateGroup(System.String,System.Boolean,System.DateTime)">
+            <summary>
+             creates a message room in the backend
+            </summary>
+            <returns>true if successful </returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.StoreUserRooms(System.String)">
+            <summary>
+             stores rooms associated with a user id
+            </summary>
+            <returns>true if successful</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.SendMessage(System.String,System.String,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+             stores sent message on the back end.
+            </summary>
+            <returns>true if successful </returns>
+        </member>
         <member name="M:Gordon360.ApiControllers.DiningController.Get">
             <summary>
              Gets information about student's dining plan and balance
@@ -275,7 +305,7 @@
         </member>
         <member name="M:Gordon360.ApiControllers.JobsController.deleteShiftForStaff(System.Int32)">
             <summary>
-            Delee a user's active job
+            Delete a user's active job
             </summary>
             <returns>The result of deleting the shift for a Staff</returns>
         </member>
@@ -554,8 +584,11 @@
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.getAdvisors(System.String)">
-            <summary>Get the advisor of particular student</summary>
-             <returns></returns>
+            <summary>Get the advisor(s) of a particular student</summary>
+             <returns>
+             All advisors of the given student.  For each advisor,
+             provides first name, last name, and username.
+             </returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.getMyImg">
             <summary>Get the profile image of currently logged in user</summary>
