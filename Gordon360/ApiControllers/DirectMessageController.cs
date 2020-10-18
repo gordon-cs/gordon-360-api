@@ -55,9 +55,9 @@ namespace Gordon360.ApiControllers
             ///  returns messages from a specified group
             /// </summary>
             /// <returns>MessageViewModel</returns>
-            [HttpGet]
+            [HttpPut]
             [Route("messages")]
-            public IHttpActionResult GetMessages([FromBody] String roomId)
+            public IHttpActionResult GetMessages([FromBody] string roomId)
             {
                 DateTime currentTime = DateTime.Now;
                 var result = _DirectMessageService.GetMessages(roomId);
@@ -67,7 +67,7 @@ namespace Gordon360.ApiControllers
                     return NotFound();
                 }
 
-                return Ok("messages from this group: " + result);
+                return Ok(result);
             }
 
             /// <summary>
@@ -91,7 +91,7 @@ namespace Gordon360.ApiControllers
                     return NotFound();
                 }
 
-                return Ok("rooms associated with this user: " + result);
+                return Ok(result);
             }
 
             

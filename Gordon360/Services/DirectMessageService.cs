@@ -23,7 +23,7 @@ namespace Gordon360.Services
 
         public IEnumerable<MessageViewModel> GetMessages(string roomId)
         {
-
+        
             var roomIdParam = new SqlParameter("@room_id", roomId);
             var result = RawSqlQuery<MessageViewModel>.query("GET_ALL_MESSAGES_BY_ID @room_id", roomIdParam); //run stored procedure
 
