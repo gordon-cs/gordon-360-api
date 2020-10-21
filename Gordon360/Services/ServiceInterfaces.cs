@@ -63,6 +63,8 @@ namespace Gordon360.Services
         bool CreateGroup(String id, String name, bool group, DateTime lastUpdated);
         bool SendMessage(String id, String room_id, String text, String user_id, bool system, bool sent, bool received, bool pending);
         bool StoreUserRooms(String userId, String roomId);
+        IEnumerable<MessageViewModel> GetMessages(string roomId);
+        IEnumerable<GroupViewModel> GetRooms(string userId);
     }
 
     public interface IActivityService

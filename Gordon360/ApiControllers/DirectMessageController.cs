@@ -51,8 +51,54 @@ namespace Gordon360.ApiControllers
                 return Ok(result);
             }
 
+            /// <summary>
+            ///  returns messages from a specified group
+            /// </summary>
+            /// <returns>MessageViewModel</returns>
+            [HttpPut]
+            [Route("messages")]
+            public IHttpActionResult GetMessages([FromBody] string roomId)
+            {
+                DateTime currentTime = DateTime.Now;
+                var result = _DirectMessageService.GetMessages(roomId);
 
+                if (result == null)
+                {
+                    return NotFound();
+                }
 
+                return Ok(result);
+            }
+
+            /// <summary>
+            ///  returns rooms associated with this user
+            /// </summary>
+            /// <returns>MessageViewModel</returns>
+            [HttpGet]
+            [Route("rooms")]
+            public IHttpActionResult GetRooms()
+            {
+                var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+                var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+                var userId = _accountService.GetAccountByUsername(username).GordonID;
+
+                DateTime currentTime = DateTime.Now;
+                var result = _DirectMessageService.GetRooms(userId);
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(result);
+            }
+
+            
+            /// <summary>
+            ///  creates a message room in the backend
+            /// </summary>
+            /// <returns>true if successful </returns>
             [HttpPost]
             [Route("")]
             public IHttpActionResult CreateGroup([FromBody] String name, bool group, DateTime lastUpdated)
@@ -74,6 +120,10 @@ namespace Gordon360.ApiControllers
 
             }
 
+            /// <summary>
+            ///  stores rooms associated with a user id
+            /// </summary>
+            /// <returns>true if successful</returns>
             [HttpPost]
             [Route("userRooms")]
             public IHttpActionResult StoreUserRooms([FromBody] String roomId)
@@ -96,7 +146,11 @@ namespace Gordon360.ApiControllers
 
             }
 
-        [HttpPost]
+            /// <summary>
+            ///  stores sent message on the back end.
+            /// </summary>
+            /// <returns>true if successful </returns>
+            [HttpPost]
             [Route("sendMessage")]
             public IHttpActionResult SendMessage([FromBody] String room_id, String text, bool system, bool sent, bool received, bool pending)
             {
