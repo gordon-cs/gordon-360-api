@@ -7,7 +7,7 @@ from datetime import datetime
 import pytest_components as api
 import test_gordon360_pytest as control
 
-class Test_AllWellnessCheckTest(control.testCase):
+class Test_AllHousingAppTest(control.testCase):
 # # # # # # # # # # 
 # HOUSING APP TEST#
 # # # # # # # # # # 
@@ -18,7 +18,7 @@ class Test_AllWellnessCheckTest(control.testCase):
 #    Expected Response Body -- A list of one dictionary with user answer
     def test_get_all_for_apartment_app(self):
         self.session = self.createAuthorizedSession(control.username, control.password)
-        self.url = control.hostURL + 'api/housing/'
+        self.url = control.hostURL + 'api/housing/apartmentInfo'
         response = api.get(self.session, self.url)
 
         if not response.status_code == 200:
@@ -29,5 +29,5 @@ class Test_AllWellnessCheckTest(control.testCase):
         except ValueError:
             pytest.fail('Expected Json respone body, got {0}.'\
                 .format(response.text))
-        assert response.json()[0]["OnOffCampus"] == null
-        assert response.json()[0]["OnCampusRoom"] == 210 
+        assert response.json()[0]["OnOffCampus"] == None
+        assert response.json()[0]["OnCampusRoom"] == '210'
