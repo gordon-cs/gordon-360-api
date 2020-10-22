@@ -71,7 +71,7 @@ namespace Gordon360.ApiControllers
             }
 
             /// <summary>
-            ///  returns rooms associated with this user
+            ///  returns room ids associated with this user
             /// </summary>
             /// <returns>MessageViewModel</returns>
             [HttpGet]
@@ -94,7 +94,26 @@ namespace Gordon360.ApiControllers
                 return Ok(result);
             }
 
-            
+            /// <summary>
+            ///  returns a room object Identified by room id
+            /// </summary>
+            /// <returns>MessageViewModel</returns>
+            [HttpPut]
+            [Route("rooms")]
+            public IHttpActionResult GetRoomObject([FromBody] string roomId)
+            {
+                var result = _DirectMessageService.GetRoomById(roomId);
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(result);
+            }
+
+
+
             /// <summary>
             ///  creates a message room in the backend
             /// </summary>
