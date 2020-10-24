@@ -83,6 +83,36 @@ namespace Gordon360.Services
 
         }
 
+        public IEnumerable<RoomViewModel> GetRoomById(string roomId)
+        {
+
+            var roomIdParam = new SqlParameter("@room_id", roomId);
+            var result = RawSqlQuery<RoomViewModel>.query("GET_ROOM_BY_ID @room_id", roomIdParam); //run stored procedure
+
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+
+
+            var RoomModel = result.Select(x =>
+            {
+                RoomViewModel y = new RoomViewModel();
+
+                y.room_id = x.room_id;
+                y.name = x.name;
+                y.Group = x.Group;
+                y.createdAt = x.createdAt;
+                y.lastUpdated = x.lastUpdated;
+                y.roomImage = x.roomImage;
+                return y;
+            });
+
+
+            return RoomModel;
+
+        }
+
         public bool CreateGroup(String id, String name, bool group, DateTime lastUpdated)
         {
             DateTime createdAt = DateTime.Now;

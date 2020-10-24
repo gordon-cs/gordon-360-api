@@ -159,7 +159,13 @@
         </member>
         <member name="M:Gordon360.ApiControllers.DirectMessageController.GetRooms">
             <summary>
-             returns rooms associated with this user
+             returns room ids associated with this user
+            </summary>
+            <returns>MessageViewModel</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetRoomObject(System.String)">
+            <summary>
+             returns a room object Identified by room id
             </summary>
             <returns>MessageViewModel</returns>
         </member>
