@@ -31,3 +31,19 @@ class Test_AllHousingAppTest(control.testCase):
                 .format(response.text))
         assert response.json()[0]["OnOffCampus"] == None
         assert response.json()[0]["OnCampusRoom"] == '210'
+
+#    Verify that a user can submit a housing application
+#    Endpoint -- 'api/housing/putApartmentApplication'
+#    Expected Status Code -- 200 OK
+#    Expected Content --
+    def test_put_apartment_application(self):
+        self.session = self.createAuthorizedSession(control.username, control.password)
+        self.url = control.hostURL + 'api/housing/putApartmentApplication'
+        self.data = {
+            'ID': control.my_id_number
+        }
+        self.requestID = -1
+        response = api.put(self.session, self.url, self.data)
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 Created, got {0}.'\
+                .format(response.status_code))
