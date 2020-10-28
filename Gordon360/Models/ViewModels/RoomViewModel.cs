@@ -11,7 +11,7 @@ namespace Gordon360.Models.ViewModels
 
         public String name { get; set; }
 
-        public bool Group { get; set; }
+        public bool group { get; set; }
 
         public DateTime createdAt { get; set; }
 

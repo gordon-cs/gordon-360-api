@@ -83,33 +83,50 @@ namespace Gordon360.Services
 
         }
 
-        public IEnumerable<RoomViewModel> GetRoomById(string roomId)
+        public List<Object> GetRoomById(string userId)
         {
 
-            var roomIdParam = new SqlParameter("@room_id", roomId);
-            var result = RawSqlQuery<RoomViewModel>.query("GET_ROOM_BY_ID @room_id", roomIdParam); //run stored procedure
+            var userIdParam = new SqlParameter("@user_id", userId);
+            var result = RawSqlQuery<GroupViewModel>.query("GET_ALL_ROOMS_BY_ID @user_id", userIdParam); //run stored procedure
 
-            if (result == null)
+            List<Object> endresult = new List<object>();
+
+            var RoomIdModel = result.Select(x =>
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
-            }
-
-
-            var RoomModel = result.Select(x =>
-            {
-                RoomViewModel y = new RoomViewModel();
-
+                GroupViewModel y = new GroupViewModel();
                 y.room_id = x.room_id;
-                y.name = x.name;
-                y.Group = x.Group;
-                y.createdAt = x.createdAt;
-                y.lastUpdated = x.lastUpdated;
-                y.roomImage = x.roomImage;
                 return y;
             });
 
+            foreach (GroupViewModel ids in RoomIdModel) {
 
-            return RoomModel;
+                var roomIdParam = new SqlParameter("@room_id", ids.room_id);
+                var result2 = RawSqlQuery<RoomViewModel>.query("GET_ROOM_BY_ID @room_id", roomIdParam);
+
+                var RoomModel = result2.Select(x =>
+                {
+                    RoomViewModel y = new RoomViewModel();
+
+                    y.room_id = x.room_id;
+                    y.name = x.name;
+                    y.group = x.group;
+                    y.createdAt = x.createdAt;
+                    y.lastUpdated = x.lastUpdated;
+                    y.roomImage = x.roomImage;
+                    return y;
+                });
+
+                endresult.Add(RoomModel);
+            }
+
+            if (endresult == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+     
+
+
+            return endresult;
 
         }
 

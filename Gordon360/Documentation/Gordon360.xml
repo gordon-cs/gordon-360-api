@@ -163,7 +163,7 @@
             </summary>
             <returns>MessageViewModel</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetRoomObject(System.String)">
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetRoomObject">
             <summary>
              returns a room object Identified by room id
             </summary>

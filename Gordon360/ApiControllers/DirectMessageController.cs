@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
+using System.Collections.Generic;
 using Gordon360.Services;
 using Gordon360.Models;
 using Gordon360.Exceptions.CustomExceptions;
@@ -37,11 +38,11 @@ namespace Gordon360.ApiControllers
             _DirectMessageService = DirectMessageService;
             }
 
-            /// <summary>
-            ///  returns hello world example
-            /// </summary>
-            /// <returns>string and date</returns>
-            [HttpGet]
+        /// <summary>
+        ///  returns hello world example
+        /// </summary>
+        /// <returns>string and date</returns>
+        [HttpGet]
             [Route("")]
             public IHttpActionResult Get()
             {
@@ -75,7 +76,7 @@ namespace Gordon360.ApiControllers
             /// </summary>
             /// <returns>MessageViewModel</returns>
             [HttpGet]
-            [Route("rooms")]
+            [Route("roomsIds")]
             public IHttpActionResult GetRooms()
             {
                 var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
@@ -98,11 +99,15 @@ namespace Gordon360.ApiControllers
             ///  returns a room object Identified by room id
             /// </summary>
             /// <returns>MessageViewModel</returns>
-            [HttpPut]
+            [HttpGet]
             [Route("rooms")]
-            public IHttpActionResult GetRoomObject([FromBody] string roomId)
+            public IHttpActionResult GetRoomObject()
             {
-                var result = _DirectMessageService.GetRoomById(roomId);
+                var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+                var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+                var userId = _accountService.GetAccountByUsername(username).GordonID;
+
+                var result = _DirectMessageService.GetRoomById(userId);
 
                 if (result == null)
                 {
