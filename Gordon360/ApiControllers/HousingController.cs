@@ -19,6 +19,7 @@ namespace Gordon360.Controllers.Api
     {
         private IUnitOfWork _unitOfWork;
         private IHousingService _housingService;
+        private IAccountService _accountService;
 
 
         public HousingController()
@@ -35,6 +36,34 @@ namespace Gordon360.Controllers.Api
         public IHttpActionResult GetApartmentInfo()
         {
             var result = _housingService.GetAll();
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Submit shifts
+        /// </summary>
+        /// <returns>The result of submitting the shifts</returns>
+        [HttpPost]
+        [Route("submit")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.STUDENT)]
+        public IHttpActionResult SubmitHousingAppForUser([FromBody] IEnumerable<HousingAppToSubmitViewModel> applicantsToStore)
+        {
+            IEnumerable<HousingAppToSubmitViewModel> result = null;
+            int userID = GetCurrentUserID();
+
+            try
+            {
+                foreach (string applicant in applicantsToStore)
+                {
+                    var id = _accountService.GetAccountByUsername(applicant).GordonID;
+                    result = _jobsService.submitShiftForUser(userID, shift.EML, shift.SHIFT_END_DATETIME, shift.SUBMITTED_TO, shift.LAST_CHANGED_BY);
+                }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                return InternalServerError();
+            }
             return Ok(result);
         }
     }

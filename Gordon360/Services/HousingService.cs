@@ -30,5 +30,27 @@ namespace Gordon360.Services
         {
             return RawSqlQuery<HousingViewModel>.query("GET_STU_HOUSING_INFO");
         }
+
+        /// <summary>
+        /// Gets student housing info
+        /// TODO list what exactly we mean by houding info
+        /// </summary>
+        /// <returns>The news item</returns>
+        public IEnumerable<HousingViewModel> SaveApplicant(int id)
+        {
+           //return RawSqlQuery<HousingViewModel>.query("INSERT_AA_APPLICATION", id);
+            IEnumerable<HousingViewModel> result = null;
+
+            try
+            {
+                result = RawSqlQuery<HousingViewModel>.query("INSERT_AA_APPLICANT");
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+
+            return result;
+        }
     }
 }

@@ -266,6 +266,7 @@ namespace Gordon360.Services
     public interface IHousingService
     {
         IEnumerable<HousingViewModel> GetAll();
+        IEnumerable<HousingViewModel> SaveApplicant(int id);
     }
 
 }
