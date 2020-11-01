@@ -102,9 +102,11 @@ namespace Gordon360.Services
 
                 var roomIdParam = new SqlParameter("@room_id", ids.room_id);
                 var result2 = RawSqlQuery<RoomViewModel>.query("GET_ROOM_BY_ID @room_id", roomIdParam);
+                // var result3 = RawSqlQuery<RoomViewModel>.query("GET_USERS_BY_ROOM_ID @room_id", roomIdParam);
 
                 var RoomModel = result2.Select(x =>
                 {
+
                     RoomViewModel y = new RoomViewModel();
 
                     y.room_id = x.room_id;
@@ -113,6 +115,12 @@ namespace Gordon360.Services
                     y.createdAt = x.createdAt;
                     y.lastUpdated = x.lastUpdated;
                     y.roomImage = x.roomImage;
+                    var localRoomIdParam = new SqlParameter("@room_id", x.room_id);
+                    var users = RawSqlQuery<List<string>>.query("GET_ALL_USERS_BY_ROOM_ID @room_id", localRoomIdParam);
+                    var localUsers = users.ToString();
+
+                    y.users = users;
+
                     return y;
                 });
 
