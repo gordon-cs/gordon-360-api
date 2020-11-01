@@ -19,5 +19,6 @@ namespace Gordon360.Models.ViewModels
 
         public String roomImage { get; set; }
 
+        public IEnumerable<List<String>> users { get; set; }
     }
 }
