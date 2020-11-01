@@ -591,6 +591,7 @@
     <Compile Include="Models\ViewModels\SessionViewModel.cs" />
     <Compile Include="Models\ViewModels\SliderViewModel.cs" />
     <Compile Include="Models\ViewModels\SupervisorViewModel.cs" />
+    <Compile Include="Models\ViewModels\UserViewModel.cs" />
     <Compile Include="Models\ViewModels\VictoryPromiseViewModel.cs" />
     <Compile Include="Models\ViewModels\WellnessQuestionViewModel.cs" />
     <Compile Include="Models\view_cct_alumni.cs">
