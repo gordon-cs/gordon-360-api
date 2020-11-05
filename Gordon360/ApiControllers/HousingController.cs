@@ -40,9 +40,9 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>
-        /// Submit shifts
+        /// save application
         /// </summary>
-        /// <returns>The result of submitting the shifts</returns>
+        /// <returns>The result of submitting the application</returns>
         [HttpPost]
         [Route("save")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)]

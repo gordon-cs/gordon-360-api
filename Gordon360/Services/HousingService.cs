@@ -25,17 +25,16 @@ namespace Gordon360.Services
         /// Gets student housing info
         /// TODO list what exactly we mean by houding info
         /// </summary>
-        /// <returns>The news item</returns>
+        /// <returns>The housing item</returns>
         public IEnumerable<HousingViewModel> GetAll()
         {
             return RawSqlQuery<HousingViewModel>.query("GET_STU_HOUSING_INFO");
         }
 
         /// <summary>
-        /// Gets student housing info
-        /// TODO list what exactly we mean by houding info
+        /// Saves student housing info
         /// </summary>
-        /// <returns>The news item</returns>
+        /// <returns>The housing item</returns>
         public IEnumerable<HousingAppToSubmitViewModel>SaveApplication(int id)
         {
            //return RawSqlQuery<HousingViewModel>.query("INSERT_AA_APPLICATION", id);
