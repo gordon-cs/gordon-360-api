@@ -36,18 +36,19 @@ namespace Gordon360.Services
         /// TODO list what exactly we mean by houding info
         /// </summary>
         /// <returns>The news item</returns>
-        public IEnumerable<HousingViewModel> SaveApplicant(int id)
+        public IEnumerable<HousingAppToSubmitViewModel>SaveApplication(int id)
         {
            //return RawSqlQuery<HousingViewModel>.query("INSERT_AA_APPLICATION", id);
-            IEnumerable<HousingViewModel> result = null;
+            IEnumerable<HousingAppToSubmitViewModel> result = null;
+            DateTime now = System.DateTime.Now;
 
-            try
+            var timeParam = new SqlParameter("@NOW", id);
+            var idParam = new SqlParameter("@MODIFIER_ID", now);
+
+            result = RawSqlQuery<HousingAppToSubmitViewModel>.query("INSERT_AA_APPLICATION @NOW, @MODIFIER_ID", timeParam, idParam); //run stored procedure
+            if (result == null)
             {
-                result = RawSqlQuery<HousingViewModel>.query("INSERT_AA_APPLICANT");
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
             }
 
             return result;

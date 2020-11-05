@@ -9,6 +9,8 @@ using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using Gordon360.Models.ViewModels;
+using System.Collections.Generic;
+
 
 namespace Gordon360.Controllers.Api
 {
@@ -46,19 +48,14 @@ namespace Gordon360.Controllers.Api
         [HttpPost]
         [Route("submit")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.STUDENT)]
-        public IHttpActionResult SubmitHousingAppForUser([FromBody] IEnumerable<HousingAppToSubmitViewModel> applicantsToStore)
+        public IHttpActionResult SubmitHousingAppForUser([FromBody] IEnumerable<HousingAppToSubmitViewModel> applicationToSubmit)
         {
             IEnumerable<HousingAppToSubmitViewModel> result = null;
             int userID = GetCurrentUserID();
 
-            try
-            {
-                foreach (string applicant in applicantsToStore)
-                {
-                    var id = _accountService.GetAccountByUsername(applicant).GordonID;
-                    result = _jobsService.submitShiftForUser(userID, shift.EML, shift.SHIFT_END_DATETIME, shift.SUBMITTED_TO, shift.LAST_CHANGED_BY);
-                }
-            }
+            var id = _accountService.GetAccountByUsername(applicant).GordonID;
+            result = _housingService.submitShiftForUser(userID, shift.EML, shift.SHIFT_END_DATETIME, shift.SUBMITTED_TO, shift.LAST_CHANGED_BY);
+    
             catch (Exception e)
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
