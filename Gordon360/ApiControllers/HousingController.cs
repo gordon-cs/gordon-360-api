@@ -14,14 +14,12 @@ using System.Collections.Generic;
 
 namespace Gordon360.Controllers.Api
 {
-    [RoutePrefix("api/housing")] 
+    [RoutePrefix("api/housing")]
     [Authorize]
     [CustomExceptionFilter]
     public class HousingController : ApiController
     {
-        private IUnitOfWork _unitOfWork;
         private IHousingService _housingService;
-        private IAccountService _accountService;
 
 
         public HousingController()
@@ -46,22 +44,29 @@ namespace Gordon360.Controllers.Api
         /// </summary>
         /// <returns>The result of submitting the shifts</returns>
         [HttpPost]
-        [Route("submit")]
-        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.STUDENT)]
-        public IHttpActionResult SubmitHousingAppForUser([FromBody] IEnumerable<HousingAppToSubmitViewModel> applicationToSubmit)
+        [Route("save")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)]
+        public IHttpActionResult SaveApplication(int id)
         {
-            IEnumerable<HousingAppToSubmitViewModel> result = null;
-            int userID = GetCurrentUserID();
-
-            var id = _accountService.GetAccountByUsername(applicant).GordonID;
-            result = _housingService.submitShiftForUser(userID, shift.EML, shift.SHIFT_END_DATETIME, shift.SUBMITTED_TO, shift.LAST_CHANGED_BY);
-    
-            catch (Exception e)
+            // Verify Input
+            if (!ModelState.IsValid)
             {
-                System.Diagnostics.Debug.WriteLine(e.Message);
-                return InternalServerError();
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
             }
-            return Ok(result);
+
+            _housingService.SaveApplication(id);
+
+            return Ok();
+
         }
     }
 }
