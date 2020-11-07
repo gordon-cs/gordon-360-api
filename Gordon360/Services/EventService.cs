@@ -44,7 +44,8 @@ namespace Gordon360.Services
         /// <param name="EventID"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public string GetRoute(string EventID, string type)
+        public string GetRoute(string EventID, string type) 
+        // all these '&event_type_id=<somId+someId>'s might need to change, actually we don't use the one that just gets a single type
         {
             // Get the current year
             string year = Helpers.GetFirstEventDate();
