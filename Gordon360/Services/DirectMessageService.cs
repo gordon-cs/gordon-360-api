@@ -114,7 +114,7 @@ namespace Gordon360.Services
                     y.createdAt = x.createdAt;
                     y.lastUpdated = x.lastUpdated;
                     y.roomImage = x.roomImage;
-                    var localRoomIdParam = new SqlParameter("@room_id", 7);
+                    var localRoomIdParam = new SqlParameter("@room_id", x.room_id);
                     var users = RawSqlQuery<UserViewModel>.query("GET_ALL_USERS_BY_ROOM_ID @room_id", localRoomIdParam);
 
                     var userSelect = users.Select(i =>
