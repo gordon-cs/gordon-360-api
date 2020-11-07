@@ -2091,5 +2091,112 @@
             Article: https://www.codeproject.com/Articles/12117/Simulate-a-Windows-Service-using-ASP-NET-to-run-sc
             </summary>
         </member>
+        <member name="F:Gordon360.WebServer.OnlineUsers">
+            <summary>
+            Store the list of online users. Wish I had a ConcurrentList. 
+            </summary>
+        </member>
+        <member name="M:Gordon360.WebServer.Main(System.String[])">
+            <summary>
+            Initialize the application and start the Alchemy Websockets server
+            </summary>
+            <param name="args"></param>
+        </member>
+        <member name="M:Gordon360.WebServer.OnConnect(Alchemy.Classes.UserContext)">
+            <summary>
+            Event fired when a client connects to the Alchemy Websockets server instance.
+            Adds the client to the online users list.
+            </summary>
+            <param name="context">The user's connection context</param>
+        </member>
+        <member name="M:Gordon360.WebServer.OnReceive(Alchemy.Classes.UserContext)">
+            <summary>
+            Event fired when a data is received from the Alchemy Websockets server instance.
+            Parses data as JSON and calls the appropriate message or sends an error message.
+            </summary>
+            <param name="context">The user's connection context</param>
+        </member>
+        <member name="M:Gordon360.WebServer.OnSend(Alchemy.Classes.UserContext)">
+            <summary>
+            Event fired when the Alchemy Websockets server instance sends data to a client.
+            Logs the data to the console and performs no further action.
+            </summary>
+            <param name="context">The user's connection context</param>
+        </member>
+        <member name="M:Gordon360.WebServer.OnDisconnect(Alchemy.Classes.UserContext)">
+            <summary>
+            Event fired when a client disconnects from the Alchemy Websockets server instance.
+            Removes the user from the online users list and broadcasts the disconnection message
+            to all connected users.
+            </summary>
+            <param name="context">The user's connection context</param>
+        </member>
+        <member name="M:Gordon360.WebServer.Register(System.String,Alchemy.Classes.UserContext)">
+            <summary>
+            Register a user's context for the first time with a username, and add it to the list of online users
+            </summary>
+            <param name="name">The name to register the user under</param>
+            <param name="context">The user's connection context</param>
+        </member>
+        <member name="M:Gordon360.WebServer.ChatMessage(System.String,Alchemy.Classes.UserContext)">
+            <summary>
+            Broadcasts a chat message to all online usrs
+            </summary>
+            <param name="message">The chat message to be broadcasted</param>
+            <param name="context">The user's connection context</param>
+        </member>
+        <member name="M:Gordon360.WebServer.NameChange(System.String,Alchemy.Classes.UserContext)">
+            <summary>
+            Update a user's name if they sent a name-change command from the client.
+            </summary>
+            <param name="name">The name to be changed to</param>
+            <param name="aContext">The user's connection context</param>
+        </member>
+        <member name="M:Gordon360.WebServer.SendError(System.String,Alchemy.Classes.UserContext)">
+            <summary>
+            Broadcasts an error message to the client who caused the error
+            </summary>
+            <param name="errorMessage">Details of the error</param>
+            <param name="context">The user's connection context</param>
+        </member>
+        <member name="M:Gordon360.WebServer.BroadcastNameList">
+            <summary>
+            Broadcasts a list of all online users to all online users
+            </summary>
+        </member>
+        <member name="M:Gordon360.WebServer.Broadcast(System.String,System.Collections.Generic.ICollection{Gordon360.WebServer.User})">
+            <summary>
+            Broadcasts a message to all users, or if users is populated, a select list of users
+            </summary>
+            <param name="message">Message to be broadcast</param>
+            <param name="users">Optional list of users to broadcast to. If null, broadcasts to all. Defaults to null.</param>
+        </member>
+        <member name="M:Gordon360.WebServer.ValidateName(System.String)">
+            <summary>
+            Checks validity of a user's name
+            </summary>
+            <param name="name">Name to check</param>
+            <returns></returns>
+        </member>
+        <member name="T:Gordon360.WebServer.ResponseType">
+            <summary>
+            Defines the type of response to send back to the client for parsing logic
+            </summary>
+        </member>
+        <member name="T:Gordon360.WebServer.Response">
+            <summary>
+            Defines the response object to send back to the client
+            </summary>
+        </member>
+        <member name="T:Gordon360.WebServer.User">
+            <summary>
+            Holds the name and context instance for an online user
+            </summary>
+        </member>
+        <member name="T:Gordon360.WebServer.CommandType">
+            <summary>
+            Defines a type of command that the client sends to the server
+            </summary>
+        </member>
     </members>
 </doc>
