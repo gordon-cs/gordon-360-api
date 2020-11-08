@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using Gordon360.Services;
 using Gordon360.Models;
 using Gordon360.Exceptions.CustomExceptions;
+using Gordon360.Services.ComplexQueries;
 using System.Linq;
 
 namespace Gordon360.ApiControllers
@@ -60,6 +61,7 @@ namespace Gordon360.ApiControllers
             [Route("messages")]
             public IHttpActionResult GetMessages([FromBody] string roomId)
             {
+
                 DateTime currentTime = DateTime.Now;
                 var result = _DirectMessageService.GetMessages(roomId);
 
