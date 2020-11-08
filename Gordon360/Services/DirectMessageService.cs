@@ -15,10 +15,15 @@ namespace Gordon360.Services
 {
     public class DirectMessageService : IDirectMessageService
     {
+        private IProfileService _profileService;
+        private IAccountService _accountService;
 
 
         public DirectMessageService()
         {
+            var _unitOfWork = new UnitOfWork();
+            _profileService = new ProfileService(_unitOfWork);
+            _accountService = new AccountService(_unitOfWork);
         }
 
         public IEnumerable<MessageViewModel> GetMessages(string roomId)
@@ -48,6 +53,14 @@ namespace Gordon360.Services
                 y.image = x.image;
                 y.received = x.received;
                 y.pending = x.pending;
+
+                var j = new UserViewModel();
+                j.user_id = x.user_id;
+                j.user_name = _accountService.Get(x.user_id).ADUserName;
+                j.user_avatar = null;
+
+                y.user = j;
+
                 return y;
             });
 
@@ -114,13 +127,15 @@ namespace Gordon360.Services
                     y.createdAt = x.createdAt;
                     y.lastUpdated = x.lastUpdated;
                     y.roomImage = x.roomImage;
-                    var localRoomIdParam = new SqlParameter("@room_id", 7);
+                    var localRoomIdParam = new SqlParameter("@room_id", x.room_id);
                     var users = RawSqlQuery<UserViewModel>.query("GET_ALL_USERS_BY_ROOM_ID @room_id", localRoomIdParam);
 
                     var userSelect = users.Select(i =>
                     {
                         UserViewModel j = new UserViewModel();
                         j.user_id = i.user_id;
+                        j.user_name = _accountService.Get(i.user_id).ADUserName;
+                        j.user_avatar = null;
 
                         return j;
                     });
