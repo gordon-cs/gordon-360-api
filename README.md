@@ -19,8 +19,8 @@ Dive in.
     - [Manual and Debugging Access](#manual-and-debugging-access)
     - [Updating or creating .edmx](#updating-or-creating-edmx)
 - [The Code](#the-code)
-- [Introduction](#introduction)
-- [Adding New Queries](#adding-new-queries)
+    - [Introduction](#introduction)
+    - [Adding New Queries](#adding-new-queries)
 - [Caching](#caching)
 - [API Endpoints](#api-endpoints)
     - [Accounts](#accounts)
@@ -45,7 +45,7 @@ Dive in.
     - [News](#news)
     - [Wellness Check](#wellness-check)
 - [API Testing](#api-testing)
-    - [Introduction](#introduction)
+    - [Testing Introduction](#testing-introduction)
     - [Running the Tests](#running-the-tests)
     - [Writing the Tests](#writing-the-tests)
 - [Troubleshooting](#troubleshooting)
@@ -940,7 +940,7 @@ Back endpoint responsible for fetching and sending information to the database r
 
 ## API Testing
 
-### Introduction
+### Testing Introduction
 
 A test suite is available at `Tests/ApiEndpoints` to exercise the different endpoints. The most important files here are:
 - `test_gordon360_pytest` -- Stores all the necessary variables and authentication.
