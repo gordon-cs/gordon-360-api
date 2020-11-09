@@ -26,7 +26,7 @@ namespace Gordon360.Services
         /// <param name="id">id</param>
         /// <returns>boolean if found, null if not found</returns>
 
-        public IEnumerable<WellnessViewModel> GetStatus(string id)
+        public WellnessViewModel GetStatus(string id)
         {
             var _unitOfWork = new UnitOfWork();
             var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
@@ -43,40 +43,11 @@ namespace Gordon360.Services
                  throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
             }
 
+            var wellnessStatus = result.SingleOrDefault();
 
-            var wellnessModel = result.Select(x =>
-            {
-                WellnessViewModel y = new WellnessViewModel();
+            wellnessStatus.answerValid = isValidStatus(wellnessStatus);
 
-                DateTime currentTime = DateTime.Now;
-                
-                DateTime changeTime = new DateTime(currentTime.Year, currentTime.Month, currentTime.Day, 5, 0, 0);
-
-                // Answer is good until 5am the next day, so changeTime is most recent 5am
-                // which might be yesterday.
-                if(changeTime > currentTime)
-                {
-                    TimeSpan day = new TimeSpan(24, 0, 0);
-                    changeTime = new DateTime(changeTime.Ticks - day.Ticks);
-                }
-
-                if (x.timestamp >= changeTime)
-                {
-                    y.answerValid = true;
-                    y.userAnswer = x.userAnswer;
-                    y.timestamp = x.timestamp;
-                    return y;
-                }
-
-                y.answerValid = false;
-                y.userAnswer = x.userAnswer;
-                y.timestamp = x.timestamp;
-                
-                return y;
-            });
-
-
-            return wellnessModel;
+            return wellnessStatus;
 
         }
 
@@ -85,11 +56,11 @@ namespace Gordon360.Services
         ///     If answer boolean is true: student is feeling symptomatic
         ///     If answer boolean is false: student is not feeling symptomatic
         /// </summary>
-        /// <param name="id">id</param>
-        /// <param name="answer">answer</param>
-        /// <returns>Ok if message was recorded</returns>
+        /// <param name="id"> ID of the user to post the status for</param>
+        /// <param name="answer"> Answer that is being posted, true = Symptoms, false = No Symptoms </param>
+        /// <returns>Answer that was successfully recorded</returns>
 
-        public WellnessViewModel PostStatus(bool answer, string id)
+        public bool PostStatus(bool answer, string id)
         {
             var _unitOfWork = new UnitOfWork();
             var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
@@ -107,16 +78,7 @@ namespace Gordon360.Services
                  throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
             }
 
-            var UserAnswer = answer;
-
-            WellnessViewModel y = new WellnessViewModel()
-            {
-                userAnswer = UserAnswer
-            };
-
-
-
-            return y;
+            return answer;
 
         }
 
@@ -125,7 +87,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <returns>list of strings with questions and prompts</returns>
 
-        public IEnumerable<WellnessQuestionViewModel> GetQuestion()
+        public WellnessQuestionViewModel GetQuestion()
         {
 
             var result = RawSqlQuery<WellnessQuestionViewModel>.query("GET_HEALTH_CHECK_QUESTION"); //run stored procedure
@@ -137,23 +99,35 @@ namespace Gordon360.Services
             }
 
 
-            var wellnessQuestionModel = result.Select(x =>
-            {
-                WellnessQuestionViewModel y = new WellnessQuestionViewModel();
-
-                y.question = x.question;
-
-                y.yesPrompt = x.yesPrompt;
-
-                y.noPrompt = x.noPrompt;
-
-                return y;
-            });
+            var wellnessQuestionModel = result.SingleOrDefault();
 
 
 
             return wellnessQuestionModel;
 
+        }
+
+
+        /// <summary>
+        /// Checks whether a wellness status is still valid (i.e. new since 5AM)
+        /// </summary>
+        /// <param name='status'>Wellness status to check, an instance of a WellnessViewModel</param>
+        /// <returns>boolean representing whether the status is still valid</returns>
+        private bool isValidStatus(WellnessViewModel status)
+        {
+            DateTime currentTime = DateTime.Now;
+
+            DateTime changeTime = new DateTime(currentTime.Year, currentTime.Month, currentTime.Day, 5, 0, 0);
+
+            // Answer is good until 5am the next day, so changeTime is most recent 5am
+            // which might be yesterday.
+            if (changeTime > currentTime)
+            {
+                TimeSpan day = new TimeSpan(24, 0, 0);
+                changeTime = new DateTime(changeTime.Ticks - day.Ticks);
+            }
+
+            return status.timestamp >= changeTime;
         }
 
     }

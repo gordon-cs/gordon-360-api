@@ -83,13 +83,14 @@ namespace Gordon360.Controllers.Api
         ///  If answer boolean is true: student is feeling symptomatic(feeling sick).
         ///  If answer boolean is false: student is not feeling symptomatic(feeling fine).
         /// </summary>
-        /// <returns>Ok if message was recorded</returns>
+        /// <param name="answer"> The answer to be posted. true = Symptoms, false = No Symptoms</param>
+        /// <returns> Answer that was recorded successfully </returns>
         [HttpPost]
         [Route("")]
         public IHttpActionResult PostAnswer([FromBody] bool answer)
         {
 
-            if (!ModelState.IsValid || answer == null)
+            if (!ModelState.IsValid)
             {
                 string errors = "";
                 foreach (var modelstate in ModelState.Values)
@@ -109,12 +110,6 @@ namespace Gordon360.Controllers.Api
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
             var result = _wellnessService.PostStatus(answer, id);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
 
             return Created("Recorded answer :", result);
 

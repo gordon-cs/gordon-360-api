@@ -1822,8 +1822,8 @@
                 If answer boolean is true: student is feeling symptomatic
                 If answer boolean is false: student is not feeling symptomatic
             </summary>
-            <param name="id">id</param>
-            <param name="answer">answer</param>
+            <param name="id"> ID of the user to post the status for</param>
+            <param name="answer"> Answer that is being posted, true = Symptoms, false = No Symptoms </param>
             <returns>Ok if message was recorded</returns>
         </member>
         <member name="M:Gordon360.Services.WellnessService.GetQuestion">
@@ -1831,6 +1831,13 @@
             gets the question for the wellness check from the back end
             </summary>
             <returns>list of strings with questions and prompts</returns>
+        </member>
+        <member name="M:Gordon360.Services.WellnessService.isValidStatus(Gordon360.Models.ViewModels.WellnessViewModel)">
+            <summary>
+            Checks whether a wellness status is still valid (i.e. new since 5AM)
+            </summary>
+            <param name='status'>Wellness status to check, an instance of a WellnessViewModel</param>
+            <returns>boolean representing whether the status is still valid</returns>
         </member>
         <member name="T:Gordon360.Services.JenzibarActivityService">
             <summary>
