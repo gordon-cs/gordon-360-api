@@ -578,7 +578,8 @@
              If answer boolean is true: student is feeling symptomatic(feeling sick).
              If answer boolean is false: student is not feeling symptomatic(feeling fine).
             </summary>
-            <returns>Ok if message was recorded</returns>
+            <param name="answer"> The answer to be posted. true = Symptoms, false = No Symptoms</param>
+            <returns> Answer that was recorded successfully </returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.Get">
             <summary>Get profile info of currently logged in user</summary>
@@ -1824,7 +1825,7 @@
             </summary>
             <param name="id"> ID of the user to post the status for</param>
             <param name="answer"> Answer that is being posted, true = Symptoms, false = No Symptoms </param>
-            <returns>Ok if message was recorded</returns>
+            <returns>Answer that was successfully recorded</returns>
         </member>
         <member name="M:Gordon360.Services.WellnessService.GetQuestion">
             <summary>
@@ -1832,7 +1833,14 @@
             </summary>
             <returns>list of strings with questions and prompts</returns>
         </member>
-        <member name="M:Gordon360.Services.WellnessService.isValidStatus(Gordon360.Models.ViewModels.WellnessViewModel)">
+        <member name="M:Gordon360.Services.WellnessService.IsValidStatus(Gordon360.Models.ViewModels.WellnessViewModel)">
+            <summary>
+            Checks whether a wellness status is still valid (i.e. new since 5AM)
+            </summary>
+            <param name='status'>Wellness status to check, an instance of a WellnessViewModel</param>
+            <returns>boolean representing whether the status is still valid</returns>
+        </member>
+        <member name="M:Gordon360.Services.WellnessService.IsValidStatus(Gordon360.Models.ViewModels.WellnessStatusViewModel)">
             <summary>
             Checks whether a wellness status is still valid (i.e. new since 5AM)
             </summary>

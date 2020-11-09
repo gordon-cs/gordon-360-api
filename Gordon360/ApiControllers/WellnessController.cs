@@ -8,6 +8,7 @@ using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Models;
 using Gordon360.Exceptions.CustomExceptions;
+using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Controllers.Api
 {
@@ -16,9 +17,7 @@ namespace Gordon360.Controllers.Api
     [Authorize]
     public class WellnessController : ApiController
     {
-        private IProfileService _profileService;
         private IAccountService _accountService;
-        private IRoleCheckingService _roleCheckingService;
 
         private IWellnessService _wellnessService;
 
@@ -26,14 +25,17 @@ namespace Gordon360.Controllers.Api
         {
             var _unitOfWork = new UnitOfWork();
             _wellnessService = new WellnessService();
-            _profileService = new ProfileService(_unitOfWork);
             _accountService = new AccountService(_unitOfWork);
-            _roleCheckingService = new RoleCheckingService(_unitOfWork);
         }
 
         public WellnessController(IWellnessService wellnessService)
         {
             _wellnessService = wellnessService;
+        }
+
+        public enum WellnessStatusColor
+        {
+            GREEN, YELLOW, RED
         }
 
         /// <summary>
@@ -113,6 +115,53 @@ namespace Gordon360.Controllers.Api
 
             return Created("Recorded answer :", result);
 
+        }
+
+        [HttpGet]
+        [Route("status")]
+        public IHttpActionResult GetStatus()
+        {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            var result = _wellnessService.GetStatusOrOverride(id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("status")]
+        public IHttpActionResult PostStatus([FromBody] WellnessStatusColor status)
+        {
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            var result = _wellnessService.PostStatus(status.ToString(), id);
+
+            return Created("Recorded answer :", result);
         }
     }
 }

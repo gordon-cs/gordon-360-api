@@ -54,8 +54,10 @@ namespace Gordon360.Services
     public interface IWellnessService
     {
         WellnessViewModel GetStatus(string id);
+        WellnessStatusViewModel GetStatusOrOverride(string id);
         WellnessQuestionViewModel GetQuestion();
         bool PostStatus(bool answer, string id);
+        string PostStatus(string status, string id);
     }
 
     public interface IDirectMessageService

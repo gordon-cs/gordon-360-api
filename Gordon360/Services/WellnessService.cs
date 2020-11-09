@@ -14,7 +14,7 @@ namespace Gordon360.Services
 {
     public class WellnessService : IWellnessService
     {
-       
+
 
         public WellnessService()
         {
@@ -37,18 +37,42 @@ namespace Gordon360.Services
 
             var idParam = new SqlParameter("@ID_NUM", id);
             var result = RawSqlQuery<WellnessViewModel>.query("GET_HEALTH_CHECK_BY_ID @ID_NUM", idParam); //run stored procedure
-         
+
             if (result == null)
             {
-                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
             }
 
             var wellnessStatus = result.SingleOrDefault();
 
-            wellnessStatus.answerValid = isValidStatus(wellnessStatus);
+            wellnessStatus.answerValid = IsValidStatus(wellnessStatus);
 
             return wellnessStatus;
 
+        }
+
+        public WellnessStatusViewModel GetStatusOrOverride(string id)
+        {
+            var _unitOfWork = new UnitOfWork();
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
+
+            var idParam = new SqlParameter("@ID_NUM", id);
+            var result = RawSqlQuery<WellnessStatusViewModel>.query("GET_HEALTH_STATUS_BY_ID @ID_NUM", idParam);
+
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+
+            var wellnessStatus = result.SingleOrDefault();
+
+            wellnessStatus.IsValid = IsValidStatus(wellnessStatus);
+
+            return wellnessStatus;
         }
 
         /// <summary>
@@ -66,7 +90,7 @@ namespace Gordon360.Services
             var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
             if (query == null)
             {
-                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
             var idParam = new SqlParameter("@ID_NUM", id);
@@ -75,10 +99,32 @@ namespace Gordon360.Services
             var result = RawSqlQuery<WellnessViewModel>.query("INSERT_HEALTH_CHECK @ID_NUM, @Answer", idParam, answerParam); //run stored procedure
             if (result == null)
             {
-                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
             }
 
             return answer;
+
+        }
+
+        public string PostStatus(string status, string id)
+        {
+            var _unitOfWork = new UnitOfWork();
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
+
+            var idParam = new SqlParameter("@ID_NUM", id);
+            var statusParam = new SqlParameter("@Status", status);
+
+            var result = RawSqlQuery<WellnessStatusViewModel>.query("INSERT_HEALTH_CHECK_UPDATED @ID_NUM, @Status", idParam, statusParam);
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+
+            return status;
 
         }
 
@@ -113,7 +159,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name='status'>Wellness status to check, an instance of a WellnessViewModel</param>
         /// <returns>boolean representing whether the status is still valid</returns>
-        private bool isValidStatus(WellnessViewModel status)
+        private bool IsValidStatus(WellnessViewModel status)
         {
             DateTime currentTime = DateTime.Now;
 
@@ -128,6 +174,33 @@ namespace Gordon360.Services
             }
 
             return status.timestamp >= changeTime;
+        }
+
+        /// <summary>
+        /// Checks whether a wellness status is still valid (i.e. new since 5AM)
+        /// </summary>
+        /// <param name='status'>Wellness status to check, an instance of a WellnessViewModel</param>
+        /// <returns>boolean representing whether the status is still valid</returns>
+        private bool IsValidStatus(WellnessStatusViewModel status)
+        {
+            if (status.IsOverride)
+            {
+                return true;
+            }
+
+            DateTime currentTime = DateTime.Now;
+
+            DateTime changeTime = new DateTime(currentTime.Year, currentTime.Month, currentTime.Day, 5, 0, 0);
+
+            // Answer is good until 5am the next day, so changeTime is most recent 5am
+            // which might be yesterday.
+            if (changeTime > currentTime)
+            {
+                TimeSpan day = new TimeSpan(24, 0, 0);
+                changeTime = new DateTime(changeTime.Ticks - day.Ticks);
+            }
+
+            return status.Created >= changeTime;
         }
 
     }
