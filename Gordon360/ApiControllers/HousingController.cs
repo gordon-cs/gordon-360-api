@@ -20,12 +20,19 @@ namespace Gordon360.Controllers.Api
     public class HousingController : ApiController
     {
         private IHousingService _housingService;
+        private ISessionService _sessionService;
+        private IAccountService _accountService;
+      
+
+
 
 
         public HousingController()
         {
             IUnitOfWork _unitOfWork = new UnitOfWork();
             _housingService = new HousingService(_unitOfWork);
+            _sessionService = new SessionService(_unitOfWork);
+            _accountService = new AccountService(_unitOfWork);
         }
 
         /** Call the service that gets all student housing information
@@ -46,7 +53,7 @@ namespace Gordon360.Controllers.Api
         [HttpPost]
         [Route("save")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)]
-        public IHttpActionResult SaveApplication(int id)
+        public IHttpActionResult SaveApplication(string username, string [] applicants)
         {
             // Verify Input
             if (!ModelState.IsValid)
@@ -62,8 +69,13 @@ namespace Gordon360.Controllers.Api
                 }
                 throw new BadInputException() { ExceptionMessage = errors };
             }
-
-            _housingService.SaveApplication(id);
+            SessionViewModel currentSessionViewModel = null;
+            string sessionId = currentSessionViewModel.SessionCode;
+            string[] appIds = new string[applicants.Length];
+            for(int i = 0; i <= applicants.Length; i++){
+                appIds[i] = _accountService.GetAccountByUsername(username).GordonID;
+            }
+            _housingService.SaveApplication(username, sessionId, appIds);
 
             return Ok();
 
