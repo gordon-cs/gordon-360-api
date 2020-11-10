@@ -340,7 +340,7 @@
     <Compile Include="Models\FacStaff.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\GET_ALL_HEALTH_STATUSES_Result.cs">
+    <Compile Include="Models\GET_ALL_HEALTH_STATUS_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\GET_ALL_MESSAGES_BY_ID_Result.cs">
@@ -670,7 +670,6 @@
     <Compile Include="Models\view_cct_student.cs">
       <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ViewModels\WellnessViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\CustomMultiPartFormDataStreamProvider.cs" />
     <Compile Include="Repositories\GenericRepository.cs" />

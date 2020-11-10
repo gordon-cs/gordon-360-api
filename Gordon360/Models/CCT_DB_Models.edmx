@@ -608,6 +608,14 @@ warning 6002: The table/view 'CCT.dbo.FacStaff' does not have a primary key defi
           <Property Name="Mail_Location" Type="varchar" MaxLength="20" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6013: The table/view 'CCT.dbo.Health_Status' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="Health_Status">
+          <Property Name="ID_Num" Type="int" />
+          <Property Name="Status" Type="varchar" MaxLength="6" />
+          <Property Name="Created" Type="datetime" />
+          <Property Name="isOverride" Type="bit" />
+        </EntityType>-->
+        <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.JENZ_ACT_CLUB_DEF' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="JENZ_ACT_CLUB_DEF">
           <Key>
@@ -869,7 +877,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Parameter Name="NOW" Type="datetime" Mode="In" />
           <Parameter Name="MODIFIER_ID" Type="int" Mode="In" />
         </Function>
-        <Function Name="GET_ALL_HEALTH_STATUSES" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="GET_ALL_HEALTH_STATUS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="GET_ALL_MESSAGES_BY_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="room_id" Type="int" Mode="In" />
         </Function>
@@ -2377,7 +2385,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="NOW" Mode="In" Type="DateTime" />
             <Parameter Name="MODIFIER_ID" Mode="In" Type="Int32" />
           </FunctionImport>
-          <FunctionImport Name="GET_ALL_HEALTH_STATUSES" ReturnType="Collection(Gordon360.GET_ALL_HEALTH_STATUSES_Result)" />
+          <FunctionImport Name="GET_ALL_HEALTH_STATUS" ReturnType="Collection(Gordon360.GET_ALL_HEALTH_STATUS_Result)" />
           <FunctionImport Name="GET_ALL_MESSAGES_BY_ID" ReturnType="Collection(Gordon360.GET_ALL_MESSAGES_BY_ID_Result)">
             <Parameter Name="room_id" Mode="In" Type="Int32" />
           </FunctionImport>
@@ -2716,7 +2724,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="String" Name="CHTermCD" Nullable="true" MaxLength="4" />
           <Property Type="Int32" Name="Required" Nullable="true" />
         </ComplexType>
-        <ComplexType Name="GET_ALL_HEALTH_STATUSES_Result">
+        <ComplexType Name="GET_ALL_HEALTH_STATUS_Result">
           <Property Type="Int32" Name="ID_Num" Nullable="true" />
           <Property Type="String" Name="Status" Nullable="true" MaxLength="6" />
           <Property Type="DateTime" Name="Created" Nullable="true" Precision="23" />
@@ -2745,6 +2753,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="String" Name="noPrompt" Nullable="false" />
         </ComplexType>
         <ComplexType Name="GET_HEALTH_STATUS_BY_ID_Result">
+          <Property Type="Int32" Name="ID_Num" Nullable="true" />
           <Property Type="String" Name="Status" Nullable="true" MaxLength="6" />
           <Property Type="DateTime" Name="Created" Nullable="true" Precision="23" />
           <Property Type="Boolean" Name="isOverride" Nullable="true" />
@@ -3843,9 +3852,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             </ResultMapping>
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="GET_AA_APPID_BY_NAME_AND_DATE" FunctionName="Gordon360.Store.GET_AA_APPID_BY_NAME_AND_DATE" />
-          <FunctionImportMapping FunctionImportName="GET_ALL_HEALTH_STATUSES" FunctionName="Gordon360.Store.GET_ALL_HEALTH_STATUSES">
+          <FunctionImportMapping FunctionImportName="GET_ALL_HEALTH_STATUS" FunctionName="Gordon360.Store.GET_ALL_HEALTH_STATUS">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="Gordon360.GET_ALL_HEALTH_STATUSES_Result">
+              <ComplexTypeMapping TypeName="Gordon360.GET_ALL_HEALTH_STATUS_Result">
                 <ScalarProperty Name="ID_Num" ColumnName="ID_Num" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="Created" ColumnName="Created" />
@@ -3892,6 +3901,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImportMapping FunctionImportName="GET_HEALTH_STATUS_BY_ID" FunctionName="Gordon360.Store.GET_HEALTH_STATUS_BY_ID">
             <ResultMapping>
               <ComplexTypeMapping TypeName="Gordon360.GET_HEALTH_STATUS_BY_ID_Result">
+                <ScalarProperty Name="ID_Num" ColumnName="ID_Num" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="Created" ColumnName="Created" />
                 <ScalarProperty Name="isOverride" ColumnName="isOverride" />

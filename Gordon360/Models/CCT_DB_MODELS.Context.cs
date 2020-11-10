@@ -450,9 +450,9 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GET_AA_APPID_BY_NAME_AND_DATE", nOWParameter, mODIFIER_IDParameter);
         }
     
-        public virtual ObjectResult<GET_ALL_HEALTH_STATUSES_Result> GET_ALL_HEALTH_STATUSES()
+        public virtual ObjectResult<GET_ALL_HEALTH_STATUS_Result> GET_ALL_HEALTH_STATUS()
         {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GET_ALL_HEALTH_STATUSES_Result>("GET_ALL_HEALTH_STATUSES");
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GET_ALL_HEALTH_STATUS_Result>("GET_ALL_HEALTH_STATUS");
         }
     
         public virtual ObjectResult<GET_ALL_MESSAGES_BY_ID_Result> GET_ALL_MESSAGES_BY_ID(Nullable<int> room_id)

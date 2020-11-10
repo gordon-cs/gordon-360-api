@@ -13,6 +13,7 @@ namespace Gordon360.Models
     
     public partial class GET_HEALTH_STATUS_BY_ID_Result
     {
+        public Nullable<int> ID_Num { get; set; }
         public string Status { get; set; }
         public Nullable<System.DateTime> Created { get; set; }
         public Nullable<bool> isOverride { get; set; }

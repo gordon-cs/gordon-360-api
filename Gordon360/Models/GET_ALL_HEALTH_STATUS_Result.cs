@@ -11,7 +11,7 @@ namespace Gordon360.Models
 {
     using System;
     
-    public partial class GET_ALL_HEALTH_STATUSES_Result
+    public partial class GET_ALL_HEALTH_STATUS_Result
     {
         public Nullable<int> ID_Num { get; set; }
         public string Status { get; set; }
