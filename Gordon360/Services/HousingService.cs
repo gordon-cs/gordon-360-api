@@ -46,8 +46,8 @@ namespace Gordon360.Services
 
             DateTime now = System.DateTime.Now;
 
-            var timeParam = new SqlParameter("@NOW", username);
-            var idParam = new SqlParameter("@MODIFIER_ID", now);
+            var timeParam = new SqlParameter("@NOW", now);
+            var idParam = new SqlParameter("@MODIFIER_ID", username);
             var sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
             //var programParam = new SqlParameter("@APRT_PROGRAM", now);
 
