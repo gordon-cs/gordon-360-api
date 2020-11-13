@@ -22,7 +22,7 @@ namespace Gordon360.Controllers.Api
         private IHousingService _housingService;
         private ISessionService _sessionService;
         private IAccountService _accountService;
-      
+
 
 
 
@@ -53,7 +53,7 @@ namespace Gordon360.Controllers.Api
         [HttpPost]
         [Route("save")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)]
-        public IHttpActionResult SaveApplication(string username, string [] applicants)
+        public IHttpActionResult SaveApplication([FromBody] HousingApplicationViewModel housingApplicationDetails)
         {
             // Verify Input
             if (!ModelState.IsValid)
@@ -71,11 +71,11 @@ namespace Gordon360.Controllers.Api
             }
             SessionViewModel currentSessionViewModel = null;
             string sessionId = currentSessionViewModel.SessionCode;
-            string[] appIds = new string[applicants.Length];
-            for(int i = 0; i <= applicants.Length; i++){
-                appIds[i] = _accountService.GetAccountByUsername(username).GordonID;
+            string[] appIds = new string[housingApplicationDetails.applicants.Length];
+            for(int i = 0; i <= housingApplicationDetails.applicants.Length; i++){
+                appIds[i] = _accountService.GetAccountByUsername(housingApplicationDetails.applicants[i]).GordonID;
             }
-            _housingService.SaveApplication(username, sessionId, appIds);
+            _housingService.SaveApplication(housingApplicationDetails.username, sessionId, appIds);
 
             return Ok();
 
