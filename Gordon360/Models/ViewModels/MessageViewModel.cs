@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Gordon360.Models;
 
 namespace Gordon360.Models.ViewModels
 {
@@ -27,6 +28,8 @@ namespace Gordon360.Models.ViewModels
         public bool received { get; set; }
 
         public bool pending { get; set; }
+
+        public UserViewModel user { get; set; }
 
     }
 }

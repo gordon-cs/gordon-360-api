@@ -65,6 +65,7 @@ namespace Gordon360.Services
         bool StoreUserRooms(String userId, String roomId);
         IEnumerable<MessageViewModel> GetMessages(string roomId);
         IEnumerable<GroupViewModel> GetRooms(string userId);
+        List<Object> GetRoomById(string userId);
     }
 
     public interface IActivityService

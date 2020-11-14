@@ -15,10 +15,15 @@ namespace Gordon360.Services
 {
     public class DirectMessageService : IDirectMessageService
     {
+        private IProfileService _profileService;
+        private IAccountService _accountService;
 
 
         public DirectMessageService()
         {
+            var _unitOfWork = new UnitOfWork();
+            _profileService = new ProfileService(_unitOfWork);
+            _accountService = new AccountService(_unitOfWork);
         }
 
         public IEnumerable<MessageViewModel> GetMessages(string roomId)
@@ -48,6 +53,14 @@ namespace Gordon360.Services
                 y.image = x.image;
                 y.received = x.received;
                 y.pending = x.pending;
+
+                var j = new UserViewModel();
+                j.user_id = x.user_id;
+                j.user_name = _accountService.Get(x.user_id).ADUserName;
+                j.user_avatar = null;
+
+                y.user = j;
+
                 return y;
             });
 
@@ -80,6 +93,69 @@ namespace Gordon360.Services
 
 
             return GroupModel;
+
+        }
+
+        public List<Object> GetRoomById(string userId)
+        {
+
+            var userIdParam = new SqlParameter("@user_id", userId);
+            var result = RawSqlQuery<GroupViewModel>.query("GET_ALL_ROOMS_BY_ID @user_id", userIdParam); //run stored procedure
+
+            List<Object> endresult = new List<object>();
+
+            var RoomIdModel = result.Select(x =>
+            {
+                GroupViewModel y = new GroupViewModel();
+                y.room_id = x.room_id;
+                return y;
+            });
+
+            foreach (GroupViewModel ids in RoomIdModel) {
+
+                var roomIdParam = new SqlParameter("@room_id", ids.room_id);
+                var result2 = RawSqlQuery<RoomViewModel>.query("GET_ROOM_BY_ID @room_id", roomIdParam);
+
+                var RoomModel = result2.Select(x =>
+                {
+
+                    RoomViewModel y = new RoomViewModel();
+
+                    y.room_id = x.room_id;
+                    y.name = x.name;
+                    y.group = x.group;
+                    y.createdAt = x.createdAt;
+                    y.lastUpdated = x.lastUpdated;
+                    y.roomImage = x.roomImage;
+                    var localRoomIdParam = new SqlParameter("@room_id", x.room_id);
+                    var users = RawSqlQuery<UserViewModel>.query("GET_ALL_USERS_BY_ROOM_ID @room_id", localRoomIdParam);
+
+                    var userSelect = users.Select(i =>
+                    {
+                        UserViewModel j = new UserViewModel();
+                        j.user_id = i.user_id;
+                        j.user_name = _accountService.Get(i.user_id).ADUserName;
+                        j.user_avatar = null;
+
+                        return j;
+                    });
+
+                    y.users = userSelect;
+
+                    return y;
+                });
+
+                endresult.Add(RoomModel);
+            }
+
+            if (endresult == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+     
+
+
+            return endresult;
 
         }
 
