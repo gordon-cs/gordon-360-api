@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using Gordon360.Exceptions.CustomExceptions;
 using System.Data.SqlClient;
 using Gordon360.Services.ComplexQueries;
-using System.Diagnostics;
 
 namespace Gordon360.Services
 {
@@ -50,9 +47,7 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        ///  Gets answer to the wellness check answer and sends it to the back end.
-        ///     If answer boolean is true: student is feeling symptomatic
-        ///     If answer boolean is false: student is not feeling symptomatic
+        /// Stores wellness Status in database.
         /// </summary>
         /// <param name="id"> ID of the user to post the status for</param>
         /// <param name="status"> Status that is being posted, one of GREEN, YELLOW, or RED </param>
@@ -78,31 +73,6 @@ namespace Gordon360.Services
 
             return status;
 
-        }
-
-
-        // May not be necessary - use GO site to access table directly?
-        public string PostOverride(string status, string id, DateTime? expires, string creator)
-        {
-            var _unitOfWork = new UnitOfWork();
-            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
-            if (query == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
-            }
-
-            var idParam = new SqlParameter("@ID_NUM", id);
-            var statusParam = new SqlParameter("@Status", status);
-            var expiresParam = new SqlParameter("@Expires", expires);
-            var creatorParam = new SqlParameter("@Created_By", creator);
-
-            var result = RawSqlQuery<WellnessStatusViewModel>.query("INSERT_HEALTH_OVERRIDE @ID_NUM, @Status, @Expires, @Created_By", idParam, statusParam, expiresParam, creatorParam);
-            if (result == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
-            }
-
-            return status;
         }
 
         /// <summary>
@@ -131,6 +101,26 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// gets the question for the wellness check from the back end
+        /// </summary>
+        /// <returns>list of strings with questions and prompts</returns>
+
+        public IEnumerable<WellnessQuestionViewModel> DEPRECATED_GetQuestion()
+        {
+
+            var result = RawSqlQuery<WellnessQuestionViewModel>.query("GET_HEALTH_CHECK_QUESTION"); //run stored procedure
+
+
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+
+            return result;
+
+        }
+
+        /// <summary>
         /// Checks whether a wellness status is still valid (i.e. new since 5AM)
         /// </summary>
         /// <param name='status'>Wellness status to check, an instance of a WellnessViewModel</param>
@@ -155,6 +145,99 @@ namespace Gordon360.Services
             }
 
             return status.Created >= changeTime;
+        }
+
+        public IEnumerable<DEPRECATED_WellnessViewModel> DEPRECATED_GetStatus(string id)
+        {
+            var _unitOfWork = new UnitOfWork();
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
+
+            var idParam = new SqlParameter("@ID_NUM", id);
+            var result = RawSqlQuery<DEPRECATED_WellnessViewModel>.query("GET_HEALTH_CHECK_BY_ID @ID_NUM", idParam); //run stored procedure
+
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+
+
+            var wellnessModel = result.Select(x =>
+            {
+                DEPRECATED_WellnessViewModel y = new DEPRECATED_WellnessViewModel();
+
+                DateTime currentTime = DateTime.Now;
+
+                DateTime changeTime = new DateTime(currentTime.Year, currentTime.Month, currentTime.Day, 5, 0, 0);
+
+                // Answer is good until 5am the next day, so changeTime is most recent 5am
+                // which might be yesterday.
+                if (changeTime > currentTime)
+                {
+                    TimeSpan day = new TimeSpan(24, 0, 0);
+                    changeTime = new DateTime(changeTime.Ticks - day.Ticks);
+                }
+
+                if (x.timestamp >= changeTime)
+                {
+                    y.answerValid = true;
+                    y.userAnswer = x.userAnswer;
+                    y.timestamp = x.timestamp;
+                    return y;
+                }
+
+                y.answerValid = false;
+                y.userAnswer = x.userAnswer;
+                y.timestamp = x.timestamp;
+
+                return y;
+            });
+
+
+            return wellnessModel;
+
+        }
+
+        /// <summary>
+        ///  Gets answer to the wellness check answer and sends it to the back end.
+        ///     If answer boolean is true: student is feeling symptomatic
+        ///     If answer boolean is false: student is not feeling symptomatic
+        /// </summary>
+        /// <param name="id">id</param>
+        /// <param name="answer">answer</param>
+        /// <returns>Ok if message was recorded</returns>
+        public DEPRECATED_WellnessViewModel DEPRECATED_PostStatus(bool answer, string id)
+        {
+            var _unitOfWork = new UnitOfWork();
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
+
+            var idParam = new SqlParameter("@ID_NUM", id);
+            var answerParam = new SqlParameter("@Answer", answer);
+
+            var result = RawSqlQuery<DEPRECATED_WellnessViewModel>.query("INSERT_HEALTH_CHECK @ID_NUM, @Answer", idParam, answerParam); //run stored procedure
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+
+            var UserAnswer = answer;
+
+            DEPRECATED_WellnessViewModel y = new DEPRECATED_WellnessViewModel()
+            {
+                userAnswer = UserAnswer
+            };
+
+
+
+            return y;
+
         }
 
     }
