@@ -18,6 +18,8 @@ namespace Gordon360.Models
         public string SESS_DESC { get; set; }
         public Nullable<System.DateTime> SESS_BEGN_DTE { get; set; }
         public Nullable<System.DateTime> SESS_END_DTE { get; set; }
+        public Nullable<System.DateTime> WHEEL_BEGN_DTE { get; set; }
+        public Nullable<System.DateTime> WHEEL_END_DTE { get; set; }
         public string YRTRM_CDE_2 { get; set; }
         public string YRTRM_CDE_4 { get; set; }
     }

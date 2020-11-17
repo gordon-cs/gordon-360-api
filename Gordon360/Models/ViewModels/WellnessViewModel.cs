@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Gordon360.Models.ViewModels
 {
-    public class WellnessViewModel
+    public class DEPRECATED_WellnessViewModel
     {
         //returns true if last answered question is still valid
         public Nullable<bool> answerValid { get; set; }
