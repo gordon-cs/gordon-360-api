@@ -12,24 +12,21 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Transit_Rides
+    public partial class Health_Status_CTRL
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Transit_Rides()
+        public Health_Status_CTRL()
         {
-            this.Transit_Requests = new HashSet<Transit_Requests>();
+            this.Health_Override = new HashSet<Health_Override>();
+            this.Health_Check_NEW = new HashSet<Health_Check_NEW>();
         }
     
-        public System.DateTime transaction_datetime { get; set; }
-        public int ride_id { get; set; }
-        public string driver_username { get; set; }
-        public int max_capacity { get; set; }
-        public string origin { get; set; }
-        public string destination { get; set; }
-        public System.DateTime departure_datetime { get; set; }
-        public string driver_note { get; set; }
+        public byte HealthStatusID { get; set; }
+        public string HealthStatusColor { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Transit_Requests> Transit_Requests { get; set; }
+        public virtual ICollection<Health_Override> Health_Override { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Health_Check_NEW> Health_Check_NEW { get; set; }
     }
 }

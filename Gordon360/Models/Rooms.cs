@@ -10,14 +10,15 @@
 namespace Gordon360.Models
 {
     using System;
+    using System.Collections.Generic;
     
-    public partial class STUDENT_JOBS_PER_ID_NUM_Result
+    public partial class Rooms
     {
-        public string Job_Title { get; set; }
-        public string Job_Department { get; set; }
-        public string Job_Department_Name { get; set; }
-        public System.DateTime Job_Start_Date { get; set; }
-        public Nullable<System.DateTime> Job_End_Date { get; set; }
-        public Nullable<System.DateTime> Job_Expected_End_Date { get; set; }
+        public string room_id { get; set; }
+        public string name { get; set; }
+        public bool group { get; set; }
+        public System.DateTime createdAt { get; set; }
+        public System.DateTime lastUpdated { get; set; }
+        public byte[] roomImage { get; set; }
     }
 }

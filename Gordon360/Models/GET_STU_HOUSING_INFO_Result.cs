@@ -11,13 +11,16 @@ namespace Gordon360.Models
 {
     using System;
     
-    public partial class STUDENT_JOBS_PER_ID_NUM_Result
+    public partial class GET_STU_HOUSING_INFO_Result
     {
-        public string Job_Title { get; set; }
-        public string Job_Department { get; set; }
-        public string Job_Department_Name { get; set; }
-        public System.DateTime Job_Start_Date { get; set; }
-        public Nullable<System.DateTime> Job_End_Date { get; set; }
-        public Nullable<System.DateTime> Job_Expected_End_Date { get; set; }
+        public string ID { get; set; }
+        public string Title { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string OnOffCampus { get; set; }
+        public string BuildingDescription { get; set; }
+        public string OnCampusRoom { get; set; }
+        public string Gender { get; set; }
+        public string Email { get; set; }
     }
 }

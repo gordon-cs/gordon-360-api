@@ -12,15 +12,16 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CM_SESSION_MSTR
+    public partial class Health_Override
     {
-        public string SESS_CDE { get; set; }
-        public string SESS_DESC { get; set; }
-        public Nullable<System.DateTime> SESS_BEGN_DTE { get; set; }
-        public Nullable<System.DateTime> SESS_END_DTE { get; set; }
-        public Nullable<System.DateTime> WHEEL_BEGN_DTE { get; set; }
-        public Nullable<System.DateTime> WHEEL_END_DTE { get; set; }
-        public string YRTRM_CDE_2 { get; set; }
-        public string YRTRM_CDE_4 { get; set; }
+        public int ID_Num { get; set; }
+        public byte HealthStatusID { get; set; }
+        public System.DateTime Created { get; set; }
+        public Nullable<System.DateTime> Expires { get; set; }
+        public string Created_By { get; set; }
+        public Nullable<bool> Contacted { get; set; }
+        public string Reason { get; set; }
+    
+        public virtual Health_Status_CTRL Health_Status_CTRL { get; set; }
     }
 }

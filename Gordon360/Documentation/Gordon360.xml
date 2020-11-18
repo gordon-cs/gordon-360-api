@@ -375,11 +375,11 @@
         <member name="M:Gordon360.Controllers.Api.HousingController.GetApartmentInfo">
             Call the service that gets all student housing information
         </member>
-        <member name="M:Gordon360.Controllers.Api.HousingController.SaveApplication(System.Int32)">
+        <member name="M:Gordon360.Controllers.Api.HousingController.SaveApplication(Gordon360.Models.ViewModels.HousingAppViewModel)">
             <summary>
-            Submit shifts
+            save application
             </summary>
-            <returns>The result of submitting the shifts</returns>
+            <returns>The result of submitting the application</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.NewsController.#ctor">
             private void catchBadInput()
@@ -1823,14 +1823,13 @@
             Gets student housing info
             TODO list what exactly we mean by houding info
             </summary>
-            <returns>The news item</returns>
+            <returns>The housing item</returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.SaveApplication(System.Int32)">
+        <member name="M:Gordon360.Services.HousingService.SaveApplication(System.String,System.String,System.String[])">
             <summary>
-            Gets student housing info
-            TODO list what exactly we mean by houding info
+            Saves student housing info
             </summary>
-            <returns>The news item</returns>
+            <returns>The housing item</returns>
         </member>
         <member name="M:Gordon360.Services.WellnessService.GetStatus(System.String)">
             <summary>

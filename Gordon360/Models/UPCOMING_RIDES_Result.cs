@@ -10,7 +10,7 @@
 namespace Gordon360.Models
 {
     using System;
-
+    
     public partial class UPCOMING_RIDES_Result
     {
         public string rideID { get; set; }

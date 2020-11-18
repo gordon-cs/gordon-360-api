@@ -10,14 +10,15 @@
 namespace Gordon360.Models
 {
     using System;
+    using System.Collections.Generic;
     
-    public partial class STUDENT_JOBS_PER_ID_NUM_Result
+    public partial class Health_Check_NEW
     {
-        public string Job_Title { get; set; }
-        public string Job_Department { get; set; }
-        public string Job_Department_Name { get; set; }
-        public System.DateTime Job_Start_Date { get; set; }
-        public Nullable<System.DateTime> Job_End_Date { get; set; }
-        public Nullable<System.DateTime> Job_Expected_End_Date { get; set; }
+        public int ID_Num { get; set; }
+        public byte HealthStatusID { get; set; }
+        public System.DateTime Created { get; set; }
+        public Nullable<System.DateTime> emailed { get; set; }
+    
+        public virtual Health_Status_CTRL Health_Status_CTRL { get; set; }
     }
 }
