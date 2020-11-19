@@ -11,7 +11,7 @@ using Gordon360.Static.Names;
 using Gordon360.Static.Methods;
 using Gordon360.Models.ViewModels;
 using System.Collections.Generic;
-
+using System;
 
 namespace Gordon360.Controllers.Api
 {
@@ -72,9 +72,11 @@ namespace Gordon360.Controllers.Api
             for(int i = 0; i <= apartmentAppDetails.Applicants.Length; i++){
                 appIds[i] = _accountService.GetAccountByUsername(apartmentAppDetails.Applicants[i]).GordonID;
             }
-            _housingService.SaveApplication(apartmentAppDetails.Username, sessionId, appIds);
+            IEnumerable<HousingAppToSubmitViewModel> result = _housingService.SaveApplication(apartmentAppDetails.Username, sessionId, appIds);
 
-            return Ok();
+            var applicationID = result.FirstOrDefault().AprtAppID;
+
+            return Ok(applicationID);
 
         }
     }
