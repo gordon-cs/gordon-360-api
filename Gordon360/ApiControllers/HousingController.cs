@@ -62,7 +62,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpGet]
         [Route("apartment")]
-        public IHttpActionResult GetApartmentAppID()
+        public IHttpActionResult GetApplicationID()
         {
             //get token data from context, username is the username of current logged in person
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
@@ -141,63 +141,9 @@ namespace Gordon360.Controllers.Api
         /// <param name="applicationID">application ID number of the apartment application</param>
         /// <returns>Object of type ApartmentAppViewModel</returns>
         [HttpGet]
-        [Route("apartment/{applicationID}")]
-        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING)]
-        public IHttpActionResult GetAppartmentApplication(string applicationID)
-        {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(username))
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
-            //! Placeholder
-            var result = "This feature is not yet implemented";
-            return Ok(result);
-        }
-
-        /// <summary>Get apartment application info for a given application ID number</summary>
-        /// <param name="applicationID">application ID number of the apartment application</param>
-        /// <returns>Object of type ApartmentAppViewModel</returns>
-        [HttpGet]
         [Route("apartment/load/{applicationID}")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING)]
-        public IHttpActionResult GetAppartmentApplication(string applicationID)
-        {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(applicationID))
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
-            //! Placeholder
-            var result = "This feature is not yet implemented";
-            return Ok(result);
-        }
-
-        /// <summary>Get apartment application info for a given application ID number</summary>
-        /// <param name="applicationID">application ID number of the apartment application</param>
-        /// <returns>Object of type ApartmentAppViewModel</returns>
-        [HttpGet]
-        [Route("apartment/load/{applicationID}")]
-        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING)]
-        public IHttpActionResult GetAppartmentApplication(string applicationID)
+        public IHttpActionResult GetApartmentApplication(string applicationID)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(applicationID))
             {
