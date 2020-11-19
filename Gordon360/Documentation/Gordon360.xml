@@ -169,9 +169,15 @@
             </summary>
             <returns>MessageViewModel</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.DirectMessageController.CreateGroup(System.String,System.Boolean,System.DateTime)">
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.CreateGroup(Gordon360.Models.ViewModels.CreateGroupViewModel)">
             <summary>
              creates a message room in the backend
+            </summary>
+            <returns>true if successful </returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.SendMessage(Gordon360.Models.ViewModels.SendTextViewModel)">
+            <summary>
+             stores sent message on the back end.
             </summary>
             <returns>true if successful </returns>
         </member>
@@ -180,12 +186,6 @@
              stores rooms associated with a user id
             </summary>
             <returns>true if successful</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.DirectMessageController.SendMessage(System.String,System.String,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
-            <summary>
-             stores sent message on the back end.
-            </summary>
-            <returns>true if successful </returns>
         </member>
         <member name="M:Gordon360.ApiControllers.DiningController.Get">
             <summary>
