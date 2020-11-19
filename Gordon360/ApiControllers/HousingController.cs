@@ -43,12 +43,69 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
 
+        /// <summary>Check if the currently logged in user is authorized to view the housing staff page for applications</summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("staff")]
+        public IHttpActionResult CheckHousingStaff()
+        {
+            //get token data from context, username is the username of current logged in person
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+            //! Placeholder
+            var result = "This feature is not yet implemented";
+            return Ok(result);
+        }
+
+        /// <summary>Get apartment application ID number of currently logged in user if that user is on an existing application</summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("apartment")]
+        public IHttpActionResult GetApartmentAppID()
+        {
+            //get token data from context, username is the username of current logged in person
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+            //! Placeholder
+            var result = "This feature is not yet implemented";
+            return Ok(result);
+        }
+        /// <summary>Get apartment application ID number for a user if that user is on an existing application</summary>
+        /// <param name="username">username of the profile info</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("apartment/{username}")]
+        public IHttpActionResult GetUserApplicationID(string username)
+        {
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(username))
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+            //get token data from context, username is the username of current logged in person
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+
+            //! Placeholder
+            var result = "This feature is not yet implemented";
+            return Ok(result);
+        }
+
         /// <summary>
         /// save application
         /// </summary>
-        /// <returns>The result of submitting the application</returns>
+        /// <returns>The application ID number of the saved application</returns>
         [HttpPost]
-        [Route("save")]
+        [Route("apartment/save")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)]
         public IHttpActionResult SaveApplication([FromBody] ApartmentAppViewModel apartmentAppDetails)
         {
@@ -78,6 +135,33 @@ namespace Gordon360.Controllers.Api
 
             return Ok(applicationID);
 
+        }
+
+        /// <summary>Get apartment application info for a given application ID number</summary>
+        /// <param name="applicationID">application ID number of the apartment application</param>
+        /// <returns>Object of type ApartmentAppViewModel</returns>
+        [HttpGet]
+        [Route("apartment/{applicationID}")]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING)]
+        public IHttpActionResult GetAppartmentApplication(string applicationID)
+        {
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(username))
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            //! Placeholder
+            var result = "This feature is not yet implemented";
+            return Ok(result);
         }
     }
 }
