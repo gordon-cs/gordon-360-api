@@ -41,6 +41,18 @@ namespace Gordon360.Services
 
             var wellnessStatus = result.SingleOrDefault();
 
+            if (wellnessStatus == null)
+            {
+                // No status was found for the given user, so return an invalid fake status
+                return new WellnessStatusViewModel
+                {
+                    Status = "GREEN",
+                    Created = new DateTime(1900, 01, 01),
+                    IsValid = false,
+                    IsOverride = false
+                };
+            }
+
             wellnessStatus.IsValid = IsValidStatus(wellnessStatus);
 
             return wellnessStatus;
