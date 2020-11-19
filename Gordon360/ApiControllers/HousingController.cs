@@ -172,7 +172,7 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING)]
         public IHttpActionResult GetAppartmentApplication(string applicationID)
         {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(username))
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(applicationID))
             {
                 string errors = "";
                 foreach (var modelstate in ModelState.Values)

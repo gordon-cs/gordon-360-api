@@ -375,11 +375,29 @@
         <member name="M:Gordon360.Controllers.Api.HousingController.GetApartmentInfo">
             Call the service that gets all student housing information
         </member>
-        <member name="M:Gordon360.Controllers.Api.HousingController.SaveApplication(Gordon360.Models.ViewModels.HousingAppViewModel)">
+        <member name="M:Gordon360.Controllers.Api.HousingController.CheckHousingStaff">
+            <summary>Check if the currently logged in user is authorized to view the housing staff page for applications</summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.GetApartmentAppID">
+            <summary>Get apartment application ID number of currently logged in user if that user is on an existing application</summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.GetUserApplicationID(System.String)">
+            <summary>Get apartment application ID number for a user if that user is on an existing application</summary>
+            <param name="username">username of the profile info</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.SaveApplication(Gordon360.Models.ViewModels.ApartmentAppViewModel)">
             <summary>
             save application
             </summary>
-            <returns>The result of submitting the application</returns>
+            <returns>The application ID number of the saved application</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.GetAppartmentApplication(System.String)">
+            <summary>Get apartment application info for a given application ID number</summary>
+            <param name="applicationID">application ID number of the apartment application</param>
+            <returns>Object of type ApartmentAppViewModel</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.NewsController.#ctor">
             private void catchBadInput()
