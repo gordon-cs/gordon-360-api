@@ -172,7 +172,7 @@ namespace Gordon360.Services
 
             groupImageParam.Value = DBNull.Value;
 
-            var result = RawSqlQuery<WellnessViewModel>.query("CREATE_MESSAGE_ROOM @_id, @name, @group, @createdAt, @lastUpdated, @roomImage", idParam, nameParam, groupParam, createdAtParam, lastUpdatedParam, groupImageParam); //run stored procedure
+            var result = RawSqlQuery<MessageViewModel>.query("CREATE_MESSAGE_ROOM @_id, @name, @group, @createdAt, @lastUpdated, @roomImage", idParam, nameParam, groupParam, createdAtParam, lastUpdatedParam, groupImageParam); //run stored procedure
             bool returnAnswer = true; 
             if (result == null)
             {
@@ -214,7 +214,7 @@ namespace Gordon360.Services
             videoParam.Value = DBNull.Value;
             audioParam.Value = DBNull.Value;
 
-            var result = RawSqlQuery<SendTextViewModel>.query("INSERT_MESSAGE @_id, @room_id, @text, @createdAt, @user_id, @image, @video, @audio, @system, @sent, @received, @pending", 
+            var result = RawSqlQuery<SendTextViewModel>.query("INSERT_MESSAGE @_id, @room_id, @text, @createdAt, @user_id, @image, @video, @audio, @system, @sent, @received, @pending",
                 idParam, roomIdParam, textParam, createdAtParam, userIdParam, imageParam, videoParam, audioParam, systemParam, sentParam, receivedParam, pendingParam); //run stored procedure
 
             bool returnAnswer = true;
@@ -243,7 +243,7 @@ namespace Gordon360.Services
             var roomIdParam = new SqlParameter("@room_id", roomId);
             
 
-            var result = RawSqlQuery<WellnessViewModel>.query("INSERT_USER_ROOMS @user_id, @room_id", userIdParam, roomIdParam); //run stored procedure
+            var result = RawSqlQuery<MessageViewModel>.query("INSERT_USER_ROOMS @user_id, @room_id", userIdParam, roomIdParam); //run stored procedure
 
             bool returnAnswer = true;
 

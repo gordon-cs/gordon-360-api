@@ -44,7 +44,8 @@ namespace Gordon360.Services
         /// <param name="EventID"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public string GetRoute(string EventID, string type)
+        public string GetRoute(string EventID, string type) 
+        // all these '&event_type_id=<somId+someId>'s might need to change, actually we don't use the one that just gets a single type
         {
             // Get the current year
             string year = Helpers.GetFirstEventDate();
@@ -55,7 +56,7 @@ namespace Gordon360.Services
             if (EventID == "All")
             {
                 // Set our api route and fill in the event information we would like
-                requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=10+12+13+14+16+17+18+19+51+20+21+22+23+24+25+29+30+33&state=2&end_after=" + year + "&scope=extended";
+                requestUrl = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=14+19+28+57&state=2&end_after=" + year + "&scope=extended";
             }
 
             // If the type is "s", then it is a single event request, "m" is multiple event IDs
