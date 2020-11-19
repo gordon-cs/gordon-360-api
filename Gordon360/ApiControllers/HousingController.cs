@@ -139,7 +139,7 @@ namespace Gordon360.Controllers.Api
         /// <param name="applicationID">application ID number of the apartment application</param>
         /// <returns>Object of type ApartmentAppViewModel</returns>
         [HttpGet]
-        [Route("apartment/{applicationID}")]
+        [Route("apartment/load/{applicationID}")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING)]
         public IHttpActionResult GetAppartmentApplication(string applicationID)
         {
