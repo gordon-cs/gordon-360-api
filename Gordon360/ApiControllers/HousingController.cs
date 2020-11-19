@@ -68,8 +68,7 @@ namespace Gordon360.Controllers.Api
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
-            //! Placeholder
-            var result = "This feature is not yet implemented";
+            var result = _housingService.GetApplicationID(username);
             return Ok(result);
         }
         /// <summary>Get apartment application ID number for a user if that user is on an existing application</summary>
@@ -95,8 +94,7 @@ namespace Gordon360.Controllers.Api
             //get token data from context, username is the username of current logged in person
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
 
-            //! Placeholder
-            var result = "This feature is not yet implemented";
+            var result = _housingService.GetApplicationID(username);
             return Ok(result);
         }
 

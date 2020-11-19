@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Xml.Linq;
 using System.Collections.Generic;
 using Gordon360.Models;
@@ -267,6 +267,7 @@ namespace Gordon360.Services
     public interface IHousingService
     {
         IEnumerable<HousingViewModel> GetAll();
+        string GetApplicationID(string username);
         IEnumerable<HousingAppToSubmitViewModel> SaveApplication(string username, string sess_cde, string [] appIds);
     }
 

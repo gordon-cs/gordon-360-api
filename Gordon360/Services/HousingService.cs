@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -30,6 +30,14 @@ namespace Gordon360.Services
         public IEnumerable<HousingViewModel> GetAll()
         {
             return RawSqlQuery<HousingViewModel>.query("GET_STU_HOUSING_INFO");
+        }
+
+        public string GetApplicationID(string username)
+        {
+            var idParam = new SqlParameter("@MODIFIER_ID", username);
+            var query = RawSqlQuery<string>.query("GET_AA_APPID_BY_NAME @MODIFIER_ID", idParam); //run stored procedure
+            var applicationID = query.FirstOrDefault();
+            return applicationID;
         }
 
         /// <summary>
