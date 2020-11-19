@@ -8,6 +8,7 @@ using System.Security.Claims;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
+using Gordon360.Static.Methods;
 using Gordon360.Models.ViewModels;
 using System.Collections.Generic;
 
@@ -20,18 +21,14 @@ namespace Gordon360.Controllers.Api
     public class HousingController : ApiController
     {
         private IHousingService _housingService;
-        private ISessionService _sessionService;
+        //private ISessionService _sessionService;
         private IAccountService _accountService;
-
-
-
-
 
         public HousingController()
         {
             IUnitOfWork _unitOfWork = new UnitOfWork();
             _housingService = new HousingService(_unitOfWork);
-            _sessionService = new SessionService(_unitOfWork);
+            //_sessionService = new SessionService(_unitOfWork);
             _accountService = new AccountService(_unitOfWork);
         }
 
@@ -53,7 +50,7 @@ namespace Gordon360.Controllers.Api
         [HttpPost]
         [Route("save")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)]
-        public IHttpActionResult SaveApplication([FromBody] HousingAppViewModel housingAppDetails)
+        public IHttpActionResult SaveApplication([FromBody] ApartmentAppViewModel apartmentAppDetails)
         {
             // Verify Input
             if (!ModelState.IsValid)
@@ -69,13 +66,13 @@ namespace Gordon360.Controllers.Api
                 }
                 throw new BadInputException() { ExceptionMessage = errors };
             }
-            SessionViewModel currentSessionViewModel = null;
-            string sessionId = currentSessionViewModel.SessionCode;
-            string[] appIds = new string[housingAppDetails.applicants.Length];
-            for(int i = 0; i <= housingAppDetails.applicants.Length; i++){
-                appIds[i] = _accountService.GetAccountByUsername(housingAppDetails.applicants[i]).GordonID;
+
+            string sessionId = Helpers.GetCurrentSession().SessionCode;
+            string[] appIds = new string[apartmentAppDetails.Applicants.Length];
+            for(int i = 0; i <= apartmentAppDetails.Applicants.Length; i++){
+                appIds[i] = _accountService.GetAccountByUsername(apartmentAppDetails.Applicants[i]).GordonID;
             }
-            _housingService.SaveApplication(housingAppDetails.username, sessionId, appIds);
+            _housingService.SaveApplication(apartmentAppDetails.Username, sessionId, appIds);
 
             return Ok();
 
