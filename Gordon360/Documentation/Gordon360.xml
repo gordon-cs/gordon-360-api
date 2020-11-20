@@ -375,7 +375,7 @@
         <member name="M:Gordon360.Controllers.Api.HousingController.GetApartmentInfo">
             Call the service that gets all student housing information
         </member>
-        <member name="M:Gordon360.Controllers.Api.HousingController.SaveApplication(Gordon360.Models.ViewModels.HousingAppViewModel)">
+        <member name="M:Gordon360.Controllers.Api.HousingController.SaveApplication(Gordon360.Models.ViewModels.ApartmentAppViewModel)">
             <summary>
             save application
             </summary>
