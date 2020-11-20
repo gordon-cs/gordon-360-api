@@ -406,9 +406,6 @@ namespace Gordon360.ApiControllers
             var viewerType = _roleCheckingService.getCollegeRole(viewerName);
 
             // Create accounts viewmodel to search
-            var studentAccounts = Data.PublicStudentData;
-            var facStaffAccounts = Data.PublicFacultyStaffData;
-            var alumniAccounts = Data.PublicAlumniData;
             var accountsWithoutCurrentStudents = Data.AllPublicAccountsWithoutCurrentStudents;
             var accountsWithoutAlumni = Data.AllPublicAccountsWithoutAlumni;
             var accounts = Data.AllPublicAccounts;

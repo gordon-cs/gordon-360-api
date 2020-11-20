@@ -850,7 +850,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:5849</IISUrl>
+          <IISUrl>http://localhost:6969</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
