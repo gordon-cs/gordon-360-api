@@ -342,15 +342,6 @@ namespace Gordon360.ApiControllers
         [Route("advanced-people-search/{includeAlumniSearchParam}/{firstNameSearchParam}/{lastNameSearchParam}/{majorSearchParam}/{minorSearchParam}/{hallSearchParam}/{classTypeSearchParam}/{hometownSearchParam}/{stateSearchParam}/{countrySearchParam}/{departmentSearchParam}/{buildingSearchParam}")]
         public IHttpActionResult AdvancedPeopleSearch(bool includeAlumniSearchParam, string firstNameSearchParam, string lastNameSearchParam, string majorSearchParam, string minorSearchParam, string hallSearchParam, string classTypeSearchParam,  string hometownSearchParam, string stateSearchParam, string countrySearchParam, string departmentSearchParam, string buildingSearchParam)
         {
-            System.Diagnostics.Debug.WriteLine("A.P.S. been called");
-
-
-            System.Diagnostics.Debug.WriteLine("Values of each search param. IncludeAlumni?: " + includeAlumniSearchParam + " FirstName: " + firstNameSearchParam + "  LastName: " + lastNameSearchParam + "  Major: " + majorSearchParam +
-                "  Minor: " + minorSearchParam + "  Class: " + classTypeSearchParam + "  Hometown: " + hometownSearchParam + "  State: " + stateSearchParam + "  Country: " + countrySearchParam + "  Dept: " + departmentSearchParam + "  Building: " + buildingSearchParam);
-            
-            string sampleBuildingDescription = Gordon360.Services.ComplexQueries.RawSqlQuery<String>.query("SELECT BuildingDescription from STUDENT where AD_Username = 'nathaniel.rudenberg'").Cast<string>().ElementAt(0);
-            System.Diagnostics.Debug.WriteLine("Sample Building description from Database: " + sampleBuildingDescription);
-
             // If any search params were not entered, set them to empty strings
             if (firstNameSearchParam == "C\u266F")
             {
