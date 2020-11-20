@@ -613,6 +613,14 @@ warning 6002: The table/view 'CCT.dbo.FacStaff' does not have a primary key defi
           <Property Name="Mail_Location" Type="varchar" MaxLength="20" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6013: The table/view 'CCT.dbo.Health_Status' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="Health_Status">
+          <Property Name="ID_Num" Type="int" />
+          <Property Name="Status" Type="varchar" MaxLength="6" />
+          <Property Name="Created" Type="datetime" />
+          <Property Name="isOverride" Type="bit" />
+        </EntityType>-->
+        <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.JENZ_ACT_CLUB_DEF' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="JENZ_ACT_CLUB_DEF">
           <Key>
