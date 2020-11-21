@@ -606,7 +606,6 @@
     <Compile Include="Models\ViewModels\GroupViewModel.cs" />
     <Compile Include="Models\ViewModels\HourTypesViewModel.cs" />
     <Compile Include="Models\ViewModels\MessageViewModel.cs" />
-    <Compile Include="Models\ViewModels\HousingAppToSubmitViewModel.cs" />
     <Compile Include="Models\ViewModels\RoomViewModel.cs" />
     <Compile Include="Models\ViewModels\StaffCheckViewModel.cs" />
     <Compile Include="Models\ViewModels\StaffTimesheetsViewModel.cs" />
