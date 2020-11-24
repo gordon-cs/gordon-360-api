@@ -37,6 +37,7 @@ namespace Gordon360.Models.ViewModels
         public Nullable<int> show_pic { get; set; }
         public string BuildingDescription { get; set; }
         public string Country { get; set; }
+        public string Mail_Location { get; set; }
 
 
 
@@ -74,7 +75,8 @@ namespace Gordon360.Models.ViewModels
                 preferred_photo = fac.preferred_photo,
                 show_pic = fac.show_pic,
                 BuildingDescription = fac.BuildingDescription ?? "",
-                Country = fac.Country ?? ""
+                Country = fac.Country ?? "",
+                Mail_Location = fac.Mail_Location ?? ""
             };
             if (vm.KeepPrivate.Contains("1"))
             {
