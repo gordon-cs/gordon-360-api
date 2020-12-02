@@ -67,7 +67,7 @@ namespace Gordon360.Controllers.Api
 
             string sessionId = Helpers.GetCurrentSession().SessionCode;
             string[] appIds = new string[apartmentAppDetails.Applicants.Length];
-            for(int i = 0; i <= apartmentAppDetails.Applicants.Length; i++){
+            for(int i = 0; i < apartmentAppDetails.Applicants.Length; i++){
                 appIds[i] = _accountService.GetAccountByUsername(apartmentAppDetails.Applicants[i]).GordonID;
             }
             bool result = _housingService.SaveApplication(apartmentAppDetails.Username, sessionId, appIds);
