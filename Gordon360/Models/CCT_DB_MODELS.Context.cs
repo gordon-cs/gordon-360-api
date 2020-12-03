@@ -34,6 +34,7 @@ namespace Gordon360.Models
         public virtual DbSet<CUSTOM_PROFILE> CUSTOM_PROFILE { get; set; }
         public virtual DbSet<ERROR_LOG> ERROR_LOG { get; set; }
         public virtual DbSet<Health_Override> Health_Override { get; set; }
+        public virtual DbSet<Health_Status> Health_Status { get; set; }
         public virtual DbSet<Health_Status_CTRL> Health_Status_CTRL { get; set; }
         public virtual DbSet<JNZB_ACTIVITIES> JNZB_ACTIVITIES { get; set; }
         public virtual DbSet<MEMBERSHIP> MEMBERSHIP { get; set; }
@@ -438,15 +439,15 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<EVENTS_BY_STUDENT_ID_Result>("EVENTS_BY_STUDENT_ID", sTU_USERNAMEParameter);
         }
     
-        public virtual ObjectResult<Nullable<int>> GET_AA_APPID_BY_NAME_AND_DATE(Nullable<System.DateTime> nOW, Nullable<int> mODIFIER_ID)
+        public virtual ObjectResult<Nullable<int>> GET_AA_APPID_BY_NAME_AND_DATE(Nullable<System.DateTime> nOW, string mODIFIER_ID)
         {
             var nOWParameter = nOW.HasValue ?
                 new ObjectParameter("NOW", nOW) :
                 new ObjectParameter("NOW", typeof(System.DateTime));
     
-            var mODIFIER_IDParameter = mODIFIER_ID.HasValue ?
+            var mODIFIER_IDParameter = mODIFIER_ID != null ?
                 new ObjectParameter("MODIFIER_ID", mODIFIER_ID) :
-                new ObjectParameter("MODIFIER_ID", typeof(int));
+                new ObjectParameter("MODIFIER_ID", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GET_AA_APPID_BY_NAME_AND_DATE", nOWParameter, mODIFIER_IDParameter);
         }
@@ -542,15 +543,15 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GRP_ADMIN_EMAILS_PER_ACT_CDE_Result>("GRP_ADMIN_EMAILS_PER_ACT_CDE", aCT_CDEParameter, sESS_CDEParameter);
         }
     
-        public virtual int INSERT_AA_APPLICANT(Nullable<int> aPPLICATION_ID, Nullable<int> iD_NUM, string aPRT_PROGRAM, string sESS_CDE)
+        public virtual int INSERT_AA_APPLICANT(Nullable<int> aPPLICATION_ID, string iD_NUM, string aPRT_PROGRAM, string sESS_CDE)
         {
             var aPPLICATION_IDParameter = aPPLICATION_ID.HasValue ?
                 new ObjectParameter("APPLICATION_ID", aPPLICATION_ID) :
                 new ObjectParameter("APPLICATION_ID", typeof(int));
     
-            var iD_NUMParameter = iD_NUM.HasValue ?
+            var iD_NUMParameter = iD_NUM != null ?
                 new ObjectParameter("ID_NUM", iD_NUM) :
-                new ObjectParameter("ID_NUM", typeof(int));
+                new ObjectParameter("ID_NUM", typeof(string));
     
             var aPRT_PROGRAMParameter = aPRT_PROGRAM != null ?
                 new ObjectParameter("APRT_PROGRAM", aPRT_PROGRAM) :
@@ -563,15 +564,15 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("INSERT_AA_APPLICANT", aPPLICATION_IDParameter, iD_NUMParameter, aPRT_PROGRAMParameter, sESS_CDEParameter);
         }
     
-        public virtual int INSERT_AA_APPLICATION(Nullable<System.DateTime> nOW, Nullable<int> mODIFIER_ID)
+        public virtual int INSERT_AA_APPLICATION(Nullable<System.DateTime> nOW, string mODIFIER_ID)
         {
             var nOWParameter = nOW.HasValue ?
                 new ObjectParameter("NOW", nOW) :
                 new ObjectParameter("NOW", typeof(System.DateTime));
     
-            var mODIFIER_IDParameter = mODIFIER_ID.HasValue ?
+            var mODIFIER_IDParameter = mODIFIER_ID != null ?
                 new ObjectParameter("MODIFIER_ID", mODIFIER_ID) :
-                new ObjectParameter("MODIFIER_ID", typeof(int));
+                new ObjectParameter("MODIFIER_ID", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("INSERT_AA_APPLICATION", nOWParameter, mODIFIER_IDParameter);
         }
@@ -640,11 +641,11 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("INSERT_HEALTH_QUESTION", questionParameter, yesPromptParameter, noPromptParameter);
         }
     
-        public virtual int INSERT_MESSAGE(Nullable<int> p_id, string room_id, string text, Nullable<System.DateTime> createdAt, string user_id, byte[] image, byte[] video, byte[] audio, Nullable<bool> system, Nullable<bool> sent, Nullable<bool> received, Nullable<bool> pending)
+        public virtual int INSERT_MESSAGE(string p_id, string room_id, string text, Nullable<System.DateTime> createdAt, string user_id, byte[] image, byte[] video, byte[] audio, Nullable<bool> system, Nullable<bool> sent, Nullable<bool> received, Nullable<bool> pending)
         {
-            var p_idParameter = p_id.HasValue ?
+            var p_idParameter = p_id != null ?
                 new ObjectParameter("p_id", p_id) :
-                new ObjectParameter("p_id", typeof(int));
+                new ObjectParameter("p_id", typeof(string));
     
             var room_idParameter = room_id != null ?
                 new ObjectParameter("room_id", room_id) :

@@ -17,5 +17,11 @@ namespace Gordon360.Models
         public string Status { get; set; }
         public Nullable<System.DateTime> Created { get; set; }
         public Nullable<bool> isOverride { get; set; }
+        public string CheckIn_Status { get; set; }
+        public Nullable<System.DateTime> CheckIn_Created { get; set; }
+        public string Override_Status { get; set; }
+        public Nullable<System.DateTime> Override_Created { get; set; }
+        public string Override_Created_By { get; set; }
+        public Nullable<System.DateTime> Override_Expires { get; set; }
     }
 }

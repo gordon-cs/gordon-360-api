@@ -66,12 +66,14 @@ namespace Gordon360.Controllers.Api
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
+            string modifierId = _accountService.GetAccountByUsername(apartmentAppDetails.Username).GordonID;
             string sessionId = Helpers.GetCurrentSession().SessionCode;
             string[] appIds = new string[apartmentAppDetails.Applicants.Length];
             for(int i = 0; i < apartmentAppDetails.Applicants.Length; i++){
                 appIds[i] = _accountService.GetAccountByUsername(apartmentAppDetails.Applicants[i]).GordonID;
             }
-            bool result = _housingService.SaveApplication(apartmentAppDetails.Username, sessionId, appIds);
+
+            bool result = _housingService.SaveApplication(modifierId, sessionId, appIds);
 
             return Created("Status of application saving: ", result);
 

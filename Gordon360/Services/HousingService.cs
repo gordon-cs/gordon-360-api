@@ -34,46 +34,56 @@ namespace Gordon360.Services
 
         /// <summary>
         /// Saves student housing info
+        /// - first, it creates a new row in the applications table and puts the id of the primary applicant and a timestamp
+        /// - second, it looks for the application id with the information we just input to an application (because 
+        /// the database creates the application ID so we have to ask it which number it generated for it)
+        /// - third, it inserts each applicant into the applicnts table along with the apartment ID so we know
+        /// which application on which they are an applicant
+        ///  
         /// </summary>
-        /// <returns>The housing item</returns>
-        public bool SaveApplication(string username, string sess_cde, string [] appIds)
+        /// <returns>Whether or not all the queries succeeded</returns>
+        public bool SaveApplication(string modifierId, string sess_cde, string [] appIds)
         {
             IEnumerable<ApartmentAppSaveViewModel> result = null;
-            IEnumerable<AA_ApartmentApplications> result2 = null;
-            IEnumerable<AA_Applicants> result3 = null;
+            IEnumerable<AA_ApartmentApplications> aprtAppId = null;
+            IEnumerable<ApartmentApplicantViewModel> result2 = null;
 
             DateTime now = System.DateTime.Now;
 
             var timeParam = new SqlParameter("@NOW", now);
-            var idParam = new SqlParameter("@MODIFIER_ID", username);
+            var modParam = new SqlParameter("@MODIFIER_ID", modifierId);
             var sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
             //var programParam = new SqlParameter("@APRT_PROGRAM", now);
 
             bool returnAnswer = true;
 
-            result = RawSqlQuery<ApartmentAppSaveViewModel>.query("INSERT_AA_APPLICATION @NOW, @MODIFIER_ID", timeParam, idParam); //run stored procedure
+            result = RawSqlQuery<ApartmentAppSaveViewModel>.query("INSERT_AA_APPLICATION @NOW, @MODIFIER_ID", timeParam, modParam); //run stored procedure
             if (result == null)
             {
                 returnAnswer = false;
                 throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be saved." };
             }
 
-            result2 = RawSqlQuery<AA_ApartmentApplications>.query("GET_AA_APPID_BY_NAME_AND_DATE @NOW, @MODIFIER_ID", timeParam, idParam); //run stored procedure
-            if (result2 == null)
+            aprtAppId = RawSqlQuery<AA_ApartmentApplications>.query("GET_AA_APPID_BY_NAME_AND_DATE @NOW, @MODIFIER_ID", timeParam, modParam); //run stored procedure
+            if (aprtAppId == null)
             {
                 returnAnswer = false;
                 throw new ResourceNotFoundException() { ExceptionMessage = "The new application ID could not be found." };
             }
 
-            foreach (string applicant in appIds) {
-                result3 = RawSqlQuery<AA_Applicants>.query("INSERT_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM,  @SESS_CDE", result2, applicant, null, sessionParam); //run stored procedure
-                if (result3 == null)
+            var appIdParam = new SqlParameter("@MODIFIER_ID", aprtAppId);
+            var idParam = new SqlParameter("@MODIFIER_ID", null);
+
+            foreach (string id in appIds) {
+                idParam.Value = id;
+                result2 = RawSqlQuery<ApartmentApplicantViewModel>.query("INSERT_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM,  @SESS_CDE", appIdParam, idParam, null, sessionParam); //run stored procedure
+                if (result2 == null)
                 {
                     returnAnswer = false; // not sure if this matters since I have heard throwing an exception "returns"
-                    throw new ResourceNotFoundException() { ExceptionMessage = "Applicant with ID " + applicant + " could not be saved." };   
+                    throw new ResourceNotFoundException() { ExceptionMessage = "Applicant with ID " + id + " could not be saved." };   
                 }
             }
-
+             
             return returnAnswer;
         }
     }
