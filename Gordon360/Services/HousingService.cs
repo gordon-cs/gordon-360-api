@@ -38,8 +38,7 @@ namespace Gordon360.Services
         /// <returns>The housing item</returns>
         public bool SaveApplication(string username, string sess_cde, string [] appIds)
         {
-            Debug.Assert(1 != 2);
-            IEnumerable<AA_ApartmentApplications> result = null;
+            IEnumerable<ApartmentAppSaveViewModel> result = null;
             IEnumerable<AA_ApartmentApplications> result2 = null;
             IEnumerable<AA_Applicants> result3 = null;
 
@@ -52,8 +51,7 @@ namespace Gordon360.Services
 
             bool returnAnswer = true;
 
-            result = RawSqlQuery<AA_ApartmentApplications>.query("INSERT_AA_APPLICATION @NOW, @MODIFIER_ID", timeParam, idParam); //run stored procedure
-            Debug.Assert(result != null);
+            result = RawSqlQuery<ApartmentAppSaveViewModel>.query("INSERT_AA_APPLICATION @NOW, @MODIFIER_ID", timeParam, idParam); //run stored procedure
             if (result == null)
             {
                 returnAnswer = false;

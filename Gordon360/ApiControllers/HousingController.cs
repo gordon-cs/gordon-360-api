@@ -12,6 +12,7 @@ using Gordon360.Static.Methods;
 using Gordon360.Models.ViewModels;
 using System.Collections.Generic;
 using System;
+using System.Diagnostics;
 
 namespace Gordon360.Controllers.Api
 {
