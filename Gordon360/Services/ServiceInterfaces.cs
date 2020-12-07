@@ -3,6 +3,7 @@ using System.Xml.Linq;
 using System.Collections.Generic;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
+using static Gordon360.Controllers.Api.WellnessController;
 
 // <summary>
 // Namespace with all the Service Interfaces that are to be implemented. I don't think making this interface is required, the services can work find on their own.
@@ -53,12 +54,11 @@ namespace Gordon360.Services
 
     public interface IWellnessService
     {
-        WellnessStatusViewModel GetStatus(string id);
-        IEnumerable<DEPRECATED_WellnessViewModel> DEPRECATED_GetStatus(string id);
+        WellnessViewModel GetStatus(string id);
+        DEPRECATED_WellnessStatusViewModel DEPRECATED_GetStatus(string id);
         WellnessQuestionViewModel GetQuestion();
-        IEnumerable<WellnessQuestionViewModel> DEPRECATED_GetQuestion();
-        string PostStatus(string status, string id);
-        DEPRECATED_WellnessViewModel DEPRECATED_PostStatus(bool answer, string id);
+        Health_Status PostStatus(WellnessStatusColor status, string id);
+        string DEPRECATED_PostStatus(string status, string id);
     }
 
     public interface IDirectMessageService

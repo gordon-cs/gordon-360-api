@@ -39,6 +39,7 @@ namespace Gordon360.Repositories
         private IRepository<Schedule_Control> _ScheduleControlRepository;
         private IRepository<StudentNews> _StudentNewsRepository;
         private IRepository<StudentNewsCategory> _StudentNewsCategoryRepository;
+        private IRepository<Health_Status> _WellnessRepository;
 
         private CCTEntities1 _context;
         private MyGordonEntities _myGordonCtx;
@@ -104,6 +105,10 @@ namespace Gordon360.Repositories
         public IRepository<Schedule_Control> ScheduleControlRepository
         {
             get { return _ScheduleControlRepository ?? (_ScheduleControlRepository = new GenericRepository<Schedule_Control>(_context)); }
+        }
+        public IRepository<Health_Status> WellnessRepository
+        {
+            get { return _WellnessRepository ?? (_WellnessRepository = new GenericRepository<Health_Status>(_context)); }
         }
 
         IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> IUnitOfWork.ActivityPerSessionRepository

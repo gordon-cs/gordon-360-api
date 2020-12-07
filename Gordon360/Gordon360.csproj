@@ -277,8 +277,8 @@
       <DependentUpon>CCT_DB_Models.Context.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CCT_DB_Models.cs">
-      <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CCT_DB_Models.Designer.cs">
@@ -346,19 +346,10 @@
     <Compile Include="Models\FacStaff.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\GET_ALL_HEALTH_STATUS_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\GET_ALL_MESSAGES_BY_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\GET_HEALTH_CHECK_BY_ID_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\GET_HEALTH_CHECK_QUESTION_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\GET_HEALTH_STATUS_BY_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\GET_ROOM_BY_ID_Result.cs">
@@ -373,16 +364,13 @@
     <Compile Include="Models\GRP_ADMIN_EMAILS_PER_ACT_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Health_Check.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Health_Check_Updated.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Health_Override.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\Health_Question.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Health_Status.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Health_Status_CTRL.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\hour_types.cs">
