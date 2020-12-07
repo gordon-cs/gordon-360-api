@@ -31,6 +31,7 @@ Dive in.
     - [Content Management](#content-management)
     - [Emails](#emails)
     - [Events](#events)
+    - [Jobs](#jobs)
     - [Memberships](#memberships)
     - [Membership Requests](#membership-requests)
     - [Participation Definitions](#participation-definitions)
@@ -664,6 +665,36 @@ Multiple types or events are separated by a '$'
 `api/events/25Live/Public` Returns all events in 25Live marked to promote on public calendars (Reuirement_ID = 3).
 
 
+### Jobs
+What is it? Resource that represents student (and soon staff) jobs on campus.
+
+##### GET
+
+`api/jobs{shiftStart}{shiftEnd}` Get all jobs for the logged in user that are active in the time between `shiftStart` and `shiftEnd`.
+
+`api/jobs/shifts` Get all saved shifts for the logged in user.
+
+`api/jobs/supervisor/:id` Get the name of a supervisor with accoutn id `id`.
+
+`api/jobs/clockins` Gets the clock in status of the currently logged in user.
+
+##### POST
+
+`api/jobs/shifts` Save a new shift.
+
+`api/jobs/shifts/submit` Submits saved shifts.
+
+`api/jobs/clockins` Saves a new clock in status.
+
+##### PUT
+
+`api/jobs/shifts/:id` Edit the saved shift with shift id `id`.
+
+##### DELETE
+
+`api/jobs/shifts/:id` Delete the saved shift with id `id`.
+
+`api/jobs/clockins` Deletes the last clock in of the logged in user.
 
 ### Memberships
 What is it? Resource that represents the affiliation between a student and a club.
