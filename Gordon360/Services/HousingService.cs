@@ -64,19 +64,20 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be saved." };
             }
 
-            aprtAppId = RawSqlQuery<AA_ApartmentApplications>.query("GET_AA_APPID_BY_NAME_AND_DATE @NOW, @MODIFIER_ID", timeParam, modParam); //run stored procedure
+            /**aprtAppId = RawSqlQuery<AA_ApartmentApplications>.query("GET_AA_APPID_BY_NAME_AND_DATE @NOW, @MODIFIER_ID", timeParam, modParam); //run stored procedure
             if (aprtAppId == null)
             {
                 returnAnswer = false;
                 throw new ResourceNotFoundException() { ExceptionMessage = "The new application ID could not be found." };
-            }
+            }*/ // commented out temporarily for debug
 
-            var appIdParam = new SqlParameter("@MODIFIER_ID", aprtAppId);
-            var idParam = new SqlParameter("@MODIFIER_ID", null);
+            var appIdParam = new SqlParameter("@APPLICATION_ID", 12346); //aprtAppId); commented out temporarily for debug
+            var idParam = new SqlParameter("@ID_NUM", null);
+            var programParam = new SqlParameter("@APRT_PROGRAM", "");
 
             foreach (string id in appIds) {
                 idParam.Value = id;
-                result2 = RawSqlQuery<ApartmentApplicantViewModel>.query("INSERT_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM,  @SESS_CDE", appIdParam, idParam, null, sessionParam); //run stored procedure
+                result2 = RawSqlQuery<ApartmentApplicantViewModel>.query("INSERT_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM, @SESS_CDE", appIdParam, idParam, programParam, sessionParam); //run stored procedure
                 if (result2 == null)
                 {
                     returnAnswer = false; // not sure if this matters since I have heard throwing an exception "returns"
