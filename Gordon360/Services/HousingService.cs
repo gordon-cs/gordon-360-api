@@ -69,14 +69,23 @@ namespace Gordon360.Services
             {
                 returnAnswer = false;
                 throw new ResourceNotFoundException() { ExceptionMessage = "The new application ID could not be found." };
-            }*/ // commented out temporarily for debug
+            } */ // commented out temporarily for debug
 
-            var appIdParam = new SqlParameter("@APPLICATION_ID", 12346); //aprtAppId); commented out temporarily for debug
-            var idParam = new SqlParameter("@ID_NUM", null);
-            var programParam = new SqlParameter("@APRT_PROGRAM", "");
+            SqlParameter appIdParam = null;
+            SqlParameter idParam = null;
+            SqlParameter programParam = null;
 
             foreach (string id in appIds) {
-                idParam.Value = id;
+                // The following is ODD, I know. It seems you cannot execute the same query with the same sql parameters twice.
+                // Thus, this constructs new SqlParameters each time we iterate (despite that only 1/4 will actually be different
+                // on subsequent iterations.
+
+                //idParam.Value = id; might need if this solution is not satisfactory
+                appIdParam = new SqlParameter("@APPLICATION_ID", 3); // replace 3 with aprtAppId when done debugging
+                idParam = new SqlParameter("@ID_NUM", id);
+                programParam = new SqlParameter("@APRT_PROGRAM", "");
+                sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
+
                 result2 = RawSqlQuery<ApartmentApplicantViewModel>.query("INSERT_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM, @SESS_CDE", appIdParam, idParam, programParam, sessionParam); //run stored procedure
                 if (result2 == null)
                 {
