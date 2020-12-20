@@ -89,7 +89,7 @@ namespace Gordon360.ApiControllers
         [Authorize]
         [HttpGet]
         [Route("25Live/type/{Type_ID}")]
-        public IHttpActionResult GetEventsByType(string Type_ID)
+        public IHttpActionResult GetEventsByType(string Type_ID) // *
         {
             // Two important checks: make sure the event_or_type_id does not contain any letters, and make sure the type is a single letter
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(Type_ID) )
@@ -157,7 +157,7 @@ namespace Gordon360.ApiControllers
         /// <returns></returns>
         [Authorize]
         [HttpGet]
-        [Route("25Live/All")]
+        [Route("25Live/All")] // *
         public IHttpActionResult GetAllEvents()
         {
 
@@ -208,7 +208,7 @@ namespace Gordon360.ApiControllers
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var result = _eventService.GetAllEvents(Static.Data.Data.AllEvents).Where( x => x.Category_Id == "85");
+            var result = _eventService.GetAllEvents(Static.Data.Data.AllEvents).Where( x => x.Category_Id == "85"); // this is category ID, not type ID right?
 
 
             if (result == null)
@@ -239,7 +239,7 @@ namespace Gordon360.ApiControllers
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var result = _eventService.GetAllEvents(Static.Data.Data.AllEvents).Where(x => x.Requirement_Id == "3");
+            var result = _eventService.GetAllEvents(Static.Data.Data.AllEvents).Where(x => x.Requirement_Id == "3"); // probably not an issue, we will see
 
             if (result == null)
             {

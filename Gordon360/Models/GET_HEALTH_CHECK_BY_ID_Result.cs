@@ -11,13 +11,9 @@ namespace Gordon360.Models
 {
     using System;
     
-    public partial class STUDENT_JOBS_PER_ID_NUM_Result
+    public partial class GET_HEALTH_CHECK_BY_ID_Result
     {
-        public string Job_Title { get; set; }
-        public string Job_Department { get; set; }
-        public string Job_Department_Name { get; set; }
-        public System.DateTime Job_Start_Date { get; set; }
-        public Nullable<System.DateTime> Job_End_Date { get; set; }
-        public Nullable<System.DateTime> Job_Expected_End_Date { get; set; }
+        public Nullable<System.DateTime> timestamp { get; set; }
+        public Nullable<bool> userAnswer { get; set; }
     }
 }
