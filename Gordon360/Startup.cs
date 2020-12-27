@@ -73,7 +73,6 @@ namespace Gordon360
             config.MapHttpAttributeRoutes();
             config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/plain"));
             appBuilder.UseWebApi(config);
-            appBuilder.UseSignalR
         }
 
         /// <summary>
