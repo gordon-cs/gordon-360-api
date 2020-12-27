@@ -20,7 +20,7 @@ using Gordon360.Models;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using Gordon360.Hubs;
-
+using Microsoft.AspNet.SignalR;
 
 namespace Gordon360
 {
@@ -31,7 +31,9 @@ namespace Gordon360
         {
             var issuer = System.Web.Configuration.WebConfigurationManager.AppSettings["jwtIssuer"];
             var secret = System.Web.Configuration.WebConfigurationManager.AppSettings["jwtSecret"];
-            appBuilder.MapSignalR();
+            var HubConfig = new HubConfiguration();
+            HubConfig.EnableJSONP = true;
+            appBuilder.MapSignalR(HubConfig);
             // Configure Cors
             appBuilder.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
             // Configure options for Authorization Component
