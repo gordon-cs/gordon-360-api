@@ -19,6 +19,8 @@ using System.Collections.Generic;
 using Gordon360.Models;
 using Newtonsoft.Json.Linq;
 using System.Linq;
+using Gordon360.Hubs;
+
 
 namespace Gordon360
 {
@@ -29,10 +31,9 @@ namespace Gordon360
         {
             var issuer = System.Web.Configuration.WebConfigurationManager.AppSettings["jwtIssuer"];
             var secret = System.Web.Configuration.WebConfigurationManager.AppSettings["jwtSecret"];
-
+            appBuilder.MapSignalR();
             // Configure Cors
             appBuilder.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
-
             // Configure options for Authorization Component
             appBuilder.UseOAuthAuthorizationServer(new OAuthAuthorizationServerOptions
             {
