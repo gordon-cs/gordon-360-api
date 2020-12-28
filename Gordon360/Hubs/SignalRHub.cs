@@ -25,6 +25,12 @@ namespace Gordon360.Hubs
             await Clients.All.SendAsync("It's working boss");
 
         }
+
+        public string test2()
+        {
+            return "It worked";
+
+        }
     }
  
 
