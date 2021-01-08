@@ -32,9 +32,7 @@ namespace Gordon360.Services
 
     public interface IEventService
     {
-        IEnumerable<AttendedEventViewModel> GetAllForStudent(string id);
         IEnumerable<AttendedEventViewModel> GetEventsForStudentByTerm(string id, string term);
-        IEnumerable<EventViewModel> GetSpecificEvents(string Event_ID, string type);
         IEnumerable<EventViewModel> GetAllEvents(XDocument xmlDoc);
     }
 
