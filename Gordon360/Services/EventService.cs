@@ -44,7 +44,7 @@ namespace Gordon360.Services
         /// <param name="EventID"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public string GetRoute(string EventID, string type) 
+        public string GetRoute(string EventID, string type)
         // all these '&event_type_id=<somId+someId>'s might need to change, actually we don't use the one that just gets a single type
         {
             // Get the current year
@@ -102,7 +102,7 @@ namespace Gordon360.Services
             XDocument xmlDoc = Helpers.GetLiveStream(requestUrl);
 
             // Pull out the nodes for events
-            IEnumerable<XElement> events = xmlDoc.Descendants(r25 +"event");
+            IEnumerable<XElement> events = xmlDoc.Descendants(r25 + "event");
 
             // Convert to iterable list containing just the pieces we need
             List<EventViewModel> stuff = new List<EventViewModel>();
@@ -115,32 +115,38 @@ namespace Gordon360.Services
             }
 
             return stuff.AsEnumerable<EventViewModel>();
-            
+
         }
-        
+
         /// <summary>
         /// Access the memory stream created by the cached task and parse it into events
         /// </summary>
         /// <param name="xmlDoc"></param>
         /// <returns></returns>
-        public IEnumerable<EventViewModel> GetAllEvents (XDocument xmlDoc)
+        public IEnumerable<EventViewModel> GetAllEvents(XDocument xmlDoc)
         {
 
-                // Pull out the nodes for events
-                IEnumerable<XElement> events = xmlDoc.Descendants(r25 + "event");
+            return xmlDoc.Descendants(r25 + "event")
+                .Select(e => new EventViewModel(e))
+                .Where(e => e.Categories.Any(c => c.CategoryID == "99"));
 
-                // Convert to iterable list containing just the pieces we need
-                List<EventViewModel> stuff = new List<EventViewModel>();
+            //// Pull out the nodes for events
+            //IEnumerable<XElement> events = xmlDoc.Descendants(r25 + "event");
 
-                // Convert each element into a viewmodel for events          
-                foreach (XElement n in events)
-                {
-                    EventViewModel vm = new EventViewModel(n);
-                    stuff.Add(vm);
-                }
 
-                return stuff.AsEnumerable<EventViewModel>();
-            
+            //// Convert to iterable list containing just the pieces we need
+            //List<EventViewModel> stuff = new List<EventViewModel>();
+
+            //    // Convert each element into a viewmodel for events          
+            //    foreach (XElement n in events)
+            //    {
+            //        EventViewModel vm = new EventViewModel(n);
+            //        stuff.Add(vm);
+            //    }
+
+            //    // Only include events for public calendar
+            //    return stuff.AsEnumerable()
+
         }
 
         /// <summary>
@@ -234,16 +240,16 @@ namespace Gordon360.Services
             }
             return vm;
         }
-    
 
 
-    /// <summary>
-    /// Returns all attended events for a student in a specific term
-    /// </summary>
-    /// <param name="user_name"> The student's ID</param>
-    /// <param name="term"> The current term</param>
-    /// <returns></returns>
-    [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.ChapelEvent)]
+
+        /// <summary>
+        /// Returns all attended events for a student in a specific term
+        /// </summary>
+        /// <param name="user_name"> The student's ID</param>
+        /// <param name="term"> The current term</param>
+        /// <returns></returns>
+        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.ChapelEvent)]
         public IEnumerable<AttendedEventViewModel> GetEventsForStudentByTerm(string user_name, string term)
         {
             var studentExists = _unitOfWork.AccountRepository.Where(x => x.AD_Username.Trim() == user_name.Trim()).Count() > 0;
@@ -320,7 +326,8 @@ namespace Gordon360.Services
             }
 
             // Attempt to convert the list to a ViewModel we can return
-            try { 
+            try
+            {
                 vm = list.AsEnumerable<AttendedEventViewModel>();
             }
 
