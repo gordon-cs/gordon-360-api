@@ -7,12 +7,10 @@ namespace Gordon360.Models.ViewModels
     {
         public string LiveID { get; set; }
         public DateTime? CHDate { get; set; }
-        public DateTime? CHTime { get; set; }
         public string CHTermCD { get; set; }
         public int? Required { get; set; }
         public string Event_Name { get; set; }
         public string Event_Title { get; set; }
-        public string Event_Type_Name { get; set; }
         public string Description { get; set; }
         public string Organization { get; set; }
         public List<EventOccurence> Occurrences { get; set; }
@@ -23,8 +21,7 @@ namespace Gordon360.Models.ViewModels
         {   
             // First the EventViewModel
             LiveID = b.LiveID;
-            CHDate = b.CHDate;
-            CHTime = b.CHTime;
+            CHDate = b.CHDate.Value.Add(b.CHTime.Value.TimeOfDay);
             CHTermCD = b.CHTermCD.Trim();
             Required = b.Required;
             // Then the CHapelEventViewModel
@@ -32,7 +29,6 @@ namespace Gordon360.Models.ViewModels
             {
                 Event_Name = a.Event_Name ?? "";
                 Event_Title = a.Event_Title ?? "";
-                Event_Type_Name = a.Event_Type_Name ?? "";
                 Description = a.Description ?? "";
                 Organization = a.Organization ?? "";
                 Occurrences = a.Occurrences ?? null;
@@ -43,7 +39,6 @@ namespace Gordon360.Models.ViewModels
             {
                 Event_Name =  "";
                 Event_Title = "";
-                Event_Type_Name =  "";
                 Description =  "";
                 Organization =  "";
                 Occurrences = null;

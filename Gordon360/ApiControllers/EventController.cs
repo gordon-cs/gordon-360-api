@@ -1,8 +1,6 @@
-﻿using System;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Linq;
 using System.Web.Http;
-using System.ServiceModel;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
 using Gordon360.Services;
@@ -27,7 +25,7 @@ namespace Gordon360.ApiControllers
         public IHttpActionResult GetEventsForStudentByTerm(string term)
         {
             //get token data from context, username is the username of current logged in person
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var authenticatedUser = ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var user_name = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(user_name) || string.IsNullOrWhiteSpace(term))
             {
@@ -151,12 +149,7 @@ namespace Gordon360.ApiControllers
             return Ok(result);
         }
 
-        
-
     }
-
-
-
 
 }
 

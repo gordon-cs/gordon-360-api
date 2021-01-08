@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
@@ -10,7 +9,6 @@ using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using Gordon360.Static.Data;
-using Gordon360.Static.Methods;
 using System.Xml.Linq;
 
 
@@ -53,7 +51,7 @@ namespace Gordon360.Services
         /// <returns>All Public Events</returns>
         public IEnumerable<EventViewModel> GetPublicEvents()
         {
-            return GetAllEvents().Where(e => e.Requirements.Any(r => r.RequirementID == "3"));
+            return GetAllEvents().Where(e => e.IsPublic);
         }
 
         /// <summary>
@@ -62,7 +60,7 @@ namespace Gordon360.Services
         /// <returns>All CLAW Events</returns>
         public IEnumerable<EventViewModel> GetCLAWEvents()
         {
-            return GetAllEvents().Where(e => e.Categories.Any(c => c.CategoryID == "85"));
+            return GetAllEvents().Where(e => e.HasCLAWCredit);
         }
 
 
@@ -93,73 +91,14 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The student was not found" };
             }
 
-            // This is the only real difference between the last method and this one
-            // Filter out the events that are part of the specified term, based on the attribute specified, then sort by Date
-            result = result.Where(x => x.CHTermCD.Trim().Equals(term)).OrderByDescending(x => x.CHDate);
-
-            // A list to hold each combined event until we finish
-            List<AttendedEventViewModel> list = new List<AttendedEventViewModel>();
-
-            // Create an empty event view model, to use just in case
-            EventViewModel whoops = null;
-
-            // Create an empty list of events, to use just in case
-            IEnumerable<EventViewModel> events = null;
-
-            // Get a list of every attended event, to send over to 25Live
-            string joined = string.Join("+", result.Select(x => x.LiveID));
-
-            // Attempt to return all events attended by the student from 25Live
-            // We use the cached data
-            events = GetAllEvents();
-
-            // Loop through each event a student has attended and pull it's corresponding details from 25Live
-            foreach (var c in result)
-            {
-                try
-                {
-                    // Find the event with the same ID as the attended event
-                    EventViewModel l = events.ToList().Find(x => x.Event_ID == c.LiveID);
-                    whoops = l;
-                }
-                catch
-                {
-                    // Ignore issue and continue to iterate
-                }
-                AttendedEventViewModel combine = new AttendedEventViewModel(whoops, c);
-                // Add to the list we made earlier
-                list.Add(combine);
-
-            }
-
-            // Declare an empty AttendedEventViewModel to return in the case of a problem
-            IEnumerable<AttendedEventViewModel> vm = null;
-            // In the database, the time and date are stored as separate datetime objects, here we combine them into one
-            foreach (var v in list)
-            {
-                try
-                {
-                    v.CHDate = v.CHDate.Value.Add(v.CHTime.Value.TimeOfDay);
-                }
-                catch (InvalidOperationException e)
-                {
-                    // time value is null -- don't worry bout it
-                    System.Diagnostics.Debug.WriteLine(e.Message);
-                }
-            }
-
-            // Attempt to convert the list to a ViewModel we can return
-            try
-            {
-                vm = list.AsEnumerable<AttendedEventViewModel>();
-            }
-
-            catch (Exception c)
-            {
-                // Do Nothing -- Let the Front End handle a return containing 0 Events
-                System.Diagnostics.Debug.WriteLine(c.Message);
-            }
-            return vm;
+            return result
+                .Where(x => x.CHTermCD.Trim().Equals(term))
+                .Join(
+                    GetAllEvents(),
+                    c => c.LiveID,
+                    e => e.Event_ID,
+                    (c, e) => new AttendedEventViewModel(e, c)
+                );
         }
     }
 }

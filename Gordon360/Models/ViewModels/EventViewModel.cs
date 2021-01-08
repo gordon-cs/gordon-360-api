@@ -15,8 +15,9 @@ namespace Gordon360.Models.ViewModels
         public string Event_Name { get; set; }
         public string Event_Title { get; set; }
         public string Event_Type_Name { get; set; }
-        public List<EventCategory> Categories { get; set; }
-        public List<EventRequirement> Requirements { get; set; }
+        public bool HasCLAWCredit { get; set; }
+
+        public bool IsPublic { get; set; }
         public string Description { get; set; }
         public List<EventOccurence> Occurrences { get; set; }
         public string Organization { get; set; }
@@ -31,20 +32,32 @@ namespace Gordon360.Models.ViewModels
             Event_Name = a.Element(r25 + "event_name")?.Value;
             Event_Title = a.Element(r25 + "event_title")?.Value;
             Event_Type_Name = a.Element(r25 + "event_type_name")?.Value;
-            Description = a.Element(r25 + "event_text")?.Element(r25 + "text")?.Value;
+            Description = a.Elements(r25 + "event_text")?.FirstOrDefault(t => t.Element(r25 + "text_type_id")?.Value == "1")?.Element(r25 + "text")?.Value;
             Organization = a.Element(r25 + "organization")?.Element(r25 + "organization_name")?.Value;
 
-            Categories = a.Elements(r25 + "category")?.Select(category => new EventCategory
+            foreach (var category in a.Elements(r25 + "category"))
             {
-                CategoryID = category.Element(r25 + "category_id")?.Value,
-                CategoryName = category.Element(r25 + "category_name")?.Value
-            }).ToList();
+                if (category.Element(r25 + "category_id")?.Value == "85")
+                {
+                    HasCLAWCredit = true;
+                }
 
-            Requirements = a.Elements(r25 + "requirement")?.Select(requirement => new EventRequirement
+                if (category.Element(r25 + "category_id")?.Value == "99")
+                {
+                    IsPublic = true;
+                }
+            }
+
+            if (!IsPublic)
             {
-                RequirementID = requirement.Element(r25 + "requirement_id")?.Value,
-                RequirementName = requirement.Element(r25 + "requirement_name")?.Value
-            }).ToList();
+                foreach (var requirement in a.Elements(r25 + "requirement"))
+                {
+                    if (requirement.Element(r25 + "requirement_id")?.Value == "3")
+                    {
+                        IsPublic = true;
+                    }
+                }
+            }
 
             Occurrences = a.Element(r25 + "profile")?.Descendants(r25 + "reservation").Select(o => new EventOccurence
             {
@@ -53,18 +66,6 @@ namespace Gordon360.Models.ViewModels
                 Location = o.Element(r25 + "space_reservation")?.Element(r25 + "space")?.Element(r25 + "formal_name")?.Value
             }).ToList();
         }
-    }
-
-    public class EventCategory
-    {
-        public string CategoryID { get; set; }
-        public string CategoryName { get; set; }
-    }
-
-    public class EventRequirement
-    {
-        public string RequirementID { get; set; }
-        public string RequirementName { get; set; }
     }
 
     public class EventOccurence
