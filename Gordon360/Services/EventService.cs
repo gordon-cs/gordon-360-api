@@ -40,17 +40,30 @@ namespace Gordon360.Services
         /// <summary>
         /// Access the memory stream created by the cached task and parse it into events
         /// </summary>
-        /// <param name="xmlDoc"></param>
-        /// <returns></returns>
-        public IEnumerable<EventViewModel> GetAllEvents(XDocument xmlDoc)
+        /// <returns>All events for the current academic year.</returns>
+        public IEnumerable<EventViewModel> GetAllEvents()
         {
 
-            return xmlDoc.Descendants(r25 + "event")
-                .Select(e => new EventViewModel(e))
-                .Where(e => e.Categories.Any(c => c.CategoryID == "99"));
-
+            return Data.AllEvents.Descendants(r25 + "event").Select(e => new EventViewModel(e));
         }
 
+        /// <summary>
+        /// Select only events that are marked for Public promotion
+        /// </summary>
+        /// <returns>All Public Events</returns>
+        public IEnumerable<EventViewModel> GetPublicEvents()
+        {
+            return GetAllEvents().Where(e => e.Requirements.Any(r => r.RequirementID == "3"));
+        }
+
+        /// <summary>
+        /// Select only events that are Approved to give CLAW credit
+        /// </summary>
+        /// <returns>All CLAW Events</returns>
+        public IEnumerable<EventViewModel> GetCLAWEvents()
+        {
+            return GetAllEvents().Where(e => e.Categories.Any(c => c.CategoryID == "85"));
+        }
 
 
         /// <summary>
@@ -98,7 +111,7 @@ namespace Gordon360.Services
 
             // Attempt to return all events attended by the student from 25Live
             // We use the cached data
-            events = GetAllEvents(Data.AllEvents);
+            events = GetAllEvents();
 
             // Loop through each event a student has attended and pull it's corresponding details from 25Live
             foreach (var c in result)

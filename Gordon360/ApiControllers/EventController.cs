@@ -78,7 +78,7 @@ namespace Gordon360.ApiControllers
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var result = _eventService.GetAllEvents(Static.Data.Data.AllEvents);
+            var result = _eventService.GetAllEvents();
 
             if (result == null)
             {
@@ -110,7 +110,7 @@ namespace Gordon360.ApiControllers
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var result = _eventService.GetAllEvents(Static.Data.Data.AllEvents).Where( x => x.Category_Id == "85"); // this is category ID, not type ID right?
+            var result = _eventService.GetCLAWEvents();
 
 
             if (result == null)
@@ -141,7 +141,7 @@ namespace Gordon360.ApiControllers
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var result = _eventService.GetAllEvents(Static.Data.Data.AllEvents).Where(x => x.Requirement_Id == "3"); // probably not an issue, we will see
+            var result = _eventService.GetPublicEvents();
 
             if (result == null)
             {
