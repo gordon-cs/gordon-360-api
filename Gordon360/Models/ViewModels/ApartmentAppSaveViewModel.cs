@@ -5,9 +5,10 @@ using System.Web;
 
 namespace Gordon360.Models.ViewModels
 {
-    public class ApartmentAppViewModel
+    public class ApartmentAppSaveViewModel
     {
-        public string Username { get; set; }
-        public string [] Applicants { get; set; }
+        public DateTime NOW { get; set; }
+        public string MODIFIER_ID { get; set; }
+        
     }
 }

@@ -12,6 +12,7 @@ using Gordon360.Static.Methods;
 using Gordon360.Models.ViewModels;
 using System.Collections.Generic;
 using System;
+using System.Diagnostics;
 
 namespace Gordon360.Controllers.Api
 {
@@ -21,14 +22,12 @@ namespace Gordon360.Controllers.Api
     public class HousingController : ApiController
     {
         private IHousingService _housingService;
-        //private ISessionService _sessionService;
         private IAccountService _accountService;
 
         public HousingController()
         {
             IUnitOfWork _unitOfWork = new UnitOfWork();
             _housingService = new HousingService(_unitOfWork);
-            //_sessionService = new SessionService(_unitOfWork);
             _accountService = new AccountService(_unitOfWork);
         }
 
@@ -49,7 +48,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>The result of submitting the application</returns>
         [HttpPost]
         [Route("save")]
-        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)]
+        //[StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
         public IHttpActionResult SaveApplication([FromBody] ApartmentAppViewModel apartmentAppDetails)
         {
             // Verify Input
@@ -67,16 +66,16 @@ namespace Gordon360.Controllers.Api
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
+            string modifierId = _accountService.GetAccountByUsername(apartmentAppDetails.Username).GordonID;
             string sessionId = Helpers.GetCurrentSession().SessionCode;
             string[] appIds = new string[apartmentAppDetails.Applicants.Length];
-            for(int i = 0; i <= apartmentAppDetails.Applicants.Length; i++){
+            for(int i = 0; i < apartmentAppDetails.Applicants.Length; i++){
                 appIds[i] = _accountService.GetAccountByUsername(apartmentAppDetails.Applicants[i]).GordonID;
             }
-            IEnumerable<HousingAppToSubmitViewModel> result = _housingService.SaveApplication(apartmentAppDetails.Username, sessionId, appIds);
 
-            var applicationID = result.FirstOrDefault().AprtAppID;
+            bool result = _housingService.SaveApplication(modifierId, sessionId, appIds);
 
-            return Ok(applicationID);
+            return Created("Status of application saving: ", result);
 
         }
     }

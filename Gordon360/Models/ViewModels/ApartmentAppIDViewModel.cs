@@ -5,9 +5,8 @@ using System.Web;
 
 namespace Gordon360.Models.ViewModels
 {
-    public class ApartmentAppViewModel
+    public class ApartmentAppIDViewModel
     {
-        public string Username { get; set; }
-        public string [] Applicants { get; set; }
+        public int AprtAppID { get; set; }
     }
 }

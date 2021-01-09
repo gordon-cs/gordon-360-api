@@ -34,36 +34,73 @@ namespace Gordon360.Services
 
         /// <summary>
         /// Saves student housing info
+        /// - first, it creates a new row in the applications table and puts the id of the primary applicant and a timestamp
+        /// - second, it looks for the application id of the application with the information we just input (because 
+        /// the database creates the application ID so we have to ask it which number it generated for it)
+        /// - third, it inserts each applicant into the applicnts table along with the apartment ID so we know
+        /// which application on which they are an applicant
+        ///  
         /// </summary>
-        /// <returns>The housing item</returns>
-        public IEnumerable<HousingAppToSubmitViewModel>SaveApplication(string username, string sess_cde, string [] appIds)
+        /// <returns>Whether or not all the queries succeeded</returns>
+        public bool SaveApplication(string modifierId, string sess_cde, string [] appIds)
         {
-           //return RawSqlQuery<HousingViewModel>.query("INSERT_AA_APPLICATION", id);
-            IEnumerable<HousingAppToSubmitViewModel> result = null;
-            IEnumerable<HousingViewModel> result2 = null;
-            IEnumerable<HousingAppToSubmitViewModel> result3 = null;
-
+            IEnumerable<ApartmentAppSaveViewModel> result = null;
+            IEnumerable<ApartmentAppIDViewModel> idResult = null;
+            IEnumerable<ApartmentApplicantViewModel> result2 = null;
 
             DateTime now = System.DateTime.Now;
 
             var timeParam = new SqlParameter("@NOW", now);
-            var idParam = new SqlParameter("@MODIFIER_ID", username);
+            var modParam = new SqlParameter("@MODIFIER_ID", modifierId);
             var sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
-            //var programParam = new SqlParameter("@APRT_PROGRAM", now);
 
-            result = RawSqlQuery<HousingAppToSubmitViewModel>.query("INSERT_AA_APPLICATION @NOW, @MODIFIER_ID", timeParam, idParam); //run stored procedure
-            result2 = RawSqlQuery<HousingViewModel>.query("GET_AA_APPID_BY_NAME_AND_DATE @NOW, @MODIFIER_ID", timeParam, idParam); //run stored procedure
-            foreach(string applicant in appIds){
-                result3 = RawSqlQuery<HousingAppToSubmitViewModel>.query("INSERT_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM,  @SESS_CDE", result2, applicant, null, sessionParam); //run stored procedure
-            }
+            bool returnAnswer = true;
 
-
+            result = RawSqlQuery<ApartmentAppSaveViewModel>.query("INSERT_AA_APPLICATION @NOW, @MODIFIER_ID", timeParam, modParam); //run stored procedure
             if (result == null)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+                returnAnswer = false;
+                throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be saved." };
             }
 
-            return result;
+            // The following is ODD, I know. It seems you cannot execute the same query with the same sql parameters twice.
+            // Thus, these two sql params must be recreated after being used in the last query:
+
+            timeParam = new SqlParameter("@NOW", now);
+            modParam = new SqlParameter("@MODIFIER_ID", modifierId);
+
+            idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_NAME_AND_DATE @NOW, @MODIFIER_ID", timeParam, modParam); //run stored procedure
+            if (idResult == null)
+            {
+                returnAnswer = false;
+                throw new ResourceNotFoundException() { ExceptionMessage = "The new application ID could not be found." };
+            }
+
+            ApartmentAppIDViewModel idModel = idResult.ElementAt(0);
+
+            SqlParameter appIdParam = null;
+            SqlParameter idParam = null;
+            SqlParameter programParam = null;
+
+            foreach (string id in appIds) {
+                // this constructs new SqlParameters each time we iterate (despite that only 1/4 will actually be different
+                // on subsequent iterations. See above explanation of this ODD strategy.
+
+                //idParam.Value = id; might need if this ODD solution is not satisfactory
+                appIdParam = new SqlParameter("@APPLICATION_ID", idModel.AprtAppID);
+                idParam = new SqlParameter("@ID_NUM", id);
+                programParam = new SqlParameter("@APRT_PROGRAM", "");
+                sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
+
+                result2 = RawSqlQuery<ApartmentApplicantViewModel>.query("INSERT_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM, @SESS_CDE", appIdParam, idParam, programParam, sessionParam); //run stored procedure
+                if (result2 == null)
+                {
+                    returnAnswer = false; // not sure if this matters since I have heard throwing an exception "returns"
+                    throw new ResourceNotFoundException() { ExceptionMessage = "Applicant with ID " + id + " could not be saved." };   
+                }
+            }
+             
+            return returnAnswer;
         }
     }
 }

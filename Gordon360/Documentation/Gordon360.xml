@@ -1842,8 +1842,14 @@
         <member name="M:Gordon360.Services.HousingService.SaveApplication(System.String,System.String,System.String[])">
             <summary>
             Saves student housing info
+            - first, it creates a new row in the applications table and puts the id of the primary applicant and a timestamp
+            - second, it looks for the application id with the information we just input to an application (because 
+            the database creates the application ID so we have to ask it which number it generated for it)
+            - third, it inserts each applicant into the applicnts table along with the apartment ID so we know
+            which application on which they are an applicant
+             
             </summary>
-            <returns>The housing item</returns>
+            <returns>Whether or not all the queries succeeded</returns>
         </member>
         <member name="M:Gordon360.Services.WellnessService.GetStatus(System.String)">
             <summary>

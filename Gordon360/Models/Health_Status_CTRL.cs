@@ -18,6 +18,7 @@ namespace Gordon360.Models
         public Health_Status_CTRL()
         {
             this.Health_Override = new HashSet<Health_Override>();
+            this.Health_Status = new HashSet<Health_Status>();
             this.Health_Check_NEW = new HashSet<Health_Check_NEW>();
         }
     
@@ -26,6 +27,8 @@ namespace Gordon360.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Health_Override> Health_Override { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Health_Status> Health_Status { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Health_Check_NEW> Health_Check_NEW { get; set; }
     }
