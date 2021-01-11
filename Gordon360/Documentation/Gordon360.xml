@@ -1843,7 +1843,7 @@
             <summary>
             Saves student housing info
             - first, it creates a new row in the applications table and puts the id of the primary applicant and a timestamp
-            - second, it looks for the application id with the information we just input to an application (because 
+            - second, it looks for the application id of the application with the information we just input (because 
             the database creates the application ID so we have to ask it which number it generated for it)
             - third, it inserts each applicant into the applicnts table along with the apartment ID so we know
             which application on which they are an applicant
