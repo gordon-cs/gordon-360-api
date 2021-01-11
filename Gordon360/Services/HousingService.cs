@@ -32,15 +32,14 @@ namespace Gordon360.Services
             return RawSqlQuery<HousingViewModel>.query("GET_STU_HOUSING_INFO");
         }
 
-        public int GetApplicationID(string modifierId, string sess_cde)
+        public int GetApplicationID(string studentId, string sess_cde)
         {
             IEnumerable<ApartmentAppIDViewModel> idResult = null;
 
-            var modParam = new SqlParameter("@MODIFIER_ID", modifierId);
+            var idParam = new SqlParameter("@STUDENT_ID", studentId);
             var sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
             
-            // TODO: Create this stored procedure
-            idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_NAME_AND_SESS @SESS_CDE, @MODIFIER_ID", sessionParam, modParam); //run stored procedure
+            idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, idParam); //run stored procedure
             if (idResult == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The application ID could not be found." };

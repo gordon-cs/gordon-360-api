@@ -270,7 +270,7 @@ namespace Gordon360.Services
     public interface IHousingService
     {
         IEnumerable<HousingViewModel> GetAll();
-        int GetApplicationID(string modifierId, string sess_cde);
+        int GetApplicationID(string studentId, string sess_cde);
         bool SaveApplication(string modifierId, string sess_cde, string [] appIds);
     }
 
