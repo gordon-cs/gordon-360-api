@@ -379,7 +379,7 @@
             <summary>Check if the currently logged in user is authorized to view the housing staff page for applications</summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.HousingController.GetApartmentAppID">
+        <member name="M:Gordon360.Controllers.Api.HousingController.GetApplicationID">
             <summary>Get apartment application ID number of currently logged in user if that user is on an existing application</summary>
             <returns></returns>
         </member>
@@ -394,7 +394,7 @@
             </summary>
             <returns>The application ID number of the saved application</returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.HousingController.GetAppartmentApplication(System.String)">
+        <member name="M:Gordon360.Controllers.Api.HousingController.GetApartmentApplication(System.String)">
             <summary>Get apartment application info for a given application ID number</summary>
             <param name="applicationID">application ID number of the apartment application</param>
             <returns>Object of type ApartmentAppViewModel</returns>
@@ -1861,7 +1861,7 @@
             <summary>
             Saves student housing info
             - first, it creates a new row in the applications table and puts the id of the primary applicant and a timestamp
-            - second, it looks for the application id with the information we just input to an application (because 
+            - second, it looks for the application id of the application with the information we just input (because 
             the database creates the application ID so we have to ask it which number it generated for it)
             - third, it inserts each applicant into the applicnts table along with the apartment ID so we know
             which application on which they are an applicant
