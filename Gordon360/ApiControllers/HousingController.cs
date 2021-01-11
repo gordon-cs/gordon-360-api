@@ -145,7 +145,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>Object of type ApartmentAppViewModel</returns>
         [HttpGet]
         [Route("apartment/load/{applicationID}")]
-        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING)]
+        //[StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
         public IHttpActionResult GetApartmentApplication(string applicationID)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(applicationID))
