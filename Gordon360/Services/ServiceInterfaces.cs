@@ -167,6 +167,7 @@ namespace Gordon360.Services
         MEMBERSHIP ToggleGroupAdmin(int id, MEMBERSHIP membership);
         void TogglePrivacy(int id, bool p);
         MEMBERSHIP Delete(int id);
+        Boolean IsGroupAdmin(int studentID);
     }
 
     public interface IJobsService

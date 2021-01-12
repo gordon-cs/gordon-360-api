@@ -2,6 +2,7 @@
 using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Static.Names;
+using System;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
@@ -101,7 +102,7 @@ namespace Gordon360.AuthorizationFilters
          * Operations
          */
          // This operation is specifically for authorizing deny and allow operations on membership requests. These two operations don't
-         // Fit in nicely with the REST specificatino which is why there is a seperate case for them.
+         // Fit in nicely with the REST specification which is why there is a seperate case for them.
          private bool canDenyAllow(string resource)
         {
             // User is admin
@@ -168,15 +169,29 @@ namespace Gordon360.AuthorizationFilters
                     }
                 case Resource.STUDENT:
                     // To add a membership for a student, you need to have the students identifier.
+                    // NOTE: I don't believe the 'student' resource is currently being used in API
                     {
                         return true;
                     }
                 case Resource.ADVISOR:
                     return true;
                 case Resource.ACCOUNT:
-                    // To add a membership for a person, you need to have the the person's identifier.
                     {
-                        return true;
+                        // Membership group admins can access ID of members using their email
+                        // NOTE: In the future, probably only email addresses should be stored 
+                        // in memberships, since we would rather not give students access to
+                        // other students' account information
+                        var membershipService = new MembershipService(new UnitOfWork());
+                        var isGroupAdmin = membershipService.IsGroupAdmin(Int32.Parse(user_id));
+                        if (isGroupAdmin) // If user is a group admin of the activity that the request is sent to
+                            return true;
+
+                        // faculty and police can access student account information
+                        if (user_position == Position.FACSTAFF
+                            || user_position == Position.POLICE)
+                            return true;
+
+                        return false;
                     }
                 case Resource.NEWS:
                     return true;

@@ -896,6 +896,12 @@
             <param name="id">The identifier for the membership to be deleted</param>
             <remarks>Calls the server to make a call and remove the given membership from the database</remarks>
         </member>
+        <member name="M:Gordon360.Controllers.Api.MembershipsController.IsGroupAdmin(System.Int32)">
+            <summary>	
+            Determines whether or not the given student is a Group Admin of some activity	
+            </summary>
+            <param name="id">The student id</param>
+        </member>
         <member name="M:Gordon360.Controllers.Api.StudentEmploymentController.Get">
             <summary>
              Gets student employment information about the user
@@ -1143,14 +1149,14 @@
             Fetches the account record with the specified email.
             </summary>
             <param name="email">The email address associated with the account.</param>
-            <returns></returns>
+            <returns>the student account information</returns>
         </member>
         <member name="M:Gordon360.Services.AccountService.GetAccountByUsername(System.String)">
             <summary>
             Fetches the account record with the specified username.
             </summary>
             <param name="username">The username associated with the account.</param>
-            <returns></returns>
+            <returns>the student account information</returns>
         </member>
         <member name="T:Gordon360.Services.ActivityService">
             <summary>
@@ -1213,7 +1219,7 @@
         </member>
         <member name="M:Gordon360.Services.ActivityService.GetClosedActivities(System.String)">
             <summary>
-            Gets a collection of all the current activitie already closed out, by finding which activities have 
+            Gets a collection of all the current activities already closed out, by finding which activities have 
             memberships with an END_DTE that is not null
             </summary>
             <returns>The collection of activity codes for open activities</returns>
@@ -2031,7 +2037,7 @@
             Fetches all the membership information linked to the student whose id appears as a parameter.
             </summary>
             <param name="id">The student id.</param>
-            <returns>A MembershipViewModel IEnumerable. If nothing is found, an empty IEnumberable is returned.</returns>
+            <returns>A MembershipViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.GetActivityFollowersCount(System.String)">
             <summary>
@@ -2093,6 +2099,13 @@
             </summary>
             <param name="membership">The membership to validate</param>
             <returns>True if the membership is valid. Throws ResourceNotFoundException if not. Exception is caught in an Exception Filter</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.IsGroupAdmin(System.Int32)">
+            <summary>	
+            Determines whether or not the given student is a Group Admin of some activity	
+            </summary>
+            <param name="studentID">The student id</param>	
+            <returns>true if student is a Group Admin, else false</returns>	
         </member>
         <member name="T:Gordon360.Services.SessionService">
             <summary>

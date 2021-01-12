@@ -13,6 +13,7 @@ using Gordon360.Models.ViewModels;
 using System.Collections;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
+using Gordon360.AuthorizationFilters;
 
 namespace Gordon360.ApiControllers
 {
@@ -35,6 +36,7 @@ namespace Gordon360.ApiControllers
         // GET: api/Accounts
         [HttpGet]
         [Route("email/{email}")]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
         public IHttpActionResult GetByAccountEmail(string email)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(email))
@@ -295,6 +297,7 @@ namespace Gordon360.ApiControllers
         // GET: api/Accounts
         [HttpGet]
         [Route("username/{username}")]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
         public IHttpActionResult GetByAccountUsername(string username)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(username))

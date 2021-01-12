@@ -541,5 +541,18 @@ namespace Gordon360.Controllers.Api
 
             return Ok(result);
         }
+
+        /// <summary>	
+        /// Determines whether or not the given student is a Group Admin of some activity	
+        /// </summary>
+        /// <param name="id">The student id</param>
+        [HttpGet]
+        [Route("isGroupAdmin/{id}")]
+        public IHttpActionResult IsGroupAdmin(int id)
+        {
+            var result = _membershipService.IsGroupAdmin(id);
+
+            return Ok(result);
+        }
     }
 }
