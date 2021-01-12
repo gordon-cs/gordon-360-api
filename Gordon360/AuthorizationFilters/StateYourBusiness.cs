@@ -2,6 +2,7 @@
 using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Static.Names;
+using System;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
@@ -180,14 +181,13 @@ namespace Gordon360.AuthorizationFilters
                         // NOTE: In the future, probably only email addresses should be stored 
                         // in memberships, since we would rather not give students access to
                         // other students' account information
-                        /*
+                        
                         var membershipService = new MembershipService(new UnitOfWork());
-                        var isGroupAdmin = membershipService.GetGroupAdminMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        var isGroupAdmin = membershipService.IsGroupAdmin(Int32.Parse(user_id));
                         if (isGroupAdmin) // If user is a group admin of the activity that the request is sent to
                             return true;
 
-                        return false;*/
-                        return true;
+                        return false;
                     }
                 case Resource.NEWS:
                     return true;
