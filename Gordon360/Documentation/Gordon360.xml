@@ -1085,14 +1085,14 @@
             Fetches the account record with the specified email.
             </summary>
             <param name="email">The email address associated with the account.</param>
-            <returns></returns>
+            <returns>the student account information</returns>
         </member>
         <member name="M:Gordon360.Services.AccountService.GetAccountByUsername(System.String)">
             <summary>
             Fetches the account record with the specified username.
             </summary>
             <param name="username">The username associated with the account.</param>
-            <returns></returns>
+            <returns>the student account information</returns>
         </member>
         <member name="T:Gordon360.Services.ActivityService">
             <summary>

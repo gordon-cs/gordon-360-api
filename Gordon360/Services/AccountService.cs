@@ -63,7 +63,7 @@ namespace Gordon360.Services
         /// Fetches the account record with the specified email.
         /// </summary>
         /// <param name="email">The email address associated with the account.</param>
-        /// <returns></returns>
+        /// <returns>the student account information</returns>
         public AccountViewModel GetAccountByEmail(string email)
         {
             var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.email == email);
@@ -79,8 +79,7 @@ namespace Gordon360.Services
         /// Fetches the account record with the specified username.
         /// </summary>
         /// <param name="username">The username associated with the account.</param>
-        /// <returns></returns>
-        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
+        /// <returns>the student account information</returns>
         public AccountViewModel GetAccountByUsername(string username)
         {
             var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.AD_Username == username);

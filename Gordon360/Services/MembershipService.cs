@@ -483,8 +483,7 @@ namespace Gordon360.Services
         /// <returns>true if student is a Group Admin, else false</returns>	
         public Boolean IsGroupAdmin(int studentID)
         {
-            IEnumerable<MembershipViewModel> memberships = GetMembershipsForStudent("" + studentID);
-
+            // find memberships that the student is both apart of and group admin
             var membershipsWhereStudentIsGroupAdmin = _unitOfWork.MembershipRepository.Where(
                 membership => membership.ID_NUM == studentID &&
                               membership.GRP_ADMIN == true);
