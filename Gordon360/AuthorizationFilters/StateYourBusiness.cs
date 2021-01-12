@@ -181,10 +181,14 @@ namespace Gordon360.AuthorizationFilters
                         // NOTE: In the future, probably only email addresses should be stored 
                         // in memberships, since we would rather not give students access to
                         // other students' account information
-                        
                         var membershipService = new MembershipService(new UnitOfWork());
                         var isGroupAdmin = membershipService.IsGroupAdmin(Int32.Parse(user_id));
                         if (isGroupAdmin) // If user is a group admin of the activity that the request is sent to
+                            return true;
+
+                        // faculty and police can access student account information
+                        if (user_position == Position.FACSTAFF
+                            || user_position == Position.POLICE)
                             return true;
 
                         return false;

@@ -13,6 +13,7 @@ using System.Data.SqlClient;
 
 namespace Gordon360.Services
 {
+    
     /// <summary>
     /// Service Class that facilitates data transactions between the AccountsController and the Account database model.
     /// </summary>
@@ -63,7 +64,6 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="email">The email address associated with the account.</param>
         /// <returns></returns>
-        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
         public AccountViewModel GetAccountByEmail(string email)
         {
             var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.email == email);
