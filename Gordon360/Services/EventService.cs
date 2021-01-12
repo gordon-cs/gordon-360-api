@@ -14,8 +14,7 @@ using System.Xml.Linq;
 
 // <summary>
 // We use this service to pull data from 25Live as well as parsing it
-// For the most part, we use the data which is pulled and cached in the Startup.cs file
-// However, there are functions included in this service to manually pull data from 25Live
+// The data is retrieved from the cache maintained by Startup.cs
 // </summary>
 namespace Gordon360.Services
 {
