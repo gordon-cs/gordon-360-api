@@ -486,9 +486,9 @@ What is it? Resource that represents a gordon account.
 
 ##### GET
 
-`api/accounts/email/:email` Get the account with email `email`.
+`api/accounts/email/:email` Get the account with email `email`. Currently restricted to FacStaff, Police, and Group Admins.
 
-`api/accounts/username/:username` Get the account with `username`.
+`api/accounts/username/:username` Get the account with `username`. Currently restricted to FacStaff, Police, and Group Admins.
 
 `api/accounts/search/:searchString` Returns the basicinfoviewmodel with a Concatenated attribute matching some or all of the searchstring
 
@@ -693,6 +693,8 @@ What is it? Resource that represents the affiliation between a student and a clu
 `api/memberships/student/:id` Get the memberships of the student with student id `id`.
 
 `api/memberships/student/username:username` Get the public version of memberships of the student with student username `username`.
+
+`api/memberships/isgroupadmin/:id` Get whether or not a student with id `id` is a Group Admin for some activity. Service method is used for security purposes but Controller is currently just for testing convenience.
 
 ##### POST
 
