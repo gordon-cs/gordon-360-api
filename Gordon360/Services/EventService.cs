@@ -6,8 +6,6 @@ using Gordon360.Services.ComplexQueries;
 using System.Data.SqlClient;
 using System.Data;
 using Gordon360.Exceptions.CustomExceptions;
-using Gordon360.AuthorizationFilters;
-using Gordon360.Static.Names;
 using Gordon360.Static.Data;
 using System.Xml.Linq;
 
@@ -40,7 +38,6 @@ namespace Gordon360.Services
         /// <returns>All events for the current academic year.</returns>
         public IEnumerable<EventViewModel> GetAllEvents()
         {
-
             return Data.AllEvents.Descendants(r25 + "event").Select(e => new EventViewModel(e));
         }
 
@@ -69,7 +66,6 @@ namespace Gordon360.Services
         /// <param name="user_name"> The student's ID</param>
         /// <param name="term"> The current term</param>
         /// <returns></returns>
-        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.ChapelEvent)]
         public IEnumerable<AttendedEventViewModel> GetEventsForStudentByTerm(string user_name, string term)
         {
             var studentExists = _unitOfWork.AccountRepository.Where(x => x.AD_Username.Trim() == user_name.Trim()).Count() > 0;

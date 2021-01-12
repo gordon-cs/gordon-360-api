@@ -5,6 +5,8 @@ using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Exceptions.CustomExceptions;
+using Gordon360.AuthorizationFilters;
+using Gordon360.Static.Names;
 
 namespace Gordon360.ApiControllers
 {
@@ -22,6 +24,7 @@ namespace Gordon360.ApiControllers
         [Authorize]
         [HttpGet]
         [Route("chapel/{term}")]
+        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.ChapelEvent)]
         public IHttpActionResult GetEventsForStudentByTerm(string term)
         {
             //get token data from context, username is the username of current logged in person

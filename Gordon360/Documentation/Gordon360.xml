@@ -2132,6 +2132,13 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="F:Gordon360.Static.Names.URLs.ALL_EVENTS_REQUEST">
+            Retrieve events from the 25Live API. 
+            event_type_id parameter fetches only events of type 14 (Calendar Announcement) and 57 (Event).
+            All other event types are not appropiate for the 360 events feed.
+            end_after parameter  limits to request to events from the current academic year.
+            state parameter fetches only confirmed events
+        </member>
         <member name="F:Gordon360.Startup.DummyCacheItemKey">
             <summary>
             Caching task methods created based upon the ideas in the article written by Omar Al Zabir
