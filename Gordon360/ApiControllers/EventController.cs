@@ -24,8 +24,7 @@ namespace Gordon360.ApiControllers
         [Authorize]
         [HttpGet]
         [Route("chapel/{term}")]
-        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.ChapelEvent)]
-        public IHttpActionResult GetEventsForStudentByTerm(string term)
+        public IHttpActionResult GetEventsByTerm(string term)
         {
             //get token data from context, username is the username of current logged in person
             var authenticatedUser = ActionContext.RequestContext.Principal as ClaimsPrincipal;
