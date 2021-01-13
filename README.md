@@ -206,6 +206,7 @@ A record in this table stores:
 -   twitter - The URL of the user's twitter without its domain name
 -   instagram - The URL of the user's instagram without its domain name
 -   linkedin - The URL of the user's linkedin without its domain name
+-   handshake - The URL of the user's handshake without its domain name (just user id)
 
 Users don't exist in the table unless they add/edit their social media links on 360 site. Once a user adds any links, the user will be added to the table. This logic is done so that there won't be unused users in the table which can possibly slow down the website.
 
@@ -845,7 +846,7 @@ Differences from GoSite:
 
 `api/profiles/image/reset` Delete preferred image and set profile image to default for the current logged in user.
 
-`api/profiles/:type` Update a social media link of a type(facebook, twitter, linkedin,instagram) of current logged in user.
+`api/profiles/:type` Update a social media link of a type(facebook, twitter, linkedin,instagram, handshake) of current logged in user.
 
 ##### PUT
 
