@@ -1372,33 +1372,23 @@
             Service that allows for event control
             </summary>
         </member>
-        <member name="M:Gordon360.Services.EventService.GetRoute(System.String,System.String)">
-            <summary>
-            Helper function to set the route we are making our request to in 25Live
-            </summary>
-            <param name="EventID"></param>
-            <param name="type"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Services.EventService.GetSpecificEvents(System.String,System.String)">
-            <summary>
-            Return a Single Event JObject from Live25
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Services.EventService.GetAllEvents(System.Xml.Linq.XDocument)">
+        <member name="M:Gordon360.Services.EventService.GetAllEvents">
             <summary>
             Access the memory stream created by the cached task and parse it into events
             </summary>
-            <param name="xmlDoc"></param>
-            <returns></returns>
+            <returns>All events for the current academic year.</returns>
         </member>
-        <member name="M:Gordon360.Services.EventService.GetAllForStudent(System.String)">
+        <member name="M:Gordon360.Services.EventService.GetPublicEvents">
             <summary>
-            Returns all attended events for a student
+            Select only events that are marked for Public promotion
             </summary>
-            <param name="user_name"> The student's ID</param>
-            <returns></returns>
+            <returns>All Public Events</returns>
+        </member>
+        <member name="M:Gordon360.Services.EventService.GetCLAWEvents">
+            <summary>
+            Select only events that are Approved to give CLAW credit
+            </summary>
+            <returns>All CLAW Events</returns>
         </member>
         <member name="M:Gordon360.Services.EventService.GetEventsForStudentByTerm(System.String,System.String)">
             <summary>
@@ -2154,6 +2144,13 @@
              Helper function to determine the current academic year
             </summary>
             <returns></returns>
+        </member>
+        <member name="F:Gordon360.Static.Names.URLs.ALL_EVENTS_REQUEST">
+            Retrieve events from the 25Live API. 
+            event_type_id parameter fetches only events of type 14 (Calendar Announcement) and 57 (Event).
+            All other event types are not appropiate for the 360 events feed.
+            end_after parameter  limits to request to events from the current academic year.
+            state parameter fetches only confirmed events
         </member>
         <member name="F:Gordon360.Startup.DummyCacheItemKey">
             <summary>

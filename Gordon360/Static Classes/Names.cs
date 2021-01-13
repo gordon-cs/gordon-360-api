@@ -93,11 +93,14 @@ namespace Gordon360.Static.Names
 
     public static class URLs
     {
-        // This url makes use of the 25Live API to retrieve events based on the "event_type" parameter.
-        // We also make use of the "end after" field to get only events from this academic year.
-        public static string ALL_EVENTS_REQUEST = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=14+19+28+57&state=2&end_after=" + Helpers.GetFirstEventDate() + "&scope=extended";
-      //public static string ALL_EVENTS_REQUEST = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=10+12+13+14+16+17+18+19+51+20+21+22+23+24+25+29+30+31+35&state=2&end_after=" + Helpers.GetFirstEventDate() + "&scope=extended"; // *
-      //public static string ALL_EVENTS_REQUEST = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=10+12+13+14+16+17+18+19+51+20+21+22+23+24+25+29+30+33
+        /**
+         * Retrieve events from the 25Live API. 
+         * event_type_id parameter fetches only events of type 14 (Calendar Announcement) and 57 (Event).
+         * All other event types are not appropiate for the 360 events feed.
+         * end_after parameter  limits to request to events from the current academic year.
+         * state parameter fetches only confirmed events
+         */
+        public static string ALL_EVENTS_REQUEST = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=14+57&state=2&end_after=" + Helpers.GetFirstEventDate() + "&scope=extended";
     }
 
     public static class SQLQuery
