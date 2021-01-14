@@ -1425,6 +1425,11 @@
             Execute the sql query on the StaffTimesheets database
             </summary>
             <param name="query">An sql statement. Can be a stored procedure or even a simple SELECT statment</param>
+        <member name="M:Gordon360.Services.ComplexQueries.RawSqlQuery`1.StaffTimesheetQuery(System.String,System.Object[])">
+            <summary>
+            Execute the sql query on the StaffTimesheets database
+            </summary>
+            <param name="query">An sql statement. Can be a stored procedure or even a simple SELECT statment</param>
             <param name="parameters">Parameters to pass into the stored procedure</param>
             <returns></returns>
         </member>

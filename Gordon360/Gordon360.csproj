@@ -514,6 +514,39 @@
     <Compile Include="Models\staff_timesheets_select_supervisor_name_Result.cs">
       <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\StaffTimesheets_DB_Models.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StaffTimesheets_DB_Models.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\StaffTimesheets_DB_Models.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\StaffTimesheets_DB_Models.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StaffTimesheets_DB_Models.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\staff_timesheets.cs">
+      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\staff_timesheets_select_active_status_shifts_Result.cs">
+      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\staff_timesheets_select_emls_for_ajax_selectbox_Result.cs">
+      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\staff_timesheets_select_fixed_status_shifts_Result.cs">
+      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\staff_timesheets_select_hour_types_Result.cs">
+      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\staff_timesheets_select_supervisor_name_Result.cs">
+      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Student.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
