@@ -87,10 +87,12 @@ namespace Gordon360.Controllers.Api
         /// <summary>
         /// change the modifier (i.e. primary applicant) of the application
         /// </summary>
+        /// <param name="applicationID"> The application ID number of the apartment application to be modified </param>
+        /// <param name="newModifierUsername"> The username of the student who will be set as the editor of this apartment application </param>
         /// <returns>The result of changing the modifier</returns>
         [HttpPost]
-        [Route("change-modifier")]
-        public IHttpActionResult ChangeModifier([FromBody] ApartmentAppNewModViewModel newModifierDetails)
+        [Route("change-modifier/{applicationID}/{newModifierUsername}")]
+        public IHttpActionResult ChangeModifier(int applicationID, string newModifierUsername)
         {
             // Verify Input
             if (!ModelState.IsValid)
@@ -112,11 +114,9 @@ namespace Gordon360.Controllers.Api
 
             string modifierId = _accountService.GetAccountByUsername(username).GordonID;
 
-            int apartAppId = newModifierDetails.AprtAppID;
-            string newModifierUsername = newModifierDetails.Username;
             string newModifierId = _accountService.GetAccountByUsername(newModifierUsername).GordonID;
 
-            bool result = _housingService.ChangeApplicationModifier(apartAppId, modifierId, newModifierId);
+            bool result = _housingService.ChangeApplicationModifier(applicationID, modifierId, newModifierId);
 
             return Ok(result);
         }

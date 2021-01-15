@@ -378,10 +378,12 @@
             </summary>
             <returns>The result of submitting the application</returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.HousingController.ChangeModifier(Gordon360.Models.ViewModels.ApartmentAppNewModViewModel)">
+        <member name="M:Gordon360.Controllers.Api.HousingController.ChangeModifier(System.Int32,System.String)">
             <summary>
             change the modifier (i.e. primary applicant) of the application
             </summary>
+            <param name="applicationID"> The application ID number of the apartment application to be modified </param>
+            <param name="newModifierUsername"> The username of the student who will be set as the editor of this apartment application </param>
             <returns>The result of changing the modifier</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.NewsController.#ctor">
