@@ -1,18 +1,12 @@
 ﻿using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Repositories;
 using Gordon360.Services;
-using Gordon360.Models;
-using System.Linq;
 using System.Web.Http;
-using System.Security.Claims;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using Gordon360.Static.Methods;
 using Gordon360.Models.ViewModels;
-using System.Collections.Generic;
-using System;
-using System.Diagnostics;
 
 namespace Gordon360.Controllers.Api
 {
@@ -33,6 +27,7 @@ namespace Gordon360.Controllers.Api
 
         /** Call the service that gets all student housing information
          */
+        /*
         [HttpGet]
         [Route("apartmentInfo")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.STUDENT)]
@@ -41,6 +36,7 @@ namespace Gordon360.Controllers.Api
             var result = _housingService.GetAll();
             return Ok(result);
         }
+        */
 
         /// <summary>Check if the currently logged in user is authorized to view the housing staff page for applications</summary>
         /// <returns></returns>
@@ -127,14 +123,15 @@ namespace Gordon360.Controllers.Api
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
+            int apartAppId = apartmentAppDetails.AprtAppID; // Set the apartAppId to -1 to indicate that an application ID was not passed by the frontend
             string modifierId = _accountService.GetAccountByUsername(apartmentAppDetails.Username).GordonID;
             string sessionId = Helpers.GetCurrentSession().SessionCode;
-            string[] appIds = new string[apartmentAppDetails.Applicants.Length];
+            string[] applicantIds = new string[apartmentAppDetails.Applicants.Length];
             for(int i = 0; i < apartmentAppDetails.Applicants.Length; i++){
-                appIds[i] = _accountService.GetAccountByUsername(apartmentAppDetails.Applicants[i]).GordonID;
+                applicantIds[i] = _accountService.GetAccountByUsername(apartmentAppDetails.Applicants[i]).GordonID;
             }
 
-            bool result = _housingService.SaveApplication(modifierId, sessionId, appIds);
+            int result = _housingService.SaveApplication(apartAppId, modifierId, sessionId, applicantIds);
 
             return Created("Status of application saving: ", result);
 
