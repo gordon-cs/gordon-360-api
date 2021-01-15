@@ -271,6 +271,7 @@ namespace Gordon360.Services
     {
         //IEnumerable<HousingViewModel> GetAll();
         int SaveApplication(int apartAppId, string modifierId, string sess_cde, string [] applicantIds);
+        bool ChangeApplicationModifier(int apartAppId, string modifierId, string newModifierId);
     }
 
 }

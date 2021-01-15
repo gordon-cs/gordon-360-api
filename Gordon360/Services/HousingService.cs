@@ -43,7 +43,7 @@ namespace Gordon360.Services
         /// which application on which they are an applicant
         ///  
         /// </summary>
-        /// <returns>Whether or not all the queries succeeded</returns>
+        /// <returns>The application ID number if all the queries succeeded, otherwise returns -1</returns>
         public int SaveApplication(int apartAppId, string modifierId, string sess_cde, string [] applicantIds)
         {
             IEnumerable<ApartmentAppSaveViewModel> result = null;
@@ -115,6 +115,50 @@ namespace Gordon360.Services
             }
 
             return appId;
+        }
+
+        /// <summary>
+        /// Changes the student user who has permission to modify the given application
+        ///  
+        /// </summary>
+        /// <returns>Whether or not all the queries succeeded</returns>
+        public bool ChangeApplicationModifier(int apartAppId, string modifierId, string newModifierId)
+        {
+            IEnumerable<ApartmentAppModViewModel> modResult = null;
+            IEnumerable<ApartmentAppSaveViewModel> result = null;
+
+            SqlParameter appIdParam = null;
+            SqlParameter modParam = null;
+            SqlParameter newModParam = null;
+
+            appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
+
+            modResult = RawSqlQuery<ApartmentAppModViewModel>.query("GET_AA_MODIFIER_BY_APPID @APPLICATION_ID", appIdParam);
+            if (modResult == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be found." };
+            }
+            ApartmentAppModViewModel modModel = modResult.ElementAt(0);
+            string storedModifierId = modModel.ModifiedBy;
+
+            if (modifierId == storedModifierId)
+            {
+                appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
+                modParam = new SqlParameter("@MODIFIER_ID", modifierId);
+                newModParam = new SqlParameter("@MODIFIER_ID", newModifierId);
+                // TODO: Consider making a new ViewModel specifically for this operation
+                result = RawSqlQuery<ApartmentAppSaveViewModel>.query("UPDATE_AA_APPLICATION_MODIFIER @APPLICATION_ID, @MODIFIER_ID, @NEW_MODIFIER_ID", appIdParam, modParam, newModParam); //run stored procedure
+                if (result == null)
+                {
+                    throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be updated." };
+                }
+
+                return true; // PLACEHOLDER
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

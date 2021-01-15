@@ -1,12 +1,15 @@
 ﻿using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Repositories;
 using Gordon360.Services;
+using System.Linq;
 using System.Web.Http;
+using System.Security.Claims;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using Gordon360.Static.Methods;
 using Gordon360.Models.ViewModels;
+using System;
 
 namespace Gordon360.Controllers.Api
 {
@@ -61,10 +64,16 @@ namespace Gordon360.Controllers.Api
                 }
                 throw new BadInputException() { ExceptionMessage = errors };
             }
+            //get token data from context, username is the username of current logged in person
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
-            int apartAppId = apartmentAppDetails.AprtAppID; // Set the apartAppId to -1 to indicate that an application ID was not passed by the frontend
-            string modifierId = _accountService.GetAccountByUsername(apartmentAppDetails.Username).GordonID;
+            string modifierId = _accountService.GetAccountByUsername(username).GordonID;
+
             string sessionId = Helpers.GetCurrentSession().SessionCode;
+
+            int apartAppId = apartmentAppDetails.AprtAppID; // The apartAppId is set to -1 if an existing application ID was not yet known by the frontend
+            // string modifierId = _accountService.GetAccountByUsername(apartmentAppDetails.Username).GordonID;
             string[] applicantIds = new string[apartmentAppDetails.Applicants.Length];
             for(int i = 0; i < apartmentAppDetails.Applicants.Length; i++){
                 applicantIds[i] = _accountService.GetAccountByUsername(apartmentAppDetails.Applicants[i]).GordonID;
@@ -73,7 +82,43 @@ namespace Gordon360.Controllers.Api
             int result = _housingService.SaveApplication(apartAppId, modifierId, sessionId, applicantIds);
 
             return Created("Status of application saving: ", result);
+        }
 
+        /// <summary>
+        /// change the modifier (i.e. primary applicant) of the application
+        /// </summary>
+        /// <returns>The result of changing the modifier</returns>
+        [HttpPost]
+        [Route("change-modifier")]
+        public IHttpActionResult ChangeModifier([FromBody] ApartmentAppNewModViewModel newModifierDetails)
+        {
+            // Verify Input
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+            //get token data from context, username is the username of current logged in person
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+            string modifierId = _accountService.GetAccountByUsername(username).GordonID;
+
+            int apartAppId = newModifierDetails.AprtAppID;
+            string newModifierUsername = newModifierDetails.Username;
+            string newModifierId = _accountService.GetAccountByUsername(newModifierUsername).GordonID;
+
+            bool result = _housingService.ChangeApplicationModifier(apartAppId, modifierId, newModifierId);
+
+            return Ok(result);
         }
     }
 }
