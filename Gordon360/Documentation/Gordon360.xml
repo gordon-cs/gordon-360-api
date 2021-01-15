@@ -372,9 +372,6 @@
             <param name="rideID">The identifier for the booking to be deleted</param>
             <remarks>Calls the server to make a call and remove the given booking from the database</remarks>
         </member>
-        <member name="M:Gordon360.Controllers.Api.HousingController.GetApartmentInfo">
-            Call the service that gets all student housing information
-        </member>
         <member name="M:Gordon360.Controllers.Api.HousingController.SaveApplication(Gordon360.Models.ViewModels.ApartmentAppViewModel)">
             <summary>
             save application
@@ -1832,14 +1829,7 @@
             <param name="id">id</param>
             <returns>VictoryPromiseViewModel if found, null if not found</returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.GetAll">
-            <summary>
-            Gets student housing info
-            TODO list what exactly we mean by houding info
-            </summary>
-            <returns>The housing item</returns>
-        </member>
-        <member name="M:Gordon360.Services.HousingService.SaveApplication(System.String,System.String,System.String[])">
+        <member name="M:Gordon360.Services.HousingService.SaveApplication(System.Int32,System.String,System.String,System.String[])">
             <summary>
             Saves student housing info
             - first, it creates a new row in the applications table and puts the id of the primary applicant and a timestamp
