@@ -372,9 +372,6 @@
             <param name="rideID">The identifier for the booking to be deleted</param>
             <remarks>Calls the server to make a call and remove the given booking from the database</remarks>
         </member>
-        <member name="M:Gordon360.Controllers.Api.HousingController.GetApartmentInfo">
-            Call the service that gets all student housing information
-        </member>
         <member name="M:Gordon360.Controllers.Api.HousingController.CheckHousingStaff">
             <summary>Check if the currently logged in user is authorized to view the housing staff page for applications</summary>
             <returns></returns>
