@@ -127,8 +127,11 @@ namespace Gordon360.Services
             IEnumerable<ApartmentAppModViewModel> modResult = null;
             IEnumerable<ApartmentAppSaveViewModel> result = null;
 
+            DateTime now = System.DateTime.Now;
+
             SqlParameter appIdParam = null;
             SqlParameter modParam = null;
+            SqlParameter timeParam = null;
             SqlParameter newModParam = null;
 
             appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
@@ -143,17 +146,19 @@ namespace Gordon360.Services
 
             if (modifierId == storedModifierId)
             {
+                // Only perform the update if the ID of the current user matched the 'ModifiedBy' ID stored in the database for the requested application
                 appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
                 modParam = new SqlParameter("@MODIFIER_ID", modifierId);
+                timeParam = new SqlParameter("@NOW", now);
                 newModParam = new SqlParameter("@MODIFIER_ID", newModifierId);
-                // TODO: Consider making a new ViewModel specifically for this operation
-                result = RawSqlQuery<ApartmentAppSaveViewModel>.query("UPDATE_AA_APPLICATION_MODIFIER @APPLICATION_ID, @MODIFIER_ID, @NEW_MODIFIER_ID", appIdParam, modParam, newModParam); //run stored procedure
+
+                result = RawSqlQuery<ApartmentAppSaveViewModel>.query("UPDATE_AA_APPLICATION_MODIFIER @APPLICATION_ID, @MODIFIER_ID, @NOW, @NEW_MODIFIER_ID", appIdParam, modParam, timeParam, newModParam); //run stored procedure
                 if (result == null)
                 {
                     throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be updated." };
                 }
 
-                return true; // PLACEHOLDER
+                return true;
             }
             else
             {
