@@ -43,6 +43,10 @@ namespace Gordon360.Services
         /// which application on which they are an applicant
         ///  
         /// </summary>
+        /// <param name="apartAppId"> The application ID number of the application to be edited </param>  
+        /// <param name="modifierId"> The student ID number of the user who is attempting to save the apartment application </param>  
+        /// <param name="sess_cde"> The current session code </param>  
+        /// <param name="applicantIds"> Array of student ID numbers for each of the applicants </param>  
         /// <returns>The application ID number if all the queries succeeded, otherwise returns -1</returns>
         public int SaveApplication(int apartAppId, string modifierId, string sess_cde, string [] applicantIds)
         {
