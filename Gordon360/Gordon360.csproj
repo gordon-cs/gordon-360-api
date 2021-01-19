@@ -1,812 +1,882 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
-  <Import Project="..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" />
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>
-    </ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{47DF568B-4E41-4398-BD88-B6BAB507334A}</ProjectGuid>
-    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Gordon360</RootNamespace>
-    <AssemblyName>Gordon360</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <MvcBuildViews>false</MvcBuildViews>
-    <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>49645</IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
-    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
-    <UseGlobalApplicationHostFile />
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <Use64BitIISExpress />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>Documentation\Gordon360.xml</DocumentationFile>
-    <NoWarn>1591</NoWarn>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.1\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Cors, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Cors.3.0.1\lib\net45\Microsoft.Owin.Cors.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Host.HttpListener, Version=2.0.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Host.HttpListener.2.0.2\lib\net45\Microsoft.Owin.Host.HttpListener.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Hosting, Version=2.0.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Hosting.2.0.2\lib\net45\Microsoft.Owin.Hosting.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Security, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Security.3.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Security.Cookies, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.2.1.0\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Security.Jwt, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Security.Jwt.3.0.1\lib\net45\Microsoft.Owin.Security.Jwt.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Security.OAuth, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.3.0.1\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
-      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.DirectoryServices.AccountManagement" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.IdentityModel" />
-    <Reference Include="System.IdentityModel.Tokens.Jwt, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.4.0.0\lib\net45\System.IdentityModel.Tokens.Jwt.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Security" />
-    <Reference Include="System.Web.Cors, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Cors.5.2.3\lib\net45\System.Web.Cors.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Web.Entity" />
-    <Reference Include="System.Web.ApplicationServices" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Http.Owin, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Owin.5.2.3\lib\net45\System.Web.Http.Owin.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Abstractions" />
-    <Reference Include="System.Web.Routing" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Net.Http">
-    </Reference>
-    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Net.Http.WebRequest">
-    </Reference>
-    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Http.WebHost, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.3\lib\net45\System.Web.Http.WebHost.dll</HintPath>
-    </Reference>
-    <Reference Include="Thinktecture.IdentityModel.Core, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Thinktecture.IdentityModel.Core.1.4.0\lib\net45\Thinktecture.IdentityModel.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
-      <HintPath>..\packages\WebActivatorEx.2.0\lib\net40\WebActivatorEx.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Antlr3.Runtime">
-      <Private>True</Private>
-      <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="WebGrease, Version=1.5.2.14234, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ApiControllers\AccountsController.cs" />
-    <Compile Include="ApiControllers\AdminsController.cs" />
-    <Compile Include="ApiControllers\AdvancedSearchController.cs" />
-    <Compile Include="ApiControllers\NewsController.cs" />
-    <Compile Include="ApiControllers\DiningController.cs" />
-    <Compile Include="ApiControllers\ErrorLogController.cs" />
-    <Compile Include="ApiControllers\EventController.cs" />
-    <Compile Include="ApiControllers\ContentManagementController.cs" />
-    <Compile Include="ApiControllers\EmailsController.cs" />
-    <Compile Include="ApiControllers\JobsController.cs" />
-    <Compile Include="ApiControllers\MembershipRequestController.cs" />
-    <Compile Include="ApiControllers\MyScheduleController.cs" />
-    <Compile Include="ApiControllers\SaveController.cs" />
-    <Compile Include="ApiControllers\ScheduleControlController.cs" />
-    <Compile Include="ApiControllers\WellnessController.cs" />
-    <Compile Include="Models\ACCOUNT.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ACTIVE_CLUBS_PER_SESS_ID_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ADVISOR_SEPARATE_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ACT_INFO.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ADMIN.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ADVISOR_EMAILS_PER_ACT_CDE_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ALL_BASIC_INFO_NOT_ALUMNI_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ALL_BASIC_INFO_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ALL_MEMBERSHIPS_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ALL_REQUESTS_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Alumni.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Buildings.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\C360_SLIDER.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\CCT_DB_Models.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CCT_DB_Models.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\CCT_DB_Models.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\CCT_DB_Models.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ChapelEvent.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ChapelSummary.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\CM_SESSION_MSTR.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Countries.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\COURSES_FOR_PROFESSOR_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\CSVStringsToTable_fn_Result.cs">
-      <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\CUSTOM_PROFILE.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\DiningInfo.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Dining_Mealplans.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Dining_Meal_Choice_Desc.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Dining_Meal_Plan_Id_Mapping.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Dining_Student_Meal_Choice.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\dtproperties.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\dt_getpropertiesbyid_Result.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\dt_getpropertiesbyid_u_Result.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\EMAILS_PER_ACT_CDE_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ERROR_LOG.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\EVENTS_BY_STUDENT_ID_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\FacStaff.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\GRP_ADMIN_EMAILS_PER_ACT_CDE_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\hour_types.cs">
-      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\JENZ_ACT_CLUB_DEF.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\JNZB_ACTIVITIES.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\LEADER_EMAILS_PER_ACT_CDE_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\LEADER_MEMBERSHIPS_PER_ACT_CDE_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\MEMBERSHIP.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\MEMBERSHIPS_PER_ACT_CDE_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\MEMBERSHIPS_PER_STUDENT_ID_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\MyGordon_DB_Models.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>MyGordon_DB_Models.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\MyGordon_DB_Models.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\MyGordon_DB_Models.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="Models\MYSCHEDULE.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\MYSCHEDULE_BY_ID_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\NEWS_CATEGORIES_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\NEWS_NEW_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\NEWS_NOT_EXPIRED_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\paid_shifts.cs">
-      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\PART_DEF.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\PHOTO_INFO_PER_USER_NAME_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\REQUEST.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\REQUESTS_PER_ACT_CDE_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\REQUESTS_PER_STUDENT_ID_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\REQUEST_PER_REQUEST_ID_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\RIDERS_BY_RIDE_ID_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\RoomAssign.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Save_Bookings.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Save_Rides.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Schedule_Control.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\sp_helpdiagramdefinition_Result.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\sp_helpdiagrams_Result.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\StaffTimesheets_DB_Models.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>StaffTimesheets_DB_Models.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\StaffTimesheets_DB_Models.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\StaffTimesheets_DB_Models.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>StaffTimesheets_DB_Models.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="Models\staff_timesheets.cs">
-      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\staff_timesheets_select_active_status_shifts_Result.cs">
-      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\staff_timesheets_select_emls_for_ajax_selectbox_Result.cs">
-      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\staff_timesheets_select_fixed_status_shifts_Result.cs">
-      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\staff_timesheets_select_hour_types_Result.cs">
-      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\staff_timesheets_select_supervisor_name_Result.cs">
-      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Student.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\StudentEmployment.cs" />
-    <Compile Include="Models\StudentNews.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\StudentNewsCategory.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\StudentNewsExpiration.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\StudentTimesheet_DB_Models.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>StudentTimesheet_DB_Models.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\StudentTimesheet_DB_Models.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\StudentTimesheet_DB_Models.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="Models\STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <!-- <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs" /> -->
-    <Compile Include="Models\student_timesheets.cs">
-      <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\student_timesheets_select_active_status_shifts_Result.cs">
-      <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\student_timesheets_select_emls_for_ajax_selectbox_Result.cs">
-      <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\student_timesheets_select_fixed_status_shifts_Result.cs">
-      <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\student_timesheets_select_supervisor_name_Result.cs">
-      <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\sysdiagrams.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Transit_Requests.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Transit_Rides.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\UPCOMING_RIDES_BY_STUDENT_ID_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\UPCOMING_RIDES_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\VICTORY_PROMISE_BY_STUDENT_ID_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ViewModels\ClockInViewModel.cs" />
-    <Compile Include="Models\ViewModels\HourTypesViewModel.cs" />
-    <Compile Include="Models\ViewModels\StaffCheckViewModel.cs" />
-    <Compile Include="Models\ViewModels\StaffTimesheetsViewModel.cs" />
-    <Compile Include="Models\ViewModels\StudentNewsCategoryViewModel.cs" />
-    <Compile Include="Models\ViewModels\StudentNewsViewModel.cs" />
-    <Compile Include="Models\ViewModels\ActiveJobSelectionParametersModel.cs" />
-    <Compile Include="Models\ViewModels\ActiveJobViewModel.cs" />
-    <Compile Include="Models\ViewModels\OverlappingShiftIdViewModel.cs" />
-    <Compile Include="Models\ViewModels\ShiftToDeleteViewModel.cs" />
-    <Compile Include="Models\ViewModels\ShiftToSubmitViewModel.cs" />
-    <Compile Include="Models\ViewModels\ShiftViewModel.cs" />
-    <Compile Include="Models\ViewModels\StudentTimesheetsViewModel.cs" />
-    <Compile Include="Models\ViewModels\MyScheduleViewModel.cs" />
-    <Compile Include="ApiControllers\ProfilesController.cs" />
-    <Compile Include="ApiControllers\ScheduleController.cs" />
-    <Compile Include="ApiControllers\VersionController.cs" />
-    <Compile Include="ApiControllers\SessionsController.cs" />
-    <Compile Include="ApiControllers\ActivitiesController.cs" />
-    <Compile Include="ApiControllers\MembershipsController.cs" />
-    <Compile Include="ApiControllers\StudentEmploymentController.cs" />
-    <Compile Include="ApiControllers\VictoryPromiseController.cs" />
-    <Compile Include="AuthorizationFilters\StateYourBusiness.cs" />
-    <Compile Include="AuthorizationServer\CustomJWTFormat.cs" />
-    <Compile Include="AuthorizationServer\TokenIssuer.cs" />
-    <Compile Include="Exceptions\CustomExceptions.cs" />
-    <Compile Include="Exceptions\CustomExceptionFilter.cs" />
-    <Compile Include="Models\Metadata.cs" />
-    <Compile Include="Models\ModelPartialClasses.cs" />
-    <Compile Include="Models\ViewModels\BasicInfoViewModel.cs" />
-    <Compile Include="Models\ViewModels\AccountViewModel.cs" />
-    <Compile Include="Models\ViewModels\ActivityInfoViewModel.cs" />
-    <Compile Include="Models\ViewModels\ActivityViewModel.cs" />
-    <Compile Include="Models\ViewModels\AdvisorViewModel.cs" />
-    <Compile Include="Models\ViewModels\AlumniProfileViewModel.cs" />
-    <Compile Include="Models\ViewModels\AttendedEventViewModel.cs" />
-    <Compile Include="Models\ViewModels\DiningTableViewModel.cs" />
-    <Compile Include="Models\ViewModels\DiningViewModel.cs" />
-    <Compile Include="Models\ViewModels\EmailContentViewModel.cs" />
-    <Compile Include="Models\ViewModels\ChapelEventViewModel.cs" />
-    <Compile Include="Models\ViewModels\EmailViewModel.cs" />
-    <Compile Include="Models\ViewModels\EventViewModel.cs" />
-    <Compile Include="Models\ViewModels\ExtensionMethods\EventViewModelExtension.cs" />
-    <Compile Include="Models\ViewModels\FacultyStaffProfileViewModel.cs" />
-    <Compile Include="Models\ViewModels\JenzibarActivitiesViewModel.cs" />
-    <Compile Include="Models\ViewModels\MembershipViewModel.cs" />
-    <Compile Include="Models\ViewModels\MembershipRequestViewModel.cs" />
-    <Compile Include="Models\ViewModels\ParticipationViewModel.cs" />
-    <Compile Include="Models\ViewModels\PhotoPathViewModel.cs" />
-    <Compile Include="Models\ViewModels\ProfileCustomViewModel.cs" />
-    <Compile Include="Models\ViewModels\PublicAlumniProfileViewModel.cs" />
-    <Compile Include="Models\ViewModels\PublicFacultyStaffProfileViewModel.cs" />
-    <Compile Include="Models\ViewModels\PublicStudentProfileViewModel.cs" />
-    <Compile Include="Models\ViewModels\RideViewModel.cs" />
-    <Compile Include="Models\ViewModels\ScheduleViewModel.cs" />
-    <Compile Include="Models\ViewModels\StudentEmploymentViewModel.cs" />
-    <Compile Include="Models\ViewModels\StudentProfileViewModel.cs" />
-    <Compile Include="Models\ViewModels\SessionViewModel.cs" />
-    <Compile Include="Models\ViewModels\SliderViewModel.cs" />
-    <Compile Include="Models\ViewModels\SupervisorViewModel.cs" />
-    <Compile Include="Models\ViewModels\VictoryPromiseViewModel.cs" />
-    <Compile Include="Models\ViewModels\WellnessQuestionViewModel.cs" />
-    <Compile Include="Models\view_cct_alumni.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\view_cct_ChapelEvent.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\view_cct_facstaff.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\view_cct_student.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ViewModels\WellnessViewModel.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Providers\CustomMultiPartFormDataStreamProvider.cs" />
-    <Compile Include="Repositories\GenericRepository.cs" />
-    <Compile Include="Repositories\IRepository.cs" />
-    <Compile Include="Repositories\IUnitOfWork.cs" />
-    <Compile Include="Repositories\UnitOfWork.cs" />
-    <Compile Include="Services\AccountService.cs" />
-    <Compile Include="Services\ActivityService.cs" />
-    <Compile Include="Services\AdministratorService.cs" />
-    <Compile Include="Services\JobsService.cs" />
-    <Compile Include="Services\DiningService.cs" />
-    <Compile Include="Services\ErrorLogService.cs" />
-    <Compile Include="Services\EventService.cs" />
-    <Compile Include="Services\ComplexQueries\RawSqlQuery.cs" />
-    <Compile Include="Services\ContentManagementService.cs" />
-    <Compile Include="Services\EmailService.cs" />
-    <Compile Include="Services\MyScheduleService.cs" />
-    <Compile Include="Services\NewsService.cs" />
-    <Compile Include="Services\ProfileService.cs" />
-    <Compile Include="Services\RoleCheckingService.cs" />
-    <Compile Include="Services\SaveService.cs" />
-    <Compile Include="Services\ScheduleControlService.cs" />
-    <Compile Include="Services\ScheduleService.cs" />
-    <Compile Include="Services\StudentEmploymentService.cs" />
-    <Compile Include="Services\VictoryPromiseService.cs" />
-    <Compile Include="Services\WellnessService.cs" />
-    <Compile Include="Static Classes\Data.cs" />
-    <Compile Include="Static Classes\Helpers.cs" />
-    <Compile Include="Services\JenzibarActivityService.cs" />
-    <Compile Include="Services\MembershipRequestService.cs" />
-    <Compile Include="Services\MembershipService.cs" />
-    <Compile Include="Services\ServiceInterfaces.cs" />
-    <Compile Include="Services\SessionService.cs" />
-    <Compile Include="Startup.cs" />
-    <Compile Include="Static Classes\Names.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="browseable\profile\Default\profile.png" />
-    <Content Include="browseable\uploads\Default\activityImage.png" />
-    <EntityDeploy Include="Models\StudentTimesheet_DB_Models.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>StudentTimesheet_DB_Models.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\CCT_DB_Models.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
-      <LastGenOutput>CCT_DB_Models.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\CCT_DB_Models.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
-      <LastGenOutput>CCT_DB_Models.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\MyGordon_DB_Models.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
-      <LastGenOutput>MyGordon_DB_Models.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\MyGordon_DB_Models.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
-      <LastGenOutput>MyGordon_DB_Models.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\StaffTimesheets_DB_Models.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>StaffTimesheets_DB_Models.edmx</DependentUpon>
-      <LastGenOutput>StaffTimesheets_DB_Models.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\StaffTimesheets_DB_Models.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>StaffTimesheets_DB_Models.edmx</DependentUpon>
-      <LastGenOutput>StaffTimesheets_DB_Models.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\StudentTimesheet_DB_Models.edmx.diagram">
-      <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
-    </Content>
-    <EntityDeploy Include="Models\CCT_DB_Models.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>CCT_DB_Models.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\CCT_DB_Models.edmx.diagram">
-      <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
-    </Content>
-    <EntityDeploy Include="Models\MyGordon_DB_Models.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>MyGordon_DB_Models.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\MyGordon_DB_Models.edmx.diagram">
-      <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
-    </Content>
-    <EntityDeploy Include="Models\StaffTimesheets_DB_Models.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>StaffTimesheets_DB_Models.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\StaffTimesheets_DB_Models.edmx.diagram">
-      <DependentUpon>StaffTimesheets_DB_Models.edmx</DependentUpon>
-    </Content>
-    <None Include="secrets.config">
-      <SubType>Designer</SubType>
-    </None>
-    <EmbeddedResource Include="version.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <Content Include="Models\StudentTimesheet_DB_Models.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
-      <LastGenOutput>StudentTimesheet_DB_Models.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\StudentTimesheet_DB_Models.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
-      <LastGenOutput>StudentTimesheet_DB_Models.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\StudentTimesheet_DB_Models.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
-      <LastGenOutput>StudentTimesheet_DB_Models.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\StudentTimesheet_DB_Models.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
-      <LastGenOutput>StudentTimesheet_DB_Models.cs</LastGenOutput>
-    </Content>
-    <Content Include="Web.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </Content>
-    <Content Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
-      <SubType>Designer</SubType>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
-    <None Include="Properties\PublishProfiles\DEV.pubxml" />
-    <None Include="Properties\PublishProfiles\PROD.pubxml" />
-  </ItemGroup>
-  <ItemGroup />
-  <PropertyGroup>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
-    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject>
-    </StartupObject>
-  </PropertyGroup>
-  <PropertyGroup>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-  </PropertyGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
-  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
-    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
-  </Target>
-  <ProjectExtensions>
-    <VisualStudio>
-      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
-        <WebProjectProperties>
-          <UseIIS>True</UseIIS>
-          <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>49645</DevelopmentServerPort>
-          <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:6969</IISUrl>
-          <NTLMAuthentication>False</NTLMAuthentication>
-          <UseCustomServer>False</UseCustomServer>
-          <CustomServerUrl>
-          </CustomServerUrl>
-          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
-          <servers defaultServer="">
-            <server name="SelfHostServer" exePath="" cmdArgs="" url="http://localhost:49645/" workingDir="" />
-          </servers>
-        </WebProjectProperties>
-      </FlavorProperties>
-    </VisualStudio>
-  </ProjectExtensions>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+<Project ToolsVersion="14.0" DefaultTargets="Build"
+    xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+    <Import Project="..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" />
+    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
     <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <ProductVersion>
+        </ProductVersion>
+        <SchemaVersion>2.0</SchemaVersion>
+        <ProjectGuid>{47DF568B-4E41-4398-BD88-B6BAB507334A}</ProjectGuid>
+        <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+        <OutputType>Library</OutputType>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <RootNamespace>Gordon360</RootNamespace>
+        <AssemblyName>Gordon360</AssemblyName>
+        <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+        <MvcBuildViews>false</MvcBuildViews>
+        <UseIISExpress>true</UseIISExpress>
+        <IISExpressSSLPort>49645</IISExpressSSLPort>
+        <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+        <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+        <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
+        <UseGlobalApplicationHostFile />
+        <NuGetPackageImportStamp>
+        </NuGetPackageImportStamp>
+        <Use64BitIISExpress>false</Use64BitIISExpress>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
-  </Target>
-  <PropertyGroup>
-    <PreBuildEvent>"C:\Program Files\Git\bin\git.exe" rev-parse --short HEAD &gt; %25tmp%25\hash.txt
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+        <OutputPath>bin\</OutputPath>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+        <DocumentationFile>Documentation\Gordon360.xml</DocumentationFile>
+        <NoWarn>1591</NoWarn>
+        <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <DebugType>pdbonly</DebugType>
+        <Optimize>true</Optimize>
+        <OutputPath>bin\</OutputPath>
+        <DefineConstants>TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+            <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+            <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+            <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+        </Reference>
+        <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.1\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.2.2\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
+        </Reference>
+        <Reference Include="Microsoft.AspNet.SignalR.SystemWeb, Version=2.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\Microsoft.AspNet.SignalR.SystemWeb.2.2.2\lib\net45\Microsoft.AspNet.SignalR.SystemWeb.dll</HintPath>
+        </Reference>
+        <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="Microsoft.CSharp" />
+        <Reference Include="Microsoft.Owin, Version=4.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\Microsoft.Owin.4.1.1\lib\net45\Microsoft.Owin.dll</HintPath>
+        </Reference>
+        <Reference Include="Microsoft.Owin.Cors, Version=4.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\Microsoft.Owin.Cors.4.1.1\lib\net45\Microsoft.Owin.Cors.dll</HintPath>
+        </Reference>
+        <Reference Include="Microsoft.Owin.Host.HttpListener, Version=2.0.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\Microsoft.Owin.Host.HttpListener.2.0.2\lib\net45\Microsoft.Owin.Host.HttpListener.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.4.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+        </Reference>
+        <Reference Include="Microsoft.Owin.Hosting, Version=2.0.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\Microsoft.Owin.Hosting.2.0.2\lib\net45\Microsoft.Owin.Hosting.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="Microsoft.Owin.Security, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\Microsoft.Owin.Security.3.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="Microsoft.Owin.Security.Cookies, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\Microsoft.Owin.Security.Cookies.2.1.0\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="Microsoft.Owin.Security.Jwt, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\Microsoft.Owin.Security.Jwt.3.0.1\lib\net45\Microsoft.Owin.Security.Jwt.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="Microsoft.Owin.Security.OAuth, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\Microsoft.Owin.Security.OAuth.3.0.1\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+            <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+        </Reference>
+        <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+            <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="System" />
+        <Reference Include="System.Data" />
+        <Reference Include="System.DirectoryServices.AccountManagement" />
+        <Reference Include="System.Drawing" />
+        <Reference Include="System.IdentityModel" />
+        <Reference Include="System.IdentityModel.Tokens.Jwt, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.4.0.0\lib\net45\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="System.Security" />
+        <Reference Include="System.Web.Cors, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\Microsoft.AspNet.Cors.5.2.3\lib\net45\System.Web.Cors.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="System.Web.Entity" />
+        <Reference Include="System.Web.ApplicationServices" />
+        <Reference Include="System.ComponentModel.DataAnnotations" />
+        <Reference Include="System.Core" />
+        <Reference Include="System.Data.DataSetExtensions" />
+        <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Web.Http.Owin, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\Microsoft.AspNet.WebApi.Owin.5.2.3\lib\net45\System.Web.Http.Owin.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Xml.Linq" />
+        <Reference Include="System.Web" />
+        <Reference Include="System.Web.Abstractions" />
+        <Reference Include="System.Web.Routing" />
+        <Reference Include="System.Xml" />
+        <Reference Include="System.Configuration" />
+        <Reference Include="System.Runtime.Serialization" />
+        <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <Private>True</Private>
+            <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Net.Http">
+        </Reference>
+        <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Net.Http.WebRequest">
+        </Reference>
+        <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Web.Http.WebHost, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.3\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+        </Reference>
+        <Reference Include="Thinktecture.IdentityModel.Core, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+            <HintPath>..\packages\Thinktecture.IdentityModel.Core.1.4.0\lib\net45\Thinktecture.IdentityModel.Core.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
+            <HintPath>..\packages\WebActivatorEx.2.0\lib\net40\WebActivatorEx.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="Antlr3.Runtime">
+            <Private>True</Private>
+            <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
+        </Reference>
+        <Reference Include="WebGrease, Version=1.5.2.14234, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="ApiControllers\AccountsController.cs" />
+        <Compile Include="ApiControllers\AdminsController.cs" />
+        <Compile Include="ApiControllers\AdvancedSearchController.cs" />
+        <Compile Include="ApiControllers\DirectMessageController.cs" />
+        <Compile Include="ApiControllers\NewsController.cs" />
+        <Compile Include="ApiControllers\DiningController.cs" />
+        <Compile Include="ApiControllers\ErrorLogController.cs" />
+        <Compile Include="ApiControllers\EventController.cs" />
+        <Compile Include="ApiControllers\ContentManagementController.cs" />
+        <Compile Include="ApiControllers\EmailsController.cs" />
+        <Compile Include="ApiControllers\JobsController.cs" />
+        <Compile Include="ApiControllers\MembershipRequestController.cs" />
+        <Compile Include="ApiControllers\MyScheduleController.cs" />
+        <Compile Include="ApiControllers\SaveController.cs" />
+        <Compile Include="ApiControllers\ScheduleControlController.cs" />
+        <Compile Include="ApiControllers\WellnessController.cs" />
+        <Compile Include="Models\AA_ApartmentApplications.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\AA_ApartmentChoices.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\AA_Applicants.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\ACCOUNT.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\ACTIVE_CLUBS_PER_SESS_ID_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\ACT_INFO.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\ADMIN.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\ADVISOR_EMAILS_PER_ACT_CDE_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\ADVISOR_SEPARATE_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\ALL_BASIC_INFO_NOT_ALUMNI_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\ALL_BASIC_INFO_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\ALL_MEMBERSHIPS_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\ALL_REQUESTS_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\Alumni.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\Buildings.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\C360_SLIDER.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\CCT_DB_Models.Context.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>CCT_DB_Models.Context.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\CCT_DB_Models.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\CCT_DB_Models.Designer.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
+        </Compile>
+        <Compile Include="Models\ChapelEvent.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\ChapelSummary.cs">
+            <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\Clifton_Strengths.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\CM_SESSION_MSTR.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\Countries.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\COURSES_FOR_PROFESSOR_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\CSVStringsToTable_fn_Result.cs">
+            <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\CUSTOM_PROFILE.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\DiningInfo.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\Dining_Mealplans.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\Dining_Meal_Choice_Desc.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\Dining_Meal_Plan_Id_Mapping.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\Dining_Student_Meal_Choice.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\dtproperties.cs">
+            <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\dt_getpropertiesbyid_Result.cs">
+            <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\dt_getpropertiesbyid_u_Result.cs">
+            <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\EMAILS_PER_ACT_CDE_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\ERROR_LOG.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\EVENTS_BY_STUDENT_ID_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\FacStaff.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\GET_ALL_MESSAGES_BY_ID_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\GET_HEALTH_CHECK_QUESTION_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\GET_ROOM_BY_ID_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\GET_STU_HOUSING_INFO_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\GET_TIMESHEETS_CLOCK_IN_OUT_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\GRP_ADMIN_EMAILS_PER_ACT_CDE_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\Health_Question.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\Health_Status.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\Health_Status_CTRL.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\hour_types.cs">
+            <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\JENZ_ACT_CLUB_DEF.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\JNZB_ACTIVITIES.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\LEADER_EMAILS_PER_ACT_CDE_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\LEADER_MEMBERSHIPS_PER_ACT_CDE_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\MEMBERSHIP.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\MEMBERSHIPS_PER_ACT_CDE_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\MEMBERSHIPS_PER_STUDENT_ID_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\Messages.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\MyGordon_DB_Models.Context.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>MyGordon_DB_Models.Context.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\MyGordon_DB_Models.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\MyGordon_DB_Models.Designer.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
+        </Compile>
+        <Compile Include="Models\MYSCHEDULE.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\MYSCHEDULE_BY_ID_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\NEWS_CATEGORIES_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\NEWS_NEW_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\NEWS_NOT_EXPIRED_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\NEWS_PERSONAL_UNAPPROVED_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\paid_shifts.cs">
+            <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\PART_DEF.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\PHOTO_INFO_PER_USER_NAME_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\REQUEST.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\REQUESTS_PER_ACT_CDE_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\REQUESTS_PER_STUDENT_ID_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\REQUEST_PER_REQUEST_ID_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\RIDERS_BY_RIDE_ID_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\RoomAssign.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\Rooms.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\Save_Bookings.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\Save_Rides.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\Schedule_Control.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\sp_helpdiagramdefinition_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\sp_helpdiagrams_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\StaffTimesheets_DB_Models.Context.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>StaffTimesheets_DB_Models.Context.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\StaffTimesheets_DB_Models.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\StaffTimesheets_DB_Models.Designer.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>StaffTimesheets_DB_Models.edmx</DependentUpon>
+        </Compile>
+        <Compile Include="Models\staff_timesheets.cs">
+            <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\staff_timesheets_select_active_status_shifts_Result.cs">
+            <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\staff_timesheets_select_emls_for_ajax_selectbox_Result.cs">
+            <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\staff_timesheets_select_fixed_status_shifts_Result.cs">
+            <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\staff_timesheets_select_hour_types_Result.cs">
+            <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\staff_timesheets_select_supervisor_name_Result.cs">
+            <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\Student.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\StudentEmployment.cs" />
+        <Compile Include="Models\StudentNews.cs">
+            <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\StudentNewsCategory.cs">
+            <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\StudentNewsExpiration.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\StudentTimesheet_DB_Models.Context.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>StudentTimesheet_DB_Models.Context.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\StudentTimesheet_DB_Models.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\StudentTimesheet_DB_Models.Designer.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
+        </Compile>
+        <Compile Include="Models\STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <!-- <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs" /> -->
+        <Compile Include="Models\student_timesheets.cs">
+            <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\student_timesheets_select_active_status_shifts_Result.cs">
+            <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\student_timesheets_select_emls_for_ajax_selectbox_Result.cs">
+            <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\student_timesheets_select_fixed_status_shifts_Result.cs">
+            <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\student_timesheets_select_supervisor_name_Result.cs">
+            <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\sysdiagrams.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\Timesheets_Clock_In_Out.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\UPCOMING_RIDES_BY_STUDENT_ID_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\UPCOMING_RIDES_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\Users.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\User_Rooms.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\VICTORY_PROMISE_BY_STUDENT_ID_Result.cs">
+            <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\ViewModels\ClockInViewModel.cs" />
+        <Compile Include="Models\ViewModels\CreateGroupViewModel.cs" />
+        <Compile Include="Models\ViewModels\GroupViewModel.cs" />
+        <Compile Include="Models\ViewModels\HourTypesViewModel.cs" />
+        <Compile Include="Models\ViewModels\MessageViewModel.cs" />
+        <Compile Include="Models\ViewModels\RoomViewModel.cs" />
+        <Compile Include="Models\ViewModels\SendTextViewModel.cs" />
+        <Compile Include="Models\ViewModels\StaffCheckViewModel.cs" />
+        <Compile Include="Models\ViewModels\StaffTimesheetsViewModel.cs" />
+        <Compile Include="Models\ViewModels\StudentNewsCategoryViewModel.cs" />
+        <Compile Include="Models\ViewModels\StudentNewsViewModel.cs" />
+        <Compile Include="Models\ViewModels\ActiveJobSelectionParametersModel.cs" />
+        <Compile Include="Models\ViewModels\ActiveJobViewModel.cs" />
+        <Compile Include="Models\ViewModels\OverlappingShiftIdViewModel.cs" />
+        <Compile Include="Models\ViewModels\ShiftToDeleteViewModel.cs" />
+        <Compile Include="Models\ViewModels\ShiftToSubmitViewModel.cs" />
+        <Compile Include="Models\ViewModels\ShiftViewModel.cs" />
+        <Compile Include="Models\ViewModels\StudentTimesheetsViewModel.cs" />
+        <Compile Include="Models\ViewModels\MyScheduleViewModel.cs" />
+        <Compile Include="ApiControllers\ProfilesController.cs" />
+        <Compile Include="ApiControllers\ScheduleController.cs" />
+        <Compile Include="ApiControllers\VersionController.cs" />
+        <Compile Include="ApiControllers\SessionsController.cs" />
+        <Compile Include="ApiControllers\ActivitiesController.cs" />
+        <Compile Include="ApiControllers\MembershipsController.cs" />
+        <Compile Include="ApiControllers\StudentEmploymentController.cs" />
+        <Compile Include="ApiControllers\VictoryPromiseController.cs" />
+        <Compile Include="AuthorizationFilters\StateYourBusiness.cs" />
+        <Compile Include="AuthorizationServer\CustomJWTFormat.cs" />
+        <Compile Include="AuthorizationServer\TokenIssuer.cs" />
+        <Compile Include="Exceptions\CustomExceptions.cs" />
+        <Compile Include="Exceptions\CustomExceptionFilter.cs" />
+        <Compile Include="Models\Metadata.cs" />
+        <Compile Include="Models\ModelPartialClasses.cs" />
+        <Compile Include="Models\ViewModels\BasicInfoViewModel.cs" />
+        <Compile Include="Models\ViewModels\AccountViewModel.cs" />
+        <Compile Include="Models\ViewModels\ActivityInfoViewModel.cs" />
+        <Compile Include="Models\ViewModels\ActivityViewModel.cs" />
+        <Compile Include="Models\ViewModels\AdvisorViewModel.cs" />
+        <Compile Include="Models\ViewModels\AlumniProfileViewModel.cs" />
+        <Compile Include="Models\ViewModels\AttendedEventViewModel.cs" />
+        <Compile Include="Models\ViewModels\DiningTableViewModel.cs" />
+        <Compile Include="Models\ViewModels\DiningViewModel.cs" />
+        <Compile Include="Models\ViewModels\EmailContentViewModel.cs" />
+        <Compile Include="Models\ViewModels\ChapelEventViewModel.cs" />
+        <Compile Include="Models\ViewModels\EmailViewModel.cs" />
+        <Compile Include="Models\ViewModels\EventViewModel.cs" />
+        <Compile Include="Models\ViewModels\FacultyStaffProfileViewModel.cs" />
+        <Compile Include="Models\ViewModels\JenzibarActivitiesViewModel.cs" />
+        <Compile Include="Models\ViewModels\MembershipViewModel.cs" />
+        <Compile Include="Models\ViewModels\MembershipRequestViewModel.cs" />
+        <Compile Include="Models\ViewModels\ParticipationViewModel.cs" />
+        <Compile Include="Models\ViewModels\PhotoPathViewModel.cs" />
+        <Compile Include="Models\ViewModels\ProfileCustomViewModel.cs" />
+        <Compile Include="Models\ViewModels\PublicAlumniProfileViewModel.cs" />
+        <Compile Include="Models\ViewModels\PublicFacultyStaffProfileViewModel.cs" />
+        <Compile Include="Models\ViewModels\PublicStudentProfileViewModel.cs" />
+        <Compile Include="Models\ViewModels\RideViewModel.cs" />
+        <Compile Include="Models\ViewModels\ScheduleViewModel.cs" />
+        <Compile Include="Models\ViewModels\StudentEmploymentViewModel.cs" />
+        <Compile Include="Models\ViewModels\StudentProfileViewModel.cs" />
+        <Compile Include="Models\ViewModels\SessionViewModel.cs" />
+        <Compile Include="Models\ViewModels\SliderViewModel.cs" />
+        <Compile Include="Models\ViewModels\SupervisorViewModel.cs" />
+        <Compile Include="Models\ViewModels\UserViewModel.cs" />
+        <Compile Include="Models\ViewModels\VictoryPromiseViewModel.cs" />
+        <Compile Include="Models\ViewModels\WellnessQuestionViewModel.cs" />
+        <Compile Include="Models\ViewModels\WellnessStatusViewModel.cs" />
+        <Compile Include="Models\ViewModels\WellnessViewModel.cs" />
+        <Compile Include="Models\view_cct_alumni.cs">
+            <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\view_cct_ChapelEvent.cs">
+            <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\view_cct_facstaff.cs">
+            <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Models\view_cct_student.cs">
+            <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+        </Compile>
+        <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="Providers\CustomMultiPartFormDataStreamProvider.cs" />
+        <Compile Include="Repositories\GenericRepository.cs" />
+        <Compile Include="Repositories\IRepository.cs" />
+        <Compile Include="Repositories\IUnitOfWork.cs" />
+        <Compile Include="Repositories\UnitOfWork.cs" />
+        <Compile Include="Services\AccountService.cs" />
+        <Compile Include="Services\ActivityService.cs" />
+        <Compile Include="Services\AdministratorService.cs" />
+        <Compile Include="Services\DirectMessageService.cs" />
+        <Compile Include="Services\JobsService.cs" />
+        <Compile Include="Services\DiningService.cs" />
+        <Compile Include="Services\ErrorLogService.cs" />
+        <Compile Include="Services\EventService.cs" />
+        <Compile Include="Services\ComplexQueries\RawSqlQuery.cs" />
+        <Compile Include="Services\ContentManagementService.cs" />
+        <Compile Include="Services\EmailService.cs" />
+        <Compile Include="Services\MyScheduleService.cs" />
+        <Compile Include="Services\NewsService.cs" />
+        <Compile Include="Services\ProfileService.cs" />
+        <Compile Include="Services\RoleCheckingService.cs" />
+        <Compile Include="Services\SaveService.cs" />
+        <Compile Include="Services\ScheduleControlService.cs" />
+        <Compile Include="Services\ScheduleService.cs" />
+        <Compile Include="Services\StudentEmploymentService.cs" />
+        <Compile Include="Services\VictoryPromiseService.cs" />
+        <Compile Include="Services\WellnessService.cs" />
+        <Compile Include="Static Classes\Data.cs" />
+        <Compile Include="Static Classes\Helpers.cs" />
+        <Compile Include="Services\JenzibarActivityService.cs" />
+        <Compile Include="Services\MembershipRequestService.cs" />
+        <Compile Include="Services\MembershipService.cs" />
+        <Compile Include="Services\ServiceInterfaces.cs" />
+        <Compile Include="Services\SessionService.cs" />
+        <Compile Include="Startup.cs" />
+        <Compile Include="Static Classes\Names.cs" />
+        <Compile Include="Hubs\SignalRHub.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="browseable\profile\Default\profile.png" />
+        <Content Include="browseable\uploads\Default\activityImage.png" />
+        <EntityDeploy Include="Models\StudentTimesheet_DB_Models.edmx">
+            <Generator>EntityModelCodeGenerator</Generator>
+            <LastGenOutput>StudentTimesheet_DB_Models.Designer.cs</LastGenOutput>
+        </EntityDeploy>
+        <Content Include="Models\CCT_DB_Models.Context.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
+            <LastGenOutput>CCT_DB_Models.Context.cs</LastGenOutput>
+        </Content>
+        <Content Include="Models\CCT_DB_Models.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
+            <LastGenOutput>CCT_DB_Models.cs</LastGenOutput>
+        </Content>
+        <Content Include="Models\MyGordon_DB_Models.Context.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
+            <LastGenOutput>MyGordon_DB_Models.Context.cs</LastGenOutput>
+        </Content>
+        <Content Include="Models\MyGordon_DB_Models.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
+            <LastGenOutput>MyGordon_DB_Models.cs</LastGenOutput>
+        </Content>
+        <Content Include="Models\StaffTimesheets_DB_Models.Context.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <DependentUpon>StaffTimesheets_DB_Models.edmx</DependentUpon>
+            <LastGenOutput>StaffTimesheets_DB_Models.Context.cs</LastGenOutput>
+        </Content>
+        <Content Include="Models\StaffTimesheets_DB_Models.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <DependentUpon>StaffTimesheets_DB_Models.edmx</DependentUpon>
+            <LastGenOutput>StaffTimesheets_DB_Models.cs</LastGenOutput>
+        </Content>
+        <Content Include="Models\StudentTimesheet_DB_Models.edmx.diagram">
+            <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
+        </Content>
+        <EntityDeploy Include="Models\MyGordon_DB_Models.edmx">
+            <Generator>EntityModelCodeGenerator</Generator>
+            <LastGenOutput>MyGordon_DB_Models.Designer.cs</LastGenOutput>
+        </EntityDeploy>
+        <Content Include="Models\MyGordon_DB_Models.edmx.diagram">
+            <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
+        </Content>
+        <EntityDeploy Include="Models\StaffTimesheets_DB_Models.edmx">
+            <Generator>EntityModelCodeGenerator</Generator>
+            <LastGenOutput>StaffTimesheets_DB_Models.Designer.cs</LastGenOutput>
+        </EntityDeploy>
+        <Content Include="Models\StaffTimesheets_DB_Models.edmx.diagram">
+            <DependentUpon>StaffTimesheets_DB_Models.edmx</DependentUpon>
+        </Content>
+        <EntityDeploy Include="Models\CCT_DB_Models.edmx">
+            <Generator>EntityModelCodeGenerator</Generator>
+            <LastGenOutput>CCT_DB_Models.Designer.cs</LastGenOutput>
+        </EntityDeploy>
+        <Content Include="Models\CCT_DB_Models.edmx.diagram">
+            <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
+        </Content>
+        <Content Include="libman.json" />
+        <None Include="secrets.config">
+            <SubType>Designer</SubType>
+        </None>
+        <EmbeddedResource Include="version.txt">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </EmbeddedResource>
+        <Content Include="Models\StudentTimesheet_DB_Models.Context.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
+            <LastGenOutput>StudentTimesheet_DB_Models.Context.cs</LastGenOutput>
+        </Content>
+        <Content Include="Models\StudentTimesheet_DB_Models.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
+            <LastGenOutput>StudentTimesheet_DB_Models.cs</LastGenOutput>
+        </Content>
+        <Content Include="Models\StudentTimesheet_DB_Models.Context.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
+            <LastGenOutput>StudentTimesheet_DB_Models.Context.cs</LastGenOutput>
+        </Content>
+        <Content Include="Models\StudentTimesheet_DB_Models.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
+            <LastGenOutput>StudentTimesheet_DB_Models.cs</LastGenOutput>
+        </Content>
+        <Content Include="Scripts\jquery.signalR-2.2.2.js" />
+        <Content Include="Scripts\jquery.signalR-2.2.2.min.js" />
+        <Content Include="Web.config">
+            <SubType>Designer</SubType>
+        </Content>
+        <Content Include="Web.Debug.config">
+            <DependentUpon>Web.config</DependentUpon>
+        </Content>
+        <Content Include="Web.Release.config">
+            <DependentUpon>Web.config</DependentUpon>
+            <SubType>Designer</SubType>
+        </Content>
+    </ItemGroup>
+    <ItemGroup>
+        <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="packages.config" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
+        <None Include="Properties\PublishProfiles\DEV.pubxml" />
+        <None Include="Properties\PublishProfiles\PROD.pubxml" />
+    </ItemGroup>
+    <ItemGroup />
+    <PropertyGroup>
+        <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+        <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    </PropertyGroup>
+    <PropertyGroup>
+        <StartupObject>
+        </StartupObject>
+    </PropertyGroup>
+    <PropertyGroup>
+        <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    </PropertyGroup>
+    <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+    <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+    <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+    <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+        <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+    </Target>
+    <ProjectExtensions>
+        <VisualStudio>
+            <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+                <WebProjectProperties>
+                    <UseIIS>True</UseIIS>
+                    <AutoAssignPort>True</AutoAssignPort>
+                    <DevelopmentServerPort>49645</DevelopmentServerPort>
+                    <DevelopmentServerVPath>/</DevelopmentServerVPath>
+                    <IISUrl>http://localhost:3417</IISUrl>
+                    <NTLMAuthentication>False</NTLMAuthentication>
+                    <UseCustomServer>False</UseCustomServer>
+                    <CustomServerUrl>
+                    </CustomServerUrl>
+                    <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+                    <servers defaultServer="">
+                        <server name="SelfHostServer" exePath="" cmdArgs="" url="http://localhost:49645/" workingDir="" />
+                    </servers>
+                </WebProjectProperties>
+            </FlavorProperties>
+        </VisualStudio>
+    </ProjectExtensions>
+    <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+        <PropertyGroup>
+            <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+        </PropertyGroup>
+        <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props'))" />
+        <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    </Target>
+    <PropertyGroup>
+        <PreBuildEvent>"C:\Program Files\Git\bin\git.exe" rev-parse --short HEAD &gt; %25tmp%25\hash.txt
 echo %25date%25 %25time%25 &gt; %25tmp%25\date.txt
 set /p hashvar=&lt;%25tmp%25\hash.txt
 set /p datevar=&lt;%25tmp%25\date.txt
 echo Git Hash: %25hashvar%25; Build Time: %25datevar%25 &gt; "$(ProjectDir)\version.txt"
 del %25tmp%25\hash.txt
 del %25tmp%25\date.txt</PreBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+    </PropertyGroup>
+    <PropertyGroup>
+        <PostBuildEvent>
+        </PostBuildEvent>
+    </PropertyGroup>
+    <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

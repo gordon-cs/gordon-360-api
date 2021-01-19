@@ -3,6 +3,7 @@ using System.Xml.Linq;
 using System.Collections.Generic;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
+using static Gordon360.Controllers.Api.WellnessController;
 
 // <summary>
 // Namespace with all the Service Interfaces that are to be implemented. I don't think making this interface is required, the services can work find on their own.
@@ -31,10 +32,10 @@ namespace Gordon360.Services
 
     public interface IEventService
     {
-        IEnumerable<AttendedEventViewModel> GetAllForStudent(string id);
         IEnumerable<AttendedEventViewModel> GetEventsForStudentByTerm(string id, string term);
-        IEnumerable<EventViewModel> GetSpecificEvents(string Event_ID, string type);
-        IEnumerable<EventViewModel> GetAllEvents(XDocument xmlDoc);
+        IEnumerable<EventViewModel> GetAllEvents();
+        IEnumerable<EventViewModel> GetPublicEvents();
+        IEnumerable<EventViewModel> GetCLAWEvents();
     }
 
     public interface IDiningService
@@ -53,9 +54,21 @@ namespace Gordon360.Services
 
     public interface IWellnessService
     {
-        IEnumerable<WellnessViewModel> GetStatus(string id);
-        IEnumerable<WellnessQuestionViewModel> GetQuestion();
-        WellnessViewModel PostStatus(bool answer, string id);
+        WellnessViewModel GetStatus(string id);
+        DEPRECATED_WellnessStatusViewModel DEPRECATED_GetStatus(string id);
+        WellnessQuestionViewModel GetQuestion();
+        Health_Status PostStatus(WellnessStatusColor status, string id);
+        string DEPRECATED_PostStatus(string status, string id);
+    }
+
+    public interface IDirectMessageService
+    {
+        bool CreateGroup(String id, String name, bool group, DateTime lastUpdated,string image);
+        bool SendMessage(SendTextViewModel textInfo, string user_id);
+        bool StoreUserRooms(String userId, String roomId);
+        IEnumerable<MessageViewModel> GetMessages(string roomId);
+        IEnumerable<GroupViewModel> GetRooms(string userId);
+        List<Object> GetRoomById(string userId);
     }
 
     public interface IActivityService
@@ -154,6 +167,7 @@ namespace Gordon360.Services
         MEMBERSHIP ToggleGroupAdmin(int id, MEMBERSHIP membership);
         void TogglePrivacy(int id, bool p);
         MEMBERSHIP Delete(int id);
+        Boolean IsGroupAdmin(int studentID);
     }
 
     public interface IJobsService

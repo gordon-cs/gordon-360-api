@@ -1,12 +1,9 @@
 ﻿using System.Linq;
 using System.Security.Claims;
 using System.Web.Http;
-using System.Net;
-using System.Net.Http;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
 using Gordon360.Services;
-using Gordon360.Models;
 using Gordon360.Exceptions.CustomExceptions;
 
 namespace Gordon360.Controllers.Api
@@ -16,9 +13,7 @@ namespace Gordon360.Controllers.Api
     [Authorize]
     public class WellnessController : ApiController
     {
-        private IProfileService _profileService;
         private IAccountService _accountService;
-        private IRoleCheckingService _roleCheckingService;
 
         private IWellnessService _wellnessService;
 
@@ -26,9 +21,7 @@ namespace Gordon360.Controllers.Api
         {
             var _unitOfWork = new UnitOfWork();
             _wellnessService = new WellnessService();
-            _profileService = new ProfileService(_unitOfWork);
             _accountService = new AccountService(_unitOfWork);
-            _roleCheckingService = new RoleCheckingService(_unitOfWork);
         }
 
         public WellnessController(IWellnessService wellnessService)
@@ -37,9 +30,20 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>
-        ///  Gets current wellness status of student
+        /// Enum representing three possible wellness statuses.
+        /// GREEN - Healthy, no known contact/symptoms
+        /// YELLOW - Symptomatic or cautionary hold
+        /// RED - Quarantine/Isolation
         /// </summary>
-        /// <returns>Json WellnessViewModel</returns>
+        public enum WellnessStatusColor
+        {
+            GREEN, YELLOW, RED
+        }
+
+        /// <summary>
+        ///  Gets wellness status of current user
+        /// </summary>
+        /// <returns>A WellnessViewModel representing the most recent status of the user</returns>
         [HttpGet]
         [Route("")]
         public IHttpActionResult Get()
@@ -62,7 +66,7 @@ namespace Gordon360.Controllers.Api
         /// <summary>
         ///  Gets question for wellness check from the back end
         /// </summary>
-        /// <returns> json WellnessQuestionViewModel</returns>
+        /// <returns>A WellnessQuestionViewModel</returns>
         [HttpGet]
         [Route("question")]
         public IHttpActionResult GetQuestion()
@@ -77,19 +81,17 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
 
-
         /// <summary>
-        ///  Stores the user's wellness check answer, with a timestamp.
-        ///  If answer boolean is true: student is feeling symptomatic(feeling sick).
-        ///  If answer boolean is false: student is not feeling symptomatic(feeling fine).
+        ///  Stores the user's wellness status
         /// </summary>
-        /// <returns>Ok if message was recorded</returns>
+        /// <param name="status">The current status of the user to post, of type WellnessStatusColor</param>
+        /// <returns>The status that was stored in the database</returns>
         [HttpPost]
         [Route("")]
-        public IHttpActionResult PostAnswer([FromBody] bool answer)
+        public IHttpActionResult Post([FromBody] WellnessStatusColor status)
         {
 
-            if (!ModelState.IsValid || answer == null)
+            if (!ModelState.IsValid)
             {
                 string errors = "";
                 foreach (var modelstate in ModelState.Values)
@@ -108,7 +110,7 @@ namespace Gordon360.Controllers.Api
 
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
-            var result = _wellnessService.PostStatus(answer, id);
+            var result = _wellnessService.PostStatus(status, id);
 
             if (result == null)
             {
@@ -118,6 +120,82 @@ namespace Gordon360.Controllers.Api
 
             return Created("Recorded answer :", result);
 
+        }
+
+        /// <summary>
+        /// DEPRECATED - Please use base route
+        ///  Gets current wellness status of student
+        /// </summary>
+        /// <returns>Json WellnessStatusViewModel</returns>
+        [HttpGet]
+        [Route("status")]
+        public IHttpActionResult DEPRECATED_Get()
+        {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            var result = _wellnessService.DEPRECATED_GetStatus(id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// DEPRECATED - Please use base route /question
+        ///  Gets question for wellness check from the back end
+        /// </summary>
+        /// <returns> json WellnessQuestionViewModel</returns>
+        [HttpGet]
+        [Route("status/question")]
+        public IHttpActionResult DEPRECATED_GetQuestion()
+        {
+            var result = _wellnessService.GetQuestion();
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// DEPRECATED - Please use base route
+        /// </summary>
+        /// <param name="status">The status to be posted - GREEN, YELLOW, or RED</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("status")]
+        public IHttpActionResult DEPRECATED_PostStatus([FromBody] WellnessStatusColor status)
+        {
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            var result = _wellnessService.DEPRECATED_PostStatus(status.ToString(), id);
+
+            return Created("Recorded answer :", result);
         }
     }
 }
