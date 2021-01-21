@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using Gordon360.Exceptions.CustomExceptions;
 using System.Data.SqlClient;
 using Gordon360.Services.ComplexQueries;
-using System.Diagnostics;
 
 namespace Gordon360.Services
 {
@@ -36,10 +33,10 @@ namespace Gordon360.Services
 
         /// <summary>
         /// Saves student housing info
-        /// - first, it creates a new row in the applications table and puts the id of the primary applicant and a timestamp
-        /// - second, it looks for the application id of the application with the information we just input (because 
+        /// - first, it creates a new row in the applications table and inserts the id of the of the primary applicant and a timestamp
+        /// - second, it retrieves the application id of the application with the information we just inserted (because 
         /// the database creates the application ID so we have to ask it which number it generated for it)
-        /// - third, it inserts each applicant into the applicnts table along with the apartment ID so we know
+        /// - third, it inserts each applicant into the applicants table along with the apartment ID so we know
         /// which application on which they are an applicant
         ///  
         /// </summary>
