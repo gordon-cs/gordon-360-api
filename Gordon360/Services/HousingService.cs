@@ -55,9 +55,8 @@ namespace Gordon360.Services
 
             DateTime now = System.DateTime.Now;
 
-            var timeParam = new SqlParameter("@NOW", now);
-            var modParam = new SqlParameter("@MODIFIER_ID", modifierId);
             var sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
+            var modParam = new SqlParameter("@MODIFIER_ID", modifierId);
 
             int appId = -1;
 
@@ -68,8 +67,9 @@ namespace Gordon360.Services
                 if (idResult == null)
                 {
                     IEnumerable<ApartmentAppSaveViewModel> newAppResult = null;
-                    
-                    // SQL parameters must be remade before they may be reused
+
+                    // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
+                    var timeParam = new SqlParameter("@NOW", now);
                     modParam = new SqlParameter("@MODIFIER_ID", modifierId);
 
                     // If an existing application was not found for this modifier, then insert a new application entry in the database
@@ -82,6 +82,7 @@ namespace Gordon360.Services
                     // The following is ODD, I know. It seems you cannot execute the same query with the same sql parameters twice.
                     // Thus, these two sql params must be recreated after being used in the last query:
 
+                    // All SqlParameters must be remade before each SQL Query to prevent errors
                     timeParam = new SqlParameter("@NOW", now);
                     modParam = new SqlParameter("@MODIFIER_ID", modifierId);
 
@@ -124,8 +125,7 @@ namespace Gordon360.Services
             foreach (string id in applicantIds) {
                 IEnumerable<ApartmentApplicantViewModel> applicantResult = null;
 
-                // this constructs new SqlParameters each time we iterate (despite that only 1/4 will actually be different
-                // on subsequent iterations. See above explanation of this ODD strategy.
+                // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
                 //idParam.Value = id; might need if this ODD solution is not satisfactory
                 appIdParam = new SqlParameter("@APPLICATION_ID", appId);
                 idParam = new SqlParameter("@ID_NUM", id);
