@@ -105,6 +105,22 @@ namespace Gordon360.Services
             SqlParameter idParam = null;
             SqlParameter programParam = null;
 
+            // TODO:
+            // use stored procedure to get an array of all applicant IDs that match the application ID
+            // - This will be used compare the new applicant IDs with any applicants already stored in the database
+            // 
+            // Then, here is a suggested algorithm for adding and removing the necessary applicants to make the database match the data received from the frontend 
+            // - currentApplicantIds = array of applicant IDs from the database
+            // - newApplicantIds = array of applicant IDs from the frontend
+            //
+            // We can use `newApplicantIds.Except(currentApplicantIds);` to get array of applicants that are not yet in the database
+            // - In other words, an array of applicant that need to be inserted for this application id
+            //
+            // We can use `currentApplicantIds.Except(newApplicantIds);` to get array of applicants that are in database but not in the array from the frontend
+            // - In other words, an array of applicants that should be removed
+            //
+            // Requires `using System.Linq;`
+
             foreach (string id in applicantIds) {
                 // this constructs new SqlParameters each time we iterate (despite that only 1/4 will actually be different
                 // on subsequent iterations. See above explanation of this ODD strategy.
