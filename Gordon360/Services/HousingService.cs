@@ -51,9 +51,9 @@ namespace Gordon360.Services
         /// <returns>Whether or not all the queries succeeded</returns>
         public int SaveApplication(int apartAppId, string modifierId, string sess_cde, string [] applicantIds)
         {
-            IEnumerable<ApartmentAppSaveViewModel> result = null;
+            IEnumerable<ApartmentAppSaveViewModel> newAppResult = null;
             IEnumerable<ApartmentAppIDViewModel> idResult = null;
-            IEnumerable<ApartmentApplicantViewModel> result2 = null;
+            IEnumerable<ApartmentApplicantViewModel> applicantResult = null;
 
             DateTime now = System.DateTime.Now;
 
@@ -71,10 +71,10 @@ namespace Gordon360.Services
                 {
                     // SQL parameters must be remade before they may be reused
                     modParam = new SqlParameter("@MODIFIER_ID", modifierId);
-                    
+
                     // If an existing application was not found for this modifier, then insert a new application entry in the database
-                    result = RawSqlQuery<ApartmentAppSaveViewModel>.query("INSERT_AA_APPLICATION @NOW, @MODIFIER_ID", timeParam, modParam); //run stored procedure
-                    if (result == null)
+                    newAppResult = RawSqlQuery<ApartmentAppSaveViewModel>.query("INSERT_AA_APPLICATION @NOW, @MODIFIER_ID", timeParam, modParam); //run stored procedure
+                    if (newAppResult == null)
                     {
                         throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be saved." };
                     }
@@ -131,8 +131,8 @@ namespace Gordon360.Services
                 programParam = new SqlParameter("@APRT_PROGRAM", "");
                 sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
 
-                result2 = RawSqlQuery<ApartmentApplicantViewModel>.query("INSERT_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM, @SESS_CDE", appIdParam, idParam, programParam, sessionParam); //run stored procedure
-                if (result2 == null)
+                applicantResult = RawSqlQuery<ApartmentApplicantViewModel>.query("INSERT_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM, @SESS_CDE", appIdParam, idParam, programParam, sessionParam); //run stored procedure
+                if (applicantResult == null)
                 {
                     throw new ResourceNotFoundException() { ExceptionMessage = "Applicant with ID " + id + " could not be saved." };   
                 }
