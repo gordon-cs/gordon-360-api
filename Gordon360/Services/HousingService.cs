@@ -51,9 +51,7 @@ namespace Gordon360.Services
         /// <returns>Whether or not all the queries succeeded</returns>
         public int SaveApplication(int apartAppId, string modifierId, string sess_cde, string [] applicantIds)
         {
-            IEnumerable<ApartmentAppSaveViewModel> newAppResult = null;
             IEnumerable<ApartmentAppIDViewModel> idResult = null;
-            IEnumerable<ApartmentApplicantViewModel> applicantResult = null;
 
             DateTime now = System.DateTime.Now;
 
@@ -69,6 +67,8 @@ namespace Gordon360.Services
                 idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, modParam); //run stored procedure
                 if (idResult == null)
                 {
+                    IEnumerable<ApartmentAppSaveViewModel> newAppResult = null;
+                    
                     // SQL parameters must be remade before they may be reused
                     modParam = new SqlParameter("@MODIFIER_ID", modifierId);
 
@@ -122,9 +122,10 @@ namespace Gordon360.Services
             // Requires `using System.Linq;`
 
             foreach (string id in applicantIds) {
+                IEnumerable<ApartmentApplicantViewModel> applicantResult = null;
+
                 // this constructs new SqlParameters each time we iterate (despite that only 1/4 will actually be different
                 // on subsequent iterations. See above explanation of this ODD strategy.
-
                 //idParam.Value = id; might need if this ODD solution is not satisfactory
                 appIdParam = new SqlParameter("@APPLICATION_ID", appId);
                 idParam = new SqlParameter("@ID_NUM", id);
