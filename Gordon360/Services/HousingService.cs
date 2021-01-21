@@ -37,10 +37,10 @@ namespace Gordon360.Services
         ///   - if not, then it checks the database for an existing application that matches the current semester and the current student user
         ///     - if an existing application is NOT found, then:
         ///       - first, it creates a new row in the applications table and inserts the id of the primary applicant and a timestamp
-        ///       - second, it looks for the application id of the application with the information we just input (because 
+        ///       - second, it retrieves the application id of the application with the information we just inserted (because 
         ///       the database creates the application ID so we have to ask it which number it generated for it)
-        ///     - else, it saves the application ID of that existing application to the variable "appId"
-        /// - third, it inserts each applicant into the applicnts table along with the apartment ID so we know
+        ///     - else, it retrieves the application ID of that existing application
+        /// - third, it inserts each applicant into the applicants table along with the apartment ID so we know
         /// which application on which they are an applicant
         ///  
         /// </summary>
@@ -69,6 +69,9 @@ namespace Gordon360.Services
                 idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, modParam); //run stored procedure
                 if (idResult == null)
                 {
+                    // SQL parameters must be remade before they may be reused
+                    modParam = new SqlParameter("@MODIFIER_ID", modifierId);
+                    
                     // If an existing application was not found for this modifier, then insert a new application entry in the database
                     result = RawSqlQuery<ApartmentAppSaveViewModel>.query("INSERT_AA_APPLICATION @NOW, @MODIFIER_ID", timeParam, modParam); //run stored procedure
                     if (result == null)
