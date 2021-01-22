@@ -338,6 +338,22 @@ namespace Gordon360.Controllers.Api
 
         }
 
+        /// <summary> Gets the clifton strengths of a particular user </summary>
+        /// <param name="username"> The username for which to retrieve info </param>
+        /// <returns> Clifton strengths of the given user. </returns>
+        [HttpGet]
+        [Route("clifton/{username}")]
+        public IHttpActionResult getCliftonStrengths(string username)
+        {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            var strengths = _profileService.GetCliftonStrengths(id);
+
+            return Ok(strengths);
+
+        }
+
         /// <summary>Get the profile image of currently logged in user</summary>
         /// <returns></returns>
         [HttpGet]

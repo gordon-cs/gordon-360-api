@@ -40,6 +40,7 @@ namespace Gordon360.Repositories
         private IRepository<StudentNews> _StudentNewsRepository;
         private IRepository<StudentNewsCategory> _StudentNewsCategoryRepository;
         private IRepository<Health_Status> _WellnessRepository;
+        private IRepository<Clifton_Strengths> _CliftonStrengthsRepository;
 
         private CCTEntities1 _context;
         private MyGordonEntities _myGordonCtx;
@@ -177,6 +178,10 @@ namespace Gordon360.Repositories
         public IRepository<Save_Bookings> BookingRepository
         {
             get { return _BookingRepository ?? (_BookingRepository = new GenericRepository<Save_Bookings>(_context)); }
+        }
+        public IRepository<Clifton_Strengths> CliftonStrengthsRepository
+        {
+            get { return _CliftonStrengthsRepository ?? (_CliftonStrengthsRepository = new GenericRepository<Clifton_Strengths>(_context)); }
         }
 
         public bool Save()

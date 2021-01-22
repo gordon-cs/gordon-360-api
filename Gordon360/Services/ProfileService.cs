@@ -119,6 +119,20 @@ namespace Gordon360.Services
             //Set a list to return not null object in array
             return resultList;
         }
+
+        /// <summary> Gets the clifton strengths of a particular user </summary>
+        /// <param name="id"> The id of the user for which to retrieve info </param>
+        /// <returns> Clifton strengths of the given user. </returns>
+        public Clifton_Strengths GetCliftonStrengths(int id)
+        {
+            var strengths = _unitOfWork.CliftonStrengthsRepository.GetById(id);
+            if(strengths == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "Clifton Strengths not found." };
+            }
+            return strengths;
+        }
+
         /// <summary>
         /// Get photo path for profile
         /// </summary>
