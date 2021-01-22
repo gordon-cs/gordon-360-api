@@ -361,10 +361,17 @@ namespace Gordon360.ApiControllers
             if (majorSearchParam == "C\u266F")
             {
                 majorSearchParam = "";
-            } else if (majorSearchParam.Contains("_") || majorSearchParam.Contains("dash"))
+            } else if (
+                majorSearchParam.Contains("_") ||
+                majorSearchParam.Contains("dash") ||
+                majorSearchParam.Contains("colon") ||
+                majorSearchParam.Contains("slash")
+                )
             {
                 majorSearchParam = majorSearchParam.Replace("_", "&");
                 majorSearchParam = majorSearchParam.Replace("dash", "-");
+                majorSearchParam = majorSearchParam.Replace("colon", ":");
+                majorSearchParam = majorSearchParam.Replace("slash", "/");
             }
             if (minorSearchParam == "C\u266F")
             {
