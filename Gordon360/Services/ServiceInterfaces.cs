@@ -55,10 +55,8 @@ namespace Gordon360.Services
     public interface IWellnessService
     {
         WellnessViewModel GetStatus(string id);
-        DEPRECATED_WellnessStatusViewModel DEPRECATED_GetStatus(string id);
         WellnessQuestionViewModel GetQuestion();
         Health_Status PostStatus(WellnessStatusColor status, string id);
-        string DEPRECATED_PostStatus(string status, string id);
     }
 
     public interface IDirectMessageService
