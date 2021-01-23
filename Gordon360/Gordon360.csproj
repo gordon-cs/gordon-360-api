@@ -608,7 +608,7 @@
     <Compile Include="Models\ViewModels\ApartmentApplicantViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppIDViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppNewEditorViewModel.cs" />
-    <Compile Include="Models\ViewModels\ApartmentAppSaveViewModel.cs" />
+    <Compile Include="Models\ViewModels\ApartmentAppSaveResultViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppViewModel.cs" />
     <Compile Include="Models\ViewModels\ClockInViewModel.cs" />
     <Compile Include="Models\ViewModels\CreateGroupViewModel.cs" />
@@ -620,7 +620,6 @@
     <Compile Include="Models\ViewModels\StaffCheckViewModel.cs" />
     <Compile Include="Models\ViewModels\StaffTimesheetsViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentNewsCategoryViewModel.cs" />
-    <Compile Include="Models\ViewModels\HousingViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentNewsViewModel.cs" />
     <Compile Include="Models\ViewModels\ActiveJobSelectionParametersModel.cs" />
     <Compile Include="Models\ViewModels\ActiveJobViewModel.cs" />

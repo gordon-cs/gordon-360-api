@@ -2,10 +2,10 @@
 
 namespace Gordon360.Models.ViewModels
 {
-    public class ApartmentAppSaveViewModel
+    public class ApartmentAppSaveResultViewModel
     {
         public DateTime NOW { get; set; }
-        public string EDITOR { get; set; }
+        public string EDITOR_ID { get; set; }
         
     }
 }

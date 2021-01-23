@@ -26,19 +26,6 @@ namespace Gordon360.Controllers.Api
             _accountService = new AccountService(_unitOfWork);
         }
 
-        /** Call the service that gets all student housing information
-         */
-        /*
-        [HttpGet]
-        [Route("apartmentInfo")]
-        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.STUDENT)]
-        public IHttpActionResult GetApartmentInfo()
-        {
-            var result = _housingService.GetAll();
-            return Ok(result);
-        }
-        */
-
         /// <summary>
         /// save application
         /// </summary>

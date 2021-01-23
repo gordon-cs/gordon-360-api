@@ -19,18 +19,6 @@ namespace Gordon360.Services
             _unitOfWork = unitOfWork;
         }
 
-        /*
-        /// <summary>
-        /// Gets student housing info
-        /// TODO list what exactly we mean by houding info
-        /// </summary>
-        /// <returns>The housing item</returns>
-        public IEnumerable<HousingViewModel> GetAll()
-        {
-            return RawSqlQuery<HousingViewModel>.query("GET_STU_HOUSING_INFO");
-        }
-        */
-
         /// <summary>
         /// Saves student housing info
         /// - first, it checks if an application ID was passed in as a parameter
@@ -66,14 +54,14 @@ namespace Gordon360.Services
                 idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, editorParam); //run stored procedure
                 if (idResult == null)
                 {
-                    IEnumerable<ApartmentAppSaveViewModel> newAppResult = null;
+                    IEnumerable<ApartmentAppSaveResultViewModel> newAppResult = null;
 
                     // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
                     var timeParam = new SqlParameter("@NOW", now);
                     editorParam = new SqlParameter("@MODIFIER_ID", editorId);
 
                     // If an existing application was not found for this modifier, then insert a new application entry in the database
-                    newAppResult = RawSqlQuery<ApartmentAppSaveViewModel>.query("INSERT_AA_APPLICATION @NOW, @MODIFIER_ID", timeParam, editorParam); //run stored procedure
+                    newAppResult = RawSqlQuery<ApartmentAppSaveResultViewModel>.query("INSERT_AA_APPLICATION @NOW, @MODIFIER_ID", timeParam, editorParam); //run stored procedure
                     if (newAppResult == null)
                     {
                         throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be saved." };
@@ -150,7 +138,7 @@ namespace Gordon360.Services
         public bool ChangeApplicationModifier(int apartAppId, string editorId, string newEditorId)
         {
             IEnumerable<ApartmentAppEditorViewModel> editorResult = null;
-            IEnumerable<ApartmentAppSaveViewModel> result = null;
+            IEnumerable<ApartmentAppSaveResultViewModel> result = null;
 
             DateTime now = System.DateTime.Now;
 
@@ -177,7 +165,7 @@ namespace Gordon360.Services
                 timeParam = new SqlParameter("@NOW", now);
                 newEditorParam = new SqlParameter("@MODIFIER_ID", newEditorId);
 
-                result = RawSqlQuery<ApartmentAppSaveViewModel>.query("UPDATE_AA_APPLICATION_MODIFIER @APPLICATION_ID, @MODIFIER_ID, @NOW, @NEW_MODIFIER_ID", appIdParam, editorParam, timeParam, newEditorParam); //run stored procedure
+                result = RawSqlQuery<ApartmentAppSaveResultViewModel>.query("UPDATE_AA_APPLICATION_MODIFIER @APPLICATION_ID, @MODIFIER_ID, @NOW, @NEW_MODIFIER_ID", appIdParam, editorParam, timeParam, newEditorParam); //run stored procedure
                 if (result == null)
                 {
                     throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be updated." };
