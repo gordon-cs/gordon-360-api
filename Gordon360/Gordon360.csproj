@@ -604,10 +604,10 @@
     <Compile Include="Models\VICTORY_PROMISE_BY_STUDENT_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ViewModels\ApartmentAppModViewModel.cs" />
+    <Compile Include="Models\ViewModels\ApartmentAppEditorViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentApplicantViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppIDViewModel.cs" />
-    <Compile Include="Models\ViewModels\ApartmentAppNewModViewModel.cs" />
+    <Compile Include="Models\ViewModels\ApartmentAppNewEditorViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppSaveViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppViewModel.cs" />
     <Compile Include="Models\ViewModels\ClockInViewModel.cs" />

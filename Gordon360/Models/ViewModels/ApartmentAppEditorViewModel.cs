@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Gordon360.Models.ViewModels
 {
-    public class ApartmentAppModViewModel
+    public class ApartmentAppEditorViewModel
     {
         public string ModifiedBy { get; set; }
     }

@@ -56,24 +56,24 @@ namespace Gordon360.Services
             DateTime now = System.DateTime.Now;
 
             var sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
-            var modParam = new SqlParameter("@MODIFIER_ID", editorId);
+            var editorParam = new SqlParameter("@MODIFIER_ID", editorId);
 
             int appId = -1;
 
             if (apartAppId == -1)
             {
                 // If an application ID was not passed in, then check if an application already exists
-                idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, modParam); //run stored procedure
+                idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, editorParam); //run stored procedure
                 if (idResult == null)
                 {
                     IEnumerable<ApartmentAppSaveViewModel> newAppResult = null;
 
                     // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
                     var timeParam = new SqlParameter("@NOW", now);
-                    modParam = new SqlParameter("@MODIFIER_ID", editorId);
+                    editorParam = new SqlParameter("@MODIFIER_ID", editorId);
 
                     // If an existing application was not found for this modifier, then insert a new application entry in the database
-                    newAppResult = RawSqlQuery<ApartmentAppSaveViewModel>.query("INSERT_AA_APPLICATION @NOW, @MODIFIER_ID", timeParam, modParam); //run stored procedure
+                    newAppResult = RawSqlQuery<ApartmentAppSaveViewModel>.query("INSERT_AA_APPLICATION @NOW, @MODIFIER_ID", timeParam, editorParam); //run stored procedure
                     if (newAppResult == null)
                     {
                         throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be saved." };
@@ -84,9 +84,9 @@ namespace Gordon360.Services
 
                     // All SqlParameters must be remade before each SQL Query to prevent errors
                     timeParam = new SqlParameter("@NOW", now);
-                    modParam = new SqlParameter("@MODIFIER_ID", editorId);
+                    editorParam = new SqlParameter("@MODIFIER_ID", editorId);
 
-                    idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_NAME_AND_DATE @NOW, @MODIFIER_ID", timeParam, modParam); //run stored procedure
+                    idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_NAME_AND_DATE @NOW, @MODIFIER_ID", timeParam, editorParam); //run stored procedure
                     if (idResult == null)
                     {
                         throw new ResourceNotFoundException() { ExceptionMessage = "The new application ID could not be found." };
@@ -147,37 +147,37 @@ namespace Gordon360.Services
         ///  
         /// </summary>
         /// <returns>Whether or not all the queries succeeded</returns>
-        public bool ChangeApplicationModifier(int apartAppId, string editorId, string newModifierId)
+        public bool ChangeApplicationModifier(int apartAppId, string editorId, string newEditorId)
         {
-            IEnumerable<ApartmentAppModViewModel> modResult = null;
+            IEnumerable<ApartmentAppEditorViewModel> editorResult = null;
             IEnumerable<ApartmentAppSaveViewModel> result = null;
 
             DateTime now = System.DateTime.Now;
 
             SqlParameter appIdParam = null;
-            SqlParameter modParam = null;
+            SqlParameter editorParam = null;
             SqlParameter timeParam = null;
-            SqlParameter newModParam = null;
+            SqlParameter newEditorParam = null;
 
             appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
 
-            modResult = RawSqlQuery<ApartmentAppModViewModel>.query("GET_AA_MODIFIER_BY_APPID @APPLICATION_ID", appIdParam);
-            if (modResult == null)
+            editorResult = RawSqlQuery<ApartmentAppEditorViewModel>.query("GET_AA_MODIFIER_BY_APPID @APPLICATION_ID", appIdParam);
+            if (editorResult == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be found." };
             }
-            ApartmentAppModViewModel modModel = modResult.ElementAt(0);
-            string storedModifierId = modModel.ModifiedBy;
+            ApartmentAppEditorViewModel modModel = editorResult.ElementAt(0);
+            string storedEditorId = modModel.ModifiedBy;
 
-            if (modifierId == storedModifierId)
+            if (editorId == storedEditorId)
             {
                 // Only perform the update if the ID of the current user matched the 'ModifiedBy' ID stored in the database for the requested application
                 appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
-                modParam = new SqlParameter("@MODIFIER_ID", editorId);
+                editorParam = new SqlParameter("@MODIFIER_ID", editorId);
                 timeParam = new SqlParameter("@NOW", now);
-                newModParam = new SqlParameter("@MODIFIER_ID", newEditorId);
+                newEditorParam = new SqlParameter("@MODIFIER_ID", newEditorId);
 
-                result = RawSqlQuery<ApartmentAppSaveViewModel>.query("UPDATE_AA_APPLICATION_MODIFIER @APPLICATION_ID, @MODIFIER_ID, @NOW, @NEW_MODIFIER_ID", appIdParam, modParam, timeParam, newModParam); //run stored procedure
+                result = RawSqlQuery<ApartmentAppSaveViewModel>.query("UPDATE_AA_APPLICATION_MODIFIER @APPLICATION_ID, @MODIFIER_ID, @NOW, @NEW_MODIFIER_ID", appIdParam, editorParam, timeParam, newEditorParam); //run stored procedure
                 if (result == null)
                 {
                     throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be updated." };

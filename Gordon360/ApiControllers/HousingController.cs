@@ -68,11 +68,9 @@ namespace Gordon360.Controllers.Api
 
             string editorId = _accountService.GetAccountByUsername(username).GordonID;
 
-            int apartAppId = apartmentAppDetails.AprtAppID; // Set the apartAppId to -1 to indicate that an application ID was not passed by the frontend
             string sessionId = Helpers.GetCurrentSession().SessionCode;
 
             int apartAppId = apartmentAppDetails.AprtAppID; // The apartAppId is set to -1 if an existing application ID was not yet known by the frontend
-            // string modifierId = _accountService.GetAccountByUsername(apartmentAppDetails.Username).GordonID;
             string[] applicantIds = new string[apartmentAppDetails.Applicants.Length];
             for(int i = 0; i < apartmentAppDetails.Applicants.Length; i++){
                 applicantIds[i] = _accountService.GetAccountByUsername(apartmentAppDetails.Applicants[i]).GordonID;

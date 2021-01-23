@@ -378,11 +378,11 @@
             </summary>
             <returns>The result of submitting the application</returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.HousingController.ChangeModifier(Gordon360.Models.ViewModels.ApartmentAppNewModViewModel)">
+        <member name="M:Gordon360.Controllers.Api.HousingController.ChangeEditor(Gordon360.Models.ViewModels.ApartmentAppNewEditorViewModel)">
             <summary>
-            change the modifier (i.e. primary applicant) of the application
+            change the editor (i.e. primary applicant) of the application
             </summary>
-            <returns>The result of changing the modifier</returns>
+            <returns>The result of changing the editor</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.NewsController.#ctor">
             private void catchBadInput()
@@ -1850,7 +1850,7 @@
              
             </summary>
             <param name="apartAppId"> The application ID number of the application to be edited </param>  
-            <param name="modifierId"> The student ID number of the user who is attempting to save the apartment application </param>  
+            <param name="editorId"> The student ID number of the user who is attempting to save the apartment application </param>  
             <param name="sess_cde"> The current session code </param>  
             <param name="applicantIds"> Array of student ID numbers for each of the applicants </param>  
             <returns>The application ID number if all the queries succeeded, otherwise returns -1</returns>
