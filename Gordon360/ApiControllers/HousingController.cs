@@ -3,8 +3,6 @@ using Gordon360.Repositories;
 using Gordon360.Services;
 using System.Web.Http;
 using Gordon360.Exceptions.ExceptionFilters;
-using Gordon360.AuthorizationFilters;
-using Gordon360.Static.Names;
 using Gordon360.Static.Methods;
 using Gordon360.Models.ViewModels;
 
