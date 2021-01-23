@@ -5,8 +5,6 @@ using System.Linq;
 using System.Web.Http;
 using System.Security.Claims;
 using Gordon360.Exceptions.ExceptionFilters;
-using Gordon360.AuthorizationFilters;
-using Gordon360.Static.Names;
 using Gordon360.Static.Methods;
 using Gordon360.Models.ViewModels;
 using System;
@@ -68,8 +66,9 @@ namespace Gordon360.Controllers.Api
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
-            string modifierId = _accountService.GetAccountByUsername(username).GordonID;
+            string editorId = _accountService.GetAccountByUsername(username).GordonID;
 
+            int apartAppId = apartmentAppDetails.AprtAppID; // Set the apartAppId to -1 to indicate that an application ID was not passed by the frontend
             string sessionId = Helpers.GetCurrentSession().SessionCode;
 
             int apartAppId = apartmentAppDetails.AprtAppID; // The apartAppId is set to -1 if an existing application ID was not yet known by the frontend
@@ -79,18 +78,18 @@ namespace Gordon360.Controllers.Api
                 applicantIds[i] = _accountService.GetAccountByUsername(apartmentAppDetails.Applicants[i]).GordonID;
             }
 
-            int result = _housingService.SaveApplication(apartAppId, modifierId, sessionId, applicantIds);
+            int result = _housingService.SaveApplication(apartAppId, editorId, sessionId, applicantIds);
 
             return Created("Status of application saving: ", result);
         }
 
         /// <summary>
-        /// change the modifier (i.e. primary applicant) of the application
+        /// change the editor (i.e. primary applicant) of the application
         /// </summary>
-        /// <returns>The result of changing the modifier</returns>
+        /// <returns>The result of changing the editor</returns>
         [HttpPost]
-        [Route("change-modifier")]
-        public IHttpActionResult ChangeModifier([FromBody] ApartmentAppNewModViewModel newModifierDetails)
+        [Route("change-editor")]
+        public IHttpActionResult ChangeEditor([FromBody] ApartmentAppNewEditorViewModel newEditorDetails)
         {
             // Verify Input
             if (!ModelState.IsValid)
@@ -110,13 +109,13 @@ namespace Gordon360.Controllers.Api
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
-            string modifierId = _accountService.GetAccountByUsername(username).GordonID;
+            string editorId = _accountService.GetAccountByUsername(username).GordonID;
 
-            int apartAppId = newModifierDetails.AprtAppID;
-            string newModifierUsername = newModifierDetails.Username;
-            string newModifierId = _accountService.GetAccountByUsername(newModifierUsername).GordonID;
+            int apartAppId = newEditorDetails.AprtAppID;
+            string newEditorUsername = newEditorDetails.Username;
+            string newEditorId = _accountService.GetAccountByUsername(newEditorUsername).GordonID;
 
-            bool result = _housingService.ChangeApplicationModifier(apartAppId, modifierId, newModifierId);
+            bool result = _housingService.ChangeApplicationModifier(apartAppId, editorId, newEditorId);
 
             return Ok(result);
         }

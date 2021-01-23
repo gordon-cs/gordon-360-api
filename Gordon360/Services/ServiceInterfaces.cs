@@ -269,9 +269,8 @@ namespace Gordon360.Services
 
     public interface IHousingService
     {
-        //IEnumerable<HousingViewModel> GetAll();
-        int SaveApplication(int apartAppId, string modifierId, string sess_cde, string [] applicantIds);
-        bool ChangeApplicationModifier(int apartAppId, string modifierId, string newModifierId);
+        int SaveApplication(int apartAppId, string editorId, string sess_cde, string [] applicantIds);
+        bool ChangeApplicationModifier(int apartAppId, string editorId, string newEditorId);
     }
 
 }
