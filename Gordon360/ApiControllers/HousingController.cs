@@ -63,10 +63,10 @@ namespace Gordon360.Controllers.Api
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
-            string modifierId = _accountService.GetAccountByUsername(username).GordonID;
+            string editorId = _accountService.GetAccountByUsername(username).GordonID;
             string sessionId = Helpers.GetCurrentSession().SessionCode;
 
-            var result = _housingService.GetApplicationID(modifierId, sessionId);
+            var result = _housingService.GetApplicationID(editorId, sessionId);
             return Ok(result);
         }
         /// <summary>Get apartment application ID number for a user if that user is on an existing application</summary>
@@ -92,10 +92,10 @@ namespace Gordon360.Controllers.Api
             //get token data from context, username is the username of current logged in person
             //var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
 
-            string modifierId = _accountService.GetAccountByUsername(username).GordonID;
+            string editorId = _accountService.GetAccountByUsername(username).GordonID;
             string sessionId = Helpers.GetCurrentSession().SessionCode;
 
-            var result = _housingService.GetApplicationID(modifierId, sessionId);
+            var result = _housingService.GetApplicationID(editorId, sessionId);
             return Ok(result);
         }
 
@@ -124,14 +124,14 @@ namespace Gordon360.Controllers.Api
             }
 
             int apartAppId = apartmentAppDetails.AprtAppID; // Set the apartAppId to -1 to indicate that an application ID was not passed by the frontend
-            string editor = _accountService.GetAccountByUsername(apartmentAppDetails.Username).GordonID;
+            string editorId = _accountService.GetAccountByUsername(apartmentAppDetails.Username).GordonID;
             string sessionId = Helpers.GetCurrentSession().SessionCode;
             string[] applicantIds = new string[apartmentAppDetails.Applicants.Length];
             for(int i = 0; i < apartmentAppDetails.Applicants.Length; i++){
                 applicantIds[i] = _accountService.GetAccountByUsername(apartmentAppDetails.Applicants[i]).GordonID;
             }
 
-            int result = _housingService.SaveApplication(apartAppId, editor, sessionId, applicantIds);
+            int result = _housingService.SaveApplication(apartAppId, editorId, sessionId, applicantIds);
 
             return Created("Status of application saving: ", result);
 

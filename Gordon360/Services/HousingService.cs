@@ -65,18 +65,18 @@ namespace Gordon360.Services
         ///  
         /// </summary>
         /// <param name="apartAppId"> The application ID number of the application to be edited </param>  
-        /// <param name="editor"> The student ID number of the user who is attempting to save the apartment application </param>  
+        /// <param name="editorId"> The student ID number of the user who is attempting to save the apartment application </param>  
         /// <param name="sess_cde"> The current session code </param>  
         /// <param name="applicantIds"> Array of student ID numbers for each of the applicants </param>  
         /// <returns>Whether or not all the queries succeeded</returns>
-        public int SaveApplication(int apartAppId, string editor, string sess_cde, string [] applicantIds)
+        public int SaveApplication(int apartAppId, string editorId, string sess_cde, string [] applicantIds)
         {
             IEnumerable<ApartmentAppIDViewModel> idResult = null;
 
             DateTime now = System.DateTime.Now;
 
             var sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
-            var modParam = new SqlParameter("@MODIFIER_ID", editor);
+            var modParam = new SqlParameter("@MODIFIER_ID", editorId);
 
             int appId = -1;
 
@@ -90,9 +90,9 @@ namespace Gordon360.Services
 
                     // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
                     var timeParam = new SqlParameter("@NOW", now);
-                    modParam = new SqlParameter("@MODIFIER_ID", editor);
+                    modParam = new SqlParameter("@MODIFIER_ID", editorId);
 
-                    // If an existing application was not found for this modifier, then insert a new application entry in the database
+                    // If an existing application was not found for this editor, then insert a new application entry in the database
                     newAppResult = RawSqlQuery<ApartmentAppSaveViewModel>.query("INSERT_AA_APPLICATION @NOW, @MODIFIER_ID", timeParam, modParam); //run stored procedure
                     if (newAppResult == null)
                     {
@@ -104,7 +104,7 @@ namespace Gordon360.Services
 
                     // All SqlParameters must be remade before each SQL Query to prevent errors
                     timeParam = new SqlParameter("@NOW", now);
-                    modParam = new SqlParameter("@MODIFIER_ID", editor);
+                    modParam = new SqlParameter("@MODIFIER_ID", editorId);
 
                     idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_NAME_AND_DATE @NOW, @MODIFIER_ID", timeParam, modParam); //run stored procedure
                     if (idResult == null)
