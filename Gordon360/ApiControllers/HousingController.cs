@@ -62,8 +62,9 @@ namespace Gordon360.Controllers.Api
             for(int i = 0; i < apartmentAppDetails.Applicants.Length; i++){
                 applicantIds[i] = _accountService.GetAccountByUsername(apartmentAppDetails.Applicants[i]).GordonID;
             }
+            ApartmentChoiceViewModel[] apartmentChoices = apartmentAppDetails.ApartmentChoices;
 
-            int result = _housingService.SaveApplication(apartAppId, editorId, sessionId, applicantIds);
+            int result = _housingService.SaveApplication(editorId, sessionId, apartAppId, applicantIds, apartmentChoices);
 
             return Created("Status of application saving: ", result);
         }
@@ -100,7 +101,7 @@ namespace Gordon360.Controllers.Api
             string newEditorUsername = newEditorDetails.Username;
             string newEditorId = _accountService.GetAccountByUsername(newEditorUsername).GordonID;
 
-            bool result = _housingService.ChangeApplicationModifier(apartAppId, editorId, newEditorId);
+            bool result = _housingService.ChangeApplicationModifier(editorId, apartAppId, newEditorId);
 
             return Ok(result);
         }
