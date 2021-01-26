@@ -100,7 +100,7 @@ namespace Gordon360.Controllers.Api
             string newEditorUsername = newEditorDetails.Username;
             string newEditorId = _accountService.GetAccountByUsername(newEditorUsername).GordonID;
 
-            bool result = _housingService.ChangeApplicationModifier(apartAppId, editorId, newEditorId);
+            bool result = _housingService.ChangeApplicationEditor(apartAppId, editorId, newEditorId);
 
             return Ok(result);
         }
