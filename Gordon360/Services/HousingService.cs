@@ -149,11 +149,16 @@ namespace Gordon360.Services
 
             appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
 
-            editorResult = RawSqlQuery<ApartmentAppEditorViewModel>.query("GET_AA_MODIFIER_BY_APPID @APPLICATION_ID", appIdParam);
+            editorResult = RawSqlQuery<ApartmentAppEditorViewModel>.query("GET_AA_EDITOR_BY_APPID @APPLICATION_ID", appIdParam);
             if (editorResult == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be found." };
             }
+            else if (!editorResult.Any())
+            {
+                return false;
+            }
+
             ApartmentAppEditorViewModel modModel = editorResult.ElementAt(0);
             string storedEditorId = modModel.ModifiedBy;
 
@@ -163,7 +168,7 @@ namespace Gordon360.Services
                 appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
                 editorParam = new SqlParameter("@MODIFIER_ID", editorId);
                 timeParam = new SqlParameter("@NOW", now);
-                newEditorParam = new SqlParameter("@MODIFIER_ID", newEditorId);
+                newEditorParam = new SqlParameter("@NEW_MODIFIER_ID", newEditorId);
 
                 result = RawSqlQuery<ApartmentAppSaveResultViewModel>.query("UPDATE_AA_APPLICATION_MODIFIER @APPLICATION_ID, @MODIFIER_ID, @NOW, @NEW_MODIFIER_ID", appIdParam, editorParam, timeParam, newEditorParam); //run stored procedure
                 if (result == null)
