@@ -377,13 +377,19 @@
     <Compile Include="Models\Health_Check.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Health_Check_Updated.cs">
+    <Compile Include="Models\Health_Check_NEW.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Health_Override.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Health_Question.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Health_Status.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Health_Status_CTRL.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\hour_types.cs">
@@ -598,12 +604,15 @@
     <Compile Include="Models\VICTORY_PROMISE_BY_STUDENT_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModels\ApartmentApplicantViewModel.cs" />
+    <Compile Include="Models\ViewModels\ApartmentAppIDViewModel.cs" />
+    <Compile Include="Models\ViewModels\ApartmentAppSaveViewModel.cs" />
+    <Compile Include="Models\ViewModels\ApartmentAppViewModel.cs" />
     <Compile Include="Models\ViewModels\ClockInViewModel.cs" />
     <Compile Include="Models\ViewModels\CreateGroupViewModel.cs" />
     <Compile Include="Models\ViewModels\GroupViewModel.cs" />
     <Compile Include="Models\ViewModels\HourTypesViewModel.cs" />
     <Compile Include="Models\ViewModels\MessageViewModel.cs" />
-    <Compile Include="Models\ViewModels\HousingAppToSubmitViewModel.cs" />
     <Compile Include="Models\ViewModels\RoomViewModel.cs" />
     <Compile Include="Models\ViewModels\SendTextViewModel.cs" />
     <Compile Include="Models\ViewModels\StaffCheckViewModel.cs" />

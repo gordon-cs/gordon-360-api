@@ -12,12 +12,13 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class AA_ApartmentApplications
+    public partial class Health_Check_NEW
     {
-        public int AprtAppID { get; set; }
-        public bool Submitted { get; set; }
-        public Nullable<System.DateTime> DateSubmitted { get; set; }
-        public System.DateTime DateModified { get; set; }
-        public string ModifiedBy { get; set; }
+        public int ID_Num { get; set; }
+        public byte HealthStatusID { get; set; }
+        public System.DateTime Created { get; set; }
+        public Nullable<System.DateTime> emailed { get; set; }
+    
+        public virtual Health_Status_CTRL Health_Status_CTRL { get; set; }
     }
 }

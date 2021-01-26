@@ -372,14 +372,11 @@
             <param name="rideID">The identifier for the booking to be deleted</param>
             <remarks>Calls the server to make a call and remove the given booking from the database</remarks>
         </member>
-        <member name="M:Gordon360.Controllers.Api.HousingController.GetApartmentInfo">
-            Call the service that gets all student housing information
-        </member>
-        <member name="M:Gordon360.Controllers.Api.HousingController.SaveApplication(System.Int32)">
+        <member name="M:Gordon360.Controllers.Api.HousingController.SaveApplication(Gordon360.Models.ViewModels.ApartmentAppViewModel)">
             <summary>
-            Submit shifts
+            save application
             </summary>
-            <returns>The result of submitting the shifts</returns>
+            <returns>The result of submitting the application</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.NewsController.#ctor">
             private void catchBadInput()
@@ -1832,19 +1829,25 @@
             <param name="id">id</param>
             <returns>VictoryPromiseViewModel if found, null if not found</returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.GetAll">
+        <member name="M:Gordon360.Services.HousingService.SaveApplication(System.Int32,System.String,System.String,System.String[])">
             <summary>
-            Gets student housing info
-            TODO list what exactly we mean by houding info
+            Saves student housing info
+            - first, it checks if an application ID was passed in as a parameter
+              - if not, then it checks the database for an existing application that matches the current semester and the current student user
+                - if an existing application is NOT found, then:
+                  - first, it creates a new row in the applications table and inserts the id of the primary applicant and a timestamp
+                  - second, it retrieves the application id of the application with the information we just inserted (because 
+                  the database creates the application ID so we have to ask it which number it generated for it)
+                - else, it retrieves the application ID of that existing application
+            - third, it inserts each applicant into the applicants table along with the apartment ID so we know
+            which application on which they are an applicant
+             
             </summary>
-            <returns>The news item</returns>
-        </member>
-        <member name="M:Gordon360.Services.HousingService.SaveApplication(System.Int32)">
-            <summary>
-            Gets student housing info
-            TODO list what exactly we mean by houding info
-            </summary>
-            <returns>The news item</returns>
+            <param name="apartAppId"> The application ID number of the application to be edited </param>  
+            <param name="editor"> The student ID number of the user who is attempting to save the apartment application </param>  
+            <param name="sess_cde"> The current session code </param>  
+            <param name="applicantIds"> Array of student ID numbers for each of the applicants </param>  
+            <returns>Whether or not all the queries succeeded</returns>
         </member>
         <member name="M:Gordon360.Services.WellnessService.GetStatus(System.String)">
             <summary>

@@ -395,7 +395,7 @@ Visual Studio provides auto-generation of .edmx files, with the following proced
   * Open Visual Studio and load the solution file
 
 * *Deleting the old edmx files*
-  * In the solution explorer, expand the "Models" folder and delete the previous `<database name>_DB_MODELS.edmx` which represents the database to which you made changes; for example, if it was the CCT database that was changed, delete CCT_DB_MODELS.edmx by right clicking and selecting 'delete' (it's okay, we can remake it)
+  * In the solution explorer, expand the "Models" folder and delete the previous `<database name>_DB_Models.edmx` which represents the database to which you made changes; for example, if it was the CCT database that was changed, delete CCT_DB_Models.edmx by right clicking and selecting 'delete' (it's okay, we can remake it)
   * At the bottom of the `web.config` file there is a `<connectionStrings>` tag with an `<add ...>` tag for every connection string nested within. Delete the connection string (the `<add ...>` tag) for the DB connection you are regenerating (if this is confusing, [this step](#connection-string) explains why you may need it deleted)
 
 * *Generating the new edmx files*
