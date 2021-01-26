@@ -159,8 +159,8 @@ namespace Gordon360.Services
                 return false;
             }
 
-            ApartmentAppEditorViewModel editorResult = editorResult.ElementAt(0);
-            string storedEditorId = editorResult.ModifiedBy;
+            ApartmentAppEditorViewModel editorModel = editorResult.ElementAt(0);
+            string storedEditorId = editorModel.ModifiedBy;
 
             if (editorId == storedEditorId)
             {
