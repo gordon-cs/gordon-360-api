@@ -7,7 +7,6 @@ using System.Security.Claims;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Static.Methods;
 using Gordon360.Models.ViewModels;
-using System;
 
 namespace Gordon360.Controllers.Api
 {
