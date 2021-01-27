@@ -160,11 +160,11 @@ namespace Gordon360.Services
             }
 
             ApartmentAppEditorViewModel editorModel = editorResult.ElementAt(0);
-            string storedEditorId = editorModel.ModifiedBy;
+            string storedEditorId = editorModel.EditorID;
 
             if (editorId == storedEditorId)
             {
-                // Only perform the update if the ID of the current user matched the 'ModifiedBy' ID stored in the database for the requested application
+                // Only perform the update if the ID of the current user matched the 'EditorID' ID stored in the database for the requested application
                 appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
                 editorParam = new SqlParameter("@EDITOR_ID", editorId);
                 timeParam = new SqlParameter("@NOW", now);

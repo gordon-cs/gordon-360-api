@@ -10,10 +10,9 @@
             <PropertyRef Name="AprtAppID" />
           </Key>
           <Property Name="AprtAppID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Submitted" Type="bit" Nullable="false" />
           <Property Name="DateSubmitted" Type="datetime" />
           <Property Name="DateModified" Type="datetime" Nullable="false" />
-          <Property Name="ModifiedBy" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="EditorID" Type="varchar" MaxLength="10" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.AA_ApartmentChoices' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1592,10 +1591,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <PropertyRef Name="AprtAppID" />
           </Key>
           <Property Name="AprtAppID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Submitted" Type="Boolean" Nullable="false" />
           <Property Name="DateSubmitted" Type="DateTime" Precision="3" />
           <Property Name="DateModified" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="EditorID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
         </EntityType>
         <EntityType Name="ACT_INFO">
           <Key>
@@ -3177,10 +3175,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <EntityTypeMapping TypeName="Gordon360.AA_ApartmentApplications">
               <MappingFragment StoreEntitySet="AA_ApartmentApplications">
                 <ScalarProperty Name="AprtAppID" ColumnName="AprtAppID" />
-                <ScalarProperty Name="Submitted" ColumnName="Submitted" />
                 <ScalarProperty Name="DateSubmitted" ColumnName="DateSubmitted" />
                 <ScalarProperty Name="DateModified" ColumnName="DateModified" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
