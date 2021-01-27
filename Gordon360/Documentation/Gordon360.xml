@@ -1835,7 +1835,7 @@
             <param name="id">id</param>
             <returns>VictoryPromiseViewModel if found, null if not found</returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.SaveApplication(System.Int32,System.String,System.String,System.String[])">
+        <member name="M:Gordon360.Services.HousingService.SaveApplication(System.String,System.String,System.Int32,System.String[],Gordon360.Models.ViewModels.ApartmentChoiceViewModel[])">
             <summary>
             Saves student housing info
             - first, it checks if an application ID was passed in as a parameter
@@ -1855,7 +1855,7 @@
             <param name="applicantIds"> Array of student ID numbers for each of the applicants </param>  
             <returns>The application ID number if all the queries succeeded, otherwise returns -1</returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.ChangeApplicationModifier(System.Int32,System.String,System.String)">
+        <member name="M:Gordon360.Services.HousingService.ChangeApplicationModifier(System.String,System.Int32,System.String)">
             <summary>
             Changes the student user who has permission to modify the given application
              
