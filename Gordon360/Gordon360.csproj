@@ -605,6 +605,7 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ViewModels\ApartmentAppEditorViewModel.cs" />
+    <Compile Include="Models\ViewModels\ApartmentApplicantIDViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentApplicantViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppIDViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppNewEditorViewModel.cs" />
