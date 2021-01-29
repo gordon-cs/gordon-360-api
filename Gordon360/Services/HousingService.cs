@@ -149,49 +149,50 @@ namespace Gordon360.Services
             string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
             using (SqlConnection con = new SqlConnection(constr))
             {
-            using (SqlCommand cmd = new SqlCommand("SELECT * FROM AA_ApartmentApplications"))
-            {
-                using (SqlDataAdapter sda = new SqlDataAdapter())
+                using (SqlCommand cmd = new SqlCommand("SELECT * FROM AA_ApartmentApplications"))
                 {
-                    cmd.Connection = con;
-                    sda.SelectCommand = cmd;
-                    using (DataTable dt = new DataTable())
+                    using (SqlDataAdapter sda = new SqlDataAdapter())
                     {
-                        sda.Fill(dt);
-    
-                        //Build the CSV file data as a Comma separated string.
-                        string csv = string.Empty;
-    
-                        foreach (DataColumn column in dt.Columns)
+                        cmd.Connection = con;
+                        sda.SelectCommand = cmd;
+                        using (DataTable dt = new DataTable())
                         {
-                            //Add the Header row for CSV file.
-                            csv += column.ColumnName + ',';
-                        }
-    
-                        //Add new line.
-                        csv += "\r\n";
-    
-                        foreach (DataRow row in dt.Rows)
-                        {
+                            sda.Fill(dt);
+
+                            //Build the CSV file data as a Comma separated string.
+                            string csv = string.Empty;
+
                             foreach (DataColumn column in dt.Columns)
                             {
-                                //Add the Data rows.
-                                csv += row[column.ColumnName].ToString().Replace(",", ";") + ',';
+                                //Add the Header row for CSV file.
+                                csv += column.ColumnName + ',';
                             }
-    
+
                             //Add new line.
                             csv += "\r\n";
+
+                            foreach (DataRow row in dt.Rows)
+                            {
+                                foreach (DataColumn column in dt.Columns)
+                                {
+                                    //Add the Data rows.
+                                    csv += row[column.ColumnName].ToString().Replace(",", ";") + ',';
+                                }
+
+                                //Add new line.
+                                csv += "\r\n";
+                            }
+
+                            //Download the CSV file.
+                            Response.Clear();
+                            Response.Buffer = true;
+                            Response.AddHeader("content-disposition", "attachment;filename=SqlExport.csv");
+                            Response.Charset = "";
+                            Response.ContentType = "application/text";
+                            Response.Output.Write(csv);
+                            Response.Flush();
+                            Response.End();
                         }
-    
-                        //Download the CSV file.
-                        Response.Clear();
-                        Response.Buffer = true;
-                        Response.AddHeader("content-disposition", "attachment;filename=SqlExport.csv");
-                        Response.Charset = "";
-                        Response.ContentType = "application/text";
-                        Response.Output.Write(csv);
-                        Response.Flush();
-                        Response.End();
                     }
                 }
             }
