@@ -113,12 +113,12 @@ namespace Gordon360.Services
         /// Edit an existings apartment application
         ///
         /// </summary>
-        /// <param name="apartAppId"> The application ID number of the application to be edited </param>
         /// <param name="editorId"> The student ID number of the user who is attempting to save the apartment application </param>
         /// <param name="sess_cde"> The current session code </param>
+        /// <param name="apartAppId"> The application ID number of the application to be edited </param>
         /// <param name="newApplicantIds"> Array of student ID numbers for each of the applicants </param>
         /// <returns>Returns true if all the queries succeeded, otherwise returns false</returns>
-        public bool EditApplication(int apartAppId, string editorId, string sess_cde, string[] newApplicantIds)
+        public bool EditApplication(string editorId, string sess_cde, int apartAppId, string[] newApplicantIds)
         {
             IEnumerable<ApartmentAppEditorViewModel> editorResult = null;
 
@@ -247,7 +247,7 @@ namespace Gordon360.Services
         ///
         /// </summary>
         /// <returns>Whether or not all the queries succeeded</returns>
-        public bool ChangeApplicationEditor(int apartAppId, string editorId, string newEditorId)
+        public bool ChangeApplicationEditor(string editorId, int apartAppId, string newEditorId)
         {
             IEnumerable<ApartmentAppEditorViewModel> editorResult = null;
             IEnumerable<ApartmentAppSaveResultViewModel> result = null;
