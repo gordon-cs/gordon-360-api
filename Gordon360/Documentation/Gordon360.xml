@@ -378,6 +378,12 @@
             </summary>
             <returns>The result of submitting the application</returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.EditApplication(Gordon360.Models.ViewModels.ApartmentAppViewModel)">
+            <summary>
+            edit existing application
+            </summary>
+            <returns>Returns true if all the queries succeeded, otherwise returns false</returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.HousingController.ChangeEditor(Gordon360.Models.ViewModels.ApartmentAppNewEditorViewModel)">
             <summary>
             change the editor (i.e. primary applicant) of the application
