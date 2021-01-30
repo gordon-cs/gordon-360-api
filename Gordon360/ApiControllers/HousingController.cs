@@ -28,7 +28,7 @@ namespace Gordon360.Controllers.Api
         /// <summary>
         /// save application
         /// </summary>
-        /// <returns>The result of submitting the application</returns>
+        /// <returns>Returns the application ID number if all the queries succeeded, otherwise returns -1</returns>
         [HttpPost]
         [Route("apartment/save")]
         //[StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
@@ -69,11 +69,11 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>
-        /// edit existing application
+        /// update existing application (Differentiated by HttpPut instead of HttpPost)
         /// </summary>
-        /// <returns>Returns true if all the queries succeeded, otherwise returns false</returns>
+        /// <returns>Returns the application ID number if all the queries succeeded, otherwise returns -1</returns>
         [HttpPut]
-        [Route("apartment/edit")]
+        [Route("apartment/save")]
         public IHttpActionResult EditApplication([FromBody] ApartmentAppViewModel apartmentAppDetails)
         {
             // Verify Input
@@ -99,6 +99,7 @@ namespace Gordon360.Controllers.Api
             string sessionId = Helpers.GetCurrentSession().SessionCode;
 
             int apartAppId = apartmentAppDetails.AprtAppID; // The apartAppId is set to -1 if an existing application ID was not yet known by the frontend
+
             string[] newApplicantIds = new string[apartmentAppDetails.Applicants.Length];
             for (int i = 0; i < apartmentAppDetails.Applicants.Length; i++)
             {
@@ -107,7 +108,7 @@ namespace Gordon360.Controllers.Api
 
             ApartmentChoiceViewModel[] newApartmentChoices = apartmentAppDetails.ApartmentChoices;
 
-            bool result = _housingService.EditApplication(editorId, sessionId, apartAppId, newApplicantIds, newApartmentChoices);
+            int result = _housingService.EditApplication(editorId, sessionId, apartAppId, newApplicantIds, newApartmentChoices);
 
             return Created("Status of application saving: ", result);
         }

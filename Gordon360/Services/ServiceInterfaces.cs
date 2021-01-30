@@ -270,7 +270,7 @@ namespace Gordon360.Services
     public interface IHousingService
     {
         int SaveApplication(string editorId, string sess_cde, string [] applicantIds, ApartmentChoiceViewModel[] apartmentChoices);
-        bool EditApplication(string editorId, string sess_cde, int apartAppId, string [] newApplicantIds, ApartmentChoiceViewModel[] newApartmentChoices);
+        int EditApplication(string editorId, string sess_cde, int apartAppId, string [] newApplicantIds, ApartmentChoiceViewModel[] newApartmentChoices);
         bool ChangeApplicationEditor(string editorId, int apartAppId, string newEditorId);
     }
 

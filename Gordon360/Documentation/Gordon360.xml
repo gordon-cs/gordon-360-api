@@ -376,13 +376,13 @@
             <summary>
             save application
             </summary>
-            <returns>The result of submitting the application</returns>
+            <returns>Returns the application ID number if all the queries succeeded, otherwise returns -1</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.HousingController.EditApplication(Gordon360.Models.ViewModels.ApartmentAppViewModel)">
             <summary>
-            edit existing application
+            update existing application (Differentiated by HttpPut instead of HttpPost)
             </summary>
-            <returns>Returns true if all the queries succeeded, otherwise returns false</returns>
+            <returns>Returns the application ID number if all the queries succeeded, otherwise returns -1</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.HousingController.ChangeEditor(Gordon360.Models.ViewModels.ApartmentAppNewEditorViewModel)">
             <summary>
