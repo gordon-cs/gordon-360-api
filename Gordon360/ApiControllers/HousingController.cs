@@ -72,7 +72,7 @@ namespace Gordon360.Controllers.Api
         /// </summary>
         /// <returns>Returns true if all the queries succeeded, otherwise returns false</returns>
         [HttpPut]
-        [Route("apartment/save")]
+        [Route("apartment/edit")]
         public IHttpActionResult EditApplication([FromBody] ApartmentAppViewModel apartmentAppDetails)
         {
             // Verify Input
