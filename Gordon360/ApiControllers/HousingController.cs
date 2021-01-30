@@ -63,7 +63,7 @@ namespace Gordon360.Controllers.Api
             }
             ApartmentChoiceViewModel[] apartmentChoices = apartmentAppDetails.ApartmentChoices;
 
-            int result = _housingService.SaveApplication(editorId, sessionId, apartAppId, applicantIds, apartmentChoices);
+            int result = _housingService.SaveApplication(editorId, sessionId, applicantIds, apartmentChoices);
 
             return Created("Status of application saving: ", result);
         }

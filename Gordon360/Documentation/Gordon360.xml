@@ -1835,7 +1835,7 @@
             <param name="id">id</param>
             <returns>VictoryPromiseViewModel if found, null if not found</returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.SaveApplication(System.String,System.String,System.Int32,System.String[],Gordon360.Models.ViewModels.ApartmentChoiceViewModel[])">
+        <member name="M:Gordon360.Services.HousingService.SaveApplication(System.String,System.String,System.String[],Gordon360.Models.ViewModels.ApartmentChoiceViewModel[])">
              <summary>
              Saves student housing info
              - first, it checks if an application ID was passed in as a parameter
@@ -1849,11 +1849,23 @@
              which application on which they are an applicant
             
              </summary>
-             <param name="apartAppId"> The application ID number of the application to be edited </param>
              <param name="editorId"> The student ID number of the user who is attempting to save the apartment application </param>
              <param name="sess_cde"> The current session code </param>
              <param name="applicantIds"> Array of student ID numbers for each of the applicants </param>
+             <param name="apartmentChoices"> Array of JSON objects providing apartment hall choices </param>
              <returns>The application ID number if all the queries succeeded, otherwise returns -1</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.EditApplication(System.String,System.String,System.Int32,System.String[],Gordon360.Models.ViewModels.ApartmentChoiceViewModel[])">
+             <summary>
+             Edit an existings apartment application
+            
+             </summary>
+             <param name="editorId"> The student ID number of the user who is attempting to save the apartment application </param>
+             <param name="sess_cde"> The current session code </param>
+             <param name="apartAppId"> The application ID number of the application to be edited </param>
+             <param name="newApplicantIds"> Array of student ID numbers for each of the applicants </param>
+             <param name="newApartmentChoices"> Array of JSON objects providing apartment hall choices </param>
+             <returns>Returns true if all the queries succeeded, otherwise returns false</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.ChangeApplicationEditor(System.String,System.Int32,System.String)">
              <summary>
