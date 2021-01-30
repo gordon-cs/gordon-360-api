@@ -83,7 +83,7 @@ namespace Gordon360.Controllers.Api
         //[StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
         public IHttpActionResult ExportCSV([FromBody] ApartmentAppViewModel apartmentAppDetails)
         {
-            return 0;
+            return null;
         }
     }
 }
