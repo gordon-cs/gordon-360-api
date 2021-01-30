@@ -78,12 +78,13 @@ namespace Gordon360.Controllers.Api
         /// Export the SQL data into CSV file
         /// </summary>
         /// <returns>CSV file with an exported data</returns>
-        [HttpPost]
-        [Route("ExportCSV")]
+        [HttpGet]
+        [Route("csv")]
         //[StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
-        public IHttpActionResult ExportCSV([FromBody] ApartmentAppViewModel apartmentAppDetails)
+        public IHttpActionResult CreateCSV()
         {
-            return null;
+            string result = _housingService.CreateCSV();
+            return Created("Result of CSV creation: ", result);
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Gordon360.Models.ViewModels;
+using Gordon360.Models;
 using Gordon360.Repositories;
 using Gordon360.Exceptions.CustomExceptions;
 using System.Data.SqlClient;
@@ -148,60 +149,26 @@ namespace Gordon360.Services
         /// Exports the database table into a CSV file and allow the user to save it locally.
         /// - 
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public void ExportCSV(object sender, EventArgs e)
+        /// Sudo code:
+        /// Call a stored procedure that gets all data from all apartmentapp tables
+        /// - Get the first element in the query result (This will be a view model)
+        /// - Then, 
+        /// foreach element in result {        /// csv += element.User_ID        /// + ","        /// /...        // csv += "\n"        /// 1,50197937,0,0        /// 1,5027658,0,0        /// 1,5078654,0,0
+
+        public string CreateCSV()
         {
-            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
-            using (SqlConnection con = new SqlConnection(constr))
+            string csv = string.Empty;
+            result = RawSqlQuery<ViewModel>.query("GET_AA_EVERYTHING"); //run stored procedure
+            foreach element in result
             {
-                using (SqlCommand cmd = new SqlCommand("SELECT * FROM AA_ApartmentApplications"))
-                {
-                    using (SqlDataAdapter sda = new SqlDataAdapter())
-                    {
-                        cmd.Connection = con;
-                        sda.SelectCommand = cmd;
-                        using (DataTable dt = new DataTable())
-                        {
-                            sda.Fill(dt);
-
-                            //Build the CSV file data as a Comma separated string.
-                            string csv = string.Empty;
-
-                            foreach (DataColumn column in dt.Columns)
-                            {
-                                //Add the Header row for CSV file.
-                                csv += column.ColumnName + ',';
-                            }
-
-                            //Add new line.
-                            csv += "\r\n";
-
-                            foreach (DataRow row in dt.Rows)
-                            {
-                                foreach (DataColumn column in dt.Columns)
-                                {
-                                    //Add the Data rows.
-                                    csv += row[column.ColumnName].ToString().Replace(",", ";") + ',';
-                                }
-
-                                //Add new line.
-                                csv += "\r\n";
-                            }
-
-                            //Download the CSV file.
-                            Response.Clear();
-                            Response.Buffer = true;
-                            Response.AddHeader("content-disposition", "attachment;filename=SqlExport.csv");
-                            Response.Charset = "";
-                            Response.ContentType = "application/text";
-                            Response.Output.Write(csv);
-                            Response.Flush();
-                            Response.End();
-                        }
-                    }
-                }
+                csv += element.Application_ID + ","
+                     + element.ID_NUM + ","
+                     + element.APRT_PROGRAM;
+                csv += "\n";
             }
+
+
+            return csv;
         }
     }
 }
