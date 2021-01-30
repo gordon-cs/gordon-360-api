@@ -144,6 +144,12 @@ namespace Gordon360.Services
             return appId;
         }
 
+        /// <summary>
+        /// Exports the database table into a CSV file and allow the user to save it locally.
+        /// - 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void ExportCSV(object sender, EventArgs e)
         {
             string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
