@@ -7,7 +7,6 @@ using System.Security.Claims;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Static.Methods;
 using Gordon360.Models.ViewModels;
-using System;
 
 namespace Gordon360.Controllers.Api
 {
@@ -31,7 +30,7 @@ namespace Gordon360.Controllers.Api
         /// </summary>
         /// <returns>The result of submitting the application</returns>
         [HttpPost]
-        [Route("save")]
+        [Route("apartment/save")]
         //[StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
         public IHttpActionResult SaveApplication([FromBody] ApartmentAppViewModel apartmentAppDetails)
         {
@@ -74,7 +73,7 @@ namespace Gordon360.Controllers.Api
         /// </summary>
         /// <returns>The result of changing the editor</returns>
         [HttpPost]
-        [Route("change-editor")]
+        [Route("apartment/change-editor")]
         public IHttpActionResult ChangeEditor([FromBody] ApartmentAppNewEditorViewModel newEditorDetails)
         {
             // Verify Input
@@ -101,7 +100,7 @@ namespace Gordon360.Controllers.Api
             string newEditorUsername = newEditorDetails.Username;
             string newEditorId = _accountService.GetAccountByUsername(newEditorUsername).GordonID;
 
-            bool result = _housingService.ChangeApplicationModifier(editorId, apartAppId, newEditorId);
+            bool result = _housingService.ChangeApplicationEditor(editorId, apartAppId, newEditorId);
 
             return Ok(result);
         }

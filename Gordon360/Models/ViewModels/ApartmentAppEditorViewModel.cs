@@ -7,6 +7,6 @@ namespace Gordon360.Models.ViewModels
 {
     public class ApartmentAppEditorViewModel
     {
-        public string ModifiedBy { get; set; }
+        public string EditorID { get; set; }
     }
 }
