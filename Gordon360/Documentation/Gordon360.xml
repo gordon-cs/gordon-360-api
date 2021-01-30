@@ -378,6 +378,12 @@
             </summary>
             <returns>The result of submitting the application</returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.ChangeEditor(Gordon360.Models.ViewModels.ApartmentAppNewEditorViewModel)">
+            <summary>
+            change the editor (i.e. primary applicant) of the application
+            </summary>
+            <returns>The result of changing the editor</returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.NewsController.#ctor">
             private void catchBadInput()
                     {
@@ -1830,24 +1836,31 @@
             <returns>VictoryPromiseViewModel if found, null if not found</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.SaveApplication(System.Int32,System.String,System.String,System.String[])">
-            <summary>
-            Saves student housing info
-            - first, it checks if an application ID was passed in as a parameter
-              - if not, then it checks the database for an existing application that matches the current semester and the current student user
-                - if an existing application is NOT found, then:
-                  - first, it creates a new row in the applications table and inserts the id of the primary applicant and a timestamp
-                  - second, it retrieves the application id of the application with the information we just inserted (because 
-                  the database creates the application ID so we have to ask it which number it generated for it)
-                - else, it retrieves the application ID of that existing application
-            - third, it inserts each applicant into the applicants table along with the apartment ID so we know
-            which application on which they are an applicant
-             
-            </summary>
-            <param name="apartAppId"> The application ID number of the application to be edited </param>  
-            <param name="editor"> The student ID number of the user who is attempting to save the apartment application </param>  
-            <param name="sess_cde"> The current session code </param>  
-            <param name="applicantIds"> Array of student ID numbers for each of the applicants </param>  
-            <returns>Whether or not all the queries succeeded</returns>
+             <summary>
+             Saves student housing info
+             - first, it checks if an application ID was passed in as a parameter
+               - if not, then it checks the database for an existing application that matches the current semester and the current student user
+                 - if an existing application is NOT found, then:
+                   - first, it creates a new row in the applications table and inserts the id of the primary applicant and a timestamp
+                   - second, it retrieves the application id of the application with the information we just inserted (because
+                   the database creates the application ID so we have to ask it which number it generated for it)
+                 - else, it retrieves the application ID of that existing application
+             - third, it inserts each applicant into the applicants table along with the apartment ID so we know
+             which application on which they are an applicant
+            
+             </summary>
+             <param name="apartAppId"> The application ID number of the application to be edited </param>
+             <param name="editorId"> The student ID number of the user who is attempting to save the apartment application </param>
+             <param name="sess_cde"> The current session code </param>
+             <param name="applicantIds"> Array of student ID numbers for each of the applicants </param>
+             <returns>The application ID number if all the queries succeeded, otherwise returns -1</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.ChangeApplicationEditor(System.Int32,System.String,System.String)">
+             <summary>
+             Changes the student user who has permission to edit the given application
+            
+             </summary>
+             <returns>Whether or not all the queries succeeded</returns>
         </member>
         <member name="M:Gordon360.Services.WellnessService.GetStatus(System.String)">
             <summary>
