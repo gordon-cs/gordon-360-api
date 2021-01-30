@@ -30,7 +30,7 @@ namespace Gordon360.Controllers.Api
         /// </summary>
         /// <returns>The application ID number if all the queries succeeded, otherwise returns -1</returns>
         [HttpPost]
-        [Route("save")]
+        [Route("apartment/save")]
         //[StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
         public IHttpActionResult SaveApplication([FromBody] ApartmentAppViewModel apartmentAppDetails)
         {
@@ -70,8 +70,8 @@ namespace Gordon360.Controllers.Api
         /// edit existing application
         /// </summary>
         /// <returns>Returns true if all the queries succeeded, otherwise returns false</returns>
-        [HttpPost]
-        [Route("edit")]
+        [HttpPut]
+        [Route("apartment/edit")]
         //[StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
         public IHttpActionResult EditApplication([FromBody] ApartmentAppViewModel apartmentAppDetails)
         {
@@ -113,8 +113,8 @@ namespace Gordon360.Controllers.Api
         /// change the editor (i.e. primary applicant) of the application
         /// </summary>
         /// <returns>The result of changing the editor</returns>
-        [HttpPost]
-        [Route("change-editor")]
+        [HttpPut]
+        [Route("apartment/change-editor")]
         public IHttpActionResult ChangeEditor([FromBody] ApartmentAppNewEditorViewModel newEditorDetails)
         {
             // Verify Input
