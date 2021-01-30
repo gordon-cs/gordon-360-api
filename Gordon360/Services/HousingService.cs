@@ -35,7 +35,7 @@ namespace Gordon360.Services
         /// <param name="editorId"> The student ID number of the user who is attempting to save the apartment application </param>
         /// <param name="sess_cde"> The current session code </param>
         /// <param name="applicantIds"> Array of student ID numbers for each of the applicants </param>
-        /// <returns>The application ID number if all the queries succeeded, otherwise returns -1</returns>
+        /// <returns>Returns the application ID number if all the queries succeeded, otherwise returns -1</returns>
         public int SaveApplication(string editorId, string sess_cde, string [] applicantIds)
         {
             IEnumerable<ApartmentAppIDViewModel> idResult = null;
@@ -84,6 +84,9 @@ namespace Gordon360.Services
                 ApartmentAppIDViewModel idModel = idResult.ElementAt(0);
                 apartAppId = idModel.AprtAppID;
 
+                //--------
+                // Save applicant information
+
                 SqlParameter appIdParam = null;
                 SqlParameter idParam = null;
                 SqlParameter programParam = null;
@@ -104,6 +107,15 @@ namespace Gordon360.Services
                         throw new ResourceNotFoundException() { ExceptionMessage = "Applicant with ID " + id + " could not be saved." };
                     }
                 }
+
+                //--------
+                // Save hall information
+
+                // PLACEHOLDER
+                //
+                // The update hall info code will go here once we get a chance to implement it 
+                //
+                // PLACEHOLDER
             }
 
             return apartAppId;
@@ -117,8 +129,8 @@ namespace Gordon360.Services
         /// <param name="sess_cde"> The current session code </param>
         /// <param name="apartAppId"> The application ID number of the application to be edited </param>
         /// <param name="newApplicantIds"> Array of student ID numbers for each of the applicants </param>
-        /// <returns>Returns true if all the queries succeeded, otherwise returns false</returns>
-        public bool EditApplication(string editorId, string sess_cde, int apartAppId, string[] newApplicantIds)
+        /// <returns>Returns the application ID number if all the queries succeeded, otherwise returns -1</returns>
+        public int EditApplication(string editorId, string sess_cde, int apartAppId, string[] newApplicantIds)
         {
             IEnumerable<ApartmentAppEditorViewModel> editorResult = null;
 
@@ -131,7 +143,7 @@ namespace Gordon360.Services
             }
             else if (!editorResult.Any())
             {
-                return false;
+                return -1;
             }
 
             ApartmentAppEditorViewModel editorModel = editorResult.ElementAt(0);
@@ -140,7 +152,7 @@ namespace Gordon360.Services
             if (editorId != storedEditorId)
             {
                 // Return false if the current user does not match this application's editor stored in the database
-                return false;
+                return -1;
             }
             // Only perform the update if the ID of the current user matched the 'EditorID' ID stored in the database for the requested application
 
@@ -239,7 +251,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The application DateModified could not be updated." };
             }
 
-            return true;
+            return apartAppId;
         }
 
         /// <summary>
