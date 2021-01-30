@@ -30,7 +30,7 @@ namespace Gordon360.Controllers.Api
         /// </summary>
         /// <returns>The result of submitting the application</returns>
         [HttpPost]
-        [Route("save")]
+        [Route("apartment/save")]
         //[StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
         public IHttpActionResult SaveApplication([FromBody] ApartmentAppViewModel apartmentAppDetails)
         {
@@ -72,7 +72,7 @@ namespace Gordon360.Controllers.Api
         /// </summary>
         /// <returns>The result of changing the editor</returns>
         [HttpPost]
-        [Route("change-editor")]
+        [Route("apartment/change-editor")]
         public IHttpActionResult ChangeEditor([FromBody] ApartmentAppNewEditorViewModel newEditorDetails)
         {
             // Verify Input
