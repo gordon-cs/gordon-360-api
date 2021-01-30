@@ -56,11 +56,11 @@ namespace Gordon360.Controllers.Api
 
             string sessionId = Helpers.GetCurrentSession().SessionCode;
 
-            int apartAppId = apartmentAppDetails.AprtAppID; // The apartAppId is set to -1 if an existing application ID was not yet known by the frontend
             string[] applicantIds = new string[apartmentAppDetails.Applicants.Length];
             for(int i = 0; i < apartmentAppDetails.Applicants.Length; i++){
                 applicantIds[i] = _accountService.GetAccountByUsername(apartmentAppDetails.Applicants[i]).GordonID;
             }
+
             ApartmentChoiceViewModel[] apartmentChoices = apartmentAppDetails.ApartmentChoices;
 
             int result = _housingService.SaveApplication(editorId, sessionId, applicantIds, apartmentChoices);
@@ -104,6 +104,7 @@ namespace Gordon360.Controllers.Api
             {
                 newApplicantIds[i] = _accountService.GetAccountByUsername(apartmentAppDetails.Applicants[i]).GordonID;
             }
+
             ApartmentChoiceViewModel[] newApartmentChoices = apartmentAppDetails.ApartmentChoices;
 
             bool result = _housingService.EditApplication(editorId, sessionId, apartAppId, newApplicantIds, newApartmentChoices);
