@@ -145,11 +145,11 @@ namespace Gordon360.Services
             return appId;
         }
 
-        /// Sudo code:
-        /// Call a stored procedure that gets all data from all apartmentapp tables
-        /// - Get the first element in the query result (This will be a view model)
-        /// - Then, 
-        /// foreach element in result {        /// csv += element.User_ID        /// + ","        /// /...        /// csv += "\n"        /// 1,50197937,0,0        /// 1,5027658,0,0        /// 1,5078654,0,0
+        // Sudo code:
+        // Call a stored procedure that gets all data from all apartmentapp tables
+        // - Get the first element in the query result (This will be a view model)
+        // - Then, 
+        // foreach element in result {        // csv += element.User_ID        // + ","        // /...        // csv += "\n"        // 1,50197937,0,0        // 1,5027658,0,0        // 1,5078654,0,0
 
         /// <summary>
         /// Exports the database table into a CSV file and allow the user to save it locally.
