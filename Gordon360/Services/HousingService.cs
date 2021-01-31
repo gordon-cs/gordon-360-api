@@ -167,7 +167,7 @@ namespace Gordon360.Services
             {
                 csv += element.AprtAppID + ","
                      + element.DateSubmitted + ","
-                     + element.DateModified + ","
+                     + element.DateModified.ToString("MM/dd/yyyy HH:mm:ss") + ","
                      + element.EditorID;
                 const string V = "\r\n";
                 csv += V;
