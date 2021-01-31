@@ -7,8 +7,6 @@ using Gordon360.Repositories;
 using Gordon360.Exceptions.CustomExceptions;
 using System.Data.SqlClient;
 using Gordon360.Services.ComplexQueries;
-using System.Data;
-using System.Configuration;
 
 namespace Gordon360.Services
 {
@@ -149,7 +147,14 @@ namespace Gordon360.Services
         // Call a stored procedure that gets all data from all apartmentapp tables
         // - Get the first element in the query result (This will be a view model)
         // - Then, 
-        // foreach element in result {        // csv += element.User_ID        // + ","        // /...        // csv += "\n"        // 1,50197937,0,0        // 1,5027658,0,0        // 1,5078654,0,0
+        // foreach element in result {
+        // csv += element.User_ID
+        // + ","
+        // /...
+        // csv += "\n"
+        // 1,50197937,0,0
+        // 1,5027658,0,0
+        // 1,5078654,0,0
 
         /// <summary>
         /// Exports the database table into a CSV file and allow the user to save it locally.
@@ -164,7 +169,8 @@ namespace Gordon360.Services
                      + element.DateSubmitted + ","
                      + element.DateModified + ","
                      + element.EditorID;
-                csv += "\r\n";
+                const string V = "\r\n";
+                csv += V;
             }
 
             return csv;
