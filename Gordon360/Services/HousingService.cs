@@ -149,14 +149,28 @@ namespace Gordon360.Services
         /// </summary>
         public string CreateCSV()
         {
+            //string csv = string.Empty;
+            //var result = RawSqlQuery<ApartmentApplicationsTableViewModel>.query("GET_AA_APPLICATIONS"); //run stored procedure
+            //foreach (var element in result)
+            //{
+            //    csv += element.AprtAppID + ","
+            //         + element.DateSubmitted + ","
+            //         + element.DateModified.ToString("MM/dd/yyyy HH:mm:ss") + ","
+            //         + element.EditorID;
+            //    const string V = "\r\n";
+            //    csv += V;
+            //}
             string csv = string.Empty;
-            var result = RawSqlQuery<ApartmentApplicationsTableViewModel>.query("GET_AA_APPLICATIONS"); //run stored procedure
+            var result = RawSqlQuery<ApartmentAppTwoTablesViewModel>.query("GET_AA_TWO_TABLES"); //run stored procedure
             foreach (var element in result)
             {
                 csv += element.AprtAppID + ","
                      + element.DateSubmitted + ","
                      + element.DateModified.ToString("MM/dd/yyyy HH:mm:ss") + ","
-                     + element.EditorID;
+                     + element.ID_NUM + ","
+                     + element.AprtProgram + ","
+                     + element.AprtProgramCredit + ","
+                     + element.SESS_CDE;
                 const string V = "\r\n";
                 csv += V;
             }
