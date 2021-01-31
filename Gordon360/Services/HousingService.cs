@@ -159,14 +159,14 @@ namespace Gordon360.Services
         {
             string csv = string.Empty;
             var result = RawSqlQuery<ApartmentApplicationsTableViewModel>.query("GET_AA_APPLICATIONS"); //run stored procedure
-            foreach element in result
+            foreach (var element in result)
             {
-                csv += element.Application_ID + ","
-                     + element.ID_NUM + ","
-                     + element.APRT_PROGRAM;
+                csv += element.AprtAppID + ","
+                     + element.DateSubmitted + ","
+                     + element.DateModified + ","
+                     + element.EditorID;
                 csv += "\n";
             }
-
 
             return csv;
         }
