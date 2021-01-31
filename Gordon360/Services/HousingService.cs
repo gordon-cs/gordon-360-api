@@ -164,7 +164,7 @@ namespace Gordon360.Services
                      + element.DateSubmitted + ","
                      + element.DateModified + ","
                      + element.EditorID;
-                csv += "\n";
+                csv += "\r\n";
             }
 
             return csv;
