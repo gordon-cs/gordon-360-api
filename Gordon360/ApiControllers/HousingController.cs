@@ -105,9 +105,10 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>
-        /// Export the SQL data into CSV file
+        /// Create a string a string from the combination of AA_ApartementApplications and AA_Applicants Tables
+        /// and returns it to the frontend, so that it can convert it into a csv file.
         /// </summary>
-        /// <returns>CSV file with an exported data</returns>
+        /// <returns>An http result with the csv string from the CreateCSV service</returns>
         [HttpGet]
         [Route("csv")]
         //[StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this

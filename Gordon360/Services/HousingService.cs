@@ -186,27 +186,17 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// Exports the database table into a CSV file and returns it to the frontend.
-        /// - for each row, it iterates each column and add the element to a csv string.
+        /// Creates a string from the combination of AA_ApartementApplications and AA_Applicants Tables
+        /// and returns it to the frontend, so that it can convert it into a csv file.
         /// </summary>
         public string CreateCSV()
         {
-            //string csv = string.Empty;
-            //var result = RawSqlQuery<ApartmentApplicationsTableViewModel>.query("GET_AA_APPLICATIONS"); //run stored procedure
-            //foreach (var element in result)
-            //{
-            //    csv += element.AprtAppID + ","
-            //         + element.DateSubmitted + ","
-            //         + element.DateModified.ToString("MM/dd/yyyy HH:mm:ss") + ","
-            //         + element.EditorID;
-            //    const string V = "\r\n";
-            //    csv += V;
-            //}
             string csv = string.Empty;
-            var result = RawSqlQuery<ApartmentAppTwoTablesViewModel>.query("GET_AA_TWO_TABLES"); //run stored procedure
+            var result = RawSqlQuery<ApartmentApplicantDetailsViewModel>.query("GET_AA_APPLICANTS_DETAILS"); //run stored procedure
             foreach (var element in result)
             {
                 csv += element.AprtAppID + ","
+                     + element.EditorID + ","
                      + element.DateSubmitted + ","
                      + element.DateModified.ToString("MM/dd/yyyy HH:mm:ss") + ","
                      + element.ID_NUM + ","

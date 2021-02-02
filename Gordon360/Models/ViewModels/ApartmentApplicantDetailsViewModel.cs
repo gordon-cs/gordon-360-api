@@ -2,9 +2,10 @@
 
 namespace Gordon360.Models.ViewModels
 {
-    public class ApartmentAppTwoTablesViewModel
+    public class ApartmentApplicantDetailsViewModel
     {
         public int AprtAppID { get; set; }
+        public string EditorID { get; set; }
         public DateTime? DateSubmitted { get; set; } // Nullable
         public DateTime DateModified { get; set; }
         public string ID_NUM { get; set; }
