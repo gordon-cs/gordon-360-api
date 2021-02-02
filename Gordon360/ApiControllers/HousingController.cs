@@ -110,7 +110,7 @@ namespace Gordon360.Controllers.Api
         /// </summary>
         /// <returns>An http result with the csv string from the CreateCSV service</returns>
         [HttpGet]
-        [Route("csv")]
+        [Route("apartment/csv")]
         //[StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
         public IHttpActionResult CreateCSV()
         {
