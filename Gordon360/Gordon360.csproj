@@ -605,7 +605,6 @@
     <Compile Include="Models\ViewModels\ApartmentAppEditorViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentApplicantViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentApplicationsTableViewModel.cs" />
-    <Compile Include="Models\ViewModels\ApartmentAppSaveViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppTwoTablesViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppNewEditorViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppSaveResultViewModel.cs" />
