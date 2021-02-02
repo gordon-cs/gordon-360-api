@@ -173,26 +173,25 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The applicants could not be found." };
             }
 
+            string[] oldApplicantIds =  null;
             // Check whether any applicants were found matching the given application ID number
             if (applicantIdsResult.Any())
             {
-                string[] oldApplicantIds = new string[applicantIdsResult.Count()];
+                oldApplicantIds = new string[applicantIdsResult.Count()];
                 for (int i = 0; i < applicantIdsResult.Count(); i++)
                 {
                     ApartmentApplicantIDViewModel applicantModel = applicantIdsResult.ElementAt(i);
                     oldApplicantIds[i] = applicantModel.ID_NUM;
                 }
-
-                // Get an array of applicants IDs that are in the array recieved from the frontend but not yet in the database
-                IEnumerable<string> applicantIdsToAdd = newApplicantIds.Except(oldApplicantIds);
-
-                // Get an array of appliants IDs that in the database but not in the array recieved from the frontend
-                IEnumerable<string> applicantIdsToRemove = oldApplicantIds.Except(newApplicantIds);
             } else {
-                // If no applicants were found in the database for this application, then all new applicants should be added
-                string[] applicantIdsToAdd = newApplicantIds;
-                string[] applicantIdsToRemove = new string[0];
+                oldApplicantIds = new string[0];
             }
+
+            // Get an array of applicants IDs that are in the array recieved from the frontend but not yet in the database
+            IEnumerable<string> applicantIdsToAdd = newApplicantIds.Except(oldApplicantIds);
+
+            // Get an array of appliants IDs that in the database but not in the array recieved from the frontend
+            IEnumerable<string> applicantIdsToRemove = oldApplicantIds.Except(newApplicantIds);
 
             SqlParameter idParam = null;
             SqlParameter programParam = null;
