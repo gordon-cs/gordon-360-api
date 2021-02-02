@@ -76,7 +76,7 @@ namespace Gordon360.Services
             DateTime now = System.DateTime.Now;
 
             var sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
-            var modParam = new SqlParameter("@MODIFIER_ID", editorId);
+            var modParam = new SqlParameter("@STUDENT_ID", editorId);
 
             int appId = -1;
 
@@ -84,7 +84,7 @@ namespace Gordon360.Services
             {
                 // If an application ID was not passed in, then check if an application already exists
                 idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, modParam); //run stored procedure
-                if (idResult == null)
+                if (idResult == null || !idResult.Any())
                 {
                     IEnumerable<ApartmentAppSaveViewModel> newAppResult = null;
 
