@@ -96,7 +96,6 @@ namespace Gordon360.Services
                 IEnumerable<ApartmentApplicantViewModel> applicantResult = null;
 
                 // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
-                //idParam.Value = id; might need if this ODD solution is not satisfactory
                 appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
                 idParam = new SqlParameter("@ID_NUM", id);
                 programParam = new SqlParameter("@APRT_PROGRAM", "");
@@ -123,6 +122,10 @@ namespace Gordon360.Services
 
         /// <summary>
         /// Edit an existings apartment application
+        /// - first, it gets the EditorID from the database for the given application ID and makes sure that the student ID of the current user matches that stored ID number
+        /// - second, it gets an array of the applicants that are already stored in the database for the given application ID
+        /// - third, it inserts each applicant that is in the 'newApplicantIds' array but was not yet in the database
+        /// - fourth, it removes each applicant that was stored in the database but was not in the 'newApplicantIds' array
         ///
         /// </summary>
         /// <param name="editorId"> The student ID number of the user who is attempting to save the apartment application </param>
@@ -151,10 +154,10 @@ namespace Gordon360.Services
 
             if (editorId != storedEditorId)
             {
-                // Return false if the current user does not match this application's editor stored in the database
+                // Return -1 if the current user does not match this application's editor stored in the database
                 return -1;
             }
-            // Only perform the update if the ID of the current user matched the 'EditorID' ID stored in the database for the requested application
+            // Only perform the update if the student ID of the current user matched the 'EditorID' ID stored in the database for the requested application
 
             //--------
             // Update applicant information
