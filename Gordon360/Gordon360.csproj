@@ -306,7 +306,7 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CSVStringsToTable_fn_Result.cs">
-      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
+      <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CUSTOM_PROFILE.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
@@ -363,9 +363,6 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\GET_ROOM_BY_ID_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\GET_STU_HOUSING_INFO_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\GET_TIMESHEETS_CLOCK_IN_OUT_Result.cs">
@@ -564,9 +561,6 @@
     <Compile Include="Models\STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
     <!-- <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs" /> -->
     <Compile Include="Models\student_timesheets.cs">
       <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
@@ -604,9 +598,11 @@
     <Compile Include="Models\VICTORY_PROMISE_BY_STUDENT_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModels\ApartmentAppEditorViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentApplicantViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppIDViewModel.cs" />
-    <Compile Include="Models\ViewModels\ApartmentAppSaveViewModel.cs" />
+    <Compile Include="Models\ViewModels\ApartmentAppNewEditorViewModel.cs" />
+    <Compile Include="Models\ViewModels\ApartmentAppSaveResultViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppViewModel.cs" />
     <Compile Include="Models\ViewModels\ClockInViewModel.cs" />
     <Compile Include="Models\ViewModels\CreateGroupViewModel.cs" />
@@ -618,7 +614,6 @@
     <Compile Include="Models\ViewModels\StaffCheckViewModel.cs" />
     <Compile Include="Models\ViewModels\StaffTimesheetsViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentNewsCategoryViewModel.cs" />
-    <Compile Include="Models\ViewModels\HousingViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentNewsViewModel.cs" />
     <Compile Include="Models\ViewModels\ActiveJobSelectionParametersModel.cs" />
     <Compile Include="Models\ViewModels\ActiveJobViewModel.cs" />
