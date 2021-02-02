@@ -113,7 +113,7 @@ namespace Gordon360.Services
 
                 // PLACEHOLDER
                 //
-                // The update hall info code will go here once we get a chance to implement it 
+                // The update hall info code will go here once we get a chance to implement it
                 //
                 // PLACEHOLDER
             }
@@ -231,7 +231,7 @@ namespace Gordon360.Services
 
             // PLACEHOLDER
             //
-            // The update hall info code will go here once we get a chance to implement it 
+            // The update hall info code will go here once we get a chance to implement it
             //
             // PLACEHOLDER
 
