@@ -21,13 +21,9 @@ namespace Gordon360.Services
 
         /// <summary>
         /// Saves student housing info
-        /// - first, it checks if an application ID was passed in as a parameter
-        ///   - if not, then it checks the database for an existing application that matches the current semester and the current student user
-        ///     - if an existing application is NOT found, then:
-        ///       - first, it creates a new row in the applications table and inserts the id of the primary applicant and a timestamp
-        ///       - second, it retrieves the application id of the application with the information we just inserted (because
-        ///       the database creates the application ID so we have to ask it which number it generated for it)
-        ///     - else, it retrieves the application ID of that existing application
+        /// - first, it creates a new row in the applications table and inserts the id of the primary applicant and a timestamp
+        /// - second, it retrieves the application id of the application with the information we just inserted (because
+        /// the database creates the application ID so we have to ask it which number it generated for it)
         /// - third, it inserts each applicant into the applicants table along with the apartment ID so we know
         /// which application on which they are an applicant
         ///
@@ -42,81 +38,85 @@ namespace Gordon360.Services
 
             DateTime now = System.DateTime.Now;
 
-            var sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
-            var editorParam = new SqlParameter("@STUDENT_ID", editorId);
-
-            int apartAppId = -1;
+            SqlParameter sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
+            SqlParameter editorParam = new SqlParameter("@STUDENT_ID", editorId);
 
             // If an application ID was not passed in, then check if an application already exists
             idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, editorParam); //run stored procedure
             if (idResult != null && idResult.Any())
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "An existing application ID was found for with user. Please use 'EditApplication' to update an existing application." };
+                throw new ResourceNotFoundException() { ExceptionMessage = "An existing application ID was found for this user. Please use 'EditApplication' to update an existing application." };
             }
-            else
+
+            //----------------
+            // Save the application editor and time
+
+            IEnumerable<ApartmentAppSaveResultViewModel> newAppResult = null;
+
+            // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
+            SqlParameter timeParam = new SqlParameter("@NOW", now);
+            editorParam = new SqlParameter("@EDITOR_ID", editorId);
+
+            // If an existing application was not found for this editor, then insert a new application entry in the database
+            newAppResult = RawSqlQuery<ApartmentAppSaveResultViewModel>.query("INSERT_AA_APPLICATION @NOW, @EDITOR_ID", timeParam, editorParam); //run stored procedure
+            if (newAppResult == null)
             {
-                IEnumerable<ApartmentAppSaveResultViewModel> newAppResult = null;
+                throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be saved." };
+            }
+
+            //----------------
+            // Retrieve the application ID number of this new application
+
+            // The following is ODD, I know. It seems you cannot execute the same query with the same sql parameters twice.
+            // Thus, these two sql params must be recreated after being used in the last query:
+
+            idResult = null;
+
+            // All SqlParameters must be remade before each SQL Query to prevent errors
+            timeParam = new SqlParameter("@NOW", now);
+            editorParam = new SqlParameter("@EDITOR_ID", editorId);
+
+            idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_NAME_AND_DATE @NOW, @EDITOR_ID", timeParam, editorParam); //run stored procedure
+            if (idResult == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The new application ID could not be found." };
+            }
+
+            ApartmentAppIDViewModel idModel = idResult.ElementAt(0);
+            int apartAppId = idModel.AprtAppID;
+
+            //----------------
+            // Save applicant information
+
+            SqlParameter appIdParam = null;
+            SqlParameter idParam = null;
+            SqlParameter programParam = null;
+
+            foreach (string id in applicantIds) {
+                IEnumerable<ApartmentApplicantViewModel> applicantResult = null;
 
                 // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
-                var timeParam = new SqlParameter("@NOW", now);
-                editorParam = new SqlParameter("@EDITOR_ID", editorId);
+                //idParam.Value = id; might need if this ODD solution is not satisfactory
+                appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
+                idParam = new SqlParameter("@ID_NUM", id);
+                programParam = new SqlParameter("@APRT_PROGRAM", "");
+                sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
 
-                // If an existing application was not found for this editor, then insert a new application entry in the database
-                newAppResult = RawSqlQuery<ApartmentAppSaveResultViewModel>.query("INSERT_AA_APPLICATION @NOW, @EDITOR_ID", timeParam, editorParam); //run stored procedure
-                if (newAppResult == null)
+                applicantResult = RawSqlQuery<ApartmentApplicantViewModel>.query("INSERT_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM, @SESS_CDE", appIdParam, idParam, programParam, sessionParam); //run stored procedure
+                if (applicantResult == null)
                 {
-                    throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be saved." };
+                    throw new ResourceNotFoundException() { ExceptionMessage = "Applicant with ID " + id + " could not be saved." };
                 }
-
-                // The following is ODD, I know. It seems you cannot execute the same query with the same sql parameters twice.
-                // Thus, these two sql params must be recreated after being used in the last query:
-
-                // All SqlParameters must be remade before each SQL Query to prevent errors
-                timeParam = new SqlParameter("@NOW", now);
-                editorParam = new SqlParameter("@EDITOR_ID", editorId);
-
-                idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_NAME_AND_DATE @NOW, @EDITOR_ID", timeParam, editorParam); //run stored procedure
-                if (idResult == null)
-                {
-                    throw new ResourceNotFoundException() { ExceptionMessage = "The new application ID could not be found." };
-                }
-
-                ApartmentAppIDViewModel idModel = idResult.ElementAt(0);
-                apartAppId = idModel.AprtAppID;
-
-                //--------
-                // Save applicant information
-
-                SqlParameter appIdParam = null;
-                SqlParameter idParam = null;
-                SqlParameter programParam = null;
-
-                foreach (string id in applicantIds) {
-                    IEnumerable<ApartmentApplicantViewModel> applicantResult = null;
-
-                    // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
-                    //idParam.Value = id; might need if this ODD solution is not satisfactory
-                    appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
-                    idParam = new SqlParameter("@ID_NUM", id);
-                    programParam = new SqlParameter("@APRT_PROGRAM", "");
-                    sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
-
-                    applicantResult = RawSqlQuery<ApartmentApplicantViewModel>.query("INSERT_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM, @SESS_CDE", appIdParam, idParam, programParam, sessionParam); //run stored procedure
-                    if (applicantResult == null)
-                    {
-                        throw new ResourceNotFoundException() { ExceptionMessage = "Applicant with ID " + id + " could not be saved." };
-                    }
-                }
-
-                //--------
-                // Save hall information
-
-                // PLACEHOLDER
-                //
-                // The update hall info code will go here once we get a chance to implement it
-                //
-                // PLACEHOLDER
             }
+
+            //----------------
+            // Save hall information
+
+            // PLACEHOLDER
+            //
+            // The update hall info code will go here once we get a chance to implement it
+            //
+            // PLACEHOLDER
 
             return apartAppId;
         }
