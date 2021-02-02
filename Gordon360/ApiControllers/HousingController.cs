@@ -49,7 +49,7 @@ namespace Gordon360.Controllers.Api
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
             //! Placeholder
-            var result = "This feature is not yet implemented";
+            var result = false; // This feature is not yet implemented
             return Ok(result);
         }
 
@@ -160,7 +160,7 @@ namespace Gordon360.Controllers.Api
             }
 
             //! Placeholder
-            var result = "This feature is not yet implemented";
+            var result = false; // This feature is not yet implemented
             return Ok(result);
         }
     }
