@@ -190,19 +190,22 @@ namespace Gordon360.Services
             // Get an array of applicants IDs that are in the array recieved from the frontend but not yet in the database
             IEnumerable<string> applicantIdsToAdd = newApplicantIds.Except(oldApplicantIds);
 
-            // Get an array of appliants IDs that in the database but not in the array recieved from the frontend
+            // Get an array of applicants IDs that are in both the array recieved from the frontend and the database
+            IEnumerable<string> applicantIdsToUpdate = newApplicantIds.Intersect(oldApplicantIds);
+
+            // Get an array of applicants IDs that are in the database but not in the array recieved from the frontend
             IEnumerable<string> applicantIdsToRemove = oldApplicantIds.Except(newApplicantIds);
 
             SqlParameter idParam = null;
             SqlParameter programParam = null;
             SqlParameter sessionParam = null;
 
+            // Insert new applicants that are not yet in the database
             foreach (string id in applicantIdsToAdd)
             {
                 IEnumerable<ApartmentApplicantViewModel> applicantResult = null;
 
                 // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
-                //idParam.Value = id; might need if this ODD solution is not satisfactory
                 appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
                 idParam = new SqlParameter("@ID_NUM", id);
                 programParam = new SqlParameter("@APRT_PROGRAM", "");
@@ -215,12 +218,30 @@ namespace Gordon360.Services
                 }
             }
 
+            // Update the info of applicants from the frontend that are already in the database
+            foreach (string id in applicantIdsToUpdate)
+            {
+                IEnumerable<ApartmentApplicantViewModel> applicantResult = null;
+
+                // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
+                appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
+                idParam = new SqlParameter("@ID_NUM", id);
+                programParam = new SqlParameter("@APRT_PROGRAM", ""); // TODO: This will be used to update the off-campus program department once that feature has been made on the frontend
+                sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
+
+                applicantResult = RawSqlQuery<ApartmentApplicantViewModel>.query("UPDATE_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM, @SESS_CDE", appIdParam, idParam, programParam, sessionParam); //run stored procedure
+                if (applicantResult == null)
+                {
+                    throw new ResourceNotFoundException() { ExceptionMessage = "Applicant with ID " + id + " could not be updated." };
+                }
+            }
+
+            // Remove applicants from the database that were remove from the frontend
             foreach (string id in applicantIdsToRemove)
             {
                 IEnumerable<ApartmentApplicantViewModel> applicantResult = null;
 
                 // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
-                //idParam.Value = id; might need if this ODD solution is not satisfactory
                 appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
                 idParam = new SqlParameter("@ID_NUM", id);
                 sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
