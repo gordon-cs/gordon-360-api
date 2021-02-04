@@ -77,7 +77,7 @@ If there are problems with automatic deployment, or a specific need to revert or
     -   If you don't see the publish profile you want (or you are automatically taken to the "Pick a Publish Target" Window) see [MakePublishProfiles.md](MakePublishProfiles.md) to restore the Publish Profiles.
 -   Clicking publish pushes your changes to the API for either 360ApiTrain.gordon.edu or 360Api.gordon.edu, depending on which publish profile you used.
 
-### Ideal Case: Continuous Deployment with GitHub Actions
+#### Ideal Case: Continuous Deployment with GitHub Actions
 
 The frontend is already configured for continuous deployment with GitHub Actions. The backend should ideally be simularly automated, but isn't yet.
 
