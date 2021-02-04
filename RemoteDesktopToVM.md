@@ -73,9 +73,10 @@ Ensure that you are connected to the Gordon network (either locally or through a
 2.	Add the PC
       -	In the Microsoft Remote Desktop window, press the '+' sign in the top left.
       -  Click 'Add PC' in the dropdown
-      -  For 'Name', type in `CS-RDSH-02.gordon.edu` (not case-sensitive).
-      -  For 'User Account', open the dropdown and choose 'Add User Account'
-      -	Enter your Gordon credentials for 'User name' and 'Password' and click 'Add'
+      -  For 'Name', type in the full name of the server you want to connect to, e.g. `CS-RDSH-02.gordon.edu` (not case-sensitive).
+      -  For 'User Account', open the dropdown and choose the user you want to connect as.
+          -  If the account doesn't exist, select 'Add User Account'.
+          -  Then, enter the appropriate Gordon credentials for 'User name' and 'Password' and click 'Add''
       -  Leave everything else the same and click 'Add'
 3.	Run and connect
       -  You should now see a box representing the PC under 'Saved PCs', click it
