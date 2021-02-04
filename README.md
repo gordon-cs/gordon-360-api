@@ -8,9 +8,9 @@ Dive in.
 
 -   [Machines and Sites](#machines-and-sites)
     -   [Deploying to the Api Site](#deploying-to-the-api-site)
-        -   [Normal Case: Deploying Automatically via Travis](#normal-case-deploying-automatically-via-travis)
-        -   [Unusual Case: Deploying Manually](#unusual-case-deploying-manually)
-    -   [Deploying to the Front-end site (deprecated)](#deploying-to-the-front-end-site)
+        -   [Current Case: Deploying Manually](#current-case-deploying-manually)
+        -   [Ideal Case: Continuous Deployment with GitHub Actions](#ideal-case-continuous-deployment-with-github-actions)
+-   [Caching](#caching)
 -   [Running the API locally](#running-the-api-locally)
     -   [Preliminary setup](#preliminary-setup)
     -   [Building and running](#building-and-running)
@@ -55,37 +55,11 @@ Dive in.
 
 ## Machines and Sites
 
-As of Summer 2018 the virtual machines CS-RDSH-01 and CS-RDSH-02 are used for developing Gordon 360. Instructions for connecting via Remote Desktop can be found in [RemoteDesktopToVM.md](RemoteDesktopToVM.md).
-
-To work on this project, it is easiest to use the following machines provided by CTS:
-
--   360train.gordon.edu - Windows machine.
-    -   Can be accessed through Remote Desktop Connection.
-    -   Has the C# code.
-    -   Has Visual Studio, MSSQL Server.
-    -   Has deployment scripts and folders.
-    -   Has site folders.
--   CS-360-API-TEST.gordon.edu - Ubuntu machine
-    -   Is accessed through ssh.
-    -   Is setup for running the tests (has an already filled `test_credentials.py` file.)
-    -   Has the User-facing code (HTML, JS and CSS)
-
-The folders for these IIS sites can be found on the 360train machine under `F:\sites`.
-
--   360.gordon.edu -- Production Front-end. User-facing code (css, js, html)
--   360Train.gordon.edu -- Development Front-end. User-facing code (css, js, html)
--   360Api.gordon.edu -- Production JSON server site. C# using the ASP.NET Framework.
--   360ApiTrain.gordon.edu -- Development JSON server site. C# using the ASP.NET Framework.
+As of Spring 2021, the virtual machines CS-RDSH-01 and CS-RDSH-02 are used for developing Gordon 360. Instructions for connecting via Remote Desktop can be found in [RemoteDesktopToVM.md](RemoteDesktopToVM.md).
 
 ### Deploying to the Api Site
 
-#### Normal Case: Deploying Automatically via Travis
-
-When a pull request is merged into "develop", Travis will automatically build it and deploy it to 360apitrain.gordon.edu (for testing).
-
-When a pull request is merged into "master", Travis will automatically build it and deploy it to 360api.gordon.edu (for production).
-
-#### Unusual Case: Deploying Manually
+#### Current Case: Deploying Manually
 
 If there are problems with automatic deployment, or a specific need to revert or push manually, then this older procedure can be used.
 
@@ -103,23 +77,9 @@ If there are problems with automatic deployment, or a specific need to revert or
     -   If you don't see the publish profile you want (or you are automatically taken to the "Pick a Publish Target" Window) see [MakePublishProfiles.md](MakePublishProfiles.md) to restore the Publish Profiles.
 -   Clicking publish pushes your changes to the API for either 360ApiTrain.gordon.edu or 360Api.gordon.edu, depending on which publish profile you used.
 
-### Deploying to the Front-end Site
+### Ideal Case: Continuous Deployment with GitHub Actions
 
-**Note: these instructions are out-of-date, since Project Bernard is deprecated with the transition to gordon-360-ui!** Please refer to the documentation for [gordon-360-ui](https://github.com/gordon-cs/gordon-360-ui) on GitHub. The new gordon-360-ui front-end uses the React framework rather than Ember.
-
--   Log into CS-360-API-TEST through ssh.
--   To make a change to the code, clone the [Project Bernard](https://github.com/gordon-cs/Project-Bernard) repository.
--   Install EmberJS and its dependencies. See the Project Bernard repository for help on how to do this (If you are using the CS-360-API-TEST machine, skip this step).
--   Make a change to the code. Do your thing, make your mark. A legacy.
--   Run one of these commands in the terminal at the root of the project folder.
-    -   `ember build --env development` -- This version will use the Development api endpoint (360ApiTrain.gordon.edu)
-    -   `ember build --env production` -- This version will use the Production api endpoint (360Api.gordon.edu)
--   The output is placed in the `dist/` folder at root of your project folder.
-    -   Note: Since emberJS is a javascript framework, the output is just an html file with a TON of javascript linked :p
--   Move the `dist/` folder AS-IS to one of the two user-facing sites on CS-RDP1.
-    -   If you used the development flag, move `dist/` to the 360Train IIS site.
-    -   If you used the production flag, move `dist/` to the 360 IIS site.
--   For moving files between a mac and the virtual windows machine, we used a Microsoft Remote Desktop feature called folder redirection. It lets you specify folders on your mac that will be available on the PC you are remoting to.
+The frontend is already configured for continuous deployment with GitHub Actions. The backend should ideally be simularly automated, but isn't yet.
 
 ## Caching
 
