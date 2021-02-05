@@ -59,6 +59,8 @@ As of Spring 2021, the virtual machines CS-RDSH-01 and CS-RDSH-02 are used for d
 
 ### Deploying to the Api Site
 
+The Gordon 360 API is hosted on the `360api.gordon.edu` server, which is also known as `cts-360.gordon.edu`. The built files are deployed at `F:\Sites`, under the names `360Api` and `360ApiTrain` for the master and develop branches respectively.
+
 #### Current Case: Deploying Manually
 
 If there are problems with automatic deployment, or a specific need to revert or push manually, then this older procedure can be used.
@@ -66,7 +68,7 @@ If there are problems with automatic deployment, or a specific need to revert or
 -   Access the cts-360.gordon.edu VM (see [RemoteDesktopToVM.md](RemoteDesktopToVM.md) for instructions) as the cct.service user.
 -   Before you publish your new version, be sure to copy the current stable version to make a backup. To do so:
     -   Navigate in File Explorer to `F:\Sites` and copy either 360Api or 360ApiTrain, whichever you're planning to publish to.
-    -   Paste that copy in the same place (`F:\Sites`), and rename it to a backup including the date. For example, if you backed up the Train site on January 1, 2001, then the copy would be named `360ApiTrain_backup 1-01-2001`.
+    -   Paste that copy in the same place (`F:\Sites`), and rename it to a backup including the date. For example, if you backed up the Train site on January 1, 2001, then the copy would be named `360ApiTrain_backup_1-01-2001`.
 -   Open gitbash and cd to `C:\users\cct.service\code\gordon-360-api`. Make sure that you are on the branch you wish to deploy, and that it has been pulled up to date.
     **Note: if you clone a new repository on this VM, it will not have the necessary publish profiles or secrets.config. See [MakePublishProfiles.md](MakePublishProfiles.md) to restore the Publish Profiles.**
 -   Start Visual Studio as an administrator (right click) and open the existing project/solution file - `C:\users\cct.service\code\gordon-360-api\Gordon360.sln` (the solution file).
