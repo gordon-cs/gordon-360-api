@@ -20,6 +20,7 @@ namespace Gordon360.Models
         public Nullable<System.DateTime> Expires { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> Emailed { get; set; }
+        public string Notes { get; set; }
     
         public virtual Health_Status_CTRL Health_Status_CTRL { get; set; }
     }

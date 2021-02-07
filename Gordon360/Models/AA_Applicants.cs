@@ -15,7 +15,7 @@ namespace Gordon360.Models
     public partial class AA_Applicants
     {
         public int AprtAppID { get; set; }
-        public int ID_NUM { get; set; }
+        public string ID_NUM { get; set; }
         public string AprtProgram { get; set; }
         public Nullable<bool> AprtProgramCredit { get; set; }
         public string SESS_CDE { get; set; }
