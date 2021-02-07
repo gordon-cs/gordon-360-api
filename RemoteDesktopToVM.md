@@ -1,10 +1,15 @@
 # How to connect to a CS-RDSH virtual machine
 
 ## Table of Contents
-
+- [Connect from off campus](#connect-from-off-campus)
 - [Connect from Ubuntu Linux](#connect-from-ubuntu-linux)
 - [Connect from Windows](#connect-from-windows)
 - [Connect from MacOS](#connect-from-macos)
+
+## Connect from Off Campus
+
+Follow [these](https://cts.gordon.edu/knowledge/gordon-vpn/) instructions to setup the VPN along with Windows Multifactor Authentication. After everything is set up with the VPN, You will be able to follow the instructions in the rest of this document without problems. 
+
 
 ## Connect from Ubuntu Linux
 
