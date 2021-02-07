@@ -327,7 +327,6 @@ namespace Gordon360.Controllers.Api
         /// </returns>
         [HttpGet]
         [Route("Advisors/{username}")]
-        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ADVISOR)]
         public IHttpActionResult GetAdvisors(string username)
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
@@ -345,7 +344,7 @@ namespace Gordon360.Controllers.Api
         /// <returns> Clifton strengths of the given user. </returns>
         [HttpGet]
         [Route("clifton/{username}")]
-        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.CLIFTON)]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
         public IHttpActionResult GetCliftonStrengths(string username)
         {
             var id = _accountService.GetAccountByUsername(username).GordonID;
