@@ -123,7 +123,7 @@ namespace Gordon360.Services
         /// <summary> Gets the clifton strengths of a particular user </summary>
         /// <param name="id"> The id of the user for which to retrieve info </param>
         /// <returns> Clifton strengths of the given user. </returns>
-        public Clifton_Strengths GetCliftonStrengths(int id)
+        public CliftonStrengthsViewModel GetCliftonStrengths(int id)
         {
             var strengths = _unitOfWork.CliftonStrengthsRepository.GetById(id);
             if(strengths == null)

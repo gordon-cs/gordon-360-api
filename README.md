@@ -834,7 +834,7 @@ Differences from GoSite:
 
 `api/profiles/Advisors/:username` Get advisor(s) info of a user with username `username` as a parameter.
 
-`api/profiles/clifton/:username` Get the Clifton Strengths of a user with username `username` as a parameter. The returned object includes all columns in the db table, which are currently `id_num`, `access_code`, `email`, `dte_completed`, `theme_1`, `theme_2`, `theme_3`, `theme_4`, `theme_5`.
+`api/profiles/clifton/:username` Get the Clifton Strengths of a user with username `username` as a parameter.
 
 `api/profiles/Image/` Get profile image of the current logged in user. Image is stored in a base 64 string.
 
