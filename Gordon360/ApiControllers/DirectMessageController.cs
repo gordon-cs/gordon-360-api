@@ -199,8 +199,34 @@ namespace Gordon360.ApiControllers
 
             }
 
+            /// <summary>
+            ///  stores rooms associated with a user id
+            /// </summary>
+            /// <returns>true if successful</returns>
+            [HttpPost]
+            [Route("userConnectionIds")]
+            public IHttpActionResult StoreUserConnectionIds([FromBody] String connectionId)
+            {
+
+                var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+                var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+                var userId = _accountService.GetAccountByUsername(username).GordonID;
+
+                var result = _DirectMessageService.StoreUserConnectionIds(userId, connectionId);
+
+                if (result == false)
+                {
+                    return NotFound();
+                }
 
 
-        }
+                return Ok(result);
+
+            }
+
+
+
+    }
 
 }

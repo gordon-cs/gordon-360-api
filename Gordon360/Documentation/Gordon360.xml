@@ -187,6 +187,12 @@
             </summary>
             <returns>true if successful</returns>
         </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.StoreUserConnectionIds(System.String)">
+            <summary>
+             stores rooms associated with a user id
+            </summary>
+            <returns>true if successful</returns>
+        </member>
         <member name="M:Gordon360.ApiControllers.DiningController.Get">
             <summary>
              Gets information about student's dining plan and balance

@@ -259,6 +259,35 @@ namespace Gordon360.Services
 
         }
 
+        public bool StoreUserConnectionIds(String userId, String connectionId)
+        {
+            var _unitOfWork = new UnitOfWork();
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == userId);
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
+
+            var userIdParam = new SqlParameter("@user_id", userId);
+            var connectionIdParam = new SqlParameter("@connection_id", connectionId);
+
+
+            var result = RawSqlQuery<MessageViewModel>.query("INSERT_USER_CONNECTION_ID @user_id, @connection_id", userIdParam, connectionIdParam); //run stored procedure
+
+            bool returnAnswer = true;
+
+            if (result == null)
+            {
+                returnAnswer = false;
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+
+
+
+            return returnAnswer;
+
+        }
+
 
     }
 

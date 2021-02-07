@@ -66,6 +66,7 @@ namespace Gordon360.Services
         bool CreateGroup(String id, String name, bool group, DateTime lastUpdated,string image);
         bool SendMessage(SendTextViewModel textInfo, string user_id);
         bool StoreUserRooms(String userId, String roomId);
+        bool StoreUserConnectionIds(String userId, String connectionId);
         IEnumerable<MessageViewModel> GetMessages(string roomId);
         IEnumerable<GroupViewModel> GetRooms(string userId);
         List<Object> GetRoomById(string userId);
