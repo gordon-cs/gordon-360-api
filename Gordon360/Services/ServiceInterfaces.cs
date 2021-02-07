@@ -22,7 +22,7 @@ namespace Gordon360.Services
         FacultyStaffProfileViewModel GetFacultyStaffProfileByUsername(string username);
         AlumniProfileViewModel GetAlumniProfileByUsername(string username);
         IEnumerable<AdvisorViewModel> GetAdvisors(string id);
-        IEnumerable<Clifton_Strengths> GetCliftonStrengths(string id);
+        Clifton_Strengths GetCliftonStrengths(int id);
         ProfileCustomViewModel GetCustomUserInfo(string username);
         PhotoPathViewModel GetPhotoPath(string id);
         void UpdateProfileLink(string username, string type, CUSTOM_PROFILE path);

@@ -617,14 +617,19 @@
             <param name="username">username of the profile info</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.getAdvisors(System.String)">
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.GetAdvisors(System.String)">
             <summary>Get the advisor(s) of a particular student</summary>
              <returns>
              All advisors of the given student.  For each advisor,
              provides first name, last name, and username.
              </returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.getMyImg">
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.GetCliftonStrengths(System.String)">
+            <summary> Gets the clifton strengths of a particular user </summary>
+            <param name="username"> The username for which to retrieve info </param>
+            <returns> Clifton strengths of the given user. </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.GetMyImg">
             <summary>Get the profile image of currently logged in user</summary>
             <returns></returns>
         </member>
@@ -1670,6 +1675,11 @@
             </summary>
             <param name="id">student id</param>
             <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetCliftonStrengths(System.Int32)">
+            <summary> Gets the clifton strengths of a particular user </summary>
+            <param name="id"> The id of the user for which to retrieve info </param>
+            <returns> Clifton strengths of the given user. </returns>
         </member>
         <member name="M:Gordon360.Services.ProfileService.GetPhotoPath(System.String)">
             <summary>
