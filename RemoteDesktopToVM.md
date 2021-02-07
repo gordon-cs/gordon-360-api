@@ -1,7 +1,7 @@
 # How to connect to a CS-RDSH virtual machine
 
 ## Table of Contents
-- [Connect from off campus](#connect-from-off-campus)
+- [Connect from Off Campus](#connect-from-off-campus)
 - [Connect from Ubuntu Linux](#connect-from-ubuntu-linux)
 - [Connect from Windows](#connect-from-windows)
 - [Connect from MacOS](#connect-from-macos)
