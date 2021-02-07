@@ -189,7 +189,13 @@
         </member>
         <member name="M:Gordon360.ApiControllers.DirectMessageController.StoreUserConnectionIds(System.String)">
             <summary>
-             stores rooms associated with a user id
+             stores connection associated with a user id
+            </summary>
+            <returns>true if successful</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetConnectionIds(System.String)">
+            <summary>
+             Gets connection ids associated with a user id
             </summary>
             <returns>true if successful</returns>
         </member>

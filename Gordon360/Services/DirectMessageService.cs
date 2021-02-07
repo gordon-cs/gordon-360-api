@@ -218,13 +218,12 @@ namespace Gordon360.Services
                 idParam, roomIdParam, textParam, createdAtParam, userIdParam, imageParam, videoParam, audioParam, systemParam, sentParam, receivedParam, pendingParam); //run stored procedure
 
             bool returnAnswer = true;
+
             if (result == null)
             {
                 returnAnswer = false;
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
             }
-
-
 
             return returnAnswer;
 
@@ -285,6 +284,33 @@ namespace Gordon360.Services
 
 
             return returnAnswer;
+
+        }
+
+        public IEnumerable<ConnectionIdViewModel> GetUserConnectionIds(String userId)
+        {
+            var _unitOfWork = new UnitOfWork();
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == userId);
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
+
+            var userIdParam = new SqlParameter("@user_id", userId);
+
+            var result = RawSqlQuery<ConnectionIdViewModel>.query("GET_ALL_CONNECTION_IDS_BY_ID @user_id", userIdParam); //run stored procedure
+
+            var model = result.Select(x =>
+            {
+                ConnectionIdViewModel y = new ConnectionIdViewModel();
+                y.connection_id = x.connection_id;
+               
+
+                return y;
+            });
+
+
+            return model;
 
         }
 

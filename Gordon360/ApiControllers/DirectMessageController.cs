@@ -200,7 +200,7 @@ namespace Gordon360.ApiControllers
             }
 
             /// <summary>
-            ///  stores rooms associated with a user id
+            ///  stores connection associated with a user id
             /// </summary>
             /// <returns>true if successful</returns>
             [HttpPost]
@@ -225,8 +225,29 @@ namespace Gordon360.ApiControllers
 
             }
 
+            /// <summary>
+            ///  Gets connection ids associated with a user id
+            /// </summary>
+            /// <returns>true if successful</returns>
+            [HttpPut]
+            [Route("userConnectionIds")]
+            public IHttpActionResult GetConnectionIds([FromBody] String userId)
+            {
 
 
-    }
+                var result = _DirectMessageService.GetUserConnectionIds(userId);
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+
+                return Ok(result);
+
+            }
+
+
+        }
 
 }
