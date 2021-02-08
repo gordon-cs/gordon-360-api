@@ -1,10 +1,15 @@
 # How to connect to a CS-RDSH virtual machine
 
 ## Table of Contents
-
+- [Connect from Off Campus](#connect-from-off-campus)
 - [Connect from Ubuntu Linux](#connect-from-ubuntu-linux)
 - [Connect from Windows](#connect-from-windows)
 - [Connect from MacOS](#connect-from-macos)
+
+## Connect from Off Campus
+
+Follow [these](https://cts.gordon.edu/knowledge/gordon-vpn/) instructions to setup the VPN along with Windows Multifactor Authentication. After everything is set up with the VPN, You will be able to follow the instructions in the rest of this document without problems. 
+
 
 ## Connect from Ubuntu Linux
 
@@ -71,18 +76,14 @@ Ensure that you are connected to the Gordon network (either locally or through a
       -  Click in the upper-right corner of the menu bar, or press Command-Space bar for spotlight search and type in 'remote'.
       -	Launch the 'Microsoft Remote Desktop' app. If it's not already installed, it can be installed [here](https://apps.apple.com/us/app/microsoft-remote-desktop/id1295203466?mt=12).
 2.	Add the PC
-      -	In the Microsoft Remote Desktop window, click on 'Preferences'.
-      -	Press the '+' sign in the bottom left.
-      -	Name the Gateway name whatever you’d like.
-      -	For 'Server', type in `CS-RDSH-02.gordon.edu` (not case-sensitive).
-      -	Enter your Gordon credentials for 'User name' and 'Password'.
-      -	Close the Preferences window.
+      -	In the Microsoft Remote Desktop window, press the '+' sign in the top left.
+      -  Click 'Add PC' in the dropdown
+      -  For 'Name', type in the full name of the server you want to connect to, e.g. `CS-RDSH-02.gordon.edu` (not case-sensitive).
+      -  For 'User Account', open the dropdown and choose the user you want to connect as.
+          -  If the account doesn't exist, select 'Add User Account'.
+          -  Then, enter the appropriate Gordon credentials for 'User name' and 'Password' and click 'Add''
+      -  Leave everything else the same and click 'Add'
 3.	Run and connect
-      - In the Microsoft Remote Desktop window, click on 'New'.
-      - Name the 'Connection name' whatever you’d like (I recommend the same as the 'Gateway name')
-      - Under 'PC name', type in `CS-RDSH-02` (not case-sensitive).
-      - Select the Gateway you created from the dropdown.
-      - Enter your Gordon credentials for 'User name' and 'Password'.
-      - Close the 'Edit Remote Desktops' window
-      - Select the remote connection you just created under 'My Desktops' and press 'Start' (or double click).
-      - A pop-up will be shown asking 'Accept Certificate?'. You may check the one available option to never see the pop-up again and click on 'accept'.
+      -  You should now see a box representing the PC under 'Saved PCs', click it
+      -  If there is a pop-up saying "The certificate could not be verified...", click 'Continue'
+      -  A new window should open with the desktop of the VM- you've connected!
