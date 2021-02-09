@@ -1853,7 +1853,7 @@
              </summary>
              <param name="editorId"> The student ID number of the user who is attempting to save the apartment application </param>
              <param name="sess_cde"> The current session code </param>
-             <param name="applicantIds"> Array of student ID numbers for each of the applicants </param>
+             <param name="applicantIDs"> Array of student ID numbers for each of the applicants </param>
              <returns>Returns the application ID number if all the queries succeeded, otherwise returns -1</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.EditApplication(System.String,System.String,System.Int32,System.String[])">
@@ -1861,14 +1861,14 @@
              Edit an existings apartment application
              - first, it gets the EditorID from the database for the given application ID and makes sure that the student ID of the current user matches that stored ID number
              - second, it gets an array of the applicants that are already stored in the database for the given application ID
-             - third, it inserts each applicant that is in the 'newApplicantIds' array but was not yet in the database
-             - fourth, it removes each applicant that was stored in the database but was not in the 'newApplicantIds' array
+             - third, it inserts each applicant that is in the 'newApplicantIDs' array but was not yet in the database
+             - fourth, it removes each applicant that was stored in the database but was not in the 'newApplicantIDs' array
             
              </summary>
              <param name="editorId"> The student ID number of the user who is attempting to save the apartment application </param>
              <param name="sess_cde"> The current session code </param>
              <param name="apartAppId"> The application ID number of the application to be edited </param>
-             <param name="newApplicantIds"> Array of student ID numbers for each of the applicants </param>
+             <param name="newApplicantIDs"> Array of student ID numbers for each of the applicants </param>
              <returns>Returns the application ID number if all the queries succeeded, otherwise returns -1</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.ChangeApplicationEditor(System.String,System.Int32,System.String)">
