@@ -112,6 +112,20 @@ namespace Gordon360.Services
             //----------------
             // Save hall information
 
+            ApartmentChoiceViewModel 
+
+            SqlParameter rankingParam = null;
+            SqlParameter buildingCodeParam = null;
+
+            foreach (ApartmentChoiceViewModel id in apartmentChoices)
+            {
+                IEnumerable<ApartmentChoiceViewModel> apartmentChoicesResult = null;
+
+                // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
+                appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
+                rankingParam = new SqlParameter("@RANKING", ranking);
+            }
+
             // PLACEHOLDER
             //
             // The update hall info code will go here once we get a chance to implement it
