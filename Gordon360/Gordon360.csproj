@@ -25,7 +25,6 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <Use64BitIISExpress>false</Use64BitIISExpress>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -582,6 +581,7 @@
     <Compile Include="Models\VICTORY_PROMISE_BY_STUDENT_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModels\CliftonStrengthsViewModel.cs" />
     <Compile Include="Models\ViewModels\ClockInViewModel.cs" />
     <Compile Include="Models\ViewModels\CreateGroupViewModel.cs" />
     <Compile Include="Models\ViewModels\GroupViewModel.cs" />

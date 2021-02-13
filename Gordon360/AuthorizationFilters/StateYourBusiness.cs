@@ -145,7 +145,6 @@ namespace Gordon360.AuthorizationFilters
             {
                 case Resource.PROFILE:
                     return true;
-
                 case Resource.MEMBERSHIP:
                     return true;
                 case Resource.MEMBERSHIP_REQUEST:
