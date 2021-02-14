@@ -89,6 +89,8 @@ namespace Gordon360.Services
             //----------------
             // Save applicant information
 
+            
+
             SqlParameter appIdParam = null;
             SqlParameter idParam = null;
             SqlParameter programParam = null;
@@ -112,25 +114,23 @@ namespace Gordon360.Services
             //----------------
             // Save hall information
 
-            ApartmentChoiceViewModel 
-
             SqlParameter rankingParam = null;
             SqlParameter buildingCodeParam = null;
 
-            foreach (ApartmentChoiceViewModel id in apartmentChoices)
+            foreach (ApartmentChoiceViewModel choice in apartmentChoices)
             {
-                IEnumerable<ApartmentChoiceViewModel> apartmentChoicesResult = null;
+                IEnumerable<ApartmentChoiceViewModel> apartmentChoiceResult = null;
 
                 // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
                 appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
-                rankingParam = new SqlParameter("@RANKING", ranking);
+                rankingParam = new SqlParameter("@RANKING", choice.HallRank);
+                buildingCodeParam = new SqlParameter("@BLDG_CDE", choice.HallName);
+                apartmentChoiceResult = RawSqlQuery<ApartmentChoiceViewModel>.query("INSERT_AA_APARMENT_CHOICE @APPLICATION_ID, @RANKING, @BLDG_CDE", appIdParam, rankingParam, buildingCodeParam); // run stored procedure
+                if (apartmentChoiceResult == null)
+                {
+                    throw new ResourceNotFoundException() { ExceptionMessage = "The apartment preference could not be saved." };
+                }
             }
-
-            // PLACEHOLDER
-            //
-            // The update hall info code will go here once we get a chance to implement it
-            //
-            // PLACEHOLDER
 
             return apartAppId;
         }
