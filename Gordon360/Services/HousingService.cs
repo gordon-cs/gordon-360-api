@@ -119,13 +119,13 @@ namespace Gordon360.Services
 
             foreach (ApartmentChoiceViewModel choice in apartmentChoices)
             {
-                IEnumerable<ApartmentChoiceViewModel> apartmentChoiceResult = null;
+                IEnumerable<ApartmentChoiceSaveViewModel> apartmentChoiceResult = null;
 
                 // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
                 appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
                 rankingParam = new SqlParameter("@RANKING", choice.HallRank);
                 buildingCodeParam = new SqlParameter("@BLDG_CDE", choice.HallName);
-                apartmentChoiceResult = RawSqlQuery<ApartmentChoiceViewModel>.query("INSERT_AA_APARMENT_CHOICE @APPLICATION_ID, @RANKING, @BLDG_CDE", appIdParam, rankingParam, buildingCodeParam); // run stored procedure
+                apartmentChoiceResult = RawSqlQuery<ApartmentChoiceSaveViewModel>.query("INSERT_AA_APARMENT_CHOICE @APPLICATION_ID, @RANKING, @BLDG_CDE", appIdParam, rankingParam, buildingCodeParam); // run stored procedure
                 if (apartmentChoiceResult == null)
                 {
                     throw new ResourceNotFoundException() { ExceptionMessage = "The apartment preference could not be saved." };
