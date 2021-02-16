@@ -587,27 +587,6 @@
             <param name="status">The current status of the user to post, of type WellnessStatusColor</param>
             <returns>The status that was stored in the database</returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.WellnessController.DEPRECATED_Get">
-            <summary>
-            DEPRECATED - Please use base route
-             Gets current wellness status of student
-            </summary>
-            <returns>Json WellnessStatusViewModel</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.WellnessController.DEPRECATED_GetQuestion">
-            <summary>
-            DEPRECATED - Please use base route /question
-             Gets question for wellness check from the back end
-            </summary>
-            <returns> json WellnessQuestionViewModel</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.WellnessController.DEPRECATED_PostStatus(Gordon360.Controllers.Api.WellnessController.WellnessStatusColor)">
-            <summary>
-            DEPRECATED - Please use base route
-            </summary>
-            <param name="status">The status to be posted - GREEN, YELLOW, or RED</param>
-            <returns></returns>
-        </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.Get">
             <summary>Get profile info of currently logged in user</summary>
             <returns></returns>
@@ -1870,30 +1849,6 @@
             </summary>
             <param name="currentTime">The time of the check in</param>
             <returns>When the check in should expire (the next 5AM).</returns>
-        </member>
-        <member name="M:Gordon360.Services.WellnessService.DEPRECATED_IsValidStatus(Gordon360.Models.ViewModels.DEPRECATED_WellnessStatusViewModel)">
-            <summary>
-            Checks whether a wellness status is still valid (i.e. new since 5AM)
-            </summary>
-            <param name='status'>Wellness status to check, an instance of a WellnessViewModel</param>
-            <returns>boolean representing whether the status is still valid</returns>
-        </member>
-        <member name="M:Gordon360.Services.WellnessService.DEPRECATED_GetStatus(System.String)">
-            <summary>
-            DEPRECATED
-            gets status of wellness check
-            </summary>
-            <param name="id">ID of the user to get the status of</param>
-            <returns> The status of the user, a WellnessStatusViewModel </returns>
-        </member>
-        <member name="M:Gordon360.Services.WellnessService.DEPRECATED_PostStatus(System.String,System.String)">
-            <summary>
-            DEPRECATED
-            Stores wellness Status in database.
-            </summary>
-            <param name="id"> ID of the user to post the status for</param>
-            <param name="status"> Status that is being posted, one of GREEN, YELLOW, or RED </param>
-            <returns>Status that was successfully recorded</returns>
         </member>
         <member name="T:Gordon360.Services.JenzibarActivityService">
             <summary>
