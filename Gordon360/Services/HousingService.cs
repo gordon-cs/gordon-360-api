@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Gordon360.Models.ViewModels;
+using Gordon360.Models;
 using Gordon360.Repositories;
 using Gordon360.Exceptions.CustomExceptions;
 using System.Data.SqlClient;
@@ -336,6 +337,31 @@ namespace Gordon360.Services
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Creates a string from the combination of AA_ApartementApplications and AA_Applicants Tables
+        /// and returns it to the frontend, so that it can convert it into a csv file.
+        /// </summary>
+        public string CreateCSV()
+        {
+            string csv = string.Empty;
+            var result = RawSqlQuery<ApartmentApplicantDetailsViewModel>.query("GET_AA_APPLICANTS_DETAILS"); //run stored procedure
+            foreach (var element in result)
+            {
+                csv += element.AprtAppID + ","
+                     + element.EditorID + ","
+                     + element.DateSubmitted + ","
+                     + element.DateModified.ToString("MM/dd/yyyy HH:mm:ss") + ","
+                     + element.ID_NUM + ","
+                     + element.AprtProgram + ","
+                     + element.AprtProgramCredit + ","
+                     + element.SESS_CDE;
+                const string V = "\r\n";
+                csv += V;
+            }
+
+            return csv;
         }
     }
 }

@@ -10,15 +10,16 @@
 namespace Gordon360.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class Health_Check_NEW
+    public partial class GET_AA_APPLICANTS_DETAILS_Result
     {
-        public int ID_Num { get; set; }
-        public byte HealthStatusID { get; set; }
-        public System.DateTime Created { get; set; }
-        public Nullable<System.DateTime> emailed { get; set; }
-    
-        public virtual Health_Status_CTRL Health_Status_CTRL { get; set; }
+        public int AprtAppID { get; set; }
+        public string EditorID { get; set; }
+        public Nullable<System.DateTime> DateSubmitted { get; set; }
+        public System.DateTime DateModified { get; set; }
+        public string ID_NUM { get; set; }
+        public string AprtProgram { get; set; }
+        public Nullable<bool> AprtProgramCredit { get; set; }
+        public string SESS_CDE { get; set; }
     }
 }
