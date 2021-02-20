@@ -229,6 +229,8 @@ namespace Gordon360.Services
 
         }
 
+        
+
         public bool StoreUserRooms(String userId, String roomId)
         {
             var _unitOfWork = new UnitOfWork();
@@ -257,6 +259,7 @@ namespace Gordon360.Services
             return returnAnswer;
 
         }
+
 
         public bool StoreUserConnectionIds(String userId, String connectionId)
         {
@@ -311,6 +314,26 @@ namespace Gordon360.Services
 
 
             return model;
+
+        }
+
+        public bool DeleteUserConnectionIds(String connectionId)
+        {
+            var connectionIdParam = new SqlParameter("@connection_id", connectionId);
+
+            var result = RawSqlQuery<MessageViewModel>.query("DELETE_USER_CONNECTION_ID  @connection_id", connectionIdParam); //run stored procedure
+
+            bool returnAnswer = true;
+
+            if (result == null)
+            {
+                returnAnswer = false;
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+
+
+
+            return returnAnswer;
 
         }
 

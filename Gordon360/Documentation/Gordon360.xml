@@ -145,12 +145,6 @@
             </summary>
             <returns> All buildings</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.DirectMessageController.Get">
-            <summary>
-             returns hello world example
-            </summary>
-            <returns>string and date</returns>
-        </member>
         <member name="M:Gordon360.ApiControllers.DirectMessageController.GetMessages(System.String)">
             <summary>
              returns messages from a specified group
@@ -196,6 +190,12 @@
         <member name="M:Gordon360.ApiControllers.DirectMessageController.GetConnectionIds(System.String)">
             <summary>
              Gets connection ids associated with a user id
+            </summary>
+            <returns>true if successful</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.DeleteConnectionIds(System.String)">
+            <summary>
+             Deletes connection ids associated with a user id
             </summary>
             <returns>true if successful</returns>
         </member>
