@@ -35,8 +35,9 @@ namespace Gordon360.Controllers.Api
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
-            //! Placeholder
-            var result = false; // This feature is not yet implemented
+            string userId = _accountService.GetAccountByUsername(username).GordonID;
+
+            var result = _housingService.CheckHousingStaff(userId);
             return Ok(result);
         }
 
@@ -56,6 +57,7 @@ namespace Gordon360.Controllers.Api
             var result = _housingService.GetApplicationID(editorId, sessionId);
             return Ok(result);
         }
+
         /// <summary>Get apartment application ID number for a user if that user is on an existing application</summary>
         /// <param name="username">username of the profile info</param>
         /// <returns></returns>

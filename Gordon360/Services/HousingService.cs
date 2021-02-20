@@ -19,6 +19,22 @@ namespace Gordon360.Services
             _unitOfWork = unitOfWork;
         }
 
+        /// <summary>
+        /// Calls a stored procedure that returns the count of rows in the staff whitelist which have the given user id
+        /// (the count should be 0 or 1) and converts that count into boolean
+        /// </summary>
+        /// <param name="userId"> The id of the person using the page </param>
+        /// <returns> Whether or not the user is on the staff whitelist </returns>
+        public bool CheckHousingStaff(string userId)
+        {
+            IEnumerable<ApartmentAppIsStaffViewModel> idResult = null;
+
+            var idParam = new SqlParameter("@USER_ID", userId);
+
+            idResult = RawSqlQuery<ApartmentAppIsStaffViewModel>.query("GET_AA_USER_IS_STAFF @USER_ID", idParam);
+            return idResult.ElementAt(0).ResultCount != 0;
+        }
+
         public int GetApplicationID(string studentId, string sess_cde)
         {
             IEnumerable<ApartmentAppIDViewModel> idResult = null;
