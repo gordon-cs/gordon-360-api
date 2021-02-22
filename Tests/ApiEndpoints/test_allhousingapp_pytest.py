@@ -50,7 +50,7 @@ class Test_AllHousingAppTest(control.testCase):
 
 #   Verify that the editor (primary applicant) can save the application
 #   Endpoint -- 'api/housing/apartment/save'
-#   Expected Status Code -- 200 OK
+#   Expected Status Code -- 201 Created
 #   Expected Content --
     def test_post_save_apartment_application_as_editor(self):
         self.session = self.createAuthorizedSession(control.username, control.password)
@@ -66,13 +66,13 @@ class Test_AllHousingAppTest(control.testCase):
         #   Put pytest codes here
         #
 
-        if not response.status_code == 200:
-            pytest.fail('Expected 200 Created, got {0}.'\
+        if not response.status_code == 201:
+            pytest.fail('Expected 201 Created, got {0}.'\
                 .format(response.status_code))
 
 #   Verify that the editor (primary applicant) can edit the application
 #   Endpoint -- 'api/housing/apartment/save'
-#   Expected Status Code -- 200 OK
+#   Expected Status Code -- 201 Created
 #   Expected Content --
     def test_put_edit_apartment_application_as_editor(self):
         self.session = self.createAuthorizedSession(control.username, control.password)
@@ -82,6 +82,6 @@ class Test_AllHousingAppTest(control.testCase):
         }
         self.requestID = -1
         response = api.post(self.session, self.url, self.data)
-        if not response.status_code == 200:
-            pytest.fail('Expected 200 Created, got {0}.'\
+        if not response.status_code == 201:
+            pytest.fail('Expected 201 Created, got {0}.'\
                 .format(response.status_code))
