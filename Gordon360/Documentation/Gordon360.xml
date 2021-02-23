@@ -1853,6 +1853,14 @@
             <param name="id">id</param>
             <returns>VictoryPromiseViewModel if found, null if not found</returns>
         </member>
+        <member name="M:Gordon360.Services.HousingService.CheckHousingStaff(System.String)">
+            <summary>
+            Calls a stored procedure that returns the count of rows in the staff whitelist which have the given user id
+            (the count should be 0 or 1) and converts that count into boolean
+            </summary>
+            <param name="userId"> The id of the person using the page </param>
+            <returns> Whether or not the user is on the staff whitelist </returns>
+        </member>
         <member name="M:Gordon360.Services.HousingService.SaveApplication(System.Int32,System.String,System.String,System.String[])">
              <summary>
              Saves student housing info
