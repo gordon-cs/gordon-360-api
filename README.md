@@ -422,13 +422,13 @@ If you are attempting to connect the API to a database other than the ones to wh
 
 -   You do not need to delete any edmx files, since you are now creating the first instance of a different edmx
 -   <span id="create-connection"><!--anchor--></span>
--   None of the options for data connection will fit your needs, so you will need to create a new option:
-    _ Click "New Connection..."
-    _ If prompted "Choose Data Source", choose "Microsoft SQL Server"
-    _ For "Server name", put `admintrainsql.gordon.edu`
-    _ Under "Connect to a Database", make sure "Select or enter a database name:" is selected and enter `<database name>`
-    _ Go to Advanced settings, scroll to the top, and make sure "MultipleActiveResultSets" is set to True; then, scroll towards the bottom to find "Integrated Security" and make sure that is set to True
-    _ Click OK to close Advanced settings, then OK again to save the data connection you have just made
+    None of the options for data connection will fit your needs, so you will need to create a new option:
+    - Click "New Connection..."
+    - If prompted "Choose Data Source", choose "Microsoft SQL Server"
+    - For "Server name", put `admintrainsql.gordon.edu`
+    - Under "Connect to a Database", make sure "Select or enter a database name:" is selected and enter `<database name>`
+    - Go to Advanced settings, scroll to the top, and make sure "MultipleActiveResultSets" is set to True; then, scroll towards the bottom to find "Integrated Security" and make sure that is set to True
+    - Click OK to close Advanced settings, then OK again to save the data connection you have just made
 -   Now, you can select the data connection you just made from the drop down and pick up with the above directions at 'Make sure you check "Save connection...'
 
 ## The Code
