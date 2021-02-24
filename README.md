@@ -422,7 +422,7 @@ If you are attempting to connect the API to a database other than the ones to wh
 
 -   You do not need to delete any edmx files, since you are now creating the first instance of a different edmx
 -   <span id="create-connection"><!--anchor--></span>
-    None of the options for data connection will fit your needs, so you will need to create a new option:
+-   None of the options for data connection will fit your needs, so you will need to create a new option:
     _ Click "New Connection..."
     _ If prompted "Choose Data Source", choose "Microsoft SQL Server"
     _ For "Server name", put `admintrainsql.gordon.edu`
