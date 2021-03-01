@@ -17,6 +17,8 @@ The code that is unique to the apartment application API has just five parts:
 
 However, there is much code in the Gordon 360 API that these five parts depend on. Some of it is obvious because all feature APIs depend on it. The rest of it is code that only some feature APIs use, so it is important to note that the apartment application API should be counted among this subset of APIs.
 
+![image](https://user-images.githubusercontent.com/40189910/109569411-69a52800-7ab6-11eb-9949-e5486ff3fa04.png)
+
 The interaction of these five parts is represented in [this](https://drive.google.com/file/d/1jae5NiNZDN5kxD4YzBEBol2KnrIvlylX/view?usp=sharing) diagram and can be described as follows: The _service interface_ is a declaration of methods that each perform a transaction in the database (a series of database operations that go hand-in-hand). The _Housing service methods_ implement these transactions, using the _view models_ to hold different combinations of data and calling stored procedures defined in the database. The _edmx descriptions_ give the API an understanding of the apartment application tables so that it can apply stored procedures to them. Lastly, the _Housing controller methods_ define the interface the UI has with the Housing service methods. They are the endpoints the UI calls to access the API. This is also where some of the code that is not unique to the apartment application API comes in, as the Housing controller methods call service methods of other features. Thus, the advantage to having a controller separate from a service is that functionality from other features can be used without it defining the basic building blocks of the feature.
 
 
