@@ -223,7 +223,8 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.getJobsForUser(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
+        <!-- Badly formed XML comment ignored for member "M:Gordon360.ApiControllers.JobsController.GetJobs(System.DateTime,System.DateTime)" -->
+        <member name="M:Gordon360.ApiControllers.JobsController.DEPRECATED_getJobsForUser(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
             <summary>
             Get a user's active jobs
             </summary>
