@@ -51,16 +51,25 @@ class Test_AllHousingAppTest(control.testCase):
 #    Verify that a user who is on the staff whitelist gets the OK to access staff features
 #    Endpoint -- 'api/housing/staff'
 #    Expected Status Code -- 200 OK
-#    Expected Content --
+#    Expected Content -- The single attribute ResultCount holding the value 1
     def test_is_on_whitelist(self):
         self.session = self.createAuthorizedSession(control.username, control.password)
-        self.url = control.hostURL + 'api/housing/staff'
+        self.url = control.hostURL + 'api/housing/whitelist/add'
+        self.data = {
+            'id': '1',
+        }
         response = api.get(self.session, self.url)
+
+        self.url = control.hostURL + 'api/housing/whitelist/check'
+        response = api.get(self.session, self.url)
+
         if not response.status_code == 200:
             pytest.fail('Expected 200 Created, got {0}.'\
                 .format(response.status_code))
         try:
-            # assert response.json()['ResultCount'] == 
+            response.json()
         except ValueError:
             pytest.fail('Expected Json response body, got {0}.'\
                 .format(response.text))
+        assert response.json()[0]['ResultCount'] == 1
+        
