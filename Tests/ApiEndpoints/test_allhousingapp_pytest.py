@@ -48,28 +48,35 @@ class Test_AllHousingAppTest(control.testCase):
             pytest.fail('Expected 200 Created, got {0}.'\
                 .format(response.status_code))
 
-#    Verify that a user who is on the staff whitelist gets the OK to access staff features
-#    Endpoint -- 'api/housing/staff'
+#    Verify that a user who is on the admin whitelist gets the OK to access staff features
+#    Endpoint -- 'api/housing/admin'
 #    Expected Status Code -- 200 OK
-#    Expected Content -- The single attribute ResultCount holding the value 1
+#    Expected Content -- Empty response content
     def test_is_on_whitelist(self):
         self.session = self.createAuthorizedSession(control.username, control.password)
-        self.url = control.hostURL + 'api/housing/whitelist/add'
-        self.data = {
-            'id': '1',
-        }
+        self.url = control.hostURL + 'api/housing/admin'
+        # add test user to whitelist
+        api.post(self.session, self.url + control.my_id_number + '/')
+        # check that user is on the whitelist
         response = api.get(self.session, self.url)
-
-        self.url = control.hostURL + 'api/housing/whitelist/check'
-        response = api.get(self.session, self.url)
+        # remove 
+        api.delete(self.session, self.url + control.my_id_number + '/')
 
         if not response.status_code == 200:
             pytest.fail('Expected 200 Created, got {0}.'\
                 .format(response.status_code))
-        try:
-            response.json()
-        except ValueError:
-            pytest.fail('Expected Json response body, got {0}.'\
-                .format(response.text))
-        assert response.json()[0]['ResultCount'] == 1
+
+#    Verify that a user who is not on the admin whitelist gets the response Not Found
+#    Endpoint -- 'api/housing/admin'
+#    Expected Status Code -- 404 Not Found
+#    Expected Content -- Empty Response content
+    def test_not_on_whitelist(self):
+        self.session = self.createAuthorizedSession(control.username, control.password)
+        # the test user should not be an admin unless it is added in one of these tests
+        self.url = control.hostURL + 'api/housing/admin'
+        response = api.get(self.session, self.url)
+
+        if not response.status_code == 404:
+            pytest.fail('Expected 404 Created, got {0}.'\
+                .format(response.status_code))
         
