@@ -39,21 +39,7 @@ namespace Gordon360.ApiControllers
         {
             _DirectMessageService = DirectMessageService;
         }
-
-        /// <summary>
-        ///  returns hello world example
-        /// </summary>
-        /// <returns>string and date</returns>
-        [HttpGet]
-        [Route("")]
-        public IHttpActionResult Get()
-        {
-            DateTime currentTime = DateTime.Now;
-            var result = "hello world I'm coming from the back end at: " + currentTime;
-
-            return Ok(result);
-        }
-
+        
         /// <summary>
         ///  returns messages from a specified group
         /// </summary>
@@ -199,8 +185,78 @@ namespace Gordon360.ApiControllers
 
             }
 
+            
+        
+            /// <summary>
+            ///  stores connection associated with a user id
+            /// </summary>
+            /// <returns>true if successful</returns>
+            [HttpPost]
+            [Route("userConnectionIds")]
+            public IHttpActionResult StoreUserConnectionIds([FromBody] String connectionId)
+            {
+                var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+                var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+                var userId = _accountService.GetAccountByUsername(username).GordonID;
+
+                var result = _DirectMessageService.StoreUserConnectionIds(userId, connectionId);
+
+                if (result == false)
+                {
+                    return NotFound();
+                }
 
 
-        }
+                return Ok(result);
+
+            }
+
+            /// <summary>
+            ///  Gets connection ids associated with a user id
+            /// </summary>
+            /// <returns>true if successful</returns>
+            [HttpPut]
+            [Route("userConnectionIds")]
+            public IHttpActionResult GetConnectionIds([FromBody] String userId)
+            {
+
+
+                var result = _DirectMessageService.GetUserConnectionIds(userId);
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+
+                return Ok(result);
+
+            }
+
+            /// <summary>
+            ///  Deletes connection ids associated with a user id
+            /// </summary>
+            /// <returns>true if successful</returns>
+            [HttpPut]
+            [Route("deleteUserConnectionIds")]
+            public IHttpActionResult DeleteConnectionIds([FromBody] String connectionId)
+            {
+
+
+                var result = _DirectMessageService.DeleteUserConnectionIds(connectionId);
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+
+                return Ok(result);
+
+            }
+
+
+    }
 
 }

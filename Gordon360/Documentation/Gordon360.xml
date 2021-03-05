@@ -145,12 +145,6 @@
             </summary>
             <returns> All buildings</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.DirectMessageController.Get">
-            <summary>
-             returns hello world example
-            </summary>
-            <returns>string and date</returns>
-        </member>
         <member name="M:Gordon360.ApiControllers.DirectMessageController.GetMessages(System.String)">
             <summary>
              returns messages from a specified group
@@ -187,6 +181,24 @@
             </summary>
             <returns>true if successful</returns>
         </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.StoreUserConnectionIds(System.String)">
+            <summary>
+             stores connection associated with a user id
+            </summary>
+            <returns>true if successful</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetConnectionIds(System.String)">
+            <summary>
+             Gets connection ids associated with a user id
+            </summary>
+            <returns>true if successful</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.DeleteConnectionIds(System.String)">
+            <summary>
+             Deletes connection ids associated with a user id
+            </summary>
+            <returns>true if successful</returns>
+        </member>
         <member name="M:Gordon360.ApiControllers.DiningController.Get">
             <summary>
              Gets information about student's dining plan and balance
@@ -211,7 +223,8 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.getJobsForUser(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
+        <!-- Badly formed XML comment ignored for member "M:Gordon360.ApiControllers.JobsController.GetJobs(System.DateTime,System.DateTime)" -->
+        <member name="M:Gordon360.ApiControllers.JobsController.DEPRECATED_getJobsForUser(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
             <summary>
             Get a user's active jobs
             </summary>
@@ -587,27 +600,6 @@
             <param name="status">The current status of the user to post, of type WellnessStatusColor</param>
             <returns>The status that was stored in the database</returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.WellnessController.DEPRECATED_Get">
-            <summary>
-            DEPRECATED - Please use base route
-             Gets current wellness status of student
-            </summary>
-            <returns>Json WellnessStatusViewModel</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.WellnessController.DEPRECATED_GetQuestion">
-            <summary>
-            DEPRECATED - Please use base route /question
-             Gets question for wellness check from the back end
-            </summary>
-            <returns> json WellnessQuestionViewModel</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.WellnessController.DEPRECATED_PostStatus(Gordon360.Controllers.Api.WellnessController.WellnessStatusColor)">
-            <summary>
-            DEPRECATED - Please use base route
-            </summary>
-            <param name="status">The status to be posted - GREEN, YELLOW, or RED</param>
-            <returns></returns>
-        </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.Get">
             <summary>Get profile info of currently logged in user</summary>
             <returns></returns>
@@ -617,14 +609,19 @@
             <param name="username">username of the profile info</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.getAdvisors(System.String)">
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.GetAdvisors(System.String)">
             <summary>Get the advisor(s) of a particular student</summary>
              <returns>
              All advisors of the given student.  For each advisor,
              provides first name, last name, and username.
              </returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.getMyImg">
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.GetCliftonStrengths(System.String)">
+            <summary> Gets the clifton strengths of a particular user </summary>
+            <param name="username"> The username for which to retrieve info </param>
+            <returns> Clifton strengths of the given user. </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.GetMyImg">
             <summary>Get the profile image of currently logged in user</summary>
             <returns></returns>
         </member>
@@ -1671,6 +1668,11 @@
             <param name="id">student id</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Services.ProfileService.GetCliftonStrengths(System.Int32)">
+            <summary> Gets the clifton strengths of a particular user </summary>
+            <param name="id"> The id of the user for which to retrieve info </param>
+            <returns> Clifton strengths of the given user. </returns>
+        </member>
         <member name="M:Gordon360.Services.ProfileService.GetPhotoPath(System.String)">
             <summary>
             Get photo path for profile
@@ -1860,30 +1862,6 @@
             </summary>
             <param name="currentTime">The time of the check in</param>
             <returns>When the check in should expire (the next 5AM).</returns>
-        </member>
-        <member name="M:Gordon360.Services.WellnessService.DEPRECATED_IsValidStatus(Gordon360.Models.ViewModels.DEPRECATED_WellnessStatusViewModel)">
-            <summary>
-            Checks whether a wellness status is still valid (i.e. new since 5AM)
-            </summary>
-            <param name='status'>Wellness status to check, an instance of a WellnessViewModel</param>
-            <returns>boolean representing whether the status is still valid</returns>
-        </member>
-        <member name="M:Gordon360.Services.WellnessService.DEPRECATED_GetStatus(System.String)">
-            <summary>
-            DEPRECATED
-            gets status of wellness check
-            </summary>
-            <param name="id">ID of the user to get the status of</param>
-            <returns> The status of the user, a WellnessStatusViewModel </returns>
-        </member>
-        <member name="M:Gordon360.Services.WellnessService.DEPRECATED_PostStatus(System.String,System.String)">
-            <summary>
-            DEPRECATED
-            Stores wellness Status in database.
-            </summary>
-            <param name="id"> ID of the user to post the status for</param>
-            <param name="status"> Status that is being posted, one of GREEN, YELLOW, or RED </param>
-            <returns>Status that was successfully recorded</returns>
         </member>
         <member name="T:Gordon360.Services.JenzibarActivityService">
             <summary>

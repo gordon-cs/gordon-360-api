@@ -42,6 +42,7 @@ namespace Gordon360.Repositories
 
         IRepository<StudentNews> StudentNewsRepository { get; }
         IRepository<StudentNewsCategory> StudentNewsCategoryRepository { get; }
+        IRepository<Clifton_Strengths> CliftonStrengthsRepository { get; }
 
         bool Save();
 

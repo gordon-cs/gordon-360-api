@@ -15,9 +15,9 @@ Dive in.
     -   [Preliminary setup](#preliminary-setup)
     -   [Building and running](#building-and-running)
 -   [The Database](#the-database)
-    -   [Tables](#tables)
-    -   [Stored Procedures](#stored-procedures)
-    -   [Triggers](#triggers)
+    -   [Tables](#CCT-tables)
+    -   [Stored Procedures](#CCT-stored-procedures)
+    -   [Triggers](#CCT-triggers)
     -   [Manual and Debugging Access](#manual-and-debugging-access)
     -   [Updating or creating .edmx](#updating-or-creating-edmx)
 -   [The Code](#the-code)
@@ -55,7 +55,7 @@ Dive in.
 
 ## Machines and Sites
 
-As of Spring 2021, the virtual machines CS-RDSH-01 and CS-RDSH-02 are used for developing Gordon 360. Instructions for connecting via Remote Desktop can be found in [RemoteDesktopToVM.md](RemoteDesktopToVM.md).
+As of Spring 2021, the virtual machines CS-RDSH-01 and CS-RDSH-02 are used for developing Gordon 360. Instructions for connecting via Remote Desktop can be found in [RemoteDesktopToVM.md](RemoteDesktopToVM.md#How-to-connect-to-a-CS-RDSH-virtual-machine).
 
 ### Deploying to the Api Site
 
@@ -65,18 +65,18 @@ The Gordon 360 API is hosted on the `360api.gordon.edu` server, which is also kn
 
 If there are problems with automatic deployment, or a specific need to revert or push manually, then this older procedure can be used.
 
--   Access the cts-360.gordon.edu VM (see [RemoteDesktopToVM.md](RemoteDesktopToVM.md) for instructions) as the cct.service user.
+-   Access the cts-360.gordon.edu VM (see [RemoteDesktopToVM.md](RemoteDesktopToVM.md#How-to-connect-to-a-CS-RDSH-virtual-machine) for instructions) as the cct.service user.
 -   Before you publish your new version, be sure to copy the current stable version to make a backup. To do so:
     -   Navigate in File Explorer to `F:\Sites` and copy either 360Api or 360ApiTrain, whichever you're planning to publish to.
     -   Paste that copy in the same place (`F:\Sites`), and rename it to a backup including the date. For example, if you backed up the Train site on January 1, 2001, then the copy would be named `360ApiTrain_backup_1-01-2001`.
 -   Open gitbash and cd to `C:\users\cct.service\code\gordon-360-api`. Make sure that you are on the branch you wish to deploy, and that it has been pulled up to date.
-    **Note: if you clone a new repository on this VM, it will not have the necessary publish profiles or secrets.config. See [MakePublishProfiles.md](MakePublishProfiles.md) to restore the Publish Profiles.**
+    **Note: if you clone a new repository on this VM, it will not have the necessary publish profiles or secrets.config. See [MakePublishProfiles.md](MakePublishProfiles.md#How-to-create-the-Publish-Profiles-to-publish-the-API-to-the-Sites) to restore the Publish Profiles.**
 -   Start Visual Studio as an administrator (right click) and open the existing project/solution file - `C:\users\cct.service\code\gordon-360-api\Gordon360.sln` (the solution file).
 -   Menu Bar -> Build - Publish Gordon360.
 -   Choose the right publish profile.
     -   DEV -- Development ( Connects to the admintrainsql database server, and used for 360train.gordon.edu).
     -   Prod -- Production ( Connects to the adminprodsql database server, and used for the real site 360.gordon.edu).
-    -   If you don't see the publish profile you want (or you are automatically taken to the "Pick a Publish Target" Window) see [MakePublishProfiles.md](MakePublishProfiles.md) to restore the Publish Profiles.
+    -   If you don't see the publish profile you want (or you are automatically taken to the "Pick a Publish Target" Window) see [MakePublishProfiles.md](MakePublishProfiles.md#How-to-create-the-Publish-Profiles-to-publish-the-API-to-the-Sites) to restore the Publish Profiles.
 -   Clicking publish pushes your changes to the API for either 360ApiTrain.gordon.edu or 360Api.gordon.edu, depending on which publish profile you used.
 
 #### Ideal Case: Continuous Deployment with GitHub Actions
@@ -101,7 +101,7 @@ Data which is stored upon startup includes:
 
 ### Preliminary setup
 
--   It is easiest to use the development virtual machine to work on this project. Follow [these instructions](RemoteDesktopToVM.md) to set up and connect to the virtual machine using your Gordon account.
+-   It is easiest to use the development virtual machine to work on this project. Follow [these instructions](RemoteDesktopToVM.md#How-to-connect-to-a-CS-RDSH-virtual-machine) to set up and connect to the virtual machine using your Gordon account.
 
 -   If this is your first time on the virtual machine, you will need to clone this repository. You can do this by using Git Bash. It is possible that you will need to [add the SSH key to your Git account](https://help.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh), it will guide you to `cd .ssh` then `cat id_rsa.pub`, copy the output and go to your github settings and paste it in your SSH keys.
 
@@ -423,12 +423,12 @@ If you are attempting to connect the API to a database other than the ones to wh
 -   You do not need to delete any edmx files, since you are now creating the first instance of a different edmx
 -   <span id="create-connection"><!--anchor--></span>
     None of the options for data connection will fit your needs, so you will need to create a new option:
-    _ Click "New Connection..."
-    _ If prompted "Choose Data Source", choose "Microsoft SQL Server"
-    _ For "Server name", put `admintrainsql.gordon.edu`
-    _ Under "Connect to a Database", make sure "Select or enter a database name:" is selected and enter `<database name>`
-    _ Go to Advanced settings, scroll to the top, and make sure "MultipleActiveResultSets" is set to True; then, scroll towards the bottom to find "Integrated Security" and make sure that is set to True
-    _ Click OK to close Advanced settings, then OK again to save the data connection you have just made
+    - Click "New Connection..."
+    - If prompted "Choose Data Source", choose "Microsoft SQL Server"
+    - For "Server name", put `admintrainsql.gordon.edu`
+    - Under "Connect to a Database", make sure "Select or enter a database name:" is selected and enter `<database name>`
+    - Go to Advanced settings, scroll to the top, and make sure "MultipleActiveResultSets" is set to True; then, scroll towards the bottom to find "Integrated Security" and make sure that is set to True
+    - Click OK to close Advanced settings, then OK again to save the data connection you have just made
 -   Now, you can select the data connection you just made from the drop down and pick up with the above directions at 'Make sure you check "Save connection...'
 
 ## The Code
@@ -795,6 +795,8 @@ Differences from GoSite:
 `api/profiles/role/:username` Get college role of a user with username `username` as a parameter --- College roles: super admin, faculty and staff, student and police.
 
 `api/profiles/Advisors/:username` Get advisor(s) info of a user with username `username` as a parameter.
+
+`api/profiles/clifton/:username` Get the Clifton Strengths of a user with username `username` as a parameter.
 
 `api/profiles/Image/` Get profile image of the current logged in user. Image is stored in a base 64 string.
 
