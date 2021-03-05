@@ -83,7 +83,7 @@ class Test_AllHousingAppTest(control.testCase):
 
         # Sudo code
         # First, create an authorized session and check if the student is the editor
-        # If editor, call the save api to save the application.
+        # If editor, call the save api to save the application. (accesses the database)
         # No additional applicant or hall preference is added.
         self.requestID = -1
         response = api.put(self.session, self.url, self.data)
