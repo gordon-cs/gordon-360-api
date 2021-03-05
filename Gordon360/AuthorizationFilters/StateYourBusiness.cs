@@ -464,9 +464,9 @@ namespace Gordon360.AuthorizationFilters
                         if (is_membershipOwner)
                         {
                             // Restrict what a regular owner can edit.
-                            var originalMembership = membershipService.GetMembershipsForStudent(user_name);
+                            var originalMembership = membershipService.GetSpecificMembership(membershipToConsider.MEMBERSHIP_ID);
                             // If they are not trying to change their participation level, then it is ok
-                            if( ((MEMBERSHIP)originalMembership).PART_CDE == membershipToConsider.PART_CDE)
+                            if (originalMembership.PART_CDE == membershipToConsider.PART_CDE)
                                 return true;
                         }
                        
@@ -487,13 +487,13 @@ namespace Gordon360.AuthorizationFilters
                             return true;
                         var membershipService = new MembershipService(new UnitOfWork());
                         var membershipID = (int)context.ActionArguments["id"];
-                        
-                        var membershipToConsider = membershipService.GetMembershipsForStudent(user_name);
-                        var is_membershipOwner = ((MEMBERSHIP)membershipToConsider).ID_NUM.ToString() == user_id;
+
+                        var membershipToConsider = membershipService.GetSpecificMembership(membershipID);
+                        var is_membershipOwner = membershipToConsider.ID_NUM.ToString() == user_id;
                         if (is_membershipOwner)
                             return true;
 
-                        var activityCode = ((MEMBERSHIP)membershipToConsider).ACT_CDE;
+                        var activityCode = membershipToConsider.ACT_CDE;
 
                         var isGroupAdmin = membershipService.GetGroupAdminMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
                         if (isGroupAdmin)
