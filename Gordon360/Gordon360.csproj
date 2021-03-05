@@ -869,12 +869,12 @@ set /p datevar=&lt;%25tmp%25\date.txt
 echo Git Hash: %25hashvar%25; Build Time: %25datevar%25 &gt; "$(ProjectDir)\version.txt"
 del %25tmp%25\hash.txt
 del %25tmp%25\date.txt</PreBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+    </PropertyGroup>
+    <PropertyGroup>
+        <PostBuildEvent>
+        </PostBuildEvent>
+    </PropertyGroup>
+    <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
