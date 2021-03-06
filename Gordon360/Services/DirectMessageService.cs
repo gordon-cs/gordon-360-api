@@ -28,7 +28,7 @@ namespace Gordon360.Services
 
         public IEnumerable<MessageViewModel> GetMessages(string roomId)
         {
-        
+
             var roomIdParam = new SqlParameter("@room_id", roomId);
             var result = RawSqlQuery<MessageViewModel>.query("GET_ALL_MESSAGES_BY_ID @room_id", roomIdParam); //run stored procedure
 
@@ -152,18 +152,33 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
             }
-     
+
 
 
             return endresult;
 
         }
 
-        public bool CreateGroup(String id, String name, bool group, DateTime lastUpdated, string image)
+
+        public bool CreateGroup(String name, bool group, DateTime lastUpdated, string image)
         {
             DateTime createdAt = DateTime.Now;
+            Guid id = Guid.NewGuid();
 
-            var idParam = new SqlParameter("@_id", id);
+            var idParam = new SqlParameter("@id", id.ToString());
+
+            var idCheck = RawSqlQuery<IdCheckViewModel>.query("CHECK_ID @id", idParam);
+
+            foreach( IdCheckViewModel isNotAvailable in idCheck)
+            {
+                while (isNotAvailable.IdCheck)
+                {
+                    id = Guid.NewGuid();
+                    idParam = new SqlParameter("@id", id.ToString());
+                    idCheck = RawSqlQuery<IdCheckViewModel>.query("CHECK_ID @id", idParam);
+                }
+            }
+
             var nameParam = new SqlParameter("@name", name);
             var groupParam = new SqlParameter("@group", group);
             var createdAtParam = new SqlParameter("@createdAt", createdAt);
@@ -290,30 +305,35 @@ namespace Gordon360.Services
 
         }
 
-        public IEnumerable<ConnectionIdViewModel> GetUserConnectionIds(String userId)
+        public List<IEnumerable<ConnectionIdViewModel>> GetUserConnectionIds(List<String> userIds)
         {
             var _unitOfWork = new UnitOfWork();
-            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == userId);
-            if (query == null)
+            foreach(string user in userIds) {
+                var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == user);
+                if (query == null)
+                {
+                    throw new ResourceNotFoundException() { ExceptionMessage = "One of the accounts was not found." };
+                }
+            }
+            var idList = new List<IEnumerable<ConnectionIdViewModel>>(300);
+
+            foreach (string user in userIds)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+                var userIdParam = new SqlParameter("@user_id", user);
+
+                var result = RawSqlQuery<ConnectionIdViewModel>.query("GET_ALL_CONNECTION_IDS_BY_ID @user_id", userIdParam); //run stored procedure
+
+                var model = result.Select(x =>
+                {
+                    ConnectionIdViewModel y = new ConnectionIdViewModel();
+                    y.connection_id = x.connection_id;
+                    return y;
+                });
+
+                idList.Add(model);
             }
 
-            var userIdParam = new SqlParameter("@user_id", userId);
-
-            var result = RawSqlQuery<ConnectionIdViewModel>.query("GET_ALL_CONNECTION_IDS_BY_ID @user_id", userIdParam); //run stored procedure
-
-            var model = result.Select(x =>
-            {
-                ConnectionIdViewModel y = new ConnectionIdViewModel();
-                y.connection_id = x.connection_id;
-               
-
-                return y;
-            });
-
-
-            return model;
+            return idList;
 
         }
 

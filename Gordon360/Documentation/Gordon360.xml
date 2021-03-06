@@ -187,7 +187,7 @@
             </summary>
             <returns>true if successful</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetConnectionIds(System.String)">
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetConnectionIds(System.Collections.Generic.List{System.String})">
             <summary>
              Gets connection ids associated with a user id
             </summary>

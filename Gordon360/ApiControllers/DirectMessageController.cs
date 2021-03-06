@@ -84,6 +84,7 @@ namespace Gordon360.ApiControllers
             return Ok(result);
         }
 
+        public string userID;
         /// <summary>
         ///  returns a room object Identified by room id
         /// </summary>
@@ -95,7 +96,7 @@ namespace Gordon360.ApiControllers
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             var userId = _accountService.GetAccountByUsername(username).GordonID;
-
+            
             var result = _DirectMessageService.GetRoomById(userId);
 
             if (result == null)
@@ -121,7 +122,7 @@ namespace Gordon360.ApiControllers
             int raw_id = rnd.Next(10000000, 99999999);
             var id = raw_id.ToString();
 
-            var result = _DirectMessageService.CreateGroup(id, chatInfo.name, chatInfo.group, chatInfo.lastUpdated, chatInfo.image);
+            var result = _DirectMessageService.CreateGroup(chatInfo.name, chatInfo.group, chatInfo.lastUpdated, chatInfo.image);
 
             if (result == false)
             {
@@ -218,11 +219,11 @@ namespace Gordon360.ApiControllers
             /// <returns>true if successful</returns>
             [HttpPut]
             [Route("userConnectionIds")]
-            public IHttpActionResult GetConnectionIds([FromBody] String userId)
+            public IHttpActionResult GetConnectionIds([FromBody] List<string> userIds)
             {
 
 
-                var result = _DirectMessageService.GetUserConnectionIds(userId);
+                var result = _DirectMessageService.GetUserConnectionIds(userIds);
 
                 if (result == null)
                 {
