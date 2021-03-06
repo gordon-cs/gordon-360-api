@@ -15,7 +15,7 @@ namespace Gordon360.Models
     public partial class AA_ApartmentChoices
     {
         public int AprtAppID { get; set; }
-        public int Rank { get; set; }
+        public int Ranking { get; set; }
         public string BLDG_CDE { get; set; }
     }
 }

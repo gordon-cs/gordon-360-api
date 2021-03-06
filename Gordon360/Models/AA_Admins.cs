@@ -12,16 +12,8 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Health_Override
+    public partial class AA_Admins
     {
-        public int ID_Num { get; set; }
-        public byte HealthStatusID { get; set; }
-        public System.DateTime Created { get; set; }
-        public Nullable<System.DateTime> Expires { get; set; }
-        public string Created_By { get; set; }
-        public Nullable<bool> Contacted { get; set; }
-        public string Reason { get; set; }
-    
-        public virtual Health_Status_CTRL Health_Status_CTRL { get; set; }
+        public string AdminID { get; set; }
     }
 }
