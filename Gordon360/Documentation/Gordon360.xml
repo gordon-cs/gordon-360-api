@@ -397,6 +397,13 @@
             </summary>
             <returns>The result of changing the editor</returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.CreateCSV">
+            <summary>
+            Create a string a string from the combination of AA_ApartementApplications and AA_Applicants Tables
+            and returns it to the frontend, so that it can convert it into a csv file.
+            </summary>
+            <returns>An http result with the csv string from the CreateCSV service</returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.HousingController.GetApartmentApplication(System.String)">
             <summary>Get apartment application info for a given application ID number</summary>
             <param name="applicationID">application ID number of the apartment application</param>
@@ -1879,6 +1886,12 @@
             
              </summary>
              <returns>Whether or not all the queries succeeded</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.CreateCSV">
+            <summary>
+            Creates a string from the combination of AA_ApartementApplications and AA_Applicants Tables
+            and returns it to the frontend, so that it can convert it into a csv file.
+            </summary>
         </member>
         <member name="M:Gordon360.Services.WellnessService.GetStatus(System.String)">
             <summary>

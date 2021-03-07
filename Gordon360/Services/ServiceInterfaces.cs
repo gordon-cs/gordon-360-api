@@ -272,6 +272,7 @@ namespace Gordon360.Services
         int GetApplicationID(string studentId, string sess_cde);
         int SaveApplication(int apartAppId, string editorId, string sess_cde, string [] applicantIds);
         bool ChangeApplicationEditor(int apartAppId, string editorId, string newEditorId);
+        string CreateCSV();
     }
 
 }

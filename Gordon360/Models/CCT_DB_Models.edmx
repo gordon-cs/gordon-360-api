@@ -98,43 +98,6 @@ warning 6002: The table/view 'CCT.dbo.AA_Applicants' does not have a primary key
           <Property Name="LOG_MESSAGE" Type="nvarchar(max)" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'CCT.dbo.Health_Check' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <EntityType Name="Health_Check">
-          <Key>
-            <PropertyRef Name="ID_Num" />
-          </Key>
-          <Property Name="ID_Num" Type="int" Nullable="false" />
-          <Property Name="Answer" Type="bit" />
-          <Property Name="Timestamp" Type="datetime" />
-          <Property Name="Emailed" Type="datetime" />
-        </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'CCT.dbo.Health_Check_NEW' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <EntityType Name="Health_Check_NEW">
-          <Key>
-            <PropertyRef Name="ID_Num" />
-            <PropertyRef Name="HealthStatusID" />
-            <PropertyRef Name="Created" />
-          </Key>
-          <Property Name="ID_Num" Type="int" Nullable="false" />
-          <Property Name="HealthStatusID" Type="tinyint" Nullable="false" />
-          <Property Name="Created" Type="datetime" Nullable="false" />
-          <Property Name="emailed" Type="datetime" />
-        </EntityType>
-        <EntityType Name="Health_Override">
-          <Key>
-            <PropertyRef Name="ID_Num" />
-            <PropertyRef Name="Created" />
-          </Key>
-          <Property Name="ID_Num" Type="int" Nullable="false" />
-          <Property Name="HealthStatusID" Type="tinyint" Nullable="false" />
-          <Property Name="Created" Type="datetime" Nullable="false" />
-          <Property Name="Expires" Type="datetime" />
-          <Property Name="Created_By" Type="varchar(max)" Nullable="false" />
-          <Property Name="Contacted" Type="bit" />
-          <Property Name="Reason" Type="varchar(max)" />
-        </EntityType>
-        <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.Health_Question' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Health_Question">
           <Key>
@@ -762,18 +725,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="Minor3Description" Type="varchar" MaxLength="50" />
           <Property Name="Mail_Location" Type="varchar" MaxLength="20" />
         </EntityType>
-        <Association Name="FK__Health_Ov__Healt__2BB470E3">
-          <End Role="Health_Status_CTRL" Type="Self.Health_Status_CTRL" Multiplicity="1" />
-          <End Role="Health_Override" Type="Self.Health_Override" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Health_Status_CTRL">
-              <PropertyRef Name="HealthStatusID" />
-            </Principal>
-            <Dependent Role="Health_Override">
-              <PropertyRef Name="HealthStatusID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_booking_rides">
           <End Role="Save_Rides" Type="Self.Save_Rides" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -785,18 +736,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             </Principal>
             <Dependent Role="Save_Bookings">
               <PropertyRef Name="rideID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Health_Check_NEW_Health_Status_CTRL">
-          <End Role="Health_Status_CTRL" Type="Self.Health_Status_CTRL" Multiplicity="1" />
-          <End Role="Health_Check_NEW" Type="Self.Health_Check_NEW" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Health_Status_CTRL">
-              <PropertyRef Name="HealthStatusID" />
-            </Principal>
-            <Dependent Role="Health_Check_NEW">
-              <PropertyRef Name="HealthStatusID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -883,6 +822,11 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Parameter Name="HANDSHAKE" Type="varchar(max)" Mode="In" />
         </Function>
         <Function Name="CURRENT_SESSION" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="DELETE_AA_APPLICANT" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="APPLICATION_ID" Type="int" Mode="In" />
+          <Parameter Name="ID_NUM" Type="varchar" Mode="In" />
+          <Parameter Name="SESS_CDE" Type="char" Mode="In" />
+        </Function>
         <Function Name="DELETE_BOOKING" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="RIDE_ID" Type="varchar" Mode="In" />
           <Parameter Name="ID" Type="varchar" Mode="In" />
@@ -927,6 +871,11 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Parameter Name="SESS_CDE" Type="char" Mode="In" />
           <Parameter Name="STUDENT_ID" Type="varchar" Mode="In" />
         </Function>
+        <Function Name="GET_AA_APPLICANTS_BY_APPID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="APPLICATION_ID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="GET_AA_APPLICANTS_DETAILS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="GET_AA_APPLICATIONS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="GET_AA_EDITOR_BY_APPID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="APPLICATION_ID" Type="int" Mode="In" />
         </Function>
@@ -940,13 +889,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <Function Name="GET_ALL_USERS_BY_ROOM_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="room_id" Type="int" Mode="In" />
         </Function>
-        <Function Name="GET_HEALTH_CHECK_BY_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="ID_NUM" Type="int" Mode="In" />
-        </Function>
         <Function Name="GET_HEALTH_CHECK_QUESTION" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
-        <Function Name="GET_HEALTH_STATUS_BY_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="ID_NUM" Type="int" Mode="In" />
-        </Function>
         <Function Name="GET_ROOM_BY_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="room_id" Type="int" Mode="In" />
         </Function>
@@ -966,20 +909,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <Function Name="INSERT_AA_APPLICATION" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="NOW" Type="datetime" Mode="In" />
           <Parameter Name="EDITOR_ID" Type="varchar" Mode="In" />
-        </Function>
-        <Function Name="INSERT_HEALTH_CHECK" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="ID_NUM" Type="int" Mode="In" />
-          <Parameter Name="Answer" Type="bit" Mode="In" />
-        </Function>
-        <Function Name="INSERT_HEALTH_CHECK_UPDATED" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="ID_NUM" Type="int" Mode="In" />
-          <Parameter Name="Status" Type="varchar" Mode="In" />
-        </Function>
-        <Function Name="INSERT_HEALTH_OVERRIDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="ID_NUM" Type="int" Mode="In" />
-          <Parameter Name="Status" Type="varchar" Mode="In" />
-          <Parameter Name="Expires" Type="datetime" Mode="In" />
-          <Parameter Name="Created_By" Type="varchar(max)" Mode="In" />
         </Function>
         <Function Name="INSERT_HEALTH_QUESTION" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Question" Type="varchar(max)" Mode="In" />
@@ -1113,6 +1042,10 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <Function Name="UPCOMING_RIDES_BY_STUDENT_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="STUDENT_ID" Type="int" Mode="In" />
         </Function>
+        <Function Name="UPDATE_AA_APPLICATION_DATEMODIFIED" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="APPLICATION_ID" Type="int" Mode="In" />
+          <Parameter Name="NOW" Type="datetime" Mode="In" />
+        </Function>
         <Function Name="UPDATE_AA_APPLICATION_EDITOR" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="APPLICATION_ID" Type="int" Mode="In" />
           <Parameter Name="EDITOR_ID" Type="varchar" Mode="In" />
@@ -1181,7 +1114,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="Clifton_Strengths" EntityType="Self.Clifton_Strengths" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CUSTOM_PROFILE" EntityType="Self.CUSTOM_PROFILE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ERROR_LOG" EntityType="Self.ERROR_LOG" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Health_Override" EntityType="Self.Health_Override" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Health_Status" EntityType="Self.Health_Status" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Health_Status_CTRL" EntityType="Self.Health_Status_CTRL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="JNZB_ACTIVITIES" EntityType="Self.JNZB_ACTIVITIES" Schema="dbo" store:Type="Tables" />
@@ -1208,22 +1140,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [AA_Applicants].[AprtProgramCredit] AS [AprtProgramCredit], 
     [AA_Applicants].[SESS_CDE] AS [SESS_CDE]
     FROM [dbo].[AA_Applicants] AS [AA_Applicants]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="Health_Check" EntityType="Self.Health_Check" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [Health_Check].[ID_Num] AS [ID_Num], 
-    [Health_Check].[Answer] AS [Answer], 
-    [Health_Check].[Timestamp] AS [Timestamp], 
-    [Health_Check].[Emailed] AS [Emailed]
-    FROM [dbo].[Health_Check] AS [Health_Check]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="Health_Check_NEW" EntityType="Self.Health_Check_NEW" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [Health_Check_NEW].[ID_Num] AS [ID_Num], 
-    [Health_Check_NEW].[HealthStatusID] AS [HealthStatusID], 
-    [Health_Check_NEW].[Created] AS [Created], 
-    [Health_Check_NEW].[emailed] AS [emailed]
-    FROM [dbo].[Health_Check_NEW] AS [Health_Check_NEW]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="Health_Question" EntityType="Self.Health_Question" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -1579,17 +1495,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [Student].[Mail_Location] AS [Mail_Location]
     FROM [dbo].[Student] AS [Student]</DefiningQuery>
           </EntitySet>
-          <AssociationSet Name="FK__Health_Ov__Healt__2BB470E3" Association="Self.FK__Health_Ov__Healt__2BB470E3">
-            <End Role="Health_Status_CTRL" EntitySet="Health_Status_CTRL" />
-            <End Role="Health_Override" EntitySet="Health_Override" />
-          </AssociationSet>
           <AssociationSet Name="FK_booking_rides" Association="Self.FK_booking_rides">
             <End Role="Save_Rides" EntitySet="Save_Rides" />
             <End Role="Save_Bookings" EntitySet="Save_Bookings" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Health_Check_NEW_Health_Status_CTRL" Association="Self.FK_Health_Check_NEW_Health_Status_CTRL">
-            <End Role="Health_Status_CTRL" EntitySet="Health_Status_CTRL" />
-            <End Role="Health_Check_NEW" EntitySet="Health_Check_NEW" />
           </AssociationSet>
           <AssociationSet Name="FK_Health_Status_HealthStatus_CTRL" Association="Self.FK_Health_Status_HealthStatus_CTRL">
             <End Role="Health_Status_CTRL" EntitySet="Health_Status_CTRL" />
@@ -1667,20 +1575,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="LOG_TIME" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="LOG_MESSAGE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
         </EntityType>
-        <EntityType Name="Health_Override">
-          <Key>
-            <PropertyRef Name="ID_Num" />
-            <PropertyRef Name="Created" />
-          </Key>
-          <Property Name="ID_Num" Type="Int32" Nullable="false" />
-          <Property Name="HealthStatusID" Type="Byte" Nullable="false" />
-          <Property Name="Created" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Expires" Type="DateTime" Precision="3" />
-          <Property Name="Created_By" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Contacted" Type="Boolean" />
-          <Property Name="Reason" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Health_Status_CTRL" Relationship="Self.FK__Health_Ov__Healt__2BB470E3" FromRole="Health_Override" ToRole="Health_Status_CTRL" />
-        </EntityType>
         <EntityType Name="Health_Status">
           <Key>
             <PropertyRef Name="ID_Num" />
@@ -1701,9 +1595,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           </Key>
           <Property Name="HealthStatusID" Type="Byte" Nullable="false" />
           <Property Name="HealthStatusColor" Type="String" MaxLength="6" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="Health_Override" Relationship="Self.FK__Health_Ov__Healt__2BB470E3" FromRole="Health_Status_CTRL" ToRole="Health_Override" />
           <NavigationProperty Name="Health_Status" Relationship="Self.FK_Health_Status_HealthStatus_CTRL" FromRole="Health_Status_CTRL" ToRole="Health_Status" />
-          <NavigationProperty Name="Health_Check_NEW" Relationship="Self.FK_Health_Check_NEW_Health_Status_CTRL" FromRole="Health_Status_CTRL" ToRole="Health_Check_NEW" />
         </EntityType>
         <EntityType Name="JNZB_ACTIVITIES">
           <Key>
@@ -1846,27 +1738,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="AprtProgram" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="AprtProgramCredit" Type="Boolean" />
           <Property Name="SESS_CDE" Type="String" MaxLength="8" FixedLength="true" Unicode="false" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Health_Check">
-          <Key>
-            <PropertyRef Name="ID_Num" />
-          </Key>
-          <Property Name="ID_Num" Type="Int32" Nullable="false" />
-          <Property Name="Answer" Type="Boolean" />
-          <Property Name="Timestamp" Type="DateTime" Precision="3" />
-          <Property Name="Emailed" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="Health_Check_NEW">
-          <Key>
-            <PropertyRef Name="ID_Num" />
-            <PropertyRef Name="HealthStatusID" />
-            <PropertyRef Name="Created" />
-          </Key>
-          <Property Name="ID_Num" Type="Int32" Nullable="false" />
-          <Property Name="HealthStatusID" Type="Byte" Nullable="false" />
-          <Property Name="Created" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="emailed" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Health_Status_CTRL" Relationship="Self.FK_Health_Check_NEW_Health_Status_CTRL" FromRole="Health_Check_NEW" ToRole="Health_Status_CTRL" />
         </EntityType>
         <EntityType Name="Health_Question">
           <Key>
@@ -2301,18 +2172,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="Minor3Description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Mail_Location" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
         </EntityType>
-        <Association Name="FK__Health_Ov__Healt__2BB470E3">
-          <End Role="Health_Status_CTRL" Type="Self.Health_Status_CTRL" Multiplicity="1" />
-          <End Role="Health_Override" Type="Self.Health_Override" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Health_Status_CTRL">
-              <PropertyRef Name="HealthStatusID" />
-            </Principal>
-            <Dependent Role="Health_Override">
-              <PropertyRef Name="HealthStatusID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Health_Status_HealthStatus_CTRL">
           <End Role="Health_Status_CTRL" Type="Self.Health_Status_CTRL" Multiplicity="1" />
           <End Role="Health_Status" Type="Self.Health_Status" Multiplicity="*" />
@@ -2321,18 +2180,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               <PropertyRef Name="HealthStatusID" />
             </Principal>
             <Dependent Role="Health_Status">
-              <PropertyRef Name="HealthStatusID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Health_Check_NEW_Health_Status_CTRL">
-          <End Role="Health_Status_CTRL" Type="Self.Health_Status_CTRL" Multiplicity="1" />
-          <End Role="Health_Check_NEW" Type="Self.Health_Check_NEW" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Health_Status_CTRL">
-              <PropertyRef Name="HealthStatusID" />
-            </Principal>
-            <Dependent Role="Health_Check_NEW">
               <PropertyRef Name="HealthStatusID" />
             </Dependent>
           </ReferentialConstraint>
@@ -2358,7 +2205,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="Clifton_Strengths" EntityType="Self.Clifton_Strengths" />
           <EntitySet Name="CUSTOM_PROFILE" EntityType="Self.CUSTOM_PROFILE" />
           <EntitySet Name="ERROR_LOG" EntityType="Self.ERROR_LOG" />
-          <EntitySet Name="Health_Override" EntityType="Self.Health_Override" />
           <EntitySet Name="Health_Status" EntityType="Self.Health_Status" />
           <EntitySet Name="Health_Status_CTRL" EntityType="Self.Health_Status_CTRL" />
           <EntitySet Name="JNZB_ACTIVITIES" EntityType="Self.JNZB_ACTIVITIES" />
@@ -2372,8 +2218,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
           <EntitySet Name="AA_ApartmentChoices" EntityType="Self.AA_ApartmentChoices" />
           <EntitySet Name="AA_Applicants" EntityType="Self.AA_Applicants" />
-          <EntitySet Name="Health_Check" EntityType="Self.Health_Check" />
-          <EntitySet Name="Health_Check_NEW" EntityType="Self.Health_Check_NEW" />
           <EntitySet Name="Health_Question" EntityType="Self.Health_Question" />
           <EntitySet Name="Messages" EntityType="Self.Messages" />
           <EntitySet Name="Rooms" EntityType="Self.Rooms" />
@@ -2397,17 +2241,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="PART_DEF" EntityType="Self.PART_DEF" />
           <EntitySet Name="RoomAssign" EntityType="Self.RoomAssign" />
           <EntitySet Name="Student" EntityType="Self.Student" />
-          <AssociationSet Name="FK__Health_Ov__Healt__2BB470E3" Association="Self.FK__Health_Ov__Healt__2BB470E3">
-            <End Role="Health_Status_CTRL" EntitySet="Health_Status_CTRL" />
-            <End Role="Health_Override" EntitySet="Health_Override" />
-          </AssociationSet>
           <AssociationSet Name="FK_Health_Status_HealthStatus_CTRL" Association="Self.FK_Health_Status_HealthStatus_CTRL">
             <End Role="Health_Status_CTRL" EntitySet="Health_Status_CTRL" />
             <End Role="Health_Status" EntitySet="Health_Status" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Health_Check_NEW_Health_Status_CTRL" Association="Self.FK_Health_Check_NEW_Health_Status_CTRL">
-            <End Role="Health_Status_CTRL" EntitySet="Health_Status_CTRL" />
-            <End Role="Health_Check_NEW" EntitySet="Health_Check_NEW" />
           </AssociationSet>
           <AssociationSet Name="FK_booking_rides" Association="Self.FK_booking_rides">
             <End Role="Save_Rides" EntitySet="Save_Rides" />
@@ -2484,6 +2320,11 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="HANDSHAKE" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="CURRENT_SESSION" ReturnType="Collection(String)" />
+          <FunctionImport Name="DELETE_AA_APPLICANT">
+            <Parameter Name="APPLICATION_ID" Mode="In" Type="Int32" />
+            <Parameter Name="ID_NUM" Mode="In" Type="String" />
+            <Parameter Name="SESS_CDE" Mode="In" Type="String" />
+          </FunctionImport>
           <FunctionImport Name="DELETE_BOOKING">
             <Parameter Name="RIDE_ID" Mode="In" Type="String" />
             <Parameter Name="ID" Mode="In" Type="String" />
@@ -2519,7 +2360,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImport Name="EVENTS_BY_STUDENT_ID" ReturnType="Collection(Gordon360.EVENTS_BY_STUDENT_ID_Result)">
             <Parameter Name="STU_USERNAME" Mode="In" Type="String" />
           </FunctionImport>
-          <FunctionImport Name="GET_AA_APPID_BY_NAME_AND_DATE">
+          <FunctionImport Name="GET_AA_APPID_BY_NAME_AND_DATE" ReturnType="Collection(Int32)">
             <Parameter Name="NOW" Mode="In" Type="DateTime" />
             <Parameter Name="EDITOR_ID" Mode="In" Type="String" />
           </FunctionImport>
@@ -2527,10 +2368,15 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="SESS_CDE" Mode="In" Type="String" />
             <Parameter Name="STUDENT_ID" Mode="In" Type="String" />
           </FunctionImport>
-          <FunctionImport Name="GET_AA_EDITOR_BY_APPID">
+          <FunctionImport Name="GET_AA_APPLICANTS_BY_APPID" ReturnType="Collection(String)">
             <Parameter Name="APPLICATION_ID" Mode="In" Type="Int32" />
           </FunctionImport>
-          <FunctionImport Name="GET_ALL_HEALTH_STATUS" ReturnType="Collection(Gordon360.GET_ALL_HEALTH_STATUS_Result)" />
+          <FunctionImport Name="GET_AA_APPLICANTS_DETAILS" ReturnType="Collection(Gordon360.GET_AA_APPLICANTS_DETAILS_Result)" />
+          <FunctionImport Name="GET_AA_APPLICATIONS" ReturnType="Collection(Gordon360.GET_AA_APPLICATIONS_Result)" />
+          <FunctionImport Name="GET_AA_EDITOR_BY_APPID" ReturnType="Collection(String)">
+            <Parameter Name="APPLICATION_ID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="GET_ALL_HEALTH_STATUS" />
           <FunctionImport Name="GET_ALL_MESSAGES_BY_ID" ReturnType="Collection(Gordon360.GET_ALL_MESSAGES_BY_ID_Result)">
             <Parameter Name="room_id" Mode="In" Type="Int32" />
           </FunctionImport>
@@ -2540,13 +2386,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImport Name="GET_ALL_USERS_BY_ROOM_ID" ReturnType="Collection(String)">
             <Parameter Name="room_id" Mode="In" Type="Int32" />
           </FunctionImport>
-          <FunctionImport Name="GET_HEALTH_CHECK_BY_ID" ReturnType="Collection(Gordon360.GET_HEALTH_CHECK_BY_ID_Result)">
-            <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
-          </FunctionImport>
           <FunctionImport Name="GET_HEALTH_CHECK_QUESTION" ReturnType="Collection(Gordon360.GET_HEALTH_CHECK_QUESTION_Result)" />
-          <FunctionImport Name="GET_HEALTH_STATUS_BY_ID" ReturnType="Collection(Gordon360.GET_HEALTH_STATUS_BY_ID_Result)">
-            <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
-          </FunctionImport>
           <FunctionImport Name="GET_ROOM_BY_ID" ReturnType="Collection(Gordon360.GET_ROOM_BY_ID_Result)">
             <Parameter Name="room_id" Mode="In" Type="Int32" />
           </FunctionImport>
@@ -2566,20 +2406,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImport Name="INSERT_AA_APPLICATION">
             <Parameter Name="NOW" Mode="In" Type="DateTime" />
             <Parameter Name="EDITOR_ID" Mode="In" Type="String" />
-          </FunctionImport>
-          <FunctionImport Name="INSERT_HEALTH_CHECK">
-            <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
-            <Parameter Name="Answer" Mode="In" Type="Boolean" />
-          </FunctionImport>
-          <FunctionImport Name="INSERT_HEALTH_CHECK_UPDATED">
-            <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
-            <Parameter Name="Status" Mode="In" Type="String" />
-          </FunctionImport>
-          <FunctionImport Name="INSERT_HEALTH_OVERRIDE">
-            <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
-            <Parameter Name="Status" Mode="In" Type="String" />
-            <Parameter Name="Expires" Mode="In" Type="DateTime" />
-            <Parameter Name="Created_By" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="INSERT_HEALTH_QUESTION">
             <Parameter Name="Question" Mode="In" Type="String" />
@@ -2712,6 +2538,10 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           </FunctionImport>
           <FunctionImport Name="UPCOMING_RIDES_BY_STUDENT_ID" ReturnType="Collection(Gordon360.UPCOMING_RIDES_BY_STUDENT_ID_Result)">
             <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="UPDATE_AA_APPLICATION_DATEMODIFIED">
+            <Parameter Name="APPLICATION_ID" Mode="In" Type="Int32" />
+            <Parameter Name="NOW" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="UPDATE_AA_APPLICATION_EDITOR">
             <Parameter Name="APPLICATION_ID" Mode="In" Type="Int32" />
@@ -2874,11 +2704,21 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="String" Name="CHTermCD" Nullable="true" MaxLength="4" />
           <Property Type="Int32" Name="Required" Nullable="true" />
         </ComplexType>
-        <ComplexType Name="GET_ALL_HEALTH_STATUS_Result">
-          <Property Type="Int32" Name="ID_Num" Nullable="true" />
-          <Property Type="String" Name="Status" Nullable="true" MaxLength="6" />
-          <Property Type="DateTime" Name="Created" Nullable="true" Precision="23" />
-          <Property Type="Boolean" Name="isOverride" Nullable="true" />
+        <ComplexType Name="GET_AA_APPLICANTS_DETAILS_Result">
+          <Property Type="Int32" Name="AprtAppID" Nullable="false" />
+          <Property Type="String" Name="EditorID" Nullable="false" MaxLength="10" />
+          <Property Type="DateTime" Name="DateSubmitted" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="DateModified" Nullable="false" Precision="23" />
+          <Property Type="String" Name="ID_NUM" Nullable="false" MaxLength="10" />
+          <Property Type="String" Name="AprtProgram" Nullable="true" MaxLength="50" />
+          <Property Type="Boolean" Name="AprtProgramCredit" Nullable="true" />
+          <Property Type="String" Name="SESS_CDE" Nullable="false" MaxLength="8" />
+        </ComplexType>
+        <ComplexType Name="GET_AA_APPLICATIONS_Result">
+          <Property Type="Int32" Name="AprtAppID" Nullable="false" />
+          <Property Type="DateTime" Name="DateSubmitted" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="DateModified" Nullable="false" Precision="23" />
+          <Property Type="String" Name="EditorID" Nullable="false" MaxLength="10" />
         </ComplexType>
         <ComplexType Name="GET_ALL_MESSAGES_BY_ID_Result">
           <Property Type="String" Name="message_id" Nullable="false" MaxLength="72" />
@@ -2893,26 +2733,10 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="Boolean" Name="received" Nullable="false" />
           <Property Type="Boolean" Name="pending" Nullable="false" />
         </ComplexType>
-        <ComplexType Name="GET_HEALTH_CHECK_BY_ID_Result">
-          <Property Type="DateTime" Name="timestamp" Nullable="true" Precision="23" />
-          <Property Type="Boolean" Name="userAnswer" Nullable="true" />
-        </ComplexType>
         <ComplexType Name="GET_HEALTH_CHECK_QUESTION_Result">
           <Property Type="String" Name="question" Nullable="false" />
           <Property Type="String" Name="yesPrompt" Nullable="false" />
           <Property Type="String" Name="noPrompt" Nullable="false" />
-        </ComplexType>
-        <ComplexType Name="GET_HEALTH_STATUS_BY_ID_Result">
-          <Property Type="Int32" Name="ID_Num" Nullable="true" />
-          <Property Type="String" Name="Status" Nullable="true" MaxLength="6" />
-          <Property Type="DateTime" Name="Created" Nullable="true" Precision="23" />
-          <Property Type="Boolean" Name="isOverride" Nullable="true" />
-          <Property Type="String" Name="CheckIn_Status" Nullable="true" MaxLength="6" />
-          <Property Type="DateTime" Name="CheckIn_Created" Nullable="true" Precision="23" />
-          <Property Type="String" Name="Override_Status" Nullable="true" MaxLength="6" />
-          <Property Type="DateTime" Name="Override_Created" Nullable="true" Precision="23" />
-          <Property Type="String" Name="Override_Created_By" Nullable="true" />
-          <Property Type="DateTime" Name="Override_Expires" Nullable="true" Precision="23" />
         </ComplexType>
         <ComplexType Name="GET_ROOM_BY_ID_Result">
           <Property Type="String" Name="room_id" Nullable="false" MaxLength="72" />
@@ -3254,19 +3078,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Health_Override">
-            <EntityTypeMapping TypeName="Gordon360.Health_Override">
-              <MappingFragment StoreEntitySet="Health_Override">
-                <ScalarProperty Name="ID_Num" ColumnName="ID_Num" />
-                <ScalarProperty Name="HealthStatusID" ColumnName="HealthStatusID" />
-                <ScalarProperty Name="Created" ColumnName="Created" />
-                <ScalarProperty Name="Expires" ColumnName="Expires" />
-                <ScalarProperty Name="Created_By" ColumnName="Created_By" />
-                <ScalarProperty Name="Contacted" ColumnName="Contacted" />
-                <ScalarProperty Name="Reason" ColumnName="Reason" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Health_Status">
             <EntityTypeMapping TypeName="Gordon360.Health_Status">
               <MappingFragment StoreEntitySet="Health_Status">
@@ -3430,26 +3241,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="AprtProgram" ColumnName="AprtProgram" />
                 <ScalarProperty Name="AprtProgramCredit" ColumnName="AprtProgramCredit" />
                 <ScalarProperty Name="SESS_CDE" ColumnName="SESS_CDE" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Health_Check">
-            <EntityTypeMapping TypeName="Gordon360.Health_Check">
-              <MappingFragment StoreEntitySet="Health_Check">
-                <ScalarProperty Name="ID_Num" ColumnName="ID_Num" />
-                <ScalarProperty Name="Answer" ColumnName="Answer" />
-                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
-                <ScalarProperty Name="Emailed" ColumnName="Emailed" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Health_Check_NEW">
-            <EntityTypeMapping TypeName="Gordon360.Health_Check_NEW">
-              <MappingFragment StoreEntitySet="Health_Check_NEW">
-                <ScalarProperty Name="ID_Num" ColumnName="ID_Num" />
-                <ScalarProperty Name="HealthStatusID" ColumnName="HealthStatusID" />
-                <ScalarProperty Name="Created" ColumnName="Created" />
-                <ScalarProperty Name="emailed" ColumnName="emailed" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -3974,6 +3765,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImportMapping FunctionImportName="CREATE_RIDE" FunctionName="Gordon360.Store.CREATE_RIDE" />
           <FunctionImportMapping FunctionImportName="CREATE_SOCIAL_LINKS" FunctionName="Gordon360.Store.CREATE_SOCIAL_LINKS" />
           <FunctionImportMapping FunctionImportName="CURRENT_SESSION" FunctionName="Gordon360.Store.CURRENT_SESSION" />
+          <FunctionImportMapping FunctionImportName="DELETE_AA_APPLICANT" FunctionName="Gordon360.Store.DELETE_AA_APPLICANT" />
           <FunctionImportMapping FunctionImportName="DELETE_BOOKING" FunctionName="Gordon360.Store.DELETE_BOOKING" />
           <FunctionImportMapping FunctionImportName="DELETE_BOOKINGS" FunctionName="Gordon360.Store.DELETE_BOOKINGS" />
           <FunctionImportMapping FunctionImportName="DELETE_CLOCK_IN" FunctionName="Gordon360.Store.DELETE_CLOCK_IN" />
@@ -4010,17 +3802,33 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="GET_AA_APPID_BY_NAME_AND_DATE" FunctionName="Gordon360.Store.GET_AA_APPID_BY_NAME_AND_DATE" />
           <FunctionImportMapping FunctionImportName="GET_AA_APPID_BY_STU_ID_AND_SESS" FunctionName="Gordon360.Store.GET_AA_APPID_BY_STU_ID_AND_SESS" />
-          <FunctionImportMapping FunctionImportName="GET_AA_EDITOR_BY_APPID" FunctionName="Gordon360.Store.GET_AA_EDITOR_BY_APPID" />
-          <FunctionImportMapping FunctionImportName="GET_ALL_HEALTH_STATUS" FunctionName="Gordon360.Store.GET_ALL_HEALTH_STATUS">
+          <FunctionImportMapping FunctionImportName="GET_AA_APPLICANTS_BY_APPID" FunctionName="Gordon360.Store.GET_AA_APPLICANTS_BY_APPID" />
+          <FunctionImportMapping FunctionImportName="GET_AA_APPLICANTS_DETAILS" FunctionName="Gordon360.Store.GET_AA_APPLICANTS_DETAILS">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="Gordon360.GET_ALL_HEALTH_STATUS_Result">
-                <ScalarProperty Name="ID_Num" ColumnName="ID_Num" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Created" ColumnName="Created" />
-                <ScalarProperty Name="isOverride" ColumnName="isOverride" />
+              <ComplexTypeMapping TypeName="Gordon360.GET_AA_APPLICANTS_DETAILS_Result">
+                <ScalarProperty Name="AprtAppID" ColumnName="AprtAppID" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="DateSubmitted" ColumnName="DateSubmitted" />
+                <ScalarProperty Name="DateModified" ColumnName="DateModified" />
+                <ScalarProperty Name="ID_NUM" ColumnName="ID_NUM" />
+                <ScalarProperty Name="AprtProgram" ColumnName="AprtProgram" />
+                <ScalarProperty Name="AprtProgramCredit" ColumnName="AprtProgramCredit" />
+                <ScalarProperty Name="SESS_CDE" ColumnName="SESS_CDE" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GET_AA_APPLICATIONS" FunctionName="Gordon360.Store.GET_AA_APPLICATIONS">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.GET_AA_APPLICATIONS_Result">
+                <ScalarProperty Name="AprtAppID" ColumnName="AprtAppID" />
+                <ScalarProperty Name="DateSubmitted" ColumnName="DateSubmitted" />
+                <ScalarProperty Name="DateModified" ColumnName="DateModified" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GET_AA_EDITOR_BY_APPID" FunctionName="Gordon360.Store.GET_AA_EDITOR_BY_APPID" />
+          <FunctionImportMapping FunctionImportName="GET_ALL_HEALTH_STATUS" FunctionName="Gordon360.Store.GET_ALL_HEALTH_STATUS" />
           <FunctionImportMapping FunctionImportName="GET_ALL_MESSAGES_BY_ID" FunctionName="Gordon360.Store.GET_ALL_MESSAGES_BY_ID">
             <ResultMapping>
               <ComplexTypeMapping TypeName="Gordon360.GET_ALL_MESSAGES_BY_ID_Result">
@@ -4040,36 +3848,12 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="GET_ALL_ROOMS_BY_ID" FunctionName="Gordon360.Store.GET_ALL_ROOMS_BY_ID" />
           <FunctionImportMapping FunctionImportName="GET_ALL_USERS_BY_ROOM_ID" FunctionName="Gordon360.Store.GET_ALL_USERS_BY_ROOM_ID" />
-          <FunctionImportMapping FunctionImportName="GET_HEALTH_CHECK_BY_ID" FunctionName="Gordon360.Store.GET_HEALTH_CHECK_BY_ID">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="Gordon360.GET_HEALTH_CHECK_BY_ID_Result">
-                <ScalarProperty Name="timestamp" ColumnName="timestamp" />
-                <ScalarProperty Name="userAnswer" ColumnName="userAnswer" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="GET_HEALTH_CHECK_QUESTION" FunctionName="Gordon360.Store.GET_HEALTH_CHECK_QUESTION">
             <ResultMapping>
               <ComplexTypeMapping TypeName="Gordon360.GET_HEALTH_CHECK_QUESTION_Result">
                 <ScalarProperty Name="question" ColumnName="question" />
                 <ScalarProperty Name="yesPrompt" ColumnName="yesPrompt" />
                 <ScalarProperty Name="noPrompt" ColumnName="noPrompt" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="GET_HEALTH_STATUS_BY_ID" FunctionName="Gordon360.Store.GET_HEALTH_STATUS_BY_ID">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="Gordon360.GET_HEALTH_STATUS_BY_ID_Result">
-                <ScalarProperty Name="ID_Num" ColumnName="ID_Num" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Created" ColumnName="Created" />
-                <ScalarProperty Name="isOverride" ColumnName="isOverride" />
-                <ScalarProperty Name="CheckIn_Status" ColumnName="CheckIn_Status" />
-                <ScalarProperty Name="CheckIn_Created" ColumnName="CheckIn_Created" />
-                <ScalarProperty Name="Override_Status" ColumnName="Override_Status" />
-                <ScalarProperty Name="Override_Created" ColumnName="Override_Created" />
-                <ScalarProperty Name="Override_Created_By" ColumnName="Override_Created_By" />
-                <ScalarProperty Name="Override_Expires" ColumnName="Override_Expires" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
@@ -4104,9 +3888,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="INSERT_AA_APPLICANT" FunctionName="Gordon360.Store.INSERT_AA_APPLICANT" />
           <FunctionImportMapping FunctionImportName="INSERT_AA_APPLICATION" FunctionName="Gordon360.Store.INSERT_AA_APPLICATION" />
-          <FunctionImportMapping FunctionImportName="INSERT_HEALTH_CHECK" FunctionName="Gordon360.Store.INSERT_HEALTH_CHECK" />
-          <FunctionImportMapping FunctionImportName="INSERT_HEALTH_CHECK_UPDATED" FunctionName="Gordon360.Store.INSERT_HEALTH_CHECK_UPDATED" />
-          <FunctionImportMapping FunctionImportName="INSERT_HEALTH_OVERRIDE" FunctionName="Gordon360.Store.INSERT_HEALTH_OVERRIDE" />
           <FunctionImportMapping FunctionImportName="INSERT_HEALTH_QUESTION" FunctionName="Gordon360.Store.INSERT_HEALTH_QUESTION" />
           <FunctionImportMapping FunctionImportName="INSERT_MESSAGE" FunctionName="Gordon360.Store.INSERT_MESSAGE" />
           <FunctionImportMapping FunctionImportName="INSERT_NEWS_ITEM" FunctionName="Gordon360.Store.INSERT_NEWS_ITEM" />
@@ -4442,6 +4223,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="UPDATE_AA_APPLICATION_DATEMODIFIED" FunctionName="Gordon360.Store.UPDATE_AA_APPLICATION_DATEMODIFIED" />
           <FunctionImportMapping FunctionImportName="UPDATE_AA_APPLICATION_EDITOR" FunctionName="Gordon360.Store.UPDATE_AA_APPLICATION_EDITOR" />
           <FunctionImportMapping FunctionImportName="UPDATE_ACT_INFO" FunctionName="Gordon360.Store.UPDATE_ACT_INFO" />
           <FunctionImportMapping FunctionImportName="UPDATE_DESCRIPTION" FunctionName="Gordon360.Store.UPDATE_DESCRIPTION" />

@@ -33,7 +33,6 @@ namespace Gordon360.Models
         public virtual DbSet<Clifton_Strengths> Clifton_Strengths { get; set; }
         public virtual DbSet<CUSTOM_PROFILE> CUSTOM_PROFILE { get; set; }
         public virtual DbSet<ERROR_LOG> ERROR_LOG { get; set; }
-        public virtual DbSet<Health_Override> Health_Override { get; set; }
         public virtual DbSet<Health_Status> Health_Status { get; set; }
         public virtual DbSet<Health_Status_CTRL> Health_Status_CTRL { get; set; }
         public virtual DbSet<JNZB_ACTIVITIES> JNZB_ACTIVITIES { get; set; }
@@ -47,8 +46,6 @@ namespace Gordon360.Models
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         public virtual DbSet<AA_ApartmentChoices> AA_ApartmentChoices { get; set; }
         public virtual DbSet<AA_Applicants> AA_Applicants { get; set; }
-        public virtual DbSet<Health_Check> Health_Check { get; set; }
-        public virtual DbSet<Health_Check_NEW> Health_Check_NEW { get; set; }
         public virtual DbSet<Health_Question> Health_Question { get; set; }
         public virtual DbSet<Messages> Messages { get; set; }
         public virtual DbSet<Rooms> Rooms { get; set; }
@@ -333,6 +330,23 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("CURRENT_SESSION");
         }
     
+        public virtual int DELETE_AA_APPLICANT(Nullable<int> aPPLICATION_ID, string iD_NUM, string sESS_CDE)
+        {
+            var aPPLICATION_IDParameter = aPPLICATION_ID.HasValue ?
+                new ObjectParameter("APPLICATION_ID", aPPLICATION_ID) :
+                new ObjectParameter("APPLICATION_ID", typeof(int));
+    
+            var iD_NUMParameter = iD_NUM != null ?
+                new ObjectParameter("ID_NUM", iD_NUM) :
+                new ObjectParameter("ID_NUM", typeof(string));
+    
+            var sESS_CDEParameter = sESS_CDE != null ?
+                new ObjectParameter("SESS_CDE", sESS_CDE) :
+                new ObjectParameter("SESS_CDE", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DELETE_AA_APPLICANT", aPPLICATION_IDParameter, iD_NUMParameter, sESS_CDEParameter);
+        }
+    
         public virtual int DELETE_BOOKING(string rIDE_ID, string iD)
         {
             var rIDE_IDParameter = rIDE_ID != null ?
@@ -443,7 +457,7 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<EVENTS_BY_STUDENT_ID_Result>("EVENTS_BY_STUDENT_ID", sTU_USERNAMEParameter);
         }
     
-        public virtual int GET_AA_APPID_BY_NAME_AND_DATE(Nullable<System.DateTime> nOW, string eDITOR_ID)
+        public virtual ObjectResult<Nullable<int>> GET_AA_APPID_BY_NAME_AND_DATE(Nullable<System.DateTime> nOW, string eDITOR_ID)
         {
             var nOWParameter = nOW.HasValue ?
                 new ObjectParameter("NOW", nOW) :
@@ -453,7 +467,7 @@ namespace Gordon360.Models
                 new ObjectParameter("EDITOR_ID", eDITOR_ID) :
                 new ObjectParameter("EDITOR_ID", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("GET_AA_APPID_BY_NAME_AND_DATE", nOWParameter, eDITOR_IDParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GET_AA_APPID_BY_NAME_AND_DATE", nOWParameter, eDITOR_IDParameter);
         }
     
         public virtual ObjectResult<Nullable<int>> GET_AA_APPID_BY_STU_ID_AND_SESS(string sESS_CDE, string sTUDENT_ID)
@@ -469,18 +483,37 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GET_AA_APPID_BY_STU_ID_AND_SESS", sESS_CDEParameter, sTUDENT_IDParameter);
         }
     
-        public virtual int GET_AA_EDITOR_BY_APPID(Nullable<int> aPPLICATION_ID)
+        public virtual ObjectResult<string> GET_AA_APPLICANTS_BY_APPID(Nullable<int> aPPLICATION_ID)
         {
             var aPPLICATION_IDParameter = aPPLICATION_ID.HasValue ?
                 new ObjectParameter("APPLICATION_ID", aPPLICATION_ID) :
                 new ObjectParameter("APPLICATION_ID", typeof(int));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("GET_AA_EDITOR_BY_APPID", aPPLICATION_IDParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("GET_AA_APPLICANTS_BY_APPID", aPPLICATION_IDParameter);
         }
     
-        public virtual ObjectResult<GET_ALL_HEALTH_STATUS_Result> GET_ALL_HEALTH_STATUS()
+        public virtual ObjectResult<GET_AA_APPLICANTS_DETAILS_Result> GET_AA_APPLICANTS_DETAILS()
         {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GET_ALL_HEALTH_STATUS_Result>("GET_ALL_HEALTH_STATUS");
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GET_AA_APPLICANTS_DETAILS_Result>("GET_AA_APPLICANTS_DETAILS");
+        }
+    
+        public virtual ObjectResult<GET_AA_APPLICATIONS_Result> GET_AA_APPLICATIONS()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GET_AA_APPLICATIONS_Result>("GET_AA_APPLICATIONS");
+        }
+    
+        public virtual ObjectResult<string> GET_AA_EDITOR_BY_APPID(Nullable<int> aPPLICATION_ID)
+        {
+            var aPPLICATION_IDParameter = aPPLICATION_ID.HasValue ?
+                new ObjectParameter("APPLICATION_ID", aPPLICATION_ID) :
+                new ObjectParameter("APPLICATION_ID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("GET_AA_EDITOR_BY_APPID", aPPLICATION_IDParameter);
+        }
+    
+        public virtual int GET_ALL_HEALTH_STATUS()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("GET_ALL_HEALTH_STATUS");
         }
     
         public virtual ObjectResult<GET_ALL_MESSAGES_BY_ID_Result> GET_ALL_MESSAGES_BY_ID(Nullable<int> room_id)
@@ -510,27 +543,9 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("GET_ALL_USERS_BY_ROOM_ID", room_idParameter);
         }
     
-        public virtual ObjectResult<GET_HEALTH_CHECK_BY_ID_Result> GET_HEALTH_CHECK_BY_ID(Nullable<int> iD_NUM)
-        {
-            var iD_NUMParameter = iD_NUM.HasValue ?
-                new ObjectParameter("ID_NUM", iD_NUM) :
-                new ObjectParameter("ID_NUM", typeof(int));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GET_HEALTH_CHECK_BY_ID_Result>("GET_HEALTH_CHECK_BY_ID", iD_NUMParameter);
-        }
-    
         public virtual ObjectResult<GET_HEALTH_CHECK_QUESTION_Result> GET_HEALTH_CHECK_QUESTION()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GET_HEALTH_CHECK_QUESTION_Result>("GET_HEALTH_CHECK_QUESTION");
-        }
-    
-        public virtual ObjectResult<GET_HEALTH_STATUS_BY_ID_Result> GET_HEALTH_STATUS_BY_ID(Nullable<int> iD_NUM)
-        {
-            var iD_NUMParameter = iD_NUM.HasValue ?
-                new ObjectParameter("ID_NUM", iD_NUM) :
-                new ObjectParameter("ID_NUM", typeof(int));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GET_HEALTH_STATUS_BY_ID_Result>("GET_HEALTH_STATUS_BY_ID", iD_NUMParameter);
         }
     
         public virtual ObjectResult<GET_ROOM_BY_ID_Result> GET_ROOM_BY_ID(Nullable<int> room_id)
@@ -596,53 +611,6 @@ namespace Gordon360.Models
                 new ObjectParameter("EDITOR_ID", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("INSERT_AA_APPLICATION", nOWParameter, eDITOR_IDParameter);
-        }
-    
-        public virtual int INSERT_HEALTH_CHECK(Nullable<int> iD_NUM, Nullable<bool> answer)
-        {
-            var iD_NUMParameter = iD_NUM.HasValue ?
-                new ObjectParameter("ID_NUM", iD_NUM) :
-                new ObjectParameter("ID_NUM", typeof(int));
-    
-            var answerParameter = answer.HasValue ?
-                new ObjectParameter("Answer", answer) :
-                new ObjectParameter("Answer", typeof(bool));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("INSERT_HEALTH_CHECK", iD_NUMParameter, answerParameter);
-        }
-    
-        public virtual int INSERT_HEALTH_CHECK_UPDATED(Nullable<int> iD_NUM, string status)
-        {
-            var iD_NUMParameter = iD_NUM.HasValue ?
-                new ObjectParameter("ID_NUM", iD_NUM) :
-                new ObjectParameter("ID_NUM", typeof(int));
-    
-            var statusParameter = status != null ?
-                new ObjectParameter("Status", status) :
-                new ObjectParameter("Status", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("INSERT_HEALTH_CHECK_UPDATED", iD_NUMParameter, statusParameter);
-        }
-    
-        public virtual int INSERT_HEALTH_OVERRIDE(Nullable<int> iD_NUM, string status, Nullable<System.DateTime> expires, string created_By)
-        {
-            var iD_NUMParameter = iD_NUM.HasValue ?
-                new ObjectParameter("ID_NUM", iD_NUM) :
-                new ObjectParameter("ID_NUM", typeof(int));
-    
-            var statusParameter = status != null ?
-                new ObjectParameter("Status", status) :
-                new ObjectParameter("Status", typeof(string));
-    
-            var expiresParameter = expires.HasValue ?
-                new ObjectParameter("Expires", expires) :
-                new ObjectParameter("Expires", typeof(System.DateTime));
-    
-            var created_ByParameter = created_By != null ?
-                new ObjectParameter("Created_By", created_By) :
-                new ObjectParameter("Created_By", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("INSERT_HEALTH_OVERRIDE", iD_NUMParameter, statusParameter, expiresParameter, created_ByParameter);
         }
     
         public virtual int INSERT_HEALTH_QUESTION(string question, string yesPrompt, string noPrompt)
@@ -1083,6 +1051,19 @@ namespace Gordon360.Models
                 new ObjectParameter("STUDENT_ID", typeof(int));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<UPCOMING_RIDES_BY_STUDENT_ID_Result>("UPCOMING_RIDES_BY_STUDENT_ID", sTUDENT_IDParameter);
+        }
+    
+        public virtual int UPDATE_AA_APPLICATION_DATEMODIFIED(Nullable<int> aPPLICATION_ID, Nullable<System.DateTime> nOW)
+        {
+            var aPPLICATION_IDParameter = aPPLICATION_ID.HasValue ?
+                new ObjectParameter("APPLICATION_ID", aPPLICATION_ID) :
+                new ObjectParameter("APPLICATION_ID", typeof(int));
+    
+            var nOWParameter = nOW.HasValue ?
+                new ObjectParameter("NOW", nOW) :
+                new ObjectParameter("NOW", typeof(System.DateTime));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_AA_APPLICATION_DATEMODIFIED", aPPLICATION_IDParameter, nOWParameter);
         }
     
         public virtual int UPDATE_AA_APPLICATION_EDITOR(Nullable<int> aPPLICATION_ID, string eDITOR_ID, Nullable<System.DateTime> nOW, string nEW_EDITOR_ID)
