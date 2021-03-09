@@ -372,16 +372,36 @@
             <param name="rideID">The identifier for the booking to be deleted</param>
             <remarks>Calls the server to make a call and remove the given booking from the database</remarks>
         </member>
-        <member name="M:Gordon360.Controllers.Api.HousingController.CheckHousingStaff">
-            <summary>Check if the currently logged in user is authorized to view the housing staff page for applications</summary>
+        <member name="M:Gordon360.Controllers.Api.HousingController.CheckIfHousingAdmin">
+            <summary>
+            Check if the currently logged in user is authorized to view the housing admin page
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.AddHousingAdmin(System.String)">
+            <summary>
+            Add a user to the admin whitelist
+            </summary>
+            <param name="id"> The id of the user to add </param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.RemoveHousingAdmin(System.String)">
+            <summary>
+            Remove a user from the admin whitelist
+            </summary>
+            <param name="id"> The id of the user to remove </param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.HousingController.GetApplicationID">
-            <summary>Get apartment application ID number of currently logged in user if that user is on an existing application</summary>
+            <summary>
+            Get apartment application ID number of currently logged in user if that user is on an existing application
+            </summary>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.HousingController.GetUserApplicationID(System.String)">
-            <summary>Get apartment application ID number for a user if that user is on an existing application</summary>
+            <summary>
+            Get apartment application ID number for a user if that user is on an existing application
+            </summary>
             <param name="username">username of the profile info</param>
             <returns></returns>
         </member>
@@ -1853,13 +1873,27 @@
             <param name="id">id</param>
             <returns>VictoryPromiseViewModel if found, null if not found</returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.CheckHousingStaff(System.String)">
+        <member name="M:Gordon360.Services.HousingService.CheckIfHousingAdmin(System.String)">
             <summary>
             Calls a stored procedure that returns the count of rows in the staff whitelist which have the given user id
             (the count should be 0 or 1) and converts that count into boolean
             </summary>
             <param name="userId"> The id of the person using the page </param>
             <returns> Whether or not the user is on the staff whitelist </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.AddHousingAdmin(System.String)">
+            <summary>
+            Calls a stored procedure that inserts the given id into the whitelist table
+            </summary>
+            <param name="id"> The id to insert </param>
+            <returns> Whether or not this was successful </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.RemoveHousingAdmin(System.String)">
+            <summary>
+            Calls a stored procedure that deletes the given id from the whitelist table
+            </summary>
+            <param name="id"> The id to remove </param>
+            <returns> Whether or not this was successful </returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.SaveApplication(System.Int32,System.String,System.String,System.String[])">
              <summary>

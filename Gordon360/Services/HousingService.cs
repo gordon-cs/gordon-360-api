@@ -20,19 +20,72 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// Calls a stored procedure that returns the count of rows in the staff whitelist which have the given user id
-        /// (the count should be 0 or 1) and converts that count into boolean
+        /// Calls a stored procedure that returns a row in the staff whitelist which has the given user id,
+        /// if it is in the whitelist
         /// </summary>
         /// <param name="userId"> The id of the person using the page </param>
         /// <returns> Whether or not the user is on the staff whitelist </returns>
-        public bool CheckHousingStaff(string userId)
+        public bool CheckIfHousingAdmin(string userId)
         {
-            IEnumerable<ApartmentAppIsStaffViewModel> idResult = null;
+            IEnumerable<ApartmentAppAdminViewModel> idResult = null;
 
             var idParam = new SqlParameter("@USER_ID", userId);
 
-            idResult = RawSqlQuery<ApartmentAppIsStaffViewModel>.query("GET_AA_USER_IS_STAFF @USER_ID", idParam);
-            return idResult.ElementAt(0).ResultCount != 0;
+            idResult = RawSqlQuery<ApartmentAppAdminViewModel>.query("GET_AA_ADMIN @USER_ID", idParam);
+            if (!idResult.Any())
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Calls a stored procedure that inserts the given id into the whitelist table
+        /// </summary>
+        /// <param name="id"> The id to insert </param>
+        /// <returns> Whether or not this was successful </returns>
+        public bool AddHousingAdmin(string id)
+        {
+            IEnumerable<ApartmentAppAdminViewModel> idResult = null;
+
+            var idParam = new SqlParameter("@ADMIN_ID", id);
+
+            idResult = RawSqlQuery<ApartmentAppAdminViewModel>.query("INSERT_AA_ADMIN @ADMIN_ID", idParam);
+            if (idResult == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The id could not be added." };
+            }
+            else if (!idResult.Any())
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Calls a stored procedure that deletes the given id from the whitelist table
+        /// </summary>
+        /// <param name="id"> The id to remove </param>
+        /// <returns> Whether or not this was successful </returns>
+        public bool RemoveHousingAdmin(string id)
+        {
+            IEnumerable<ApartmentAppAdminViewModel> idResult = null;
+
+            var idParam = new SqlParameter("@ADMIN_ID", id);
+
+            idResult = RawSqlQuery<ApartmentAppAdminViewModel>.query("DELETE_AA_ADMIN @ADMIN_ID", idParam);
+            if (idResult == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The id could not be removed." };
+            }
+            else if (!idResult.Any())
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public int GetApplicationID(string studentId, string sess_cde)

@@ -583,6 +583,7 @@
     <Compile Include="Models\VICTORY_PROMISE_BY_STUDENT_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModels\ApartmentAppAdminViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppEditorViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentApplicantViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppIDViewModel.cs" />
@@ -590,7 +591,7 @@
     <Compile Include="Models\ViewModels\ApartmentAppSaveResultViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppViewModel.cs" />
     <Compile Include="Models\ViewModels\ClockInViewModel.cs" />
-    <Compile Include="Models\ViewModels\ApartmentAppIsStaffViewModel.cs" />
+    <Compile Include="Models\ViewModels\ApartmentAppIsAdminViewModel.cs" />
     <Compile Include="Models\ViewModels\CreateGroupViewModel.cs" />
     <Compile Include="Models\ViewModels\GroupViewModel.cs" />
     <Compile Include="Models\ViewModels\HourTypesViewModel.cs" />
@@ -846,7 +847,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:2550</IISUrl>
+          <IISUrl>http://localhost:2477</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

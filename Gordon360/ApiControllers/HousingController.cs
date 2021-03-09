@@ -25,11 +25,13 @@ namespace Gordon360.Controllers.Api
             _accountService = new AccountService(_unitOfWork);
         }
 
-        /// <summary>Check if the currently logged in user is authorized to view the housing staff page for applications</summary>
+        /// <summary>
+        /// Check if the currently logged in user is authorized to view the housing admin page
+        /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("staff")]
-        public IHttpActionResult CheckHousingStaff()
+        [Route("admin")]
+        public IHttpActionResult CheckIfHousingAdmin()
         {
             //get token data from context, username is the username of current logged in person
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
@@ -37,11 +39,47 @@ namespace Gordon360.Controllers.Api
 
             string userId = _accountService.GetAccountByUsername(username).GordonID;
 
-            var result = _housingService.CheckHousingStaff(userId);
+            var result = _housingService.CheckIfHousingAdmin(userId);
+            if (result)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound();
+            }
+            
+        }
+
+        /// <summary>
+        /// Add a user to the admin whitelist
+        /// </summary>
+        /// <param name="id"> The id of the user to add </param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("admin/{id}")]
+        public IHttpActionResult AddHousingAdmin(string id)
+        {
+            var result = _housingService.AddHousingAdmin(id);
             return Ok(result);
         }
 
-        /// <summary>Get apartment application ID number of currently logged in user if that user is on an existing application</summary>
+        /// <summary>
+        /// Remove a user from the admin whitelist
+        /// </summary>
+        /// <param name="id"> The id of the user to remove </param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("admin/{id}")]
+        public IHttpActionResult RemoveHousingAdmin(string id)
+        {
+            var result = _housingService.RemoveHousingAdmin(id);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Get apartment application ID number of currently logged in user if that user is on an existing application
+        /// </summary>
         /// <returns></returns>
         [HttpGet]
         [Route("apartment")]
@@ -58,7 +96,9 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
 
-        /// <summary>Get apartment application ID number for a user if that user is on an existing application</summary>
+        /// <summary>
+        /// Get apartment application ID number for a user if that user is on an existing application
+        /// </summary>
         /// <param name="username">username of the profile info</param>
         /// <returns></returns>
         [HttpGet]

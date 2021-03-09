@@ -56,11 +56,13 @@ class Test_AllHousingAppTest(control.testCase):
         self.session = self.createAuthorizedSession(control.username, control.password)
         self.url = control.hostURL + 'api/housing/admin'
         # add test user to whitelist
-        api.post(self.session, self.url + control.my_id_number + '/')
+        self.token_payload = { 'username':control.username, 'password':control.password, \
+            'grant_type':'password' }
+        api.post(self.session, self.url + '/' + str(control.my_id_number) + '/', self.token_payload)
         # check that user is on the whitelist
         response = api.get(self.session, self.url)
         # remove 
-        api.delete(self.session, self.url + control.my_id_number + '/')
+        api.delete(self.session, self.url + '/' + str(control.my_id_number) + '/')
 
         if not response.status_code == 200:
             pytest.fail('Expected 200 Created, got {0}.'\
