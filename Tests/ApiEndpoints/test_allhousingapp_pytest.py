@@ -52,23 +52,23 @@ class Test_AllHousingAppTest(control.testCase):
 #   Endpoint -- 'api/housing/apartment/save'
 #   Expected Status Code -- 201 Created
 #   Expected Content --
-    def test_post_save_apartment_application__editor(self):
-        self.session = self.createAuthorizedSession(control.username, control.password)
-        self.url = control.hostURL + 'api/housing/apartment/save'
-        self.data = {
-            'ID': control.my_id_number
-        }
-        self.requestID = -1
-        response = api.post(self.session, self.url, self.data)
+    # def test_post_save_apartment_application__editor(self):
+    #     self.session = self.createAuthorizedSession(control.username, control.password)
+    #     self.url = control.hostURL + 'api/housing/apartment/save'
+    #     self.data = {
+    #         'ID': control.my_id_number
+    #     }
+    #     self.requestID = -1
+    #     response = api.post(self.session, self.url, self.data)
 
-        #
-        #   PLACE HOLDER
-        #   Put pytest codes here
-        #
+    #     #
+    #     #   PLACE HOLDER
+    #     #   Put pytest codes here
+    #     #
 
-        if not response.status_code == 201:
-            pytest.fail('Expected 201 Created, got {0}.'\
-                .format(response.status_code))
+    #     if not response.status_code == 201:
+    #         pytest.fail('Expected 201 Created, got {0}.'\
+    #             .format(response.status_code))
 
 #   Verify that the editor (primary applicant) can edit the application
 #   Endpoint -- 'api/housing/apartment/save'
@@ -81,12 +81,13 @@ class Test_AllHousingAppTest(control.testCase):
             'ID': control.my_id_number
         }
 
+        response = api.put(self.session, self.url, self.data)
         # Sudo code
         # First, create an authorized session and check if the student is the editor
         # If editor, call the save api to save the application. (accesses the database)
         # No additional applicant or hall preference is added.
-        self.requestID = -1
-        response = api.put(self.session, self.url, self.data)
+
         if not response.status_code == 201:
             pytest.fail('Expected 201 Created, got {0}.'\
                 .format(response.status_code))
+
