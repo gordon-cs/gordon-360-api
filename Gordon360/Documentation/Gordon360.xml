@@ -1875,8 +1875,8 @@
         </member>
         <member name="M:Gordon360.Services.HousingService.CheckIfHousingAdmin(System.String)">
             <summary>
-            Calls a stored procedure that returns the count of rows in the staff whitelist which have the given user id
-            (the count should be 0 or 1) and converts that count into boolean
+            Calls a stored procedure that returns a row in the staff whitelist which has the given user id,
+            if it is in the whitelist
             </summary>
             <param name="userId"> The id of the person using the page </param>
             <returns> Whether or not the user is on the staff whitelist </returns>
