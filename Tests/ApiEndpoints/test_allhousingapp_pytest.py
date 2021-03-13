@@ -47,3 +47,16 @@ class Test_AllHousingAppTest(control.testCase):
         if not response.status_code == 200:
             pytest.fail('Expected 200 Created, got {0}.'\
                 .format(response.status_code))
+
+#    Verify that nothing is found if a user is not on an application 
+#    Endpoint -- 'api/housing/apartment'
+#    Expected Status Code -- 404 Not Found
+#    Expected Content -- 
+    def test_get_application_id_not_found(self):
+        self.session = self.createAuthorizedSession(control.username, control.password)
+        self.url = control.hostURL + 'api/housing/apartment'
+        response = api.get(self.session, self.url)
+
+        if not response.status_code == 404:
+            pytest.fail('Expected 404 Created, got {0}.'\
+                .format(response.status_code))
