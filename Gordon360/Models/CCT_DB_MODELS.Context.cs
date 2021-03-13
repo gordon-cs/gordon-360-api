@@ -913,28 +913,28 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<MYSCHEDULE_BY_ID_Result>("MYSCHEDULE_BY_ID", iD_NUMParameter);
         }
     
-        public virtual int NEWS_CATEGORIES()
+        public virtual ObjectResult<NEWS_CATEGORIES_Result> NEWS_CATEGORIES()
         {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NEWS_CATEGORIES");
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<NEWS_CATEGORIES_Result>("NEWS_CATEGORIES");
         }
     
-        public virtual int NEWS_NEW()
+        public virtual ObjectResult<NEWS_NEW_Result> NEWS_NEW()
         {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NEWS_NEW");
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<NEWS_NEW_Result>("NEWS_NEW");
         }
     
-        public virtual int NEWS_NOT_EXPIRED()
+        public virtual ObjectResult<NEWS_NOT_EXPIRED_Result> NEWS_NOT_EXPIRED()
         {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NEWS_NOT_EXPIRED");
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<NEWS_NOT_EXPIRED_Result>("NEWS_NOT_EXPIRED");
         }
     
-        public virtual int NEWS_PERSONAL_UNAPPROVED(string username)
+        public virtual ObjectResult<NEWS_PERSONAL_UNAPPROVED_Result> NEWS_PERSONAL_UNAPPROVED(string username)
         {
             var usernameParameter = username != null ?
                 new ObjectParameter("Username", username) :
                 new ObjectParameter("Username", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NEWS_PERSONAL_UNAPPROVED", usernameParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<NEWS_PERSONAL_UNAPPROVED_Result>("NEWS_PERSONAL_UNAPPROVED", usernameParameter);
         }
     
         public virtual ObjectResult<PHOTO_INFO_PER_USER_NAME_Result> PHOTO_INFO_PER_USER_NAME(Nullable<int> iD)
@@ -1098,13 +1098,13 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result>("STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE", id_numParameter, sess_cdeParameter);
         }
     
-        public virtual int STUDENT_JOBS_PER_ID_NUM(Nullable<int> iD_NUM)
+        public virtual ObjectResult<STUDENT_JOBS_PER_ID_NUM_Result> STUDENT_JOBS_PER_ID_NUM(Nullable<int> iD_NUM)
         {
             var iD_NUMParameter = iD_NUM.HasValue ?
                 new ObjectParameter("ID_NUM", iD_NUM) :
                 new ObjectParameter("ID_NUM", typeof(int));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("STUDENT_JOBS_PER_ID_NUM", iD_NUMParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<STUDENT_JOBS_PER_ID_NUM_Result>("STUDENT_JOBS_PER_ID_NUM", iD_NUMParameter);
         }
     
         public virtual int SUPERVISOR_PER_SUP_ID(Nullable<int> sUP_ID)
