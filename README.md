@@ -669,6 +669,8 @@ What is it? Resource that represents residence hall information that would conce
 
 `api/housing/apartmentInfo` Calls the CCT 'GET_STU__HOUSING_INFO' stored procedure, which currently selects ID, Title, Firstname, Lastname, OnOffCampus, BuildingDescription, OnCampusRoom, Gender, and Email from CCT.dbo.Student for Josua Rogers.
 
+`api/housing/admin` Gets the ID of the user if they are in the admin whitelist table and gets Not Found otherwiae
+
 ### Memberships
 What is it? Resource that represents the affiliation between a student and a club.
 
@@ -963,6 +965,7 @@ A test suite is available at `Tests/ApiEndpoints` to exercise the different endp
 - `test_alldining_pytest` -- Tests for api/dining/ endpoint
 - `test_allemail_pytest` -- Tests for api/emails/activity/ endpoint
 - `test_allevents_pytest` -- Tests for api/events/ endpoint
+- `test_allhousingapp_pytest` -- Tests for api/housing/ endpoint
 - `test_allmembership_pytest` -- Tests for api/memberships/ endpoint
 - `test_allmembershiprequest_pytest` -- Tests for api/requests/ endpoint
 - `test_allmyschedule_pytest` -- Tests for api/myschedule/ endpoint
