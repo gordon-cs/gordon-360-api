@@ -76,8 +76,6 @@ namespace Gordon360.Controllers.Api
                 }
                 throw new BadInputException() { ExceptionMessage = errors };
             }
-            //get token data from context, username is the username of current logged in person
-            //var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
 
             string editorId = _accountService.GetAccountByUsername(username).GordonID;
             string sessionId = Helpers.GetCurrentSession().SessionCode;
