@@ -160,7 +160,7 @@ namespace Gordon360.Services
         }
 
 
-        public bool CreateGroup(String name, bool group, DateTime lastUpdated, string image, List<String> usernames)
+        public CreateGroupViewModel CreateGroup(String name, bool group, DateTime lastUpdated, string image, List<String> usernames)
         {
             DateTime createdAt = DateTime.Now;
             Guid id = Guid.NewGuid();
@@ -191,7 +191,6 @@ namespace Gordon360.Services
             bool returnAnswer = true; 
             if (result == null)
             {
-                returnAnswer = false;
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
             }
             List<string> idlist = new List<String>(500);
@@ -201,14 +200,27 @@ namespace Gordon360.Services
                 idlist.Add(_accountService.GetAccountByUsername(username).GordonID);
             }
 
-            foreach(string userid in idlist)
+            var groupObject = new CreateGroupViewModel();
+            groupObject.id = idRefreshParam.Value.ToString();
+            groupObject.name = nameParam.Value.ToString();
+            groupObject.group = group;
+            groupObject.createdAt = createdAt;
+            groupObject.lastUpdated = lastUpdated;
+            groupObject.image = null;
+
+            foreach (string userid in idlist)
             {
                 var studentIdParam = new SqlParameter("@user_id", userid);
                 var IdRefreshParam2 = new SqlParameter("@_id", idParam.Value);
                 var storeRoooms = RawSqlQuery<MessageViewModel>.query("INSERT_USER_ROOMS @user_id, @_id", studentIdParam, IdRefreshParam2);
+                UserViewModel userInfo = new UserViewModel();
+                userInfo.user_id = userid;
+                userInfo.user_name = _accountService.Get(userid).ADUserName;
+
+                groupObject.users.Add(userInfo);
             }
 
-            return returnAnswer;
+            return groupObject;
 
         }
 

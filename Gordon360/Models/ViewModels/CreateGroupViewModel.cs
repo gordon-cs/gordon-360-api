@@ -20,5 +20,7 @@ namespace Gordon360.Models.ViewModels
         public String image { get; set; }
 
         public List<String> usernames = new List<string>(500);
+
+        public List<UserViewModel> users = new List<UserViewModel>(500);
     }
 }

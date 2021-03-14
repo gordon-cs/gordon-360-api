@@ -120,7 +120,7 @@ namespace Gordon360.ApiControllers
 
             var result = _DirectMessageService.CreateGroup(chatInfo.name, chatInfo.group, chatInfo.lastUpdated, chatInfo.image, chatInfo.usernames);
 
-            if (result == false)
+            if (result == null)
             {
                 return NotFound();
             }
