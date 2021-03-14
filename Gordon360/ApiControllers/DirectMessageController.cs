@@ -118,11 +118,7 @@ namespace Gordon360.ApiControllers
         public IHttpActionResult CreateGroup([FromBody] CreateGroupViewModel chatInfo)
         {
 
-            Random rnd = new Random();
-            int raw_id = rnd.Next(10000000, 99999999);
-            var id = raw_id.ToString();
-
-            var result = _DirectMessageService.CreateGroup(chatInfo.name, chatInfo.group, chatInfo.lastUpdated, chatInfo.image);
+            var result = _DirectMessageService.CreateGroup(chatInfo.name, chatInfo.group, chatInfo.lastUpdated, chatInfo.image, chatInfo.usernames);
 
             if (result == false)
             {
