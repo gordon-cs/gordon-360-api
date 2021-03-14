@@ -54,7 +54,7 @@ namespace Gordon360.Hubs
             {
                 foreach (var userConnections in connections)
                 {
-                    await ManageGroupAsync(/*userConnections.connection_id*/Context.ConnectionId, "list", "add");
+                    await ManageGroupAsync(userConnections.connection_id, "list", "add");
                 }
             }
 
@@ -64,7 +64,7 @@ namespace Gordon360.Hubs
             {
                 foreach (var userConnections in connections)
                 {
-                     ManageGroupAsync(/*userConnections.connection_id*/Context.ConnectionId, "list", "remove");
+                     ManageGroupAsync(userConnections.connection_id, "list", "remove");
                 }
             }
          }
