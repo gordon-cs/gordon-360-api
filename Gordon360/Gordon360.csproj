@@ -347,6 +347,15 @@
     <Compile Include="Models\FacStaff.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\GET_AA_APPLICANTS_DETAILS_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GET_AA_APPLICATIONS_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GET_ALL_MESSAGES_BY_ID_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\GET_ALL_HEALTH_STATUS_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -598,9 +607,12 @@
     <Compile Include="Models\VICTORY_PROMISE_BY_STUDENT_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModels\ApartmentAppIDViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppEditorViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentApplicantIDViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentApplicantViewModel.cs" />
+    <Compile Include="Models\ViewModels\ApartmentApplicationsTableViewModel.cs" />
+    <Compile Include="Models\ViewModels\ApartmentApplicantDetailsViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppIDViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppNewEditorViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppSaveResultViewModel.cs" />
@@ -863,7 +875,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:2350</IISUrl>
+          <IISUrl>http://localhost:2550</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

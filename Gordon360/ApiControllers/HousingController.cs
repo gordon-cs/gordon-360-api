@@ -149,5 +149,19 @@ namespace Gordon360.Controllers.Api
 
             return Ok(result);
         }
+
+        /// <summary>
+        /// Create a string a string from the combination of AA_ApartementApplications and AA_Applicants Tables
+        /// and returns it to the frontend, so that it can convert it into a csv file.
+        /// </summary>
+        /// <returns>An http result with the csv string from the CreateCSV service</returns>
+        [HttpGet]
+        [Route("apartment/csv")]
+        //[StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
+        public IHttpActionResult CreateCSV()
+        {
+            string result = _housingService.CreateCSV();
+            return Created("Result of CSV creation: ", result);
+        }
     }
 }
