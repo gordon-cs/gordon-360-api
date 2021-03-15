@@ -31,10 +31,10 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="editorId"> The student ID number of the user who is attempting to save the apartment application </param>
         /// <param name="sess_cde"> The current session code </param>
-        /// <param name="applicantIds"> Array of student ID numbers for each of the applicants </param>
+        /// <param name="applicantIDs"> Array of student ID numbers for each of the applicants </param>
         /// <param name="apartmentChoices"> Array of JSON objects providing apartment hall choices </param>
-        /// <returns>The application ID number if all the queries succeeded, otherwise returns -1</returns>
-        public int SaveApplication(string editorId, string sess_cde, string [] applicantIds, ApartmentChoiceViewModel[] apartmentChoices)
+        /// <returns>Returns the application ID number if all the queries succeeded</returns>
+        public int SaveApplication(string editorId, string sess_cde, string [] applicantIDs, ApartmentChoiceViewModel[] apartmentChoices)
         {
             IEnumerable<ApartmentAppIDViewModel> idResult = null;
 
@@ -90,13 +90,13 @@ namespace Gordon360.Services
             //----------------
             // Save applicant information
 
-            
+
 
             SqlParameter appIdParam = null;
             SqlParameter idParam = null;
             SqlParameter programParam = null;
 
-            foreach (string id in applicantIds) {
+            foreach (string id in applicantIDs) {
                 IEnumerable<ApartmentApplicantViewModel> applicantResult = null;
 
                 // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
@@ -140,17 +140,17 @@ namespace Gordon360.Services
         /// Edit an existings apartment application
         /// - first, it gets the EditorID from the database for the given application ID and makes sure that the student ID of the current user matches that stored ID number
         /// - second, it gets an array of the applicants that are already stored in the database for the given application ID
-        /// - third, it inserts each applicant that is in the 'newApplicantIds' array but was not yet in the database
-        /// - fourth, it removes each applicant that was stored in the database but was not in the 'newApplicantIds' array
+        /// - third, it inserts each applicant that is in the 'newApplicantIDs' array but was not yet in the database
+        /// - fourth, it removes each applicant that was stored in the database but was not in the 'newApplicantIDs' array
         ///
         /// </summary>
         /// <param name="editorId"> The student ID number of the user who is attempting to save the apartment application </param>
         /// <param name="sess_cde"> The current session code </param>
         /// <param name="apartAppId"> The application ID number of the application to be edited </param>
-        /// <param name="newApplicantIds"> Array of student ID numbers for each of the applicants </param>
+        /// <param name="newApplicantIDs"> Array of student ID numbers for each of the applicants </param>
         /// <param name="newApartmentChoices"> Array of JSON objects providing apartment hall choices </param>
-        /// <returns>Returns true if all the queries succeeded, otherwise returns false</returns>
-        public int EditApplication(string editorId, string sess_cde, int apartAppId, string[] newApplicantIds, ApartmentChoiceViewModel[] newApartmentChoices)
+        /// <returns>Returns the application ID number if all the queries succeeded</returns>
+        public int EditApplication(string editorId, string sess_cde, int apartAppId, string[] newApplicantIDs, ApartmentChoiceViewModel[] newApartmentChoices)
         {
             IEnumerable<ApartmentAppEditorViewModel> editorResult = null;
 
@@ -179,47 +179,54 @@ namespace Gordon360.Services
             //--------
             // Update applicant information
 
-            IEnumerable<ApartmentApplicantIDViewModel> applicantIdsResult = null;
+            IEnumerable<ApartmentApplicantIDViewModel> applicantIDsResult = null;
 
             appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
 
             // Get the IDs of the applicants that are already stored in the database for this application
-            applicantIdsResult = RawSqlQuery<ApartmentApplicantIDViewModel>.query("GET_AA_APPLICANTS_BY_APPID @APPLICATION_ID", appIdParam);
-            if (applicantIdsResult == null)
+            applicantIDsResult = RawSqlQuery<ApartmentApplicantIDViewModel>.query("GET_AA_APPLICANTS_BY_APPID @APPLICATION_ID", appIdParam);
+            if (applicantIDsResult == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The applicants could not be found." };
             }
 
-            string[] oldApplicantIds =  null;
+            // List of applicants IDs that are in the array recieved from the frontend but not yet in the database
+            List<string> applicantIDsToAdd = new List<string>(newApplicantIDs);
+
+            // List of applicants IDs that are in both the array recieved from the frontend and the database
+            List<string> applicantIDsToUpdate = new List<string>();
+
+            // List of applicants IDs that are in the database but not in the array recieved from the frontend
+            List<string> applicantIDsToRemove = new List<string>();
+
             // Check whether any applicants were found matching the given application ID number
-            if (applicantIdsResult.Any())
+            if (applicantIDsResult.Any())
             {
-                oldApplicantIds = new string[applicantIdsResult.Count()];
-                for (int i = 0; i < applicantIdsResult.Count(); i++)
+                foreach(ApartmentApplicantIDViewModel applicantIDModel in applicantIDsResult)
                 {
-                    ApartmentApplicantIDViewModel applicantModel = applicantIdsResult.ElementAt(i);
-                    oldApplicantIds[i] = applicantModel.ID_NUM;
+                    string existingApplicantID = applicantIDModel.ID_NUM;
+                    if (newApplicantIDs.Contains(existingApplicantID))
+                    {
+                        applicantIDsToAdd.Remove(existingApplicantID);
+                        applicantIDsToUpdate.Add(existingApplicantID);
+                    }
+                    else
+                    {
+                        applicantIDsToRemove.Add(existingApplicantID);
+                    }
                 }
-            } else {
-                oldApplicantIds = new string[0];
             }
-
-            // Get an array of applicants IDs that are in the array recieved from the frontend but not yet in the database
-            IEnumerable<string> applicantIdsToAdd = newApplicantIds.Except(oldApplicantIds);
-
-            // Get an array of appliants IDs that in the database but not in the array recieved from the frontend
-            IEnumerable<string> applicantIdsToRemove = oldApplicantIds.Except(newApplicantIds);
 
             SqlParameter idParam = null;
             SqlParameter programParam = null;
             SqlParameter sessionParam = null;
 
-            foreach (string id in applicantIdsToAdd)
+            // Insert new applicants that are not yet in the database
+            foreach (string id in applicantIDsToAdd)
             {
                 IEnumerable<ApartmentApplicantViewModel> applicantResult = null;
 
                 // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
-                //idParam.Value = id; might need if this ODD solution is not satisfactory
                 appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
                 idParam = new SqlParameter("@ID_NUM", id);
                 programParam = new SqlParameter("@APRT_PROGRAM", "");
@@ -232,12 +239,30 @@ namespace Gordon360.Services
                 }
             }
 
-            foreach (string id in applicantIdsToRemove)
+            // Update the info of applicants from the frontend that are already in the database
+            foreach (string id in applicantIDsToUpdate)
             {
                 IEnumerable<ApartmentApplicantViewModel> applicantResult = null;
 
                 // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
-                //idParam.Value = id; might need if this ODD solution is not satisfactory
+                appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
+                idParam = new SqlParameter("@ID_NUM", id);
+                programParam = new SqlParameter("@APRT_PROGRAM", ""); // TODO: This will be used to update the off-campus program department once that feature has been made on the frontend
+                sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
+
+                applicantResult = RawSqlQuery<ApartmentApplicantViewModel>.query("UPDATE_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM, @SESS_CDE", appIdParam, idParam, programParam, sessionParam); //run stored procedure
+                if (applicantResult == null)
+                {
+                    throw new ResourceNotFoundException() { ExceptionMessage = "Applicant with ID " + id + " could not be updated." };
+                }
+            }
+
+            // Remove applicants from the database that were remove from the frontend
+            foreach (string id in applicantIDsToRemove)
+            {
+                IEnumerable<ApartmentApplicantViewModel> applicantResult = null;
+
+                // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
                 appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
                 idParam = new SqlParameter("@ID_NUM", id);
                 sessionParam = new SqlParameter("@SESS_CDE", sess_cde);

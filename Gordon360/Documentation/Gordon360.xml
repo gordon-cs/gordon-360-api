@@ -1881,11 +1881,11 @@
              <returns>Returns true if all the queries succeeded, otherwise returns false</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.ChangeApplicationEditor(System.String,System.Int32,System.String)">
-             <summary>
-             Changes the student user who has permission to edit the given application
+            <summary>
+            Changes the student user who has permission to edit the given application
             
-             </summary>
-             <returns>Whether or not all the queries succeeded</returns>
+            </summary>
+            <returns>Whether or not all the queries succeeded</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.CreateCSV">
             <summary>
