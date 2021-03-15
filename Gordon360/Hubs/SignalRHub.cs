@@ -20,28 +20,78 @@ namespace Gordon360.Hubs
     [HubName("ChatHub")]
     public class ChatHub : Hub
     {
-        //public DirectMessageService _DirectMessageService = new DirectMessageService();
-
-        public async Task refreshMessages(List<string> connectionIds, IEnumerable<MessageViewModel> message)
-         {
-            foreach(string connections in connectionIds)
+        public async Task ManageGroupAsync(string connectionId, string groupName, string function)
+        {
+            if (connectionId == null)
             {
-                await Groups.Add(connections, "list");
+                throw new ArgumentNullException(nameof(connectionId));
             }
-            await Clients.Group("list").SendAsync("Received message refresh, Message: ", message);
+
+            if (groupName == null)
+            {
+                throw new ArgumentNullException(nameof(groupName));
+            }
+            
+
+            if (function == "add")
+            {
+                await Groups.Add(connectionId, groupName);
+
+            } else
+            {
+                Groups.Remove(connectionId, groupName);
+            }
+
+        }
+
+
+        public async Task refreshMessages(List<string> userIds, SendTextViewModel message, string userId)
+         {
+            DirectMessageService _DirectMessageService = new DirectMessageService();
+            var connectionIds =_DirectMessageService.GetUserConnectionIds(userIds);
+            
+            foreach (var connections in connectionIds)
+            {
+                foreach (var userConnections in connections)
+                {
+                    await ManageGroupAsync(userConnections.connection_id, "list", "add");
+                }
+            }
+
+            await Clients.Group("list").SendAsync(message, userId);
+
+            foreach (var connections in connectionIds)
+            {
+                foreach (var userConnections in connections)
+                {
+                     ManageGroupAsync(userConnections.connection_id, "list", "remove");
+                }
+            }
          }
 
         public string savedUserId;
         public string savedConnectionId;
 
-        public  void saveConnection(string id)
+        public async Task saveFunction(string id)
         {
             DirectMessageService _DirectMessageService = new DirectMessageService();
+            _DirectMessageService.StoreUserConnectionIds(id, Context.ConnectionId);
+        }
+
+        public  async Task saveConnection(string id)
+        {
             savedUserId = id;
             savedConnectionId = Context.ConnectionId;
-            _DirectMessageService.StoreUserConnectionIds(id, Context.ConnectionId);
-             Clients.All.BroadcastMessage("It's working boss");
+            await saveFunction(id);
 
+            Clients.All.BroadcastMessage("Saved Connection!");
+
+        }
+
+        public override Task OnConnected()
+        {
+            Clients.All.BroadcastMessage("connectedToServer");
+            return base.OnConnected();
         }
 
         public override Task OnDisconnected(bool stopCalled)
