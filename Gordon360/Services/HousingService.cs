@@ -251,77 +251,8 @@ namespace Gordon360.Services
             //--------
             // Update hall information
 
-            //IEnumerable<ApartmentChoiceSaveViewModel> apartmentChoicesResult = null;
+            // Code goes here
 
-            //appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
-
-            //// Get the hall choices that are already stored in the database for this application
-            //apartmentChoicesResult = RawSqlQuery<ApartmentChoiceSaveViewModel>.query("GET_AA_APARTMENT_CHOICES_BY_APP_ID @APPLICATION_ID", appIdParam); // run stored procedure
-            //if (apartmentChoicesResult == null)
-            //{
-            //    throw new ResourceNotFoundException() { ExceptionMessage = "The apartment preference could not be found." };
-            //}
-
-            //ApartmentChoiceSaveViewModel[] oldApartmentChoices = null;
-            //// Check whether any applicants were found matching the given application ID number
-            //if (apartmentChoicesResult.Any())
-            //{
-            //    oldApartmentChoices = new ApartmentChoiceSaveViewModel[apartmentChoicesResult.Count()];
-            //    for (int i = 0; i < apartmentChoicesResult.Count(); i++)
-            //    {
-            //        ApartmentChoiceSaveViewModel apartmentChoicesModel = apartmentChoicesResult.ElementAt(i);
-            //        oldApartmentChoices[i] = apartmentChoicesModel;
-            //    }
-            //}
-            //else
-            //{
-            //    oldApartmentChoices = new ApartmentChoiceSaveViewModel[0];
-            //}
-
-            //// Get an array of applicants IDs that are in the array recieved from the frontend but not yet in the database
-            //IEnumerable<string> applicantIdsToAdd = newApplicantIds.Except(oldApplicantIds);
-
-            //// Get an array of appliants IDs that in the database but not in the array recieved from the frontend
-            //IEnumerable<string> applicantIdsToRemove = oldApplicantIds.Except(newApplicantIds);
-
-            //SqlParameter idParam = null;
-            //SqlParameter programParam = null;
-            //SqlParameter sessionParam = null;
-
-            //foreach (string id in applicantIdsToAdd)
-            //{
-            //    IEnumerable<ApartmentApplicantViewModel> applicantResult = null;
-
-            //    // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
-            //    //idParam.Value = id; might need if this ODD solution is not satisfactory
-            //    appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
-            //    idParam = new SqlParameter("@ID_NUM", id);
-            //    programParam = new SqlParameter("@APRT_PROGRAM", "");
-            //    sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
-
-            //    applicantResult = RawSqlQuery<ApartmentApplicantViewModel>.query("INSERT_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM, @SESS_CDE", appIdParam, idParam, programParam, sessionParam); //run stored procedure
-            //    if (applicantResult == null)
-            //    {
-            //        throw new ResourceNotFoundException() { ExceptionMessage = "Applicant with ID " + id + " could not be inserted." };
-            //    }
-            //}
-
-            //foreach (string id in applicantIdsToRemove)
-            //{
-            //    IEnumerable<ApartmentApplicantViewModel> applicantResult = null;
-
-            //    // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
-            //    //idParam.Value = id; might need if this ODD solution is not satisfactory
-            //    appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
-            //    idParam = new SqlParameter("@ID_NUM", id);
-            //    sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
-
-            //    applicantResult = RawSqlQuery<ApartmentApplicantViewModel>.query("DELETE_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @SESS_CDE", appIdParam, idParam, sessionParam); //run stored procedure
-            //    if (applicantResult == null)
-            //    {
-            //        throw new ResourceNotFoundException() { ExceptionMessage = "Applicant with ID " + id + " could not be removed." };
-            //    }
-            //}
 
             //--------
             // Update the date modified
