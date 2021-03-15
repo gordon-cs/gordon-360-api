@@ -54,8 +54,16 @@ namespace Gordon360.Controllers.Api
             string sessionId = Helpers.GetCurrentSession().SessionCode;
 
             var result = _housingService.GetApplicationID(editorId, sessionId);
-            return Ok(result);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound();
+            }
         }
+
         /// <summary>Get apartment application ID number for a user if that user is on an existing application</summary>
         /// <param name="username">username of the profile info</param>
         /// <returns></returns>
@@ -83,7 +91,14 @@ namespace Gordon360.Controllers.Api
             string sessionId = Helpers.GetCurrentSession().SessionCode;
 
             var result = _housingService.GetApplicationID(editorId, sessionId);
-            return Ok(result);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         /// <summary>

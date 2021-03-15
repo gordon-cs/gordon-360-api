@@ -20,7 +20,7 @@ namespace Gordon360.Services
             _unitOfWork = unitOfWork;
         }
 
-        public int GetApplicationID(string studentId, string sess_cde)
+        public int? GetApplicationID(string studentId, string sess_cde)
         {
             IEnumerable<ApartmentAppIDViewModel> idResult = null;
 
@@ -28,9 +28,9 @@ namespace Gordon360.Services
             var sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
             
             idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, idParam); //run stored procedure
-            if (idResult == null)
+            if (idResult == null || !idResult.Any())
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The application ID could not be found." };
+                return null; 
             }
 
             ApartmentAppIDViewModel idModel = idResult.ElementAt(0);
