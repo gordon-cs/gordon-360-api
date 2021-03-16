@@ -28,7 +28,7 @@ namespace Gordon360.Controllers.Api
         /// <summary>
         /// save application
         /// </summary>
-        /// <returns>Returns the application ID number if all the queries succeeded, otherwise returns -1</returns>
+        /// <returns>Returns the application ID number if all the queries succeeded</returns>
         [HttpPost]
         [Route("apartment/save")]
         //[StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
@@ -71,7 +71,7 @@ namespace Gordon360.Controllers.Api
         /// <summary>
         /// update existing application (Differentiated by HttpPut instead of HttpPost)
         /// </summary>
-        /// <returns>Returns the application ID number if all the queries succeeded, otherwise returns -1</returns>
+        /// <returns>Returns the application ID number if all the queries succeeded</returns>
         [HttpPut]
         [Route("apartment/save")]
         public IHttpActionResult EditApplication([FromBody] ApartmentAppViewModel apartmentAppDetails)
