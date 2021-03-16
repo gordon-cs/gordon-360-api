@@ -272,6 +272,9 @@ namespace Gordon360.Services
         int? GetApplicationID(string studentId, string sess_cde);
         int SaveApplication(int apartAppId, string editorId, string sess_cde, string [] applicantIds);
         bool ChangeApplicationEditor(int apartAppId, string editorId, string newEditorId);
+        bool CheckIfHousingAdmin(string userId);
+        bool AddHousingAdmin(string id);
+        bool RemoveHousingAdmin(string id);
         string CreateCSV();
     }
 
