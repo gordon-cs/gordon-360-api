@@ -224,6 +224,9 @@
     <Compile Include="ApiControllers\SaveController.cs" />
     <Compile Include="ApiControllers\ScheduleControlController.cs" />
     <Compile Include="ApiControllers\WellnessController.cs" />
+    <Compile Include="Models\AA_Admins.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\AA_ApartmentApplications.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -345,6 +348,9 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\FacStaff.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GET_AA_APARTMENT_CHOICES_BY_APP_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\GET_AA_APPLICANTS_DETAILS_Result.cs">
@@ -549,6 +555,9 @@
     <Compile Include="Models\STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <!-- <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs" /> -->
     <Compile Include="Models\student_timesheets.cs">
       <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
@@ -580,17 +589,20 @@
     <Compile Include="Models\Users.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\User_Connection_Ids.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\User_Rooms.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\VICTORY_PROMISE_BY_STUDENT_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ViewModels\ApartmentAppIDViewModel.cs" />
+    <Compile Include="Models\ViewModels\ApartmentAppAdminViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppEditorViewModel.cs" />
-    <Compile Include="Models\ViewModels\ApartmentApplicantViewModel.cs" />
-    <Compile Include="Models\ViewModels\ApartmentApplicationsTableViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentApplicantDetailsViewModel.cs" />
+    <Compile Include="Models\ViewModels\ApartmentApplicantViewModel.cs" />
+    <Compile Include="Models\ViewModels\ApartmentAppIDViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppNewEditorViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppSaveResultViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppViewModel.cs" />
@@ -850,7 +862,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:2550</IISUrl>
+          <IISUrl>http://localhost:2477</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
