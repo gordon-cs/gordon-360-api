@@ -32,8 +32,9 @@ namespace Gordon360.Services
         /// <param name="editorId"> The student ID number of the user who is attempting to save the apartment application </param>
         /// <param name="sess_cde"> The current session code </param>
         /// <param name="applicantIDs"> Array of student ID numbers for each of the applicants </param>
-        /// <returns>Returns the application ID number if all the queries succeeded, otherwise returns -1</returns>
-        public int SaveApplication(string editorId, string sess_cde, string [] applicantIDs)
+        /// <param name="apartmentChoices"> Array of JSON objects providing apartment hall choices </param>
+        /// <returns>Returns the application ID number if all the queries succeeded</returns>
+        public int SaveApplication(string editorId, string sess_cde, string [] applicantIDs, ApartmentChoiceViewModel[] apartmentChoices)
         {
             IEnumerable<ApartmentAppIDViewModel> idResult = null;
 
@@ -89,6 +90,8 @@ namespace Gordon360.Services
             //----------------
             // Save applicant information
 
+
+
             SqlParameter appIdParam = null;
             SqlParameter idParam = null;
             SqlParameter programParam = null;
@@ -112,11 +115,23 @@ namespace Gordon360.Services
             //----------------
             // Save hall information
 
-            // PLACEHOLDER
-            //
-            // The update hall info code will go here once we get a chance to implement it
-            //
-            // PLACEHOLDER
+            SqlParameter rankingParam = null;
+            SqlParameter buildingCodeParam = null;
+
+            foreach (ApartmentChoiceViewModel choice in apartmentChoices)
+            {
+                IEnumerable<ApartmentChoiceSaveViewModel> apartmentChoiceResult = null;
+
+                // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
+                appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
+                rankingParam = new SqlParameter("@RANKING", choice.HallRank);
+                buildingCodeParam = new SqlParameter("@BLDG_CDE", choice.HallName);
+                apartmentChoiceResult = RawSqlQuery<ApartmentChoiceSaveViewModel>.query("INSERT_AA_APARTMENT_CHOICE @APPLICATION_ID, @RANKING, @BLDG_CDE", appIdParam, rankingParam, buildingCodeParam); // run stored procedure
+                if (apartmentChoiceResult == null)
+                {
+                    throw new ResourceNotFoundException() { ExceptionMessage = "The apartment preference could not be saved." };
+                }
+            }
 
             return apartAppId;
         }
@@ -133,8 +148,9 @@ namespace Gordon360.Services
         /// <param name="sess_cde"> The current session code </param>
         /// <param name="apartAppId"> The application ID number of the application to be edited </param>
         /// <param name="newApplicantIDs"> Array of student ID numbers for each of the applicants </param>
-        /// <returns>Returns the application ID number if all the queries succeeded, otherwise returns -1</returns>
-        public int EditApplication(string editorId, string sess_cde, int apartAppId, string[] newApplicantIDs)
+        /// <param name="newApartmentChoices"> Array of JSON objects providing apartment hall choices </param>
+        /// <returns>Returns the application ID number if all the queries succeeded</returns>
+        public int EditApplication(string editorId, string sess_cde, int apartAppId, string[] newApplicantIDs, ApartmentChoiceViewModel[] newApartmentChoices)
         {
             IEnumerable<ApartmentAppEditorViewModel> editorResult = null;
 
@@ -261,11 +277,8 @@ namespace Gordon360.Services
             //--------
             // Update hall information
 
-            // PLACEHOLDER
-            //
-            // The update hall info code will go here once we get a chance to implement it
-            //
-            // PLACEHOLDER
+            // Code goes here
+
 
             //--------
             // Update the date modified
