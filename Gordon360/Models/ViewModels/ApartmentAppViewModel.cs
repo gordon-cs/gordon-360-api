@@ -4,5 +4,6 @@
     {
         public int AprtAppID { get; set; }
         public string [] Applicants { get; set; }
+        public ApartmentChoiceViewModel [] ApartmentChoices { get; set; }
     }
 }

@@ -28,7 +28,7 @@ namespace Gordon360.Controllers.Api
         /// <summary>
         /// save application
         /// </summary>
-        /// <returns>Returns the application ID number if all the queries succeeded, otherwise returns -1</returns>
+        /// <returns>Returns the application ID number if all the queries succeeded</returns>
         [HttpPost]
         [Route("apartment/save")]
         //[StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
@@ -57,19 +57,21 @@ namespace Gordon360.Controllers.Api
             string sessionId = Helpers.GetCurrentSession().SessionCode;
 
             string[] applicantIds = new string[apartmentAppDetails.Applicants.Length];
-
             for(int i = 0; i < apartmentAppDetails.Applicants.Length; i++){
                 applicantIds[i] = _accountService.GetAccountByUsername(apartmentAppDetails.Applicants[i]).GordonID;
             }
 
-            int result = _housingService.SaveApplication(editorId, sessionId, applicantIds);
+            ApartmentChoiceViewModel[] apartmentChoices = apartmentAppDetails.ApartmentChoices;
+
+            int result = _housingService.SaveApplication(editorId, sessionId, applicantIds, apartmentChoices);
 
             return Created("Status of application saving: ", result);
         }
+
         /// <summary>
         /// update existing application (Differentiated by HttpPut instead of HttpPost)
         /// </summary>
-        /// <returns>Returns the application ID number if all the queries succeeded, otherwise returns -1</returns>
+        /// <returns>Returns the application ID number if all the queries succeeded</returns>
         [HttpPut]
         [Route("apartment/save")]
         public IHttpActionResult EditApplication([FromBody] ApartmentAppViewModel apartmentAppDetails)
@@ -104,7 +106,9 @@ namespace Gordon360.Controllers.Api
                 newApplicantIds[i] = _accountService.GetAccountByUsername(apartmentAppDetails.Applicants[i]).GordonID;
             }
 
-            int result = _housingService.EditApplication(editorId, sessionId, apartAppId, newApplicantIds);
+            ApartmentChoiceViewModel[] newApartmentChoices = apartmentAppDetails.ApartmentChoices;
+
+            int result = _housingService.EditApplication(editorId, sessionId, apartAppId, newApplicantIds, newApartmentChoices);
 
             return Created("Status of application saving: ", result);
         }
