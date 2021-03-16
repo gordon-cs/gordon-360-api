@@ -89,7 +89,17 @@ namespace Gordon360.Services
             return true;
         }
 
-        public int GetApplicationID(string studentId, string sess_cde)
+        /// <summary>
+        /// Calls a stored procedure that tries to get the id of an the application that a given user is 
+        /// applicant on for a given session
+        /// </summary>
+        /// <param name="studentId"> The id to look for </param>
+        /// /// <param name="sess_cde"> Session for which the application would be </param>
+        /// <returns> 
+        /// The id of the application or 
+        /// null if the user is not on an application for that session 
+        /// </returns>
+        public int? GetApplicationID(string studentId, string sess_cde)
         {
             IEnumerable<ApartmentAppIDViewModel> idResult = null;
 
@@ -97,9 +107,9 @@ namespace Gordon360.Services
             var sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
             
             idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, idParam); //run stored procedure
-            if (idResult == null)
+            if (idResult == null || !idResult.Any())
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The application ID could not be found." };
+                return null; 
             }
 
             ApartmentAppIDViewModel idModel = idResult.ElementAt(0);
