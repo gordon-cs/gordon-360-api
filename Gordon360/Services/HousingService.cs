@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Gordon360.Models.ViewModels;
@@ -18,6 +18,105 @@ namespace Gordon360.Services
         public HousingService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
+        }
+
+        /// <summary>
+        /// Calls a stored procedure that returns a row in the staff whitelist which has the given user id,
+        /// if it is in the whitelist
+        /// </summary>
+        /// <param name="userId"> The id of the person using the page </param>
+        /// <returns> Whether or not the user is on the staff whitelist </returns>
+        public bool CheckIfHousingAdmin(string userId)
+        {
+            IEnumerable<ApartmentAppAdminViewModel> idResult = null;
+
+            var idParam = new SqlParameter("@USER_ID", userId);
+
+            idResult = RawSqlQuery<ApartmentAppAdminViewModel>.query("GET_AA_ADMIN @USER_ID", idParam);
+            if (!idResult.Any())
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Calls a stored procedure that inserts the given id into the whitelist table
+        /// </summary>
+        /// <param name="id"> The id to insert </param>
+        /// <returns> Whether or not this was successful </returns>
+        public bool AddHousingAdmin(string id)
+        {
+            IEnumerable<ApartmentAppAdminViewModel> idResult = null;
+
+            var idParam = new SqlParameter("@ADMIN_ID", id);
+
+            idResult = RawSqlQuery<ApartmentAppAdminViewModel>.query("INSERT_AA_ADMIN @ADMIN_ID", idParam);
+            if (idResult == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The id could not be added." };
+            }
+            else if (!idResult.Any())
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Calls a stored procedure that deletes the given id from the whitelist table
+        /// </summary>
+        /// <param name="id"> The id to remove </param>
+        /// <returns> Whether or not this was successful </returns>
+        public bool RemoveHousingAdmin(string id)
+        {
+            IEnumerable<ApartmentAppAdminViewModel> idResult = null;
+
+            var idParam = new SqlParameter("@ADMIN_ID", id);
+
+            idResult = RawSqlQuery<ApartmentAppAdminViewModel>.query("DELETE_AA_ADMIN @ADMIN_ID", idParam);
+            if (idResult == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The id could not be removed." };
+            }
+            else if (!idResult.Any())
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Calls a stored procedure that tries to get the id of an the application that a given user is 
+        /// applicant on for a given session
+        /// </summary>
+        /// <param name="studentId"> The id to look for </param>
+        /// /// <param name="sess_cde"> Session for which the application would be </param>
+        /// <returns> 
+        /// The id of the application or 
+        /// null if the user is not on an application for that session 
+        /// </returns>
+        public int? GetApplicationID(string studentId, string sess_cde)
+        {
+            IEnumerable<ApartmentAppIDViewModel> idResult = null;
+
+            var idParam = new SqlParameter("@STUDENT_ID", studentId);
+            var sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
+            
+            idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, idParam); //run stored procedure
+            if (idResult == null || !idResult.Any())
+            {
+                return null; 
+            }
+
+            ApartmentAppIDViewModel idModel = idResult.ElementAt(0);
+
+            int result = idModel.AprtAppID;
+
+            return result;
         }
 
         /// <summary>

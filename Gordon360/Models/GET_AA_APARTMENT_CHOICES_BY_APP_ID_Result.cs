@@ -10,9 +10,8 @@
 namespace Gordon360.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class AA_ApartmentChoices
+    public partial class GET_AA_APARTMENT_CHOICES_BY_APP_ID_Result
     {
         public int AprtAppID { get; set; }
         public int Ranking { get; set; }

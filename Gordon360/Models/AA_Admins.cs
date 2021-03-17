@@ -12,10 +12,8 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class AA_ApartmentChoices
+    public partial class AA_Admins
     {
-        public int AprtAppID { get; set; }
-        public int Ranking { get; set; }
-        public string BLDG_CDE { get; set; }
+        public string AdminID { get; set; }
     }
 }
