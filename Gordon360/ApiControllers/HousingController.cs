@@ -258,6 +258,7 @@ namespace Gordon360.Controllers.Api
             //! Placeholder
             var result = false; // This feature is not yet implemented
             return Ok(result);
+            // Note to ApartApp developers: The return type must be ApartmentAppViewModel, so that the frontend can correctly parse the results
         }
     }
 }
