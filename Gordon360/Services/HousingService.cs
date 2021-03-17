@@ -277,8 +277,43 @@ namespace Gordon360.Services
             //--------
             // Update hall information
 
-            // Code goes here
+            IEnumerable<ApartmentChoiceSaveViewModel> apartmentChoiceResult = null;
 
+            appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
+
+            // Get the apartment preferences that are already stored in the database for this application
+            apartmentChoiceResult = RawSqlQuery<ApartmentChoiceSaveViewModel>.query("GET_AA_APARTMENT_CHOICES_BY_APP_ID @APPLICATION_ID", appIdParam);
+            if (apartmentChoiceResult == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The hall information could not be found." };
+            }
+
+            // List of apartment choices that are in the array recieved from the frontend but not yet in the database
+            List<ApartmentChoiceViewModel> apartmentChoicesToAdd = new List<ApartmentChoiceViewModel>(newApartmentChoices);
+
+            // List of apartment choices that are in both the array recieved from the frontend and the database
+            List<ApartmentChoiceViewModel> apartmentChoicesToUpdate = new List<ApartmentChoiceViewModel>();
+
+            // List of apartment choices that are in the database but not in the array recieved from the frontend
+            List<ApartmentChoiceViewModel> apartmentChoicesToRemove = new List<ApartmentChoiceViewModel>();
+
+            // Check whether any apartment choices were found matching the given application ID number
+            if (apartmentChoiceResult.Any())
+            {
+                foreach (ApartmentChoiceSaveViewModel apartmentChoiceModel in apartmentChoiceResult)
+                {
+                    int existingApartmentChoices = apartmentChoiceModel.APPLICATION_ID;
+                    if (newApartmentChoices.Contains(existingApartmentChoices))
+                    {
+                        applicantIDsToAdd.Remove(existingApartmentChoices);
+                        applicantIDsToUpdate.Add(existingApartmentChoices);
+                    }
+                    else
+                    {
+                        applicantIDsToRemove.Add(existingApartmentChoices);
+                    }
+                }
+            }
 
             //--------
             // Update the date modified
