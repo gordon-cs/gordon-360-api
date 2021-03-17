@@ -303,15 +303,33 @@ namespace Gordon360.Services
                 foreach (ApartmentChoiceSaveViewModel apartmentChoiceModel in apartmentChoiceResult)
                 {
                     int existingApartmentChoices = apartmentChoiceModel.APPLICATION_ID;
-                    if (newApartmentChoices.Contains(existingApartmentChoices))
+                    if (newApartmentChoices.Cast<int>().Contains(existingApartmentChoices))
                     {
-                        applicantIDsToAdd.Remove(existingApartmentChoices);
-                        applicantIDsToUpdate.Add(existingApartmentChoices);
+                        apartmentChoicesToAdd.Cast<int>().Remove(existingApartmentChoices);
+                        apartmentChoicesToUpdate.Cast<int>().Add(existingApartmentChoices);
                     }
                     else
                     {
-                        applicantIDsToRemove.Add(existingApartmentChoices);
+                        apartmentChoicesToRemove.Cast<int>().Add(existingApartmentChoices);
                     }
+                }
+            }
+
+            // Insert new apartment choices that are not yet in the database
+            foreach (string id in applicantIDsToAdd)
+            {
+                IEnumerable<ApartmentApplicantViewModel> applicantResult = null;
+
+                // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
+                appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
+                idParam = new SqlParameter("@ID_NUM", id);
+                programParam = new SqlParameter("@APRT_PROGRAM", "");
+                sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
+
+                applicantResult = RawSqlQuery<ApartmentApplicantViewModel>.query("INSERT_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM, @SESS_CDE", appIdParam, idParam, programParam, sessionParam); //run stored procedure
+                if (applicantResult == null)
+                {
+                    throw new ResourceNotFoundException() { ExceptionMessage = "Applicant with ID " + id + " could not be inserted." };
                 }
             }
 
