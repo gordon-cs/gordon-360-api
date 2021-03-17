@@ -458,7 +458,7 @@ namespace Gordon360.Services
         public string CreateCSV()
         {
             string csv = string.Empty;
-            var result = RawSqlQuery<ApartmentApplicantDetailsViewModel>.query("GET_AA_APPLICANTS_DETAILS"); //run stored procedure
+            var result = RawSqlQuery<ApartmentApplicantDataViewModel>.query("GET_AA_APPLICANTS_DETAILS"); //run stored procedure
             foreach (var element in result)
             {
                 csv += element.AprtAppID + ","

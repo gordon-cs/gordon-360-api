@@ -372,6 +372,39 @@
             <param name="rideID">The identifier for the booking to be deleted</param>
             <remarks>Calls the server to make a call and remove the given booking from the database</remarks>
         </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.CheckIfHousingAdmin">
+            <summary>
+            Check if the currently logged in user is authorized to view the housing admin page
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.AddHousingAdmin(System.String)">
+            <summary>
+            Add a user to the admin whitelist
+            </summary>
+            <param name="id"> The id of the user to add </param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.RemoveHousingAdmin(System.String)">
+            <summary>
+            Remove a user from the admin whitelist
+            </summary>
+            <param name="id"> The id of the user to remove </param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.GetApplicationID">
+            <summary>
+            Get apartment application ID number of currently logged in user if that user is on an existing application
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.GetUserApplicationID(System.String)">
+            <summary>
+            Get apartment application ID number for a user if that user is on an existing application
+            </summary>
+            <param name="username">username of the profile info</param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.HousingController.SaveApplication(Gordon360.Models.ViewModels.ApartmentAppViewModel)">
             <summary>
             save application
@@ -396,6 +429,11 @@
             and returns it to the frontend, so that it can convert it into a csv file.
             </summary>
             <returns>An http result with the csv string from the CreateCSV service</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.GetApartmentApplication(System.String)">
+            <summary>Get apartment application info for a given application ID number</summary>
+            <param name="applicationID">application ID number of the apartment application</param>
+            <returns>Object of type ApartmentAppViewModel</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.NewsController.#ctor">
             private void catchBadInput()
@@ -1847,6 +1885,40 @@
             </summary>
             <param name="id">id</param>
             <returns>VictoryPromiseViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.CheckIfHousingAdmin(System.String)">
+            <summary>
+            Calls a stored procedure that returns a row in the staff whitelist which has the given user id,
+            if it is in the whitelist
+            </summary>
+            <param name="userId"> The id of the person using the page </param>
+            <returns> Whether or not the user is on the staff whitelist </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.AddHousingAdmin(System.String)">
+            <summary>
+            Calls a stored procedure that inserts the given id into the whitelist table
+            </summary>
+            <param name="id"> The id to insert </param>
+            <returns> Whether or not this was successful </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.RemoveHousingAdmin(System.String)">
+            <summary>
+            Calls a stored procedure that deletes the given id from the whitelist table
+            </summary>
+            <param name="id"> The id to remove </param>
+            <returns> Whether or not this was successful </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetApplicationID(System.String,System.String)">
+            <summary>
+            Calls a stored procedure that tries to get the id of an the application that a given user is 
+            applicant on for a given session
+            </summary>
+            <param name="studentId"> The id to look for </param>
+            /// <param name="sess_cde"> Session for which the application would be </param>
+            <returns> 
+            The id of the application or 
+            null if the user is not on an application for that session 
+            </returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.SaveApplication(System.String,System.String,System.String[],Gordon360.Models.ViewModels.ApartmentChoiceViewModel[])">
              <summary>
