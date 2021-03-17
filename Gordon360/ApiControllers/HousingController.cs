@@ -26,6 +26,121 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>
+        /// Check if the currently logged in user is authorized to view the housing admin page
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("admin")]
+        public IHttpActionResult CheckIfHousingAdmin()
+        {
+            //get token data from context, username is the username of current logged in person
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+            string userId = _accountService.GetAccountByUsername(username).GordonID;
+
+            var result = _housingService.CheckIfHousingAdmin(userId);
+            if (result)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound();
+            }
+            
+        }
+
+        /// <summary>
+        /// Add a user to the admin whitelist
+        /// </summary>
+        /// <param name="id"> The id of the user to add </param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("admin/{id}")]
+        public IHttpActionResult AddHousingAdmin(string id)
+        {
+            var result = _housingService.AddHousingAdmin(id);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Remove a user from the admin whitelist
+        /// </summary>
+        /// <param name="id"> The id of the user to remove </param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("admin/{id}")]
+        public IHttpActionResult RemoveHousingAdmin(string id)
+        {
+            var result = _housingService.RemoveHousingAdmin(id);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Get apartment application ID number of currently logged in user if that user is on an existing application
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("apartment")]
+        public IHttpActionResult GetApplicationID()
+        {
+            //get token data from context, username is the username of current logged in person
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+            string editorId = _accountService.GetAccountByUsername(username).GordonID;
+            string sessionId = Helpers.GetCurrentSession().SessionCode;
+
+            var result = _housingService.GetApplicationID(editorId, sessionId);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        /// <summary>
+        /// Get apartment application ID number for a user if that user is on an existing application
+        /// </summary>
+        /// <param name="username">username of the profile info</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("apartment/{username}")]
+        public IHttpActionResult GetUserApplicationID(string username)
+        {
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(username))
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            string editorId = _accountService.GetAccountByUsername(username).GordonID;
+            string sessionId = Helpers.GetCurrentSession().SessionCode;
+
+            var result = _housingService.GetApplicationID(editorId, sessionId);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        /// <summary>
         /// save application
         /// </summary>
         /// <returns>Returns the application ID number if all the queries succeeded</returns>
@@ -162,6 +277,33 @@ namespace Gordon360.Controllers.Api
         {
             string result = _housingService.CreateCSV();
             return Created("Result of CSV creation: ", result);
+        }
+
+        /// <summary>Get apartment application info for a given application ID number</summary>
+        /// <param name="applicationID">application ID number of the apartment application</param>
+        /// <returns>Object of type ApartmentAppViewModel</returns>
+        [HttpGet]
+        [Route("apartment/load/{applicationID}")]
+        //[StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
+        public IHttpActionResult GetApartmentApplication(string applicationID)
+        {
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(applicationID))
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            //! Placeholder
+            var result = false; // This feature is not yet implemented
+            return Ok(result);
         }
     }
 }

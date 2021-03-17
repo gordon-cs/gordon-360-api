@@ -2,7 +2,7 @@
 
 namespace Gordon360.Models.ViewModels
 {
-    public class ApartmentApplicantDetailsViewModel
+    public class ApartmentApplicantDataViewModel
     {
         public int AprtAppID { get; set; }
         public string EditorID { get; set; }

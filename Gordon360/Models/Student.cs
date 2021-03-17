@@ -75,5 +75,7 @@ namespace Gordon360.Models
         public string Minor2Description { get; set; }
         public string Minor3Description { get; set; }
         public string Mail_Location { get; set; }
+        public Nullable<int> ChapelRequired { get; set; }
+        public Nullable<int> ChapelAttended { get; set; }
     }
 }
