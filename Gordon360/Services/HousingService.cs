@@ -471,22 +471,40 @@ namespace Gordon360.Services
 
                 foreach (ApartmentChoiceViewModel newApartmentChoiceModel in newApartmentChoices)
                 {
-                    int newApartmentChoiceRank = newApartmentChoiceModel.HallRank;
-                    string newApartmentChoice = newApartmentChoiceModel.HallName;
-                    if (bldg == newApartmentChoice)
+                    if (bldg == newApartmentChoiceModel.HallName)
                     {
-
+                        // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
+                        appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
+                        rankingParam = new SqlParameter("@RANKING", newApartmentChoiceModel.HallRank);
+                        buildingCodeParam = new SqlParameter("@BLDG_CDE", newApartmentChoiceModel.HallName);
+                        apartmentChoiceResult = RawSqlQuery<ApartmentChoiceSaveViewModel>.query("INSERT_AA_APARTMENT_CHOICE @APPLICATION_ID, @RANKING, @BLDG_CDE", appIdParam, rankingParam, buildingCodeParam); // run stored procedure
+                        if (apartmentChoiceResult == null)
+                        {
+                            throw new ResourceNotFoundException() { ExceptionMessage = "The apartment preference could not be saved." };
+                        }
                     }
                 }
+            }
 
-                // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
-                appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
-                rankingParam = new SqlParameter("@RANKING", choice.HallRank);
-                buildingCodeParam = new SqlParameter("@BLDG_CDE", choice.HallName);
-                apartmentChoiceResult = RawSqlQuery<ApartmentChoiceSaveViewModel>.query("INSERT_AA_APARTMENT_CHOICE @APPLICATION_ID, @RANKING, @BLDG_CDE", appIdParam, rankingParam, buildingCodeParam); // run stored procedure
-                if (apartmentChoiceResult == null)
+            // Update existing apartment choices that are in both the database and the frontend
+            foreach (string bldg in apartmentChoicesToUpdate)
+            {
+                IEnumerable<ApartmentChoiceSaveViewModel> apartmentChoiceResult = null;
+
+                foreach (ApartmentChoiceViewModel newApartmentChoiceModel in newApartmentChoices)
                 {
-                    throw new ResourceNotFoundException() { ExceptionMessage = "The apartment preference could not be saved." };
+                    if (bldg == newApartmentChoiceModel.HallName)
+                    {
+                        // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
+                        appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
+                        rankingParam = new SqlParameter("@RANKING", newApartmentChoiceModel.HallRank);
+                        buildingCodeParam = new SqlParameter("@BLDG_CDE", newApartmentChoiceModel.HallName);
+                        apartmentChoiceResult = RawSqlQuery<ApartmentChoiceSaveViewModel>.query("INSERT_AA_APARTMENT_CHOICE @APPLICATION_ID, @RANKING, @BLDG_CDE", appIdParam, rankingParam, buildingCodeParam); // run stored procedure
+                        if (apartmentChoiceResult == null)
+                        {
+                            throw new ResourceNotFoundException() { ExceptionMessage = "The apartment preference could not be saved." };
+                        }
+                    }
                 }
             }
 
