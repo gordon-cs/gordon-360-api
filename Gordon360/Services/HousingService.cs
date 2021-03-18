@@ -376,21 +376,11 @@ namespace Gordon360.Services
             //--------
             // Update hall information
 
-            IEnumerable<ApartmentChoiceSaveViewModel> apartmentChoiceResult = null;
-
-            appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
-
-            // Get the apartment preferences that are already stored in the database for this application
-            apartmentChoiceResult = RawSqlQuery<ApartmentChoiceSaveViewModel>.query("GET_AA_APARTMENT_CHOICES_BY_APP_ID @APPLICATION_ID", appIdParam);
-            if (apartmentChoiceResult == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The hall information could not be found." };
-            }
-
             // Sudo code:
-            //first - ApartmentChoiceSaveViewModel list
-            //    list<string> bldg code to add or update
-            //    list stinrg to remove
+            //first - ApartmentChoiceSaveViewModel list (IEnumerable)
+            //    compare the list from front and back and sort the elements into the string lists
+            //      list<string> bldg code to add or update
+            //      list stinrg to remove
 
             //    compare the first string list to put the rankings for each buildings
 
@@ -399,60 +389,117 @@ namespace Gordon360.Services
             //    then 2nd loop update
             //    3rd loop to remove
 
-            // Initialize the list to store information from CCT database tables.
-            List<ApartmentChoiceSaveViewModel> apartmentChoicesFromDB = new List<ApartmentChoiceSaveViewModel>();
+            IEnumerable<ApartmentChoiceSaveViewModel> apartmentChoicesFromDB = null;
+
+            appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
+
+            // Get the apartment preferences that are already stored in the database for this application
+            apartmentChoicesFromDB = RawSqlQuery<ApartmentChoiceSaveViewModel>.query("GET_AA_APARTMENT_CHOICES_BY_APP_ID @APPLICATION_ID", appIdParam);
+            if (apartmentChoicesFromDB == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The hall information could not be found." };
+            }
 
             // Initialize the list to store information from the frontend.
-            List<ApartmentChoiceViewModel> apartmentChoicesFromFrontend = new List<ApartmentChoiceViewModel>(newApartmentChoices);
+            //List<ApartmentChoiceViewModel> apartmentChoicesFromFrontend = new List<ApartmentChoiceViewModel>(newApartmentChoices);
 
-            List<string> apartmentChoicesToAdd = new List<string>();
+            // List to store json objects as strings
+            List<string> newApartmentChoicesToAddOrUpdate = new List<string>();
+
+            // List to store the existing hall preferences in the database
+            List<string> existingApartmentChoices = new List<string>();
+
+            // List of apartment choices to remove from the database
             List<string> apartmentChoicesToRemove = new List<string>();
 
+            // Add the hall preference from the database into the list of strings
+            if (apartmentChoicesFromDB.Any())
+            {
+                foreach (ApartmentChoiceSaveViewModel apartmentChoiceModel in apartmentChoicesFromDB)
+                {
+                    string oldApartmentChoice = apartmentChoiceModel.BLDG_CDE;
+                    existingApartmentChoices.Add(oldApartmentChoice);
+                }
+            }
 
-            //// List of apartment choices that are in the array recieved from the frontend but not yet in the database
-            //List<ApartmentChoiceViewModel> apartmentChoicesToAdd = new List<ApartmentChoiceViewModel>(newApartmentChoices);
+            // Add the hall preference from the frontend into the list of strings
+            if (newApartmentChoices.Any())
+            {
+                foreach (ApartmentChoiceViewModel newApartmentChoiceModel in newApartmentChoices)
+                {
+                    string newApartmentChoice = newApartmentChoiceModel.HallName;
+                    newApartmentChoicesToAddOrUpdate.Add(newApartmentChoice);
+                }
+            }
 
-            //// List of apartment choices that are in both the array recieved from the frontend and the database
-            //List<ApartmentChoiceViewModel> apartmentChoicesToUpdate = new List<ApartmentChoiceViewModel>();
+            // Find a list of apartment choices to remove
+            foreach (string bldg in existingApartmentChoices)
+            {
+                if (!newApartmentChoicesToAddOrUpdate.Contains(bldg))
+                {
+                    apartmentChoicesToRemove.Add(bldg);
+                    newApartmentChoicesToAddOrUpdate.Remove(bldg);
+                }
+            }
 
-            //// List of apartment choices that are in the database but not in the array recieved from the frontend
-            //List<ApartmentChoiceViewModel> apartmentChoicesToRemove = new List<ApartmentChoiceViewModel>();
+            // List of apartment choices that are in the array recieved from the frontend but not yet in the database
+            List<string> apartmentChoicesToAdd = new List<string>();
+            // List of apartment choices that are in both the array recieved from the frontend and the database
+            List<string> apartmentChoicesToUpdate = new List<string>();
 
-            //// Check whether any apartment choices were found matching the given application ID number
-            //if (apartmentChoiceResult.Any())
-            //{
-            //    foreach (ApartmentChoiceSaveViewModel apartmentChoiceModel in apartmentChoiceResult)
-            //    {
-            //        string existingApartmentChoices = apartmentChoiceModel.BLDG_CDE;
-            //        if (newApartmentChoices.Contains(existingApartmentChoices))
-            //        {
-            //            apartmentChoicesToAdd.Remove(existingApartmentChoices);
-            //            apartmentChoicesToUpdate.Add(existingApartmentChoices);
-            //        }
-            //        else
-            //        {
-            //            apartmentChoicesToRemove.Cast<int>().Add(existingApartmentChoices);
-            //        }
-            //    }
-            //}
+            // Separate the list into two: ToAdd and ToUpdate
+            foreach (string bldg in newApartmentChoicesToAddOrUpdate)
+            {
+                if (existingApartmentChoices.Contains(bldg))
+                {
+                    apartmentChoicesToUpdate.Add(bldg);
+                    newApartmentChoicesToAddOrUpdate.Remove(bldg);
+                }
+                else
+                {
+                    apartmentChoicesToAdd.Add(bldg);
+                }
+            }
 
             // Insert new apartment choices that are not yet in the database
-            foreach (string id in applicantIDsToAdd)
+            SqlParameter rankingParam = null;
+            SqlParameter buildingCodeParam = null;
+
+            foreach (string bldg in apartmentChoicesToAdd)
             {
-                IEnumerable<ApartmentApplicantViewModel> applicantResult = null;
+                IEnumerable<ApartmentChoiceSaveViewModel> apartmentChoiceResult = null;
+
+                foreach (ApartmentChoiceViewModel newApartmentChoiceModel in newApartmentChoices)
+                {
+                    int newApartmentChoiceRank = newApartmentChoiceModel.HallRank;
+                    string newApartmentChoice = newApartmentChoiceModel.HallName;
+                    if (bldg == newApartmentChoice)
+                    {
+
+                    }
+                }
 
                 // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
                 appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
-                idParam = new SqlParameter("@ID_NUM", id);
-                programParam = new SqlParameter("@APRT_PROGRAM", "");
-                sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
-
-                applicantResult = RawSqlQuery<ApartmentApplicantViewModel>.query("INSERT_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM, @SESS_CDE", appIdParam, idParam, programParam, sessionParam); //run stored procedure
-                if (applicantResult == null)
+                rankingParam = new SqlParameter("@RANKING", choice.HallRank);
+                buildingCodeParam = new SqlParameter("@BLDG_CDE", choice.HallName);
+                apartmentChoiceResult = RawSqlQuery<ApartmentChoiceSaveViewModel>.query("INSERT_AA_APARTMENT_CHOICE @APPLICATION_ID, @RANKING, @BLDG_CDE", appIdParam, rankingParam, buildingCodeParam); // run stored procedure
+                if (apartmentChoiceResult == null)
                 {
-                    throw new ResourceNotFoundException() { ExceptionMessage = "Applicant with ID " + id + " could not be inserted." };
+                    throw new ResourceNotFoundException() { ExceptionMessage = "The apartment preference could not be saved." };
                 }
             }
+
+            // Initialize the list of string so that we could perform sorting methods like 'contains', 'add', and 'remove'.
+            // List of apartment choices by their BLDG_CDE:
+            List<string> apartmentChoicesToAddOrUpdate = new List<string>(); // apartment choices to add or update
+            
+
+
+            
+            
+
+
 
             //--------
             // Update the date modified
