@@ -387,32 +387,54 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The hall information could not be found." };
             }
 
-            // List of apartment choices that are in the array recieved from the frontend but not yet in the database
-            List<ApartmentChoiceViewModel> apartmentChoicesToAdd = new List<ApartmentChoiceViewModel>(newApartmentChoices);
+            // Sudo code:
+            //first - ApartmentChoiceSaveViewModel list
+            //    list<string> bldg code to add or update
+            //    list stinrg to remove
 
-            // List of apartment choices that are in both the array recieved from the frontend and the database
-            List<ApartmentChoiceViewModel> apartmentChoicesToUpdate = new List<ApartmentChoiceViewModel>();
+            //    compare the first string list to put the rankings for each buildings
 
-            // List of apartment choices that are in the database but not in the array recieved from the frontend
-            List<ApartmentChoiceViewModel> apartmentChoicesToRemove = new List<ApartmentChoiceViewModel>();
+            //    then I will create 2nd viewmodel list to add all of them so that i can send back to db (or call the stored precedure)
+            //    loop - add
+            //    then 2nd loop update
+            //    3rd loop to remove
 
-            // Check whether any apartment choices were found matching the given application ID number
-            if (apartmentChoiceResult.Any())
-            {
-                foreach (ApartmentChoiceSaveViewModel apartmentChoiceModel in apartmentChoiceResult)
-                {
-                    int existingApartmentChoices = apartmentChoiceModel.APPLICATION_ID;
-                    if (newApartmentChoices.Cast<int>().Contains(existingApartmentChoices))
-                    {
-                        apartmentChoicesToAdd.Cast<int>().Remove(existingApartmentChoices);
-                        apartmentChoicesToUpdate.Cast<int>().Add(existingApartmentChoices);
-                    }
-                    else
-                    {
-                        apartmentChoicesToRemove.Cast<int>().Add(existingApartmentChoices);
-                    }
-                }
-            }
+            // Initialize the list to store information from CCT database tables.
+            List<ApartmentChoiceSaveViewModel> apartmentChoicesFromDB = new List<ApartmentChoiceSaveViewModel>();
+
+            // Initialize the list to store information from the frontend.
+            List<ApartmentChoiceViewModel> apartmentChoicesFromFrontend = new List<ApartmentChoiceViewModel>(newApartmentChoices);
+
+            List<string> apartmentChoicesToAdd = new List<string>();
+            List<string> apartmentChoicesToRemove = new List<string>();
+
+
+            //// List of apartment choices that are in the array recieved from the frontend but not yet in the database
+            //List<ApartmentChoiceViewModel> apartmentChoicesToAdd = new List<ApartmentChoiceViewModel>(newApartmentChoices);
+
+            //// List of apartment choices that are in both the array recieved from the frontend and the database
+            //List<ApartmentChoiceViewModel> apartmentChoicesToUpdate = new List<ApartmentChoiceViewModel>();
+
+            //// List of apartment choices that are in the database but not in the array recieved from the frontend
+            //List<ApartmentChoiceViewModel> apartmentChoicesToRemove = new List<ApartmentChoiceViewModel>();
+
+            //// Check whether any apartment choices were found matching the given application ID number
+            //if (apartmentChoiceResult.Any())
+            //{
+            //    foreach (ApartmentChoiceSaveViewModel apartmentChoiceModel in apartmentChoiceResult)
+            //    {
+            //        string existingApartmentChoices = apartmentChoiceModel.BLDG_CDE;
+            //        if (newApartmentChoices.Contains(existingApartmentChoices))
+            //        {
+            //            apartmentChoicesToAdd.Remove(existingApartmentChoices);
+            //            apartmentChoicesToUpdate.Add(existingApartmentChoices);
+            //        }
+            //        else
+            //        {
+            //            apartmentChoicesToRemove.Cast<int>().Add(existingApartmentChoices);
+            //        }
+            //    }
+            //}
 
             // Insert new apartment choices that are not yet in the database
             foreach (string id in applicantIDsToAdd)
