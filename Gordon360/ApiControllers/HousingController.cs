@@ -48,7 +48,7 @@ namespace Gordon360.Controllers.Api
             {
                 return NotFound();
             }
-            
+
         }
 
         /// <summary>
@@ -172,7 +172,8 @@ namespace Gordon360.Controllers.Api
             string sessionId = Helpers.GetCurrentSession().SessionCode;
 
             string[] applicantIds = new string[apartmentAppDetails.Applicants.Length];
-            for(int i = 0; i < apartmentAppDetails.Applicants.Length; i++){
+            for (int i = 0; i < apartmentAppDetails.Applicants.Length; i++)
+            {
                 applicantIds[i] = _accountService.GetAccountByUsername(apartmentAppDetails.Applicants[i]).GordonID;
             }
 
@@ -265,29 +266,16 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
 
-        /// <summary>
-        /// Create a string a string from the combination of AA_ApartementApplications and AA_Applicants Tables
-        /// and returns it to the frontend, so that it can convert it into a csv file.
-        /// </summary>
-        /// <returns>An http result with the csv string from the CreateCSV service</returns>
-        [HttpGet]
-        [Route("apartment/csv")]
-        //[StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
-        public IHttpActionResult CreateCSV()
-        {
-            string result = _housingService.CreateCSV();
-            return Created("Result of CSV creation: ", result);
-        }
 
         /// <summary>Get apartment application info for a given application ID number</summary>
         /// <param name="applicationID">application ID number of the apartment application</param>
         /// <returns>Object of type ApartmentAppViewModel</returns>
         [HttpGet]
-        [Route("apartment/load/{applicationID}")]
+        [Route("apartment/applications/{applicationID}")]
         //[StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
-        public IHttpActionResult GetApartmentApplication(string applicationID)
+        public IHttpActionResult GetApartmentApplication(int applicationID)
         {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(applicationID))
+            if (!ModelState.IsValid || applicationID != null)
             {
                 string errors = "";
                 foreach (var modelstate in ModelState.Values)
@@ -300,10 +288,63 @@ namespace Gordon360.Controllers.Api
                 }
                 throw new BadInputException() { ExceptionMessage = errors };
             }
+            //get token data from context, username is the username of current logged in person
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
-            //! Placeholder
-            var result = false; // This feature is not yet implemented
-            return Ok(result);
+            string userId = _accountService.GetAccountByUsername(username).GordonID;
+            string sessionId = Helpers.GetCurrentSession().SessionCode;
+
+            int? storedApplicationID = _housingService.GetApplicationID(userId, sessionId);
+            if (storedApplicationID == null)
+            {
+                return NotFound();
+            }
+            else if (storedApplicationID != applicationID)
+            {
+                return Ok('User does not appear to be an applicant on the application they are trying to load'); // This should not be an "Ok", but I have not researched yet what type of error code is appropriate. It is some form of unauthorized.
+            }
+            else
+            {
+                ApartmentAppViewModel? result = _housingService.GetApartmentApplication(userId, sessionId, applicationID);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+        }
+
+        /// <summary>Get apartment application info for all applications if the current user is a housing admin</summary>
+        /// <returns>Object of type ApartmentAppViewModel</returns>
+        [HttpGet]
+        [Route("admin/apartment/applications/")]
+        //[StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
+        public IHttpActionResult GetAllApartmentApplication()
+        {
+            //get token data from context, username is the username of current logged in person
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+            string userId = _accountService.GetAccountByUsername(username).GordonID;
+            string sessionId = Helpers.GetCurrentSession().SessionCode;
+
+
+            var isAdmin = _housingService.CheckIfHousingAdmin(userId);
+
+
+            ApartmentAppViewModel result = _housingService.GetAllApartmentApplication(userId, sessionId, applicationID);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound();
+            }
         }
     }
 }
