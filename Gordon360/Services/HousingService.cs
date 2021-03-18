@@ -196,7 +196,7 @@ namespace Gordon360.Services
             SqlParameter programParam = null;
 
             foreach (string id in applicantIDs) {
-                IEnumerable<ApartmentApplicantViewModel> applicantResult = null;
+                IEnumerable<ApartmentApplicantsTableViewModel> applicantResult = null;
 
                 // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
                 appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
@@ -204,7 +204,7 @@ namespace Gordon360.Services
                 programParam = new SqlParameter("@APRT_PROGRAM", "");
                 sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
 
-                applicantResult = RawSqlQuery<ApartmentApplicantViewModel>.query("INSERT_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM, @SESS_CDE", appIdParam, idParam, programParam, sessionParam); //run stored procedure
+                applicantResult = RawSqlQuery<ApartmentApplicantsTableViewModel>.query("INSERT_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM, @SESS_CDE", appIdParam, idParam, programParam, sessionParam); //run stored procedure
                 if (applicantResult == null)
                 {
                     throw new ResourceNotFoundException() { ExceptionMessage = "Applicant with ID " + id + " could not be saved." };
@@ -323,7 +323,7 @@ namespace Gordon360.Services
             // Insert new applicants that are not yet in the database
             foreach (string id in applicantIDsToAdd)
             {
-                IEnumerable<ApartmentApplicantViewModel> applicantResult = null;
+                IEnumerable<ApartmentApplicantsTableViewModel> applicantResult = null;
 
                 // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
                 appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
@@ -331,7 +331,7 @@ namespace Gordon360.Services
                 programParam = new SqlParameter("@APRT_PROGRAM", "");
                 sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
 
-                applicantResult = RawSqlQuery<ApartmentApplicantViewModel>.query("INSERT_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM, @SESS_CDE", appIdParam, idParam, programParam, sessionParam); //run stored procedure
+                applicantResult = RawSqlQuery<ApartmentApplicantsTableViewModel>.query("INSERT_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM, @SESS_CDE", appIdParam, idParam, programParam, sessionParam); //run stored procedure
                 if (applicantResult == null)
                 {
                     throw new ResourceNotFoundException() { ExceptionMessage = "Applicant with ID " + id + " could not be inserted." };
@@ -341,7 +341,7 @@ namespace Gordon360.Services
             // Update the info of applicants from the frontend that are already in the database
             foreach (string id in applicantIDsToUpdate)
             {
-                IEnumerable<ApartmentApplicantViewModel> applicantResult = null;
+                IEnumerable<ApartmentApplicantsTableViewModel> applicantResult = null;
 
                 // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
                 appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
@@ -349,7 +349,7 @@ namespace Gordon360.Services
                 programParam = new SqlParameter("@APRT_PROGRAM", ""); // TODO: This will be used to update the off-campus program department once that feature has been made on the frontend
                 sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
 
-                applicantResult = RawSqlQuery<ApartmentApplicantViewModel>.query("UPDATE_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM, @SESS_CDE", appIdParam, idParam, programParam, sessionParam); //run stored procedure
+                applicantResult = RawSqlQuery<ApartmentApplicantsTableViewModel>.query("UPDATE_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM, @SESS_CDE", appIdParam, idParam, programParam, sessionParam); //run stored procedure
                 if (applicantResult == null)
                 {
                     throw new ResourceNotFoundException() { ExceptionMessage = "Applicant with ID " + id + " could not be updated." };
@@ -359,14 +359,14 @@ namespace Gordon360.Services
             // Remove applicants from the database that were remove from the frontend
             foreach (string id in applicantIDsToRemove)
             {
-                IEnumerable<ApartmentApplicantViewModel> applicantResult = null;
+                IEnumerable<ApartmentApplicantsTableViewModel> applicantResult = null;
 
                 // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
                 appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
                 idParam = new SqlParameter("@ID_NUM", id);
                 sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
 
-                applicantResult = RawSqlQuery<ApartmentApplicantViewModel>.query("DELETE_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @SESS_CDE", appIdParam, idParam, sessionParam); //run stored procedure
+                applicantResult = RawSqlQuery<ApartmentApplicantsTableViewModel>.query("DELETE_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @SESS_CDE", appIdParam, idParam, sessionParam); //run stored procedure
                 if (applicantResult == null)
                 {
                     throw new ResourceNotFoundException() { ExceptionMessage = "Applicant with ID " + id + " could not be removed." };
@@ -417,7 +417,7 @@ namespace Gordon360.Services
             // Insert new apartment choices that are not yet in the database
             foreach (string id in applicantIDsToAdd)
             {
-                IEnumerable<ApartmentApplicantViewModel> applicantResult = null;
+                IEnumerable<ApartmentApplicantsTableViewModel> applicantResult = null;
 
                 // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
                 appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
@@ -425,7 +425,7 @@ namespace Gordon360.Services
                 programParam = new SqlParameter("@APRT_PROGRAM", "");
                 sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
 
-                applicantResult = RawSqlQuery<ApartmentApplicantViewModel>.query("INSERT_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM, @SESS_CDE", appIdParam, idParam, programParam, sessionParam); //run stored procedure
+                applicantResult = RawSqlQuery<ApartmentApplicantsTableViewModel>.query("INSERT_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM, @SESS_CDE", appIdParam, idParam, programParam, sessionParam); //run stored procedure
                 if (applicantResult == null)
                 {
                     throw new ResourceNotFoundException() { ExceptionMessage = "Applicant with ID " + id + " could not be inserted." };
