@@ -499,7 +499,7 @@ namespace Gordon360.Services
                         appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
                         rankingParam = new SqlParameter("@RANKING", newApartmentChoiceModel.HallRank);
                         buildingCodeParam = new SqlParameter("@BLDG_CDE", newApartmentChoiceModel.HallName);
-                        apartmentChoiceResult = RawSqlQuery<ApartmentChoiceSaveViewModel>.query("INSERT_AA_APARTMENT_CHOICE @APPLICATION_ID, @RANKING, @BLDG_CDE", appIdParam, rankingParam, buildingCodeParam); // run stored procedure
+                        apartmentChoiceResult = RawSqlQuery<ApartmentChoiceSaveViewModel>.query("UPDATE_AA_APARTMENT_CHOICES @APPLICATION_ID, @RANKING, @BLDG_CDE", appIdParam, rankingParam, buildingCodeParam); // run stored procedure
                         if (apartmentChoiceResult == null)
                         {
                             throw new ResourceNotFoundException() { ExceptionMessage = "The apartment preference could not be saved." };
@@ -508,16 +508,20 @@ namespace Gordon360.Services
                 }
             }
 
-            // Initialize the list of string so that we could perform sorting methods like 'contains', 'add', and 'remove'.
-            // List of apartment choices by their BLDG_CDE:
-            List<string> apartmentChoicesToAddOrUpdate = new List<string>(); // apartment choices to add or update
-            
+            // Remove existing apartment choices that are in the database but not in the frontend
+            foreach (string bldg in apartmentChoicesToRemove)
+            {
+                IEnumerable<ApartmentChoiceSaveViewModel> apartmentChoiceResult = null;
 
-
-            
-            
-
-
+                // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
+                appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
+                buildingCodeParam = new SqlParameter("@BLDG_CDE", bldg);
+                apartmentChoiceResult = RawSqlQuery<ApartmentChoiceSaveViewModel>.query("DELETE_AA_APARTMENT_CHOICES @APPLICATION_ID, @BLDG_CDE", appIdParam, buildingCodeParam); // run stored procedure
+                if (apartmentChoiceResult == null)
+                {
+                    throw new ResourceNotFoundException() { ExceptionMessage = "The apartment preference could not be saved." };
+                }
+            }
 
             //--------
             // Update the date modified
