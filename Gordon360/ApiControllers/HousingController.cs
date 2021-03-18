@@ -1,12 +1,12 @@
 ﻿using Gordon360.Exceptions.CustomExceptions;
+using Gordon360.Exceptions.ExceptionFilters;
+using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using Gordon360.Services;
-using System.Linq;
-using System.Web.Http;
-using System.Security.Claims;
-using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Static.Methods;
-using Gordon360.Models.ViewModels;
+using System.Linq;
+using System.Security.Claims;
+using System.Web.Http;
 
 namespace Gordon360.Controllers.Api
 {
@@ -34,12 +34,12 @@ namespace Gordon360.Controllers.Api
         public IHttpActionResult CheckIfHousingAdmin()
         {
             //get token data from context, username is the username of current logged in person
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
             string userId = _accountService.GetAccountByUsername(username).GordonID;
 
-            var result = _housingService.CheckIfHousingAdmin(userId);
+            bool result = _housingService.CheckIfHousingAdmin(userId);
             if (result)
             {
                 return Ok(result);
@@ -60,7 +60,7 @@ namespace Gordon360.Controllers.Api
         [Route("admin/{id}")]
         public IHttpActionResult AddHousingAdmin(string id)
         {
-            var result = _housingService.AddHousingAdmin(id);
+            bool result = _housingService.AddHousingAdmin(id);
             return Ok(result);
         }
 
@@ -73,7 +73,7 @@ namespace Gordon360.Controllers.Api
         [Route("admin/{id}")]
         public IHttpActionResult RemoveHousingAdmin(string id)
         {
-            var result = _housingService.RemoveHousingAdmin(id);
+            bool result = _housingService.RemoveHousingAdmin(id);
             return Ok(result);
         }
 
@@ -86,13 +86,13 @@ namespace Gordon360.Controllers.Api
         public IHttpActionResult GetApplicationID()
         {
             //get token data from context, username is the username of current logged in person
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
             string editorId = _accountService.GetAccountByUsername(username).GordonID;
             string sessionId = Helpers.GetCurrentSession().SessionCode;
 
-            var result = _housingService.GetApplicationID(editorId, sessionId);
+            int? result = _housingService.GetApplicationID(editorId, sessionId);
             if (result != null)
             {
                 return Ok(result);
@@ -115,9 +115,9 @@ namespace Gordon360.Controllers.Api
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(username))
             {
                 string errors = "";
-                foreach (var modelstate in ModelState.Values)
+                foreach (System.Web.Http.ModelBinding.ModelState modelstate in ModelState.Values)
                 {
-                    foreach (var error in modelstate.Errors)
+                    foreach (System.Web.Http.ModelBinding.ModelError error in modelstate.Errors)
                     {
                         errors += "|" + error.ErrorMessage + "|" + error.Exception;
                     }
@@ -129,7 +129,7 @@ namespace Gordon360.Controllers.Api
             string editorId = _accountService.GetAccountByUsername(username).GordonID;
             string sessionId = Helpers.GetCurrentSession().SessionCode;
 
-            var result = _housingService.GetApplicationID(editorId, sessionId);
+            int? result = _housingService.GetApplicationID(editorId, sessionId);
             if (result != null)
             {
                 return Ok(result);
@@ -153,9 +153,9 @@ namespace Gordon360.Controllers.Api
             if (!ModelState.IsValid)
             {
                 string errors = "";
-                foreach (var modelstate in ModelState.Values)
+                foreach (System.Web.Http.ModelBinding.ModelState modelstate in ModelState.Values)
                 {
-                    foreach (var error in modelstate.Errors)
+                    foreach (System.Web.Http.ModelBinding.ModelError error in modelstate.Errors)
                     {
                         errors += "|" + error.ErrorMessage + "|" + error.Exception;
                     }
@@ -164,8 +164,8 @@ namespace Gordon360.Controllers.Api
                 throw new BadInputException() { ExceptionMessage = errors };
             }
             //get token data from context, username is the username of current logged in person
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
             string editorId = _accountService.GetAccountByUsername(username).GordonID;
 
@@ -196,9 +196,9 @@ namespace Gordon360.Controllers.Api
             if (!ModelState.IsValid)
             {
                 string errors = "";
-                foreach (var modelstate in ModelState.Values)
+                foreach (System.Web.Http.ModelBinding.ModelState modelstate in ModelState.Values)
                 {
-                    foreach (var error in modelstate.Errors)
+                    foreach (System.Web.Http.ModelBinding.ModelError error in modelstate.Errors)
                     {
                         errors += "|" + error.ErrorMessage + "|" + error.Exception;
                     }
@@ -207,8 +207,8 @@ namespace Gordon360.Controllers.Api
                 throw new BadInputException() { ExceptionMessage = errors };
             }
             //get token data from context, username is the username of current logged in person
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
             string editorId = _accountService.GetAccountByUsername(username).GordonID;
 
@@ -241,9 +241,9 @@ namespace Gordon360.Controllers.Api
             if (!ModelState.IsValid)
             {
                 string errors = "";
-                foreach (var modelstate in ModelState.Values)
+                foreach (System.Web.Http.ModelBinding.ModelState modelstate in ModelState.Values)
                 {
-                    foreach (var error in modelstate.Errors)
+                    foreach (System.Web.Http.ModelBinding.ModelError error in modelstate.Errors)
                     {
                         errors += "|" + error.ErrorMessage + "|" + error.Exception;
                     }
@@ -252,8 +252,8 @@ namespace Gordon360.Controllers.Api
                 throw new BadInputException() { ExceptionMessage = errors };
             }
             //get token data from context, username is the username of current logged in person
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
             string editorId = _accountService.GetAccountByUsername(username).GordonID;
 
@@ -278,9 +278,9 @@ namespace Gordon360.Controllers.Api
             if (!ModelState.IsValid || applicationID != null)
             {
                 string errors = "";
-                foreach (var modelstate in ModelState.Values)
+                foreach (System.Web.Http.ModelBinding.ModelState modelstate in ModelState.Values)
                 {
-                    foreach (var error in modelstate.Errors)
+                    foreach (System.Web.Http.ModelBinding.ModelError error in modelstate.Errors)
                     {
                         errors += "|" + error.ErrorMessage + "|" + error.Exception;
                     }
@@ -289,8 +289,8 @@ namespace Gordon360.Controllers.Api
                 throw new BadInputException() { ExceptionMessage = errors };
             }
             //get token data from context, username is the username of current logged in person
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
             string userId = _accountService.GetAccountByUsername(username).GordonID;
             string sessionId = Helpers.GetCurrentSession().SessionCode;
@@ -326,14 +326,14 @@ namespace Gordon360.Controllers.Api
         public IHttpActionResult GetAllApartmentApplication()
         {
             //get token data from context, username is the username of current logged in person
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
             string userId = _accountService.GetAccountByUsername(username).GordonID;
             string sessionId = Helpers.GetCurrentSession().SessionCode;
 
 
-            var isAdmin = _housingService.CheckIfHousingAdmin(userId);
+            bool isAdmin = _housingService.CheckIfHousingAdmin(userId);
 
 
             ApartmentAppViewModel result = _housingService.GetAllApartmentApplication(userId, sessionId, applicationID);
