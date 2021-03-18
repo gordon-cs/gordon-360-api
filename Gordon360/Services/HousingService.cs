@@ -376,19 +376,6 @@ namespace Gordon360.Services
             //--------
             // Update hall information
 
-            // Sudo code:
-            //first - ApartmentChoiceSaveViewModel list (IEnumerable)
-            //    compare the list from front and back and sort the elements into the string lists
-            //      list<string> bldg code to add or update
-            //      list stinrg to remove
-
-            //    compare the first string list to put the rankings for each buildings
-
-            //    then I will create 2nd viewmodel list to add all of them so that i can send back to db (or call the stored precedure)
-            //    loop - add
-            //    then 2nd loop update
-            //    3rd loop to remove
-
             IEnumerable<ApartmentChoiceSaveViewModel> apartmentChoicesFromDB = null;
 
             appIdParam = new SqlParameter("@APPLICATION_ID", apartAppId);
