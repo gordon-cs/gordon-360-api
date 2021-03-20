@@ -1,6 +1,6 @@
 ﻿namespace Gordon360.Models.ViewModels
 {
-    public class ApartmentAppAdminViewModel
+    public class HousingAdminViewModel
     {
         public string AdminID { get; set; }
     }

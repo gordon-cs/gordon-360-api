@@ -1,8 +1,8 @@
-﻿using System;
-using System.Xml.Linq;
-using System.Collections.Generic;
-using Gordon360.Models;
+﻿using Gordon360.Models;
 using Gordon360.Models.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Xml.Linq;
 
 // <summary>
 // Namespace with all the Service Interfaces that are to be implemented. I don't think making this interface is required, the services can work find on their own.
@@ -63,7 +63,7 @@ namespace Gordon360.Services
 
     public interface IDirectMessageService
     {
-        bool CreateGroup(String id, String name, bool group, DateTime lastUpdated,string image);
+        bool CreateGroup(String id, String name, bool group, DateTime lastUpdated, string image);
         bool SendMessage(SendTextViewModel textInfo, string user_id);
         bool StoreUserRooms(String userId, String roomId);
         IEnumerable<MessageViewModel> GetMessages(string roomId);
@@ -126,7 +126,7 @@ namespace Gordon360.Services
         IEnumerable<EmailViewModel> GetEmailsForActivityAdvisors(string activity_code, string session_code);
         IEnumerable<EmailViewModel> GetEmailsForActivity(string activity_code, string session_code);
         // Send emails
-        void SendEmails(string [] to_emails, string to_email, string subject, string email_content, string password);
+        void SendEmails(string[] to_emails, string to_email, string subject, string email_content, string password);
         void SendEmailToActivity(string activityCode, string sessionCode, string from_email, string subject, string email_content, string password);
     }
 
@@ -273,12 +273,12 @@ namespace Gordon360.Services
         bool CheckIfHousingAdmin(string userId);
         bool AddHousingAdmin(string id);
         bool RemoveHousingAdmin(string id);
-        int SaveApplication(string editorId, string sess_cde, ApartmentApplicantViewModel[] apartmentApplicants, ApartmentChoiceViewModel[] apartmentChoices);
-        int EditApplication(string editorId, string sess_cde, int apartAppId, ApartmentApplicantViewModel[] newApartmentApplicants, ApartmentChoiceViewModel[] newApartmentChoices);
-        bool ChangeApplicationEditor(string editorId, int apartAppId, string newEditorId);
+        int SaveApplication(string userID, string sess_cde, string editorID, ApartmentApplicantViewModel[] apartmentApplicants, ApartmentChoiceViewModel[] apartmentChoices);
+        int EditApplication(string userID, string sess_cde, int applicationID, string newEditorID, ApartmentApplicantViewModel[] newApartmentApplicants, ApartmentChoiceViewModel[] newApartmentChoices);
+        bool ChangeApplicationEditor(string userID, int applicationID, string newEditorId);
         string CreateCSV();
-        ApartmentAppViewModel GetApartmentApplication(string sess_cde, int applicationID);
-        ApartmentAppViewModel[] GetAllApartmentApplication(string sess_cde);
+        ApartmentApplicationViewModel GetApartmentApplication(string sess_cde, int applicationID);
+        ApartmentApplicationViewModel[] GetAllApartmentApplication(string sess_cde);
     }
 
 }
