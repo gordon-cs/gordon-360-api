@@ -277,8 +277,8 @@ namespace Gordon360.Services
         int EditApplication(string userID, string sess_cde, int applicationID, string newEditorID, ApartmentApplicantViewModel[] newApartmentApplicants, ApartmentChoiceViewModel[] newApartmentChoices);
         bool ChangeApplicationEditor(string userID, int applicationID, string newEditorId);
         string CreateCSV();
-        ApartmentApplicationViewModel GetApartmentApplication(string sess_cde, int applicationID);
-        ApartmentApplicationViewModel[] GetAllApartmentApplication(string sess_cde);
+        ApartmentApplicationViewModel GetApartmentApplication(int applicationID);
+        ApartmentApplicationViewModel[] GetAllApartmentApplication();
     }
 
 }

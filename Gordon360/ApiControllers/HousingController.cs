@@ -315,7 +315,7 @@ namespace Gordon360.Controllers.Api
             }
             else
             {
-                ApartmentApplicationViewModel result = _housingService.GetApartmentApplication(sessionID, applicationID);
+                ApartmentApplicationViewModel result = _housingService.GetApartmentApplication(applicationID);
                 if (result != null)
                 {
                     return Ok(result);

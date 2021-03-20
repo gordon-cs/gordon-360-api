@@ -600,7 +600,7 @@ namespace Gordon360.Services
             return csv;
         }
 
-        public ApartmentApplicationViewModel GetApartmentApplication(string sess_cde, int applicationID)
+        public ApartmentApplicationViewModel GetApartmentApplication(int applicationID)
         {
             SqlParameter appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
 
@@ -617,24 +617,44 @@ namespace Gordon360.Services
 
             GET_AA_APPLICATIONS_BY_ID_Result applicationsDBModel = applicationResult.FirstOrDefault(x => x.AprtAppID == applicationID);
 
-            ApartmentApplicationViewModel apartmentApplication = new ApartmentApplicationViewModel();
-
-            SqlParameter sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
             // Assign the values from the database to the corresponding properties
+            ApartmentApplicationViewModel apartmentApplication = new ApartmentApplicationViewModel();
             apartmentApplication.AprtAppID = applicationsDBModel.AprtAppID;
+
+            // Get the applicants that match this application ID
+            appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
+            IEnumerable<GET_AA_APPLICANTS_BY_APPID_Result> applicantsResult = RawSqlQuery<GET_AA_APPLICANTS_BY_APPID_Result>.query("GET_AA_APPLICANTS_BY_APPID", applicationID);
+            if (applicantsResult != null && applicantsResult.Any())
+            {
+                ApartmentApplicantViewModel[] applicants = new ApartmentApplicantViewModel[applicantsResult.Count()];
+                foreach (GET_AA_APPLICANTS_BY_APPID_Result applicantDbModel in applicantsResult)
+                {
+                    ApartmentApplicantViewModel applicantModel = new ApartmentApplicantViewModel();
+
+                }
+
+
+
+
+            }
+
+
+
+
+
+
+
 
 
 
             return null; //Temporary while I work
         }
 
-        public ApartmentApplicationViewModel[] GetAllApartmentApplication(string sess_cde)
+        public ApartmentApplicationViewModel[] GetAllApartmentApplication()
         {
             IEnumerable<GET_AA_APPLICATIONS_Result> applicationResult = null;
 
-            SqlParameter sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
-
-            applicationResult = RawSqlQuery<GET_AA_APPLICATIONS_Result>.query("GET_AA_APPLICATIONS @SESS_CDE", sessionParam);
+            applicationResult = RawSqlQuery<GET_AA_APPLICATIONS_Result>.query("GET_AA_CURRENT_APPLICATIONS");
             if (applicationResult == null || !applicationResult.Any())
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be found." };
