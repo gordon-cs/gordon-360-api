@@ -9,9 +9,10 @@ namespace Gordon360.Models.ViewModels
     public class ApartmentApplicantViewModel
     {
         public int AprtAppID { get; set; }
+        public string ID { get; set; }
         public string Username { get; set; }
         public int? Age { get; set; }
-        public string? OffCampusProgram { get; set; }
+        public string OffCampusProgram { get; set; }
         public bool Probation { get; set; }
         public int Point { get; set; }
     }

@@ -353,7 +353,13 @@
     <Compile Include="Models\GET_AA_APARTMENT_CHOICES_BY_APP_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\GET_AA_APPLICANTS_BY_APPID_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\GET_AA_APPLICANTS_DETAILS_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GET_AA_APPLICATIONS_BY_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\GET_AA_APPLICATIONS_Result.cs">
@@ -387,6 +393,9 @@
       <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Internships_as_Involvements.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\JENZ_ACT_CLUB_DEF.cs">
@@ -432,18 +441,6 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MYSCHEDULE_BY_ID_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\NEWS_CATEGORIES_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\NEWS_NEW_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\NEWS_NOT_EXPIRED_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\NEWS_PERSONAL_UNAPPROVED_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\paid_shifts.cs">
@@ -555,9 +552,6 @@
     <Compile Include="Models\STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
     <!-- <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs" /> -->
     <Compile Include="Models\student_timesheets.cs">
       <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
@@ -602,7 +596,6 @@
     <Compile Include="Models\ViewModels\ApartmentAppEditorViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppIDViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentApplicantIDViewModel.cs" />
-    <Compile Include="Models\ViewModels\ApartmentApplicantsTableViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentApplicationsTableViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentApplicantDataViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppNewEditorViewModel.cs" />

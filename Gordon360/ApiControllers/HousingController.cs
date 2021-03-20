@@ -5,6 +5,7 @@ using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Static.Methods;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Web.Http;
 
@@ -171,15 +172,15 @@ namespace Gordon360.Controllers.Api
 
             string sessionId = Helpers.GetCurrentSession().SessionCode;
 
-            string[] applicantIds = new string[apartmentAppDetails.Applicants.Length];
-            for (int i = 0; i < apartmentAppDetails.Applicants.Length; i++)
+            ApartmentApplicantViewModel[] apartmentApplicants = apartmentAppDetails.Applicants;
+            foreach (ApartmentApplicantViewModel applicant in apartmentApplicants)
             {
-                applicantIds[i] = _accountService.GetAccountByUsername(apartmentAppDetails.Applicants[i]).GordonID;
+                applicant.ID = _accountService.GetAccountByUsername(applicant.Username).GordonID;
             }
 
             ApartmentChoiceViewModel[] apartmentChoices = apartmentAppDetails.ApartmentChoices;
 
-            int result = _housingService.SaveApplication(editorId, sessionId, applicantIds, apartmentChoices);
+            int result = _housingService.SaveApplication(editorId, sessionId, apartmentApplicants, apartmentChoices);
 
             return Created("Status of application saving: ", result);
         }
@@ -216,15 +217,15 @@ namespace Gordon360.Controllers.Api
 
             int apartAppId = apartmentAppDetails.AprtAppID; // The apartAppId is set to -1 if an existing application ID was not yet known by the frontend
 
-            string[] newApplicantIds = new string[apartmentAppDetails.Applicants.Length];
-            for (int i = 0; i < apartmentAppDetails.Applicants.Length; i++)
+            ApartmentApplicantViewModel[] newApartmentApplicants = apartmentAppDetails.Applicants;
+            foreach (ApartmentApplicantViewModel applicant in newApartmentApplicants)
             {
-                newApplicantIds[i] = _accountService.GetAccountByUsername(apartmentAppDetails.Applicants[i]).GordonID;
+                applicant.ID = _accountService.GetAccountByUsername(applicant.Username).GordonID;
             }
 
             ApartmentChoiceViewModel[] newApartmentChoices = apartmentAppDetails.ApartmentChoices;
 
-            int result = _housingService.EditApplication(editorId, sessionId, apartAppId, newApplicantIds, newApartmentChoices);
+            int result = _housingService.EditApplication(editorId, sessionId, apartAppId, newApartmentApplicants, newApartmentChoices);
 
             return Created("Status of application saving: ", result);
         }
@@ -302,11 +303,11 @@ namespace Gordon360.Controllers.Api
             }
             else if (storedApplicationID != applicationID)
             {
-                return Ok('User does not appear to be an applicant on the application they are trying to load'); // This should not be an "Ok", but I have not researched yet what type of error code is appropriate. It is some form of unauthorized.
+                return StatusCode(HttpStatusCode.Forbidden);
             }
             else
             {
-                ApartmentAppViewModel? result = _housingService.GetApartmentApplication(userId, sessionId, applicationID);
+                ApartmentAppViewModel result = _housingService.GetApartmentApplication(sessionId, applicationID);
                 if (result != null)
                 {
                     return Ok(result);
@@ -330,21 +331,23 @@ namespace Gordon360.Controllers.Api
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
             string userId = _accountService.GetAccountByUsername(username).GordonID;
-            string sessionId = Helpers.GetCurrentSession().SessionCode;
-
 
             bool isAdmin = _housingService.CheckIfHousingAdmin(userId);
-
-
-            ApartmentAppViewModel result = _housingService.GetAllApartmentApplication(userId, sessionId, applicationID);
-            if (result != null)
+            if (isAdmin)
             {
-                return Ok(result);
+                string sessionId = Helpers.GetCurrentSession().SessionCode;
+
+                ApartmentAppViewModel[] result = _housingService.GetAllApartmentApplication(sessionId);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
-            else
-            {
-                return NotFound();
-            }
+            return StatusCode(HttpStatusCode.Forbidden);
         }
     }
 }
