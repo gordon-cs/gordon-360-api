@@ -305,14 +305,17 @@ namespace Gordon360.Services
                     newMatchingApplicant = newApartmentApplicants.FirstOrDefault(x => x.ID == existingApplicant.ID_NUM);  //.Where(x => x.ID == existingApplicantID).First();
                     if (newMatchingApplicant != null)
                     {
+                        // If the applicant is in both the new applicant list and the existing applicant list, then we do NOT need to add it to the database
                         applicantsToAdd.Remove(newMatchingApplicant);
                         if (newMatchingApplicant.OffCampusProgram != existingApplicant.AprtProgram)
                         {
+                            // If the applicant is in both the new and existing applicant lists but has different OffCampusProgram values, then we need to update that in the database
                             applicantsToUpdate.Add(newMatchingApplicant);
                         }
                     }
                     else
                     {
+                        // If the applicant is in the existing list but not in the new list of applicants, then we need to remove it from the database
                         applicantsToRemove.Add(newMatchingApplicant);
                     }
                 }
@@ -421,14 +424,17 @@ namespace Gordon360.Services
                     newMatchingApartmentChoice = newApartmentChoices.FirstOrDefault(x => x.HallName == existingApartmentChoice.BLDG_CDE);
                     if (newMatchingApartmentChoice != null)
                     {
+                        // If the apartment is in both the new apartment list and the existing apartment list, then we do NOT need to add it to the database
                         apartmentChoicesToAdd.Remove(newMatchingApartmentChoice);
                         if (newMatchingApartmentChoice.HallRank != existingApartmentChoice.Ranking)
                         {
+                            // If the apartment is in both the new and existing apartment lists but has different ranking values, then we need to update that in the database
                             apartmentChoicesToUpdate.Add(newMatchingApartmentChoice);
                         }
                     }
                     else
                     {
+                        // If the apartment is in the existing list but not in the new list of apartments, then we need to remove it from the database
                         apartmentChoicesToRemove.Add(newMatchingApartmentChoice);
                     }
                 }
