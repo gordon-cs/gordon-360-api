@@ -3,6 +3,7 @@ using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using Gordon360.Services.ComplexQueries;
+using Gordon360.Static.Data;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -101,18 +102,18 @@ namespace Gordon360.Services
         /// </returns>
         public int? GetApplicationID(string studentID, string sess_cde)
         {
-            IEnumerable<AprtAppID> idResult = null;
+            IEnumerable<ApartmentAppIDViewModel> idResult = null;
 
             SqlParameter idParam = new SqlParameter("@STUDENT_ID", studentID);
             SqlParameter sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
 
-            idResult = RawSqlQuery<AprtAppID>.query("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, idParam); //run stored procedure
+            idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, idParam); //run stored procedure
             if (idResult == null || !idResult.Any())
             {
                 return null;
             }
 
-            int result = idResult.FirstOrDefault().ID;
+            int result = idResult.FirstOrDefault().AprtAppID;
 
             return result;
         }
@@ -134,7 +135,7 @@ namespace Gordon360.Services
         /// <returns>Returns the application ID number if all the queries succeeded</returns>
         public int SaveApplication(string userID, string sess_cde, string editorID, ApartmentApplicantViewModel[] apartmentApplicants, ApartmentChoiceViewModel[] apartmentChoices)
         {
-            IEnumerable<AprtAppID> idResult = null;
+            IEnumerable<ApartmentAppIDViewModel> idResult = null;
 
             DateTime now = System.DateTime.Now;
 
@@ -142,7 +143,7 @@ namespace Gordon360.Services
             SqlParameter editorParam = new SqlParameter("@STUDENT_ID", editorID);
 
             // If an application ID was not passed in, then check if an application already exists
-            idResult = RawSqlQuery<AprtAppID>.query("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, editorParam); //run stored procedure
+            idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, editorParam); //run stored procedure
             if (idResult != null && idResult.Any())
             {
                 throw new ResourceCreationException() { ExceptionMessage = "An existing application ID was found for this user. Please use 'EditApplication' to update an existing application." };
@@ -176,13 +177,13 @@ namespace Gordon360.Services
             timeParam = new SqlParameter("@NOW", now);
             editorParam = new SqlParameter("@EDITOR_ID", editorID);
 
-            idResult = RawSqlQuery<AprtAppID>.query("GET_AA_APPID_BY_NAME_AND_DATE @NOW, @EDITOR_ID", timeParam, editorParam); //run stored procedure
+            idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_NAME_AND_DATE @NOW, @EDITOR_ID", timeParam, editorParam); //run stored procedure
             if (idResult == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The new application ID could not be found." };
             }
 
-            int applicationID = idResult.FirstOrDefault().ID;
+            int applicationID = idResult.FirstOrDefault().AprtAppID;
 
             //----------------
             // Save applicant information
@@ -197,14 +198,14 @@ namespace Gordon360.Services
 
                 // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
                 appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
-                idParam = new SqlParameter("@ID_NUM", applicant.ID);
+                idParam = new SqlParameter("@ID_NUM", applicant.StudentID);
                 programParam = new SqlParameter("@APRT_PROGRAM", "");
                 sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
 
                 applicantResult = RawSqlQuery<AA_Applicants>.query("INSERT_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM, @SESS_CDE", appIDParam, idParam, programParam, sessionParam); //run stored procedure
                 if (applicantResult == null)
                 {
-                    throw new ResourceCreationException() { ExceptionMessage = "Applicant with ID " + applicant.ID + " could not be saved." };
+                    throw new ResourceCreationException() { ExceptionMessage = "Applicant with ID " + applicant.StudentID + " could not be saved." };
                 }
             }
 
@@ -302,7 +303,7 @@ namespace Gordon360.Services
                 foreach (GET_AA_APPLICANTS_BY_APPID_Result applicantResult in applicantsResult)
                 {
                     ApartmentApplicantViewModel existingApplicant = null;
-                    existingApplicant = newApartmentApplicants.FirstOrDefault(x => x.ID == applicantResult.ID_NUM);  //.Where(x => x.ID == existingApplicantID).First();
+                    existingApplicant = newApartmentApplicants.FirstOrDefault(x => x.StudentID == applicantResult.ID_NUM);  //.Where(x => x.ID == existingApplicantID).First();
                     if (existingApplicant != null)
                     {
                         applicantsToAdd.Remove(existingApplicant);
@@ -329,7 +330,7 @@ namespace Gordon360.Services
 
                 // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
                 appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
-                idParam = new SqlParameter("@ID_NUM", applicant.ID);
+                idParam = new SqlParameter("@ID_NUM", applicant.StudentID);
                 if (applicant.OffCampusProgram != null)
                 {
                     programParam = new SqlParameter("@APRT_PROGRAM", applicant.OffCampusProgram);
@@ -343,7 +344,7 @@ namespace Gordon360.Services
                 applicantResult = RawSqlQuery<AA_Applicants>.query("INSERT_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM, @SESS_CDE", appIDParam, idParam, programParam, sessionParam); //run stored procedure
                 if (applicantResult == null)
                 {
-                    throw new ResourceCreationException() { ExceptionMessage = "Applicant with ID " + applicant.ID + " could not be inserted." };
+                    throw new ResourceCreationException() { ExceptionMessage = "Applicant with ID " + applicant.StudentID + " could not be inserted." };
                 }
             }
 
@@ -354,7 +355,7 @@ namespace Gordon360.Services
 
                 // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
                 appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
-                idParam = new SqlParameter("@ID_NUM", applicant.ID);
+                idParam = new SqlParameter("@ID_NUM", applicant.StudentID);
                 if (applicant.OffCampusProgram != null)
                 {
                     programParam = new SqlParameter("@APRT_PROGRAM", applicant.OffCampusProgram);
@@ -368,7 +369,7 @@ namespace Gordon360.Services
                 applicantResult = RawSqlQuery<AA_Applicants>.query("UPDATE_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM, @SESS_CDE", appIDParam, idParam, programParam, sessionParam); //run stored procedure
                 if (applicantResult == null)
                 {
-                    throw new ResourceCreationException() { ExceptionMessage = "Applicant with ID " + applicant.ID + " could not be updated." };
+                    throw new ResourceCreationException() { ExceptionMessage = "Applicant with ID " + applicant.StudentID + " could not be updated." };
                 }
             }
 
@@ -379,13 +380,13 @@ namespace Gordon360.Services
 
                 // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
                 appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
-                idParam = new SqlParameter("@ID_NUM", applicant.ID);
+                idParam = new SqlParameter("@ID_NUM", applicant.StudentID);
                 sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
 
                 applicantResult = RawSqlQuery<AA_Applicants>.query("DELETE_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @SESS_CDE", appIDParam, idParam, sessionParam); //run stored procedure
                 if (applicantResult == null)
                 {
-                    throw new ResourceNotFoundException() { ExceptionMessage = "Applicant with ID " + applicant.ID + " could not be removed." };
+                    throw new ResourceNotFoundException() { ExceptionMessage = "Applicant with ID " + applicant.StudentID + " could not be removed." };
                 }
             }
 
@@ -618,53 +619,120 @@ namespace Gordon360.Services
             GET_AA_APPLICATIONS_BY_ID_Result applicationsDBModel = applicationResult.FirstOrDefault(x => x.AprtAppID == applicationID);
 
             // Assign the values from the database to the corresponding properties
-            ApartmentApplicationViewModel apartmentApplication = new ApartmentApplicationViewModel();
-            apartmentApplication.AprtAppID = applicationsDBModel.AprtAppID;
+            ApartmentApplicationViewModel apartmentApplicationModel = new ApartmentApplicationViewModel();
+            apartmentApplicationModel.ApplicationID = applicationsDBModel.AprtAppID;
+            apartmentApplicationModel.DateSubmitted = applicationsDBModel.DateSubmitted;
+            apartmentApplicationModel.DateModified = applicationsDBModel.DateModified;
+
+            Student editorStudent = Data.StudentData.FirstOrDefault(x => x.ID.ToLower() == applicationsDBModel.EditorID.ToLower());
+            if (editorStudent == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The student information about the editor of this application could not be found." };
+            }
+            apartmentApplicationModel.EditorUsername = editorStudent.AD_Username;
+            apartmentApplicationModel.Gender = editorStudent.Gender;
 
             // Get the applicants that match this application ID
             appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
-            IEnumerable<GET_AA_APPLICANTS_BY_APPID_Result> applicantsResult = RawSqlQuery<GET_AA_APPLICANTS_BY_APPID_Result>.query("GET_AA_APPLICANTS_BY_APPID", applicationID);
+            IEnumerable<GET_AA_APPLICANTS_BY_APPID_Result> applicantsResult = RawSqlQuery<GET_AA_APPLICANTS_BY_APPID_Result>.query("GET_AA_APPLICANTS_BY_APPID @APPLICATION_ID", applicationID);
             if (applicantsResult != null && applicantsResult.Any())
             {
-                ApartmentApplicantViewModel[] applicants = new ApartmentApplicantViewModel[applicantsResult.Count()];
-                foreach (GET_AA_APPLICANTS_BY_APPID_Result applicantDbModel in applicantsResult)
+                // Only attempt to parse the data if the collection of applicants is not empty
+                // It is possible for a valid saved application to not contain any applicants yet, so we do not want to throw an error in the case where no applicants were found
+                List<ApartmentApplicantViewModel> applicantsList = new List<ApartmentApplicantViewModel>();
+                foreach (GET_AA_APPLICANTS_BY_APPID_Result applicantDBModel in applicantsResult)
                 {
-                    ApartmentApplicantViewModel applicantModel = new ApartmentApplicantViewModel();
+                    Student student = Data.StudentData.FirstOrDefault(x => x.ID.ToLower() == applicantDBModel.ID_NUM.ToLower());
+                    if (student != null)
+                    {
+                        // If the student information is found, create a new ApplicationViewModel and fill in its properties
+                        ApartmentApplicantViewModel applicantModel = new ApartmentApplicantViewModel();
+                        applicantModel.ApplicationID = applicationID;
+                        applicantModel.Username = student.AD_Username;
+                        applicantModel.OffCampusProgram = applicantDBModel.AprtProgram;
 
+                        applicantModel.Age = null; // Not yet implemented
+
+                        applicantModel.Probation = false; // Not yet implemented. This is where we will put the code to check if a student has a probation
+
+                        applicantModel.Points = 1; // Not yet implemented. This is the part where we will need to calculate the points.
+
+                        // Add this new ApplicantViewModel object to the list of applicants for this application
+                        applicantsList.Add(applicantModel);
+                    }
                 }
 
-
-
-
+                if (applicantsList.Any())
+                {
+                    // Add this list of applicants to the application model as an array
+                    apartmentApplicationModel.Applicants = applicantsList.ToArray();
+                }
             }
 
+            // Get the apartment choices that match this application ID
+            appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
+            IEnumerable<GET_AA_APARTMENT_CHOICES_BY_APP_ID_Result> apartmentChoicesResult = RawSqlQuery<GET_AA_APARTMENT_CHOICES_BY_APP_ID_Result>.query("GET_AA_APARTMENT_CHOICES_BY_APP_ID @APPLICATION_ID", applicationID);
+            if (apartmentChoicesResult != null && apartmentChoicesResult.Any())
+            {
+                // Only attempt to parse the data if the collection of apartment choices is not empty
+                // It is possible for a valid saved application to not contain any apartment choices yet, so we do not want to throw an error in the case where no applicants were found
+                List<ApartmentChoiceViewModel> apartmentChoicesList = new List<ApartmentChoiceViewModel>();
+                foreach (GET_AA_APARTMENT_CHOICES_BY_APP_ID_Result apartmentChoiceDBModel in apartmentChoicesResult)
+                {
+                    ApartmentChoiceViewModel apartmentChoiceModel = new ApartmentChoiceViewModel();
+                    apartmentChoiceModel.ApplicationID = applicationID;
+                    apartmentChoiceModel.HallName = apartmentChoiceDBModel.BLDG_CDE;
+                    apartmentChoiceModel.HallRank = apartmentChoiceDBModel.Ranking;
 
+                    // Add this new ApplicantViewModel object to the list of applicants for this application
+                    apartmentChoicesList.Add(apartmentChoiceModel);
+                }
 
+                if (apartmentChoicesList.Any())
+                {
+                    // Sort the apartment choices by their ranking number and Add this list of apartment choices to the application model as an array
+                    apartmentApplicationModel.ApartmentChoices = apartmentChoicesList.OrderBy(x => x.HallRank).ThenBy(x => x.HallName).ToArray();
+                }
+            }
 
-
-
-
-
-
-
-            return null; //Temporary while I work
+            return apartmentApplicationModel;
         }
 
         public ApartmentApplicationViewModel[] GetAllApartmentApplication()
         {
-            IEnumerable<GET_AA_APPLICATIONS_Result> applicationResult = null;
+            IEnumerable<ApartmentAppIDViewModel> appIDResults = null;
 
-            applicationResult = RawSqlQuery<GET_AA_APPLICATIONS_Result>.query("GET_AA_CURRENT_APPLICATIONS");
-            if (applicationResult == null || !applicationResult.Any())
+            appIDResults = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_CURRENT_APP_IDS");
+            if (appIDResults == null || !appIDResults.Any())
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be found." };
             }
-            return null; //Temporary while I work
-        }
 
-        private class AprtAppID
-        {
-            public int ID { get; set; }
+            List<ApartmentApplicationViewModel> applicationList = new List<ApartmentApplicationViewModel>();
+            foreach (ApartmentAppIDViewModel appIDModel in appIDResults)
+            {
+                ApartmentApplicationViewModel apartmentApplicationModel = null;
+                try
+                {
+                    apartmentApplicationModel = GetApartmentApplication(appIDModel.AprtAppID);
+                    if (apartmentApplicationModel != null)
+                    {
+                        applicationList.Add(apartmentApplicationModel);
+                    }
+                }
+                catch
+                {
+                    // Do nothing, simply skip this application
+                    // TODO: condsider how to report this error for the case where the application exists but something went wrong getting the editor student info (See the GetApartmentApplication method for what I am referring to)
+                }
+            }
+
+            ApartmentApplicationViewModel[] result = null;
+            if (applicationList.Any())
+            {
+                result = applicationList.ToArray();
+            }
+            return result;
         }
     }
 }

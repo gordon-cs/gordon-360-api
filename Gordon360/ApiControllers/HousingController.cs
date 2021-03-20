@@ -177,7 +177,7 @@ namespace Gordon360.Controllers.Api
             ApartmentApplicantViewModel[] apartmentApplicants = applicationDetails.Applicants;
             foreach (ApartmentApplicantViewModel applicant in apartmentApplicants)
             {
-                applicant.ID = _accountService.GetAccountByUsername(applicant.Username).GordonID;
+                applicant.StudentID = _accountService.GetAccountByUsername(applicant.Username).GordonID;
             }
 
             ApartmentChoiceViewModel[] apartmentChoices = applicationDetails.ApartmentChoices;
@@ -219,7 +219,7 @@ namespace Gordon360.Controllers.Api
 
             if (applicationID == -1)
             {
-                applicationID = applicationDetails.AprtAppID; // The apartAppID is set to -1 if an existing application ID was not yet known by the frontend
+                applicationID = applicationDetails.ApplicationID; // The apartAppID is set to -1 if an existing application ID was not yet known by the frontend
             }
 
             string newEditorUsername = applicationDetails.EditorUsername;
@@ -228,7 +228,7 @@ namespace Gordon360.Controllers.Api
             ApartmentApplicantViewModel[] newApartmentApplicants = applicationDetails.Applicants;
             foreach (ApartmentApplicantViewModel applicant in newApartmentApplicants)
             {
-                applicant.ID = _accountService.GetAccountByUsername(applicant.Username).GordonID;
+                applicant.StudentID = _accountService.GetAccountByUsername(applicant.Username).GordonID;
             }
 
             ApartmentChoiceViewModel[] newApartmentChoices = applicationDetails.ApartmentChoices;
