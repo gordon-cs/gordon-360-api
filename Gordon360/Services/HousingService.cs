@@ -277,13 +277,13 @@ namespace Gordon360.Services
             //--------
             // Update applicant information
 
-            IEnumerable<GET_AA_APPLICANTS_BY_APPID_Result> applicantsResult = null;
+            IEnumerable<GET_AA_APPLICANTS_BY_APPID_Result> existingApplicantResult = null;
 
             appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
 
             // Get the IDs of the applicants that are already stored in the database for this application
-            applicantsResult = RawSqlQuery<GET_AA_APPLICANTS_BY_APPID_Result>.query("GET_AA_APPLICANTS_BY_APPID @APPLICATION_ID", appIDParam);
-            if (applicantsResult == null)
+            existingApplicantResult = RawSqlQuery<GET_AA_APPLICANTS_BY_APPID_Result>.query("GET_AA_APPLICANTS_BY_APPID @APPLICATION_ID", appIDParam);
+            if (existingApplicantResult == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The applicants could not be found." };
             }
@@ -298,23 +298,26 @@ namespace Gordon360.Services
             List<ApartmentApplicantViewModel> applicantsToRemove = new List<ApartmentApplicantViewModel>();
 
             // Check whether any applicants were found matching the given application ID number
-            if (applicantsResult.Any())
+            if (existingApplicantResult.Any())
             {
-                foreach (GET_AA_APPLICANTS_BY_APPID_Result applicantResult in applicantsResult)
+                foreach (GET_AA_APPLICANTS_BY_APPID_Result existingApplicant in existingApplicantResult)
                 {
-                    ApartmentApplicantViewModel existingApplicant = null;
-                    existingApplicant = newApartmentApplicants.FirstOrDefault(x => x.StudentID == applicantResult.ID_NUM);  //.Where(x => x.ID == existingApplicantID).First();
-                    if (existingApplicant != null)
+                    ApartmentApplicantViewModel newMatchingApplicant = null;
+                    newMatchingApplicant = newApartmentApplicants.FirstOrDefault(x => x.StudentID == existingApplicant.ID_NUM);
+                    if (newMatchingApplicant != null)
                     {
-                        applicantsToAdd.Remove(existingApplicant);
-                        if (existingApplicant.OffCampusProgram != applicantResult.AprtProgram)
+                        // If the applicant is in both the new applicant list and the existing applicant list, then we do NOT need to add it to the database
+                        applicantsToAdd.Remove(newMatchingApplicant);
+                        if (newMatchingApplicant.OffCampusProgram != existingApplicant.AprtProgram)
                         {
-                            applicantsToUpdate.Add(existingApplicant);
+                            // If the applicant is in both the new and existing applicant lists but has different OffCampusProgram values, then we need to update that in the database
+                            applicantsToUpdate.Add(newMatchingApplicant);
                         }
                     }
                     else
                     {
-                        applicantsToRemove.Add(existingApplicant);
+                        // If the applicant is in the existing list but not in the new list of applicants, then we need to remove it from the database
+                        applicantsToRemove.Add(newMatchingApplicant);
                     }
                 }
             }
@@ -416,18 +419,24 @@ namespace Gordon360.Services
             // Check whether any apartment choices were found matching the given application ID number
             if (existingApartmentChoiceResult.Any())
             {
-                foreach (GET_AA_APARTMENT_CHOICES_BY_APP_ID_Result existingApartmentChoiceModel in existingApartmentChoiceResult)
+                foreach (GET_AA_APARTMENT_CHOICES_BY_APP_ID_Result existingApartmentChoice in existingApartmentChoiceResult)
                 {
-                    ApartmentChoiceViewModel existingApartmentChoice = null;
-                    existingApartmentChoice = newApartmentChoices.FirstOrDefault(x => x.HallName == existingApartmentChoiceModel.BLDG_CDE);
-                    if (existingApartmentChoice != null)
+                    ApartmentChoiceViewModel newMatchingApartmentChoice = null;
+                    newMatchingApartmentChoice = newApartmentChoices.FirstOrDefault(x => x.HallName == existingApartmentChoice.BLDG_CDE);
+                    if (newMatchingApartmentChoice != null)
                     {
-                        apartmentChoicesToAdd.Remove(existingApartmentChoice);
-                        apartmentChoicesToUpdate.Add(existingApartmentChoice);
+                        // If the apartment is in both the new apartment list and the existing apartment list, then we do NOT need to add it to the database
+                        apartmentChoicesToAdd.Remove(newMatchingApartmentChoice);
+                        if (newMatchingApartmentChoice.HallRank != existingApartmentChoice.Ranking)
+                        {
+                            // If the apartment is in both the new and existing apartment lists but has different ranking values, then we need to update that in the database
+                            apartmentChoicesToUpdate.Add(newMatchingApartmentChoice);
+                        }
                     }
                     else
                     {
-                        apartmentChoicesToRemove.Add(existingApartmentChoice);
+                        // If the apartment is in the existing list but not in the new list of apartments, then we need to remove it from the database
+                        apartmentChoicesToRemove.Add(newMatchingApartmentChoice);
                     }
                 }
             }
