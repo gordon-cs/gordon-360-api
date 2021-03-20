@@ -406,14 +406,14 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The hall information could not be found." };
             }
 
-            // Initialize the list to store information from the frontend.
-            //List<ApartmentChoiceViewModel> apartmentChoicesFromFrontend = new List<ApartmentChoiceViewModel>(newApartmentChoices);
+            // List of apartment choices that are in the array recieved from the frontend but not yet in the database
+            List<ApartmentChoiceViewModel> apartmentChoicesToAdd = new List<ApartmentChoiceViewModel>(newApartmentChoices);
 
-            // List to store json objects as strings
-            List<string> newApartmentChoicesToAddOrUpdate = new List<string>();
+            // List of apartment choices that are in both the array recieved from the frontend and the database
+            List<ApartmentChoiceViewModel> apartmentChoicesToUpdate = new List<ApartmentChoiceViewModel>();
 
-            // List to store the existing hall preferences in the database
-            List<string> existingApartmentChoices = new List<string>();
+            // List of apartment choices that are in the database but not in the array recieved from the frontend
+            List<ApartmentChoiceViewModel> apartmentChoicesToRemove = new List<ApartmentChoiceViewModel>();
 
             // Check whether any apartment choices were found matching the given application ID number
             if (existingApartmentChoiceResult.Any())
