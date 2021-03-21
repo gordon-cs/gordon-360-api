@@ -657,14 +657,18 @@ namespace Gordon360.Services
                         // If the student information is found, create a new ApplicationViewModel and fill in its properties
                         ApartmentApplicantViewModel applicantModel = new ApartmentApplicantViewModel();
                         applicantModel.ApplicationID = applicationID;
+
+                        applicantModel.StudentID = null; // Intentionally null in this case. Do not share the ID numbers of arbitrary students with the frontend
                         applicantModel.Username = student.AD_Username;
-                        applicantModel.OffCampusProgram = applicantDBModel.AprtProgram;
 
                         applicantModel.Age = null; // Not yet implemented
+                        applicantModel.Class = student.Class;
+
+                        applicantModel.OffCampusProgram = applicantDBModel.AprtProgram;
 
                         applicantModel.Probation = false; // Not yet implemented. This is where we will put the code to check if a student has a probation
 
-                        applicantModel.Points = 1; // Not yet implemented. This is the part where we will need to calculate the points.
+                        applicantModel.Points = 1; // Not yet implemented. This is the place where we will need to calculate the points.
 
                         // Add this new ApplicantViewModel object to the list of applicants for this application
                         applicantsList.Add(applicantModel);
