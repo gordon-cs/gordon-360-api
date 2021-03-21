@@ -343,9 +343,7 @@ namespace Gordon360.Controllers.Api
             bool isAdmin = _housingService.CheckIfHousingAdmin(userID);
             if (isAdmin)
             {
-                string sessionID = Helpers.GetCurrentSession().SessionCode;
-
-                ApartmentApplicationViewModel[] result = _housingService.GetAllApartmentApplication(sessionID);
+                ApartmentApplicationViewModel[] result = _housingService.GetAllApartmentApplication();
                 if (result != null)
                 {
                     return Ok(result);
@@ -355,7 +353,10 @@ namespace Gordon360.Controllers.Api
                     return NotFound();
                 }
             }
-            return StatusCode(HttpStatusCode.Forbidden);
+            else
+            {
+                return StatusCode(HttpStatusCode.Forbidden);
+            }
         }
     }
 }
