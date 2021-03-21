@@ -7,7 +7,7 @@ namespace Gordon360.Models.ViewModels
 {
     public class CreateGroupViewModel
     {
-        public String id { get; set; }
+        public int id { get; set; }
 
         public String name { get; set; }
 

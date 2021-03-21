@@ -13,7 +13,7 @@ using System.Diagnostics;
 
 namespace Gordon360.Services
 {
-    public class DirectMessageService : IDirectMessageService
+    public class DirectMessageService : IDirectMessageService 
     {
         private IProfileService _profileService;
         private IAccountService _accountService;
@@ -163,22 +163,6 @@ namespace Gordon360.Services
         public CreateGroupViewModel CreateGroup(String name, bool group, DateTime lastUpdated, string image, List<String> usernames)
         {
             DateTime createdAt = DateTime.Now;
-            Guid id = Guid.NewGuid();
-
-            var idParam = new SqlParameter("@_id", id.ToString());
-
-            var idCheck = RawSqlQuery<IdCheckViewModel>.query("CHECK_ID @_id", idParam);
-
-            foreach( IdCheckViewModel isNotAvailable in idCheck)
-            {
-                while (isNotAvailable.IdCheck)
-                {
-                    id = Guid.NewGuid();
-                    idParam = new SqlParameter("@_id", id.ToString());
-                    idCheck = RawSqlQuery<IdCheckViewModel>.query("CHECK_ID @_id", idParam);
-                }
-            }
-            var idRefreshParam = new SqlParameter("@_id", idParam.Value);
             var nameParam = new SqlParameter("@name", name);
             var groupParam = new SqlParameter("@group", group);
             var createdAtParam = new SqlParameter("@createdAt", createdAt);
@@ -187,8 +171,8 @@ namespace Gordon360.Services
 
             groupImageParam.Value = DBNull.Value;
 
-            var result = RawSqlQuery<MessageViewModel>.query("CREATE_MESSAGE_ROOM @_id, @name, @group, @createdAt, @lastUpdated, @roomImage", idRefreshParam, nameParam, groupParam, createdAtParam, lastUpdatedParam, groupImageParam); //run stored procedure
-            bool returnAnswer = true; 
+            var result = RawSqlQuery<CreateGroupViewModel>.query("CREATE_MESSAGE_ROOM @name, @group, @createdAt, @lastUpdated, @roomImage", nameParam, groupParam, createdAtParam, lastUpdatedParam, groupImageParam); //run stored procedure
+      
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
@@ -201,17 +185,16 @@ namespace Gordon360.Services
             }
 
             var groupObject = new CreateGroupViewModel();
-            groupObject.id = idRefreshParam.Value.ToString();
-            groupObject.name = nameParam.Value.ToString();
-            groupObject.group = group;
-            groupObject.createdAt = createdAt;
-            groupObject.lastUpdated = lastUpdated;
-            groupObject.image = null;
+
+            foreach(CreateGroupViewModel model in result)
+            {
+                groupObject = model;
+            }
 
             foreach (string userid in idlist)
             {
                 var studentIdParam = new SqlParameter("@user_id", userid);
-                var IdRefreshParam2 = new SqlParameter("@_id", idParam.Value);
+                var IdRefreshParam2 = new SqlParameter("@_id", groupObject.id);
                 var storeRoooms = RawSqlQuery<MessageViewModel>.query("INSERT_USER_ROOMS @user_id, @_id", studentIdParam, IdRefreshParam2);
                 UserViewModel userInfo = new UserViewModel();
                 userInfo.user_id = userid;
