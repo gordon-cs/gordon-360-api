@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Gordon360.Models.ViewModels
 {
-    public class WellnessStatusViewModel
+    public class DEPRECATED_WellnessStatusViewModel
     {
         public string Status { get; set; }
         public DateTime Created { get; set; }
