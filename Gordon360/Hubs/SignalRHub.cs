@@ -20,31 +20,6 @@ namespace Gordon360.Hubs
     [HubName("ChatHub")]
     public class ChatHub : Hub
     {
-        public async Task ManageGroupAsync(string connectionId, string groupName, string function)
-        {
-            if (connectionId == null)
-            {
-                throw new ArgumentNullException(nameof(connectionId));
-            }
-
-            if (groupName == null)
-            {
-                throw new ArgumentNullException(nameof(groupName));
-            }
-            
-
-            if (function == "add")
-            {
-                await Groups.Add(connectionId, groupName);
-
-            } else
-            {
-                Groups.Remove(connectionId, groupName);
-            }
-
-        }
-
-
         public async Task refreshMessages(List<string> userIds, SendTextViewModel message, string userId)
          {
             DirectMessageService _DirectMessageService = new DirectMessageService();
@@ -54,17 +29,7 @@ namespace Gordon360.Hubs
             {
                 foreach (var userConnections in connections)
                 {
-                    await ManageGroupAsync(userConnections.connection_id, "list", "add");
-                }
-            }
-
-            await Clients.Group("list").SendAsync(message, userId);
-
-            foreach (var connections in connectionIds)
-            {
-                foreach (var userConnections in connections)
-                {
-                     ManageGroupAsync(userConnections.connection_id, "list", "remove");
+                    await Clients.Client(userConnections.connection_id).SendAsync(message, userId);
                 }
             }
          }
@@ -105,7 +70,6 @@ namespace Gordon360.Hubs
         public override Task OnReconnected()
         {
             DirectMessageService _DirectMessageService = new DirectMessageService();
-
             _DirectMessageService.DeleteUserConnectionIds(savedConnectionId);
             _DirectMessageService.StoreUserConnectionIds(savedUserId, Context.ConnectionId);
             return base.OnReconnected();

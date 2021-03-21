@@ -84,7 +84,7 @@ namespace Gordon360.ApiControllers
             return Ok(result);
         }
 
-        public string userID;
+        
         /// <summary>
         ///  returns a room object Identified by room id
         /// </summary>
