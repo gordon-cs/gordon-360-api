@@ -10,14 +10,17 @@
 namespace Gordon360.Models
 {
     using System;
+    using System.Collections.Generic;
     
-    public partial class GET_ROOM_BY_ID_Result
+    public partial class Internships_as_Involvements
     {
-        public int room_id { get; set; }
-        public string name { get; set; }
-        public bool group { get; set; }
-        public System.DateTime createdAt { get; set; }
-        public System.DateTime lastupdated { get; set; }
-        public byte[] roomImage { get; set; }
+        public string ACT_CDE { get; set; }
+        public int ID_NUM { get; set; }
+        public string YR_CDE { get; set; }
+        public string TRM_CDE { get; set; }
+        public string SESS_CDE { get; set; }
+        public Nullable<System.DateTime> BEGIN_DTE { get; set; }
+        public Nullable<System.DateTime> END_DTE { get; set; }
+        public string COMMENT_TXT { get; set; }
     }
 }

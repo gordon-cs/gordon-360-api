@@ -10,14 +10,15 @@
 namespace Gordon360.Models
 {
     using System;
+    using System.Collections.Generic;
     
-    public partial class GET_ROOM_BY_ID_Result
+    public partial class Message_Rooms
     {
         public int room_id { get; set; }
         public string name { get; set; }
         public bool group { get; set; }
         public System.DateTime createdAt { get; set; }
-        public System.DateTime lastupdated { get; set; }
+        public System.DateTime lastUpdated { get; set; }
         public byte[] roomImage { get; set; }
     }
 }

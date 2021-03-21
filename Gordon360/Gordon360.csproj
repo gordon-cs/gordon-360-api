@@ -122,6 +122,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.DirectoryServices.AccountManagement" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IdentityModel" />
@@ -279,8 +280,8 @@
       <DependentUpon>CCT_DB_Models.Context.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CCT_DB_Models.cs">
-      <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CCT_DB_Models.Designer.cs">
@@ -304,6 +305,9 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\COURSES_FOR_PROFESSOR_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CREATE_MESSAGE_ROOM_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CSVStringsToTable_fn_Result.cs">
@@ -351,10 +355,19 @@
     <Compile Include="Models\GET_AA_APARTMENT_CHOICES_BY_APP_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\GET_AA_APPLICANTS_BY_APPID_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\GET_AA_APPLICANTS_DETAILS_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\GET_AA_APPLICATIONS_BY_ID_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\GET_AA_APPLICATIONS_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GET_AA_CURRENT_APPLICATIONS_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\GET_ALL_MESSAGES_BY_ID_Result.cs">
@@ -387,6 +400,9 @@
     <Compile Include="Models\INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Internships_as_Involvements.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\JENZ_ACT_CLUB_DEF.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -409,6 +425,9 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Messages.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Message_Rooms.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MyGordon_DB_Models.Context.cs">
@@ -780,6 +799,7 @@
     <Content Include="Models\StaffTimesheets_DB_Models.edmx.diagram">
       <DependentUpon>StaffTimesheets_DB_Models.edmx</DependentUpon>
     </Content>
+    <Content Include="libman.json" />
     <EntityDeploy Include="Models\CCT_DB_Models.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>CCT_DB_Models.Designer.cs</LastGenOutput>
@@ -787,7 +807,6 @@
     <Content Include="Models\CCT_DB_Models.edmx.diagram">
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
     </Content>
-    <Content Include="libman.json" />
     <None Include="secrets.config">
       <SubType>Designer</SubType>
     </None>
