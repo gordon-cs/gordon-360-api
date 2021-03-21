@@ -145,12 +145,6 @@
             </summary>
             <returns> All buildings</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.DirectMessageController.Get">
-            <summary>
-             returns hello world example
-            </summary>
-            <returns>string and date</returns>
-        </member>
         <member name="M:Gordon360.ApiControllers.DirectMessageController.GetMessages(System.String)">
             <summary>
              returns messages from a specified group
@@ -187,6 +181,24 @@
             </summary>
             <returns>true if successful</returns>
         </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.StoreUserConnectionIds(System.String)">
+            <summary>
+             stores connection associated with a user id
+            </summary>
+            <returns>true if successful</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetConnectionIds(System.Collections.Generic.List{System.String})">
+            <summary>
+             Gets connection ids associated with a user id
+            </summary>
+            <returns>true if successful</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.DeleteConnectionIds(System.String)">
+            <summary>
+             Deletes connection ids associated with a user id
+            </summary>
+            <returns>true if successful</returns>
+        </member>
         <member name="M:Gordon360.ApiControllers.DiningController.Get">
             <summary>
              Gets information about student's dining plan and balance
@@ -211,7 +223,8 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.getJobsForUser(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
+        <!-- Badly formed XML comment ignored for member "M:Gordon360.ApiControllers.JobsController.GetJobs(System.DateTime,System.DateTime)" -->
+        <member name="M:Gordon360.ApiControllers.JobsController.DEPRECATED_getJobsForUser(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
             <summary>
             Get a user's active jobs
             </summary>
@@ -409,13 +422,7 @@
             <summary>
             save application
             </summary>
-            <returns>Returns the application ID number if all the queries succeeded</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.HousingController.EditApplication(Gordon360.Models.ViewModels.ApartmentAppViewModel)">
-            <summary>
-            update existing application (Differentiated by HttpPut instead of HttpPost)
-            </summary>
-            <returns>Returns the application ID number if all the queries succeeded</returns>
+            <returns>The application ID number of the saved application</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.HousingController.ChangeEditor(Gordon360.Models.ViewModels.ApartmentAppNewEditorViewModel)">
             <summary>
@@ -650,27 +657,6 @@
             <param name="status">The current status of the user to post, of type WellnessStatusColor</param>
             <returns>The status that was stored in the database</returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.WellnessController.DEPRECATED_Get">
-            <summary>
-            DEPRECATED - Please use base route
-             Gets current wellness status of student
-            </summary>
-            <returns>Json WellnessStatusViewModel</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.WellnessController.DEPRECATED_GetQuestion">
-            <summary>
-            DEPRECATED - Please use base route /question
-             Gets question for wellness check from the back end
-            </summary>
-            <returns> json WellnessQuestionViewModel</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.WellnessController.DEPRECATED_PostStatus(Gordon360.Controllers.Api.WellnessController.WellnessStatusColor)">
-            <summary>
-            DEPRECATED - Please use base route
-            </summary>
-            <param name="status">The status to be posted - GREEN, YELLOW, or RED</param>
-            <returns></returns>
-        </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.Get">
             <summary>Get profile info of currently logged in user</summary>
             <returns></returns>
@@ -680,14 +666,19 @@
             <param name="username">username of the profile info</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.getAdvisors(System.String)">
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.GetAdvisors(System.String)">
             <summary>Get the advisor(s) of a particular student</summary>
              <returns>
              All advisors of the given student.  For each advisor,
              provides first name, last name, and username.
              </returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.getMyImg">
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.GetCliftonStrengths(System.String)">
+            <summary> Gets the clifton strengths of a particular user </summary>
+            <param name="username"> The username for which to retrieve info </param>
+            <returns> Clifton strengths of the given user. </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.GetMyImg">
             <summary>Get the profile image of currently logged in user</summary>
             <returns></returns>
         </member>
@@ -1734,6 +1725,11 @@
             <param name="id">student id</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Services.ProfileService.GetCliftonStrengths(System.Int32)">
+            <summary> Gets the clifton strengths of a particular user </summary>
+            <param name="id"> The id of the user for which to retrieve info </param>
+            <returns> Clifton strengths of the given user. </returns>
+        </member>
         <member name="M:Gordon360.Services.ProfileService.GetPhotoPath(System.String)">
             <summary>
             Get photo path for profile
@@ -1930,39 +1926,27 @@
             null if the user is not on an application for that session 
             </returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.SaveApplication(System.String,System.String,System.String[],Gordon360.Models.ViewModels.ApartmentChoiceViewModel[])">
+        <member name="M:Gordon360.Services.HousingService.SaveApplication(System.Int32,System.String,System.String,System.String[])">
              <summary>
              Saves student housing info
-             - first, it creates a new row in the applications table and inserts the id of the primary applicant and a timestamp
-             - second, it retrieves the application id of the application with the information we just inserted (because
-             the database creates the application ID so we have to ask it which number it generated for it)
+             - first, it checks if an application ID was passed in as a parameter
+               - if not, then it checks the database for an existing application that matches the current semester and the current student user
+                 - if an existing application is NOT found, then:
+                   - first, it creates a new row in the applications table and inserts the id of the primary applicant and a timestamp
+                   - second, it retrieves the application id of the application with the information we just inserted (because
+                   the database creates the application ID so we have to ask it which number it generated for it)
+                 - else, it retrieves the application ID of that existing application
              - third, it inserts each applicant into the applicants table along with the apartment ID so we know
              which application on which they are an applicant
             
              </summary>
-             <param name="editorId"> The student ID number of the user who is attempting to save the apartment application </param>
-             <param name="sess_cde"> The current session code </param>
-             <param name="applicantIDs"> Array of student ID numbers for each of the applicants </param>
-             <param name="apartmentChoices"> Array of JSON objects providing apartment hall choices </param>
-             <returns>Returns the application ID number if all the queries succeeded</returns>
-        </member>
-        <member name="M:Gordon360.Services.HousingService.EditApplication(System.String,System.String,System.Int32,System.String[],Gordon360.Models.ViewModels.ApartmentChoiceViewModel[])">
-             <summary>
-             Edit an existings apartment application
-             - first, it gets the EditorID from the database for the given application ID and makes sure that the student ID of the current user matches that stored ID number
-             - second, it gets an array of the applicants that are already stored in the database for the given application ID
-             - third, it inserts each applicant that is in the 'newApplicantIDs' array but was not yet in the database
-             - fourth, it removes each applicant that was stored in the database but was not in the 'newApplicantIDs' array
-            
-             </summary>
-             <param name="editorId"> The student ID number of the user who is attempting to save the apartment application </param>
-             <param name="sess_cde"> The current session code </param>
              <param name="apartAppId"> The application ID number of the application to be edited </param>
-             <param name="newApplicantIDs"> Array of student ID numbers for each of the applicants </param>
-             <param name="newApartmentChoices"> Array of JSON objects providing apartment hall choices </param>
-             <returns>Returns the application ID number if all the queries succeeded</returns>
+             <param name="editorId"> The student ID number of the user who is attempting to save the apartment application </param>
+             <param name="sess_cde"> The current session code </param>
+             <param name="applicantIds"> Array of student ID numbers for each of the applicants </param>
+             <returns>The application ID number if all the queries succeeded, otherwise returns -1</returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.ChangeApplicationEditor(System.String,System.Int32,System.String)">
+        <member name="M:Gordon360.Services.HousingService.ChangeApplicationEditor(System.Int32,System.String,System.String)">
              <summary>
              Changes the student user who has permission to edit the given application
             
@@ -2002,30 +1986,6 @@
             </summary>
             <param name="currentTime">The time of the check in</param>
             <returns>When the check in should expire (the next 5AM).</returns>
-        </member>
-        <member name="M:Gordon360.Services.WellnessService.DEPRECATED_IsValidStatus(Gordon360.Models.ViewModels.DEPRECATED_WellnessStatusViewModel)">
-            <summary>
-            Checks whether a wellness status is still valid (i.e. new since 5AM)
-            </summary>
-            <param name='status'>Wellness status to check, an instance of a WellnessViewModel</param>
-            <returns>boolean representing whether the status is still valid</returns>
-        </member>
-        <member name="M:Gordon360.Services.WellnessService.DEPRECATED_GetStatus(System.String)">
-            <summary>
-            DEPRECATED
-            gets status of wellness check
-            </summary>
-            <param name="id">ID of the user to get the status of</param>
-            <returns> The status of the user, a WellnessStatusViewModel </returns>
-        </member>
-        <member name="M:Gordon360.Services.WellnessService.DEPRECATED_PostStatus(System.String,System.String)">
-            <summary>
-            DEPRECATED
-            Stores wellness Status in database.
-            </summary>
-            <param name="id"> ID of the user to post the status for</param>
-            <param name="status"> Status that is being posted, one of GREEN, YELLOW, or RED </param>
-            <returns>Status that was successfully recorded</returns>
         </member>
         <member name="T:Gordon360.Services.JenzibarActivityService">
             <summary>

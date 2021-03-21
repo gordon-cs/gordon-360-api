@@ -2364,7 +2364,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="CCTEntities1" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="AA_Admins" EntityType="Self.AA_Admins" />
           <EntitySet Name="AA_ApartmentApplications" EntityType="Self.AA_ApartmentApplications" />
           <EntitySet Name="AA_Applicants" EntityType="Self.AA_Applicants" />
@@ -3275,7 +3275,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="Gordon360StoreContainer" CdmEntityContainer="CCTEntities1">
+        <EntityContainerMapping StorageEntityContainer="Gordon360StoreContainer" CdmEntityContainer="Entities">
           <EntitySetMapping Name="AA_Admins">
             <EntityTypeMapping TypeName="Gordon360.AA_Admins">
               <MappingFragment StoreEntitySet="AA_Admins">
