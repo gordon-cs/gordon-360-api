@@ -26,9 +26,10 @@ namespace Gordon360.Models
         {
             throw new UnintentionalCodeFirstException();
         }
-    
+
         public virtual DbSet<AA_Admins> AA_Admins { get; set; }
         public virtual DbSet<AA_ApartmentApplications> AA_ApartmentApplications { get; set; }
+        public virtual DbSet<AA_ApartmentChoices> AA_ApartmentChoices { get; set; }
         public virtual DbSet<AA_Applicants> AA_Applicants { get; set; }
         public virtual DbSet<ACT_INFO> ACT_INFO { get; set; }
         public virtual DbSet<ADMIN> ADMIN { get; set; }
@@ -46,8 +47,6 @@ namespace Gordon360.Models
         public virtual DbSet<Schedule_Control> Schedule_Control { get; set; }
         public virtual DbSet<StudentNewsExpiration> StudentNewsExpiration { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
-        public virtual DbSet<AA_ApartmentChoices> AA_ApartmentChoices { get; set; }
-        public virtual DbSet<AA_Applicants> AA_Applicants { get; set; }
         public virtual DbSet<Health_Question> Health_Question { get; set; }
         public virtual DbSet<Messages> Messages { get; set; }
         public virtual DbSet<Rooms> Rooms { get; set; }
@@ -72,7 +71,7 @@ namespace Gordon360.Models
         public virtual DbSet<PART_DEF> PART_DEF { get; set; }
         public virtual DbSet<RoomAssign> RoomAssign { get; set; }
         public virtual DbSet<Student> Student { get; set; }
-    
+
         public virtual ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> ACTIVE_CLUBS_PER_SESS_ID(string sESS_CDE)
         {
             var sESS_CDEParameter = sESS_CDE != null ?
@@ -573,8 +572,8 @@ namespace Gordon360.Models
             var user_id_listParameter = user_id_list != null ?
                 new ObjectParameter("user_id_list", user_id_list) :
                 new ObjectParameter("user_id_list", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GET_AA_APPID_BY_NAME_AND_DATE", nOWParameter, eDITOR_IDParameter);
+
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("GET_ALL_CONNECTION_IDS_BY_ID_LIST", user_id_listParameter);
         }
     
         public virtual ObjectResult<GET_ALL_MESSAGES_BY_ID_Result> GET_ALL_MESSAGES_BY_ID(Nullable<int> room_id)
