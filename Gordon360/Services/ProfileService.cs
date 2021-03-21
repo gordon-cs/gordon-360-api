@@ -242,8 +242,9 @@ namespace Gordon360.Services
                 var tParam = new SqlParameter("@TWITTER", DBNull.Value);
                 var iParam = new SqlParameter("@INSTAGRAM", DBNull.Value);
                 var lParam = new SqlParameter("@LINKEDIN", DBNull.Value);
+                var hParam = new SqlParameter("@HANDSHAKE", DBNull.Value);
                 var context = new CCTEntities1();
-                context.Database.ExecuteSqlCommand("CREATE_SOCIAL_LINKS @USERNAME, @FACEBOOK, @TWITTER, @INSTAGRAM, @LINKEDIN", nameParam, fParam, tParam, iParam, lParam); //run stored procedure to create a row in the database for this user.
+                context.Database.ExecuteSqlCommand("CREATE_SOCIAL_LINKS @USERNAME, @FACEBOOK, @TWITTER, @INSTAGRAM, @LINKEDIN @HANDSHAKE", nameParam, fParam, tParam, iParam, lParam, hParam); //run stored procedure to create a row in the database for this user.
                 original = _unitOfWork.ProfileCustomRepository.GetByUsername(username);
             }
 
@@ -263,6 +264,10 @@ namespace Gordon360.Services
 
                 case "linkedin":
                     original.linkedin = path.linkedin;
+                    break;
+
+                case "handshake":
+                    original.handshake = path.handshake;
                     break;
             }
 
