@@ -1,12 +1,12 @@
-﻿using System;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Linq;
 using System.Web.Http;
-using System.ServiceModel;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Exceptions.CustomExceptions;
+using Gordon360.AuthorizationFilters;
+using Gordon360.Static.Names;
 
 namespace Gordon360.ApiControllers
 {
@@ -20,47 +20,14 @@ namespace Gordon360.ApiControllers
             IUnitOfWork unitOfWork = new UnitOfWork();
             _eventService = new EventService(unitOfWork);
         }
-        
-        [Authorize]
-        [HttpGet]
-        [Route("chapel/")]
-        public IHttpActionResult GetAllForStudent()
-        {
-            //get token data from context, username is the username of current logged in person
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var user_name = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(user_name))
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
-            var result = _eventService.GetAllForStudent(user_name);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(result);
-        }
 
         [Authorize]
         [HttpGet]
         [Route("chapel/{term}")]
-        public IHttpActionResult GetEventsForStudentByTerm(string term)
+        public IHttpActionResult GetEventsByTerm(string term)
         {
             //get token data from context, username is the username of current logged in person
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var authenticatedUser = ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var user_name = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(user_name) || string.IsNullOrWhiteSpace(term))
             {
@@ -86,78 +53,13 @@ namespace Gordon360.ApiControllers
             return Ok(result);
         }
 
-        [Authorize]
-        [HttpGet]
-        [Route("25Live/type/{Type_ID}")]
-        public IHttpActionResult GetEventsByType(string Type_ID) // *
-        {
-            // Two important checks: make sure the event_or_type_id does not contain any letters, and make sure the type is a single letter
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(Type_ID) )
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                // Throw errors for invalid route
-     
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
-            var result = _eventService.GetSpecificEvents(Type_ID, "t");
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(result);
-
-        }
-
-        [Authorize]
-        [HttpGet]
-        [Route("25Live/{Event_ID}")]
-        public IHttpActionResult GetEventsByID(string Event_ID)
-        {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(Event_ID))
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                // Throw errors for invalid route
-
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
-            var result = _eventService.GetSpecificEvents(Event_ID, "m");
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(result);
-
-        }
-
         /// <summary>
         /// This makes use of our cached request to 25Live, which stores AllEvents
         /// </summary>
         /// <returns></returns>
         [Authorize]
         [HttpGet]
-        [Route("25Live/All")] // *
+        [Route("25Live/All")]
         public IHttpActionResult GetAllEvents()
         {
 
@@ -176,7 +78,7 @@ namespace Gordon360.ApiControllers
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var result = _eventService.GetAllEvents(Static.Data.Data.AllEvents);
+            var result = _eventService.GetAllEvents();
 
             if (result == null)
             {
@@ -208,7 +110,7 @@ namespace Gordon360.ApiControllers
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var result = _eventService.GetAllEvents(Static.Data.Data.AllEvents).Where( x => x.Category_Id == "85"); // this is category ID, not type ID right?
+            var result = _eventService.GetCLAWEvents();
 
 
             if (result == null)
@@ -239,7 +141,7 @@ namespace Gordon360.ApiControllers
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var result = _eventService.GetAllEvents(Static.Data.Data.AllEvents).Where(x => x.Requirement_Id == "3"); // probably not an issue, we will see
+            var result = _eventService.GetPublicEvents();
 
             if (result == null)
             {
@@ -249,12 +151,7 @@ namespace Gordon360.ApiControllers
             return Ok(result);
         }
 
-        
-
     }
-
-
-
 
 }
 

@@ -184,7 +184,7 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// Gets a collection of all the current activitie already closed out, by finding which activities have 
+        /// Gets a collection of all the current activities already closed out, by finding which activities have 
         /// memberships with an END_DTE that is not null
         /// </summary>
         /// <returns>The collection of activity codes for open activities</returns>

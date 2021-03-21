@@ -57,8 +57,8 @@ namespace Gordon360.Models.ViewModels
         public string MobilePhone { get; set; }
         public int IsMobilePhonePrivate { get; set; }
         public string AD_Username { get; set; }
-        public Nullable<int> show_pic { get; set; }
-        public Nullable<int> preferred_photo { get; set; }
+        public int? show_pic { get; set; }
+        public int? preferred_photo { get; set; }
         public string Country { get; set; }
         public string BuildingDescription { get; set; }
         public string Major1Description { get; set; }
@@ -68,6 +68,8 @@ namespace Gordon360.Models.ViewModels
         public string Minor2Description { get; set; }
         public string Minor3Description { get; set; }
         public string Mail_Location { get; set; }
+        public int? ChapelRequired { get; set; }
+        public int? ChapelAttended { get; set; }
 
 
         public static implicit operator StudentProfileViewModel(Student stu)
@@ -135,6 +137,8 @@ namespace Gordon360.Models.ViewModels
                 Minor2Description = stu.Minor2Description ?? "",
                 Minor3Description = stu.Minor3Description ?? "",
                 Mail_Location = stu.Mail_Location ?? "",
+                ChapelRequired = stu.ChapelRequired ?? 0,
+                ChapelAttended = stu.ChapelAttended ?? 0
             };
 
             return vm;

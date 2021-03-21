@@ -47,6 +47,7 @@ namespace Gordon360.Models
         public virtual DbSet<StudentNewsExpiration> StudentNewsExpiration { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         public virtual DbSet<AA_ApartmentChoices> AA_ApartmentChoices { get; set; }
+        public virtual DbSet<AA_Applicants> AA_Applicants { get; set; }
         public virtual DbSet<Health_Question> Health_Question { get; set; }
         public virtual DbSet<Messages> Messages { get; set; }
         public virtual DbSet<Rooms> Rooms { get; set; }
@@ -573,12 +574,7 @@ namespace Gordon360.Models
                 new ObjectParameter("user_id_list", user_id_list) :
                 new ObjectParameter("user_id_list", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("GET_ALL_CONNECTION_IDS_BY_ID_LIST", user_id_listParameter);
-        }
-    
-        public virtual int GET_ALL_HEALTH_STATUS()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("GET_ALL_HEALTH_STATUS");
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GET_AA_APPID_BY_NAME_AND_DATE", nOWParameter, eDITOR_IDParameter);
         }
     
         public virtual ObjectResult<GET_ALL_MESSAGES_BY_ID_Result> GET_ALL_MESSAGES_BY_ID(Nullable<int> room_id)
