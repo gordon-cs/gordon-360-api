@@ -18,7 +18,7 @@ namespace Gordon360.Models
     public partial class CCTEntities1 : DbContext
     {
         public CCTEntities1()
-            : base("name=CCTEntities1")
+            : base("name=Entities")
         {
         }
     
