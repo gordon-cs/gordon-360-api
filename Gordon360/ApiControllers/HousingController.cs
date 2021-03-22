@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Claims;
 using System.Web.Http;
+using System.Web.Http.ModelBinding;
 
 namespace Gordon360.Controllers.Api
 {
@@ -116,7 +117,7 @@ namespace Gordon360.Controllers.Api
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(username))
             {
                 string errors = "";
-                foreach (System.Web.Http.ModelBinding.ModelState modelstate in ModelState.Values)
+                foreach (ModelState modelstate in ModelState.Values)
                 {
                     foreach (System.Web.Http.ModelBinding.ModelError error in modelstate.Errors)
                     {
@@ -153,7 +154,7 @@ namespace Gordon360.Controllers.Api
             if (!ModelState.IsValid)
             {
                 string errors = "";
-                foreach (System.Web.Http.ModelBinding.ModelState modelstate in ModelState.Values)
+                foreach (ModelState modelstate in ModelState.Values)
                 {
                     foreach (System.Web.Http.ModelBinding.ModelError error in modelstate.Errors)
                     {
@@ -196,7 +197,7 @@ namespace Gordon360.Controllers.Api
             if (!ModelState.IsValid)
             {
                 string errors = "";
-                foreach (System.Web.Http.ModelBinding.ModelState modelstate in ModelState.Values)
+                foreach (ModelState modelstate in ModelState.Values)
                 {
                     foreach (System.Web.Http.ModelBinding.ModelError error in modelstate.Errors)
                     {
@@ -239,7 +240,7 @@ namespace Gordon360.Controllers.Api
             if (!ModelState.IsValid)
             {
                 string errors = "";
-                foreach (System.Web.Http.ModelBinding.ModelState modelstate in ModelState.Values)
+                foreach (ModelState modelstate in ModelState.Values)
                 {
                     foreach (System.Web.Http.ModelBinding.ModelError error in modelstate.Errors)
                     {
@@ -270,7 +271,7 @@ namespace Gordon360.Controllers.Api
             if (!ModelState.IsValid || applicationID != null)
             {
                 string errors = "";
-                foreach (System.Web.Http.ModelBinding.ModelState modelstate in ModelState.Values)
+                foreach (ModelState modelstate in ModelState.Values)
                 {
                     foreach (System.Web.Http.ModelBinding.ModelError error in modelstate.Errors)
                     {
