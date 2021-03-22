@@ -477,7 +477,7 @@ namespace Gordon360.Services
                 }
             }
 
-            // Remove apartment choices from the database that were remove from the frontend
+            // Remove apartment choices from the database that were removed from the frontend
             foreach (ApartmentChoiceViewModel apartmentChoice in apartmentChoicesToRemove)
             {
                 IEnumerable<AA_ApartmentChoices> apartmentChoiceResult = null;
