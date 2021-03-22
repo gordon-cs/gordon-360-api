@@ -13,7 +13,7 @@ using System.Diagnostics;
 
 namespace Gordon360.Services
 {
-    public class DirectMessageService : IDirectMessageService
+    public class DirectMessageService : IDirectMessageService 
     {
         private IProfileService _profileService;
         private IAccountService _accountService;
@@ -28,7 +28,7 @@ namespace Gordon360.Services
 
         public IEnumerable<MessageViewModel> GetMessages(string roomId)
         {
-        
+
             var roomIdParam = new SqlParameter("@room_id", roomId);
             var result = RawSqlQuery<MessageViewModel>.query("GET_ALL_MESSAGES_BY_ID @room_id", roomIdParam); //run stored procedure
 
@@ -152,18 +152,17 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
             }
-     
+
 
 
             return endresult;
 
         }
 
-        public bool CreateGroup(String id, String name, bool group, DateTime lastUpdated, string image)
+
+        public CreateGroupViewModel CreateGroup(String name, bool group, DateTime lastUpdated, string image, List<String> usernames)
         {
             DateTime createdAt = DateTime.Now;
-
-            var idParam = new SqlParameter("@_id", id);
             var nameParam = new SqlParameter("@name", name);
             var groupParam = new SqlParameter("@group", group);
             var createdAtParam = new SqlParameter("@createdAt", createdAt);
@@ -172,17 +171,39 @@ namespace Gordon360.Services
 
             groupImageParam.Value = DBNull.Value;
 
-            var result = RawSqlQuery<MessageViewModel>.query("CREATE_MESSAGE_ROOM @_id, @name, @group, @createdAt, @lastUpdated, @roomImage", idParam, nameParam, groupParam, createdAtParam, lastUpdatedParam, groupImageParam); //run stored procedure
-            bool returnAnswer = true; 
+            var result = RawSqlQuery<CreateGroupViewModel>.query("CREATE_MESSAGE_ROOM @name, @group, @createdAt, @lastUpdated, @roomImage", nameParam, groupParam, createdAtParam, lastUpdatedParam, groupImageParam); //run stored procedure
+      
             if (result == null)
             {
-                returnAnswer = false;
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
             }
+            List<string> idlist = new List<String>(500);
 
+            foreach (string username in usernames)
+            {
+                idlist.Add(_accountService.GetAccountByUsername(username).GordonID);
+            }
 
+            var groupObject = new CreateGroupViewModel();
 
-            return returnAnswer;
+            foreach(CreateGroupViewModel model in result)
+            {
+                groupObject = model;
+            }
+
+            foreach (string userid in idlist)
+            {
+                var studentIdParam = new SqlParameter("@user_id", userid);
+                var IdRefreshParam2 = new SqlParameter("@_id", groupObject.id);
+                var storeRoooms = RawSqlQuery<MessageViewModel>.query("INSERT_USER_ROOMS @user_id, @_id", studentIdParam, IdRefreshParam2);
+                UserViewModel userInfo = new UserViewModel();
+                userInfo.user_id = userid;
+                userInfo.user_name = _accountService.Get(userid).ADUserName;
+
+                groupObject.users.Add(userInfo);
+            }
+
+            return groupObject;
 
         }
 
@@ -218,17 +239,18 @@ namespace Gordon360.Services
                 idParam, roomIdParam, textParam, createdAtParam, userIdParam, imageParam, videoParam, audioParam, systemParam, sentParam, receivedParam, pendingParam); //run stored procedure
 
             bool returnAnswer = true;
+
             if (result == null)
             {
                 returnAnswer = false;
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
             }
 
-
-
             return returnAnswer;
 
         }
+
+        
 
         public bool StoreUserRooms(String userId, String roomId)
         {
@@ -244,6 +266,88 @@ namespace Gordon360.Services
             
 
             var result = RawSqlQuery<MessageViewModel>.query("INSERT_USER_ROOMS @user_id, @room_id", userIdParam, roomIdParam); //run stored procedure
+
+            bool returnAnswer = true;
+
+            if (result == null)
+            {
+                returnAnswer = false;
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+
+
+
+            return returnAnswer;
+
+        }
+
+
+        public bool StoreUserConnectionIds(String userId, String connectionId)
+        {
+            var _unitOfWork = new UnitOfWork();
+            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == userId);
+            if (query == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
+
+            var userIdParam = new SqlParameter("@user_id", userId);
+            var connectionIdParam = new SqlParameter("@connection_id", connectionId);
+
+
+            var result = RawSqlQuery<MessageViewModel>.query("INSERT_USER_CONNECTION_ID @user_id, @connection_id", userIdParam, connectionIdParam); //run stored procedure
+
+            bool returnAnswer = true;
+
+            if (result == null)
+            {
+                returnAnswer = false;
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+
+
+
+            return returnAnswer;
+
+        }
+
+        public List<IEnumerable<ConnectionIdViewModel>> GetUserConnectionIds(List<String> userIds)
+        {
+            var _unitOfWork = new UnitOfWork();
+            foreach(string user in userIds) {
+                var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == user);
+                if (query == null)
+                {
+                    throw new ResourceNotFoundException() { ExceptionMessage = "One of the accounts was not found." };
+                }
+            }
+            var idList = new List<IEnumerable<ConnectionIdViewModel>>(300);
+
+            foreach (string user in userIds)
+            {
+                var userIdParam = new SqlParameter("@user_id", user);
+
+                var result = RawSqlQuery<ConnectionIdViewModel>.query("GET_ALL_CONNECTION_IDS_BY_ID @user_id", userIdParam); //run stored procedure
+
+                var model = result.Select(x =>
+                {
+                    ConnectionIdViewModel y = new ConnectionIdViewModel();
+                    y.connection_id = x.connection_id;
+                    return y;
+                });
+
+                idList.Add(model);
+            }
+
+            return idList;
+
+        }
+
+        public bool DeleteUserConnectionIds(String connectionId)
+        {
+            var connectionIdParam = new SqlParameter("@connection_id", connectionId);
+
+            var result = RawSqlQuery<MessageViewModel>.query("DELETE_USER_CONNECTION_ID  @connection_id", connectionIdParam); //run stored procedure
 
             bool returnAnswer = true;
 

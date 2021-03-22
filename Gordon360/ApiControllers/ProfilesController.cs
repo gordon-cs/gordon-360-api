@@ -17,6 +17,7 @@ using Gordon360.Providers;
 using System.IO;
 using Gordon360.Models.ViewModels;
 using System.Security.Claims;
+using Gordon360.AuthorizationFilters;
 
 namespace Gordon360.Controllers.Api
 {
@@ -326,7 +327,7 @@ namespace Gordon360.Controllers.Api
         /// </returns>
         [HttpGet]
         [Route("Advisors/{username}")]
-        public IHttpActionResult getAdvisors(string username)
+        public IHttpActionResult GetAdvisors(string username)
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var _student = _profileService.GetStudentProfileByUsername(username);
@@ -338,11 +339,26 @@ namespace Gordon360.Controllers.Api
 
         }
 
+        /// <summary> Gets the clifton strengths of a particular user </summary>
+        /// <param name="username"> The username for which to retrieve info </param>
+        /// <returns> Clifton strengths of the given user. </returns>
+        [HttpGet]
+        [Route("clifton/{username}")]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
+        public IHttpActionResult GetCliftonStrengths(string username)
+        {
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+            var strengths = _profileService.GetCliftonStrengths(int.Parse(id));
+
+            return Ok(strengths);
+
+        }
+
         /// <summary>Get the profile image of currently logged in user</summary>
         /// <returns></returns>
         [HttpGet]
         [Route("Image")]
-        public IHttpActionResult getMyImg()
+        public IHttpActionResult GetMyImg()
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;

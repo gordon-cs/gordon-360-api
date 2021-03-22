@@ -22,6 +22,7 @@ namespace Gordon360.Services
         FacultyStaffProfileViewModel GetFacultyStaffProfileByUsername(string username);
         AlumniProfileViewModel GetAlumniProfileByUsername(string username);
         IEnumerable<AdvisorViewModel> GetAdvisors(string id);
+        CliftonStrengthsViewModel GetCliftonStrengths(int id);
         ProfileCustomViewModel GetCustomUserInfo(string username);
         PhotoPathViewModel GetPhotoPath(string id);
         void UpdateProfileLink(string username, string type, CUSTOM_PROFILE path);
@@ -55,17 +56,18 @@ namespace Gordon360.Services
     public interface IWellnessService
     {
         WellnessViewModel GetStatus(string id);
-        DEPRECATED_WellnessStatusViewModel DEPRECATED_GetStatus(string id);
         WellnessQuestionViewModel GetQuestion();
         Health_Status PostStatus(WellnessStatusColor status, string id);
-        string DEPRECATED_PostStatus(string status, string id);
     }
 
     public interface IDirectMessageService
     {
-        bool CreateGroup(String id, String name, bool group, DateTime lastUpdated, string image);
+        CreateGroupViewModel CreateGroup(String name, bool group, DateTime lastUpdated, string image, List<String> usernames);
         bool SendMessage(SendTextViewModel textInfo, string user_id);
         bool StoreUserRooms(String userId, String roomId);
+        bool StoreUserConnectionIds(String userId, String connectionId);
+        bool DeleteUserConnectionIds(String connectionId);
+        List<IEnumerable<ConnectionIdViewModel>> GetUserConnectionIds(List<String> userIds);
         IEnumerable<MessageViewModel> GetMessages(string roomId);
         IEnumerable<GroupViewModel> GetRooms(string userId);
         List<Object> GetRoomById(string userId);

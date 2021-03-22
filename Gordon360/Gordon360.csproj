@@ -25,7 +25,8 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <Use64BitIISExpress>false</Use64BitIISExpress>
+    <Use64BitIISExpress>
+    </Use64BitIISExpress>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -121,6 +122,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.DirectoryServices.AccountManagement" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IdentityModel" />
@@ -278,8 +280,8 @@
       <DependentUpon>CCT_DB_Models.Context.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CCT_DB_Models.cs">
-      <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CCT_DB_Models.Designer.cs">
@@ -366,6 +368,8 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\GET_AA_CURRENT_APPLICATIONS_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\GET_ALL_MESSAGES_BY_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -445,6 +449,18 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MYSCHEDULE_BY_ID_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NEWS_CATEGORIES_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NEWS_NEW_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NEWS_NOT_EXPIRED_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NEWS_PERSONAL_UNAPPROVED_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\paid_shifts.cs">
@@ -556,7 +572,9 @@
     <Compile Include="Models\STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <!-- <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs" /> -->
+    <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\student_timesheets.cs">
       <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
     </Compile>
@@ -603,10 +621,13 @@
     <Compile Include="Models\ViewModels\ApartmentChoiceViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentApplicationViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentApplicantViewModel.cs" />
+    <Compile Include="Models\ViewModels\CliftonStrengthsViewModel.cs" />
     <Compile Include="Models\ViewModels\ClockInViewModel.cs" />
+    <Compile Include="Models\ViewModels\ConnectionIdViewModel.cs" />
     <Compile Include="Models\ViewModels\CreateGroupViewModel.cs" />
     <Compile Include="Models\ViewModels\GroupViewModel.cs" />
     <Compile Include="Models\ViewModels\HourTypesViewModel.cs" />
+    <Compile Include="Models\ViewModels\IdCheckViewModel.cs" />
     <Compile Include="Models\ViewModels\MessageViewModel.cs" />
     <Compile Include="Models\ViewModels\Model1.cs" />
     <Compile Include="Models\ViewModels\RoomViewModel.cs" />
@@ -671,7 +692,6 @@
     <Compile Include="Models\ViewModels\UserViewModel.cs" />
     <Compile Include="Models\ViewModels\VictoryPromiseViewModel.cs" />
     <Compile Include="Models\ViewModels\WellnessQuestionViewModel.cs" />
-    <Compile Include="Models\ViewModels\WellnessStatusViewModel.cs" />
     <Compile Include="Models\ViewModels\WellnessViewModel.cs" />
     <Compile Include="Models\view_cct_alumni.cs">
       <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
@@ -778,6 +798,7 @@
     <Content Include="Models\StaffTimesheets_DB_Models.edmx.diagram">
       <DependentUpon>StaffTimesheets_DB_Models.edmx</DependentUpon>
     </Content>
+    <Content Include="libman.json" />
     <EntityDeploy Include="Models\CCT_DB_Models.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>CCT_DB_Models.Designer.cs</LastGenOutput>
@@ -785,7 +806,6 @@
     <Content Include="Models\CCT_DB_Models.edmx.diagram">
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
     </Content>
-    <Content Include="libman.json" />
     <None Include="secrets.config">
       <SubType>Designer</SubType>
     </None>
@@ -862,7 +882,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:2550</IISUrl>
+          <IISUrl>http://localhost:2477</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

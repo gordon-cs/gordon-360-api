@@ -7,7 +7,7 @@ namespace Gordon360.Models.ViewModels
 {
     public class CreateGroupViewModel
     {
-        public String id { get; set; }
+        public int id { get; set; }
 
         public String name { get; set; }
 
@@ -18,5 +18,9 @@ namespace Gordon360.Models.ViewModels
         public DateTime lastUpdated { get; set; }
 
         public String image { get; set; }
+
+        public List<String> usernames = new List<string>(500);
+
+        public List<UserViewModel> users = new List<UserViewModel>(500);
     }
 }
