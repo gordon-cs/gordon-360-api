@@ -5,123 +5,84 @@
 Dive in.
 
 ## Table of Contents
-- [Machines and Sites](#machines-and-sites)
-    - [Deploying to the Api Site](#deploying-to-the-api-site)
-      - [Normal Case: Deploying Automatically via Travis](#normal-case-deploying-automatically-via-travis)
-      - [Unusual Case: Deploying Manually](#unusual-case-deploying-manually)
-    - [Deploying to the Front-end site (deprecated)](#deploying-to-the-front-end-site)
-- [Running the API locally](#running-the-api-locally)
-    - [Preliminary setup](#preliminary-setup)
-    - [Building and running](#building-and-running)
-- [The Database](#the-database)
-    - [CCT Tables](#cct-tables)
-    - [MyGordon Tables](#mygordon-tables)
-    - [CCT Views](#cct-views)
-    - [Stored Procedures](#stored-procedures)
-    - [Triggers](#triggers)
-    - [Manual and Debugging Access](#manual-and-debugging-access)
-    - [Updating or creating .edmx](#updating-or-creating-edmx)
-- [The Code](#the-code)
-    - [Introduction](#introduction)
-    - [Adding New Queries](#adding-new-queries)
-- [Caching](#caching)
-- [API Endpoints](#api-endpoints)
-    - [Accounts](#accounts)
-    - [Activities](#activities)
-    - [Admins](#admins)
-    - [Advanced Search](#advanced-search)
-    - [Authentication](#authentication)
-    - [Content Management](#content-management)
-    - [Emails](#emails)
-    - [Events](#events)
-    - [Housing](#housing)
-    - [Memberships](#memberships)
-    - [Membership Requests](#membership-requests)
-    - [Participation Definitions](#participation-definitions)
-    - [Profiles](#profiles)
-    - [Sessions](#sessions)
-    - [Dining](#dining)
-    - [Student Employment](#student-employment)
-    - [Schedule](#schedule)
-    - [MySchedule](#my-schedule)
-    - [ScheduleControl](#schedule-control)
-    - [Victory Promise](#victory-promise)
-    - [News](#news)
-    - [Wellness Check](#wellness-check)
-- [API Testing](#api-testing)
-    - [Testing Introduction](#testing-introduction)
-    - [Running the Tests](#running-the-tests)
-    - [Writing the Tests](#writing-the-tests)
-- [Troubleshooting](#troubleshooting)
-- [Documentation](#documentation)
+
+-   [Machines and Sites](#machines-and-sites)
+    -   [Deploying to the Api Site](#deploying-to-the-api-site)
+        -   [Current Case: Deploying Manually](#current-case-deploying-manually)
+        -   [Ideal Case: Continuous Deployment with GitHub Actions](#ideal-case-continuous-deployment-with-github-actions)
+-   [Caching](#caching)
+-   [Running the API locally](#running-the-api-locally)
+    -   [Preliminary setup](#preliminary-setup)
+    -   [Building and running](#building-and-running)
+-   [The Database](#the-database)
+    -   [Tables](#CCT-tables)
+    -   [Stored Procedures](#CCT-stored-procedures)
+    -   [Triggers](#CCT-triggers)
+    -   [Manual and Debugging Access](#manual-and-debugging-access)
+    -   [Updating or creating .edmx](#updating-or-creating-edmx)
+-   [The Code](#the-code)
+    -   [Introduction](#introduction)
+    -   [Adding New Queries](#adding-new-queries)
+-   [Caching](#caching)
+-   [API Endpoints](#api-endpoints)
+    -   [Accounts](#accounts)
+    -   [Activities](#activities)
+    -   [Admins](#admins)
+    -   [Advanced Search](#advanced-search)
+    -   [Authentication](#authentication)
+    -   [Content Management](#content-management)
+    -   [Emails](#emails)
+    -   [Events](#events)
+    -   [Housing](#housing)
+    -   [Memberships](#memberships)
+    -   [Membership Requests](#membership-requests)
+    -   [Participation Definitions](#participation-definitions)
+    -   [Profiles](#profiles)
+    -   [Sessions](#sessions)
+    -   [Dining](#dining)
+    -   [Student Employment](#student-employment)
+    -   [Schedule](#schedule)
+    -   [MySchedule](#my-schedule)
+    -   [ScheduleControl](#schedule-control)
+    -   [Victory Promise](#victory-promise)
+    -   [News](#news)
+    -   [Wellness Check](#wellness-check)
+-   [API Testing](#api-testing)
+    -   [Testing Introduction](#testing-introduction)
+    -   [Running the Tests](#running-the-tests)
+    -   [Writing the Tests](#writing-the-tests)
+-   [Troubleshooting](#troubleshooting)
+-   [Documentation](#documentation)
 
 ## Machines and Sites
 
-As of Summer 2018 the virtual machines CS-RDSH-01 and CS-RDSH-02 are used for developing Gordon 360. Instructions for connecting via Remote Desktop can be found in [RemoteDesktopToVM.md](RemoteDesktopToVM.md).
-
-To work on this project, it is easiest to use the following machines provided by CTS:
-
--   360train.gordon.edu - Windows machine.
-    -   Can be accessed through Remote Desktop Connection.
-    -   Has the C# code.
-    -   Has Visual Studio, MSSQL Server.
-    -   Has deployment scripts and folders.
-    -   Has site folders.
--   CS-360-API-TEST.gordon.edu - Ubuntu machine
-    -   Is accessed through ssh.
-    -   Is setup for running the tests (has an already filled `test_credentials.py` file.)
-    -   Has the User-facing code (HTML, JS and CSS)
-
-The folders for these IIS sites can be found on the 360train machine under `F:\sites`.
-
--   360.gordon.edu -- Production Front-end. User-facing code (css, js, html)
--   360Train.gordon.edu -- Development Front-end. User-facing code (css, js, html)
--   360Api.gordon.edu -- Production JSON server site. C# using the ASP.NET Framework.
--   360ApiTrain.gordon.edu -- Development JSON server site. C# using the ASP.NET Framework.
+As of Spring 2021, the virtual machines CS-RDSH-01 and CS-RDSH-02 are used for developing Gordon 360. Instructions for connecting via Remote Desktop can be found in [RemoteDesktopToVM.md](RemoteDesktopToVM.md#How-to-connect-to-a-CS-RDSH-virtual-machine).
 
 ### Deploying to the Api Site
 
-#### Normal Case: Deploying Automatically via Travis
+The Gordon 360 API is hosted on the `360api.gordon.edu` server, which is also known as `cts-360.gordon.edu`. The built files are deployed at `F:\Sites`, under the names `360Api` and `360ApiTrain` for the master and develop branches respectively.
 
-When a pull request is merged into "develop", Travis will automatically build it and deploy it to 360apitrain.gordon.edu (for testing).
-
-When a pull request is merged into "master", Travis will automatically build it and deploy it to 360api.gordon.edu (for production).
-
-#### Unusual Case: Deploying Manually
+#### Current Case: Deploying Manually
 
 If there are problems with automatic deployment, or a specific need to revert or push manually, then this older procedure can be used.
 
--   Access the cts-360.gordon.edu VM (see [RemoteDesktopToVM.md](RemoteDesktopToVM.md) for instructions) as the cct.service user.
+-   Access the cts-360.gordon.edu VM (see [RemoteDesktopToVM.md](RemoteDesktopToVM.md#How-to-connect-to-a-CS-RDSH-virtual-machine) for instructions) as the cct.service user.
 -   Before you publish your new version, be sure to copy the current stable version to make a backup. To do so:
     -   Navigate in File Explorer to `F:\Sites` and copy either 360Api or 360ApiTrain, whichever you're planning to publish to.
-    -   Paste that copy in the same place (`F:\Sites`), and rename it to a backup including the date. For example, if you backed up the Train site on January 1, 2001, then the copy would be named `360ApiTrain_backup 1-01-2001`.
+    -   Paste that copy in the same place (`F:\Sites`), and rename it to a backup including the date. For example, if you backed up the Train site on January 1, 2001, then the copy would be named `360ApiTrain_backup_1-01-2001`.
 -   Open gitbash and cd to `C:\users\cct.service\code\gordon-360-api`. Make sure that you are on the branch you wish to deploy, and that it has been pulled up to date.
-    **Note: if you clone a new repository on this VM, it will not have the necessary publish profiles or secrets.config. See [MakePublishProfiles.md](MakePublishProfiles.md) to restore the Publish Profiles.**
+    **Note: if you clone a new repository on this VM, it will not have the necessary publish profiles or secrets.config. See [MakePublishProfiles.md](MakePublishProfiles.md#How-to-create-the-Publish-Profiles-to-publish-the-API-to-the-Sites) to restore the Publish Profiles.**
 -   Start Visual Studio as an administrator (right click) and open the existing project/solution file - `C:\users\cct.service\code\gordon-360-api\Gordon360.sln` (the solution file).
 -   Menu Bar -> Build - Publish Gordon360.
 -   Choose the right publish profile.
     -   DEV -- Development ( Connects to the admintrainsql database server, and used for 360train.gordon.edu).
     -   Prod -- Production ( Connects to the adminprodsql database server, and used for the real site 360.gordon.edu).
-    -   If you don't see the publish profile you want (or you are automatically taken to the "Pick a Publish Target" Window) see [MakePublishProfiles.md](MakePublishProfiles.md) to restore the Publish Profiles.
+    -   If you don't see the publish profile you want (or you are automatically taken to the "Pick a Publish Target" Window) see [MakePublishProfiles.md](MakePublishProfiles.md#How-to-create-the-Publish-Profiles-to-publish-the-API-to-the-Sites) to restore the Publish Profiles.
 -   Clicking publish pushes your changes to the API for either 360ApiTrain.gordon.edu or 360Api.gordon.edu, depending on which publish profile you used.
 
-### Deploying to the Front-end Site
+#### Ideal Case: Continuous Deployment with GitHub Actions
 
-**Note: these instructions are out-of-date, since Project Bernard is deprecated with the transition to gordon-360-ui!** Please refer to the documentation for [gordon-360-ui](https://github.com/gordon-cs/gordon-360-ui) on GitHub. The new gordon-360-ui front-end uses the React framework rather than Ember.
-
--   Log into CS-360-API-TEST through ssh.
--   To make a change to the code, clone the [Project Bernard](https://github.com/gordon-cs/Project-Bernard) repository.
--   Install EmberJS and its dependencies. See the Project Bernard repository for help on how to do this (If you are using the CS-360-API-TEST machine, skip this step).
--   Make a change to the code. Do your thing, make your mark. A legacy.
--   Run one of these commands in the terminal at the root of the project folder.
-    -   `ember build --env development` -- This version will use the Development api endpoint (360ApiTrain.gordon.edu)
-    -   `ember build --env production` -- This version will use the Production api endpoint (360Api.gordon.edu)
--   The output is placed in the `dist/` folder at root of your project folder.
-    -   Note: Since emberJS is a javascript framework, the output is just an html file with a TON of javascript linked :p
--   Move the `dist/` folder AS-IS to one of the two user-facing sites on CS-RDP1.
-    -   If you used the development flag, move `dist/` to the 360Train IIS site.
-    -   If you used the production flag, move `dist/` to the 360 IIS site.
--   For moving files between a mac and the virtual windows machine, we used a Microsoft Remote Desktop feature called folder redirection. It lets you specify folders on your mac that will be available on the PC you are remoting to.
+The frontend is already configured for continuous deployment with GitHub Actions. The backend should ideally be simularly automated, but isn't yet.
 
 ## Caching
 
@@ -141,7 +102,7 @@ Data which is stored upon startup includes:
 
 ### Preliminary setup
 
--   It is easiest to use the development virtual machine to work on this project. Follow [these instructions](RemoteDesktopToVM.md) to set up and connect to the virtual machine using your Gordon account.
+-   It is easiest to use the development virtual machine to work on this project. Follow [these instructions](RemoteDesktopToVM.md#How-to-connect-to-a-CS-RDSH-virtual-machine) to set up and connect to the virtual machine using your Gordon account.
 
 -   If this is your first time on the virtual machine, you will need to clone this repository. You can do this by using Git Bash. It is possible that you will need to [add the SSH key to your Git account](https://help.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh), it will guide you to `cd .ssh` then `cat id_rsa.pub`, copy the output and go to your github settings and paste it in your SSH keys.
 
@@ -460,12 +421,12 @@ If you are attempting to connect the API to a database other than the ones to wh
 -   You do not need to delete any edmx files, since you are now creating the first instance of a different edmx
 -   <span id="create-connection"><!--anchor--></span>
     None of the options for data connection will fit your needs, so you will need to create a new option:
-    _ Click "New Connection..."
-    _ If prompted "Choose Data Source", choose "Microsoft SQL Server"
-    _ For "Server name", put `admintrainsql.gordon.edu`
-    _ Under "Connect to a Database", make sure "Select or enter a database name:" is selected and enter `<database name>`
-    _ Go to Advanced settings, scroll to the top, and make sure "MultipleActiveResultSets" is set to True; then, scroll towards the bottom to find "Integrated Security" and make sure that is set to True
-    _ Click OK to close Advanced settings, then OK again to save the data connection you have just made
+    - Click "New Connection..."
+    - If prompted "Choose Data Source", choose "Microsoft SQL Server"
+    - For "Server name", put `admintrainsql.gordon.edu`
+    - Under "Connect to a Database", make sure "Select or enter a database name:" is selected and enter `<database name>`
+    - Go to Advanced settings, scroll to the top, and make sure "MultipleActiveResultSets" is set to True; then, scroll towards the bottom to find "Integrated Security" and make sure that is set to True
+    - Click OK to close Advanced settings, then OK again to save the data connection you have just made
 -   Now, you can select the data connection you just made from the drop down and pick up with the above directions at 'Make sure you check "Save connection...'
 
 ## The Code
@@ -701,7 +662,7 @@ What is it? Resources to get information on Events from the 25Live system
 
 `api/events/25Live/CLAW` Returns all events in 25Live with Category_ID = 85 (CL&W Credit approved).
 
-`api/events/25Live/Public` Returns all events in 25Live marked to promote on public calendars (Reuirement_ID = 3).
+`api/events/25Live/Public` Returns all events in 25Live marked to promote on public calendars (Requirement_ID = 3).
 
 ### Housing
 What is it? Resource that represents residence hall information that would concern the residents or housing director.
@@ -841,6 +802,8 @@ Differences from GoSite:
 `api/profiles/role/:username` Get college role of a user with username `username` as a parameter --- College roles: super admin, faculty and staff, student and police.
 
 `api/profiles/Advisors/:username` Get advisor(s) info of a user with username `username` as a parameter.
+
+`api/profiles/clifton/:username` Get the Clifton Strengths of a user with username `username` as a parameter.
 
 `api/profiles/Image/` Get profile image of the current logged in user. Image is stored in a base 64 string.
 

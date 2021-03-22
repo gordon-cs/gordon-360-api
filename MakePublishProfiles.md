@@ -2,9 +2,9 @@
 
 ## Table of Contents
 
-- [Why we need Publish Profiles](why-we-need-publish-profiles)
-- [Why don't we have the publish profiles](why-dont-we-have-the-publish-profiles)
-- [How to create the Publish Profiles](how-to-create-the-publish-profiles)
+- [Why we need Publish Profiles](#why-we-need-publish-profiles)
+- [Why don't we have the publish profiles](#why-dont-we-have-the-publish-profiles)
+- [How to create the Publish Profiles](#how-to-create-the-publish-profiles)
 
 ## Why we need Publish Profiles
 
