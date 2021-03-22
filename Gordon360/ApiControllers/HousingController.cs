@@ -233,8 +233,8 @@ namespace Gordon360.Controllers.Api
         /// </summary>
         /// <returns>The result of changing the editor</returns>
         [HttpPut]
-        [Route("apartment/applications/{applicationID}/{newEditorUsername}")]
-        public IHttpActionResult ChangeEditor(int applicationID, string newEditorUsername) // [FromBody] ApartmentAppNewEditorViewModel newEditorDetails)
+        [Route("apartment/applications/{applicationID}/editor")]
+        public IHttpActionResult ChangeEditor(int applicationID, [FromBody] ApartmentApplicationViewModel applicationDetails)
         {
             // Verify Input
             if (!ModelState.IsValid)
@@ -253,6 +253,8 @@ namespace Gordon360.Controllers.Api
             //get token data from context, username is the username of current logged in person
             ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+            string newEditorUsername = applicationDetails.EditorUsername;
 
             bool result = _housingService.ChangeApplicationEditor(username, applicationID, newEditorUsername);
 
