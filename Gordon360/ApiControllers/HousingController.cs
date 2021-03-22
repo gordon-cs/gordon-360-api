@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Claims;
 using System.Web.Http;
+using System.Web.Http.ModelBinding;
 
 namespace Gordon360.Controllers.Api
 {
@@ -116,9 +117,9 @@ namespace Gordon360.Controllers.Api
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(username))
             {
                 string errors = "";
-                foreach (System.Web.Http.ModelBinding.ModelState modelstate in ModelState.Values)
+                foreach (ModelState modelstate in ModelState.Values)
                 {
-                    foreach (System.Web.Http.ModelBinding.ModelError error in modelstate.Errors)
+                    foreach (ModelError error in modelstate.Errors)
                     {
                         errors += "|" + error.ErrorMessage + "|" + error.Exception;
                     }
@@ -127,10 +128,9 @@ namespace Gordon360.Controllers.Api
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            string editorID = _accountService.GetAccountByUsername(username).GordonID;
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
-            int? result = _housingService.GetApplicationID(editorID, sessionID);
+            int? result = _housingService.GetApplicationID(username, sessionID);
             if (result != null)
             {
                 return Ok(result);
@@ -154,9 +154,9 @@ namespace Gordon360.Controllers.Api
             if (!ModelState.IsValid)
             {
                 string errors = "";
-                foreach (System.Web.Http.ModelBinding.ModelState modelstate in ModelState.Values)
+                foreach (ModelState modelstate in ModelState.Values)
                 {
-                    foreach (System.Web.Http.ModelBinding.ModelError error in modelstate.Errors)
+                    foreach (ModelError error in modelstate.Errors)
                     {
                         errors += "|" + error.ErrorMessage + "|" + error.Exception;
                     }
@@ -167,8 +167,6 @@ namespace Gordon360.Controllers.Api
             //get token data from context, username is the username of current logged in person
             ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-
-            string userID = _accountService.GetAccountByUsername(username).GordonID;
 
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
@@ -182,7 +180,7 @@ namespace Gordon360.Controllers.Api
 
             ApartmentChoiceViewModel[] apartmentChoices = applicationDetails.ApartmentChoices;
 
-            int result = _housingService.SaveApplication(userID, sessionID, editorID, apartmentApplicants, apartmentChoices);
+            int result = _housingService.SaveApplication(username, sessionID, editorID, apartmentApplicants, apartmentChoices);
 
             return Created("Status of application saving: ", result);
         }
@@ -199,9 +197,9 @@ namespace Gordon360.Controllers.Api
             if (!ModelState.IsValid)
             {
                 string errors = "";
-                foreach (System.Web.Http.ModelBinding.ModelState modelstate in ModelState.Values)
+                foreach (ModelState modelstate in ModelState.Values)
                 {
-                    foreach (System.Web.Http.ModelBinding.ModelError error in modelstate.Errors)
+                    foreach (ModelError error in modelstate.Errors)
                     {
                         errors += "|" + error.ErrorMessage + "|" + error.Exception;
                     }
@@ -213,17 +211,9 @@ namespace Gordon360.Controllers.Api
             ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
-            string userID = _accountService.GetAccountByUsername(username).GordonID;
-
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
-            if (applicationID == -1)
-            {
-                applicationID = applicationDetails.ApplicationID; // The apartAppID is set to -1 if an existing application ID was not yet known by the frontend
-            }
-
             string newEditorUsername = applicationDetails.EditorUsername;
-            string newEditorID = _accountService.GetAccountByUsername(newEditorUsername).GordonID;
 
             ApartmentApplicantViewModel[] newApartmentApplicants = applicationDetails.Applicants;
             foreach (ApartmentApplicantViewModel applicant in newApartmentApplicants)
@@ -233,7 +223,7 @@ namespace Gordon360.Controllers.Api
 
             ApartmentChoiceViewModel[] newApartmentChoices = applicationDetails.ApartmentChoices;
 
-            int result = _housingService.EditApplication(userID, sessionID, applicationID, newEditorID, newApartmentApplicants, newApartmentChoices);
+            int result = _housingService.EditApplication(username, sessionID, applicationID, newEditorUsername, newApartmentApplicants, newApartmentChoices);
 
             return Created("Status of application saving: ", result);
         }
@@ -243,16 +233,16 @@ namespace Gordon360.Controllers.Api
         /// </summary>
         /// <returns>The result of changing the editor</returns>
         [HttpPut]
-        [Route("apartment/applications/{applicationID}/{editorUsername}")]
-        public IHttpActionResult ChangeEditor(int applicationID, string editorUsername) // [FromBody] ApartmentAppNewEditorViewModel newEditorDetails)
+        [Route("apartment/applications/{applicationID}/editor")]
+        public IHttpActionResult ChangeEditor(int applicationID, [FromBody] ApartmentApplicationViewModel applicationDetails)
         {
             // Verify Input
             if (!ModelState.IsValid)
             {
                 string errors = "";
-                foreach (System.Web.Http.ModelBinding.ModelState modelstate in ModelState.Values)
+                foreach (ModelState modelstate in ModelState.Values)
                 {
-                    foreach (System.Web.Http.ModelBinding.ModelError error in modelstate.Errors)
+                    foreach (ModelError error in modelstate.Errors)
                     {
                         errors += "|" + error.ErrorMessage + "|" + error.Exception;
                     }
@@ -264,13 +254,9 @@ namespace Gordon360.Controllers.Api
             ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
-            string userID = _accountService.GetAccountByUsername(username).GordonID;
+            string newEditorUsername = applicationDetails.EditorUsername;
 
-            //int apartAppID = newEditorDetails.AprtAppID;
-            //string newEditorUsername = newEditorDetails.EditorUsername;
-            string newEditorID = _accountService.GetAccountByUsername(editorUsername).GordonID;
-
-            bool result = _housingService.ChangeApplicationEditor(userID, applicationID, newEditorID);
+            bool result = _housingService.ChangeApplicationEditor(username, applicationID, newEditorUsername);
 
             return Ok(result);
         }
@@ -287,9 +273,9 @@ namespace Gordon360.Controllers.Api
             if (!ModelState.IsValid || applicationID != null)
             {
                 string errors = "";
-                foreach (System.Web.Http.ModelBinding.ModelState modelstate in ModelState.Values)
+                foreach (ModelState modelstate in ModelState.Values)
                 {
-                    foreach (System.Web.Http.ModelBinding.ModelError error in modelstate.Errors)
+                    foreach (ModelError error in modelstate.Errors)
                     {
                         errors += "|" + error.ErrorMessage + "|" + error.Exception;
                     }
@@ -301,10 +287,9 @@ namespace Gordon360.Controllers.Api
             ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
-            string userID = _accountService.GetAccountByUsername(username).GordonID;
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
-            int? storedApplicationID = _housingService.GetApplicationID(userID, sessionID);
+            int? storedApplicationID = _housingService.GetApplicationID(username, sessionID);
             if (storedApplicationID == null)
             {
                 return NotFound();

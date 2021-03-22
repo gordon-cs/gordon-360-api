@@ -272,13 +272,13 @@ namespace Gordon360.Services
 
     public interface IHousingService
     {
-        int? GetApplicationID(string studentId, string sess_cde);
         bool CheckIfHousingAdmin(string userId);
         bool AddHousingAdmin(string id);
         bool RemoveHousingAdmin(string id);
-        int SaveApplication(string userID, string sess_cde, string editorID, ApartmentApplicantViewModel[] apartmentApplicants, ApartmentChoiceViewModel[] apartmentChoices);
-        int EditApplication(string userID, string sess_cde, int applicationID, string newEditorID, ApartmentApplicantViewModel[] newApartmentApplicants, ApartmentChoiceViewModel[] newApartmentChoices);
-        bool ChangeApplicationEditor(string userID, int applicationID, string newEditorId);
+        int? GetApplicationID(string username, string sess_cde);
+        int SaveApplication(string username, string sess_cde, string editorUsername, ApartmentApplicantViewModel[] apartmentApplicants, ApartmentChoiceViewModel[] apartmentChoices);
+        int EditApplication(string username, string sess_cde, int applicationID, string newEditorUsername, ApartmentApplicantViewModel[] newApartmentApplicants, ApartmentChoiceViewModel[] newApartmentChoices);
+        bool ChangeApplicationEditor(string username, int applicationID, string newEditorUsername);
         string CreateCSV();
         ApartmentApplicationViewModel GetApartmentApplication(int applicationID);
         ApartmentApplicationViewModel[] GetAllApartmentApplication();
