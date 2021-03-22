@@ -119,7 +119,7 @@ namespace Gordon360.Controllers.Api
                 string errors = "";
                 foreach (ModelState modelstate in ModelState.Values)
                 {
-                    foreach (System.Web.Http.ModelBinding.ModelError error in modelstate.Errors)
+                    foreach (ModelError error in modelstate.Errors)
                     {
                         errors += "|" + error.ErrorMessage + "|" + error.Exception;
                     }
@@ -156,7 +156,7 @@ namespace Gordon360.Controllers.Api
                 string errors = "";
                 foreach (ModelState modelstate in ModelState.Values)
                 {
-                    foreach (System.Web.Http.ModelBinding.ModelError error in modelstate.Errors)
+                    foreach (ModelError error in modelstate.Errors)
                     {
                         errors += "|" + error.ErrorMessage + "|" + error.Exception;
                     }
@@ -199,7 +199,7 @@ namespace Gordon360.Controllers.Api
                 string errors = "";
                 foreach (ModelState modelstate in ModelState.Values)
                 {
-                    foreach (System.Web.Http.ModelBinding.ModelError error in modelstate.Errors)
+                    foreach (ModelError error in modelstate.Errors)
                     {
                         errors += "|" + error.ErrorMessage + "|" + error.Exception;
                     }
@@ -242,7 +242,7 @@ namespace Gordon360.Controllers.Api
                 string errors = "";
                 foreach (ModelState modelstate in ModelState.Values)
                 {
-                    foreach (System.Web.Http.ModelBinding.ModelError error in modelstate.Errors)
+                    foreach (ModelError error in modelstate.Errors)
                     {
                         errors += "|" + error.ErrorMessage + "|" + error.Exception;
                     }
@@ -273,7 +273,7 @@ namespace Gordon360.Controllers.Api
                 string errors = "";
                 foreach (ModelState modelstate in ModelState.Values)
                 {
-                    foreach (System.Web.Http.ModelBinding.ModelError error in modelstate.Errors)
+                    foreach (ModelError error in modelstate.Errors)
                     {
                         errors += "|" + error.ErrorMessage + "|" + error.Exception;
                     }
