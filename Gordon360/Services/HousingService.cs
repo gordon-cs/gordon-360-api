@@ -93,26 +93,26 @@ namespace Gordon360.Services
         /// Calls a stored procedure that tries to get the id of an the application that a given user is 
         /// applicant on for a given session
         /// </summary>
-        /// <param name="studentID"> The id to look for </param>
+        /// <param name="username"> The student username to look for </param>
         /// /// <param name="sess_cde"> Session for which the application would be </param>
         /// <returns> 
         /// The id of the application or 
         /// null if the user is not on an application for that session 
         /// </returns>
-        public int? GetApplicationID(string studentID, string sess_cde)
+        public int? GetApplicationID(string username, string sess_cde)
         {
-            IEnumerable<AprtAppID> idResult = null;
+            IEnumerable<ApartmentAppIDViewModel> idResult = null;
 
-            SqlParameter idParam = new SqlParameter("@STUDENT_ID", studentID);
+            SqlParameter idParam = new SqlParameter("@STUDENT_ID", username);
             SqlParameter sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
 
-            idResult = RawSqlQuery<AprtAppID>.query("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, idParam); //run stored procedure
+            idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, idParam); //run stored procedure
             if (idResult == null || !idResult.Any())
             {
                 return null;
             }
 
-            int result = idResult.FirstOrDefault().ID;
+            int result = idResult.FirstOrDefault().AprtAppID;
 
             return result;
         }
@@ -126,23 +126,23 @@ namespace Gordon360.Services
         /// which application on which they are an applicant
         ///
         /// </summary>
-        /// <param name="userID"> The student ID number of the user who is attempting to save the apartment application (retrieved via authentication token) </param>
+        /// <param name="username"> The student username of the user who is attempting to save the apartment application (retrieved via authentication token) </param>
         /// <param name="sess_cde"> The current session code </param>
-        /// <param name="editorID"> The student ID number of the student who is declared to be the editor of this application (retrieved from the JSON from the front end) </param>
+        /// <param name="editorUsername"> The student username of the student who is declared to be the editor of this application (retrieved from the JSON from the front end) </param>
         /// <param name="apartmentApplicants"> Array of JSON objects providing apartment applicants </param>
         /// <param name="apartmentChoices"> Array of JSON objects providing apartment hall choices </param>
         /// <returns>Returns the application ID number if all the queries succeeded</returns>
-        public int SaveApplication(string userID, string sess_cde, string editorID, ApartmentApplicantViewModel[] apartmentApplicants, ApartmentChoiceViewModel[] apartmentChoices)
+        public int SaveApplication(string username, string sess_cde, string editorUsername, ApartmentApplicantViewModel[] apartmentApplicants, ApartmentChoiceViewModel[] apartmentChoices)
         {
-            IEnumerable<AprtAppID> idResult = null;
+            IEnumerable<ApartmentAppIDViewModel> idResult = null;
 
             DateTime now = System.DateTime.Now;
 
             SqlParameter sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
-            SqlParameter editorParam = new SqlParameter("@STUDENT_ID", editorID);
+            SqlParameter editorParam = new SqlParameter("@STUDENT_ID", editorUsername);
 
             // If an application ID was not passed in, then check if an application already exists
-            idResult = RawSqlQuery<AprtAppID>.query("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, editorParam); //run stored procedure
+            idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, editorParam); //run stored procedure
             if (idResult != null && idResult.Any())
             {
                 throw new ResourceCreationException() { ExceptionMessage = "An existing application ID was found for this user. Please use 'EditApplication' to update an existing application." };
@@ -155,7 +155,7 @@ namespace Gordon360.Services
 
             // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
             SqlParameter timeParam = new SqlParameter("@NOW", now);
-            editorParam = new SqlParameter("@EDITOR_ID", editorID);
+            editorParam = new SqlParameter("@EDITOR_ID", editorUsername);
 
             // If an existing application was not found for this editor, then insert a new application entry in the database
             newAppResult = RawSqlQuery<AA_ApartmentApplications>.query("INSERT_AA_APPLICATION @NOW, @EDITOR_ID", timeParam, editorParam); //run stored procedure
@@ -174,15 +174,15 @@ namespace Gordon360.Services
 
             // All SqlParameters must be remade before each SQL Query to prevent errors
             timeParam = new SqlParameter("@NOW", now);
-            editorParam = new SqlParameter("@EDITOR_ID", editorID);
+            editorParam = new SqlParameter("@EDITOR_ID", editorUsername);
 
-            idResult = RawSqlQuery<AprtAppID>.query("GET_AA_APPID_BY_NAME_AND_DATE @NOW, @EDITOR_ID", timeParam, editorParam); //run stored procedure
+            idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_NAME_AND_DATE @NOW, @EDITOR_ID", timeParam, editorParam); //run stored procedure
             if (idResult == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The new application ID could not be found." };
             }
 
-            int applicationID = idResult.FirstOrDefault().ID;
+            int applicationID = idResult.FirstOrDefault().AprtAppID;
 
             //----------------
             // Save applicant information
@@ -234,20 +234,20 @@ namespace Gordon360.Services
 
         /// <summary>
         /// Edit an existings apartment application
-        /// - first, it gets the EditorID from the database for the given application ID and makes sure that the student ID of the current user matches that stored ID number
+        /// - first, it gets the EditorUsername from the database for the given application ID and makes sure that the student ID of the current user matches that stored ID number
         /// - second, it gets an array of the applicants that are already stored in the database for the given application ID
         /// - third, it inserts each applicant that is in the 'newApplicantIDs' array but was not yet in the database
         /// - fourth, it removes each applicant that was stored in the database but was not in the 'newApplicantIDs' array
         ///
         /// </summary>
-        /// <param name="userID"> The student ID number of the user who is attempting to save the apartment application (retrieved via authentication token) </param>
+        /// <param name="username"> The student username of the user who is attempting to save the apartment application (retrieved via authentication token) </param>
         /// <param name="sess_cde"> The current session code </param>
         /// <param name="applicationID"> The application ID number of the application to be edited </param>
-        /// <param name="editorID"> The student ID number of the student who is declared to be the editor of this application (retrieved from the JSON from the front end) </param>
+        /// <param name="newEditorUsername"> The student username of the student who is declared to be the editor of this application (retrieved from the JSON from the front end) </param>
         /// <param name="newApartmentApplicants"> Array of JSON objects providing apartment applicants </param>
         /// <param name="newApartmentChoices"> Array of JSON objects providing apartment hall choices </param>
         /// <returns>Returns the application ID number if all the queries succeeded</returns>
-        public int EditApplication(string userID, string sess_cde, int applicationID, string newEditorID, ApartmentApplicantViewModel[] newApartmentApplicants, ApartmentChoiceViewModel[] newApartmentChoices)
+        public int EditApplication(string username, string sess_cde, int applicationID, string newEditorUsername, ApartmentApplicantViewModel[] newApartmentApplicants, ApartmentChoiceViewModel[] newApartmentChoices)
         {
             IEnumerable<string> editorResult = null;
 
@@ -263,14 +263,14 @@ namespace Gordon360.Services
                 return -1;
             }
 
-            string storedEditorID = editorResult.FirstOrDefault();
+            string storedEditorUsername = editorResult.FirstOrDefault();
 
-            if (userID != storedEditorID)
+            if (username != storedEditorUsername)
             {
                 // Return -1 if the current user does not match this application's editor stored in the database
                 return -1;
             }
-            // Only perform the update if the student ID of the current user matched the 'EditorID' ID stored in the database for the requested application
+            // Only perform the update if the username of the current user matched the 'EditorUsername' stored in the database for the requested application
 
 
             //--------
@@ -503,10 +503,10 @@ namespace Gordon360.Services
 
             appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
             SqlParameter timeParam = new SqlParameter("@NOW", now);
-            if (newEditorID != storedEditorID)
+            if (newEditorUsername != storedEditorUsername)
             {
-                SqlParameter editorParam = new SqlParameter("@EDITOR_ID", userID);
-                SqlParameter newEditorParam = new SqlParameter("@NEW_EDITOR_ID", newEditorID);
+                SqlParameter editorParam = new SqlParameter("@EDITOR_ID", username);
+                SqlParameter newEditorParam = new SqlParameter("@NEW_EDITOR_ID", newEditorUsername);
                 result = RawSqlQuery<ApartmentApplicationViewModel>.query("UPDATE_AA_APPLICATION_EDITOR @APPLICATION_ID, @EDITOR_ID, @NOW, @NEW_EDITOR_ID", appIDParam, editorParam, timeParam, newEditorParam); //run stored procedure
                 if (result == null)
                 {
@@ -530,7 +530,7 @@ namespace Gordon360.Services
         ///
         /// </summary>
         /// <returns>Whether or not all the queries succeeded</returns>
-        public bool ChangeApplicationEditor(string userID, int applicationID, string newEditorID)
+        public bool ChangeApplicationEditor(string username, int applicationID, string newEditorUsername)
         {
             IEnumerable<string> editorResult = null;
 
@@ -548,7 +548,7 @@ namespace Gordon360.Services
 
             string storedEditorID = editorResult.FirstOrDefault();
 
-            if (userID != storedEditorID)
+            if (username != storedEditorID)
             {
                 // Return false if the current user does not match this application's editor stored in the database
                 return false;
@@ -561,10 +561,10 @@ namespace Gordon360.Services
 
             appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
             SqlParameter timeParam = new SqlParameter("@NOW", now);
-            if (newEditorID != storedEditorID)
+            if (newEditorUsername != storedEditorID)
             {
-                SqlParameter editorParam = new SqlParameter("@EDITOR_ID", userID);
-                SqlParameter newEditorParam = new SqlParameter("@NEW_EDITOR_ID", newEditorID);
+                SqlParameter editorParam = new SqlParameter("@EDITOR_ID", username);
+                SqlParameter newEditorParam = new SqlParameter("@NEW_EDITOR_ID", newEditorUsername);
                 result = RawSqlQuery<ApartmentApplicationViewModel>.query("UPDATE_AA_APPLICATION_EDITOR @APPLICATION_ID, @EDITOR_ID, @NOW, @NEW_EDITOR_ID", appIDParam, editorParam, timeParam, newEditorParam); //run stored procedure
                 if (result == null)
                 {
@@ -649,11 +649,6 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be found." };
             }
             return null; //Temporary while I work
-        }
-
-        private class AprtAppID
-        {
-            public int ID { get; set; }
         }
     }
 }

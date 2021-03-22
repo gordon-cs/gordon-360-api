@@ -127,10 +127,9 @@ namespace Gordon360.Controllers.Api
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            string editorID = _accountService.GetAccountByUsername(username).GordonID;
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
-            int? result = _housingService.GetApplicationID(editorID, sessionID);
+            int? result = _housingService.GetApplicationID(username, sessionID);
             if (result != null)
             {
                 return Ok(result);
@@ -168,8 +167,6 @@ namespace Gordon360.Controllers.Api
             ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
-            string userID = _accountService.GetAccountByUsername(username).GordonID;
-
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
             string editorID = _accountService.GetAccountByUsername(applicationDetails.EditorUsername).GordonID;
@@ -182,7 +179,7 @@ namespace Gordon360.Controllers.Api
 
             ApartmentChoiceViewModel[] apartmentChoices = applicationDetails.ApartmentChoices;
 
-            int result = _housingService.SaveApplication(userID, sessionID, editorID, apartmentApplicants, apartmentChoices);
+            int result = _housingService.SaveApplication(username, sessionID, editorID, apartmentApplicants, apartmentChoices);
 
             return Created("Status of application saving: ", result);
         }
@@ -213,17 +210,9 @@ namespace Gordon360.Controllers.Api
             ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
-            string userID = _accountService.GetAccountByUsername(username).GordonID;
-
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
-            if (applicationID == -1)
-            {
-                applicationID = applicationDetails.AprtAppID; // The apartAppID is set to -1 if an existing application ID was not yet known by the frontend
-            }
-
             string newEditorUsername = applicationDetails.EditorUsername;
-            string newEditorID = _accountService.GetAccountByUsername(newEditorUsername).GordonID;
 
             ApartmentApplicantViewModel[] newApartmentApplicants = applicationDetails.Applicants;
             foreach (ApartmentApplicantViewModel applicant in newApartmentApplicants)
@@ -233,7 +222,7 @@ namespace Gordon360.Controllers.Api
 
             ApartmentChoiceViewModel[] newApartmentChoices = applicationDetails.ApartmentChoices;
 
-            int result = _housingService.EditApplication(userID, sessionID, applicationID, newEditorID, newApartmentApplicants, newApartmentChoices);
+            int result = _housingService.EditApplication(username, sessionID, applicationID, newEditorUsername, newApartmentApplicants, newApartmentChoices);
 
             return Created("Status of application saving: ", result);
         }
@@ -243,8 +232,8 @@ namespace Gordon360.Controllers.Api
         /// </summary>
         /// <returns>The result of changing the editor</returns>
         [HttpPut]
-        [Route("apartment/applications/{applicationID}/{editorUsername}")]
-        public IHttpActionResult ChangeEditor(int applicationID, string editorUsername) // [FromBody] ApartmentAppNewEditorViewModel newEditorDetails)
+        [Route("apartment/applications/{applicationID}/{newEditorUsername}")]
+        public IHttpActionResult ChangeEditor(int applicationID, string newEditorUsername) // [FromBody] ApartmentAppNewEditorViewModel newEditorDetails)
         {
             // Verify Input
             if (!ModelState.IsValid)
@@ -264,13 +253,7 @@ namespace Gordon360.Controllers.Api
             ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
-            string userID = _accountService.GetAccountByUsername(username).GordonID;
-
-            //int apartAppID = newEditorDetails.AprtAppID;
-            //string newEditorUsername = newEditorDetails.EditorUsername;
-            string newEditorID = _accountService.GetAccountByUsername(editorUsername).GordonID;
-
-            bool result = _housingService.ChangeApplicationEditor(userID, applicationID, newEditorID);
+            bool result = _housingService.ChangeApplicationEditor(username, applicationID, newEditorUsername);
 
             return Ok(result);
         }
@@ -301,10 +284,9 @@ namespace Gordon360.Controllers.Api
             ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
-            string userID = _accountService.GetAccountByUsername(username).GordonID;
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
-            int? storedApplicationID = _housingService.GetApplicationID(userID, sessionID);
+            int? storedApplicationID = _housingService.GetApplicationID(username, sessionID);
             if (storedApplicationID == null)
             {
                 return NotFound();

@@ -14,6 +14,6 @@ namespace Gordon360.Models.ViewModels
         public int? Age { get; set; }
         public string OffCampusProgram { get; set; }
         public bool Probation { get; set; }
-        public int Point { get; set; }
+        public int Points { get; set; }
     }
 }
