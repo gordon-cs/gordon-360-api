@@ -145,12 +145,6 @@
             </summary>
             <returns> All buildings</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.DirectMessageController.Get">
-            <summary>
-             returns hello world example
-            </summary>
-            <returns>string and date</returns>
-        </member>
         <member name="M:Gordon360.ApiControllers.DirectMessageController.GetMessages(System.String)">
             <summary>
              returns messages from a specified group
@@ -187,6 +181,24 @@
             </summary>
             <returns>true if successful</returns>
         </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.StoreUserConnectionIds(System.String)">
+            <summary>
+             stores connection associated with a user id
+            </summary>
+            <returns>true if successful</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetConnectionIds(System.Collections.Generic.List{System.String})">
+            <summary>
+             Gets connection ids associated with a user id
+            </summary>
+            <returns>true if successful</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.DeleteConnectionIds(System.String)">
+            <summary>
+             Deletes connection ids associated with a user id
+            </summary>
+            <returns>true if successful</returns>
+        </member>
         <member name="M:Gordon360.ApiControllers.DiningController.Get">
             <summary>
              Gets information about student's dining plan and balance
@@ -211,7 +223,8 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.getJobsForUser(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
+        <!-- Badly formed XML comment ignored for member "M:Gordon360.ApiControllers.JobsController.GetJobs(System.DateTime,System.DateTime)" -->
+        <member name="M:Gordon360.ApiControllers.JobsController.DEPRECATED_getJobsForUser(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
             <summary>
             Get a user's active jobs
             </summary>
@@ -617,39 +630,32 @@
             <param name="value">New description</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.WellnessController.DEPRECATED_Get">
+        <member name="T:Gordon360.Controllers.Api.WellnessController.WellnessStatusColor">
             <summary>
-             DEPRECATED - Please use new route /status
-             Gets current wellness status of student
+            Enum representing three possible wellness statuses.
+            GREEN - Healthy, no known contact/symptoms
+            YELLOW - Symptomatic or cautionary hold
+            RED - Quarantine/Isolation
             </summary>
-            <returns>Json WellnessViewModel</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.WellnessController.Get">
             <summary>
-             Gets current wellness status of student
+             Gets wellness status of current user
             </summary>
-            <returns>Json WellnessStatusViewModel</returns>
+            <returns>A WellnessViewModel representing the most recent status of the user</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.WellnessController.GetQuestion">
             <summary>
              Gets question for wellness check from the back end
             </summary>
-            <returns> json WellnessQuestionViewModel</returns>
+            <returns>A WellnessQuestionViewModel</returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.WellnessController.DEPRECATED_GetQuestion">
+        <member name="M:Gordon360.Controllers.Api.WellnessController.Post(Gordon360.Controllers.Api.WellnessController.WellnessStatusColor)">
             <summary>
-             Gets question for wellness check from the back end
+             Stores the user's wellness status
             </summary>
-            <returns> json WellnessQuestionViewModel</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.WellnessController.DEPRECATED_PostAnswer(System.Boolean)">
-            <summary>
-            DEPRECATED - Please use new route /status
-             Stores the user's wellness check answer, with a timestamp.
-             If answer boolean is true: student is feeling symptomatic(feeling sick).
-             If answer boolean is false: student is not feeling symptomatic(feeling fine).
-            </summary>
-            <returns>Ok if message was recorded</returns>
+            <param name="status">The current status of the user to post, of type WellnessStatusColor</param>
+            <returns>The status that was stored in the database</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.Get">
             <summary>Get profile info of currently logged in user</summary>
@@ -660,14 +666,19 @@
             <param name="username">username of the profile info</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.getAdvisors(System.String)">
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.GetAdvisors(System.String)">
             <summary>Get the advisor(s) of a particular student</summary>
              <returns>
              All advisors of the given student.  For each advisor,
              provides first name, last name, and username.
              </returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.getMyImg">
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.GetCliftonStrengths(System.String)">
+            <summary> Gets the clifton strengths of a particular user </summary>
+            <param name="username"> The username for which to retrieve info </param>
+            <returns> Clifton strengths of the given user. </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.GetMyImg">
             <summary>Get the profile image of currently logged in user</summary>
             <returns></returns>
         </member>
@@ -939,6 +950,12 @@
             <param name="id">The identifier for the membership to be deleted</param>
             <remarks>Calls the server to make a call and remove the given membership from the database</remarks>
         </member>
+        <member name="M:Gordon360.Controllers.Api.MembershipsController.IsGroupAdmin(System.Int32)">
+            <summary>	
+            Determines whether or not the given student is a Group Admin of some activity	
+            </summary>
+            <param name="id">The student id</param>
+        </member>
         <member name="M:Gordon360.Controllers.Api.StudentEmploymentController.Get">
             <summary>
              Gets student employment information about the user
@@ -1186,14 +1203,14 @@
             Fetches the account record with the specified email.
             </summary>
             <param name="email">The email address associated with the account.</param>
-            <returns></returns>
+            <returns>the student account information</returns>
         </member>
         <member name="M:Gordon360.Services.AccountService.GetAccountByUsername(System.String)">
             <summary>
             Fetches the account record with the specified username.
             </summary>
             <param name="username">The username associated with the account.</param>
-            <returns></returns>
+            <returns>the student account information</returns>
         </member>
         <member name="T:Gordon360.Services.ActivityService">
             <summary>
@@ -1256,7 +1273,7 @@
         </member>
         <member name="M:Gordon360.Services.ActivityService.GetClosedActivities(System.String)">
             <summary>
-            Gets a collection of all the current activitie already closed out, by finding which activities have 
+            Gets a collection of all the current activities already closed out, by finding which activities have 
             memberships with an END_DTE that is not null
             </summary>
             <returns>The collection of activity codes for open activities</returns>
@@ -1409,33 +1426,23 @@
             Service that allows for event control
             </summary>
         </member>
-        <member name="M:Gordon360.Services.EventService.GetRoute(System.String,System.String)">
-            <summary>
-            Helper function to set the route we are making our request to in 25Live
-            </summary>
-            <param name="EventID"></param>
-            <param name="type"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Services.EventService.GetSpecificEvents(System.String,System.String)">
-            <summary>
-            Return a Single Event JObject from Live25
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Services.EventService.GetAllEvents(System.Xml.Linq.XDocument)">
+        <member name="M:Gordon360.Services.EventService.GetAllEvents">
             <summary>
             Access the memory stream created by the cached task and parse it into events
             </summary>
-            <param name="xmlDoc"></param>
-            <returns></returns>
+            <returns>All events for the current academic year.</returns>
         </member>
-        <member name="M:Gordon360.Services.EventService.GetAllForStudent(System.String)">
+        <member name="M:Gordon360.Services.EventService.GetPublicEvents">
             <summary>
-            Returns all attended events for a student
+            Select only events that are marked for Public promotion
             </summary>
-            <param name="user_name"> The student's ID</param>
-            <returns></returns>
+            <returns>All Public Events</returns>
+        </member>
+        <member name="M:Gordon360.Services.EventService.GetCLAWEvents">
+            <summary>
+            Select only events that are Approved to give CLAW credit
+            </summary>
+            <returns>All CLAW Events</returns>
         </member>
         <member name="M:Gordon360.Services.EventService.GetEventsForStudentByTerm(System.String,System.String)">
             <summary>
@@ -1718,6 +1725,11 @@
             <param name="id">student id</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Services.ProfileService.GetCliftonStrengths(System.Int32)">
+            <summary> Gets the clifton strengths of a particular user </summary>
+            <param name="id"> The id of the user for which to retrieve info </param>
+            <returns> Clifton strengths of the given user. </returns>
+        </member>
         <member name="M:Gordon360.Services.ProfileService.GetPhotoPath(System.String)">
             <summary>
             Get photo path for profile
@@ -1902,6 +1914,18 @@
             <param name="id"> The id to remove </param>
             <returns> Whether or not this was successful </returns>
         </member>
+        <member name="M:Gordon360.Services.HousingService.GetApplicationID(System.String,System.String)">
+            <summary>
+            Calls a stored procedure that tries to get the id of an the application that a given user is 
+            applicant on for a given session
+            </summary>
+            <param name="studentId"> The id to look for </param>
+            /// <param name="sess_cde"> Session for which the application would be </param>
+            <returns> 
+            The id of the application or 
+            null if the user is not on an application for that session 
+            </returns>
+        </member>
         <member name="M:Gordon360.Services.HousingService.SaveApplication(System.Int32,System.String,System.String,System.String[])">
              <summary>
              Saves student housing info
@@ -1937,47 +1961,31 @@
         </member>
         <member name="M:Gordon360.Services.WellnessService.GetStatus(System.String)">
             <summary>
-            gets status of wellness check
+            Get the status of the user by id
             </summary>
             <param name="id">ID of the user to get the status of</param>
-            <returns> The status of the user, a WellnessStatusViewModel </returns>
+            <returns> The status of the user, a WellnessViewModel </returns>
         </member>
-        <member name="M:Gordon360.Services.WellnessService.PostStatus(System.String,System.String)">
+        <member name="M:Gordon360.Services.WellnessService.PostStatus(Gordon360.Controllers.Api.WellnessController.WellnessStatusColor,System.String)">
             <summary>
             Stores wellness Status in database.
             </summary>
             <param name="id"> ID of the user to post the status for</param>
-            <param name="status"> Status that is being posted, one of GREEN, YELLOW, or RED </param>
+            <param name="status"> Status that is being posted, one of the WellnessStatusColors </param>
             <returns>Status that was successfully recorded</returns>
         </member>
         <member name="M:Gordon360.Services.WellnessService.GetQuestion">
             <summary>
             gets the question for the wellness check from the back end
             </summary>
-            <returns>list of strings with questions and prompts</returns>
+            <returns>A WellnessQuestionViewModel including the text of the question and the disclaimers for positive and negative answers.</returns>
         </member>
-        <member name="M:Gordon360.Services.WellnessService.DEPRECATED_GetQuestion">
+        <member name="M:Gordon360.Services.WellnessService.ExpirationDate(System.DateTime)">
             <summary>
-            gets the question for the wellness check from the back end
+            Creates an expiration date for a check in at the current time
             </summary>
-            <returns>list of strings with questions and prompts</returns>
-        </member>
-        <member name="M:Gordon360.Services.WellnessService.IsValidStatus(Gordon360.Models.ViewModels.WellnessStatusViewModel)">
-            <summary>
-            Checks whether a wellness status is still valid (i.e. new since 5AM)
-            </summary>
-            <param name='status'>Wellness status to check, an instance of a WellnessViewModel</param>
-            <returns>boolean representing whether the status is still valid</returns>
-        </member>
-        <member name="M:Gordon360.Services.WellnessService.DEPRECATED_PostStatus(System.Boolean,System.String)">
-            <summary>
-             Gets answer to the wellness check answer and sends it to the back end.
-                If answer boolean is true: student is feeling symptomatic
-                If answer boolean is false: student is not feeling symptomatic
-            </summary>
-            <param name="id">id</param>
-            <param name="answer">answer</param>
-            <returns>Ok if message was recorded</returns>
+            <param name="currentTime">The time of the check in</param>
+            <returns>When the check in should expire (the next 5AM).</returns>
         </member>
         <member name="T:Gordon360.Services.JenzibarActivityService">
             <summary>
@@ -2121,7 +2129,7 @@
             Fetches all the membership information linked to the student whose id appears as a parameter.
             </summary>
             <param name="id">The student id.</param>
-            <returns>A MembershipViewModel IEnumerable. If nothing is found, an empty IEnumberable is returned.</returns>
+            <returns>A MembershipViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.GetActivityFollowersCount(System.String)">
             <summary>
@@ -2184,6 +2192,13 @@
             <param name="membership">The membership to validate</param>
             <returns>True if the membership is valid. Throws ResourceNotFoundException if not. Exception is caught in an Exception Filter</returns>
         </member>
+        <member name="M:Gordon360.Services.MembershipService.IsGroupAdmin(System.Int32)">
+            <summary>	
+            Determines whether or not the given student is a Group Admin of some activity	
+            </summary>
+            <param name="studentID">The student id</param>	
+            <returns>true if student is a Group Admin, else false</returns>	
+        </member>
         <member name="T:Gordon360.Services.SessionService">
             <summary>
             Service class to facilitate data transactions between the Controller and the database model.
@@ -2232,117 +2247,17 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="F:Gordon360.Static.Names.URLs.ALL_EVENTS_REQUEST">
+            Retrieve events from the 25Live API. 
+            event_type_id parameter fetches only events of type 14 (Calendar Announcement) and 57 (Event).
+            All other event types are not appropiate for the 360 events feed.
+            end_after parameter  limits to request to events from the current academic year.
+            state parameter fetches only confirmed events
+        </member>
         <member name="F:Gordon360.Startup.DummyCacheItemKey">
             <summary>
             Caching task methods created based upon the ideas in the article written by Omar Al Zabir
             Article: https://www.codeproject.com/Articles/12117/Simulate-a-Windows-Service-using-ASP-NET-to-run-sc
-            </summary>
-        </member>
-        <member name="F:Gordon360.WebServer.OnlineUsers">
-            <summary>
-            Store the list of online users. Wish I had a ConcurrentList. 
-            </summary>
-        </member>
-        <member name="M:Gordon360.WebServer.Main(System.String[])">
-            <summary>
-            Initialize the application and start the Alchemy Websockets server
-            </summary>
-            <param name="args"></param>
-        </member>
-        <member name="M:Gordon360.WebServer.OnConnect(Alchemy.Classes.UserContext)">
-            <summary>
-            Event fired when a client connects to the Alchemy Websockets server instance.
-            Adds the client to the online users list.
-            </summary>
-            <param name="context">The user's connection context</param>
-        </member>
-        <member name="M:Gordon360.WebServer.OnReceive(Alchemy.Classes.UserContext)">
-            <summary>
-            Event fired when a data is received from the Alchemy Websockets server instance.
-            Parses data as JSON and calls the appropriate message or sends an error message.
-            </summary>
-            <param name="context">The user's connection context</param>
-        </member>
-        <member name="M:Gordon360.WebServer.OnSend(Alchemy.Classes.UserContext)">
-            <summary>
-            Event fired when the Alchemy Websockets server instance sends data to a client.
-            Logs the data to the console and performs no further action.
-            </summary>
-            <param name="context">The user's connection context</param>
-        </member>
-        <member name="M:Gordon360.WebServer.OnDisconnect(Alchemy.Classes.UserContext)">
-            <summary>
-            Event fired when a client disconnects from the Alchemy Websockets server instance.
-            Removes the user from the online users list and broadcasts the disconnection message
-            to all connected users.
-            </summary>
-            <param name="context">The user's connection context</param>
-        </member>
-        <member name="M:Gordon360.WebServer.Register(System.String,Alchemy.Classes.UserContext)">
-            <summary>
-            Register a user's context for the first time with a username, and add it to the list of online users
-            </summary>
-            <param name="name">The name to register the user under</param>
-            <param name="context">The user's connection context</param>
-        </member>
-        <member name="M:Gordon360.WebServer.ChatMessage(System.String,Alchemy.Classes.UserContext)">
-            <summary>
-            Broadcasts a chat message to all online usrs
-            </summary>
-            <param name="message">The chat message to be broadcasted</param>
-            <param name="context">The user's connection context</param>
-        </member>
-        <member name="M:Gordon360.WebServer.NameChange(System.String,Alchemy.Classes.UserContext)">
-            <summary>
-            Update a user's name if they sent a name-change command from the client.
-            </summary>
-            <param name="name">The name to be changed to</param>
-            <param name="aContext">The user's connection context</param>
-        </member>
-        <member name="M:Gordon360.WebServer.SendError(System.String,Alchemy.Classes.UserContext)">
-            <summary>
-            Broadcasts an error message to the client who caused the error
-            </summary>
-            <param name="errorMessage">Details of the error</param>
-            <param name="context">The user's connection context</param>
-        </member>
-        <member name="M:Gordon360.WebServer.BroadcastNameList">
-            <summary>
-            Broadcasts a list of all online users to all online users
-            </summary>
-        </member>
-        <member name="M:Gordon360.WebServer.Broadcast(System.String,System.Collections.Generic.ICollection{Gordon360.WebServer.User})">
-            <summary>
-            Broadcasts a message to all users, or if users is populated, a select list of users
-            </summary>
-            <param name="message">Message to be broadcast</param>
-            <param name="users">Optional list of users to broadcast to. If null, broadcasts to all. Defaults to null.</param>
-        </member>
-        <member name="M:Gordon360.WebServer.ValidateName(System.String)">
-            <summary>
-            Checks validity of a user's name
-            </summary>
-            <param name="name">Name to check</param>
-            <returns></returns>
-        </member>
-        <member name="T:Gordon360.WebServer.ResponseType">
-            <summary>
-            Defines the type of response to send back to the client for parsing logic
-            </summary>
-        </member>
-        <member name="T:Gordon360.WebServer.Response">
-            <summary>
-            Defines the response object to send back to the client
-            </summary>
-        </member>
-        <member name="T:Gordon360.WebServer.User">
-            <summary>
-            Holds the name and context instance for an online user
-            </summary>
-        </member>
-        <member name="T:Gordon360.WebServer.CommandType">
-            <summary>
-            Defines a type of command that the client sends to the server
             </summary>
         </member>
     </members>

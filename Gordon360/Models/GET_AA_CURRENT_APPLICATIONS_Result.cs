@@ -10,13 +10,12 @@
 namespace Gordon360.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class Health_Check_Updated
+    public partial class GET_AA_CURRENT_APPLICATIONS_Result
     {
-        public int ID_Num { get; set; }
-        public string StatusColor { get; set; }
-        public Nullable<System.DateTime> Created { get; set; }
-        public Nullable<System.DateTime> Emailed { get; set; }
+        public int AprtAppID { get; set; }
+        public Nullable<System.DateTime> DateSubmitted { get; set; }
+        public System.DateTime DateModified { get; set; }
+        public string EditorID { get; set; }
     }
 }

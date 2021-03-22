@@ -44,6 +44,25 @@ namespace Gordon360.ApiControllers
             return userID;
         }
 
+        /// Get a user's active jobs
+        /// </summary>
+        /// <param name="details"></param>
+        /// <returns>The user's active jobs</returns>
+        [HttpGet]
+        [Route("")]
+        public IHttpActionResult GetJobs(DateTime shiftStart, DateTime shiftEnd) {
+            IEnumerable<ActiveJobViewModel> result;
+            try {
+                result = _jobsService.getActiveJobs(shiftStart, shiftEnd, GetCurrentUserID());
+            }
+            catch(Exception e) {
+                //
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                return InternalServerError();
+            }
+            return Ok(result);
+        }
+
         /// <summary>
         /// Get a user's active jobs
         /// </summary>
@@ -51,7 +70,7 @@ namespace Gordon360.ApiControllers
         /// <returns>The user's active jobs</returns>
         [HttpPost]
         [Route("getJobs")]
-        public IHttpActionResult getJobsForUser([FromBody] ActiveJobSelectionParametersModel details)
+        public IHttpActionResult DEPRECATED_getJobsForUser([FromBody] ActiveJobSelectionParametersModel details)
         {
             IEnumerable<ActiveJobViewModel> result = null;
             int userID = GetCurrentUserID();

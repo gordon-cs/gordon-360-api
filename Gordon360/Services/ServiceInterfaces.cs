@@ -3,6 +3,7 @@ using System.Xml.Linq;
 using System.Collections.Generic;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
+using static Gordon360.Controllers.Api.WellnessController;
 
 // <summary>
 // Namespace with all the Service Interfaces that are to be implemented. I don't think making this interface is required, the services can work find on their own.
@@ -21,6 +22,7 @@ namespace Gordon360.Services
         FacultyStaffProfileViewModel GetFacultyStaffProfileByUsername(string username);
         AlumniProfileViewModel GetAlumniProfileByUsername(string username);
         IEnumerable<AdvisorViewModel> GetAdvisors(string id);
+        CliftonStrengthsViewModel GetCliftonStrengths(int id);
         ProfileCustomViewModel GetCustomUserInfo(string username);
         PhotoPathViewModel GetPhotoPath(string id);
         void UpdateProfileLink(string username, string type, CUSTOM_PROFILE path);
@@ -31,10 +33,10 @@ namespace Gordon360.Services
 
     public interface IEventService
     {
-        IEnumerable<AttendedEventViewModel> GetAllForStudent(string id);
         IEnumerable<AttendedEventViewModel> GetEventsForStudentByTerm(string id, string term);
-        IEnumerable<EventViewModel> GetSpecificEvents(string Event_ID, string type);
-        IEnumerable<EventViewModel> GetAllEvents(XDocument xmlDoc);
+        IEnumerable<EventViewModel> GetAllEvents();
+        IEnumerable<EventViewModel> GetPublicEvents();
+        IEnumerable<EventViewModel> GetCLAWEvents();
     }
 
     public interface IDiningService
@@ -53,19 +55,19 @@ namespace Gordon360.Services
 
     public interface IWellnessService
     {
-        WellnessStatusViewModel GetStatus(string id);
-        IEnumerable<DEPRECATED_WellnessViewModel> DEPRECATED_GetStatus(string id);
+        WellnessViewModel GetStatus(string id);
         WellnessQuestionViewModel GetQuestion();
-        IEnumerable<WellnessQuestionViewModel> DEPRECATED_GetQuestion();
-        string PostStatus(string status, string id);
-        DEPRECATED_WellnessViewModel DEPRECATED_PostStatus(bool answer, string id);
+        Health_Status PostStatus(WellnessStatusColor status, string id);
     }
 
     public interface IDirectMessageService
     {
-        bool CreateGroup(String id, String name, bool group, DateTime lastUpdated,string image);
+        CreateGroupViewModel CreateGroup(String name, bool group, DateTime lastUpdated, string image, List<String> usernames);
         bool SendMessage(SendTextViewModel textInfo, string user_id);
         bool StoreUserRooms(String userId, String roomId);
+        bool StoreUserConnectionIds(String userId, String connectionId);
+        bool DeleteUserConnectionIds(String connectionId);
+        List<IEnumerable<ConnectionIdViewModel>> GetUserConnectionIds(List<String> userIds);
         IEnumerable<MessageViewModel> GetMessages(string roomId);
         IEnumerable<GroupViewModel> GetRooms(string userId);
         List<Object> GetRoomById(string userId);
@@ -167,6 +169,7 @@ namespace Gordon360.Services
         MEMBERSHIP ToggleGroupAdmin(int id, MEMBERSHIP membership);
         void TogglePrivacy(int id, bool p);
         MEMBERSHIP Delete(int id);
+        Boolean IsGroupAdmin(int studentID);
     }
 
     public interface IJobsService
