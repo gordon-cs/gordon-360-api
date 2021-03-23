@@ -198,8 +198,15 @@ namespace Gordon360.Services
 
                 // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
                 appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
-                idParam = new SqlParameter("@ID_NUM", applicant.StudentID);
-                programParam = new SqlParameter("@APRT_PROGRAM", "");
+                idParam = new SqlParameter("@ID_NUM", applicant.ID);
+                if (applicant.OffCampusProgram != null)
+                {
+                    programParam = new SqlParameter("@APRT_PROGRAM", applicant.OffCampusProgram);
+                }
+                else
+                {
+                    programParam = new SqlParameter("@APRT_PROGRAM", "");
+                }
                 sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
 
                 applicantResult = RawSqlQuery<AA_Applicants>.query("INSERT_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM, @SESS_CDE", appIDParam, idParam, programParam, sessionParam); //run stored procedure
