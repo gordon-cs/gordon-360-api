@@ -617,11 +617,15 @@
     </Compile>
     <Compile Include="Models\ViewModels\ApartmentAppAdminViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppEditorViewModel.cs" />
-    <Compile Include="Models\ViewModels\ApartmentApplicantDetailsViewModel.cs" />
-    <Compile Include="Models\ViewModels\ApartmentApplicantViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppIDViewModel.cs" />
+    <Compile Include="Models\ViewModels\ApartmentApplicantIDViewModel.cs" />
+    <Compile Include="Models\ViewModels\ApartmentApplicantViewModel.cs" />
+    <Compile Include="Models\ViewModels\ApartmentApplicationsTableViewModel.cs" />
+    <Compile Include="Models\ViewModels\ApartmentApplicantDataViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppNewEditorViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppSaveResultViewModel.cs" />
+    <Compile Include="Models\ViewModels\ApartmentChoiceSaveViewModel.cs" />
+    <Compile Include="Models\ViewModels\ApartmentChoiceViewModel.cs" />
     <Compile Include="Models\ViewModels\ApartmentAppViewModel.cs" />
     <Compile Include="Models\ViewModels\CliftonStrengthsViewModel.cs" />
     <Compile Include="Models\ViewModels\ClockInViewModel.cs" />
@@ -631,6 +635,7 @@
     <Compile Include="Models\ViewModels\HourTypesViewModel.cs" />
     <Compile Include="Models\ViewModels\IdCheckViewModel.cs" />
     <Compile Include="Models\ViewModels\MessageViewModel.cs" />
+    <Compile Include="Models\ViewModels\Model1.cs" />
     <Compile Include="Models\ViewModels\RoomViewModel.cs" />
     <Compile Include="Models\ViewModels\SendTextViewModel.cs" />
     <Compile Include="Models\ViewModels\StaffCheckViewModel.cs" />
@@ -904,13 +909,15 @@
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
   </Target>
   <PropertyGroup>
-    <PreBuildEvent>"C:\Program Files\Git\bin\git.exe" rev-parse --short HEAD &gt; %25tmp%25\hash.txt
-echo %25date%25 %25time%25 &gt; %25tmp%25\date.txt
-set /p hashvar=&lt;%25tmp%25\hash.txt
-set /p datevar=&lt;%25tmp%25\date.txt
-echo Git Hash: %25hashvar%25; Build Time: %25datevar%25 &gt; "$(ProjectDir)\version.txt"
-del %25tmp%25\hash.txt
-del %25tmp%25\date.txt</PreBuildEvent>
+    <PreBuildEvent>
+      "C:\Program Files\Git\bin\git.exe" rev-parse --short HEAD &gt; %25tmp%25\hash.txt
+      echo %25date%25 %25time%25 &gt; %25tmp%25\date.txt
+      set /p hashvar=&lt;%25tmp%25\hash.txt
+      set /p datevar=&lt;%25tmp%25\date.txt
+      echo Git Hash: %25hashvar%25; Build Time: %25datevar%25 &gt; "$(ProjectDir)\version.txt"
+      del %25tmp%25\hash.txt
+      del %25tmp%25\date.txt
+    </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>

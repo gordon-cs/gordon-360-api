@@ -143,7 +143,7 @@ namespace Gordon360.Controllers.Api
         /// <summary>
         /// save application
         /// </summary>
-        /// <returns>The application ID number of the saved application</returns>
+        /// <returns>Returns the application ID number if all the queries succeeded</returns>
         [HttpPost]
         [Route("apartment/save")]
         //[StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
@@ -171,13 +171,59 @@ namespace Gordon360.Controllers.Api
 
             string sessionId = Helpers.GetCurrentSession().SessionCode;
 
-            int apartAppId = apartmentAppDetails.AprtAppID; // The apartAppId is set to -1 if an existing application ID was not yet known by the frontend
             string[] applicantIds = new string[apartmentAppDetails.Applicants.Length];
             for(int i = 0; i < apartmentAppDetails.Applicants.Length; i++){
                 applicantIds[i] = _accountService.GetAccountByUsername(apartmentAppDetails.Applicants[i]).GordonID;
             }
 
-            int result = _housingService.SaveApplication(apartAppId, editorId, sessionId, applicantIds);
+            ApartmentChoiceViewModel[] apartmentChoices = apartmentAppDetails.ApartmentChoices;
+
+            int result = _housingService.SaveApplication(editorId, sessionId, applicantIds, apartmentChoices);
+
+            return Created("Status of application saving: ", result);
+        }
+
+        /// <summary>
+        /// update existing application (Differentiated by HttpPut instead of HttpPost)
+        /// </summary>
+        /// <returns>Returns the application ID number if all the queries succeeded</returns>
+        [HttpPut]
+        [Route("apartment/save")]
+        public IHttpActionResult EditApplication([FromBody] ApartmentAppViewModel apartmentAppDetails)
+        {
+            // Verify Input
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+            //get token data from context, username is the username of current logged in person
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+            string editorId = _accountService.GetAccountByUsername(username).GordonID;
+
+            string sessionId = Helpers.GetCurrentSession().SessionCode;
+
+            int apartAppId = apartmentAppDetails.AprtAppID; // The apartAppId is set to -1 if an existing application ID was not yet known by the frontend
+
+            string[] newApplicantIds = new string[apartmentAppDetails.Applicants.Length];
+            for (int i = 0; i < apartmentAppDetails.Applicants.Length; i++)
+            {
+                newApplicantIds[i] = _accountService.GetAccountByUsername(apartmentAppDetails.Applicants[i]).GordonID;
+            }
+
+            ApartmentChoiceViewModel[] newApartmentChoices = apartmentAppDetails.ApartmentChoices;
+
+            int result = _housingService.EditApplication(editorId, sessionId, apartAppId, newApplicantIds, newApartmentChoices);
 
             return Created("Status of application saving: ", result);
         }
@@ -214,7 +260,7 @@ namespace Gordon360.Controllers.Api
             string newEditorUsername = newEditorDetails.Username;
             string newEditorId = _accountService.GetAccountByUsername(newEditorUsername).GordonID;
 
-            bool result = _housingService.ChangeApplicationEditor(apartAppId, editorId, newEditorId);
+            bool result = _housingService.ChangeApplicationEditor(editorId, apartAppId, newEditorId);
 
             return Ok(result);
         }
