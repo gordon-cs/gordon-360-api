@@ -688,7 +688,7 @@ namespace Gordon360.Services
             if (apartmentChoicesResult != null && apartmentChoicesResult.Any())
             {
                 // Only attempt to parse the data if the collection of apartment choices is not empty
-                // It is possible for a valid saved application to not contain any apartment choices yet, so we do not want to throw an error in the case where no applicants were found
+                // It is possible for a valid saved application to not contain any apartment choices yet, so we do not want to throw an error in the case where no apartment choices were found
                 List<ApartmentChoiceViewModel> apartmentChoicesList = new List<ApartmentChoiceViewModel>();
                 foreach (GET_AA_APARTMENT_CHOICES_BY_APP_ID_Result apartmentChoiceDBModel in apartmentChoicesResult)
                 {
