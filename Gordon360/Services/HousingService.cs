@@ -697,7 +697,7 @@ namespace Gordon360.Services
                     apartmentChoiceModel.HallName = apartmentChoiceDBModel.BLDG_CDE;
                     apartmentChoiceModel.HallRank = apartmentChoiceDBModel.Ranking;
 
-                    // Add this new ApplicantViewModel object to the list of applicants for this application
+                    // Add this new ApartmentChoiceModel object to the list of apartment choices for this application
                     apartmentChoicesList.Add(apartmentChoiceModel);
                 }
 
