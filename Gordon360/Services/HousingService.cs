@@ -590,32 +590,7 @@ namespace Gordon360.Services
 
             return true;
         }
-
-        /// <summary>
-        /// Creates a string from the combination of AA_ApartementApplications and AA_Applicants Tables
-        /// and returns it to the frontend, so that it can convert it into a csv file.
-        /// </summary>
-        public string CreateCSV()
-        {
-            string csv = string.Empty;
-            IEnumerable<GET_AA_APPLICANTS_DETAILS_Result> result = RawSqlQuery<GET_AA_APPLICANTS_DETAILS_Result>.query("GET_AA_APPLICANTS_DETAILS"); //run stored procedure
-            foreach (GET_AA_APPLICANTS_DETAILS_Result element in result)
-            {
-                csv += element.AprtAppID + ","
-                     + element.EditorID + ","
-                     + element.DateSubmitted + ","
-                     + element.DateModified.ToString("MM/dd/yyyy HH:mm:ss") + ","
-                     + element.ID_NUM + ","
-                     + element.AprtProgram + ","
-                     + element.AprtProgramCredit + ","
-                     + element.SESS_CDE;
-                const string V = "\r\n";
-                csv += V;
-            }
-
-            return csv;
-        }
-
+        
         public ApartmentApplicationViewModel GetApartmentApplication(string sess_cde, int applicationID)
         {
             SqlParameter appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
