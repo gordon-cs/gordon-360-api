@@ -10,12 +10,11 @@
 namespace Gordon360.Models
 {
     using System;
+    using System.Collections.Generic;
     
-    public partial class GET_ALL_HEALTH_STATUS_Result
+    public partial class User_Connection_Ids
     {
-        public Nullable<int> ID_Num { get; set; }
-        public string Status { get; set; }
-        public Nullable<System.DateTime> Created { get; set; }
-        public Nullable<bool> isOverride { get; set; }
+        public string user_id { get; set; }
+        public string connection_id { get; set; }
     }
 }

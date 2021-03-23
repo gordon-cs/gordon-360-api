@@ -20,28 +20,43 @@ namespace Gordon360.Hubs
     [HubName("ChatHub")]
     public class ChatHub : Hub
     {
-        //public DirectMessageService _DirectMessageService = new DirectMessageService();
-
-        public async Task refreshMessages(List<string> connectionIds, IEnumerable<MessageViewModel> message)
+        public async Task refreshMessages(List<string> userIds, SendTextViewModel message, string userId)
          {
-            foreach(string connections in connectionIds)
+            DirectMessageService _DirectMessageService = new DirectMessageService();
+            var connectionIds =_DirectMessageService.GetUserConnectionIds(userIds);
+            
+            foreach (var connections in connectionIds)
             {
-                await Groups.Add(connections, "list");
+                foreach (var userConnections in connections)
+                {
+                    await Clients.Client(userConnections.connection_id).SendAsync(message, userId);
+                }
             }
-            await Clients.Group("list").SendAsync("Received message refresh, Message: ", message);
          }
 
         public string savedUserId;
         public string savedConnectionId;
 
-        public  void saveConnection(string id)
+        public async Task saveFunction(string id)
         {
             DirectMessageService _DirectMessageService = new DirectMessageService();
+            _DirectMessageService.StoreUserConnectionIds(id, Context.ConnectionId);
+        }
+
+        public  async Task saveConnection(string id)
+        {
             savedUserId = id;
             savedConnectionId = Context.ConnectionId;
-            _DirectMessageService.StoreUserConnectionIds(id, Context.ConnectionId);
-             Clients.All.BroadcastMessage("It's working boss");
+            await saveFunction(id);
 
+            Clients.All.BroadcastMessage("Saved Connection!");
+
+        }
+
+        public override Task OnConnected()
+        {
+            Clients.All.BroadcastMessage("connectedToServer");
+            return base.OnConnected();
         }
 
         public override Task OnDisconnected(bool stopCalled)
@@ -55,7 +70,6 @@ namespace Gordon360.Hubs
         public override Task OnReconnected()
         {
             DirectMessageService _DirectMessageService = new DirectMessageService();
-
             _DirectMessageService.DeleteUserConnectionIds(savedConnectionId);
             _DirectMessageService.StoreUserConnectionIds(savedUserId, Context.ConnectionId);
             return base.OnReconnected();

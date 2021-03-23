@@ -125,7 +125,7 @@ namespace Gordon360.Services
         private DateTime ExpirationDate(DateTime currentTime)
         {
             // Answer expires at 5AM
-            DateTime expirationTime = new DateTime(currentTime.Year, currentTime.Month, currentTime.Day, 5, 0, 0);
+            DateTime expirationTime = new DateTime(currentTime.Year, currentTime.Month, currentTime.Day, 4, 45, 0);
 
             // If it's past 5AM, expirationTime is 5AM tomorrow.
             if (currentTime > expirationTime)

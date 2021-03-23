@@ -12,10 +12,15 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class AA_ApartmentChoices
+    public partial class Internships_as_Involvements
     {
-        public int AprtAppID { get; set; }
-        public int Ranking { get; set; }
-        public string BLDG_CDE { get; set; }
+        public string ACT_CDE { get; set; }
+        public int ID_NUM { get; set; }
+        public string YR_CDE { get; set; }
+        public string TRM_CDE { get; set; }
+        public string SESS_CDE { get; set; }
+        public Nullable<System.DateTime> BEGIN_DTE { get; set; }
+        public Nullable<System.DateTime> END_DTE { get; set; }
+        public string COMMENT_TXT { get; set; }
     }
 }

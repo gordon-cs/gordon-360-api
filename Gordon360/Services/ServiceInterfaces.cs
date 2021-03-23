@@ -62,12 +62,12 @@ namespace Gordon360.Services
 
     public interface IDirectMessageService
     {
-        bool CreateGroup(String id, String name, bool group, DateTime lastUpdated,string image);
+        CreateGroupViewModel CreateGroup(String name, bool group, DateTime lastUpdated, string image, List<String> usernames);
         bool SendMessage(SendTextViewModel textInfo, string user_id);
         bool StoreUserRooms(String userId, String roomId);
         bool StoreUserConnectionIds(String userId, String connectionId);
         bool DeleteUserConnectionIds(String connectionId);
-        IEnumerable<ConnectionIdViewModel> GetUserConnectionIds(String userId);
+        List<IEnumerable<ConnectionIdViewModel>> GetUserConnectionIds(List<String> userIds);
         IEnumerable<MessageViewModel> GetMessages(string roomId);
         IEnumerable<GroupViewModel> GetRooms(string userId);
         List<Object> GetRoomById(string userId);
@@ -268,6 +268,17 @@ namespace Gordon360.Services
         StudentNews SubmitNews(StudentNews newsItem, string username, string id);
         StudentNews DeleteNews(int newsID);
         StudentNewsViewModel EditPosting(int newsID, StudentNews newsItem);
+    }
+
+    public interface IHousingService
+    {
+        int? GetApplicationID(string studentId, string sess_cde);
+        int SaveApplication(int apartAppId, string editorId, string sess_cde, string [] applicantIds);
+        bool ChangeApplicationEditor(int apartAppId, string editorId, string newEditorId);
+        bool CheckIfHousingAdmin(string userId);
+        bool AddHousingAdmin(string id);
+        bool RemoveHousingAdmin(string id);
+        string CreateCSV();
     }
 
 }
