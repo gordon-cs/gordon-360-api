@@ -713,7 +713,7 @@ namespace Gordon360.Services
 
         public ApartmentApplicationViewModel[] GetAllApartmentApplication()
         {
-            IEnumerable<ApartmentAppIDViewModel> appIDResults = null;
+            IEnumerable<ApartmentAppIDViewModel> appIDsResult = null;
 
             appIDResults = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_CURRENT_APP_IDS");
             if (appIDResults == null || !appIDResults.Any())
