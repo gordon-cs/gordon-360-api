@@ -715,8 +715,8 @@ namespace Gordon360.Services
         {
             IEnumerable<ApartmentAppIDViewModel> appIDsResult = null;
 
-            appIDResults = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_CURRENT_APP_IDS");
-            if (appIDResults == null || !appIDResults.Any())
+            appIDsResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_CURRENT_APP_IDS");
+            if (appIDsResult == null || !appIDsResult.Any())
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be found." };
             }
