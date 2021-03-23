@@ -114,20 +114,6 @@ namespace Gordon360.Controllers.Api
         [Route("apartment/{username}")]
         public IHttpActionResult GetUserApplicationID(string username)
         {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(username))
-            {
-                string errors = "";
-                foreach (ModelState modelstate in ModelState.Values)
-                {
-                    foreach (ModelError error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
             int? result = _housingService.GetApplicationID(username, sessionID);
@@ -175,7 +161,7 @@ namespace Gordon360.Controllers.Api
             ApartmentApplicantViewModel[] apartmentApplicants = applicationDetails.Applicants;
             foreach (ApartmentApplicantViewModel applicant in apartmentApplicants)
             {
-                applicant.ID = _accountService.GetAccountByUsername(applicant.Username).GordonID;
+                applicant.StudentID = _accountService.GetAccountByUsername(applicant.Username).GordonID;
             }
 
             ApartmentChoiceViewModel[] apartmentChoices = applicationDetails.ApartmentChoices;
@@ -218,7 +204,7 @@ namespace Gordon360.Controllers.Api
             ApartmentApplicantViewModel[] newApartmentApplicants = applicationDetails.Applicants;
             foreach (ApartmentApplicantViewModel applicant in newApartmentApplicants)
             {
-                applicant.ID = _accountService.GetAccountByUsername(applicant.Username).GordonID;
+                applicant.StudentID = _accountService.GetAccountByUsername(applicant.Username).GordonID;
             }
 
             ApartmentChoiceViewModel[] newApartmentChoices = applicationDetails.ApartmentChoices;
@@ -270,19 +256,6 @@ namespace Gordon360.Controllers.Api
         //[StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
         public IHttpActionResult GetApartmentApplication(int applicationID)
         {
-            if (!ModelState.IsValid || applicationID != null)
-            {
-                string errors = "";
-                foreach (ModelState modelstate in ModelState.Values)
-                {
-                    foreach (ModelError error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
             //get token data from context, username is the username of current logged in person
             ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
@@ -300,7 +273,7 @@ namespace Gordon360.Controllers.Api
             }
             else
             {
-                ApartmentApplicationViewModel result = _housingService.GetApartmentApplication(sessionID, applicationID);
+                ApartmentApplicationViewModel result = _housingService.GetApartmentApplication(applicationID);
                 if (result != null)
                 {
                     return Ok(result);
@@ -328,9 +301,7 @@ namespace Gordon360.Controllers.Api
             bool isAdmin = _housingService.CheckIfHousingAdmin(userID);
             if (isAdmin)
             {
-                string sessionID = Helpers.GetCurrentSession().SessionCode;
-
-                ApartmentApplicationViewModel[] result = _housingService.GetAllApartmentApplication(sessionID);
+                ApartmentApplicationViewModel[] result = _housingService.GetAllApartmentApplication();
                 if (result != null)
                 {
                     return Ok(result);
@@ -340,7 +311,10 @@ namespace Gordon360.Controllers.Api
                     return NotFound();
                 }
             }
-            return StatusCode(HttpStatusCode.Forbidden);
+            else
+            {
+                return StatusCode(HttpStatusCode.Forbidden);
+            }
         }
     }
 }
