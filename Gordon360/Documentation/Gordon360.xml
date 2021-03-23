@@ -430,7 +430,7 @@
             </summary>
             <returns>Returns the application ID number if all the queries succeeded</returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.HousingController.ChangeEditor(System.Int32,System.String)">
+        <member name="M:Gordon360.Controllers.Api.HousingController.ChangeEditor(System.Int32,Gordon360.Models.ViewModels.ApartmentApplicationViewModel)">
             <summary>
             change the editor (i.e. primary applicant) of the application
             </summary>
