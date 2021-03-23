@@ -198,7 +198,7 @@ namespace Gordon360.Services
 
                 // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
                 appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
-                idParam = new SqlParameter("@ID_NUM", applicant.ID);
+                idParam = new SqlParameter("@ID_NUM", applicant.StudentID);
                 if (applicant.OffCampusProgram != null)
                 {
                     programParam = new SqlParameter("@APRT_PROGRAM", applicant.OffCampusProgram);

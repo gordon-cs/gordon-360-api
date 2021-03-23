@@ -114,20 +114,6 @@ namespace Gordon360.Controllers.Api
         [Route("apartment/{username}")]
         public IHttpActionResult GetUserApplicationID(string username)
         {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(username))
-            {
-                string errors = "";
-                foreach (ModelState modelstate in ModelState.Values)
-                {
-                    foreach (ModelError error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
             int? result = _housingService.GetApplicationID(username, sessionID);
@@ -270,19 +256,6 @@ namespace Gordon360.Controllers.Api
         //[StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
         public IHttpActionResult GetApartmentApplication(int applicationID)
         {
-            if (!ModelState.IsValid || applicationID != null)
-            {
-                string errors = "";
-                foreach (ModelState modelstate in ModelState.Values)
-                {
-                    foreach (ModelError error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
             //get token data from context, username is the username of current logged in person
             ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
