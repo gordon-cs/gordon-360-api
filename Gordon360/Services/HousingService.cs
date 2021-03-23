@@ -695,7 +695,7 @@ namespace Gordon360.Services
             if (apartmentChoicesResult != null && apartmentChoicesResult.Any())
             {
                 // Only attempt to parse the data if the collection of apartment choices is not empty
-                // It is possible for a valid saved application to not contain any apartment choices yet, so we do not want to throw an error in the case where no applicants were found
+                // It is possible for a valid saved application to not contain any apartment choices yet, so we do not want to throw an error in the case where no apartment choices were found
                 List<ApartmentChoiceViewModel> apartmentChoicesList = new List<ApartmentChoiceViewModel>();
                 foreach (GET_AA_APARTMENT_CHOICES_BY_APP_ID_Result apartmentChoiceDBModel in apartmentChoicesResult)
                 {
@@ -704,7 +704,7 @@ namespace Gordon360.Services
                     apartmentChoiceModel.HallName = apartmentChoiceDBModel.BLDG_CDE;
                     apartmentChoiceModel.HallRank = apartmentChoiceDBModel.Ranking;
 
-                    // Add this new ApplicantViewModel object to the list of applicants for this application
+                    // Add this new ApartmentChoiceModel object to the list of apartment choices for this application
                     apartmentChoicesList.Add(apartmentChoiceModel);
                 }
 
@@ -720,16 +720,16 @@ namespace Gordon360.Services
 
         public ApartmentApplicationViewModel[] GetAllApartmentApplication()
         {
-            IEnumerable<ApartmentAppIDViewModel> appIDResults = null;
+            IEnumerable<ApartmentAppIDViewModel> appIDsResult = null;
 
-            appIDResults = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_CURRENT_APP_IDS");
-            if (appIDResults == null || !appIDResults.Any())
+            appIDsResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_CURRENT_APP_IDS");
+            if (appIDsResult == null || !appIDsResult.Any())
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be found." };
             }
 
             List<ApartmentApplicationViewModel> applicationList = new List<ApartmentApplicationViewModel>();
-            foreach (ApartmentAppIDViewModel appIDModel in appIDResults)
+            foreach (ApartmentAppIDViewModel appIDModel in appIDsResult)
             {
                 ApartmentApplicationViewModel apartmentApplicationModel = null;
                 try
