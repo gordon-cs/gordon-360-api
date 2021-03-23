@@ -722,7 +722,7 @@ namespace Gordon360.Services
             }
 
             List<ApartmentApplicationViewModel> applicationList = new List<ApartmentApplicationViewModel>();
-            foreach (ApartmentAppIDViewModel appIDModel in appIDResults)
+            foreach (ApartmentAppIDViewModel appIDModel in appIDsResult)
             {
                 ApartmentApplicationViewModel apartmentApplicationModel = null;
                 try
