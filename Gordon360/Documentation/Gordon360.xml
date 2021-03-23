@@ -418,34 +418,31 @@
             <param name="username">username of the profile info</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.HousingController.SaveApplication(Gordon360.Models.ViewModels.ApartmentAppViewModel)">
+        <member name="M:Gordon360.Controllers.Api.HousingController.SaveApplication(Gordon360.Models.ViewModels.ApartmentApplicationViewModel)">
             <summary>
             save application
             </summary>
             <returns>Returns the application ID number if all the queries succeeded</returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.HousingController.EditApplication(Gordon360.Models.ViewModels.ApartmentAppViewModel)">
+        <member name="M:Gordon360.Controllers.Api.HousingController.EditApplication(System.Int32,Gordon360.Models.ViewModels.ApartmentApplicationViewModel)">
             <summary>
             update existing application (Differentiated by HttpPut instead of HttpPost)
             </summary>
             <returns>Returns the application ID number if all the queries succeeded</returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.HousingController.ChangeEditor(Gordon360.Models.ViewModels.ApartmentAppNewEditorViewModel)">
+        <member name="M:Gordon360.Controllers.Api.HousingController.ChangeEditor(System.Int32,Gordon360.Models.ViewModels.ApartmentApplicationViewModel)">
             <summary>
             change the editor (i.e. primary applicant) of the application
             </summary>
             <returns>The result of changing the editor</returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.HousingController.CreateCSV">
-            <summary>
-            Create a string a string from the combination of AA_ApartementApplications and AA_Applicants Tables
-            and returns it to the frontend, so that it can convert it into a csv file.
-            </summary>
-            <returns>An http result with the csv string from the CreateCSV service</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.HousingController.GetApartmentApplication(System.String)">
+        <member name="M:Gordon360.Controllers.Api.HousingController.GetApartmentApplication(System.Int32)">
             <summary>Get apartment application info for a given application ID number</summary>
             <param name="applicationID">application ID number of the apartment application</param>
+            <returns>Object of type ApartmentAppViewModel</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.GetAllApartmentApplication">
+            <summary>Get apartment application info for all applications if the current user is a housing admin</summary>
             <returns>Object of type ApartmentAppViewModel</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.NewsController.#ctor">
@@ -1903,7 +1900,7 @@
             Calls a stored procedure that returns a row in the staff whitelist which has the given user id,
             if it is in the whitelist
             </summary>
-            <param name="userId"> The id of the person using the page </param>
+            <param name="userID"> The id of the person using the page </param>
             <returns> Whether or not the user is on the staff whitelist </returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.AddHousingAdmin(System.String)">
@@ -1925,14 +1922,14 @@
             Calls a stored procedure that tries to get the id of an the application that a given user is 
             applicant on for a given session
             </summary>
-            <param name="studentId"> The id to look for </param>
+            <param name="username"> The student username to look for </param>
             /// <param name="sess_cde"> Session for which the application would be </param>
             <returns> 
             The id of the application or 
             null if the user is not on an application for that session 
             </returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.SaveApplication(System.String,System.String,System.String[],Gordon360.Models.ViewModels.ApartmentChoiceViewModel[])">
+        <member name="M:Gordon360.Services.HousingService.SaveApplication(System.String,System.String,System.String,Gordon360.Models.ViewModels.ApartmentApplicantViewModel[],Gordon360.Models.ViewModels.ApartmentChoiceViewModel[])">
              <summary>
              Saves student housing info
              - first, it creates a new row in the applications table and inserts the id of the primary applicant and a timestamp
@@ -1942,25 +1939,27 @@
              which application on which they are an applicant
             
              </summary>
-             <param name="editorId"> The student ID number of the user who is attempting to save the apartment application </param>
+             <param name="username"> The student username of the user who is attempting to save the apartment application (retrieved via authentication token) </param>
              <param name="sess_cde"> The current session code </param>
-             <param name="applicantIDs"> Array of student ID numbers for each of the applicants </param>
+             <param name="editorUsername"> The student username of the student who is declared to be the editor of this application (retrieved from the JSON from the front end) </param>
+             <param name="apartmentApplicants"> Array of JSON objects providing apartment applicants </param>
              <param name="apartmentChoices"> Array of JSON objects providing apartment hall choices </param>
              <returns>Returns the application ID number if all the queries succeeded</returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.EditApplication(System.String,System.String,System.Int32,System.String[],Gordon360.Models.ViewModels.ApartmentChoiceViewModel[])">
+        <member name="M:Gordon360.Services.HousingService.EditApplication(System.String,System.String,System.Int32,System.String,Gordon360.Models.ViewModels.ApartmentApplicantViewModel[],Gordon360.Models.ViewModels.ApartmentChoiceViewModel[])">
              <summary>
              Edit an existings apartment application
-             - first, it gets the EditorID from the database for the given application ID and makes sure that the student ID of the current user matches that stored ID number
+             - first, it gets the EditorUsername from the database for the given application ID and makes sure that the student ID of the current user matches that stored ID number
              - second, it gets an array of the applicants that are already stored in the database for the given application ID
              - third, it inserts each applicant that is in the 'newApplicantIDs' array but was not yet in the database
              - fourth, it removes each applicant that was stored in the database but was not in the 'newApplicantIDs' array
             
              </summary>
-             <param name="editorId"> The student ID number of the user who is attempting to save the apartment application </param>
+             <param name="username"> The student username of the user who is attempting to save the apartment application (retrieved via authentication token) </param>
              <param name="sess_cde"> The current session code </param>
-             <param name="apartAppId"> The application ID number of the application to be edited </param>
-             <param name="newApplicantIDs"> Array of student ID numbers for each of the applicants </param>
+             <param name="applicationID"> The application ID number of the application to be edited </param>
+             <param name="newEditorUsername"> The student username of the student who is declared to be the editor of this application (retrieved from the JSON from the front end) </param>
+             <param name="newApartmentApplicants"> Array of JSON objects providing apartment applicants </param>
              <param name="newApartmentChoices"> Array of JSON objects providing apartment hall choices </param>
              <returns>Returns the application ID number if all the queries succeeded</returns>
         </member>
