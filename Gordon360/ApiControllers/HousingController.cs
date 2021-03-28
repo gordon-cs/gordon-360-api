@@ -91,10 +91,9 @@ namespace Gordon360.Controllers.Api
             ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
-            string editorID = _accountService.GetAccountByUsername(username).GordonID;
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
-            int? result = _housingService.GetApplicationID(editorID, sessionID);
+            int? result = _housingService.GetApplicationID(username, sessionID);
             if (result != null)
             {
                 return Ok(result);
@@ -156,17 +155,11 @@ namespace Gordon360.Controllers.Api
 
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
-            string editorID = _accountService.GetAccountByUsername(applicationDetails.EditorUsername).GordonID;
-
+            string editorUsername = applicationDetails.EditorUsername;
             ApartmentApplicantViewModel[] apartmentApplicants = applicationDetails.Applicants;
-            foreach (ApartmentApplicantViewModel applicant in apartmentApplicants)
-            {
-                applicant.StudentID = _accountService.GetAccountByUsername(applicant.Username).GordonID;
-            }
-
             ApartmentChoiceViewModel[] apartmentChoices = applicationDetails.ApartmentChoices;
 
-            int result = _housingService.SaveApplication(username, sessionID, editorID, apartmentApplicants, apartmentChoices);
+            int result = _housingService.SaveApplication(username, sessionID, editorUsername, apartmentApplicants, apartmentChoices);
 
             return Created("Status of application saving: ", result);
         }
@@ -200,13 +193,7 @@ namespace Gordon360.Controllers.Api
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
             string newEditorUsername = applicationDetails.EditorUsername;
-
             ApartmentApplicantViewModel[] newApartmentApplicants = applicationDetails.Applicants;
-            foreach (ApartmentApplicantViewModel applicant in newApartmentApplicants)
-            {
-                applicant.StudentID = _accountService.GetAccountByUsername(applicant.Username).GordonID;
-            }
-
             ApartmentChoiceViewModel[] newApartmentChoices = applicationDetails.ApartmentChoices;
 
             int result = _housingService.EditApplication(username, sessionID, applicationID, newEditorUsername, newApartmentApplicants, newApartmentChoices);

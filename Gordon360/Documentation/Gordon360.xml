@@ -1970,12 +1970,6 @@
              </summary>
              <returns>Whether or not all the queries succeeded</returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.CreateCSV">
-            <summary>
-            Creates a string from the combination of AA_ApartementApplications and AA_Applicants Tables
-            and returns it to the frontend, so that it can convert it into a csv file.
-            </summary>
-        </member>
         <member name="M:Gordon360.Services.WellnessService.GetStatus(System.String)">
             <summary>
             Get the status of the user by id

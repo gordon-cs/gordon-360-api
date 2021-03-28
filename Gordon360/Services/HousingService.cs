@@ -104,10 +104,10 @@ namespace Gordon360.Services
         {
             IEnumerable<ApartmentAppIDViewModel> idResult = null;
 
-            SqlParameter idParam = new SqlParameter("@STUDENT_ID", username);
+            SqlParameter userParam = new SqlParameter("@STUDENT_ID", username);
             SqlParameter sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
 
-            idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, idParam); //run stored procedure
+            idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, userParam); //run stored procedure
             if (idResult == null || !idResult.Any())
             {
                 return null;
