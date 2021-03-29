@@ -6,6 +6,7 @@ using Gordon360.Services.ComplexQueries;
 using Gordon360.Static.Data;
 using System;
 using System.Collections.Generic;
+using System.Data.Objects;
 using System.Data.SqlClient;
 using System.Linq;
 
@@ -102,18 +103,16 @@ namespace Gordon360.Services
         /// </returns>
         public int? GetApplicationID(string username, string sess_cde)
         {
-            IEnumerable<ApartmentAppIDViewModel> idResult = null;
-
             SqlParameter userParam = new SqlParameter("@STUDENT_ID", username);
             SqlParameter sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
 
-            idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, userParam); //run stored procedure
-            if (idResult == null || !idResult.Any())
+            IEnumerable<ObjectResult<int?>> idResult = RawSqlQuery<ObjectResult<int?>>.query("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, userParam); //run stored procedure
+            if (idResult?.FirstOrDefault()?.FirstOrDefault() == null || !idResult.Any())
             {
                 return null;
             }
 
-            int result = idResult.FirstOrDefault().AprtAppID;
+            int result = idResult.FirstOrDefault().FirstOrDefault().Value;
 
             return result;
         }
@@ -137,7 +136,7 @@ namespace Gordon360.Services
         {
             CCTEntities1 context = new CCTEntities1();
 
-            IEnumerable<ApartmentAppIDViewModel> idResult = null;
+            IEnumerable<ObjectResult<int?>> idResult = null;
 
             DateTime now = System.DateTime.Now;
 
@@ -145,8 +144,8 @@ namespace Gordon360.Services
             SqlParameter editorParam = new SqlParameter("@STUDENT_ID", editorUsername);
 
             // If an application ID was not passed in, then check if an application already exists
-            idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, editorParam); //run stored procedure
-            if (idResult != null && idResult.Any())
+            idResult = RawSqlQuery<ObjectResult<int?>>.query("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, editorParam); //run stored procedure
+            if (idResult?.FirstOrDefault()?.FirstOrDefault() != null && idResult.Any())
             {
                 throw new ResourceCreationException() { ExceptionMessage = "An existing application ID was found for this user. Please use 'EditApplication' to update an existing application." };
             }
@@ -159,7 +158,7 @@ namespace Gordon360.Services
             editorParam = new SqlParameter("@EDITOR_ID", editorUsername);
 
             // If an existing application was not found for this editor, then insert a new application entry in the database
-            int newAppResult = context.Database.ExecuteSqlCommand("INSERT_AA_APPLICATION @NOW, @EDITOR_ID", timeParam, editorParam); //run stored procedure
+            int? newAppResult = context.Database.ExecuteSqlCommand("INSERT_AA_APPLICATION @NOW, @EDITOR_ID", timeParam, editorParam); //run stored procedure
             if (newAppResult == null)
             {
                 throw new ResourceCreationException() { ExceptionMessage = "The application could not be saved." };
@@ -177,13 +176,13 @@ namespace Gordon360.Services
             timeParam = new SqlParameter("@NOW", now);
             editorParam = new SqlParameter("@EDITOR_ID", editorUsername);
 
-            idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_NAME_AND_DATE @NOW, @EDITOR_ID", timeParam, editorParam); //run stored procedure
-            if (idResult == null)
+            idResult = RawSqlQuery<ObjectResult<int?>>.query("GET_AA_APPID_BY_NAME_AND_DATE @NOW, @EDITOR_ID", timeParam, editorParam); //run stored procedure
+            if (idResult?.FirstOrDefault()?.FirstOrDefault() == null || !idResult.Any())
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The new application ID could not be found." };
             }
 
-            int applicationID = idResult.FirstOrDefault().AprtAppID;
+            int applicationID = idResult.FirstOrDefault().FirstOrDefault().Value;
 
             //----------------
             // Save applicant information
@@ -207,7 +206,7 @@ namespace Gordon360.Services
                 }
                 sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
 
-                int applicantResult = context.Database.ExecuteSqlCommand("INSERT_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM, @SESS_CDE", appIDParam, idParam, programParam, sessionParam); //run stored procedure
+                int? applicantResult = context.Database.ExecuteSqlCommand("INSERT_AA_APPLICANT @APPLICATION_ID, @ID_NUM, @APRT_PROGRAM, @SESS_CDE", appIDParam, idParam, programParam, sessionParam); //run stored procedure
                 if (applicantResult == null)
                 {
                     throw new ResourceCreationException() { ExceptionMessage = "Applicant with ID " + applicant.StudentID + " could not be saved." };
@@ -524,11 +523,8 @@ namespace Gordon360.Services
         /// <returns>Whether or not all the queries succeeded</returns>
         public bool ChangeApplicationEditor(string username, int applicationID, string newEditorUsername)
         {
-            IEnumerable<string> editorResult = null;
-
             SqlParameter appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
-
-            editorResult = RawSqlQuery<string>.query("GET_AA_EDITOR_BY_APPID @APPLICATION_ID", appIDParam);
+            IEnumerable<string> editorResult = RawSqlQuery<string>.query("GET_AA_EDITOR_BY_APPID @APPLICATION_ID", appIDParam);
             if (editorResult == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be found." };
@@ -679,31 +675,37 @@ namespace Gordon360.Services
 
         public ApartmentApplicationViewModel[] GetAllApartmentApplication()
         {
-            IEnumerable<ApartmentAppIDViewModel> appIDsResult = null;
+            IEnumerable<ObjectResult<int?>> appIDsResult = null;
 
-            appIDsResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_CURRENT_APP_IDS");
+            appIDsResult = RawSqlQuery<ObjectResult<int?>>.query("GET_AA_CURRENT_APP_IDS");
             if (appIDsResult == null || !appIDsResult.Any())
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be found." };
             }
 
             List<ApartmentApplicationViewModel> applicationList = new List<ApartmentApplicationViewModel>();
-            foreach (ApartmentAppIDViewModel appIDModel in appIDsResult)
+            foreach (ObjectResult<int?> appIDObjectResult in appIDsResult)
             {
-                ApartmentApplicationViewModel apartmentApplicationModel = null;
-                try
+                foreach (int? applicationID in appIDObjectResult)
                 {
-                    apartmentApplicationModel = GetApartmentApplication(appIDModel.AprtAppID);
-                    if (apartmentApplicationModel != null)
+                    if (applicationID != null)
                     {
-                        applicationList.Add(apartmentApplicationModel);
+                        ApartmentApplicationViewModel apartmentApplicationModel = null;
+                        try
+                        {
+                            apartmentApplicationModel = GetApartmentApplication(applicationID.Value);
+                            if (apartmentApplicationModel != null)
+                            {
+                                applicationList.Add(apartmentApplicationModel);
+                            }
+                        }
+                        catch
+                        {
+                            // Do nothing, simply skip this application
+                            // TODO: condsider how to report this error for the case where the application exists but something went wrong getting the editor student info (See the GetApartmentApplication method for what I am referring to)
+                            // We want to report the error, but not stop the entire process. It is better to have some or most applications rather than none of them
+                        }
                     }
-                }
-                catch
-                {
-                    // Do nothing, simply skip this application
-                    // TODO: condsider how to report this error for the case where the application exists but something went wrong getting the editor student info (See the GetApartmentApplication method for what I am referring to)
-                    // We want to report the error, but not stop the entire process. It is better to have some or most applications rather than none of them
                 }
             }
 
