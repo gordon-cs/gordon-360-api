@@ -26,19 +26,15 @@ class Test_AdminTest(control.testCase):
             pytest.fail('Expected 200 OK, got {0}.'\
                 .format(response.status_code))
         try:
-            response.json()
+            admins = response.json()
         except ValueError:
             pytest.fail('Expected Json response body, got {0}.'\
                 .format(response.text))
-        if not (type(response.json()) is list):
+        if not (type(admins) is list):
             pytest.fail('Expected list, got {0}.'.format(response.json))
-        print(response.json())
-        assert response.json()[1]['EMAIL'] == "360.FacultyTest@gordon.edu"
-        assert response.json()[0]['EMAIL'] == "Chris.Carlson@gordon.edu"
-        assert response.json()[0]['ADMIN_ID'] == 1
-        assert response.json()[0]['ID_NUM'] == 8330171
-        assert response.json()[0]['USER_NAME'] == "Chris.Carlson"
-        assert response.json()[0]['EMAIL'] == "Chris.Carlson@gordon.edu"
+        print(admins)
+        assert [admin for admin in admins if admin['EMAIL'] == "360.facultytest@gordon.edu"]
+        assert [admin for admin in admins if admin['EMAIL'] == "Chris.Carlson@gordon.edu" and admin['ADMIN_ID'] == 1 and admin['USER_NAME'] == "Chris.Carlson"]
 
 #    Verify that a guest can't get information of a specific admin via GordonId.
 #    Endpoint -- api/admins
