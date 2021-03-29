@@ -7,6 +7,9 @@ from datetime import datetime
 import pytest_components as api
 import test_gordon360_pytest as control
 
+site_admin = {'ADMIN_ID': 1, 'ID_NUM': 8330171, 'USER_NAME': 'Chris.Carlson', 'EMAIL': 'Chris.Carlson@gordon.edu', 'SUPER_ADMIN': True}
+    
+
 class Test_AdminTest(control.testCase):
   
 # # # # # # # #
@@ -31,15 +34,14 @@ class Test_AdminTest(control.testCase):
             pytest.fail('Expected Json response body, got {0}.'\
                 .format(response.text))
         if not (type(admins) is list):
-            pytest.fail('Expected list, got {0}.'.format(response.json))
+            pytest.fail('Expected list, got {0}.'.format(response.text))
         print(admins)
         assert [admin for admin in admins if admin['EMAIL'] == "360.facultytest@gordon.edu"]
-        assert [admin for admin in admins if admin['EMAIL'] == "Chris.Carlson@gordon.edu" and admin['ADMIN_ID'] == 1 and admin['USER_NAME'] == "Chris.Carlson"]
+        assert [admin for admin in admins if admin == site_admin]
 
 #    Verify that a guest can't get information of a specific admin via GordonId.
 #    Endpoint -- api/admins
 #    Expected Status Code -- 401 Unauthorized Error
-#    Expected Response Body -- An authorization denied error
     def test_get_all_admin_as_guest(self):
         self.session = self.createGuestSession()
         self.url = control.hostURL + 'api/admins/'
@@ -51,7 +53,7 @@ class Test_AdminTest(control.testCase):
             assert response.json()['Message'] == control.AUTHORIZATION_DENIED
         except ValueError:
             pytest.fail('Expected Json response body, got{0}.'\
-                .format(response.text))
+                .format(response.text)) 
 
 #    Verify that a student can't get information of a specific admin via
 #    GordonId.
@@ -59,8 +61,6 @@ class Test_AdminTest(control.testCase):
 #    Endpoint -- api/admins
 #    Expected Status Code -- 401 Unauthorized Error
 #    Expected Response Body -- An authorization denied error
-    @pytest.mark.skipif(not control.unknownPrecondition, reason = \
-        "Hanging on get request")
     def test_get_all_admin_as_student(self):
         self.session = self.createAuthorizedSession(control.username, control.password)
         self.url = control.hostURL + 'api/admins/'
@@ -87,16 +87,11 @@ class Test_AdminTest(control.testCase):
             pytest.fail('Expected 200 OK, got {0}.'\
                 .format(response.status_code))
         try:
-            response.json()
+            admin = response.json()
         except ValueError:
             pytest.fail('Expected Json response body, got {0}.'\
                 .format(response.text))
-        assert response.json()['EMAIL'] == "Chris.Carlson@gordon.edu"
-        assert response.json()['ADMIN_ID'] == 1
-        assert response.json()['ID_NUM'] == 8330171
-        assert response.json()['USER_NAME'] == "Chris.Carlson"
-        assert response.json()['EMAIL'] == "Chris.Carlson@gordon.edu"
-        assert response.json()['SUPER_ADMIN'] == True
+        assert admin == site_admin
 
 #    Verify that a guest can't get information of all admins.
 #    Endpoint -- api/admin/_id
@@ -121,8 +116,6 @@ class Test_AdminTest(control.testCase):
 #    Endpoint -- api/admin/_id
 #    Expected Status Code -- 401 Unauthorized Error
 #    Expected Response Body -- An authorization denied error
-    @pytest.mark.skipif(not control.unknownPrecondition, reason = \
-        "Hanging on get request")
     def test_get_student_admin(self):
         self.session = self.createAuthorizedSession(control.username, control.password)
         self.url = control.hostURL + 'api/admins/8330171'
