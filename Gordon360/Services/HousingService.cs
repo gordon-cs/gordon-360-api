@@ -308,7 +308,7 @@ namespace Gordon360.Services
                 foreach (GET_AA_APPLICANTS_BY_APPID_Result existingApplicant in existingApplicantResult)
                 {
                     ApartmentApplicantViewModel newMatchingApplicant = null;
-                    newMatchingApplicant = newApartmentApplicants.FirstOrDefault(x => x.StudentID == existingApplicant.ID_NUM);
+                    newMatchingApplicant = newApartmentApplicants.FirstOrDefault(x => x.Username == existingApplicant.ID_NUM);
                     if (newMatchingApplicant != null)
                     {
                         // If the applicant is in both the new applicant list and the existing applicant list, then we do NOT need to add it to the database
@@ -580,7 +580,7 @@ namespace Gordon360.Services
         {
             SqlParameter appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
 
-            IEnumerable<GET_AA_APPLICATIONS_BY_ID_Result> applicationResult = RawSqlQuery<GET_AA_APPLICATIONS_BY_ID_Result>.query("GET_AA_APPLICATIONS_BY_ID @APPLICATION_ID", applicationID);
+            IEnumerable<GET_AA_APPLICATIONS_BY_ID_Result> applicationResult = RawSqlQuery<GET_AA_APPLICATIONS_BY_ID_Result>.query("GET_AA_APPLICATIONS_BY_ID @APPLICATION_ID", appIDParam);
             if (applicationResult == null || !applicationResult.Any())
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be found." };
@@ -609,7 +609,7 @@ namespace Gordon360.Services
 
             // Get the applicants that match this application ID
             appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
-            IEnumerable<GET_AA_APPLICANTS_BY_APPID_Result> applicantsResult = RawSqlQuery<GET_AA_APPLICANTS_BY_APPID_Result>.query("GET_AA_APPLICANTS_BY_APPID @APPLICATION_ID", applicationID);
+            IEnumerable<GET_AA_APPLICANTS_BY_APPID_Result> applicantsResult = RawSqlQuery<GET_AA_APPLICANTS_BY_APPID_Result>.query("GET_AA_APPLICANTS_BY_APPID @APPLICATION_ID", appIDParam);
             if (applicantsResult != null && applicantsResult.Any())
             {
                 // Only attempt to parse the data if the collection of applicants is not empty
@@ -649,7 +649,7 @@ namespace Gordon360.Services
 
             // Get the apartment choices that match this application ID
             appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
-            IEnumerable<GET_AA_APARTMENT_CHOICES_BY_APP_ID_Result> apartmentChoicesResult = RawSqlQuery<GET_AA_APARTMENT_CHOICES_BY_APP_ID_Result>.query("GET_AA_APARTMENT_CHOICES_BY_APP_ID @APPLICATION_ID", applicationID);
+            IEnumerable<GET_AA_APARTMENT_CHOICES_BY_APP_ID_Result> apartmentChoicesResult = RawSqlQuery<GET_AA_APARTMENT_CHOICES_BY_APP_ID_Result>.query("GET_AA_APARTMENT_CHOICES_BY_APP_ID @APPLICATION_ID", appIDParam);
             if (apartmentChoicesResult != null && apartmentChoicesResult.Any())
             {
                 // Only attempt to parse the data if the collection of apartment choices is not empty
