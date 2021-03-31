@@ -13,7 +13,7 @@ namespace Gordon360.Services
 {
     public class HousingService : IHousingService
     {
-        private IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
 
 
         public HousingService(IUnitOfWork unitOfWork)
@@ -593,20 +593,22 @@ namespace Gordon360.Services
 
             GET_AA_APPLICATIONS_BY_ID_Result applicationsDBModel = applicationResult.FirstOrDefault(x => x.AprtAppID == applicationID);
 
-            // Assign the values from the database to the corresponding properties
-            ApartmentApplicationViewModel apartmentApplicationModel = new ApartmentApplicationViewModel();
-            apartmentApplicationModel.ApplicationID = applicationsDBModel.AprtAppID;
-            apartmentApplicationModel.DateSubmitted = applicationsDBModel.DateSubmitted;
-            apartmentApplicationModel.DateModified = applicationsDBModel.DateModified;
-
             Student editorStudent = Data.StudentData.FirstOrDefault(x => x.ID.ToLower() == applicationsDBModel.EditorID.ToLower());
             if (editorStudent == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The student information about the editor of this application could not be found." };
             }
-            apartmentApplicationModel.EditorUsername = editorStudent.AD_Username;
-            apartmentApplicationModel.EditorEmail = editorStudent.Email;
-            apartmentApplicationModel.Gender = editorStudent.Gender;
+
+            // Assign the values from the database to the corresponding properties
+            ApartmentApplicationViewModel apartmentApplicationModel = new ApartmentApplicationViewModel
+            {
+                ApplicationID = applicationsDBModel.AprtAppID,
+                DateSubmitted = applicationsDBModel.DateSubmitted,
+                DateModified = applicationsDBModel.DateModified,
+                EditorUsername = editorStudent.AD_Username,
+                EditorEmail = editorStudent.Email,
+                Gender = editorStudent.Gender
+            };
 
             // Get the applicants that match this application ID
             appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
@@ -622,23 +624,53 @@ namespace Gordon360.Services
                     if (student != null)
                     {
                         // If the student information is found, create a new ApplicationViewModel and fill in its properties
-                        ApartmentApplicantViewModel applicantModel = new ApartmentApplicantViewModel();
-                        applicantModel.ApplicationID = applicationID;
+                        ApartmentApplicantViewModel applicantModel = new ApartmentApplicantViewModel
+                        {
+                            ApplicationID = applicationID,
+                            Profile = student,
+                            StudentID = null, // Intentionally null in this case. Do not share the ID numbers of arbitrary students with the frontend
+                            Username = student.AD_Username,
+                            Age = null, // Not yet implemented
+                            Class = student.Class,
+                            OffCampusProgram = applicantDBModel.AprtProgram,
+                            Probation = false // Not yet implemented. This is where we will put the code to check if a student has a probation
+                        };
+                        // Ther probation data is already in the database, we just need to write a stored procedure to get it
 
-                        applicantModel.Profile = student;
+                        // Calculate application points
+                        int points = 0;
+                        switch (applicantModel.Class)
+                        {
+                            case "Freshman":
+                                points += 1;
+                                break;
+                            case "Sophomore":
+                                points += 2;
+                                break;
+                            case "Junior":
+                                points += 3;
+                                break;
+                            case "Senior":
+                                points += 4;
+                                break;
+                        }
 
-                        applicantModel.StudentID = null; // Intentionally null in this case. Do not share the ID numbers of arbitrary students with the frontend
-                        applicantModel.Username = student.AD_Username;
+                        if (applicantModel.Age >= 23)
+                        {
+                            points += 1;
+                        }
 
-                        applicantModel.Age = null; // Not yet implemented
-                        applicantModel.Class = student.Class;
+                        if (!string.IsNullOrEmpty(applicantModel.OffCampusProgram))
+                        {
+                            points += 1;
+                        }
 
-                        applicantModel.OffCampusProgram = applicantDBModel.AprtProgram;
+                        if (applicantModel.Probation)
+                        {
+                            points -= 3;
+                        }
 
-                        applicantModel.Probation = false; // Not yet implemented. This is where we will put the code to check if a student has a probation
-                        // This data is already in the database, we just need to write a stored procedure to get it
-
-                        applicantModel.Points = 1; // Not yet implemented. This is the place where we will need to calculate the points.
+                        applicantModel.Points = Math.Max(0, points); ; // Not yet implemented. This is the place where we will need to calculate the points.
 
                         // Add this new ApplicantViewModel object to the list of applicants for this application
                         applicantsList.Add(applicantModel);
@@ -662,10 +694,12 @@ namespace Gordon360.Services
                 List<ApartmentChoiceViewModel> apartmentChoicesList = new List<ApartmentChoiceViewModel>();
                 foreach (GET_AA_APARTMENT_CHOICES_BY_APP_ID_Result apartmentChoiceDBModel in apartmentChoicesResult)
                 {
-                    ApartmentChoiceViewModel apartmentChoiceModel = new ApartmentChoiceViewModel();
-                    apartmentChoiceModel.ApplicationID = applicationID;
-                    apartmentChoiceModel.HallName = apartmentChoiceDBModel.BLDG_CDE;
-                    apartmentChoiceModel.HallRank = apartmentChoiceDBModel.Ranking;
+                    ApartmentChoiceViewModel apartmentChoiceModel = new ApartmentChoiceViewModel
+                    {
+                        ApplicationID = applicationID,
+                        HallName = apartmentChoiceDBModel.BLDG_CDE,
+                        HallRank = apartmentChoiceDBModel.Ranking
+                    };
 
                     // Add this new ApartmentChoiceModel object to the list of apartment choices for this application
                     apartmentChoicesList.Add(apartmentChoiceModel);
