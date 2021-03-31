@@ -625,6 +625,8 @@ namespace Gordon360.Services
                         ApartmentApplicantViewModel applicantModel = new ApartmentApplicantViewModel();
                         applicantModel.ApplicationID = applicationID;
 
+                        applicantModel.Profile = student;
+
                         applicantModel.StudentID = null; // Intentionally null in this case. Do not share the ID numbers of arbitrary students with the frontend
                         applicantModel.Username = student.AD_Username;
 

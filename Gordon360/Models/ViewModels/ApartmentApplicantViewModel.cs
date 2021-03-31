@@ -4,6 +4,7 @@
     public class ApartmentApplicantViewModel
     {
         public int ApplicationID { get; set; }
+        public StudentProfileViewModel Profile { get; set; }
         public string StudentID { get; set; }
         public string Username { get; set; }
         public int? Age { get; set; }
