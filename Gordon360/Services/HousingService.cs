@@ -605,6 +605,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The student information about the editor of this application could not be found." };
             }
             apartmentApplicationModel.EditorUsername = editorStudent.AD_Username;
+            apartmentApplicationModel.EditorEmail = editorStudent.Email;
             apartmentApplicationModel.Gender = editorStudent.Gender;
 
             // Get the applicants that match this application ID
