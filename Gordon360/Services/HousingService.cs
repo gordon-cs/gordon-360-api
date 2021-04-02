@@ -670,7 +670,7 @@ namespace Gordon360.Services
                             points -= 3;
                         }
 
-                        applicantModel.Points = Math.Max(0, points); ; // Not yet implemented. This is the place where we will need to calculate the points.
+                        applicantModel.Points = Math.Max(0, points); ; // Set the resulting points to zero if the sum gave a value less than zero
 
                         // Add this new ApplicantViewModel object to the list of applicants for this application
                         applicantsList.Add(applicantModel);
