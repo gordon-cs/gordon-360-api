@@ -605,6 +605,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The student information about the editor of this application could not be found." };
             }
             apartmentApplicationModel.EditorUsername = editorStudent.AD_Username;
+            apartmentApplicationModel.EditorEmail = editorStudent.Email;
             apartmentApplicationModel.Gender = editorStudent.Gender;
 
             // Get the applicants that match this application ID
@@ -624,6 +625,9 @@ namespace Gordon360.Services
                         ApartmentApplicantViewModel applicantModel = new ApartmentApplicantViewModel();
                         applicantModel.ApplicationID = applicationID;
 
+                        applicantModel.Profile = student;
+
+                        applicantModel.StudentID = null; // Intentionally null in this case. Do not share the ID numbers of arbitrary students with the frontend
                         applicantModel.Username = student.AD_Username;
 
                         applicantModel.Age = null; // Not yet implemented
