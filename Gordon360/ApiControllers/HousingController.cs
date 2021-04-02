@@ -159,7 +159,7 @@ namespace Gordon360.Controllers.Api
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
             string editorUsername = applicationDetails.EditorUsername;
-            string editorID = _accountService.GetAccountByUsername(username).GordonID;
+            string editorID = _accountService.GetAccountByUsername(editorUsername).GordonID;
 
             ApartmentApplicantViewModel[] apartmentApplicants = applicationDetails.Applicants;
             foreach (ApartmentApplicantViewModel applicant in apartmentApplicants)
@@ -204,7 +204,7 @@ namespace Gordon360.Controllers.Api
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
             string newEditorUsername = applicationDetails.EditorUsername;
-            string newEditorID = _accountService.GetAccountByUsername(username).GordonID;
+            string newEditorID = _accountService.GetAccountByUsername(newEditorUsername).GordonID;
 
             ApartmentApplicantViewModel[] newApartmentApplicants = applicationDetails.Applicants;
             foreach (ApartmentApplicantViewModel applicant in newApartmentApplicants)
@@ -247,7 +247,7 @@ namespace Gordon360.Controllers.Api
             string userID = _accountService.GetAccountByUsername(username).GordonID;
 
             string newEditorUsername = applicationDetails.EditorUsername;
-            string newEditorID = _accountService.GetAccountByUsername(username).GordonID;
+            string newEditorID = _accountService.GetAccountByUsername(newEditorUsername).GordonID;
 
             bool result = _housingService.ChangeApplicationEditor(userID, applicationID, newEditorID);
 
