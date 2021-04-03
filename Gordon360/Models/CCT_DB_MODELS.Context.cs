@@ -29,6 +29,7 @@ namespace Gordon360.Models
     
         public virtual DbSet<AA_Admins> AA_Admins { get; set; }
         public virtual DbSet<AA_ApartmentApplications> AA_ApartmentApplications { get; set; }
+        public virtual DbSet<AA_Apartments> AA_Apartments { get; set; }
         public virtual DbSet<AA_Applicants> AA_Applicants { get; set; }
         public virtual DbSet<ACT_INFO> ACT_INFO { get; set; }
         public virtual DbSet<ADMIN> ADMIN { get; set; }
@@ -528,6 +529,11 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GET_AA_APARTMENT_CHOICES_BY_APP_ID_Result>("GET_AA_APARTMENT_CHOICES_BY_APP_ID", aPPLICATION_IDParameter);
         }
     
+        public virtual ObjectResult<string> GET_AA_APARTMENTS()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("GET_AA_APARTMENTS");
+        }
+    
         public virtual ObjectResult<Nullable<int>> GET_AA_APPID_BY_NAME_AND_DATE(Nullable<System.DateTime> nOW, string eDITOR_ID)
         {
             var nOWParameter = nOW.HasValue ?
@@ -633,11 +639,11 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GET_ALL_MESSAGES_BY_ID_Result>("GET_ALL_MESSAGES_BY_ID", room_idParameter);
         }
     
-        public virtual ObjectResult<string> GET_ALL_ROOMS_BY_ID(Nullable<int> user_id)
+        public virtual ObjectResult<string> GET_ALL_ROOMS_BY_ID(string user_id)
         {
-            var user_idParameter = user_id.HasValue ?
+            var user_idParameter = user_id != null ?
                 new ObjectParameter("user_id", user_id) :
-                new ObjectParameter("user_id", typeof(int));
+                new ObjectParameter("user_id", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("GET_ALL_ROOMS_BY_ID", user_idParameter);
         }
