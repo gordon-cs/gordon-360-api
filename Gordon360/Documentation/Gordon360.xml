@@ -1934,7 +1934,7 @@
             Calls a stored procedure that tries to get the id of an the application that a given user is 
             applicant on for a given session
             </summary>
-            <param name="username"> The student username to look for </param>
+            <param name="userID"> The student username to look for </param>
             <param name="sess_cde"> Session for which the application would be </param>
             <returns> 
             The id of the application or 
@@ -1951,9 +1951,9 @@
              which application on which they are an applicant
             
              </summary>
-             <param name="username"> The student username of the user who is attempting to save the apartment application (retrieved via authentication token) </param>
+             <param name="userID"> The student username of the user who is attempting to save the apartment application (retrieved via authentication token) </param>
              <param name="sess_cde"> The current session code </param>
-             <param name="editorUsername"> The student username of the student who is declared to be the editor of this application (retrieved from the JSON from the front end) </param>
+             <param name="editorID"> The student username of the student who is declared to be the editor of this application (retrieved from the JSON from the front end) </param>
              <param name="apartmentApplicants"> Array of JSON objects providing apartment applicants </param>
              <param name="apartmentChoices"> Array of JSON objects providing apartment hall choices </param>
              <returns>Returns the application ID number if all the queries succeeded</returns>
@@ -1967,10 +1967,10 @@
              - fourth, it removes each applicant that was stored in the database but was not in the 'newApplicantIDs' array
             
              </summary>
-             <param name="username"> The student username of the user who is attempting to save the apartment application (retrieved via authentication token) </param>
+             <param name="userID"> The student username of the user who is attempting to save the apartment application (retrieved via authentication token) </param>
              <param name="sess_cde"> The current session code </param>
              <param name="applicationID"> The application ID number of the application to be edited </param>
-             <param name="newEditorUsername"> The student username of the student who is declared to be the editor of this application (retrieved from the JSON from the front end) </param>
+             <param name="newEditorID"> The student username of the student who is declared to be the editor of this application (retrieved from the JSON from the front end) </param>
              <param name="newApartmentApplicants"> Array of JSON objects providing apartment applicants </param>
              <param name="newApartmentChoices"> Array of JSON objects providing apartment hall choices </param>
              <returns>Returns the application ID number if all the queries succeeded</returns>
