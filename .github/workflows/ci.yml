@@ -32,7 +32,7 @@ jobs:
 
             - name: Upload Train Build Artifact
               uses: actions/upload-artifact@v2.2.2
-              if: ${{ github.refs == 'refs/heads/develop' }}
+              if: ${{ github.ref == 'refs/heads/develop' }}
               with:
                   name: build-Train
                   path: ${{ github.workspace }}\Gordon360\bin\app.publish\ci
@@ -40,7 +40,7 @@ jobs:
 
             - name: Upload Prod Build Artifact
               uses: actions/upload-artifact@v2.2.2
-              if: ${{ github.refs == 'refs/heads/master' }}
+              if: ${{ github.ref == 'refs/heads/master' }}
               with:
                   name: build-Prod
                   path: ${{ github.workspace }}\Gordon360\bin\app.publish\ci
