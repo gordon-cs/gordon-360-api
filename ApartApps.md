@@ -86,8 +86,10 @@ Note: This part of the documentation is the most vulnerable to becoming outdated
     - Since these "inline" parameters are passed in the form of text that is part of the URL, the data type is limited to primitive types, such as `string` or `int` for example.
   - Those parameters that should be placed in the body of the frontend's request are only mentioned in the method declaration and are preceded by their data type and the phrase `[FromBody]`.
   - These `[FromBody]` parameters can sometimes have a complex data type called a View Model
-    - look for a file with the same name as the parameter's type in the View Models folder 
-    - you will find that it is essentilly a bundle of parameters with various data types; that means make sure you are sending it a JSON string with all the necessary parameters
+    - In Visual Studio, you can right-click on the data type and choose "Go To Definition" to see what it entails
+    - You will find that it is essentilly a bundle of parameters with various data types; that means make sure you are sending it a JSON string with all the necessary parameters
+    - You can also find the definition by looking for the file with the same name as the parameter's type in the View Models folder 
+    
 - __The code that validates the input__
   - Each Housing Controller method has the same block of code that begins `if (!ModelState.IsValid ...`
     - This `ModelState` check is only needed if the controller method accepts a View Model as one of its parameters.
