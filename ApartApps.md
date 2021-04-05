@@ -98,6 +98,9 @@ Note: This part of the documentation is the most vulnerable to becoming outdated
   - This is done with methods of Account Service within each Housing Controller method that requires this information 
 - __The code that is used to figure out whether to show admin or applicant view__
   - `public bool CheckIfHousingAdmin(...)` in the Housing Service
+- __Where we get the list halls for which students can apply__
+  - `public AA_ApartmentHalls[] GetAllApartmentHalls()` in the Housing Service, which just gets all the rows from a table called `AA_ApartmentHalls` in the CCT database
+  - this table can only be edited by editing rows directly; there are no stored procedures for this
 - __The code that figures out which application to load for a returning user__
   - This is also used to check if a student is already on another existing application 
   - `public int? GetApplicationID(...)` in the Housing Service
