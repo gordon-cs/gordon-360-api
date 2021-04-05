@@ -93,11 +93,18 @@ namespace Gordon360.Services
         /// <summary>
         /// Calls a stored procedure that gets all names of apartment halls
         /// </summary>
-        /// <returns> The list of hall names </returns>
-        public List<string> GetAllApartments()
+        /// <returns> AN array of hall names </returns>
+        public AA_ApartmentHalls[] GetAllApartmentHalls()
         {
-            List<string> placeholder = ['p'];
-            return placeholder;
+            IEnumerable<AA_ApartmentHalls> hallsResult = null;
+
+            hallsResult = RawSqlQuery<AA_ApartmentHalls>.query("GET_AA_APARTMENT_HALLS");
+            if (hallsResult == null || !hallsResult.Any())
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The apartment halls could not be found." };
+            }
+
+            return hallsResult.ToArray();
         }
 
         /// <summary>

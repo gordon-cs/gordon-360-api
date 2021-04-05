@@ -4,10 +4,10 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="cb9bac4f038f44ff8e3b0c664563c9d6" Name="Diagram1">
+      <Diagram DiagramId="654b1151e0ee4773a43dbd07ee0547e1" Name="Diagram1">
         <EntityTypeShape EntityType="Gordon360.AA_Admins" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.AA_ApartmentApplications" Width="1.5" PointX="5.75" PointY="2.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="Gordon360.AA_Apartments" Width="1.5" PointX="5.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Gordon360.AA_ApartmentHalls" Width="1.5" PointX="5.75" PointY="5.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.AA_Applicants" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.ACT_INFO" Width="1.5" PointX="7.75" PointY="3.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.ADMIN" Width="1.5" PointX="5.75" PointY="7.75" IsExpanded="true" />

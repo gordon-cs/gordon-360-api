@@ -1,6 +1,7 @@
 ﻿using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Models.ViewModels;
+using Gordon360.Models;
 using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Static.Methods;
@@ -77,6 +78,25 @@ namespace Gordon360.Controllers.Api
         {
             bool result = _housingService.RemoveHousingAdmin(id);
             return Ok(result);
+        }
+
+        /// <summary>
+        /// Get a list of the apartment-style halls
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("halls")]
+        public IHttpActionResult GetApartmentHalls()
+        {
+            AA_ApartmentHalls[] result = _housingService.GetAllApartmentHalls();
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         /// <summary>

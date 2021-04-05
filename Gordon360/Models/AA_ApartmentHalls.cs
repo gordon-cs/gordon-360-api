@@ -12,7 +12,7 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class AA_Apartments
+    public partial class AA_ApartmentHalls
     {
         public string Name { get; set; }
     }
