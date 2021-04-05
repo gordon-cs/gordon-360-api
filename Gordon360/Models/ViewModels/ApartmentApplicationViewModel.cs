@@ -9,6 +9,7 @@ namespace Gordon360.Models.ViewModels
         public DateTime? DateSubmitted { get; set; } // Nullable
         public DateTime DateModified { get; set; }
         public string EditorUsername { get; set; }
+        public string EditorEmail { get; set; }
         public string Gender { get; set; }
         public ApartmentApplicantViewModel[] Applicants { get; set; }
         public ApartmentChoiceViewModel[] ApartmentChoices { get; set; }
