@@ -107,3 +107,4 @@ Note: This part of the documentation is the most vulnerable to becoming outdated
   - `public ApartmentApplicationViewModel GetApartmentApplication(...)` in the Housing Service
 - __The code that gets all current applications and their info__
   - `public ApartmentApplicationViewModel[] GetAllApartmentApplication()` in the Housing Service
+  - This info is only returned if the user is a housing admin
