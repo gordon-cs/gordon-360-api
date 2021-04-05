@@ -88,6 +88,7 @@ Note: This part of the documentation is the most vulnerable to becoming outdated
   - If the data type of either is a View Model, look for it in the View Models folder and you will find that the method requies a collection of parameters with various data types; that means make sure you are sending it a JSON string with all the necessary parameters
 - __The code that validates the input__
   - Each Housing Controller method has the same block of code that begins `if (!ModelState.IsValid ...`
+    - This `ModelState` check is only needed if the controller method accepts a View Model as one of its parameters.
   - This, as far as the author of this documentation knows, simply throws a `BadInputException` if any parameter is null, empty, or not matching the View Model
 - __How the code gets the information of the logged-in user__
   - This is done with methods of Account Service within each Housing Controller method that requires this information 
