@@ -83,6 +83,7 @@ Note: This part of the documentation is the most vulnerable to becoming outdated
   - There are two kinds of parameters that the frontend must supply, those that should be named in the route and those that should be placed in the body of the HTTP request 
   - Those that should be named in the route are identified in the same place as the previous point, `[Route("someRoute/{X}")]` in the respective Housing Controller method
   - The data type for these, let's call it Y, is identified next to the corresponding parameter in the actual method declaration: `public IHttpActionResult DoSomething(Y X)` 
+    - Since these "inline" parameters are passed in the form of text that is part of the URL, the data type is limited to primitive types, such as `string` or `int` for example.
   - Those parameters that should be placed in the body of the frontend's request are only mentioned in the method declaration and are preceded by their data type and the phrase `[FromBody]`.
   - If the data type of either is a View Model, look for it in the View Models folder and you will find that the method requies a collection of parameters with various data types; that means make sure you are sending it a JSON string with all the necessary parameters
 - __The code that validates the input__
