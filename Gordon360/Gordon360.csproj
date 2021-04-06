@@ -232,6 +232,9 @@
     <Compile Include="Models\AA_ApartmentChoices.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\AA_ApartmentHalls.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\AA_Applicants.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>

@@ -92,11 +92,28 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// Calls a stored procedure that gets all names of apartment halls
+        /// </summary>
+        /// <returns> AN array of hall names </returns>
+        public AA_ApartmentHalls[] GetAllApartmentHalls()
+        {
+            IEnumerable<AA_ApartmentHalls> hallsResult = null;
+
+            hallsResult = RawSqlQuery<AA_ApartmentHalls>.query("GET_AA_APARTMENT_HALLS");
+            if (hallsResult == null || !hallsResult.Any())
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The apartment halls could not be found." };
+            }
+
+            return hallsResult.ToArray();
+        }
+
+        /// <summary>
         /// Calls a stored procedure that tries to get the id of an the application that a given user is 
         /// applicant on for a given session
         /// </summary>
         /// <param name="userID"> The student username to look for </param>
-        /// /// <param name="sess_cde"> Session for which the application would be </param>
+        /// <param name="sess_cde"> Session for which the application would be </param>
         /// <returns> 
         /// The id of the application or 
         /// null if the user is not on an application for that session 
@@ -601,6 +618,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The student information about the editor of this application could not be found." };
             }
             apartmentApplicationModel.EditorUsername = editorStudent.AD_Username;
+            apartmentApplicationModel.EditorEmail = editorStudent.Email;
             apartmentApplicationModel.Gender = editorStudent.Gender;
 
             // Get the applicants that match this application ID
@@ -620,6 +638,9 @@ namespace Gordon360.Services
                         ApartmentApplicantViewModel applicantModel = new ApartmentApplicantViewModel();
                         applicantModel.ApplicationID = applicationID;
 
+                        applicantModel.Profile = student;
+
+                        applicantModel.StudentID = null; // Intentionally null in this case. Do not share the ID numbers of arbitrary students with the frontend
                         applicantModel.Username = student.AD_Username;
 
                         applicantModel.Age = null; // Not yet implemented

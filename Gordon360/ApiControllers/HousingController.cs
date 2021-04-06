@@ -1,6 +1,7 @@
 ﻿using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Models.ViewModels;
+using Gordon360.Models;
 using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Static.Methods;
@@ -77,6 +78,25 @@ namespace Gordon360.Controllers.Api
         {
             bool result = _housingService.RemoveHousingAdmin(id);
             return Ok(result);
+        }
+
+        /// <summary>
+        /// Get a list of the apartment-style halls
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("halls/apartments")]
+        public IHttpActionResult GetApartmentHalls()
+        {
+            AA_ApartmentHalls[] result = _housingService.GetAllApartmentHalls();
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         /// <summary>
@@ -159,7 +179,7 @@ namespace Gordon360.Controllers.Api
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
             string editorUsername = applicationDetails.EditorUsername;
-            string editorID = _accountService.GetAccountByUsername(username).GordonID;
+            string editorID = _accountService.GetAccountByUsername(editorUsername).GordonID;
 
             ApartmentApplicantViewModel[] apartmentApplicants = applicationDetails.Applicants;
             foreach (ApartmentApplicantViewModel applicant in apartmentApplicants)
@@ -204,7 +224,7 @@ namespace Gordon360.Controllers.Api
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
             string newEditorUsername = applicationDetails.EditorUsername;
-            string newEditorID = _accountService.GetAccountByUsername(username).GordonID;
+            string newEditorID = _accountService.GetAccountByUsername(newEditorUsername).GordonID;
 
             ApartmentApplicantViewModel[] newApartmentApplicants = applicationDetails.Applicants;
             foreach (ApartmentApplicantViewModel applicant in newApartmentApplicants)
@@ -247,7 +267,7 @@ namespace Gordon360.Controllers.Api
             string userID = _accountService.GetAccountByUsername(username).GordonID;
 
             string newEditorUsername = applicationDetails.EditorUsername;
-            string newEditorID = _accountService.GetAccountByUsername(username).GordonID;
+            string newEditorID = _accountService.GetAccountByUsername(newEditorUsername).GordonID;
 
             bool result = _housingService.ChangeApplicationEditor(userID, applicationID, newEditorID);
 
