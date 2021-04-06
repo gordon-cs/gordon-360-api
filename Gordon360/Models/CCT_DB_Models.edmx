@@ -32,6 +32,12 @@ warning 6002: The table/view 'CCT.dbo.AA_ApartmentChoices' does not have a prima
           <Property Name="Ranking" Type="int" Nullable="false" />
           <Property Name="BLDG_CDE" Type="char" MaxLength="5" Nullable="false" />
         </EntityType>
+        <EntityType Name="AA_ApartmentHalls">
+          <Key>
+            <PropertyRef Name="Name" />
+          </Key>
+          <Property Name="Name" Type="varchar" MaxLength="15" Nullable="false" />
+        </EntityType>
         <EntityType Name="AA_Applicants">
           <Key>
             <PropertyRef Name="AprtAppID" />
@@ -931,6 +937,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <Function Name="GET_AA_APARTMENT_CHOICES_BY_APP_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="APPLICATION_ID" Type="int" Mode="In" />
         </Function>
+        <Function Name="GET_AA_APARTMENTS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="GET_AA_APPID_BY_NAME_AND_DATE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="NOW" Type="datetime" Mode="In" />
           <Parameter Name="EDITOR_ID" Type="varchar" Mode="In" />
@@ -963,7 +970,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Parameter Name="room_id" Type="int" Mode="In" />
         </Function>
         <Function Name="GET_ALL_ROOMS_BY_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="user_id" Type="int" Mode="In" />
+          <Parameter Name="user_id" Type="varchar" Mode="In" />
         </Function>
         <Function Name="GET_ALL_USERS_BY_ROOM_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="room_id" Type="int" Mode="In" />
@@ -1217,6 +1224,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <EntityContainer Name="Gordon360StoreContainer">
           <EntitySet Name="AA_Admins" EntityType="Self.AA_Admins" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AA_ApartmentApplications" EntityType="Self.AA_ApartmentApplications" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AA_ApartmentHalls" EntityType="Self.AA_ApartmentHalls" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AA_Applicants" EntityType="Self.AA_Applicants" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ACT_INFO" EntityType="Self.ACT_INFO" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ADMIN" EntityType="Self.ADMIN" Schema="dbo" store:Type="Tables" />
@@ -1645,6 +1653,12 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="DateSubmitted" Type="DateTime" Precision="3" />
           <Property Name="DateModified" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="EditorID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AA_ApartmentHalls">
+          <Key>
+            <PropertyRef Name="Name" />
+          </Key>
+          <Property Name="Name" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
         </EntityType>
         <EntityType Name="AA_Applicants">
           <Key>
@@ -2367,6 +2381,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <EntityContainer Name="CCTEntities1" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="AA_Admins" EntityType="Self.AA_Admins" />
           <EntitySet Name="AA_ApartmentApplications" EntityType="Self.AA_ApartmentApplications" />
+          <EntitySet Name="AA_ApartmentHalls" EntityType="Self.AA_ApartmentHalls" />
           <EntitySet Name="AA_Applicants" EntityType="Self.AA_Applicants" />
           <EntitySet Name="ACT_INFO" EntityType="Self.ACT_INFO" />
           <EntitySet Name="ADMIN" EntityType="Self.ADMIN" />
@@ -2552,6 +2567,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImport Name="GET_AA_APARTMENT_CHOICES_BY_APP_ID" ReturnType="Collection(Gordon360.GET_AA_APARTMENT_CHOICES_BY_APP_ID_Result)">
             <Parameter Name="APPLICATION_ID" Mode="In" Type="Int32" />
           </FunctionImport>
+          <FunctionImport Name="GET_AA_APARTMENTS" />
           <FunctionImport Name="GET_AA_APPID_BY_NAME_AND_DATE" ReturnType="Collection(Int32)">
             <Parameter Name="NOW" Mode="In" Type="DateTime" />
             <Parameter Name="EDITOR_ID" Mode="In" Type="String" />
@@ -2584,7 +2600,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="room_id" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="GET_ALL_ROOMS_BY_ID" ReturnType="Collection(String)">
-            <Parameter Name="user_id" Mode="In" Type="Int32" />
+            <Parameter Name="user_id" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="GET_ALL_USERS_BY_ROOM_ID" ReturnType="Collection(String)">
             <Parameter Name="room_id" Mode="In" Type="Int32" />
@@ -3290,6 +3306,13 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="DateSubmitted" ColumnName="DateSubmitted" />
                 <ScalarProperty Name="DateModified" ColumnName="DateModified" />
                 <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AA_ApartmentHalls">
+            <EntityTypeMapping TypeName="Gordon360.AA_ApartmentHalls">
+              <MappingFragment StoreEntitySet="AA_ApartmentHalls">
+                <ScalarProperty Name="Name" ColumnName="Name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4139,6 +4162,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GET_AA_APARTMENTS" FunctionName="Gordon360.Store.GET_AA_APARTMENTS" />
           <FunctionImportMapping FunctionImportName="GET_AA_APPID_BY_NAME_AND_DATE" FunctionName="Gordon360.Store.GET_AA_APPID_BY_NAME_AND_DATE" />
           <FunctionImportMapping FunctionImportName="GET_AA_APPID_BY_STU_ID_AND_SESS" FunctionName="Gordon360.Store.GET_AA_APPID_BY_STU_ID_AND_SESS" />
           <FunctionImportMapping FunctionImportName="GET_AA_APPLICANTS_BY_APPID" FunctionName="Gordon360.Store.GET_AA_APPLICANTS_BY_APPID">

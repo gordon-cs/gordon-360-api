@@ -45,7 +45,7 @@ class Test_AllHousingAppTest(control.testCase):
         self.requestID = -1
         response = api.put(self.session, self.url, self.data)
         if not response.status_code == 200:
-            pytest.fail('Expected 200 Created, got {0}.'\
+            pytest.fail('Expected 200 OK, got {0}.'\
                 .format(response.status_code))
 
 #    Verify that a user who is on the admin whitelist gets the OK to access staff features
@@ -65,7 +65,7 @@ class Test_AllHousingAppTest(control.testCase):
         api.delete(self.session, self.url + '/' + str(control.my_id_number) + '/')
 
         if not response.status_code == 200:
-            pytest.fail('Expected 200 Created, got {0}.'\
+            pytest.fail('Expected 200 OK, got {0}.'\
                 .format(response.status_code))
 
 #    Verify that a user who is not on the admin whitelist gets the response Not Found
@@ -79,7 +79,20 @@ class Test_AllHousingAppTest(control.testCase):
         response = api.get(self.session, self.url)
 
         if not response.status_code == 404:
-            pytest.fail('Expected 404 Created, got {0}.'\
+            pytest.fail('Expected 404 Not Found, got {0}.'\
+                .format(response.status_code))
+
+#    Verify that the list of apartment-style halls is retrieved correctly
+#    Endpoint -- 'api/housing/halls'
+#    Expected Status Code -- 200 OK
+#    Expected Content -- 
+    def test_get_apartment_halls(self):
+        self.session = self.createAuthorizedSession(control.username, control.password)
+        self.url = control.hostURL + 'api/housing/halls/apartments'
+        response = api.get(self.session, self.url)
+
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'\
                 .format(response.status_code))
 
 #    Verify that nothing is found if the current user is not on an application 
@@ -92,7 +105,7 @@ class Test_AllHousingAppTest(control.testCase):
         response = api.get(self.session, self.url)
 
         if not response.status_code == 404:
-            pytest.fail('Expected 404 Created, got {0}.'\
+            pytest.fail('Expected 404 Not Found, got {0}.'\
                 .format(response.status_code))
 
 #    Verify that nothing is found if a given id is not on an application 
@@ -106,7 +119,7 @@ class Test_AllHousingAppTest(control.testCase):
         response = api.get(self.session, self.url)
 
         if not response.status_code == 404:
-            pytest.fail('Expected 404 Created, got {0}.'\
+            pytest.fail('Expected 404 Not Found, got {0}.'\
                 .format(response.status_code))
         
 
