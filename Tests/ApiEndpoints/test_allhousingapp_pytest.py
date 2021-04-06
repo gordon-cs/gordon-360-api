@@ -88,7 +88,7 @@ class Test_AllHousingAppTest(control.testCase):
 #    Expected Content -- 
     def test_get_apartment_halls(self):
         self.session = self.createAuthorizedSession(control.username, control.password)
-        self.url = control.hostURL + 'api/housing/halls'
+        self.url = control.hostURL + 'api/housing/halls/apartments'
         response = api.get(self.session, self.url)
 
         if not response.status_code == 200:
