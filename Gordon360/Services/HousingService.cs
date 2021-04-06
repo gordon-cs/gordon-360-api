@@ -106,7 +106,7 @@ namespace Gordon360.Services
             SqlParameter userParam = new SqlParameter("@STUDENT_ID", userID);
             SqlParameter sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
 
-            IEnumerable<ObjectResult<int?>> idResult = RawSqlQuery<ObjectResult<int?>>.query("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, userParam); //run stored procedure
+            IEnumerable<int?> idResult = context.Database.SqlQuery<int?>("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, userParam); //run stored procedure
             if (idResult?.FirstOrDefault()?.FirstOrDefault() == null || !idResult.Any())
             {
                 return null;
@@ -136,7 +136,7 @@ namespace Gordon360.Services
         {
             CCTEntities1 context = new CCTEntities1();
 
-            IEnumerable<ObjectResult<int?>> idResult = null;
+            IEnumerable<int?> idResult = null;
 
             DateTime now = System.DateTime.Now;
 
@@ -144,7 +144,7 @@ namespace Gordon360.Services
             SqlParameter editorParam = new SqlParameter("@STUDENT_ID", editorID);
 
             // If an application ID was not passed in, then check if an application already exists
-            idResult = RawSqlQuery<ObjectResult<int?>>.query("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, editorParam); //run stored procedure
+            idResult = context.Database.SqlQuery<int?>("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_ID", sessionParam, editorParam); //run stored procedure
             if (idResult?.FirstOrDefault()?.FirstOrDefault() != null && idResult.Any())
             {
                 throw new ResourceCreationException() { ExceptionMessage = "An existing application ID was found for this user. Please use 'EditApplication' to update an existing application." };
@@ -176,7 +176,7 @@ namespace Gordon360.Services
             timeParam = new SqlParameter("@NOW", now);
             editorParam = new SqlParameter("@EDITOR_ID", editorID);
 
-            idResult = RawSqlQuery<ObjectResult<int?>>.query("GET_AA_APPID_BY_NAME_AND_DATE @NOW, @EDITOR_ID", timeParam, editorParam); //run stored procedure
+            idResult = context.Database.SqlQuery<int?>("GET_AA_APPID_BY_NAME_AND_DATE @NOW, @EDITOR_ID", timeParam, editorParam).AsEnumerable(); //run stored procedure
             if (idResult?.FirstOrDefault()?.FirstOrDefault() == null || !idResult.Any())
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The new application ID could not be found." };
@@ -675,16 +675,16 @@ namespace Gordon360.Services
 
         public ApartmentApplicationViewModel[] GetAllApartmentApplication()
         {
-            IEnumerable<ObjectResult<int?>> appIDsResult = null;
+            IEnumerable<int?> appIDsResult = null;
 
-            appIDsResult = RawSqlQuery<ObjectResult<int?>>.query("GET_AA_CURRENT_APP_IDS");
+            appIDsResult = context.Database.SqlQuery<int?>("GET_AA_CURRENT_APP_IDS");
             if (appIDsResult == null || !appIDsResult.Any())
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be found." };
             }
 
             List<ApartmentApplicationViewModel> applicationList = new List<ApartmentApplicationViewModel>();
-            foreach (ObjectResult<int?> appIDObjectResult in appIDsResult)
+            foreach (int? appIDObjectResult in appIDsResult)
             {
                 foreach (int? applicationID in appIDObjectResult)
                 {
