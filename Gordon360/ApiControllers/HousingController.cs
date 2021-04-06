@@ -85,7 +85,7 @@ namespace Gordon360.Controllers.Api
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("halls")]
+        [Route("halls/apartments")]
         public IHttpActionResult GetApartmentHalls()
         {
             AA_ApartmentHalls[] result = _housingService.GetAllApartmentHalls();
