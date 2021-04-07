@@ -608,8 +608,6 @@ namespace Gordon360.Services
                 EditorUsername = editorStudent.AD_Username,
                 EditorEmail = editorStudent.Email,
                 Gender = editorStudent.Gender,
-                TotalPoints = 0, // Initialize the points to zero. The actual points are calculated in the "applicants" section below
-                AvgPoints = 0,
             };
 
             // Get the applicants that match this application ID
@@ -684,10 +682,6 @@ namespace Gordon360.Services
                 {
                     // Add this list of applicants to the application model as an array
                     apartmentApplicationModel.Applicants = applicantsList.ToArray();
-
-                    // Add the total points and average points to the application model
-                    apartmentApplicationModel.TotalPoints = applicantsList.Sum(applicant => applicant.Points);
-                    apartmentApplicationModel.AvgPoints = applicantsList.Average(applicant => applicant.Points);
                 }
             }
 
