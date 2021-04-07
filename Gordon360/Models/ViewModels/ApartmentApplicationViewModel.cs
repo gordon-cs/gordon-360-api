@@ -13,5 +13,7 @@ namespace Gordon360.Models.ViewModels
         public string Gender { get; set; }
         public ApartmentApplicantViewModel[] Applicants { get; set; }
         public ApartmentChoiceViewModel[] ApartmentChoices { get; set; }
+        public int TotalPoints { get; set; }
+        public double AvgPoints { get; set; }
     }
 }

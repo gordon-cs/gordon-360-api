@@ -607,7 +607,9 @@ namespace Gordon360.Services
                 DateModified = applicationsDBModel.DateModified,
                 EditorUsername = editorStudent.AD_Username,
                 EditorEmail = editorStudent.Email,
-                Gender = editorStudent.Gender
+                Gender = editorStudent.Gender,
+                TotalPoints = 0, // Initialize the points to zero. The actual points are calculated in the "applicants" section below
+                AvgPoints = 0,
             };
 
             // Get the applicants that match this application ID
@@ -633,9 +635,10 @@ namespace Gordon360.Services
                             Age = null, // Not yet implemented
                             Class = student.Class,
                             OffCampusProgram = applicantDBModel.AprtProgram,
-                            Probation = false // Not yet implemented. This is where we will put the code to check if a student has a probation
+                            Probation = false, // Not yet implemented. This is where we will put the code to check if a student has a probation
+                            Points = 0, // Initialize to zero. The point actual points are calculated a few lines below this
                         };
-                        // Ther probation data is already in the database, we just need to write a stored procedure to get it
+                        // The probation data is already in the database, we just need to write a stored procedure to get it
 
                         // Calculate application points
                         int points = 0;
@@ -681,6 +684,10 @@ namespace Gordon360.Services
                 {
                     // Add this list of applicants to the application model as an array
                     apartmentApplicationModel.Applicants = applicantsList.ToArray();
+
+                    // Add the total points and average points to the application model
+                    apartmentApplicationModel.TotalPoints = applicantsList.Sum(applicant => applicant.Points);
+                    apartmentApplicationModel.AvgPoints = applicantsList.Average(applicant => applicant.Points);
                 }
             }
 
