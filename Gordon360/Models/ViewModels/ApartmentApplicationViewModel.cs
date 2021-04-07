@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Gordon360.Models.ViewModels
 {
@@ -13,5 +14,7 @@ namespace Gordon360.Models.ViewModels
         public string Gender { get; set; }
         public ApartmentApplicantViewModel[] Applicants { get; set; }
         public ApartmentChoiceViewModel[] ApartmentChoices { get; set; }
+        public int TotalPoints => Applicants?.Sum(applicant => applicant.Points) ?? 0;
+        public double AvgPoints => Applicants?.Average(applicant => applicant.Points) ?? 0;
     }
 }
