@@ -32,5 +32,6 @@ namespace Gordon360.Models
         public Nullable<int> Chapel_Required { get; set; }
         public string Mail_Location { get; set; }
         public Nullable<int> Chapel_Attended { get; set; }
+        public Nullable<System.DateTime> Birth_Date { get; set; }
     }
 }

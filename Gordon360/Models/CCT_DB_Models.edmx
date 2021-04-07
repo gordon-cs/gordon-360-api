@@ -415,6 +415,7 @@ warning 6002: The table/view 'CCT.dbo.ACCOUNT' does not have a primary key defin
           <Property Name="Chapel_Required" Type="int" />
           <Property Name="Mail_Location" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="Chapel_Attended" Type="int" />
+          <Property Name="Birth_Date" Type="datetime" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.Alumni' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -837,8 +838,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <Function Name="CREATE_MESSAGE_ROOM" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="name" Type="varchar(max)" Mode="In" />
           <Parameter Name="group" Type="bit" Mode="In" />
-          <Parameter Name="createdAt" Type="datetime" Mode="In" />
-          <Parameter Name="lastUpdated" Type="datetime" Mode="In" />
           <Parameter Name="roomImage" Type="varbinary(max)" Mode="In" />
         </Function>
         <Function Name="CREATE_MYSCHEDULE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
@@ -937,7 +936,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <Function Name="GET_AA_APARTMENT_CHOICES_BY_APP_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="APPLICATION_ID" Type="int" Mode="In" />
         </Function>
-        <Function Name="GET_AA_APARTMENTS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="GET_AA_APARTMENT_HALLS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="GET_AA_APPID_BY_NAME_AND_DATE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="NOW" Type="datetime" Mode="In" />
           <Parameter Name="EDITOR_ID" Type="varchar" Mode="In" />
@@ -975,10 +974,17 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <Function Name="GET_ALL_USERS_BY_ROOM_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="room_id" Type="int" Mode="In" />
         </Function>
+        <Function Name="GET_BIRTH_DATE_BY_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="GET_HEALTH_CHECK_QUESTION" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="GET_LATEST_ROOM" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="GET_ROOM_BY_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="room_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="GET_SINGLE_MESSAGE_BY_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="room_id" Type="int" Mode="In" />
+          <Parameter Name="message_id" Type="varchar(max)" Mode="In" />
         </Function>
         <Function Name="GET_TIMESHEETS_CLOCK_IN_OUT" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ID_NUM" Type="int" Mode="In" />
@@ -1345,7 +1351,8 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [ACCOUNT].[is_police] AS [is_police], 
     [ACCOUNT].[Chapel_Required] AS [Chapel_Required], 
     [ACCOUNT].[Mail_Location] AS [Mail_Location], 
-    [ACCOUNT].[Chapel_Attended] AS [Chapel_Attended]
+    [ACCOUNT].[Chapel_Attended] AS [Chapel_Attended], 
+    [ACCOUNT].[Birth_Date] AS [Birth_Date]
     FROM [dbo].[ACCOUNT] AS [ACCOUNT]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="Alumni" EntityType="Self.Alumni" store:Type="Views" store:Schema="dbo">
@@ -2033,6 +2040,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="Chapel_Required" Type="Int32" />
           <Property Name="Mail_Location" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Chapel_Attended" Type="Int32" />
+          <Property Name="Birth_Date" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="Alumni">
           <Key>
@@ -2468,8 +2476,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImport Name="CREATE_MESSAGE_ROOM" ReturnType="Collection(Gordon360.CREATE_MESSAGE_ROOM_Result)">
             <Parameter Name="name" Mode="In" Type="String" />
             <Parameter Name="group" Mode="In" Type="Boolean" />
-            <Parameter Name="createdAt" Mode="In" Type="DateTime" />
-            <Parameter Name="lastUpdated" Mode="In" Type="DateTime" />
             <Parameter Name="roomImage" Mode="In" Type="Binary" />
           </FunctionImport>
           <FunctionImport Name="CREATE_MYSCHEDULE">
@@ -2567,7 +2573,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImport Name="GET_AA_APARTMENT_CHOICES_BY_APP_ID" ReturnType="Collection(Gordon360.GET_AA_APARTMENT_CHOICES_BY_APP_ID_Result)">
             <Parameter Name="APPLICATION_ID" Mode="In" Type="Int32" />
           </FunctionImport>
-          <FunctionImport Name="GET_AA_APARTMENTS" />
+          <FunctionImport Name="GET_AA_APARTMENT_HALLS" ReturnType="Collection(String)" />
           <FunctionImport Name="GET_AA_APPID_BY_NAME_AND_DATE" ReturnType="Collection(Int32)">
             <Parameter Name="NOW" Mode="In" Type="DateTime" />
             <Parameter Name="EDITOR_ID" Mode="In" Type="String" />
@@ -2605,10 +2611,17 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <FunctionImport Name="GET_ALL_USERS_BY_ROOM_ID" ReturnType="Collection(String)">
             <Parameter Name="room_id" Mode="In" Type="Int32" />
           </FunctionImport>
+          <FunctionImport Name="GET_BIRTH_DATE_BY_ID" ReturnType="Collection(DateTime)">
+            <Parameter Name="ID" Mode="In" Type="String" />
+          </FunctionImport>
           <FunctionImport Name="GET_HEALTH_CHECK_QUESTION" ReturnType="Collection(Gordon360.GET_HEALTH_CHECK_QUESTION_Result)" />
           <FunctionImport Name="GET_LATEST_ROOM" ReturnType="Collection(Int32)" />
           <FunctionImport Name="GET_ROOM_BY_ID" ReturnType="Collection(Gordon360.GET_ROOM_BY_ID_Result)">
             <Parameter Name="room_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="GET_SINGLE_MESSAGE_BY_ID" ReturnType="Collection(Gordon360.GET_SINGLE_MESSAGE_BY_ID_Result)">
+            <Parameter Name="room_id" Mode="In" Type="Int32" />
+            <Parameter Name="message_id" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="GET_TIMESHEETS_CLOCK_IN_OUT" ReturnType="Collection(Gordon360.GET_TIMESHEETS_CLOCK_IN_OUT_Result)">
             <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
@@ -3023,6 +3036,19 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="DateTime" Name="createdAt" Nullable="false" Precision="23" />
           <Property Type="DateTime" Name="lastupdated" Nullable="false" Precision="23" />
           <Property Type="Binary" Name="roomImage" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="GET_SINGLE_MESSAGE_BY_ID_Result">
+          <Property Type="String" Name="message_id" Nullable="false" MaxLength="72" />
+          <Property Type="String" Name="text" Nullable="false" />
+          <Property Type="DateTime" Name="createdAt" Nullable="false" Precision="23" />
+          <Property Type="String" Name="user_id" Nullable="false" MaxLength="72" />
+          <Property Type="Binary" Name="image" Nullable="true" />
+          <Property Type="Binary" Name="video" Nullable="true" />
+          <Property Type="Binary" Name="audio" Nullable="true" />
+          <Property Type="Boolean" Name="system" Nullable="false" />
+          <Property Type="Boolean" Name="sent" Nullable="false" />
+          <Property Type="Boolean" Name="received" Nullable="false" />
+          <Property Type="Boolean" Name="pending" Nullable="false" />
         </ComplexType>
         <ComplexType Name="GET_TIMESHEETS_CLOCK_IN_OUT_Result">
           <Property Type="DateTime" Name="timestamp" Nullable="true" Precision="23" />
@@ -3669,6 +3695,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="Chapel_Required" ColumnName="Chapel_Required" />
                 <ScalarProperty Name="Mail_Location" ColumnName="Mail_Location" />
                 <ScalarProperty Name="Chapel_Attended" ColumnName="Chapel_Attended" />
+                <ScalarProperty Name="Birth_Date" ColumnName="Birth_Date" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4162,7 +4189,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="GET_AA_APARTMENTS" FunctionName="Gordon360.Store.GET_AA_APARTMENTS" />
+          <FunctionImportMapping FunctionImportName="GET_AA_APARTMENT_HALLS" FunctionName="Gordon360.Store.GET_AA_APARTMENT_HALLS" />
           <FunctionImportMapping FunctionImportName="GET_AA_APPID_BY_NAME_AND_DATE" FunctionName="Gordon360.Store.GET_AA_APPID_BY_NAME_AND_DATE" />
           <FunctionImportMapping FunctionImportName="GET_AA_APPID_BY_STU_ID_AND_SESS" FunctionName="Gordon360.Store.GET_AA_APPID_BY_STU_ID_AND_SESS" />
           <FunctionImportMapping FunctionImportName="GET_AA_APPLICANTS_BY_APPID" FunctionName="Gordon360.Store.GET_AA_APPLICANTS_BY_APPID">
@@ -4244,6 +4271,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="GET_ALL_ROOMS_BY_ID" FunctionName="Gordon360.Store.GET_ALL_ROOMS_BY_ID" />
           <FunctionImportMapping FunctionImportName="GET_ALL_USERS_BY_ROOM_ID" FunctionName="Gordon360.Store.GET_ALL_USERS_BY_ROOM_ID" />
+          <FunctionImportMapping FunctionImportName="GET_BIRTH_DATE_BY_ID" FunctionName="Gordon360.Store.GET_BIRTH_DATE_BY_ID" />
           <FunctionImportMapping FunctionImportName="GET_HEALTH_CHECK_QUESTION" FunctionName="Gordon360.Store.GET_HEALTH_CHECK_QUESTION">
             <ResultMapping>
               <ComplexTypeMapping TypeName="Gordon360.GET_HEALTH_CHECK_QUESTION_Result">
@@ -4263,6 +4291,23 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="createdAt" ColumnName="createdAt" />
                 <ScalarProperty Name="lastupdated" ColumnName="lastupdated" />
                 <ScalarProperty Name="roomImage" ColumnName="roomImage" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GET_SINGLE_MESSAGE_BY_ID" FunctionName="Gordon360.Store.GET_SINGLE_MESSAGE_BY_ID">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Gordon360.GET_SINGLE_MESSAGE_BY_ID_Result">
+                <ScalarProperty Name="message_id" ColumnName="message_id" />
+                <ScalarProperty Name="text" ColumnName="text" />
+                <ScalarProperty Name="createdAt" ColumnName="createdAt" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="image" ColumnName="image" />
+                <ScalarProperty Name="video" ColumnName="video" />
+                <ScalarProperty Name="audio" ColumnName="audio" />
+                <ScalarProperty Name="system" ColumnName="system" />
+                <ScalarProperty Name="sent" ColumnName="sent" />
+                <ScalarProperty Name="received" ColumnName="received" />
+                <ScalarProperty Name="pending" ColumnName="pending" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>

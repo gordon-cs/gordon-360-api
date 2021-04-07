@@ -183,7 +183,7 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("CREATE_BOOKING", iDParameter, rIDEIDParameter, iSDRIVERParameter);
         }
     
-        public virtual ObjectResult<CREATE_MESSAGE_ROOM_Result> CREATE_MESSAGE_ROOM(string name, Nullable<bool> group, Nullable<System.DateTime> createdAt, Nullable<System.DateTime> lastUpdated, byte[] roomImage)
+        public virtual ObjectResult<CREATE_MESSAGE_ROOM_Result> CREATE_MESSAGE_ROOM(string name, Nullable<bool> group, byte[] roomImage)
         {
             var nameParameter = name != null ?
                 new ObjectParameter("name", name) :
@@ -193,19 +193,11 @@ namespace Gordon360.Models
                 new ObjectParameter("group", group) :
                 new ObjectParameter("group", typeof(bool));
     
-            var createdAtParameter = createdAt.HasValue ?
-                new ObjectParameter("createdAt", createdAt) :
-                new ObjectParameter("createdAt", typeof(System.DateTime));
-    
-            var lastUpdatedParameter = lastUpdated.HasValue ?
-                new ObjectParameter("lastUpdated", lastUpdated) :
-                new ObjectParameter("lastUpdated", typeof(System.DateTime));
-    
             var roomImageParameter = roomImage != null ?
                 new ObjectParameter("roomImage", roomImage) :
                 new ObjectParameter("roomImage", typeof(byte[]));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<CREATE_MESSAGE_ROOM_Result>("CREATE_MESSAGE_ROOM", nameParameter, groupParameter, createdAtParameter, lastUpdatedParameter, roomImageParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<CREATE_MESSAGE_ROOM_Result>("CREATE_MESSAGE_ROOM", nameParameter, groupParameter, roomImageParameter);
         }
     
         public virtual int CREATE_MYSCHEDULE(string eVENTID, string gORDONID, string lOCATION, string dESCRIPTION, string mON_CDE, string tUE_CDE, string wED_CDE, string tHU_CDE, string fRI_CDE, string sAT_CDE, string sUN_CDE, Nullable<int> iS_ALLDAY, Nullable<System.TimeSpan> bEGINTIME, Nullable<System.TimeSpan> eNDTIME)
@@ -529,9 +521,9 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GET_AA_APARTMENT_CHOICES_BY_APP_ID_Result>("GET_AA_APARTMENT_CHOICES_BY_APP_ID", aPPLICATION_IDParameter);
         }
     
-        public virtual int GET_AA_APARTMENTS()
+        public virtual ObjectResult<string> GET_AA_APARTMENT_HALLS()
         {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("GET_AA_APARTMENTS");
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("GET_AA_APARTMENT_HALLS");
         }
     
         public virtual ObjectResult<Nullable<int>> GET_AA_APPID_BY_NAME_AND_DATE(Nullable<System.DateTime> nOW, string eDITOR_ID)
@@ -657,6 +649,15 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("GET_ALL_USERS_BY_ROOM_ID", room_idParameter);
         }
     
+        public virtual ObjectResult<Nullable<System.DateTime>> GET_BIRTH_DATE_BY_ID(string iD)
+        {
+            var iDParameter = iD != null ?
+                new ObjectParameter("ID", iD) :
+                new ObjectParameter("ID", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<System.DateTime>>("GET_BIRTH_DATE_BY_ID", iDParameter);
+        }
+    
         public virtual ObjectResult<GET_HEALTH_CHECK_QUESTION_Result> GET_HEALTH_CHECK_QUESTION()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GET_HEALTH_CHECK_QUESTION_Result>("GET_HEALTH_CHECK_QUESTION");
@@ -674,6 +675,19 @@ namespace Gordon360.Models
                 new ObjectParameter("room_id", typeof(int));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GET_ROOM_BY_ID_Result>("GET_ROOM_BY_ID", room_idParameter);
+        }
+    
+        public virtual ObjectResult<GET_SINGLE_MESSAGE_BY_ID_Result> GET_SINGLE_MESSAGE_BY_ID(Nullable<int> room_id, string message_id)
+        {
+            var room_idParameter = room_id.HasValue ?
+                new ObjectParameter("room_id", room_id) :
+                new ObjectParameter("room_id", typeof(int));
+    
+            var message_idParameter = message_id != null ?
+                new ObjectParameter("message_id", message_id) :
+                new ObjectParameter("message_id", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GET_SINGLE_MESSAGE_BY_ID_Result>("GET_SINGLE_MESSAGE_BY_ID", room_idParameter, message_idParameter);
         }
     
         public virtual ObjectResult<GET_TIMESHEETS_CLOCK_IN_OUT_Result> GET_TIMESHEETS_CLOCK_IN_OUT(Nullable<int> iD_NUM)
