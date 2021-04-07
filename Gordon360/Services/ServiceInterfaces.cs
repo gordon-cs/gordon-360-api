@@ -63,7 +63,7 @@ namespace Gordon360.Services
 
     public interface IDirectMessageService
     {
-        CreateGroupViewModel CreateGroup(String name, bool group, DateTime lastUpdated, string image, List<String> usernames);
+        CreateGroupViewModel CreateGroup(String name, bool group, string image, List<String> usernames, SendTextViewModel initialMessage, string userId);
         bool SendMessage(SendTextViewModel textInfo, string user_id);
         bool StoreUserRooms(String userId, String roomId);
         bool StoreUserConnectionIds(String userId, String connectionId);
@@ -72,6 +72,7 @@ namespace Gordon360.Services
         IEnumerable<MessageViewModel> GetMessages(string roomId);
         IEnumerable<GroupViewModel> GetRooms(string userId);
         List<Object> GetRoomById(string userId);
+        MessageViewModel GetSingleMessage(string messageID, string roomID);
     }
 
     public interface IActivityService

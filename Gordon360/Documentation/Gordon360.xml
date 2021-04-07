@@ -151,6 +151,12 @@
             </summary>
             <returns>MessageViewModel</returns>
         </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetSingleMessage(Gordon360.Models.MessageSearchViewModel)">
+            <summary>
+             returns single message from a specified group and message id
+            </summary>
+            <returns>MessageViewModel</returns>
+        </member>
         <member name="M:Gordon360.ApiControllers.DirectMessageController.GetRooms">
             <summary>
              returns room ids associated with this user

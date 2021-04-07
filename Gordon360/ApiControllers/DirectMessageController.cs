@@ -12,6 +12,9 @@ using Gordon360.Models;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Services.ComplexQueries;
 using System.Linq;
+using Newtonsoft.Json;
+using System.Net.Http.Headers;
+using System.Text;
 
 namespace Gordon360.ApiControllers
 {
@@ -51,6 +54,25 @@ namespace Gordon360.ApiControllers
 
             DateTime currentTime = DateTime.Now;
             var result = _DirectMessageService.GetMessages(roomId);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        ///  returns single message from a specified group and message id
+        /// </summary>
+        /// <returns>MessageViewModel</returns>
+        [HttpPut]
+        [Route("singleMessage")]
+        public IHttpActionResult GetSingleMessage([FromBody] MessageSearchViewModel model)
+        {
+
+            var result = _DirectMessageService.GetSingleMessage(model.messageID, model.roomID);
 
             if (result == null)
             {
@@ -117,8 +139,11 @@ namespace Gordon360.ApiControllers
         [Route("")]
         public IHttpActionResult CreateGroup([FromBody] CreateGroupViewModel chatInfo)
         {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var userId = _accountService.GetAccountByUsername(username).GordonID;
 
-            var result = _DirectMessageService.CreateGroup(chatInfo.name, chatInfo.group, chatInfo.lastUpdated, chatInfo.image, chatInfo.usernames);
+            var result = _DirectMessageService.CreateGroup(chatInfo.name, chatInfo.group, chatInfo.image, chatInfo.usernames, chatInfo.message, userId);
 
             if (result == null)
             {
@@ -146,12 +171,40 @@ namespace Gordon360.ApiControllers
 
                 var result = _DirectMessageService.SendMessage(textInfo, user_id.ToString());
 
-                if (result == false)
+                var data = new NotificationDataViewModel();
+                data.messageID = textInfo.id;
+                data.roomID = textInfo.room_id;
+                
+                var connectionIDs = _DirectMessageService.GetUserConnectionIds(textInfo.users_ids);
+
+                if (result == false || connectionIDs == null)
                 {
                     return NotFound();
                 }
 
+                foreach (IEnumerable<ConnectionIdViewModel> connections in connectionIDs)
+                {
+                    foreach (ConnectionIdViewModel model in connections)
+                    {
+                        var pushNotification = new PushNotificationViewModel();
+                        pushNotification.body = textInfo.groupText;
+                        pushNotification.to = /*model.connection_id*/ "ExponentPushToken[uJBJ65P03tj39vXo-R9joJ]";
+                        pushNotification.data = data;
+                        pushNotification.title = textInfo.groupName;
 
+                        var myJsonObject = Newtonsoft.Json.JsonConvert.SerializeObject(pushNotification);
+
+                        HttpClient httpClient = new HttpClient();
+
+                        httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+
+                        var content = new StringContent(myJsonObject.ToString(), Encoding.UTF8, "application/json");
+                        var post = httpClient.PostAsync("https://exp.host/--/api/v2/push/send", content).Result;
+                        var postContent = Newtonsoft.Json.JsonConvert.DeserializeObject(post.Content.ToString());
+                    }
+                 }
+            
                 return Ok(result);
 
             }
