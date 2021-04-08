@@ -10,12 +10,13 @@
 namespace Gordon360.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class AA_ApartmentChoices
+    public partial class CREATE_MESSAGE_ROOM_Result
     {
-        public int AprtAppID { get; set; }
-        public int Ranking { get; set; }
-        public string BLDG_CDE { get; set; }
+        public int id { get; set; }
+        public string name { get; set; }
+        public System.DateTime createdAt { get; set; }
+        public System.DateTime lastUpdated { get; set; }
+        public byte[] image { get; set; }
     }
 }

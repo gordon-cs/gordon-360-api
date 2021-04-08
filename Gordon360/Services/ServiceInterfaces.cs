@@ -1,9 +1,9 @@
-﻿using System;
-using System.Xml.Linq;
-using System.Collections.Generic;
-using Gordon360.Models;
+﻿using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using static Gordon360.Controllers.Api.WellnessController;
+using System;
+using System.Collections.Generic;
+using System.Xml.Linq;
 
 // <summary>
 // Namespace with all the Service Interfaces that are to be implemented. I don't think making this interface is required, the services can work find on their own.
@@ -128,7 +128,7 @@ namespace Gordon360.Services
         IEnumerable<EmailViewModel> GetEmailsForActivityAdvisors(string activity_code, string session_code);
         IEnumerable<EmailViewModel> GetEmailsForActivity(string activity_code, string session_code);
         // Send emails
-        void SendEmails(string [] to_emails, string to_email, string subject, string email_content, string password);
+        void SendEmails(string[] to_emails, string to_email, string subject, string email_content, string password);
         void SendEmailToActivity(string activityCode, string sessionCode, string from_email, string subject, string email_content, string password);
     }
 
@@ -268,6 +268,20 @@ namespace Gordon360.Services
         StudentNews SubmitNews(StudentNews newsItem, string username, string id);
         StudentNews DeleteNews(int newsID);
         StudentNewsViewModel EditPosting(int newsID, StudentNews newsItem);
+    }
+
+    public interface IHousingService
+    {
+        bool CheckIfHousingAdmin(string userId);
+        bool AddHousingAdmin(string id);
+        bool RemoveHousingAdmin(string id);
+        AA_ApartmentHalls[] GetAllApartmentHalls();
+        int? GetApplicationID(string username, string sess_cde);
+        ApartmentApplicationViewModel GetApartmentApplication(int applicationID);
+        ApartmentApplicationViewModel[] GetAllApartmentApplication();
+        int SaveApplication(string username, string sess_cde, string editorUsername, ApartmentApplicantViewModel[] apartmentApplicants, ApartmentChoiceViewModel[] apartmentChoices);
+        int EditApplication(string username, string sess_cde, int applicationID, string newEditorUsername, ApartmentApplicantViewModel[] newApartmentApplicants, ApartmentChoiceViewModel[] newApartmentChoices);
+        bool ChangeApplicationEditor(string username, int applicationID, string newEditorUsername);
     }
 
 }

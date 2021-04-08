@@ -10,12 +10,13 @@
 namespace Gordon360.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class AA_ApartmentChoices
+    public partial class GET_AA_APPLICANTS_BY_APPID_Result
     {
         public int AprtAppID { get; set; }
-        public int Ranking { get; set; }
-        public string BLDG_CDE { get; set; }
+        public string ID_NUM { get; set; }
+        public string AprtProgram { get; set; }
+        public Nullable<bool> AprtProgramCredit { get; set; }
+        public string SESS_CDE { get; set; }
     }
 }
