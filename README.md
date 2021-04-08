@@ -669,9 +669,7 @@ What is it? Resource that represents residence hall information that would conce
 
 ##### GET
 
-`api/housing/apartmentInfo` Calls the CCT 'GET_STU__HOUSING_INFO' stored procedure, which currently selects ID, Title, Firstname, Lastname, OnOffCampus, BuildingDescription, OnCampusRoom, Gender, and Email from CCT.dbo.Student for Josua Rogers.
-
-`api/housing/admin` Gets the ID of the user if they are in the admin whitelist table and gets Not Found otherwise
+`api/housing/admin` Gets an Http OK if the current user is in the admin whitelist table and gets Not Found otherwise
 
 ### Memberships
 
