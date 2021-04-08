@@ -671,6 +671,16 @@ What is it? Resource that represents residence hall information that would conce
 
 `api/housing/admin` Gets an Http OK if the current user is in the admin whitelist table and gets Not Found otherwise
 
+`api/housing/halls/apartments` Gets the list of apartment-style halls that are available for student housing and gets Not Found if it cannot be found
+
+`api/housing/apartment/` Gets the application ID matching the current user if that user is on an application saved for the current semester, otherwise returns a Not Found code
+
+`api/housing/apartment/${username}/` Gets the application ID matching the given username if that user is on an application saved for the current semester, otherwise returns a Not Found code
+
+`api/housing/apartment/applications/{applicationID}/` Gets the apartment application info matching the given application ID if it is found in the database, otherwise returns a Not Found code
+
+`api/housing/admin/apartment/applications` Gets the apartment application info for all applications submitted during the current semester, otherwise returns a Not Found code
+
 ### Memberships
 
 What is it? Resource that represents the affiliation between a student and a club.
