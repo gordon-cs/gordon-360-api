@@ -6,5 +6,17 @@
         public int ApplicationID { get; set; }
         public int HallRank { get; set; }
         public string HallName { get; set; }
+
+        public static implicit operator ApartmentChoiceViewModel(GET_AA_APARTMENT_CHOICES_BY_APP_ID_Result apartmentChoiceDBModel)
+        {
+            ApartmentChoiceViewModel vm = new ApartmentChoiceViewModel
+            {
+                ApplicationID = apartmentChoiceDBModel.AprtAppID,
+                HallRank = apartmentChoiceDBModel.Ranking,
+                HallName = apartmentChoiceDBModel.BLDG_CDE, //HallName = dbApartmentChoice.HallName, // Code for after we remade the AA_ApartmentChoices table
+            };
+
+            return vm;
+        }
     }
 }
