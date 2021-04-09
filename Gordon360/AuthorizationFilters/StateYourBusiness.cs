@@ -192,6 +192,11 @@ namespace Gordon360.AuthorizationFilters
 
                         return false;
                     }
+                case Resource.HOUSING:
+                    {
+                        // The members of the apartment application can only read their application
+
+                    }
                 case Resource.NEWS:
                     return true;
                 default: return false;
@@ -352,6 +357,7 @@ namespace Gordon360.AuthorizationFilters
                     return false;
                 case Resource.HOUSING:
                     {
+                        // Only the housing admin can read all of the received applications
                         var housingService = new HousingService(new UnitOfWork());
                         if (housingService.CheckIfHousingAdmin(user_id))
                         {
