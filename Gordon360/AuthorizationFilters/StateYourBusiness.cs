@@ -350,6 +350,15 @@ namespace Gordon360.AuthorizationFilters
                     return false;
                 case Resource.ADMIN:
                     return false;
+                case Resource.HOUSING:
+                    {
+                        var housingService = new HousingService(new UnitOfWork());
+                        if (housingService.CheckIfHousingAdmin(user_id))
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
                 case Resource.NEWS:
                     return true;
                 default: return false;
