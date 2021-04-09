@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
+using Gordon360.Static.Helpers;
 
 namespace Gordon360.AuthorizationFilters
 {
@@ -115,7 +116,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.MEMBERSHIP_REQUEST:
                     {
                         var mrID = (int)context.ActionArguments["id"];
-                        // Get the veiw model from the repository
+                        // Get the view model from the repository
                         var mrService = new MembershipRequestService(new UnitOfWork());
                         var mrToConsider = mrService.Get(mrID);
                         // Populate the membershipRequest manually. Omit fields I don't need.
@@ -195,7 +196,14 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.HOUSING:
                     {
                         // The members of the apartment application can only read their application
-
+                        var housingService = new HousingService(new UnitOfWork());
+                        var sess_cde = Helpers.GetCurrentSession();
+                        int? applicationID = housingService.GetApplicationID(user_id, sess_cde);
+                        if (!(applicationID == null) || idResult.Any())
+                        {
+                            return true;
+                        }
+                        return false;
                     }
                 case Resource.NEWS:
                     return true;

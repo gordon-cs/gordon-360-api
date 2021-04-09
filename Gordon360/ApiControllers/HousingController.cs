@@ -280,7 +280,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>Object of type ApartmentAppViewModel</returns>
         [HttpGet]
         [Route("apartment/applications/{applicationID}")]
-        //[StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING)] // we need to actually add HOUSING to stateYourBusiness if we do this
         public IHttpActionResult GetApartmentApplication(int applicationID)
         {
             //get token data from context, username is the username of current logged in person
