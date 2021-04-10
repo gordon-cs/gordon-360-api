@@ -154,7 +154,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>Returns the application ID number if all the queries succeeded</returns>
         [HttpPost]
         [Route("apartment/applications")]
-        //[StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
+        //[StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
         public IHttpActionResult SaveApplication([FromBody] ApartmentApplicationViewModel applicationDetails)
         {
             // Verify Input
@@ -200,6 +200,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>Returns the application ID number if all the queries succeeded</returns>
         [HttpPut]
         [Route("apartment/applications/{applicationID}")]
+        //[StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)]
         public IHttpActionResult EditApplication(int applicationID, [FromBody] ApartmentApplicationViewModel applicationDetails)
         {
             // Verify Input

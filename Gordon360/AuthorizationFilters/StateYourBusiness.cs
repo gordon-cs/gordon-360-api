@@ -2,13 +2,13 @@
 using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Static.Names;
+using Gordon360.Static.Helpers;
 using System;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
-using Gordon360.Static.Helpers;
 
 namespace Gordon360.AuthorizationFilters
 {
@@ -443,6 +443,17 @@ namespace Gordon360.AuthorizationFilters
                         return true;
                     else
                         return false; // Only super admin can add Advisors through this API
+                case Resource.HOUSING:
+                    {
+                        // The user must be a student and not a member of an existing application
+                        if (user_position == Position.STUDENT)
+                        {
+                            return true;
+                        
+                        return false;
+                        var housingService = housingService(new UnitOfWork());
+
+                    }
                 case Resource.ADMIN:
                     return false;
                 case Resource.ERROR_LOG:
@@ -526,6 +537,12 @@ namespace Gordon360.AuthorizationFilters
                     }
                 case Resource.STUDENT:
                     return false; // No one should be able to update a student through this API
+                case Resource.HOUSING:
+                    {
+                        // Only an editor can save and update the application
+                        var housingService = new HousingService(new UnitOfWork());
+
+                    }
                 case Resource.ADVISOR:
                     {
                         // User is admin
