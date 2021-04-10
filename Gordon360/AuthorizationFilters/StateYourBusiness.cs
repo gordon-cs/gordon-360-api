@@ -544,8 +544,19 @@ namespace Gordon360.AuthorizationFilters
                     return false; // No one should be able to update a student through this API
                 case Resource.HOUSING:
                     {
-                        // Only an editor can save and update the application
-                        var housingService = new HousingService(new UnitOfWork());
+                        // The user must be a student and an editor to update the application
+                        if (user_position == Position.STUDENT)
+                        {
+                            var housingService = housingService(new UnitOfWork());
+                            var sess_cde = Helpers.GetCurrentSession();
+                            int? applicationID = housingService.GetApplicationID(user_id, sess_cde);
+                            if (!(applicationID == null) || idResult.Any())
+                            {
+                                return true;
+                            }
+                            return false;
+                        }
+                        return false;
 
                     }
                 case Resource.ADVISOR:
