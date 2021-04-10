@@ -448,11 +448,16 @@ namespace Gordon360.AuthorizationFilters
                         // The user must be a student and not a member of an existing application
                         if (user_position == Position.STUDENT)
                         {
-                            return true;
-                        
+                            var housingService = housingService(new UnitOfWork());
+                            var sess_cde = Helpers.GetCurrentSession();
+                            int? applicationID = housingService.GetApplicationID(user_id, sess_cde);
+                            if (applicationID == null || !idResult.Any())
+                            {
+                                return true;
+                            }
+                            return false;
+                        }
                         return false;
-                        var housingService = housingService(new UnitOfWork());
-
                     }
                 case Resource.ADMIN:
                     return false;
