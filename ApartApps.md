@@ -76,7 +76,7 @@ All the tables were created from scratch by our team.
 |222222222 |
 |333333333 |
 
-AA_ApartmentApplication
+##### AA_ApartmentApplications
 - AprtAppID - int, not nullable
 - DateSubmitted - datetime, nullable
 - DateModified - datetime, not nullable
