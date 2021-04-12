@@ -1941,6 +1941,16 @@
             null if the user is not on an application for that session 
             </returns>
         </member>
+        <member name="M:Gordon360.Services.HousingService.GetEditorID(System.Nullable{System.Int32})">
+            <summary>
+            Calls a stored procedure that tries to get the editor ID of a given application ID
+            </summary>
+            <param name="applicationID"> The application ID for which the editor ID would be </param>
+            <returns>
+            The id of the editor or
+            null if the user is a member but not an editor of a given application
+            </returns>
+        </member>
         <member name="M:Gordon360.Services.HousingService.SaveApplication(System.String,System.String,System.String,Gordon360.Models.ViewModels.ApartmentApplicantViewModel[],Gordon360.Models.ViewModels.ApartmentChoiceViewModel[])">
              <summary>
              Saves student housing info
