@@ -197,9 +197,9 @@ namespace Gordon360.AuthorizationFilters
                     {
                         // The members of the apartment application can only read their application
                         var housingService = new HousingService(new UnitOfWork());
-                        var sess_cde = Helpers.GetCurrentSession();
+                        var sess_cde = Helpers.GetCurrentSession().ToString();
                         int? applicationID = housingService.GetApplicationID(user_id, sess_cde);
-                        if (!(applicationID == null) || idResult.Any())
+                        if (!(applicationID == null))
                         {
                             return true;
                         }
@@ -448,10 +448,10 @@ namespace Gordon360.AuthorizationFilters
                         // The user must be a student and not a member of an existing application
                         if (user_position == Position.STUDENT)
                         {
-                            var housingService = housingService(new UnitOfWork());
-                            var sess_cde = Helpers.GetCurrentSession();
+                            var housingService = new HousingService(new UnitOfWork());
+                            var sess_cde = Helpers.GetCurrentSession().ToString();
                             int? applicationID = housingService.GetApplicationID(user_id, sess_cde);
-                            if (applicationID == null || !idResult.Any())
+                            if (applicationID == null)
                             {
                                 return true;
                             }
@@ -547,10 +547,10 @@ namespace Gordon360.AuthorizationFilters
                         // The user must be a student and an editor to update the application
                         if (user_position == Position.STUDENT)
                         {
-                            var housingService = housingService(new UnitOfWork());
-                            var sess_cde = Helpers.GetCurrentSession();
+                            var housingService = new HousingService(new UnitOfWork());
+                            var sess_cde = Helpers.GetCurrentSession().ToString();
                             int? applicationID = housingService.GetApplicationID(user_id, sess_cde);
-                            if (!(applicationID == null) || idResult.Any())
+                            if (!(applicationID == null))
                             {
                                 return true;
                             }
