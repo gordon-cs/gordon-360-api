@@ -68,7 +68,7 @@ Although, a faster method for simply viewing the tables is to open `Gordon360/Mo
 
 All the tables were created from scratch by our team.
 
-AA_Admin
+##### AA_Admins
 - AdminID - varchar(10)
 
 | AdminID  |
