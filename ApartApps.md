@@ -67,7 +67,6 @@ Although, a faster method for simply viewing the tables is to open `Gordon360/Mo
 #### Example:
 
 AA_Admin
-Attribute(s):
 - AdminID - varchar(10)
 
 | AdminID  |
@@ -76,7 +75,6 @@ Attribute(s):
 |333333333 |
 
 AA_ApartmentApplication
-Attribute(s):
 - AprtAppID - int, not nullable
 - DateSubmitted - datetime, nullable
 - DateModified - datetime, not nullable
@@ -88,7 +86,6 @@ Attribute(s):
 | 2         | 2021-01-01 12:12:12.111 | 2021-01-01 12:12:12.111 | 111111111 |
 
 AA_ApartmentChoices
-Attribute(s):
 - AprtAppID - int, not nullable
 - Ranking - int, not nullable
 - BLDG_CDE - char(5), not nullable
@@ -101,7 +98,6 @@ Attribute(s):
 | 2         | 2       | BRO      |
 
 AA_ApartmentHalls
-Attribute(s):
 - Name - varchar(15), not nullable
 
 | Name     |
@@ -114,7 +110,6 @@ Attribute(s):
 | Tavilla  |
 
 AA_Applicants
-Attribute(s):
 - AprtAppID - int, not nullable
 - ID_NUM - varchar(10), not nullable
 - AprtProgram - varchar(50), nullable
