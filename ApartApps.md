@@ -94,10 +94,10 @@ All the tables were created from scratch by our team.
 
 | AprtAppID | Ranking | HallName |
 |-----------|---------|----------|
-| 1         | 1       | Tavilla      |
-| 1         | 2       | Bromley      |
-| 2         | 1       | Tavilla      |
-| 2         | 2       | Bromley      |
+| 1         | 1       | Tavilla  |
+| 1         | 2       | Bromley  |
+| 2         | 1       | Tavilla  |
+| 2         | 2       | Bromley  |
 
 ##### AA_ApartmentHalls
 - Name - varchar(15), not nullable
@@ -112,16 +112,16 @@ All the tables were created from scratch by our team.
 | Tavilla  |
 
 ##### AA_Applicants
-- AprtAppID - int, not nullable
-- ID_NUM - varchar(10), not nullable
+- AprtAppID - PK, int, not nullable
+- Username - PK, varchar(50), not nullable
 - AprtProgram - varchar(50), nullable
 - AprtProgramCredit - bit, nullable
 - SESS_CDE - char(8), not nullable
 
-| AprtAppID | ID_NUM    | AprtProgram | AprtProgramCredit | SESS_CDE |
-|-----------|-----------|-------------|-------------------|----------|
-| 1         | 123456789 |             | 0                 | 202101   |
-| 2         | 111111111 |             | 0                 | 202101   |
+| AprtAppID | Username           | AprtProgram | AprtProgramCredit | SESS_CDE |
+|-----------|--------------------|-------------|-------------------|----------|
+| 1         | firstname.lastname |             | 0                 | 202101   |
+| 2         | anthony.aardvark   |             | 0                 | 202101   |
 
 
 ### Stored Procedures
