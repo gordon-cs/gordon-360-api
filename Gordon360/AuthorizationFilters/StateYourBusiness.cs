@@ -2,7 +2,7 @@
 using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Static.Names;
-using Gordon360.Static.Helpers;
+using Gordon360.Static.Methods;
 using System;
 using System.Linq;
 using System.Net.Http;
