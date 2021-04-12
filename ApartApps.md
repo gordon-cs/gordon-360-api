@@ -87,7 +87,7 @@ All the tables were created from scratch by our team.
 | 1         | NULL                    | 2021-01-01 12:12:12.111 | firstname.lastname |
 | 2         | 2021-01-01 12:12:12.111 | 2021-01-01 12:12:12.111 | anthony.aardvark   |
 
-AA_ApartmentChoices
+##### AA_ApartmentChoices
 - AprtAppID - int, not nullable
 - Ranking - int, not nullable
 - BLDG_CDE - char(5), not nullable
