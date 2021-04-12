@@ -63,6 +63,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpPost]
         [Route("admin/{id}")]
+        // [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING)] Need to implement
         public IHttpActionResult AddHousingAdmin(string id)
         {
             bool result = _housingService.AddHousingAdmin(id);
@@ -76,6 +77,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpDelete]
         [Route("admin/{id}")]
+        // [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING)] Need to implement
         public IHttpActionResult RemoveHousingAdmin(string id)
         {
             bool result = _housingService.RemoveHousingAdmin(id);
@@ -320,7 +322,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>Object of type ApartmentAppViewModel</returns>
         [HttpGet]
         [Route("admin/apartment/applications/")]
-        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING)]
+        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING)]
         public IHttpActionResult GetAllApartmentApplication()
         {
             //get token data from context, username is the username of current logged in person
