@@ -80,12 +80,12 @@ All the tables were created from scratch by our team.
 - AprtAppID - int, not nullable
 - DateSubmitted - datetime, nullable
 - DateModified - datetime, not nullable
-- EditorID - varchar(10), not nullable
+- EditorUsername - varchar(50), not nullable
 
-| AprtAppID | DateSubmitted           | DateModified            | EditorID  |
-|-----------|-------------------------|-------------------------|-----------|
-| 1         | NULL                    | 2021-01-01 12:12:12.111 | 123456789 |
-| 2         | 2021-01-01 12:12:12.111 | 2021-01-01 12:12:12.111 | 111111111 |
+| AprtAppID | DateSubmitted           | DateModified            | EditorUsername     |
+|-----------|-------------------------|-------------------------|--------------------|
+| 1         | NULL                    | 2021-01-01 12:12:12.111 | firstname.lastname |
+| 2         | 2021-01-01 12:12:12.111 | 2021-01-01 12:12:12.111 | anthony.aardvark   |
 
 AA_ApartmentChoices
 - AprtAppID - int, not nullable
