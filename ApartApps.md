@@ -64,6 +64,68 @@ Data specifically intended for the apartment application is stored in the CCT da
 The details of these tables can be viewed and edited in SQL Server Management Studio with the right permissions. 
 Although, a faster method for simply viewing the tables is to open `Gordon360/Models/CCT_DB_Models.edmx` in Visual Studio 2017 and pan the screen around until the box for the desired table is in view. In the edmx, the type and nullability of each attribute of a table can also be viewed by clicking a column name and looking at the Properties table in the bottom right corner of Visual Studio 2017.
 
+#### Example:
+
+AA_Admin
+Attribute(s):
+- AdminID - varchar(10)
+
+| AdminID  |
+|----------|
+|222222222 |
+|333333333 |
+
+AA_ApartmentApplication
+Attribute(s):
+- AprtAppID - int, not nullable
+- DateSubmitted - datetime, nullable
+- DateModified - datetime, not nullable
+- EditorID - varchar(10), not nullable
+
+| AprtAppID | DateSubmitted           | DateModified            | EditorID  |
+|-----------|-------------------------|-------------------------|-----------|
+| 1         | NULL                    | 2021-01-01 12:12:12.111 | 123456789 |
+| 2         | 2021-01-01 12:12:12.111 | 2021-01-01 12:12:12.111 | 111111111 |
+
+AA_ApartmentChoices
+Attribute(s):
+- AprtAppID - int, not nullable
+- Ranking - int, not nullable
+- BLDG_CDE - char(5), not nullable
+
+| AprtAppID | Ranking | BLDG_CDE |
+|-----------|---------|----------|
+| 1         | 1       | TAV      |
+| 1         | 2       | BRO      |
+| 2         | 1       | TAV      |
+| 2         | 2       | BRO      |
+
+AA_ApartmentHalls
+Attribute(s):
+- Name - varchar(15), not nullable
+
+| Name     |
+|----------|
+| Bromley  |
+| Conrad   |
+| Hilton   |
+| MacInnis |
+| Rider    |
+| Tavilla  |
+
+AA_Applicants
+Attribute(s):
+- AprtAppID - int, not nullable
+- ID_NUM - varchar(10), not nullable
+- AprtProgram - varchar(50), nullable
+- AprtProgramCredit - bit, nullable
+- SESS_CDE - char(8), not nullable
+
+| AprtAppID | ID_NUM    | AprtProgram | AprtProgramCredit | SESS_CDE |
+|-----------|-----------|-------------|-------------------|----------|
+| 1         | 123456789 |             | 0                 | 202101   |
+| 2         | 111111111 |             | 0                 | 202101   |
+
 
 ### Stored Procedures
 
