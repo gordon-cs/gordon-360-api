@@ -90,7 +90,7 @@ All the tables were created from scratch by our team.
 ##### AA_ApartmentChoices
 - AprtAppID - int, not nullable
 - Ranking - int, not nullable
-- BLDG_CDE - char(5), not nullable
+- HallName - varchar(15), not nullable
 
 | AprtAppID | Ranking | BLDG_CDE |
 |-----------|---------|----------|
