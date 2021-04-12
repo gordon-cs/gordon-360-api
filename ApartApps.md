@@ -92,12 +92,12 @@ All the tables were created from scratch by our team.
 - Ranking - int, not nullable
 - HallName - varchar(15), not nullable
 
-| AprtAppID | Ranking | BLDG_CDE |
+| AprtAppID | Ranking | HallName |
 |-----------|---------|----------|
-| 1         | 1       | TAV      |
-| 1         | 2       | BRO      |
-| 2         | 1       | TAV      |
-| 2         | 2       | BRO      |
+| 1         | 1       | Tavilla      |
+| 1         | 2       | Bromley      |
+| 2         | 1       | Tavilla      |
+| 2         | 2       | Bromley      |
 
 ##### AA_ApartmentHalls
 - Name - varchar(15), not nullable
