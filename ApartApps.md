@@ -99,7 +99,7 @@ All the tables were created from scratch by our team.
 | 2         | 1       | TAV      |
 | 2         | 2       | BRO      |
 
-AA_ApartmentHalls
+##### AA_ApartmentHalls
 - Name - varchar(15), not nullable
 
 | Name     |
@@ -111,7 +111,7 @@ AA_ApartmentHalls
 | Rider    |
 | Tavilla  |
 
-AA_Applicants
+##### AA_Applicants
 - AprtAppID - int, not nullable
 - ID_NUM - varchar(10), not nullable
 - AprtProgram - varchar(50), nullable
