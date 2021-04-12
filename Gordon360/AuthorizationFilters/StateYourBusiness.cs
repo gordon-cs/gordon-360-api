@@ -199,7 +199,7 @@ namespace Gordon360.AuthorizationFilters
                         var housingService = new HousingService(new UnitOfWork());
                         var sess_cde = Helpers.GetCurrentSession().ToString();
                         int? applicationID = housingService.GetApplicationID(user_id, sess_cde);
-                        if (!(applicationID == null))
+                        if (applicationID != null)
                         {
                             return true;
                         }
@@ -550,9 +550,12 @@ namespace Gordon360.AuthorizationFilters
                             var housingService = new HousingService(new UnitOfWork());
                             var sess_cde = Helpers.GetCurrentSession().ToString();
                             int? applicationID = housingService.GetApplicationID(user_id, sess_cde);
-                            if (!(applicationID == null))
+                            if (applicationID != null)
                             {
-                                return true;
+                                var editorID = housingService.GetEditorID(applicationID);
+                                var is_editor = editorID == user_id;
+                                if (is_editor)
+                                    return true;
                             }
                             return false;
                         }
