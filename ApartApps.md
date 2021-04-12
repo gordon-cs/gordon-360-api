@@ -64,7 +64,9 @@ Data specifically intended for the apartment application is stored in the CCT da
 The details of these tables can be viewed and edited in SQL Server Management Studio with the right permissions. 
 Although, a faster method for simply viewing the tables is to open `Gordon360/Models/CCT_DB_Models.edmx` in Visual Studio 2017 and pan the screen around until the box for the desired table is in view. In the edmx, the type and nullability of each attribute of a table can also be viewed by clicking a column name and looking at the Properties table in the bottom right corner of Visual Studio 2017.
 
-#### Example:
+#### CCT Tables
+
+All the tables were created from scratch by our team.
 
 AA_Admin
 - AdminID - varchar(10)
