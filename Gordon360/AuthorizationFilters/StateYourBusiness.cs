@@ -197,13 +197,20 @@ namespace Gordon360.AuthorizationFilters
                     {
                         // The members of the apartment application can only read their application
                         var housingService = new HousingService(new UnitOfWork());
-                        var sess_cde = Helpers.GetCurrentSession().ToString();
-                        int? applicationID = housingService.GetApplicationID(user_id, sess_cde);
-                        if (applicationID != null)
+                        if (housingService.CheckIfHousingAdmin(user_id))
                         {
                             return true;
                         }
-                        return false;
+                        else
+                        {
+                            var sess_cde = Helpers.GetCurrentSession().ToString();
+                            int? applicationID = housingService.GetApplicationID(user_id, sess_cde);
+                            if (applicationID != null)
+                            {
+                                return true;
+                            }
+                            return false;
+                        }
                     }
                 case Resource.NEWS:
                     return true;
@@ -544,20 +551,16 @@ namespace Gordon360.AuthorizationFilters
                     return false; // No one should be able to update a student through this API
                 case Resource.HOUSING:
                     {
-                        // The user must be a student and an editor to update the application
-                        if (user_position == Position.STUDENT)
+                        // The user must be on an application and be an editor to update the application
+                        var housingService = new HousingService(new UnitOfWork());
+                        var sess_cde = Helpers.GetCurrentSession().ToString();
+                        int? applicationID = housingService.GetApplicationID(user_id, sess_cde);
+                        if (applicationID != null)
                         {
-                            var housingService = new HousingService(new UnitOfWork());
-                            var sess_cde = Helpers.GetCurrentSession().ToString();
-                            int? applicationID = housingService.GetApplicationID(user_id, sess_cde);
-                            if (applicationID != null)
-                            {
-                                var editorID = housingService.GetEditorID(applicationID);
-                                var is_editor = editorID == user_id;
-                                if (is_editor)
-                                    return true;
-                            }
-                            return false;
+                            var editorID = housingService.GetEditorID(applicationID);
+                            var is_editor = editorID == user_id;
+                            if (is_editor)
+                                return true;
                         }
                         return false;
 
