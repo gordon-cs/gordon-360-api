@@ -145,17 +145,17 @@ namespace Gordon360.Services
         /// </returns>
         public string GetEditorID(int? applicationID)
         {
-            IEnumerable<ApartmentApplicationViewModel> appResult = null;
+            IEnumerable<string> editorResult= null;
 
             SqlParameter applicationIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
 
-            appResult = RawSqlQuery<ApartmentApplicationViewModel>.query("GET_AA_EDITOR_BY_APPID, @APPLICATION_ID", applicationIDParam); // run stored procedure
-            if (appResult == null || !appResult.Any())
+            editorResult = RawSqlQuery<string>.query("GET_AA_EDITOR_BY_APPID, @APPLICATION_ID", applicationIDParam); // run stored procedure
+            if (editorResult == null || !editorResult.Any())
             {
                 return null;
             }
 
-            string result = appResult.FirstOrDefault().EditorUsername;
+            string result = editorResult.FirstOrDefault();
 
             return result;
         }
