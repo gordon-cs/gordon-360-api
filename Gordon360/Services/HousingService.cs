@@ -150,7 +150,7 @@ namespace Gordon360.Services
             SqlParameter applicationIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
 
             editorResult = RawSqlQuery<string>.query("GET_AA_EDITOR_BY_APPID, @APPLICATION_ID", applicationIDParam); // run stored procedure
-            if (appResult == null || !appResult.Any())
+            if (editorResult == null || !editorResult.Any())
             {
                 return null;
             }
