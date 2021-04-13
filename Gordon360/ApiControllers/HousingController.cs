@@ -1,4 +1,4 @@
-﻿using Gordon360.Exceptions.CustomExceptions;
+using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
@@ -323,7 +323,7 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>Get apartment application info for all applications if the current user is a housing admin</summary>
-        /// <returns>Object of type ApartmentAppViewModel</returns>
+        /// <returns>Object of type ApartmentApplicationViewModel</returns>
         [HttpGet]
         [Route("admin/apartment/applications/")]
         //[StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this

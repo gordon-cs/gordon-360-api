@@ -6,7 +6,7 @@ namespace Gordon360.Models.ViewModels
     public class ApartmentApplicantViewModel
     {
         public int ApplicationID { get; set; }
-        public StudentProfileViewModel Profile { get; set; }
+        public StudentProfileViewModel Profile { get; set; } // We need a way to make this StudentProfileViewModel if the is authorized to view this user profile, otherwise it must be PublicStudentProfileViewModel
         private string _studentID;
         public string StudentID
         {

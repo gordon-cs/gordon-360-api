@@ -587,6 +587,8 @@ namespace Gordon360.Services
             return true;
         }
 
+        /// <param name="applicationID">application ID number of the apartment application</param>
+        /// <returns>Object of type ApartmentApplicationViewModel</returns>
         public ApartmentApplicationViewModel GetApartmentApplication(int applicationID)
         {
             SqlParameter appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
@@ -604,13 +606,38 @@ namespace Gordon360.Services
 
             GET_AA_APPLICATIONS_BY_ID_Result applicationDBModel = applicationResult.First(x => x.AprtAppID == applicationID);
 
-            Student editorStudent = Data.StudentData.First(x => x.ID.ToLower() == applicationDBModel.EditorID.ToLower());
+            StudentProfileViewModel editorStudent = Data.StudentData.First(x => x.ID.ToLower() == applicationDBModel.EditorID.ToLower());
+
             if (editorStudent == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The student information about the editor of this application could not be found." };
             }
-            else if (false)
-            { }
+
+            //object editorStudent = null;
+            //
+            //else if (username == applicationDBModel.EditorUsername)
+            //{
+            //    editorStudent = _editorStudent;
+            //}
+            //else
+            //{
+            //    //security control depends on viewer type. apply different views to different viewers.
+            //    switch (viewerType)
+            //    {
+            //        case Position.SUPERADMIN:
+            //            editorStudent = _editorStudent;
+            //            break;
+            //        case Position.POLICE:
+            //            editorStudent = _editorStudent;
+            //            break;
+            //        case Position.STUDENT:
+            //            editorStudent = (_editorStudent == null) ? null : (PublicStudentProfileViewModel)_editorStudent;         //implicit conversion
+            //            break;
+            //        case Position.FACSTAFF:
+            //            editorStudent = _editorStudent;
+            //            break;
+            //    }
+            //}
 
             // Assign the values from the database to the corresponding properties
             ApartmentApplicationViewModel apartmentApplicationModel = new ApartmentApplicationViewModel
@@ -633,12 +660,40 @@ namespace Gordon360.Services
                 List<ApartmentApplicantViewModel> applicantsList = new List<ApartmentApplicantViewModel>();
                 foreach (GET_AA_APPLICANTS_BY_APPID_Result applicantDBModel in applicantsResult)
                 {
-                    // The following commented out code is meant 
-                    //StudentProfileViewModel student = _profileService.GetStudentProfileByUsername(applicantDBModel.Username);
+                    // search username in cached data
                     StudentProfileViewModel student = Data.StudentData.FirstOrDefault(x => x.ID.ToLower() == applicantDBModel.ID_NUM.ToLower());
+                    // The following commented out code is meant to be used once the database tables have been remade to use Username instead of ID_Num
+                    //StudentProfileViewModel _student = _profileService.GetStudentProfileByUsername(applicantDBModel.Username);
+
+                    // If the student information is found, create a new ApplicationViewModel and fill in its properties
                     if (student != null)
                     {
-                        // If the student information is found, create a new ApplicationViewModel and fill in its properties
+                        //object student = null;
+
+                        //if (username == applicantDBModel.Username)
+                        //{
+                        //    student = _student;
+                        //}
+                        //else
+                        //{
+                        //    //security control depends on viewer type. apply different views to different viewers.
+                        //    switch (viewerType)
+                        //    {
+                        //        case Position.SUPERADMIN:
+                        //            student = _student;
+                        //            break;
+                        //        case Position.POLICE:
+                        //            student = _student;
+                        //            break;
+                        //        case Position.STUDENT:
+                        //            student = (_student == null) ? null : (PublicStudentProfileViewModel)_student;         //implicit conversion
+                        //            break;
+                        //        case Position.FACSTAFF:
+                        //            student = _student;
+                        //            break;
+                        //    }
+                        //}
+
                         ApartmentApplicantViewModel applicantModel = new ApartmentApplicantViewModel
                         {
                             ApplicationID = applicationID,
@@ -729,6 +784,7 @@ namespace Gordon360.Services
             return apartmentApplicationModel;
         }
 
+        /// <returns>Array of ApartmentApplicationViewModel Objects</returns>
         public ApartmentApplicationViewModel[] GetAllApartmentApplication()
         {
             IEnumerable<ApartmentAppIDViewModel> appIDsResult = null;
