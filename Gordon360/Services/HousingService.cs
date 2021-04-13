@@ -155,7 +155,7 @@ namespace Gordon360.Services
                 return null;
             }
 
-            string result = appResult.FirstOrDefault().EditorUsername;
+            string result = editorResult.FirstOrDefault();
 
             return result;
         }
