@@ -453,9 +453,13 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.HOUSING:
                     {
                         // The user must be a student and not a member of an existing application
-                        if (user_position == Position.STUDENT)
+                        var housingService = new HousingService(new UnitOfWork());
+                        if (user_position == Position.SUPERADMIN || (housingService.CheckIfHousingAdmin(user_id)))
                         {
-                            var housingService = new HousingService(new UnitOfWork());
+                            return true;
+                        }
+                        else if (user_position == Position.STUDENT)
+                        {
                             var sess_cde = Helpers.GetCurrentSession().ToString();
                             int? applicationID = housingService.GetApplicationID(user_id, sess_cde);
                             if (applicationID == null)
@@ -563,7 +567,6 @@ namespace Gordon360.AuthorizationFilters
                                 return true;
                         }
                         return false;
-
                     }
                 case Resource.ADVISOR:
                     {
@@ -708,6 +711,16 @@ namespace Gordon360.AuthorizationFilters
                     return false;
                 case Resource.ADMIN:
                     return false;
+                case Resource.HOUSING:
+                    {
+                        // Only the superadmins and the housing admins can delete members from the whitelist
+                        var housingService = new HousingService(new UnitOfWork());
+                        if (user_position == Position.SUPERADMIN || (housingService.CheckIfHousingAdmin(user_id)))
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
                 case Resource.NEWS:
                     {
                         var newsID = context.ActionArguments["newsID"];

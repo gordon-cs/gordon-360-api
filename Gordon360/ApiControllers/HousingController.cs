@@ -63,7 +63,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpPost]
         [Route("admin/{id}")]
-        // [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING)] Need to implement
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING)]
         public IHttpActionResult AddHousingAdmin(string id)
         {
             bool result = _housingService.AddHousingAdmin(id);
@@ -77,7 +77,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpDelete]
         [Route("admin/{id}")]
-        // [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING)] Need to implement
+        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING)]
         public IHttpActionResult RemoveHousingAdmin(string id)
         {
             bool result = _housingService.RemoveHousingAdmin(id);
