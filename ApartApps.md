@@ -64,6 +64,65 @@ Data specifically intended for the apartment application is stored in the CCT da
 The details of these tables can be viewed and edited in SQL Server Management Studio with the right permissions. 
 Although, a faster method for simply viewing the tables is to open `Gordon360/Models/CCT_DB_Models.edmx` in Visual Studio 2017 and pan the screen around until the box for the desired table is in view. In the edmx, the type and nullability of each attribute of a table can also be viewed by clicking a column name and looking at the Properties table in the bottom right corner of Visual Studio 2017.
 
+#### CCT Tables
+
+All the tables were created from scratch by our team.
+
+##### AA_Admins
+- AdminID - PK, varchar(10), not nullable
+
+| AdminID  |
+|----------|
+|222222222 |
+|333333333 |
+
+##### AA_ApartmentApplications
+- AprtAppID - PK, int, not nullable
+- DateSubmitted - datetime, nullable
+- DateModified - datetime, not nullable
+- EditorUsername - varchar(50), not nullable
+
+| AprtAppID | DateSubmitted           | DateModified            | EditorUsername     |
+|-----------|-------------------------|-------------------------|--------------------|
+| 1         | NULL                    | 2021-01-01 12:12:12.111 | firstname.lastname |
+| 2         | 2021-01-01 12:12:12.111 | 2021-01-01 12:12:12.111 | anthony.aardvark   |
+
+##### AA_ApartmentChoices
+- AprtAppID - int, not nullable
+- Ranking - int, not nullable
+- HallName - varchar(15), not nullable
+
+| AprtAppID | Ranking | HallName |
+|-----------|---------|----------|
+| 1         | 1       | Tavilla  |
+| 1         | 2       | Bromley  |
+| 2         | 1       | Tavilla  |
+| 2         | 2       | Bromley  |
+
+##### AA_ApartmentHalls
+- Name - PK, varchar(15), not nullable
+
+| Name     |
+|----------|
+| Bromley  |
+| Conrad   |
+| Hilton   |
+| MacInnis |
+| Rider    |
+| Tavilla  |
+
+##### AA_Applicants
+- AprtAppID - PK, int, not nullable
+- Username - PK, varchar(50), not nullable
+- AprtProgram - varchar(50), nullable
+- AprtProgramCredit - bit, nullable
+- SESS_CDE - char(8), not nullable
+
+| AprtAppID | Username           | AprtProgram | AprtProgramCredit | SESS_CDE |
+|-----------|--------------------|-------------|-------------------|----------|
+| 1         | firstname.lastname |             | 0                 | 202101   |
+| 2         | anthony.aardvark   |             | 0                 | 202101   |
+
 
 ### Stored Procedures
 
