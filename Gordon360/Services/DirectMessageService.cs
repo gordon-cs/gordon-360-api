@@ -69,6 +69,32 @@ namespace Gordon360.Services
 
         }
 
+        public MessageViewModel GetSingleMessage(string messageID, string roomID)
+        {
+            var roomIDParam = new SqlParameter("@room_id", roomID);
+            var messageIDParam = new SqlParameter("@message_id", messageID);
+
+            var result = RawSqlQuery<MessageViewModel>.query("GET_SINGLE_MESSAGE_BY_ID @room_id, @message_id", roomIDParam, messageIDParam); //run stored procedure
+
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+            var returnModel = new MessageViewModel();
+            var user = new UserViewModel();
+
+            foreach( MessageViewModel messageInfo in result)
+            {
+                returnModel = messageInfo;
+                user.user_id = messageInfo.user_id;
+                user.user_avatar = messageInfo.image;
+                user.user_name = _accountService.Get(messageInfo.user_id).ADUserName;
+                returnModel.user = user;
+            }
+
+            return returnModel;
+        }
+
         public IEnumerable<GroupViewModel> GetRooms(string userId)
         {
 
@@ -160,18 +186,15 @@ namespace Gordon360.Services
         }
 
 
-        public CreateGroupViewModel CreateGroup(String name, bool group, DateTime lastUpdated, string image, List<String> usernames)
+        public CreateGroupViewModel CreateGroup(String name, bool group, string image, List<String> usernames, SendTextViewModel initialMessage, string userId)
         {
-            DateTime createdAt = DateTime.Now;
             var nameParam = new SqlParameter("@name", name);
             var groupParam = new SqlParameter("@group", group);
-            var createdAtParam = new SqlParameter("@createdAt", createdAt);
-            var lastUpdatedParam = new SqlParameter("@lastUpdated", lastUpdated);
             var groupImageParam = new SqlParameter("@roomImage", System.Data.SqlDbType.VarBinary, -1);
 
             groupImageParam.Value = DBNull.Value;
 
-            var result = RawSqlQuery<CreateGroupViewModel>.query("CREATE_MESSAGE_ROOM @name, @group, @createdAt, @lastUpdated, @roomImage", nameParam, groupParam, createdAtParam, lastUpdatedParam, groupImageParam); //run stored procedure
+            var result = RawSqlQuery<CreateGroupViewModel>.query("CREATE_MESSAGE_ROOM @name, @group, @roomImage", nameParam, groupParam, groupImageParam); //run stored procedure
       
             if (result == null)
             {
@@ -202,6 +225,8 @@ namespace Gordon360.Services
 
                 groupObject.users.Add(userInfo);
             }
+
+            SendMessage(initialMessage, userId);
 
             return groupObject;
 

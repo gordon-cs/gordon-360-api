@@ -430,6 +430,7 @@
     <Compile Include="Models\Messages.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModels\MessageSearchViewModel.cs" />
     <Compile Include="Models\Message_Rooms.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -630,6 +631,8 @@
     <Compile Include="Models\ViewModels\HourTypesViewModel.cs" />
     <Compile Include="Models\ViewModels\IdCheckViewModel.cs" />
     <Compile Include="Models\ViewModels\MessageViewModel.cs" />
+    <Compile Include="Models\ViewModels\NotificationDataViewModel.cs" />
+    <Compile Include="Models\ViewModels\PushNotificationViewModel.cs" />
     <Compile Include="Models\ViewModels\Model1.cs" />
     <Compile Include="Models\ViewModels\RoomViewModel.cs" />
     <Compile Include="Models\ViewModels\SendTextViewModel.cs" />
