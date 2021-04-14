@@ -188,7 +188,7 @@ namespace Gordon360.ApiControllers
                     {
                         var pushNotification = new PushNotificationViewModel();
                         pushNotification.body = textInfo.groupText;
-                        pushNotification.to = /*model.connection_id*/ "ExponentPushToken[uJBJ65P03tj39vXo-R9joJ]";
+                        pushNotification.to = model.connection_id;
                         pushNotification.data = data;
                         pushNotification.title = textInfo.groupName;
 
@@ -201,7 +201,6 @@ namespace Gordon360.ApiControllers
 
                         var content = new StringContent(myJsonObject.ToString(), Encoding.UTF8, "application/json");
                         var post = httpClient.PostAsync("https://exp.host/--/api/v2/push/send", content).Result;
-                        var postContent = Newtonsoft.Json.JsonConvert.DeserializeObject(post.Content.ToString());
                     }
                  }
             
