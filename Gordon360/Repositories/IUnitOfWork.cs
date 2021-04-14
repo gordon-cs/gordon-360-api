@@ -31,6 +31,7 @@ namespace Gordon360.Repositories
         IRepository<DiningInfo> DiningInfoRepository { get; }
         IRepository<ERROR_LOG> ErrorLogRepository { get; }
         IRepository<Schedule_Control> ScheduleControlRepository { get; }
+        IRepository<Health_Status> WellnessRepository { get; }
 
         // Note -- Only use this repository to call SQL Stored Procedures
         IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> ActivityPerSessionRepository { get;  }
@@ -41,6 +42,7 @@ namespace Gordon360.Repositories
 
         IRepository<StudentNews> StudentNewsRepository { get; }
         IRepository<StudentNewsCategory> StudentNewsCategoryRepository { get; }
+        IRepository<Clifton_Strengths> CliftonStrengthsRepository { get; }
 
         bool Save();
 

@@ -17,6 +17,7 @@ namespace Gordon360.Static.Names
         public const string ACTIVITY_STATUS = "The open or closed status of an activity";
         public const string ChapelEvent = "The info of chapel events";
         public const string DINING = "Info related to dining service";
+        public const string HOUSING = "Info related to housing";
         public const string ERROR_LOG = "The error log resource";
         public const string MYSCHEDULE = "A custom schedule resource";
         public const string Save_Rides = "A ride resource";
@@ -93,17 +94,20 @@ namespace Gordon360.Static.Names
 
     public static class URLs
     {
-        // This url makes use of the 25Live API to retrieve events based on the "event_type" parameter.
-        // We also make use of the "end after" field to get only events from this academic year.
-        public static string ALL_EVENTS_REQUEST = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=14+19+28+57&state=2&end_after=" + Helpers.GetFirstEventDate() + "&scope=extended";
-      //public static string ALL_EVENTS_REQUEST = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=10+12+13+14+16+17+18+19+51+20+21+22+23+24+25+29+30+31+35&state=2&end_after=" + Helpers.GetFirstEventDate() + "&scope=extended"; // *
-      //public static string ALL_EVENTS_REQUEST = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=10+12+13+14+16+17+18+19+51+20+21+22+23+24+25+29+30+33
+        /**
+         * Retrieve events from the 25Live API. 
+         * event_type_id parameter fetches only events of type 14 (Calendar Announcement) and 57 (Event).
+         * All other event types are not appropiate for the 360 events feed.
+         * end_after parameter  limits to request to events from the current academic year.
+         * state parameter fetches only confirmed events
+         */
+        public static string ALL_EVENTS_REQUEST = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=14+57&state=2&end_after=" + Helpers.GetFirstEventDate() + "&scope=extended";
     }
 
     public static class SQLQuery
     {
         public static string ALL_PUBLIC_STUDENT_REQUEST = "SELECT ISNULL(Mail_Location, '') as Mail_Location, ISNULL(BuildingDescription, '') as Hall, ISNULL(FirstName, '') as FirstName, ISNULL(LastName, '') as LastName, ISNULL(NickName, '') as NickName, ISNULL(Class, '') as Class, ISNULL(Major1Description, '') as Major1Description, ISNULL(Major2Description, '') as Major2Description, ISNULL(Major3Description, '') as Major3Description, ISNULL(Minor1Description, '') as Minor1Description, ISNULL(Minor2Description, '') as Minor2Description, ISNULL(Minor3Description, '') as Minor3Description, ISNULL(HomeCity, '') as HomeCity, ISNULL(HomeState, '') as HomeState, ISNULL(Country, '') as Country, ISNULL(KeepPrivate, '') as KeepPrivate, ISNULL(Email, '') as Email, AD_Username FROM STUDENT S WHERE AD_Username is not null FOR JSON PATH, ROOT('Students')";
-        public static string ALL_PUBLIC_FACULTY_STAFF_REQUEST = "SELECT FirstName, LastName, NickName, OnCampusDepartment, BuildingDescription, HomeCity, HomeState, Country, KeepPrivate, JobTitle, Email, Type, AD_Username FROM FacStaff WHERE AD_Username is not null";
+        public static string ALL_PUBLIC_FACULTY_STAFF_REQUEST = "SELECT FirstName, LastName, NickName, OnCampusDepartment, BuildingDescription, HomeCity, HomeState, Country, KeepPrivate, JobTitle, Email, Type, AD_Username, Mail_Location FROM FacStaff WHERE AD_Username is not null";
         public static string ALL_PUBLIC_ALUMNI_REQUEST = "SELECT FirstName, LastName, NickName, Major1Description, Major2Description, HomeCity, HomeState, Country, Email, ShareName, PreferredClassYear, AD_Username FROM Alumni WHERE AD_Username is not null AND ShareName is null OR ShareName = 'Y';";
 
         public static string ALL_STUDENT_REQUEST = "SELECT * from Student WHERE AD_Username is not null";

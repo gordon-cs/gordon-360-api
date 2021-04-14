@@ -11,9 +11,11 @@ namespace Gordon360.Models
 {
     using System;
     
-    public partial class GET_HEALTH_CHECK_BY_ID_Result
+    public partial class GET_AA_APPLICATIONS_BY_ID_Result
     {
-        public Nullable<System.DateTime> timestamp { get; set; }
-        public Nullable<bool> userAnswer { get; set; }
+        public int AprtAppID { get; set; }
+        public Nullable<System.DateTime> DateSubmitted { get; set; }
+        public System.DateTime DateModified { get; set; }
+        public string EditorID { get; set; }
     }
 }

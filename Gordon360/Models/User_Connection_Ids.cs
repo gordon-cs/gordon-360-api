@@ -12,11 +12,9 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Health_Check_Updated
+    public partial class User_Connection_Ids
     {
-        public int ID_Num { get; set; }
-        public string StatusColor { get; set; }
-        public Nullable<System.DateTime> Created { get; set; }
-        public Nullable<System.DateTime> Emailed { get; set; }
+        public string user_id { get; set; }
+        public string connection_id { get; set; }
     }
 }

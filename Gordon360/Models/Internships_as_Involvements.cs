@@ -10,17 +10,17 @@
 namespace Gordon360.Models
 {
     using System;
+    using System.Collections.Generic;
     
-    public partial class GET_STU_HOUSING_INFO_Result
+    public partial class Internships_as_Involvements
     {
-        public string ID { get; set; }
-        public string Title { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string OnOffCampus { get; set; }
-        public string BuildingDescription { get; set; }
-        public string OnCampusRoom { get; set; }
-        public string Gender { get; set; }
-        public string Email { get; set; }
+        public string ACT_CDE { get; set; }
+        public int ID_NUM { get; set; }
+        public string YR_CDE { get; set; }
+        public string TRM_CDE { get; set; }
+        public string SESS_CDE { get; set; }
+        public Nullable<System.DateTime> BEGIN_DTE { get; set; }
+        public Nullable<System.DateTime> END_DTE { get; set; }
+        public string COMMENT_TXT { get; set; }
     }
 }

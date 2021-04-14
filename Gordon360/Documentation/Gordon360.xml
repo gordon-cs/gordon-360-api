@@ -229,7 +229,8 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.getJobsForUser(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
+        <!-- Badly formed XML comment ignored for member "M:Gordon360.ApiControllers.JobsController.GetJobs(System.DateTime,System.DateTime)" -->
+        <member name="M:Gordon360.ApiControllers.JobsController.DEPRECATED_getJobsForUser(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
             <summary>
             Get a user's active jobs
             </summary>
@@ -389,6 +390,72 @@
             <summary>Delete an existing booking item</summary>
             <param name="rideID">The identifier for the booking to be deleted</param>
             <remarks>Calls the server to make a call and remove the given booking from the database</remarks>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.CheckIfHousingAdmin">
+            <summary>
+            Check if the currently logged in user is authorized to view the housing admin page
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.AddHousingAdmin(System.String)">
+            <summary>
+            Add a user to the admin whitelist
+            </summary>
+            <param name="id"> The id of the user to add </param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.RemoveHousingAdmin(System.String)">
+            <summary>
+            Remove a user from the admin whitelist
+            </summary>
+            <param name="id"> The id of the user to remove </param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.GetApartmentHalls">
+            <summary>
+            Get a list of the apartment-style halls
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.GetApplicationID">
+            <summary>
+            Get apartment application ID number of currently logged in user if that user is on an existing application
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.GetUserApplicationID(System.String)">
+            <summary>
+            Get apartment application ID number for a user if that user is on an existing application
+            </summary>
+            <param name="username">username of the profile info</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.SaveApplication(Gordon360.Models.ViewModels.ApartmentApplicationViewModel)">
+            <summary>
+            save application
+            </summary>
+            <returns>Returns the application ID number if all the queries succeeded</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.EditApplication(System.Int32,Gordon360.Models.ViewModels.ApartmentApplicationViewModel)">
+            <summary>
+            update existing application (Differentiated by HttpPut instead of HttpPost)
+            </summary>
+            <returns>Returns the application ID number if all the queries succeeded</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.ChangeEditor(System.Int32,Gordon360.Models.ViewModels.ApartmentApplicationViewModel)">
+            <summary>
+            change the editor (i.e. primary applicant) of the application
+            </summary>
+            <returns>The result of changing the editor</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.GetApartmentApplication(System.Int32)">
+            <summary>Get apartment application info for a given application ID number</summary>
+            <param name="applicationID">application ID number of the apartment application</param>
+            <returns>Object of type ApartmentAppViewModel</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.GetAllApartmentApplication">
+            <summary>Get apartment application info for all applications if the current user is a housing admin</summary>
+            <returns>Object of type ApartmentAppViewModel</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.NewsController.#ctor">
             private void catchBadInput()
@@ -578,39 +645,32 @@
             <param name="value">New description</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.WellnessController.DEPRECATED_Get">
+        <member name="T:Gordon360.Controllers.Api.WellnessController.WellnessStatusColor">
             <summary>
-             DEPRECATED - Please use new route /status
-             Gets current wellness status of student
+            Enum representing three possible wellness statuses.
+            GREEN - Healthy, no known contact/symptoms
+            YELLOW - Symptomatic or cautionary hold
+            RED - Quarantine/Isolation
             </summary>
-            <returns>Json WellnessViewModel</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.WellnessController.Get">
             <summary>
-             Gets current wellness status of student
+             Gets wellness status of current user
             </summary>
-            <returns>Json WellnessStatusViewModel</returns>
+            <returns>A WellnessViewModel representing the most recent status of the user</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.WellnessController.GetQuestion">
             <summary>
              Gets question for wellness check from the back end
             </summary>
-            <returns> json WellnessQuestionViewModel</returns>
+            <returns>A WellnessQuestionViewModel</returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.WellnessController.DEPRECATED_GetQuestion">
+        <member name="M:Gordon360.Controllers.Api.WellnessController.Post(Gordon360.Controllers.Api.WellnessController.WellnessStatusColor)">
             <summary>
-             Gets question for wellness check from the back end
+             Stores the user's wellness status
             </summary>
-            <returns> json WellnessQuestionViewModel</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.WellnessController.DEPRECATED_PostAnswer(System.Boolean)">
-            <summary>
-            DEPRECATED - Please use new route /status
-             Stores the user's wellness check answer, with a timestamp.
-             If answer boolean is true: student is feeling symptomatic(feeling sick).
-             If answer boolean is false: student is not feeling symptomatic(feeling fine).
-            </summary>
-            <returns>Ok if message was recorded</returns>
+            <param name="status">The current status of the user to post, of type WellnessStatusColor</param>
+            <returns>The status that was stored in the database</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.Get">
             <summary>Get profile info of currently logged in user</summary>
@@ -621,14 +681,19 @@
             <param name="username">username of the profile info</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.getAdvisors(System.String)">
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.GetAdvisors(System.String)">
             <summary>Get the advisor(s) of a particular student</summary>
              <returns>
              All advisors of the given student.  For each advisor,
              provides first name, last name, and username.
              </returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.getMyImg">
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.GetCliftonStrengths(System.String)">
+            <summary> Gets the clifton strengths of a particular user </summary>
+            <param name="username"> The username for which to retrieve info </param>
+            <returns> Clifton strengths of the given user. </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.GetMyImg">
             <summary>Get the profile image of currently logged in user</summary>
             <returns></returns>
         </member>
@@ -900,6 +965,12 @@
             <param name="id">The identifier for the membership to be deleted</param>
             <remarks>Calls the server to make a call and remove the given membership from the database</remarks>
         </member>
+        <member name="M:Gordon360.Controllers.Api.MembershipsController.IsGroupAdmin(System.Int32)">
+            <summary>	
+            Determines whether or not the given student is a Group Admin of some activity	
+            </summary>
+            <param name="id">The student id</param>
+        </member>
         <member name="M:Gordon360.Controllers.Api.StudentEmploymentController.Get">
             <summary>
              Gets student employment information about the user
@@ -1147,14 +1218,14 @@
             Fetches the account record with the specified email.
             </summary>
             <param name="email">The email address associated with the account.</param>
-            <returns></returns>
+            <returns>the student account information</returns>
         </member>
         <member name="M:Gordon360.Services.AccountService.GetAccountByUsername(System.String)">
             <summary>
             Fetches the account record with the specified username.
             </summary>
             <param name="username">The username associated with the account.</param>
-            <returns></returns>
+            <returns>the student account information</returns>
         </member>
         <member name="T:Gordon360.Services.ActivityService">
             <summary>
@@ -1217,7 +1288,7 @@
         </member>
         <member name="M:Gordon360.Services.ActivityService.GetClosedActivities(System.String)">
             <summary>
-            Gets a collection of all the current activitie already closed out, by finding which activities have 
+            Gets a collection of all the current activities already closed out, by finding which activities have 
             memberships with an END_DTE that is not null
             </summary>
             <returns>The collection of activity codes for open activities</returns>
@@ -1370,33 +1441,23 @@
             Service that allows for event control
             </summary>
         </member>
-        <member name="M:Gordon360.Services.EventService.GetRoute(System.String,System.String)">
-            <summary>
-            Helper function to set the route we are making our request to in 25Live
-            </summary>
-            <param name="EventID"></param>
-            <param name="type"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Services.EventService.GetSpecificEvents(System.String,System.String)">
-            <summary>
-            Return a Single Event JObject from Live25
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Services.EventService.GetAllEvents(System.Xml.Linq.XDocument)">
+        <member name="M:Gordon360.Services.EventService.GetAllEvents">
             <summary>
             Access the memory stream created by the cached task and parse it into events
             </summary>
-            <param name="xmlDoc"></param>
-            <returns></returns>
+            <returns>All events for the current academic year.</returns>
         </member>
-        <member name="M:Gordon360.Services.EventService.GetAllForStudent(System.String)">
+        <member name="M:Gordon360.Services.EventService.GetPublicEvents">
             <summary>
-            Returns all attended events for a student
+            Select only events that are marked for Public promotion
             </summary>
-            <param name="user_name"> The student's ID</param>
-            <returns></returns>
+            <returns>All Public Events</returns>
+        </member>
+        <member name="M:Gordon360.Services.EventService.GetCLAWEvents">
+            <summary>
+            Select only events that are Approved to give CLAW credit
+            </summary>
+            <returns>All CLAW Events</returns>
         </member>
         <member name="M:Gordon360.Services.EventService.GetEventsForStudentByTerm(System.String,System.String)">
             <summary>
@@ -1679,6 +1740,11 @@
             <param name="id">student id</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Services.ProfileService.GetCliftonStrengths(System.Int32)">
+            <summary> Gets the clifton strengths of a particular user </summary>
+            <param name="id"> The id of the user for which to retrieve info </param>
+            <returns> Clifton strengths of the given user. </returns>
+        </member>
         <member name="M:Gordon360.Services.ProfileService.GetPhotoPath(System.String)">
             <summary>
             Get photo path for profile
@@ -1841,49 +1907,114 @@
             <param name="id">id</param>
             <returns>VictoryPromiseViewModel if found, null if not found</returns>
         </member>
+        <member name="M:Gordon360.Services.HousingService.CheckIfHousingAdmin(System.String)">
+            <summary>
+            Calls a stored procedure that returns a row in the staff whitelist which has the given user id,
+            if it is in the whitelist
+            </summary>
+            <param name="userID"> The id of the person using the page </param>
+            <returns> Whether or not the user is on the staff whitelist </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.AddHousingAdmin(System.String)">
+            <summary>
+            Calls a stored procedure that inserts the given id into the whitelist table
+            </summary>
+            <param name="id"> The id to insert </param>
+            <returns> Whether or not this was successful </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.RemoveHousingAdmin(System.String)">
+            <summary>
+            Calls a stored procedure that deletes the given id from the whitelist table
+            </summary>
+            <param name="id"> The id to remove </param>
+            <returns> Whether or not this was successful </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetAllApartmentHalls">
+            <summary>
+            Calls a stored procedure that gets all names of apartment halls
+            </summary>
+            <returns> AN array of hall names </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetApplicationID(System.String,System.String)">
+            <summary>
+            Calls a stored procedure that tries to get the id of an the application that a given user is 
+            applicant on for a given session
+            </summary>
+            <param name="userID"> The student username to look for </param>
+            <param name="sess_cde"> Session for which the application would be </param>
+            <returns> 
+            The id of the application or 
+            null if the user is not on an application for that session 
+            </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.SaveApplication(System.String,System.String,System.String,Gordon360.Models.ViewModels.ApartmentApplicantViewModel[],Gordon360.Models.ViewModels.ApartmentChoiceViewModel[])">
+             <summary>
+             Saves student housing info
+             - first, it creates a new row in the applications table and inserts the id of the primary applicant and a timestamp
+             - second, it retrieves the application id of the application with the information we just inserted (because
+             the database creates the application ID so we have to ask it which number it generated for it)
+             - third, it inserts each applicant into the applicants table along with the apartment ID so we know
+             which application on which they are an applicant
+            
+             </summary>
+             <param name="userID"> The student username of the user who is attempting to save the apartment application (retrieved via authentication token) </param>
+             <param name="sess_cde"> The current session code </param>
+             <param name="editorID"> The student username of the student who is declared to be the editor of this application (retrieved from the JSON from the front end) </param>
+             <param name="apartmentApplicants"> Array of JSON objects providing apartment applicants </param>
+             <param name="apartmentChoices"> Array of JSON objects providing apartment hall choices </param>
+             <returns>Returns the application ID number if all the queries succeeded</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.EditApplication(System.String,System.String,System.Int32,System.String,Gordon360.Models.ViewModels.ApartmentApplicantViewModel[],Gordon360.Models.ViewModels.ApartmentChoiceViewModel[])">
+             <summary>
+             Edit an existings apartment application
+             - first, it gets the EditorUsername from the database for the given application ID and makes sure that the student ID of the current user matches that stored ID number
+             - second, it gets an array of the applicants that are already stored in the database for the given application ID
+             - third, it inserts each applicant that is in the 'newApplicantIDs' array but was not yet in the database
+             - fourth, it removes each applicant that was stored in the database but was not in the 'newApplicantIDs' array
+            
+             </summary>
+             <param name="userID"> The student username of the user who is attempting to save the apartment application (retrieved via authentication token) </param>
+             <param name="sess_cde"> The current session code </param>
+             <param name="applicationID"> The application ID number of the application to be edited </param>
+             <param name="newEditorID"> The student username of the student who is declared to be the editor of this application (retrieved from the JSON from the front end) </param>
+             <param name="newApartmentApplicants"> Array of JSON objects providing apartment applicants </param>
+             <param name="newApartmentChoices"> Array of JSON objects providing apartment hall choices </param>
+             <returns>Returns the application ID number if all the queries succeeded</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.ChangeApplicationEditor(System.String,System.Int32,System.String)">
+             <summary>
+             Changes the student user who has permission to edit the given application
+            
+             </summary>
+             <returns>Whether or not all the queries succeeded</returns>
+        </member>
         <member name="M:Gordon360.Services.WellnessService.GetStatus(System.String)">
             <summary>
-            gets status of wellness check
+            Get the status of the user by id
             </summary>
             <param name="id">ID of the user to get the status of</param>
-            <returns> The status of the user, a WellnessStatusViewModel </returns>
+            <returns> The status of the user, a WellnessViewModel </returns>
         </member>
-        <member name="M:Gordon360.Services.WellnessService.PostStatus(System.String,System.String)">
+        <member name="M:Gordon360.Services.WellnessService.PostStatus(Gordon360.Controllers.Api.WellnessController.WellnessStatusColor,System.String)">
             <summary>
             Stores wellness Status in database.
             </summary>
             <param name="id"> ID of the user to post the status for</param>
-            <param name="status"> Status that is being posted, one of GREEN, YELLOW, or RED </param>
+            <param name="status"> Status that is being posted, one of the WellnessStatusColors </param>
             <returns>Status that was successfully recorded</returns>
         </member>
         <member name="M:Gordon360.Services.WellnessService.GetQuestion">
             <summary>
             gets the question for the wellness check from the back end
             </summary>
-            <returns>list of strings with questions and prompts</returns>
+            <returns>A WellnessQuestionViewModel including the text of the question and the disclaimers for positive and negative answers.</returns>
         </member>
-        <member name="M:Gordon360.Services.WellnessService.DEPRECATED_GetQuestion">
+        <member name="M:Gordon360.Services.WellnessService.ExpirationDate(System.DateTime)">
             <summary>
-            gets the question for the wellness check from the back end
+            Creates an expiration date for a check in at the current time
             </summary>
-            <returns>list of strings with questions and prompts</returns>
-        </member>
-        <member name="M:Gordon360.Services.WellnessService.IsValidStatus(Gordon360.Models.ViewModels.WellnessStatusViewModel)">
-            <summary>
-            Checks whether a wellness status is still valid (i.e. new since 5AM)
-            </summary>
-            <param name='status'>Wellness status to check, an instance of a WellnessViewModel</param>
-            <returns>boolean representing whether the status is still valid</returns>
-        </member>
-        <member name="M:Gordon360.Services.WellnessService.DEPRECATED_PostStatus(System.Boolean,System.String)">
-            <summary>
-             Gets answer to the wellness check answer and sends it to the back end.
-                If answer boolean is true: student is feeling symptomatic
-                If answer boolean is false: student is not feeling symptomatic
-            </summary>
-            <param name="id">id</param>
-            <param name="answer">answer</param>
-            <returns>Ok if message was recorded</returns>
+            <param name="currentTime">The time of the check in</param>
+            <returns>When the check in should expire (the next 5AM).</returns>
         </member>
         <member name="T:Gordon360.Services.JenzibarActivityService">
             <summary>
@@ -2027,7 +2158,7 @@
             Fetches all the membership information linked to the student whose id appears as a parameter.
             </summary>
             <param name="id">The student id.</param>
-            <returns>A MembershipViewModel IEnumerable. If nothing is found, an empty IEnumberable is returned.</returns>
+            <returns>A MembershipViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.GetActivityFollowersCount(System.String)">
             <summary>
@@ -2090,6 +2221,13 @@
             <param name="membership">The membership to validate</param>
             <returns>True if the membership is valid. Throws ResourceNotFoundException if not. Exception is caught in an Exception Filter</returns>
         </member>
+        <member name="M:Gordon360.Services.MembershipService.IsGroupAdmin(System.Int32)">
+            <summary>	
+            Determines whether or not the given student is a Group Admin of some activity	
+            </summary>
+            <param name="studentID">The student id</param>	
+            <returns>true if student is a Group Admin, else false</returns>	
+        </member>
         <member name="T:Gordon360.Services.SessionService">
             <summary>
             Service class to facilitate data transactions between the Controller and the database model.
@@ -2137,6 +2275,13 @@
              Helper function to determine the current academic year
             </summary>
             <returns></returns>
+        </member>
+        <member name="F:Gordon360.Static.Names.URLs.ALL_EVENTS_REQUEST">
+            Retrieve events from the 25Live API. 
+            event_type_id parameter fetches only events of type 14 (Calendar Announcement) and 57 (Event).
+            All other event types are not appropiate for the 360 events feed.
+            end_after parameter  limits to request to events from the current academic year.
+            state parameter fetches only confirmed events
         </member>
         <member name="F:Gordon360.Startup.DummyCacheItemKey">
             <summary>
