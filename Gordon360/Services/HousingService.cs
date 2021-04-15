@@ -661,9 +661,7 @@ namespace Gordon360.Services
                 foreach (GET_AA_APPLICANTS_BY_APPID_Result applicantDBModel in applicantsResult)
                 {
                     // search username in cached data
-                    StudentProfileViewModel student = Data.StudentData.FirstOrDefault(x => x.ID.ToLower() == applicantDBModel.ID_NUM.ToLower());
-                    // The following commented out code is meant to be used once the database tables have been remade to use Username instead of ID_Num
-                    //StudentProfileViewModel _student = _profileService.GetStudentProfileByUsername(applicantDBModel.Username);
+                    StudentProfileViewModel student = _profileService.GetStudentProfileByUsername(applicantDBModel.Username);
 
                     // If the student information is found, create a new ApplicationViewModel and fill in its properties
                     if (student != null)
