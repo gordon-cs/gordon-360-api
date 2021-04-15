@@ -81,6 +81,20 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>
+        /// Delete an application (and consequently all rows that reference it)
+        /// </summary>
+        /// <param name="applicationID"> The id of the application to remove </param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("apartment/applications/{applicationID}")]
+        public IHttpActionResult DeleteApplication(int applicationID)
+        {
+            bool result = _housingService.DeleteApplication(applicationID);
+            return Ok(result);
+        }
+
+
+        /// <summary>
         /// Get a list of the apartment-style halls
         /// </summary>
         /// <returns></returns>
@@ -274,6 +288,18 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
 
+        /// <summary>
+        /// change the date an application was submitted
+        /// (changes it from null the first time they submit)
+        /// </summary>
+        /// <returns>The result of changing the date submitted</returns>
+        [HttpPut]
+        [Route("apartment/applications/{applicationID}/submit")]
+        public IHttpActionResult ChangeApplicationDateSubmitted(int applicationID)
+        {
+            bool result = _housingService.ChangeApplicationDateSubmitted(applicationID);
+            return Ok(result);
+        }
 
         /// <summary>Get apartment application info for a given application ID number</summary>
         /// <param name="applicationID">application ID number of the apartment application</param>

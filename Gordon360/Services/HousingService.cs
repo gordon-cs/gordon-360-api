@@ -91,6 +91,31 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// Calls a stored procedure that deletes the application with given id
+        /// (and consequently all rows that reference it)
+        /// </summary>
+        /// <param name="applicationID"> The id of the application to delete </param>
+        /// <returns> Whether or not this was successful </returns>
+        public bool DeleteApplication(int applicationID)
+        {
+            IEnumerable<ApartmentApplicationViewModel> result = null;
+
+            SqlParameter appIdParam = new SqlParameter("@APP_ID", applicationID);
+
+            result = RawSqlQuery<ApartmentApplicationViewModel>.query("DELETE_AA_APPLICATION @APP_ID", appIdParam);
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be found and removed." };
+            }
+            else if (!result.Any())
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// Calls a stored procedure that gets all names of apartment halls
         /// </summary>
         /// <returns> AN array of hall names </returns>
@@ -769,6 +794,25 @@ namespace Gordon360.Services
                 apartmentApplicationArray = applicationList.ToArray();
             }
             return apartmentApplicationArray;
+        }
+
+        // I appreciate that we are not typing redundant comments,
+        // but can we have something to make it more clear where these services start?
+        public bool ChangeApplicationDateSubmitted(int applicationID)
+        {
+            IEnumerable<ApartmentApplicationViewModel> result = null;
+
+            SqlParameter appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
+            DateTime now = System.DateTime.Now;
+            SqlParameter timeParam = new SqlParameter("@NOW", now);
+
+            result = RawSqlQuery<ApartmentApplicationViewModel>.query("UPDATE_AA_APPLICATION_DATESUBMITTED @APPLICATION_ID, @NOW", appIDParam, timeParam);
+            if (result == null)
+            {
+                throw new ResourceCreationException() { ExceptionMessage = "The application DateSubmitted could not be updated." };
+            }
+
+            return true;
         }
     }
 }
