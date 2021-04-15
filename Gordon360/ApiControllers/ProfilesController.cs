@@ -362,18 +362,33 @@ namespace Gordon360.Controllers.Api
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
-            var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var viewerType = _roleCheckingService.getCollegeRole(viewerName);
-            var photoInfo = _profileService.GetPhotoPath(id);
+
+            var photoModel = _profileService.GetPhotoPath(id);
+
             string pref_img = "";
             string default_img = "";
+           
             var fileName = "";
             var filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PREF_IMAGE_PATH"];
             byte[] imageBytes;
             JObject result = new JObject();
 
-            //return default image if no photo info found for this user.
-            if (photoInfo == null)
+            if (photoModel != null)
+            {
+                fileName = photoModel.Pref_Img_Name;
+            }
+            else if (false) //File.Exists(filePath + fileName)
+            {
+
+                string unapprovedImgPath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_ID_SUBMISSION_PATH"];
+                string unapprovedImgName = "";
+
+                var webClient = new WebClient();
+                imageBytes = webClient.DownloadData(unapprovedImgPath + unapprovedImgName);
+         
+                string unapprovedImg = Convert.ToBase64String(imageBytes);
+            }
+            else
             {
                 var webClient = new WebClient();
                 imageBytes = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
@@ -381,13 +396,12 @@ namespace Gordon360.Controllers.Api
                 result.Add("def", default_img);
                 return Ok(result);
             }
-            else
-                fileName = photoInfo.Pref_Img_Name;
+                
 
             if (string.IsNullOrEmpty(fileName) || !File.Exists(filePath + fileName)) //check file existence for prefferred image.
             {
                 filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_IMAGE_PATH"];
-                fileName = photoInfo.Img_Name;
+                fileName = photoModel.Img_Name;
                 try
                 {
                     imageBytes = File.ReadAllBytes(filePath + fileName);
@@ -419,6 +433,7 @@ namespace Gordon360.Controllers.Api
                 return Ok(result);  //return image as a base64 string
             }
         }
+
         /// <summary>Get the profile image of currently logged in user</summary>
         /// <returns></returns>
         [HttpGet]
