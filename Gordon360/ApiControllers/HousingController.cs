@@ -190,7 +190,6 @@ namespace Gordon360.Controllers.Api
                 {
                     applicant.Profile = _profileService.GetStudentProfileByUsername(applicant?.Profile?.AD_Username ?? applicant?.Username); // conversion from PublicStudentProfileViewModel to StudentProfileViewModel
                 }
-                // applicant.StudentID = _accountService.GetAccountByUsername(applicant.Username).GordonID;
             }
 
             ApartmentChoiceViewModel[] apartmentChoices = applicationDetails.ApartmentChoices;
