@@ -264,11 +264,11 @@ namespace Gordon360.Services
         /// <param name="userID"> The student username of the user who is attempting to save the apartment application (retrieved via authentication token) </param>
         /// <param name="sess_cde"> The current session code </param>
         /// <param name="applicationID"> The application ID number of the application to be edited </param>
-        /// <param name="newEditorID"> The student username of the student who is declared to be the editor of this application (retrieved from the JSON from the front end) </param>
+        /// <param name="newEditorUsername"> The student username of the student who is declared to be the editor of this application (retrieved from the JSON from the front end) </param>
         /// <param name="newApartmentApplicants"> Array of JSON objects providing apartment applicants </param>
         /// <param name="newApartmentChoices"> Array of JSON objects providing apartment hall choices </param>
         /// <returns>Returns the application ID number if all the queries succeeded</returns>
-        public int EditApplication(string userID, string sess_cde, int applicationID, string newEditorID, ApartmentApplicantViewModel[] newApartmentApplicants, ApartmentChoiceViewModel[] newApartmentChoices)
+        public int EditApplication(string userID, string sess_cde, int applicationID, string newEditorUsername, ApartmentApplicantViewModel[] newApartmentApplicants, ApartmentChoiceViewModel[] newApartmentChoices)
         {
             CCTEntities1 context = new CCTEntities1();
 
@@ -286,9 +286,9 @@ namespace Gordon360.Services
                 return -1;
             }
 
-            string storedEditorID = editorResult.FirstOrDefault();
+            string storedEditorUsername = editorResult.FirstOrDefault();
 
-            if (userID != storedEditorID)
+            if (userID != storedEditorUsername)
             {
                 // Return -1 if the current user does not match this application's editor stored in the database
                 return -1;
@@ -325,7 +325,7 @@ namespace Gordon360.Services
                 foreach (GET_AA_APPLICANTS_BY_APPID_Result existingApplicant in existingApplicantResult)
                 {
                     ApartmentApplicantViewModel newMatchingApplicant = null;
-                    newMatchingApplicant = newApartmentApplicants.FirstOrDefault(x => x.Username == existingApplicant.USERNAME);
+                    newMatchingApplicant = newApartmentApplicants.FirstOrDefault(x => x.Username == existingApplicant.Username);
                     if (newMatchingApplicant != null)
                     {
                         // If the applicant is in both the new applicant list and the existing applicant list, then we do NOT need to add it to the database
@@ -438,7 +438,7 @@ namespace Gordon360.Services
                 foreach (GET_AA_APARTMENT_CHOICES_BY_APP_ID_Result existingApartmentChoice in existingApartmentChoiceResult)
                 {
                     ApartmentChoiceViewModel newMatchingApartmentChoice = null;
-                    newMatchingApartmentChoice = newApartmentChoices.FirstOrDefault(x => x.HallName == existingApartmentChoice.BLDG_CDE);
+                    newMatchingApartmentChoice = newApartmentChoices.FirstOrDefault(x => x.HallName == existingApartmentChoice.HallName);
                     if (newMatchingApartmentChoice != null)
                     {
                         // If the apartment is in both the new apartment list and the existing apartment list, then we do NOT need to add it to the database
@@ -512,10 +512,10 @@ namespace Gordon360.Services
 
             appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
             SqlParameter timeParam = new SqlParameter("@NOW", now);
-            if (newEditorID != storedEditorID)
+            if (newEditorUsername != storedEditorUsername)
             {
                 SqlParameter editorParam = new SqlParameter("@EDITOR_USERNAME", userID);
-                SqlParameter newEditorParam = new SqlParameter("@NEW_EDITOR_USERNAME", newEditorID);
+                SqlParameter newEditorParam = new SqlParameter("@NEW_EDITOR_USERNAME", newEditorUsername);
                 int? result = context.Database.ExecuteSqlCommand("UPDATE_AA_APPLICATION_EDITOR @APPLICATION_ID, @EDITOR_USERNAME, @NOW, @NEW_EDITOR_USERNAME", appIDParam, editorParam, timeParam, newEditorParam); //run stored procedure
                 if (result == null)
                 {
@@ -539,7 +539,7 @@ namespace Gordon360.Services
         ///
         /// </summary>
         /// <returns>Whether or not all the queries succeeded</returns>
-        public bool ChangeApplicationEditor(string userID, int applicationID, string newEditorID)
+        public bool ChangeApplicationEditor(string username, int applicationID, string newEditorUsername)
         {
             IEnumerable<string> editorResult = null;
 
@@ -555,14 +555,14 @@ namespace Gordon360.Services
                 return false;
             }
 
-            string storedEditorID = editorResult.FirstOrDefault();
+            string storedEditorUsername = editorResult.FirstOrDefault();
 
-            if (userID != storedEditorID)
+            if (username != storedEditorUsername)
             {
                 // Return false if the current user does not match this application's editor stored in the database
                 return false;
             }
-            // Only perform the update if the ID of the current user matched the 'EditorID' ID stored in the database for the requested application
+            // Only perform the update if the username of the current user matched the 'EditorUsername' username stored in the database for the requested application
 
             CCTEntities1 context = new CCTEntities1();
 
@@ -570,10 +570,10 @@ namespace Gordon360.Services
 
             appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
             SqlParameter timeParam = new SqlParameter("@NOW", now);
-            if (newEditorID != storedEditorID)
+            if (newEditorUsername != storedEditorUsername)
             {
-                SqlParameter editorParam = new SqlParameter("@EDITOR_USERNAME", userID);
-                SqlParameter newEditorParam = new SqlParameter("@NEW_EDITOR_USERNAME", newEditorID);
+                SqlParameter editorParam = new SqlParameter("@EDITOR_USERNAME", username);
+                SqlParameter newEditorParam = new SqlParameter("@NEW_EDITOR_USERNAME", newEditorUsername);
                 int? result = context.Database.ExecuteSqlCommand("UPDATE_AA_APPLICATION_EDITOR @APPLICATION_ID, @EDITOR_USERNAME, @NOW, @NEW_EDITOR_USERNAME", appIDParam, editorParam, timeParam, newEditorParam); //run stored procedure
                 if (result == null)
                 {
@@ -610,7 +610,7 @@ namespace Gordon360.Services
 
             GET_AA_APPLICATIONS_BY_ID_Result applicationsDBModel = applicationResult.FirstOrDefault(x => x.AprtAppID == applicationID);
 
-            Student editorStudent = Data.StudentData.FirstOrDefault(x => x.ID.ToLower() == applicationsDBModel.EditorID.ToLower());
+            Student editorStudent = Data.StudentData.FirstOrDefault(x => x.ID.ToLower() == applicationsDBModel.EditorUsername.ToLower());
             if (editorStudent == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The student information about the editor of this application could not be found." };
@@ -637,7 +637,7 @@ namespace Gordon360.Services
                 List<ApartmentApplicantViewModel> applicantsList = new List<ApartmentApplicantViewModel>();
                 foreach (GET_AA_APPLICANTS_BY_APPID_Result applicantDBModel in applicantsResult)
                 {
-                    Student student = Data.StudentData.FirstOrDefault(x => x.ID.ToLower() == applicantDBModel.USERNAME.ToLower());
+                    Student student = Data.StudentData.FirstOrDefault(x => x.ID.ToLower() == applicantDBModel.Username.ToLower());
                     if (student != null)
                     {
                         // If the student information is found, create a new ApplicationViewModel and fill in its properties
@@ -714,7 +714,7 @@ namespace Gordon360.Services
                     ApartmentChoiceViewModel apartmentChoiceModel = new ApartmentChoiceViewModel
                     {
                         ApplicationID = applicationID,
-                        HallName = apartmentChoiceDBModel.BLDG_CDE,
+                        HallName = apartmentChoiceDBModel.HallName,
                         HallRank = apartmentChoiceDBModel.Ranking
                     };
 

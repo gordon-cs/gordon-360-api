@@ -184,7 +184,7 @@ namespace Gordon360.Controllers.Api
             ApartmentApplicantViewModel[] apartmentApplicants = applicationDetails.Applicants;
             foreach (ApartmentApplicantViewModel applicant in apartmentApplicants)
             {
-                applicant.StudentID = _accountService.GetAccountByUsername(applicant.Username).GordonID;
+                applicant.Username = _accountService.GetAccountByUsername(applicant.Username).GordonID;
             }
 
             ApartmentChoiceViewModel[] apartmentChoices = applicationDetails.ApartmentChoices;
@@ -229,7 +229,7 @@ namespace Gordon360.Controllers.Api
             ApartmentApplicantViewModel[] newApartmentApplicants = applicationDetails.Applicants;
             foreach (ApartmentApplicantViewModel applicant in newApartmentApplicants)
             {
-                applicant.StudentID = _accountService.GetAccountByUsername(applicant.Username).GordonID;
+                applicant.Username = _accountService.GetAccountByUsername(applicant.Username).GordonID;
             }
 
             ApartmentChoiceViewModel[] newApartmentChoices = applicationDetails.ApartmentChoices;
