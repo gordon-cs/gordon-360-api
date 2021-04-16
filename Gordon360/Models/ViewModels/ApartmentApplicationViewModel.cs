@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Gordon360.Static.Data;
+using System;
 using System.Linq;
 
 namespace Gordon360.Models.ViewModels
@@ -9,7 +10,7 @@ namespace Gordon360.Models.ViewModels
         public int ApplicationID { get; set; }
         public DateTime? DateSubmitted { get; set; } // Nullable
         public DateTime DateModified { get; set; }
-        public StudentProfileViewModel EditorProfile { get; set; }
+        public PublicStudentProfileViewModel EditorProfile { get; set; }
         private string _editorUsername;
         public string EditorUsername
         {
@@ -30,7 +31,8 @@ namespace Gordon360.Models.ViewModels
                 ApplicationID = applicationDBModel.AprtAppID,
                 DateSubmitted = applicationDBModel.DateSubmitted,
                 DateModified = applicationDBModel.DateModified,
-                //EditorUsername = applicationDBModel.EditorUsername, // Code for after we remade the AA_Applications table
+                EditorUsername = applicationDBModel.EditorUsername,
+                EditorProfile = (StudentProfileViewModel)Data.StudentData.FirstOrDefault(x => x.AD_Username.ToLower() == applicationDBModel.EditorUsername.ToLower()),
             };
 
             return vm;
