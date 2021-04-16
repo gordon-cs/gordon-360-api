@@ -112,7 +112,7 @@ namespace Gordon360.Controllers.Api
             //get token data from context, username is the username of current logged in person
             ClaimsPrincipal authenticatedUser = ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            
+
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
             int? result = _housingService.GetApplicationID(username, sessionID);
@@ -182,9 +182,9 @@ namespace Gordon360.Controllers.Api
             ApartmentApplicantViewModel[] apartmentApplicants = applicationDetails.Applicants;
             foreach (ApartmentApplicantViewModel applicant in apartmentApplicants)
             {
-                if (!(applicant.Profile is StudentProfileViewModel))
+                if (applicant.Profile == null)
                 {
-                    applicant.Profile = _profileService.GetStudentProfileByUsername(applicant?.Profile?.AD_Username ?? applicant?.Username); // conversion from PublicStudentProfileViewModel to StudentProfileViewModel
+                    applicant.Profile = _profileService.GetStudentProfileByUsername(applicant?.Profile?.AD_Username ?? applicant?.Username);
                 }
             }
 
@@ -228,9 +228,9 @@ namespace Gordon360.Controllers.Api
             ApartmentApplicantViewModel[] newApartmentApplicants = applicationDetails.Applicants;
             foreach (ApartmentApplicantViewModel applicant in newApartmentApplicants)
             {
-                if (!(applicant.Profile is StudentProfileViewModel))
+                if (applicant.Profile == null)
                 {
-                    applicant.Profile = _profileService.GetStudentProfileByUsername(applicant?.Profile?.AD_Username ?? applicant?.Username); // conversion from PublicStudentProfileViewModel to StudentProfileViewModel
+                    applicant.Profile = _profileService.GetStudentProfileByUsername(applicant?.Profile?.AD_Username ?? applicant?.Username);
                 }
             }
 

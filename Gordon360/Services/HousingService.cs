@@ -3,7 +3,6 @@ using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using Gordon360.Services.ComplexQueries;
-using Gordon360.Static.Data;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -13,7 +12,7 @@ namespace Gordon360.Services
 {
     public class HousingService : IHousingService
     {
-        private IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
 
         private CCTEntities1 _context;
 
@@ -218,7 +217,7 @@ namespace Gordon360.Services
                 programParam = new SqlParameter("@APRT_PROGRAM", applicant.OffCampusProgram ?? "");
                 sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
 
-                int? applicantResult = context.Database.ExecuteSqlCommand("INSERT_AA_APPLICANT @APPLICATION_ID, @USERNAME, @APRT_PROGRAM, @SESS_CDE", appIDParam, userParam, programParam, sessionParam); //run stored procedure
+                int? applicantResult = _context.Database.ExecuteSqlCommand("INSERT_AA_APPLICANT @APPLICATION_ID, @USERNAME, @APRT_PROGRAM, @SESS_CDE", appIDParam, userParam, programParam, sessionParam); //run stored procedure
                 if (applicantResult == null)
                 {
                     throw new ResourceCreationException() { ExceptionMessage = "Applicant " + applicant.Username + " could not be saved." };
@@ -594,23 +593,13 @@ namespace Gordon360.Services
 
             GET_AA_APPLICATIONS_BY_ID_Result applicationDBModel = applicationResult.FirstOrDefault(x => x.AprtAppID == applicationID);
 
-            StudentProfileViewModel editorStudent = (StudentProfileViewModel)Data.StudentData.FirstOrDefault(x => x.AD_Username.ToLower() == applicationDBModel.EditorUsername.ToLower());
-            if (editorStudent == null)
+            // Assign the values from the database to the custom view model for the frontend
+            ApartmentApplicationViewModel apartmentApplicationModel = applicationDBModel; //implicit conversion
+
+            if (apartmentApplicationModel.EditorProfile == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The student information about the editor of this application could not be found." };
             }
-
-
-            // Assign the values from the database to the corresponding properties
-            ApartmentApplicationViewModel apartmentApplicationModel = new ApartmentApplicationViewModel
-            {
-                ApplicationID = applicationDBModel.AprtAppID,
-                DateSubmitted = applicationDBModel.DateSubmitted,
-                DateModified = applicationDBModel.DateModified,
-                EditorProfile = editorStudent,
-                EditorUsername = editorStudent.AD_Username,
-            };
-
 
             // Get the applicants that match this application ID
             appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
@@ -622,58 +611,56 @@ namespace Gordon360.Services
                 List<ApartmentApplicantViewModel> applicantsList = new List<ApartmentApplicantViewModel>();
                 foreach (GET_AA_APPLICANTS_BY_APPID_Result applicantDBModel in applicantsResult)
                 {
-                    if (applicantDBModel.AprtAppID == applicationID)
+                    ApartmentApplicantViewModel applicantModel = applicantDBModel; //implicit conversion
+
+                    // If the student information is found, create a new ApplicationViewModel and fill in its properties
+                    if (applicantModel.Profile != null && applicantDBModel.AprtAppID == applicationID)
                     {
-                        ApartmentApplicantViewModel applicantModel = applicantDBModel; //implicit conversion
-
-                        // If the student information is found, create a new ApplicationViewModel and fill in its properties
-                        if (applicantModel.Profile != null)
+                        // Only add the birthdate, probabtion, and points if the user is authorized to view that information
+                        if (true) // if the current user is a housing admin or super admin 
                         {
-                            if (true) // if the current user is a housing admin or super admin 
+                            applicantModel.BirthDate = new UnitOfWork().AccountRepository.FirstOrDefault(x => x.AD_Username.ToLower() == applicantDBModel.Username.ToLower()).Birth_Date;
+
+                            // The probation data is already in the database, we just need to write a stored procedure to get it
+
+                            // Calculate application points
+                            int points = 0;
+                            switch (applicantModel.Class)
                             {
-                                applicantModel.BirthDate = new UnitOfWork().AccountRepository.FirstOrDefault(x => x.AD_Username.ToLower() == applicantDBModel.Username.ToLower()).Birth_Date;
-
-                                // The probation data is already in the database, we just need to write a stored procedure to get it
-
-                                // Calculate application points
-                                int points = 0;
-                                switch (applicantModel.Class)
-                                {
-                                    case "Freshman":
-                                        points += 1;
-                                        break;
-                                    case "Sophomore":
-                                        points += 2;
-                                        break;
-                                    case "Junior":
-                                        points += 3;
-                                        break;
-                                    case "Senior":
-                                        points += 4;
-                                        break;
-                                }
-
-                                if (applicantModel.Age >= 23)
-                                {
+                                case "Freshman":
                                     points += 1;
-                                }
-
-                                if (!string.IsNullOrEmpty(applicantModel.OffCampusProgram))
-                                {
-                                    points += 1;
-                                }
-
-                                if (applicantModel.Probation)
-                                {
-                                    points -= 3;
-                                }
-
-                                applicantModel.Points = Math.Max(0, points); ; // Set the resulting points to zero if the sum gave a value less than zero
+                                    break;
+                                case "Sophomore":
+                                    points += 2;
+                                    break;
+                                case "Junior":
+                                    points += 3;
+                                    break;
+                                case "Senior":
+                                    points += 4;
+                                    break;
                             }
 
-                            // Add this new ApplicantViewModel object to the list of applicants for this application
-                            applicantsList.Add(applicantModel);
+                            if (applicantModel.Age >= 23)
+                            {
+                                points += 1;
+                            }
+
+                            if (!string.IsNullOrEmpty(applicantModel.OffCampusProgram))
+                            {
+                                points += 1;
+                            }
+
+                            if (applicantModel.Probation)
+                            {
+                                points -= 3;
+                            }
+
+                            applicantModel.Points = Math.Max(0, points); ; // Set the resulting points to zero if the sum gave a value less than zero
                         }
+
+                        // Add this new ApplicantViewModel object to the list of applicants for this application
+                        applicantsList.Add(applicantModel);
                     }
                 }
 
@@ -694,12 +681,7 @@ namespace Gordon360.Services
                 List<ApartmentChoiceViewModel> apartmentChoicesList = new List<ApartmentChoiceViewModel>();
                 foreach (GET_AA_APARTMENT_CHOICES_BY_APP_ID_Result apartmentChoiceDBModel in apartmentChoicesResult)
                 {
-                    ApartmentChoiceViewModel apartmentChoiceModel = new ApartmentChoiceViewModel
-                    {
-                        ApplicationID = applicationID,
-                        HallName = apartmentChoiceDBModel.HallName,
-                        HallRank = apartmentChoiceDBModel.Ranking
-                    };
+                    ApartmentChoiceViewModel apartmentChoiceModel = apartmentChoiceDBModel; //implicit conversion
 
                     // Add this new ApartmentChoiceModel object to the list of apartment choices for this application
                     apartmentChoicesList.Add(apartmentChoiceModel);
