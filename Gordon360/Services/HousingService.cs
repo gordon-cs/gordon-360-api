@@ -637,7 +637,7 @@ namespace Gordon360.Services
                 List<ApartmentApplicantViewModel> applicantsList = new List<ApartmentApplicantViewModel>();
                 foreach (GET_AA_APPLICANTS_BY_APPID_Result applicantDBModel in applicantsResult)
                 {
-                    Student student = Data.StudentData.FirstOrDefault(x => x.ID.ToLower() == applicantDBModel.Username.ToLower());
+                    StudentProfileViewModel student = Data.StudentData.FirstOrDefault(x => x.AD_Username.ToLower() == applicantDBModel.Username.ToLower());
                     if (student != null)
                     {
                         // If the student information is found, create a new ApplicationViewModel and fill in its properties
