@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Gordon360.Repositories;
+using Gordon360.Static.Data;
+using System;
+using System.Linq;
 
 namespace Gordon360.Models.ViewModels
 {
@@ -6,7 +9,7 @@ namespace Gordon360.Models.ViewModels
     public class ApartmentApplicantViewModel
     {
         public int ApplicationID { get; set; }
-        public StudentProfileViewModel Profile { get; set; } // We need a way to make this StudentProfileViewModel if the is authorized to view this user profile, otherwise it must be PublicStudentProfileViewModel
+        public PublicStudentProfileViewModel Profile { get; set; }
         private string _username;
         public string Username
         {
@@ -22,14 +25,18 @@ namespace Gordon360.Models.ViewModels
 
         public static implicit operator ApartmentApplicantViewModel(GET_AA_APPLICANTS_BY_APPID_Result applicantDBModel)
         {
-            ApartmentApplicantViewModel vm = new ApartmentApplicantViewModel
+            ApartmentApplicantViewModel applicantModel = new ApartmentApplicantViewModel
             {
                 ApplicationID = applicantDBModel.AprtAppID,
-                StudentID = applicantDBModel.ID_NUM,
-                //Username = applicantDBModel.Username, // Code for after we remade the AA_Applicants table
+                Username = applicantDBModel.Username,
+                // search username in cached data
+                Profile = (StudentProfileViewModel)Data.StudentData.FirstOrDefault(x => x.AD_Username.ToLower() == applicantDBModel.Username.ToLower()),
+                OffCampusProgram = applicantDBModel.AprtProgram,
+                Probation = false, // Initialize to false. The actual value is determine and set in HousingService iff the user is housing admin
+                Points = 0, // Initialize to zero. The point actual points are calculated in HousingService
             };
 
-            return vm;
+            return applicantModel;
         }
     }
 }
