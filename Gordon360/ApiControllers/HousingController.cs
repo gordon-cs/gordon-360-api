@@ -113,10 +113,9 @@ namespace Gordon360.Controllers.Api
             ClaimsPrincipal authenticatedUser = ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
-            string userID = _accountService.GetAccountByUsername(username).GordonID;
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
-            int? result = _housingService.GetApplicationID(userID, sessionID);
+            int? result = _housingService.GetApplicationID(username, sessionID);
             if (result != null)
             {
                 return Ok(result);
@@ -136,10 +135,9 @@ namespace Gordon360.Controllers.Api
         [Route("apartment/{username}")]
         public IHttpActionResult GetUserApplicationID(string username)
         {
-            string userID = _accountService.GetAccountByUsername(username).GordonID;
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
-            int? result = _housingService.GetApplicationID(userID, sessionID);
+            int? result = _housingService.GetApplicationID(username, sessionID);
             if (result != null)
             {
                 return Ok(result);
@@ -176,12 +174,10 @@ namespace Gordon360.Controllers.Api
             //get token data from context, username is the username of current logged in person
             ClaimsPrincipal authenticatedUser = ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            string userID = _accountService.GetAccountByUsername(username).GordonID;
 
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
             string editorUsername = applicationDetails?.EditorProfile?.AD_Username ?? applicationDetails?.EditorUsername;
-            string editorID = _accountService.GetAccountByUsername(editorUsername).GordonID;
 
             ApartmentApplicantViewModel[] apartmentApplicants = applicationDetails.Applicants;
             foreach (ApartmentApplicantViewModel applicant in apartmentApplicants)
@@ -194,7 +190,7 @@ namespace Gordon360.Controllers.Api
 
             ApartmentChoiceViewModel[] apartmentChoices = applicationDetails.ApartmentChoices;
 
-            int result = _housingService.SaveApplication(userID, sessionID, editorID, apartmentApplicants, apartmentChoices);
+            int result = _housingService.SaveApplication(username, sessionID, editorUsername, apartmentApplicants, apartmentChoices);
 
             return Created("Status of application saving: ", result);
         }
