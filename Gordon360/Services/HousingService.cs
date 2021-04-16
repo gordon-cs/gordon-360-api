@@ -111,13 +111,13 @@ namespace Gordon360.Services
         /// Calls a stored procedure that tries to get the id of an the application that a given user is 
         /// applicant on for a given session
         /// </summary>
-        /// <param name="userID"> The student username to look for </param>
+        /// <param name="username"> The student username to look for </param>
         /// <param name="sess_cde"> Session for which the application would be </param>
         /// <returns> 
         /// The id of the application or 
         /// null if the user is not on an application for that session 
         /// </returns>
-        public int? GetApplicationID(string userID, string sess_cde)
+        public int? GetApplicationID(string username, string sess_cde)
         {
             IEnumerable<ApartmentAppIDViewModel> idResult = null;
 
@@ -255,20 +255,20 @@ namespace Gordon360.Services
 
         /// <summary>
         /// Edit an existings apartment application
-        /// - first, it gets the EditorUsername from the database for the given application ID and makes sure that the student ID of the current user matches that stored ID number
+        /// - first, it gets the EditorUsername from the database for the given application ID and makes sure that the student username of the current user matches that stored username
         /// - second, it gets an array of the applicants that are already stored in the database for the given application ID
         /// - third, it inserts each applicant that is in the 'newApplicantIDs' array but was not yet in the database
         /// - fourth, it removes each applicant that was stored in the database but was not in the 'newApplicantIDs' array
         ///
         /// </summary>
-        /// <param name="userID"> The student username of the user who is attempting to save the apartment application (retrieved via authentication token) </param>
+        /// <param name="username"> The student username of the user who is attempting to save the apartment application (retrieved via authentication token) </param>
         /// <param name="sess_cde"> The current session code </param>
         /// <param name="applicationID"> The application ID number of the application to be edited </param>
         /// <param name="newEditorUsername"> The student username of the student who is declared to be the editor of this application (retrieved from the JSON from the front end) </param>
         /// <param name="newApartmentApplicants"> Array of JSON objects providing apartment applicants </param>
         /// <param name="newApartmentChoices"> Array of JSON objects providing apartment hall choices </param>
         /// <returns>Returns the application ID number if all the queries succeeded</returns>
-        public int EditApplication(string userID, string sess_cde, int applicationID, string newEditorUsername, ApartmentApplicantViewModel[] newApartmentApplicants, ApartmentChoiceViewModel[] newApartmentChoices)
+        public int EditApplication(string username, string sess_cde, int applicationID, string newEditorUsername, ApartmentApplicantViewModel[] newApartmentApplicants, ApartmentChoiceViewModel[] newApartmentChoices)
         {
             CCTEntities1 context = new CCTEntities1();
 
