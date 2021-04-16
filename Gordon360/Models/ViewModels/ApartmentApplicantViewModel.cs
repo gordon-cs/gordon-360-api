@@ -1,5 +1,4 @@
-﻿using Gordon360.Repositories;
-using Gordon360.Static.Data;
+﻿using Gordon360.Static.Data;
 using System;
 using System.Linq;
 
@@ -17,7 +16,18 @@ namespace Gordon360.Models.ViewModels
             set => _username = value;
         }
         public DateTime? BirthDate { get; set; }
-        public int? Age { get; set; } // To be calculated from the birthday
+        public int? Age
+        {
+            get
+            {
+                if (BirthDate.HasValue)
+                {
+                    DateTime nextSemester = new DateTime(DateTime.Today.Year, 9, 1); //The next semester is fall of the current year, since apartment applications are only in the spring
+                    return nextSemester.Year - BirthDate.Value.Year; // This age is meant to be approximate, so no need for leap-year compensation or an exact 'nextSemester' date
+                }
+                else { return null; }
+            }
+        }
         public string Class => Profile?.Class ?? null;
         public string OffCampusProgram { get; set; }
         public bool Probation { get; set; }
