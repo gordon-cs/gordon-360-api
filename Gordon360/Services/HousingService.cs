@@ -140,10 +140,10 @@ namespace Gordon360.Services
 
         /// <summary>
         /// Saves student housing info
-        /// - first, it creates a new row in the applications table and inserts the id of the primary applicant and a timestamp
+        /// - first, it creates a new row in the applications table and inserts the username of the primary applicant and a timestamp
         /// - second, it retrieves the application id of the application with the information we just inserted (because
         /// the database creates the application ID so we have to ask it which number it generated for it)
-        /// - third, it inserts each applicant into the applicants table along with the apartment ID so we know
+        /// - third, it inserts each applicant into the applicants table along with the application ID so we know
         /// which application on which they are an applicant
         ///
         /// </summary>
@@ -218,7 +218,7 @@ namespace Gordon360.Services
                 programParam = new SqlParameter("@APRT_PROGRAM", applicant.OffCampusProgram ?? "");
                 sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
 
-                int? applicantResult = _context.Database.ExecuteSqlCommand("INSERT_AA_APPLICANT @APPLICATION_ID, @USERNAME, @APRT_PROGRAM, @SESS_CDE", appIDParam, userParam, programParam, sessionParam); //run stored procedure
+                int? applicantResult = context.Database.ExecuteSqlCommand("INSERT_AA_APPLICANT @APPLICATION_ID, @USERNAME, @APRT_PROGRAM, @SESS_CDE", appIDParam, userParam, programParam, sessionParam); //run stored procedure
                 if (applicantResult == null)
                 {
                     throw new ResourceCreationException() { ExceptionMessage = "Applicant " + applicant.Username + " could not be saved." };
@@ -249,7 +249,7 @@ namespace Gordon360.Services
 
         /// <summary>
         /// Edit an existings apartment application
-        /// - first, it gets the EditorUsername from the database for the given application ID and makes sure that the student ID of the current user matches that stored ID number
+        /// - first, it gets the EditorUsername from the database for the given application ID and makes sure that the student username of the current user matches that stored username
         /// - second, it gets an array of the applicants that are already stored in the database for the given application ID
         /// - third, it inserts each applicant that is in the 'newApplicantIDs' array but was not yet in the database
         /// - fourth, it removes each applicant that was stored in the database but was not in the 'newApplicantIDs' array
@@ -572,8 +572,6 @@ namespace Gordon360.Services
                     throw new ResourceCreationException() { ExceptionMessage = "The application DateModified could not be updated." };
                 }
             }
-
-
             return true;
         }
 
