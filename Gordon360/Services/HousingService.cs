@@ -610,7 +610,7 @@ namespace Gordon360.Services
 
             GET_AA_APPLICATIONS_BY_ID_Result applicationsDBModel = applicationResult.FirstOrDefault(x => x.AprtAppID == applicationID);
 
-            Student editorStudent = Data.StudentData.FirstOrDefault(x => x.ID.ToLower() == applicationsDBModel.EditorUsername.ToLower());
+           StudentProfileViewModel editorStudent = Data.StudentData.FirstOrDefault(x => x.AD_Username.ToLower() == applicationsDBModel.EditorUsername.ToLower());
             if (editorStudent == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The student information about the editor of this application could not be found." };
