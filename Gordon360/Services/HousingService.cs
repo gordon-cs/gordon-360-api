@@ -680,7 +680,7 @@ namespace Gordon360.Services
                 if (applicantsList.Any())
                 {
                     // Add this list of applicants to the application model as an array
-                    apartmentApplicationModel.Applicants = applicantsList.ToArray();
+                    apartmentApplicationModel.Applicants = applicantsList.OrderBy(x => x.Username).ToArray();
                 }
             }
 
