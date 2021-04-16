@@ -206,14 +206,14 @@ namespace Gordon360.Services
             // Save applicant information
 
             SqlParameter appIDParam = null;
-            SqlParameter idParam = null;
+            SqlParameter userParam = null;
             SqlParameter programParam = null;
 
             foreach (ApartmentApplicantViewModel applicant in apartmentApplicants)
             {
                 // All SqlParameters must be remade before being reused in an SQL Query to prevent errors
                 appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
-                idParam = new SqlParameter("@USERNAME", applicant.Username);
+                userParam = new SqlParameter("@USERNAME", applicant.Username);
                 if (applicant.OffCampusProgram != null)
                 {
                     programParam = new SqlParameter("@APRT_PROGRAM", applicant.OffCampusProgram);
@@ -224,7 +224,7 @@ namespace Gordon360.Services
                 }
                 sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
 
-                int? applicantResult = context.Database.ExecuteSqlCommand("INSERT_AA_APPLICANT @APPLICATION_ID, @USERNAME, @APRT_PROGRAM, @SESS_CDE", appIDParam, idParam, programParam, sessionParam); //run stored procedure
+                int? applicantResult = context.Database.ExecuteSqlCommand("INSERT_AA_APPLICANT @APPLICATION_ID, @USERNAME, @APRT_PROGRAM, @SESS_CDE", appIDParam, userParam, programParam, sessionParam); //run stored procedure
                 if (applicantResult == null)
                 {
                     throw new ResourceCreationException() { ExceptionMessage = "Applicant " + applicant.Username + " could not be saved." };
@@ -514,7 +514,7 @@ namespace Gordon360.Services
             SqlParameter timeParam = new SqlParameter("@NOW", now);
             if (newEditorUsername != storedEditorUsername)
             {
-                SqlParameter editorParam = new SqlParameter("@EDITOR_USERNAME", userID);
+                SqlParameter editorParam = new SqlParameter("@EDITOR_USERNAME", username);
                 SqlParameter newEditorParam = new SqlParameter("@NEW_EDITOR_USERNAME", newEditorUsername);
                 int? result = context.Database.ExecuteSqlCommand("UPDATE_AA_APPLICATION_EDITOR @APPLICATION_ID, @EDITOR_USERNAME, @NOW, @NEW_EDITOR_USERNAME", appIDParam, editorParam, timeParam, newEditorParam); //run stored procedure
                 if (result == null)
