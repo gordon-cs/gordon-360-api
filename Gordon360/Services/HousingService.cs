@@ -288,7 +288,7 @@ namespace Gordon360.Services
 
             string storedEditorUsername = editorResult.FirstOrDefault();
 
-            if (userID != storedEditorUsername)
+            if (username != storedEditorUsername)
             {
                 // Return -1 if the current user does not match this application's editor stored in the database
                 return -1;
