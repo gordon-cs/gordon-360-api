@@ -588,8 +588,6 @@ namespace Gordon360.Services
                     throw new ResourceCreationException() { ExceptionMessage = "The application DateModified could not be updated." };
                 }
             }
-
-
             return true;
         }
 
