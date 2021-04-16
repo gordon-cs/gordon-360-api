@@ -610,7 +610,7 @@ namespace Gordon360.Services
 
             GET_AA_APPLICATIONS_BY_ID_Result applicationsDBModel = applicationResult.FirstOrDefault(x => x.AprtAppID == applicationID);
 
-            Student editorStudent = Data.StudentData.FirstOrDefault(x => x.ID.ToLower() == applicationsDBModel.EditorUsername.ToLower());
+           StudentProfileViewModel editorStudent = Data.StudentData.FirstOrDefault(x => x.AD_Username.ToLower() == applicationsDBModel.EditorUsername.ToLower());
             if (editorStudent == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The student information about the editor of this application could not be found." };
@@ -637,7 +637,7 @@ namespace Gordon360.Services
                 List<ApartmentApplicantViewModel> applicantsList = new List<ApartmentApplicantViewModel>();
                 foreach (GET_AA_APPLICANTS_BY_APPID_Result applicantDBModel in applicantsResult)
                 {
-                    Student student = Data.StudentData.FirstOrDefault(x => x.ID.ToLower() == applicantDBModel.Username.ToLower());
+                    StudentProfileViewModel student = Data.StudentData.FirstOrDefault(x => x.AD_Username.ToLower() == applicantDBModel.Username.ToLower());
                     if (student != null)
                     {
                         // If the student information is found, create a new ApplicationViewModel and fill in its properties
