@@ -137,10 +137,10 @@ namespace Gordon360.Services
 
         /// <summary>
         /// Saves student housing info
-        /// - first, it creates a new row in the applications table and inserts the id of the primary applicant and a timestamp
+        /// - first, it creates a new row in the applications table and inserts the username of the primary applicant and a timestamp
         /// - second, it retrieves the application id of the application with the information we just inserted (because
         /// the database creates the application ID so we have to ask it which number it generated for it)
-        /// - third, it inserts each applicant into the applicants table along with the apartment ID so we know
+        /// - third, it inserts each applicant into the applicants table along with the application ID so we know
         /// which application on which they are an applicant
         ///
         /// </summary>
