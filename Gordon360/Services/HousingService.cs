@@ -13,12 +13,15 @@ namespace Gordon360.Services
 {
     public class HousingService : IHousingService
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private IUnitOfWork _unitOfWork;
 
+        private CCTEntities1 _context;
 
         public HousingService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
+
+            _context = new CCTEntities1();
         }
 
         /// <summary>
@@ -152,8 +155,6 @@ namespace Gordon360.Services
         /// <returns>Returns the application ID number if all the queries succeeded</returns>
         public int SaveApplication(string username, string sess_cde, string editorUsername, ApartmentApplicantViewModel[] apartmentApplicants, ApartmentChoiceViewModel[] apartmentChoices)
         {
-            CCTEntities1 context = new CCTEntities1();
-
             IEnumerable<ApartmentAppIDViewModel> idResult = null;
 
             DateTime now = System.DateTime.Now;
@@ -176,7 +177,7 @@ namespace Gordon360.Services
             editorParam = new SqlParameter("@EDITOR_USERNAME", editorUsername);
 
             // If an existing application was not found for this editor, then insert a new application entry in the database
-            int? newAppResult = context.Database.ExecuteSqlCommand("INSERT_AA_APPLICATION @NOW, @EDITOR_USERNAME", timeParam, editorParam); //run stored procedure
+            int? newAppResult = _context.Database.ExecuteSqlCommand("INSERT_AA_APPLICATION @NOW, @EDITOR_USERNAME", timeParam, editorParam); //run stored procedure
             if (newAppResult == null)
             {
                 throw new ResourceCreationException() { ExceptionMessage = "The application could not be saved." };
@@ -217,7 +218,7 @@ namespace Gordon360.Services
                 programParam = new SqlParameter("@APRT_PROGRAM", applicant.OffCampusProgram ?? "");
                 sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
 
-                int? applicantResult = context.Database.ExecuteSqlCommand("INSERT_AA_APPLICANT @APPLICATION_ID, @USERNAME, @APRT_PROGRAM, @SESS_CDE", appIDParam, userParam, programParam, sessionParam); //run stored procedure
+                int? applicantResult = _context.Database.ExecuteSqlCommand("INSERT_AA_APPLICANT @APPLICATION_ID, @USERNAME, @APRT_PROGRAM, @SESS_CDE", appIDParam, userParam, programParam, sessionParam); //run stored procedure
                 if (applicantResult == null)
                 {
                     throw new ResourceCreationException() { ExceptionMessage = "Applicant " + applicant.Username + " could not be saved." };
@@ -236,7 +237,7 @@ namespace Gordon360.Services
                 appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
                 rankingParam = new SqlParameter("@RANKING", choice.HallRank);
                 buildingCodeParam = new SqlParameter("@HALL_NAME", choice.HallName);
-                int? apartmentChoiceResult = context.Database.ExecuteSqlCommand("INSERT_AA_APARTMENT_CHOICE @APPLICATION_ID, @RANKING, @HALL_NAME", appIDParam, rankingParam, buildingCodeParam); // run stored procedure
+                int? apartmentChoiceResult = _context.Database.ExecuteSqlCommand("INSERT_AA_APARTMENT_CHOICE @APPLICATION_ID, @RANKING, @HALL_NAME", appIDParam, rankingParam, buildingCodeParam); // run stored procedure
                 if (apartmentChoiceResult == null)
                 {
                     throw new ResourceCreationException() { ExceptionMessage = "The apartment preference could not be saved." };
@@ -254,17 +255,15 @@ namespace Gordon360.Services
         /// - fourth, it removes each applicant that was stored in the database but was not in the 'newApplicantIDs' array
         ///
         /// </summary>
-        /// <param name="userID"> The student username of the user who is attempting to save the apartment application (retrieved via authentication token) </param>
+        /// <param name="username"> The student username of the user who is attempting to save the apartment application (retrieved via authentication token) </param>
         /// <param name="sess_cde"> The current session code </param>
         /// <param name="applicationID"> The application ID number of the application to be edited </param>
         /// <param name="newEditorUsername"> The student username of the student who is declared to be the editor of this application (retrieved from the JSON from the front end) </param>
         /// <param name="newApartmentApplicants"> Array of JSON objects providing apartment applicants </param>
         /// <param name="newApartmentChoices"> Array of JSON objects providing apartment hall choices </param>
         /// <returns>Returns the application ID number if all the queries succeeded</returns>
-        public int EditApplication(string userID, string sess_cde, int applicationID, string newEditorUsername, ApartmentApplicantViewModel[] newApartmentApplicants, ApartmentChoiceViewModel[] newApartmentChoices)
+        public int EditApplication(string username, string sess_cde, int applicationID, string newEditorUsername, ApartmentApplicantViewModel[] newApartmentApplicants, ApartmentChoiceViewModel[] newApartmentChoices)
         {
-            CCTEntities1 context = new CCTEntities1();
-
             IEnumerable<string> editorResult = null;
 
             SqlParameter appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
@@ -277,10 +276,10 @@ namespace Gordon360.Services
 
             string storedEditorUsername = editorResult.FirstOrDefault();
 
-            if (userID != storedEditorUsername)
+            if (username != storedEditorUsername)
             {
-                // Return -1 if the current user does not match this application's editor stored in the database
-                return -1;
+                // This should already be caught by the StateYourBusiness, but I will leave this check here just in case
+                throw new Exceptions.CustomExceptions.UnauthorizedAccessException() { ExceptionMessage = "The current user does not match the stored editor of this application" };
             }
             // Only perform the update if the username of the current user matched the 'EditorUsername' stored in the database for the requested application
 
@@ -330,8 +329,7 @@ namespace Gordon360.Services
                         ApartmentApplicantViewModel nonMatchingApplicant = new ApartmentApplicantViewModel
                         {
                             ApplicationID = existingApplicant.AprtAppID,
-                            StudentID = existingApplicant.ID_NUM,
-                            // Username = existingApplicant.Username, // Code for after we remade the AA_Applicants table
+                            Username = existingApplicant.Username, // Code for after we remade the AA_Applicants table
                         };
                         // If the applicant is in the existing list but not in the new list of applicants, then we need to remove it from the database
                         applicantsToRemove.Add(nonMatchingApplicant);
@@ -352,7 +350,7 @@ namespace Gordon360.Services
                 programParam = new SqlParameter("@APRT_PROGRAM", applicant.OffCampusProgram ?? "");
                 sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
 
-                int? applicantResult = context.Database.ExecuteSqlCommand("INSERT_AA_APPLICANT @APPLICATION_ID, @USERNAME, @APRT_PROGRAM, @SESS_CDE", appIDParam, userParam, programParam, sessionParam); //run stored procedure
+                int? applicantResult = _context.Database.ExecuteSqlCommand("INSERT_AA_APPLICANT @APPLICATION_ID, @USERNAME, @APRT_PROGRAM, @SESS_CDE", appIDParam, userParam, programParam, sessionParam); //run stored procedure
                 if (applicantResult == null)
                 {
                     throw new ResourceCreationException() { ExceptionMessage = "Applicant " + applicant.Username + " could not be inserted." };
@@ -368,7 +366,7 @@ namespace Gordon360.Services
                 programParam = new SqlParameter("@APRT_PROGRAM", applicant.OffCampusProgram ?? "");
                 sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
 
-                int? applicantResult = context.Database.ExecuteSqlCommand("UPDATE_AA_APPLICANT @APPLICATION_ID, @USERNAME, @APRT_PROGRAM, @SESS_CDE", appIDParam, userParam, programParam, sessionParam); //run stored procedure
+                int? applicantResult = _context.Database.ExecuteSqlCommand("UPDATE_AA_APPLICANT @APPLICATION_ID, @USERNAME, @APRT_PROGRAM, @SESS_CDE", appIDParam, userParam, programParam, sessionParam); //run stored procedure
                 if (applicantResult == null)
                 {
                     throw new ResourceCreationException() { ExceptionMessage = "Applicant " + applicant.Username + " could not be updated." };
@@ -383,7 +381,7 @@ namespace Gordon360.Services
                 userParam = new SqlParameter("@USERNAME", applicant.Username);
                 sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
 
-                int? applicantResult = context.Database.ExecuteSqlCommand("DELETE_AA_APPLICANT @APPLICATION_ID, @USERNAME, @SESS_CDE", appIDParam, userParam, sessionParam); //run stored procedure
+                int? applicantResult = _context.Database.ExecuteSqlCommand("DELETE_AA_APPLICANT @APPLICATION_ID, @USERNAME, @SESS_CDE", appIDParam, userParam, sessionParam); //run stored procedure
                 if (applicantResult == null)
                 {
                     throw new ResourceNotFoundException() { ExceptionMessage = "Applicant " + applicant.Username + " could not be removed." };
@@ -436,7 +434,7 @@ namespace Gordon360.Services
                         {
                             ApplicationID = existingApartmentChoice.AprtAppID,
                             HallRank = existingApartmentChoice.Ranking,
-                            HallName = existingApartmentChoice.BLDG_CDE,
+                            HallName = existingApartmentChoice.HallName,
                         };
                         // If the apartment is in the existing list but not in the new list of apartments, then we need to remove it from the database
                         apartmentChoicesToRemove.Add(nonMatchingApartmentChoice);
@@ -455,7 +453,7 @@ namespace Gordon360.Services
                 rankingParam = new SqlParameter("@RANKING", apartmentChoice.HallRank);
                 buildingCodeParam = new SqlParameter("@HALL_NAME", apartmentChoice.HallName);
 
-                int? apartmentChoiceResult = context.Database.ExecuteSqlCommand("INSERT_AA_APARTMENT_CHOICE @APPLICATION_ID, @RANKING, @HALL_NAME", appIDParam, rankingParam, buildingCodeParam); //run stored procedure
+                int? apartmentChoiceResult = _context.Database.ExecuteSqlCommand("INSERT_AA_APARTMENT_CHOICE @APPLICATION_ID, @RANKING, @HALL_NAME", appIDParam, rankingParam, buildingCodeParam); //run stored procedure
                 if (apartmentChoiceResult == null)
                 {
                     throw new ResourceCreationException() { ExceptionMessage = "Apartment choice with ID " + applicationID + " and hall name " + apartmentChoice.HallName + " could not be inserted." };
@@ -470,7 +468,7 @@ namespace Gordon360.Services
                 rankingParam = new SqlParameter("@RANKING", apartmentChoice.HallRank);
                 buildingCodeParam = new SqlParameter("@HALL_NAME", apartmentChoice.HallName);
 
-                int? apartmentChoiceResult = context.Database.ExecuteSqlCommand("UPDATE_AA_APARTMENT_CHOICE @APPLICATION_ID, @RANKING, @HALL_NAME", appIDParam, rankingParam, buildingCodeParam); //run stored procedure
+                int? apartmentChoiceResult = _context.Database.ExecuteSqlCommand("UPDATE_AA_APARTMENT_CHOICE @APPLICATION_ID, @RANKING, @HALL_NAME", appIDParam, rankingParam, buildingCodeParam); //run stored procedure
                 if (apartmentChoiceResult == null)
                 {
                     throw new ResourceCreationException() { ExceptionMessage = "Apartment choice with ID " + applicationID + " and hall name " + apartmentChoice.HallName + " could not be updated." };
@@ -484,7 +482,7 @@ namespace Gordon360.Services
                 appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
                 buildingCodeParam = new SqlParameter("@HALL_NAME", apartmentChoice.HallName);
 
-                int? apartmentChoiceResult = context.Database.ExecuteSqlCommand("DELETE_AA_APARTMENT_CHOICE @APPLICATION_ID, @HALL_NAME", appIDParam, buildingCodeParam); //run stored procedure
+                int? apartmentChoiceResult = _context.Database.ExecuteSqlCommand("DELETE_AA_APARTMENT_CHOICE @APPLICATION_ID, @HALL_NAME", appIDParam, buildingCodeParam); //run stored procedure
                 if (apartmentChoiceResult == null)
                 {
                     throw new ResourceNotFoundException() { ExceptionMessage = "Apartment choice with ID " + applicationID + " and hall name " + apartmentChoice.HallName + " could not be removed." };
@@ -501,9 +499,9 @@ namespace Gordon360.Services
             SqlParameter timeParam = new SqlParameter("@NOW", now);
             if (newEditorUsername != storedEditorUsername)
             {
-                SqlParameter editorParam = new SqlParameter("@EDITOR_USERNAME", userID);
+                SqlParameter editorParam = new SqlParameter("@EDITOR_USERNAME", username);
                 SqlParameter newEditorParam = new SqlParameter("@NEW_EDITOR_USERNAME", newEditorUsername);
-                int? result = context.Database.ExecuteSqlCommand("UPDATE_AA_APPLICATION_EDITOR @APPLICATION_ID, @EDITOR_USERNAME, @NOW, @NEW_EDITOR_USERNAME", appIDParam, editorParam, timeParam, newEditorParam); //run stored procedure
+                int? result = _context.Database.ExecuteSqlCommand("UPDATE_AA_APPLICATION_EDITOR @APPLICATION_ID, @EDITOR_USERNAME, @NOW, @NEW_EDITOR_USERNAME", appIDParam, editorParam, timeParam, newEditorParam); //run stored procedure
                 if (result == null)
                 {
                     throw new ResourceCreationException() { ExceptionMessage = "The application could not be updated." };
@@ -511,7 +509,7 @@ namespace Gordon360.Services
             }
             else
             {
-                int? result = context.Database.ExecuteSqlCommand("UPDATE_AA_APPLICATION_DATEMODIFIED @APPLICATION_ID, @NOW", appIDParam, timeParam); //run stored procedure
+                int? result = _context.Database.ExecuteSqlCommand("UPDATE_AA_APPLICATION_DATEMODIFIED @APPLICATION_ID, @NOW", appIDParam, timeParam); //run stored procedure
                 if (result == null)
                 {
                     throw new ResourceCreationException() { ExceptionMessage = "The application DateModified could not be updated." };
@@ -542,16 +540,15 @@ namespace Gordon360.Services
                 return false;
             }
 
-            string storedEditorUsername = editorResult.First();
+            string storedEditorUsername = editorResult.FirstOrDefault();
 
             if (username != storedEditorUsername)
             {
-                // Return false if the current user does not match this application's editor stored in the database
-                return false;
+                // Throw an error if the current user does not match this application's editor stored in the database
+                throw new Exceptions.CustomExceptions.UnauthorizedAccessException() { ExceptionMessage = "The current user does not match the stored editor of this application" };
+
             }
             // Only perform the update if the username of the current user matched the 'EditorUsername' username stored in the database for the requested application
-
-            CCTEntities1 context = new CCTEntities1();
 
             DateTime now = System.DateTime.Now;
 
@@ -561,7 +558,7 @@ namespace Gordon360.Services
             {
                 SqlParameter editorParam = new SqlParameter("@EDITOR_USERNAME", username);
                 SqlParameter newEditorParam = new SqlParameter("@NEW_EDITOR_USERNAME", newEditorUsername);
-                int? result = context.Database.ExecuteSqlCommand("UPDATE_AA_APPLICATION_EDITOR @APPLICATION_ID, @EDITOR_USERNAME, @NOW, @NEW_EDITOR_USERNAME", appIDParam, editorParam, timeParam, newEditorParam); //run stored procedure
+                int? result = _context.Database.ExecuteSqlCommand("UPDATE_AA_APPLICATION_EDITOR @APPLICATION_ID, @EDITOR_USERNAME, @NOW, @NEW_EDITOR_USERNAME", appIDParam, editorParam, timeParam, newEditorParam); //run stored procedure
                 if (result == null)
                 {
                     throw new ResourceCreationException() { ExceptionMessage = "The application could not be updated." };
@@ -569,7 +566,7 @@ namespace Gordon360.Services
             }
             else
             {
-                int? result = context.Database.ExecuteSqlCommand("UPDATE_AA_APPLICATION_DATEMODIFIED @APPLICATION_ID, @NOW", appIDParam, timeParam); //run stored procedure
+                int? result = _context.Database.ExecuteSqlCommand("UPDATE_AA_APPLICATION_DATEMODIFIED @APPLICATION_ID, @NOW", appIDParam, timeParam); //run stored procedure
                 if (result == null)
                 {
                     throw new ResourceCreationException() { ExceptionMessage = "The application DateModified could not be updated." };
@@ -597,40 +594,14 @@ namespace Gordon360.Services
                 // We will have to decide what is the best course of action in this case
             }
 
-            GET_AA_APPLICATIONS_BY_ID_Result applicationDBModel = applicationResult.First(x => x.AprtAppID == applicationID);
+            GET_AA_APPLICATIONS_BY_ID_Result applicationDBModel = applicationResult.FirstOrDefault(x => x.AprtAppID == applicationID);
 
-            StudentProfileViewModel editorStudent = Data.StudentData.First(x => x.ID.ToLower() == applicationDBModel.EditorID.ToLower());
-
+            StudentProfileViewModel editorStudent = (StudentProfileViewModel)Data.StudentData.FirstOrDefault(x => x.AD_Username.ToLower() == applicationDBModel.EditorUsername.ToLower());
             if (editorStudent == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The student information about the editor of this application could not be found." };
             }
 
-            //object editorStudent = null;
-            //
-            //else if (username == applicationDBModel.EditorUsername)
-            //{
-            //    editorStudent = _editorStudent;
-            //}
-            //else
-            //{
-            //    //security control depends on viewer type. apply different views to different viewers.
-            //    switch (viewerType)
-            //    {
-            //        case Position.SUPERADMIN:
-            //            editorStudent = _editorStudent;
-            //            break;
-            //        case Position.POLICE:
-            //            editorStudent = _editorStudent;
-            //            break;
-            //        case Position.STUDENT:
-            //            editorStudent = (_editorStudent == null) ? null : (PublicStudentProfileViewModel)_editorStudent;         //implicit conversion
-            //            break;
-            //        case Position.FACSTAFF:
-            //            editorStudent = _editorStudent;
-            //            break;
-            //    }
-            //}
 
             // Assign the values from the database to the corresponding properties
             ApartmentApplicationViewModel apartmentApplicationModel = new ApartmentApplicationViewModel
@@ -653,87 +624,58 @@ namespace Gordon360.Services
                 List<ApartmentApplicantViewModel> applicantsList = new List<ApartmentApplicantViewModel>();
                 foreach (GET_AA_APPLICANTS_BY_APPID_Result applicantDBModel in applicantsResult)
                 {
-                    // search username in cached data
-                    StudentProfileViewModel student = _profileService.GetStudentProfileByUsername(applicantDBModel.Username);
-
-                    // If the student information is found, create a new ApplicationViewModel and fill in its properties
-                    if (student != null)
+                    if (applicantDBModel.AprtAppID == applicationID)
                     {
-                        //object student = null;
+                        ApartmentApplicantViewModel applicantModel = applicantDBModel; //implicit conversion
 
-                        //if (username == applicantDBModel.Username)
-                        //{
-                        //    student = _student;
-                        //}
-                        //else
-                        //{
-                        //    //security control depends on viewer type. apply different views to different viewers.
-                        //    switch (viewerType)
-                        //    {
-                        //        case Position.SUPERADMIN:
-                        //            student = _student;
-                        //            break;
-                        //        case Position.POLICE:
-                        //            student = _student;
-                        //            break;
-                        //        case Position.STUDENT:
-                        //            student = (_student == null) ? null : (PublicStudentProfileViewModel)_student;         //implicit conversion
-                        //            break;
-                        //        case Position.FACSTAFF:
-                        //            student = _student;
-                        //            break;
-                        //    }
-                        //}
-
-                        ApartmentApplicantViewModel applicantModel = new ApartmentApplicantViewModel
+                        // If the student information is found, create a new ApplicationViewModel and fill in its properties
+                        if (applicantModel.Profile != null)
                         {
-                            ApplicationID = applicationID,
-                            Profile = student, // Conversion to be used in the future: (PublicStudentProfileViewModel)student, //implicit conversion
-                            Username = student.AD_Username,
-                            Age = null, // Not yet implemented
-                            OffCampusProgram = applicantDBModel.AprtProgram,
-                            Probation = false, // Not yet implemented. This is where we will put the code to check if a student has a probation
-                            Points = 0, // Initialize to zero. The point actual points are calculated a few lines below this
-                        };
-                        // The probation data is already in the database, we just need to write a stored procedure to get it
+                            if (true) // if the current user is a housing admin or super admin 
+                            {
+                                applicantModel.BirthDate = new UnitOfWork().AccountRepository.FirstOrDefault(x => x.AD_Username.ToLower() == applicantDBModel.Username.ToLower()).Birth_Date;
 
-                        // Calculate application points
-                        int points = 0;
-                        switch (applicantModel.Class)
-                        {
-                            case "Freshman":
-                                points += 1;
-                                break;
-                            case "Sophomore":
-                                points += 2;
-                                break;
-                            case "Junior":
-                                points += 3;
-                                break;
-                            case "Senior":
-                                points += 4;
-                                break;
+                                // The probation data is already in the database, we just need to write a stored procedure to get it
+
+                                // Calculate application points
+                                int points = 0;
+                                switch (applicantModel.Class)
+                                {
+                                    case "Freshman":
+                                        points += 1;
+                                        break;
+                                    case "Sophomore":
+                                        points += 2;
+                                        break;
+                                    case "Junior":
+                                        points += 3;
+                                        break;
+                                    case "Senior":
+                                        points += 4;
+                                        break;
+                                }
+
+                                if (applicantModel.Age >= 23)
+                                {
+                                    points += 1;
+                                }
+
+                                if (!string.IsNullOrEmpty(applicantModel.OffCampusProgram))
+                                {
+                                    points += 1;
+                                }
+
+                                if (applicantModel.Probation)
+                                {
+                                    points -= 3;
+                                }
+
+                                applicantModel.Points = Math.Max(0, points); ; // Set the resulting points to zero if the sum gave a value less than zero
+                            }
+
+                            // Add this new ApplicantViewModel object to the list of applicants for this application
+                            applicantsList.Add(applicantModel);
                         }
-
-                        if (applicantModel.Age >= 23)
-                        {
-                            points += 1;
-                        }
-
-                        if (!string.IsNullOrEmpty(applicantModel.OffCampusProgram))
-                        {
-                            points += 1;
-                        }
-
-                        if (applicantModel.Probation)
-                        {
-                            points -= 3;
-                        }
-
-                        applicantModel.Points = Math.Max(0, points); ; // Set the resulting points to zero if the sum gave a value less than zero
-
-                        // Add this new ApplicantViewModel object to the list of applicants for this application
-                        applicantsList.Add(applicantModel);
                     }
                 }
 
