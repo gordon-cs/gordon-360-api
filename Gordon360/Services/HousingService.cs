@@ -121,7 +121,7 @@ namespace Gordon360.Services
         {
             IEnumerable<ApartmentAppIDViewModel> idResult = null;
 
-            SqlParameter userParam = new SqlParameter("@STUDENT_USERNAME", userID);
+            SqlParameter userParam = new SqlParameter("@STUDENT_USERNAME", username);
             SqlParameter sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
 
             idResult = RawSqlQuery<ApartmentAppIDViewModel>.query("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_USERNAME", sessionParam, userParam); //run stored procedure
