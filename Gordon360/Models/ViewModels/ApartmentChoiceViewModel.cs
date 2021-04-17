@@ -13,7 +13,7 @@
             {
                 ApplicationID = apartmentChoiceDBModel.AprtAppID,
                 HallRank = apartmentChoiceDBModel.Ranking,
-                HallName = apartmentChoiceDBModel.BLDG_CDE, //HallName = dbApartmentChoice.HallName, // Code for after we remade the AA_ApartmentChoices table
+                HallName = dbApartmentChoice.HallName, // Code for after we remade the AA_ApartmentChoices table
             };
 
             return vm;

@@ -184,7 +184,7 @@ namespace Gordon360.Controllers.Api
             {
                 if (applicant.Profile == null)
                 {
-                    applicant.Profile = _profileService.GetStudentProfileByUsername(applicant?.Profile?.AD_Username ?? applicant?.Username);
+                    applicant.Profile = _profileService.GetStudentProfileByUsername(applicant.Username);
                 }
             }
 
@@ -230,7 +230,7 @@ namespace Gordon360.Controllers.Api
             {
                 if (applicant.Profile == null)
                 {
-                    applicant.Profile = _profileService.GetStudentProfileByUsername(applicant?.Profile?.AD_Username ?? applicant?.Username);
+                    applicant.Profile = _profileService.GetStudentProfileByUsername(applicant.Username);
                 }
             }
 
