@@ -56,9 +56,8 @@ class Test_AllHousingAppTest(control.testCase):
         self.session = self.createAuthorizedSession(control.username, control.password)
         self.url = control.hostURL + 'api/housing/admin'
         # add test user to whitelist
-        self.token_payload = { 'username':control.username, 'password':control.password, \
-            'grant_type':'password' }
-        api.post(self.session, self.url + '/' + str(control.my_id_number) + '/', self.token_payload)
+        self.data = { }
+        api.post(self.session, self.url + '/' + str(control.my_id_number) + '/', self.data)
         # check that user is on the whitelist
         response = api.get(self.session, self.url)
         # remove 
@@ -94,12 +93,10 @@ class Test_AllHousingAppTest(control.testCase):
             'EditorUsername' : control.leader_username,
             'Applicants' : [
                 {
-                    'StudentID' : control.leader_id_number,
                     'Username' : control.leader_username
                 },
                 {
-                    'StudentID' : control.username,
-                    'Username' : control.my_id_number
+                    'Username' : control.username
                 }
             ],
             'ApartmentChoices' : [
@@ -117,7 +114,9 @@ class Test_AllHousingAppTest(control.testCase):
                 }
             ],
         }   
-        appID = api.postAsJson(self.session, self.url, self.data)
+        appIDResponse = api.postAsJson(self.session, self.url, self.data)
+
+        appID = appIDResponse.content
 
         self.url = control.hostURL + 'api/housing/apartment/applications/' + str(appID)
         response = api.delete(self.session, self.url)
@@ -196,12 +195,19 @@ class Test_AllHousingAppTest(control.testCase):
             'EditorUsername' : control.leader_username,
             'Applicants' : [
                 {
-                    'StudentID' : control.leader_id_number,
                     'Username' : control.leader_username,
                 },
             ],
+            'ApartmentChoices' : [
+                {
+                    'HallRank' : 1,
+                    'HallName' : "Taj MaHall"
+                },
+            ],
         }
-        appID = api.postAsJson(self.session, self.url, self.data)
+        appIDResponse = api.postAsJson(self.session, self.url, self.data)
+
+        appID = appIDResponse.content
 
         self.url = control.hostURL + 'api/housing/apartment/applications/' + str(appID) + '/submit'
         self.data = {}
@@ -211,13 +217,9 @@ class Test_AllHousingAppTest(control.testCase):
             pytest.fail('Expected 200 OK, got {0}.'\
                 .format(response.status_code))
 
-        self.url = control.hostURL + 'api/housing/apartment/applications/' + str(appID)
-        application = api.get(self.session, self.url)
-
         # clean up
+        self.url = control.hostURL + 'api/housing/apartment/applications/' + str(appID)
         response = api.delete(self.session, self.url)
-
-        assert application.json()[0]['DateSubmitted'] != None
         
 
 #   Verify that the editor (primary applicant) can save the application
