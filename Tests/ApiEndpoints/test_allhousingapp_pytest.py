@@ -82,6 +82,53 @@ class Test_AllHousingAppTest(control.testCase):
             pytest.fail('Expected 404 Not Found, got {0}.'\
                 .format(response.status_code))
 
+#    Verify that an application and all rows that reference are deleted successfully
+#    Endpoint -- 'api/housing/apartment/applications/{applicationID}'
+#    Expected Status Code -- 200 OK
+#    Expected Content -- Empty Response content
+    def test_application_deleted(self):
+        self.session = self.createAuthorizedSession(control.username, control.password)
+        self.url = control.hostURL + 'api/housing/apartment/applications'
+        self.data = {
+            "EditorUsername" : control.leader_username,
+            "Applicants" : [
+                {
+                    "StudentID" : control.leader_id_number
+                    "Username" : control.leader_username
+                },
+                {
+                    "StudentID" : control.username
+                    "Username" : control.my_id_number
+                }
+            ],
+            "ApartmentChoices" : [
+                {
+                    "HallRank" : 1
+                    "HallName" : "Taj MaHall"
+                },
+                {
+                    "HallRank" : 2
+                    "HallName" : "Carnegie Hall"
+                },
+                {
+                    "HallRank" : 3
+                    "HallName" : "Hall of Mirrors"
+                }
+            ],
+        }   
+        appID = api.post(self.session, self.url, self.data)
+
+        self.url = control.hostURL + 'api/housing/apartment/applications/' + str(appID)
+
+        response = api.delete(self.session, self.url)
+
+        if not response.status_code == 200:
+            pytest.fail('Expected 404 Not Found, got {0}.'\
+                .format(response.status_code))
+
+        # make sure that they have actually been deleted by trying to access them
+        # (the referenced rows, too)
+
 #    Verify that the list of apartment-style halls is retrieved correctly
 #    Endpoint -- 'api/housing/halls'
 #    Expected Status Code -- 200 OK
