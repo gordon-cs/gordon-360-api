@@ -84,50 +84,65 @@ class Test_AllHousingAppTest(control.testCase):
 
 #    Verify that an application and all rows that reference are deleted successfully
 #    Endpoint -- 'api/housing/apartment/applications/{applicationID}'
-#    Expected Status Code -- 200 OK
+#    Expected Status Code -- 200 OK and 404 Not Found
 #    Expected Content -- Empty Response content
     def test_application_deleted(self):
         self.session = self.createAuthorizedSession(control.username, control.password)
         self.url = control.hostURL + 'api/housing/apartment/applications'
         self.data = {
-            "EditorUsername" : control.leader_username,
-            "Applicants" : [
+            'ApplicationID' : -1,
+            'EditorUsername' : control.leader_username,
+            'Applicants' : [
                 {
-                    "StudentID" : control.leader_id_number
-                    "Username" : control.leader_username
+                    'StudentID' : control.leader_id_number,
+                    'Username' : control.leader_username
                 },
                 {
-                    "StudentID" : control.username
-                    "Username" : control.my_id_number
+                    'StudentID' : control.username,
+                    'Username' : control.my_id_number
                 }
             ],
-            "ApartmentChoices" : [
+            'ApartmentChoices' : [
                 {
-                    "HallRank" : 1
-                    "HallName" : "Taj MaHall"
+                    'HallRank' : 1,
+                    'HallName' : "Taj MaHall"
                 },
                 {
-                    "HallRank" : 2
-                    "HallName" : "Carnegie Hall"
+                    'HallRank' : 2,
+                    'HallName' : "Carnegie Hall"
                 },
                 {
-                    "HallRank" : 3
-                    "HallName" : "Hall of Mirrors"
+                    'HallRank' : 3,
+                    'HallName' : "Hall of Mirrors"
                 }
             ],
         }   
-        appID = api.post(self.session, self.url, self.data)
+        appID = api.postAsJson(self.session, self.url, self.data)
 
         self.url = control.hostURL + 'api/housing/apartment/applications/' + str(appID)
-
         response = api.delete(self.session, self.url)
 
         if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'\
+                .format(response.status_code))
+
+        # make sure the referenced rows have been deleted too
+        # (no endpoint exists to just get a list of hall choices, 
+        # it is not verified here that the application hall choices are deleted)
+
+        self.url = control.hostURL + 'api/housing/apartment/' + control.leader_username
+        response = api.get(self.session, self.url)
+
+        if not response.status_code == 404:
             pytest.fail('Expected 404 Not Found, got {0}.'\
                 .format(response.status_code))
 
-        # make sure that they have actually been deleted by trying to access them
-        # (the referenced rows, too)
+        self.url = control.hostURL + 'api/housing/apartment/' + control.username
+        response = api.get(self.session, self.url)
+
+        if not response.status_code == 404:
+            pytest.fail('Expected 404 Not Found, got {0}.'\
+                .format(response.status_code))
 
 #    Verify that the list of apartment-style halls is retrieved correctly
 #    Endpoint -- 'api/housing/halls'
@@ -168,6 +183,41 @@ class Test_AllHousingAppTest(control.testCase):
         if not response.status_code == 404:
             pytest.fail('Expected 404 Not Found, got {0}.'\
                 .format(response.status_code))
+
+#    Verify that an application's date submitted is changed successfully
+#    Endpoint -- 'api/housing/apartment/applications/{applicationID}/submit'
+#    Expected Status Code -- 200 OK
+#    Expected Content -- a non-null value for dateSubmitted 
+    def test_date_submitted_changed(self):
+        self.session = self.createAuthorizedSession(control.username, control.password)
+        self.url = control.hostURL + 'api/housing/apartment/applications'
+        self.data = {
+            'ApplicationID' : -1,
+            'EditorUsername' : control.leader_username,
+            'Applicants' : [
+                {
+                    'StudentID' : control.leader_id_number,
+                    'Username' : control.leader_username,
+                },
+            ],
+        }
+        appID = api.postAsJson(self.session, self.url, self.data)
+
+        self.url = control.hostURL + 'api/housing/apartment/applications/' + str(appID) + '/submit'
+        self.data = {}
+        response = api.put(self.session, self.url, self.data)
+
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'\
+                .format(response.status_code))
+
+        self.url = control.hostURL + 'api/housing/apartment/applications/' + str(appID)
+        application = api.get(self.session, self.url)
+
+        # clean up
+        response = api.delete(self.session, self.url)
+
+        assert application.json()[0]['DateSubmitted'] != None
         
 
 #   Verify that the editor (primary applicant) can save the application
