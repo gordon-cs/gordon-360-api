@@ -161,7 +161,9 @@ namespace Gordon360.Services
                     y.group = x.group;
                     y.createdAt = x.createdAt;
                     y.lastUpdated = x.lastUpdated;
-                    y.roomImage = x.roomImage;
+                    byte[] imageInfo = Encoding.ASCII.GetBytes(x.roomImage);
+                    string encodedByteArray = Convert.ToBase64String(imageInfo);
+                    y.roomImage = encodedByteArray;
                     var localRoomIdParam = new SqlParameter("@room_id", x.room_id);
                     var users = RawSqlQuery<UserViewModel>.query("GET_ALL_USERS_BY_ROOM_ID @room_id", localRoomIdParam);
 
@@ -201,7 +203,11 @@ namespace Gordon360.Services
             var groupParam = new SqlParameter("@group", group);
             var groupImageParam = new SqlParameter("@roomImage", System.Data.SqlDbType.VarBinary, -1);
 
-            groupImageParam.Value = DBNull.Value;
+            byte[] decodedByteArray =
+            Convert.FromBase64CharArray(image.ToCharArray(),
+                                    0, image.Length);
+
+            groupImageParam.Value = decodedByteArray;
 
             var result = RawSqlQuery<CreateGroupViewModel>.query("CREATE_MESSAGE_ROOM @name, @group, @roomImage", nameParam, groupParam, groupImageParam); //run stored procedure
       
@@ -313,8 +319,6 @@ namespace Gordon360.Services
                 returnAnswer = false;
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
             }
-
-
 
             return returnAnswer;
 
