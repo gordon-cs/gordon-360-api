@@ -15,9 +15,8 @@ namespace Gordon360.Models
     public partial class AA_ApartmentApplications
     {
         public int AprtAppID { get; set; }
-        public bool Submitted { get; set; }
-        public System.DateTime DateSubmitted { get; set; }
+        public Nullable<System.DateTime> DateSubmitted { get; set; }
         public System.DateTime DateModified { get; set; }
-        public int ModifiedBy { get; set; }
+        public string EditorID { get; set; }
     }
 }

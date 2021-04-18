@@ -11,6 +11,7 @@ namespace Gordon360.Models.ViewModels
         public string Twitter { get; set; }
         public string Instagram { get; set; }
         public string LinkedIn { get; set; }
+        public string Handshake { get; set; }
 
         public static implicit operator ProfileCustomViewModel(CUSTOM_PROFILE pro)
         {
@@ -19,7 +20,8 @@ namespace Gordon360.Models.ViewModels
                 Facebook = pro.facebook ?? "",
                 Twitter = pro.twitter ?? "",
                 Instagram = pro.instagram ?? "",
-                LinkedIn = pro.linkedin ?? ""
+                LinkedIn = pro.linkedin ?? "",
+                Handshake = pro.handshake ?? ""
             };
             return vm;
         }

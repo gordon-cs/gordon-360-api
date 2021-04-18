@@ -247,7 +247,7 @@ namespace Gordon360.Services
         /// Fetches all the membership information linked to the student whose id appears as a parameter.
         /// </summary>
         /// <param name="id">The student id.</param>
-        /// <returns>A MembershipViewModel IEnumerable. If nothing is found, an empty IEnumberable is returned.</returns>
+        /// <returns>A MembershipViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
         public IEnumerable<MembershipViewModel> GetMembershipsForStudent(string id)
         {
             var studentExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id.Trim() == id).Count() > 0;
@@ -474,6 +474,29 @@ namespace Gordon360.Services
             }
 
             return true;
+        }
+
+        /// <summary>	
+        /// Determines whether or not the given student is a Group Admin of some activity	
+        /// </summary>
+        /// <param name="studentID">The student id</param>	
+        /// <returns>true if student is a Group Admin, else false</returns>	
+        public Boolean IsGroupAdmin(int studentID)
+        {
+            // find memberships that the student is both apart of and group admin
+            var membershipsWhereStudentIsGroupAdmin = _unitOfWork.MembershipRepository.Where(
+                membership => membership.ID_NUM == studentID &&
+                              membership.GRP_ADMIN == true);
+            // probably should also add clauses to require membership to be recent
+
+            // potentially could modify this method to return the list of memberships where 
+            // student is group admin rather than a simple binary
+            if (membershipsWhereStudentIsGroupAdmin != null && membershipsWhereStudentIsGroupAdmin.Count() > 0)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

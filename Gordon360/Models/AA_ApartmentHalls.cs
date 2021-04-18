@@ -12,11 +12,8 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Health_Check
+    public partial class AA_ApartmentHalls
     {
-        public int ID_Num { get; set; }
-        public Nullable<bool> Answer { get; set; }
-        public Nullable<System.DateTime> Timestamp { get; set; }
-        public Nullable<System.DateTime> Emailed { get; set; }
+        public string Name { get; set; }
     }
 }

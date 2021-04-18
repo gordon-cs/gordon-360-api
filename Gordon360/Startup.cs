@@ -175,7 +175,6 @@ namespace Gordon360
             {
                 JObject theFacStaff = JObject.FromObject(aFacStaff);
                 theFacStaff.Add("Hall", null);
-                theFacStaff.Add("Mail_Location", null);
                 theFacStaff.Add("Class", null);
                 theFacStaff.Add("Major1Description", null);
                 theFacStaff.Add("Major2Description", null);

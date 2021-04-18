@@ -25,12 +25,14 @@ namespace Gordon360.ApiControllers
     {
         private IJobsService _jobsService;
         private IAccountService _accountService;
+        private IErrorLogService _errorLogService;
 
         public JobsController()
         {
             IUnitOfWork _unitOfWork = new UnitOfWork();
             _jobsService = new JobsService(_unitOfWork);
             _accountService = new AccountService(_unitOfWork);
+            _errorLogService = new ErrorLogService(_unitOfWork);
         }
 
         private int GetCurrentUserID()
@@ -44,6 +46,25 @@ namespace Gordon360.ApiControllers
             return userID;
         }
 
+        /// Get a user's active jobs
+        /// </summary>
+        /// <param name="details"></param>
+        /// <returns>The user's active jobs</returns>
+        [HttpGet]
+        [Route("")]
+        public IHttpActionResult GetJobs(DateTime shiftStart, DateTime shiftEnd) {
+            IEnumerable<ActiveJobViewModel> result;
+            try {
+                result = _jobsService.getActiveJobs(shiftStart, shiftEnd, GetCurrentUserID());
+            }
+            catch(Exception e) {
+                //
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                return InternalServerError();
+            }
+            return Ok(result);
+        }
+
         /// <summary>
         /// Get a user's active jobs
         /// </summary>
@@ -51,7 +72,7 @@ namespace Gordon360.ApiControllers
         /// <returns>The user's active jobs</returns>
         [HttpPost]
         [Route("getJobs")]
-        public IHttpActionResult getJobsForUser([FromBody] ActiveJobSelectionParametersModel details)
+        public IHttpActionResult DEPRECATED_getJobsForUser([FromBody] ActiveJobSelectionParametersModel details)
         {
             IEnumerable<ActiveJobViewModel> result = null;
             int userID = GetCurrentUserID();
@@ -111,6 +132,13 @@ namespace Gordon360.ApiControllers
 
             try
             {
+
+                if (shiftDetails.SHIFT_START_DATETIME == null || shiftDetails.SHIFT_END_DATETIME == null || shiftDetails.SHIFT_START_DATETIME == shiftDetails.SHIFT_END_DATETIME)
+                {
+                    _errorLogService.Log($"Invalid timesheets shift saved. Student ID: {shiftDetails.ID}, job ID: {shiftDetails.EML}, shiftStart: {shiftDetails.SHIFT_START_DATETIME}, shift end time: {shiftDetails.SHIFT_END_DATETIME}, hours worked: {shiftDetails.HOURS_WORKED} at time {DateTime.Now}");
+                    throw new Exception("Invalid shift times. shiftStart and shiftEnd must be non-null and not the same.");
+                };
+
                 overlapCheckResult = _jobsService.checkForOverlappingShift(userID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME);
                 if (overlapCheckResult.Count() > 0)
                 {
