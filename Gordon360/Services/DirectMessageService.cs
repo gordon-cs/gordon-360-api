@@ -9,7 +9,9 @@ using Gordon360.Exceptions.CustomExceptions;
 using System.Data.SqlClient;
 using Gordon360.Services.ComplexQueries;
 using System.Diagnostics;
-
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
+using System.Text;
 
 namespace Gordon360.Services
 {
@@ -50,9 +52,16 @@ namespace Gordon360.Services
                 y.video = x.video;
                 y.audio = x.audio;
                 y.system = x.system;
-                y.image = x.image;
                 y.received = x.received;
                 y.pending = x.pending;
+
+                if(x.image != null)
+                {
+                    byte[] imageInfo = Encoding.ASCII.GetBytes(x.image);
+                    string encodedByteArray = Convert.ToBase64String(imageInfo);
+
+                    y.image = encodedByteArray;
+                }
 
                 var j = new UserViewModel();
                 j.user_id = x.user_id;
@@ -222,9 +231,10 @@ namespace Gordon360.Services
                 UserViewModel userInfo = new UserViewModel();
                 userInfo.user_id = userid;
                 userInfo.user_name = _accountService.Get(userid).ADUserName;
-
                 groupObject.users.Add(userInfo);
             }
+
+            initialMessage.room_id = groupObject.id.ToString();
 
             SendMessage(initialMessage, userId);
 
@@ -256,7 +266,11 @@ namespace Gordon360.Services
             var receivedParam = new SqlParameter("@received", textInfo.received);
             var pendingParam = new SqlParameter("@pending", textInfo.pending);
 
-            imageParam.Value = DBNull.Value;
+            byte[] decodedByteArray =
+            Convert.FromBase64CharArray(textInfo.image.ToCharArray(),
+                                    0, textInfo.image.Length);
+
+            imageParam.Value = decodedByteArray;
             videoParam.Value = DBNull.Value;
             audioParam.Value = DBNull.Value;
 
