@@ -714,7 +714,7 @@ namespace Gordon360.Services
                 ApartmentApplicationViewModel apartmentApplicationModel = null;
                 try
                 {
-                    apartmentApplicationModel = GetApartmentApplication(appIDModel.AprtAppID);
+                    apartmentApplicationModel = GetApartmentApplication(appIDModel.AprtAppID, true);
                     if (apartmentApplicationModel != null)
                     {
                         applicationList.Add(apartmentApplicationModel);
