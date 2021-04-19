@@ -575,6 +575,7 @@ namespace Gordon360.Services
         }
 
         /// <param name="applicationID">application ID number of the apartment application</param>
+        /// <param name="isAdmin">boolean indicating whether the current user is an admin, permits access to restricted information such as birth date</param>
         /// <returns>Object of type ApartmentApplicationViewModel</returns>
         public ApartmentApplicationViewModel GetApartmentApplication(int applicationID, bool isAdmin = false)
         {
