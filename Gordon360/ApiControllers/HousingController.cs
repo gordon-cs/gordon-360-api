@@ -20,6 +20,7 @@ namespace Gordon360.Controllers.Api
     {
         private IHousingService _housingService;
         private IAccountService _accountService;
+        private IAdministratorService _administratorService;
         private IProfileService _profileService;
 
         public HousingController()
@@ -27,6 +28,7 @@ namespace Gordon360.Controllers.Api
             IUnitOfWork _unitOfWork = new UnitOfWork();
             _housingService = new HousingService(_unitOfWork);
             _accountService = new AccountService(_unitOfWork);
+            _administratorService = new AdministratorService(_unitOfWork);
             _profileService = new ProfileService(_unitOfWork);
         }
 
@@ -287,28 +289,43 @@ namespace Gordon360.Controllers.Api
             ClaimsPrincipal authenticatedUser = ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
-            string sessionID = Helpers.GetCurrentSession().SessionCode;
+            string userID = _accountService.GetAccountByUsername(username).GordonID;
 
-            int? storedApplicationID = _housingService.GetApplicationID(username, sessionID);
-            if (storedApplicationID == null)
+            bool isAdmin = false;
+
+            try
             {
-                return NotFound();
+                ADMIN adminModel = _administratorService.Get(userID);
+                isAdmin = (adminModel != null) || false;
             }
-            else if (storedApplicationID != applicationID)
+            catch
             {
-                return StatusCode(HttpStatusCode.Forbidden);
+                isAdmin = _housingService.CheckIfHousingAdmin(userID);
             }
-            else
+
+            if (!isAdmin)
             {
-                ApartmentApplicationViewModel result = _housingService.GetApartmentApplication(applicationID);
-                if (result != null)
-                {
-                    return Ok(result);
-                }
-                else
+                string sessionID = Helpers.GetCurrentSession().SessionCode;
+
+                int? storedApplicationID = _housingService.GetApplicationID(username, sessionID);
+                if (storedApplicationID == null)
                 {
                     return NotFound();
                 }
+                else if (storedApplicationID != applicationID)
+                {
+                    return StatusCode(HttpStatusCode.Forbidden);
+                }
+            }
+
+            ApartmentApplicationViewModel result = _housingService.GetApartmentApplication(applicationID, isAdmin);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound();
             }
         }
 
@@ -322,9 +339,10 @@ namespace Gordon360.Controllers.Api
             //get token data from context, username is the username of current logged in person
             ClaimsPrincipal authenticatedUser = ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            string userID = _accountService.GetAccountByUsername(username).GordonID;
 
-            bool isAdmin = _housingService.CheckIfHousingAdmin(username);
-            if (isAdmin)
+            bool isAdmin = _housingService.CheckIfHousingAdmin(userID);
+            if (isAdmin) // This outer 'if/else' can be removed once the StateYourBusiness has been implemented
             {
                 ApartmentApplicationViewModel[] result = _housingService.GetAllApartmentApplication();
                 if (result != null)

@@ -576,7 +576,7 @@ namespace Gordon360.Services
 
         /// <param name="applicationID">application ID number of the apartment application</param>
         /// <returns>Object of type ApartmentApplicationViewModel</returns>
-        public ApartmentApplicationViewModel GetApartmentApplication(int applicationID)
+        public ApartmentApplicationViewModel GetApartmentApplication(int applicationID, bool isAdmin = false)
         {
             SqlParameter appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
 
@@ -616,9 +616,9 @@ namespace Gordon360.Services
                     // If the student information is found, create a new ApplicationViewModel and fill in its properties
                     if (applicantModel.Profile != null && applicantDBModel.AprtAppID == applicationID)
                     {
-                        // Only add the birthdate, probabtion, and points if the user is authorized to view that information
-                        if (true) // if the current user is a housing admin or super admin 
+                        if (isAdmin) // if the current user is a housing admin or super admin 
                         {
+                            // Only add the birthdate, probabtion, and points if the user is authorized to view that information
                             applicantModel.BirthDate = new UnitOfWork().AccountRepository.FirstOrDefault(x => x.AD_Username.ToLower() == applicantDBModel.Username.ToLower()).Birth_Date;
 
                             // The probation data is already in the database, we just need to write a stored procedure to get it
