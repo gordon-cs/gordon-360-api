@@ -296,26 +296,11 @@ namespace Gordon360.Controllers.Api
             try
             {
                 ADMIN adminModel = _administratorService.Get(userID);
-                isAdmin = (adminModel != null) || false;
+                isAdmin = (adminModel != null);
             }
             catch
             {
                 isAdmin = _housingService.CheckIfHousingAdmin(userID);
-            }
-
-            if (!isAdmin)
-            {
-                string sessionID = Helpers.GetCurrentSession().SessionCode;
-
-                int? storedApplicationID = _housingService.GetApplicationID(username, sessionID);
-                if (storedApplicationID == null)
-                {
-                    return NotFound();
-                }
-                else if (storedApplicationID != applicationID)
-                {
-                    return StatusCode(HttpStatusCode.Forbidden);
-                }
             }
 
             ApartmentApplicationViewModel result = _housingService.GetApartmentApplication(applicationID, isAdmin);
@@ -341,8 +326,8 @@ namespace Gordon360.Controllers.Api
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             string userID = _accountService.GetAccountByUsername(username).GordonID;
 
-            bool isAdmin = _housingService.CheckIfHousingAdmin(userID);
-            if (isAdmin) // This outer 'if/else' can be removed once the StateYourBusiness has been implemented
+            bool isAdmin = _housingService.CheckIfHousingAdmin(userID); // This line can be removed once the StateYourBusiness has been implemented
+            if (isAdmin) // This line can be removed once the StateYourBusiness has been implemented
             {
                 ApartmentApplicationViewModel[] result = _housingService.GetAllApartmentApplication();
                 if (result != null)
@@ -354,9 +339,9 @@ namespace Gordon360.Controllers.Api
                     return NotFound();
                 }
             }
-            else
+            else // This line can be removed once the StateYourBusiness has been implemented
             {
-                return StatusCode(HttpStatusCode.Forbidden);
+                return StatusCode(HttpStatusCode.Forbidden); // This line can be removed once the StateYourBusiness has been implemented
             }
         }
     }

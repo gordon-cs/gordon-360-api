@@ -623,6 +623,7 @@ namespace Gordon360.Services
                             applicantModel.BirthDate = new UnitOfWork().AccountRepository.FirstOrDefault(x => x.AD_Username.ToLower() == applicantDBModel.Username.ToLower()).Birth_Date;
 
                             // The probation data is already in the database, we just need to write a stored procedure to get it
+                            // applicantModel.Probation = ... // TBD
 
                             // Calculate application points
                             int points = 0;
