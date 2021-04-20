@@ -761,8 +761,6 @@ namespace Gordon360.Services
         // but can we have something to make it more clear where these services start?
         public bool ChangeApplicationDateSubmitted(int applicationID)
         {
-            IEnumerable<ApartmentApplicationViewModel> result = null;
-
             SqlParameter appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
             DateTime now = System.DateTime.Now;
             SqlParameter timeParam = new SqlParameter("@NOW", now);
