@@ -100,8 +100,6 @@ namespace Gordon360.Services
         /// <returns> Whether or not this was successful </returns>
         public bool DeleteApplication(int applicationID)
         {
-            IEnumerable<ApartmentApplicationViewModel> result = null;
-
             SqlParameter appIdParam = new SqlParameter("@APP_ID", applicationID);
 
             int? result = _context.Database.ExecuteSqlCommand("DELETE_AA_APPLICATION @APP_ID", appIdParam);
