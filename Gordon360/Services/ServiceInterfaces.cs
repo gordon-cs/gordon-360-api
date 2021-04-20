@@ -278,7 +278,7 @@ namespace Gordon360.Services
         bool DeleteApplication(int applicationID);
         AA_ApartmentHalls[] GetAllApartmentHalls();
         int? GetApplicationID(string username, string sess_cde);
-        ApartmentApplicationViewModel GetApartmentApplication(int applicationID);
+        ApartmentApplicationViewModel GetApartmentApplication(int applicationID, bool isAdmin = false);
         ApartmentApplicationViewModel[] GetAllApartmentApplication();
         int SaveApplication(string username, string sess_cde, string editorUsername, ApartmentApplicantViewModel[] apartmentApplicants, ApartmentChoiceViewModel[] apartmentChoices);
         int EditApplication(string username, string sess_cde, int applicationID, string newEditorUsername, ApartmentApplicantViewModel[] newApartmentApplicants, ApartmentChoiceViewModel[] newApartmentChoices);
