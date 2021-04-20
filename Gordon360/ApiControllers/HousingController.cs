@@ -63,7 +63,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpPost]
         [Route("admin/{id}")]
-        [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING)]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_ADMIN)]
         public IHttpActionResult AddHousingAdmin(string id)
         {
             bool result = _housingService.AddHousingAdmin(id);
