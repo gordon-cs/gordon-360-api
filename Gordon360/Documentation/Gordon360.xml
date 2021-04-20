@@ -1934,14 +1934,14 @@
             Calls a stored procedure that tries to get the id of an the application that a given user is 
             applicant on for a given session
             </summary>
-            <param name="userID"> The student username to look for </param>
+            <param name="username"> The student username to look for </param>
             <param name="sess_cde"> Session for which the application would be </param>
             <returns> 
             The id of the application or 
             null if the user is not on an application for that session 
             </returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.GetEditorID(System.Nullable{System.Int32})">
+        <member name="M:Gordon360.Services.HousingService.GetEditorUsername(System.Int32)">
             <summary>
             Calls a stored procedure that tries to get the editor ID of a given application ID
             </summary>
@@ -1954,10 +1954,10 @@
         <member name="M:Gordon360.Services.HousingService.SaveApplication(System.String,System.String,System.String,Gordon360.Models.ViewModels.ApartmentApplicantViewModel[],Gordon360.Models.ViewModels.ApartmentChoiceViewModel[])">
              <summary>
              Saves student housing info
-             - first, it creates a new row in the applications table and inserts the id of the primary applicant and a timestamp
+             - first, it creates a new row in the applications table and inserts the username of the primary applicant and a timestamp
              - second, it retrieves the application id of the application with the information we just inserted (because
              the database creates the application ID so we have to ask it which number it generated for it)
-             - third, it inserts each applicant into the applicants table along with the apartment ID so we know
+             - third, it inserts each applicant into the applicants table along with the application ID so we know
              which application on which they are an applicant
             
              </summary>
@@ -1971,13 +1971,13 @@
         <member name="M:Gordon360.Services.HousingService.EditApplication(System.String,System.String,System.Int32,System.String,Gordon360.Models.ViewModels.ApartmentApplicantViewModel[],Gordon360.Models.ViewModels.ApartmentChoiceViewModel[])">
              <summary>
              Edit an existings apartment application
-             - first, it gets the EditorUsername from the database for the given application ID and makes sure that the student ID of the current user matches that stored ID number
+             - first, it gets the EditorUsername from the database for the given application ID and makes sure that the student username of the current user matches that stored username
              - second, it gets an array of the applicants that are already stored in the database for the given application ID
              - third, it inserts each applicant that is in the 'newApplicantIDs' array but was not yet in the database
              - fourth, it removes each applicant that was stored in the database but was not in the 'newApplicantIDs' array
             
              </summary>
-             <param name="userID"> The student username of the user who is attempting to save the apartment application (retrieved via authentication token) </param>
+             <param name="username"> The student username of the user who is attempting to save the apartment application (retrieved via authentication token) </param>
              <param name="sess_cde"> The current session code </param>
              <param name="applicationID"> The application ID number of the application to be edited </param>
              <param name="newEditorUsername"> The student username of the student who is declared to be the editor of this application (retrieved from the JSON from the front end) </param>
