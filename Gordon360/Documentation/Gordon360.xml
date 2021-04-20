@@ -469,7 +469,7 @@
         </member>
         <member name="M:Gordon360.Controllers.Api.HousingController.GetAllApartmentApplication">
             <summary>Get apartment application info for all applications if the current user is a housing admin</summary>
-            <returns>Object of type ApartmentAppViewModel</returns>
+            <returns>Object of type ApartmentApplicationViewModel</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.NewsController.#ctor">
             private void catchBadInput()
@@ -2009,6 +2009,14 @@
             
              </summary>
              <returns>Whether or not all the queries succeeded</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetApartmentApplication(System.Int32,System.Boolean)">
+            <param name="applicationID">application ID number of the apartment application</param>
+            <param name="isAdmin">boolean indicating whether the current user is an admin, permits access to restricted information such as birth date</param>
+            <returns>Object of type ApartmentApplicationViewModel</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetAllApartmentApplication">
+            <returns>Array of ApartmentApplicationViewModel Objects</returns>
         </member>
         <member name="M:Gordon360.Services.WellnessService.GetStatus(System.String)">
             <summary>
