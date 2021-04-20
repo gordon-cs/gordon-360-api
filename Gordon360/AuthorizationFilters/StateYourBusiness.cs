@@ -204,7 +204,7 @@ namespace Gordon360.AuthorizationFilters
                         else
                         {
                             var sess_cde = Helpers.GetCurrentSession().ToString();
-                            int? applicationID = housingService.GetApplicationID(user_id, sess_cde);
+                            int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
                             if (applicationID != null)
                             {
                                 return true;
@@ -461,7 +461,7 @@ namespace Gordon360.AuthorizationFilters
                         else if (user_position == Position.STUDENT)
                         {
                             var sess_cde = Helpers.GetCurrentSession().ToString();
-                            int? applicationID = housingService.GetApplicationID(user_id, sess_cde);
+                            int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
                             if (applicationID == null)
                             {
                                 return true;
@@ -558,11 +558,11 @@ namespace Gordon360.AuthorizationFilters
                         // The user must be on an application and be an editor to update the application
                         var housingService = new HousingService(new UnitOfWork());
                         var sess_cde = Helpers.GetCurrentSession().ToString();
-                        int? applicationID = housingService.GetApplicationID(user_id, sess_cde);
+                        int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
                         if (applicationID != null)
                         {
-                            var editorID = housingService.GetEditorID(applicationID);
-                            var is_editor = editorID == user_id;
+                            var editorUsername = housingService.GetEditorUsername(applicationID);
+                            var is_editor = editorUsername == user_name;
                             if (is_editor)
                                 return true;
                         }
