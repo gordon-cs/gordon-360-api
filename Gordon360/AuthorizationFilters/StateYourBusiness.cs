@@ -556,10 +556,16 @@ namespace Gordon360.AuthorizationFilters
                         {
                             var sess_cde = Helpers.GetCurrentSession().ToString();
                             int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
-                            var editorUsername = housingService.GetEditorUsername(applicationID);
-                            var is_editor = editorUsername == user_name;
-                            if (is_editor)
-                                return true;
+                            var requestedApplicationID = (int)context.ActionArguments["applicationID"];
+                            if (applicationID != null && applicationID == requestedApplicationID)
+                            {
+                                var editorUsername = housingService.GetEditorUsername(applicationID);
+                                var is_editor = editorUsername == user_name;
+                                if (is_editor)
+                                    return true;
+                                return false;
+                            }
+                            return false;
                         }
                         return false;
                     }
