@@ -104,7 +104,7 @@ namespace Gordon360.Services
 
             SqlParameter appIdParam = new SqlParameter("@APP_ID", applicationID);
 
-            result = RawSqlQuery<ApartmentApplicationViewModel>.query("DELETE_AA_APPLICATION @APP_ID", appIdParam);
+            int? result = _context.Database.ExecuteSqlCommand("DELETE_AA_APPLICATION @APP_ID", appIdParam);
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be found and removed." };
