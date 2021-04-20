@@ -143,7 +143,7 @@ namespace Gordon360.Services
         /// The id of the editor or
         /// null if the user is a member but not an editor of a given application
         /// </returns>
-        public string GetEditorID(int? applicationID)
+        public string GetEditorUsername(int applicationID)
         {
             IEnumerable<string> editorResult= null;
 
