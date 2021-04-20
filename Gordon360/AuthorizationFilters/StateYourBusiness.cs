@@ -444,6 +444,13 @@ namespace Gordon360.AuthorizationFilters
                         return true;
                     else
                         return false; // Only super admin can add Advisors through this API
+                case Resource.HOUSING_ADMIN:
+                    {
+                        if (user_position == Position.SUPERADMIN)
+                            return true;
+                        else
+                            return false; // Only superadmin can add housing admins through this API
+                    }
                 case Resource.HOUSING:
                     {
                         // The user must be a student and not a member of an existing application
@@ -714,9 +721,8 @@ namespace Gordon360.AuthorizationFilters
                     return false;
                 case Resource.HOUSING_ADMIN:
                     {
-                        // Only the superadmins and the housing admins can delete members from the whitelist
-                        var housingService = new HousingService(new UnitOfWork());
-                        if (user_position == Position.SUPERADMIN || (housingService.CheckIfHousingAdmin(user_id)))
+                        // Only the superadmins can remove a housing admin from the whitelist
+                        if (user_position == Position.SUPERADMIN)
                         {
                             return true;
                         }
