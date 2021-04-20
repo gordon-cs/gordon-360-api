@@ -77,7 +77,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpDelete]
         [Route("admin/{id}")]
-        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING)]
+        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_ADMIN)]
         public IHttpActionResult RemoveHousingAdmin(string id)
         {
             bool result = _housingService.RemoveHousingAdmin(id);

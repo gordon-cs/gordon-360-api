@@ -712,7 +712,7 @@ namespace Gordon360.AuthorizationFilters
                     return false;
                 case Resource.ADMIN:
                     return false;
-                case Resource.HOUSING:
+                case Resource.HOUSING_ADMIN:
                     {
                         // Only the superadmins and the housing admins can delete members from the whitelist
                         var housingService = new HousingService(new UnitOfWork());
