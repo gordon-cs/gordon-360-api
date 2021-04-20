@@ -200,7 +200,7 @@ namespace Gordon360.AuthorizationFilters
                         var sess_cde = Helpers.GetCurrentSession().ToString();
                         int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
                         var requestedApplicationID = (int)context.ActionArguments["applicationID"];
-                        if (applicationID != null && applicationID == requestedApplicationID)
+                        if (applicationID.HasValue && applicationID == requestedApplicationID)
                         {
                             return true;
                         }
@@ -459,7 +459,7 @@ namespace Gordon360.AuthorizationFilters
                         {
                             var sess_cde = Helpers.GetCurrentSession().ToString();
                             int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
-                            if (applicationID == null)
+                            if (!applicationID.HasValue)
                             {
                                 return true;
                             }
@@ -564,9 +564,9 @@ namespace Gordon360.AuthorizationFilters
                             var sess_cde = Helpers.GetCurrentSession().ToString();
                             int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
                             var requestedApplicationID = (int)context.ActionArguments["applicationID"];
-                            if (applicationID != null && applicationID == requestedApplicationID)
+                            if (applicationID.HasValue && applicationID == requestedApplicationID)
                             {
-                                var editorUsername = housingService.GetEditorUsername(applicationID);
+                                var editorUsername = housingService.GetEditorUsername((int)applicationID);
                                 var is_editor = editorUsername == user_name;
                                 if (is_editor)
                                     return true;
