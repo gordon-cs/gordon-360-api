@@ -87,6 +87,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpDelete]
         [Route("apartment/applications/{applicationID}")]
+        // StateYourBusiness
         public IHttpActionResult DeleteApplication(int applicationID)
         {
             bool result = _housingService.DeleteApplication(applicationID);
