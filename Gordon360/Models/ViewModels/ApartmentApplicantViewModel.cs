@@ -12,10 +12,10 @@ namespace Gordon360.Models.ViewModels
         private string _username;
         public string Username
         {
-            get => Profile?.AD_Username ?? _username;
-            set => _username = value;
+            get { return Profile?.AD_Username ?? _username; }
+            set { _username = value; }
         }
-        public string Class => Profile?.Class ?? null;
+        public string Class { get { return Profile?.Class ?? null; } }
         public DateTime? BirthDate { get; set; }
         public int? Age
         {
