@@ -197,20 +197,14 @@ namespace Gordon360.AuthorizationFilters
                     {
                         // The members of the apartment application can only read their application
                         var housingService = new HousingService(new UnitOfWork());
-                        if (housingService.CheckIfHousingAdmin(user_id))
+                        var sess_cde = Helpers.GetCurrentSession().ToString();
+                        int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
+                        var requestedApplicationID = (int)context.ActionArguments["applicationID"];
+                        if (applicationID != null && applicationID == requestedApplicationID)
                         {
                             return true;
                         }
-                        else
-                        {
-                            var sess_cde = Helpers.GetCurrentSession().ToString();
-                            int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
-                            if (applicationID != null)
-                            {
-                                return true;
-                            }
-                            return false;
-                        }
+                        return false;
                     }
                 case Resource.NEWS:
                     return true;
