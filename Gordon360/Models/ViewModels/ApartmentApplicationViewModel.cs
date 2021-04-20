@@ -14,15 +14,15 @@ namespace Gordon360.Models.ViewModels
         private string _editorUsername;
         public string EditorUsername
         {
-            get => EditorProfile?.AD_Username ?? _editorUsername;
-            set => _editorUsername = value;
+            get { return EditorProfile?.AD_Username ?? _editorUsername; }
+            set { _editorUsername = value; }
         }
-        public string EditorEmail => EditorProfile?.Email;
-        public string Gender => EditorProfile?.Gender ?? Applicants?.First()?.Profile?.Gender;
+        public string EditorEmail { get { return EditorProfile?.Email; } }
+        public string Gender { get { return EditorProfile?.Gender ?? Applicants?.First()?.Profile?.Gender; } }
         public ApartmentApplicantViewModel[] Applicants { get; set; }
         public ApartmentChoiceViewModel[] ApartmentChoices { get; set; }
-        public int TotalPoints => Applicants?.Sum(applicant => applicant.Points) ?? 0;
-        public double AvgPoints => Applicants?.Average(applicant => applicant.Points) ?? 0;
+        public int TotalPoints { get { return Applicants?.Sum(applicant => applicant.Points) ?? 0; } }
+        public double AvgPoints { get { return Applicants?.Average(applicant => applicant.Points) ?? 0; } }
 
         public static implicit operator ApartmentApplicationViewModel(GET_AA_APPLICATIONS_BY_ID_Result applicationDBModel)
         {
