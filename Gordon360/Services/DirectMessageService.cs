@@ -9,7 +9,9 @@ using Gordon360.Exceptions.CustomExceptions;
 using System.Data.SqlClient;
 using Gordon360.Services.ComplexQueries;
 using System.Diagnostics;
-
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
+using System.Text;
 
 namespace Gordon360.Services
 {
@@ -50,9 +52,16 @@ namespace Gordon360.Services
                 y.video = x.video;
                 y.audio = x.audio;
                 y.system = x.system;
-                y.image = x.image;
                 y.received = x.received;
                 y.pending = x.pending;
+
+                if(x.image != null)
+                {
+                    byte[] imageInfo = Encoding.ASCII.GetBytes(x.image);
+                    string encodedByteArray = Convert.ToBase64String(imageInfo);
+
+                    y.image = encodedByteArray;
+                }
 
                 var j = new UserViewModel();
                 j.user_id = x.user_id;
@@ -67,6 +76,32 @@ namespace Gordon360.Services
 
             return messageModel;
 
+        }
+
+        public MessageViewModel GetSingleMessage(string messageID, string roomID)
+        {
+            var roomIDParam = new SqlParameter("@room_id", roomID);
+            var messageIDParam = new SqlParameter("@message_id", messageID);
+
+            var result = RawSqlQuery<MessageViewModel>.query("GET_SINGLE_MESSAGE_BY_ID @room_id, @message_id", roomIDParam, messageIDParam); //run stored procedure
+
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+            var returnModel = new MessageViewModel();
+            var user = new UserViewModel();
+
+            foreach( MessageViewModel messageInfo in result)
+            {
+                returnModel = messageInfo;
+                user.user_id = messageInfo.user_id;
+                user.user_avatar = messageInfo.image;
+                user.user_name = _accountService.Get(messageInfo.user_id).ADUserName;
+                returnModel.user = user;
+            }
+
+            return returnModel;
         }
 
         public IEnumerable<GroupViewModel> GetRooms(string userId)
@@ -126,7 +161,9 @@ namespace Gordon360.Services
                     y.group = x.group;
                     y.createdAt = x.createdAt;
                     y.lastUpdated = x.lastUpdated;
-                    y.roomImage = x.roomImage;
+                    byte[] imageInfo = Encoding.ASCII.GetBytes(x.roomImage);
+                    string encodedByteArray = Convert.ToBase64String(imageInfo);
+                    y.roomImage = encodedByteArray;
                     var localRoomIdParam = new SqlParameter("@room_id", x.room_id);
                     var users = RawSqlQuery<UserViewModel>.query("GET_ALL_USERS_BY_ROOM_ID @room_id", localRoomIdParam);
 
@@ -160,18 +197,19 @@ namespace Gordon360.Services
         }
 
 
-        public CreateGroupViewModel CreateGroup(String name, bool group, DateTime lastUpdated, string image, List<String> usernames)
+        public CreateGroupViewModel CreateGroup(String name, bool group, string image, List<String> usernames, SendTextViewModel initialMessage, string userId)
         {
-            DateTime createdAt = DateTime.Now;
             var nameParam = new SqlParameter("@name", name);
             var groupParam = new SqlParameter("@group", group);
-            var createdAtParam = new SqlParameter("@createdAt", createdAt);
-            var lastUpdatedParam = new SqlParameter("@lastUpdated", lastUpdated);
             var groupImageParam = new SqlParameter("@roomImage", System.Data.SqlDbType.VarBinary, -1);
 
-            groupImageParam.Value = DBNull.Value;
+            byte[] decodedByteArray =
+            Convert.FromBase64CharArray(image.ToCharArray(),
+                                    0, image.Length);
 
-            var result = RawSqlQuery<CreateGroupViewModel>.query("CREATE_MESSAGE_ROOM @name, @group, @createdAt, @lastUpdated, @roomImage", nameParam, groupParam, createdAtParam, lastUpdatedParam, groupImageParam); //run stored procedure
+            groupImageParam.Value = decodedByteArray;
+
+            var result = RawSqlQuery<CreateGroupViewModel>.query("CREATE_MESSAGE_ROOM @name, @group, @roomImage", nameParam, groupParam, groupImageParam); //run stored procedure
       
             if (result == null)
             {
@@ -199,9 +237,12 @@ namespace Gordon360.Services
                 UserViewModel userInfo = new UserViewModel();
                 userInfo.user_id = userid;
                 userInfo.user_name = _accountService.Get(userid).ADUserName;
-
                 groupObject.users.Add(userInfo);
             }
+
+            initialMessage.room_id = groupObject.id.ToString();
+
+            SendMessage(initialMessage, userId);
 
             return groupObject;
 
@@ -231,7 +272,11 @@ namespace Gordon360.Services
             var receivedParam = new SqlParameter("@received", textInfo.received);
             var pendingParam = new SqlParameter("@pending", textInfo.pending);
 
-            imageParam.Value = DBNull.Value;
+            byte[] decodedByteArray =
+            Convert.FromBase64CharArray(textInfo.image.ToCharArray(),
+                                    0, textInfo.image.Length);
+
+            imageParam.Value = decodedByteArray;
             videoParam.Value = DBNull.Value;
             audioParam.Value = DBNull.Value;
 
@@ -274,8 +319,6 @@ namespace Gordon360.Services
                 returnAnswer = false;
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
             }
-
-
 
             return returnAnswer;
 

@@ -69,7 +69,7 @@ Although, a faster method for simply viewing the tables is to open `Gordon360/Mo
 All the tables were created from scratch by our team.
 
 ##### AA_Admins
-- AdminID - varchar(10)
+- AdminID - PK, varchar(10), not nullable
 
 | AdminID  |
 |----------|
@@ -77,7 +77,7 @@ All the tables were created from scratch by our team.
 |333333333 |
 
 ##### AA_ApartmentApplications
-- AprtAppID - int, not nullable
+- AprtAppID - PK, int, not nullable
 - DateSubmitted - datetime, nullable
 - DateModified - datetime, not nullable
 - EditorUsername - varchar(50), not nullable
@@ -100,7 +100,7 @@ All the tables were created from scratch by our team.
 | 2         | 2       | Bromley  |
 
 ##### AA_ApartmentHalls
-- Name - varchar(15), not nullable
+- Name - PK, varchar(15), not nullable
 
 | Name     |
 |----------|
