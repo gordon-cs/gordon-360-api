@@ -102,15 +102,15 @@ class Test_AllHousingAppTest(control.testCase):
             'ApartmentChoices' : [
                 {
                     'HallRank' : 1,
-                    'HallName' : "Taj MaHall"
+                    'HallName' : "Tavilla"
                 },
                 {
                     'HallRank' : 2,
-                    'HallName' : "Carnegie Hall"
+                    'HallName' : "Conrad"
                 },
                 {
                     'HallRank' : 3,
-                    'HallName' : "Hall of Mirrors"
+                    'HallName' : "Hilton"
                 }
             ],
         }   
@@ -201,7 +201,7 @@ class Test_AllHousingAppTest(control.testCase):
             'ApartmentChoices' : [
                 {
                     'HallRank' : 1,
-                    'HallName' : "Taj MaHall"
+                    'HallName' : "Tavilla"
                 },
             ],
         }
