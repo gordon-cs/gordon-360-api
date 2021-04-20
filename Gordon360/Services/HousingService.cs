@@ -765,7 +765,7 @@ namespace Gordon360.Services
             DateTime now = System.DateTime.Now;
             SqlParameter timeParam = new SqlParameter("@NOW", now);
 
-            result = RawSqlQuery<ApartmentApplicationViewModel>.query("UPDATE_AA_APPLICATION_DATESUBMITTED @APPLICATION_ID, @NOW", appIDParam, timeParam);
+            int? result = _context.Database.ExecuteSqlCommand("UPDATE_AA_APPLICATION_DATESUBMITTED @APPLICATION_ID, @NOW", appIDParam, timeParam);
             if (result == null)
             {
                 throw new ResourceCreationException() { ExceptionMessage = "The application DateSubmitted could not be updated." };
