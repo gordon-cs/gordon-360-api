@@ -86,5 +86,53 @@ class Test_AllHousingAppTest(control.testCase):
             pytest.fail('Expected 404 Not Found, got {0}.'\
                 .format(response.status_code))
 
+#    Verify that an application's editor is changed if the new editor is on the 
+#    application
+#    Endpoint -- 'api/housing/apartment/applications/{applicationID}/editor'
+#    Expected Status Code -- 200 OK
+#    Expected Content -- 
+    def test_application_editor_changed(self):
+        self.session = self.createAuthorizedSession(control.username, control.password)
+        self.url = control.hostURL + 'api/housing/apartment/applications'
+        self.data = { # will be changed to pass in a Profile once that change is in apartapp-develop 
+            'ApplicationID' : -1, 
+            'EditorUsername' : control.leader_username,
+            'Applicants' : [
+                {
+                    'Username' : control.leader_username
+                },
+                {
+                    'Username' : control.username
+                }
+            ],
+        }
+        appIDResponse = api.postAsJson(self.session, self.url, self.data)
+
+        appID = appIDResponse.content
+
+        self.url = control.hostURL + 'api/housing/apartment/applications/' + str(appID) + '/editor'
+        self.data = { # will be changed to pass in a Profile once that change is in apartapp-develop 
+            'ApplicationID' : appID, 
+            'EditorUsername' : control.username,
+            'Applicants' : [
+                {
+                    'Username' : control.leader_username
+                },
+                {
+                    'Username' : control.username
+                }
+            ],
+        }
+
+        response = api.putAsJson(self.session, self.url, self.data)
+
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 Not Found, got {0}.'\
+                .format(response.status_code))
+
+        # clean up
+        self.url = control.hostURL + 'api/housing/apartment/applications/' + str(appID)
+        response = api.delete(self.session, self.url)
+
 
 
