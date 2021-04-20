@@ -200,11 +200,12 @@ namespace Gordon360.AuthorizationFilters
                         var sess_cde = Helpers.GetCurrentSession().ToString();
                         int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
                         var requestedApplicationID = (int)context.ActionArguments["applicationID"];
-                        if (applicationID.HasValue && applicationID == requestedApplicationID)
+                        if (applicationID.HasValue && applicationID != requestedApplicationID)
                         {
-                            return true;
+                            return false;
                         }
-                        return false;
+                        return true; // The rest will be checked by the HousingService. Otherwise, we need to change
+                                     // GetApartmentApplication from the HousingService
                     }
                 case Resource.NEWS:
                     return true;
