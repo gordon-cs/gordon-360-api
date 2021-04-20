@@ -109,10 +109,6 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be found and removed." };
             }
-            else if (!result.Any())
-            {
-                return false;
-            }
 
             return true;
         }
