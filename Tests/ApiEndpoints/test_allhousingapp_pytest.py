@@ -90,27 +90,35 @@ class Test_AllHousingAppTest(control.testCase):
         self.url = control.hostURL + 'api/housing/apartment/applications'
         self.data = {
             'ApplicationID' : -1,
-            'EditorUsername' : control.leader_username,
+            'EditorProfile' : {
+                'AD_Username' : control.leader_username,
+            },   
             'Applicants' : [
                 {
-                    'Username' : control.leader_username
+                    'Profile' : {
+                       'AD_Username' : control.leader_username,
+                       'Class' : 'Junior',
+                    },
                 },
                 {
-                    'Username' : control.username
-                }
+                    'Profile' : {
+                       'AD_Username' : control.username,
+                       'Class' : 'Senior',
+                    },
+                },
             ],
             'ApartmentChoices' : [
                 {
                     'HallRank' : 1,
-                    'HallName' : "Tavilla"
+                    'HallName' : 'Tavilla'
                 },
                 {
                     'HallRank' : 2,
-                    'HallName' : "Conrad"
+                    'HallName' : 'Conrad'
                 },
                 {
                     'HallRank' : 3,
-                    'HallName' : "Hilton"
+                    'HallName' : 'Hilton'
                 }
             ],
         }   
@@ -192,16 +200,21 @@ class Test_AllHousingAppTest(control.testCase):
         self.url = control.hostURL + 'api/housing/apartment/applications'
         self.data = {
             'ApplicationID' : -1,
-            'EditorUsername' : control.leader_username,
+            'EditorProfile' : {
+                'AD_Username' : control.leader_username,
+            },
             'Applicants' : [
                 {
-                    'Username' : control.leader_username,
+                    'Profile' : {
+                       'AD_Username' : control.leader_username,
+                       'Class' : 'Junior',
+                    },
                 },
             ],
             'ApartmentChoices' : [
                 {
                     'HallRank' : 1,
-                    'HallName' : "Tavilla"
+                    'HallName' : 'Tavilla'
                 },
             ],
         }
