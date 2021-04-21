@@ -1,10 +1,13 @@
-﻿using Gordon360.Exceptions.CustomExceptions;
+using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Exceptions.ExceptionFilters;
+using Gordon360.AuthorizationFilters;
 using Gordon360.Models.ViewModels;
 using Gordon360.Models;
+using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Static.Methods;
+using Gordon360.Static.Names;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
@@ -20,12 +23,16 @@ namespace Gordon360.Controllers.Api
     {
         private IHousingService _housingService;
         private IAccountService _accountService;
+        private IAdministratorService _administratorService;
+        private IProfileService _profileService;
 
         public HousingController()
         {
             IUnitOfWork _unitOfWork = new UnitOfWork();
             _housingService = new HousingService(_unitOfWork);
             _accountService = new AccountService(_unitOfWork);
+            _administratorService = new AdministratorService(_unitOfWork);
+            _profileService = new ProfileService(_unitOfWork);
         }
 
         /// <summary>
@@ -37,7 +44,7 @@ namespace Gordon360.Controllers.Api
         public IHttpActionResult CheckIfHousingAdmin()
         {
             //get token data from context, username is the username of current logged in person
-            ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            ClaimsPrincipal authenticatedUser = ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
             string userID = _accountService.GetAccountByUsername(username).GordonID;
@@ -61,6 +68,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpPost]
         [Route("admin/{id}")]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_ADMIN)]
         public IHttpActionResult AddHousingAdmin(string id)
         {
             bool result = _housingService.AddHousingAdmin(id);
@@ -74,6 +82,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpDelete]
         [Route("admin/{id}")]
+        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_ADMIN)]
         public IHttpActionResult RemoveHousingAdmin(string id)
         {
             bool result = _housingService.RemoveHousingAdmin(id);
@@ -108,9 +117,9 @@ namespace Gordon360.Controllers.Api
         public IHttpActionResult GetApplicationID()
         {
             //get token data from context, username is the username of current logged in person
-            ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            ClaimsPrincipal authenticatedUser = ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            
+
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
             int? result = _housingService.GetApplicationID(username, sessionID);
@@ -152,7 +161,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>Returns the application ID number if all the queries succeeded</returns>
         [HttpPost]
         [Route("apartment/applications")]
-        //[StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING)]
         public IHttpActionResult SaveApplication([FromBody] ApartmentApplicationViewModel applicationDetails)
         {
             // Verify Input
@@ -170,14 +179,21 @@ namespace Gordon360.Controllers.Api
                 throw new BadInputException() { ExceptionMessage = errors };
             }
             //get token data from context, username is the username of current logged in person
-            ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            ClaimsPrincipal authenticatedUser = ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
-            string editorUsername = applicationDetails.EditorUsername;
+            string editorUsername = applicationDetails?.EditorProfile?.AD_Username ?? applicationDetails?.EditorUsername;
 
             ApartmentApplicantViewModel[] apartmentApplicants = applicationDetails.Applicants;
+            foreach (ApartmentApplicantViewModel applicant in apartmentApplicants)
+            {
+                if (applicant.Profile == null)
+                {
+                    applicant.Profile = _profileService.GetStudentProfileByUsername(applicant.Username);
+                }
+            }
 
             ApartmentChoiceViewModel[] apartmentChoices = applicationDetails.ApartmentChoices;
 
@@ -192,6 +208,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>Returns the application ID number if all the queries succeeded</returns>
         [HttpPut]
         [Route("apartment/applications/{applicationID}")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)]
         public IHttpActionResult EditApplication(int applicationID, [FromBody] ApartmentApplicationViewModel applicationDetails)
         {
             // Verify Input
@@ -209,14 +226,21 @@ namespace Gordon360.Controllers.Api
                 throw new BadInputException() { ExceptionMessage = errors };
             }
             //get token data from context, username is the username of current logged in person
-            ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            ClaimsPrincipal authenticatedUser = ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
-            string newEditorUsername = applicationDetails.EditorUsername;
+            string newEditorUsername = applicationDetails?.EditorProfile?.AD_Username ?? applicationDetails?.EditorUsername;
 
             ApartmentApplicantViewModel[] newApartmentApplicants = applicationDetails.Applicants;
+            foreach (ApartmentApplicantViewModel applicant in newApartmentApplicants)
+            {
+                if (applicant.Profile == null)
+                {
+                    applicant.Profile = _profileService.GetStudentProfileByUsername(applicant.Username);
+                }
+            }
 
             ApartmentChoiceViewModel[] newApartmentChoices = applicationDetails.ApartmentChoices;
 
@@ -248,10 +272,10 @@ namespace Gordon360.Controllers.Api
                 throw new BadInputException() { ExceptionMessage = errors };
             }
             //get token data from context, username is the username of current logged in person
-            ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            ClaimsPrincipal authenticatedUser = ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
-            string newEditorUsername = applicationDetails.EditorUsername;
+            string newEditorUsername = applicationDetails?.EditorProfile?.AD_Username ?? applicationDetails?.EditorUsername;
 
             bool result = _housingService.ChangeApplicationEditor(username, applicationID, newEditorUsername);
 
@@ -264,51 +288,52 @@ namespace Gordon360.Controllers.Api
         /// <returns>Object of type ApartmentAppViewModel</returns>
         [HttpGet]
         [Route("apartment/applications/{applicationID}")]
-        //[StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING)]
         public IHttpActionResult GetApartmentApplication(int applicationID)
         {
             //get token data from context, username is the username of current logged in person
-            ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            ClaimsPrincipal authenticatedUser = ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
-            string sessionID = Helpers.GetCurrentSession().SessionCode;
+            string userID = _accountService.GetAccountByUsername(username).GordonID;
 
-            int? storedApplicationID = _housingService.GetApplicationID(username, sessionID);
-            if (storedApplicationID == null)
+            bool isAdmin = false;
+
+            try
             {
-                return NotFound();
+                ADMIN adminModel = _administratorService.Get(userID);
+                isAdmin = (adminModel != null);
             }
-            else if (storedApplicationID != applicationID)
+            catch
             {
-                return StatusCode(HttpStatusCode.Forbidden);
+                isAdmin = _housingService.CheckIfHousingAdmin(userID);
+            }
+
+            ApartmentApplicationViewModel result = _housingService.GetApartmentApplication(applicationID, isAdmin);
+            if (result != null)
+            {
+                return Ok(result);
             }
             else
             {
-                ApartmentApplicationViewModel result = _housingService.GetApartmentApplication(applicationID);
-                if (result != null)
-                {
-                    return Ok(result);
-                }
-                else
-                {
-                    return NotFound();
-                }
+                return NotFound();
             }
         }
 
         /// <summary>Get apartment application info for all applications if the current user is a housing admin</summary>
-        /// <returns>Object of type ApartmentAppViewModel</returns>
+        /// <returns>Object of type ApartmentApplicationViewModel</returns>
         [HttpGet]
         [Route("admin/apartment/applications/")]
-        //[StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
+        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING)]
         public IHttpActionResult GetAllApartmentApplication()
         {
             //get token data from context, username is the username of current logged in person
-            ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            ClaimsPrincipal authenticatedUser = ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            string userID = _accountService.GetAccountByUsername(username).GordonID;
 
-            bool isAdmin = _housingService.CheckIfHousingAdmin(username);
-            if (isAdmin)
+            bool isAdmin = _housingService.CheckIfHousingAdmin(userID); // This line can be removed once the StateYourBusiness has been implemented
+            if (isAdmin) // This line can be removed once the StateYourBusiness has been implemented
             {
                 ApartmentApplicationViewModel[] result = _housingService.GetAllApartmentApplication();
                 if (result != null)
@@ -320,9 +345,9 @@ namespace Gordon360.Controllers.Api
                     return NotFound();
                 }
             }
-            else
+            else // This line can be removed once the StateYourBusiness has been implemented
             {
-                return StatusCode(HttpStatusCode.Forbidden);
+                return StatusCode(HttpStatusCode.Forbidden); // This line can be removed once the StateYourBusiness has been implemented
             }
         }
     }
