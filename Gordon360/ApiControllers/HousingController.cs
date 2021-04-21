@@ -324,7 +324,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>Object of type ApartmentApplicationViewModel</returns>
         [HttpGet]
         [Route("admin/apartment/applications/")]
-        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_ADMIN)]
+        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING)]
         public IHttpActionResult GetAllApartmentApplication()
         {
             //get token data from context, username is the username of current logged in person

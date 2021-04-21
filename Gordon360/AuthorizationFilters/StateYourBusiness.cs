@@ -364,7 +364,7 @@ namespace Gordon360.AuthorizationFilters
                     return false;
                 case Resource.ADMIN:
                     return false;
-                case Resource.HOUSING_ADMIN:
+                case Resource.HOUSING:
                     {
                         // Only the housing admin and super admin can read all of the received applications.
                         // Super admin has unrestricted access by default, so no need to check.
