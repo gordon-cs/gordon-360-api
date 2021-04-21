@@ -364,9 +364,10 @@ namespace Gordon360.AuthorizationFilters
                     return false;
                 case Resource.ADMIN:
                     return false;
-                case Resource.HOUSING:
+                case Resource.HOUSING_ADMIN:
                     {
-                        // Only the housing admin can read all of the received applications
+                        // Only the housing admin and super admin can read all of the received applications.
+                        // Super admin has unrestricted access by default, so no need to check.
                         var housingService = new HousingService(new UnitOfWork());
                         if (housingService.CheckIfHousingAdmin(user_id))
                         {
@@ -445,12 +446,8 @@ namespace Gordon360.AuthorizationFilters
                     else
                         return false; // Only super admin can add Advisors through this API
                 case Resource.HOUSING_ADMIN:
-                    {
-                        if (user_position == Position.SUPERADMIN)
-                            return true;
-                        else
-                            return false; // Only superadmin can add housing admins through this API
-                    }
+                    //only superadmins can add a HOUSING_ADMIN
+                    return false;
                 case Resource.HOUSING:
                     {
                         // The user must be a student and not a member of an existing application
@@ -555,7 +552,7 @@ namespace Gordon360.AuthorizationFilters
                         // The housing admins can update the application information (i.e. probation, offcampus program, etc.)
                         // If the user is a student, then the user must be on an application and be an editor to update the application
                         var housingService = new HousingService(new UnitOfWork());
-                        if (user_position == Position.SUPERADMIN || (housingService.CheckIfHousingAdmin(user_id)))
+                        if (housingService.CheckIfHousingAdmin(user_id))
                         {
                             return true;
                         }
@@ -721,10 +718,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.HOUSING_ADMIN:
                     {
                         // Only the superadmins can remove a housing admin from the whitelist
-                        if (user_position == Position.SUPERADMIN)
-                        {
-                            return true;
-                        }
+                        // Super admins have unrestricted access by default: no need to check
                         return false;
                     }
                 case Resource.NEWS:
