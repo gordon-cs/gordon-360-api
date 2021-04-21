@@ -138,6 +138,31 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// Calls a stored procedure that tries to get the editor ID of a given application ID
+        /// </summary>
+        /// <param name="applicationID"> The application ID for which the editor ID would be </param>
+        /// <returns>
+        /// The id of the editor or
+        /// null if the user is a member but not an editor of a given application
+        /// </returns>
+        public string GetEditorUsername(int applicationID)
+        {
+            IEnumerable<string> editorResult= null;
+
+            SqlParameter applicationIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
+
+            editorResult = RawSqlQuery<string>.query("GET_AA_EDITOR_BY_APPID, @APPLICATION_ID", applicationIDParam); // run stored procedure
+            if (editorResult == null || !editorResult.Any())
+            {
+                return null;
+            }
+
+            string result = editorResult.FirstOrDefault();
+
+            return result;
+        }
+
+        /// <summary>
         /// Saves student housing info
         /// - first, it creates a new row in the applications table and inserts the username of the primary applicant and a timestamp
         /// - second, it retrieves the application id of the application with the information we just inserted (because

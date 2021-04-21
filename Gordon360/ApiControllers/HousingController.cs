@@ -1,10 +1,13 @@
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Exceptions.ExceptionFilters;
+using Gordon360.AuthorizationFilters;
+using Gordon360.Models.ViewModels;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Static.Methods;
+using Gordon360.Static.Names;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
@@ -65,6 +68,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpPost]
         [Route("admin/{id}")]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_ADMIN)]
         public IHttpActionResult AddHousingAdmin(string id)
         {
             bool result = _housingService.AddHousingAdmin(id);
@@ -78,6 +82,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpDelete]
         [Route("admin/{id}")]
+        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_ADMIN)]
         public IHttpActionResult RemoveHousingAdmin(string id)
         {
             bool result = _housingService.RemoveHousingAdmin(id);
@@ -156,7 +161,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>Returns the application ID number if all the queries succeeded</returns>
         [HttpPost]
         [Route("apartment/applications")]
-        //[StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING)]
         public IHttpActionResult SaveApplication([FromBody] ApartmentApplicationViewModel applicationDetails)
         {
             // Verify Input
@@ -203,6 +208,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>Returns the application ID number if all the queries succeeded</returns>
         [HttpPut]
         [Route("apartment/applications/{applicationID}")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)]
         public IHttpActionResult EditApplication(int applicationID, [FromBody] ApartmentApplicationViewModel applicationDetails)
         {
             // Verify Input
@@ -282,7 +288,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>Object of type ApartmentAppViewModel</returns>
         [HttpGet]
         [Route("apartment/applications/{applicationID}")]
-        //[StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING)]
         public IHttpActionResult GetApartmentApplication(int applicationID)
         {
             //get token data from context, username is the username of current logged in person
@@ -318,7 +324,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>Object of type ApartmentApplicationViewModel</returns>
         [HttpGet]
         [Route("admin/apartment/applications/")]
-        //[StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING)] we need to actually add HOUSING to stateYourBusiness if we do this
+        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING)]
         public IHttpActionResult GetAllApartmentApplication()
         {
             //get token data from context, username is the username of current logged in person
