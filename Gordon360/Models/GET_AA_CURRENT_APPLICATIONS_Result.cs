@@ -16,6 +16,6 @@ namespace Gordon360.Models
         public int AprtAppID { get; set; }
         public Nullable<System.DateTime> DateSubmitted { get; set; }
         public System.DateTime DateModified { get; set; }
-        public string EditorID { get; set; }
+        public string EditorUsername { get; set; }
     }
 }

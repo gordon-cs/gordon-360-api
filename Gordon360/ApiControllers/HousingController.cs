@@ -110,11 +110,10 @@ namespace Gordon360.Controllers.Api
             //get token data from context, username is the username of current logged in person
             ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-
-            string userID = _accountService.GetAccountByUsername(username).GordonID;
+            
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
-            int? result = _housingService.GetApplicationID(userID, sessionID);
+            int? result = _housingService.GetApplicationID(username, sessionID);
             if (result != null)
             {
                 return Ok(result);
@@ -134,10 +133,9 @@ namespace Gordon360.Controllers.Api
         [Route("apartment/{username}")]
         public IHttpActionResult GetUserApplicationID(string username)
         {
-            string userID = _accountService.GetAccountByUsername(username).GordonID;
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
-            int? result = _housingService.GetApplicationID(userID, sessionID);
+            int? result = _housingService.GetApplicationID(username, sessionID);
             if (result != null)
             {
                 return Ok(result);
@@ -174,22 +172,16 @@ namespace Gordon360.Controllers.Api
             //get token data from context, username is the username of current logged in person
             ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            string userID = _accountService.GetAccountByUsername(username).GordonID;
 
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
             string editorUsername = applicationDetails.EditorUsername;
-            string editorID = _accountService.GetAccountByUsername(editorUsername).GordonID;
 
             ApartmentApplicantViewModel[] apartmentApplicants = applicationDetails.Applicants;
-            foreach (ApartmentApplicantViewModel applicant in apartmentApplicants)
-            {
-                applicant.StudentID = _accountService.GetAccountByUsername(applicant.Username).GordonID;
-            }
 
             ApartmentChoiceViewModel[] apartmentChoices = applicationDetails.ApartmentChoices;
 
-            int result = _housingService.SaveApplication(userID, sessionID, editorID, apartmentApplicants, apartmentChoices);
+            int result = _housingService.SaveApplication(username, sessionID, editorUsername, apartmentApplicants, apartmentChoices);
 
             return Created("Status of application saving: ", result);
         }
@@ -219,22 +211,16 @@ namespace Gordon360.Controllers.Api
             //get token data from context, username is the username of current logged in person
             ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            string userID = _accountService.GetAccountByUsername(username).GordonID;
 
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
             string newEditorUsername = applicationDetails.EditorUsername;
-            string newEditorID = _accountService.GetAccountByUsername(newEditorUsername).GordonID;
 
             ApartmentApplicantViewModel[] newApartmentApplicants = applicationDetails.Applicants;
-            foreach (ApartmentApplicantViewModel applicant in newApartmentApplicants)
-            {
-                applicant.StudentID = _accountService.GetAccountByUsername(applicant.Username).GordonID;
-            }
 
             ApartmentChoiceViewModel[] newApartmentChoices = applicationDetails.ApartmentChoices;
 
-            int result = _housingService.EditApplication(userID, sessionID, applicationID, newEditorID, newApartmentApplicants, newApartmentChoices);
+            int result = _housingService.EditApplication(username, sessionID, applicationID, newEditorUsername, newApartmentApplicants, newApartmentChoices);
 
             return Created("Status of application saving: ", result);
         }
@@ -264,12 +250,10 @@ namespace Gordon360.Controllers.Api
             //get token data from context, username is the username of current logged in person
             ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            string userID = _accountService.GetAccountByUsername(username).GordonID;
 
             string newEditorUsername = applicationDetails.EditorUsername;
-            string newEditorID = _accountService.GetAccountByUsername(newEditorUsername).GordonID;
 
-            bool result = _housingService.ChangeApplicationEditor(userID, applicationID, newEditorID);
+            bool result = _housingService.ChangeApplicationEditor(username, applicationID, newEditorUsername);
 
             return Ok(result);
         }
@@ -286,11 +270,10 @@ namespace Gordon360.Controllers.Api
             //get token data from context, username is the username of current logged in person
             ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            string userID = _accountService.GetAccountByUsername(username).GordonID;
 
             string sessionID = Helpers.GetCurrentSession().SessionCode;
 
-            int? storedApplicationID = _housingService.GetApplicationID(userID, sessionID);
+            int? storedApplicationID = _housingService.GetApplicationID(username, sessionID);
             if (storedApplicationID == null)
             {
                 return NotFound();
@@ -323,9 +306,8 @@ namespace Gordon360.Controllers.Api
             //get token data from context, username is the username of current logged in person
             ClaimsPrincipal authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            string userID = _accountService.GetAccountByUsername(username).GordonID;
 
-            bool isAdmin = _housingService.CheckIfHousingAdmin(userID);
+            bool isAdmin = _housingService.CheckIfHousingAdmin(username);
             if (isAdmin)
             {
                 ApartmentApplicationViewModel[] result = _housingService.GetAllApartmentApplication();
