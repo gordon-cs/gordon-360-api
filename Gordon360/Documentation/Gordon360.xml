@@ -455,7 +455,7 @@
         </member>
         <member name="M:Gordon360.Controllers.Api.HousingController.GetAllApartmentApplication">
             <summary>Get apartment application info for all applications if the current user is a housing admin</summary>
-            <returns>Object of type ApartmentAppViewModel</returns>
+            <returns>Object of type ApartmentApplicationViewModel</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.NewsController.#ctor">
             private void catchBadInput()
@@ -1957,9 +1957,9 @@
              which application on which they are an applicant
             
              </summary>
-             <param name="userID"> The student username of the user who is attempting to save the apartment application (retrieved via authentication token) </param>
+             <param name="username"> The student username of the user who is attempting to save the apartment application (retrieved via authentication token) </param>
              <param name="sess_cde"> The current session code </param>
-             <param name="editorID"> The student username of the student who is declared to be the editor of this application (retrieved from the JSON from the front end) </param>
+             <param name="editorUsername"> The student username of the student who is declared to be the editor of this application (retrieved from the JSON from the front end) </param>
              <param name="apartmentApplicants"> Array of JSON objects providing apartment applicants </param>
              <param name="apartmentChoices"> Array of JSON objects providing apartment hall choices </param>
              <returns>Returns the application ID number if all the queries succeeded</returns>
@@ -1976,7 +1976,7 @@
              <param name="userID"> The student username of the user who is attempting to save the apartment application (retrieved via authentication token) </param>
              <param name="sess_cde"> The current session code </param>
              <param name="applicationID"> The application ID number of the application to be edited </param>
-             <param name="newEditorID"> The student username of the student who is declared to be the editor of this application (retrieved from the JSON from the front end) </param>
+             <param name="newEditorUsername"> The student username of the student who is declared to be the editor of this application (retrieved from the JSON from the front end) </param>
              <param name="newApartmentApplicants"> Array of JSON objects providing apartment applicants </param>
              <param name="newApartmentChoices"> Array of JSON objects providing apartment hall choices </param>
              <returns>Returns the application ID number if all the queries succeeded</returns>
@@ -1987,6 +1987,14 @@
             
              </summary>
              <returns>Whether or not all the queries succeeded</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetApartmentApplication(System.Int32,System.Boolean)">
+            <param name="applicationID">application ID number of the apartment application</param>
+            <param name="isAdmin">boolean indicating whether the current user is an admin, permits access to restricted information such as birth date</param>
+            <returns>Object of type ApartmentApplicationViewModel</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetAllApartmentApplication">
+            <returns>Array of ApartmentApplicationViewModel Objects</returns>
         </member>
         <member name="M:Gordon360.Services.WellnessService.GetStatus(System.String)">
             <summary>

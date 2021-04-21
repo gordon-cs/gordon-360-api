@@ -14,9 +14,21 @@ namespace Gordon360.Models
     
     public partial class AA_ApartmentApplications
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public AA_ApartmentApplications()
+        {
+            this.AA_ApartmentChoices = new HashSet<AA_ApartmentChoices>();
+            this.AA_Applicants = new HashSet<AA_Applicants>();
+        }
+    
         public int AprtAppID { get; set; }
         public Nullable<System.DateTime> DateSubmitted { get; set; }
         public System.DateTime DateModified { get; set; }
-        public string EditorID { get; set; }
+        public string EditorUsername { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AA_ApartmentChoices> AA_ApartmentChoices { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AA_Applicants> AA_Applicants { get; set; }
     }
 }
