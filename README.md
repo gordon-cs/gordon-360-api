@@ -7,9 +7,10 @@ Dive in.
 ## Table of Contents
 
 -   [Machines and Sites](#machines-and-sites)
-    -   [Deploying to the Api Site](#deploying-to-the-api-site)
-        -   [Current Case: Deploying Manually](#current-case-deploying-manually)
-        -   [Ideal Case: Continuous Deployment with GitHub Actions](#ideal-case-continuous-deployment-with-github-actions)
+-   [API Maintenance](#api-maintenance)
+    -   [Continuous Integration](#continuous-integration)
+    -   [Continuous Deployment](#continuous-deployment)
+    -   [Deploying Manually](#deploying-manually)
 -   [Caching](#caching)
 -   [Running the API locally](#running-the-api-locally)
     -   [Preliminary setup](#preliminary-setup)
@@ -58,18 +59,28 @@ Dive in.
 
 As of Spring 2021, the virtual machines CS-RDSH-01 and CS-RDSH-02 are used for developing Gordon 360. Instructions for connecting via Remote Desktop can be found in [RemoteDesktopToVM.md](RemoteDesktopToVM.md#How-to-connect-to-a-CS-RDSH-virtual-machine).
 
-### Deploying to the Api Site
+## API Maintenance
 
-The Gordon 360 API is hosted on the `360api.gordon.edu` server, which is also known as `cts-360.gordon.edu`. The built files are deployed at `F:\Sites`, under the names `360Api` and `360ApiTrain` for the master and develop branches respectively.
+### Continuous Integration
 
-#### Current Case: Deploying Manually
+The backend uses GitHub Actions for Continuous Integration. Whenever changes are pushed to GitHub, the `CI` action defined in `.github/workflows/ci.yml` will be run by GitHub Actions. This action will checkout the latest version of whatever branch was pushed to and attempt to build it. If the build fails, the action will fail and no pull request on that branch will be able to be merged until a new build succeeds. This is the minimum in Continuous Integration. Ideally, we would also have unit/integration tests that run in the `CI` action. We currently have some tests defined in the `pytest` Python format, which can be found in `Tests/ApiEndpoints`. These are difficult to use in a Continuous Integration system because they require the API-to-be-tested to be running and locally accessible to the `pytest` module.
 
-If there are problems with automatic deployment, or a specific need to revert or push manually, then this older procedure can be used.
+### Continuous Deployment
+
+The Gordon 360 API is hosted on the `360api.gordon.edu` server, which is also known as `cts-360.gordon.edu`. The built files are deployed at `F:\Sites`, under the names `360Api` and `360ApiTrain` for the `master` and `develop` branches respectively.
+
+The backend is deployed automatically using GitHub Actions. Whenever changes are pushed to the `develop` or `master` branches, the `CI` workflow will run and ensure a successful build (see above [section on Continuous Integration](#continuous-integration) for details). If the changes build successfully, the output of that build will be saved as an artifact on the workflow run - `build-Train` for `develop` and `build-Prod` for `master`.
+
+To detect and deploy successful builds, the scheduled task `Deploy 360Api[Train]` runs every 5 minutes on the API server. It calls the powershell script `Deploy360BackEnd.ps1` (found at `F:\Scripts\Deploy`), polling GitHub's API for new builds. If it detects a new build for the relevant environment (`Train` for `develop`, `Prod` for `master`), it will backup the existing API and deploy the new one. Transcripts for these deployments can be found at `F:\Scripts\Deploy\Transcripts`.
+
+### Deploying Manually
+
+If there are problems with continuous deployment, or a specific need arises to revert or push manually, then this older procedure can be used.
 
 -   Access the cts-360.gordon.edu VM (see [RemoteDesktopToVM.md](RemoteDesktopToVM.md#How-to-connect-to-a-CS-RDSH-virtual-machine) for instructions) as the cct.service user.
 -   Before you publish your new version, be sure to copy the current stable version to make a backup. To do so:
     -   Navigate in File Explorer to `F:\Sites` and copy either 360Api or 360ApiTrain, whichever you're planning to publish to.
-    -   Paste that copy in the same place (`F:\Sites`), and rename it to a backup including the date. For example, if you backed up the Train site on January 1, 2001, then the copy would be named `360ApiTrain_backup_1-01-2001`.
+    -   Paste that copy in the same place (`F:\Sites`), and rename it to a backup including the date. For example, if you backed up the Train site on January 1, 2001, then the copy would be named `360ApiTrain-backup-2001-01-01`.
 -   Open gitbash and cd to `C:\users\cct.service\code\gordon-360-api`. Make sure that you are on the branch you wish to deploy, and that it has been pulled up to date.
     **Note: if you clone a new repository on this VM, it will not have the necessary publish profiles or secrets.config. See [MakePublishProfiles.md](MakePublishProfiles.md#How-to-create-the-Publish-Profiles-to-publish-the-API-to-the-Sites) to restore the Publish Profiles.**
 -   Start Visual Studio as an administrator (right click) and open the existing project/solution file - `C:\users\cct.service\code\gordon-360-api\Gordon360.sln` (the solution file).
@@ -79,10 +90,6 @@ If there are problems with automatic deployment, or a specific need to revert or
     -   Prod -- Production ( Connects to the adminprodsql database server, and used for the real site 360.gordon.edu).
     -   If you don't see the publish profile you want (or you are automatically taken to the "Pick a Publish Target" Window) see [MakePublishProfiles.md](MakePublishProfiles.md#How-to-create-the-Publish-Profiles-to-publish-the-API-to-the-Sites) to restore the Publish Profiles.
 -   Clicking publish pushes your changes to the API for either 360ApiTrain.gordon.edu or 360Api.gordon.edu, depending on which publish profile you used.
-
-#### Ideal Case: Continuous Deployment with GitHub Actions
-
-The frontend is already configured for continuous deployment with GitHub Actions. The backend should ideally be simularly automated, but isn't yet.
 
 ## Caching
 
@@ -421,12 +428,12 @@ If you are attempting to connect the API to a database other than the ones to wh
 -   You do not need to delete any edmx files, since you are now creating the first instance of a different edmx
 -   <span id="create-connection"><!--anchor--></span>
     None of the options for data connection will fit your needs, so you will need to create a new option:
-    - Click "New Connection..."
-    - If prompted "Choose Data Source", choose "Microsoft SQL Server"
-    - For "Server name", put `admintrainsql.gordon.edu`
-    - Under "Connect to a Database", make sure "Select or enter a database name:" is selected and enter `<database name>`
-    - Go to Advanced settings, scroll to the top, and make sure "MultipleActiveResultSets" is set to True; then, scroll towards the bottom to find "Integrated Security" and make sure that is set to True
-    - Click OK to close Advanced settings, then OK again to save the data connection you have just made
+    -   Click "New Connection..."
+    -   If prompted "Choose Data Source", choose "Microsoft SQL Server"
+    -   For "Server name", put `admintrainsql.gordon.edu`
+    -   Under "Connect to a Database", make sure "Select or enter a database name:" is selected and enter `<database name>`
+    -   Go to Advanced settings, scroll to the top, and make sure "MultipleActiveResultSets" is set to True; then, scroll towards the bottom to find "Integrated Security" and make sure that is set to True
+    -   Click OK to close Advanced settings, then OK again to save the data connection you have just made
 -   Now, you can select the data connection you just made from the drop down and pick up with the above directions at 'Make sure you check "Save connection...'
 
 ## The Code

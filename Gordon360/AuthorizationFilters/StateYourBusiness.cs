@@ -75,7 +75,7 @@ namespace Gordon360.AuthorizationFilters
             isAuthorized = canPerformOperation(resource, operation);
             if (!isAuthorized)
             {
-                actionContext.Response = new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
+                actionContext.Response = actionContext.Request.CreateResponse(System.Net.HttpStatusCode.Unauthorized,  new { Message = "Authorization has been denied for this request." });
             }
 
             base.OnActionExecuting(actionContext);
