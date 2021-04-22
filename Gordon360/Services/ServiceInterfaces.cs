@@ -62,7 +62,7 @@ namespace Gordon360.Services
 
     public interface IDirectMessageService
     {
-        CreateGroupViewModel CreateGroup(String name, bool group, DateTime lastUpdated, string image, List<String> usernames);
+        CreateGroupViewModel CreateGroup(String name, bool group, string image, List<String> usernames, SendTextViewModel initialMessage, string userId);
         bool SendMessage(SendTextViewModel textInfo, string user_id);
         bool StoreUserRooms(String userId, String roomId);
         bool StoreUserConnectionIds(String userId, String connectionId);
@@ -71,6 +71,7 @@ namespace Gordon360.Services
         IEnumerable<MessageViewModel> GetMessages(string roomId);
         IEnumerable<GroupViewModel> GetRooms(string userId);
         List<Object> GetRoomById(string userId);
+        MessageViewModel GetSingleMessage(string messageID, string roomID);
     }
 
     public interface IActivityService
@@ -275,6 +276,7 @@ namespace Gordon360.Services
         bool CheckIfHousingAdmin(string userID);
         bool AddHousingAdmin(string id);
         bool RemoveHousingAdmin(string id);
+        bool DeleteApplication(int applicationID);
         AA_ApartmentHalls[] GetAllApartmentHalls();
         string GetEditorUsername(int applicationID);
         int? GetApplicationID(string username, string sess_cde);
@@ -283,6 +285,7 @@ namespace Gordon360.Services
         int SaveApplication(string username, string sess_cde, string editorUsername, ApartmentApplicantViewModel[] apartmentApplicants, ApartmentChoiceViewModel[] apartmentChoices);
         int EditApplication(string username, string sess_cde, int applicationID, string newEditorUsername, ApartmentApplicantViewModel[] newApartmentApplicants, ApartmentChoiceViewModel[] newApartmentChoices);
         bool ChangeApplicationEditor(string username, int applicationID, string newEditorUsername);
+        bool ChangeApplicationDateSubmitted(int applicationID);
     }
 
 }
