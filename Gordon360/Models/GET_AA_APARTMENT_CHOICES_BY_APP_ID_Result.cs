@@ -15,6 +15,6 @@ namespace Gordon360.Models
     {
         public int AprtAppID { get; set; }
         public int Ranking { get; set; }
-        public string BLDG_CDE { get; set; }
+        public string HallName { get; set; }
     }
 }
