@@ -361,6 +361,7 @@ namespace Gordon360.Controllers.Api
         public IHttpActionResult GetMyImg()
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
 
             var photoModel = _profileService.GetPhotoPath(id);
@@ -370,23 +371,27 @@ namespace Gordon360.Controllers.Api
            
             var fileName = "";
             var filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PREF_IMAGE_PATH"];
+
+            var unapprovedFileName = username + "_" + _accountService.GetAccountByUsername(username).account_id + ".jpg";
+            var unapprovedFilePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_ID_SUBMISSION_PATH"];
+
             byte[] imageBytes;
             JObject result = new JObject();
 
             if (photoModel != null)
             {
+                // If this is the case, we just set the filename and complete the process after this if-else block
                 fileName = photoModel.Pref_Img_Name;
             }
-            else if (false) //File.Exists(filePath + fileName)
+            else if (File.Exists(unapprovedFilePath + unapprovedFileName))
             {
 
-                string unapprovedImgPath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_ID_SUBMISSION_PATH"];
-                string unapprovedImgName = "";
-
                 var webClient = new WebClient();
-                imageBytes = webClient.DownloadData(unapprovedImgPath + unapprovedImgName);
-         
-                string unapprovedImg = Convert.ToBase64String(imageBytes);
+                imageBytes = webClient.DownloadData(unapprovedFilePath + unapprovedFileName);
+
+                string unapproved_img = Convert.ToBase64String(imageBytes);
+                result.Add("unap", unapproved_img);
+                return Ok(result);
             }
             else
             {
