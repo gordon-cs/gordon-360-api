@@ -66,8 +66,8 @@ FILE_PATH_ID = r'..\..\Gordon360\browseable\profile\Default\ID.png'
 
 # API. Choose only 1. 
 # localhost set up using Visual Studio to enable local testing.
-#hostURL = 'https://360ApiTrain.gordon.edu/'
-hostURL = 'http://localhost:2477/' 
+hostURL = 'https://360ApiTrain.gordon.edu/'
+# hostURL = 'http://localhost:2477/' 
 
 # Constants
 LEADERSHIP_POSITIONS = ['CAPT','CODIR','CORD','DIREC','PRES','VICEC','VICEP']
