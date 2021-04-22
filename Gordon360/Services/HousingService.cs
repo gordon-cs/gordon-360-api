@@ -31,11 +31,11 @@ namespace Gordon360.Services
         /// <returns> Whether or not the user is on the staff whitelist </returns>
         public bool CheckIfHousingAdmin(string userID)
         {
-            IEnumerable<HousingAdminViewModel> idResult = null;
+            IEnumerable<string> idResult = null;
 
             SqlParameter idParam = new SqlParameter("@USER_ID", userID);
 
-            idResult = RawSqlQuery<HousingAdminViewModel>.query("GET_AA_ADMIN @USER_ID", idParam);
+            idResult = RawSqlQuery<string>.query("GET_AA_ADMIN @USER_ID", idParam);
             if (idResult == null || !idResult.Any())
             {
                 return false;
@@ -51,18 +51,12 @@ namespace Gordon360.Services
         /// <returns> Whether or not this was successful </returns>
         public bool AddHousingAdmin(string id)
         {
-            IEnumerable<HousingAdminViewModel> idResult = null;
-
             SqlParameter idParam = new SqlParameter("@ADMIN_ID", id);
 
-            idResult = RawSqlQuery<HousingAdminViewModel>.query("INSERT_AA_ADMIN @ADMIN_ID", idParam);
+            int? idResult = _context.Database.ExecuteSqlCommand("INSERT_AA_ADMIN @ADMIN_ID", idParam);
             if (idResult == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The id could not be added." };
-            }
-            else if (!idResult.Any())
-            {
-                return false;
             }
 
             return true;
@@ -75,18 +69,12 @@ namespace Gordon360.Services
         /// <returns> Whether or not this was successful </returns>
         public bool RemoveHousingAdmin(string id)
         {
-            IEnumerable<HousingAdminViewModel> idResult = null;
-
             SqlParameter idParam = new SqlParameter("@ADMIN_ID", id);
 
-            idResult = RawSqlQuery<HousingAdminViewModel>.query("DELETE_AA_ADMIN @ADMIN_ID", idParam);
+            int? idResult = _context.Database.ExecuteSqlCommand("DELETE_AA_ADMIN @ADMIN_ID", idParam);
             if (idResult == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The id could not be removed." };
-            }
-            else if (!idResult.Any())
-            {
-                return false;
             }
 
             return true;
@@ -125,13 +113,8 @@ namespace Gordon360.Services
             SqlParameter sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
 
             IEnumerable<int?> idResult = _context.Database.SqlQuery<int?>("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_USERNAME", sessionParam, userParam).AsEnumerable().ToList(); //run stored procedure
-            if (idResult?.FirstOrDefault()?.HasValue)
-            {
-                return idResult.FirstOrDefault().Value;
-            } else
-            {
-                return null;
-            }
+
+            return idResult.FirstOrDefault();
         }
 
         /// <summary>
@@ -144,19 +127,11 @@ namespace Gordon360.Services
         /// </returns>
         public string GetEditorUsername(int applicationID)
         {
-            IEnumerable<string> editorResult= null;
-
             SqlParameter applicationIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
 
-            editorResult = RawSqlQuery<string>.query("GET_AA_EDITOR_BY_APPID, @APPLICATION_ID", applicationIDParam); // run stored procedure
-            if (editorResult == null || !editorResult.Any())
-            {
-                return null;
-            }
+            IEnumerable<string> editorResult = RawSqlQuery<string>.query("GET_AA_EDITOR_BY_APPID, @APPLICATION_ID", applicationIDParam); // run stored procedure
 
-            string result = editorResult.FirstOrDefault();
-
-            return result;
+            return editorResult.FirstOrDefault();
         }
 
         /// <summary>
@@ -176,16 +151,14 @@ namespace Gordon360.Services
         /// <returns>Returns the application ID number if all the queries succeeded</returns>
         public int SaveApplication(string username, string sess_cde, string editorUsername, ApartmentApplicantViewModel[] apartmentApplicants, ApartmentChoiceViewModel[] apartmentChoices)
         {
-
-            IEnumerable<int?> idResult = null;
             DateTime now = System.DateTime.Now;
 
             SqlParameter sessionParam = new SqlParameter("@SESS_CDE", sess_cde);
             SqlParameter editorParam = new SqlParameter("@STUDENT_USERNAME", editorUsername);
 
             // If an application ID was not passed in, then check if an application already exists
-            idResult = context.Database.SqlQuery<int?>("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_USERNAME", sessionParam, editorParam).AsEnumerable().ToList(); //run stored procedure
-            if (idResult?.FirstOrDefault()?.HasValue)
+            IEnumerable<int?> idResult = _context.Database.SqlQuery<int?>("GET_AA_APPID_BY_STU_ID_AND_SESS @SESS_CDE, @STUDENT_USERNAME", sessionParam, editorParam).AsEnumerable().ToList(); //run stored procedure
+            if (idResult.FirstOrDefault().HasValue)
             {
                 throw new ResourceCreationException() { ExceptionMessage = "An existing application ID was found for this user. Please use 'EditApplication' to update an existing application." };
             }
@@ -210,14 +183,13 @@ namespace Gordon360.Services
             // The following is ODD, I know. It seems you cannot execute the same query with the same sql parameters twice.
             // Thus, these two sql params must be recreated after being used in the last query:
 
-            idResult = null;
-
             // All SqlParameters must be remade before each SQL Query to prevent errors
             timeParam = new SqlParameter("@NOW", now);
             editorParam = new SqlParameter("@EDITOR_USERNAME", editorUsername);
 
-            idResult = context.Database.SqlQuery<int?>("GET_AA_APPID_BY_NAME_AND_DATE @NOW, @EDITOR_USERNAME", timeParam, editorParam).AsEnumerable().ToList(); //run stored procedure
-            if (idResult?.FirstOrDefault()?.HasValue)
+            idResult = null;
+            idResult = _context.Database.SqlQuery<int?>("GET_AA_APPID_BY_NAME_AND_DATE @NOW, @EDITOR_USERNAME", timeParam, editorParam).AsEnumerable().ToList(); //run stored procedure
+            if (!idResult.FirstOrDefault().HasValue)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The new application ID could not be found." };
             }
