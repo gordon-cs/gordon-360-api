@@ -81,6 +81,25 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// Calls a stored procedure that deletes the application with given id
+        /// (and consequently all rows that reference it)
+        /// </summary>
+        /// <param name="applicationID"> The id of the application to delete </param>
+        /// <returns> Whether or not this was successful </returns>
+        public bool DeleteApplication(int applicationID)
+        {
+            SqlParameter appIdParam = new SqlParameter("@APP_ID", applicationID);
+
+            int? result = _context.Database.ExecuteSqlCommand("DELETE_AA_APPLICATION @APP_ID", appIdParam);
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be found and removed." };
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// Calls a stored procedure that gets all names of apartment halls
         /// </summary>
         /// <returns> AN array of hall names </returns>
@@ -730,6 +749,23 @@ namespace Gordon360.Services
                 apartmentApplicationArray = applicationList.ToArray();
             }
             return apartmentApplicationArray;
+        }
+
+        // I appreciate that we are not typing redundant comments,
+        // but can we have something to make it more clear where these services start?
+        public bool ChangeApplicationDateSubmitted(int applicationID)
+        {
+            SqlParameter appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
+            DateTime now = System.DateTime.Now;
+            SqlParameter timeParam = new SqlParameter("@NOW", now);
+
+            int? result = _context.Database.ExecuteSqlCommand("UPDATE_AA_APPLICATION_DATESUBMITTED @APPLICATION_ID, @NOW", appIDParam, timeParam);
+            if (result == null)
+            {
+                throw new ResourceCreationException() { ExceptionMessage = "The application DateSubmitted could not be updated." };
+            }
+
+            return true;
         }
     }
 }

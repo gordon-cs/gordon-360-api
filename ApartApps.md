@@ -69,7 +69,7 @@ Although, a faster method for simply viewing the tables is to open `Gordon360/Mo
 All the tables were created from scratch by our team.
 
 ##### AA_Admins
-- AdminID - varchar(10)
+- AdminID - PK, varchar(10), not nullable
 
 | AdminID  |
 |----------|
@@ -77,7 +77,7 @@ All the tables were created from scratch by our team.
 |333333333 |
 
 ##### AA_ApartmentApplications
-- AprtAppID - int, not nullable
+- AprtAppID - PK, int, not nullable
 - DateSubmitted - datetime, nullable
 - DateModified - datetime, not nullable
 - EditorUsername - varchar(50), not nullable
@@ -100,7 +100,7 @@ All the tables were created from scratch by our team.
 | 2         | 2       | Bromley  |
 
 ##### AA_ApartmentHalls
-- Name - varchar(15), not nullable
+- Name - PK, varchar(15), not nullable
 
 | Name     |
 |----------|
@@ -157,7 +157,9 @@ Note: This part of the documentation is the most vulnerable to becoming outdated
   - This is done with methods of Account Service within each Housing Controller method that requires this information 
 - __The code that is used to figure out whether to show admin or applicant view__
   - `public bool CheckIfHousingAdmin(...)` in the Housing Service
-- __Where we get the list halls for which students can apply__
+- __The code that deletes an application and all data that references it__
+  - `public bool DeleteApplication(...)` in the Housing Service. This calls a stored procedure that just deletes a row representing an application. However, everything in the database that references the application's ID has `ON DELETE CASCADE` set in the table definition, so applicants and housing choices of the applicaiton are deleted also. 
+- __Where we get the list of halls for which students can apply__
   - `public AA_ApartmentHalls[] GetAllApartmentHalls()` in the Housing Service, which just gets all the rows from a table called `AA_ApartmentHalls` in the CCT database
   - this table can only be edited by editing rows directly; there are no stored procedures for this
 - __The code that figures out which application to load for a returning user__
@@ -174,3 +176,5 @@ Note: This part of the documentation is the most vulnerable to becoming outdated
 - __The code that gets all current applications and their info__
   - `public ApartmentApplicationViewModel[] GetAllApartmentApplication()` in the Housing Service
   - This info is only returned if the user is a housing admin
+- __The code that submits an application__
+  - `public bool ChangeApplicationDateSubmitted(...)` in the Housing Service; since everything about an application is already in the database, submission is only a matter of changing the value of `DateSubmitted`, which would be null until the first time this is called.

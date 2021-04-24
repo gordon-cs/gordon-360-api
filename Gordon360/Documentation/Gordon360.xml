@@ -151,6 +151,12 @@
             </summary>
             <returns>MessageViewModel</returns>
         </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetSingleMessage(Gordon360.Models.MessageSearchViewModel)">
+            <summary>
+             returns single message from a specified group and message id
+            </summary>
+            <returns>MessageViewModel</returns>
+        </member>
         <member name="M:Gordon360.ApiControllers.DirectMessageController.GetRooms">
             <summary>
              returns room ids associated with this user
@@ -405,6 +411,13 @@
             <param name="id"> The id of the user to remove </param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.DeleteApplication(System.Int32)">
+            <summary>
+            Delete an application (and consequently all rows that reference it)
+            </summary>
+            <param name="applicationID"> The id of the application to remove </param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.HousingController.GetApartmentHalls">
             <summary>
             Get a list of the apartment-style halls
@@ -441,6 +454,13 @@
             change the editor (i.e. primary applicant) of the application
             </summary>
             <returns>The result of changing the editor</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.ChangeApplicationDateSubmitted(System.Int32)">
+            <summary>
+            change the date an application was submitted
+            (changes it from null the first time they submit)
+            </summary>
+            <returns>The result of changing the date submitted</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.HousingController.GetApartmentApplication(System.Int32)">
             <summary>Get apartment application info for a given application ID number</summary>
@@ -1921,6 +1941,14 @@
             Calls a stored procedure that deletes the given id from the whitelist table
             </summary>
             <param name="id"> The id to remove </param>
+            <returns> Whether or not this was successful </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.DeleteApplication(System.Int32)">
+            <summary>
+            Calls a stored procedure that deletes the application with given id
+            (and consequently all rows that reference it)
+            </summary>
+            <param name="applicationID"> The id of the application to delete </param>
             <returns> Whether or not this was successful </returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.GetAllApartmentHalls">
