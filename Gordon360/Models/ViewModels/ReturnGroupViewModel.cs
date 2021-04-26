@@ -20,5 +20,9 @@ namespace Gordon360.Models.ViewModels
             public List<UserViewModel> users = new List<UserViewModel>(500);
 
             public SendTextViewModel message { get; set; }
+
+            public DateTime createdAt { get; set; }
+
+            public DateTime lastUpdated { get; set; }
     }
 }

@@ -243,6 +243,11 @@ namespace Gordon360.Services
                 groupObject.id = model.id;
                 groupObject.name = model.name;
                 groupObject.group = model.group;
+                groupObject.message = model.message;
+                groupObject.group = model.group;
+                groupObject.createdAt = model.createdAt;
+                groupObject.lastUpdated = model.lastUpdated;
+                
             
                 string encodedByteArray = null;
 
