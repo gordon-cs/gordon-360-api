@@ -782,8 +782,11 @@ namespace Gordon360.Services
             return apartmentApplicationArray;
         }
 
-        // I appreciate that we are not typing redundant comments,
-        // but can we have something to make it more clear where these services start?
+        /// <summary>
+        /// "Submit" an application by changing its DateSubmitted value to the date the submit button is succesfully clicked
+        /// </summary>
+        /// <param name="applicationID"> The application ID number of the application to be submitted </param>
+        /// <returns>Returns twhether the query succeeded</returns>
         public bool ChangeApplicationDateSubmitted(int applicationID)
         {
             SqlParameter appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
