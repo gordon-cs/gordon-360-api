@@ -271,9 +271,9 @@ namespace Gordon360.Services
                 groupObject.users.Add(userInfo);
             }
 
-            initialMessage.room_id = groupObject.id.ToString();
+            //initialMessage.room_id = groupObject.id.ToString();
 
-            SendMessage(initialMessage, userId);
+            //SendMessage(initialMessage, userId);
 
             return groupObject;
 
