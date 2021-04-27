@@ -7,7 +7,7 @@ namespace Gordon360.Models.ViewModels
     // The view model used to send/receive apartment applicant data to/from the frontend
     public class ApartmentApplicantViewModel
     {
-        public int ApplicationID { get; set; }
+        public int? ApplicationID { get; set; }
         public PublicStudentProfileViewModel Profile { get; set; }
         private string _username;
         public string Username

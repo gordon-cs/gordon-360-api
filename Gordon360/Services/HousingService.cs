@@ -93,6 +93,25 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// Calls a stored procedure that deletes the application with given id
+        /// (and consequently all rows that reference it)
+        /// </summary>
+        /// <param name="applicationID"> The id of the application to delete </param>
+        /// <returns> Whether or not this was successful </returns>
+        public bool DeleteApplication(int applicationID)
+        {
+            SqlParameter appIdParam = new SqlParameter("@APP_ID", applicationID);
+
+            int? result = _context.Database.ExecuteSqlCommand("DELETE_AA_APPLICATION @APP_ID", appIdParam);
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be found and removed." };
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// Calls a stored procedure that gets all names of apartment halls
         /// </summary>
         /// <returns> AN array of hall names </returns>
@@ -133,6 +152,31 @@ namespace Gordon360.Services
             }
 
             int result = idResult.FirstOrDefault().AprtAppID;
+
+            return result;
+        }
+
+        /// <summary>
+        /// Calls a stored procedure that tries to get the editor ID of a given application ID
+        /// </summary>
+        /// <param name="applicationID"> The application ID for which the editor ID would be </param>
+        /// <returns>
+        /// The id of the editor or
+        /// null if the user is a member but not an editor of a given application
+        /// </returns>
+        public string GetEditorUsername(int applicationID)
+        {
+            IEnumerable<string> editorResult= null;
+
+            SqlParameter applicationIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
+
+            editorResult = RawSqlQuery<string>.query("GET_AA_EDITOR_BY_APPID, @APPLICATION_ID", applicationIDParam); // run stored procedure
+            if (editorResult == null || !editorResult.Any())
+            {
+                return null;
+            }
+
+            string result = editorResult.FirstOrDefault();
 
             return result;
         }
@@ -736,6 +780,26 @@ namespace Gordon360.Services
                 apartmentApplicationArray = applicationList.ToArray();
             }
             return apartmentApplicationArray;
+        }
+
+        /// <summary>
+        /// "Submit" an application by changing its DateSubmitted value to the date the submit button is succesfully clicked
+        /// </summary>
+        /// <param name="applicationID"> The application ID number of the application to be submitted </param>
+        /// <returns>Returns twhether the query succeeded</returns>
+        public bool ChangeApplicationDateSubmitted(int applicationID)
+        {
+            SqlParameter appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
+            DateTime now = System.DateTime.Now;
+            SqlParameter timeParam = new SqlParameter("@NOW", now);
+
+            int? result = _context.Database.ExecuteSqlCommand("UPDATE_AA_APPLICATION_DATESUBMITTED @APPLICATION_ID, @NOW", appIDParam, timeParam);
+            if (result == null)
+            {
+                throw new ResourceCreationException() { ExceptionMessage = "The application DateSubmitted could not be updated." };
+            }
+
+            return true;
         }
     }
 }
