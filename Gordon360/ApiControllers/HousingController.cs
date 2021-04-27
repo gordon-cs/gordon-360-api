@@ -96,7 +96,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpDelete]
         [Route("apartment/applications/{applicationID}")]
-        // StateYourBusiness
+        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING)]
         public IHttpActionResult DeleteApplication(int applicationID)
         {
             bool result = _housingService.DeleteApplication(applicationID);
@@ -304,7 +304,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>The result of changing the date submitted</returns>
         [HttpPut]
         [Route("apartment/applications/{applicationID}/submit")]
-        // StateYourBusiness
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)]
         public IHttpActionResult ChangeApplicationDateSubmitted(int applicationID)
         {
             bool result = _housingService.ChangeApplicationDateSubmitted(applicationID);
