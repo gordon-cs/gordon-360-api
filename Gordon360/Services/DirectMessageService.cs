@@ -28,6 +28,7 @@ namespace Gordon360.Services
             _accountService = new AccountService(_unitOfWork);
         }
 
+        //returns all the messages associated with a certain room id in the form of a list of MessageViewModels
         public IEnumerable<MessageViewModel> GetMessages(string roomId)
         {
 
@@ -74,6 +75,7 @@ namespace Gordon360.Services
 
         }
 
+        //Gets a single message specified by a messageID and RoomID
         public MessageViewModel GetSingleMessage(string messageID, string roomID)
         {
             var roomIDParam = new SqlParameter("@room_id", roomID);
@@ -113,6 +115,7 @@ namespace Gordon360.Services
             return returnModel;
         }
 
+        //returns all the room IDs associated with a user id
         public IEnumerable<GroupViewModel> GetRooms(string userId)
         {
 
@@ -139,7 +142,7 @@ namespace Gordon360.Services
             return GroupModel;
 
         }
-
+        // get all the room objects associated with a user ID in the form of a list of objects
         public List<Object> GetRoomById(string userId)
         {
 
@@ -207,7 +210,7 @@ namespace Gordon360.Services
 
         }
 
-
+        //create group using user information taken from the front end.
         public CreateGroupViewModel CreateGroup(String name, bool group, string image, List<String> usernames, SendTextViewModel initialMessage, string userId)
         {
             var nameParam = new SqlParameter("@name", name);
@@ -271,15 +274,11 @@ namespace Gordon360.Services
                 groupObject.users.Add(userInfo);
             }
 
-            //initialMessage.room_id = groupObject.id.ToString();
-
-            //SendMessage(initialMessage, userId);
-
             return groupObject;
 
         }
 
-        //String id, String room_id, String text, String user_id, bool system, bool sent, bool received, bool pending
+        //saves message that was sent in real time in the controller.
         public bool SendMessage(SendTextViewModel textInfo, String user_id)
         {
             DateTime createdAt = DateTime.Now;
@@ -317,6 +316,9 @@ namespace Gordon360.Services
             var result = RawSqlQuery<SendTextViewModel>.query("INSERT_MESSAGE @_id, @room_id, @text, @createdAt, @user_id, @image, @video, @audio, @system, @sent, @received, @pending",
                 idParam, roomIdParam, textParam, createdAtParam, userIdParam, imageParam, videoParam, audioParam, systemParam, sentParam, receivedParam, pendingParam); //run stored procedure
 
+            var UpdateRoomIdParam = new SqlParameter("@room_id", textInfo.room_id);
+            var updateRoom = RawSqlQuery<SendTextViewModel>.query("UPDATE_ROOM  @room_id", UpdateRoomIdParam); //run stored procedure
+
             bool returnAnswer = true;
 
             if (result == null)
@@ -330,7 +332,7 @@ namespace Gordon360.Services
         }
 
         
-
+        //stores a room id along with a user id in order to create an association between the two
         public bool StoreUserRooms(String userId, String roomId)
         {
             var _unitOfWork = new UnitOfWork();
@@ -358,7 +360,7 @@ namespace Gordon360.Services
 
         }
 
-
+        //stores the a users expo token for push notification
         public bool StoreUserConnectionIds(String userId, String connectionId)
         {
             var _unitOfWork = new UnitOfWork();
@@ -388,6 +390,7 @@ namespace Gordon360.Services
 
         }
 
+        //gets a users expo token for push notification
         public List<IEnumerable<ConnectionIdViewModel>> GetUserConnectionIds(List<String> userIds)
         {
             var _unitOfWork = new UnitOfWork();
@@ -419,7 +422,7 @@ namespace Gordon360.Services
             return idList;
 
         }
-
+        //deletes a users expo token
         public bool DeleteUserConnectionIds(String connectionId)
         {
             var connectionIdParam = new SqlParameter("@connection_id", connectionId);
