@@ -356,7 +356,7 @@ namespace Gordon360.Services
                 foreach (GET_AA_APPLICANTS_BY_APPID_Result existingApplicant in existingApplicantResult)
                 {
                     ApartmentApplicantViewModel newMatchingApplicant = null;
-                    newMatchingApplicant = newApartmentApplicants.FirstOrDefault(x => x.Username == existingApplicant.Username);
+                    newMatchingApplicant = newApartmentApplicants.FirstOrDefault(x => x.Username.ToLower() == existingApplicant.Username.ToLower());
                     if (newMatchingApplicant != null)
                     {
                         // If the applicant is in both the new applicant list and the existing applicant list, then we do NOT need to add it to the database
@@ -540,7 +540,7 @@ namespace Gordon360.Services
             appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
 
             SqlParameter timeParam = new SqlParameter("@NOW", now);
-            if (newEditorUsername != storedEditorUsername)
+            if (newEditorUsername.ToLower() != storedEditorUsername.ToLower())
             {
                 SqlParameter editorParam = new SqlParameter("@EDITOR_USERNAME", username);
                 SqlParameter newEditorParam = new SqlParameter("@NEW_EDITOR_USERNAME", newEditorUsername);
@@ -585,7 +585,7 @@ namespace Gordon360.Services
 
             string storedEditorUsername = editorResult.FirstOrDefault();
 
-            if (username != storedEditorUsername)
+            if (username.ToLower() != storedEditorUsername.ToLower())
             {
                 // Throw an error if the current user does not match this application's editor stored in the database
                 throw new Exceptions.CustomExceptions.UnauthorizedAccessException() { ExceptionMessage = "The current user does not match the stored editor of this application" };
@@ -597,7 +597,7 @@ namespace Gordon360.Services
 
             appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
             SqlParameter timeParam = new SqlParameter("@NOW", now);
-            if (newEditorUsername != storedEditorUsername)
+            if (newEditorUsername.ToLower() != storedEditorUsername.ToLower())
             {
                 SqlParameter editorParam = new SqlParameter("@EDITOR_USERNAME", username);
                 SqlParameter newEditorParam = new SqlParameter("@NEW_EDITOR_USERNAME", newEditorUsername);
