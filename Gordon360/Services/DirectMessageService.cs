@@ -142,7 +142,7 @@ namespace Gordon360.Services
             return GroupModel;
 
         }
-        // get allt he room objects associated with a user ID in the form of a list of objects
+        // get all the room objects associated with a user ID in the form of a list of objects
         public List<Object> GetRoomById(string userId)
         {
 
@@ -315,6 +315,9 @@ namespace Gordon360.Services
 
             var result = RawSqlQuery<SendTextViewModel>.query("INSERT_MESSAGE @_id, @room_id, @text, @createdAt, @user_id, @image, @video, @audio, @system, @sent, @received, @pending",
                 idParam, roomIdParam, textParam, createdAtParam, userIdParam, imageParam, videoParam, audioParam, systemParam, sentParam, receivedParam, pendingParam); //run stored procedure
+
+            var UpdateRoomIdParam = new SqlParameter("@room_id", textInfo.room_id);
+            var updateRoom = RawSqlQuery<SendTextViewModel>.query("UPDATE_ROOM  @room_id", UpdateRoomIdParam); //run stored procedure
 
             bool returnAnswer = true;
 
