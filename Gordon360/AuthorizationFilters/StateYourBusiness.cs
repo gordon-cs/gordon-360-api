@@ -564,7 +564,7 @@ namespace Gordon360.AuthorizationFilters
                             if (applicationID.HasValue && applicationID == requestedApplicationID)
                             {
                                 var editorUsername = housingService.GetEditorUsername((int)applicationID);
-                                if (editorUsername == user_name)
+                                if (editorUsername.ToLower() == user_name.ToLower())
                                     return true;
                                 return false;
                             }

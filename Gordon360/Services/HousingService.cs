@@ -170,7 +170,7 @@ namespace Gordon360.Services
 
             SqlParameter applicationIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
 
-            editorResult = RawSqlQuery<string>.query("GET_AA_EDITOR_BY_APPID, @APPLICATION_ID", applicationIDParam); // run stored procedure
+            editorResult = RawSqlQuery<string>.query("GET_AA_EDITOR_BY_APPID @APPLICATION_ID", applicationIDParam); // run stored procedure
             if (editorResult == null || !editorResult.Any())
             {
                 return null;
@@ -319,7 +319,7 @@ namespace Gordon360.Services
 
             string storedEditorUsername = editorResult.FirstOrDefault();
 
-            if (username != storedEditorUsername)
+            if (username.ToLower() != storedEditorUsername.ToLower())
             {
                 // This should already be caught by the StateYourBusiness, but I will leave this check here just in case
                 throw new Exceptions.CustomExceptions.UnauthorizedAccessException() { ExceptionMessage = "The current user does not match the stored editor of this application" };
@@ -511,7 +511,7 @@ namespace Gordon360.Services
                 rankingParam = new SqlParameter("@RANKING", apartmentChoice.HallRank);
                 buildingCodeParam = new SqlParameter("@HALL_NAME", apartmentChoice.HallName);
 
-                int? apartmentChoiceResult = _context.Database.ExecuteSqlCommand("UPDATE_AA_APARTMENT_CHOICE @APPLICATION_ID, @RANKING, @HALL_NAME", appIDParam, rankingParam, buildingCodeParam); //run stored procedure
+                int? apartmentChoiceResult = _context.Database.ExecuteSqlCommand("UPDATE_AA_APARTMENT_CHOICES @APPLICATION_ID, @RANKING, @HALL_NAME", appIDParam, rankingParam, buildingCodeParam); //run stored procedure
                 if (apartmentChoiceResult == null)
                 {
                     throw new ResourceCreationException() { ExceptionMessage = "Apartment choice with ID " + applicationID + " and hall name " + apartmentChoice.HallName + " could not be updated." };
