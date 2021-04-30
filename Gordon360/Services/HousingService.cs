@@ -1,11 +1,5 @@
-using Gordon360.Exceptions.CustomExceptions;
-using Gordon360.Models;
-using Gordon360.Models.ViewModels;
-using Gordon360.Repositories;
-using Gordon360.Services.ComplexQueries;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 
 namespace Gordon360.Services
@@ -627,20 +621,10 @@ namespace Gordon360.Services
 
                             // Calculate application points
                             int points = 0;
-                            switch (applicantModel.Class)
+
+                            if (!String.IsNullOrEmpty(applicantModel.Class))
                             {
-                                case "Freshman":
-                                    points += 1;
-                                    break;
-                                case "Sophomore":
-                                    points += 2;
-                                    break;
-                                case "Junior":
-                                    points += 3;
-                                    break;
-                                case "Senior":
-                                    points += 4;
-                                    break;
+                                points += Convert.ToInt32(Char.GetNumericValue(applicantModel.Class));
                             }
 
                             if (applicantModel.Age >= 23)
@@ -648,7 +632,7 @@ namespace Gordon360.Services
                                 points += 1;
                             }
 
-                            if (!string.IsNullOrEmpty(applicantModel.OffCampusProgram))
+                            if (!String.IsNullOrEmpty(applicantModel.OffCampusProgram))
                             {
                                 points += 1;
                             }
