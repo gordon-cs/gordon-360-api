@@ -1,5 +1,11 @@
+using Gordon360.Exceptions.CustomExceptions;
+using Gordon360.Models;
+using Gordon360.Models.ViewModels;
+using Gordon360.Repositories;
+using Gordon360.Services.ComplexQueries;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 
 namespace Gordon360.Services
@@ -624,7 +630,7 @@ namespace Gordon360.Services
 
                             if (!String.IsNullOrEmpty(applicantModel.Class))
                             {
-                                points += Convert.ToInt32(Char.GetNumericValue(applicantModel.Class));
+                                points += Int32.Parse(applicantModel.Class);
                             }
 
                             if (applicantModel.Age >= 23)
