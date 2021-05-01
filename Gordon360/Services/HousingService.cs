@@ -638,9 +638,9 @@ namespace Gordon360.Services
                             // Calculate application points
                             int points = 0;
 
-                            if (!String.IsNullOrEmpty(applicantModel.Class))
+                            if (!string.IsNullOrEmpty(applicantModel.Class))
                             {
-                                points += Int32.Parse(applicantModel.Class);
+                                points += int.Parse(applicantModel.Class);
                             }
 
                             if (applicantModel.Age >= 23)
@@ -648,7 +648,7 @@ namespace Gordon360.Services
                                 points += 1;
                             }
 
-                            if (!String.IsNullOrEmpty(applicantModel.OffCampusProgram))
+                            if (!string.IsNullOrEmpty(applicantModel.OffCampusProgram))
                             {
                                 points += 1;
                             }
