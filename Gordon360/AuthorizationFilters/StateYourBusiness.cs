@@ -564,7 +564,7 @@ namespace Gordon360.AuthorizationFilters
                             if (applicationID.HasValue && applicationID == requestedApplicationID)
                             {
                                 var editorUsername = housingService.GetEditorUsername((int)applicationID);
-                                if (editorUsername == user_name)
+                                if (editorUsername.ToLower() == user_name.ToLower())
                                     return true;
                                 return false;
                             }
@@ -711,6 +711,31 @@ namespace Gordon360.AuthorizationFilters
                     }
                 case Resource.STUDENT:
                     return false; // No one should be able to delete a student through our API
+                case Resource.HOUSING:
+                    {
+                        // The housing admins can update the application information (i.e. probation, offcampus program, etc.)
+                        // If the user is a student, then the user must be on an application and be an editor to update the application
+                        var housingService = new HousingService(new UnitOfWork());
+                        if (housingService.CheckIfHousingAdmin(user_id))
+                        {
+                            return true;
+                        }
+                        else if (user_position == Position.STUDENT)
+                        {
+                            var sess_cde = Helpers.GetCurrentSession().ToString();
+                            int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
+                            var requestedApplicationID = (int)context.ActionArguments["applicationID"];
+                            if (applicationID.HasValue && applicationID == requestedApplicationID)
+                            {
+                                var editorUsername = housingService.GetEditorUsername((int)applicationID);
+                                if (editorUsername == user_name)
+                                    return true;
+                                return false;
+                            }
+                            return false;
+                        }
+                        return false;
+                    }
                 case Resource.ADVISOR:
                     return false;
                 case Resource.ADMIN:

@@ -148,7 +148,7 @@ namespace Gordon360.Services
         {
             SqlParameter applicationIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
 
-            IEnumerable<string> editorResult = RawSqlQuery<string>.query("GET_AA_EDITOR_BY_APPID, @APPLICATION_ID", applicationIDParam); // run stored procedure
+            IEnumerable<string> editorResult = RawSqlQuery<string>.query("GET_AA_EDITOR_BY_APPID @APPLICATION_ID", applicationIDParam); // run stored procedure
 
             return editorResult.FirstOrDefault();
         }
@@ -288,7 +288,7 @@ namespace Gordon360.Services
 
             string storedEditorUsername = editorResult.FirstOrDefault();
 
-            if (username != storedEditorUsername)
+            if (username.ToLower() != storedEditorUsername.ToLower())
             {
                 // This should already be caught by the StateYourBusiness, but I will leave this check here just in case
                 throw new Exceptions.CustomExceptions.UnauthorizedAccessException() { ExceptionMessage = "The current user does not match the stored editor of this application" };
@@ -325,7 +325,7 @@ namespace Gordon360.Services
                 foreach (GET_AA_APPLICANTS_BY_APPID_Result existingApplicant in existingApplicantResult)
                 {
                     ApartmentApplicantViewModel newMatchingApplicant = null;
-                    newMatchingApplicant = newApartmentApplicants.FirstOrDefault(x => x.Username == existingApplicant.Username);
+                    newMatchingApplicant = newApartmentApplicants.FirstOrDefault(x => x.Username.ToLower() == existingApplicant.Username.ToLower());
                     if (newMatchingApplicant != null)
                     {
                         // If the applicant is in both the new applicant list and the existing applicant list, then we do NOT need to add it to the database
@@ -480,7 +480,7 @@ namespace Gordon360.Services
                 rankingParam = new SqlParameter("@RANKING", apartmentChoice.HallRank);
                 buildingCodeParam = new SqlParameter("@HALL_NAME", apartmentChoice.HallName);
 
-                int? apartmentChoiceResult = _context.Database.ExecuteSqlCommand("UPDATE_AA_APARTMENT_CHOICE @APPLICATION_ID, @RANKING, @HALL_NAME", appIDParam, rankingParam, buildingCodeParam); //run stored procedure
+                int? apartmentChoiceResult = _context.Database.ExecuteSqlCommand("UPDATE_AA_APARTMENT_CHOICES @APPLICATION_ID, @RANKING, @HALL_NAME", appIDParam, rankingParam, buildingCodeParam); //run stored procedure
                 if (apartmentChoiceResult == null)
                 {
                     throw new ResourceCreationException() { ExceptionMessage = "Apartment choice with ID " + applicationID + " and hall name " + apartmentChoice.HallName + " could not be updated." };
@@ -509,7 +509,7 @@ namespace Gordon360.Services
             appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
 
             SqlParameter timeParam = new SqlParameter("@NOW", now);
-            if (newEditorUsername != storedEditorUsername)
+            if (newEditorUsername.ToLower() != storedEditorUsername.ToLower())
             {
                 SqlParameter editorParam = new SqlParameter("@EDITOR_USERNAME", username);
                 SqlParameter newEditorParam = new SqlParameter("@NEW_EDITOR_USERNAME", newEditorUsername);
@@ -551,7 +551,7 @@ namespace Gordon360.Services
 
             string storedEditorUsername = editorResult.FirstOrDefault();
 
-            if (username != storedEditorUsername)
+            if (username.ToLower() != storedEditorUsername.ToLower())
             {
                 // Throw an error if the current user does not match this application's editor stored in the database
                 throw new Exceptions.CustomExceptions.UnauthorizedAccessException() { ExceptionMessage = "The current user does not match the stored editor of this application" };
@@ -563,7 +563,7 @@ namespace Gordon360.Services
 
             appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
             SqlParameter timeParam = new SqlParameter("@NOW", now);
-            if (newEditorUsername != storedEditorUsername)
+            if (newEditorUsername.ToLower() != storedEditorUsername.ToLower())
             {
                 SqlParameter editorParam = new SqlParameter("@EDITOR_USERNAME", username);
                 SqlParameter newEditorParam = new SqlParameter("@NEW_EDITOR_USERNAME", newEditorUsername);
@@ -637,20 +637,10 @@ namespace Gordon360.Services
 
                             // Calculate application points
                             int points = 0;
-                            switch (applicantModel.Class)
+
+                            if (!String.IsNullOrEmpty(applicantModel.Class))
                             {
-                                case "Freshman":
-                                    points += 1;
-                                    break;
-                                case "Sophomore":
-                                    points += 2;
-                                    break;
-                                case "Junior":
-                                    points += 3;
-                                    break;
-                                case "Senior":
-                                    points += 4;
-                                    break;
+                                points += Int32.Parse(applicantModel.Class);
                             }
 
                             if (applicantModel.Age >= 23)
@@ -658,7 +648,7 @@ namespace Gordon360.Services
                                 points += 1;
                             }
 
-                            if (!string.IsNullOrEmpty(applicantModel.OffCampusProgram))
+                            if (!String.IsNullOrEmpty(applicantModel.OffCampusProgram))
                             {
                                 points += 1;
                             }
@@ -751,8 +741,11 @@ namespace Gordon360.Services
             return apartmentApplicationArray;
         }
 
-        // I appreciate that we are not typing redundant comments,
-        // but can we have something to make it more clear where these services start?
+        /// <summary>
+        /// "Submit" an application by changing its DateSubmitted value to the date the submit button is succesfully clicked
+        /// </summary>
+        /// <param name="applicationID"> The application ID number of the application to be submitted </param>
+        /// <returns>Returns twhether the query succeeded</returns>
         public bool ChangeApplicationDateSubmitted(int applicationID)
         {
             SqlParameter appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
