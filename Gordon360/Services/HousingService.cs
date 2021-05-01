@@ -702,10 +702,8 @@ namespace Gordon360.Services
         /// <returns>Array of ApartmentApplicationViewModel Objects</returns>
         public ApartmentApplicationViewModel[] GetAllApartmentApplication()
         {
-            CCTEntities1 context = new CCTEntities1();
-
-            IEnumerable<int?> appIDsResult = context.Database.SqlQuery<int?>("GET_AA_CURRENT_APP_IDS").AsEnumerable().ToList();
-            if (appIDsResult == null || !appIDsResult.Any())
+            IEnumerable<int?> appIDsResult = _context.Database.SqlQuery<int?>("GET_AA_CURRENT_APP_IDS").AsEnumerable().ToList();
+            if (!appIDsResult.FirstOrDefault().HasValue)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be found." };
             }
