@@ -210,7 +210,7 @@ namespace Gordon360.Services
 
         }
 
-        //created group using user information taken from the front end.
+        //create group using user information taken from the front end.
         public CreateGroupViewModel CreateGroup(String name, bool group, string image, List<String> usernames, SendTextViewModel initialMessage, string userId)
         {
             var nameParam = new SqlParameter("@name", name);
