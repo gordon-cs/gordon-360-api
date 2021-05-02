@@ -13,7 +13,7 @@ namespace Gordon360.Models.ViewModels
 
         public String text { get; set; }
 
-        public String createdAt { get; set; }
+        public DateTime createdAt { get; set; }
 
         public String image { get; set; }
 

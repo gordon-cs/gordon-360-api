@@ -281,7 +281,6 @@ namespace Gordon360.Services
         //saves message that was sent in real time in the controller.
         public bool SendMessage(SendTextViewModel textInfo, String user_id)
         {
-            DateTime createdAt = DateTime.Now;
             var _unitOfWork = new UnitOfWork();
             var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == user_id);
             if (query == null)
