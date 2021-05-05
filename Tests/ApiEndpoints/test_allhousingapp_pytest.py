@@ -7,89 +7,57 @@ from datetime import datetime
 import pytest_components as api
 import test_gordon360_pytest as control
 
+# # # # # # # # # # # # # # # # # # # # # #
+# Define functions for creating test data #
+# # # # # # # # # # # # # # # # # # # # # #
+
+# Create a PublicStudentProfileViewModel with the information needed by 
+# the apartment application
+def create_profile_json(username, classStanding=""):
+    return {
+        'AD_Username' : username,
+        'Class' : classStanding
+    }
+
+# Create an ApartmentApplicantViewModel in JSON
+def create_applicant_json(profile, appID="", classStanding="", offCampusProg=""):
+    return {
+        'ApplicationID' : appID,
+        'Profile' : profile,
+        'Class' : classStanding,
+        'OffCampusProgram' : offCampusProg
+    }
+
+# Create an ApartmentChoiceViewModel in JSON
+def create_apartment_choice_json(rank, name, appID=""):
+    return {
+        'ApplicationID' : appID,
+        'HallRank' : rank,
+        'HallName' : name
+    }
+
+# Create an ApartmentApplicationViewModel in JSON
+# 
+# editorP : the PublicStudentProfileViewModel of the editor
+# applicants : a list [] of ApartmentApplicantViewModels of the applicants
+# appID : int, identifies application 
+# dSubmitted : Datetime
+# dModified : Datetime
+# apartChoices : a list [] of ApartmentChoiceViewModels of the apartments chosen by the applicants
+def create_application_json(editorP, applicants, appID="", dSubmitted="", dModified="", apartChoices=""):
+    return {
+        'ApplicationID' : appID,
+        'DateSubmitted' : dSubmitted,
+        'DateModified' : dModified,
+        'EditorProfile' : editorP,
+        'Applicants' : applicants,
+        'ApartmentChoices' : apartChoices
+    }
+
 class Test_AllHousingAppTest(control.testCase):
 # # # # # # # # # # #
 # HOUSING APP TESTS #
 # # # # # # # # # # #
-
-    # Create test data
-
-    COMPLETE_APPLICANT1_JSON = {
-            'Profile' : {
-                'AD_Username' : control.username,
-                'Class' : 'Sophomore',
-            },
-            'OffCampusProgram' : 'Chemistry'
-        }
-
-    MINIMAL_APPLICANT1_JSON = {
-            'Profile' : {
-                'AD_Username' : control.username,
-            },
-        }
-
-    COMPLETE_APPLICANT2_JSON = {
-            'Profile' : {
-                'AD_Username' : control.leader_username,
-                'Class' : 'Senior',
-            },
-            'OffCampusProgram' : 'Center for Entrepreneurial Leadership'
-        }
-
-    MINIMAL_APPLICANT2_JSON = {
-            'Profile' : {
-                'AD_Username' : control.leader_username,
-            },
-        }
-
-    HALL1_RANK1 = {
-            'HallRank' : 1,
-            'HallName' : 'Bromley'
-        }
-
-    HALL1_RANK2 = {
-            'HallRank' : 2,
-            'HallName' : 'Bromley'
-        }
-
-    HALL2_RANK1 = {
-            'HallRank' : 1,
-            'HallName' : 'Tavilla'
-        }
-
-    NEW_APPLICATION_JSON = {  
-            'ApplicationID' : -1, 
-            'EditorProfile' : MINIMAL_APPLICANT1_JSON,  
-            'Applicants' : [
-                COMPLETE_APPLICANT1_JSON,
-                COMPLETE_APPLICANT2_JSON
-            ],
-            'ApartmentChoices' : [
-                HALL2_RANK1,
-                HALL1_RANK2
-            ],
-        }
-
-    NEW_APP_MINIMAL_JSON = {  
-            'ApplicationID' : -1, 
-            'EditorProfile' : MINIMAL_APPLICANT1_JSON,  
-            'Applicants' : [
-                MINIMAL_APPLICANT1_JSON,
-            ],
-            'ApartmentChoices' : [],
-        }
-
-    def create_application_json(appID="", dSubmitted="", dModified="", editorP="", applicants="", apartChoices=""):
-        return {
-            'ApplicationID' : appID,
-            'DateSubmitted' : dSubmitted,
-            'DateModified' : dModified,
-            'EditorProfile' : editorP,
-            'Applicants' : applicants,
-            'ApartmentChoices' : apartChoices
-        }
-
-    # TEST!
 
 #    Verify that a user who is on the admin whitelist gets the OK to access staff features
 #    Endpoint -- 'api/housing/admin'
@@ -131,40 +99,25 @@ class Test_AllHousingAppTest(control.testCase):
     def test_application_deleted(self):
         self.session = self.createAuthorizedSession(control.username, control.password)
         self.url = control.hostURL + 'api/housing/apartment/applications'
-        self.data = {
-            'ApplicationID' : -1,
-            'EditorProfile' : {
-                'AD_Username' : control.leader_username,
-            },   
-            'Applicants' : [
-                {
-                    'Profile' : {
-                       'AD_Username' : control.leader_username,
-                       'Class' : 'Junior',
-                    },
-                },
-                {
-                    'Profile' : {
-                       'AD_Username' : control.username,
-                       'Class' : 'Senior',
-                    },
-                },
-            ],
-            'ApartmentChoices' : [
-                {
-                    'HallRank' : 1,
-                    'HallName' : 'Tavilla'
-                },
-                {
-                    'HallRank' : 2,
-                    'HallName' : 'Conrad'
-                },
-                {
-                    'HallRank' : 3,
-                    'HallName' : 'Hilton'
-                }
-            ],
-        }   
+
+        profile1Json = create_profile_json(control.leader_username, '4')
+        profile2Json = create_profile_json(control.username, '3')
+
+        applicant1Json = create_applicant_json(profile1Json)
+        applicant2Json = create_applicant_json(profile2Json)
+
+        applicantsJson = [applicant1Json, applicant2Json] 
+
+        choice1Json = create_apartment_choice_json(1, 'Tavilla')
+        choice2Json = create_apartment_choice_json(2, 'Conrad')
+        choice3Json = create_apartment_choice_json(3, 'Hilton')
+
+        choicesJson = [choice1Json, choice2Json, choice3Json]
+
+        appJson = create_application_json(profile1Json, applicantsJson, choicesJson)
+
+        self.data = appJson  
+
         appIDResponse = api.postAsJson(self.session, self.url, self.data)
 
         appID = appIDResponse.content
