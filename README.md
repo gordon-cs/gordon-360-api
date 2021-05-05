@@ -688,6 +688,16 @@ What is it? Resource that represents residence hall information that would conce
 
 `api/housing/admin/apartment/applications` Gets the apartment application info for all applications submitted during the current semester, otherwise returns a Not Found code
 
+##### PUT
+
+`apartment/applications/{applicationID}/submit` Changes the date an application was submitted (changes it from null the first time they submit)
+
+##### DELETE
+
+`apartment/applications/{applicationID}` Deletes an application (and consequently all rows that reference it)
+
+
+
 ### Memberships
 
 What is it? Resource that represents the affiliation between a student and a club.

@@ -93,6 +93,25 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// Calls a stored procedure that deletes the application with given id
+        /// (and consequently all rows that reference it)
+        /// </summary>
+        /// <param name="applicationID"> The id of the application to delete </param>
+        /// <returns> Whether or not this was successful </returns>
+        public bool DeleteApplication(int applicationID)
+        {
+            SqlParameter appIdParam = new SqlParameter("@APP_ID", applicationID);
+
+            int? result = _context.Database.ExecuteSqlCommand("DELETE_AA_APPLICATION @APP_ID", appIdParam);
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be found and removed." };
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// Calls a stored procedure that gets all names of apartment halls
         /// </summary>
         /// <returns> AN array of hall names </returns>
@@ -133,6 +152,31 @@ namespace Gordon360.Services
             }
 
             int result = idResult.FirstOrDefault().AprtAppID;
+
+            return result;
+        }
+
+        /// <summary>
+        /// Calls a stored procedure that tries to get the editor ID of a given application ID
+        /// </summary>
+        /// <param name="applicationID"> The application ID for which the editor ID would be </param>
+        /// <returns>
+        /// The id of the editor or
+        /// null if the user is a member but not an editor of a given application
+        /// </returns>
+        public string GetEditorUsername(int applicationID)
+        {
+            IEnumerable<string> editorResult = null;
+
+            SqlParameter applicationIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
+
+            editorResult = RawSqlQuery<string>.query("GET_AA_EDITOR_BY_APPID @APPLICATION_ID", applicationIDParam); // run stored procedure
+            if (editorResult == null || !editorResult.Any())
+            {
+                return null;
+            }
+
+            string result = editorResult.FirstOrDefault();
 
             return result;
         }
@@ -275,7 +319,7 @@ namespace Gordon360.Services
 
             string storedEditorUsername = editorResult.FirstOrDefault();
 
-            if (username != storedEditorUsername)
+            if (username.ToLower() != storedEditorUsername.ToLower())
             {
                 // This should already be caught by the StateYourBusiness, but I will leave this check here just in case
                 throw new Exceptions.CustomExceptions.UnauthorizedAccessException() { ExceptionMessage = "The current user does not match the stored editor of this application" };
@@ -312,7 +356,7 @@ namespace Gordon360.Services
                 foreach (GET_AA_APPLICANTS_BY_APPID_Result existingApplicant in existingApplicantResult)
                 {
                     ApartmentApplicantViewModel newMatchingApplicant = null;
-                    newMatchingApplicant = newApartmentApplicants.FirstOrDefault(x => x.Username == existingApplicant.Username);
+                    newMatchingApplicant = newApartmentApplicants.FirstOrDefault(x => x.Username.ToLower() == existingApplicant.Username.ToLower());
                     if (newMatchingApplicant != null)
                     {
                         // If the applicant is in both the new applicant list and the existing applicant list, then we do NOT need to add it to the database
@@ -467,7 +511,7 @@ namespace Gordon360.Services
                 rankingParam = new SqlParameter("@RANKING", apartmentChoice.HallRank);
                 buildingCodeParam = new SqlParameter("@HALL_NAME", apartmentChoice.HallName);
 
-                int? apartmentChoiceResult = _context.Database.ExecuteSqlCommand("UPDATE_AA_APARTMENT_CHOICE @APPLICATION_ID, @RANKING, @HALL_NAME", appIDParam, rankingParam, buildingCodeParam); //run stored procedure
+                int? apartmentChoiceResult = _context.Database.ExecuteSqlCommand("UPDATE_AA_APARTMENT_CHOICES @APPLICATION_ID, @RANKING, @HALL_NAME", appIDParam, rankingParam, buildingCodeParam); //run stored procedure
                 if (apartmentChoiceResult == null)
                 {
                     throw new ResourceCreationException() { ExceptionMessage = "Apartment choice with ID " + applicationID + " and hall name " + apartmentChoice.HallName + " could not be updated." };
@@ -496,7 +540,7 @@ namespace Gordon360.Services
             appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
 
             SqlParameter timeParam = new SqlParameter("@NOW", now);
-            if (newEditorUsername != storedEditorUsername)
+            if (newEditorUsername.ToLower() != storedEditorUsername.ToLower())
             {
                 SqlParameter editorParam = new SqlParameter("@EDITOR_USERNAME", username);
                 SqlParameter newEditorParam = new SqlParameter("@NEW_EDITOR_USERNAME", newEditorUsername);
@@ -541,7 +585,7 @@ namespace Gordon360.Services
 
             string storedEditorUsername = editorResult.FirstOrDefault();
 
-            if (username != storedEditorUsername)
+            if (username.ToLower() != storedEditorUsername.ToLower())
             {
                 // Throw an error if the current user does not match this application's editor stored in the database
                 throw new Exceptions.CustomExceptions.UnauthorizedAccessException() { ExceptionMessage = "The current user does not match the stored editor of this application" };
@@ -553,7 +597,7 @@ namespace Gordon360.Services
 
             appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
             SqlParameter timeParam = new SqlParameter("@NOW", now);
-            if (newEditorUsername != storedEditorUsername)
+            if (newEditorUsername.ToLower() != storedEditorUsername.ToLower())
             {
                 SqlParameter editorParam = new SqlParameter("@EDITOR_USERNAME", username);
                 SqlParameter newEditorParam = new SqlParameter("@NEW_EDITOR_USERNAME", newEditorUsername);
@@ -627,20 +671,10 @@ namespace Gordon360.Services
 
                             // Calculate application points
                             int points = 0;
-                            switch (applicantModel.Class)
+
+                            if (!string.IsNullOrEmpty(applicantModel.Class))
                             {
-                                case "Freshman":
-                                    points += 1;
-                                    break;
-                                case "Sophomore":
-                                    points += 2;
-                                    break;
-                                case "Junior":
-                                    points += 3;
-                                    break;
-                                case "Senior":
-                                    points += 4;
-                                    break;
+                                points += int.Parse(applicantModel.Class);
                             }
 
                             if (applicantModel.Age >= 23)
@@ -736,6 +770,26 @@ namespace Gordon360.Services
                 apartmentApplicationArray = applicationList.ToArray();
             }
             return apartmentApplicationArray;
+        }
+
+        /// <summary>
+        /// "Submit" an application by changing its DateSubmitted value to the date the submit button is succesfully clicked
+        /// </summary>
+        /// <param name="applicationID"> The application ID number of the application to be submitted </param>
+        /// <returns>Returns twhether the query succeeded</returns>
+        public bool ChangeApplicationDateSubmitted(int applicationID)
+        {
+            SqlParameter appIDParam = new SqlParameter("@APPLICATION_ID", applicationID);
+            DateTime now = System.DateTime.Now;
+            SqlParameter timeParam = new SqlParameter("@NOW", now);
+
+            int? result = _context.Database.ExecuteSqlCommand("UPDATE_AA_APPLICATION_DATESUBMITTED @APPLICATION_ID, @NOW", appIDParam, timeParam);
+            if (result == null)
+            {
+                throw new ResourceCreationException() { ExceptionMessage = "The application DateSubmitted could not be updated." };
+            }
+
+            return true;
         }
     }
 }

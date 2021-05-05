@@ -411,6 +411,13 @@
             <param name="id"> The id of the user to remove </param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.DeleteApplication(System.Int32)">
+            <summary>
+            Delete an application (and consequently all rows that reference it)
+            </summary>
+            <param name="applicationID"> The id of the application to remove </param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.HousingController.GetApartmentHalls">
             <summary>
             Get a list of the apartment-style halls
@@ -447,6 +454,13 @@
             change the editor (i.e. primary applicant) of the application
             </summary>
             <returns>The result of changing the editor</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.ChangeApplicationDateSubmitted(System.Int32)">
+            <summary>
+            change the date an application was submitted
+            (changes it from null the first time they submit)
+            </summary>
+            <returns>The result of changing the date submitted</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.HousingController.GetApartmentApplication(System.Int32)">
             <summary>Get apartment application info for a given application ID number</summary>
@@ -1929,6 +1943,14 @@
             <param name="id"> The id to remove </param>
             <returns> Whether or not this was successful </returns>
         </member>
+        <member name="M:Gordon360.Services.HousingService.DeleteApplication(System.Int32)">
+            <summary>
+            Calls a stored procedure that deletes the application with given id
+            (and consequently all rows that reference it)
+            </summary>
+            <param name="applicationID"> The id of the application to delete </param>
+            <returns> Whether or not this was successful </returns>
+        </member>
         <member name="M:Gordon360.Services.HousingService.GetAllApartmentHalls">
             <summary>
             Calls a stored procedure that gets all names of apartment halls
@@ -1945,6 +1967,16 @@
             <returns> 
             The id of the application or 
             null if the user is not on an application for that session 
+            </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetEditorUsername(System.Int32)">
+            <summary>
+            Calls a stored procedure that tries to get the editor ID of a given application ID
+            </summary>
+            <param name="applicationID"> The application ID for which the editor ID would be </param>
+            <returns>
+            The id of the editor or
+            null if the user is a member but not an editor of a given application
             </returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.SaveApplication(System.String,System.String,System.String,Gordon360.Models.ViewModels.ApartmentApplicantViewModel[],Gordon360.Models.ViewModels.ApartmentChoiceViewModel[])">
@@ -1995,6 +2027,13 @@
         </member>
         <member name="M:Gordon360.Services.HousingService.GetAllApartmentApplication">
             <returns>Array of ApartmentApplicationViewModel Objects</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.ChangeApplicationDateSubmitted(System.Int32)">
+            <summary>
+            "Submit" an application by changing its DateSubmitted value to the date the submit button is succesfully clicked
+            </summary>
+            <param name="applicationID"> The application ID number of the application to be submitted </param>
+            <returns>Returns twhether the query succeeded</returns>
         </member>
         <member name="M:Gordon360.Services.WellnessService.GetStatus(System.String)">
             <summary>

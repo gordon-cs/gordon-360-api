@@ -99,9 +99,8 @@ class Test_AllHousingAppTest(control.testCase):
         self.session = self.createAuthorizedSession(control.username, control.password)
         self.url = control.hostURL + 'api/housing/admin'
         # add test user to whitelist
-        self.token_payload = { 'username':control.username, 'password':control.password, \
-            'grant_type':'password' }
-        api.post(self.session, self.url + '/' + str(control.my_id_number) + '/', self.token_payload)
+        self.data = { }
+        api.post(self.session, self.url + '/' + str(control.my_id_number) + '/', self.data)
         # check that user is on the whitelist
         response = api.get(self.session, self.url)
         # remove 
@@ -119,6 +118,76 @@ class Test_AllHousingAppTest(control.testCase):
         self.session = self.createAuthorizedSession(control.username, control.password)
         # the test user should not be an admin unless it is added in one of these tests
         self.url = control.hostURL + 'api/housing/admin'
+        response = api.get(self.session, self.url)
+
+        if not response.status_code == 404:
+            pytest.fail('Expected 404 Not Found, got {0}.'\
+                .format(response.status_code))
+
+#    Verify that an application and all rows that reference are deleted successfully
+#    Endpoint -- 'api/housing/apartment/applications/{applicationID}'
+#    Expected Status Code -- 200 OK and 404 Not Found
+#    Expected Content -- Empty Response content
+    def test_application_deleted(self):
+        self.session = self.createAuthorizedSession(control.username, control.password)
+        self.url = control.hostURL + 'api/housing/apartment/applications'
+        self.data = {
+            'ApplicationID' : -1,
+            'EditorProfile' : {
+                'AD_Username' : control.leader_username,
+            },   
+            'Applicants' : [
+                {
+                    'Profile' : {
+                       'AD_Username' : control.leader_username,
+                       'Class' : 'Junior',
+                    },
+                },
+                {
+                    'Profile' : {
+                       'AD_Username' : control.username,
+                       'Class' : 'Senior',
+                    },
+                },
+            ],
+            'ApartmentChoices' : [
+                {
+                    'HallRank' : 1,
+                    'HallName' : 'Tavilla'
+                },
+                {
+                    'HallRank' : 2,
+                    'HallName' : 'Conrad'
+                },
+                {
+                    'HallRank' : 3,
+                    'HallName' : 'Hilton'
+                }
+            ],
+        }   
+        appIDResponse = api.postAsJson(self.session, self.url, self.data)
+
+        appID = appIDResponse.content
+
+        self.url = control.hostURL + 'api/housing/apartment/applications/' + str(appID)
+        response = api.delete(self.session, self.url)
+
+        if not response.status_code == 200:
+            pytest.fail('Expected 200 OK, got {0}.'\
+                .format(response.status_code))
+
+        # make sure the referenced rows have been deleted too
+        # (no endpoint exists to just get a list of hall choices, 
+        # it is not verified here that the application hall choices are deleted)
+
+        self.url = control.hostURL + 'api/housing/apartment/' + control.leader_username
+        response = api.get(self.session, self.url)
+
+        if not response.status_code == 404:
+            pytest.fail('Expected 404 Not Found, got {0}.'\
+                .format(response.status_code))
+
+        self.url = control.hostURL + 'api/housing/apartment/' + control.username
         response = api.get(self.session, self.url)
 
         if not response.status_code == 404:
