@@ -142,6 +142,49 @@ namespace Gordon360.Services
             return GroupModel;
 
         }
+
+        //gets a simgle room object specified by a room id 
+        public object GetSingleRoom(int roomId)
+        {
+            var roomIdParam = new SqlParameter("@room_id", roomId);
+            var result = RawSqlQuery<ReturnRoomViewModel>.query("GET_ROOM_BY_ID @room_id", roomIdParam); //run stored procedure
+
+            var RoomModel = result.Select(x =>
+            {
+
+                RoomViewModel y = new RoomViewModel();
+
+                y.room_id = x.room_id;
+                y.name = x.name;
+                y.group = x.group;
+                y.createdAt = x.createdAt;
+                y.lastUpdated = x.lastUpdated;
+                if (x.roomImage != null)
+                {
+                    string encodedByteArray = Convert.ToBase64String(x.roomImage);
+                    y.roomImage = encodedByteArray;
+                }
+                var localRoomIdParam = new SqlParameter("@room_id", x.room_id);
+                var users = RawSqlQuery<UserViewModel>.query("GET_ALL_USERS_BY_ROOM_ID @room_id", localRoomIdParam);
+
+                var userSelect = users.Select(i =>
+                {
+                    UserViewModel j = new UserViewModel();
+                    j.user_id = i.user_id;
+                    j.user_name = _accountService.Get(i.user_id).ADUserName;
+                    j.user_avatar = null;
+
+                    return j;
+                });
+
+                y.users = userSelect;
+
+                return y;
+            });
+
+            return RoomModel;
+        }
+
         // get all the room objects associated with a user ID in the form of a list of objects
         public List<Object> GetRoomById(string userId)
         {

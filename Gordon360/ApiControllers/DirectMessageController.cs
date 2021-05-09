@@ -129,6 +129,26 @@ namespace Gordon360.ApiControllers
             return Ok(result);
         }
 
+        /// <summary>
+        ///  Gets a single room object specified by a room id
+        /// </summary>
+        /// <returns>true if successful </returns>
+        [HttpPost]
+        [Route("singleRoom")]
+        public IHttpActionResult GetSingleRoom([FromBody] int roomId)
+        {
+
+            var result = _DirectMessageService.GetSingleRoom(roomId);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+
+            return Ok(result);
+
+        }
 
 
         /// <summary>
