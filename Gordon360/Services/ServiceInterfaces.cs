@@ -72,6 +72,7 @@ namespace Gordon360.Services
         IEnumerable<GroupViewModel> GetRooms(string userId);
         List<Object> GetRoomById(string userId);
         MessageViewModel GetSingleMessage(string messageID, string roomID);
+        object GetSingleRoom(int roomId);
     }
 
     public interface IActivityService

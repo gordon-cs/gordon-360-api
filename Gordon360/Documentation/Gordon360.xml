@@ -169,6 +169,12 @@
             </summary>
             <returns>MessageViewModel</returns>
         </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetSingleRoom(System.Int32)">
+            <summary>
+             Gets a single room object specified by a room id
+            </summary>
+            <returns>true if successful </returns>
+        </member>
         <member name="M:Gordon360.ApiControllers.DirectMessageController.CreateGroup(Gordon360.Models.ViewModels.CreateGroupViewModel)">
             <summary>
              creates a message room in the backend
