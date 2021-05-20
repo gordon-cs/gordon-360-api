@@ -711,12 +711,12 @@ namespace Gordon360.Services
             List<ApartmentApplicationViewModel> applicationList = new List<ApartmentApplicationViewModel>();
             foreach (int? applicationID in appIDsResult)
             {
-                if (applicationID != null)
+                if (applicationID.HasValue)
                 {
                     ApartmentApplicationViewModel apartmentApplicationModel = null;
                     try
                     {
-                        apartmentApplicationModel = GetApartmentApplication(applicationID.Value);
+                        apartmentApplicationModel = GetApartmentApplication(applicationID.Value, true);
                         if (apartmentApplicationModel != null)
                         {
                             applicationList.Add(apartmentApplicationModel);
