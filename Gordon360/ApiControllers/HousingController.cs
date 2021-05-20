@@ -210,7 +210,7 @@ namespace Gordon360.Controllers.Api
                 }
             }
 
-            ApartmentChoiceViewModel[] apartmentChoices = applicationDetails.ApartmentChoices;
+            ApartmentChoiceViewModel[] apartmentChoices = applicationDetails.ApartmentChoices ?? new ApartmentChoiceViewModel[0]; // It is possible to save an application with no apartment choices
 
             int result = _housingService.SaveApplication(username, sessionID, editorUsername, apartmentApplicants, apartmentChoices);
 
@@ -257,7 +257,7 @@ namespace Gordon360.Controllers.Api
                 }
             }
 
-            ApartmentChoiceViewModel[] newApartmentChoices = applicationDetails.ApartmentChoices;
+            ApartmentChoiceViewModel[] newApartmentChoices = applicationDetails.ApartmentChoices ?? new ApartmentChoiceViewModel[0]; // It is possible to save an application with no apartment choices
 
             int result = _housingService.EditApplication(username, sessionID, applicationID, newEditorUsername, newApartmentApplicants, newApartmentChoices);
 
