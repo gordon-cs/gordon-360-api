@@ -16,45 +16,28 @@ namespace Gordon360.Exceptions.ExceptionFilters
             if (actionExecutedContext.Exception is ResourceNotFoundException)
             {
                 var exception = actionExecutedContext.Exception as ResourceNotFoundException;
-                actionExecutedContext.Response = new HttpResponseMessage()
-                {
-                    StatusCode = System.Net.HttpStatusCode.NotFound,
-                    Content = new StringContent(exception.ExceptionMessage),
-                    //ReasonPhrase = "LOL"
-                };
+                actionExecutedContext.Response = actionExecutedContext.Request.CreateErrorResponse(System.Net.HttpStatusCode.NotFound, exception.ExceptionMessage);
             }
 
             // RESOURCE CREATION CONFLICT
             else if (actionExecutedContext.Exception is ResourceCreationException)
             {
                 var exception = actionExecutedContext.Exception as ResourceCreationException;
-                actionExecutedContext.Response = new HttpResponseMessage()
-                {
-                    StatusCode = System.Net.HttpStatusCode.Conflict,
-                    Content = new StringContent(exception.ExceptionMessage)
-                };
+                actionExecutedContext.Response = actionExecutedContext.Request.CreateErrorResponse(System.Net.HttpStatusCode.Conflict, exception.ExceptionMessage);
             }
 
             // BAD INPUT
             else if( actionExecutedContext.Exception is BadInputException)
             {
                 var exception = actionExecutedContext.Exception as BadInputException;
-                actionExecutedContext.Response = new HttpResponseMessage()
-                {
-                    StatusCode = System.Net.HttpStatusCode.BadRequest,
-                    Content = new StringContent(exception.ExceptionMessage)
-                };
+                actionExecutedContext.Response = actionExecutedContext.Request.CreateErrorResponse(System.Net.HttpStatusCode.BadRequest, exception.ExceptionMessage);
             }
 
             // UNAUTHORIZED ACCESS EXCEPTION
             else if (actionExecutedContext.Exception is UnauthorizedAccessException)
             {
                 var exception = actionExecutedContext.Exception as UnauthorizedAccessException;
-                actionExecutedContext.Response = new HttpResponseMessage()
-                {
-                    StatusCode = System.Net.HttpStatusCode.Unauthorized,
-                    Content = new StringContent(exception.ExceptionMessage)
-                };
+                actionExecutedContext.Response = actionExecutedContext.Request.CreateErrorResponse(System.Net.HttpStatusCode.Unauthorized, exception.ExceptionMessage);
             }
         }
     }
