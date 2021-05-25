@@ -1,7 +1,6 @@
+using Gordon360.AuthorizationFilters;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Exceptions.ExceptionFilters;
-using Gordon360.AuthorizationFilters;
-using Gordon360.Models.ViewModels;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
