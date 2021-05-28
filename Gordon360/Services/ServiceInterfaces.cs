@@ -1,9 +1,9 @@
-﻿using System;
-using System.Xml.Linq;
-using System.Collections.Generic;
-using Gordon360.Models;
+﻿using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using static Gordon360.Controllers.Api.WellnessController;
+using System;
+using System.Collections.Generic;
+using System.Xml.Linq;
 
 // <summary>
 // Namespace with all the Service Interfaces that are to be implemented. I don't think making this interface is required, the services can work find on their own.
@@ -62,15 +62,17 @@ namespace Gordon360.Services
 
     public interface IDirectMessageService
     {
-        bool CreateGroup(String id, String name, bool group, DateTime lastUpdated,string image);
+        CreateGroupViewModel CreateGroup(String name, bool group, string image, List<String> usernames, SendTextViewModel initialMessage, string userId);
         bool SendMessage(SendTextViewModel textInfo, string user_id);
         bool StoreUserRooms(String userId, String roomId);
         bool StoreUserConnectionIds(String userId, String connectionId);
         bool DeleteUserConnectionIds(String connectionId);
-        IEnumerable<ConnectionIdViewModel> GetUserConnectionIds(String userId);
+        List<IEnumerable<ConnectionIdViewModel>> GetUserConnectionIds(List<String> userIds);
         IEnumerable<MessageViewModel> GetMessages(string roomId);
         IEnumerable<GroupViewModel> GetRooms(string userId);
         List<Object> GetRoomById(string userId);
+        MessageViewModel GetSingleMessage(string messageID, string roomID);
+        object GetSingleRoom(int roomId);
     }
 
     public interface IActivityService
@@ -128,7 +130,7 @@ namespace Gordon360.Services
         IEnumerable<EmailViewModel> GetEmailsForActivityAdvisors(string activity_code, string session_code);
         IEnumerable<EmailViewModel> GetEmailsForActivity(string activity_code, string session_code);
         // Send emails
-        void SendEmails(string [] to_emails, string to_email, string subject, string email_content, string password);
+        void SendEmails(string[] to_emails, string to_email, string subject, string email_content, string password);
         void SendEmailToActivity(string activityCode, string sessionCode, string from_email, string subject, string email_content, string password);
     }
 
@@ -268,6 +270,23 @@ namespace Gordon360.Services
         StudentNews SubmitNews(StudentNews newsItem, string username, string id);
         StudentNews DeleteNews(int newsID);
         StudentNewsViewModel EditPosting(int newsID, StudentNews newsItem);
+    }
+
+    public interface IHousingService
+    {
+        bool CheckIfHousingAdmin(string userID);
+        bool AddHousingAdmin(string id);
+        bool RemoveHousingAdmin(string id);
+        bool DeleteApplication(int applicationID);
+        AA_ApartmentHalls[] GetAllApartmentHalls();
+        string GetEditorUsername(int applicationID);
+        int? GetApplicationID(string username, string sess_cde);
+        ApartmentApplicationViewModel GetApartmentApplication(int applicationID, bool isAdmin = false);
+        ApartmentApplicationViewModel[] GetAllApartmentApplication();
+        int SaveApplication(string username, string sess_cde, string editorUsername, ApartmentApplicantViewModel[] apartmentApplicants, ApartmentChoiceViewModel[] apartmentChoices);
+        int EditApplication(string username, string sess_cde, int applicationID, string newEditorUsername, ApartmentApplicantViewModel[] newApartmentApplicants, ApartmentChoiceViewModel[] newApartmentChoices);
+        bool ChangeApplicationEditor(string username, int applicationID, string newEditorUsername);
+        bool ChangeApplicationDateSubmitted(int applicationID);
     }
 
 }

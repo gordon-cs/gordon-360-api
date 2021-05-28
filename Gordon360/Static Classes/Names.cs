@@ -17,6 +17,8 @@ namespace Gordon360.Static.Names
         public const string ACTIVITY_STATUS = "The open or closed status of an activity";
         public const string ChapelEvent = "The info of chapel events";
         public const string DINING = "Info related to dining service";
+        public const string HOUSING = "Info related to housing";
+        public const string HOUSING_ADMIN = "A Housing Admin Resource";
         public const string ERROR_LOG = "The error log resource";
         public const string MYSCHEDULE = "A custom schedule resource";
         public const string Save_Rides = "A ride resource";

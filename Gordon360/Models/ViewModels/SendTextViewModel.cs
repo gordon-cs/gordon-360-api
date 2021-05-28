@@ -13,7 +13,7 @@ namespace Gordon360.Models.ViewModels
 
         public String text { get; set; }
 
-        public String createdAt { get; set; }
+        public DateTime createdAt { get; set; }
 
         public String image { get; set; }
 
@@ -28,5 +28,11 @@ namespace Gordon360.Models.ViewModels
         public bool received { get; set; }
 
         public bool pending { get; set; }
+
+        public List<string> users_ids { get; set; }
+
+        public string groupName { get; set; }
+
+        public string groupText { get; set; }
     }
 }

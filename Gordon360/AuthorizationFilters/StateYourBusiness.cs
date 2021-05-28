@@ -2,6 +2,7 @@
 using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Static.Names;
+using Gordon360.Static.Methods;
 using System;
 using System.Linq;
 using System.Net.Http;
@@ -75,7 +76,7 @@ namespace Gordon360.AuthorizationFilters
             isAuthorized = canPerformOperation(resource, operation);
             if (!isAuthorized)
             {
-                actionContext.Response = new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
+                actionContext.Response = actionContext.Request.CreateResponse(System.Net.HttpStatusCode.Unauthorized,  new { Message = "Authorization has been denied for this request." });
             }
 
             base.OnActionExecuting(actionContext);
@@ -115,7 +116,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.MEMBERSHIP_REQUEST:
                     {
                         var mrID = (int)context.ActionArguments["id"];
-                        // Get the veiw model from the repository
+                        // Get the view model from the repository
                         var mrService = new MembershipRequestService(new UnitOfWork());
                         var mrToConsider = mrService.Get(mrID);
                         // Populate the membershipRequest manually. Omit fields I don't need.
@@ -190,6 +191,19 @@ namespace Gordon360.AuthorizationFilters
                             || user_position == Position.POLICE)
                             return true;
 
+                        return false;
+                    }
+                case Resource.HOUSING:
+                    {
+                        // The members of the apartment application can only read their application
+                        HousingService housingService = new HousingService(new UnitOfWork());
+                        string sess_cde = Helpers.GetCurrentSession().SessionCode;
+                        int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
+                        int requestedApplicationID = (int)context.ActionArguments["applicationID"];
+                        if (applicationID.HasValue && applicationID.Value == requestedApplicationID)
+                        {
+                            return true;
+                        }
                         return false;
                     }
                 case Resource.NEWS:
@@ -350,6 +364,17 @@ namespace Gordon360.AuthorizationFilters
                     return false;
                 case Resource.ADMIN:
                     return false;
+                case Resource.HOUSING:
+                    {
+                        // Only the housing admin and super admin can read all of the received applications.
+                        // Super admin has unrestricted access by default, so no need to check.
+                        var housingService = new HousingService(new UnitOfWork());
+                        if (housingService.CheckIfHousingAdmin(user_id))
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
                 case Resource.NEWS:
                     return true;
                 default: return false;
@@ -420,6 +445,25 @@ namespace Gordon360.AuthorizationFilters
                         return true;
                     else
                         return false; // Only super admin can add Advisors through this API
+                case Resource.HOUSING_ADMIN:
+                    //only superadmins can add a HOUSING_ADMIN
+                    return false;
+                case Resource.HOUSING:
+                    {
+                        // The user must be a student and not a member of an existing application
+                        var housingService = new HousingService(new UnitOfWork());
+                        if (user_position == Position.STUDENT)
+                        {
+                            var sess_cde = Helpers.GetCurrentSession().SessionCode;
+                            int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
+                            if (!applicationID.HasValue)
+                            {
+                                return true;
+                            }
+                            return false;
+                        }
+                        return false;
+                    }
                 case Resource.ADMIN:
                     return false;
                 case Resource.ERROR_LOG:
@@ -503,6 +547,31 @@ namespace Gordon360.AuthorizationFilters
                     }
                 case Resource.STUDENT:
                     return false; // No one should be able to update a student through this API
+                case Resource.HOUSING:
+                    {
+                        // The housing admins can update the application information (i.e. probation, offcampus program, etc.)
+                        // If the user is a student, then the user must be on an application and be an editor to update the application
+                        HousingService housingService = new HousingService(new UnitOfWork());
+                        if (housingService.CheckIfHousingAdmin(user_id))
+                        {
+                            return true;
+                        }
+                        else if (user_position == Position.STUDENT)
+                        {
+                            string sess_cde = Helpers.GetCurrentSession().SessionCode;
+                            int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
+                            int requestedApplicationID = (int)context.ActionArguments["applicationID"];
+                            if (applicationID.HasValue && applicationID == requestedApplicationID)
+                            {
+                                string editorUsername = housingService.GetEditorUsername(applicationID.Value);
+                                if (editorUsername.ToLower() == user_name.ToLower())
+                                    return true;
+                                return false;
+                            }
+                            return false;
+                        }
+                        return false;
+                    }
                 case Resource.ADVISOR:
                     {
                         // User is admin
@@ -642,10 +711,41 @@ namespace Gordon360.AuthorizationFilters
                     }
                 case Resource.STUDENT:
                     return false; // No one should be able to delete a student through our API
+                case Resource.HOUSING:
+                    {
+                        // The housing admins can update the application information (i.e. probation, offcampus program, etc.)
+                        // If the user is a student, then the user must be on an application and be an editor to update the application
+                        HousingService housingService = new HousingService(new UnitOfWork());
+                        if (housingService.CheckIfHousingAdmin(user_id))
+                        {
+                            return true;
+                        }
+                        else if (user_position == Position.STUDENT)
+                        {
+                            string sess_cde = Helpers.GetCurrentSession().SessionCode;
+                            int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
+                            int requestedApplicationID = (int)context.ActionArguments["applicationID"];
+                            if (applicationID.HasValue && applicationID.Value == requestedApplicationID)
+                            {
+                                var editorUsername = housingService.GetEditorUsername(applicationID.Value);
+                                if (editorUsername.ToLower() == user_name.ToLower())
+                                    return true;
+                                return false;
+                            }
+                            return false;
+                        }
+                        return false;
+                    }
                 case Resource.ADVISOR:
                     return false;
                 case Resource.ADMIN:
                     return false;
+                case Resource.HOUSING_ADMIN:
+                    {
+                        // Only the superadmins can remove a housing admin from the whitelist
+                        // Super admins have unrestricted access by default: no need to check
+                        return false;
+                    }
                 case Resource.NEWS:
                     {
                         var newsID = context.ActionArguments["newsID"];

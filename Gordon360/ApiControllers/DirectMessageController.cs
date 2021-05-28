@@ -12,6 +12,9 @@ using Gordon360.Models;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Services.ComplexQueries;
 using System.Linq;
+using Newtonsoft.Json;
+using System.Net.Http.Headers;
+using System.Text;
 
 namespace Gordon360.ApiControllers
 {
@@ -61,6 +64,25 @@ namespace Gordon360.ApiControllers
         }
 
         /// <summary>
+        ///  returns single message from a specified group and message id
+        /// </summary>
+        /// <returns>MessageViewModel</returns>
+        [HttpPut]
+        [Route("singleMessage")]
+        public IHttpActionResult GetSingleMessage([FromBody] MessageSearchViewModel model)
+        {
+
+            var result = _DirectMessageService.GetSingleMessage(model.messageID, model.roomID);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+        /// <summary>
         ///  returns room ids associated with this user
         /// </summary>
         /// <returns>MessageViewModel</returns>
@@ -84,6 +106,7 @@ namespace Gordon360.ApiControllers
             return Ok(result);
         }
 
+        
         /// <summary>
         ///  returns a room object Identified by room id
         /// </summary>
@@ -95,7 +118,7 @@ namespace Gordon360.ApiControllers
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             var userId = _accountService.GetAccountByUsername(username).GordonID;
-
+            
             var result = _DirectMessageService.GetRoomById(userId);
 
             if (result == null)
@@ -106,6 +129,26 @@ namespace Gordon360.ApiControllers
             return Ok(result);
         }
 
+        /// <summary>
+        ///  Gets a single room object specified by a room id
+        /// </summary>
+        /// <returns>true if successful </returns>
+        [HttpPost]
+        [Route("singleRoom")]
+        public IHttpActionResult GetSingleRoom([FromBody] int roomId)
+        {
+
+            var result = _DirectMessageService.GetSingleRoom(roomId);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+
+            return Ok(result);
+
+        }
 
 
         /// <summary>
@@ -116,14 +159,13 @@ namespace Gordon360.ApiControllers
         [Route("")]
         public IHttpActionResult CreateGroup([FromBody] CreateGroupViewModel chatInfo)
         {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var userId = _accountService.GetAccountByUsername(username).GordonID;
 
-            Random rnd = new Random();
-            int raw_id = rnd.Next(10000000, 99999999);
-            var id = raw_id.ToString();
+            var result = _DirectMessageService.CreateGroup(chatInfo.name, chatInfo.group, chatInfo.image, chatInfo.usernames, chatInfo.message, userId);
 
-            var result = _DirectMessageService.CreateGroup(id, chatInfo.name, chatInfo.group, chatInfo.lastUpdated, chatInfo.image);
-
-            if (result == false)
+            if (result == null)
             {
                 return NotFound();
             }
@@ -149,12 +191,39 @@ namespace Gordon360.ApiControllers
 
                 var result = _DirectMessageService.SendMessage(textInfo, user_id.ToString());
 
-                if (result == false)
+                var data = new NotificationDataViewModel();
+                data.messageID = textInfo.id;
+                data.roomID = textInfo.room_id;
+                
+                var connectionIDs = _DirectMessageService.GetUserConnectionIds(textInfo.users_ids);
+
+                if (result == false || connectionIDs == null)
                 {
                     return NotFound();
                 }
 
+                foreach (IEnumerable<ConnectionIdViewModel> connections in connectionIDs)
+                {
+                    foreach (ConnectionIdViewModel model in connections)
+                    {
+                        var pushNotification = new PushNotificationViewModel();
+                        pushNotification.body = textInfo.groupText;
+                        pushNotification.to = model.connection_id;
+                        pushNotification.data = data;
+                        pushNotification.title = textInfo.groupName;
 
+                        var myJsonObject = Newtonsoft.Json.JsonConvert.SerializeObject(pushNotification);
+
+                        HttpClient httpClient = new HttpClient();
+
+                        httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+
+                        var content = new StringContent(myJsonObject.ToString(), Encoding.UTF8, "application/json");
+                        var post = httpClient.PostAsync("https://exp.host/--/api/v2/push/send", content).Result;
+                    }
+                 }
+            
                 return Ok(result);
 
             }
@@ -218,11 +287,11 @@ namespace Gordon360.ApiControllers
             /// <returns>true if successful</returns>
             [HttpPut]
             [Route("userConnectionIds")]
-            public IHttpActionResult GetConnectionIds([FromBody] String userId)
+            public IHttpActionResult GetConnectionIds([FromBody] List<string> userIds)
             {
 
 
-                var result = _DirectMessageService.GetUserConnectionIds(userId);
+                var result = _DirectMessageService.GetUserConnectionIds(userIds);
 
                 if (result == null)
                 {

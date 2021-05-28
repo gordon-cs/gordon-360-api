@@ -11,11 +11,11 @@ namespace Gordon360.Models
 {
     using System;
     
-    public partial class GET_ALL_HEALTH_STATUS_Result
+    public partial class GET_AA_APPLICATIONS_BY_ID_Result
     {
-        public Nullable<int> ID_Num { get; set; }
-        public string Status { get; set; }
-        public Nullable<System.DateTime> Created { get; set; }
-        public Nullable<bool> isOverride { get; set; }
+        public int AprtAppID { get; set; }
+        public Nullable<System.DateTime> DateSubmitted { get; set; }
+        public System.DateTime DateModified { get; set; }
+        public string EditorUsername { get; set; }
     }
 }

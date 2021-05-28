@@ -151,6 +151,12 @@
             </summary>
             <returns>MessageViewModel</returns>
         </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetSingleMessage(Gordon360.Models.MessageSearchViewModel)">
+            <summary>
+             returns single message from a specified group and message id
+            </summary>
+            <returns>MessageViewModel</returns>
+        </member>
         <member name="M:Gordon360.ApiControllers.DirectMessageController.GetRooms">
             <summary>
              returns room ids associated with this user
@@ -162,6 +168,12 @@
              returns a room object Identified by room id
             </summary>
             <returns>MessageViewModel</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetSingleRoom(System.Int32)">
+            <summary>
+             Gets a single room object specified by a room id
+            </summary>
+            <returns>true if successful </returns>
         </member>
         <member name="M:Gordon360.ApiControllers.DirectMessageController.CreateGroup(Gordon360.Models.ViewModels.CreateGroupViewModel)">
             <summary>
@@ -187,7 +199,7 @@
             </summary>
             <returns>true if successful</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetConnectionIds(System.String)">
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetConnectionIds(System.Collections.Generic.List{System.String})">
             <summary>
              Gets connection ids associated with a user id
             </summary>
@@ -384,6 +396,86 @@
             <summary>Delete an existing booking item</summary>
             <param name="rideID">The identifier for the booking to be deleted</param>
             <remarks>Calls the server to make a call and remove the given booking from the database</remarks>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.CheckIfHousingAdmin">
+            <summary>
+            Check if the currently logged in user is authorized to view the housing admin page
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.AddHousingAdmin(System.String)">
+            <summary>
+            Add a user to the admin whitelist
+            </summary>
+            <param name="id"> The id of the user to add </param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.RemoveHousingAdmin(System.String)">
+            <summary>
+            Remove a user from the admin whitelist
+            </summary>
+            <param name="id"> The id of the user to remove </param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.DeleteApplication(System.Int32)">
+            <summary>
+            Delete an application (and consequently all rows that reference it)
+            </summary>
+            <param name="applicationID"> The id of the application to remove </param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.GetApartmentHalls">
+            <summary>
+            Get a list of the apartment-style halls
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.GetApplicationID">
+            <summary>
+            Get apartment application ID number of currently logged in user if that user is on an existing application
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.GetUserApplicationID(System.String)">
+            <summary>
+            Get apartment application ID number for a user if that user is on an existing application
+            </summary>
+            <param name="username">username of the profile info</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.SaveApplication(Gordon360.Models.ViewModels.ApartmentApplicationViewModel)">
+            <summary>
+            save application
+            </summary>
+            <returns>Returns the application ID number if all the queries succeeded</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.EditApplication(System.Int32,Gordon360.Models.ViewModels.ApartmentApplicationViewModel)">
+            <summary>
+            update existing application (Differentiated by HttpPut instead of HttpPost)
+            </summary>
+            <returns>Returns the application ID number if all the queries succeeded</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.ChangeEditor(System.Int32,Gordon360.Models.ViewModels.ApartmentApplicationViewModel)">
+            <summary>
+            change the editor (i.e. primary applicant) of the application
+            </summary>
+            <returns>The result of changing the editor</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.ChangeApplicationDateSubmitted(System.Int32)">
+            <summary>
+            change the date an application was submitted
+            (changes it from null the first time they submit)
+            </summary>
+            <returns>The result of changing the date submitted</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.GetApartmentApplication(System.Int32)">
+            <summary>Get apartment application info for a given application ID number</summary>
+            <param name="applicationID">application ID number of the apartment application</param>
+            <returns>Object of type ApartmentAppViewModel</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.HousingController.GetAllApartmentApplication">
+            <summary>Get apartment application info for all applications if the current user is a housing admin</summary>
+            <returns>Object of type ApartmentApplicationViewModel</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.NewsController.#ctor">
             private void catchBadInput()
@@ -1834,6 +1926,120 @@
             </summary>
             <param name="id">id</param>
             <returns>VictoryPromiseViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.CheckIfHousingAdmin(System.String)">
+            <summary>
+            Calls a stored procedure that returns a row in the staff whitelist which has the given user id,
+            if it is in the whitelist
+            </summary>
+            <param name="userID"> The id of the person using the page </param>
+            <returns> Whether or not the user is on the staff whitelist </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.AddHousingAdmin(System.String)">
+            <summary>
+            Calls a stored procedure that inserts the given id into the whitelist table
+            </summary>
+            <param name="id"> The id to insert </param>
+            <returns> Whether or not this was successful </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.RemoveHousingAdmin(System.String)">
+            <summary>
+            Calls a stored procedure that deletes the given id from the whitelist table
+            </summary>
+            <param name="id"> The id to remove </param>
+            <returns> Whether or not this was successful </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.DeleteApplication(System.Int32)">
+            <summary>
+            Calls a stored procedure that deletes the application with given id
+            (and consequently all rows that reference it)
+            </summary>
+            <param name="applicationID"> The id of the application to delete </param>
+            <returns> Whether or not this was successful </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetAllApartmentHalls">
+            <summary>
+            Calls a stored procedure that gets all names of apartment halls
+            </summary>
+            <returns> AN array of hall names </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetApplicationID(System.String,System.String)">
+            <summary>
+            Calls a stored procedure that tries to get the id of an the application that a given user is 
+            applicant on for a given session
+            </summary>
+            <param name="username"> The student username to look for </param>
+            <param name="sess_cde"> Session for which the application would be </param>
+            <returns> 
+            The id of the application or 
+            null if the user is not on an application for that session 
+            </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetEditorUsername(System.Int32)">
+            <summary>
+            Calls a stored procedure that tries to get the editor ID of a given application ID
+            </summary>
+            <param name="applicationID"> The application ID for which the editor ID would be </param>
+            <returns>
+            The id of the editor or
+            null if the user is a member but not an editor of a given application
+            </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.SaveApplication(System.String,System.String,System.String,Gordon360.Models.ViewModels.ApartmentApplicantViewModel[],Gordon360.Models.ViewModels.ApartmentChoiceViewModel[])">
+             <summary>
+             Saves student housing info
+             - first, it creates a new row in the applications table and inserts the username of the primary applicant and a timestamp
+             - second, it retrieves the application id of the application with the information we just inserted (because
+             the database creates the application ID so we have to ask it which number it generated for it)
+             - third, it inserts each applicant into the applicants table along with the application ID so we know
+             which application on which they are an applicant
+            
+             </summary>
+             <param name="username"> The student username of the user who is attempting to save the apartment application (retrieved via authentication token) </param>
+             <param name="sess_cde"> The current session code </param>
+             <param name="editorUsername"> The student username of the student who is declared to be the editor of this application (retrieved from the JSON from the front end) </param>
+             <param name="apartmentApplicants"> Array of JSON objects providing apartment applicants </param>
+             <param name="apartmentChoices"> Array of JSON objects providing apartment hall choices </param>
+             <returns>Returns the application ID number if all the queries succeeded</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.EditApplication(System.String,System.String,System.Int32,System.String,Gordon360.Models.ViewModels.ApartmentApplicantViewModel[],Gordon360.Models.ViewModels.ApartmentChoiceViewModel[])">
+             <summary>
+             Edit an existings apartment application
+             - first, it gets the EditorUsername from the database for the given application ID and makes sure that the student username of the current user matches that stored username
+             - second, it gets an array of the applicants that are already stored in the database for the given application ID
+             - third, it inserts each applicant that is in the 'newApplicantIDs' array but was not yet in the database
+             - fourth, it removes each applicant that was stored in the database but was not in the 'newApplicantIDs' array
+            
+             </summary>
+             <param name="username"> The student username of the user who is attempting to save the apartment application (retrieved via authentication token) </param>
+             <param name="sess_cde"> The current session code </param>
+             <param name="applicationID"> The application ID number of the application to be edited </param>
+             <param name="newEditorUsername"> The student username of the student who is declared to be the editor of this application (retrieved from the JSON from the front end) </param>
+             <param name="newApartmentApplicants"> Array of JSON objects providing apartment applicants </param>
+             <param name="newApartmentChoices"> Array of JSON objects providing apartment hall choices </param>
+             <returns>Returns the application ID number if all the queries succeeded</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.ChangeApplicationEditor(System.String,System.Int32,System.String)">
+             <summary>
+             Changes the student user who has permission to edit the given application
+            
+             </summary>
+             <returns>Whether or not all the queries succeeded</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetApartmentApplication(System.Int32,System.Boolean)">
+            <param name="applicationID">application ID number of the apartment application</param>
+            <param name="isAdmin">boolean indicating whether the current user is an admin, permits access to restricted information such as birth date</param>
+            <returns>Object of type ApartmentApplicationViewModel</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetAllApartmentApplication">
+            <returns>Array of ApartmentApplicationViewModel Objects</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.ChangeApplicationDateSubmitted(System.Int32)">
+            <summary>
+            "Submit" an application by changing its DateSubmitted value to the date the submit button is succesfully clicked
+            </summary>
+            <param name="applicationID"> The application ID number of the application to be submitted </param>
+            <returns>Returns twhether the query succeeded</returns>
         </member>
         <member name="M:Gordon360.Services.WellnessService.GetStatus(System.String)">
             <summary>

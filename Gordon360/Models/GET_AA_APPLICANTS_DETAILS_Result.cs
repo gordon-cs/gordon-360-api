@@ -11,16 +11,15 @@ namespace Gordon360.Models
 {
     using System;
     
-    public partial class GET_STU_HOUSING_INFO_Result
+    public partial class GET_AA_APPLICANTS_DETAILS_Result
     {
-        public string ID { get; set; }
-        public string Title { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string OnOffCampus { get; set; }
-        public string BuildingDescription { get; set; }
-        public string OnCampusRoom { get; set; }
-        public string Gender { get; set; }
-        public string Email { get; set; }
+        public int AprtAppID { get; set; }
+        public string EditorUsername { get; set; }
+        public Nullable<System.DateTime> DateSubmitted { get; set; }
+        public System.DateTime DateModified { get; set; }
+        public string Username { get; set; }
+        public string AprtProgram { get; set; }
+        public Nullable<bool> AprtProgramCredit { get; set; }
+        public string SESS_CDE { get; set; }
     }
 }
