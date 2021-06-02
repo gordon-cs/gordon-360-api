@@ -10,12 +10,14 @@
 namespace Gordon360.Models
 {
     using System;
+    using System.Collections.Generic;
     
-    public partial class GET_AA_APPLICATIONS_BY_ID_Result
+    public partial class Housing_HallChoices
     {
         public int HousingAppID { get; set; }
-        public Nullable<System.DateTime> DateSubmitted { get; set; }
-        public System.DateTime DateModified { get; set; }
-        public string EditorUsername { get; set; }
+        public int Ranking { get; set; }
+        public string HallName { get; set; }
+    
+        public virtual Housing_Applications Housing_Applications { get; set; }
     }
 }

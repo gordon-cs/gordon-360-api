@@ -13,6 +13,7 @@ namespace Gordon360.Models
     
     public partial class CREATE_MESSAGE_ROOM_Result
     {
+        public bool group { get; set; }
         public int id { get; set; }
         public string name { get; set; }
         public System.DateTime createdAt { get; set; }

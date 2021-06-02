@@ -2,6 +2,6 @@
 {
     public class ApartmentAppIDViewModel
     {
-        public int AprtAppID { get; set; }
+        public int HousingAppID { get; set; }
     }
 }
