@@ -27,10 +27,6 @@ namespace Gordon360.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<AA_Admins> AA_Admins { get; set; }
-        public virtual DbSet<AA_ApartmentApplications> AA_ApartmentApplications { get; set; }
-        public virtual DbSet<AA_ApartmentHalls> AA_ApartmentHalls { get; set; }
-        public virtual DbSet<AA_Applicants> AA_Applicants { get; set; }
         public virtual DbSet<ACT_INFO> ACT_INFO { get; set; }
         public virtual DbSet<ADMIN> ADMIN { get; set; }
         public virtual DbSet<Clifton_Strengths> Clifton_Strengths { get; set; }
@@ -38,6 +34,10 @@ namespace Gordon360.Models
         public virtual DbSet<ERROR_LOG> ERROR_LOG { get; set; }
         public virtual DbSet<Health_Status> Health_Status { get; set; }
         public virtual DbSet<Health_Status_CTRL> Health_Status_CTRL { get; set; }
+        public virtual DbSet<Housing_Admins> Housing_Admins { get; set; }
+        public virtual DbSet<Housing_Applicants> Housing_Applicants { get; set; }
+        public virtual DbSet<Housing_Applications> Housing_Applications { get; set; }
+        public virtual DbSet<Housing_Halls> Housing_Halls { get; set; }
         public virtual DbSet<JNZB_ACTIVITIES> JNZB_ACTIVITIES { get; set; }
         public virtual DbSet<MEMBERSHIP> MEMBERSHIP { get; set; }
         public virtual DbSet<Message_Rooms> Message_Rooms { get; set; }
@@ -48,8 +48,8 @@ namespace Gordon360.Models
         public virtual DbSet<Schedule_Control> Schedule_Control { get; set; }
         public virtual DbSet<StudentNewsExpiration> StudentNewsExpiration { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
-        public virtual DbSet<AA_ApartmentChoices> AA_ApartmentChoices { get; set; }
         public virtual DbSet<Health_Question> Health_Question { get; set; }
+        public virtual DbSet<Housing_HallChoices> Housing_HallChoices { get; set; }
         public virtual DbSet<Messages> Messages { get; set; }
         public virtual DbSet<Rooms> Rooms { get; set; }
         public virtual DbSet<Timesheets_Clock_In_Out> Timesheets_Clock_In_Out { get; set; }
@@ -1175,13 +1175,13 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result>("STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE", id_numParameter, sess_cdeParameter);
         }
     
-        public virtual int STUDENT_JOBS_PER_ID_NUM(Nullable<int> iD_NUM)
+        public virtual ObjectResult<STUDENT_JOBS_PER_ID_NUM_Result> STUDENT_JOBS_PER_ID_NUM(Nullable<int> iD_NUM)
         {
             var iD_NUMParameter = iD_NUM.HasValue ?
                 new ObjectParameter("ID_NUM", iD_NUM) :
                 new ObjectParameter("ID_NUM", typeof(int));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("STUDENT_JOBS_PER_ID_NUM", iD_NUMParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<STUDENT_JOBS_PER_ID_NUM_Result>("STUDENT_JOBS_PER_ID_NUM", iD_NUMParameter);
         }
     
         public virtual int SUPERVISOR_PER_SUP_ID(Nullable<int> sUP_ID)
@@ -1451,6 +1451,15 @@ namespace Gordon360.Models
                 new ObjectParameter("FILE_NAME", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_PHOTO_PATH", iDParameter, fILE_PATHParameter, fILE_NAMEParameter);
+        }
+    
+        public virtual int UPDATE_ROOM(Nullable<int> room_id)
+        {
+            var room_idParameter = room_id.HasValue ?
+                new ObjectParameter("room_id", room_id) :
+                new ObjectParameter("room_id", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_ROOM", room_idParameter);
         }
     
         public virtual int UPDATE_SCHEDULE_PRIVACY(Nullable<int> iD, string vALUE)

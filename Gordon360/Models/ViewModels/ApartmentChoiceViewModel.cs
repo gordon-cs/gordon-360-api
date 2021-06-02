@@ -11,7 +11,7 @@
         {
             ApartmentChoiceViewModel vm = new ApartmentChoiceViewModel
             {
-                ApplicationID = apartmentChoiceDBModel.AprtAppID,
+                ApplicationID = apartmentChoiceDBModel.HousingAppID,
                 HallRank = apartmentChoiceDBModel.Ranking,
                 HallName = apartmentChoiceDBModel.HallName,
             };

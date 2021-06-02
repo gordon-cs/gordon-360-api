@@ -12,8 +12,8 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class AA_ApartmentHalls
+    public partial class Housing_Admins
     {
-        public string Name { get; set; }
+        public string AdminID { get; set; }
     }
 }
