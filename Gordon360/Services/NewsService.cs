@@ -1,4 +1,5 @@
-﻿using Gordon360.Exceptions.CustomExceptions;
+﻿using System.Net.Http;
+using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
@@ -6,6 +7,11 @@ using Gordon360.Services.ComplexQueries;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+
+using System.Web;
+using System.Net;
+using Gordon360.Providers;
+using System.IO;
 
 namespace Gordon360.Services
 {
@@ -93,9 +99,10 @@ namespace Gordon360.Services
             var categoryIDParam = new SqlParameter("@CategoryID", newsItem.categoryID);
             var subjectParam = new SqlParameter("@Subject", newsItem.Subject);
             var bodyParam = new SqlParameter("@Body", newsItem.Body);
+            var imageParam = new SqlParameter("@Image", newsItem.Image);
 
             // Run stored procedure
-            var result = RawSqlQuery<StudentNewsViewModel>.query("INSERT_NEWS_ITEM @Username, @CategoryID, @Subject, @Body", usernameParam, categoryIDParam, subjectParam, bodyParam);
+            var result = RawSqlQuery<StudentNewsViewModel>.query("INSERT_NEWS_ITEM @Username, @CategoryID, @Subject, @Body, @Image", usernameParam, categoryIDParam, subjectParam, bodyParam, imageParam);
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
@@ -152,6 +159,7 @@ namespace Gordon360.Services
             newsItem.categoryID = newData.categoryID;
             newsItem.Subject = newData.Subject;
             newsItem.Body = newData.Body;
+            newsItem.Image = newData.Image;
 
             _unitOfWork.Save();
             

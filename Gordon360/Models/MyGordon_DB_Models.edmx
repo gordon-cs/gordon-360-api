@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="Gordon360.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="MyGordonModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="ChapelSummary">
           <Key>
             <PropertyRef Name="ID" />
@@ -20,6 +20,7 @@
           <Property Name="CreditHrs" Type="numeric" Precision="5" Scale="2" />
           <Property Name="GEO" Type="varchar" MaxLength="5" />
           <Property Name="Commuter" Type="varchar" MaxLength="1" />
+          <Property Name="Remote" Type="varchar" MaxLength="1" />
           <Property Name="GradFlag" Type="varchar" MaxLength="5" />
           <Property Name="Required" Type="int" />
           <Property Name="Attended" Type="int" />
@@ -63,6 +64,7 @@
           <Property Name="fname" Type="varchar" MaxLength="30" />
           <Property Name="lname" Type="varchar" MaxLength="30" />
           <Property Name="ManualExpirationDate" Type="datetime" />
+          <Property Name="Image" Type="varchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="StudentNewsCategory">
           <Key>
@@ -400,6 +402,7 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
           <Parameter Name="vchPassword" Type="nvarchar" Mode="In" />
         </Function>
         <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
+        <Function Name="select_departments" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
           <Parameter Name="owner_id" Type="int" Mode="In" />
@@ -434,7 +437,7 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
           <Parameter Name="Role" Type="varchar" Mode="In" />
           <Parameter Name="Active" Type="bit" Mode="In" />
         </Function>
-        <EntityContainer Name="Gordon360StoreContainer">
+        <EntityContainer Name="MyGordonModelStoreContainer">
           <EntitySet Name="ChapelSummary" EntityType="Self.ChapelSummary" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="dtproperties" EntityType="Self.dtproperties" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StudentNews" EntityType="Self.StudentNews" Schema="dbo" store:Type="Tables" />
@@ -595,7 +598,7 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="Gordon360" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="MyGordonModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="ChapelSummary">
           <Key>
             <PropertyRef Name="ID" />
@@ -611,6 +614,7 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
           <Property Name="CreditHrs" Type="Decimal" Precision="5" Scale="2" />
           <Property Name="GEO" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="Commuter" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="Remote" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="GradFlag" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="Required" Type="Int32" />
           <Property Name="Attended" Type="Int32" />
@@ -654,6 +658,7 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
           <Property Name="fname" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
           <Property Name="lname" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
           <Property Name="ManualExpirationDate" Type="DateTime" Precision="3" />
+          <Property Name="Image" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="StudentNewsCategory" Relationship="Self.FK_StudentNews_StudentNewsCategory" FromRole="StudentNews" ToRole="StudentNewsCategory" />
         </EntityType>
         <EntityType Name="StudentNewsCategory">
@@ -932,11 +937,11 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
             <Parameter Name="property" Mode="In" Type="String" />
             <Parameter Name="uvalue" Mode="In" Type="String" />
           </FunctionImport>
-          <FunctionImport Name="dt_getpropertiesbyid" ReturnType="Collection(Gordon360.dt_getpropertiesbyid_Result)">
+          <FunctionImport Name="dt_getpropertiesbyid" ReturnType="Collection(MyGordonModel.dt_getpropertiesbyid_Result)">
             <Parameter Name="id" Mode="In" Type="Int32" />
             <Parameter Name="property" Mode="In" Type="String" />
           </FunctionImport>
-          <FunctionImport Name="dt_getpropertiesbyid_u" ReturnType="Collection(Gordon360.dt_getpropertiesbyid_u_Result)">
+          <FunctionImport Name="dt_getpropertiesbyid_u" ReturnType="Collection(MyGordonModel.dt_getpropertiesbyid_u_Result)">
             <Parameter Name="id" Mode="In" Type="Int32" />
             <Parameter Name="property" Mode="In" Type="String" />
           </FunctionImport>
@@ -996,6 +1001,7 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
             <Parameter Name="vchLoginName" Mode="In" Type="String" />
             <Parameter Name="vchPassword" Mode="In" Type="String" />
           </FunctionImport>
+          <FunctionImport Name="select_departments" />
           <FunctionImport Name="sp_alterdiagram">
             <Parameter Name="diagramname" Mode="In" Type="String" />
             <Parameter Name="owner_id" Mode="In" Type="Int32" />
@@ -1012,11 +1018,11 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
             <Parameter Name="diagramname" Mode="In" Type="String" />
             <Parameter Name="owner_id" Mode="In" Type="Int32" />
           </FunctionImport>
-          <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(Gordon360.sp_helpdiagramdefinition_Result)">
+          <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(MyGordonModel.sp_helpdiagramdefinition_Result)">
             <Parameter Name="diagramname" Mode="In" Type="String" />
             <Parameter Name="owner_id" Mode="In" Type="Int32" />
           </FunctionImport>
-          <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(Gordon360.sp_helpdiagrams_Result)">
+          <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(MyGordonModel.sp_helpdiagrams_Result)">
             <Parameter Name="diagramname" Mode="In" Type="String" />
             <Parameter Name="owner_id" Mode="In" Type="Int32" />
           </FunctionImport>
@@ -1054,9 +1060,9 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="Gordon360StoreContainer" CdmEntityContainer="MyGordonEntities">
+        <EntityContainerMapping StorageEntityContainer="MyGordonModelStoreContainer" CdmEntityContainer="MyGordonEntities">
           <EntitySetMapping Name="ChapelSummary">
-            <EntityTypeMapping TypeName="Gordon360.ChapelSummary">
+            <EntityTypeMapping TypeName="MyGordonModel.ChapelSummary">
               <MappingFragment StoreEntitySet="ChapelSummary">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="TermCD" ColumnName="TermCD" />
@@ -1068,6 +1074,7 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
                 <ScalarProperty Name="CreditHrs" ColumnName="CreditHrs" />
                 <ScalarProperty Name="GEO" ColumnName="GEO" />
                 <ScalarProperty Name="Commuter" ColumnName="Commuter" />
+                <ScalarProperty Name="Remote" ColumnName="Remote" />
                 <ScalarProperty Name="GradFlag" ColumnName="GradFlag" />
                 <ScalarProperty Name="Required" ColumnName="Required" />
                 <ScalarProperty Name="Attended" ColumnName="Attended" />
@@ -1085,7 +1092,7 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="dtproperties">
-            <EntityTypeMapping TypeName="Gordon360.dtproperties">
+            <EntityTypeMapping TypeName="MyGordonModel.dtproperties">
               <MappingFragment StoreEntitySet="dtproperties">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="objectid" ColumnName="objectid" />
@@ -1098,7 +1105,7 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="StudentNews">
-            <EntityTypeMapping TypeName="Gordon360.StudentNews">
+            <EntityTypeMapping TypeName="MyGordonModel.StudentNews">
               <MappingFragment StoreEntitySet="StudentNews">
                 <ScalarProperty Name="SNID" ColumnName="SNID" />
                 <ScalarProperty Name="ADUN" ColumnName="ADUN" />
@@ -1112,11 +1119,12 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
                 <ScalarProperty Name="fname" ColumnName="fname" />
                 <ScalarProperty Name="lname" ColumnName="lname" />
                 <ScalarProperty Name="ManualExpirationDate" ColumnName="ManualExpirationDate" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="StudentNewsCategory">
-            <EntityTypeMapping TypeName="Gordon360.StudentNewsCategory">
+            <EntityTypeMapping TypeName="MyGordonModel.StudentNewsCategory">
               <MappingFragment StoreEntitySet="StudentNewsCategory">
                 <ScalarProperty Name="categoryID" ColumnName="categoryID" />
                 <ScalarProperty Name="categoryName" ColumnName="categoryName" />
@@ -1125,7 +1133,7 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Countries">
-            <EntityTypeMapping TypeName="Gordon360.Countries">
+            <EntityTypeMapping TypeName="MyGordonModel.Countries">
               <MappingFragment StoreEntitySet="Countries">
                 <ScalarProperty Name="CTY" ColumnName="CTY" />
                 <ScalarProperty Name="COUNTRY" ColumnName="COUNTRY" />
@@ -1133,7 +1141,7 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="view_cct_alumni">
-            <EntityTypeMapping TypeName="Gordon360.view_cct_alumni">
+            <EntityTypeMapping TypeName="MyGordonModel.view_cct_alumni">
               <MappingFragment StoreEntitySet="view_cct_alumni">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="WebUpdate" ColumnName="WebUpdate" />
@@ -1172,7 +1180,7 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="view_cct_ChapelEvent">
-            <EntityTypeMapping TypeName="Gordon360.view_cct_ChapelEvent">
+            <EntityTypeMapping TypeName="MyGordonModel.view_cct_ChapelEvent">
               <MappingFragment StoreEntitySet="view_cct_ChapelEvent">
                 <ScalarProperty Name="ROWID" ColumnName="ROWID" />
                 <ScalarProperty Name="CHBarEventID" ColumnName="CHBarEventID" />
@@ -1191,7 +1199,7 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="view_cct_facstaff">
-            <EntityTypeMapping TypeName="Gordon360.view_cct_facstaff">
+            <EntityTypeMapping TypeName="MyGordonModel.view_cct_facstaff">
               <MappingFragment StoreEntitySet="view_cct_facstaff">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
@@ -1227,7 +1235,7 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="view_cct_student">
-            <EntityTypeMapping TypeName="Gordon360.view_cct_student">
+            <EntityTypeMapping TypeName="MyGordonModel.view_cct_student">
               <MappingFragment StoreEntitySet="view_cct_student">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
@@ -1281,24 +1289,24 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="dt_addtosourcecontrol" FunctionName="Gordon360.Store.dt_addtosourcecontrol" />
-          <FunctionImportMapping FunctionImportName="dt_addtosourcecontrol_u" FunctionName="Gordon360.Store.dt_addtosourcecontrol_u" />
-          <FunctionImportMapping FunctionImportName="dt_adduserobject" FunctionName="Gordon360.Store.dt_adduserobject" />
-          <FunctionImportMapping FunctionImportName="dt_adduserobject_vcs" FunctionName="Gordon360.Store.dt_adduserobject_vcs" />
-          <FunctionImportMapping FunctionImportName="dt_checkinobject" FunctionName="Gordon360.Store.dt_checkinobject" />
-          <FunctionImportMapping FunctionImportName="dt_checkinobject_u" FunctionName="Gordon360.Store.dt_checkinobject_u" />
-          <FunctionImportMapping FunctionImportName="dt_checkoutobject" FunctionName="Gordon360.Store.dt_checkoutobject" />
-          <FunctionImportMapping FunctionImportName="dt_checkoutobject_u" FunctionName="Gordon360.Store.dt_checkoutobject_u" />
-          <FunctionImportMapping FunctionImportName="dt_displayoaerror" FunctionName="Gordon360.Store.dt_displayoaerror" />
-          <FunctionImportMapping FunctionImportName="dt_displayoaerror_u" FunctionName="Gordon360.Store.dt_displayoaerror_u" />
-          <FunctionImportMapping FunctionImportName="dt_droppropertiesbyid" FunctionName="Gordon360.Store.dt_droppropertiesbyid" />
-          <FunctionImportMapping FunctionImportName="dt_dropuserobjectbyid" FunctionName="Gordon360.Store.dt_dropuserobjectbyid" />
-          <FunctionImportMapping FunctionImportName="dt_generateansiname" FunctionName="Gordon360.Store.dt_generateansiname" />
-          <FunctionImportMapping FunctionImportName="dt_getobjwithprop" FunctionName="Gordon360.Store.dt_getobjwithprop" />
-          <FunctionImportMapping FunctionImportName="dt_getobjwithprop_u" FunctionName="Gordon360.Store.dt_getobjwithprop_u" />
-          <FunctionImportMapping FunctionImportName="dt_getpropertiesbyid" FunctionName="Gordon360.Store.dt_getpropertiesbyid">
+          <FunctionImportMapping FunctionImportName="dt_addtosourcecontrol" FunctionName="MyGordonModel.Store.dt_addtosourcecontrol" />
+          <FunctionImportMapping FunctionImportName="dt_addtosourcecontrol_u" FunctionName="MyGordonModel.Store.dt_addtosourcecontrol_u" />
+          <FunctionImportMapping FunctionImportName="dt_adduserobject" FunctionName="MyGordonModel.Store.dt_adduserobject" />
+          <FunctionImportMapping FunctionImportName="dt_adduserobject_vcs" FunctionName="MyGordonModel.Store.dt_adduserobject_vcs" />
+          <FunctionImportMapping FunctionImportName="dt_checkinobject" FunctionName="MyGordonModel.Store.dt_checkinobject" />
+          <FunctionImportMapping FunctionImportName="dt_checkinobject_u" FunctionName="MyGordonModel.Store.dt_checkinobject_u" />
+          <FunctionImportMapping FunctionImportName="dt_checkoutobject" FunctionName="MyGordonModel.Store.dt_checkoutobject" />
+          <FunctionImportMapping FunctionImportName="dt_checkoutobject_u" FunctionName="MyGordonModel.Store.dt_checkoutobject_u" />
+          <FunctionImportMapping FunctionImportName="dt_displayoaerror" FunctionName="MyGordonModel.Store.dt_displayoaerror" />
+          <FunctionImportMapping FunctionImportName="dt_displayoaerror_u" FunctionName="MyGordonModel.Store.dt_displayoaerror_u" />
+          <FunctionImportMapping FunctionImportName="dt_droppropertiesbyid" FunctionName="MyGordonModel.Store.dt_droppropertiesbyid" />
+          <FunctionImportMapping FunctionImportName="dt_dropuserobjectbyid" FunctionName="MyGordonModel.Store.dt_dropuserobjectbyid" />
+          <FunctionImportMapping FunctionImportName="dt_generateansiname" FunctionName="MyGordonModel.Store.dt_generateansiname" />
+          <FunctionImportMapping FunctionImportName="dt_getobjwithprop" FunctionName="MyGordonModel.Store.dt_getobjwithprop" />
+          <FunctionImportMapping FunctionImportName="dt_getobjwithprop_u" FunctionName="MyGordonModel.Store.dt_getobjwithprop_u" />
+          <FunctionImportMapping FunctionImportName="dt_getpropertiesbyid" FunctionName="MyGordonModel.Store.dt_getpropertiesbyid">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="Gordon360.dt_getpropertiesbyid_Result">
+              <ComplexTypeMapping TypeName="MyGordonModel.dt_getpropertiesbyid_Result">
                 <ScalarProperty Name="property" ColumnName="property" />
                 <ScalarProperty Name="version" ColumnName="version" />
                 <ScalarProperty Name="value" ColumnName="value" />
@@ -1306,9 +1314,9 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="dt_getpropertiesbyid_u" FunctionName="Gordon360.Store.dt_getpropertiesbyid_u">
+          <FunctionImportMapping FunctionImportName="dt_getpropertiesbyid_u" FunctionName="MyGordonModel.Store.dt_getpropertiesbyid_u">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="Gordon360.dt_getpropertiesbyid_u_Result">
+              <ComplexTypeMapping TypeName="MyGordonModel.dt_getpropertiesbyid_u_Result">
                 <ScalarProperty Name="property" ColumnName="property" />
                 <ScalarProperty Name="version" ColumnName="version" />
                 <ScalarProperty Name="uvalue" ColumnName="uvalue" />
@@ -1316,34 +1324,35 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="dt_getpropertiesbyid_vcs" FunctionName="Gordon360.Store.dt_getpropertiesbyid_vcs" />
-          <FunctionImportMapping FunctionImportName="dt_getpropertiesbyid_vcs_u" FunctionName="Gordon360.Store.dt_getpropertiesbyid_vcs_u" />
-          <FunctionImportMapping FunctionImportName="dt_isundersourcecontrol" FunctionName="Gordon360.Store.dt_isundersourcecontrol" />
-          <FunctionImportMapping FunctionImportName="dt_isundersourcecontrol_u" FunctionName="Gordon360.Store.dt_isundersourcecontrol_u" />
-          <FunctionImportMapping FunctionImportName="dt_removefromsourcecontrol" FunctionName="Gordon360.Store.dt_removefromsourcecontrol" />
-          <FunctionImportMapping FunctionImportName="dt_setpropertybyid" FunctionName="Gordon360.Store.dt_setpropertybyid" />
-          <FunctionImportMapping FunctionImportName="dt_setpropertybyid_u" FunctionName="Gordon360.Store.dt_setpropertybyid_u" />
-          <FunctionImportMapping FunctionImportName="dt_validateloginparams" FunctionName="Gordon360.Store.dt_validateloginparams" />
-          <FunctionImportMapping FunctionImportName="dt_validateloginparams_u" FunctionName="Gordon360.Store.dt_validateloginparams_u" />
-          <FunctionImportMapping FunctionImportName="dt_vcsenabled" FunctionName="Gordon360.Store.dt_vcsenabled" />
-          <FunctionImportMapping FunctionImportName="dt_verstamp006" FunctionName="Gordon360.Store.dt_verstamp006" />
-          <FunctionImportMapping FunctionImportName="dt_verstamp007" FunctionName="Gordon360.Store.dt_verstamp007" />
-          <FunctionImportMapping FunctionImportName="dt_whocheckedout" FunctionName="Gordon360.Store.dt_whocheckedout" />
-          <FunctionImportMapping FunctionImportName="dt_whocheckedout_u" FunctionName="Gordon360.Store.dt_whocheckedout_u" />
-          <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="Gordon360.Store.sp_alterdiagram" />
-          <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="Gordon360.Store.sp_creatediagram" />
-          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="Gordon360.Store.sp_dropdiagram" />
-          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="Gordon360.Store.sp_helpdiagramdefinition">
+          <FunctionImportMapping FunctionImportName="dt_getpropertiesbyid_vcs" FunctionName="MyGordonModel.Store.dt_getpropertiesbyid_vcs" />
+          <FunctionImportMapping FunctionImportName="dt_getpropertiesbyid_vcs_u" FunctionName="MyGordonModel.Store.dt_getpropertiesbyid_vcs_u" />
+          <FunctionImportMapping FunctionImportName="dt_isundersourcecontrol" FunctionName="MyGordonModel.Store.dt_isundersourcecontrol" />
+          <FunctionImportMapping FunctionImportName="dt_isundersourcecontrol_u" FunctionName="MyGordonModel.Store.dt_isundersourcecontrol_u" />
+          <FunctionImportMapping FunctionImportName="dt_removefromsourcecontrol" FunctionName="MyGordonModel.Store.dt_removefromsourcecontrol" />
+          <FunctionImportMapping FunctionImportName="dt_setpropertybyid" FunctionName="MyGordonModel.Store.dt_setpropertybyid" />
+          <FunctionImportMapping FunctionImportName="dt_setpropertybyid_u" FunctionName="MyGordonModel.Store.dt_setpropertybyid_u" />
+          <FunctionImportMapping FunctionImportName="dt_validateloginparams" FunctionName="MyGordonModel.Store.dt_validateloginparams" />
+          <FunctionImportMapping FunctionImportName="dt_validateloginparams_u" FunctionName="MyGordonModel.Store.dt_validateloginparams_u" />
+          <FunctionImportMapping FunctionImportName="dt_vcsenabled" FunctionName="MyGordonModel.Store.dt_vcsenabled" />
+          <FunctionImportMapping FunctionImportName="dt_verstamp006" FunctionName="MyGordonModel.Store.dt_verstamp006" />
+          <FunctionImportMapping FunctionImportName="dt_verstamp007" FunctionName="MyGordonModel.Store.dt_verstamp007" />
+          <FunctionImportMapping FunctionImportName="dt_whocheckedout" FunctionName="MyGordonModel.Store.dt_whocheckedout" />
+          <FunctionImportMapping FunctionImportName="dt_whocheckedout_u" FunctionName="MyGordonModel.Store.dt_whocheckedout_u" />
+          <FunctionImportMapping FunctionImportName="select_departments" FunctionName="MyGordonModel.Store.select_departments" />
+          <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="MyGordonModel.Store.sp_alterdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="MyGordonModel.Store.sp_creatediagram" />
+          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="MyGordonModel.Store.sp_dropdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="MyGordonModel.Store.sp_helpdiagramdefinition">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="Gordon360.sp_helpdiagramdefinition_Result">
+              <ComplexTypeMapping TypeName="MyGordonModel.sp_helpdiagramdefinition_Result">
                 <ScalarProperty Name="version" ColumnName="version" />
                 <ScalarProperty Name="definition" ColumnName="definition" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="Gordon360.Store.sp_helpdiagrams">
+          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="MyGordonModel.Store.sp_helpdiagrams">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="Gordon360.sp_helpdiagrams_Result">
+              <ComplexTypeMapping TypeName="MyGordonModel.sp_helpdiagrams_Result">
                 <ScalarProperty Name="Database" ColumnName="Database" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
@@ -1352,7 +1361,7 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="Gordon360.Store.sp_renamediagram" />
+          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="MyGordonModel.Store.sp_renamediagram" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

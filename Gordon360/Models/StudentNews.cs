@@ -26,6 +26,7 @@ namespace Gordon360.Models
         public string fname { get; set; }
         public string lname { get; set; }
         public Nullable<System.DateTime> ManualExpirationDate { get; set; }
+        public string Image { get; set; }
     
         public virtual StudentNewsCategory StudentNewsCategory { get; set; }
     }
