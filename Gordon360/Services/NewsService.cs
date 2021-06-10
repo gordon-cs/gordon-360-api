@@ -7,6 +7,7 @@ using Gordon360.Services.ComplexQueries;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 
 using System.Web;
 using System.Net;
@@ -19,9 +20,13 @@ namespace Gordon360.Services
     {
         private IUnitOfWork _unitOfWork;
 
+        private CCTEntities1 _context;
+
         public NewsService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
+
+            _context = new CCTEntities1();
         }
 
         /// <summary>
@@ -41,6 +46,9 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The news item was not found." };
             }
             return newsItem;
+
+            //HMM
+            //Get needs to return the image path, but the frontend needs the data. oh boy
         }
 
         public IEnumerable<StudentNewsViewModel> GetNewsNotExpired()
@@ -99,16 +107,78 @@ namespace Gordon360.Services
             var categoryIDParam = new SqlParameter("@CategoryID", newsItem.categoryID);
             var subjectParam = new SqlParameter("@Subject", newsItem.Subject);
             var bodyParam = new SqlParameter("@Body", newsItem.Body);
-            var imageParam = new SqlParameter("@Image", newsItem.Image);
+            var imageParam = new SqlParameter("@Image", null);
+            //TODO: Figure out this stupid image null thing.
 
             // Run stored procedure
-            var result = RawSqlQuery<StudentNewsViewModel>.query("INSERT_NEWS_ITEM @Username, @CategoryID, @Subject, @Body, @Image", usernameParam, categoryIDParam, subjectParam, bodyParam, imageParam);
-            if (result == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
-            }
+            //var result = RawSqlQuery<StudentNewsViewModel>.query("INSERT_NEWS_ITEM @Username, @CategoryID, @Subject, @Body, @Image", usernameParam, categoryIDParam, subjectParam, bodyParam, imageParam);
+            IEnumerable<int> idResult = _context.Database.SqlQuery<int>("INSERT_NEWS_ITEM @Username, @CategoryID, @Subject, @Body, @Image", usernameParam, categoryIDParam, subjectParam, bodyParam, imageParam);
+            // if (idResult == null)
+            // {
+            //     throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            // }
+            //Could maybe add tests one day
+            int snid = idResult.FirstOrDefault();
+
+            uploadImage(newsItem.Image, snid);
 
             return newsItem;
+        }
+
+        /// <summary>
+        /// Uploads a news image
+        /// Can be used to add an image to a new posting or to replace an image
+        /// for an existing posting.
+        /// </summary>
+        /// <param name="imageData">The base64 image data to be stored</param>
+        /// <param name="snid">The SNID of the news item to which the image belongs</param>
+        /// <returns>The status successful or failure</returns>
+        private string uploadImage(string imageData, int snid)
+        {
+            var newsPost = Get(snid);
+            var uploadsFolder = "/browseable/uploads/news/";
+
+            string folderPath = HttpContext.Current.Server.MapPath("~" + uploadsFolder);
+            if(!System.IO.Directory.Exists(folderPath))
+                {
+                    System.IO.Directory.CreateDirectory(folderPath);
+                }
+
+            string fileName = snid + ".jpg";
+            string imagePath = folderPath + fileName;
+
+            byte[] imageDataArray = System.Convert.FromBase64String(imageData);
+
+            try{
+                //First, if the Image path is empty- a new post- and the imageData is empty,
+                //It means a news submission was made without a picture, so we won't uploade anything.
+                // We'll just return.
+                if (imageData == null && newsPost.Image == null){
+                    return "This submission had no image.";
+                }
+
+                //If a new post, Image path will be null. If there is image data,
+                //we need to conitune, so first we add the path to the DB column. 
+                if (newsPost.Image == null && imageData != null){
+                    newsPost.Image = imagePath;
+                }
+
+                _unitOfWork.Save();
+
+                //Load the image data into a memory stream and save it to
+                //the appropriate file:
+                MemoryStream imageStream = new MemoryStream(imageDataArray);
+                System.Drawing.Image image = System.Drawing.Image.FromStream(imageStream);
+
+                image.Save(imagePath, System.Drawing.Imaging.ImageFormat.Jpeg);
+                return "Saving the image was successful.";
+            }
+
+            catch (System.Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                return "Something went wrong trying to save the image for  submission with SNID " + snid;
+            }
         }
 
         /// <summary>
@@ -126,6 +196,18 @@ namespace Gordon360.Services
             //    to be able to delete expired news, this should be fixed eventually by removing some of
             //    the SuperAdmin permissions that are not explicitly given
             VerifyUnexpired(newsItem);
+
+            //Delete image from filesystem, if there is one
+            var uploadsFolder = "/browseable/uploads/news/";
+            string folderPath = HttpContext.Current.Server.MapPath("~" + uploadsFolder);
+            string fileName = newsItem.SNID + ".jpg";
+            string imagePath = folderPath + fileName;
+            try{
+                File.Delete(imagePath);
+            }
+            catch(System.Exception e){
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
 
             var result = _unitOfWork.StudentNewsRepository.Delete(newsItem);
             _unitOfWork.Save();
@@ -159,7 +241,7 @@ namespace Gordon360.Services
             newsItem.categoryID = newData.categoryID;
             newsItem.Subject = newData.Subject;
             newsItem.Body = newData.Body;
-            newsItem.Image = newData.Image;
+            uploadImage(newData.Image, newsID);
 
             _unitOfWork.Save();
             

@@ -10,13 +10,6 @@ using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using Gordon360.Models.ViewModels;
 
-using System;
-using System.Net.Http;
-using System.Web;
-using System.Net;
-using Gordon360.Providers;
-using System.IO;
-
 namespace Gordon360.Controllers.Api
 {
     [RoutePrefix("api/news")]
@@ -145,7 +138,7 @@ namespace Gordon360.Controllers.Api
         /** Create a new news item to be added to the database
          */
         [HttpPost]
-        [Route("")]//Might need to add here - Josh
+        [Route("")]
         public IHttpActionResult Post([FromBody] StudentNews newsItem)
         {
             // Check for bad input
@@ -166,80 +159,6 @@ namespace Gordon360.Controllers.Api
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             var id = _accountService.GetAccountByUsername(username).GordonID;
-            //!!!!
-
-            //Move Image to storage
-            var uploadsFolder = "/browseable/uploads/new" + id + "/";
-            
-            // if (!Request.Content.IsMimeMultipartContent())
-            // {
-            //     throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
-            // }
-            
-
-            var existingFile = "";
-            
-            if(!System.IO.Directory.Exists(HttpContext.Current.Server.MapPath("~" + uploadsFolder)))
-            {
-                System.IO.Directory.CreateDirectory(HttpContext.Current.Server.MapPath("~" + uploadsFolder));
-            }
-            else
-            {
-                try
-                {
-                    System.IO.DirectoryInfo di = new DirectoryInfo(HttpContext.Current.Server.MapPath("~" + uploadsFolder));
-                    
-                    foreach (FileInfo file in di.GetFiles())
-                    {
-                        existingFile = file.Name;
-                        file.Delete();
-                    }
-                }
-                catch (System.Exception e) {
-                    System.Diagnostics.Debug.WriteLine(e.Message);
-                }
-            }
-
-            string root = HttpContext.Current.Server.MapPath("~" + uploadsFolder);
-            var provider = new CustomMultipartFormDataStreamProvider(root);
-
-            try
-            {
-                // Read the form data.
-                // await Request.Content.ReadAsMultipartAsync(provider);
-                Request.Content.ReadAsMultipartAsync(provider);
-
-                // This illustrates how to get the file names.
-                foreach (MultipartFileData file in provider.FileData)
-                {
-                    var fileName = file.Headers.ContentDisposition.FileName.Replace("\"", "");
-
-                    // If the file has the same name as the previous one, add a 1 at the end to make it different (so that the browser does not cache it)
-                    if (fileName.Equals(existingFile))
-                    {
-                        var oldFileName = fileName;
-
-                        // Add "1" before the extension
-                        fileName = fileName.Substring(0, fileName.LastIndexOf('.')) + "1" + fileName.Substring(fileName.LastIndexOf('.'));
-
-                        // Rename existing File
-                        System.IO.DirectoryInfo di = new DirectoryInfo(HttpContext.Current.Server.MapPath("~" + uploadsFolder));
-                        System.IO.File.Move(di.FullName + oldFileName, di.FullName + fileName);
-                    }
-
-                    var uploadPath = uploadsFolder + fileName;
-                    var baseUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority);
-                    var imagePath = baseUrl + uploadPath;
-                    //_activityService.UpdateActivityImage(id, imagePath);
-                    newsItem.Image = imagePath;
-                }
-                //return Request.CreateResponse(HttpStatusCode.OK);
-            }
-            catch (System.Exception e)
-            {
-                System.Diagnostics.Debug.WriteLine(e.Message);
-                //return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error uploading the image. Please contact the maintainers");
-            }
 
             // Call appropriate service
             var result = _newsService.SubmitNews(newsItem, username, id);

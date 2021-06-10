@@ -32,12 +32,13 @@
         <EntityType Name="Clifton_Strengths">
           <Key>
             <PropertyRef Name="ID_NUM" />
+            <PropertyRef Name="ACCESS_CODE" />
           </Key>
           <Property Name="ID_NUM" Type="int" Nullable="false" />
           <Property Name="ACCESS_CODE" Type="varchar" MaxLength="25" Nullable="false" />
           <Property Name="EMAIL" Type="varchar" MaxLength="200" Nullable="false" />
-          <Property Name="DTE_COMPLETED" Type="datetime" Nullable="false" />
-          <Property Name="THEME_1" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="DTE_COMPLETED" Type="datetime" />
+          <Property Name="THEME_1" Type="varchar" MaxLength="100" />
           <Property Name="THEME_2" Type="varchar" MaxLength="100" />
           <Property Name="THEME_3" Type="varchar" MaxLength="100" />
           <Property Name="THEME_4" Type="varchar" MaxLength="100" />
@@ -684,7 +685,7 @@ warning 6002: The table/view 'CCT.dbo.PART_DEF' does not have a primary key defi
         <!--Errors Found During Generation:
 warning 6013: The table/view 'CCT.dbo.Police' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
         <EntityType Name="Police">
-          <Property Name="ID_NUM" Type="nvarchar" MaxLength="4000" />
+          <Property Name="ID_NUM" Type="int" />
         </EntityType>-->
         <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.RoomAssign' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1066,6 +1067,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Parameter Name="CategoryID" Type="int" Mode="In" />
           <Parameter Name="Subject" Type="varchar" Mode="In" />
           <Parameter Name="Body" Type="varchar" Mode="In" />
+          <Parameter Name="Image" Type="varchar" Mode="In" />
         </Function>
         <Function Name="INSERT_TIMESHEETS_CLOCK_IN_OUT" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ID_NUM" Type="int" Mode="In" />
@@ -1230,6 +1232,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Parameter Name="CategoryID" Type="int" Mode="In" />
           <Parameter Name="Subject" Type="varchar" Mode="In" />
           <Parameter Name="Body" Type="varchar" Mode="In" />
+          <Parameter Name="Image" Type="varchar" Mode="In" />
         </Function>
         <Function Name="UPDATE_PHONE_PRIVACY" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ID" Type="int" Mode="In" />
@@ -1715,12 +1718,13 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <EntityType Name="Clifton_Strengths">
           <Key>
             <PropertyRef Name="ID_NUM" />
+            <PropertyRef Name="ACCESS_CODE" />
           </Key>
           <Property Name="ID_NUM" Type="Int32" Nullable="false" />
           <Property Name="ACCESS_CODE" Type="String" MaxLength="25" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="EMAIL" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="DTE_COMPLETED" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="THEME_1" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="DTE_COMPLETED" Type="DateTime" Precision="3" />
+          <Property Name="THEME_1" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="THEME_2" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="THEME_3" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="THEME_4" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
@@ -2752,11 +2756,12 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="received" Mode="In" Type="Boolean" />
             <Parameter Name="pending" Mode="In" Type="Boolean" />
           </FunctionImport>
-          <FunctionImport Name="INSERT_NEWS_ITEM">
+          <FunctionImport Name="INSERT_NEWS_ITEM" ReturnType="Collection(Int32)">
             <Parameter Name="Username" Mode="In" Type="String" />
             <Parameter Name="CategoryID" Mode="In" Type="Int32" />
             <Parameter Name="Subject" Mode="In" Type="String" />
             <Parameter Name="Body" Mode="In" Type="String" />
+            <Parameter Name="Image" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="INSERT_TIMESHEETS_CLOCK_IN_OUT">
             <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
@@ -2850,7 +2855,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="id_num" Mode="In" Type="Int32" />
             <Parameter Name="sess_cde" Mode="In" Type="String" />
           </FunctionImport>
-          <FunctionImport Name="STUDENT_JOBS_PER_ID_NUM" ReturnType="Collection(Gordon360.STUDENT_JOBS_PER_ID_NUM_Result)">
+          <FunctionImport Name="STUDENT_JOBS_PER_ID_NUM">
             <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="SUPERVISOR_PER_SUP_ID">
@@ -2921,6 +2926,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="CategoryID" Mode="In" Type="Int32" />
             <Parameter Name="Subject" Mode="In" Type="String" />
             <Parameter Name="Body" Mode="In" Type="String" />
+            <Parameter Name="Image" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="UPDATE_PHONE_PRIVACY">
             <Parameter Name="ID" Mode="In" Type="Int32" />
@@ -3249,6 +3255,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="Int32" Name="categoryID" Nullable="false" />
           <Property Type="String" Name="Subject" Nullable="false" MaxLength="60" />
           <Property Type="String" Name="Body" Nullable="false" MaxLength="6000" />
+          <Property Type="String" Name="Image" Nullable="true" MaxLength="100" />
           <Property Type="Boolean" Name="Sent" Nullable="true" />
           <Property Type="Boolean" Name="thisPastMailing" Nullable="true" />
           <Property Type="DateTime" Name="Entered" Nullable="true" Precision="23" />
@@ -3262,6 +3269,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="Int32" Name="categoryID" Nullable="false" />
           <Property Type="String" Name="Subject" Nullable="false" MaxLength="60" />
           <Property Type="String" Name="Body" Nullable="false" MaxLength="6000" />
+          <Property Type="String" Name="Image" Nullable="true" MaxLength="100" />
           <Property Type="Boolean" Name="Sent" Nullable="true" />
           <Property Type="Boolean" Name="thisPastMailing" Nullable="true" />
           <Property Type="DateTime" Name="Entered" Nullable="true" Precision="23" />
@@ -3275,6 +3283,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="Int32" Name="categoryID" Nullable="false" />
           <Property Type="String" Name="Subject" Nullable="false" MaxLength="60" />
           <Property Type="String" Name="Body" Nullable="false" MaxLength="6000" />
+          <Property Type="String" Name="Image" Nullable="true" MaxLength="100" />
           <Property Type="Boolean" Name="Sent" Nullable="true" />
           <Property Type="Boolean" Name="thisPastMailing" Nullable="true" />
           <Property Type="DateTime" Name="Entered" Nullable="true" Precision="23" />
@@ -3362,14 +3371,6 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="String" Name="FRIDAY_CDE" Nullable="true" MaxLength="1" />
           <Property Type="Time" Name="BEGIN_TIME" Nullable="true" />
           <Property Type="Time" Name="END_TIME" Nullable="true" />
-        </ComplexType>
-        <ComplexType Name="STUDENT_JOBS_PER_ID_NUM_Result">
-          <Property Type="String" Name="Job_Title" Nullable="true" MaxLength="512" />
-          <Property Type="String" Name="Job_Department" Nullable="true" MaxLength="15" />
-          <Property Type="String" Name="Job_Department_Name" Nullable="true" MaxLength="50" />
-          <Property Type="DateTime" Name="Job_Start_Date" Nullable="false" Precision="23" />
-          <Property Type="DateTime" Name="Job_End_Date" Nullable="true" Precision="23" />
-          <Property Type="DateTime" Name="Job_Expected_End_Date" Nullable="true" Precision="23" />
         </ComplexType>
         <ComplexType Name="UPCOMING_RIDES_Result">
           <Property Type="String" Name="rideID" Nullable="false" MaxLength="10" />
@@ -4562,6 +4563,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="categoryID" ColumnName="categoryID" />
                 <ScalarProperty Name="Subject" ColumnName="Subject" />
                 <ScalarProperty Name="Body" ColumnName="Body" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
                 <ScalarProperty Name="Sent" ColumnName="Sent" />
                 <ScalarProperty Name="thisPastMailing" ColumnName="thisPastMailing" />
                 <ScalarProperty Name="Entered" ColumnName="Entered" />
@@ -4579,6 +4581,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="categoryID" ColumnName="categoryID" />
                 <ScalarProperty Name="Subject" ColumnName="Subject" />
                 <ScalarProperty Name="Body" ColumnName="Body" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
                 <ScalarProperty Name="Sent" ColumnName="Sent" />
                 <ScalarProperty Name="thisPastMailing" ColumnName="thisPastMailing" />
                 <ScalarProperty Name="Entered" ColumnName="Entered" />
@@ -4596,6 +4599,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="categoryID" ColumnName="categoryID" />
                 <ScalarProperty Name="Subject" ColumnName="Subject" />
                 <ScalarProperty Name="Body" ColumnName="Body" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
                 <ScalarProperty Name="Sent" ColumnName="Sent" />
                 <ScalarProperty Name="thisPastMailing" ColumnName="thisPastMailing" />
                 <ScalarProperty Name="Entered" ColumnName="Entered" />
@@ -4723,18 +4727,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="STUDENT_JOBS_PER_ID_NUM" FunctionName="Gordon360.Store.STUDENT_JOBS_PER_ID_NUM">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="Gordon360.STUDENT_JOBS_PER_ID_NUM_Result">
-                <ScalarProperty Name="Job_Title" ColumnName="Job_Title" />
-                <ScalarProperty Name="Job_Department" ColumnName="Job_Department" />
-                <ScalarProperty Name="Job_Department_Name" ColumnName="Job_Department_Name" />
-                <ScalarProperty Name="Job_Start_Date" ColumnName="Job_Start_Date" />
-                <ScalarProperty Name="Job_End_Date" ColumnName="Job_End_Date" />
-                <ScalarProperty Name="Job_Expected_End_Date" ColumnName="Job_Expected_End_Date" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="STUDENT_JOBS_PER_ID_NUM" FunctionName="Gordon360.Store.STUDENT_JOBS_PER_ID_NUM" />
           <FunctionImportMapping FunctionImportName="SUPERVISOR_PER_SUP_ID" FunctionName="Gordon360.Store.SUPERVISOR_PER_SUP_ID" />
           <FunctionImportMapping FunctionImportName="SUPERVISORS_PER_ACT_CDE" FunctionName="Gordon360.Store.SUPERVISORS_PER_ACT_CDE" />
           <FunctionImportMapping FunctionImportName="SUPERVISORS_PER_ID_NUM" FunctionName="Gordon360.Store.SUPERVISORS_PER_ID_NUM" />

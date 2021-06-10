@@ -1686,6 +1686,16 @@
             <param name="id">id</param>
             <returns>The newly added Membership object</returns>
         </member>
+        <member name="M:Gordon360.Services.NewsService.uploadImage(System.String,System.Int32)">
+            <summary>
+            Uploads a news image
+            Can be used to add an image to a new posting or to replace an image
+            for an existing posting.
+            </summary>
+            <param name="imageData">The base64 image data to be stored</param>
+            <param name="snid">The SNID of the news item to which the image belongs</param>
+            <returns>The status successful or failure</returns>
+        </member>
         <member name="M:Gordon360.Services.NewsService.DeleteNews(System.Int32)">
             <summary>
             (Service) Deletes a news item from the database
