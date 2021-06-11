@@ -1659,7 +1659,7 @@
             <param name="sched">The schedule information</param>
             <returns>The original schedule</returns>
         </member>
-        <member name="M:Gordon360.Services.NewsService.Get(System.Int32)">
+        <member name="M:Gordon360.Services.NewsService.Get(System.Int32,System.Boolean)">
             <summary>
             Gets a news item entity by id
             NOTE: Also a helper method, hence why it returns a StudentNews model
@@ -1667,6 +1667,10 @@
             controller
             </summary>
             <param name="newsID">The SNID (id of news item)</param>
+            <param name="needsImageData">Whether or not the place from which
+            Get was invoked needed to get the image path or image base64 data. For
+            calls from editPosting, path is needed. For calls from uploadImage,
+            path is needed. But for calls from the controller (frontend), the data is needed.</param>
             <returns>The news item</returns>
         </member>
         <member name="M:Gordon360.Services.NewsService.GetNewsPersonalUnapproved(System.String,System.String)">
@@ -1686,16 +1690,6 @@
             <param name="id">id</param>
             <returns>The newly added Membership object</returns>
         </member>
-        <member name="M:Gordon360.Services.NewsService.uploadImage(System.String,System.Int32)">
-            <summary>
-            Uploads a news image
-            Can be used to add an image to a new posting or to replace an image
-            for an existing posting.
-            </summary>
-            <param name="imageData">The base64 image data to be stored</param>
-            <param name="snid">The SNID of the news item to which the image belongs</param>
-            <returns>The status successful or failure</returns>
-        </member>
         <member name="M:Gordon360.Services.NewsService.DeleteNews(System.Int32)">
             <summary>
             (Service) Deletes a news item from the database
@@ -1712,6 +1706,53 @@
             <param name="newData">The news object that contains updated values</param>
             <returns>The updated news item's view model</returns>
             <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
+        </member>
+        <member name="M:Gordon360.Services.NewsService.GetBase64ImageDataFromPath(System.String)">
+            <summary>
+            Takes a filepath for an image, navigates to it, collects the raw data
+            of the file and converts it to base64 format. 
+            
+            The base64 data will not include the first part of a base64 image ("data:image/...").
+            This is because this part is removed in every image before being submitted, and it
+            is readded in the frontend before being displayed.
+            
+            This helper function does not perform any error checking; every place that calls it
+            checks that the path is not null. Theoretically if it isn't null it's certainly a valid path.
+            </summary>
+            <param name="imagePath">The path to the image</param>
+            <returns>The base64 content of the image</returns>
+        </member>
+        <member name="M:Gordon360.Services.NewsService.InsertImageData(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.StudentNewsViewModel})">
+            <summary>
+            Iterates through a collection of news items that have just been queried from
+            the database, replacing the Image entry of each (which contains the path to an image)
+            with the image itself. This is done because when the frontend makes requests for news items,
+            it needs the image data and not the path, but we store the path in the DB for efficiency and
+            storage reasons.
+            </summary>
+            <param name="items">The collection of student news entries</param>
+            <returns>The collection of entries with base64 data in their image variable</returns>
+        </member>
+        <member name="M:Gordon360.Services.NewsService.UploadImage(System.String,System.Int32)">
+            <summary>
+            Uploads a news image
+            Can be used to add an image to a new posting or to replace an image
+            for an existing posting.
+            
+            Because editPosting calls this method to replace whatever is currently stored
+            (if anything) with new data, and because the new data can actually include
+            an image property of null (if the user removed the image from their post), it's
+            possible for 
+            </summary>
+            <param name="imageData">The base64 image data to be stored</param>
+            <param name="snid">The SNID of the news item to which the image belongs</param>
+            <returns>The status successful or failure</returns>
+        </member>
+        <member name="M:Gordon360.Services.NewsService.RemoveImage(System.Int32)">
+            <summary>
+            Deletes an image from the filesystem, if there is one.
+            </summary>
+            <param name="snid">The SNID for the news entry to which the image belonged.</param>
         </member>
         <member name="M:Gordon360.Services.NewsService.VerifyUnapproved(Gordon360.Models.StudentNews)">
             <summary>
