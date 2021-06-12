@@ -211,7 +211,7 @@ namespace Gordon360.Services
         /// is readded in the frontend before being displayed.
         /// 
         /// This helper function does not perform any error checking; every place that calls it
-        /// checks that the path is not null. Theoretically if it isn't null it's certainly a valid path.
+        /// checks that the path is not empty. Theoretically if it isn't empty it's certainly a valid path.
         /// </summary>
         /// <param name="imagePath">The path to the image</param>
         /// <returns>The base64 content of the image</returns>
