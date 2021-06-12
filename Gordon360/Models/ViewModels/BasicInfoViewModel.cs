@@ -76,7 +76,7 @@ namespace Gordon360.Models.ViewModels
 
         public string GetLastNameFromUsername()
         {
-            return UserName.Contains('.')?UserName?.Split('.')?[1] : null;
+            return UserName.Contains('.') ? UserName?.Split('.')?[1] : null;
         }
 
         public bool NicknameMatches(string matchString)
@@ -87,11 +87,6 @@ namespace Gordon360.Models.ViewModels
         public bool NicknameStartsWith(string searchString)
         {
             return Nickname?.ToLower()?.StartsWith(searchString) ?? false;
-        }
-
-        public bool NicknameContains(string searchString)
-        {
-            return Nickname?.ToLower()?.Contains(searchString) ?? false;
         }
     }
 
