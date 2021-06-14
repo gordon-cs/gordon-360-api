@@ -35,12 +35,7 @@ namespace Gordon360.Services
         /// controller
         /// </summary>
         /// <param name="newsID">The SNID (id of news item)</param>
-        /// <param name="needsImageData">Whether or not the place from which
-        /// Get was invoked needed to get the image path or image base64 data. For
-        /// calls from editPosting, path is needed. For calls from uploadImage,
-        /// path is needed. But for calls from the controller (frontend), the data is needed.</param>
-        /// <returns>The news item</returns>
-        public StudentNews Get(int newsID, bool needsImageData)
+        public StudentNews Get(int newsID)
         {
             var newsItem = _unitOfWork.StudentNewsRepository.GetById(newsID);
             // Thrown exceptions will be converted to HTTP Responses by the CustomExceptionFilter
@@ -50,12 +45,6 @@ namespace Gordon360.Services
             }
 
             string imagePath = newsItem.Image;
-
-            if (imagePath != null && needsImageData)
-            {
-                newsItem.Image = GetBase64ImageDataFromPath(imagePath);
-                return newsItem;
-            }
 
             return newsItem;
         }
@@ -142,7 +131,7 @@ namespace Gordon360.Services
         public StudentNews DeleteNews(int newsID)
         {
             // Service method 'Get' throws its own exceptions
-            var newsItem = Get(newsID, false);
+            var newsItem = Get(newsID);
             
             // Note: This check has been duplicated from StateYourBusiness because we do not SuperAdmins
             //    to be able to delete expired news, this should be fixed eventually by removing some of
@@ -166,7 +155,7 @@ namespace Gordon360.Services
         public StudentNewsViewModel EditPosting(int newsID, StudentNews newData)
         {
             // Service method 'Get' throws its own exceptions
-            var newsItem = Get(newsID, false);
+            var newsItem = Get(newsID);
 
             // Note: These checks have been duplicated from StateYourBusiness because we do not SuperAdmins
             //    to be able to delete expired news, this should be fixed eventually by removing some of
@@ -189,8 +178,9 @@ namespace Gordon360.Services
                 UploadImage(newData.Image, newsID);
             }
 
-            //If the image property is null, it means the user removed whatever
-            //picture they had in their posting before.
+            //If the image property is null, it means that either the user
+            //chose to remove the previous image or that there was no previous
+            //image (RemoveImage is designed to handle this).
             else
             {
                 RemoveImage(newsItem.SNID);
@@ -215,7 +205,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="imagePath">The path to the image</param>
         /// <returns>The base64 content of the image</returns>
-        private string GetBase64ImageDataFromPath(string imagePath)
+        public string GetBase64ImageDataFromPath(string imagePath)
         {
             using (System.Drawing.Image image = System.Drawing.Image.FromFile(imagePath))
             using (MemoryStream data = new MemoryStream())
@@ -254,20 +244,15 @@ namespace Gordon360.Services
         /// Uploads a news image
         /// Can be used to add an image to a new posting or to replace an image
         /// for an existing posting.
-        /// 
-        /// Because editPosting calls this method to replace whatever is currently stored
-        /// (if anything) with new data, and because the new data can actually include
-        /// an image property of null (if the user removed the image from their post), it's
-        /// possible for 
         /// </summary>
         /// <param name="imageData">The base64 image data to be stored</param>
         /// <param name="snid">The SNID of the news item to which the image belongs</param>
         /// <returns>The status successful or failure</returns>
-        private string UploadImage(string imageData, int snid)
+        private void UploadImage(string imageData, int snid)
         {
-            if (imageData == null) { return "No image"; };
+            if (imageData == null) { return; }
 
-            var newsPost = Get(snid, false);
+            var newsPost = Get(snid);
 
             if (!System.IO.Directory.Exists(FolderPath))
             {
@@ -286,7 +271,7 @@ namespace Gordon360.Services
                 // We'll just return.
                 if (imageData == null && newsPost.Image == null)
                 {
-                    return "This submission had no image.";
+                    return;
                 }
 
                 System.Diagnostics.Debug.WriteLine(newsPost.Image + " is value ");
@@ -309,14 +294,14 @@ namespace Gordon360.Services
                     System.Diagnostics.Debug.WriteLine(image);
 
                     image.Save(imagePath, System.Drawing.Imaging.ImageFormat.Jpeg);
-                    return "Saving the image was successful.";
+                    return;//Saving image was successful
                 }
             }
 
             catch (System.Exception e)
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
-                return "Something went wrong trying to save the image for submission with SNID " + snid;
+                System.Diagnostics.Debug.WriteLine("Something went wrong trying to save the image for submission with SNID " + snid);
             }
         }
 

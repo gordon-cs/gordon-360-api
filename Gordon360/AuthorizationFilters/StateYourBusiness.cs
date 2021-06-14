@@ -642,7 +642,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.NEWS:
                     var newsID = context.ActionArguments["newsID"];
                     var newsService = new NewsService(new UnitOfWork());
-                    var newsItem = newsService.Get((int)newsID, false);
+                    var newsItem = newsService.Get((int)newsID);
                     // only unapproved posts may be updated
                     var approved = newsItem.Accepted;
                     if (approved == null || approved == true)
@@ -750,7 +750,7 @@ namespace Gordon360.AuthorizationFilters
                     {
                         var newsID = context.ActionArguments["newsID"];
                         var newsService = new NewsService(new UnitOfWork());
-                        var newsItem = newsService.Get((int)newsID, false);
+                        var newsItem = newsService.Get((int)newsID);
                         // only expired news items may be deleted
                         var todaysDate = System.DateTime.Now;
                         var newsDate = (System.DateTime)newsItem.Entered;

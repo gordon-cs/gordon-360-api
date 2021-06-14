@@ -61,11 +61,18 @@ namespace Gordon360.Controllers.Api
         public IHttpActionResult GetByID(int newsID)
         {
             // StateYourBusiness verifies that user is authenticated
-            var result = (StudentNewsViewModel)_newsService.Get(newsID, true);
+            var result = (StudentNewsViewModel)_newsService.Get(newsID);
             if (result == null)
             {
                 return NotFound();
             }
+
+            if (result.Image != null)
+            {
+                result.Image = _newsService.GetBase64ImageDataFromPath(result.Image);
+                return Ok(result);
+            }
+
             return Ok(result);
         }
 

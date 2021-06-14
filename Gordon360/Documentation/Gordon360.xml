@@ -1659,7 +1659,7 @@
             <param name="sched">The schedule information</param>
             <returns>The original schedule</returns>
         </member>
-        <member name="M:Gordon360.Services.NewsService.Get(System.Int32,System.Boolean)">
+        <member name="M:Gordon360.Services.NewsService.Get(System.Int32)">
             <summary>
             Gets a news item entity by id
             NOTE: Also a helper method, hence why it returns a StudentNews model
@@ -1667,11 +1667,6 @@
             controller
             </summary>
             <param name="newsID">The SNID (id of news item)</param>
-            <param name="needsImageData">Whether or not the place from which
-            Get was invoked needed to get the image path or image base64 data. For
-            calls from editPosting, path is needed. For calls from uploadImage,
-            path is needed. But for calls from the controller (frontend), the data is needed.</param>
-            <returns>The news item</returns>
         </member>
         <member name="M:Gordon360.Services.NewsService.GetNewsPersonalUnapproved(System.String,System.String)">
             <summary>

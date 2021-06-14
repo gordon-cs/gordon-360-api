@@ -262,7 +262,7 @@ namespace Gordon360.Services
 
     public interface INewsService
     {
-        StudentNews Get(int newsID, bool needsImageData);
+        StudentNews Get(int newsID);
         IEnumerable<StudentNewsViewModel> GetNewsNotExpired();
         IEnumerable<StudentNewsViewModel> GetNewsNew();
         IEnumerable<StudentNewsCategoryViewModel> GetNewsCategories();
@@ -270,6 +270,7 @@ namespace Gordon360.Services
         StudentNews SubmitNews(StudentNews newsItem, string username, string id);
         StudentNews DeleteNews(int newsID);
         StudentNewsViewModel EditPosting(int newsID, StudentNews newsItem);
+        string GetBase64ImageDataFromPath(string imagePath);
     }
 
     public interface IHousingService
