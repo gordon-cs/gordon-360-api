@@ -247,7 +247,6 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="imageData">The base64 image data to be stored</param>
         /// <param name="snid">The SNID of the news item to which the image belongs</param>
-        /// <returns>The status successful or failure</returns>
         private void UploadImage(string imageData, int snid)
         {
             if (imageData == null) { return; }
