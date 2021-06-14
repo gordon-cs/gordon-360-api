@@ -1733,15 +1733,9 @@
             Uploads a news image
             Can be used to add an image to a new posting or to replace an image
             for an existing posting.
-            
-            Because editPosting calls this method to replace whatever is currently stored
-            (if anything) with new data, and because the new data can actually include
-            an image property of null (if the user removed the image from their post), it's
-            possible for 
             </summary>
             <param name="imageData">The base64 image data to be stored</param>
             <param name="snid">The SNID of the news item to which the image belongs</param>
-            <returns>The status successful or failure</returns>
         </member>
         <member name="M:Gordon360.Services.NewsService.RemoveImage(System.Int32)">
             <summary>
