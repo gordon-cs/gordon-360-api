@@ -6,10 +6,10 @@ using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
-using Gordon360.Services.ComplexQueries;
+using Gordon360.Utils.ComplexQueries;
 using Gordon360.Static.Names;
 
-namespace Gordon360.Services
+namespace Gordon360.Utils
 {
     /// <summary>
     /// Service class to facilitate data transactions between the MembershipRequestController and the database

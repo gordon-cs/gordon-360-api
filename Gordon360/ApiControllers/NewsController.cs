@@ -1,6 +1,6 @@
 ﻿using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Repositories;
-using Gordon360.Services;
+using Gordon360.Utils;
 using Gordon360.Models;
 using System.Linq;
 using System.Web.Http;
@@ -18,6 +18,7 @@ namespace Gordon360.Controllers.Api
     public class NewsController : ApiController
     {
         private INewsService _newsService;
+        private IImageUtils _imageUtils = new ImageUtils();
         private IAccountService _accountService;
 
         /**private void catchBadInput()
@@ -67,11 +68,7 @@ namespace Gordon360.Controllers.Api
                 return NotFound();
             }
 
-            if (result.Image != null)
-            {
-                result.Image = _newsService.GetBase64ImageDataFromPath(result.Image);
-                return Ok(result);
-            }
+            result.Image = _imageUtils.RetrieveImageFromPath(result.Image);
 
             return Ok(result);
         }

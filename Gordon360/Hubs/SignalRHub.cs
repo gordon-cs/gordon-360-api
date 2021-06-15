@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
 using Gordon360;
-using Gordon360.Services;
+using Gordon360.Utils;
 using Gordon360.ApiControllers;
 using System.Web.Http;
 using Gordon360.Models.ViewModels;

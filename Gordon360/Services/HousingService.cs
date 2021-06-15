@@ -2,13 +2,13 @@ using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
-using Gordon360.Services.ComplexQueries;
+using Gordon360.Utils.ComplexQueries;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 
-namespace Gordon360.Services
+namespace Gordon360.Utils
 {
     public class HousingService : IHousingService
     {

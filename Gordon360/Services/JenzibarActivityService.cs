@@ -5,7 +5,7 @@ using System.Web;
 using Gordon360.Models;
 using Gordon360.Repositories;
 
-namespace Gordon360.Services
+namespace Gordon360.Utils
 {
     /// <summary>
     /// Service class to faclitate data transfers between in and out of the JNZB_ACTIVITIES table.

@@ -5,11 +5,11 @@ using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using Gordon360.Exceptions.CustomExceptions;
 using System.Data.SqlClient;
-using Gordon360.Services.ComplexQueries;
+using Gordon360.Utils.ComplexQueries;
 using static Gordon360.Controllers.Api.WellnessController;
 using Gordon360.Models;
 
-namespace Gordon360.Services
+namespace Gordon360.Utils
 {
     public class WellnessService : IWellnessService
     {

@@ -7,7 +7,7 @@ using System.Reflection;
 using System;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
-using Gordon360.Services;
+using Gordon360.Utils;
 
 namespace Gordon360.Controllers.Api
 {

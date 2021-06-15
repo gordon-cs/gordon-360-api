@@ -4,7 +4,7 @@ using System.DirectoryServices.AccountManagement;
 using Microsoft.Owin.Security.OAuth;
 using System.Security.Claims;
 using System.Diagnostics;
-using Gordon360.Services;
+using Gordon360.Utils;
 using Gordon360.Static.Names;
 using Gordon360.Repositories;
 using Gordon360.Exceptions.CustomExceptions;

@@ -7,10 +7,10 @@ using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using Gordon360.Exceptions.CustomExceptions;
 using System.Data.SqlClient;
-using Gordon360.Services.ComplexQueries;
+using Gordon360.Utils.ComplexQueries;
 using System.Diagnostics;
 
-namespace Gordon360.Services
+namespace Gordon360.Utils
 {
     public class VictoryPromiseService : IVictoryPromiseService
     {

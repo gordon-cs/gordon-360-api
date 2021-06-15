@@ -4,7 +4,7 @@ using Gordon360.AuthorizationFilters;
 using Gordon360.Models.ViewModels;
 using Gordon360.Models;
 using Gordon360.Repositories;
-using Gordon360.Services;
+using Gordon360.Utils;
 using Gordon360.Static.Methods;
 using Gordon360.Static.Names;
 using System.Linq;

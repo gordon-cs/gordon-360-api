@@ -5,13 +5,13 @@ using System.Collections.Generic;
 using Gordon360.Models;
 using System.Linq;
 using System.Data.SqlClient;
-using Gordon360.Services.ComplexQueries;
+using Gordon360.Utils.ComplexQueries;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Static.Methods;
 using System.Net.Mail;
 using System.Net;
 
-namespace Gordon360.Services
+namespace Gordon360.Utils
 {
     /// <summary>
     /// Service class to facilitate getting emails for members of an activity.

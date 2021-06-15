@@ -2,7 +2,7 @@
 using System.Linq;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
-using Gordon360.Services.ComplexQueries;
+using Gordon360.Utils.ComplexQueries;
 using System.Data.SqlClient;
 using System.Data;
 using Gordon360.Exceptions.CustomExceptions;
@@ -14,7 +14,7 @@ using System.Xml.Linq;
 // We use this service to pull data from 25Live as well as parsing it
 // The data is retrieved from the cache maintained by Startup.cs
 // </summary>
-namespace Gordon360.Services
+namespace Gordon360.Utils
 {
     /// <summary>
     /// Service that allows for event control

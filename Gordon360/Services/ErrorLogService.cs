@@ -5,14 +5,14 @@ using System.Web;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
-using Gordon360.Services.ComplexQueries;
+using Gordon360.Utils.ComplexQueries;
 using System.Data.SqlClient;
 using System.Data;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Static.Methods;
 using System.Diagnostics;
 
-namespace Gordon360.Services
+namespace Gordon360.Utils
 {
     /// <summary>
     /// Service Class that facilitates data transactions between the ErrorLogController and the ERROR_LOG database model.

@@ -6,7 +6,7 @@ using Gordon360.Static.Names;
 using System.Web.Http;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
-using Gordon360.Services;
+using Gordon360.Utils;
 using Gordon360.Exceptions.CustomExceptions;
 using System.Collections.Generic;
 using Gordon360.Models.ViewModels;

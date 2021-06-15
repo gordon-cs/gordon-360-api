@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Gordon360.Services.ComplexQueries
+namespace Gordon360.Utils.ComplexQueries
 {
     /// <summary>
     /// Helper class to execute Sql statements.

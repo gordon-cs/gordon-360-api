@@ -7,7 +7,7 @@ using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 
-namespace Gordon360.Services
+namespace Gordon360.Utils
 {
     /// <summary>
     /// Service class that facilitates data (specifically, site content) passing between the ContentManagementController and the database model.

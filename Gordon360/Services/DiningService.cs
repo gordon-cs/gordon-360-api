@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
-using Gordon360.Services.ComplexQueries;
+using Gordon360.Utils.ComplexQueries;
 using System.Data.SqlClient;
 using System.Data;
 using Gordon360.Exceptions.CustomExceptions;
@@ -22,7 +22,7 @@ using System.Diagnostics;
 // <summary>
 // We use this service to pull meal data from blackboard and parse it
 // </summary>
-namespace Gordon360.Services
+namespace Gordon360.Utils
 {
     /// <summary>
     /// Service that allows for meal control
