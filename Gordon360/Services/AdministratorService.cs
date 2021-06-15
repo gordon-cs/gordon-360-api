@@ -5,7 +5,7 @@ using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Models;
 using Gordon360.Repositories;
 
-namespace Gordon360.Utils
+namespace Gordon360.Services
 {
     /// <summary>
     /// Service class to facilitate interacting with the Admin table.

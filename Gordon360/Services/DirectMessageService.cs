@@ -7,13 +7,13 @@ using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using Gordon360.Exceptions.CustomExceptions;
 using System.Data.SqlClient;
-using Gordon360.Utils.ComplexQueries;
+using Gordon360.Services.ComplexQueries;
 using System.Diagnostics;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System.Text;
 
-namespace Gordon360.Utils
+namespace Gordon360.Services
 {
     public class DirectMessageService : IDirectMessageService 
     {

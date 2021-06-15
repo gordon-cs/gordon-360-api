@@ -5,7 +5,7 @@ using System.Net.Http.Headers;
 using Microsoft.Owin.Security.OAuth;
 using Microsoft.Owin.Security.Jwt;
 using System;
-using Gordon360.Utils.ComplexQueries;
+using Gordon360.Services.ComplexQueries;
 using Gordon360.AuthorizationServer;
 using Gordon360.Models.ViewModels;
 using Gordon360.Static.Data;

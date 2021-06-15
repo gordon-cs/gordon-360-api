@@ -2,14 +2,15 @@
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
-using Gordon360.Utils.ComplexQueries;
+using Gordon360.Services.ComplexQueries;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
+using Gordon360.Utils;
 
-namespace Gordon360.Utils
+namespace Gordon360.Services
 {
     public class NewsService : INewsService
     {

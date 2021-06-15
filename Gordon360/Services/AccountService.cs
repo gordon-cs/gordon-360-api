@@ -11,7 +11,7 @@ using Gordon360.Static.Names;
 using Gordon360.Static.Data;
 using System.Data.SqlClient;
 
-namespace Gordon360.Utils
+namespace Gordon360.Services
 {
     
     /// <summary>

@@ -5,14 +5,14 @@ using System.Web;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
-using Gordon360.Utils.ComplexQueries;
+using Gordon360.Services.ComplexQueries;
 using System.Data.SqlClient;
 using System.Data;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Static.Methods;
 using System.Diagnostics;
 
-namespace Gordon360.Utils
+namespace Gordon360.Services
 {
     /// <summary>
     /// Service Class that facilitates data transactions between the MembershipsController and the Membership database model.

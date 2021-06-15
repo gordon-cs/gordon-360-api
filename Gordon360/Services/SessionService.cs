@@ -8,7 +8,7 @@ using System.Data;
 using Gordon360.Exceptions.CustomExceptions;
 using System.Data.SqlClient;
 
-namespace Gordon360.Utils
+namespace Gordon360.Services
 {
     /// <summary>
     /// Service class to facilitate data transactions between the Controller and the database model.

@@ -9,7 +9,7 @@ using System.Xml.Linq;
 // Namespace with all the Service Interfaces that are to be implemented. I don't think making this interface is required, the services can work fine on their own.
 // However, building the interfaces first does give a general sense of structure to their implementations. A certain cohesiveness :p.
 // </summary>
-namespace Gordon360.Utils
+namespace Gordon360.Services
 {
 
     public interface IRoleCheckingService

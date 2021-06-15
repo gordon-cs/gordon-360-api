@@ -6,7 +6,7 @@ using System.Web;
 using System.Security.Claims;
 using Gordon360.Static.Names;
 
-namespace Gordon360.Utils
+namespace Gordon360.Services
 {
     public class RoleCheckingService: IRoleCheckingService
     {

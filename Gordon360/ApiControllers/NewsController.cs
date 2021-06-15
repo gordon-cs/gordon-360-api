@@ -1,6 +1,6 @@
 ﻿using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Repositories;
-using Gordon360.Utils;
+using Gordon360.Services;
 using Gordon360.Models;
 using System.Linq;
 using System.Web.Http;
@@ -9,6 +9,7 @@ using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using Gordon360.Models.ViewModels;
+using Gordon360.Utils;
 
 namespace Gordon360.Controllers.Api
 {

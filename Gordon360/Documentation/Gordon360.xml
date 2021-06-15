@@ -1215,73 +1215,73 @@
             <param name="query">Name of the stored procedure </param>
             <param name="parameters">Parameters to pass to the stored procedure</param>
         </member>
-        <member name="T:Gordon360.Utils.AccountService">
+        <member name="T:Gordon360.Services.AccountService">
             <summary>
             Service Class that facilitates data transactions between the AccountsController and the Account database model.
             </summary>
         </member>
-        <member name="M:Gordon360.Utils.AccountService.Get(System.String)">
+        <member name="M:Gordon360.Services.AccountService.Get(System.String)">
             <summary>
             Fetches a single account record whose id matches the id provided as an argument
             </summary>
             <param name="id">The person's gordon id</param>
             <returns>AccountViewModel if found, null if not found</returns>
         </member>
-        <member name="M:Gordon360.Utils.AccountService.GetAll">
+        <member name="M:Gordon360.Services.AccountService.GetAll">
             <summary>
             Fetches all the account records from storage.
             </summary>
             <returns>AccountViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
         </member>
-        <member name="M:Gordon360.Utils.AccountService.GetAccountByEmail(System.String)">
+        <member name="M:Gordon360.Services.AccountService.GetAccountByEmail(System.String)">
             <summary>
             Fetches the account record with the specified email.
             </summary>
             <param name="email">The email address associated with the account.</param>
             <returns>the student account information</returns>
         </member>
-        <member name="M:Gordon360.Utils.AccountService.GetAccountByUsername(System.String)">
+        <member name="M:Gordon360.Services.AccountService.GetAccountByUsername(System.String)">
             <summary>
             Fetches the account record with the specified username.
             </summary>
             <param name="username">The username associated with the account.</param>
             <returns>the student account information</returns>
         </member>
-        <member name="T:Gordon360.Utils.ActivityService">
+        <member name="T:Gordon360.Services.ActivityService">
             <summary>
             Service Class that facilitates data transactions between the ActivitiesController and the ACT_INFO database model.
             ACT_INFO is basically a copy of the ACT_CLUB_DEF domain model in TmsEPrd but with extra fields that we want to store (activity image, blurb etc...)
             Activity Info and ACtivity may be talked about interchangeably.
             </summary>
         </member>
-        <member name="M:Gordon360.Utils.ActivityService.Get(System.String)">
+        <member name="M:Gordon360.Services.ActivityService.Get(System.String)">
             <summary>
             Fetches a single activity record whose id matches the id provided as an argument
             </summary>
             <param name="id">The activity code</param>
             <returns>ActivityViewModel if found, null if not found</returns>
         </member>
-        <member name="M:Gordon360.Utils.ActivityService.GetActivitiesForSession(System.String)">
+        <member name="M:Gordon360.Services.ActivityService.GetActivitiesForSession(System.String)">
             <summary>
             Fetches the Activities that are active during the session whose code is specified as parameter.
             </summary>
             <param name="id">The session code</param>
             <returns>ActivityViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
         </member>
-        <member name="M:Gordon360.Utils.ActivityService.GetActivityTypesForSession(System.String)">
+        <member name="M:Gordon360.Services.ActivityService.GetActivityTypesForSession(System.String)">
             <summary>
             Fetches the Activity types of activities that are active during the session whose code is specified as parameter.
             </summary>
             <param name="id">The session code</param>
             <returns>ActivityViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
         </member>
-        <member name="M:Gordon360.Utils.ActivityService.GetAll">
+        <member name="M:Gordon360.Services.ActivityService.GetAll">
             <summary>
             Fetches all activity records from storage.
             </summary>
             <returns>ActivityViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
         </member>
-        <member name="M:Gordon360.Utils.ActivityService.IsOpen(System.String,System.String)">
+        <member name="M:Gordon360.Services.ActivityService.IsOpen(System.String,System.String)">
             <summary>
             Checks to see if a specified activity is still open for this session
             Note: the way we know that an activity is open or closed is by the column END_DTE in MEMBERSHIP table
@@ -1292,28 +1292,28 @@
             <param name="id"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Utils.ActivityService.GetOpenActivities(System.String)">
+        <member name="M:Gordon360.Services.ActivityService.GetOpenActivities(System.String)">
             <summary>
             Gets a collection of all the current open activities, by finding which activities have 
             memberships with an END_DTE that is null
             </summary>
             <returns>The collection of activity codes for open activities</returns>
         </member>
-        <member name="M:Gordon360.Utils.ActivityService.GetOpenActivities(System.String,System.Int32)">
+        <member name="M:Gordon360.Services.ActivityService.GetOpenActivities(System.String,System.Int32)">
             <summary>
             Gets a collection of all the current open activities for which a given user is group admin, by finding which activities have 
             memberships with an END_DTE that is null
             </summary>
             <returns>The collection of activity codes for open activities</returns>
         </member>
-        <member name="M:Gordon360.Utils.ActivityService.GetClosedActivities(System.String)">
+        <member name="M:Gordon360.Services.ActivityService.GetClosedActivities(System.String)">
             <summary>
             Gets a collection of all the current activities already closed out, by finding which activities have 
             memberships with an END_DTE that is not null
             </summary>
             <returns>The collection of activity codes for open activities</returns>
         </member>
-        <member name="M:Gordon360.Utils.ActivityService.GetClosedActivities(System.String,System.Int32)">
+        <member name="M:Gordon360.Services.ActivityService.GetClosedActivities(System.String,System.Int32)">
             <summary>
             Gets a collection of all the current closed activities for which a given user is group admin, by finding which activities have 
             memberships with an END_DTE that is not null
@@ -1322,7 +1322,7 @@
             <param name="sess_cde">The session we want to get the closed activities for</param>
             <returns>The collection of activity codes for open activities</returns>
         </member>
-        <member name="M:Gordon360.Utils.ActivityService.Update(System.String,Gordon360.Models.ACT_INFO)">
+        <member name="M:Gordon360.Services.ActivityService.Update(System.String,Gordon360.Models.ACT_INFO)">
             <summary>
             Updates the Activity Info 
             </summary>
@@ -1330,66 +1330,66 @@
             <param name="id">The id of the activity info to be updated</param>
             <returns>The updated activity info resource</returns>
         </member>
-        <member name="M:Gordon360.Utils.ActivityService.CloseOutActivityForSession(System.String,System.String)">
+        <member name="M:Gordon360.Services.ActivityService.CloseOutActivityForSession(System.String,System.String)">
             <summary>
             Closes out a specific activity for a specific session
             </summary>
             <param name="id">The activity code for the activity that will be closed</param>
             <param name="sess_cde">The session code for the session where the activity is being closed</param>
         </member>
-        <member name="M:Gordon360.Utils.ActivityService.OpenActivityForSession(System.String,System.String)">
+        <member name="M:Gordon360.Services.ActivityService.OpenActivityForSession(System.String,System.String)">
             <summary>
             Open a specific activity for a specific session
             </summary>
             <param name="id">The activity code for the activity that will be closed</param>
             <param name="sess_cde">The session code for the session where the activity is being closed</param>
         </member>
-        <member name="M:Gordon360.Utils.ActivityService.UpdateActivityImage(System.String,System.String)">
+        <member name="M:Gordon360.Services.ActivityService.UpdateActivityImage(System.String,System.String)">
             <summary>
             Sets the path for the activity image.
             </summary>
             <param name="id">The activity code</param>
             <param name="path"></param>
         </member>
-        <member name="M:Gordon360.Utils.ActivityService.ResetActivityImage(System.String)">
+        <member name="M:Gordon360.Services.ActivityService.ResetActivityImage(System.String)">
             <summary>
             Reset the path for the activity image
             </summary>
             <param name="id">The activity code</param>
         </member>
-        <member name="M:Gordon360.Utils.ActivityService.TogglePrivacy(System.String,System.Boolean)">
+        <member name="M:Gordon360.Services.ActivityService.TogglePrivacy(System.String,System.Boolean)">
             <summary>
             change activty privacy
             </summary>
             <param name="id">The activity code</param>
             <param name="p">activity private or not</param>
         </member>
-        <member name="T:Gordon360.Utils.AdministratorService">
+        <member name="T:Gordon360.Services.AdministratorService">
             <summary>
             Service class to facilitate interacting with the Admin table.
             </summary>
         </member>
-        <member name="M:Gordon360.Utils.AdministratorService.Get(System.Int32)">
+        <member name="M:Gordon360.Services.AdministratorService.Get(System.Int32)">
             <summary>
             Fetches the admin resource whose id is specified as an argument.
             </summary>
             <param name="id">The admin ID.l</param>
             <returns>The Specified administrator. If none was found, a null value is returned.</returns>
         </member>
-        <member name="M:Gordon360.Utils.AdministratorService.Get(System.String)">
+        <member name="M:Gordon360.Services.AdministratorService.Get(System.String)">
             <summary>
             Fetches the admin resource whose username matches the specified argument
             </summary>
             <param name="gordon_id">The administrator's gordon id</param>
             <returns>The Specified administrator. If none was found, a null value is returned.</returns>
         </member>
-        <member name="M:Gordon360.Utils.AdministratorService.GetAll">
+        <member name="M:Gordon360.Services.AdministratorService.GetAll">
             <summary>
             Fetches all the administrators from the database
             </summary>
             <returns>Returns a list of administrators. If no administrators were found, an empty list is returned.</returns>
         </member>
-        <member name="M:Gordon360.Utils.AdministratorService.Add(Gordon360.Models.ADMIN)">
+        <member name="M:Gordon360.Services.AdministratorService.Add(Gordon360.Models.ADMIN)">
             <summary>
             Adds a new Administrator record to storage. Since we can't establish foreign key constraints and relationships on the database side,
             we do it here by using the validateAdmin() method.
@@ -1397,19 +1397,907 @@
             <param name="admin">The admin to be added</param>
             <returns>The newly added Admin object</returns>
         </member>
-        <member name="M:Gordon360.Utils.AdministratorService.Delete(System.Int32)">
+        <member name="M:Gordon360.Services.AdministratorService.Delete(System.Int32)">
             <summary>
             Delete the admin whose id is specified by the parameter.
             </summary>
             <param name="id">The admin id</param>
             <returns>The admin that was just deleted</returns>
         </member>
-        <member name="M:Gordon360.Utils.AdministratorService.validateAdmin(Gordon360.Models.ADMIN)">
+        <member name="M:Gordon360.Services.AdministratorService.validateAdmin(Gordon360.Models.ADMIN)">
             <summary>
             Helper method to Validate an admin
             </summary>
             <param name="admin">The admin to validate</param>
             <returns>True if the admin is valid. Throws ResourceNotFoundException if not. Exception is cauth in an Exception Filter</returns>
+        </member>
+        <member name="T:Gordon360.Services.JobsService">
+            <summary>
+            Service Class that facilitates data transactions between the JobsController and the student_timesheets + paid_shifts database model.
+            </summary>
+        </member>
+        <member name="T:Gordon360.Services.DiningService">
+            <summary>
+            Service that allows for meal control
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.DiningService.GetBalance(System.Int32,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="cardHolderID"></param>
+            <param name="planID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.DiningService.GetDiningPlanInfo(System.Int32,System.String)">
+            <summary>
+            Get information about the selected plan for the student user
+            </summary>
+            <param name="cardHolderID">Student's Gordon ID</param>
+            <param name="sessionCode">Current Session Code</param>
+            <returns></returns>
+        </member>
+        <member name="T:Gordon360.Services.ErrorLogService">
+            <summary>
+            Service Class that facilitates data transactions between the ErrorLogController and the ERROR_LOG database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.ErrorLogService.Add(Gordon360.Models.ERROR_LOG)">
+            <summary>
+            Adds a new error log to storage.
+            </summary>
+            <param name="error_log">The error log to be added</param>
+            <returns>The newly added error_log object</returns>
+        </member>
+        <member name="M:Gordon360.Services.ErrorLogService.Log(System.String)">
+            <summary>
+            Adds a new error log to storage, after creating the timestamp.
+            </summary>
+            <param name="error_message">The error message for the error log to be added</param>
+            <returns>The newly added error_log object</returns>
+        </member>
+        <member name="T:Gordon360.Services.EventService">
+            <summary>
+            Service that allows for event control
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.EventService.GetAllEvents">
+            <summary>
+            Access the memory stream created by the cached task and parse it into events
+            </summary>
+            <returns>All events for the current academic year.</returns>
+        </member>
+        <member name="M:Gordon360.Services.EventService.GetPublicEvents">
+            <summary>
+            Select only events that are marked for Public promotion
+            </summary>
+            <returns>All Public Events</returns>
+        </member>
+        <member name="M:Gordon360.Services.EventService.GetCLAWEvents">
+            <summary>
+            Select only events that are Approved to give CLAW credit
+            </summary>
+            <returns>All CLAW Events</returns>
+        </member>
+        <member name="M:Gordon360.Services.EventService.GetEventsForStudentByTerm(System.String,System.String)">
+            <summary>
+            Returns all attended events for a student in a specific term
+            </summary>
+            <param name="user_name"> The student's ID</param>
+            <param name="term"> The current term</param>
+            <returns></returns>
+        </member>
+        <member name="T:Gordon360.Services.ComplexQueries.RawSqlQuery`1">
+            <summary>
+            Helper class to execute Sql statements.
+            </summary>
+            <typeparam name="T">The class to which the result will be bound</typeparam>
+        </member>
+        <member name="M:Gordon360.Services.ComplexQueries.RawSqlQuery`1.query(System.String,System.Object[])">
+            <summary>
+            Execute the sql query
+            </summary>
+            <param name="query">An sql statement. Can be a stored procedure or even a simple SELECT statement</param>
+            <param name="parameters">Parameters to pass into the stored procedure</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.ComplexQueries.RawSqlQuery`1.StudentTimesheetQuery(System.String,System.Object[])">
+            <summary>
+            Execute the sql query on the StudentTimesheets database
+            </summary>
+            <param name="query">An sql statement. Can be a stored procedure or even a simple SELECT statment</param>
+            <param name="parameters">Parameters to pass into the stored procedure</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.ComplexQueries.RawSqlQuery`1.StaffTimesheetQuery(System.String,System.Object[])">
+            <summary>
+            Execute the sql query on the StaffTimesheets database
+            </summary>
+            <param name="query">An sql statement. Can be a stored procedure or even a simple SELECT statment</param>
+            <param name="parameters">Parameters to pass into the stored procedure</param>
+            <returns></returns>
+        </member>
+        <member name="T:Gordon360.Services.ContentManagementService">
+            <summary>
+            Service class that facilitates data (specifically, site content) passing between the ContentManagementController and the database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.ContentManagementService.GetSliderContent">
+            <summary>
+            Fetches the dashboard slider content from the database.
+            </summary>
+            <returns>If found, returns a set of SliderViewModel's, based on each slide entry in the db. 
+            If not returns an empty IEnumerable.</returns>
+        </member>
+        <member name="T:Gordon360.Services.EmailService">
+            <summary>
+            Service class to facilitate getting emails for members of an activity.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivity(System.String)">
+            <summary>
+            Get a list of the emails for all members in the activity during the current session.
+            </summary>
+            <param name="activity_code"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.EmailService.GetEmailsForGroupAdmin(System.String)">
+            <summary>
+            Get a list of emails for group admin in the activity during the current session.
+            </summary>
+            <param name="activity_code"></param>
+            <returns>A collection of group admin emails</returns>
+        </member>
+        <member name="M:Gordon360.Services.EmailService.GetEmailsForGroupAdmin(System.String,System.String)">
+            <summary>
+            Get a list of emails for group admin in the activity during a specified session.
+            </summary>
+            <param name="activity_code"></param>
+            <param name="session_code"></param>
+            <returns>A collection of the group admin emails</returns>
+        </member>
+        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivityLeaders(System.String)">
+            <summary>
+            Get a list of emails for leaders in the activity during the current session.
+            </summary>
+            <param name="activity_code"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivityAdvisors(System.String)">
+            <summary>
+            Get a list of emails for advisors in the activity during the current session.
+            </summary>
+            <param name="activity_code"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivity(System.String,System.String)">
+            <summary>
+            Get a list of the emails for all members in the activity during a specific session
+            </summary>
+            <param name="activity_code">The activity code</param>
+            <param name="session_code">The session code</param>
+            <returns>List of the emails for the members of this activity</returns>
+        </member>
+        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivityLeaders(System.String,System.String)">
+            <summary>
+            Get a list of emails for leaders in the activity during a specified session
+            </summary>
+            <param name="activity_code">The activity code</param>
+            <param name="session_code">The session code</param>
+            <returns>List of emails for the leaders of this activity</returns>
+        </member>
+        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivityAdvisors(System.String,System.String)">
+            <summary>
+            Get a list of emails for leaders in the activity during a specified session
+            </summary>
+            <param name="activity_code">The activity code</param>
+            <param name="session_code">The session code</param>
+            <returns>List of emails for the leaders of this activity</returns>
+        </member>
+        <member name="M:Gordon360.Services.EmailService.SendEmails(System.String[],System.String,System.String,System.String,System.String)">
+            <summary>
+            Send a email to a list of email addresses
+            </summary>
+            <param name="to_emails">All addresses to send this email to</param>
+            <param name="from_email">The address this email is sent from</param>
+            <param name="subject">Subject of the email to be sent</param>
+            <param name="email_content">The content of the email to be sent</param>
+            <param name="password">Password of the email sender</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.EmailService.SendEmailToActivity(System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Send a email to members of an activity
+            </summary>
+            <param name="activityCode">The activity code to send this email to</param>
+            <param name="sessionCode">The session of activity to select members from</param>
+            <param name="from_email">The address this email is sent from</param>
+            <param name="subject">Subject of the email to be sent</param>
+            <param name="email_content">The content of the email to be sent</param>
+            <param name="password">Password of the email sender</param>
+            <returns></returns>
+        </member>
+        <member name="T:Gordon360.Services.MyScheduleService">
+            <summary>
+            Service Class that facilitates data transactions between the MySchedulesController and the MySchedule part of the database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.MyScheduleService.GetForID(System.String,System.String)">
+            <summary>
+            Fetch the myschedule item whose id is specified by the parameter
+            </summary>
+            <param name="event_id">The myschedule id</param>
+            <param name="gordon_id">The gordon id</param>
+            <returns>Myschedule if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.MyScheduleService.GetAllForID(System.String)">
+            <summary>
+            Fetch all myschedule items whose id is specified by the parameter
+            </summary>
+            <param name="gordon_id">The gordon id</param>
+            <returns>Array of Myschedule if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.MyScheduleService.Add(Gordon360.Models.MYSCHEDULE)">
+            <summary>
+            Adds a new mySchedule record to storage.
+            </summary>
+            <param name="mySchedule">The membership to be added</param>
+            <returns>The newly added custom event</returns>
+        </member>
+        <member name="M:Gordon360.Services.MyScheduleService.Delete(System.String,System.String)">
+            <summary>
+            Delete the myschedule whose id is specified by the parameter.
+            </summary>
+            <param name="event_id">The myschedule id</param>
+            <param name="gordon_id">The gordon id</param>
+            <returns>The myschedule that was just deleted</returns>
+        </member>
+        <member name="M:Gordon360.Services.MyScheduleService.Update(Gordon360.Models.MYSCHEDULE)">
+            <summary>
+            Update the myschedule item.
+            </summary>
+            <param name="sched">The schedule information</param>
+            <returns>The original schedule</returns>
+        </member>
+        <member name="M:Gordon360.Services.NewsService.Get(System.Int32)">
+            <summary>
+            Gets a news item entity by id
+            NOTE: Also a helper method, hence why it returns a StudentNews model
+            rather than a StudentNewsViewModel - must be casted as the latter in its own
+            controller
+            </summary>
+            <param name="newsID">The SNID (id of news item)</param>
+            <returns>The news item</returns>
+        </member>
+        <member name="M:Gordon360.Services.NewsService.GetNewsPersonalUnapproved(System.String,System.String)">
+            <summary>
+            Gets unapproved unexpired news submitted by user.
+            </summary>
+            <param name="id">user id</param>
+            <param name="username">username</param>
+            <returns>Result of query</returns>
+        </member>
+        <member name="M:Gordon360.Services.NewsService.SubmitNews(Gordon360.Models.StudentNews,System.String,System.String)">
+            <summary>
+            Adds a news item record to storage.
+            </summary>
+            <param name="newsItem">The news item to be added</param>
+            <param name="username">username</param>
+            <param name="id">id</param>
+            <returns>The newly added Membership object</returns>
+        </member>
+        <member name="M:Gordon360.Services.NewsService.DeleteNews(System.Int32)">
+            <summary>
+            (Service) Deletes a news item from the database
+            </summary>
+            <param name="newsID">The id of the news item to delete</param>
+            <returns>The deleted news item</returns>
+            <remarks>The news item must be authored by the user and must not be expired</remarks>
+        </member>
+        <member name="M:Gordon360.Services.NewsService.EditPosting(System.Int32,Gordon360.Models.StudentNews)">
+            <summary>
+            (Service) Edits a news item in the database
+            </summary>
+            <param name="newsID">The id of the news item to edit</param>
+            <param name="newData">The news object that contains updated values</param>
+            <returns>The updated news item's view model</returns>
+            <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
+        </member>
+        <member name="M:Gordon360.Services.NewsService.VerifyUnapproved(Gordon360.Models.StudentNews)">
+            <summary>
+            Helper method to verify that a given news item has not yet been approved
+            </summary>
+            <param name="newsItem">The news item to verify</param>
+            <returns>true if unapproved, otherwise throws some kind of meaningful exception</returns>
+        </member>
+        <member name="M:Gordon360.Services.NewsService.VerifyUnexpired(Gordon360.Models.StudentNews)">
+            <summary>
+            Helper method to verify that a given news item has not expired 
+            (see documentation for expiration definition)
+            </summary>
+            <param name="newsItem">The news item to verify</param>
+            <returns>true if unexpired, otherwise throws some kind of meaningful exception</returns>
+        </member>
+        <member name="M:Gordon360.Services.NewsService.ValidateNewsItem(Gordon360.Models.StudentNews)">
+            <summary>
+            Helper method to validate a news item
+            </summary>
+            <param name="newsItem">The news item to validate</param>
+            <returns>True if valid. Throws ResourceNotFoundException if not. Exception is caught in an Exception Filter</returns>
+        </member>
+        <member name="M:Gordon360.Services.NewsService.VerifyAccount(System.String)">
+            <summary>
+            Verifies that a student account exists
+            </summary>
+            <param name="id">The id of the student</param>
+            <returns>true if account exists, ResourceNotFoundException if null</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetStudentProfileByUsername(System.String)">
+            <summary>
+            get student profile info
+            </summary>
+            <param name="username">username</param>
+            <returns>StudentProfileViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetFacultyStaffProfileByUsername(System.String)">
+            <summary>
+            get faculty staff profile info
+            </summary>
+            <param name="username">username</param>
+            <returns>FacultyStaffProfileViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetAlumniProfileByUsername(System.String)">
+            <summary>
+            get alumni profile info
+            </summary>
+            <param name="username">username</param>
+            <returns>AlumniProfileViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetAdvisors(System.String)">
+            <summary>
+            get advisors for particular student
+            </summary>
+            <param name="id">student id</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetCliftonStrengths(System.Int32)">
+            <summary> Gets the clifton strengths of a particular user </summary>
+            <param name="id"> The id of the user for which to retrieve info </param>
+            <returns> Clifton strengths of the given user. </returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetPhotoPath(System.String)">
+            <summary>
+            Get photo path for profile
+            </summary>
+            <param name="id">id</param>
+            <returns>PhotoPathViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetIDPhotoPath(System.String)">
+            <summary>
+            Get ID photo path
+            </summary>
+            <param name="id">id</param>
+            <returns>PhotoPathViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetCustomUserInfo(System.String)">
+            <summary>
+            Fetches a single profile whose username matches the username provided as an argument
+            </summary>
+            <param name="username">The username</param>
+            <returns>ProfileViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.UpdateProfileImage(System.String,System.String,System.String)">
+            <summary>
+            Sets the path for the profile image.
+            </summary>
+            <param name="id">The student id</param>
+            <param name="path"></param>
+            <param name="name"></param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.UpdateProfileLink(System.String,System.String,Gordon360.Models.CUSTOM_PROFILE)">
+            <summary>
+            Sets the path for the profile links.
+            </summary>
+            <param name="username">The username</param>
+            <param name="type"></param>
+            <param name="path"></param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.UpdateMobilePrivacy(System.String,System.String)">
+            <summary>
+            privacy setting of mobile phone.
+            </summary>
+            <param name="id">id</param>
+            <param name="value">Y or N</param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.UpdateImagePrivacy(System.String,System.String)">
+            <summary>
+            privacy setting user profile photo.
+            </summary>
+            <param name="id">id</param>
+            <param name="value">Y or N</param>
+        </member>
+        <member name="M:Gordon360.Services.SaveService.GetUpcoming(System.String)">
+            <summary>
+            Fetch all upcoming ride items
+            </summary>
+            <returns> IEnumerable of ride items if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.SaveService.GetUpcomingForUser(System.String)">
+            <summary>
+            Fetch the ride items a user is part of
+            </summary>
+            <param name="gordon_id">The ride id</param>
+            <returns> ride items if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.SaveService.AddRide(Gordon360.Models.Save_Rides,System.String)">
+            <summary>
+            Adds a new ride record to storage.
+            </summary>
+            <param name="newRide">The Save_Rides object to be added</param>
+            <param name="gordon_id">The gordon_id of the user creating the ride</param>
+            <returns>The newly added custom event</returns>
+        </member>
+        <member name="M:Gordon360.Services.SaveService.DeleteRide(System.String,System.String)">
+            <summary>
+            Delete the ride whose id is specified by the parameter.
+            </summary>
+            <param name="rideID">The myschedule id</param>
+            <param name="gordon_id">The gordon id</param>
+            <returns>The myschedule that was just deleted</returns>
+        </member>
+        <member name="M:Gordon360.Services.SaveService.CancelRide(System.String,System.String)">
+            <summary>
+            Cancel the ride whose id is specified by the parameter.
+            </summary>
+            <param name="rideID">The ride id</param>
+            <param name="gordon_id">The gordon id</param>
+            <returns>The ride that was just deleted</returns>
+        </member>
+        <member name="M:Gordon360.Services.SaveService.AddBooking(Gordon360.Models.Save_Bookings)">
+            <summary>
+            Adds a new booking record to storage.
+            </summary>
+            <param name="newBooking">The Save_Bookings object to be added</param>
+            <returns>The newly added custom event</returns>
+        </member>
+        <member name="M:Gordon360.Services.SaveService.DeleteBooking(System.String,System.String)">
+            <summary>
+            Delete the booking whose ids are specified by the parameter.
+            </summary>
+            <param name="rideID">The myschedule id</param>
+            <param name="gordon_id">The gordon id</param>
+            <returns>The myschedule that was just deleted</returns>
+        </member>
+        <member name="T:Gordon360.Services.ScheduleControlService">
+            <summary>
+            Service Class that facilitates data transactions between the ScheduleControlController and the ScheduleControl part of the database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleControlService.UpdateSchedulePrivacy(System.String,System.String)">
+            <summary>
+            privacy setting of schedule.
+            </summary>
+            <param name="id">id</param>
+            <param name="value">Y or N</param>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleControlService.UpdateDescription(System.String,System.String)">
+            <summary>
+            description of schedule.
+            </summary>
+            <param name="id">id</param>
+            <param name="value">New description</param>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleControlService.UpdateModifiedTimeStamp(System.String,System.DateTime)">
+            <summary>
+            Update timestamp of modification in schedule.
+            </summary>
+            <param name="id">id</param>
+            <param name="value">Modified Time</param>
+        </member>
+        <member name="T:Gordon360.Services.ScheduleService">
+            <summary>
+            Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleService.GetScheduleStudent(System.String)">
+            <summary>
+            Fetch the schedule item whose id and session code is specified by the parameter
+            </summary>
+            <param name="id">The id of the student</param>
+            <returns>StudentScheduleViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleService.GetScheduleFaculty(System.String)">
+            <summary>
+            Fetch the schedule item whose id and session code is specified by the parameter
+            </summary>
+            <param name="id">The id of the instructor</param>
+            <returns>StudentScheduleViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.StudentEmploymentService.GetEmployment(System.String)">
+            <summary>
+            get victory promise scores
+            </summary>
+            <param name="id">id</param>
+            <returns>VictoryPromiseViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.VictoryPromiseService.GetVPScores(System.String)">
+            <summary>
+            get victory promise scores
+            </summary>
+            <param name="id">id</param>
+            <returns>VictoryPromiseViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.CheckIfHousingAdmin(System.String)">
+            <summary>
+            Calls a stored procedure that returns a row in the staff whitelist which has the given user id,
+            if it is in the whitelist
+            </summary>
+            <param name="userID"> The id of the person using the page </param>
+            <returns> Whether or not the user is on the staff whitelist </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.AddHousingAdmin(System.String)">
+            <summary>
+            Calls a stored procedure that inserts the given id into the whitelist table
+            </summary>
+            <param name="id"> The id to insert </param>
+            <returns> Whether or not this was successful </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.RemoveHousingAdmin(System.String)">
+            <summary>
+            Calls a stored procedure that deletes the given id from the whitelist table
+            </summary>
+            <param name="id"> The id to remove </param>
+            <returns> Whether or not this was successful </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.DeleteApplication(System.Int32)">
+            <summary>
+            Calls a stored procedure that deletes the application with given id
+            (and consequently all rows that reference it)
+            </summary>
+            <param name="applicationID"> The id of the application to delete </param>
+            <returns> Whether or not this was successful </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetAllApartmentHalls">
+            <summary>
+            Calls a stored procedure that gets all names of apartment halls
+            </summary>
+            <returns> AN array of hall names </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetApplicationID(System.String,System.String)">
+            <summary>
+            Calls a stored procedure that tries to get the id of an the application that a given user is 
+            applicant on for a given session
+            </summary>
+            <param name="username"> The student username to look for </param>
+            <param name="sess_cde"> Session for which the application would be </param>
+            <returns> 
+            The id of the application or 
+            null if the user is not on an application for that session 
+            </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetEditorUsername(System.Int32)">
+            <summary>
+            Calls a stored procedure that tries to get the editor ID of a given application ID
+            </summary>
+            <param name="applicationID"> The application ID for which the editor ID would be </param>
+            <returns>
+            The id of the editor or
+            null if the user is a member but not an editor of a given application
+            </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.SaveApplication(System.String,System.String,System.String,Gordon360.Models.ViewModels.ApartmentApplicantViewModel[],Gordon360.Models.ViewModels.ApartmentChoiceViewModel[])">
+             <summary>
+             Saves student housing info
+             - first, it creates a new row in the applications table and inserts the username of the primary applicant and a timestamp
+             - second, it retrieves the application id of the application with the information we just inserted (because
+             the database creates the application ID so we have to ask it which number it generated for it)
+             - third, it inserts each applicant into the applicants table along with the application ID so we know
+             which application on which they are an applicant
+            
+             </summary>
+             <param name="username"> The student username of the user who is attempting to save the apartment application (retrieved via authentication token) </param>
+             <param name="sess_cde"> The current session code </param>
+             <param name="editorUsername"> The student username of the student who is declared to be the editor of this application (retrieved from the JSON from the front end) </param>
+             <param name="apartmentApplicants"> Array of JSON objects providing apartment applicants </param>
+             <param name="apartmentChoices"> Array of JSON objects providing apartment hall choices </param>
+             <returns>Returns the application ID number if all the queries succeeded</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.EditApplication(System.String,System.String,System.Int32,System.String,Gordon360.Models.ViewModels.ApartmentApplicantViewModel[],Gordon360.Models.ViewModels.ApartmentChoiceViewModel[])">
+             <summary>
+             Edit an existings apartment application
+             - first, it gets the EditorUsername from the database for the given application ID and makes sure that the student username of the current user matches that stored username
+             - second, it gets an array of the applicants that are already stored in the database for the given application ID
+             - third, it inserts each applicant that is in the 'newApplicantIDs' array but was not yet in the database
+             - fourth, it removes each applicant that was stored in the database but was not in the 'newApplicantIDs' array
+            
+             </summary>
+             <param name="username"> The student username of the user who is attempting to save the apartment application (retrieved via authentication token) </param>
+             <param name="sess_cde"> The current session code </param>
+             <param name="applicationID"> The application ID number of the application to be edited </param>
+             <param name="newEditorUsername"> The student username of the student who is declared to be the editor of this application (retrieved from the JSON from the front end) </param>
+             <param name="newApartmentApplicants"> Array of JSON objects providing apartment applicants </param>
+             <param name="newApartmentChoices"> Array of JSON objects providing apartment hall choices </param>
+             <returns>Returns the application ID number if all the queries succeeded</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.ChangeApplicationEditor(System.String,System.Int32,System.String)">
+             <summary>
+             Changes the student user who has permission to edit the given application
+            
+             </summary>
+             <returns>Whether or not all the queries succeeded</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetApartmentApplication(System.Int32,System.Boolean)">
+            <param name="applicationID">application ID number of the apartment application</param>
+            <param name="isAdmin">boolean indicating whether the current user is an admin, permits access to restricted information such as birth date</param>
+            <returns>Object of type ApartmentApplicationViewModel</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetAllApartmentApplication">
+            <returns>Array of ApartmentApplicationViewModel Objects</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.ChangeApplicationDateSubmitted(System.Int32)">
+            <summary>
+            "Submit" an application by changing its DateSubmitted value to the date the submit button is succesfully clicked
+            </summary>
+            <param name="applicationID"> The application ID number of the application to be submitted </param>
+            <returns>Returns twhether the query succeeded</returns>
+        </member>
+        <member name="M:Gordon360.Services.WellnessService.GetStatus(System.String)">
+            <summary>
+            Get the status of the user by id
+            </summary>
+            <param name="id">ID of the user to get the status of</param>
+            <returns> The status of the user, a WellnessViewModel </returns>
+        </member>
+        <member name="M:Gordon360.Services.WellnessService.PostStatus(Gordon360.Controllers.Api.WellnessController.WellnessStatusColor,System.String)">
+            <summary>
+            Stores wellness Status in database.
+            </summary>
+            <param name="id"> ID of the user to post the status for</param>
+            <param name="status"> Status that is being posted, one of the WellnessStatusColors </param>
+            <returns>Status that was successfully recorded</returns>
+        </member>
+        <member name="M:Gordon360.Services.WellnessService.GetQuestion">
+            <summary>
+            gets the question for the wellness check from the back end
+            </summary>
+            <returns>A WellnessQuestionViewModel including the text of the question and the disclaimers for positive and negative answers.</returns>
+        </member>
+        <member name="M:Gordon360.Services.WellnessService.ExpirationDate(System.DateTime)">
+            <summary>
+            Creates an expiration date for a check in at the current time
+            </summary>
+            <param name="currentTime">The time of the check in</param>
+            <returns>When the check in should expire (the next 5AM).</returns>
+        </member>
+        <member name="T:Gordon360.Services.JenzibarActivityService">
+            <summary>
+            Service class to faclitate data transfers between in and out of the JNZB_ACTIVITIES table.
+            This is a special class whose contents might not end up being exposed. The original idea 
+            was for this class to represent all the memberships that would be moved to Jenzibar.
+            We have not reached that point yet though.
+            </summary>
+        </member>
+        <member name="T:Gordon360.Services.MembershipRequestService">
+            <summary>
+            Service class to facilitate data transactions between the MembershipRequestController and the database
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.MembershipRequestService.Add(Gordon360.Models.REQUEST)">
+            <summary>
+            Generate a new request to join an activity at a participation level higher than 'Guest'
+            </summary>
+            <param name="membershipRequest">The membership request object</param>
+            <returns>The membership request object once it is added</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipRequestService.ApproveRequest(System.Int32)">
+            <summary>
+            Approves the request with the specified ID.
+            </summary>
+            <param name="id">The ID of the request to be approved</param>
+            <returns>The approved membership</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipRequestService.Delete(System.Int32)">
+            <summary>
+            Delete the membershipRequest object whose id is given in the parameters 
+            </summary>
+            <param name="id">The membership request id</param>
+            <returns>A copy of the deleted membership request</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipRequestService.DenyRequest(System.Int32)">
+            <summary>
+            Denies the membership request object whose id is given in the parameters
+            </summary>
+            <param name="id">The membership request id</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipRequestService.Get(System.Int32)">
+            <summary>
+            Get the membership request object whose Id is specified in the parameters.
+            </summary>
+            <param name="id">The membership request id</param>
+            <returns>If found, returns MembershipRequestViewModel. If not found, returns null.</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipRequestService.GetAll">
+            <summary>
+            Fetches all the membership request objects from the database.
+            </summary>
+            <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipRequestService.GetMembershipRequestsForActivity(System.String)">
+            <summary>
+            Fetches all the membership requests associated with this activity
+            </summary>
+            <param name="id">The activity id</param>
+            <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipRequestService.GetMembershipRequestsForStudent(System.String)">
+            <summary>
+            Fetches all the membership requests associated with this student
+            </summary>
+            <param name="id">The student id</param>
+            <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipRequestService.Update(System.Int32,Gordon360.Models.REQUEST)">
+            <summary>
+            Update an existing membership request object
+            </summary>
+            <param name="id">The membership request id</param>
+            <param name="membershipRequest">The newly modified membership request</param>
+            <returns></returns>
+        </member>
+        <member name="T:Gordon360.Services.MembershipService">
+            <summary>
+            Service Class that facilitates data transactions between the MembershipsController and the Membership database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.Add(Gordon360.Models.MEMBERSHIP)">
+            <summary>
+            Adds a new Membership record to storage. Since we can't establish foreign key constraints and relationships on the database side,
+            we do it here by using the validateMembership() method.
+            </summary>
+            <param name="membership">The membership to be added</param>
+            <returns>The newly added Membership object</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.Delete(System.Int32)">
+            <summary>
+            Delete the membership whose id is specified by the parameter.
+            </summary>
+            <param name="id">The membership id</param>
+            <returns>The membership that was just deleted</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.GetSpecificMembership(System.Int32)">
+            <summary>	
+            Fetch the membership whose id is specified by the parameter	
+            </summary>	
+            <param name="id">The membership id</param>	
+            <returns>MembershipViewModel if found, null if not found</returns>	
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.GetAll">
+            <summary>
+            Fetches all membership records from storage.
+            </summary>
+            <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.GetGroupAdminMembershipsForActivity(System.String)">
+            <summary>
+            Fetches the group admin (who have edit privileges of the page) of the activity whose activity code is specified by the parameter.
+            </summary>
+            <param name="id">The activity code.</param>
+            <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.GetLeaderMembershipsForActivity(System.String)">
+            <summary>
+            Fetches the leaders of the activity whose activity code is specified by the parameter.
+            </summary>
+            <param name="id">The activity code.</param>
+            <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.GetAdvisorMembershipsForActivity(System.String)">
+            <summary>
+            Fetches the advisors of the activity whose activity code is specified by the parameter.
+            </summary>
+            <param name="id">The activity code.</param>
+            <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.GetMembershipsForActivity(System.String)">
+            <summary>
+            Fetches the memberships associated with the activity whose code is specified by the parameter.
+            </summary>
+            <param name="id">The activity code.</param>
+            <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.GetMembershipsForStudent(System.String)">
+            <summary>
+            Fetches all the membership information linked to the student whose id appears as a parameter.
+            </summary>
+            <param name="id">The student id.</param>
+            <returns>A MembershipViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.GetActivityFollowersCount(System.String)">
+            <summary>
+            Fetches the number of followers associated with the activity whose code is specified by the parameter.
+            </summary>
+            <param name="id">The activity code.</param>
+            <returns>int.</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.GetActivityMembersCount(System.String)">
+            <summary>
+            Fetches the number of memberships associated with the activity whose code is specified by the parameter.
+            </summary>
+            <param name="id">The activity code.</param>
+            <returns>int.</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.GetActivityFollowersCountForSession(System.String,System.String)">
+            <summary>
+            Fetches the number of followers associated with the activity and session whose codes are specified by the parameter.
+            </summary>
+            <param name="id">The activity code.</param>
+            <param name="sess_cde">The session code</param>
+            <returns>int.</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.GetActivityMembersCountForSession(System.String,System.String)">
+            <summary>
+            Fetches the number of memberships associated with the activity and session whose codes are specified by the parameter.
+            </summary>
+            <param name="id">The activity code.</param>
+            <param name="sess_cde">The session code</param>
+            <returns>int.</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.Update(System.Int32,Gordon360.Models.MEMBERSHIP)">
+            <summary>
+            Updates the membership whose id is given as the first parameter to the contents of the second parameter.
+            </summary>
+            <param name="id">The membership id.</param>
+            <param name="membership">The updated membership.</param>
+            <returns>The newly modified membership.</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.ToggleGroupAdmin(System.Int32,Gordon360.Models.MEMBERSHIP)">
+            <summary>
+            Switches the group-admin property of the person whose membership id is given
+            </summary>
+            <param name="id">The membership id.</param>
+            <param name="membership">The corresponding membership object</param>
+            <returns>The newly modified membership.</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.TogglePrivacy(System.Int32,System.Boolean)">
+            <summary>
+            Switches the privacy property of the person whose membership id is given
+            </summary>
+            <param name="id">The membership id.</param>
+            <param name="p">membership private or not</param>
+            <returns>The newly modified membership.</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.validateMembership(Gordon360.Models.MEMBERSHIP)">
+            <summary>
+            Helper method to Validate a membership
+            </summary>
+            <param name="membership">The membership to validate</param>
+            <returns>True if the membership is valid. Throws ResourceNotFoundException if not. Exception is caught in an Exception Filter</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.IsGroupAdmin(System.Int32)">
+            <summary>	
+            Determines whether or not the given student is a Group Admin of some activity	
+            </summary>
+            <param name="studentID">The student id</param>	
+            <returns>true if student is a Group Admin, else false</returns>	
+        </member>
+        <member name="T:Gordon360.Services.SessionService">
+            <summary>
+            Service class to facilitate data transactions between the Controller and the database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.SessionService.Get(System.String)">
+            <summary>
+            Get the session record whose sesssion code matches the parameter.
+            </summary>
+            <param name="id">The session code.</param>
+            <returns>A SessionViewModel if found, null if not found.</returns>
+        </member>
+        <member name="M:Gordon360.Services.SessionService.GetAll">
+            <summary>
+            Fetches all the session records from the database.
+            </summary>
+            <returns>A SessionViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
         </member>
         <member name="M:Gordon360.Utils.ImageUtils.GetBase64ImageDataFromPath(System.String)">
             <summary>
@@ -1448,894 +2336,6 @@
             </summary>
             <param name="imagePath">The path to which the image belongs</param>
             <param name="imageData">The base64 image data to be stored</param>
-        </member>
-        <member name="T:Gordon360.Utils.JobsService">
-            <summary>
-            Service Class that facilitates data transactions between the JobsController and the student_timesheets + paid_shifts database model.
-            </summary>
-        </member>
-        <member name="T:Gordon360.Utils.DiningService">
-            <summary>
-            Service that allows for meal control
-            </summary>
-        </member>
-        <member name="M:Gordon360.Utils.DiningService.GetBalance(System.Int32,System.String)">
-            <summary>
-            
-            </summary>
-            <param name="cardHolderID"></param>
-            <param name="planID"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Utils.DiningService.GetDiningPlanInfo(System.Int32,System.String)">
-            <summary>
-            Get information about the selected plan for the student user
-            </summary>
-            <param name="cardHolderID">Student's Gordon ID</param>
-            <param name="sessionCode">Current Session Code</param>
-            <returns></returns>
-        </member>
-        <member name="T:Gordon360.Utils.ErrorLogService">
-            <summary>
-            Service Class that facilitates data transactions between the ErrorLogController and the ERROR_LOG database model.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Utils.ErrorLogService.Add(Gordon360.Models.ERROR_LOG)">
-            <summary>
-            Adds a new error log to storage.
-            </summary>
-            <param name="error_log">The error log to be added</param>
-            <returns>The newly added error_log object</returns>
-        </member>
-        <member name="M:Gordon360.Utils.ErrorLogService.Log(System.String)">
-            <summary>
-            Adds a new error log to storage, after creating the timestamp.
-            </summary>
-            <param name="error_message">The error message for the error log to be added</param>
-            <returns>The newly added error_log object</returns>
-        </member>
-        <member name="T:Gordon360.Utils.EventService">
-            <summary>
-            Service that allows for event control
-            </summary>
-        </member>
-        <member name="M:Gordon360.Utils.EventService.GetAllEvents">
-            <summary>
-            Access the memory stream created by the cached task and parse it into events
-            </summary>
-            <returns>All events for the current academic year.</returns>
-        </member>
-        <member name="M:Gordon360.Utils.EventService.GetPublicEvents">
-            <summary>
-            Select only events that are marked for Public promotion
-            </summary>
-            <returns>All Public Events</returns>
-        </member>
-        <member name="M:Gordon360.Utils.EventService.GetCLAWEvents">
-            <summary>
-            Select only events that are Approved to give CLAW credit
-            </summary>
-            <returns>All CLAW Events</returns>
-        </member>
-        <member name="M:Gordon360.Utils.EventService.GetEventsForStudentByTerm(System.String,System.String)">
-            <summary>
-            Returns all attended events for a student in a specific term
-            </summary>
-            <param name="user_name"> The student's ID</param>
-            <param name="term"> The current term</param>
-            <returns></returns>
-        </member>
-        <member name="T:Gordon360.Utils.ComplexQueries.RawSqlQuery`1">
-            <summary>
-            Helper class to execute Sql statements.
-            </summary>
-            <typeparam name="T">The class to which the result will be bound</typeparam>
-        </member>
-        <member name="M:Gordon360.Utils.ComplexQueries.RawSqlQuery`1.query(System.String,System.Object[])">
-            <summary>
-            Execute the sql query
-            </summary>
-            <param name="query">An sql statement. Can be a stored procedure or even a simple SELECT statement</param>
-            <param name="parameters">Parameters to pass into the stored procedure</param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Utils.ComplexQueries.RawSqlQuery`1.StudentTimesheetQuery(System.String,System.Object[])">
-            <summary>
-            Execute the sql query on the StudentTimesheets database
-            </summary>
-            <param name="query">An sql statement. Can be a stored procedure or even a simple SELECT statment</param>
-            <param name="parameters">Parameters to pass into the stored procedure</param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Utils.ComplexQueries.RawSqlQuery`1.StaffTimesheetQuery(System.String,System.Object[])">
-            <summary>
-            Execute the sql query on the StaffTimesheets database
-            </summary>
-            <param name="query">An sql statement. Can be a stored procedure or even a simple SELECT statment</param>
-            <param name="parameters">Parameters to pass into the stored procedure</param>
-            <returns></returns>
-        </member>
-        <member name="T:Gordon360.Utils.ContentManagementService">
-            <summary>
-            Service class that facilitates data (specifically, site content) passing between the ContentManagementController and the database model.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Utils.ContentManagementService.GetSliderContent">
-            <summary>
-            Fetches the dashboard slider content from the database.
-            </summary>
-            <returns>If found, returns a set of SliderViewModel's, based on each slide entry in the db. 
-            If not returns an empty IEnumerable.</returns>
-        </member>
-        <member name="T:Gordon360.Utils.EmailService">
-            <summary>
-            Service class to facilitate getting emails for members of an activity.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Utils.EmailService.GetEmailsForActivity(System.String)">
-            <summary>
-            Get a list of the emails for all members in the activity during the current session.
-            </summary>
-            <param name="activity_code"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Utils.EmailService.GetEmailsForGroupAdmin(System.String)">
-            <summary>
-            Get a list of emails for group admin in the activity during the current session.
-            </summary>
-            <param name="activity_code"></param>
-            <returns>A collection of group admin emails</returns>
-        </member>
-        <member name="M:Gordon360.Utils.EmailService.GetEmailsForGroupAdmin(System.String,System.String)">
-            <summary>
-            Get a list of emails for group admin in the activity during a specified session.
-            </summary>
-            <param name="activity_code"></param>
-            <param name="session_code"></param>
-            <returns>A collection of the group admin emails</returns>
-        </member>
-        <member name="M:Gordon360.Utils.EmailService.GetEmailsForActivityLeaders(System.String)">
-            <summary>
-            Get a list of emails for leaders in the activity during the current session.
-            </summary>
-            <param name="activity_code"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Utils.EmailService.GetEmailsForActivityAdvisors(System.String)">
-            <summary>
-            Get a list of emails for advisors in the activity during the current session.
-            </summary>
-            <param name="activity_code"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Utils.EmailService.GetEmailsForActivity(System.String,System.String)">
-            <summary>
-            Get a list of the emails for all members in the activity during a specific session
-            </summary>
-            <param name="activity_code">The activity code</param>
-            <param name="session_code">The session code</param>
-            <returns>List of the emails for the members of this activity</returns>
-        </member>
-        <member name="M:Gordon360.Utils.EmailService.GetEmailsForActivityLeaders(System.String,System.String)">
-            <summary>
-            Get a list of emails for leaders in the activity during a specified session
-            </summary>
-            <param name="activity_code">The activity code</param>
-            <param name="session_code">The session code</param>
-            <returns>List of emails for the leaders of this activity</returns>
-        </member>
-        <member name="M:Gordon360.Utils.EmailService.GetEmailsForActivityAdvisors(System.String,System.String)">
-            <summary>
-            Get a list of emails for leaders in the activity during a specified session
-            </summary>
-            <param name="activity_code">The activity code</param>
-            <param name="session_code">The session code</param>
-            <returns>List of emails for the leaders of this activity</returns>
-        </member>
-        <member name="M:Gordon360.Utils.EmailService.SendEmails(System.String[],System.String,System.String,System.String,System.String)">
-            <summary>
-            Send a email to a list of email addresses
-            </summary>
-            <param name="to_emails">All addresses to send this email to</param>
-            <param name="from_email">The address this email is sent from</param>
-            <param name="subject">Subject of the email to be sent</param>
-            <param name="email_content">The content of the email to be sent</param>
-            <param name="password">Password of the email sender</param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Utils.EmailService.SendEmailToActivity(System.String,System.String,System.String,System.String,System.String,System.String)">
-            <summary>
-            Send a email to members of an activity
-            </summary>
-            <param name="activityCode">The activity code to send this email to</param>
-            <param name="sessionCode">The session of activity to select members from</param>
-            <param name="from_email">The address this email is sent from</param>
-            <param name="subject">Subject of the email to be sent</param>
-            <param name="email_content">The content of the email to be sent</param>
-            <param name="password">Password of the email sender</param>
-            <returns></returns>
-        </member>
-        <member name="T:Gordon360.Utils.MyScheduleService">
-            <summary>
-            Service Class that facilitates data transactions between the MySchedulesController and the MySchedule part of the database model.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Utils.MyScheduleService.GetForID(System.String,System.String)">
-            <summary>
-            Fetch the myschedule item whose id is specified by the parameter
-            </summary>
-            <param name="event_id">The myschedule id</param>
-            <param name="gordon_id">The gordon id</param>
-            <returns>Myschedule if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Utils.MyScheduleService.GetAllForID(System.String)">
-            <summary>
-            Fetch all myschedule items whose id is specified by the parameter
-            </summary>
-            <param name="gordon_id">The gordon id</param>
-            <returns>Array of Myschedule if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Utils.MyScheduleService.Add(Gordon360.Models.MYSCHEDULE)">
-            <summary>
-            Adds a new mySchedule record to storage.
-            </summary>
-            <param name="mySchedule">The membership to be added</param>
-            <returns>The newly added custom event</returns>
-        </member>
-        <member name="M:Gordon360.Utils.MyScheduleService.Delete(System.String,System.String)">
-            <summary>
-            Delete the myschedule whose id is specified by the parameter.
-            </summary>
-            <param name="event_id">The myschedule id</param>
-            <param name="gordon_id">The gordon id</param>
-            <returns>The myschedule that was just deleted</returns>
-        </member>
-        <member name="M:Gordon360.Utils.MyScheduleService.Update(Gordon360.Models.MYSCHEDULE)">
-            <summary>
-            Update the myschedule item.
-            </summary>
-            <param name="sched">The schedule information</param>
-            <returns>The original schedule</returns>
-        </member>
-        <member name="M:Gordon360.Utils.NewsService.Get(System.Int32)">
-            <summary>
-            Gets a news item entity by id
-            NOTE: Also a helper method, hence why it returns a StudentNews model
-            rather than a StudentNewsViewModel - must be casted as the latter in its own
-            controller
-            </summary>
-            <param name="newsID">The SNID (id of news item)</param>
-            <returns>The news item</returns>
-        </member>
-        <member name="M:Gordon360.Utils.NewsService.GetNewsPersonalUnapproved(System.String,System.String)">
-            <summary>
-            Gets unapproved unexpired news submitted by user.
-            </summary>
-            <param name="id">user id</param>
-            <param name="username">username</param>
-            <returns>Result of query</returns>
-        </member>
-        <member name="M:Gordon360.Utils.NewsService.SubmitNews(Gordon360.Models.StudentNews,System.String,System.String)">
-            <summary>
-            Adds a news item record to storage.
-            </summary>
-            <param name="newsItem">The news item to be added</param>
-            <param name="username">username</param>
-            <param name="id">id</param>
-            <returns>The newly added Membership object</returns>
-        </member>
-        <member name="M:Gordon360.Utils.NewsService.DeleteNews(System.Int32)">
-            <summary>
-            (Service) Deletes a news item from the database
-            </summary>
-            <param name="newsID">The id of the news item to delete</param>
-            <returns>The deleted news item</returns>
-            <remarks>The news item must be authored by the user and must not be expired</remarks>
-        </member>
-        <member name="M:Gordon360.Utils.NewsService.EditPosting(System.Int32,Gordon360.Models.StudentNews)">
-            <summary>
-            (Service) Edits a news item in the database
-            </summary>
-            <param name="newsID">The id of the news item to edit</param>
-            <param name="newData">The news object that contains updated values</param>
-            <returns>The updated news item's view model</returns>
-            <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
-        </member>
-        <member name="M:Gordon360.Utils.NewsService.VerifyUnapproved(Gordon360.Models.StudentNews)">
-            <summary>
-            Helper method to verify that a given news item has not yet been approved
-            </summary>
-            <param name="newsItem">The news item to verify</param>
-            <returns>true if unapproved, otherwise throws some kind of meaningful exception</returns>
-        </member>
-        <member name="M:Gordon360.Utils.NewsService.VerifyUnexpired(Gordon360.Models.StudentNews)">
-            <summary>
-            Helper method to verify that a given news item has not expired 
-            (see documentation for expiration definition)
-            </summary>
-            <param name="newsItem">The news item to verify</param>
-            <returns>true if unexpired, otherwise throws some kind of meaningful exception</returns>
-        </member>
-        <member name="M:Gordon360.Utils.NewsService.ValidateNewsItem(Gordon360.Models.StudentNews)">
-            <summary>
-            Helper method to validate a news item
-            </summary>
-            <param name="newsItem">The news item to validate</param>
-            <returns>True if valid. Throws ResourceNotFoundException if not. Exception is caught in an Exception Filter</returns>
-        </member>
-        <member name="M:Gordon360.Utils.NewsService.VerifyAccount(System.String)">
-            <summary>
-            Verifies that a student account exists
-            </summary>
-            <param name="id">The id of the student</param>
-            <returns>true if account exists, ResourceNotFoundException if null</returns>
-        </member>
-        <member name="M:Gordon360.Utils.ProfileService.GetStudentProfileByUsername(System.String)">
-            <summary>
-            get student profile info
-            </summary>
-            <param name="username">username</param>
-            <returns>StudentProfileViewModel if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Utils.ProfileService.GetFacultyStaffProfileByUsername(System.String)">
-            <summary>
-            get faculty staff profile info
-            </summary>
-            <param name="username">username</param>
-            <returns>FacultyStaffProfileViewModel if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Utils.ProfileService.GetAlumniProfileByUsername(System.String)">
-            <summary>
-            get alumni profile info
-            </summary>
-            <param name="username">username</param>
-            <returns>AlumniProfileViewModel if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Utils.ProfileService.GetAdvisors(System.String)">
-            <summary>
-            get advisors for particular student
-            </summary>
-            <param name="id">student id</param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Utils.ProfileService.GetCliftonStrengths(System.Int32)">
-            <summary> Gets the clifton strengths of a particular user </summary>
-            <param name="id"> The id of the user for which to retrieve info </param>
-            <returns> Clifton strengths of the given user. </returns>
-        </member>
-        <member name="M:Gordon360.Utils.ProfileService.GetPhotoPath(System.String)">
-            <summary>
-            Get photo path for profile
-            </summary>
-            <param name="id">id</param>
-            <returns>PhotoPathViewModel if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Utils.ProfileService.GetIDPhotoPath(System.String)">
-            <summary>
-            Get ID photo path
-            </summary>
-            <param name="id">id</param>
-            <returns>PhotoPathViewModel if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Utils.ProfileService.GetCustomUserInfo(System.String)">
-            <summary>
-            Fetches a single profile whose username matches the username provided as an argument
-            </summary>
-            <param name="username">The username</param>
-            <returns>ProfileViewModel if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Utils.ProfileService.UpdateProfileImage(System.String,System.String,System.String)">
-            <summary>
-            Sets the path for the profile image.
-            </summary>
-            <param name="id">The student id</param>
-            <param name="path"></param>
-            <param name="name"></param>
-        </member>
-        <member name="M:Gordon360.Utils.ProfileService.UpdateProfileLink(System.String,System.String,Gordon360.Models.CUSTOM_PROFILE)">
-            <summary>
-            Sets the path for the profile links.
-            </summary>
-            <param name="username">The username</param>
-            <param name="type"></param>
-            <param name="path"></param>
-        </member>
-        <member name="M:Gordon360.Utils.ProfileService.UpdateMobilePrivacy(System.String,System.String)">
-            <summary>
-            privacy setting of mobile phone.
-            </summary>
-            <param name="id">id</param>
-            <param name="value">Y or N</param>
-        </member>
-        <member name="M:Gordon360.Utils.ProfileService.UpdateImagePrivacy(System.String,System.String)">
-            <summary>
-            privacy setting user profile photo.
-            </summary>
-            <param name="id">id</param>
-            <param name="value">Y or N</param>
-        </member>
-        <member name="M:Gordon360.Utils.SaveService.GetUpcoming(System.String)">
-            <summary>
-            Fetch all upcoming ride items
-            </summary>
-            <returns> IEnumerable of ride items if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Utils.SaveService.GetUpcomingForUser(System.String)">
-            <summary>
-            Fetch the ride items a user is part of
-            </summary>
-            <param name="gordon_id">The ride id</param>
-            <returns> ride items if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Utils.SaveService.AddRide(Gordon360.Models.Save_Rides,System.String)">
-            <summary>
-            Adds a new ride record to storage.
-            </summary>
-            <param name="newRide">The Save_Rides object to be added</param>
-            <param name="gordon_id">The gordon_id of the user creating the ride</param>
-            <returns>The newly added custom event</returns>
-        </member>
-        <member name="M:Gordon360.Utils.SaveService.DeleteRide(System.String,System.String)">
-            <summary>
-            Delete the ride whose id is specified by the parameter.
-            </summary>
-            <param name="rideID">The myschedule id</param>
-            <param name="gordon_id">The gordon id</param>
-            <returns>The myschedule that was just deleted</returns>
-        </member>
-        <member name="M:Gordon360.Utils.SaveService.CancelRide(System.String,System.String)">
-            <summary>
-            Cancel the ride whose id is specified by the parameter.
-            </summary>
-            <param name="rideID">The ride id</param>
-            <param name="gordon_id">The gordon id</param>
-            <returns>The ride that was just deleted</returns>
-        </member>
-        <member name="M:Gordon360.Utils.SaveService.AddBooking(Gordon360.Models.Save_Bookings)">
-            <summary>
-            Adds a new booking record to storage.
-            </summary>
-            <param name="newBooking">The Save_Bookings object to be added</param>
-            <returns>The newly added custom event</returns>
-        </member>
-        <member name="M:Gordon360.Utils.SaveService.DeleteBooking(System.String,System.String)">
-            <summary>
-            Delete the booking whose ids are specified by the parameter.
-            </summary>
-            <param name="rideID">The myschedule id</param>
-            <param name="gordon_id">The gordon id</param>
-            <returns>The myschedule that was just deleted</returns>
-        </member>
-        <member name="T:Gordon360.Utils.ScheduleControlService">
-            <summary>
-            Service Class that facilitates data transactions between the ScheduleControlController and the ScheduleControl part of the database model.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Utils.ScheduleControlService.UpdateSchedulePrivacy(System.String,System.String)">
-            <summary>
-            privacy setting of schedule.
-            </summary>
-            <param name="id">id</param>
-            <param name="value">Y or N</param>
-        </member>
-        <member name="M:Gordon360.Utils.ScheduleControlService.UpdateDescription(System.String,System.String)">
-            <summary>
-            description of schedule.
-            </summary>
-            <param name="id">id</param>
-            <param name="value">New description</param>
-        </member>
-        <member name="M:Gordon360.Utils.ScheduleControlService.UpdateModifiedTimeStamp(System.String,System.DateTime)">
-            <summary>
-            Update timestamp of modification in schedule.
-            </summary>
-            <param name="id">id</param>
-            <param name="value">Modified Time</param>
-        </member>
-        <member name="T:Gordon360.Utils.ScheduleService">
-            <summary>
-            Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Utils.ScheduleService.GetScheduleStudent(System.String)">
-            <summary>
-            Fetch the schedule item whose id and session code is specified by the parameter
-            </summary>
-            <param name="id">The id of the student</param>
-            <returns>StudentScheduleViewModel if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Utils.ScheduleService.GetScheduleFaculty(System.String)">
-            <summary>
-            Fetch the schedule item whose id and session code is specified by the parameter
-            </summary>
-            <param name="id">The id of the instructor</param>
-            <returns>StudentScheduleViewModel if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Utils.StudentEmploymentService.GetEmployment(System.String)">
-            <summary>
-            get victory promise scores
-            </summary>
-            <param name="id">id</param>
-            <returns>VictoryPromiseViewModel if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Utils.VictoryPromiseService.GetVPScores(System.String)">
-            <summary>
-            get victory promise scores
-            </summary>
-            <param name="id">id</param>
-            <returns>VictoryPromiseViewModel if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Utils.HousingService.CheckIfHousingAdmin(System.String)">
-            <summary>
-            Calls a stored procedure that returns a row in the staff whitelist which has the given user id,
-            if it is in the whitelist
-            </summary>
-            <param name="userID"> The id of the person using the page </param>
-            <returns> Whether or not the user is on the staff whitelist </returns>
-        </member>
-        <member name="M:Gordon360.Utils.HousingService.AddHousingAdmin(System.String)">
-            <summary>
-            Calls a stored procedure that inserts the given id into the whitelist table
-            </summary>
-            <param name="id"> The id to insert </param>
-            <returns> Whether or not this was successful </returns>
-        </member>
-        <member name="M:Gordon360.Utils.HousingService.RemoveHousingAdmin(System.String)">
-            <summary>
-            Calls a stored procedure that deletes the given id from the whitelist table
-            </summary>
-            <param name="id"> The id to remove </param>
-            <returns> Whether or not this was successful </returns>
-        </member>
-        <member name="M:Gordon360.Utils.HousingService.DeleteApplication(System.Int32)">
-            <summary>
-            Calls a stored procedure that deletes the application with given id
-            (and consequently all rows that reference it)
-            </summary>
-            <param name="applicationID"> The id of the application to delete </param>
-            <returns> Whether or not this was successful </returns>
-        </member>
-        <member name="M:Gordon360.Utils.HousingService.GetAllApartmentHalls">
-            <summary>
-            Calls a stored procedure that gets all names of apartment halls
-            </summary>
-            <returns> AN array of hall names </returns>
-        </member>
-        <member name="M:Gordon360.Utils.HousingService.GetApplicationID(System.String,System.String)">
-            <summary>
-            Calls a stored procedure that tries to get the id of an the application that a given user is 
-            applicant on for a given session
-            </summary>
-            <param name="username"> The student username to look for </param>
-            <param name="sess_cde"> Session for which the application would be </param>
-            <returns> 
-            The id of the application or 
-            null if the user is not on an application for that session 
-            </returns>
-        </member>
-        <member name="M:Gordon360.Utils.HousingService.GetEditorUsername(System.Int32)">
-            <summary>
-            Calls a stored procedure that tries to get the editor ID of a given application ID
-            </summary>
-            <param name="applicationID"> The application ID for which the editor ID would be </param>
-            <returns>
-            The id of the editor or
-            null if the user is a member but not an editor of a given application
-            </returns>
-        </member>
-        <member name="M:Gordon360.Utils.HousingService.SaveApplication(System.String,System.String,System.String,Gordon360.Models.ViewModels.ApartmentApplicantViewModel[],Gordon360.Models.ViewModels.ApartmentChoiceViewModel[])">
-             <summary>
-             Saves student housing info
-             - first, it creates a new row in the applications table and inserts the username of the primary applicant and a timestamp
-             - second, it retrieves the application id of the application with the information we just inserted (because
-             the database creates the application ID so we have to ask it which number it generated for it)
-             - third, it inserts each applicant into the applicants table along with the application ID so we know
-             which application on which they are an applicant
-            
-             </summary>
-             <param name="username"> The student username of the user who is attempting to save the apartment application (retrieved via authentication token) </param>
-             <param name="sess_cde"> The current session code </param>
-             <param name="editorUsername"> The student username of the student who is declared to be the editor of this application (retrieved from the JSON from the front end) </param>
-             <param name="apartmentApplicants"> Array of JSON objects providing apartment applicants </param>
-             <param name="apartmentChoices"> Array of JSON objects providing apartment hall choices </param>
-             <returns>Returns the application ID number if all the queries succeeded</returns>
-        </member>
-        <member name="M:Gordon360.Utils.HousingService.EditApplication(System.String,System.String,System.Int32,System.String,Gordon360.Models.ViewModels.ApartmentApplicantViewModel[],Gordon360.Models.ViewModels.ApartmentChoiceViewModel[])">
-             <summary>
-             Edit an existings apartment application
-             - first, it gets the EditorUsername from the database for the given application ID and makes sure that the student username of the current user matches that stored username
-             - second, it gets an array of the applicants that are already stored in the database for the given application ID
-             - third, it inserts each applicant that is in the 'newApplicantIDs' array but was not yet in the database
-             - fourth, it removes each applicant that was stored in the database but was not in the 'newApplicantIDs' array
-            
-             </summary>
-             <param name="username"> The student username of the user who is attempting to save the apartment application (retrieved via authentication token) </param>
-             <param name="sess_cde"> The current session code </param>
-             <param name="applicationID"> The application ID number of the application to be edited </param>
-             <param name="newEditorUsername"> The student username of the student who is declared to be the editor of this application (retrieved from the JSON from the front end) </param>
-             <param name="newApartmentApplicants"> Array of JSON objects providing apartment applicants </param>
-             <param name="newApartmentChoices"> Array of JSON objects providing apartment hall choices </param>
-             <returns>Returns the application ID number if all the queries succeeded</returns>
-        </member>
-        <member name="M:Gordon360.Utils.HousingService.ChangeApplicationEditor(System.String,System.Int32,System.String)">
-             <summary>
-             Changes the student user who has permission to edit the given application
-            
-             </summary>
-             <returns>Whether or not all the queries succeeded</returns>
-        </member>
-        <member name="M:Gordon360.Utils.HousingService.GetApartmentApplication(System.Int32,System.Boolean)">
-            <param name="applicationID">application ID number of the apartment application</param>
-            <param name="isAdmin">boolean indicating whether the current user is an admin, permits access to restricted information such as birth date</param>
-            <returns>Object of type ApartmentApplicationViewModel</returns>
-        </member>
-        <member name="M:Gordon360.Utils.HousingService.GetAllApartmentApplication">
-            <returns>Array of ApartmentApplicationViewModel Objects</returns>
-        </member>
-        <member name="M:Gordon360.Utils.HousingService.ChangeApplicationDateSubmitted(System.Int32)">
-            <summary>
-            "Submit" an application by changing its DateSubmitted value to the date the submit button is succesfully clicked
-            </summary>
-            <param name="applicationID"> The application ID number of the application to be submitted </param>
-            <returns>Returns twhether the query succeeded</returns>
-        </member>
-        <member name="M:Gordon360.Utils.WellnessService.GetStatus(System.String)">
-            <summary>
-            Get the status of the user by id
-            </summary>
-            <param name="id">ID of the user to get the status of</param>
-            <returns> The status of the user, a WellnessViewModel </returns>
-        </member>
-        <member name="M:Gordon360.Utils.WellnessService.PostStatus(Gordon360.Controllers.Api.WellnessController.WellnessStatusColor,System.String)">
-            <summary>
-            Stores wellness Status in database.
-            </summary>
-            <param name="id"> ID of the user to post the status for</param>
-            <param name="status"> Status that is being posted, one of the WellnessStatusColors </param>
-            <returns>Status that was successfully recorded</returns>
-        </member>
-        <member name="M:Gordon360.Utils.WellnessService.GetQuestion">
-            <summary>
-            gets the question for the wellness check from the back end
-            </summary>
-            <returns>A WellnessQuestionViewModel including the text of the question and the disclaimers for positive and negative answers.</returns>
-        </member>
-        <member name="M:Gordon360.Utils.WellnessService.ExpirationDate(System.DateTime)">
-            <summary>
-            Creates an expiration date for a check in at the current time
-            </summary>
-            <param name="currentTime">The time of the check in</param>
-            <returns>When the check in should expire (the next 5AM).</returns>
-        </member>
-        <member name="T:Gordon360.Utils.JenzibarActivityService">
-            <summary>
-            Service class to faclitate data transfers between in and out of the JNZB_ACTIVITIES table.
-            This is a special class whose contents might not end up being exposed. The original idea 
-            was for this class to represent all the memberships that would be moved to Jenzibar.
-            We have not reached that point yet though.
-            </summary>
-        </member>
-        <member name="T:Gordon360.Utils.MembershipRequestService">
-            <summary>
-            Service class to facilitate data transactions between the MembershipRequestController and the database
-            </summary>
-        </member>
-        <member name="M:Gordon360.Utils.MembershipRequestService.Add(Gordon360.Models.REQUEST)">
-            <summary>
-            Generate a new request to join an activity at a participation level higher than 'Guest'
-            </summary>
-            <param name="membershipRequest">The membership request object</param>
-            <returns>The membership request object once it is added</returns>
-        </member>
-        <member name="M:Gordon360.Utils.MembershipRequestService.ApproveRequest(System.Int32)">
-            <summary>
-            Approves the request with the specified ID.
-            </summary>
-            <param name="id">The ID of the request to be approved</param>
-            <returns>The approved membership</returns>
-        </member>
-        <member name="M:Gordon360.Utils.MembershipRequestService.Delete(System.Int32)">
-            <summary>
-            Delete the membershipRequest object whose id is given in the parameters 
-            </summary>
-            <param name="id">The membership request id</param>
-            <returns>A copy of the deleted membership request</returns>
-        </member>
-        <member name="M:Gordon360.Utils.MembershipRequestService.DenyRequest(System.Int32)">
-            <summary>
-            Denies the membership request object whose id is given in the parameters
-            </summary>
-            <param name="id">The membership request id</param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Utils.MembershipRequestService.Get(System.Int32)">
-            <summary>
-            Get the membership request object whose Id is specified in the parameters.
-            </summary>
-            <param name="id">The membership request id</param>
-            <returns>If found, returns MembershipRequestViewModel. If not found, returns null.</returns>
-        </member>
-        <member name="M:Gordon360.Utils.MembershipRequestService.GetAll">
-            <summary>
-            Fetches all the membership request objects from the database.
-            </summary>
-            <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
-        </member>
-        <member name="M:Gordon360.Utils.MembershipRequestService.GetMembershipRequestsForActivity(System.String)">
-            <summary>
-            Fetches all the membership requests associated with this activity
-            </summary>
-            <param name="id">The activity id</param>
-            <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
-        </member>
-        <member name="M:Gordon360.Utils.MembershipRequestService.GetMembershipRequestsForStudent(System.String)">
-            <summary>
-            Fetches all the membership requests associated with this student
-            </summary>
-            <param name="id">The student id</param>
-            <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
-        </member>
-        <member name="M:Gordon360.Utils.MembershipRequestService.Update(System.Int32,Gordon360.Models.REQUEST)">
-            <summary>
-            Update an existing membership request object
-            </summary>
-            <param name="id">The membership request id</param>
-            <param name="membershipRequest">The newly modified membership request</param>
-            <returns></returns>
-        </member>
-        <member name="T:Gordon360.Utils.MembershipService">
-            <summary>
-            Service Class that facilitates data transactions between the MembershipsController and the Membership database model.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Utils.MembershipService.Add(Gordon360.Models.MEMBERSHIP)">
-            <summary>
-            Adds a new Membership record to storage. Since we can't establish foreign key constraints and relationships on the database side,
-            we do it here by using the validateMembership() method.
-            </summary>
-            <param name="membership">The membership to be added</param>
-            <returns>The newly added Membership object</returns>
-        </member>
-        <member name="M:Gordon360.Utils.MembershipService.Delete(System.Int32)">
-            <summary>
-            Delete the membership whose id is specified by the parameter.
-            </summary>
-            <param name="id">The membership id</param>
-            <returns>The membership that was just deleted</returns>
-        </member>
-        <member name="M:Gordon360.Utils.MembershipService.GetSpecificMembership(System.Int32)">
-            <summary>	
-            Fetch the membership whose id is specified by the parameter	
-            </summary>	
-            <param name="id">The membership id</param>	
-            <returns>MembershipViewModel if found, null if not found</returns>	
-        </member>
-        <member name="M:Gordon360.Utils.MembershipService.GetAll">
-            <summary>
-            Fetches all membership records from storage.
-            </summary>
-            <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        </member>
-        <member name="M:Gordon360.Utils.MembershipService.GetGroupAdminMembershipsForActivity(System.String)">
-            <summary>
-            Fetches the group admin (who have edit privileges of the page) of the activity whose activity code is specified by the parameter.
-            </summary>
-            <param name="id">The activity code.</param>
-            <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        </member>
-        <member name="M:Gordon360.Utils.MembershipService.GetLeaderMembershipsForActivity(System.String)">
-            <summary>
-            Fetches the leaders of the activity whose activity code is specified by the parameter.
-            </summary>
-            <param name="id">The activity code.</param>
-            <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        </member>
-        <member name="M:Gordon360.Utils.MembershipService.GetAdvisorMembershipsForActivity(System.String)">
-            <summary>
-            Fetches the advisors of the activity whose activity code is specified by the parameter.
-            </summary>
-            <param name="id">The activity code.</param>
-            <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        </member>
-        <member name="M:Gordon360.Utils.MembershipService.GetMembershipsForActivity(System.String)">
-            <summary>
-            Fetches the memberships associated with the activity whose code is specified by the parameter.
-            </summary>
-            <param name="id">The activity code.</param>
-            <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        </member>
-        <member name="M:Gordon360.Utils.MembershipService.GetMembershipsForStudent(System.String)">
-            <summary>
-            Fetches all the membership information linked to the student whose id appears as a parameter.
-            </summary>
-            <param name="id">The student id.</param>
-            <returns>A MembershipViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
-        </member>
-        <member name="M:Gordon360.Utils.MembershipService.GetActivityFollowersCount(System.String)">
-            <summary>
-            Fetches the number of followers associated with the activity whose code is specified by the parameter.
-            </summary>
-            <param name="id">The activity code.</param>
-            <returns>int.</returns>
-        </member>
-        <member name="M:Gordon360.Utils.MembershipService.GetActivityMembersCount(System.String)">
-            <summary>
-            Fetches the number of memberships associated with the activity whose code is specified by the parameter.
-            </summary>
-            <param name="id">The activity code.</param>
-            <returns>int.</returns>
-        </member>
-        <member name="M:Gordon360.Utils.MembershipService.GetActivityFollowersCountForSession(System.String,System.String)">
-            <summary>
-            Fetches the number of followers associated with the activity and session whose codes are specified by the parameter.
-            </summary>
-            <param name="id">The activity code.</param>
-            <param name="sess_cde">The session code</param>
-            <returns>int.</returns>
-        </member>
-        <member name="M:Gordon360.Utils.MembershipService.GetActivityMembersCountForSession(System.String,System.String)">
-            <summary>
-            Fetches the number of memberships associated with the activity and session whose codes are specified by the parameter.
-            </summary>
-            <param name="id">The activity code.</param>
-            <param name="sess_cde">The session code</param>
-            <returns>int.</returns>
-        </member>
-        <member name="M:Gordon360.Utils.MembershipService.Update(System.Int32,Gordon360.Models.MEMBERSHIP)">
-            <summary>
-            Updates the membership whose id is given as the first parameter to the contents of the second parameter.
-            </summary>
-            <param name="id">The membership id.</param>
-            <param name="membership">The updated membership.</param>
-            <returns>The newly modified membership.</returns>
-        </member>
-        <member name="M:Gordon360.Utils.MembershipService.ToggleGroupAdmin(System.Int32,Gordon360.Models.MEMBERSHIP)">
-            <summary>
-            Switches the group-admin property of the person whose membership id is given
-            </summary>
-            <param name="id">The membership id.</param>
-            <param name="membership">The corresponding membership object</param>
-            <returns>The newly modified membership.</returns>
-        </member>
-        <member name="M:Gordon360.Utils.MembershipService.TogglePrivacy(System.Int32,System.Boolean)">
-            <summary>
-            Switches the privacy property of the person whose membership id is given
-            </summary>
-            <param name="id">The membership id.</param>
-            <param name="p">membership private or not</param>
-            <returns>The newly modified membership.</returns>
-        </member>
-        <member name="M:Gordon360.Utils.MembershipService.validateMembership(Gordon360.Models.MEMBERSHIP)">
-            <summary>
-            Helper method to Validate a membership
-            </summary>
-            <param name="membership">The membership to validate</param>
-            <returns>True if the membership is valid. Throws ResourceNotFoundException if not. Exception is caught in an Exception Filter</returns>
-        </member>
-        <member name="M:Gordon360.Utils.MembershipService.IsGroupAdmin(System.Int32)">
-            <summary>	
-            Determines whether or not the given student is a Group Admin of some activity	
-            </summary>
-            <param name="studentID">The student id</param>	
-            <returns>true if student is a Group Admin, else false</returns>	
-        </member>
-        <member name="T:Gordon360.Utils.SessionService">
-            <summary>
-            Service class to facilitate data transactions between the Controller and the database model.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Utils.SessionService.Get(System.String)">
-            <summary>
-            Get the session record whose sesssion code matches the parameter.
-            </summary>
-            <param name="id">The session code.</param>
-            <returns>A SessionViewModel if found, null if not found.</returns>
-        </member>
-        <member name="M:Gordon360.Utils.SessionService.GetAll">
-            <summary>
-            Fetches all the session records from the database.
-            </summary>
-            <returns>A SessionViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
         </member>
         <member name="T:Gordon360.Static.Data.Data">
             <summary>

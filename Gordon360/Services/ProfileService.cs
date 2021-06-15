@@ -8,10 +8,10 @@ using Gordon360.Repositories;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Static.Names;
 using System.Data.SqlClient;
-using Gordon360.Utils.ComplexQueries;
+using Gordon360.Services.ComplexQueries;
 using Gordon360.Static.Data;
 
-namespace Gordon360.Utils
+namespace Gordon360.Services
 {
     public class ProfileService : IProfileService
     {
