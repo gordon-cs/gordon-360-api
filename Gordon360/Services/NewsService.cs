@@ -34,6 +34,7 @@ namespace Gordon360.Services
         /// controller
         /// </summary>
         /// <param name="newsID">The SNID (id of news item)</param>
+        /// <returns>The news item</returns>
         public StudentNews Get(int newsID)
         {
             var newsItem = _unitOfWork.StudentNewsRepository.GetById(newsID);
@@ -42,8 +43,6 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The news item was not found." };
             }
-
-            string imagePath = newsItem.Image;
 
             return newsItem;
         }
@@ -85,7 +84,7 @@ namespace Gordon360.Services
             var usernameParam = new SqlParameter("@Username", username);
 
             IEnumerable<StudentNewsViewModel> items = RawSqlQuery<StudentNewsViewModel>.query("NEWS_PERSONAL_UNAPPROVED @Username", usernameParam);
-            
+
             return InsertImageData(items);
         }
 
@@ -114,7 +113,7 @@ namespace Gordon360.Services
             // Run stored procedure
             IEnumerable<int> idResult = _context.Database.SqlQuery<int>("INSERT_NEWS_ITEM @Username, @CategoryID, @Subject, @Body, @Image", usernameParam, categoryIDParam, subjectParam, bodyParam, imageParam);
 
-            int snid = idResult.FirstOrDefault();
+            int snid = idResult.Single();
 
             UploadImage(newsItem.Image, snid);
 
@@ -131,7 +130,7 @@ namespace Gordon360.Services
         {
             // Service method 'Get' throws its own exceptions
             var newsItem = Get(newsID);
-            
+
             // Note: This check has been duplicated from StateYourBusiness because we do not SuperAdmins
             //    to be able to delete expired news, this should be fixed eventually by removing some of
             //    the SuperAdmin permissions that are not explicitly given
@@ -161,9 +160,9 @@ namespace Gordon360.Services
             //    the SuperAdmin permissions that are not explicitly given
             VerifyUnexpired(newsItem);
             VerifyUnapproved(newsItem);
-            
+
             // categoryID is required, not nullable in StudentNews model
-            if(newData.Subject == null || newData.Body == null)
+            if (newData.Subject == null || newData.Body == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The new data to update the news item is missing some entries." };
             }
@@ -187,7 +186,7 @@ namespace Gordon360.Services
             }
 
             _unitOfWork.Save();
-            
+
             return newsItem;
         }
 
@@ -234,7 +233,7 @@ namespace Gordon360.Services
                 if (imagePath != null)
                 {
                     item.Image = GetBase64ImageDataFromPath(imagePath);
-                }   
+                }
             }
             return items;
         }
@@ -338,7 +337,7 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The news item acceptance status could not be verified." };
             }
-            if(newsItem.Accepted == true)
+            if (newsItem.Accepted == true)
             {
                 throw new BadInputException() { ExceptionMessage = "The news item has already been approved." };
             }
