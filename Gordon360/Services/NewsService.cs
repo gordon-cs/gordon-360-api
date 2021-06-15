@@ -121,10 +121,11 @@ namespace Gordon360.Services
                 string fileName = snid + ".jpg";
                 string imagePath = NewsUploadsPath + fileName;
                 _imageUtils.UploadImage(imagePath, newsItem.Image);
-                newsItem.Image = imagePath;
-            }
 
-            _unitOfWork.Save();
+                StudentNews entry = Get(snid);
+                entry.Image = imagePath;
+                _unitOfWork.Save();
+            }
 
             return newsItem;
         }
