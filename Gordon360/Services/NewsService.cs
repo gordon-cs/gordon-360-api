@@ -18,8 +18,7 @@ namespace Gordon360.Services
 
         private CCTEntities1 _context;
 
-        private static readonly string UploadsFolder = "/browseable/uploads/news/";
-        private readonly string FolderPath = HttpContext.Current.Server.MapPath("~" + UploadsFolder);
+        private readonly string NewsUploadsPath = HttpContext.Current.Server.MapPath("~/browseable/uploads/news/");
 
         public NewsService(IUnitOfWork unitOfWork)
         {
