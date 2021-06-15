@@ -88,6 +88,11 @@ namespace Gordon360.Models.ViewModels
         {
             return Nickname?.ToLower()?.StartsWith(searchString) ?? false;
         }
+
+        public bool NicknameContains(string searchString)
+        {
+            return Nickname?.ToLower()?.Contains(searchString) ?? false;
+        }
     }
 
 }

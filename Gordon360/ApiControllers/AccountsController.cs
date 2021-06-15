@@ -126,6 +126,17 @@ namespace Gordon360.ApiControllers
                 }
                 precedence++;
 
+                // Nickname exact match
+                foreach (var match in accounts
+                                        .Where(s => !allMatches.ContainsValue(s))
+                                        .Where(s => s.NicknameMatches(searchString)))
+                {
+                    string key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
+
+                    appendMatch(key, match);
+                }
+                precedence++;
+
                 // Last name exact match
                 foreach (var match in accounts
                                         .Where(s => !allMatches.ContainsValue(s))
@@ -159,6 +170,17 @@ namespace Gordon360.ApiControllers
                 }
                 precedence++;
 
+                // Nickname starts with
+                foreach (var match in accounts
+                                        .Where(s => !allMatches.ContainsValue(s))
+                                        .Where(s => s.NicknameStartsWith(searchString)))
+                {
+                    string key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
+
+                    appendMatch(key, match);
+                }
+                precedence++;
+
                 // Last name starts with
                 foreach (var match in accounts
                                         .Where(s => !allMatches.ContainsValue(s))
@@ -181,14 +203,17 @@ namespace Gordon360.ApiControllers
                 }
                 precedence++;
 
-                // First name, last name, or username contains (Lowest priority)
+                // First name, last name, nickname or username contains (Lowest priority)
                 foreach (var match in accounts
                                         .Where(s => !allMatches.ContainsValue(s))
-                                        .Where(s => s.FirstNameContains(searchString) || s.LastNameContains(searchString) || s.UsernameContains(searchString)))
+                                        .Where(s => s.FirstNameContains(searchString) || s.NicknameContains(searchString) || s.LastNameContains(searchString) || s.UsernameContains(searchString)))
                 {
                     string key;
                     if (match.FirstNameContains(searchString)) { 
                         key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence); 
+                    }
+                    else if (match.NicknameContains(searchString)) {
+                        key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
                     }
                     else if (match.LastNameContains(searchString)) { 
                         key = GenerateKey(match.LastName, match.FirstName, match.UserName, precedence); 
