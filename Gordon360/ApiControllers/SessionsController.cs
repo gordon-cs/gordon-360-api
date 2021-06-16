@@ -1,17 +1,17 @@
 ﻿using System;
-using System.Web.Http;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Static.Methods;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.Controllers.Api
 {
     [RoutePrefix("api/sessions")]
     [CustomExceptionFilter]
     //All Routes made public for Guest View (No authorization needed)
-    public class SessionsController : ApiController
+    public class SessionsController : ControllerBase
     {
 
         private ISessionService _sessionService;

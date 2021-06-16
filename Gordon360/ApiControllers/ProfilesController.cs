@@ -6,7 +6,6 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web.Http;
 using Newtonsoft.Json.Linq;
 using Gordon360.Static.Names;
 using System.Threading.Tasks;
@@ -17,6 +16,7 @@ using System.IO;
 using Gordon360.Models.ViewModels;
 using System.Security.Claims;
 using Gordon360.AuthorizationFilters;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.Controllers.Api
 {
@@ -24,7 +24,7 @@ namespace Gordon360.Controllers.Api
     [RoutePrefix("api/profiles")]
     [CustomExceptionFilter]
     [Authorize]
-    public class ProfilesController : ApiController
+    public class ProfilesController : ControllerBase
     {
         //declare services we are going to use.
         private IProfileService _profileService;

@@ -3,7 +3,6 @@ using System.Security.Claims;
 using System.Linq;
 using Gordon360.Static.Data;
 using Gordon360.Static.Names;
-using System.Web.Http;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
 using Gordon360.Services;
@@ -13,13 +12,14 @@ using Gordon360.Models.ViewModels;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using Gordon360.AuthorizationFilters;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.ApiControllers
 {
     [Authorize]
     [CustomExceptionFilter]
     [RoutePrefix("api/accounts")]
-    public class AccountsController : ApiController
+    public class AccountsController : ControllerBase
     {
         private IRoleCheckingService _roleCheckingService;
 

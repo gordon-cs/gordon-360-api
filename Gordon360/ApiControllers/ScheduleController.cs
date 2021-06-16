@@ -1,5 +1,4 @@
-﻿using System.Web.Http;
-using Gordon360.Models;
+﻿using Gordon360.Models;
 using Gordon360.Services;
 using Gordon360.Repositories;
 using Gordon360.Models.ViewModels;
@@ -12,13 +11,14 @@ using Gordon360.Exceptions.CustomExceptions;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.Controllers.Api
 {
     [RoutePrefix("api/schedule")]
     [CustomExceptionFilter]
     [Authorize]
-    public class ScheduleController : ApiController
+    public class ScheduleController : ControllerBase
     {
         private IUnitOfWork _unitOfWork;
 

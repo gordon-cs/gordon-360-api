@@ -1,5 +1,4 @@
 ﻿using System.Net.Http;
-using System.Web.Http.Filters;
 using Gordon360.Exceptions.CustomExceptions;
 
 /// <summary>

@@ -1,6 +1,4 @@
 ﻿using System;
-using Microsoft.Owin.Security;
-using Microsoft.Owin.Security.DataHandler.Encoder;
 using Thinktecture.IdentityModel.Tokens;
 using System.IdentityModel.Tokens;
 

@@ -7,8 +7,7 @@ using System;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
-using System.Web.Http.Controllers;
-using System.Web.Http.Filters;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Gordon360.AuthorizationFilters
 {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.DirectoryServices.AccountManagement;
-using Microsoft.Owin.Security.OAuth;
 using System.Security.Claims;
 using System.Diagnostics;
 using Gordon360.Services;

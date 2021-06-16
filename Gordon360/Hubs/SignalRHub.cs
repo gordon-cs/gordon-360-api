@@ -2,14 +2,10 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Threading.Tasks;
-using Microsoft.AspNet.SignalR;
-using Microsoft.AspNet.SignalR.Hubs;
 using Gordon360;
 using Gordon360.Services;
 using Gordon360.ApiControllers;
-using System.Web.Http;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using System.Security.Claims;

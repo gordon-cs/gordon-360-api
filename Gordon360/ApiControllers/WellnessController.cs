@@ -1,17 +1,17 @@
 ﻿using System.Linq;
 using System.Security.Claims;
-using System.Web.Http;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Exceptions.CustomExceptions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.Controllers.Api
 {
     [RoutePrefix("api/wellness")]
     [CustomExceptionFilter]
     [Authorize]
-    public class WellnessController : ApiController
+    public class WellnessController : ControllerBase
     {
         private IAccountService _accountService;
 

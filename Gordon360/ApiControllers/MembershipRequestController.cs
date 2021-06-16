@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web.Http;
 using System.Security.Claims;
 using Gordon360.Models;
 using Gordon360.Repositories;
@@ -12,13 +11,14 @@ using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Exceptions.CustomExceptions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.Controllers.Api
 {
     [RoutePrefix("api/requests")]
     [Authorize]
     [CustomExceptionFilter]
-    public class MembershipRequestController : ApiController
+    public class MembershipRequestController : ControllerBase
     {
         private IAccountService _accountService;
 

@@ -10,15 +10,14 @@ using Gordon360.Static.Names;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
-using System.Web.Http;
-using System.Web.Http.ModelBinding;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.Controllers.Api
 {
     [RoutePrefix("api/housing")]
     [Authorize]
     [CustomExceptionFilter]
-    public class HousingController : ApiController
+    public class HousingController : ControllerBase
     {
         private IHousingService _housingService;
         private IAccountService _accountService;

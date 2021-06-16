@@ -3,19 +3,19 @@ using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Models;
 using System.Linq;
-using System.Web.Http;
 using System.Security.Claims;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using Gordon360.Models.ViewModels;
 using Gordon360.Utils;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.Controllers.Api
 {
     [RoutePrefix("api/news")]
     [CustomExceptionFilter]
-    public class NewsController : ApiController
+    public class NewsController : ControllerBase
     {
         private INewsService _newsService;
         private IImageUtils _imageUtils = new ImageUtils();
@@ -57,7 +57,6 @@ namespace Gordon360.Controllers.Api
         /// <returns>The news item</returns>
         [HttpGet]
         [Route("{newsID}")]
-        [Authorize]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.NEWS)]
         // Private route to authenticated users
         public IHttpActionResult GetByID(int newsID)
@@ -97,7 +96,6 @@ namespace Gordon360.Controllers.Api
          */
         [HttpGet]
         [Route("not-expired")]
-        [Authorize]
         public IHttpActionResult GetNotExpired()
         {
             var result = _newsService.GetNewsNotExpired();
@@ -114,7 +112,6 @@ namespace Gordon360.Controllers.Api
          */
         [HttpGet]
         [Route("new")]
-        [Authorize]
         public IHttpActionResult GetNew()
         {
             var result = _newsService.GetNewsNew();
@@ -129,7 +126,6 @@ namespace Gordon360.Controllers.Api
          */
         [HttpGet]
         [Route("categories")]
-        [Authorize]
         public IHttpActionResult GetCategories()
         {
             var result = _newsService.GetNewsCategories();
@@ -145,7 +141,6 @@ namespace Gordon360.Controllers.Api
          */
         [HttpGet]
         [Route("personal-unapproved")]
-        [Authorize]
         public IHttpActionResult GetNewsPersonalUnapproved()
         {
             // Get authenticated username/id
@@ -166,7 +161,6 @@ namespace Gordon360.Controllers.Api
          */
         [HttpPost]
         [Route("")]
-        [Authorize]
         public IHttpActionResult Post([FromBody] StudentNews newsItem)
         {
             // Check for bad input
@@ -203,7 +197,6 @@ namespace Gordon360.Controllers.Api
         /// <remarks>The news item must be authored by the user and must not be expired</remarks>
         [HttpDelete]
         [Route("{newsID}")]
-        [Authorize]
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.NEWS)]
         // Private route to authenticated authors of the news entity
         public IHttpActionResult Delete(int newsID)
@@ -229,7 +222,6 @@ namespace Gordon360.Controllers.Api
         /// <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
         [HttpPut]
         [Route("{newsID}")]
-        [Authorize]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.NEWS)]
         // Private route to authenticated users - authors of posting or admins
         public IHttpActionResult EditPosting(int newsID,[FromBody] StudentNews newData)
