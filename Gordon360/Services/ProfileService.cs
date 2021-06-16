@@ -24,19 +24,17 @@ namespace Gordon360.Services
             _accountService = new AccountService(_unitOfWork);
         }
         /// <summary>
-        /// get student profile info by id
+        /// NOTE: Also a helper method, hence why it returns a StudentProfile model
+        /// rather than a StudentProfileViewModel
         /// </summary>
         /// <param name="id">username</param>
         /// <returns>StudentProfileViewModel if found, null if not found</returns>
-        public StudentProfileViewModel GetStudentProfileByID(string id)
+        public Student GetStudentByID(string id)
         {
             var all = Data.StudentData;
-            StudentProfileViewModel result = null;
-            var student = all.FirstOrDefault(x => x.ID == id);
-            if (student != null)
-                result = student;
-            return result;
+            return all.FirstOrDefault(x => x.ID == id);
         }
+
         /// <summary>
         /// get student profile info
         /// </summary>
@@ -335,12 +333,18 @@ namespace Gordon360.Services
         /// <param name="newPhoneNumber"></param>
         public void UpdateMobilePhoneNumber(string id, string newPhoneNumber)
         {
-            var profile = GetStudentProfileByID(id);
+            var student = GetStudentByID(id);
+            
+            if (student == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The student was not found." };
+            }
 
-            profile.MobilePhone = newPhoneNumber;
+            student.MobilePhone = newPhoneNumber;
+
+            Console.WriteLine("Student ", student.MobilePhone);
 
             _unitOfWork.Save();
-
         }
 
         /// <summary>

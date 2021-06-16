@@ -1739,9 +1739,10 @@
             <param name="id">The id of the student</param>
             <returns>true if account exists, ResourceNotFoundException if null</returns>
         </member>
-        <member name="M:Gordon360.Services.ProfileService.GetStudentProfileByID(System.String)">
+        <member name="M:Gordon360.Services.ProfileService.GetStudentByID(System.String)">
             <summary>
-            get student profile info by id
+            NOTE: Also a helper method, hence why it returns a StudentProfile model
+            rather than a StudentProfileViewModel
             </summary>
             <param name="id">username</param>
             <returns>StudentProfileViewModel if found, null if not found</returns>
