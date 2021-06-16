@@ -61,9 +61,11 @@ namespace Gordon360.Utils
 
         /// <summary>
         /// Uploads a news image
+        /// </summary>
+        /// <remarks>
         /// Takes base64 image data and writes it to an image file. Note that if the target path
         /// already has a file, the method will overwrite it (which gives no errors)
-        /// </summary>
+        /// </remarks>
         /// <param name="imagePath">The path to which the image belongs</param>
         /// <param name="imageData">The base64 image data to be stored</param>
         public void UploadImage(string imagePath, string imageData)
