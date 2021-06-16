@@ -24,6 +24,20 @@ namespace Gordon360.Services
             _accountService = new AccountService(_unitOfWork);
         }
         /// <summary>
+        /// get student profile info by id
+        /// </summary>
+        /// <param name="id">username</param>
+        /// <returns>StudentProfileViewModel if found, null if not found</returns>
+        public StudentProfileViewModel GetStudentProfileByID(string id)
+        {
+            var all = Data.StudentData;
+            StudentProfileViewModel result = null;
+            var student = all.FirstOrDefault(x => x.ID == id);
+            if (student != null)
+                result = student;
+            return result;
+        }
+        /// <summary>
         /// get student profile info
         /// </summary>
         /// <param name="username">username</param>
@@ -313,6 +327,22 @@ namespace Gordon360.Services
             }
 
         }
+
+        /// <summary>
+        /// mobile phone number setting
+        /// </summary>
+        /// <param name="id">id</param>
+        /// <param name="newPhoneNumber"></param>
+        public void UpdateMobilePhoneNumber(string id, string newPhoneNumber)
+        {
+            var profile = GetStudentProfileByID(id);
+
+            profile.MobilePhone = newPhoneNumber;
+
+            _unitOfWork.Save();
+
+        }
+
 
         /// <summary>
         /// privacy setting user profile photo.

@@ -18,6 +18,7 @@ namespace Gordon360.Services
     }
     public interface IProfileService
     {
+        StudentProfileViewModel GetStudentProfileByID(string id);
         StudentProfileViewModel GetStudentProfileByUsername(string username);
         FacultyStaffProfileViewModel GetFacultyStaffProfileByUsername(string username);
         AlumniProfileViewModel GetAlumniProfileByUsername(string username);
@@ -26,6 +27,7 @@ namespace Gordon360.Services
         ProfileCustomViewModel GetCustomUserInfo(string username);
         PhotoPathViewModel GetPhotoPath(string id);
         void UpdateProfileLink(string username, string type, CUSTOM_PROFILE path);
+        void UpdateMobilePhoneNumber(string id, string newPhoneNumber);
         void UpdateMobilePrivacy(string id, string value);
         void UpdateImagePrivacy(string id, string value);
         void UpdateProfileImage(string id, string path, string name);
