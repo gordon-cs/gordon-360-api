@@ -343,7 +343,6 @@ namespace Gordon360.Services
 
         }
 
-
         /// <summary>
         /// privacy setting user profile photo.
         /// </summary>
