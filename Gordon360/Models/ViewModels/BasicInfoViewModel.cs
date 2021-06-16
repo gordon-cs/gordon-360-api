@@ -94,5 +94,4 @@ namespace Gordon360.Models.ViewModels
             return Nickname?.ToLower()?.Contains(searchString) ?? false;
         }
     }
-
 }
