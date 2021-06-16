@@ -7,13 +7,6 @@ namespace Gordon360.Utils
         /// <summary>
         /// Takes a filepath for an image, navigates to it, collects the raw data
         /// of the file and converts it to base64 format. 
-        /// 
-        /// The base64 data will not include the first part of a base64 image ("data:image/...").
-        /// This is because this part is removed in every image before being submitted, and it
-        /// is readded in the frontend before being displayed.
-        /// 
-        /// This helper function does not perform any error checking; every place that calls it
-        /// checks that the path is not empty. Theoretically if it isn't empty it's certainly a valid path.
         /// </summary>
         /// <param name="imagePath">The path to the image</param>
         /// <returns>The base64 content of the image</returns>
