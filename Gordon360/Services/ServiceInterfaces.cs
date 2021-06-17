@@ -289,4 +289,10 @@ namespace Gordon360.Services
         bool ChangeApplicationDateSubmitted(int applicationID);
     }
 
+    public interface IAcademicCheckInService
+    {
+        string[] GetHolds(string id);
+        string[] GetDemographic(string id);
+    }
+
 }
