@@ -47,7 +47,7 @@
           "dependencies": {
             "CommonServiceLocator": {
               "target": "Package",
-              "version": "[1.4.0, )"
+              "version": "[2.0.6, )"
             },
             "EntityFramework": {
               "target": "Package",
@@ -55,15 +55,15 @@
             },
             "Microsoft.AspNet.Cors": {
               "target": "Package",
-              "version": "[5.2.3, )"
+              "version": "[5.2.7, )"
             },
             "Microsoft.AspNet.SignalR": {
               "target": "Package",
-              "version": "[2.2.2, )"
+              "version": "[2.4.2, )"
             },
             "Microsoft.AspNet.WebApi": {
               "target": "Package",
-              "version": "[5.2.3, )"
+              "version": "[5.2.7, )"
             },
             "Microsoft.AspNet.WebApi.Owin": {
               "target": "Package",
@@ -79,7 +79,7 @@
             },
             "Microsoft.Owin.Host.HttpListener": {
               "target": "Package",
-              "version": "[2.0.2, )"
+              "version": "[4.2.0, )"
             },
             "Microsoft.Owin.Hosting": {
               "target": "Package",
@@ -89,17 +89,9 @@
               "target": "Package",
               "version": "[4.2.0, )"
             },
-            "Microsoft.jQuery.Unobtrusive.Validation": {
-              "target": "Package",
-              "version": "[3.2.3, )"
-            },
-            "Modernizr": {
-              "target": "Package",
-              "version": "[2.6.2, )"
-            },
             "Newtonsoft.Json": {
               "target": "Package",
-              "version": "[12.0.2, )"
+              "version": "[13.0.1, )"
             },
             "System.ComponentModel.Annotations": {
               "target": "Package",
@@ -120,18 +112,6 @@
             "WebActivatorEx": {
               "target": "Package",
               "version": "[2.2.0, )"
-            },
-            "bootstrap": {
-              "target": "Package",
-              "version": "[3.4.1, )"
-            },
-            "jQuery": {
-              "target": "Package",
-              "version": "[1.10.2, )"
-            },
-            "jQuery.Validation": {
-              "target": "Package",
-              "version": "[1.11.1, )"
             }
           },
           "imports": [

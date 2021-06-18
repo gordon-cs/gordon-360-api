@@ -466,7 +466,7 @@
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="System.DirectoryServices.AccountManagement" Version="5.0.0" />
     <PackageReference Include="EntityFramework" Version="6.4.4" />
-    <PackageReference Include="CommonServiceLocator" Version="1.4.0" />
+    <PackageReference Include="CommonServiceLocator" Version="2.0.6" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Owin" Version="5.2.7" />
     <PackageReference Include="Microsoft.Owin.Cors" Version="4.2.0" />
     <PackageReference Include="WebActivatorEx" Version="2.2.0" />
@@ -480,16 +480,11 @@
     <None Include="Properties\PublishProfiles\PROD.pubxml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="bootstrap" Version="3.4.1" />
-    <PackageReference Include="jQuery" Version="1.10.2" />
-    <PackageReference Include="jQuery.Validation" Version="1.11.1" />
-    <PackageReference Include="Microsoft.AspNet.Cors" Version="5.2.3" />
-    <PackageReference Include="Microsoft.AspNet.SignalR" Version="2.2.2" />
-    <PackageReference Include="Microsoft.AspNet.WebApi" Version="5.2.3" />
-    <PackageReference Include="Microsoft.jQuery.Unobtrusive.Validation" Version="3.2.3" />
-    <PackageReference Include="Microsoft.Owin.Host.HttpListener" Version="2.0.2" />
-    <PackageReference Include="Modernizr" Version="2.6.2" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="Microsoft.AspNet.Cors" Version="5.2.7" />
+    <PackageReference Include="Microsoft.AspNet.SignalR" Version="2.4.2" />
+    <PackageReference Include="Microsoft.AspNet.WebApi" Version="5.2.7" />
+    <PackageReference Include="Microsoft.Owin.Host.HttpListener" Version="4.2.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Thinktecture.IdentityModel.Core" Version="1.4.0" />
   </ItemGroup>
   <ItemGroup>
