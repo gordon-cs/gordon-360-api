@@ -13,17 +13,17 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using Gordon360.AuthorizationFilters;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gordon360.ApiControllers
 {
     [Authorize]
     [CustomExceptionFilter]
-    [RoutePrefix("api/accounts")]
+    [Route("api/accounts")]
     public class AccountsController : ControllerBase
     {
-        private IRoleCheckingService _roleCheckingService;
-
-        IAccountService _accountService;
+        private readonly IRoleCheckingService _roleCheckingService;
+        private readonly IAccountService _accountService;
 
         public AccountsController()
         {
@@ -32,11 +32,10 @@ namespace Gordon360.ApiControllers
             _roleCheckingService = new RoleCheckingService(_unitOfWork);
         }
 
-        // GET: api/Accounts
         [HttpGet]
         [Route("email/{email}")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
-        public IHttpActionResult GetByAccountEmail(string email)
+        public ActionResult GetByAccountEmail(string email)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(email))
             {
@@ -47,7 +46,6 @@ namespace Gordon360.ApiControllers
                     {
                         errors += "|" + error.ErrorMessage + "|" + error.Exception;
                     }
-
                 }
                 throw new BadInputException() { ExceptionMessage = errors };
             }
@@ -91,12 +89,10 @@ namespace Gordon360.ApiControllers
         /// <returns> All accounts meeting some or all of the parameter</returns>
         [HttpGet]
         [Route("search/{searchString}")]
-        public IHttpActionResult Search(string searchString)
+        public ActionResult Search(string searchString)
         {
-            //get token data from context, username is the username of current logged in person
-            var authenticatedUser = ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var viewerType = _roleCheckingService.getCollegeRole(viewerName);
+            var authenticatedUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserId);
 
             var accounts = Data.AllBasicInfoWithoutAlumni;
 
@@ -268,12 +264,10 @@ namespace Gordon360.ApiControllers
         /// <returns> All accounts meeting some or all of the parameter</returns>
         [HttpGet]
         [Route("search/{searchString}/{secondaryString}")]
-        public IHttpActionResult SearchWithSpace(string searchString, string secondaryString)
+        public ActionResult SearchWithSpace(string searchString, string secondaryString)
         {
-            //get token data from context, username is the username of current logged in person
-            var authenticatedUser = ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var viewerType = _roleCheckingService.getCollegeRole(viewerName);
+            var authenticatedUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserId);
 
             int precedence = 0;
 
@@ -371,11 +365,10 @@ namespace Gordon360.ApiControllers
             return Ok(accounts);
         }
 
-        // GET: api/Accounts
         [HttpGet]
         [Route("username/{username}")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
-        public IHttpActionResult GetByAccountUsername(string username)
+        public ActionResult GetByAccountUsername(string username)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(username))
             {
@@ -539,10 +532,8 @@ namespace Gordon360.ApiControllers
                 buildingSearchParam = buildingSearchParam.Replace("_", ".");
             }
 
-            //get token data from context, username is the username of current logged in person
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var viewerType = _roleCheckingService.getCollegeRole(viewerName);
+            var authenticatedUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserId);
 
             // Create accounts viewmodel to search
             IEnumerable<JObject> accounts = new List<JObject>();
@@ -596,9 +587,5 @@ namespace Gordon360.ApiControllers
 
             return key;
         }
-
     }
-
-
-
 }

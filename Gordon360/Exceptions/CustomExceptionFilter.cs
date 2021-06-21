@@ -1,5 +1,7 @@
 ﻿using System.Net.Http;
 using Gordon360.Exceptions.CustomExceptions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 /// <summary>
 /// These exception filters catch unhandled exceptions and convert them
@@ -9,13 +11,28 @@ namespace Gordon360.Exceptions.ExceptionFilters
 {
     public class CustomExceptionFilter : ExceptionFilterAttribute
     {
-        public override void OnException(HttpActionExecutedContext actionExecutedContext)
+        public override void OnException(ExceptionContext actionExecutedContext)
         {
             // RESOURCE NOT FOUND
             if (actionExecutedContext.Exception is ResourceNotFoundException)
             {
                 var exception = actionExecutedContext.Exception as ResourceNotFoundException;
-                actionExecutedContext.Response = actionExecutedContext.Request.CreateErrorResponse(System.Net.HttpStatusCode.NotFound, exception.ExceptionMessage);
+                
+                /*********** new opt. 1 *********/
+                actionExecutedContext.ExceptionHandled = true;
+                // log error in dbS
+                actionExecutedContext.Result = new ViewResult()
+                {
+                    ViewName = exception.ExceptionMessage
+                };
+                
+                /********** new opt. 2 ************/
+                //actionExecutedContext.ExceptionHandled = true;
+                // log error in db
+                //actionExecutedContext.Result = RedirectToAction(exception.ExceptionMessage, "InternalError");
+                
+                /*********** original *********/
+                // actionExecutedContext.Response = actionExecutedContext.Request.CreateErrorResponse(System.Net.HttpStatusCode.NotFound, exception.ExceptionMessage);
             }
 
             // RESOURCE CREATION CONFLICT
