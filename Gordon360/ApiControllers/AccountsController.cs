@@ -296,7 +296,9 @@ namespace Gordon360.ApiControllers
                 precedence++;
 
                 // Exact match in both nickname and last name
-                foreach (var match in accounts.Where(s => s.NicknameMatches(searchString) && s.LastNameMatches(secondaryString)))
+                foreach (var match in accounts
+                                        .Where(s => !allMatches.ContainsValue(s))
+                                        .Where(s => s.NicknameMatches(searchString) && s.LastNameMatches(secondaryString)))
                 {
                     string key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
 
