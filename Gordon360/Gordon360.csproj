@@ -290,7 +290,7 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Countries.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\COURSES_FOR_PROFESSOR_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
@@ -329,6 +329,9 @@
       <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\EMAILS_PER_ACT_CDE_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EmergencyContact.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ERROR_LOG.cs">
@@ -506,10 +509,10 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sp_helpdiagramdefinition_Result.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sp_helpdiagrams_Result.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Student.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
@@ -524,6 +527,9 @@
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sysdiagrams.cs">
@@ -801,19 +807,19 @@
       <DependentUpon>StaffTimesheets_DB_Models.edmx</DependentUpon>
     </Content>
     <Content Include="libman.json" />
-    <EntityDeploy Include="Models\CCT_DB_Models.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>CCT_DB_Models.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\CCT_DB_Models.edmx.diagram">
-      <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
-    </Content>
     <EntityDeploy Include="Models\MyGordon_DB_Models.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>MyGordon_DB_Models.Designer.cs</LastGenOutput>
     </EntityDeploy>
     <Content Include="Models\MyGordon_DB_Models.edmx.diagram">
       <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
+    </Content>
+    <EntityDeploy Include="Models\CCT_DB_Models.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>CCT_DB_Models.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\CCT_DB_Models.edmx.diagram">
+      <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
     </Content>
     <None Include="secrets.config">
       <SubType>Designer</SubType>
