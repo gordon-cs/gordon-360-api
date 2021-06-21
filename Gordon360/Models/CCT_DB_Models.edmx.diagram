@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="c271b0ff01344d62905737d622ee6c80" Name="Diagram1">
+      <Diagram DiagramId="cdc8dd77d7a24b5ca031f5d2d73e4ae4" Name="Diagram1">
         <EntityTypeShape EntityType="Gordon360.ACT_INFO" Width="1.5" PointX="0.75" PointY="6.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.ADMIN" Width="1.5" PointX="2.75" PointY="6.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.Clifton_Strengths" Width="1.5" PointX="4.75" PointY="8.75" IsExpanded="true" />
@@ -46,12 +46,13 @@
         <EntityTypeShape EntityType="Gordon360.Dining_Mealplans" Width="1.5" PointX="16.75" PointY="13.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.Dining_Student_Meal_Choice" Width="1.5" PointX="16.75" PointY="16.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.DiningInfo" Width="1.5" PointX="2.75" PointY="17.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="Gordon360.FacStaff" Width="1.5" PointX="12.75" PointY="17.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="Gordon360.Internships_as_Involvements" Width="1.5" PointX="18.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="Gordon360.JENZ_ACT_CLUB_DEF" Width="1.5" PointX="18.75" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="Gordon360.PART_DEF" Width="1.5" PointX="18.75" PointY="9.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="Gordon360.RoomAssign" Width="1.5" PointX="18.75" PointY="12.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="Gordon360.Student" Width="1.5" PointX="18.75" PointY="16.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Gordon360.EmergencyContact" Width="1.5" PointX="12.75" PointY="17.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Gordon360.FacStaff" Width="1.5" PointX="18.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Gordon360.Internships_as_Involvements" Width="1.5" PointX="18.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Gordon360.JENZ_ACT_CLUB_DEF" Width="1.5" PointX="18.75" PointY="13.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Gordon360.PART_DEF" Width="1.5" PointX="18.75" PointY="18.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Gordon360.RoomAssign" Width="1.5" PointX="14.75" PointY="19.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Gordon360.Student" Width="1.5" PointX="20.75" PointY="0.75" IsExpanded="true" />
         <AssociationConnector Association="Gordon360.FK_Health_Status_HealthStatus_CTRL" ManuallyRouted="false" />
         <AssociationConnector Association="Gordon360.FK_Applicants_HousingAppID" ManuallyRouted="false" />
         <AssociationConnector Association="Gordon360.FK_HallChoices_HousingAppID" ManuallyRouted="false" />
