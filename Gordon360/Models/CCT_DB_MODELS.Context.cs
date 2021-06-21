@@ -68,6 +68,7 @@ namespace Gordon360.Models
         public virtual DbSet<Dining_Mealplans> Dining_Mealplans { get; set; }
         public virtual DbSet<Dining_Student_Meal_Choice> Dining_Student_Meal_Choice { get; set; }
         public virtual DbSet<DiningInfo> DiningInfo { get; set; }
+        public virtual DbSet<EmergencyContact> EmergencyContact { get; set; }
         public virtual DbSet<FacStaff> FacStaff { get; set; }
         public virtual DbSet<Internships_as_Involvements> Internships_as_Involvements { get; set; }
         public virtual DbSet<JENZ_ACT_CLUB_DEF> JENZ_ACT_CLUB_DEF { get; set; }
@@ -851,7 +852,7 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("INSERT_MESSAGE", p_idParameter, room_idParameter, textParameter, createdAtParameter, user_idParameter, imageParameter, videoParameter, audioParameter, systemParameter, sentParameter, receivedParameter, pendingParameter);
         }
     
-        public virtual int INSERT_NEWS_ITEM(string username, Nullable<int> categoryID, string subject, string body)
+        public virtual ObjectResult<Nullable<int>> INSERT_NEWS_ITEM(string username, Nullable<int> categoryID, string subject, string body)
         {
             var usernameParameter = username != null ?
                 new ObjectParameter("Username", username) :
@@ -869,7 +870,7 @@ namespace Gordon360.Models
                 new ObjectParameter("Body", body) :
                 new ObjectParameter("Body", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("INSERT_NEWS_ITEM", usernameParameter, categoryIDParameter, subjectParameter, bodyParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("INSERT_NEWS_ITEM", usernameParameter, categoryIDParameter, subjectParameter, bodyParameter);
         }
     
         public virtual int INSERT_TIMESHEETS_CLOCK_IN_OUT(Nullable<int> iD_NUM, Nullable<bool> state)
@@ -1398,7 +1399,7 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_MYSCHEDULE", eVENTIDParameter, gORDONIDParameter, lOCATIONParameter, dESCRIPTIONParameter, mON_CDEParameter, tUE_CDEParameter, wED_CDEParameter, tHU_CDEParameter, fRI_CDEParameter, sAT_CDEParameter, sUN_CDEParameter, iS_ALLDAYParameter, bEGINTIMEParameter, eNDTIMEParameter);
         }
     
-        public virtual int UPDATE_NEWS_ITEM(Nullable<int> sNID, string username, Nullable<int> categoryID, string subject, string body)
+        public virtual int UPDATE_NEWS_ITEM(Nullable<int> sNID, string username, Nullable<int> categoryID, string subject, string body, string image)
         {
             var sNIDParameter = sNID.HasValue ?
                 new ObjectParameter("SNID", sNID) :
@@ -1420,7 +1421,11 @@ namespace Gordon360.Models
                 new ObjectParameter("Body", body) :
                 new ObjectParameter("Body", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_NEWS_ITEM", sNIDParameter, usernameParameter, categoryIDParameter, subjectParameter, bodyParameter);
+            var imageParameter = image != null ?
+                new ObjectParameter("Image", image) :
+                new ObjectParameter("Image", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_NEWS_ITEM", sNIDParameter, usernameParameter, categoryIDParameter, subjectParameter, bodyParameter, imageParameter);
         }
     
         public virtual int UPDATE_PHONE_PRIVACY(Nullable<int> iD, string vALUE)

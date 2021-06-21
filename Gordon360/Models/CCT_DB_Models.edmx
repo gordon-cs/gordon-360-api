@@ -32,12 +32,13 @@
         <EntityType Name="Clifton_Strengths">
           <Key>
             <PropertyRef Name="ID_NUM" />
+            <PropertyRef Name="ACCESS_CODE" />
           </Key>
           <Property Name="ID_NUM" Type="int" Nullable="false" />
           <Property Name="ACCESS_CODE" Type="varchar" MaxLength="25" Nullable="false" />
           <Property Name="EMAIL" Type="varchar" MaxLength="200" Nullable="false" />
-          <Property Name="DTE_COMPLETED" Type="datetime" Nullable="false" />
-          <Property Name="THEME_1" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="DTE_COMPLETED" Type="datetime" />
+          <Property Name="THEME_1" Type="varchar" MaxLength="100" />
           <Property Name="THEME_2" Type="varchar" MaxLength="100" />
           <Property Name="THEME_3" Type="varchar" MaxLength="100" />
           <Property Name="THEME_4" Type="varchar" MaxLength="100" />
@@ -576,6 +577,52 @@ warning 6002: The table/view 'CCT.dbo.DiningInfo' does not have a primary key de
           <Property Name="InitialBalance" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6002: The table/view 'CCT.dbo.EmergencyContact' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="EmergencyContact">
+          <Key>
+            <PropertyRef Name="APPID" />
+            <PropertyRef Name="SEQ_NUM" />
+            <PropertyRef Name="ID_NUM" />
+            <PropertyRef Name="EMRG_PRIORITY" />
+            <PropertyRef Name="ApprowVersion" />
+          </Key>
+          <Property Name="APPID" Type="int" Nullable="false" />
+          <Property Name="AD_Username" Type="varchar" MaxLength="50" />
+          <Property Name="SEQ_NUM" Type="int" Nullable="false" />
+          <Property Name="ID_NUM" Type="int" Nullable="false" />
+          <Property Name="ID_NUM_EMRG_CNTCT" Type="int" />
+          <Property Name="prefix" Type="varchar" MaxLength="3" />
+          <Property Name="lastname" Type="varchar" MaxLength="30" />
+          <Property Name="firstname" Type="varchar" MaxLength="15" />
+          <Property Name="middlename" Type="varchar" MaxLength="15" />
+          <Property Name="suffix" Type="varchar" MaxLength="3" />
+          <Property Name="HomePhone" Type="char" MaxLength="20" />
+          <Property Name="HomeExt" Type="char" MaxLength="5" />
+          <Property Name="WorkPhone" Type="char" MaxLength="20" />
+          <Property Name="WorkExr" Type="char" MaxLength="5" />
+          <Property Name="MobilePhone" Type="char" MaxLength="20" />
+          <Property Name="MobileExt" Type="char" MaxLength="5" />
+          <Property Name="notes" Type="varchar" MaxLength="100" />
+          <Property Name="EmailAddress" Type="varchar" MaxLength="60" />
+          <Property Name="HomeAddrCode" Type="char" MaxLength="4" />
+          <Property Name="WorkAddrCode" Type="char" MaxLength="4" />
+          <Property Name="MobileAddrCode" Type="char" MaxLength="4" />
+          <Property Name="EmailAddrCode" Type="char" MaxLength="4" />
+          <Property Name="AddressAddrCode" Type="char" MaxLength="4" />
+          <Property Name="relationship" Type="varchar" MaxLength="60" />
+          <Property Name="EMRG_PRIORITY" Type="int" Nullable="false" />
+          <Property Name="addr_1" Type="varchar" MaxLength="60" />
+          <Property Name="addr_2" Type="varchar" MaxLength="60" />
+          <Property Name="city" Type="varchar" MaxLength="25" />
+          <Property Name="EMRG_STATE" Type="varchar" MaxLength="2" />
+          <Property Name="zip" Type="varchar" MaxLength="12" />
+          <Property Name="country" Type="varchar" MaxLength="3" />
+          <Property Name="ApprowVersion" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="UserName" Type="varchar" MaxLength="513" />
+          <Property Name="JobName" Type="varchar" MaxLength="30" />
+          <Property Name="JobTime" Type="datetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.FacStaff' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="FacStaff">
           <Key>
@@ -684,7 +731,7 @@ warning 6002: The table/view 'CCT.dbo.PART_DEF' does not have a primary key defi
         <!--Errors Found During Generation:
 warning 6013: The table/view 'CCT.dbo.Police' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
         <EntityType Name="Police">
-          <Property Name="ID_NUM" Type="nvarchar" MaxLength="4000" />
+          <Property Name="ID_NUM" Type="int" />
         </EntityType>-->
         <!--Errors Found During Generation:
 warning 6002: The table/view 'CCT.dbo.RoomAssign' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1230,6 +1277,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Parameter Name="CategoryID" Type="int" Mode="In" />
           <Parameter Name="Subject" Type="varchar" Mode="In" />
           <Parameter Name="Body" Type="varchar" Mode="In" />
+          <Parameter Name="Image" Type="varchar" Mode="In" />
         </Function>
         <Function Name="UPDATE_PHONE_PRIVACY" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ID" Type="int" Mode="In" />
@@ -1511,6 +1559,45 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [DiningInfo].[InitialBalance] AS [InitialBalance]
     FROM [dbo].[DiningInfo] AS [DiningInfo]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="EmergencyContact" EntityType="Self.EmergencyContact" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [EmergencyContact].[APPID] AS [APPID], 
+    [EmergencyContact].[AD_Username] AS [AD_Username], 
+    [EmergencyContact].[SEQ_NUM] AS [SEQ_NUM], 
+    [EmergencyContact].[ID_NUM] AS [ID_NUM], 
+    [EmergencyContact].[ID_NUM_EMRG_CNTCT] AS [ID_NUM_EMRG_CNTCT], 
+    [EmergencyContact].[prefix] AS [prefix], 
+    [EmergencyContact].[lastname] AS [lastname], 
+    [EmergencyContact].[firstname] AS [firstname], 
+    [EmergencyContact].[middlename] AS [middlename], 
+    [EmergencyContact].[suffix] AS [suffix], 
+    [EmergencyContact].[HomePhone] AS [HomePhone], 
+    [EmergencyContact].[HomeExt] AS [HomeExt], 
+    [EmergencyContact].[WorkPhone] AS [WorkPhone], 
+    [EmergencyContact].[WorkExr] AS [WorkExr], 
+    [EmergencyContact].[MobilePhone] AS [MobilePhone], 
+    [EmergencyContact].[MobileExt] AS [MobileExt], 
+    [EmergencyContact].[notes] AS [notes], 
+    [EmergencyContact].[EmailAddress] AS [EmailAddress], 
+    [EmergencyContact].[HomeAddrCode] AS [HomeAddrCode], 
+    [EmergencyContact].[WorkAddrCode] AS [WorkAddrCode], 
+    [EmergencyContact].[MobileAddrCode] AS [MobileAddrCode], 
+    [EmergencyContact].[EmailAddrCode] AS [EmailAddrCode], 
+    [EmergencyContact].[AddressAddrCode] AS [AddressAddrCode], 
+    [EmergencyContact].[relationship] AS [relationship], 
+    [EmergencyContact].[EMRG_PRIORITY] AS [EMRG_PRIORITY], 
+    [EmergencyContact].[addr_1] AS [addr_1], 
+    [EmergencyContact].[addr_2] AS [addr_2], 
+    [EmergencyContact].[city] AS [city], 
+    [EmergencyContact].[EMRG_STATE] AS [EMRG_STATE], 
+    [EmergencyContact].[zip] AS [zip], 
+    [EmergencyContact].[country] AS [country], 
+    [EmergencyContact].[ApprowVersion] AS [ApprowVersion], 
+    [EmergencyContact].[UserName] AS [UserName], 
+    [EmergencyContact].[JobName] AS [JobName], 
+    [EmergencyContact].[JobTime] AS [JobTime]
+    FROM [dbo].[EmergencyContact] AS [EmergencyContact]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="FacStaff" EntityType="Self.FacStaff" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [FacStaff].[ID] AS [ID], 
@@ -1715,12 +1802,13 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <EntityType Name="Clifton_Strengths">
           <Key>
             <PropertyRef Name="ID_NUM" />
+            <PropertyRef Name="ACCESS_CODE" />
           </Key>
           <Property Name="ID_NUM" Type="Int32" Nullable="false" />
           <Property Name="ACCESS_CODE" Type="String" MaxLength="25" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="EMAIL" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="DTE_COMPLETED" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="THEME_1" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="DTE_COMPLETED" Type="DateTime" Precision="3" />
+          <Property Name="THEME_1" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="THEME_2" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="THEME_3" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="THEME_4" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
@@ -2226,6 +2314,50 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Name="PlanType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="InitialBalance" Type="Int32" />
         </EntityType>
+        <EntityType Name="EmergencyContact">
+          <Key>
+            <PropertyRef Name="APPID" />
+            <PropertyRef Name="SEQ_NUM" />
+            <PropertyRef Name="ID_NUM" />
+            <PropertyRef Name="EMRG_PRIORITY" />
+            <PropertyRef Name="ApprowVersion" />
+          </Key>
+          <Property Name="APPID" Type="Int32" Nullable="false" />
+          <Property Name="AD_Username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SEQ_NUM" Type="Int32" Nullable="false" />
+          <Property Name="ID_NUM" Type="Int32" Nullable="false" />
+          <Property Name="ID_NUM_EMRG_CNTCT" Type="Int32" />
+          <Property Name="prefix" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="lastname" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="firstname" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="middlename" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="suffix" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="HomePhone" Type="String" MaxLength="20" FixedLength="true" Unicode="false" />
+          <Property Name="HomeExt" Type="String" MaxLength="5" FixedLength="true" Unicode="false" />
+          <Property Name="WorkPhone" Type="String" MaxLength="20" FixedLength="true" Unicode="false" />
+          <Property Name="WorkExr" Type="String" MaxLength="5" FixedLength="true" Unicode="false" />
+          <Property Name="MobilePhone" Type="String" MaxLength="20" FixedLength="true" Unicode="false" />
+          <Property Name="MobileExt" Type="String" MaxLength="5" FixedLength="true" Unicode="false" />
+          <Property Name="notes" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="EmailAddress" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="HomeAddrCode" Type="String" MaxLength="4" FixedLength="true" Unicode="false" />
+          <Property Name="WorkAddrCode" Type="String" MaxLength="4" FixedLength="true" Unicode="false" />
+          <Property Name="MobileAddrCode" Type="String" MaxLength="4" FixedLength="true" Unicode="false" />
+          <Property Name="EmailAddrCode" Type="String" MaxLength="4" FixedLength="true" Unicode="false" />
+          <Property Name="AddressAddrCode" Type="String" MaxLength="4" FixedLength="true" Unicode="false" />
+          <Property Name="relationship" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="EMRG_PRIORITY" Type="Int32" Nullable="false" />
+          <Property Name="addr_1" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="addr_2" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="city" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="EMRG_STATE" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="zip" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
+          <Property Name="country" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="ApprowVersion" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="UserName" Type="String" MaxLength="513" FixedLength="false" Unicode="false" />
+          <Property Name="JobName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="JobTime" Type="DateTime" Precision="3" />
+        </EntityType>
         <EntityType Name="FacStaff">
           <Key>
             <PropertyRef Name="ID" />
@@ -2502,6 +2634,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <EntitySet Name="Dining_Mealplans" EntityType="Self.Dining_Mealplans" />
           <EntitySet Name="Dining_Student_Meal_Choice" EntityType="Self.Dining_Student_Meal_Choice" />
           <EntitySet Name="DiningInfo" EntityType="Self.DiningInfo" />
+          <EntitySet Name="EmergencyContact" EntityType="Self.EmergencyContact" />
           <EntitySet Name="FacStaff" EntityType="Self.FacStaff" />
           <EntitySet Name="Internships_as_Involvements" EntityType="Self.Internships_as_Involvements" />
           <EntitySet Name="JENZ_ACT_CLUB_DEF" EntityType="Self.JENZ_ACT_CLUB_DEF" />
@@ -2752,7 +2885,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="received" Mode="In" Type="Boolean" />
             <Parameter Name="pending" Mode="In" Type="Boolean" />
           </FunctionImport>
-          <FunctionImport Name="INSERT_NEWS_ITEM">
+          <FunctionImport Name="INSERT_NEWS_ITEM" ReturnType="Collection(Int32)">
             <Parameter Name="Username" Mode="In" Type="String" />
             <Parameter Name="CategoryID" Mode="In" Type="Int32" />
             <Parameter Name="Subject" Mode="In" Type="String" />
@@ -2921,6 +3054,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="CategoryID" Mode="In" Type="Int32" />
             <Parameter Name="Subject" Mode="In" Type="String" />
             <Parameter Name="Body" Mode="In" Type="String" />
+            <Parameter Name="Image" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="UPDATE_PHONE_PRIVACY">
             <Parameter Name="ID" Mode="In" Type="Int32" />
@@ -2972,12 +3106,14 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         <ComplexType Name="ALL_BASIC_INFO_Result">
           <Property Type="String" Name="FirstName" Nullable="true" MaxLength="50" />
           <Property Type="String" Name="LastName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Nickname" Nullable="true" MaxLength="255" />
           <Property Type="String" Name="UserName" Nullable="true" MaxLength="50" />
           <Property Type="String" Name="ConcatonatedInfo" Nullable="false" MaxLength="150" />
         </ComplexType>
         <ComplexType Name="ALL_BASIC_INFO_NOT_ALUMNI_Result">
           <Property Type="String" Name="Firstname" Nullable="true" MaxLength="50" />
           <Property Type="String" Name="Lastname" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Nickname" Nullable="true" MaxLength="255" />
           <Property Type="String" Name="Username" Nullable="true" MaxLength="50" />
           <Property Type="String" Name="ConcatonatedInfo" Nullable="false" MaxLength="150" />
         </ComplexType>
@@ -3190,6 +3326,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="String" Name="SessionCode" Nullable="false" MaxLength="8" />
           <Property Type="String" Name="SessionDescription" Nullable="true" MaxLength="1000" />
           <Property Type="Int32" Name="IDNumber" Nullable="false" />
+          <Property Type="String" Name="AD_Username" Nullable="true" MaxLength="50" />
           <Property Type="String" Name="FirstName" Nullable="true" MaxLength="50" />
           <Property Type="String" Name="LastName" Nullable="true" MaxLength="50" />
           <Property Type="String" Name="Mail_Location" Nullable="false" MaxLength="20" />
@@ -3249,6 +3386,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="Int32" Name="categoryID" Nullable="false" />
           <Property Type="String" Name="Subject" Nullable="false" MaxLength="60" />
           <Property Type="String" Name="Body" Nullable="false" MaxLength="6000" />
+          <Property Type="String" Name="Image" Nullable="true" MaxLength="100" />
           <Property Type="Boolean" Name="Sent" Nullable="true" />
           <Property Type="Boolean" Name="thisPastMailing" Nullable="true" />
           <Property Type="DateTime" Name="Entered" Nullable="true" Precision="23" />
@@ -3262,6 +3400,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="Int32" Name="categoryID" Nullable="false" />
           <Property Type="String" Name="Subject" Nullable="false" MaxLength="60" />
           <Property Type="String" Name="Body" Nullable="false" MaxLength="6000" />
+          <Property Type="String" Name="Image" Nullable="true" MaxLength="100" />
           <Property Type="Boolean" Name="Sent" Nullable="true" />
           <Property Type="Boolean" Name="thisPastMailing" Nullable="true" />
           <Property Type="DateTime" Name="Entered" Nullable="true" Precision="23" />
@@ -3275,6 +3414,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="Int32" Name="categoryID" Nullable="false" />
           <Property Type="String" Name="Subject" Nullable="false" MaxLength="60" />
           <Property Type="String" Name="Body" Nullable="false" MaxLength="6000" />
+          <Property Type="String" Name="Image" Nullable="true" MaxLength="100" />
           <Property Type="Boolean" Name="Sent" Nullable="true" />
           <Property Type="Boolean" Name="thisPastMailing" Nullable="true" />
           <Property Type="DateTime" Name="Entered" Nullable="true" Precision="23" />
@@ -3931,6 +4071,47 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="EmergencyContact">
+            <EntityTypeMapping TypeName="Gordon360.EmergencyContact">
+              <MappingFragment StoreEntitySet="EmergencyContact">
+                <ScalarProperty Name="APPID" ColumnName="APPID" />
+                <ScalarProperty Name="AD_Username" ColumnName="AD_Username" />
+                <ScalarProperty Name="SEQ_NUM" ColumnName="SEQ_NUM" />
+                <ScalarProperty Name="ID_NUM" ColumnName="ID_NUM" />
+                <ScalarProperty Name="ID_NUM_EMRG_CNTCT" ColumnName="ID_NUM_EMRG_CNTCT" />
+                <ScalarProperty Name="prefix" ColumnName="prefix" />
+                <ScalarProperty Name="lastname" ColumnName="lastname" />
+                <ScalarProperty Name="firstname" ColumnName="firstname" />
+                <ScalarProperty Name="middlename" ColumnName="middlename" />
+                <ScalarProperty Name="suffix" ColumnName="suffix" />
+                <ScalarProperty Name="HomePhone" ColumnName="HomePhone" />
+                <ScalarProperty Name="HomeExt" ColumnName="HomeExt" />
+                <ScalarProperty Name="WorkPhone" ColumnName="WorkPhone" />
+                <ScalarProperty Name="WorkExr" ColumnName="WorkExr" />
+                <ScalarProperty Name="MobilePhone" ColumnName="MobilePhone" />
+                <ScalarProperty Name="MobileExt" ColumnName="MobileExt" />
+                <ScalarProperty Name="notes" ColumnName="notes" />
+                <ScalarProperty Name="EmailAddress" ColumnName="EmailAddress" />
+                <ScalarProperty Name="HomeAddrCode" ColumnName="HomeAddrCode" />
+                <ScalarProperty Name="WorkAddrCode" ColumnName="WorkAddrCode" />
+                <ScalarProperty Name="MobileAddrCode" ColumnName="MobileAddrCode" />
+                <ScalarProperty Name="EmailAddrCode" ColumnName="EmailAddrCode" />
+                <ScalarProperty Name="AddressAddrCode" ColumnName="AddressAddrCode" />
+                <ScalarProperty Name="relationship" ColumnName="relationship" />
+                <ScalarProperty Name="EMRG_PRIORITY" ColumnName="EMRG_PRIORITY" />
+                <ScalarProperty Name="addr_1" ColumnName="addr_1" />
+                <ScalarProperty Name="addr_2" ColumnName="addr_2" />
+                <ScalarProperty Name="city" ColumnName="city" />
+                <ScalarProperty Name="EMRG_STATE" ColumnName="EMRG_STATE" />
+                <ScalarProperty Name="zip" ColumnName="zip" />
+                <ScalarProperty Name="country" ColumnName="country" />
+                <ScalarProperty Name="ApprowVersion" ColumnName="ApprowVersion" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="JobName" ColumnName="JobName" />
+                <ScalarProperty Name="JobTime" ColumnName="JobTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="FacStaff">
             <EntityTypeMapping TypeName="Gordon360.FacStaff">
               <MappingFragment StoreEntitySet="FacStaff">
@@ -4131,6 +4312,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               <ComplexTypeMapping TypeName="Gordon360.ALL_BASIC_INFO_Result">
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Nickname" ColumnName="Nickname" />
                 <ScalarProperty Name="UserName" ColumnName="UserName" />
                 <ScalarProperty Name="ConcatonatedInfo" ColumnName="ConcatonatedInfo" />
               </ComplexTypeMapping>
@@ -4141,6 +4323,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               <ComplexTypeMapping TypeName="Gordon360.ALL_BASIC_INFO_NOT_ALUMNI_Result">
                 <ScalarProperty Name="Firstname" ColumnName="Firstname" />
                 <ScalarProperty Name="Lastname" ColumnName="Lastname" />
+                <ScalarProperty Name="Nickname" ColumnName="Nickname" />
                 <ScalarProperty Name="Username" ColumnName="Username" />
                 <ScalarProperty Name="ConcatonatedInfo" ColumnName="ConcatonatedInfo" />
               </ComplexTypeMapping>
@@ -4487,6 +4670,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="SessionCode" ColumnName="SessionCode" />
                 <ScalarProperty Name="SessionDescription" ColumnName="SessionDescription" />
                 <ScalarProperty Name="IDNumber" ColumnName="IDNumber" />
+                <ScalarProperty Name="AD_Username" ColumnName="AD_Username" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />
                 <ScalarProperty Name="Mail_Location" ColumnName="Mail_Location" />
@@ -4562,6 +4746,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="categoryID" ColumnName="categoryID" />
                 <ScalarProperty Name="Subject" ColumnName="Subject" />
                 <ScalarProperty Name="Body" ColumnName="Body" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
                 <ScalarProperty Name="Sent" ColumnName="Sent" />
                 <ScalarProperty Name="thisPastMailing" ColumnName="thisPastMailing" />
                 <ScalarProperty Name="Entered" ColumnName="Entered" />
@@ -4579,6 +4764,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="categoryID" ColumnName="categoryID" />
                 <ScalarProperty Name="Subject" ColumnName="Subject" />
                 <ScalarProperty Name="Body" ColumnName="Body" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
                 <ScalarProperty Name="Sent" ColumnName="Sent" />
                 <ScalarProperty Name="thisPastMailing" ColumnName="thisPastMailing" />
                 <ScalarProperty Name="Entered" ColumnName="Entered" />
@@ -4596,6 +4782,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
                 <ScalarProperty Name="categoryID" ColumnName="categoryID" />
                 <ScalarProperty Name="Subject" ColumnName="Subject" />
                 <ScalarProperty Name="Body" ColumnName="Body" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
                 <ScalarProperty Name="Sent" ColumnName="Sent" />
                 <ScalarProperty Name="thisPastMailing" ColumnName="thisPastMailing" />
                 <ScalarProperty Name="Entered" ColumnName="Entered" />
