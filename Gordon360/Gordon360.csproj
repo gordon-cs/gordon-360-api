@@ -331,6 +331,9 @@
     <Compile Include="Models\EMAILS_PER_ACT_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\EmergencyContact.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ERROR_LOG.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -532,6 +535,7 @@
     <Compile Include="Models\VICTORY_PROMISE_BY_STUDENT_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModels\EmergencyCotnactViewModel.cs" />
     <Compile Include="Models\ViewModels\MessageSearchViewModel.cs" />
     <Compile Include="Models\MyGordon_DB_Models.Context.cs">
       <AutoGen>True</AutoGen>
@@ -934,4 +938,3 @@
   <Target Name="AfterBuild">
   </Target> -->
 </Project>
-

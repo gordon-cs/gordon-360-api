@@ -140,17 +140,6 @@ namespace Gordon360.Services
         {
             var result = _unitOfWork.EmergencyContactRepository.GetAll((x) => x.AD_Username == username).Select((emrg) =>
             new EmergencyContactViewModel(emrg));
-            /*new EmergencyContactViewModel
-            {
-                APPID = emrg.APPID,
-                AD_Username = emrg.AD_Username ?? "",
-                LastName = emrg.lastname ?? "",
-                FirstName = emrg.firstname ?? "",
-                HomePhone = emrg.HomePhone ?? "",
-                WorkPhone = emrg.WorkPhone ?? "",
-                MobilePhone = emrg.MobilePhone ?? "",
-                Relationship = emrg.relationship ?? "",
-            });*/
 
             if (result == null)
             {
