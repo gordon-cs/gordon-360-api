@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Security.Claims;
-using System.Web.Http;
 using System.Net;
 using System.Net.Http;
 using Gordon360.Exceptions.ExceptionFilters;
@@ -15,13 +14,14 @@ using System.Linq;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.ApiControllers
 {
     [RoutePrefix("api/dm")]
     [CustomExceptionFilter]
     [Authorize]
-    public class DirectMessageController : ApiController
+    public class DirectMessageController : ControllerBase
     {
         private IProfileService _profileService;
         private IAccountService _accountService;

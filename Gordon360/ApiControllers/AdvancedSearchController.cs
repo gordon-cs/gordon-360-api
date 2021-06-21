@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Web.Http;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
 using Gordon360.Static.Methods;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.ApiControllers
 {
     [Authorize]
     [CustomExceptionFilter]
     [RoutePrefix("api/advanced-search")]
-    public class AdvancedSearchController : ApiController
+    public class AdvancedSearchController : ControllerBase
     {
         public AdvancedSearchController()
         {

@@ -7,13 +7,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web.Http;
 using Newtonsoft.Json.Linq;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using System.Threading.Tasks;
 using Gordon360.Models;
-using System.Web;
 using System.Diagnostics;
 using Gordon360.Providers;
 using System.IO;
@@ -22,13 +20,14 @@ using Gordon360.Models.ViewModels;
 using System.Security.Claims;
 using System.Net.Http.Headers;
 using Gordon360.Static.Data;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.ApiControllers
 {
     [RoutePrefix("api/dining")]
     [CustomExceptionFilter]
     [Authorize]
-    public class DiningController : ApiController
+    public class DiningController : ControllerBase
     {
         public IDiningService _diningService;
         private IAccountService _accountService;

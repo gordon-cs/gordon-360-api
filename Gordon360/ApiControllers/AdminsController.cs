@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web.Http;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Exceptions.ExceptionFilters;
@@ -11,13 +10,14 @@ using Gordon360.Models;
 using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Static.Names;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.ApiControllers
 {
     [RoutePrefix("api/admins")]
     [Authorize]
     [CustomExceptionFilter]
-    public class AdminsController : ApiController
+    public class AdminsController : ControllerBase
     {
 
         private IAdministratorService _adminService;

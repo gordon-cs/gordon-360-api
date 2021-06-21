@@ -3,19 +3,19 @@ using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Models;
 using System.Linq;
-using System.Web.Http;
 using System.Security.Claims;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using Gordon360.Models.ViewModels;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.Controllers.Api
 {
     [RoutePrefix("api/news")]
     [Authorize]
     [CustomExceptionFilter]
-    public class NewsController : ApiController
+    public class NewsController : ControllerBase
     {
         private INewsService _newsService;
         private IAccountService _accountService;

@@ -1,16 +1,16 @@
 using System.Linq;
 using System.Security.Claims;
-using System.Web.Http;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
 using Gordon360.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.Controllers.Api
 {
     [RoutePrefix("api/studentemployment")]
     [CustomExceptionFilter]
     [Authorize]
-    public class StudentEmploymentController : ApiController
+    public class StudentEmploymentController : ControllerBase
     {
         //declare services we are going to use.
         private IProfileService _profileService;

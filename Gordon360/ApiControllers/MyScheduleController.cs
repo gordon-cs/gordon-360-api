@@ -1,5 +1,4 @@
-﻿using System.Web.Http;
-using Gordon360.Models;
+﻿using Gordon360.Models;
 using Gordon360.Services;
 using Gordon360.Repositories;
 using Gordon360.Models.ViewModels;
@@ -12,13 +11,14 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using Newtonsoft.Json.Linq;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.Controllers.Api
 {
     [RoutePrefix("api/myschedule")]
     [CustomExceptionFilter]
     [Authorize]
-    public class MyScheduleController : ApiController
+    public class MyScheduleController : ControllerBase
     {
         //declare services we are going to use.
         private IProfileService _profileService;

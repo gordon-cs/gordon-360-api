@@ -5,12 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web.Http;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Models.ViewModels;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.ApiControllers
 {
@@ -18,7 +18,7 @@ namespace Gordon360.ApiControllers
     [Authorize]
     [CustomExceptionFilter]
     [RoutePrefix("api/emails")]
-    public class EmailsController : ApiController
+    public class EmailsController : ControllerBase
     {
         EmailService _emailService;
         AccountService _accountService;

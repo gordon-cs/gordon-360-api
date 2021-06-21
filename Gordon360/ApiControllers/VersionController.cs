@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Security.Claims;
-using System.Web.Http;
 using System.Text;
 using System.IO;
 using System.Reflection;
@@ -8,6 +7,7 @@ using System;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
 using Gordon360.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.Controllers.Api
 {
@@ -21,7 +21,7 @@ namespace Gordon360.Controllers.Api
     [RoutePrefix("api/version")]
     [CustomExceptionFilter]
     [Authorize]
-    public class VersionController : ApiController
+    public class VersionController : ControllerBase
     {
         [HttpGet]
         [Route("")]

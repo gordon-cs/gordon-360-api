@@ -11,9 +11,9 @@ using System.Xml.Linq;
 // </summary>
 namespace Gordon360.Services
 {
-
     public interface IRoleCheckingService
     {
+        string GetCollegeRole(int id);
         string getCollegeRole(string username);
     }
     public interface IProfileService
@@ -288,5 +288,4 @@ namespace Gordon360.Services
         bool ChangeApplicationEditor(string username, int applicationID, string newEditorUsername);
         bool ChangeApplicationDateSubmitted(int applicationID);
     }
-
 }
