@@ -235,7 +235,13 @@
             </summary>
             <returns></returns>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:Gordon360.ApiControllers.JobsController.GetJobs(System.DateTime,System.DateTime)" -->
+        <member name="M:Gordon360.ApiControllers.JobsController.GetJobs(System.DateTime,System.DateTime)">
+            <summary>
+            Get a user's active jobs
+            </summary>
+            <param name="details"></param>
+            <returns>The user's active jobs</returns>
+        </member>
         <member name="M:Gordon360.ApiControllers.JobsController.DEPRECATED_getJobsForUser(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
             <summary>
             Get a user's active jobs
@@ -712,6 +718,11 @@
             <summary> Gets the clifton strengths of a particular user </summary>
             <param name="username"> The username for which to retrieve info </param>
             <returns> Clifton strengths of the given user. </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.GetEmergencyContact(System.String)">
+            <summary> Gets the emergency contact information of a particular user </summary>
+            <param username="AD_Username"> The username for which to retrieve info </param>
+            <returns> Emergency contact information of the given user. </returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.GetMyImg">
             <summary>Get the profile image of currently logged in user</summary>
@@ -1764,6 +1775,11 @@
             <summary> Gets the clifton strengths of a particular user </summary>
             <param name="id"> The id of the user for which to retrieve info </param>
             <returns> Clifton strengths of the given user. </returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetEmergencyContact(System.String)">
+            <summary> Gets the emergency contact information of a particular user </summary>
+            <param name="username"> The username of the user for which to retrieve info </param>
+            <returns> Emergency contact information of the given user. </returns>
         </member>
         <member name="M:Gordon360.Services.ProfileService.GetPhotoPath(System.String)">
             <summary>
