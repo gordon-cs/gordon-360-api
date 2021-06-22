@@ -1,20 +1,15 @@
 ﻿using Gordon360.Models;
 using Gordon360.Services;
 using Gordon360.Repositories;
-using Gordon360.Models.ViewModels;
-using Gordon360.AuthorizationFilters;
-using Gordon360.Static.Names;
-using System;
 using Gordon360.Exceptions.ExceptionFilters;
-using Gordon360.Exceptions.CustomExceptions;
 using System.Collections.Generic;
 using System.Security.Claims;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gordon360.ApiControllers
 {
-    [RoutePrefix("api/save")]
+    [Route("api/save")]
     [Authorize]
     [CustomExceptionFilter]
     public class SaveController : ControllerBase
@@ -42,20 +37,18 @@ namespace Gordon360.ApiControllers
         /// <returns>A IEnumerable of rides objects</returns>
         [HttpGet]
         [Route("rides")]
-        public IHttpActionResult GetUpcomingRides()
+        public ActionResult<IEnumerable<UPCOMING_RIDES_Result>> GetUpcomingRides()
         {
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var id = _accountService.GetAccountByUsername(username).GordonID;
+            var result = _saveService.GetUpcoming(authenticatedUserIdString);
 
-            var result = _saveService.GetUpcoming(id);
             if (result == null)
             {
                 return NotFound();
             }
-            return Ok(result);
 
+            return Ok(result);
         }
 
         /// <summary>
@@ -64,19 +57,18 @@ namespace Gordon360.ApiControllers
         /// <returns>A IEnumerable of rides objects</returns>
         [HttpGet]
         [Route("myrides")]
-        public IHttpActionResult GetUpcomingRidesForUser()
+        public ActionResult<IEnumerable<UPCOMING_RIDES_BY_STUDENT_ID_Result>> GetUpcomingRidesForUser()
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var id = _accountService.GetAccountByUsername(username).GordonID;
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var result = _saveService.GetUpcomingForUser(id);
+            var result = _saveService.GetUpcomingForUser(authenticatedUserIdString);
+
             if (result == null)
             {
                 return NotFound();
             }
-            return Ok(result);
 
+            return Ok(result);
         }
 
         /// <summary>
@@ -85,19 +77,18 @@ namespace Gordon360.ApiControllers
         /// <returns>Successfully posted ride object</returns>
         [HttpPost]
         [Route("rides/add")]
-        public IHttpActionResult PostRide([FromBody] Save_Rides newRide)
+        public ActionResult<Save_Rides> PostRide([FromBody] Save_Rides newRide)
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var id = _accountService.GetAccountByUsername(username).GordonID;
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var result = _saveService.AddRide(newRide, id);
+            var result = _saveService.AddRide(newRide, authenticatedUserIdString);
+
             if (result == null)
             {
                 return NotFound();
             }
-            return Ok(result);
 
+            return Ok(result);
         }
 
         /// <summary>Cancel an existing ride item</summary>
@@ -105,13 +96,11 @@ namespace Gordon360.ApiControllers
         /// <remarks>Calls the server to make a call and remove the given ride from the database</remarks>
         [HttpPut]
         [Route("rides/cancel/{rideID}")]
-        public IHttpActionResult CancelRide(string rideID)
+        public ActionResult<int> CancelRide(string rideID)
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var id = _accountService.GetAccountByUsername(username).GordonID;
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var result = _saveService.CancelRide(rideID, id);
+            var result = _saveService.CancelRide(rideID, authenticatedUserIdString);
 
             if (result != 0)
             {
@@ -126,13 +115,11 @@ namespace Gordon360.ApiControllers
         /// <remarks>Calls the server to make a call and remove the given ride from the database</remarks>
         [HttpDelete]
         [Route("rides/del/{rideID}")]
-        public IHttpActionResult DeleteRide(string rideID)
+        public ActionResult<Save_Rides> DeleteRide(string rideID)
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var id = _accountService.GetAccountByUsername(username).GordonID;
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var result = _saveService.DeleteRide(rideID, id);
+            var result = _saveService.DeleteRide(rideID, authenticatedUserIdString);
 
             if (result == null)
             {
@@ -148,20 +135,19 @@ namespace Gordon360.ApiControllers
         /// <returns>Successfully posted booking object</returns>
         [HttpPost]
         [Route("books/add")]
-        public IHttpActionResult PostBooking([FromBody] Save_Bookings newBooking)
+        public ActionResult<Save_Bookings> PostBooking([FromBody] Save_Bookings newBooking)
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-            newBooking.ID = id;
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            newBooking.ID = authenticatedUserIdString;
 
             var result = _saveService.AddBooking(newBooking);
+
             if (result == null)
             {
                 return NotFound();
             }
-            return Ok(result);
 
+            return Ok(result);
         }
 
         /// <summary>Delete an existing booking item</summary>
@@ -169,13 +155,11 @@ namespace Gordon360.ApiControllers
         /// <remarks>Calls the server to make a call and remove the given booking from the database</remarks>
         [HttpDelete]
         [Route("books/del/{rideID}")]
-        public IHttpActionResult DeleteBooking(string rideID)
+        public ActionResult<Save_Bookings> DeleteBooking(string rideID)
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var id = _accountService.GetAccountByUsername(username).GordonID;
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var result = _saveService.DeleteBooking(rideID, id);
+            var result = _saveService.DeleteBooking(rideID, authenticatedUserIdString);
 
             if (result == null)
             {

@@ -5,10 +5,13 @@ using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Exceptions.CustomExceptions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Gordon360.Models.ViewModels;
+using Gordon360.Models;
 
 namespace Gordon360.Controllers.Api
 {
-    [RoutePrefix("api/wellness")]
+    [Route("api/wellness")]
     [CustomExceptionFilter]
     [Authorize]
     public class WellnessController : ControllerBase
@@ -46,14 +49,11 @@ namespace Gordon360.Controllers.Api
         /// <returns>A WellnessViewModel representing the most recent status of the user</returns>
         [HttpGet]
         [Route("")]
-        public IHttpActionResult Get()
+        public ActionResult<WellnessViewModel> Get()
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-
-            var result = _wellnessService.GetStatus(id);
+            var result = _wellnessService.GetStatus(authenticatedUserIdString);
 
             if (result == null)
             {
@@ -69,7 +69,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>A WellnessQuestionViewModel</returns>
         [HttpGet]
         [Route("question")]
-        public IHttpActionResult GetQuestion()
+        public ActionResult<WellnessQuestionViewModel> GetQuestion()
         {
             var result = _wellnessService.GetQuestion();
 
@@ -83,12 +83,13 @@ namespace Gordon360.Controllers.Api
 
         /// <summary>
         ///  Stores the user's wellness status
+        ///  @TODO: Return view model rather than Health_Status model directly
         /// </summary>
         /// <param name="status">The current status of the user to post, of type WellnessStatusColor</param>
         /// <returns>The status that was stored in the database</returns>
         [HttpPost]
         [Route("")]
-        public IHttpActionResult Post([FromBody] WellnessStatusColor status)
+        public ActionResult<Health_Status> Post([FromBody] WellnessStatusColor status)
         {
 
             if (!ModelState.IsValid)
@@ -105,21 +106,16 @@ namespace Gordon360.Controllers.Api
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-
-            var result = _wellnessService.PostStatus(status, id);
+            var result = _wellnessService.PostStatus(status, authenticatedUserIdString);
 
             if (result == null)
             {
                 return NotFound();
             }
 
-
             return Created("Recorded answer :", result);
-
         }
     }
 }

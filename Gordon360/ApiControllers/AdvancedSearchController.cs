@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
 using Gordon360.Static.Methods;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.ApiControllers
 {
     [Authorize]
     [CustomExceptionFilter]
-    [RoutePrefix("api/advanced-search")]
+    [Route("api/advanced-search")]
     public class AdvancedSearchController : ControllerBase
     {
         public AdvancedSearchController()
@@ -23,7 +24,7 @@ namespace Gordon360.ApiControllers
         /// <returns> All majors</returns>
         [HttpGet]
         [Route("majors")]
-        public IHttpActionResult GetMajors()
+        public ActionResult<IEnumerable<String>> GetMajors()
         {
             IEnumerable<String> majors = Helpers.GetMajors();
             // Return all of the majors
@@ -36,7 +37,7 @@ namespace Gordon360.ApiControllers
         /// <returns> All minors</returns>
         [HttpGet]
         [Route("minors")]
-        public IHttpActionResult GetMinors()
+        public ActionResult<IEnumerable<String>> GetMinors()
         {
             IEnumerable<String> minors = Helpers.GetMinors();
             // Return all of the minors
@@ -49,7 +50,7 @@ namespace Gordon360.ApiControllers
         /// <returns> All minors</returns>
         [HttpGet]
         [Route("halls")]
-        public IHttpActionResult GetHalls()
+        public ActionResult<IEnumerable<String>> GetHalls()
         {
             IEnumerable<String> halls = Helpers.GetHalls();
             // Return all of the halls
@@ -62,7 +63,7 @@ namespace Gordon360.ApiControllers
         /// <returns> All states</returns>
         [HttpGet]
         [Route("states")]
-        public IHttpActionResult GetStates()
+        public ActionResult<IEnumerable<String>> GetStates()
         {
             IEnumerable<String> states = Helpers.GetStates();
             // Return all of the states
@@ -76,7 +77,7 @@ namespace Gordon360.ApiControllers
         /// <returns> All countries</returns>
         [HttpGet]
         [Route("countries")]
-        public IHttpActionResult GetCountries()
+        public ActionResult<IEnumerable<String>> GetCountries()
         {
             IEnumerable<String> countries = Helpers.GetCountries();
             // Return all of the countries
@@ -89,7 +90,7 @@ namespace Gordon360.ApiControllers
         /// <returns> All departments</returns>
         [HttpGet]
         [Route("departments")]
-        public IHttpActionResult GetDepartments()
+        public ActionResult<IEnumerable<String>> GetDepartments()
         {
             IEnumerable<String> departments = Helpers.GetDepartments();
             // Return all of the departments
@@ -103,15 +104,12 @@ namespace Gordon360.ApiControllers
         /// <returns> All buildings</returns>
         [HttpGet]
         [Route("buildings")]
-        public IHttpActionResult GetBuildings()
+        public ActionResult<IEnumerable<String>> GetBuildings()
         {
             IEnumerable<String> buildings = Helpers.GetBuildings();
             // Return all of the buildings
             return Ok(buildings);
         }
-
-
-
 
     }
 }

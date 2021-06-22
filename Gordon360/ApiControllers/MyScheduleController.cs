@@ -1,33 +1,28 @@
 ﻿using Gordon360.Models;
 using Gordon360.Services;
 using Gordon360.Repositories;
-using Gordon360.Models.ViewModels;
-using Gordon360.AuthorizationFilters;
-using Gordon360.Static.Names;
 using System;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Exceptions.CustomExceptions;
 using System.Collections.Generic;
 using System.Security.Claims;
 using Newtonsoft.Json.Linq;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gordon360.Controllers.Api
 {
-    [RoutePrefix("api/myschedule")]
+    [Route("api/myschedule")]
     [CustomExceptionFilter]
     [Authorize]
     public class MyScheduleController : ControllerBase
     {
         //declare services we are going to use.
-        private IProfileService _profileService;
-        private IAccountService _accountService;
-        private IRoleCheckingService _roleCheckingService;
-        private IScheduleControlService _scheduleControlService;
-
-
-        private IMyScheduleService _myScheduleService;
+        private readonly IProfileService _profileService;
+        private readonly IAccountService _accountService;
+        private readonly IRoleCheckingService _roleCheckingService;
+        private readonly IScheduleControlService _scheduleControlService;
+        private readonly IMyScheduleService _myScheduleService;
 
         public MyScheduleController()
         {
@@ -50,14 +45,11 @@ namespace Gordon360.Controllers.Api
         /// <returns>A IEnumerable of custom events</returns>
         [HttpGet]
         [Route("")]
-        public IHttpActionResult Get()
+        public ActionResult<IEnumerable<MYSCHEDULE>> Get()
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-
-            object result = _myScheduleService.GetAllForID(id);
+            object result = _myScheduleService.GetAllForID(authenticatedUserIdString);
             if (result == null)
             {
                 return NotFound();
@@ -80,14 +72,11 @@ namespace Gordon360.Controllers.Api
         /// <returns>The requested custom event</returns>
         [HttpGet]
         [Route("event/{event_id}")]
-        public IHttpActionResult GetByEventId(string event_Id)
+        public ActionResult<MYSCHEDULE> GetByEventId(string event_Id)
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-
-            object result = _myScheduleService.GetForID(event_Id, id);
+            object result = _myScheduleService.GetForID(event_Id, authenticatedUserIdString);
             if (result == null)
             {
                 return NotFound();
@@ -106,7 +95,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>A IEnumerable of myschedule objects</returns>
         [HttpGet]
         [Route("{username}")]
-        public IHttpActionResult Get(string username)
+        public ActionResult<IEnumerable<MYSCHEDULE>> Get(string username)
         {
             //probably needs privacy stuff like ProfilesController and service
             var id = _accountService.GetAccountByUsername(username).GordonID;
@@ -126,7 +115,7 @@ namespace Gordon360.Controllers.Api
         /// <remarks>Posts a new myschedule to the server to be added into the database</remarks>
         [HttpPost]
         [Route("")]
-        public IHttpActionResult Post([FromBody] MYSCHEDULE mySchedule)
+        public ActionResult<MYSCHEDULE> Post([FromBody] MYSCHEDULE mySchedule)
         {
             const int MAX = 50;
             DateTime localDate = DateTime.Now;
@@ -147,12 +136,9 @@ namespace Gordon360.Controllers.Api
             }
 
             // Check if maximum
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-
-            object existingEvents = _myScheduleService.GetAllForID(id);
+            object existingEvents = _myScheduleService.GetAllForID(authenticatedUserIdString);
 
             JArray jEvents = JArray.FromObject(existingEvents);
 
@@ -160,7 +146,6 @@ namespace Gordon360.Controllers.Api
             {
                 return Unauthorized();
             }
-
 
 
             var result = _myScheduleService.Add(mySchedule);
@@ -171,7 +156,7 @@ namespace Gordon360.Controllers.Api
             }
 
 
-            _scheduleControlService.UpdateModifiedTimeStamp(id, localDate);
+            _scheduleControlService.UpdateModifiedTimeStamp(authenticatedUserIdString, localDate);
 
             return Created("myschedule", mySchedule);
         }
@@ -181,21 +166,18 @@ namespace Gordon360.Controllers.Api
         /// <remarks>Calls the server to make a call and remove the given myschedule from the database</remarks>
         [HttpDelete]
         [Route("{event_id}")]
-        public IHttpActionResult Delete(string event_id)
+        public ActionResult<MYSCHEDULE> Delete(string event_id)
         {
             DateTime localDate = DateTime.Now;
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-            var result = _myScheduleService.Delete(event_id, id);
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var result = _myScheduleService.Delete(event_id, authenticatedUserIdString);
 
             if (result == null)
             {
                 return NotFound();
             }
 
-            _scheduleControlService.UpdateModifiedTimeStamp(id, localDate);
+            _scheduleControlService.UpdateModifiedTimeStamp(authenticatedUserIdString, localDate);
 
             return Ok(result);
         }
@@ -206,7 +188,7 @@ namespace Gordon360.Controllers.Api
         /// <remarks>Put a myschedule to the server to be updated</remarks>
         [HttpPut]
         [Route("")]
-        public IHttpActionResult Put([FromBody] MYSCHEDULE mySchedule)
+        public ActionResult<MYSCHEDULE> Put([FromBody] MYSCHEDULE mySchedule)
         {
             DateTime localDate = DateTime.Now;
             if (!ModelState.IsValid || mySchedule == null)
@@ -230,12 +212,9 @@ namespace Gordon360.Controllers.Api
                 return NotFound();
             }
 
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-
-            _scheduleControlService.UpdateModifiedTimeStamp(id, localDate);
+            _scheduleControlService.UpdateModifiedTimeStamp(authenticatedUserIdString, localDate);
 
             return Ok(result);
         }

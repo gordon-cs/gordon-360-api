@@ -1,13 +1,14 @@
-using System.Linq;
 using System.Security.Claims;
 using Gordon360.Exceptions.ExceptionFilters;
+using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using Gordon360.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.Controllers.Api
 {
-    [RoutePrefix("api/studentemployment")]
+    [Route("api/studentemployment")]
     [CustomExceptionFilter]
     [Authorize]
     public class StudentEmploymentController : ControllerBase
@@ -35,16 +36,14 @@ namespace Gordon360.Controllers.Api
         /// <summary>
         ///  Gets student employment information about the user
         /// </summary>
-        /// <returns>A Student Employment Json </returns>
-
+        /// <returns>A Student Employment Json</returns>
         [HttpGet]
         [Route("")]
-        public IHttpActionResult Get()
+        public ActionResult<StudentEmploymentViewModel> Get()
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-            var result = _studentEmploymentService.GetEmployment(id);
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var result = _studentEmploymentService.GetEmployment(authenticatedUserIdString);
             if (result == null)
             {
                 return NotFound();

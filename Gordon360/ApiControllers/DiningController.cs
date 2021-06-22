@@ -3,28 +3,14 @@ using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
 using Gordon360.Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using Newtonsoft.Json.Linq;
-using Gordon360.AuthorizationFilters;
-using Gordon360.Static.Names;
-using System.Threading.Tasks;
-using Gordon360.Models;
-using System.Diagnostics;
-using Gordon360.Providers;
-using System.IO;
 using Gordon360.Static.Methods;
-using Gordon360.Models.ViewModels;
 using System.Security.Claims;
-using System.Net.Http.Headers;
-using Gordon360.Static.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gordon360.ApiControllers
 {
-    [RoutePrefix("api/dining")]
+    [Route("api/dining")]
     [CustomExceptionFilter]
     [Authorize]
     public class DiningController : ControllerBase
@@ -45,7 +31,7 @@ namespace Gordon360.ApiControllers
         /// <returns>A DiningInfo object</returns>
         [HttpGet]
         [Route("")]
-        public IHttpActionResult Get()
+        public ActionResult<string> Get()
         {
             if (!ModelState.IsValid)
             {
@@ -56,23 +42,21 @@ namespace Gordon360.ApiControllers
                     {
                         errors += "|" + error.ErrorMessage + "|" + error.Exception;
                     }
-
                 }
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
             var sessionCode = Helpers.GetCurrentSession().SessionCode;
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var id = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID);
-            var diningInfo = _diningService.GetDiningPlanInfo(id, sessionCode);
+            var authenticatedUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var diningInfo = _diningService.GetDiningPlanInfo(authenticatedUserId, sessionCode);
+
             if (diningInfo == null)
             {
                 return NotFound();
             }
             if (diningInfo.ChoiceDescription == "None")
             {
-                var diningBalance = _diningService.GetBalance(id, FACSTAFF_MEALPLAN_ID);
+                var diningBalance = _diningService.GetBalance(authenticatedUserId, FACSTAFF_MEALPLAN_ID);
                 if (diningBalance == null)
                 {
                     return NotFound();

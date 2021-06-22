@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Security.Claims;
-using System.Net;
 using System.Net.Http;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
@@ -8,17 +7,14 @@ using System.Collections.Generic;
 using Gordon360.Services;
 using Gordon360.Models.ViewModels;
 using Gordon360.Models;
-using Gordon360.Exceptions.CustomExceptions;
-using Gordon360.Services.ComplexQueries;
-using System.Linq;
-using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gordon360.ApiControllers
 {
-    [RoutePrefix("api/dm")]
+    [Route("api/dm")]
     [CustomExceptionFilter]
     [Authorize]
     public class DirectMessageController : ControllerBase
@@ -49,10 +45,9 @@ namespace Gordon360.ApiControllers
         /// <returns>MessageViewModel</returns>
         [HttpPut]
         [Route("messages")]
-        public IHttpActionResult GetMessages([FromBody] string roomId)
+        public ActionResult<IEnumerable<MessageViewModel>> GetMessages([FromBody] string roomId)
         {
-
-            DateTime currentTime = DateTime.Now;
+            // DateTime currentTime = DateTime.Now;
             var result = _DirectMessageService.GetMessages(roomId);
 
             if (result == null)
@@ -69,9 +64,8 @@ namespace Gordon360.ApiControllers
         /// <returns>MessageViewModel</returns>
         [HttpPut]
         [Route("singleMessage")]
-        public IHttpActionResult GetSingleMessage([FromBody] MessageSearchViewModel model)
+        public ActionResult<MessageViewModel> GetSingleMessage([FromBody] MessageSearchViewModel model)
         {
-
             var result = _DirectMessageService.GetSingleMessage(model.messageID, model.roomID);
 
             if (result == null)
@@ -88,15 +82,12 @@ namespace Gordon360.ApiControllers
         /// <returns>MessageViewModel</returns>
         [HttpGet]
         [Route("roomsIds")]
-        public IHttpActionResult GetRooms()
+        public ActionResult<IEnumerable<GroupViewModel>> GetRooms()
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var userId = _accountService.GetAccountByUsername(username).GordonID;
-
-            DateTime currentTime = DateTime.Now;
-            var result = _DirectMessageService.GetRooms(userId);
+            // DateTime currentTime = DateTime.Now;
+            var result = _DirectMessageService.GetRooms(authenticatedUserIdString);
 
             if (result == null)
             {
@@ -113,13 +104,11 @@ namespace Gordon360.ApiControllers
         /// <returns>MessageViewModel</returns>
         [HttpGet]
         [Route("rooms")]
-        public IHttpActionResult GetRoomObject()
+        public ActionResult<List<Object>> GetRoomObject()
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var userId = _accountService.GetAccountByUsername(username).GordonID;
-            
-            var result = _DirectMessageService.GetRoomById(userId);
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var result = _DirectMessageService.GetRoomById(authenticatedUserIdString);
 
             if (result == null)
             {
@@ -135,7 +124,7 @@ namespace Gordon360.ApiControllers
         /// <returns>true if successful </returns>
         [HttpPost]
         [Route("singleRoom")]
-        public IHttpActionResult GetSingleRoom([FromBody] int roomId)
+        public ActionResult<Object> GetSingleRoom([FromBody] int roomId)
         {
 
             var result = _DirectMessageService.GetSingleRoom(roomId);
@@ -157,13 +146,11 @@ namespace Gordon360.ApiControllers
         /// <returns>true if successful </returns>
         [HttpPost]
         [Route("")]
-        public IHttpActionResult CreateGroup([FromBody] CreateGroupViewModel chatInfo)
+        public ActionResult<CreateGroupViewModel> CreateGroup([FromBody] CreateGroupViewModel chatInfo)
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var userId = _accountService.GetAccountByUsername(username).GordonID;
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var result = _DirectMessageService.CreateGroup(chatInfo.name, chatInfo.group, chatInfo.image, chatInfo.usernames, chatInfo.message, userId);
+            var result = _DirectMessageService.CreateGroup(chatInfo.name, chatInfo.group, chatInfo.image, chatInfo.usernames, chatInfo.message, authenticatedUserIdString);
 
             if (result == null)
             {
@@ -181,15 +168,12 @@ namespace Gordon360.ApiControllers
         /// <returns>true if successful </returns>
         [HttpPut]
         [Route("text")]
-        public IHttpActionResult SendMessage([FromBody] SendTextViewModel textInfo)
+        public ActionResult<bool> SendMessage([FromBody] SendTextViewModel textInfo)
             {
 
-                var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-                var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+                var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-                var user_id = _accountService.GetAccountByUsername(username).GordonID;
-
-                var result = _DirectMessageService.SendMessage(textInfo, user_id.ToString());
+                var result = _DirectMessageService.SendMessage(textInfo, authenticatedUserIdString);
 
                 var data = new NotificationDataViewModel();
                 data.messageID = textInfo.id;
@@ -234,15 +218,12 @@ namespace Gordon360.ApiControllers
             /// <returns>true if successful</returns>
             [HttpPost]
             [Route("userRooms")]
-            public IHttpActionResult StoreUserRooms([FromBody] String roomId)
+            public ActionResult<bool> StoreUserRooms([FromBody] String roomId)
             {
 
-                var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-                var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+                var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-                var userId = _accountService.GetAccountByUsername(username).GordonID;
-
-                var result = _DirectMessageService.StoreUserRooms(userId, roomId);
+                var result = _DirectMessageService.StoreUserRooms(authenticatedUserIdString, roomId);
 
                 if (result == false)
                 {
@@ -262,14 +243,11 @@ namespace Gordon360.ApiControllers
             /// <returns>true if successful</returns>
             [HttpPost]
             [Route("userConnectionIds")]
-            public IHttpActionResult StoreUserConnectionIds([FromBody] String connectionId)
+            public ActionResult<bool> StoreUserConnectionIds([FromBody] String connectionId)
             {
-                var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-                var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+                var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-                var userId = _accountService.GetAccountByUsername(username).GordonID;
-
-                var result = _DirectMessageService.StoreUserConnectionIds(userId, connectionId);
+                var result = _DirectMessageService.StoreUserConnectionIds(authenticatedUserIdString, connectionId);
 
                 if (result == false)
                 {
@@ -287,10 +265,8 @@ namespace Gordon360.ApiControllers
             /// <returns>true if successful</returns>
             [HttpPut]
             [Route("userConnectionIds")]
-            public IHttpActionResult GetConnectionIds([FromBody] List<string> userIds)
+            public ActionResult<bool> GetConnectionIds([FromBody] List<string> userIds)
             {
-
-
                 var result = _DirectMessageService.GetUserConnectionIds(userIds);
 
                 if (result == null)
@@ -298,9 +274,7 @@ namespace Gordon360.ApiControllers
                     return NotFound();
                 }
 
-
                 return Ok(result);
-
             }
 
             /// <summary>
@@ -309,23 +283,10 @@ namespace Gordon360.ApiControllers
             /// <returns>true if successful</returns>
             [HttpPut]
             [Route("deleteUserConnectionIds")]
-            public IHttpActionResult DeleteConnectionIds([FromBody] String connectionId)
+            public ActionResult<bool> DeleteConnectionIds([FromBody] String connectionId)
             {
-
-
                 var result = _DirectMessageService.DeleteUserConnectionIds(connectionId);
-
-                if (result == null)
-                {
-                    return NotFound();
-                }
-
-
                 return Ok(result);
-
             }
-
-
     }
-
 }

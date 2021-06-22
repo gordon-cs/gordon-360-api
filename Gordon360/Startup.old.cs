@@ -17,7 +17,7 @@ using Gordon360.Hubs;
 namespace Gordon360
 {
 
-    public class Startup
+    public class StartupOld
     {
 
         public void Configuration(IAppBuilder appBuilder)

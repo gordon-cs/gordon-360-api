@@ -1,18 +1,19 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
 using System.Security.Claims;
 using Gordon360.Exceptions.ExceptionFilters;
+using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using Gordon360.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.Controllers.Api
 {
-    [RoutePrefix("api/vpscore")]
+    [Route("api/vpscore")]
     [CustomExceptionFilter]
     [Authorize]
     public class VictoryPromiseController : ControllerBase
     {
-        //declare services we are going to use.
         private IProfileService _profileService;
         private IAccountService _accountService;
         private IRoleCheckingService _roleCheckingService;
@@ -38,14 +39,11 @@ namespace Gordon360.Controllers.Api
         /// <returns>A VP Json</returns>
         [HttpGet]
         [Route("")]
-        public IHttpActionResult Get()
+        public ActionResult<IEnumerable<VictoryPromiseViewModel>> Get()
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-
-            var result = _victoryPromiseService.GetVPScores(id);
+            var result = _victoryPromiseService.GetVPScores(authenticatedUserIdString);
 
             if (result == null)
             {

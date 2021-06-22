@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Exceptions.ExceptionFilters;
+using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Static.Methods;
@@ -8,14 +10,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.Controllers.Api
 {
-    [RoutePrefix("api/sessions")]
+    [Route("api/sessions")]
     [CustomExceptionFilter]
     //All Routes made public for Guest View (No authorization needed)
     public class SessionsController : ControllerBase
     {
-
         private ISessionService _sessionService;
-
 
         public SessionsController()
         {
@@ -34,7 +34,7 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("")]
         //Public Route
-        public IHttpActionResult Get()
+        public ActionResult<IEnumerable<SessionViewModel>> Get()
         {
             var all = _sessionService.GetAll();
             return Ok(all);
@@ -48,7 +48,7 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("{id}")]
         //Public Route
-        public IHttpActionResult Get(string id)
+        public ActionResult<SessionViewModel> Get(string id)
         {
             if (!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
             {
@@ -81,7 +81,7 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("current")]
         //Public Route
-        public IHttpActionResult GetCurrentSession()
+        public ActionResult<SessionViewModel> GetCurrentSession()
         {
             var currentSession = Helpers.GetCurrentSession();
             if(currentSession == null)
@@ -135,7 +135,7 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("daysLeft")]
         //Public Route
-        public IHttpActionResult GetDaysLeftinSemester()
+        public ActionResult<double[]> GetDaysLeftinSemester()
         {
             var days = Helpers.GetDaysLeft();
             if ((days[1] == 0 && days[2] == 0) || days == null)

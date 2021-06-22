@@ -1,12 +1,13 @@
 ﻿using System;
 using Thinktecture.IdentityModel.Tokens;
-using System.IdentityModel.Tokens;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Gordon360.AuthorizationServer
 {
     public class CustomJWTFormat : ISecureDataFormat<AuthenticationTicket>
    {
-        private static readonly byte[] _secret = TextEncodings.Base64Url.Decode(System.Web.Configuration.WebConfigurationManager.AppSettings["jwtSecret"]);
+        private static readonly byte[] _secret = Base64UrlEncoder.Decode(System.Web.Configuration.WebConfigurationManager.AppSettings["jwtSecret"]);
         private readonly string _issuer;
 
         public CustomJWTFormat(string issuer)

@@ -20,8 +20,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.Controllers.Api
 {
-
-    [RoutePrefix("api/profiles")]
+    [Route("api/profiles")]
     [CustomExceptionFilter]
     [Authorize]
     public class ProfilesController : ControllerBase

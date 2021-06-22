@@ -39,6 +39,20 @@ namespace Gordon360
                     options.UseMemberCasing();
                 });
 
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.WithOrigins("https://360.gordon.edu", "https://360train.gordon.edu", "http://localhost:3000");
+                    });
+            });
+
+            services.AddSignalR().AddJsonProtocol(options =>
+            {
+                options.PayloadSerializerOptions.PropertyNamingPolicy = null;
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,16 +66,12 @@ namespace Gordon360
             app.UseStaticFiles();
             app.UseRouting();
             app.UseAuthorization();
-            app.UseEndpoints(endpoints =>
-            }
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-            });
-            }
-            Data.AllPublicAccountsWithoutCurrentStudents = allPublicAccountsWithoutCurrentStudents;
-            Data.AllPublicAccounts = allPublicAccounts;
-            Data.AllPublicAccountsWithoutAlumni = allPublicAccountsWithoutAlumni;
+            app.UseCors();
+            app.UseOAuthAuthorizationServer(new OAuthAuthorizationServerOptions
+            {
+                TokenEndPointPath = new PathStrin
+            })
+
         }
 
         private void ConfigureMvcOptions(MvcOptions mvcOptions)

@@ -1,35 +1,23 @@
-﻿
-
-
-using Gordon360.Models;
-using Gordon360.Services;
+﻿using Gordon360.Services;
 using Gordon360.Repositories;
-using Gordon360.Models.ViewModels;
-using Gordon360.AuthorizationFilters;
-using Gordon360.Static.Names;
 using System;
 using Newtonsoft.Json.Linq;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Exceptions.CustomExceptions;
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gordon360.Controllers.Api
 {
-    [RoutePrefix("api/schedulecontrol")]
+    [Route("api/schedulecontrol")]
     [CustomExceptionFilter]
     [Authorize]
     public class ScheduleControlController : ControllerBase
     {
-        private IUnitOfWork _unitOfWork;
-
-        //declare services we are going to use.
-        private IAccountService _accountService;
-
-        private IScheduleControlService _scheduleControlService;
-
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IAccountService _accountService;
+        private readonly IScheduleControlService _scheduleControlService;
 
         public ScheduleControlController()
         {
@@ -45,19 +33,17 @@ namespace Gordon360.Controllers.Api
 
         /// <summary>
         /// Get schedule information of logged in user
-        /// Info one gets: privacy, time last updated, description, and Gordon ID 
+        /// Info one gets: privacy, time last updated, description, and Gordon ID
+        /// @TODO: Use Service Layer
         /// </summary>
         /// <returns></returns>
         [HttpGet]
         [Route("")]
-        public IHttpActionResult Get()
+        public ActionResult<JObject> Get()
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
-
-            object scheduleControlResult = null;
+            var authenticatedUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             
-            scheduleControlResult = _unitOfWork.ScheduleControlRepository.GetById(id);
+            object scheduleControlResult = _unitOfWork.ScheduleControlRepository.GetById(authenticatedUserId);
 
             if (scheduleControlResult == null)
             {
@@ -69,26 +55,22 @@ namespace Gordon360.Controllers.Api
             jresult.Property("gordon_id").Remove();
 
             return Ok(jresult);
-            
-
         }
-
 
 
         /// <summary>
         /// Get schedule information of specific user
-        /// Info one gets: privacy, time last updated, description, and Gordon ID 
+        /// Info one gets: privacy, time last updated, description, and Gordon ID
+        /// @TODO Use Service Layer
         /// </summary>
         /// <param name="username">username</param>
         /// <returns></returns>
         [HttpGet]
         [Route("{username}")]
-        public IHttpActionResult Get(string username)
+        public ActionResult<object> Get(string username)
         {
-            object scheduleControlResult = null;
-
             var id = _accountService.GetAccountByUsername(username).GordonID;
-            scheduleControlResult = _unitOfWork.ScheduleControlRepository.GetById(id);
+            object scheduleControlResult = _unitOfWork.ScheduleControlRepository.GetById(id);
             
             if (scheduleControlResult == null)
             {
@@ -96,10 +78,7 @@ namespace Gordon360.Controllers.Api
             }
 
             return Ok(scheduleControlResult);
-
         }
-
-
 
         /// <summary>
         /// Update privacy of schedule
@@ -108,7 +87,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpPut]
         [Route("privacy/{value}")]
-        public IHttpActionResult UpdateSchedulePrivacy(string value)
+        public ActionResult UpdateSchedulePrivacy(string value)
         {
             // Verify Input
             if (!ModelState.IsValid)
@@ -125,12 +104,10 @@ namespace Gordon360.Controllers.Api
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
-            _scheduleControlService.UpdateSchedulePrivacy(id, value);
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            _scheduleControlService.UpdateSchedulePrivacy(authenticatedUserIdString, value);
 
             return Ok();
-
         }
 
         /// <summary>
@@ -140,7 +117,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpPut]
         [Route("description/{value}")]
-        public IHttpActionResult UpdateDescription(string value)
+        public ActionResult UpdateDescription(string value)
         {
 
             DateTime localDate = DateTime.Now;
@@ -160,16 +137,11 @@ namespace Gordon360.Controllers.Api
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
-            _scheduleControlService.UpdateDescription(id, value);
-            _scheduleControlService.UpdateModifiedTimeStamp(id, localDate);
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            _scheduleControlService.UpdateDescription(authenticatedUserIdString, value);
+            _scheduleControlService.UpdateModifiedTimeStamp(authenticatedUserIdString, localDate);
 
             return Ok();
-
         }
-
-
     }
-
 }

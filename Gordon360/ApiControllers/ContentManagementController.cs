@@ -1,16 +1,15 @@
-﻿using System;
-using Gordon360.Services;
+﻿using Gordon360.Services;
 using Gordon360.Repositories;
 using Gordon360.Exceptions.ExceptionFilters;
-using Gordon360.Exceptions.CustomExceptions;
-using Gordon360.Static.Methods;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Controllers.Api
 {
-    [RoutePrefix("api/cms")]
+    [Route("api/cms")]
     [Authorize]
     [CustomExceptionFilter]
     public class ContentManagementController : ControllerBase
@@ -36,7 +35,7 @@ namespace Gordon360.Controllers.Api
         [Route("slider")]
         [AllowAnonymous]
         [StateYourBusiness(operation = Operation.READ_PUBLIC, resource = Resource.SLIDER)]
-        public IHttpActionResult GetSliderContent()
+        public ActionResult<SliderViewModel> GetSliderContent()
         {
             var result = _contentManagementService.DEPRECATED_GetSliderContent();
             if (result == null)

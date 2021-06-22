@@ -10,16 +10,19 @@ using Gordon360.Static.Names;
 using Gordon360.Models.ViewModels;
 using Gordon360.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
 
 namespace Gordon360.Controllers.Api
 {
-    [RoutePrefix("api/news")]
+    [Route("api/news")]
+    [Authorize]
     [CustomExceptionFilter]
     public class NewsController : ControllerBase
     {
-        private INewsService _newsService;
-        private IImageUtils _imageUtils = new ImageUtils();
-        private IAccountService _accountService;
+        private readonly INewsService _newsService;
+        private readonly IImageUtils _imageUtils = new ImageUtils();
+        private readonly IAccountService _accountService;
 
         /**private void catchBadInput()
         {
@@ -59,7 +62,7 @@ namespace Gordon360.Controllers.Api
         [Route("{newsID}")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.NEWS)]
         // Private route to authenticated users
-        public IHttpActionResult GetByID(int newsID)
+        public ActionResult<StudentNewsViewModel> GetByID(int newsID)
         {
             // StateYourBusiness verifies that user is authenticated
             var result = (StudentNewsViewModel)_newsService.Get(newsID);
@@ -96,7 +99,7 @@ namespace Gordon360.Controllers.Api
          */
         [HttpGet]
         [Route("not-expired")]
-        public IHttpActionResult GetNotExpired()
+        public ActionResult<IOrderedEnumerable<StudentNewsViewModel>> GetNotExpired()
         {
             var result = _newsService.GetNewsNotExpired();
             if (result == null)
@@ -112,7 +115,7 @@ namespace Gordon360.Controllers.Api
          */
         [HttpGet]
         [Route("new")]
-        public IHttpActionResult GetNew()
+        public ActionResult<IEnumerable<StudentNewsViewModel>> GetNew()
         {
             var result = _newsService.GetNewsNew();
             if (result == null)
@@ -126,7 +129,7 @@ namespace Gordon360.Controllers.Api
          */
         [HttpGet]
         [Route("categories")]
-        public IHttpActionResult GetCategories()
+        public ActionResult<IEnumerable<StudentNewsCategoryViewModel>> GetCategories()
         {
             var result = _newsService.GetNewsCategories();
             if (result == null)
@@ -138,18 +141,19 @@ namespace Gordon360.Controllers.Api
 
         /** Call the service that gets all unapproved student news entries (by a particular user)
          * not yet expired, filtering out the expired news
+         * @TODO: Remove redundant username/id from this and service
+         * @TODO: fix documentation comments
          */
         [HttpGet]
         [Route("personal-unapproved")]
-        public IHttpActionResult GetNewsPersonalUnapproved()
+        public ActionResult<IEnumerable<StudentNewsViewModel>> GetNewsPersonalUnapproved()
         {
             // Get authenticated username/id
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-            
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
+
             // Call appropriate service
-            var result = _newsService.GetNewsPersonalUnapproved(id, username);
+            var result = _newsService.GetNewsPersonalUnapproved(authenticatedUserIdString, authenticatedUserUsername);
             if (result == null)
             {
                 return NotFound();
@@ -158,10 +162,12 @@ namespace Gordon360.Controllers.Api
         }
 
         /** Create a new news item to be added to the database
+         * @TODO: Remove redundant username/id from this and service
+         * @TODO: fix documentation comments
          */
         [HttpPost]
         [Route("")]
-        public IHttpActionResult Post([FromBody] StudentNews newsItem)
+        public ActionResult<StudentNews> Post([FromBody] StudentNews newsItem)
         {
             // Check for bad input
             if (!ModelState.IsValid || newsItem == null )
@@ -178,12 +184,11 @@ namespace Gordon360.Controllers.Api
             }
 
             // Get authenticated username/id
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var id = _accountService.GetAccountByUsername(username).GordonID;
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
 
             // Call appropriate service
-            var result = _newsService.SubmitNews(newsItem, username, id);
+            var result = _newsService.SubmitNews(newsItem, authenticatedUserUsername, authenticatedUserIdString);
             if (result == null)
             {
                 return NotFound();
@@ -199,7 +204,7 @@ namespace Gordon360.Controllers.Api
         [Route("{newsID}")]
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.NEWS)]
         // Private route to authenticated authors of the news entity
-        public IHttpActionResult Delete(int newsID)
+        public ActionResult<StudentNews> Delete(int newsID)
         {
             // StateYourBusiness verifies that user is authenticated
             // Delete permission should be allowed only to authors of the news item
@@ -224,12 +229,11 @@ namespace Gordon360.Controllers.Api
         [Route("{newsID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.NEWS)]
         // Private route to authenticated users - authors of posting or admins
-        public IHttpActionResult EditPosting(int newsID,[FromBody] StudentNews newData)
+        public ActionResult<StudentNewsViewModel> EditPosting(int newsID,[FromBody] StudentNews newData)
         {
             // StateYourBusiness verifies that user is authenticated
             var result = _newsService.EditPosting(newsID, newData);
             return Ok(result);
         }
-
     }
 }

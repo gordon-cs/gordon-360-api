@@ -1,33 +1,26 @@
-﻿using Gordon360.Models;
-using Gordon360.Services;
+﻿using Gordon360.Services;
 using Gordon360.Repositories;
 using Gordon360.Models.ViewModels;
-using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using Newtonsoft.Json.Linq;
 using System;
 using Gordon360.Exceptions.ExceptionFilters;
-using Gordon360.Exceptions.CustomExceptions;
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gordon360.Controllers.Api
 {
-    [RoutePrefix("api/schedule")]
+    [Route("api/schedule")]
     [CustomExceptionFilter]
     [Authorize]
     public class ScheduleController : ControllerBase
     {
         private IUnitOfWork _unitOfWork;
 
-        //declare services we are going to use.
-        private IAccountService _accountService;
-        private IRoleCheckingService _roleCheckingService;
-
-        private IScheduleService _scheduleService;
-
+        private readonly IAccountService _accountService;
+        private readonly IRoleCheckingService _roleCheckingService;
+        private readonly IScheduleService _scheduleService;
 
         public ScheduleController()
         {
@@ -48,17 +41,14 @@ namespace Gordon360.Controllers.Api
         /// <returns>A IEnumerable of schedule objects</returns>
         [HttpGet]
         [Route("")]
-        public IHttpActionResult Get()
+        public ActionResult<ScheduleViewModel> Get()
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-
-            var role = _roleCheckingService.getCollegeRole(username);
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var authenticatedUserId = Int32.Parse(authenticatedUserIdString);
+            var role = _roleCheckingService.GetCollegeRole(authenticatedUserId);
 
             if (role=="student"){
-                var result = _scheduleService.GetScheduleStudent(id);
+                var result = _scheduleService.GetScheduleStudent(authenticatedUserIdString);
                 if (result == null)
                 {
                     return NotFound();
@@ -67,7 +57,7 @@ namespace Gordon360.Controllers.Api
             }
 
             else if (role=="facstaff"){
-                var result = _scheduleService.GetScheduleFaculty(id);
+                var result = _scheduleService.GetScheduleFaculty(authenticatedUserIdString);
                 if (result == null)
                 {
                     return NotFound();
@@ -84,23 +74,18 @@ namespace Gordon360.Controllers.Api
         /// <returns>A IEnumerable of schedule objects</returns>
         [HttpGet]
         [Route("{username}")]
-        public IHttpActionResult Get(string username)
+        public ActionResult<JArray> Get(string username)
         {
             //probably needs privacy stuff like ProfilesController and service
             //get token data from context, username is the username of current logged in person
 
+            var authenticatedUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var viewerRole = _roleCheckingService.GetCollegeRole(authenticatedUserId);
+
             var role = _roleCheckingService.getCollegeRole(username);
-
-
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var viewerRole = _roleCheckingService.getCollegeRole(viewerName);
-
-            object scheduleResult = null;
-
             var id = _accountService.GetAccountByUsername(username).GordonID;
-            var scheduleControl = _unitOfWork.ScheduleControlRepository.GetById(id);
-
+            object scheduleResult = null;
+            var scheduleControl = _unitOfWork.ScheduleControlRepository.GetById(authenticatedUserId);
             int schedulePrivacy = 1;
 
             // Getting student schedule
@@ -112,7 +97,7 @@ namespace Gordon360.Controllers.Api
                 }
                 catch
                 {
-                    schedulePrivacy = 1;
+                    // schedulePrivacy = 1;
                 }
                 // Viewer permissions
                 switch (viewerRole)

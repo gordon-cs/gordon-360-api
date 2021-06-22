@@ -9,20 +9,20 @@ using Gordon360.Exceptions.CustomExceptions;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Net;
-using System.Diagnostics;
 using Gordon360.Providers;
 using System.IO;
 using Gordon360.Static.Methods;
 using System.Collections.Generic;
 using Gordon360.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gordon360.Controllers.Api
 {
     
-    [RoutePrefix("api/activities")]
+    [Route("api/activities")]
     [CustomExceptionFilter]
-    //All GET routes are public (No Authorization Needed) 
+    //All GET routes are public (No Authorization Needed)
     public class ActivitiesController : ControllerBase
     {
         private IActivityService _activityService;
@@ -41,7 +41,7 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("")]
         //Public Route
-        public IHttpActionResult Get()
+        public ActionResult<ActivityInfoViewModel> Get()
         {
             var all = _activityService.GetAll();
             return Ok(all);
@@ -50,7 +50,7 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("{id}")]
         //Public Route 
-        public IHttpActionResult Get(string id)
+        public ActionResult<ActivityInfoViewModel> Get(string id)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
@@ -82,7 +82,7 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("session/{id}")]
         //Public Route
-        public IHttpActionResult GetActivitiesForSession(string id)
+        public ActionResult<IEnumerable<ActivityInfoViewModel>> GetActivitiesForSession(string id)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
@@ -116,7 +116,7 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("session/{id}/types")]
         //Public Route 
-        public IHttpActionResult GetActivityTypesForSession(string id)
+        public ActionResult<IEnumerable<String>> GetActivityTypesForSession(string id)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
@@ -152,7 +152,7 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("{sessionCode}/{id}/status")]
         //Public Route 
-        public IHttpActionResult GetActivityStatus(string sessionCode, string id)
+        public ActionResult<bool> GetActivityStatus(string sessionCode, string id)
         {
             var result = _activityService.IsOpen(id, sessionCode) ? "OPEN" : "CLOSED";
 
@@ -166,7 +166,7 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("open")]
         //Public Route 
-        public IHttpActionResult GetOpenActivities()
+        public ActionResult<IEnumerable<string>> GetOpenActivities()
         {
             var sessionCode = Helpers.GetCurrentSession().SessionCode;
 
@@ -191,7 +191,7 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("{id}/open")]
         //Public Route 
-        public IHttpActionResult GetOpenActivities(int id)
+        public ActionResult<IEnumerable<string>> GetOpenActivities(int id)
         {
             var sessionCode = Helpers.GetCurrentSession().SessionCode;
 
@@ -214,7 +214,7 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("closed")]
         //Public Route 
-        public IHttpActionResult GetClosedActivities()
+        public ActionResult<IEnumerable<string>> GetClosedActivities()
         {
             var sessionCode = Helpers.GetCurrentSession().SessionCode;
 
@@ -239,7 +239,7 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("{id}/closed")]
         //Public Route 
-        public IHttpActionResult GetClosedActivities(int id)
+        public ActionResult<IEnumerable<string>> GetClosedActivities(int id)
         {
             var sessionCode = Helpers.GetCurrentSession().SessionCode;
 
@@ -264,7 +264,7 @@ namespace Gordon360.Controllers.Api
         [Authorize]
         [Route("{id}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
-        public IHttpActionResult Put(string id, ACT_INFO activity)
+        public ActionResult<ACT_INFO> Put(string id, ACT_INFO activity)
         {
             if(!ModelState.IsValid)
             {
@@ -294,7 +294,7 @@ namespace Gordon360.Controllers.Api
         [Authorize]
         [Route("{id}/session/{sess_cde}/close")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_STATUS)]
-        public IHttpActionResult CloseSession(string id, string sess_cde)
+        public ActionResult CloseSession(string id, string sess_cde)
         {
             _activityService.CloseOutActivityForSession(id, sess_cde);
 
@@ -305,7 +305,7 @@ namespace Gordon360.Controllers.Api
         [Authorize]
         [Route("{id}/session/{sess_cde}/open")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_STATUS)]
-        public IHttpActionResult OpenSession(string id, string sess_cde)
+        public ActionResult OpenSession(string id, string sess_cde)
         {
             _activityService.OpenActivityForSession(id, sess_cde);
 
@@ -415,7 +415,7 @@ namespace Gordon360.Controllers.Api
         [Authorize]
         [Route("{id}/image/reset")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
-        public IHttpActionResult ResetImage(string id)
+        public ActionResult ResetImage(string id)
         {
             // Verify Input
             if (!ModelState.IsValid)
@@ -435,8 +435,8 @@ namespace Gordon360.Controllers.Api
             _activityService.ResetActivityImage(id);
 
             return Ok();
-
         }
+
         /// <summary>Update an existing activity to be private or not</summary>
         /// <param name="id">The id of the activity</param>
         /// <param name = "p">the boolean value</param>
@@ -445,7 +445,7 @@ namespace Gordon360.Controllers.Api
         [Authorize]
         [Route("{id}/privacy/{p}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
-        public IHttpActionResult TogglePrivacy(string id, bool p)
+        public ActionResult TogglePrivacy(string id, bool p)
         {
             if (!ModelState.IsValid)
             {

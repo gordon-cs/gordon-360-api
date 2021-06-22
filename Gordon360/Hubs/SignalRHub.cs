@@ -9,10 +9,11 @@ using Gordon360.ApiControllers;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.Hubs
 {
-    [RoutePrefix("api/signalr")]
+    [Route("api/signalr")]
     [HubName("ChatHub")]
     public class ChatHub : Hub
     {
