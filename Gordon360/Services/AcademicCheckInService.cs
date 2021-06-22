@@ -1,5 +1,4 @@
 
-
 namespace Gordon360.Services
 {
     public class AcademicCheckInService : IAcademicCheckInService
