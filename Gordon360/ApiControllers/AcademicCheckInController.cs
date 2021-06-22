@@ -1,5 +1,3 @@
-
-
 namespace Gordon360.Controllers.Api
 {
     [RoutePrefix("api/checkIn")]
@@ -51,6 +49,7 @@ namespace Gordon360.Controllers.Api
             }
             return Ok(result);
         }
+        
 
     }
 }

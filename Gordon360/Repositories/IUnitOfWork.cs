@@ -13,7 +13,7 @@ namespace Gordon360.Repositories
         IRepository<FacStaff> FacultyStaffRepository { get; }
         IRepository<Alumni> AlumniRepository { get; }
         IRepository<ACCOUNT> AccountRepository { get; }
-        IRepository<EmergencyContact> EmergencyContactRepository {get;}
+        IRepository<EmergencyContact> EmergencyContactRepository { get; }
         IRepository<ACT_INFO> ActivityInfoRepository { get; }
         IRepository<CM_SESSION_MSTR> SessionRepository { get; }
         IRepository<JNZB_ACTIVITIES> JenzibarActvityRepository { get; }
