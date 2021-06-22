@@ -23,6 +23,7 @@ namespace Gordon360.Services
         AlumniProfileViewModel GetAlumniProfileByUsername(string username);
         IEnumerable<AdvisorViewModel> GetAdvisors(string id);
         CliftonStrengthsViewModel GetCliftonStrengths(int id);
+        IEnumerable<EmergencyContactViewModel> GetEmergencyContact(string username);
         ProfileCustomViewModel GetCustomUserInfo(string username);
         PhotoPathViewModel GetPhotoPath(string id);
         void UpdateProfileLink(string username, string type, CUSTOM_PROFILE path);
@@ -278,7 +279,7 @@ namespace Gordon360.Services
         bool AddHousingAdmin(string id);
         bool RemoveHousingAdmin(string id);
         bool DeleteApplication(int applicationID);
-        AA_ApartmentHalls[] GetAllApartmentHalls();
+        string[] GetAllApartmentHalls();
         string GetEditorUsername(int applicationID);
         int? GetApplicationID(string username, string sess_cde);
         ApartmentApplicationViewModel GetApartmentApplication(int applicationID, bool isAdmin = false);
@@ -287,6 +288,12 @@ namespace Gordon360.Services
         int EditApplication(string username, string sess_cde, int applicationID, string newEditorUsername, ApartmentApplicantViewModel[] newApartmentApplicants, ApartmentChoiceViewModel[] newApartmentChoices);
         bool ChangeApplicationEditor(string username, int applicationID, string newEditorUsername);
         bool ChangeApplicationDateSubmitted(int applicationID);
+    }
+
+    public interface IAcademicCheckInService
+    {
+        string[] GetHolds(string id);
+        string[] GetDemographic(string id);
     }
 
 }

@@ -13,7 +13,7 @@ namespace Gordon360.Models
     
     public partial class GET_AA_APPLICANTS_BY_APPID_Result
     {
-        public int AprtAppID { get; set; }
+        public int HousingAppID { get; set; }
         public string Username { get; set; }
         public string AprtProgram { get; set; }
         public Nullable<bool> AprtProgramCredit { get; set; }

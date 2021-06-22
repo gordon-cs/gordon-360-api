@@ -15,6 +15,7 @@ namespace Gordon360.Repositories
         private IRepository<FacStaff> _FacultyStaffRepository;
         private IRepository<Alumni> _AlumniRepository;
         private IRepository<ACCOUNT> _AccountRepository;
+        private IRepository<EmergencyContact> _EmergencyContactRepository;
         private IRepository<CM_SESSION_MSTR> _SessionRepository;
         private IRepository<JNZB_ACTIVITIES> _JenzibarActvityRepository;
         private IRepository<MEMBERSHIP> _MembershipRepository;
@@ -65,6 +66,10 @@ namespace Gordon360.Repositories
         public IRepository<ACCOUNT> AccountRepository
         {
             get { return _AccountRepository ?? (_AccountRepository = new GenericRepository<ACCOUNT>(_context)); }
+        }
+        public IRepository<EmergencyContact> EmergencyContactRepository
+        {
+            get { return _EmergencyContactRepository ?? (_EmergencyContactRepository = new GenericRepository<EmergencyContact>(_context)); }
         }
         public IRepository<ACT_INFO> ActivityInfoRepository
         {

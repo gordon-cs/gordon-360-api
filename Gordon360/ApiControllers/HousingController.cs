@@ -3,7 +3,6 @@ using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Models.ViewModels;
 using Gordon360.Models;
-using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Static.Methods;
@@ -112,7 +111,7 @@ namespace Gordon360.Controllers.Api
         [Route("halls/apartments")]
         public IHttpActionResult GetApartmentHalls()
         {
-            AA_ApartmentHalls[] result = _housingService.GetAllApartmentHalls();
+            var result = _housingService.GetAllApartmentHalls();
             if (result != null)
             {
                 return Ok(result);

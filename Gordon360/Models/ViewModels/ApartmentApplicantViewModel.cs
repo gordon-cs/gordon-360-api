@@ -37,7 +37,7 @@ namespace Gordon360.Models.ViewModels
         {
             ApartmentApplicantViewModel applicantModel = new ApartmentApplicantViewModel
             {
-                ApplicationID = applicantDBModel.AprtAppID,
+                ApplicationID = applicantDBModel.HousingAppID,
                 Username = applicantDBModel.Username,
                 // search username in cached data
                 Profile = (StudentProfileViewModel)Data.StudentData.FirstOrDefault(x => x.AD_Username.ToLower() == applicantDBModel.Username.ToLower()),

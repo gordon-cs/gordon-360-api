@@ -1,125 +1,56 @@
-using System.Linq;
-using System.Security.Claims;
-using System.Web.Http;
-using Gordon360.Exceptions.ExceptionFilters;
-using Gordon360.Repositories;
-using Gordon360.Services;
-using Gordon360.Exceptions.CustomExceptions;
+
 
 namespace Gordon360.Controllers.Api
 {
-    [RoutePrefix("api/academicCheckIn")]
-    [CustomExceptionFilter]
+    [RoutePrefix("api/checkIn")]
     [Authorize]
-    public class AcademicCheckInController : ApiController
+    [CustomExceptionFilter]
+    public class AcademicCheckInController : ApiController 
     {
-        private IAccountService _accountService;
-
-        private IacademicCheckInService _academicCheckInService;
-
-        public academicCheckInController()
+        private IAcadmicCheckInService _checkInService;
+                
+        public AcademicCheckInController() 
         {
-            var _unitOfWork = new UnitOfWork();
-            _academicCheckInService = new AcademicCheckInService();
-            _accountService = new AccountService(_unitOfWork);
+            IUnitOfWork _unitOfWork = new UnitOfWork();
+            _checkInService = new AcademicCheckInService(_unitOfWork);
         }
-
-        public academicCheckInController(IAcademicCheckInService academicCheckInService)
-        {
-            _academicCheckInService = academicCheckInService;
-        }
-
-        /// <summary>
-        /// Enum representing two possible academicCheckIn statuses.
-        /// ONCAMPUS - Student is on campus
-        /// YELLOW - Symptomatic or cautionary hold
-        /// RED - Quarantine/Isolation
-        /// </summary>
-        public enum academicCheckInStatus
-        {
-            GREEN, YELLOW, RED
-        }
-
-        /// <summary>
-        ///  Gets academicCheckIn status of current user
-        /// </summary>
-        /// <returns>A academicCheckInViewModel representing the most recent status of the user</returns>
+        
+        /// <summary>Gets a student's holds by id from the database</summary>
+        /// <param name="studentID">The id of the student to retrieve the holds of</param>
+        /// <returns>The student's current holds (if any)</returns>
         [HttpGet]
-        [Route("")]
-        public IHttpActionResult Get()
+        [Route("holds")]
+        // TO DO: Add StateYourBusiness??
+        // Private route to authenticated users
+        public IHttpActionResult GetHolds()
         {
+            // Get authenticated username/id
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
-            var result = _academicCheckInService.GetStatus(id);
+            var result = _checkInService.GetHolds(id);
 
-            if (result == null)
-            {
+            if (result == null){
                 return NotFound();
             }
-
             return Ok(result);
         }
 
-        /// <summary>
-        ///  Gets question for academicCheckIn check from the back end
-        /// </summary>
-        /// <returns>A academicCheckInQuestionViewModel</returns>
-        [HttpGet]
-        [Route("question")]
-        public IHttpActionResult GetQuestion()
+        public IHTTPActionResult getDemographics()
         {
-            var result = _academicCheckInService.GetQuestion();
+            // Get authenticated username/id
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var id = _accountService.GetAccountByUsername(username).GordonID;
 
-            if (result == null)
-            {
+            var result = _checkInService.getDemographics(id);
+
+            if (result == null){
                 return NotFound();
             }
-
             return Ok(result);
         }
 
-        /// <summary>
-        ///  Stores the user's academicCheckIn status
-        /// </summary>
-        /// <param name="status">The current status of the user to post, of type academicCheckInStatusColor</param>
-        /// <returns>The status that was stored in the database</returns>
-        [HttpPost]
-        [Route("")]
-        public IHttpActionResult Post([FromBody] academicCheckInStatusColor status)
-        {
-
-            if (!ModelState.IsValid)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-
-            var result = _academicCheckInService.PostStatus(status, id);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-
-            return Created("Recorded answer :", result);
-
-        }
     }
 }

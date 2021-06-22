@@ -12,8 +12,14 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class AA_Admins
+    public partial class Housing_Applicants
     {
-        public string AdminID { get; set; }
+        public int HousingAppID { get; set; }
+        public string Username { get; set; }
+        public string AprtProgram { get; set; }
+        public Nullable<bool> AprtProgramCredit { get; set; }
+        public string SESS_CDE { get; set; }
+    
+        public virtual Housing_Applications Housing_Applications { get; set; }
     }
 }
