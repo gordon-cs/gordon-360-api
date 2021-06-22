@@ -724,6 +724,11 @@
             <param username="AD_Username"> The username for which to retrieve info </param>
             <returns> Emergency contact information of the given user. </returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.PutEmergencyContact(System.String,Gordon360.Models.EmergencyContact[])">
+            <summary> Sets the emergency contact information for the user </summary>
+            <param username="AD_Username"> The username for which to retrieve info </param>
+            <returns> The updated emergency contacts </returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.GetMyImg">
             <summary>Get the profile image of currently logged in user</summary>
             <returns></returns>

@@ -148,9 +148,9 @@ namespace Gordon360.Services
             return result;
         }
 
-        public EmergencyContactViewModel PutEmergencyContact(string username, EmergencyContacts newData)
+        public EmergencyContact PutEmergencyContact(string username, EmergencyContact newData)
         {
-            if(newData.emergencyContact1.firstname == null)
+            if(newData.firstname == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The new data to update the emergency contact is missing some entries. (Must have at least 1 contact)" };
             }
@@ -164,17 +164,7 @@ namespace Gordon360.Services
             }
             */
 
-            _unitOfWork.EmergencyContactRepository.Add(newData.emergencyContact1);
-
-            if (newData.emergencyContact2.firstname != null)
-            {
-                _unitOfWork.EmergencyContactRepository.Add(newData.emergencyContact2);
-            }
-
-            if (newData.emergencyContact3.firstname != null)
-            {
-                _unitOfWork.EmergencyContactRepository.Add(newData.emergencyContact3);
-            }
+            _unitOfWork.EmergencyContactRepository.Add(newData);
 
             _unitOfWork.Save();
 

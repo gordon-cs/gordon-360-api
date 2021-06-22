@@ -373,10 +373,15 @@ namespace Gordon360.Controllers.Api
         [HttpPut]
         [Route("emergency-contact/{username}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE)]
-        public IHttpActionResult PutEmergencyContact(string username,[FromBody] EmergencyContacts newData)
+        public IHttpActionResult PutEmergencyContact(string username, EmergencyContact [] newData)
         {
-            var emrg = _profileService.PutEmergencyContact(username, newData);
-            return Ok(emrg);
+            EmergencyContact[] no = new EmergencyContact [0];
+            foreach (EmergencyContact contact in newData)
+            {
+                var emrg = _profileService.PutEmergencyContact(username, contact);
+                no = no.Concat(new EmergencyContact[] { emrg }).ToArray();
+            }
+            return Ok(newData);
         }
         
 
