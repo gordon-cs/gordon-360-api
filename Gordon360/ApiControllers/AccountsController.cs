@@ -35,7 +35,7 @@ namespace Gordon360.ApiControllers
         [HttpGet]
         [Route("email/{email}")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
-        public ActionResult GetByAccountEmail(string email)
+        public ActionResult<AccountViewModel> GetByAccountEmail(string email)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(email))
             {
@@ -89,7 +89,7 @@ namespace Gordon360.ApiControllers
         /// <returns> All accounts meeting some or all of the parameter</returns>
         [HttpGet]
         [Route("search/{searchString}")]
-        public ActionResult Search(string searchString)
+        public ActionResult<IEnumerable<BasicInfoViewModel>> Search(string searchString)
         {
             var authenticatedUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserId);
@@ -264,7 +264,7 @@ namespace Gordon360.ApiControllers
         /// <returns> All accounts meeting some or all of the parameter</returns>
         [HttpGet]
         [Route("search/{searchString}/{secondaryString}")]
-        public ActionResult SearchWithSpace(string searchString, string secondaryString)
+        public ActionResult<IEnumerable<BasicInfoViewModel>> SearchWithSpace(string searchString, string secondaryString)
         {
             var authenticatedUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserId);
@@ -368,7 +368,7 @@ namespace Gordon360.ApiControllers
         [HttpGet]
         [Route("username/{username}")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
-        public ActionResult GetByAccountUsername(string username)
+        public ActionResult<AccountViewModel> GetByAccountUsername(string username)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(username))
             {
@@ -447,7 +447,7 @@ namespace Gordon360.ApiControllers
         /// <returns> All accounts meeting some or all of the parameter</returns>
         [HttpGet]
         [Route("advanced-people-search/{includeStudentSearchParam}/{includeFacStaffSearchParam}/{includeAlumniSearchParam}/{firstNameSearchParam}/{lastNameSearchParam}/{majorSearchParam}/{minorSearchParam}/{hallSearchParam}/{classTypeSearchParam}/{hometownSearchParam}/{stateSearchParam}/{countrySearchParam}/{departmentSearchParam}/{buildingSearchParam}")]
-        public IHttpActionResult AdvancedPeopleSearch(bool includeStudentSearchParam, bool includeFacStaffSearchParam,
+        public ActionResult<IEnumerable<JObject>> AdvancedPeopleSearch(bool includeStudentSearchParam, bool includeFacStaffSearchParam,
             bool includeAlumniSearchParam, string firstNameSearchParam, string lastNameSearchParam, string majorSearchParam,
             string minorSearchParam, string hallSearchParam, string classTypeSearchParam, string hometownSearchParam,
             string stateSearchParam, string countrySearchParam, string departmentSearchParam, string buildingSearchParam)

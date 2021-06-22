@@ -321,7 +321,7 @@ namespace Gordon360.Services
             if (username.ToLower() != storedEditorUsername.ToLower())
             {
                 // This should already be caught by the StateYourBusiness, but I will leave this check here just in case
-                throw new Exceptions.CustomExceptions.UnauthorizedAccessException() { ExceptionMessage = "The current user does not match the stored editor of this application" };
+                throw new UnauthorizedAccessException("The current user does not match the stored editor of this application");
             }
             // Only perform the update if the username of the current user matched the 'EditorUsername' stored in the database for the requested application
 

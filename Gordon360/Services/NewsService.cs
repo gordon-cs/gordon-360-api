@@ -253,7 +253,7 @@ namespace Gordon360.Services
             var dateDiff = (todaysDate - newsDate).Days;
             if (dateDiff >= 14)
             {
-                throw new Exceptions.CustomExceptions.UnauthorizedAccessException() { ExceptionMessage = "Unauthorized to delete expired news items." };
+                throw new UnauthorizedAccessException("Unauthorized to delete expired news items.");
             }
             return true;
         }

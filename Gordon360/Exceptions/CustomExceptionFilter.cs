@@ -1,60 +1,50 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net;
+using System.Net.Http;
 using Gordon360.Exceptions.CustomExceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 /// <summary>
-/// These exception filters catch unhandled exceptions and convert them
-/// into HTTP Responses
+/// These exception filters catch unhandled exceptions and convert them into HTTP Responses
 /// </summary>
 namespace Gordon360.Exceptions.ExceptionFilters
 {
+    // Use on Controllers (classes) and Actions (methods)
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class CustomExceptionFilter : ExceptionFilterAttribute
     {
-        public override void OnException(ExceptionContext actionExecutedContext)
+        public override void OnException(ExceptionContext context)
         {
-            // RESOURCE NOT FOUND
-            if (actionExecutedContext.Exception is ResourceNotFoundException)
-            {
-                var exception = actionExecutedContext.Exception as ResourceNotFoundException;
-                
-                /*********** new opt. 1 *********/
-                actionExecutedContext.ExceptionHandled = true;
-                // log error in dbS
-                actionExecutedContext.Result = new ViewResult()
-                {
-                    ViewName = exception.ExceptionMessage
-                };
-                
-                /********** new opt. 2 ************/
-                //actionExecutedContext.ExceptionHandled = true;
-                // log error in db
-                //actionExecutedContext.Result = RedirectToAction(exception.ExceptionMessage, "InternalError");
-                
-                /*********** original *********/
-                // actionExecutedContext.Response = actionExecutedContext.Request.CreateErrorResponse(System.Net.HttpStatusCode.NotFound, exception.ExceptionMessage);
+            var statusCode = HttpStatusCode.InternalServerError;
+
+            switch (context.Exception) {
+                case ResourceNotFoundException:
+                    statusCode = HttpStatusCode.NotFound;
+                    break;
+
+                case ResourceCreationException:
+                    statusCode = HttpStatusCode.Conflict;
+                    break;
+
+                case BadInputException:
+                    statusCode = HttpStatusCode.BadRequest;
+                    break;
+
+                // Not a custom exception
+                case UnauthorizedAccessException:
+                    statusCode = HttpStatusCode.Unauthorized;
+                    break;
             }
 
-            // RESOURCE CREATION CONFLICT
-            else if (actionExecutedContext.Exception is ResourceCreationException)
+            // Create Http Response
+            context.HttpContext.Response.ContentType = "application/json";
+            context.HttpContext.Response.StatusCode = (int) statusCode;
+            context.Result = new JsonResult(new
             {
-                var exception = actionExecutedContext.Exception as ResourceCreationException;
-                actionExecutedContext.Response = actionExecutedContext.Request.CreateErrorResponse(System.Net.HttpStatusCode.Conflict, exception.ExceptionMessage);
-            }
-
-            // BAD INPUT
-            else if( actionExecutedContext.Exception is BadInputException)
-            {
-                var exception = actionExecutedContext.Exception as BadInputException;
-                actionExecutedContext.Response = actionExecutedContext.Request.CreateErrorResponse(System.Net.HttpStatusCode.BadRequest, exception.ExceptionMessage);
-            }
-
-            // UNAUTHORIZED ACCESS EXCEPTION
-            else if (actionExecutedContext.Exception is UnauthorizedAccessException)
-            {
-                var exception = actionExecutedContext.Exception as UnauthorizedAccessException;
-                actionExecutedContext.Response = actionExecutedContext.Request.CreateErrorResponse(System.Net.HttpStatusCode.Unauthorized, exception.ExceptionMessage);
-            }
+                error = new[] { context.Exception.Message },
+                stackTrace = context.Exception.StackTrace
+            });
         }
     }
 }
