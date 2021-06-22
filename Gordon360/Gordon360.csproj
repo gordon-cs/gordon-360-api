@@ -556,6 +556,7 @@
     <Compile Include="Models\VICTORY_PROMISE_BY_STUDENT_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModels\EmergencyCotnactViewModel.cs" />
     <Compile Include="Models\ViewModels\MessageSearchViewModel.cs" />
     <Compile Include="Models\paid_shifts.cs">
       <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>

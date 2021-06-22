@@ -353,6 +353,19 @@ namespace Gordon360.Controllers.Api
 
         }
 
+        /// <summary> Gets the emergency contact information of a particular user </summary>
+        /// <param username="AD_Username"> The username for which to retrieve info </param>
+        /// <returns> Emergency contact information of the given user. </returns>
+        [HttpGet]
+        [Route("emergency-contact/{username}")]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
+        public IHttpActionResult GetEmergencyContact(string username)
+        {
+            var emrg = _profileService.GetEmergencyContact(username);
+
+            return Ok(emrg);
+        }
+
         /// <summary>Get the profile image of currently logged in user</summary>
         /// <returns></returns>
         [HttpGet]
