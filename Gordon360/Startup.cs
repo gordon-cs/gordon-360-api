@@ -144,6 +144,7 @@ namespace Gordon360
             IEnumerable<PublicAlumniProfileViewModel> publicAlumni = Helpers.GetAllPublicAlumni();
             IList<JObject> allPublicAccounts = new List<JObject>();
             IList<JObject> allPublicAccountsWithoutAlumni = new List<JObject>();
+            IList<JObject> allPublicAccountsOnlyAlumni = new List<JObject>();
             IList<JObject> allPublicAccountsWithoutCurrentStudents = new List<JObject>();
 
             // storing in global variab
@@ -186,6 +187,7 @@ namespace Gordon360
                 allPublicAccountsWithoutAlumni.Add(JObject.FromObject(theFacStaff));
                 allPublicAccountsWithoutCurrentStudents.Add(JObject.FromObject(theFacStaff));
             }
+
             foreach (PublicAlumniProfileViewModel anAlum in Data.PublicAlumniData)
             {
                 JObject theAlum = JObject.FromObject(anAlum);
@@ -201,10 +203,13 @@ namespace Gordon360
                 theAlum.Add("Minor3Description", null);
                 allPublicAccounts.Add(theAlum);
                 allPublicAccountsWithoutCurrentStudents.Add(theAlum);
+                allPublicAccountsOnlyAlumni.Add(theAlum);
             }
+
             Data.AllPublicAccountsWithoutCurrentStudents = allPublicAccountsWithoutCurrentStudents;
             Data.AllPublicAccounts = allPublicAccounts;
             Data.AllPublicAccountsWithoutAlumni = allPublicAccountsWithoutAlumni;
+            Data.AllPublicAccountsOnlyAlumni = allPublicAccountsOnlyAlumni;
         }
 
         // Inside the callback we do all the service work
