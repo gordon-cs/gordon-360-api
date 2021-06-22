@@ -4,11 +4,11 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="8d27e9f10105446b9eeee991b5aca304" Name="Diagram1">
+      <Diagram DiagramId="e3ee6a0e8c9c4178b79df320c0d961e9" Name="Diagram1">
         <EntityTypeShape EntityType="Gordon360.ChapelSummary" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.dtproperties" Width="1.5" PointX="0.75" PointY="5.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.StudentNews" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="Gordon360.StudentNewsCategory" Width="1.5" PointX="0.75" PointY="1.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Gordon360.StudentNewsCategory" Width="1.5" PointX="0.75" PointY="2" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.Countries" Width="1.5" PointX="2.75" PointY="5.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.view_cct_alumni" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Gordon360.view_cct_ChapelEvent" Width="1.5" PointX="4.75" PointY="7.75" IsExpanded="true" />

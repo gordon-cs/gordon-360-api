@@ -2299,6 +2299,44 @@
             </summary>
             <returns>A SessionViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
         </member>
+        <member name="M:Gordon360.Utils.ImageUtils.GetBase64ImageDataFromPath(System.String)">
+            <summary>
+            Takes a filepath for an image, navigates to it, collects the raw data
+            of the file and converts it to base64 format. 
+            
+            The base64 data will not include the first part of a base64 image ("data:image/...").
+            This is because this part is removed in every image before being submitted, and it
+            is readded in the frontend before being displayed.
+            
+            This helper function does not perform any error checking; every place that calls it
+            checks that the path is not empty. Theoretically if it isn't empty it's certainly a valid path.
+            </summary>
+            <param name="imagePath">The path to the image</param>
+            <returns>The base64 content of the image</returns>
+        </member>
+        <member name="M:Gordon360.Utils.ImageUtils.DeleteImage(System.String)">
+            <summary>
+            Deletes an image from the filesystem, if there is one.
+            </summary>
+            <param name="imagePath">The path to which the image belonged.</param>
+        </member>
+        <member name="M:Gordon360.Utils.ImageUtils.RetrieveImageFromPath(System.String)">
+            <summary>
+            Takes an image path and returns the data of the image at that path.
+            If given path is null it returns an empty string.
+            </summary>
+            <param name="imagePath">The path to the image</param>
+            <returns>The base64 data of the image</returns>
+        </member>
+        <member name="M:Gordon360.Utils.ImageUtils.UploadImage(System.String,System.String)">
+            <summary>
+            Uploads a news image
+            Takes base64 image data and writes it to an image file. Note that if the target path
+            already has a file, the method will overwrite it (which gives no errors)
+            </summary>
+            <param name="imagePath">The path to which the image belongs</param>
+            <param name="imageData">The base64 image data to be stored</param>
+        </member>
         <member name="T:Gordon360.Static.Data.Data">
             <summary>
             Service class for data that is shared between all services.

@@ -9,6 +9,7 @@ using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using Gordon360.Models.ViewModels;
+using Gordon360.Utils;
 
 namespace Gordon360.Controllers.Api
 {
@@ -18,6 +19,7 @@ namespace Gordon360.Controllers.Api
     public class NewsController : ApiController
     {
         private INewsService _newsService;
+        private IImageUtils _imageUtils = new ImageUtils();
         private IAccountService _accountService;
 
         /**private void catchBadInput()
@@ -66,6 +68,9 @@ namespace Gordon360.Controllers.Api
             {
                 return NotFound();
             }
+
+            result.Image = _imageUtils.RetrieveImageFromPath(result.Image);
+
             return Ok(result);
         }
 
