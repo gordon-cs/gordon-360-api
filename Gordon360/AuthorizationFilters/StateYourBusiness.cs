@@ -32,7 +32,7 @@ namespace Gordon360.AuthorizationFilters
         // Operation to be performed: Will get as parameters to the attribute
         public string operation { get; set; }
 
-        private HttpActionContext context;
+        private ActionExecutingContext context;
 
         // User position at the college and their id.
         private string user_position { get; set; }
@@ -41,11 +41,12 @@ namespace Gordon360.AuthorizationFilters
 
         private bool isAuthorized = false;
 
-        public override void OnActionExecuting(HttpActionContext actionContext)
+        public override void OnActionExecuting(ActionExecutingContext actionContext)
         {
             context = actionContext;
             // Step 1: Who is to be authorized
             var authenticatedUser = actionContext.RequestContext.Principal as ClaimsPrincipal;
+            // var authenticatedUserUsername = actionContext.HttpContext.User.Identity.Name;
 
             if (authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role") != null)
             {
