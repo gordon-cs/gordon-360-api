@@ -506,6 +506,13 @@
             <param name="newsID">The id of the news item to retrieve</param>
             <returns>The news item</returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.NewsController.GetImage(System.Int32)">
+            <summary>Gets the base64 image data for an image corresponding 
+            to a student news item. Only used by GO; when we move student news approval
+            to 360, this will be removed.</summary>
+            <param name="newsID">The id of the news item to retrieve image from</param>
+            <returns>base64 string representing image</returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.NewsController.GetNotExpired">
             Call the service that gets all approved student news entries not yet expired, filtering
             out the expired by comparing 2 weeks past date entered to current date
@@ -2319,13 +2326,6 @@
             <summary>
             Takes a filepath for an image, navigates to it, collects the raw data
             of the file and converts it to base64 format. 
-            
-            The base64 data will not include the first part of a base64 image ("data:image/...").
-            This is because this part is removed in every image before being submitted, and it
-            is readded in the frontend before being displayed.
-            
-            This helper function does not perform any error checking; every place that calls it
-            checks that the path is not empty. Theoretically if it isn't empty it's certainly a valid path.
             </summary>
             <param name="imagePath">The path to the image</param>
             <returns>The base64 content of the image</returns>
@@ -2347,9 +2347,11 @@
         <member name="M:Gordon360.Utils.ImageUtils.UploadImage(System.String,System.String)">
             <summary>
             Uploads a news image
+            </summary>
+            <remarks>
             Takes base64 image data and writes it to an image file. Note that if the target path
             already has a file, the method will overwrite it (which gives no errors)
-            </summary>
+            </remarks>
             <param name="imagePath">The path to which the image belongs</param>
             <param name="imageData">The base64 image data to be stored</param>
         </member>
