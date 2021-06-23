@@ -14,7 +14,6 @@ using Gordon360.Utils;
 namespace Gordon360.Controllers.Api
 {
     [RoutePrefix("api/news")]
-    [Authorize]
     [CustomExceptionFilter]
     public class NewsController : ApiController
     {
@@ -58,6 +57,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>The news item</returns>
         [HttpGet]
         [Route("{newsID}")]
+        [Authorize]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.NEWS)]
         // Private route to authenticated users
         public IHttpActionResult GetByID(int newsID)
@@ -74,11 +74,30 @@ namespace Gordon360.Controllers.Api
             return Ok(result);
         }
 
+        /// <summary>Gets the base64 image data for an image corresponding 
+        /// to a student news item. Only used by GO; when we move student news approval
+        /// to 360, this will be removed.</summary>
+        /// <param name="newsID">The id of the news item to retrieve image from</param>
+        /// <returns>base64 string representing image</returns>
+        [HttpGet]
+        [Route("{newsID}/image")]
+        public IHttpActionResult GetImage(int newsID)
+        {
+            var result = (StudentNewsViewModel)_newsService.Get(newsID);
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_imageUtils.RetrieveImageFromPath(result.Image));
+        }
+
         /** Call the service that gets all approved student news entries not yet expired, filtering
          * out the expired by comparing 2 weeks past date entered to current date
          */
         [HttpGet]
         [Route("not-expired")]
+        [Authorize]
         public IHttpActionResult GetNotExpired()
         {
             var result = _newsService.GetNewsNotExpired();
@@ -95,6 +114,7 @@ namespace Gordon360.Controllers.Api
          */
         [HttpGet]
         [Route("new")]
+        [Authorize]
         public IHttpActionResult GetNew()
         {
             var result = _newsService.GetNewsNew();
@@ -109,6 +129,7 @@ namespace Gordon360.Controllers.Api
          */
         [HttpGet]
         [Route("categories")]
+        [Authorize]
         public IHttpActionResult GetCategories()
         {
             var result = _newsService.GetNewsCategories();
@@ -124,6 +145,7 @@ namespace Gordon360.Controllers.Api
          */
         [HttpGet]
         [Route("personal-unapproved")]
+        [Authorize]
         public IHttpActionResult GetNewsPersonalUnapproved()
         {
             // Get authenticated username/id
@@ -144,6 +166,7 @@ namespace Gordon360.Controllers.Api
          */
         [HttpPost]
         [Route("")]
+        [Authorize]
         public IHttpActionResult Post([FromBody] StudentNews newsItem)
         {
             // Check for bad input
@@ -180,6 +203,7 @@ namespace Gordon360.Controllers.Api
         /// <remarks>The news item must be authored by the user and must not be expired</remarks>
         [HttpDelete]
         [Route("{newsID}")]
+        [Authorize]
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.NEWS)]
         // Private route to authenticated authors of the news entity
         public IHttpActionResult Delete(int newsID)
@@ -205,6 +229,7 @@ namespace Gordon360.Controllers.Api
         /// <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
         [HttpPut]
         [Route("{newsID}")]
+        [Authorize]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.NEWS)]
         // Private route to authenticated users - authors of posting or admins
         public IHttpActionResult EditPosting(int newsID,[FromBody] StudentNews newData)
