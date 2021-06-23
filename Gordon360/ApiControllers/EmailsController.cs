@@ -1,23 +1,20 @@
 ﻿using Gordon360.Repositories;
 using Gordon360.Services;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gordon360.ApiControllers
 {
 
     [Authorize]
     [CustomExceptionFilter]
-    [RoutePrefix("api/emails")]
+    [Route("api/emails")]
     public class EmailsController : ControllerBase
     {
         EmailService _emailService;
@@ -32,7 +29,7 @@ namespace Gordon360.ApiControllers
 
         [Route("activity/{id}")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_ACTIVITY)]
-        public IHttpActionResult GetEmailsForActivity(string id)
+        public ActionResult<IEnumerable<EmailViewModel>> GetEmailsForActivity(string id)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
@@ -59,7 +56,7 @@ namespace Gordon360.ApiControllers
 
         [Route("activity/{id}/session/{session}")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_ACTIVITY)]
-        public IHttpActionResult GetEmailsForActivity(string id, string session)
+        public ActionResult<IEnumerable<EmailViewModel>> GetEmailsForActivity(string id, string session)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
@@ -86,7 +83,7 @@ namespace Gordon360.ApiControllers
 
         [Route("activity/{id}/leaders")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_LEADERS)]
-        public IHttpActionResult GetEmailsForleader(string id)
+        public ActionResult<IEnumerable<EmailViewModel>> GetEmailsForleader(string id)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
@@ -112,7 +109,7 @@ namespace Gordon360.ApiControllers
 
         [Route("activity/{id}/group-admin/session/{session}")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_GROUP_ADMIN)]
-        public IHttpActionResult GetEmailsForGroupAdmin(string id, string session)
+        public ActionResult<IEnumerable<EmailViewModel>> GetEmailsForGroupAdmin(string id, string session)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
@@ -138,7 +135,7 @@ namespace Gordon360.ApiControllers
 
         [Route("activity/{id}/leaders/session/{session}")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_LEADERS)]
-        public IHttpActionResult GetEmailsForleader(string id, string session)
+        public ActionResult<IEnumerable<EmailViewModel>> GetEmailsForleader(string id, string session)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
@@ -164,7 +161,7 @@ namespace Gordon360.ApiControllers
 
         [Route("activity/{id}/advisors")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_LEADERS)]
-        public IHttpActionResult GetEmailsForAdvisor(string id)
+        public ActionResult<IEnumerable<EmailViewModel>> GetEmailsForAdvisor(string id)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
@@ -190,7 +187,7 @@ namespace Gordon360.ApiControllers
 
         [Route("activity/{id}/advisors/session/{session}")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_LEADERS)]
-        public IHttpActionResult GetEmailsForAdvisor(string id, string session)
+        public ActionResult<IEnumerable<EmailViewModel>> GetEmailsForAdvisor(string id, string session)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
@@ -216,7 +213,7 @@ namespace Gordon360.ApiControllers
 
         [HttpPut]
         [Route("")]
-        public IHttpActionResult SendEmails([FromBody]EmailContentViewModel email)
+        public ActionResult SendEmails([FromBody]EmailContentViewModel email)
         {
             if (!ModelState.IsValid)
             {
@@ -265,7 +262,7 @@ namespace Gordon360.ApiControllers
         [HttpPut]
         [Route("activity/{id}/session/{session}")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_ACTIVITY)]
-        public IHttpActionResult SendEmailToActivity(string id, string session, [FromBody] EmailContentViewModel email)
+        public ActionResult SendEmailToActivity(string id, string session, [FromBody] EmailContentViewModel email)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {

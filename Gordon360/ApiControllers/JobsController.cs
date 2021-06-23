@@ -15,12 +15,13 @@ using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using Gordon360.Exceptions.CustomExceptions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gordon360.ApiControllers
 {
     [Authorize]
     [CustomExceptionFilter]
-    [RoutePrefix("api/jobs")]
+    [Route("api/jobs")]
     public class JobsController : ControllerBase
     {
         private IJobsService _jobsService;
@@ -38,10 +39,7 @@ namespace Gordon360.ApiControllers
         private int GetCurrentUserID()
         {
             int userID = -1;
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            string id = _accountService.GetAccountByUsername(username).GordonID;
-            userID = Convert.ToInt32(id);
+            var authenticatedUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
             return userID;
         }
@@ -53,7 +51,7 @@ namespace Gordon360.ApiControllers
         /// <returns>The user's active jobs</returns>
         [HttpGet]
         [Route("")]
-        public IHttpActionResult GetJobs(DateTime shiftStart, DateTime shiftEnd) {
+        public ActionResult<IEnumerable<ActiveJobViewModel>> GetJobs(DateTime shiftStart, DateTime shiftEnd) {
             IEnumerable<ActiveJobViewModel> result;
             try {
                 result = _jobsService.getActiveJobs(shiftStart, shiftEnd, GetCurrentUserID());
@@ -73,7 +71,7 @@ namespace Gordon360.ApiControllers
         /// <returns>The user's active jobs</returns>
         [HttpPost]
         [Route("getJobs")]
-        public IHttpActionResult DEPRECATED_getJobsForUser([FromBody] ActiveJobSelectionParametersModel details)
+        public ActionResult<IEnumerable<ActiveJobViewModel>> DEPRECATED_getJobsForUser([FromBody] ActiveJobSelectionParametersModel details)
         {
             IEnumerable<ActiveJobViewModel> result = null;
             int userID = GetCurrentUserID();
@@ -196,7 +194,7 @@ namespace Gordon360.ApiControllers
         [HttpDelete]
         [Route("deleteShift/{rowID}")]
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.SHIFT)]
-        public IHttpActionResult deleteShiftForUser(int rowID)
+        public ActionResult<IEnumerable<StudentTimesheetsViewModel>> deleteShiftForUser(int rowID)
         {
             IEnumerable<StudentTimesheetsViewModel> result = null;
             int userID = GetCurrentUserID();
@@ -220,7 +218,7 @@ namespace Gordon360.ApiControllers
         [HttpPost]
         [Route("submitShifts")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.SHIFT)]
-        public IHttpActionResult submitShiftsForUser([FromBody] IEnumerable<ShiftToSubmitViewModel> shifts)
+        public ActionResult<IEnumerable<StudentTimesheetsViewModel>> submitShiftsForUser([FromBody] IEnumerable<ShiftToSubmitViewModel> shifts)
         {
             IEnumerable<StudentTimesheetsViewModel> result = null;
             int userID = GetCurrentUserID();
@@ -247,7 +245,7 @@ namespace Gordon360.ApiControllers
         [HttpGet]
         [Route("supervisorName/{supervisorID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.SHIFT)]
-        public IHttpActionResult getSupervisorName(int supervisorID)
+        public ActionResult<IEnumerable<SupervisorViewModel>> getSupervisorName(int supervisorID)
         {
             IEnumerable<SupervisorViewModel> result = null;
 
@@ -271,7 +269,7 @@ namespace Gordon360.ApiControllers
         /// <returns>returns confirmation that the answer was recorded </returns>
         [HttpPost]
         [Route("clockIn")]
-        public IHttpActionResult ClockIn([FromBody] bool state)
+        public ActionResult<ClockInViewModel> ClockIn([FromBody] bool state)
         {
 
             if (!ModelState.IsValid || state == null)
@@ -312,7 +310,7 @@ namespace Gordon360.ApiControllers
         /// <returns>ClockInViewModel</returns>
         [HttpGet]
         [Route("clockOut")]
-        public IHttpActionResult ClockOut()
+        public ActionResult<IEnumerable<ClockInViewModel>> ClockOut()
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
@@ -335,7 +333,7 @@ namespace Gordon360.ApiControllers
         /// <returns>returns confirmation that clock in status was deleted</returns>
         [HttpPut]
         [Route("deleteClockIn")]
-        public IHttpActionResult DeleteClockIn()
+        public ActionResult<ClockInViewModel> DeleteClockIn()
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
@@ -360,7 +358,7 @@ namespace Gordon360.ApiControllers
         /// <returns>Boolean</returns>
         [HttpGet]
         [Route("canUsePage")]
-        public IHttpActionResult CanUsePage()
+        public ActionResult<IEnumerable<StaffCheckViewModel>> CanUsePage()
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
@@ -386,7 +384,7 @@ namespace Gordon360.ApiControllers
         /// <returns>The Staff's active jobs</returns>
         [HttpPost]
         [Route("jobsStaff")]
-        public IHttpActionResult getJobsForStaff([FromBody] ActiveJobSelectionParametersModel details)
+        public ActionResult<IEnumerable<ActiveJobViewModel>> getJobsForStaff([FromBody] ActiveJobSelectionParametersModel details)
         {
             IEnumerable<ActiveJobViewModel> result = null;
             int userID = GetCurrentUserID();
@@ -501,7 +499,7 @@ namespace Gordon360.ApiControllers
         [HttpDelete]
         [Route("deleteShiftStaff/{rowID}")]
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.SHIFT)]
-        public IHttpActionResult deleteShiftForStaff(int rowID)
+        public ActionResult<IEnumerable<StudentTimesheetsViewModel>> deleteShiftForStaff(int rowID)
         {
             IEnumerable<StaffTimesheetsViewModel> result = null;
             int userID = GetCurrentUserID();
@@ -525,7 +523,7 @@ namespace Gordon360.ApiControllers
         [HttpPost]
         [Route("submitShiftsStaff")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.SHIFT)]
-        public IHttpActionResult submitShiftsForStaff([FromBody] IEnumerable<ShiftToSubmitViewModel> shifts)
+        public ActionResult<IEnumerable<StudentTimesheetsViewModel>> submitShiftsForStaff([FromBody] IEnumerable<ShiftToSubmitViewModel> shifts)
         {
             IEnumerable<StaffTimesheetsViewModel> result = null;
             int userID = GetCurrentUserID();
@@ -552,7 +550,7 @@ namespace Gordon360.ApiControllers
         [HttpGet]
         [Route("supervisorNameStaff/{supervisorID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.SHIFT)]
-        public IHttpActionResult getSupervisorNameStaff(int supervisorID)
+        public ActionResult<IEnumerable<SupervisorViewModel>> getSupervisorNameStaff(int supervisorID)
         {
             IEnumerable<SupervisorViewModel> result = null;
 
@@ -574,7 +572,7 @@ namespace Gordon360.ApiControllers
         /// <returns>The hour types for staff</returns>
         [HttpGet]
         [Route("hourTypes")]
-        public IHttpActionResult getHourTypes()
+        public ActionResult<IEnumerable<HourTypesViewModel>> getHourTypes()
         {
             IEnumerable<HourTypesViewModel> result = null;
 

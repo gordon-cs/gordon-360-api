@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using System.Collections.Generic;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Exceptions.ExceptionFilters;
@@ -10,17 +6,18 @@ using Gordon360.Models;
 using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Static.Names;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.ApiControllers
 {
-    [RoutePrefix("api/admins")]
+    [Route("api/admins")]
     [Authorize]
     [CustomExceptionFilter]
     public class AdminsController : ControllerBase
     {
 
-        private IAdministratorService _adminService;
+        private readonly IAdministratorService _adminService;
 
         public AdminsController()
         {
@@ -46,7 +43,7 @@ namespace Gordon360.ApiControllers
         [HttpGet]
         [Route("")]
         [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.ADMIN)]
-        public IHttpActionResult GetAll()
+        public ActionResult<IEnumerable<ADMIN>> GetAll()
         {
             var result = _adminService.GetAll();
             return Ok(result);
@@ -65,7 +62,7 @@ namespace Gordon360.ApiControllers
         [HttpGet]
         [Route("{id}")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ADMIN)]
-        public IHttpActionResult GetByGordonId(string id)
+        public ActionResult<ADMIN> GetByGordonId(string id)
         {
             var result = _adminService.Get(id);
             return Ok(result);
@@ -79,7 +76,7 @@ namespace Gordon360.ApiControllers
         [HttpPost]
         [Route("", Name = "Admins")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.ADMIN)]
-        public IHttpActionResult Post([FromBody] ADMIN admin)
+        public ActionResult<ADMIN> Post([FromBody] ADMIN admin)
         {
             if (!ModelState.IsValid || admin == null)
             {
@@ -112,7 +109,7 @@ namespace Gordon360.ApiControllers
         [HttpDelete]
         [Route("{id}")]
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.ADMIN)]
-        public IHttpActionResult Delete(int id)
+        public ActionResult<ADMIN> Delete(int id)
         {
             var result = _adminService.Delete(id);
 

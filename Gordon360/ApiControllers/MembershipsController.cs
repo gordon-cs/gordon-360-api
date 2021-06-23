@@ -11,18 +11,18 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gordon360.Controllers.Api
 {
-    [RoutePrefix("api/memberships")]
+    [Route("api/memberships")]
     [Authorize]
     [CustomExceptionFilter]
     public class MembershipsController : ControllerBase
     {
-
-        private IMembershipService _membershipService;
-        private IAccountService _accountService;
-        private IActivityService _activityService;
+        private readonly IMembershipService _membershipService;
+        private readonly IAccountService _accountService;
+        private readonly IActivityService _activityService;
 
         public MembershipsController()
         {
@@ -49,9 +49,8 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("")]
         [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.MEMBERSHIP)]
-        public IHttpActionResult Get()
+        public ActionResult<IEnumerable<MembershipViewModel>> Get()
         {
-            
             var result = _membershipService.GetAll();
             return Ok(result);
         }
@@ -64,7 +63,7 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("activity/{id}")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_BY_ACTIVITY)]
-        public IHttpActionResult GetMembershipsForActivity(string id)
+        public ActionResult<IEnumerable<MembershipViewModel>> GetMembershipsForActivity(string id)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
@@ -97,7 +96,7 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("activity/{id}/group-admin")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.GROUP_ADMIN_BY_ACTIVITY)]
-        public IHttpActionResult GetGroupAdminForActivity(string id)
+        public ActionResult<IEnumerable<MembershipViewModel>> GetGroupAdminForActivity(string id)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
@@ -129,7 +128,7 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("activity/{id}/leaders")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.LEADER_BY_ACTIVITY)]
-        public IHttpActionResult GetLeadersForActivity(string id)
+        public ActionResult<IEnumerable<MembershipViewModel>> GetLeadersForActivity(string id)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
@@ -161,7 +160,7 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("activity/{id}/advisors")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.ADVISOR_BY_ACTIVITY)]
-        public IHttpActionResult GetAdvisorsForActivity(string id)
+        public ActionResult<IEnumerable<MembershipViewModel>> GetAdvisorsForActivity(string id)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
@@ -193,7 +192,7 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("activity/{id}/followers")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
-        public IHttpActionResult GetActivityFollowersCount(string id)
+        public ActionResult<int> GetActivityFollowersCount(string id)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
@@ -221,7 +220,7 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("activity/{id}/members")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
-        public IHttpActionResult GetActivityMembersCount(string id)
+        public ActionResult<int> GetActivityMembersCount(string id)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
@@ -250,7 +249,7 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("activity/{id}/followers/{sess_cde}")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
-        public IHttpActionResult GetActivityFollowersCountForSession(string id, string sess_cde)
+        public ActionResult<int> GetActivityFollowersCountForSession(string id, string sess_cde)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
@@ -279,7 +278,7 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("activity/{id}/members/{sess_cde}")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
-        public IHttpActionResult GetActivityMembersCountForSession(string id, string sess_cde)
+        public ActionResult<int> GetActivityMembersCountForSession(string id, string sess_cde)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
             {
@@ -307,7 +306,7 @@ namespace Gordon360.Controllers.Api
         [HttpPost]
         [Route("", Name="Memberships")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.MEMBERSHIP)]
-        public IHttpActionResult Post([FromBody] MEMBERSHIP membership)
+        public ActionResult<MEMBERSHIP> Post([FromBody] MEMBERSHIP membership)
         {
             if(!ModelState.IsValid || membership == null)
             {
@@ -340,7 +339,7 @@ namespace Gordon360.Controllers.Api
         [Route("student/{id}")]
         [HttpGet]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_BY_STUDENT)]
-        public IHttpActionResult GetMembershipsForStudent(string id)
+        public ActionResult<IEnumerable<MembershipViewModel>> GetMembershipsForStudent(string id)
         {
 
             if (!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
@@ -370,7 +369,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>The membership information that the student is a part of</returns>
         [Route("student/username/{username}")]
         [HttpGet]
-        public IHttpActionResult GetMembershipsForStudentByUsename(string username)
+        public ActionResult<List<MembershipViewModel>> GetMembershipsForStudentByUsename(string username)
         {
 
             if (!ModelState.IsValid || String.IsNullOrWhiteSpace(username))

@@ -17,6 +17,7 @@ using Gordon360.Models.ViewModels;
 using System.Security.Claims;
 using Gordon360.AuthorizationFilters;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gordon360.Controllers.Api
 {
@@ -25,10 +26,9 @@ namespace Gordon360.Controllers.Api
     [Authorize]
     public class ProfilesController : ControllerBase
     {
-        //declare services we are going to use.
-        private IProfileService _profileService;
-        private IAccountService _accountService;
-        private IRoleCheckingService _roleCheckingService;
+        private readonly IProfileService _profileService;
+        private readonly IAccountService _accountService;
+        private readonly IRoleCheckingService _roleCheckingService;
 
         public ProfilesController()
         {
@@ -47,18 +47,16 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpGet]
         [Route("")]
-        public IHttpActionResult Get()
+        public ActionResult<ProfileCustomViewModel> Get()
         {
             //get token data from context, username is the username of current logged in person
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
             // search username in cached data
-            var student = _profileService.GetStudentProfileByUsername(username);
-            var faculty = _profileService.GetFacultyStaffProfileByUsername(username);
-            var alumni = _profileService.GetAlumniProfileByUsername(username);
-
+            var student = _profileService.GetStudentProfileByUsername(authenticatedUserUsername);
+            var faculty = _profileService.GetFacultyStaffProfileByUsername(authenticatedUserUsername);
+            var alumni = _profileService.GetAlumniProfileByUsername(authenticatedUserUsername);
             //get profile links
-            var customInfo = _profileService.GetCustomUserInfo(username);
+            var customInfo = _profileService.GetCustomUserInfo(authenticatedUserUsername);
 
             // merge the person's info if this person is in multiple tables and return result 
             if (student != null)
@@ -156,12 +154,13 @@ namespace Gordon360.Controllers.Api
                 return NotFound();
             }
         }
+
         /// <summary>Get public profile info for a user</summary>
         /// <param name="username">username of the profile info</param>
         /// <returns></returns>
         [HttpGet]
         [Route("{username}")]
-        public IHttpActionResult GetUserProfile(string username)
+        public ActionResult<StudentProfileViewModel> GetUserProfile(string username)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(username))
             {
@@ -177,9 +176,8 @@ namespace Gordon360.Controllers.Api
                 throw new BadInputException() { ExceptionMessage = errors };
             }
             //get token data from context, username is the username of current logged in person
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var viewerType = _roleCheckingService.getCollegeRole(viewerName);
+            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
+            var viewerType = _roleCheckingService.getCollegeRole(authenticatedUserUsername);
 
             //search this person in cached data.
             var _student = _profileService.GetStudentProfileByUsername(username);
@@ -327,26 +325,15 @@ namespace Gordon360.Controllers.Api
         /// </returns>
         [HttpGet]
         [Route("Advisors/{username}")]
-        public IHttpActionResult GetAdvisors(string username)
+        public ActionResult<IEnumerable<AdvisorViewModel>> GetAdvisors(string username)
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var _student = new StudentProfileViewModel();
-            var id = "";
-            try
-            {
-                _student = _profileService.GetStudentProfileByUsername(username);
-                id = _accountService.GetAccountByUsername(username).GordonID;
-            }
-            catch (ResourceNotFoundException)
-            {
-                NotFound();
-            }
+            var advisors = _profileService.GetAdvisors(authenticatedUserIdString);
 
             var advisors = _profileService.GetAdvisors((id == username ? username : id));
 
             return Ok(advisors);
-
         }
 
         /// <summary> Gets the clifton strengths of a particular user </summary>
@@ -355,10 +342,10 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("clifton/{username}")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
-        public IHttpActionResult GetCliftonStrengths(string username)
+        public ActionResult<IEnumerable<CliftonStrengthsViewModel>> GetCliftonStrengths(string username)
         {
             var id = _accountService.GetAccountByUsername(username).GordonID;
-            var strengths = _profileService.GetCliftonStrengths(int.Parse(id));
+            var strengths = _profileService.GetCliftonStrengths(Int32.Parse(id));
 
             return Ok(strengths);
 
@@ -394,9 +381,7 @@ namespace Gordon360.Controllers.Api
         [Route("mailbox-combination")]
         public IHttpActionResult GetMailInfo()
         {
-            //get token data from context, username is the username of current logged in person
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var username = AuthUtils.GetAuthenticatedUserUsername(User);
 
             var result = _profileService.GetMailboxCombination(username);
             return Ok(result);
@@ -406,11 +391,9 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpGet]
         [Route("birthdate")]
-        public IHttpActionResult GetBirthdate()
+        public ActionResult<DateTime> GetBirthdate()
         {
-            //get token data from context, username is the username of current logged in person
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var username = AuthUtils.GetAuthenticatedUserUsername(User);
 
             var result = _profileService.GetBirthdate(username);
             return Ok(result);
@@ -420,13 +403,11 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpGet]
         [Route("Image")]
-        public IHttpActionResult GetMyImg()
+        public ActionResult<JObject> GetMyImg()
         {
-            var authenticatedUser = ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var photoModel = _profileService.GetPhotoPath(id);
+            var photoModel = _profileService.GetPhotoPath(authenticatedUserIdString);
 
             string pref_img = "";
             string default_img = "";
@@ -505,22 +486,12 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpGet]
         [Route("Image/{username}")]
-        public IHttpActionResult getImg(string username)
+        public ActionResult<JObject> getImg(string username)
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var viewerType = _roleCheckingService.getCollegeRole(viewerName);
-            var id = "";
-            var photoInfo = new PhotoPathViewModel();
-            try
-            {
-                id = _accountService.GetAccountByUsername(username).GordonID;
-                photoInfo = _profileService.GetPhotoPath(id);
-            }
-            catch (ResourceNotFoundException)
-            {
-                photoInfo = null;
-            }
+            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
+            var viewerType = _roleCheckingService.getCollegeRole(authenticatedUserUsername);
+            var id = _accountService.GetAccountByUsername(authenticatedUserUsername).GordonID;
+            var photoInfo = _profileService.GetPhotoPath(id);
 
             var filePath = "";
             var fileName = "";
@@ -700,12 +671,11 @@ namespace Gordon360.Controllers.Api
         [Route("image")]
         public async Task<HttpResponseMessage> PostImage()
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
             string root = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PREF_IMAGE_PATH"];
-            var fileName = _accountService.GetAccountByUsername(username).Barcode + ".jpg";
-            var pathInfo = _profileService.GetPhotoPath(id);
+            var fileName = _accountService.GetAccountByUsername(authenticatedUserUsername).Barcode + ".jpg";
+            var pathInfo = _profileService.GetPhotoPath(authenticatedUserIdString);
             var provider = new CustomMultipartFormDataStreamProvider(root);
 
             if (!Request.Content.IsMimeMultipartContent())
@@ -752,12 +722,11 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpPost]
         [Route("IDimage")]
-        public async Task<IHttpActionResult> PostIDImage()
+        public async Task<ActionResult> PostIDImage()
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
             string root = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_ID_SUBMISSION_PATH"];
-            var fileName = username + "_" + _accountService.GetAccountByUsername(username).account_id + ".jpg";
+            var fileName = username + "_" + _accountService.GetAccountByUsername(authenticatedUserUsername).account_id + ".jpg";
             var provider = new CustomMultipartFormDataStreamProvider(root);
             JObject result = new JObject();
 
@@ -811,20 +780,18 @@ namespace Gordon360.Controllers.Api
 
 
 
-
         /// <summary>
         /// Reset the profile Image
         /// </summary>
         /// <returns></returns>
         [HttpPost]
         [Route("image/reset")]
-        public IHttpActionResult ResetImage()
+        public ActionResult ResetImage()
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value; ;
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
             string root = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PREF_IMAGE_PATH"];
-            var fileName = _accountService.GetAccountByUsername(username).Barcode + ".jpg";
+            var fileName = _accountService.GetAccountByUsername(authenticatedUserUsername).Barcode + ".jpg";
             try
             {
                 System.IO.DirectoryInfo di = new DirectoryInfo(root);
@@ -837,7 +804,7 @@ namespace Gordon360.Controllers.Api
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
             }
-            _profileService.UpdateProfileImage(id, null, null);  //update database
+            _profileService.UpdateProfileImage(authenticatedUserIdString, null, null);  //update database
             return Ok();
         }
 
@@ -850,7 +817,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpPut]
         [Route("{type}")]
-        public IHttpActionResult UpdateLink(string type, CUSTOM_PROFILE path)
+        public ActionResult UpdateLink(string type, CUSTOM_PROFILE path)
         {
             // Verify Input
             if (!ModelState.IsValid)
@@ -866,13 +833,11 @@ namespace Gordon360.Controllers.Api
                 }
                 throw new BadInputException() { ExceptionMessage = errors };
             }
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
 
-            _profileService.UpdateProfileLink(username, type, path);
+            _profileService.UpdateProfileLink(authenticatedUserUsername, type, path);
 
             return Ok();
-
         }
 
         /// <summary>
@@ -917,7 +882,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpPut]
         [Route("mobile_privacy/{value}")]
-        public IHttpActionResult UpdateMobilePrivacy(string value)
+        public ActionResult UpdateMobilePrivacy(string value)
         {
             // Verify Input
             if (!ModelState.IsValid)
@@ -934,12 +899,10 @@ namespace Gordon360.Controllers.Api
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
-            _profileService.UpdateMobilePrivacy(id, value);
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            _profileService.UpdateMobilePrivacy(authenticatedUserIdString, value);
 
             return Ok();
-
         }
 
         /// <summary>
@@ -949,7 +912,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpPut]
         [Route("image_privacy/{value}")]
-        public IHttpActionResult UpdateImagePrivacy(string value)
+        public ActionResult UpdateImagePrivacy(string value)
         {
             // Verify Input
             if (!ModelState.IsValid)
@@ -966,9 +929,8 @@ namespace Gordon360.Controllers.Api
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
-            _profileService.UpdateImagePrivacy(id, value);
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            _profileService.UpdateImagePrivacy(authenticatedUserIdString, value);
 
             return Ok();
         }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using System.Collections.Generic;
 using System.Security.Claims;
 using Gordon360.Models;
 using Gordon360.Repositories;
@@ -12,10 +8,12 @@ using Gordon360.Static.Names;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Exceptions.CustomExceptions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Controllers.Api
 {
-    [RoutePrefix("api/requests")]
+    [Route("api/requests")]
     [Authorize]
     [CustomExceptionFilter]
     public class MembershipRequestController : ControllerBase
@@ -43,7 +41,7 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("")]
         [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.MEMBERSHIP_REQUEST)]
-        public IHttpActionResult Get()
+        public ActionResult<IEnumerable<MembershipViewModel>> Get()
         {
             var all = _membershipRequestService.GetAll();
             return Ok(all);
@@ -57,7 +55,7 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("{id}")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP_REQUEST)]
-        public IHttpActionResult Get(int id)
+        public ActionResult<MembershipViewModel> Get(int id)
         {
             if (!ModelState.IsValid)
             {
@@ -92,7 +90,7 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("activity/{id}")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_REQUEST_BY_ACTIVITY)]
-        public IHttpActionResult GetMembershipsRequestsForActivity(string id)
+        public ActionResult<IEnumerable<MembershipViewModel>> GetMembershipsRequestsForActivity(string id)
         {
             if(!ModelState.IsValid)
             {
@@ -125,7 +123,7 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("student")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_REQUEST_BY_STUDENT)]
-        public IHttpActionResult GetMembershipsRequestsForStudent()
+        public ActionResult<IEnumerable<MembershipViewModel>> GetMembershipsRequestsForStudent()
         {
             if (!ModelState.IsValid)
             {
@@ -141,10 +139,8 @@ namespace Gordon360.Controllers.Api
                 
                 throw new BadInputException() { ExceptionMessage = errors };
             }
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var studentId = _accountService.GetAccountByUsername(username).GordonID;
-            var result = _membershipRequestService.GetMembershipRequestsForStudent(studentId);
+            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var result = _membershipRequestService.GetMembershipRequestsForStudent(authenticatedUserIdString);
 
             if (result == null)
             {
@@ -162,7 +158,7 @@ namespace Gordon360.Controllers.Api
         [HttpPost]
         [Route("",Name = "membershipRequest")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.MEMBERSHIP_REQUEST)]
-        public IHttpActionResult Post([FromBody] REQUEST membershipRequest)
+        public ActionResult<REQUEST> Post([FromBody] REQUEST membershipRequest)
         {
             if( !ModelState.IsValid || membershipRequest == null)
             {
@@ -197,7 +193,7 @@ namespace Gordon360.Controllers.Api
         [HttpPut]
         [Route("{id}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP_REQUEST)]
-        public IHttpActionResult Put(int id, REQUEST membershipRequest)
+        public ActionResult<REQUEST> Put(int id, REQUEST membershipRequest)
         {
             if (!ModelState.IsValid || membershipRequest == null || id != membershipRequest.REQUEST_ID)
             {
@@ -230,7 +226,7 @@ namespace Gordon360.Controllers.Api
         [HttpPost]
         [Route("{id}/approve")]
         [StateYourBusiness(operation = Operation.DENY_ALLOW, resource = Resource.MEMBERSHIP_REQUEST)]
-        public IHttpActionResult ApproveRequest(int id)
+        public ActionResult<MEMBERSHIP> ApproveRequest(int id)
         {
             if(!ModelState.IsValid)
             {
@@ -264,7 +260,7 @@ namespace Gordon360.Controllers.Api
         [HttpPost]
         [Route("{id}/deny")]
         [StateYourBusiness(operation = Operation.DENY_ALLOW, resource = Resource.MEMBERSHIP_REQUEST)]
-        public IHttpActionResult DenyRequest(int id)
+        public ActionResult<REQUEST> DenyRequest(int id)
         {
             if(!ModelState.IsValid)
             {
@@ -297,7 +293,7 @@ namespace Gordon360.Controllers.Api
         [HttpDelete]
         [Route("{id}")]
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.MEMBERSHIP_REQUEST)]
-        public IHttpActionResult Delete(int id)
+        public ActionResult<REQUEST> Delete(int id)
         {
             var result = _membershipRequestService.Delete(id);
 

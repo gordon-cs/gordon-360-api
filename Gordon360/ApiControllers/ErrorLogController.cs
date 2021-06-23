@@ -1,26 +1,22 @@
 ﻿using Gordon360.Models;
 using Gordon360.Services;
 using Gordon360.Repositories;
-using Gordon360.Models.ViewModels;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
-using System;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Exceptions.CustomExceptions;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gordon360.ApiControllers
 {
-    [RoutePrefix("api/log")]
+    [Route("api/log")]
     [Authorize]
     [CustomExceptionFilter]
     public class ErrorLogController : ControllerBase
     {
 
-        private IErrorLogService _errorLogService;
+        private readonly IErrorLogService _errorLogService;
 
         public ErrorLogController()
         {
@@ -40,7 +36,7 @@ namespace Gordon360.ApiControllers
         [HttpPost]
         [Route("", Name = "error_log")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.ERROR_LOG)]
-        public IHttpActionResult Post([FromBody] string error_message)
+        public ActionResult<ERROR_LOG> Post([FromBody] string error_message)
         {
 
             if (error_message == null)
@@ -63,7 +59,7 @@ namespace Gordon360.ApiControllers
         [HttpPost]
         [Route("add", Name = "error_add")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.ERROR_LOG)]
-        public IHttpActionResult Post([FromBody] ERROR_LOG error_log)
+        public ActionResult<ERROR_LOG> Post([FromBody] ERROR_LOG error_log)
         {
 
             if (!ModelState.IsValid || error_log == null)
