@@ -366,6 +366,16 @@ namespace Gordon360.Controllers.Api
             return Ok(emrg);
         }
 
+        /// <summary>Gets the mailbox information of currently logged in user</summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("mail-info/{boxNumber}")]
+        public IHttpActionResult GetMailInfo(string boxNumber)
+        {
+            var result = _profileService.GetMailInfo(Int32.Parse(boxNumber));
+            return Ok(result);
+        }
+
         /// <summary>Get the profile image of currently logged in user</summary>
         /// <returns></returns>
         [HttpGet]

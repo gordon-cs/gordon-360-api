@@ -65,6 +65,18 @@ namespace Gordon360.Services
                 result = alumni;
             return result;
         }
+
+        /// <summary>
+        /// get mailbox information
+        /// </summary>
+        /// <param name="boxNumber">the box number</param>
+        /// <returns>tbd</returns>
+        public MailboxViewModel GetMailInfo(int boxNumber)
+        {
+            MailboxViewModel info = _unitOfWork.MailboxRepository.GetById(boxNumber);
+            return info;
+        }
+
         /// <summary>
         /// get advisors for particular student
         /// </summary>
