@@ -23,10 +23,9 @@ namespace Gordon360.Static.Data
         public static JObject PublicStudentData { get; set; }
         public static IEnumerable<PublicFacultyStaffProfileViewModel> PublicFacultyStaffData { get; set; }
         public static IEnumerable<PublicAlumniProfileViewModel> PublicAlumniData { get; set; }
-        public static IEnumerable<JObject> AllPublicAccounts { get; set; }
-        public static IEnumerable<JObject> AllPublicAccountsWithoutAlumni { get; set; }
-        public static IEnumerable<JObject> AllPublicAccountsOnlyAlumni { get; set; }
-        public static IEnumerable<JObject> AllPublicAccountsWithoutCurrentStudents { get; set; }
+        public static IEnumerable<JObject> AllPublicStudentAccounts { get; set; }
+        public static IEnumerable<JObject> AllPublicFacStaffAccounts { get; set; }
+        public static IEnumerable<JObject> AllPublicAlumniAccounts { get; set; }
 
         // All account info
         public static IEnumerable<Student> StudentData { get; set; }
