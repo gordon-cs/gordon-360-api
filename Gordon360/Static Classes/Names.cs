@@ -64,6 +64,7 @@ namespace Gordon360.Static.Names
     {
         public const string STUDENT = "student";
         public const string FACSTAFF = "facstaff";
+        public const string ALUMNI = "alumni";
         public const string SUPERADMIN = "god";      // TODO: change in database to something more reverent
         public const string POLICE = "gordon police";
         public const string READONLY = "readonly";
