@@ -716,9 +716,7 @@ warning 6002: The table/view 'CCT.dbo.JENZ_ACT_CLUB_DEF' does not have a primary
 warning 6002: The table/view 'CCT.dbo.Mailboxes' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Mailboxes">
           <Key>
-            <PropertyRef Name="BoxId" />
             <PropertyRef Name="BoxNo" />
-            <PropertyRef Name="Type" />
           </Key>
           <Property Name="BoxId" Type="int" Nullable="false" />
           <Property Name="BoxNo" Type="varchar" MaxLength="32" Nullable="false" />
@@ -3572,9 +3570,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         </ComplexType>
         <EntityType Name="Mailboxes">
           <Key>
-            <PropertyRef Name="BoxId" />
             <PropertyRef Name="BoxNo" />
-            <PropertyRef Name="Type" />
           </Key>
           <Property Name="BoxId" Type="Int32" Nullable="false" />
           <Property Name="BoxNo" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />

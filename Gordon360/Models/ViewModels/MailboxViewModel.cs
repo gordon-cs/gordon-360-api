@@ -13,7 +13,7 @@ namespace Gordon360.Models.ViewModels
         {
             MailboxViewModel vm = new MailboxViewModel
             {
-                Combination = req.Combination ?? "",
+                Combination = (req != null) ? req.Combination ?? "" : "",
             };
 
             return vm;

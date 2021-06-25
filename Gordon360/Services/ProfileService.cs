@@ -67,13 +67,24 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// get mailbox information
+        /// get mailbox combination
         /// </summary>
-        /// <param name="boxNumber">the box number</param>
-        /// <returns>tbd</returns>
-        public MailboxViewModel GetMailInfo(int boxNumber)
+        /// <param name="username">The current user's username</param>
+        /// <returns>MailboxViewModel with the combination</returns>
+        public MailboxViewModel GetMailboxCombination(string username)
         {
-            MailboxViewModel info = _unitOfWork.MailboxRepository.GetById(boxNumber);
+            var mailboxNumber = 
+                Data.StudentData
+                .FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower())
+                .Mail_Location;
+
+            MailboxViewModel info = new MailboxViewModel();
+
+            if (mailboxNumber != null)
+            {
+                info = _unitOfWork.MailboxRepository.GetById(mailboxNumber);
+            }
+
             return info;
         }
 
