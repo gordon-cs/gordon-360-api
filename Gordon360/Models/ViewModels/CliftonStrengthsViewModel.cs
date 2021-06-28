@@ -7,7 +7,7 @@ namespace Gordon360.Models.ViewModels
 {
     public class CliftonStrengthsViewModel
     {
-        public List<String> Strengths { get; set; }
+        public List<string> Strengths { get; set; }
 
         public static implicit operator CliftonStrengthsViewModel(Clifton_Strengths clif)
         {

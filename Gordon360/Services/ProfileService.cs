@@ -125,10 +125,10 @@ namespace Gordon360.Services
         /// <returns> Clifton strengths of the given user. </returns>
         public CliftonStrengthsViewModel GetCliftonStrengths(int id)
         {
-            var strengths = _unitOfWork.CliftonStrengthsRepository.GetById(id);
+            var strengths = _unitOfWork.CliftonStrengthsRepository.FirstOrDefault(x => x.ID_NUM == id);
             if(strengths == null)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "Clifton Strengths not found." };
+                return null;
             }
             return strengths;
         }
