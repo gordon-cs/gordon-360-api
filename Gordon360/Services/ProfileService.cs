@@ -125,12 +125,7 @@ namespace Gordon360.Services
         /// <returns> Clifton strengths of the given user. </returns>
         public CliftonStrengthsViewModel GetCliftonStrengths(int id)
         {
-            var strengths = _unitOfWork.CliftonStrengthsRepository.FirstOrDefault(x => x.ID_NUM == id);
-            if(strengths == null)
-            {
-                return null;
-            }
-            return strengths;
+            return _unitOfWork.CliftonStrengthsRepository.FirstOrDefault(x => x.ID_NUM == id);
         }
 
         /// <summary> Gets the emergency contact information of a particular user </summary>
