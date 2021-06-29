@@ -90,10 +90,6 @@ namespace Gordon360.Services
             AccountViewModel result = query; // Implicit conversion happening here, see ViewModels.
             return result;
         }
-
-
-
-        
     }
 
 }
