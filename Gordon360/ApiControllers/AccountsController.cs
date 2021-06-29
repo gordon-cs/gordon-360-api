@@ -356,6 +356,9 @@ namespace Gordon360.ApiControllers
         }
 
         /// <summary>
+        /// Deprecated route uses new route below with two leading parameters for
+        /// including students and facStaff.
+        /// 
         /// Return a list of accounts matching some or all of the search parameters
         /// We are searching through all the info of a user, then narrowing it down to get only what we want
         /// </summary>
