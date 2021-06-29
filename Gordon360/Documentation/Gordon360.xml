@@ -41,11 +41,13 @@
             <param name="secondaryString"> The second piece of the search terms </param>
             <returns> All accounts meeting some or all of the parameter</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.AccountsController.AdvancedPeopleSearch(System.Boolean,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+        <member name="M:Gordon360.ApiControllers.AccountsController.AdvancedPeopleSearch(System.Boolean,System.Boolean,System.Boolean,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
             <summary>
             Return a list of accounts matching some or all of the search parameters
             We are searching through all the info of a user, then narrowing it down to get only what we want
             </summary>
+            <param name="includeStudentSearchParam"> Include Student in search results or not </param>
+            <param name="includeFacStaffSearchParam"> Include Faculty and Staff in search results or not </param>
             <param name="includeAlumniSearchParam"> For non-students: Include Alumni in search results or not </param>
             <param name="firstNameSearchParam"> The first name to search for </param>
             <param name="lastNameSearchParam"> The last name to search for </param>
@@ -235,7 +237,13 @@
             </summary>
             <returns></returns>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:Gordon360.ApiControllers.JobsController.GetJobs(System.DateTime,System.DateTime)" -->
+        <member name="M:Gordon360.ApiControllers.JobsController.GetJobs(System.DateTime,System.DateTime)">
+            <summary>
+            Get a user's active jobs
+            </summary>
+            <param name="details"></param>
+            <returns>The user's active jobs</returns>
+        </member>
         <member name="M:Gordon360.ApiControllers.JobsController.DEPRECATED_getJobsForUser(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
             <summary>
             Get a user's active jobs
@@ -500,6 +508,13 @@
             <param name="newsID">The id of the news item to retrieve</param>
             <returns>The news item</returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.NewsController.GetImage(System.Int32)">
+            <summary>Gets the base64 image data for an image corresponding 
+            to a student news item. Only used by GO; when we move student news approval
+            to 360, this will be removed.</summary>
+            <param name="newsID">The id of the news item to retrieve image from</param>
+            <returns>base64 string representing image</returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.NewsController.GetNotExpired">
             Call the service that gets all approved student news entries not yet expired, filtering
             out the expired by comparing 2 weeks past date entered to current date
@@ -712,6 +727,11 @@
             <summary> Gets the clifton strengths of a particular user </summary>
             <param name="username"> The username for which to retrieve info </param>
             <returns> Clifton strengths of the given user. </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.GetEmergencyContact(System.String)">
+            <summary> Gets the emergency contact information of a particular user </summary>
+            <param username="AD_Username"> The username for which to retrieve info </param>
+            <returns> Emergency contact information of the given user. </returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.GetMyImg">
             <summary>Get the profile image of currently logged in user</summary>
@@ -1765,6 +1785,11 @@
             <param name="id"> The id of the user for which to retrieve info </param>
             <returns> Clifton strengths of the given user. </returns>
         </member>
+        <member name="M:Gordon360.Services.ProfileService.GetEmergencyContact(System.String)">
+            <summary> Gets the emergency contact information of a particular user </summary>
+            <param name="username"> The username of the user for which to retrieve info </param>
+            <returns> Emergency contact information of the given user. </returns>
+        </member>
         <member name="M:Gordon360.Services.ProfileService.GetPhotoPath(System.String)">
             <summary>
             Get photo path for profile
@@ -2298,6 +2323,39 @@
             Fetches all the session records from the database.
             </summary>
             <returns>A SessionViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
+        </member>
+        <member name="M:Gordon360.Utils.ImageUtils.GetBase64ImageDataFromPath(System.String)">
+            <summary>
+            Takes a filepath for an image, navigates to it, collects the raw data
+            of the file and converts it to base64 format. 
+            </summary>
+            <param name="imagePath">The path to the image</param>
+            <returns>The base64 content of the image</returns>
+        </member>
+        <member name="M:Gordon360.Utils.ImageUtils.DeleteImage(System.String)">
+            <summary>
+            Deletes an image from the filesystem, if there is one.
+            </summary>
+            <param name="imagePath">The path to which the image belonged.</param>
+        </member>
+        <member name="M:Gordon360.Utils.ImageUtils.RetrieveImageFromPath(System.String)">
+            <summary>
+            Takes an image path and returns the data of the image at that path.
+            If given path is null it returns an empty string.
+            </summary>
+            <param name="imagePath">The path to the image</param>
+            <returns>The base64 data of the image</returns>
+        </member>
+        <member name="M:Gordon360.Utils.ImageUtils.UploadImage(System.String,System.String)">
+            <summary>
+            Uploads a news image
+            </summary>
+            <remarks>
+            Takes base64 image data and writes it to an image file. Note that if the target path
+            already has a file, the method will overwrite it (which gives no errors)
+            </remarks>
+            <param name="imagePath">The path to which the image belongs</param>
+            <param name="imageData">The base64 image data to be stored</param>
         </member>
         <member name="T:Gordon360.Static.Data.Data">
             <summary>

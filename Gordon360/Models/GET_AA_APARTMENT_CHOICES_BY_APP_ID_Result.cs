@@ -13,7 +13,7 @@ namespace Gordon360.Models
     
     public partial class GET_AA_APARTMENT_CHOICES_BY_APP_ID_Result
     {
-        public int AprtAppID { get; set; }
+        public int HousingAppID { get; set; }
         public int Ranking { get; set; }
         public string HallName { get; set; }
     }

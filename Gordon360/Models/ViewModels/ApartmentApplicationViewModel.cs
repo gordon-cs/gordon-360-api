@@ -28,7 +28,7 @@ namespace Gordon360.Models.ViewModels
         {
             ApartmentApplicationViewModel vm = new ApartmentApplicationViewModel
             {
-                ApplicationID = applicationDBModel.AprtAppID,
+                ApplicationID = applicationDBModel.HousingAppID,
                 DateSubmitted = applicationDBModel.DateSubmitted,
                 DateModified = applicationDBModel.DateModified,
                 EditorUsername = applicationDBModel.EditorUsername,

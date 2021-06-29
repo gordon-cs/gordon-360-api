@@ -223,21 +223,6 @@
     <Compile Include="ApiControllers\SaveController.cs" />
     <Compile Include="ApiControllers\ScheduleControlController.cs" />
     <Compile Include="ApiControllers\WellnessController.cs" />
-    <Compile Include="Models\AA_Admins.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\AA_ApartmentApplications.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\AA_ApartmentChoices.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\AA_ApartmentHalls.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\AA_Applicants.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\ACCOUNT.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -346,6 +331,9 @@
     <Compile Include="Models\EMAILS_PER_ACT_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\EmergencyContact.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ERROR_LOG.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -403,6 +391,21 @@
     <Compile Include="Models\hour_types.cs">
       <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Housing_Admins.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Housing_Applicants.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Housing_Applications.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Housing_HallChoices.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Housing_Halls.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -433,7 +436,6 @@
     <Compile Include="Models\Messages.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ViewModels\MessageSearchViewModel.cs" />
     <Compile Include="Models\Message_Rooms.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -469,9 +471,6 @@
     </Compile>
     <Compile Include="Models\NEWS_PERSONAL_UNAPPROVED_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\paid_shifts.cs">
-      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PART_DEF.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
@@ -515,6 +514,53 @@
     <Compile Include="Models\sp_helpdiagrams_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Student.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\StudentNews.cs">
+      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\StudentNewsCategory.cs">
+      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\StudentNewsExpiration.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\STUDENT_JOBS_PER_ID_NUM_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\sysdiagrams.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Timesheets_Clock_In_Out.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UPCOMING_RIDES_BY_STUDENT_ID_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UPCOMING_RIDES_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Users.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\User_Connection_Ids.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\User_Rooms.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\VICTORY_PROMISE_BY_STUDENT_ID_Result.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ViewModels\EmergencyCotnactViewModel.cs" />
+    <Compile Include="Models\ViewModels\MessageSearchViewModel.cs" />
+    <Compile Include="Models\paid_shifts.cs">
+      <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\StaffTimesheets_DB_Models.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -548,19 +594,7 @@
     <Compile Include="Models\staff_timesheets_select_supervisor_name_Result.cs">
       <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Student.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\StudentEmployment.cs" />
-    <Compile Include="Models\StudentNews.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\StudentNewsCategory.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\StudentNewsExpiration.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\StudentTimesheet_DB_Models.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -576,9 +610,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Models\STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\student_timesheets.cs">
       <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
     </Compile>
@@ -593,30 +624,6 @@
     </Compile>
     <Compile Include="Models\student_timesheets_select_supervisor_name_Result.cs">
       <DependentUpon>StudentTimesheet_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\sysdiagrams.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Timesheets_Clock_In_Out.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\UPCOMING_RIDES_BY_STUDENT_ID_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\UPCOMING_RIDES_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Users.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\User_Connection_Ids.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\User_Rooms.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\VICTORY_PROMISE_BY_STUDENT_ID_Result.cs">
-      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ViewModels\ApartmentAppIDViewModel.cs" />
     <Compile Include="Models\ViewModels\HousingAdminViewModel.cs" />
@@ -722,6 +729,7 @@
     <Compile Include="Services\ActivityService.cs" />
     <Compile Include="Services\AdministratorService.cs" />
     <Compile Include="Services\DirectMessageService.cs" />
+    <Compile Include="Utils\ImageUtils.cs" />
     <Compile Include="Services\JobsService.cs" />
     <Compile Include="Services\DiningService.cs" />
     <Compile Include="Services\ErrorLogService.cs" />
@@ -750,6 +758,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="Static Classes\Names.cs" />
     <Compile Include="Hubs\SignalRHub.cs" />
+    <Compile Include="Utils\UtilsInterfaces.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="browseable\profile\Default\profile.png" />
@@ -791,13 +800,6 @@
     <Content Include="Models\StudentTimesheet_DB_Models.edmx.diagram">
       <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
     </Content>
-    <EntityDeploy Include="Models\MyGordon_DB_Models.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>MyGordon_DB_Models.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\MyGordon_DB_Models.edmx.diagram">
-      <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
-    </Content>
     <EntityDeploy Include="Models\StaffTimesheets_DB_Models.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>StaffTimesheets_DB_Models.Designer.cs</LastGenOutput>
@@ -806,6 +808,13 @@
       <DependentUpon>StaffTimesheets_DB_Models.edmx</DependentUpon>
     </Content>
     <Content Include="libman.json" />
+    <EntityDeploy Include="Models\MyGordon_DB_Models.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>MyGordon_DB_Models.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\MyGordon_DB_Models.edmx.diagram">
+      <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
+    </Content>
     <EntityDeploy Include="Models\CCT_DB_Models.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>CCT_DB_Models.Designer.cs</LastGenOutput>
@@ -889,7 +898,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:2626</IISUrl>
+          <IISUrl>http://localhost:5555</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

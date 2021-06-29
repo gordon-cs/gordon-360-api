@@ -126,6 +126,17 @@ namespace Gordon360.ApiControllers
                 }
                 precedence++;
 
+                // Nickname exact match
+                foreach (var match in accounts
+                                        .Where(s => !allMatches.ContainsValue(s))
+                                        .Where(s => s.NicknameMatches(searchString)))
+                {
+                    string key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
+
+                    appendMatch(key, match);
+                }
+                precedence++;
+
                 // Last name exact match
                 foreach (var match in accounts
                                         .Where(s => !allMatches.ContainsValue(s))
@@ -159,6 +170,17 @@ namespace Gordon360.ApiControllers
                 }
                 precedence++;
 
+                // Nickname starts with
+                foreach (var match in accounts
+                                        .Where(s => !allMatches.ContainsValue(s))
+                                        .Where(s => s.NicknameStartsWith(searchString)))
+                {
+                    string key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
+
+                    appendMatch(key, match);
+                }
+                precedence++;
+
                 // Last name starts with
                 foreach (var match in accounts
                                         .Where(s => !allMatches.ContainsValue(s))
@@ -181,14 +203,17 @@ namespace Gordon360.ApiControllers
                 }
                 precedence++;
 
-                // First name, last name, or username contains (Lowest priority)
+                // First name, last name, nickname or username contains (Lowest priority)
                 foreach (var match in accounts
                                         .Where(s => !allMatches.ContainsValue(s))
-                                        .Where(s => s.FirstNameContains(searchString) || s.LastNameContains(searchString) || s.UsernameContains(searchString)))
+                                        .Where(s => s.FirstNameContains(searchString) || s.NicknameContains(searchString) || s.LastNameContains(searchString) || s.UsernameContains(searchString)))
                 {
                     string key;
                     if (match.FirstNameContains(searchString)) { 
                         key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence); 
+                    }
+                    else if (match.NicknameContains(searchString)) {
+                        key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
                     }
                     else if (match.LastNameContains(searchString)) { 
                         key = GenerateKey(match.LastName, match.FirstName, match.UserName, precedence); 
@@ -268,6 +293,28 @@ namespace Gordon360.ApiControllers
 
                     appendMatch(key, match);
                 }
+                precedence++;
+
+                // Exact match in both nickname and last name
+                foreach (var match in accounts
+                                        .Where(s => !allMatches.ContainsValue(s))
+                                        .Where(s => s.NicknameMatches(searchString) && s.LastNameMatches(secondaryString)))
+                {
+                    string key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
+
+                    appendMatch(key, match);
+                }
+                precedence++;
+
+                // Nickname and last name start with (Lowest Priority)
+                foreach (var match in accounts
+                                        .Where(s => !allMatches.ContainsValue(s))
+                                        .Where(s => s.NicknameStartsWith(searchString) && s.LastNameStartsWith(secondaryString)))
+                {
+                    string key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
+
+                    appendMatch(key, match);
+                }
 
 
                 allMatches.OrderBy(s => s.Key);
@@ -312,6 +359,8 @@ namespace Gordon360.ApiControllers
         /// Return a list of accounts matching some or all of the search parameters
         /// We are searching through all the info of a user, then narrowing it down to get only what we want
         /// </summary>
+        /// <param name="includeStudentSearchParam"> Include Student in search results or not </param>
+        /// <param name="includeFacStaffSearchParam"> Include Faculty and Staff in search results or not </param>
         /// <param name="includeAlumniSearchParam"> For non-students: Include Alumni in search results or not </param>
         /// <param name="firstNameSearchParam"> The first name to search for </param>
         /// <param name="lastNameSearchParam"> The last name to search for </param>
@@ -326,8 +375,8 @@ namespace Gordon360.ApiControllers
         /// <param name="buildingSearchParam"></param>     
         /// <returns> All accounts meeting some or all of the parameter</returns>
         [HttpGet]
-        [Route("advanced-people-search/{includeAlumniSearchParam}/{firstNameSearchParam}/{lastNameSearchParam}/{majorSearchParam}/{minorSearchParam}/{hallSearchParam}/{classTypeSearchParam}/{hometownSearchParam}/{stateSearchParam}/{countrySearchParam}/{departmentSearchParam}/{buildingSearchParam}")]
-        public IHttpActionResult AdvancedPeopleSearch(bool includeAlumniSearchParam, string firstNameSearchParam, string lastNameSearchParam, string majorSearchParam, string minorSearchParam, string hallSearchParam, string classTypeSearchParam, string hometownSearchParam, string stateSearchParam, string countrySearchParam, string departmentSearchParam, string buildingSearchParam)
+        [Route("advanced-people-search/{includeStudentSearchParam}/{includeFacStaffSearchParam}/{includeAlumniSearchParam}/{firstNameSearchParam}/{lastNameSearchParam}/{majorSearchParam}/{minorSearchParam}/{hallSearchParam}/{classTypeSearchParam}/{hometownSearchParam}/{stateSearchParam}/{countrySearchParam}/{departmentSearchParam}/{buildingSearchParam}")]
+        public IHttpActionResult AdvancedPeopleSearch(bool includeStudentSearchParam, bool includeFacStaffSearchParam, bool includeAlumniSearchParam, string firstNameSearchParam, string lastNameSearchParam, string majorSearchParam, string minorSearchParam, string hallSearchParam, string classTypeSearchParam, string hometownSearchParam, string stateSearchParam, string countrySearchParam, string departmentSearchParam, string buildingSearchParam)
         {
             // If any search params were not entered, set them to empty strings
             if (firstNameSearchParam == "C\u266F")
@@ -401,30 +450,13 @@ namespace Gordon360.ApiControllers
             var viewerType = _roleCheckingService.getCollegeRole(viewerName);
 
             // Create accounts viewmodel to search
-            var accountsWithoutCurrentStudents = Data.AllPublicAccountsWithoutCurrentStudents;
-            var accountsWithoutAlumni = Data.AllPublicAccountsWithoutAlumni;
-            var accounts = Data.AllPublicAccounts;
+            IEnumerable<JObject> accounts = new List<JObject>();
+            if (includeStudentSearchParam && viewerType != Position.ALUMNI) accounts = accounts.Union(Data.AllPublicStudentAccounts);
+            if (includeFacStaffSearchParam) accounts = accounts.Union(Data.AllPublicFacStaffAccounts);
+            if (includeAlumniSearchParam && viewerType != Position.STUDENT) accounts = accounts.Union(Data.AllPublicAlumniAccounts);
 
-            IEnumerable<JObject> searchResults;
-            if (viewerType == Position.POLICE || viewerType == Position.FACSTAFF || viewerType == Position.SUPERADMIN)
-            {
-                if (!includeAlumniSearchParam)
-                {
-                    searchResults = accountsWithoutAlumni.Where(a => (a["FirstName"].ToString().ToLower().StartsWith(firstNameSearchParam)) && (a["LastName"].ToString().ToLower().StartsWith(lastNameSearchParam)) && ((a["Major1Description"].ToString().StartsWith(majorSearchParam)) || (a["Major2Description"].ToString().StartsWith(majorSearchParam)) || (a["Major3Description"].ToString().StartsWith(majorSearchParam))) && ((a["Minor1Description"].ToString().StartsWith(minorSearchParam)) || (a["Minor2Description"].ToString().StartsWith(minorSearchParam)) || (a["Minor3Description"].ToString().StartsWith(minorSearchParam))) && (a["Hall"].ToString().StartsWith(hallSearchParam)) && (a["Class"].ToString().StartsWith(classTypeSearchParam)) && (a["HomeCity"].ToString().ToLower().StartsWith(hometownSearchParam)) && (a["HomeState"].ToString().StartsWith(stateSearchParam)) && (a["Country"].ToString().StartsWith(countrySearchParam)) && (a["OnCampusDepartment"].ToString().StartsWith(departmentSearchParam)) && (a["BuildingDescription"].ToString().StartsWith(buildingSearchParam))).OrderBy(a => a["LastName"]).ThenBy(a => a["FirstName"]);
-                }
-                else
-                {
-                    searchResults = accounts.Where(a => (a["FirstName"].ToString().ToLower().StartsWith(firstNameSearchParam)) && (a["LastName"].ToString().ToLower().StartsWith(lastNameSearchParam)) && ((a["Major1Description"].ToString().StartsWith(majorSearchParam)) || (a["Major2Description"].ToString().StartsWith(majorSearchParam)) || (a["Major3Description"].ToString().StartsWith(majorSearchParam))) && ((a["Minor1Description"].ToString().StartsWith(minorSearchParam)) || (a["Minor2Description"].ToString().StartsWith(minorSearchParam)) || (a["Minor3Description"].ToString().StartsWith(minorSearchParam))) && (a["Hall"].ToString().StartsWith(hallSearchParam)) && (a["Class"].ToString().StartsWith(classTypeSearchParam)) && (a["HomeCity"].ToString().ToLower().StartsWith(hometownSearchParam)) && (a["HomeState"].ToString().StartsWith(stateSearchParam)) && (a["Country"].ToString().StartsWith(countrySearchParam)) && (a["OnCampusDepartment"].ToString().StartsWith(departmentSearchParam)) && (a["BuildingDescription"].ToString().StartsWith(buildingSearchParam))).OrderBy(a => a["LastName"]).ThenBy(a => a["FirstName"]);
-                }
-            }
-            else if (viewerType == Position.STUDENT)
-            {
-                searchResults = accountsWithoutAlumni.Where(a => (a["FirstName"].ToString().ToLower().StartsWith(firstNameSearchParam)) && (a["LastName"].ToString().ToLower().StartsWith(lastNameSearchParam)) && ((a["Major1Description"].ToString().StartsWith(majorSearchParam)) || (a["Major2Description"].ToString().StartsWith(majorSearchParam)) || (a["Major3Description"].ToString().StartsWith(majorSearchParam))) && ((a["Minor1Description"].ToString().StartsWith(minorSearchParam)) || (a["Minor2Description"].ToString().StartsWith(minorSearchParam)) || (a["Minor3Description"].ToString().StartsWith(minorSearchParam))) && (a["Hall"].ToString().StartsWith(hallSearchParam)) && (a["Class"].ToString().StartsWith(classTypeSearchParam)) && (a["HomeCity"].ToString().ToLower().StartsWith(hometownSearchParam)) && (a["HomeState"].ToString().StartsWith(stateSearchParam)) && (a["Country"].ToString().StartsWith(countrySearchParam)) && (a["OnCampusDepartment"].ToString().StartsWith(departmentSearchParam)) && (a["BuildingDescription"].ToString().StartsWith(buildingSearchParam))).OrderBy(a => a["LastName"]).ThenBy(a => a["FirstName"]);
-            }
-            else // Alumni should not be able to see current students
-            {
-                searchResults = accountsWithoutCurrentStudents.Where(a => (a["FirstName"].ToString().ToLower().StartsWith(firstNameSearchParam)) && (a["LastName"].ToString().ToLower().StartsWith(lastNameSearchParam)) && ((a["Major1Description"].ToString().StartsWith(majorSearchParam)) || (a["Major2Description"].ToString().StartsWith(majorSearchParam)) || (a["Major3Description"].ToString().StartsWith(majorSearchParam))) && ((a["Minor1Description"].ToString().StartsWith(minorSearchParam)) || (a["Minor2Description"].ToString().StartsWith(minorSearchParam)) || (a["Minor3Description"].ToString().StartsWith(minorSearchParam))) && (a["Class"].ToString().StartsWith(classTypeSearchParam)) && (a["HomeCity"].ToString().ToLower().StartsWith(hometownSearchParam)) && (a["HomeState"].ToString().StartsWith(stateSearchParam)) && (a["Country"].ToString().StartsWith(countrySearchParam)) && (a["OnCampusDepartment"].ToString().StartsWith(departmentSearchParam)) && (a["BuildingDescription"].ToString().StartsWith(buildingSearchParam))).OrderBy(a => a["LastName"]).ThenBy(a => a["FirstName"]);
-            }
+            IEnumerable <JObject> searchResults;
+            searchResults = accounts.Where(a => (a["FirstName"].ToString().ToLower().StartsWith(firstNameSearchParam) || (a["NickName"].ToString().ToLower().StartsWith(firstNameSearchParam))) && (a["LastName"].ToString().ToLower().StartsWith(lastNameSearchParam)) && ((a["Major1Description"].ToString().StartsWith(majorSearchParam)) || (a["Major2Description"].ToString().StartsWith(majorSearchParam)) || (a["Major3Description"].ToString().StartsWith(majorSearchParam))) && ((a["Minor1Description"].ToString().StartsWith(minorSearchParam)) || (a["Minor2Description"].ToString().StartsWith(minorSearchParam)) || (a["Minor3Description"].ToString().StartsWith(minorSearchParam))) && (a["Hall"].ToString().StartsWith(hallSearchParam)) && (a["Class"].ToString().StartsWith(classTypeSearchParam)) && (a["HomeCity"].ToString().ToLower().StartsWith(hometownSearchParam)) && (a["HomeState"].ToString().StartsWith(stateSearchParam)) && (a["Country"].ToString().StartsWith(countrySearchParam)) && (a["OnCampusDepartment"].ToString().StartsWith(departmentSearchParam)) && (a["BuildingDescription"].ToString().StartsWith(buildingSearchParam))).OrderBy(a => a["LastName"]).ThenBy(a => a["FirstName"]);
 
             // Return all of the profile views
             return Ok(searchResults);
