@@ -367,23 +367,6 @@ namespace Gordon360.Controllers.Api
             return Ok(emrg);
         }
         
-        /// <summary> Sets the emergency contact information for the user </summary>
-        /// <param username="AD_Username"> The username for which to retrieve info </param>
-        /// <returns> The updated emergency contacts </returns>
-        [HttpPut]
-        [Route("emergency-contact/{username}")]
-        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE)]
-        public IHttpActionResult PutEmergencyContact(string username, EmergencyContact [] newData)
-        {
-            EmergencyContact[] no = new EmergencyContact [0];
-            foreach (EmergencyContact contact in newData)
-            {
-                var emrg = _profileService.PutEmergencyContact(username, contact);
-                no = no.Concat(new EmergencyContact[] { emrg }).ToArray();
-            }
-            return Ok(newData);
-        }
-        
 
         /// <summary>Get the profile image of currently logged in user</summary>
         /// <returns></returns>

@@ -148,28 +148,6 @@ namespace Gordon360.Services
             return result;
         }
 
-        public EmergencyContact PutEmergencyContact(string username, EmergencyContact newData)
-        {
-            if(newData.firstname == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The new data to update the emergency contact is missing some entries. (Must have at least 1 contact)" };
-            }
-            
-            /*
-            IEnumerable<EmergencyContact> emergencyContacts = _unitOfWork.EmergencyContactRepository.GetAll((x) => x.AD_Username == username);
- 
-            foreach (EmergencyContact contact in emergencyContacts)
-            {
-                _unitOfWork.EmergencyContactRepository.Delete(contact);
-            }
-            */
-
-            _unitOfWork.EmergencyContactRepository.Add(newData);
-
-            _unitOfWork.Save();
-
-            return (EmergencyContact) newData;
-        }
 
         /// <summary>
         /// Get photo path for profile

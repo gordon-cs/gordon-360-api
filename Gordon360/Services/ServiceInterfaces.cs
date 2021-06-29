@@ -24,7 +24,6 @@ namespace Gordon360.Services
         IEnumerable<AdvisorViewModel> GetAdvisors(string id);
         CliftonStrengthsViewModel GetCliftonStrengths(int id);
         IEnumerable<EmergencyContactViewModel> GetEmergencyContact(string username);
-        EmergencyContact PutEmergencyContact(string username, EmergencyContact newData);
         ProfileCustomViewModel GetCustomUserInfo(string username);
         PhotoPathViewModel GetPhotoPath(string id);
         void UpdateProfileLink(string username, string type, CUSTOM_PROFILE path);
@@ -293,8 +292,10 @@ namespace Gordon360.Services
 
     public interface IAcademicCheckInService
     {
-        string[] GetHolds(string id);
-        string[] GetDemographic(string id);
+        IEnumerable<AcademicCheckInViewModel> GetHolds(string id);
+        IEnumerable<AcademicCheckInViewModel> GetDemographic(string id);
+        IEnumerable<AcademicCheckInViewModel> PutCellPhone(string [] data, string id);
+        string FormatNumber(string phoneNum);
     }
 
 }
