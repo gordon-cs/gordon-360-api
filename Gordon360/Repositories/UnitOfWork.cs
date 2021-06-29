@@ -21,6 +21,7 @@ namespace Gordon360.Repositories
         private IRepository<MEMBERSHIP> _MembershipRepository;
         private IRepository<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> _FacultyScheduleRepository;
         private IRepository<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> _StudentScheduleRepository;
+        private IRepository<Mailboxes> _MailboxRepository;
         private IRepository<MYSCHEDULE> _MyScheduleRepository;
         private IRepository<Save_Rides> _RideRepository;
         private IRepository<Save_Bookings> _BookingRepository;
@@ -94,6 +95,10 @@ namespace Gordon360.Repositories
         public IRepository<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> FacultyScheduleRepository
         {
             get { return _FacultyScheduleRepository ?? (_FacultyScheduleRepository = new GenericRepository<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result>(_context)); }
+        }
+        public IRepository<Mailboxes> MailboxRepository
+        {
+            get { return _MailboxRepository ?? (_MailboxRepository = new GenericRepository<Mailboxes>(_context)); }
         }
         public IRepository<MYSCHEDULE> MyScheduleRepository
         {
