@@ -12,12 +12,9 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class AA_ApartmentChoices
+    public partial class Housing_Halls
     {
-        public int AprtAppID { get; set; }
-        public int Ranking { get; set; }
-        public string HallName { get; set; }
-    
-        public virtual AA_ApartmentApplications AA_ApartmentApplications { get; set; }
+        public string Name { get; set; }
+        public string Type { get; set; }
     }
 }

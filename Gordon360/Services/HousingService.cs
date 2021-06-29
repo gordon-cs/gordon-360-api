@@ -115,11 +115,10 @@ namespace Gordon360.Services
         /// Calls a stored procedure that gets all names of apartment halls
         /// </summary>
         /// <returns> AN array of hall names </returns>
-        public AA_ApartmentHalls[] GetAllApartmentHalls()
+        public string[] GetAllApartmentHalls()
         {
-            IEnumerable<AA_ApartmentHalls> hallsResult = null;
 
-            hallsResult = RawSqlQuery<AA_ApartmentHalls>.query("GET_AA_APARTMENT_HALLS");
+            var hallsResult = RawSqlQuery<string>.query("GET_AA_APARTMENT_HALLS");
             if (hallsResult == null || !hallsResult.Any())
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The apartment halls could not be found." };
@@ -151,7 +150,7 @@ namespace Gordon360.Services
                 return null;
             }
 
-            int result = idResult.FirstOrDefault().AprtAppID;
+            int result = idResult.FirstOrDefault().HousingAppID;
 
             return result;
         }
@@ -244,7 +243,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The new application ID could not be found." };
             }
 
-            int applicationID = idResult.FirstOrDefault().AprtAppID;
+            int applicationID = idResult.FirstOrDefault().HousingAppID;
 
             //----------------
             // Save applicant information
@@ -371,7 +370,7 @@ namespace Gordon360.Services
                     {
                         ApartmentApplicantViewModel nonMatchingApplicant = new ApartmentApplicantViewModel
                         {
-                            ApplicationID = existingApplicant.AprtAppID,
+                            ApplicationID = existingApplicant.HousingAppID,
                             Username = existingApplicant.Username, // Code for after we remade the AA_Applicants table
                         };
                         // If the applicant is in the existing list but not in the new list of applicants, then we need to remove it from the database
@@ -475,7 +474,7 @@ namespace Gordon360.Services
                     {
                         ApartmentChoiceViewModel nonMatchingApartmentChoice = new ApartmentChoiceViewModel
                         {
-                            ApplicationID = existingApartmentChoice.AprtAppID,
+                            ApplicationID = existingApartmentChoice.HousingAppID,
                             HallRank = existingApartmentChoice.Ranking,
                             HallName = existingApartmentChoice.HallName,
                         };
@@ -636,7 +635,7 @@ namespace Gordon360.Services
                 // We will have to decide what is the best course of action in this case
             }
 
-            GET_AA_APPLICATIONS_BY_ID_Result applicationDBModel = applicationResult.FirstOrDefault(x => x.AprtAppID == applicationID);
+            GET_AA_APPLICATIONS_BY_ID_Result applicationDBModel = applicationResult.FirstOrDefault(x => x.HousingAppID == applicationID);
 
             // Assign the values from the database to the custom view model for the frontend
             ApartmentApplicationViewModel apartmentApplicationModel = applicationDBModel; //implicit conversion
@@ -659,7 +658,7 @@ namespace Gordon360.Services
                     ApartmentApplicantViewModel applicantModel = applicantDBModel; //implicit conversion
 
                     // If the student information is found, create a new ApplicationViewModel and fill in its properties
-                    if (applicantModel.Profile != null && applicantDBModel.AprtAppID == applicationID)
+                    if (applicantModel.Profile != null && applicantDBModel.HousingAppID == applicationID)
                     {
                         if (isAdmin) // if the current user is a housing admin or super admin 
                         {
@@ -750,7 +749,7 @@ namespace Gordon360.Services
                 ApartmentApplicationViewModel apartmentApplicationModel = null;
                 try
                 {
-                    apartmentApplicationModel = GetApartmentApplication(appIDModel.AprtAppID, true);
+                    apartmentApplicationModel = GetApartmentApplication(appIDModel.HousingAppID, true);
                     if (apartmentApplicationModel != null)
                     {
                         applicationList.Add(apartmentApplicationModel);

@@ -18,6 +18,7 @@ namespace Gordon360.Models
         public int categoryID { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
+        public string Image { get; set; }
         public Nullable<bool> Sent { get; set; }
         public Nullable<bool> thisPastMailing { get; set; }
         public Nullable<System.DateTime> Entered { get; set; }

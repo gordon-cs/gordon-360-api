@@ -13,7 +13,7 @@ namespace Gordon360.Models
     
     public partial class GET_AA_APPLICANTS_DETAILS_Result
     {
-        public int AprtAppID { get; set; }
+        public int HousingAppID { get; set; }
         public string EditorUsername { get; set; }
         public Nullable<System.DateTime> DateSubmitted { get; set; }
         public System.DateTime DateModified { get; set; }

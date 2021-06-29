@@ -17,6 +17,7 @@ namespace Gordon360.Models.ViewModels
         public int categoryID { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
+        public string Image { get; set; }
         // defaults below to unapproved (if null), hence not a nullable bool
         public bool Accepted { get; set; }
         public Nullable<bool> Sent { get; set; }
@@ -35,6 +36,7 @@ namespace Gordon360.Models.ViewModels
                 categoryID = n.categoryID,
                 Subject = n.Subject,
                 Body = n.Body,
+                Image = n.Image,
                 // should default to unapproved (if null)
                 Accepted = n.Accepted ?? false,
                 Sent = n.Sent,

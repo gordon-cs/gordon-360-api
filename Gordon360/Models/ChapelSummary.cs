@@ -24,6 +24,7 @@ namespace Gordon360.Models
         public Nullable<decimal> CreditHrs { get; set; }
         public string GEO { get; set; }
         public string Commuter { get; set; }
+        public string Remote { get; set; }
         public string GradFlag { get; set; }
         public Nullable<int> Required { get; set; }
         public Nullable<int> Attended { get; set; }
