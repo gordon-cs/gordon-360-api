@@ -126,10 +126,6 @@ namespace Gordon360.Services
         public CliftonStrengthsViewModel GetCliftonStrengths(int id)
         {
             var strengths = _unitOfWork.CliftonStrengthsRepository.FirstOrDefault(x => x.ID_NUM == id);
-            if(strengths == null)
-            {
-                return null;
-            }
             return strengths;
         }
 
