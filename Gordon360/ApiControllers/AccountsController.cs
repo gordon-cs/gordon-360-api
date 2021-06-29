@@ -359,6 +359,35 @@ namespace Gordon360.ApiControllers
         /// Return a list of accounts matching some or all of the search parameters
         /// We are searching through all the info of a user, then narrowing it down to get only what we want
         /// </summary>
+        /// <param name="includeAlumniSearchParam"> For non-students: Include Alumni in search results or not </param>
+        /// <param name="firstNameSearchParam"> The first name to search for </param>
+        /// <param name="lastNameSearchParam"> The last name to search for </param>
+        /// <param name="majorSearchParam"></param>
+        /// <param name="minorSearchParam"></param>
+        /// <param name="hallSearchParam"></param>
+        /// <param name="classTypeSearchParam"></param>
+        /// <param name="hometownSearchParam"></param>
+        /// <param name="stateSearchParam"></param>
+        /// <param name="countrySearchParam"></param>
+        /// <param name="departmentSearchParam"></param>   
+        /// <param name="buildingSearchParam"></param>     
+        /// <returns> All accounts meeting some or all of the parameter</returns>
+        [HttpGet]
+        [Route("advanced-people-search/{includeAlumniSearchParam}/{firstNameSearchParam}/{lastNameSearchParam}/{majorSearchParam}/{minorSearchParam}/{hallSearchParam}/{classTypeSearchParam}/{hometownSearchParam}/{stateSearchParam}/{countrySearchParam}/{departmentSearchParam}/{buildingSearchParam}")]
+        public IHttpActionResult AdvancedPeopleSearch(bool includeAlumniSearchParam, string firstNameSearchParam, 
+            string lastNameSearchParam, string majorSearchParam, string minorSearchParam, string hallSearchParam, 
+            string classTypeSearchParam, string hometownSearchParam, string stateSearchParam, 
+            string countrySearchParam, string departmentSearchParam, string buildingSearchParam)
+        {
+            return AdvancedPeopleSearch(true, true, includeAlumniSearchParam, firstNameSearchParam, lastNameSearchParam, 
+                majorSearchParam, minorSearchParam, hallSearchParam, classTypeSearchParam, hometownSearchParam, 
+                stateSearchParam, countrySearchParam, departmentSearchParam, buildingSearchParam);
+        }
+
+        /// <summary>
+        /// Return a list of accounts matching some or all of the search parameters
+        /// We are searching through all the info of a user, then narrowing it down to get only what we want
+        /// </summary>
         /// <param name="includeStudentSearchParam"> Include Student in search results or not </param>
         /// <param name="includeFacStaffSearchParam"> Include Faculty and Staff in search results or not </param>
         /// <param name="includeAlumniSearchParam"> For non-students: Include Alumni in search results or not </param>
@@ -376,7 +405,10 @@ namespace Gordon360.ApiControllers
         /// <returns> All accounts meeting some or all of the parameter</returns>
         [HttpGet]
         [Route("advanced-people-search/{includeStudentSearchParam}/{includeFacStaffSearchParam}/{includeAlumniSearchParam}/{firstNameSearchParam}/{lastNameSearchParam}/{majorSearchParam}/{minorSearchParam}/{hallSearchParam}/{classTypeSearchParam}/{hometownSearchParam}/{stateSearchParam}/{countrySearchParam}/{departmentSearchParam}/{buildingSearchParam}")]
-        public IHttpActionResult AdvancedPeopleSearch(bool includeStudentSearchParam, bool includeFacStaffSearchParam, bool includeAlumniSearchParam, string firstNameSearchParam, string lastNameSearchParam, string majorSearchParam, string minorSearchParam, string hallSearchParam, string classTypeSearchParam, string hometownSearchParam, string stateSearchParam, string countrySearchParam, string departmentSearchParam, string buildingSearchParam)
+        public IHttpActionResult AdvancedPeopleSearch(bool includeStudentSearchParam, bool includeFacStaffSearchParam, 
+            bool includeAlumniSearchParam, string firstNameSearchParam, string lastNameSearchParam, string majorSearchParam, 
+            string minorSearchParam, string hallSearchParam, string classTypeSearchParam, string hometownSearchParam, 
+            string stateSearchParam, string countrySearchParam, string departmentSearchParam, string buildingSearchParam)
         {
             // If any search params were not entered, set them to empty strings
             if (firstNameSearchParam == "C\u266F")
