@@ -18,6 +18,9 @@ using System.IO;
 using Gordon360.Models.ViewModels;
 using System.Security.Claims;
 using Gordon360.AuthorizationFilters;
+using System.Security.Claims;
+using Gordon360.AuthorizationFilters;
+using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Controllers.Api
 {
@@ -26,7 +29,7 @@ namespace Gordon360.Controllers.Api
     [CustomExceptionFilter]
     public class AcademicCheckInController : ApiController 
     {
-        private IAcadmicCheckInService _checkInService;
+        private IAcademicCheckInService _checkInService;
                 
         public AcademicCheckInController() 
         {
