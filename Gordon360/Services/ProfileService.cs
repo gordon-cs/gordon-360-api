@@ -333,18 +333,19 @@ namespace Gordon360.Services
         /// <param name="newPhoneNumber"></param>
         public void UpdateMobilePhoneNumber(string id, string newPhoneNumber)
         {
-            var student = GetStudentByID(id);
-            
-            if (student == null)
+            var original = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+
+            if (original == null)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The student was not found." };
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
-
-            student.MobilePhone = newPhoneNumber;
-
-            Console.WriteLine("Student ", student.MobilePhone);
-
-            _unitOfWork.Save();
+            var idParam = new SqlParameter("@UserID", id);
+            var newPhoneNumberParam = new SqlParameter("@PhoneUnformatted", newPhoneNumber);
+            var context = new CCTEntities1();
+            context.Database.ExecuteSqlCommand("UPDATECELLPHONE @UserID, @PhoneUnformatted", idParam, newPhoneNumberParam); // run stored procedure.
+            // Update value in cached data
+            var student = Data.StudentData.FirstOrDefault(x => x.ID == id);
+            
         }
 
         /// <summary>
