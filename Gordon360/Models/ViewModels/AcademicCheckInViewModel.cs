@@ -8,7 +8,7 @@ namespace Gordon360.Models.ViewModels
     public class AcademicCheckInViewModel
     {
         public bool isCheckedIn { get; set; }
-        public Nullable<string> Race { get; set; }
+        public string Race { get; set; }
 
         public Nullable<int> Ethnicity { get; set; }
 
@@ -19,9 +19,10 @@ namespace Gordon360.Models.ViewModels
         public bool isPrivate { get; set; }
 
         public Nullable<bool> noPhone { get; set; }
-        public static implicit operator AcademicCheckInViewModel(CheckInData n)
+        /*
+        public static implicit operator AcademicCheckInViewModel(AcademicCheckIn n)
         {
-            AcademicCheckkInViewModel vm = new AcademicCheckInViewModel
+            AcademicCheckInViewModel vm = new AcademicCheckInViewModel
             {
                 isCheckedIn = n.isCheckedIn,
                 Race = n.Race,
@@ -34,5 +35,6 @@ namespace Gordon360.Models.ViewModels
 
             return vm;
         }
+        */
     }
 }

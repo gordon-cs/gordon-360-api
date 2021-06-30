@@ -139,7 +139,7 @@ namespace Gordon360.Services
         public IEnumerable<EmergencyContactViewModel> GetEmergencyContact(string username)
         {
             var result = _unitOfWork.EmergencyContactRepository.GetAll((x) => x.AD_Username == username).Select((emrg) =>
-            new EmergencyContactViewModel(emrg));
+            new EmergencyContactViewModel());
 
             if (result == null)
             {
