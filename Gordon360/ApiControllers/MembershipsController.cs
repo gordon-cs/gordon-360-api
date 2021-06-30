@@ -9,7 +9,6 @@ using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Exceptions.CustomExceptions;
 using System.Collections.Generic;
 using System.Security.Claims;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
@@ -23,6 +22,7 @@ namespace Gordon360.Controllers.Api
         private readonly IMembershipService _membershipService;
         private readonly IAccountService _accountService;
         private readonly IActivityService _activityService;
+        private readonly IRoleCheckingService _roleCheckingService;
 
         public MembershipsController()
         {
@@ -30,6 +30,7 @@ namespace Gordon360.Controllers.Api
             _membershipService = new MembershipService(_unitOfWork);
             _accountService = new AccountService(_unitOfWork);
             _activityService = new ActivityService(_unitOfWork);
+            _roleCheckingService = new RoleCheckingService(_unitOfWork);
         }
         public MembershipsController(IMembershipService membershipService)
         {
@@ -364,7 +365,10 @@ namespace Gordon360.Controllers.Api
 
             return Ok(result);
         }
-        /// <summary>Fetch memberships that a specific student has been a part of</summary>
+        /// <summary>
+        /// Fetch memberships that a specific student has been a part of
+        /// @TODO: Move security checks to state your business? Or consider changing implementation here
+        /// </summary>
         /// <param name="username">The Student Username</param>
         /// <returns>The membership information that the student is a part of</returns>
         [Route("student/username/{username}")]
@@ -403,12 +407,10 @@ namespace Gordon360.Controllers.Api
                 return NotFound();
             }
             // privacy control of membership view model
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var viewerID = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
-            var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            bool issuperAdmin = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role").Value.Equals(Position.SUPERADMIN);
-            bool isPolice = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role").Value.Equals(Position.POLICE);
-            if (issuperAdmin||isPolice)                    //super admin and gordon police reads all
+            var authenticatedUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserId);
+
+            if (viewerType == Position.SUPERADMIN || viewerType == Position.POLICE)              //super admin and gordon police reads all
                 return Ok(result);
             else
             {
@@ -420,7 +422,7 @@ namespace Gordon360.Controllers.Api
                     bool groupAdmin = false;
                     foreach (var admin in admins)               // group admin of a group can read membership of this group
                     {
-                        if (admin.IDNumber.ToString().Equals(viewerID))
+                        if (admin.IDNumber.Equals(authenticatedUserId))
                             groupAdmin = true;
                     }
                     if (groupAdmin)

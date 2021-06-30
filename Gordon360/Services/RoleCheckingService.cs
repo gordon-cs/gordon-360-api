@@ -5,7 +5,7 @@ namespace Gordon360.Services
 {
     public class RoleCheckingService: IRoleCheckingService
     {
-        private IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
 
         public RoleCheckingService(IUnitOfWork unitOfWork)
         {

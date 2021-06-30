@@ -327,6 +327,12 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
         public async Task<ActionResult> PostImage(string id)
         {
+            // Commenting out until we can build and test rewriting this image code
+            // https://www.fatalerrors.org/a/comparison-of-multi-file-upload-between-net-and-net-core-web-api-formdata.html
+            // https://stackoverflow.com/questions/43674504/multipart-form-data-file-upload-in-asp-net-core-web-api
+            // https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-5.0
+            return Ok();
+            /*
             // Verify Input
             if(!ModelState.IsValid)
             {
@@ -410,6 +416,7 @@ namespace Gordon360.Controllers.Api
             {
                 throw new ResourceCreationException() { ExceptionMessage = "There was an error uploading the image. Please contact the maintainers" };
             }
+            */
         }
 
         /// <summary>

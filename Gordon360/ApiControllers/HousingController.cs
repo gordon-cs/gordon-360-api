@@ -12,6 +12,7 @@ using System.Net;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using System;
 
 namespace Gordon360.Controllers.Api
 {
@@ -366,7 +367,7 @@ namespace Gordon360.Controllers.Api
             }
             else // This line can be removed once the StateYourBusiness has been implemented
             {
-                return StatusCode(HttpStatusCode.Forbidden); // This line can be removed once the StateYourBusiness has been implemented
+                throw new UnauthorizedAccessException("Unauthorized to view apartment applications"); // This line can be removed once the StateYourBusiness has been implemented
             }
         }
     }

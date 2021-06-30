@@ -22,32 +22,13 @@ namespace Gordon360.Controllers.Api
     {
         private readonly INewsService _newsService;
         private readonly IImageUtils _imageUtils = new ImageUtils();
-        private readonly IAccountService _accountService;
-
-        /**private void catchBadInput()
-        {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(variable))
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-        }*/
 
         // Constructor
         public NewsController()
         {
-            // Connect to service through which data (from the database) can be accessed 
+            // Connect to service through which data (from the database) can be accessed
             IUnitOfWork _unitOfWork = new UnitOfWork();
             _newsService = new NewsService(_unitOfWork);
-            _accountService = new AccountService(_unitOfWork);
         }
 
         public NewsController(INewsService newsService)
