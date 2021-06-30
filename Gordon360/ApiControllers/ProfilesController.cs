@@ -56,7 +56,9 @@ namespace Gordon360.Controllers.Api
             // search username in cached data
             var student = _profileService.GetStudentProfileByUsername(username);
             var faculty = _profileService.GetFacultyStaffProfileByUsername(username);
+            var id = "a";
             var alumni = _profileService.GetAlumniProfileByUsername(username);
+            
             //get profile links
             var customInfo = _profileService.GetCustomUserInfo(username);
 
@@ -332,7 +334,7 @@ namespace Gordon360.Controllers.Api
             var _student = _profileService.GetStudentProfileByUsername(username);
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
-            var advisors = _profileService.GetAdvisors(id);
+            var advisors = _profileService.GetAdvisors(id == username ? username: id);
 
             return Ok(advisors);
 
@@ -460,8 +462,17 @@ namespace Gordon360.Controllers.Api
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             var viewerType = _roleCheckingService.getCollegeRole(viewerName);
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-            var photoInfo = _profileService.GetPhotoPath(id);
+            var id = "";
+            var photoInfo = new PhotoPathViewModel();
+            try
+            {
+                id = _accountService.GetAccountByUsername(username).GordonID;
+                photoInfo = _profileService.GetPhotoPath(id);
+            }
+            catch (ResourceNotFoundException)
+            {
+                photoInfo = null;
+            }
 
             var filePath = "";
             var fileName = "";

@@ -110,11 +110,11 @@ namespace Gordon360.Static.Names
     {
         public static string ALL_PUBLIC_STUDENT_REQUEST = "SELECT ISNULL(Mail_Location, '') as Mail_Location, ISNULL(BuildingDescription, '') as Hall, ISNULL(FirstName, '') as FirstName, ISNULL(LastName, '') as LastName, ISNULL(NickName, '') as NickName, ISNULL(Class, '') as Class, ISNULL(Major1Description, '') as Major1Description, ISNULL(Major2Description, '') as Major2Description, ISNULL(Major3Description, '') as Major3Description, ISNULL(Minor1Description, '') as Minor1Description, ISNULL(Minor2Description, '') as Minor2Description, ISNULL(Minor3Description, '') as Minor3Description, ISNULL(HomeCity, '') as HomeCity, ISNULL(HomeState, '') as HomeState, ISNULL(Country, '') as Country, ISNULL(KeepPrivate, '') as KeepPrivate, ISNULL(Email, '') as Email, AD_Username FROM STUDENT S WHERE AD_Username is not null FOR JSON PATH, ROOT('Students')";
         public static string ALL_PUBLIC_FACULTY_STAFF_REQUEST = "SELECT FirstName, LastName, NickName, OnCampusDepartment, BuildingDescription, HomeCity, HomeState, Country, KeepPrivate, JobTitle, Email, Type, AD_Username, Mail_Location FROM FacStaff WHERE AD_Username is not null";
-        public static string ALL_PUBLIC_ALUMNI_REQUEST = "SELECT FirstName, LastName, NickName, Major1Description, Major2Description, HomeCity, HomeState, Country, Email, ShareName, PreferredClassYear, AD_Username FROM Alumni WHERE ShareName is null OR ShareName = 'Y';";
+        public static string ALL_PUBLIC_ALUMNI_REQUEST = "SELECT FirstName, LastName, NickName, Major1Description, Major2Description, HomeCity, HomeState, Country, Email, ShareName, PreferredClassYear, ISNULL(AD_Username, ID) as AD_Username FROM Alumni WHERE ShareName is null OR ShareName = 'Y';";
 
         public static string ALL_STUDENT_REQUEST = "SELECT * from Student WHERE AD_Username is not null";
         public static string ALL_FACULTY_STAFF_REQUEST = "SELECT * from FacStaff WHERE AD_Username is not null";
-        public static string ALL_ALUMNI_REQUEST = "SELECT * from Alumni WHERE AD_Username is not null";
+        public static string ALL_ALUMNI_REQUEST = "SELECT  ID, WebUpdate, Title, FirstName, MiddleName, LastName, Suffix, MaidenName, NickName, HomeStreet1, HomeStreet2, HomeCity, HomeState, HomePostalCode, HomeCountry, HomePhone, HomeFax, HomeEmail, JobTitle, MaritalStatus, SpouseName, College, ClassYear, PreferredClassYear, Major1, Major2, ShareName, ShareAddress, Gender, GradDate, Email, grad_student, Barcode, ISNULL(AD_Username, ID) as AD_Username, show_pic, preferred_photo, Country, Major2Description, Major1Description from Alumni";// WHERE AD_Username is not null";
         public static string ALL_BASIC_INFO_NOT_ALUM = "ALL_BASIC_INFO_NOT_ALUMNI";
 
         // GoStalk
