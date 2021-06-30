@@ -331,8 +331,20 @@ namespace Gordon360.Controllers.Api
         public IHttpActionResult GetAdvisors(string username)
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var _student = _profileService.GetStudentProfileByUsername(username);
-            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            var _student = new StudentProfileViewModel();
+            var id = "";
+            try
+            {
+                _student = _profileService.GetStudentProfileByUsername(username);
+                id = _accountService.GetAccountByUsername(username).GordonID;
+            }
+            catch (ResourceNotFoundException)
+            {
+                //just catch the exception
+            }
+
+            
 
             var advisors = _profileService.GetAdvisors((id == username ? username : id));
 
