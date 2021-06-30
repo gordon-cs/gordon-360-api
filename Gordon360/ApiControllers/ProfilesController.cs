@@ -58,7 +58,7 @@ namespace Gordon360.Controllers.Api
             var faculty = _profileService.GetFacultyStaffProfileByUsername(username);
             var id = "a";
             var alumni = _profileService.GetAlumniProfileByUsername(username);
-            
+
             //get profile links
             var customInfo = _profileService.GetCustomUserInfo(username);
 
@@ -187,6 +187,7 @@ namespace Gordon360.Controllers.Api
             var _student = _profileService.GetStudentProfileByUsername(username);
             var _faculty = _profileService.GetFacultyStaffProfileByUsername(username);
             var _alumni = _profileService.GetAlumniProfileByUsername(username);
+                
             var _customInfo = _profileService.GetCustomUserInfo(username);
 
             object student = null;
@@ -331,10 +332,20 @@ namespace Gordon360.Controllers.Api
         public IHttpActionResult GetAdvisors(string username)
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var _student = _profileService.GetStudentProfileByUsername(username);
-            var id = _accountService.GetAccountByUsername(username).GordonID;
 
-            var advisors = _profileService.GetAdvisors(id == username ? username: id);
+            var _student = new StudentProfileViewModel();
+            var id = "";
+            try
+            {
+                _student = _profileService.GetStudentProfileByUsername(username);
+                id = _accountService.GetAccountByUsername(username).GordonID;
+            }
+            catch (ResourceNotFoundException)
+            {
+                //just catch the exception (to create the profile of usernameless alumni without throwing exception)
+            }
+
+            var advisors = _profileService.GetAdvisors((id == username ? username : id));
 
             return Ok(advisors);
 

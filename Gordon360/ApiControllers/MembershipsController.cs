@@ -387,8 +387,17 @@ namespace Gordon360.Controllers.Api
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-            var result = _membershipService.GetMembershipsForStudent(id);
+            var id = "";
+            var result = Enumerable.Empty<MembershipViewModel>();
+            try
+            {
+                id = _accountService.GetAccountByUsername(username).GordonID;
+                result = _membershipService.GetMembershipsForStudent(id);
+            }
+            catch (ResourceNotFoundException)
+            {
+                //just catch the exception (to create the profile of usernameless alumni without throwing exception)
+            }
 
             if (result == null)
             {

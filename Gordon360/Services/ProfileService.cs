@@ -78,13 +78,12 @@ namespace Gordon360.Services
             if (query == null)
             {
                 return resultList;
-                //throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
             var idParam = new SqlParameter("@ID", id);
             // Stored procedure returns row containing advisor1 ID, advisor2 ID, advisor3 ID 
             var idResult = RawSqlQuery<ADVISOR_SEPARATE_Result>.query("ADVISOR_SEPARATE @ID", idParam).FirstOrDefault();
-            
+
             // If idResult equal null, it means this user do not have advisor
             if (idResult == null)
             {
@@ -104,15 +103,15 @@ namespace Gordon360.Services
                 if (!string.IsNullOrEmpty(idResult.Advisor2))
                 {
                     resultList.Add(new AdvisorViewModel(
-                        _accountService.Get(idResult.Advisor2).FirstName, 
-                        _accountService.Get(idResult.Advisor2).LastName, 
+                        _accountService.Get(idResult.Advisor2).FirstName,
+                        _accountService.Get(idResult.Advisor2).LastName,
                         _accountService.Get(idResult.Advisor2).ADUserName));
                 }
                 if (!string.IsNullOrEmpty(idResult.Advisor3))
                 {
                     resultList.Add(new AdvisorViewModel(
-                        _accountService.Get(idResult.Advisor3).FirstName, 
-                        _accountService.Get(idResult.Advisor3).LastName, 
+                        _accountService.Get(idResult.Advisor3).FirstName,
+                        _accountService.Get(idResult.Advisor3).LastName,
                         _accountService.Get(idResult.Advisor3).ADUserName));
                 }
             }
