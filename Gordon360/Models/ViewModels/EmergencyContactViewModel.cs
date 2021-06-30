@@ -30,9 +30,10 @@ namespace Gordon360.Models.ViewModels
 
             return vm;
         }*/
+
         public static implicit operator EmergencyContactViewModel(EmergencyContact emrg)
         {
-            EmergencyContactViewModel vm = new EmergencyContactViewModel
+            EmergencyContactViewModel vm = new EmergencyContactViewModel()
             {
                 APPID = emrg.APPID,
                 SEQ_NUMBER = emrg.SEQ_NUM,
