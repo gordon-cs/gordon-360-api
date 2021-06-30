@@ -72,22 +72,19 @@ namespace Gordon360.Services
         /// <returns></returns>
         public IEnumerable<AdvisorViewModel> GetAdvisors(string id)
         {
-            // Create empty advisor list to fill in and return.           
-            List<AdvisorViewModel> resultList = new List<AdvisorViewModel>();
-
             var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
             if (query == null)
             {
-                return resultList;
-                //throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
             var idParam = new SqlParameter("@ID", id);
             // Stored procedure returns row containing advisor1 ID, advisor2 ID, advisor3 ID 
             var idResult = RawSqlQuery<ADVISOR_SEPARATE_Result>.query("ADVISOR_SEPARATE @ID", idParam).FirstOrDefault();
 
-            
-            
+            // Create empty advisor list to fill in and return.           
+            List<AdvisorViewModel> resultList = new List<AdvisorViewModel>();
+
             // If idResult equal null, it means this user do not have advisor
             if (idResult == null)
             {
@@ -107,15 +104,15 @@ namespace Gordon360.Services
                 if (!string.IsNullOrEmpty(idResult.Advisor2))
                 {
                     resultList.Add(new AdvisorViewModel(
-                        _accountService.Get(idResult.Advisor2).FirstName, 
-                        _accountService.Get(idResult.Advisor2).LastName, 
+                        _accountService.Get(idResult.Advisor2).FirstName,
+                        _accountService.Get(idResult.Advisor2).LastName,
                         _accountService.Get(idResult.Advisor2).ADUserName));
                 }
                 if (!string.IsNullOrEmpty(idResult.Advisor3))
                 {
                     resultList.Add(new AdvisorViewModel(
-                        _accountService.Get(idResult.Advisor3).FirstName, 
-                        _accountService.Get(idResult.Advisor3).LastName, 
+                        _accountService.Get(idResult.Advisor3).FirstName,
+                        _accountService.Get(idResult.Advisor3).LastName,
                         _accountService.Get(idResult.Advisor3).ADUserName));
                 }
             }
@@ -128,7 +125,12 @@ namespace Gordon360.Services
         /// <returns> Clifton strengths of the given user. </returns>
         public CliftonStrengthsViewModel GetCliftonStrengths(int id)
         {
-            return _unitOfWork.CliftonStrengthsRepository.FirstOrDefault(x => x.ID_NUM == id);
+            var strengths = _unitOfWork.CliftonStrengthsRepository.FirstOrDefault(x => x.ID_NUM == id);
+            if (strengths == null)
+            {
+                return null;
+            }
+            return strengths;
         }
 
         /// <summary> Gets the emergency contact information of a particular user </summary>
