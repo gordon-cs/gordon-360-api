@@ -831,8 +831,7 @@ namespace Gordon360.Controllers.Api
 
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
-            _profileService.UpdateMobilePhoneNumber(id, value);
-            
+            var result =_profileService.UpdateMobilePhoneNumber(id, value);
             return Ok();
 
         }
