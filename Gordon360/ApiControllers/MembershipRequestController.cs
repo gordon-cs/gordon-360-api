@@ -294,8 +294,8 @@ namespace Gordon360.Controllers.Api
         /// </summary>
         /// <param name="id">The id of the membership request to delete</param>
         /// <returns>The deleted object</returns>
-        [Route("{id}")]
         [HttpDelete]
+        [Route("{id}")]
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.MEMBERSHIP_REQUEST)]
         public IHttpActionResult Delete(int id)
         {
