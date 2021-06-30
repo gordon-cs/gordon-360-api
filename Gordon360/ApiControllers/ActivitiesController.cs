@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using Gordon360.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Gordon360.Controllers.Api
 {
@@ -25,17 +26,20 @@ namespace Gordon360.Controllers.Api
     //All GET routes are public (No Authorization Needed)
     public class ActivitiesController : ControllerBase
     {
-        private IActivityService _activityService;
+        private readonly IActivityService _activityService;
+        private readonly IWebHostEnvironment _env;
         
-        public ActivitiesController()
+        public ActivitiesController(IWebHostEnvironment env)
         {
             var _unitOfWork = new UnitOfWork();
             _activityService = new ActivityService(_unitOfWork);
+            _env = env;
         }
 
-        public ActivitiesController(IActivityService activityService)
+        public ActivitiesController(IActivityService activityService, IWebHostEnvironment env)
         {
             _activityService = activityService;
+            _env = env;
         }
 
         [HttpGet]
@@ -321,7 +325,7 @@ namespace Gordon360.Controllers.Api
         [Authorize]
         [Route("{id}/image")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
-        public async Task<HttpResponseMessage> PostImage(string id)
+        public async Task<ActionResult> PostImage(string id)
         {
             // Verify Input
             if(!ModelState.IsValid)
@@ -340,20 +344,24 @@ namespace Gordon360.Controllers.Api
             var uploadsFolder = "/browseable/uploads/" + id + "/";
             if (!Request.Content.IsMimeMultipartContent())
             {
-                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+                throw new System.Web.Http.HttpResponseException(HttpStatusCode.UnsupportedMediaType);
             }
 
             var existingFile = "";
-            
-            if(!System.IO.Directory.Exists(HttpContext.Current.Server.MapPath("~" + uploadsFolder)))
+            var webRoot = _env.WebRootPath;
+            var uploadsFolderPath = System.IO.Path.Combine(webRoot, "~" + uploadsFolder);
+            if (!System.IO.Directory.Exists(uploadsFolderPath)) {
+
+            }
+            if (!System.IO.Directory.Exists(uploadsFolderPath))
             {
-                System.IO.Directory.CreateDirectory(HttpContext.Current.Server.MapPath("~" + uploadsFolder));
+                System.IO.Directory.CreateDirectory(uploadsFolderPath);
             }
             else
             {
                 try
                 {
-                    System.IO.DirectoryInfo di = new DirectoryInfo(HttpContext.Current.Server.MapPath("~" + uploadsFolder));
+                    System.IO.DirectoryInfo di = new DirectoryInfo(uploadsFolderPath);
                     
                     foreach (FileInfo file in di.GetFiles())
                     {
@@ -366,8 +374,7 @@ namespace Gordon360.Controllers.Api
                 }
             }
 
-            string root = HttpContext.Current.Server.MapPath("~" + uploadsFolder);
-            var provider = new CustomMultipartFormDataStreamProvider(root);
+            var provider = new CustomMultipartFormDataStreamProvider(uploadsFolderPath);
 
             try
             {
@@ -397,12 +404,11 @@ namespace Gordon360.Controllers.Api
                     var imagePath = baseUrl + uploadPath;
                     _activityService.UpdateActivityImage(id, imagePath);
                 }
-                return Request.CreateResponse(HttpStatusCode.OK);
+                return Ok();
             }
             catch (System.Exception e)
             {
-                System.Diagnostics.Debug.WriteLine(e.Message);
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error uploading the image. Please contact the maintainers");
+                throw new ResourceCreationException() { ExceptionMessage = "There was an error uploading the image. Please contact the maintainers" };
             }
         }
 
