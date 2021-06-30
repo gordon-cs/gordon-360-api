@@ -72,18 +72,17 @@ namespace Gordon360.Services
         /// <returns></returns>
         public IEnumerable<AdvisorViewModel> GetAdvisors(string id)
         {
+            // Create empty advisor list to fill in and return.           
+            List<AdvisorViewModel> resultList = new List<AdvisorViewModel>();
             var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
             if (query == null)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+                return resultList;
             }
 
             var idParam = new SqlParameter("@ID", id);
             // Stored procedure returns row containing advisor1 ID, advisor2 ID, advisor3 ID 
             var idResult = RawSqlQuery<ADVISOR_SEPARATE_Result>.query("ADVISOR_SEPARATE @ID", idParam).FirstOrDefault();
-
-            // Create empty advisor list to fill in and return.           
-            List<AdvisorViewModel> resultList = new List<AdvisorViewModel>();
 
             // If idResult equal null, it means this user do not have advisor
             if (idResult == null)
