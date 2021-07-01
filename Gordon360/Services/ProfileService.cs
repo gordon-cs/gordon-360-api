@@ -23,7 +23,6 @@ namespace Gordon360.Services
             _unitOfWork = unitOfWork;
             _accountService = new AccountService(_unitOfWork);
         }
-
         /// <summary>
         /// get student profile info
         /// </summary>
