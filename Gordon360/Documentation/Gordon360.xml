@@ -1824,12 +1824,11 @@
             <param name="id">id</param>
             <param name="value">Y or N</param>
         </member>
-        <member name="M:Gordon360.Services.ProfileService.UpdateMobilePhoneNumber(System.String,System.String)">
+        <member name="M:Gordon360.Services.ProfileService.UpdateMobilePhoneNumber(Gordon360.Models.ViewModels.StudentProfileViewModel)">
             <summary>
             mobile phone number setting
             </summary>
-            <param name="id">id</param>
-            <param name="newPhoneNumber"></param>
+            <param name="profile"> The profile for the user whose phone is to be updated </param>
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateImagePrivacy(System.String,System.String)">
             <summary>

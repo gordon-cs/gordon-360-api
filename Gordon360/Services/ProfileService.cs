@@ -329,12 +329,11 @@ namespace Gordon360.Services
         /// <summary>
         /// mobile phone number setting
         /// </summary>
-        /// <param name="id">id</param>
-        /// <param name="newPhoneNumber"></param>
-        public IEnumerable<StudentProfileViewModel> UpdateMobilePhoneNumber(string id, string newPhoneNumber)
+        /// <param name="profile"> The profile for the user whose phone is to be updated </param>
+        public StudentProfileViewModel UpdateMobilePhoneNumber(StudentProfileViewModel profile)
         {
-            var idParam = new SqlParameter("@UserID", id);
-            var newPhoneNumberParam = new SqlParameter("@PhoneUnformatted", newPhoneNumber);
+            var idParam = new SqlParameter("@UserID", profile.ID);
+            var newPhoneNumberParam = new SqlParameter("@PhoneUnformatted", profile.MobilePhone);
             var result = RawSqlQuery<StudentProfileViewModel>.query("UPDATECELLPHONE @UserID, @PhoneUnformatted", idParam, newPhoneNumberParam);
 
             if (result == null)
@@ -343,13 +342,13 @@ namespace Gordon360.Services
             }
 
             // Update value in cached data
-            var student = Data.StudentData.FirstOrDefault(x => x.ID == id);
+            var student = Data.StudentData.FirstOrDefault(x => x.ID == profile.ID);
             if (student != null)
             {
-                student.MobilePhone = newPhoneNumber;
+                student.MobilePhone = profile.MobilePhone;
             }
 
-            return result;
+            return profile;
         }
 
         /// <summary>

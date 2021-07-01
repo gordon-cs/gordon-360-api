@@ -830,9 +830,12 @@ namespace Gordon360.Controllers.Api
             }
 
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
-            var result =_profileService.UpdateMobilePhoneNumber(id, value);
-            return Ok();
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            StudentProfileViewModel profile = _profileService.GetStudentProfileByUsername(username);
+            profile.MobilePhone = value;
+            StudentProfileViewModel result = _profileService.UpdateMobilePhoneNumber(profile);
+            
+            return Ok(result);
 
         }
 
