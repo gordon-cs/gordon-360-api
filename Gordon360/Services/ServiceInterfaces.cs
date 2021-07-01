@@ -18,7 +18,6 @@ namespace Gordon360.Services
     }
     public interface IProfileService
     {
-        Student GetStudentByID(string id);
         StudentProfileViewModel GetStudentProfileByUsername(string username);
         FacultyStaffProfileViewModel GetFacultyStaffProfileByUsername(string username);
         AlumniProfileViewModel GetAlumniProfileByUsername(string username);
