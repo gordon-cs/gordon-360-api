@@ -373,8 +373,15 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
         public IHttpActionResult GetEmergencyContact(string username)
         {
-            var emrg = _profileService.GetEmergencyContact(username);
-
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var viewerType = _roleCheckingService.getCollegeRole(viewerName);
+            
+            var emrg = Enumerable.Empty<EmergencyContactViewModel>();
+            if (viewerType == Position.POLICE)
+            {
+                emrg = _profileService.GetEmergencyContact(username);
+            }
             return Ok(emrg);
         }
 
