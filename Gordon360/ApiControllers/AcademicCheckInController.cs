@@ -1,26 +1,15 @@
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Exceptions.ExceptionFilters;
+using Gordon360.Models;
+using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using Gordon360.Services;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Web.Http;
-using Newtonsoft.Json.Linq;
-using Gordon360.Static.Names;
-using System.Threading.Tasks;
-using Gordon360.Models;
-using System.Diagnostics;
-using Gordon360.Providers;
-using System.IO;
-using Gordon360.Models.ViewModels;
-using System.Security.Claims;
-using Gordon360.AuthorizationFilters;
-using System.Security.Claims;
-using Gordon360.AuthorizationFilters;
-using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Controllers.Api
 {
@@ -30,13 +19,16 @@ namespace Gordon360.Controllers.Api
     public class AcademicCheckInController : ApiController 
     {
         private IAcademicCheckInService _checkInService;
+        private IAccountService _accountService;
                 
         public AcademicCheckInController() 
         {
             IUnitOfWork _unitOfWork = new UnitOfWork();
-            _checkInService = new AcademicCheckInService(_unitOfWork);
+            _checkInService = new AcademicCheckInService();
+            _accountService = new AccountService(_unitOfWork);
         }
-        
+
+        /*
         /// <summary>Gets a student's holds by id from the database</summary>
         /// <param name="studentID">The id of the student to retrieve the holds of</param>
         /// <returns>The student's current holds (if any)</returns>
@@ -58,8 +50,9 @@ namespace Gordon360.Controllers.Api
             }
             return Ok(result);
         }
-
-        public IHTTPActionResult getDemographics()
+        */
+        /*
+        public IHttpActionResult getDemographics()
         {
             // Get authenticated username/id
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
@@ -73,15 +66,17 @@ namespace Gordon360.Controllers.Api
             }
             return Ok(result);
         }
+        */
 
-        /// <summary>
+        
+        /// <summary></summary>
         /// Set emergency contacts for student
         /// <param name="data"> The contact data to be stored
-        /// </summary>
+        /// </param>
         /// <returns> The data stored </returns>
         [HttpPost]
         [Route("emergencycontact")]
-        public IHTTPActionResult PutEmergencyContact(var data)
+        public IHttpActionResult PutEmergencyContact(EmergencyContact data)
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
@@ -89,24 +84,25 @@ namespace Gordon360.Controllers.Api
 
             try {
                 var result = _checkInService.PutEmergencyContact(data, id);
-                return result;
+                return Created("Emergency Contact", result);
             }
             catch (System.Exception e)
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error setting the check in data.");
+                Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error setting the check in data.");
+                return NotFound();
             }
         
         }
-
-        /// <summary>
+        /*
+        /// <summary></summary>
         /// Sets the students cell phone number
         /// <param name="data"> The phone number object to be added to the database
-        /// </summary>
+        /// </param>
         /// <returns> The data stored </returns>
         [HttpPut]
         [Route("cellphone")]
-        public IHTTPActionResult PutCellPhone(var data)
+        public IHttpActionResult PutCellPhone(object data)
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
@@ -114,14 +110,15 @@ namespace Gordon360.Controllers.Api
 
             try {
                 var result = _checkInService.PutCellPhone(data, id);
-                return result;
+                return Ok(result);
             }
             catch (System.Exception e)
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error setting the check in data.");
+                Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error setting the check in data.");
             }
         
         }
+        */
     }
 }

@@ -136,10 +136,9 @@ namespace Gordon360.Services
         /// <summary> Gets the emergency contact information of a particular user </summary>
         /// <param name="username"> The username of the user for which to retrieve info </param>
         /// <returns> Emergency contact information of the given user. </returns>
-        public IEnumerable<EmergencyContactViewModel> GetEmergencyContact(string username)
+        public IEnumerable<EmergencyContact> GetEmergencyContact(string username)
         {
-            var result = _unitOfWork.EmergencyContactRepository.GetAll((x) => x.AD_Username == username).Select((emrg) =>
-            new EmergencyContactViewModel(emrg));
+            var result = _unitOfWork.EmergencyContactRepository.GetAll((x) => x.AD_Username == username);
 
             if (result == null)
             {
