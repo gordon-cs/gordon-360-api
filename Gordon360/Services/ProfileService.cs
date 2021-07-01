@@ -24,18 +24,6 @@ namespace Gordon360.Services
             _accountService = new AccountService(_unitOfWork);
         }
         /// <summary>
-        /// NOTE: Also a helper method, hence why it returns a StudentProfile model
-        /// rather than a StudentProfileViewModel
-        /// </summary>
-        /// <param name="id">username</param>
-        /// <returns>StudentProfileViewModel if found, null if not found</returns>
-        public Student GetStudentByID(string id)
-        {
-            var all = Data.StudentData;
-            return all.FirstOrDefault(x => x.ID == id);
-        }
-
-        /// <summary>
         /// get student profile info
         /// </summary>
         /// <param name="username">username</param>
