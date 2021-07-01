@@ -113,14 +113,13 @@ namespace Gordon360.Static.Names
         //ALL_PUBLIC_ALUMNI_REQUEST returns search result to the advanced people search 
         //with encrypted id as the ad_username if their ad_username is null
         //ALL_PUBLIC_ALUMNI_REQUEST and ALL_ALUMNI_REQUEST queries work together
-        public static string ALL_PUBLIC_ALUMNI_REQUEST = "SELECT FirstName, LastName, NickName, Major1Description, Major2Description, HomeCity, HomeState, Country, Email, ShareName, PreferredClassYear, ISNULL(AD_Username, CONVERT(NVARCHAR(32),HashBytes('MD2', ID),2)) as AD_Username FROM Alumni WHERE ShareName is null OR ShareName = 'Y';";
+        public static string ALL_PUBLIC_ALUMNI_REQUEST = "SELECT FirstName, LastName, NickName, Major1Description, Major2Description, HomeCity, HomeState, Country, Email, ShareName, PreferredClassYear, ISNULL(AD_Username, CONVERT(NVARCHAR(32),HashBytes('SHA2_256', ID),2)) as AD_Username FROM Alumni WHERE ShareName is null OR ShareName = 'Y';";
 
         public static string ALL_STUDENT_REQUEST = "SELECT * from Student WHERE AD_Username is not null";
         public static string ALL_FACULTY_STAFF_REQUEST = "SELECT * from FacStaff WHERE AD_Username is not null";
-        //ALL_ALUMNI_REQUEST returns the profile information for the first match of 
-        //either real ad_username (if exists) or the encrypted id
-        //from the advanced people search to the encrypted ad_username of their profile 
-        public static string ALL_ALUMNI_REQUEST = "SELECT ID, WebUpdate, Title, FirstName, MiddleName, LastName, Suffix, MaidenName, NickName, HomeStreet1, HomeStreet2, HomeCity, HomeState, HomePostalCode, HomeCountry, HomePhone, HomeFax, HomeEmail, JobTitle, MaritalStatus, SpouseName, College, ClassYear, PreferredClassYear, Major1, Major2, ShareName, ShareAddress, Gender, GradDate, Email, grad_student, Barcode, ISNULL(AD_Username, CONVERT(NVARCHAR(32),HashBytes('MD2', ID),2)) as AD_Username, show_pic, preferred_photo, Country, Major2Description, Major1Description from Alumni";// WHERE AD_Username is not null";
+        //ALL_ALUMNI_REQUEST returns the set of all the alumni in the records
+        //Other methods query this set to find a specific alum based on AD_Username (or the encrypted id)
+        public static string ALL_ALUMNI_REQUEST = "SELECT ID, WebUpdate, Title, FirstName, MiddleName, LastName, Suffix, MaidenName, NickName, HomeStreet1, HomeStreet2, HomeCity, HomeState, HomePostalCode, HomeCountry, HomePhone, HomeFax, HomeEmail, JobTitle, MaritalStatus, SpouseName, College, ClassYear, PreferredClassYear, Major1, Major2, ShareName, ShareAddress, Gender, GradDate, Email, grad_student, Barcode, ISNULL(AD_Username, CONVERT(NVARCHAR(32),HashBytes('SHA2_256', ID),2)) as AD_Username, show_pic, preferred_photo, Country, Major2Description, Major1Description from Alumni";// WHERE AD_Username is not null";
         public static string ALL_BASIC_INFO_NOT_ALUM = "ALL_BASIC_INFO_NOT_ALUMNI";
 
         // GoStalk
