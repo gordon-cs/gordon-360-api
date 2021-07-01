@@ -370,7 +370,7 @@ namespace Gordon360.Controllers.Api
         /// <returns> Emergency contact information of the given user. </returns>
         [HttpGet]
         [Route("emergency-contact/{username}")]
-        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.EMERGENCY_CONTACT)]
         public IHttpActionResult GetEmergencyContact(string username)
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
