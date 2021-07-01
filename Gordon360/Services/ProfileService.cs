@@ -77,6 +77,7 @@ namespace Gordon360.Services
             var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
             if (query == null)
             {
+                //Return an empty list if the id account does not have advisor
                 return resultList;
             }
 

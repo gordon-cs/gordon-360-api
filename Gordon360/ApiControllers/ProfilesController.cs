@@ -341,7 +341,7 @@ namespace Gordon360.Controllers.Api
             }
             catch (ResourceNotFoundException)
             {
-                //just catch the exception (to create the profile of usernameless alumni without throwing exception)
+                NotFound();
             }
 
             var advisors = _profileService.GetAdvisors((id == username ? username : id));

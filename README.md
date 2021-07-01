@@ -814,7 +814,7 @@ What is it? Resource that represents users' profiles.
 
 Differences from GoSite:
 
--   Only displaying city and country as home address. (When the viewer is a student. Police, super admin, faculty and staff should still see all the information for home address)
+-   Only displaying city and country as home address. (When the viewer is a student, Police, super admin, alumni, faculty and staff should still see all the information for home address)
 -   Displaying minors.
 -   On campus was changed to display more general information rather than completely getting rid of it like GoSite does now. (Shows on/off campus)
 
