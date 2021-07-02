@@ -552,6 +552,11 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("dt_whocheckedout_u", chObjectTypeParameter, vchObjectNameParameter, vchLoginNameParameter, vchPasswordParameter);
         }
     
+        public virtual int select_departments()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("select_departments");
+        }
+    
         public virtual int sp_alterdiagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)
         {
             var diagramnameParameter = diagramname != null ?

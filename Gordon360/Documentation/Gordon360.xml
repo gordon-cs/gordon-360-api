@@ -28,8 +28,50 @@
             <summary>
             Remove a user from the admin whitelist
             </summary>
-            <param name="id"> The id of the user to remove </param>
-            <returns></returns>
+            <param name="includeAlumniSearchParam"> For non-students: Include Alumni in search results or not </param>
+            <param name="firstNameSearchParam"> The first name to search for </param>
+            <param name="lastNameSearchParam"> The last name to search for </param>
+            <param name="majorSearchParam"></param>
+            <param name="minorSearchParam"></param>
+            <param name="hallSearchParam"></param>
+            <param name="classTypeSearchParam"></param>
+            <param name="hometownSearchParam"></param>
+            <param name="stateSearchParam"></param>
+            <param name="countrySearchParam"></param>
+            <param name="departmentSearchParam"></param>   
+            <param name="buildingSearchParam"></param>     
+            <returns> All accounts meeting some or all of the parameter</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AccountsController.AdvancedPeopleSearch(System.Boolean,System.Boolean,System.Boolean,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Return a list of accounts matching some or all of the search parameters
+            We are searching through all the info of a user, then narrowing it down to get only what we want
+            </summary>
+            <param name="includeStudentSearchParam"> Include Student in search results or not </param>
+            <param name="includeFacStaffSearchParam"> Include Faculty and Staff in search results or not </param>
+            <param name="includeAlumniSearchParam"> For non-students: Include Alumni in search results or not </param>
+            <param name="firstNameSearchParam"> The first name to search for </param>
+            <param name="lastNameSearchParam"> The last name to search for </param>
+            <param name="majorSearchParam"></param>
+            <param name="minorSearchParam"></param>
+            <param name="hallSearchParam"></param>
+            <param name="classTypeSearchParam"></param>
+            <param name="hometownSearchParam"></param>
+            <param name="stateSearchParam"></param>
+            <param name="countrySearchParam"></param>
+            <param name="departmentSearchParam"></param>   
+            <param name="buildingSearchParam"></param>     
+            <returns> All accounts meeting some or all of the parameter</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AccountsController.GenerateKey(System.String,System.String,System.String,System.Int32)">
+             <Summary>
+               This function generates a key for each account
+             </Summary>
+            
+             <param name="keyPart1">This is what you would want to sort by first, used for first part of key</param>
+             <param name="keyPart2">This is what you want to sort by second, used for second part of key</param>
+             <param name="precedence">Set where in the dictionary this key group will be ordered</param>
+             <param name="userName">The User's Username</param>
         </member>
         <member name="M:Gordon360.Controllers.Api.HousingController.DeleteApplication(System.Int32)">
             <summary>
@@ -572,10 +614,16 @@
             <returns></returns>
             <remarks>Posts a new membership to the server to be added into the database</remarks>
         </member>
-        <member name="M:Gordon360.Controllers.Api.MembershipsController.GetMembershipsForStudent(System.String)">
-            <summary>Fetch memberships that a specific student has been a part of</summary>
-            <param name="id">The Student id</param>
-            <returns>The membership information that the student is a part of</returns>
+        <member name="M:Gordon360.Controllers.Api.NewsController.GetImage(System.Int32)">
+            <summary>Gets the base64 image data for an image corresponding 
+            to a student news item. Only used by GO; when we move student news approval
+            to 360, this will be removed.</summary>
+            <param name="newsID">The id of the news item to retrieve image from</param>
+            <returns>base64 string representing image</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.NewsController.GetNotExpired">
+            Call the service that gets all approved student news entries not yet expired, filtering
+            out the expired by comparing 2 weeks past date entered to current date
         </member>
         <member name="M:Gordon360.Controllers.Api.MembershipsController.GetMembershipsForStudentByUsename(System.String)">
             <summary>Fetch memberships that a specific student has been a part of</summary>
@@ -2338,6 +2386,39 @@
             Fetches all the session records from the database.
             </summary>
             <returns>A SessionViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
+        </member>
+        <member name="M:Gordon360.Utils.ImageUtils.GetBase64ImageDataFromPath(System.String)">
+            <summary>
+            Takes a filepath for an image, navigates to it, collects the raw data
+            of the file and converts it to base64 format. 
+            </summary>
+            <param name="imagePath">The path to the image</param>
+            <returns>The base64 content of the image</returns>
+        </member>
+        <member name="M:Gordon360.Utils.ImageUtils.DeleteImage(System.String)">
+            <summary>
+            Deletes an image from the filesystem, if there is one.
+            </summary>
+            <param name="imagePath">The path to which the image belonged.</param>
+        </member>
+        <member name="M:Gordon360.Utils.ImageUtils.RetrieveImageFromPath(System.String)">
+            <summary>
+            Takes an image path and returns the data of the image at that path.
+            If given path is null it returns an empty string.
+            </summary>
+            <param name="imagePath">The path to the image</param>
+            <returns>The base64 data of the image</returns>
+        </member>
+        <member name="M:Gordon360.Utils.ImageUtils.UploadImage(System.String,System.String)">
+            <summary>
+            Uploads a news image
+            </summary>
+            <remarks>
+            Takes base64 image data and writes it to an image file. Note that if the target path
+            already has a file, the method will overwrite it (which gives no errors)
+            </remarks>
+            <param name="imagePath">The path to which the image belongs</param>
+            <param name="imageData">The base64 image data to be stored</param>
         </member>
         <member name="T:Gordon360.Static.Data.Data">
             <summary>
