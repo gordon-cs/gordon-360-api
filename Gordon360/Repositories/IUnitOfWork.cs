@@ -14,6 +14,7 @@ namespace Gordon360.Repositories
         IRepository<Alumni> AlumniRepository { get; }
         IRepository<ACCOUNT> AccountRepository { get; }
         IRepository<EmergencyContact> EmergencyContactRepository { get; }
+        IRepository<CheckInData> CheckInDataRepository { get; }
         IRepository<ACT_INFO> ActivityInfoRepository { get; }
         IRepository<CM_SESSION_MSTR> SessionRepository { get; }
         IRepository<JNZB_ACTIVITIES> JenzibarActvityRepository { get; }

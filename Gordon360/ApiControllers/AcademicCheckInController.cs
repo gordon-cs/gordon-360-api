@@ -24,13 +24,12 @@ namespace Gordon360.Controllers.Api
         public AcademicCheckInController() 
         {
             IUnitOfWork _unitOfWork = new UnitOfWork();
-            _checkInService = new AcademicCheckInService();
+            _checkInService = new AcademicCheckInService(_unitOfWork);
             _accountService = new AccountService(_unitOfWork);
         }
 
         /*
         /// <summary>Gets a student's holds by id from the database</summary>
-        /// <param name="studentID">The id of the student to retrieve the holds of</param>
         /// <returns>The student's current holds (if any)</returns>
         [HttpGet]
         [Route("holds")]
@@ -71,8 +70,8 @@ namespace Gordon360.Controllers.Api
         
         /// <summary></summary>
         /// Set emergency contacts for student
-        /// <param name="data"> The contact data to be stored
-        /// </param>
+        /// <param name="data"> The contact data to be stored </param>
+        /// </summary>
         /// <returns> The data stored </returns>
         [HttpPost]
         [Route("emergencycontact")]
@@ -97,8 +96,8 @@ namespace Gordon360.Controllers.Api
         /*
         /// <summary></summary>
         /// Sets the students cell phone number
-        /// <param name="data"> The phone number object to be added to the database
-        /// </param>
+        /// <param name="data"> The phone number object to be added to the database </param>
+        /// </summary>
         /// <returns> The data stored </returns>
         [HttpPut]
         [Route("cellphone")]

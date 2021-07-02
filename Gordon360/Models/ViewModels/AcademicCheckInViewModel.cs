@@ -7,7 +7,6 @@ namespace Gordon360.Models.ViewModels
 {
     public class AcademicCheckInViewModel
     {
-        public bool isCheckedIn { get; set; }
         public string Race { get; set; }
 
         public Nullable<int> Ethnicity { get; set; }
@@ -24,7 +23,6 @@ namespace Gordon360.Models.ViewModels
         {
             AcademicCheckInViewModel vm = new AcademicCheckInViewModel
             {
-                isCheckedIn = n.isCheckedIn,
                 Race = n.Race,
                 Ethnicity = n.Ethnicity,
                 Holds = n.Holds,

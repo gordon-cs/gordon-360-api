@@ -14,9 +14,10 @@ namespace Gordon360.Services
 	/// 
     public class AcademicCheckInService : IAcademicCheckInService
     {
-        public AcademicCheckInService()
+        private IUnitOfWork _unitOfWork;
+        public AcademicCheckInService(IUnitOfWork unitOfWork)
         {
-
+            _unitOfWork = unitOfWork;
         }
 
         /*
@@ -65,7 +66,7 @@ namespace Gordon360.Services
         /// <param name="data"> The phone number object for the user </param>
         /// <param name="id"> The id of the student to be updated
         /// <returns> The stored data </returns>
-        public IEnumerable<AcademicCheckInViewModel> PutCellPhone(object data, string id)
+        public IEnumerable<AcademicCheckInViewModel> PutCellPhone(CheckInData data, string id)
         {
             var studentIDParam = new SqlParameter("@UserID", id);
             var phoneNumParam = new SqlParameter("@PhoneUnformatted", FormatNumber(data.phoneNum));
