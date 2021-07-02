@@ -86,7 +86,7 @@ namespace Gordon360.Services
         /// <returns> The formatted number </returns>
         public string FormatNumber(string phoneNum)
         {
-            phoneNum = phoneNum.Replace("(", "").Replace(" ", "").Replace("-", "").Replace("+", "");
+            phoneNum = phoneNum.Replace("(", "").Replace(")", "").Replace(" ", "").Replace("-", "").Replace("+", "");
             if (!Regex.IsMatch(phoneNum, @"^\d+$"))
             {
                 throw new BadInputException() { ExceptionMessage = "Phone Numbers must only be numerical digits." };
