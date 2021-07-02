@@ -370,12 +370,22 @@ namespace Gordon360.Controllers.Api
         /// <returns> Emergency contact information of the given user. </returns>
         [HttpGet]
         [Route("emergency-contact/{username}")]
-        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.EMERGENCY_CONTACT)]
         public IHttpActionResult GetEmergencyContact(string username)
         {
-            var emrg = _profileService.GetEmergencyContact(username);
-
-            return Ok(emrg);
+            try
+            {
+                var emrg = _profileService.GetEmergencyContact(username);
+                return Ok(emrg);
+            }
+            catch (System.Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error getting the emergency contact.");
+                return NotFound();
+            }
+            
+            
         }
 
         /// <summary>Get the profile image of currently logged in user</summary>
