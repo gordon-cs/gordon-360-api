@@ -844,6 +844,8 @@ Differences from GoSite:
 
 ##### PUT
 
+`api/profiles/mobile_phone_number/:value` Update mobile phone number for the current logged in user.
+
 `api/profiles/mobile_privacy/:value` Update mobile phone number privacy with value(Y or N) for the current logged in user.
 
 `api/profiles/image_privacy/:value` Update profile image privacy with value(Y or N) for the current logged in user.
