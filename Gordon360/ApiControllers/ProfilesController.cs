@@ -373,12 +373,19 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.EMERGENCY_CONTACT)]
         public IHttpActionResult GetEmergencyContact(string username)
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var viewerType = _roleCheckingService.getCollegeRole(viewerName);
+            try
+            {
+                var emrg = _profileService.GetEmergencyContact(username);
+                return Ok(emrg);
+            }
+            catch (System.Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error getting the emergency contact.");
+                return NotFound();
+            }
             
-            var emrg = _profileService.GetEmergencyContact(username);
-            return Ok(emrg);
+            
         }
 
         /// <summary>Get the profile image of currently logged in user</summary>
