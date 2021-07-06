@@ -14,19 +14,12 @@ namespace Gordon360.Controllers.Api
     [Authorize]
     public class VictoryPromiseController : ControllerBase
     {
-        private IProfileService _profileService;
-        private IAccountService _accountService;
-        private IRoleCheckingService _roleCheckingService;
-
-        private IVictoryPromiseService _victoryPromiseService;
+        private readonly IVictoryPromiseService _victoryPromiseService;
 
         public VictoryPromiseController()
         {
             var _unitOfWork = new UnitOfWork();
             _victoryPromiseService = new VictoryPromiseService(_unitOfWork);
-            _profileService = new ProfileService(_unitOfWork);
-            _accountService = new AccountService(_unitOfWork);
-            _roleCheckingService = new RoleCheckingService(_unitOfWork);
         }
         public VictoryPromiseController(IVictoryPromiseService victoryPromiseService)
         {

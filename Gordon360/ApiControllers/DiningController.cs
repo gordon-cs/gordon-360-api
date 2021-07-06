@@ -15,14 +15,12 @@ namespace Gordon360.ApiControllers
     [Authorize]
     public class DiningController : ControllerBase
     {
-        public IDiningService _diningService;
-        private IAccountService _accountService;
+        public readonly IDiningService _diningService;
         private const string FACSTAFF_MEALPLAN_ID = "7295";
         public DiningController()
         {
             IUnitOfWork _unitOfWork = new UnitOfWork();
             _diningService = new DiningService(_unitOfWork);
-            _accountService = new AccountService(_unitOfWork);
         }
 
         /// <summary>

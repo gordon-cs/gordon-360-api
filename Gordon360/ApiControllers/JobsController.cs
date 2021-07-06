@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Collections.Generic;
 using System.Security.Claims;
 using Gordon360.Exceptions.ExceptionFilters;
@@ -21,15 +19,13 @@ namespace Gordon360.ApiControllers
     [Route("api/jobs")]
     public class JobsController : ControllerBase
     {
-        private IJobsService _jobsService;
-        private IAccountService _accountService;
-        private IErrorLogService _errorLogService;
+        private readonly IJobsService _jobsService;
+        private readonly IErrorLogService _errorLogService;
 
         public JobsController()
         {
             IUnitOfWork _unitOfWork = new UnitOfWork();
             _jobsService = new JobsService(_unitOfWork);
-            _accountService = new AccountService(_unitOfWork);
             _errorLogService = new ErrorLogService(_unitOfWork);
         }
 

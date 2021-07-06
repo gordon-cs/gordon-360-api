@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Gordon360.Exceptions.ExceptionFilters;
-using Gordon360.Repositories;
 using Gordon360.Static.Methods;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +14,6 @@ namespace Gordon360.ApiControllers
     {
         public AdvancedSearchController()
         {
-            IUnitOfWork _unitOfWork = new UnitOfWork();
         }
 
         /// <summary>

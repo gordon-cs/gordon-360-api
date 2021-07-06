@@ -14,19 +14,12 @@ namespace Gordon360.Controllers.Api
     public class StudentEmploymentController : ControllerBase
     {
         //declare services we are going to use.
-        private IProfileService _profileService;
-        private IAccountService _accountService;
-        private IRoleCheckingService _roleCheckingService;
-
-        private IStudentEmploymentService _studentEmploymentService;
+        private readonly IStudentEmploymentService _studentEmploymentService;
 
         public StudentEmploymentController()
         {
             var _unitOfWork = new UnitOfWork();
             _studentEmploymentService = new StudentEmploymentService(_unitOfWork);
-            _profileService = new ProfileService(_unitOfWork);
-            _accountService = new AccountService(_unitOfWork);
-            _roleCheckingService = new RoleCheckingService(_unitOfWork);
         }
         public StudentEmploymentController(IStudentEmploymentService studentEmploymentService)
         {

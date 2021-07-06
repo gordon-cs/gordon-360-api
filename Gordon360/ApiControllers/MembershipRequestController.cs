@@ -18,7 +18,6 @@ namespace Gordon360.Controllers.Api
     [CustomExceptionFilter]
     public class MembershipRequestController : ControllerBase
     {
-        private IAccountService _accountService;
 
         public IMembershipRequestService _membershipRequestService;
 
@@ -26,7 +25,6 @@ namespace Gordon360.Controllers.Api
         {
             var _unitOfWork = new UnitOfWork();
             _membershipRequestService = new MembershipRequestService(_unitOfWork);
-            _accountService = new AccountService(_unitOfWork);
         }
 
         public MembershipRequestController(IMembershipRequestService membershipRequestService)

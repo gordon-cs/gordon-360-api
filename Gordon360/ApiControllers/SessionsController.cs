@@ -15,7 +15,7 @@ namespace Gordon360.Controllers.Api
     //All Routes made public for Guest View (No authorization needed)
     public class SessionsController : ControllerBase
     {
-        private ISessionService _sessionService;
+        private readonly ISessionService _sessionService;
 
         public SessionsController()
         {

@@ -16,15 +16,12 @@ namespace Gordon360.Controllers.Api
     [Authorize]
     public class WellnessController : ControllerBase
     {
-        private IAccountService _accountService;
-
-        private IWellnessService _wellnessService;
+        private readonly IWellnessService _wellnessService;
 
         public WellnessController()
         {
-            var _unitOfWork = new UnitOfWork();
+            // var _unitOfWork = new UnitOfWork();
             _wellnessService = new WellnessService();
-            _accountService = new AccountService(_unitOfWork);
         }
 
         public WellnessController(IWellnessService wellnessService)

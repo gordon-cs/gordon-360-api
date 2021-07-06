@@ -14,7 +14,7 @@ namespace Gordon360.Controllers.Api
     [CustomExceptionFilter]
     public class ContentManagementController : ControllerBase
     {
-        private IContentManagementService _contentManagementService;
+        private readonly IContentManagementService _contentManagementService;
 
         public ContentManagementController()
         {

@@ -1,11 +1,8 @@
 ﻿using System.Security.Claims;
-using System.Linq;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Exceptions.CustomExceptions;
-using Gordon360.AuthorizationFilters;
-using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Gordon360.Models.ViewModels;
@@ -17,7 +14,7 @@ namespace Gordon360.ApiControllers
     [Route("api/events")]
     public class EventController : ControllerBase
     {
-        IEventService _eventService;
+        private readonly IEventService _eventService;
         public EventController()
         {
             IUnitOfWork unitOfWork = new UnitOfWork();

@@ -17,14 +17,12 @@ namespace Gordon360.ApiControllers
     [Route("api/emails")]
     public class EmailsController : ControllerBase
     {
-        EmailService _emailService;
-        AccountService _accountService;
+        private readonly EmailService _emailService;
 
         public EmailsController()
         {
             IUnitOfWork unitOfWork = new UnitOfWork();
             _emailService = new EmailService(unitOfWork);
-            _accountService = new AccountService(unitOfWork);
         }
 
         [Route("activity/{id}")]

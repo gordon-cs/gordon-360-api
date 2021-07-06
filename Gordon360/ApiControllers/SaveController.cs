@@ -15,16 +15,12 @@ namespace Gordon360.ApiControllers
     public class SaveController : ControllerBase
     {
 
-        private ISaveService _saveService;
-        private IAccountService _accountService;
-        private IRoleCheckingService _roleCheckingService;
+        private readonly ISaveService _saveService;
 
         public SaveController()
         {
             IUnitOfWork _unitOfWork = new UnitOfWork();
             _saveService = new SaveService(_unitOfWork);
-            _accountService = new AccountService(_unitOfWork);
-            _roleCheckingService = new RoleCheckingService(_unitOfWork);
         }
         public SaveController(ISaveService saveService)
         {

@@ -7,8 +7,6 @@ using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Static.Methods;
 using Gordon360.Static.Names;
-using System.Linq;
-using System.Net;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
@@ -21,10 +19,10 @@ namespace Gordon360.Controllers.Api
     [CustomExceptionFilter]
     public class HousingController : ControllerBase
     {
-        private IHousingService _housingService;
-        private IAccountService _accountService;
-        private IAdministratorService _administratorService;
-        private IProfileService _profileService;
+        private readonly IHousingService _housingService;
+        private readonly IAccountService _accountService;
+        private readonly IAdministratorService _administratorService;
+        private readonly IProfileService _profileService;
 
         public HousingController()
         {

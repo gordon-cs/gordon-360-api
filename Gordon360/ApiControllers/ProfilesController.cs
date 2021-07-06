@@ -398,7 +398,7 @@ namespace Gordon360.Controllers.Api
             var result = _profileService.GetBirthdate(username);
             return Ok(result);
         }
-
+        /* @TODO: fix images
         /// <summary>Get the profile image of currently logged in user</summary>
         /// <returns></returns>
         [HttpGet]
@@ -806,7 +806,7 @@ namespace Gordon360.Controllers.Api
             }
             _profileService.UpdateProfileImage(authenticatedUserIdString, null, null);  //update database
             return Ok();
-        }
+        }*/
 
 
         /// <summary>
