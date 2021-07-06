@@ -814,7 +814,7 @@ What is it? Resource that represents users' profiles.
 
 Differences from GoSite:
 
--   Only displaying city and country as home address. (When the viewer is a student. Police, super admin, faculty and staff should still see all the information for home address)
+-   Only displaying city and country as home address. (When the viewer is a student or alumni. Police, super admin, faculty, and staff should still see all the information for home address)
 -   Displaying minors.
 -   On campus was changed to display more general information rather than completely getting rid of it like GoSite does now. (Shows on/off campus)
 
@@ -843,6 +843,8 @@ Differences from GoSite:
 `api/profiles/:type` Update a social media link of a type(facebook, twitter, linkedin,instagram, handshake) of current logged in user.
 
 ##### PUT
+
+`api/profiles/mobile_phone_number/:value` Update mobile phone number for the current logged in user.
 
 `api/profiles/mobile_privacy/:value` Update mobile phone number privacy with value(Y or N) for the current logged in user.
 
