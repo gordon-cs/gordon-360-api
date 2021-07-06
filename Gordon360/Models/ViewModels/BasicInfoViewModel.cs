@@ -88,12 +88,12 @@ namespace Gordon360.Models.ViewModels
 
         public bool NicknameStartsWith(string searchString)
         {
-            return Nickname?.ToLower()?.StartsWith(searchString) ?? false;
+            return Nickname?.ToLower().StartsWith(searchString) ?? false;
         }
 
         public bool NicknameContains(string searchString)
         {
-            return Nickname?.ToLower()?.Contains(searchString) ?? false;
+            return Nickname?.ToLower().Contains(searchString) ?? false;
         }
 
         public bool MaidenNameMatches(string matchString)
@@ -103,12 +103,12 @@ namespace Gordon360.Models.ViewModels
 
         public bool MaidenNameStartsWith(string searchString)
         {
-            return MaidenName?.ToLower()?.StartsWith(searchString) ?? false;
+            return MaidenName?.ToLower().StartsWith(searchString) ?? false;
         }
 
         public bool MaidenNameContains(string searchString)
         {
-            return MaidenName?.ToLower()?.Contains(searchString) ?? false;
+            return MaidenName?.ToLower().Contains(searchString) ?? false;
         }
     }
 }
