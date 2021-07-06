@@ -13,7 +13,7 @@ namespace Gordon360.Models.ViewModels
         {
             CliftonStrengthsViewModel vm = new CliftonStrengthsViewModel
             {
-                //if clif is null, just set Strengths to null, otherwise erros occur when clif.THEME is called
+                // if clif is null, just set Strengths to null to prevent exception when clif.THEME is called
                 Strengths = (clif == null) ? null : new List<string>()
                 {
                     clif.THEME_1,
