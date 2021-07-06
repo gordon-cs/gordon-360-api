@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using Thinktecture.IdentityModel.Tokens;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication;
@@ -35,4 +35,4 @@ namespace Gordon360.AuthorizationServer
             throw new NotImplementedException();
         }
     }
-}
+}*/

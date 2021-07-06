@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Threading.Tasks;
 using System.DirectoryServices.AccountManagement;
 using System.Security.Claims;
@@ -47,6 +47,7 @@ namespace Gordon360.AuthorizationServer
             /*******************************
              * Ldap Authentication
              *******************************/
+/*
             try
             {
                 PrincipalContext ADServiceConnection = new PrincipalContext(
@@ -181,4 +182,4 @@ namespace Gordon360.AuthorizationServer
 
 
     }
-}
+}*/
