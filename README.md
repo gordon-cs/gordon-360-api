@@ -493,7 +493,7 @@ Here is a breakdown of the project folder:
 
 ## API Endpoints
 
-Notation: In the API endpoint descriptions below, parameter values are indicated by a leading ":".  The ":" is not present in the URL, just the value.  Also, a trailing "/" is required after the last parameter value (even though it is not shown below).
+Notation: In the API endpoint descriptions below, some parameter values are indicated by a leading ":".  The ":" is not present in the URL, just the value.  Also, a trailing "/" is required after the last parameter value (even though it is not shown below).
 
 _Note:_ The shell script `get-route-list.sh` is run with `bash get-route-list.sh` from a linux shell or git-bash. It provides a list of the API routes that appear in the ApiController files.
 
