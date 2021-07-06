@@ -11,18 +11,22 @@ namespace Gordon360.Models.ViewModels
 
         public static implicit operator CliftonStrengthsViewModel(Clifton_Strengths clif)
         {
-            CliftonStrengthsViewModel vm = new CliftonStrengthsViewModel
+            if (clif != null)
             {
-                Strengths = new List<string>()
+                CliftonStrengthsViewModel vm = new CliftonStrengthsViewModel
                 {
-                    clif.THEME_1,
-                    clif.THEME_2,
-                    clif.THEME_3,
-                    clif.THEME_4,
-                    clif.THEME_5
-                },
-            };
-            return vm;
+                    Strengths = new List<string>()
+                    {
+                        clif.THEME_1,
+                        clif.THEME_2,
+                        clif.THEME_3,
+                        clif.THEME_4,
+                        clif.THEME_5
+                    },
+                };
+                return vm;
+            }
+            return null;
         }
     }
 }
