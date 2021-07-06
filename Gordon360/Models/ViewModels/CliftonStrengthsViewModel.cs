@@ -15,12 +15,12 @@ namespace Gordon360.Models.ViewModels
             {
                 Strengths = new List<string>()
                 {
-                    clif.THEME_1,
-                    clif.THEME_2,
-                    clif.THEME_3,
-                    clif.THEME_4,
-                    clif.THEME_5
-                },
+                    clif?.THEME_1,
+                    clif?.THEME_2,
+                    clif?.THEME_3,
+                    clif?.THEME_4,
+                    clif?.THEME_5
+                }
             };
             return vm;
         }
