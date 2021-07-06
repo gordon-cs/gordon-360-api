@@ -1440,7 +1440,7 @@ namespace Gordon360.Models
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_PHONE_PRIVACY", iDParameter, vALUEParameter);
         }
-    
+
         public virtual int UPDATE_PHOTO_PATH(Nullable<int> iD, string fILE_PATH, string fILE_NAME)
         {
             var iDParameter = iD.HasValue ?
