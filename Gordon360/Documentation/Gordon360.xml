@@ -4,13 +4,7 @@
         <name>Gordon360</name>
     </assembly>
     <members>
-        <member name="M:Gordon360.Controllers.Api.AcademicCheckInController.PutEmergencyContact(Gordon360.Models.EmergencyContact)">
-            <summary></summary>
-            Set emergency contacts for student
-            <param name="data"> The contact data to be stored
-            </param>
-            <returns> The data stored </returns>
-        </member>
+        <!-- Badly formed XML comment ignored for member "M:Gordon360.Controllers.Api.AcademicCheckInController.PutEmergencyContact(Gordon360.Models.EmergencyContact)" -->
         <member name="M:Gordon360.Controllers.Api.HousingController.CheckIfHousingAdmin">
             <summary>
             Check if the currently logged in user is authorized to view the housing admin page
@@ -28,50 +22,8 @@
             <summary>
             Remove a user from the admin whitelist
             </summary>
-            <param name="includeAlumniSearchParam"> For non-students: Include Alumni in search results or not </param>
-            <param name="firstNameSearchParam"> The first name to search for </param>
-            <param name="lastNameSearchParam"> The last name to search for </param>
-            <param name="majorSearchParam"></param>
-            <param name="minorSearchParam"></param>
-            <param name="hallSearchParam"></param>
-            <param name="classTypeSearchParam"></param>
-            <param name="hometownSearchParam"></param>
-            <param name="stateSearchParam"></param>
-            <param name="countrySearchParam"></param>
-            <param name="departmentSearchParam"></param>   
-            <param name="buildingSearchParam"></param>     
-            <returns> All accounts meeting some or all of the parameter</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.AccountsController.AdvancedPeopleSearch(System.Boolean,System.Boolean,System.Boolean,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
-            <summary>
-            Return a list of accounts matching some or all of the search parameters
-            We are searching through all the info of a user, then narrowing it down to get only what we want
-            </summary>
-            <param name="includeStudentSearchParam"> Include Student in search results or not </param>
-            <param name="includeFacStaffSearchParam"> Include Faculty and Staff in search results or not </param>
-            <param name="includeAlumniSearchParam"> For non-students: Include Alumni in search results or not </param>
-            <param name="firstNameSearchParam"> The first name to search for </param>
-            <param name="lastNameSearchParam"> The last name to search for </param>
-            <param name="majorSearchParam"></param>
-            <param name="minorSearchParam"></param>
-            <param name="hallSearchParam"></param>
-            <param name="classTypeSearchParam"></param>
-            <param name="hometownSearchParam"></param>
-            <param name="stateSearchParam"></param>
-            <param name="countrySearchParam"></param>
-            <param name="departmentSearchParam"></param>   
-            <param name="buildingSearchParam"></param>     
-            <returns> All accounts meeting some or all of the parameter</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.AccountsController.GenerateKey(System.String,System.String,System.String,System.Int32)">
-             <Summary>
-               This function generates a key for each account
-             </Summary>
-            
-             <param name="keyPart1">This is what you would want to sort by first, used for first part of key</param>
-             <param name="keyPart2">This is what you want to sort by second, used for second part of key</param>
-             <param name="precedence">Set where in the dictionary this key group will be ordered</param>
-             <param name="userName">The User's Username</param>
+            <param name="id"> The id of the user to remove </param>
+            <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.HousingController.DeleteApplication(System.Int32)">
             <summary>
@@ -155,6 +107,13 @@
             <summary>Gets a news item by id from the database</summary>
             <param name="newsID">The id of the news item to retrieve</param>
             <returns>The news item</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.NewsController.GetImage(System.Int32)">
+            <summary>Gets the base64 image data for an image corresponding 
+            to a student news item. Only used by GO; when we move student news approval
+            to 360, this will be removed.</summary>
+            <param name="newsID">The id of the news item to retrieve image from</param>
+            <returns>base64 string representing image</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.NewsController.GetNotExpired">
             Call the service that gets all approved student news entries not yet expired, filtering
@@ -614,16 +573,10 @@
             <returns></returns>
             <remarks>Posts a new membership to the server to be added into the database</remarks>
         </member>
-        <member name="M:Gordon360.Controllers.Api.NewsController.GetImage(System.Int32)">
-            <summary>Gets the base64 image data for an image corresponding 
-            to a student news item. Only used by GO; when we move student news approval
-            to 360, this will be removed.</summary>
-            <param name="newsID">The id of the news item to retrieve image from</param>
-            <returns>base64 string representing image</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.NewsController.GetNotExpired">
-            Call the service that gets all approved student news entries not yet expired, filtering
-            out the expired by comparing 2 weeks past date entered to current date
+        <member name="M:Gordon360.Controllers.Api.MembershipsController.GetMembershipsForStudent(System.String)">
+            <summary>Fetch memberships that a specific student has been a part of</summary>
+            <param name="id">The Student id</param>
+            <returns>The membership information that the student is a part of</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.MembershipsController.GetMembershipsForStudentByUsename(System.String)">
             <summary>Fetch memberships that a specific student has been a part of</summary>
@@ -709,9 +662,33 @@
         </member>
         <member name="M:Gordon360.ApiControllers.AccountsController.AdvancedPeopleSearch(System.Boolean,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
             <summary>
+            Deprecated route uses new route below with two leading parameters for
+            including students and facStaff.
+            
             Return a list of accounts matching some or all of the search parameters
             We are searching through all the info of a user, then narrowing it down to get only what we want
             </summary>
+            <param name="includeAlumniSearchParam"> For non-students: Include Alumni in search results or not </param>
+            <param name="firstNameSearchParam"> The first name to search for </param>
+            <param name="lastNameSearchParam"> The last name to search for </param>
+            <param name="majorSearchParam"></param>
+            <param name="minorSearchParam"></param>
+            <param name="hallSearchParam"></param>
+            <param name="classTypeSearchParam"></param>
+            <param name="hometownSearchParam"></param>
+            <param name="stateSearchParam"></param>
+            <param name="countrySearchParam"></param>
+            <param name="departmentSearchParam"></param>   
+            <param name="buildingSearchParam"></param>     
+            <returns> All accounts meeting some or all of the parameter</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AccountsController.AdvancedPeopleSearch(System.Boolean,System.Boolean,System.Boolean,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Return a list of accounts matching some or all of the search parameters
+            We are searching through all the info of a user, then narrowing it down to get only what we want
+            </summary>
+            <param name="includeStudentSearchParam"> Include Student in search results or not </param>
+            <param name="includeFacStaffSearchParam"> Include Faculty and Staff in search results or not </param>
             <param name="includeAlumniSearchParam"> For non-students: Include Alumni in search results or not </param>
             <param name="firstNameSearchParam"> The first name to search for </param>
             <param name="lastNameSearchParam"> The last name to search for </param>

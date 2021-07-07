@@ -1,6 +1,7 @@
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
+using Gordon360.Repositories;
 using Gordon360.Services.ComplexQueries;
 using System.Collections.Generic;
 using System.Data.SqlClient;
