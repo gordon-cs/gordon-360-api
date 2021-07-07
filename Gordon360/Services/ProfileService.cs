@@ -325,6 +325,31 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// mobile phone number setting
+        /// </summary>
+        /// <param name="profile"> The profile for the user whose phone is to be updated </param>
+        public StudentProfileViewModel UpdateMobilePhoneNumber(StudentProfileViewModel profile)
+        {
+            var idParam = new SqlParameter("@UserID", profile.ID);
+            var newPhoneNumberParam = new SqlParameter("@PhoneUnformatted", profile.MobilePhone);
+            var result = RawSqlQuery<StudentProfileViewModel>.query("UPDATECELLPHONE @UserID, @PhoneUnformatted", idParam, newPhoneNumberParam);
+
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+            }
+
+            // Update value in cached data
+            var student = Data.StudentData.FirstOrDefault(x => x.ID == profile.ID);
+            if (student != null)
+            {
+                student.MobilePhone = profile.MobilePhone;
+            }
+
+            return profile;
+        }
+
+        /// <summary>
         /// privacy setting user profile photo.
         /// </summary>
         /// <param name="id">id</param>

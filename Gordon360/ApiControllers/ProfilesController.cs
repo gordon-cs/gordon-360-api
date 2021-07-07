@@ -847,6 +847,42 @@ namespace Gordon360.Controllers.Api
             return Ok();
 
         }
+
+        /// <summary>
+        /// Update mobile phone number
+        /// </summary>
+        /// <param name="value">phoneNumber</param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("mobile_phone_number/{value}")]
+        public IHttpActionResult UpdateMobilePhoneNumber(string value)
+        {
+            // Verify Input
+            
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            StudentProfileViewModel profile = _profileService.GetStudentProfileByUsername(username);
+            profile.MobilePhone = value;
+            StudentProfileViewModel result = _profileService.UpdateMobilePhoneNumber(profile);
+            
+            return Ok(result);
+
+        }
+
         /// <summary>
         /// Update privacy of mobile phone number
         /// </summary>

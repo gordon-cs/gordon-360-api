@@ -493,6 +493,8 @@ Here is a breakdown of the project folder:
 
 ## API Endpoints
 
+Notation: In the API endpoint descriptions below, some parameter values are indicated by a leading ":" (though convention is to surround the parameter with {curly-brackets}).  The ":" is not present in the URL, just the value.  Also, a trailing "/" is required after the last parameter value if the parameter includes a special character like a period (e.g. `360.studenttest` necessitates trailing slash).
+
 _Note:_ The shell script `get-route-list.sh` is run with `bash get-route-list.sh` from a linux shell or git-bash. It provides a list of the API routes that appear in the ApiController files.
 
 ### Accounts
@@ -509,7 +511,7 @@ What is it? Resource that represents a gordon account.
 
 `api/accounts/search/:searchString/:secondaryString` The same as above, used when the search string contains a space
 
-`api/accounts/advanced-people-search/{includeAlumniSearchParam}/{firstNameSearchParam}/{lastNameSearchParam}/{majorSearchParam}/{minorSearchParam}/{hallSearchParam}/{classTypeSearchParam}/{hometownSearchParam}/{stateSearchParam}/{countrySearchParam}/{departmentSearchParam}/{buildingSearchParam}` Get all the accounts matching the specified parameters. Access to accounts is based on your account type (e.g. Students can't get Alumni).
+`api/accounts/advanced-people-search/{includeStudentSearchParam}/{includeFacStaffSearchParam}/{includeAlumniSearchParam}/{firstNameSearchParam}/{lastNameSearchParam}/{majorSearchParam}/{minorSearchParam}/{hallSearchParam}/{classTypeSearchParam}/{hometownSearchParam}/{stateSearchParam}/{countrySearchParam}/{departmentSearchParam}/{buildingSearchParam}` Get all the accounts matching the specified parameters. Access to accounts is based on your account type (e.g. Students can't get Alumni).
 
 ### Activities
 
@@ -844,6 +846,8 @@ Differences from GoSite:
 
 ##### PUT
 
+`api/profiles/mobile_phone_number/:value` Update mobile phone number for the current logged in user.
+
 `api/profiles/mobile_privacy/:value` Update mobile phone number privacy with value(Y or N) for the current logged in user.
 
 `api/profiles/image_privacy/:value` Update profile image privacy with value(Y or N) for the current logged in user.
@@ -1074,7 +1078,7 @@ To manually test the API, use an API development/testing app like [Postman](http
 
     -   Use the clipboard to make of copy of the _access-token_ value (do not include the double quotes, just copy the long string of characters between the quotes)
     -   Click on the "+" tab near the top of the window to open a new request frame
-    -   Leave "GET" as the request type and enter in an appropriate API URL (e.g. `http://localhost:5555/api/memberships/activity/AJG`
+    -   Leave "GET" as the request type and enter in an appropriate API URL (e.g. `http://localhost:5555/api/memberships/activity/AJG`, or `http://localhost:5555/api/profiles/360.studenttest/`).  Note that a trailing slash is needed after the last parameter value.
     -   Just below the URL, click on "Headers" and enter the following key/value pairs replacing _access-token_ with the token string you copied:
 
         | Key             | Value                               |

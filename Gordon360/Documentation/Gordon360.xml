@@ -830,7 +830,14 @@
             </summary>
             <returns>true if successful </returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.DirectMessageController.StoreUserRooms(System.String)">
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateMobilePhoneNumber(System.String)">
+            <summary>
+            Update mobile phone number
+            </summary>
+            <param name="value">phoneNumber</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateMobilePrivacy(System.String)">
             <summary>
              stores rooms associated with a user id
             </summary>
@@ -1873,6 +1880,12 @@
             </summary>
             <param name="id">id</param>
             <param name="value">Y or N</param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.UpdateMobilePhoneNumber(Gordon360.Models.ViewModels.StudentProfileViewModel)">
+            <summary>
+            mobile phone number setting
+            </summary>
+            <param name="profile"> The profile for the user whose phone is to be updated </param>
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateImagePrivacy(System.String,System.String)">
             <summary>
