@@ -367,6 +367,13 @@
             <param name="path">The path of the links</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateMobilePhoneNumber(System.String)">
+            <summary>
+            Update mobile phone number
+            </summary>
+            <param name="value">phoneNumber</param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateMobilePrivacy(System.String)">
             <summary>
             Update privacy of mobile phone number
@@ -830,14 +837,7 @@
             </summary>
             <returns>true if successful </returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateMobilePhoneNumber(System.String)">
-            <summary>
-            Update mobile phone number
-            </summary>
-            <param name="value">phoneNumber</param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateMobilePrivacy(System.String)">
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.StoreUserRooms(System.String)">
             <summary>
              stores rooms associated with a user id
             </summary>
