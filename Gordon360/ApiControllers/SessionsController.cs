@@ -111,7 +111,7 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary>
-        /// Gets the first day in the current session
+        /// Gets the last day in the current session
         /// </summary>
         /// <returns></returns>
         [HttpGet]
