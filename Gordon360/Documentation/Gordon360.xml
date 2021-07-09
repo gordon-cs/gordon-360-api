@@ -20,7 +20,11 @@
         </member>
         <member name="M:Gordon360.Controllers.Api.HousingController.RemoveHousingAdmin(System.String)">
             <summary>
-            Remove a user from the admin whitelist
+            Deprecated route uses new route below with two leading parameters for
+            including students and facStaff.
+            
+            Return a list of accounts matching some or all of the search parameters
+            We are searching through all the info of a user, then narrowing it down to get only what we want
             </summary>
             <param name="id"> The id of the user to remove </param>
             <returns></returns>
@@ -885,9 +889,21 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.GetJobs(System.DateTime,System.DateTime)">
+        <member name="M:Gordon360.Controllers.Api.SessionsController.GetFirstDayinSemester">
             <summary>
-            Get a user's active jobs
+            Gets the first day in the current session
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.SessionsController.GetLastDayinSemester">
+            <summary>
+            Gets the first day in the current session
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.SessionsController.GetDaysLeftinSemester">
+            <summary>
+            Gets the days left in the current session
             </summary>
             <param name="details"></param>
             <returns>The user's active jobs</returns>

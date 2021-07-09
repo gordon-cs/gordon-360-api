@@ -897,6 +897,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
+<<<<<<< HEAD
           <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49645</DevelopmentServerPort>
@@ -907,6 +908,9 @@
           <CustomServerUrl>
           </CustomServerUrl>
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+=======
+          <SaveServerSettingsInUserFile>True</SaveServerSettingsInUserFile>
+>>>>>>> develop
           <servers defaultServer="">
             <server name="SelfHostServer" exePath="" cmdArgs="" url="http://localhost:49645/" workingDir="" />
           </servers>

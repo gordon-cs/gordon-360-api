@@ -791,8 +791,12 @@ Who has access? Everyone.
 `api/sessions/:id` Get the session with session code `id`.
 
 `api/sessions/current` Get the current session.
+	
+`api/sessions/firstDay` Get the Gets the first day in the current session.
+	
+`api/sessions/lastDay` Get the Gets the last day in the current session.
 
-`api/sessions/daysLeft` Get the days left in the semester and the total days in the semester
+`api/sessions/daysLeft` Get the days left in the semester and the total days in the current session.
 
 ### Participation Definitions
 

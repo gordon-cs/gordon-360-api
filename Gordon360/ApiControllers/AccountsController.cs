@@ -472,6 +472,20 @@ namespace Gordon360.ApiControllers
             {
                 hometownSearchParam = "";
             }
+            // Accept common town abbreviations in advanced people search
+            // East = E, West = W, South = S, North = N
+            else if (
+              hometownSearchParam.StartsWith("e ") ||
+              hometownSearchParam.StartsWith("w ") ||
+              hometownSearchParam.StartsWith("s ") ||
+              hometownSearchParam.StartsWith("n ")
+              )
+            {
+                hometownSearchParam = hometownSearchParam.Replace("e ", "east ");
+                hometownSearchParam = hometownSearchParam.Replace("w ", "west ");
+                hometownSearchParam = hometownSearchParam.Replace("s ", "south ");
+                hometownSearchParam = hometownSearchParam.Replace("n ", "north ");
+            }
             if (majorSearchParam == "C\u266F")
             {
                 majorSearchParam = "";
