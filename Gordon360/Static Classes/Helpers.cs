@@ -175,7 +175,23 @@ namespace Gordon360.Static.Methods
             return result; ;
         }
 
-        // Return the days left in the semester, and the total days in the semester
+        // Return the first day in the current session
+        public static String GetFirstDay()
+        {
+            DateTime firstDayRaw = GetCurrentSession().SessionBeginDate.Value;
+            String firstDay = firstDayRaw.ToString("MM/dd/yyyy");
+            return firstDay;
+        }
+
+        // Return the last day in the current session
+        public static String GetLastDay()
+        {
+            DateTime lastDayRaw = GetCurrentSession().SessionEndDate.Value;
+            String lastDay = lastDayRaw.ToString("MM/dd/yyyy");
+            return lastDay;
+        }
+
+        // Return the days left in the semester, and the total days in the current session
         public static double[] GetDaysLeft()
         {
             // The end of the current session
