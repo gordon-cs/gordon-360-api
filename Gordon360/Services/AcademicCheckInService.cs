@@ -47,7 +47,7 @@ namespace Gordon360.Services
             var contactMobilePhoneParam = new SqlParameter("@ContactMobilePhone", FormatNumber(data.MobilePhone));
             var contactRelationshipParam = new SqlParameter("@ContactRelationship", data.relationship);
             var notesParam = new SqlParameter("@Notes", data.notes);
-            var usernameParam = new SqlParameter("@Username", "360Web (" + data.lastname + ", " + data.lastname + ")");
+            var usernameParam = new SqlParameter("@Username", "360Web (" + data.lastname + ", " + data.firstname + ")");
             var jobNameParam = new SqlParameter("@JobName", "Enrollment-Checkin");
 
             // Run stored procedure
@@ -88,7 +88,7 @@ namespace Gordon360.Services
         /// <returns> The formatted number </returns>
         public string FormatNumber(string phoneNum)
         {
-            phoneNum = phoneNum.Replace("(", "").Replace(")", "").Replace(" ", "").Replace("-", "").Replace("+", "");
+            phoneNum = phoneNum.Replace("(", "").Replace(")", "").Replace(" ", "").Replace("-", "");
             if (!Regex.IsMatch(phoneNum, @"^\d+$"))
             {
                 throw new BadInputException() { ExceptionMessage = "Phone Numbers must only be numerical digits." };

@@ -77,7 +77,7 @@ namespace Gordon360.Controllers.Api
         /// <returns> The data stored </returns>
         [HttpPost]
         [Route("emergencycontact")]
-        public IHttpActionResult PutEmergencyContact(EmergencyContact data)
+        public IHttpActionResult PutEmergencyContact([FromBody] EmergencyContact data)
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
