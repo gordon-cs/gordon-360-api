@@ -152,7 +152,7 @@ namespace Gordon360.AuthorizationFilters
                     else
                     {
                         var username = (string)context.ActionArguments["username"];
-                        var isSelf = username.Equals(user_name);
+                        var isSelf = username.Equals(user_name.ToLower());
                         return isSelf;
                     }
                 case Resource.MEMBERSHIP:
