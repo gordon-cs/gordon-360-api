@@ -105,14 +105,14 @@ namespace Gordon360.Controllers.Api
         /// <returns> The data stored </returns>
         [HttpPut]
         [Route("cellphone")]
-        public IHttpActionResult PutCellPhone(string phoneNum, bool isPrivate, bool noPhone)
+        public IHttpActionResult PutCellPhone(AcademicCheckInViewModel data)
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
             try {
-                var result = _checkInService.PutCellPhone(id, phoneNum, isPrivate, noPhone);
+                var result = _checkInService.PutCellPhone(id, data.personalPhone, data.makePrivate, data.noPhone);
                 return Ok(result);
             }
             catch (System.Exception e)

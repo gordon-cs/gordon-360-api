@@ -13,11 +13,11 @@ namespace Gordon360.Models.ViewModels
 
         public string Holds { get; set; }
 
-        public string phoneNum { get; set; }
+        public string personalPhone { get; set; }
 
-        public bool isPrivate { get; set; }
+        public bool makePrivate { get; set; }
 
-        public Nullable<bool> noPhone { get; set; }
+        public bool noPhone { get; set; }
         /*
         public static implicit operator AcademicCheckInViewModel(AcademicCheckIn n)
         {
