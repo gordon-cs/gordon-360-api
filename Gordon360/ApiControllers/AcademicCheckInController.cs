@@ -105,7 +105,7 @@ namespace Gordon360.Controllers.Api
         /// <returns> The data stored </returns>
         [HttpPut]
         [Route("cellphone")]
-        public IHttpActionResult PutCellPhone(AcademicCheckInViewModel data)
+        public IHttpActionResult PutCellPhone([FromBody] AcademicCheckInViewModel data)
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
@@ -119,6 +119,7 @@ namespace Gordon360.Controllers.Api
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
                 Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error setting the check in data.");
+                return NotFound();
             }
         
         }

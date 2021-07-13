@@ -5,6 +5,7 @@
     </assembly>
     <members>
         <!-- Badly formed XML comment ignored for member "M:Gordon360.Controllers.Api.AcademicCheckInController.PutEmergencyContact(Gordon360.Models.EmergencyContact)" -->
+        <!-- Badly formed XML comment ignored for member "M:Gordon360.Controllers.Api.AcademicCheckInController.PutCellPhone(Gordon360.Models.ViewModels.AcademicCheckInViewModel)" -->
         <member name="M:Gordon360.Controllers.Api.HousingController.CheckIfHousingAdmin">
             <summary>
             Check if the currently logged in user is authorized to view the housing admin page
@@ -1277,6 +1278,7 @@
             <param name="id"> The students id number</param>
             <returns> The stored data </returns>
         </member>
+        <!-- Badly formed XML comment ignored for member "M:Gordon360.Services.AcademicCheckInService.PutCellPhone(System.String,System.String,System.Boolean,System.Boolean)" -->
         <member name="M:Gordon360.Services.AcademicCheckInService.FormatNumber(System.String)">
             <summary> Formats a phone number for insertion into the database </summary>
             <param name="phoneNum"> The phone number to be formatted </param>
