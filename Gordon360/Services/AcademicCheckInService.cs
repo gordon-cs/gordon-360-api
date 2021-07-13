@@ -62,26 +62,27 @@ namespace Gordon360.Services
         // need user ID, unformatted number, whether they would like their phone number private, and whether or not they have a phone number
 
 
-        /*
+        
         /// <summary> Stores the emergency contact information of a particular user </summary>
         /// <param name="data"> The phone number object for the user </param>
         /// <param name="id"> The id of the student to be updated
         /// <returns> The stored data </returns>
-        public IEnumerable<AcademicCheckInViewModel> PutCellPhone(CheckInData data, string id)
+        public IEnumerable<AcademicCheckInViewModel> PutCellPhone(string id, string phoneNum, bool isPrivate, bool noPhone)
         {
             var studentIDParam = new SqlParameter("@UserID", id);
-            var phoneNumParam = new SqlParameter("@PhoneUnformatted", FormatNumber(data.phoneNum));
-            var isPrivateParam = new SqlParameter("@DoNotPublish", data.isPrivate);
-            var noPhoneParam = new SqlParameter("@NoneProvided", data.noPhone);
+            var phoneNumParam = new SqlParameter("@PhoneUnformatted", FormatNumber(phoneNum));
+            var isPrivateParam = new SqlParameter("@DoNotPublish", isPrivate);
+            var noPhoneParam = new SqlParameter("@NoneProvided", noPhone);
 
             // Run stored procedure
             var result = RawSqlQuery<AcademicCheckInViewModel>.query("FINALIZATION_UPDATECELLPHONE @UserID, @PhoneUnformatted, @DoNotPublish, @NoneProvided", studentIDParam, phoneNumParam, isPrivateParam, noPhoneParam);
+            if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
             }
-            return data;
+            return result;
         }
-        */
+    
 
         /// <summary> Formats a phone number for insertion into the database </summary>
         /// <param name="phoneNum"> The phone number to be formatted </param>

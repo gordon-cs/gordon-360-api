@@ -97,7 +97,7 @@ namespace Gordon360.Controllers.Api
         }
 
 
-        /*
+        
         /// <summary></summary>
         /// Sets the students cell phone number
         /// <param name="data"> The phone number object to be added to the database </param>
@@ -105,14 +105,14 @@ namespace Gordon360.Controllers.Api
         /// <returns> The data stored </returns>
         [HttpPut]
         [Route("cellphone")]
-        public IHttpActionResult PutCellPhone(object data)
+        public IHttpActionResult PutCellPhone(string phoneNum, bool isPrivate, bool noPhone)
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
             try {
-                var result = _checkInService.PutCellPhone(data, id);
+                var result = _checkInService.PutCellPhone(id, phoneNum, isPrivate, noPhone);
                 return Ok(result);
             }
             catch (System.Exception e)
@@ -122,6 +122,6 @@ namespace Gordon360.Controllers.Api
             }
         
         }
-        */
+        
     }
 }
