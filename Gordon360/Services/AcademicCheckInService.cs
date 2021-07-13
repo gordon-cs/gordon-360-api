@@ -67,12 +67,12 @@ namespace Gordon360.Services
         /// <param name="data"> The phone number object for the user </param>
         /// <param name="id"> The id of the student to be updated
         /// <returns> The stored data </returns>
-        public IEnumerable<AcademicCheckInViewModel> PutCellPhone(string id, string personalPhone, bool makePrivate, bool noPhone)
+        public AcademicCheckInViewModel PutCellPhone(string id, AcademicCheckInViewModel data)
         {
             var studentIDParam = new SqlParameter("@UserID", id);
-            var personalPhoneParam = new SqlParameter("@PhoneUnformatted", FormatNumber(personalPhone));
-            var makePrivateParam = new SqlParameter("@DoNotPublish", makePrivate);
-            var noPhoneParam = new SqlParameter("@NoneProvided", noPhone);
+            var personalPhoneParam = new SqlParameter("@PhoneUnformatted", FormatNumber(data.personalPhone));
+            var makePrivateParam = new SqlParameter("@DoNotPublish", data.makePrivate);
+            var noPhoneParam = new SqlParameter("@NoneProvided", data.noPhone);
 
             // Run stored procedure
             var result = RawSqlQuery<AcademicCheckInViewModel>.query("FINALIZATION_UPDATECELLPHONE @UserID, @PhoneUnformatted, @DoNotPublish, @NoneProvided", studentIDParam, personalPhoneParam, makePrivateParam, noPhoneParam);
@@ -80,7 +80,7 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
             }
-            return result;
+            return data;
         }
     
 

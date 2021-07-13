@@ -112,7 +112,7 @@ namespace Gordon360.Controllers.Api
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
             try {
-                var result = _checkInService.PutCellPhone(id, data.personalPhone, data.makePrivate, data.noPhone);
+                var result = _checkInService.PutCellPhone(id, data);
                 return Ok(result);
             }
             catch (System.Exception e)

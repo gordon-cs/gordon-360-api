@@ -1278,7 +1278,7 @@
             <param name="id"> The students id number</param>
             <returns> The stored data </returns>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:Gordon360.Services.AcademicCheckInService.PutCellPhone(System.String,System.String,System.Boolean,System.Boolean)" -->
+        <!-- Badly formed XML comment ignored for member "M:Gordon360.Services.AcademicCheckInService.PutCellPhone(System.String,Gordon360.Models.ViewModels.AcademicCheckInViewModel)" -->
         <member name="M:Gordon360.Services.AcademicCheckInService.FormatNumber(System.String)">
             <summary> Formats a phone number for insertion into the database </summary>
             <param name="phoneNum"> The phone number to be formatted </param>
