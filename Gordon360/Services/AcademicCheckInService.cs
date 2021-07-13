@@ -67,15 +67,15 @@ namespace Gordon360.Services
         /// <param name="data"> The phone number object for the user </param>
         /// <param name="id"> The id of the student to be updated
         /// <returns> The stored data </returns>
-        public IEnumerable<AcademicCheckInViewModel> PutCellPhone(string id, string phoneNum, bool isPrivate, bool noPhone)
+        public IEnumerable<AcademicCheckInViewModel> PutCellPhone(string id, string personalPhone, bool makePrivate, bool noPhone)
         {
             var studentIDParam = new SqlParameter("@UserID", id);
-            var phoneNumParam = new SqlParameter("@PhoneUnformatted", FormatNumber(phoneNum));
-            var isPrivateParam = new SqlParameter("@DoNotPublish", isPrivate);
+            var personalPhoneParam = new SqlParameter("@PhoneUnformatted", FormatNumber(personalPhone));
+            var makePrivateParam = new SqlParameter("@DoNotPublish", makePrivate);
             var noPhoneParam = new SqlParameter("@NoneProvided", noPhone);
 
             // Run stored procedure
-            var result = RawSqlQuery<AcademicCheckInViewModel>.query("FINALIZATION_UPDATECELLPHONE @UserID, @PhoneUnformatted, @DoNotPublish, @NoneProvided", studentIDParam, phoneNumParam, isPrivateParam, noPhoneParam);
+            var result = RawSqlQuery<AcademicCheckInViewModel>.query("FINALIZATION_UPDATECELLPHONE @UserID, @PhoneUnformatted, @DoNotPublish, @NoneProvided", studentIDParam, personalPhoneParam, makePrivateParam, noPhoneParam);
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
