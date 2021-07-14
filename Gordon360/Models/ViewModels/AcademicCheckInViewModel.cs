@@ -7,10 +7,6 @@ namespace Gordon360.Models.ViewModels
 {
     public class AcademicCheckInViewModel
     {
-        public string Race { get; set; }
-
-        public Nullable<int> Ethnicity { get; set; }
-
         public string Holds { get; set; }
 
         public string personalPhone { get; set; }
@@ -18,6 +14,10 @@ namespace Gordon360.Models.ViewModels
         public bool makePrivate { get; set; }
 
         public bool noPhone { get; set; }
+
+        public int Ethnicity { get; set; }
+
+        public int Race { get; set; }
         /*
         public static implicit operator AcademicCheckInViewModel(AcademicCheckIn n)
         {

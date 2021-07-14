@@ -69,11 +69,9 @@ namespace Gordon360.Controllers.Api
 
 
 
-        
-        /// <summary></summary>
-        /// Set emergency contacts for student
+
+        /// <summary>Set emergency contacts for student</summary>
         /// <param name="data"> The contact data to be stored </param>
-        /// </summary>
         /// <returns> The data stored </returns>
         [HttpPost]
         [Route("emergencycontact")]
@@ -97,11 +95,9 @@ namespace Gordon360.Controllers.Api
         }
 
 
-        
-        /// <summary></summary>
-        /// Sets the students cell phone number
+
+        /// <summary> Sets the students cell phone number</summary>
         /// <param name="data"> The phone number object to be added to the database </param>
-        /// </summary>
         /// <returns> The data stored </returns>
         [HttpPut]
         [Route("cellphone")]
@@ -123,6 +119,31 @@ namespace Gordon360.Controllers.Api
             }
         
         }
-        
+
+        /// <summary>Sets the students race and ethinicity</summary>
+        /// <param name="data"> The object containing the race numbers of the users </param>
+        /// <returns> The data stored </returns>
+        [HttpPut]
+        [Route("demographic")]
+        public IHttpActionResult PutDemographic([FromBody] AcademicCheckInViewModel data)
+        {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            try
+            {
+                var result = _checkInService.PutDemographic(id, data);
+                return Ok(result);
+            }
+            catch (System.Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error setting the check in data.");
+                return NotFound();
+            }
+
+        }
+
     }
 }

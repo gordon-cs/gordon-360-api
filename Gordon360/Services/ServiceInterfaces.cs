@@ -293,11 +293,10 @@ namespace Gordon360.Services
 
     public interface IAcademicCheckInService
     {
-        // IEnumerable<AcademicCheckInViewModel> GetHolds(string id);
-        // IEnumerable<AcademicCheckInViewModel> GetDemographic(string id);
         AcademicCheckInViewModel PutCellPhone(string id, AcademicCheckInViewModel data);
         EmergencyContact PutEmergencyContact(EmergencyContact data, string id);
         string FormatNumber(string phoneNum);
+        AcademicCheckInViewModel PutDemographic(string id, AcademicCheckInViewModel data);
     }
 
 }

@@ -3,6 +3,7 @@ using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using Gordon360.Services.ComplexQueries;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
@@ -21,17 +22,6 @@ namespace Gordon360.Services
             _unitOfWork = unitOfWork;
         }
 
-        /*
-        public IEnumerable<AcademicCheckInViewModel> GetHolds(string id)
-        {
-            return RawSqlQuery<AcademicCheckInViewModel>.query("HOLDS");
-        }
-
-        public IEnumerable<AcademicCheckInViewModel> GetDemographic(string id)
-        {
-            return RawSqlQuery<AcademicCheckInViewModel>.query("DEMOGRAPHIC");
-        }
-        */
 
         /// <summary> Stores the emergency contact information of a particular user </summary>
         /// <param name="data"> The object that stores the contact info </param>
@@ -39,14 +29,14 @@ namespace Gordon360.Services
         /// <returns> The stored data </returns>
         public EmergencyContact PutEmergencyContact(EmergencyContact data, string id)
         {
-            var studentIDParam = new SqlParameter("@StudentID", id);
+            var studentIDParam = new SqlParameter("@StudentID", Int32.Parse(id));
             var contactIDParam = new SqlParameter("@ContactNum", data.SEQ_NUM);
             var contactLastNameParam = new SqlParameter("@ContactLastName", data.lastname);
             var contactFirstNameParam = new SqlParameter("@ContactFirstName", data.firstname);
             var contactHomePhoneParam = new SqlParameter("@ContactHomePhone", FormatNumber(data.HomePhone));
             var contactMobilePhoneParam = new SqlParameter("@ContactMobilePhone", FormatNumber(data.MobilePhone));
             var contactRelationshipParam = new SqlParameter("@ContactRelationship", data.relationship);
-            var notesParam = new SqlParameter("@Notes", data.notes);
+            var notesParam = new SqlParameter("@Notes", "");
             var usernameParam = new SqlParameter("@Username", "360Web (" + data.lastname + ", " + data.firstname + ")");
             var jobNameParam = new SqlParameter("@JobName", "Enrollment-Checkin");
 
@@ -63,7 +53,7 @@ namespace Gordon360.Services
 
 
         
-        /// <summary> Stores the emergency contact information of a particular user </summary>
+        /// <summary> Stores the cellphone preferences for the current user </summary>
         /// <param name="data"> The phone number object for the user </param>
         /// <param name="id"> The id of the student to be updated
         /// <returns> The stored data </returns>
@@ -82,7 +72,26 @@ namespace Gordon360.Services
             }
             return data;
         }
-    
+
+        /// <summary> Stores the demographic data (race and ethnicity) of the current user </summary>
+        /// <param name="data"> The race and ethnicity data for the user </param>
+        /// <param name="id"> The id of the user to be updated
+        /// <returns> The stored data </returns>
+        public AcademicCheckInViewModel PutDemographic(string id, AcademicCheckInViewModel data)
+        {
+            var studentIDParam = new SqlParameter("@UserID", id);
+            var RaceValueParam = new SqlParameter("@RaceValue", data.Race);
+            var EthnicityValueParam = new SqlParameter("@EthnicityValue", data.Ethnicity);
+
+            // Run stored procedure
+            var result = RawSqlQuery<AcademicCheckInViewModel>.query("FINALIZATION_UPDATEDEMOGRAPHIC @UserID, @RaceValue, @EthnicityValue", studentIDParam, RaceValueParam, EthnicityValueParam);
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+            return data;
+        }
+
 
         /// <summary> Formats a phone number for insertion into the database </summary>
         /// <param name="phoneNum"> The phone number to be formatted </param>
@@ -90,13 +99,14 @@ namespace Gordon360.Services
         public string FormatNumber(string phoneNum)
         {
             phoneNum = phoneNum.Replace("(", "").Replace(")", "").Replace(" ", "").Replace("-", "");
-            if (!Regex.IsMatch(phoneNum, @"^\d+$"))
+            Console.WriteLine(phoneNum);
+            if (Regex.IsMatch(phoneNum, @"\+?[0-9]*"))
             {
-                throw new BadInputException() { ExceptionMessage = "Phone Numbers must only be numerical digits." };
+                return phoneNum;
             }
             else
             {
-                return phoneNum;
+                throw new BadInputException() { ExceptionMessage = "Phone Numbers must only be numerical digits." };
             }
         }
         
