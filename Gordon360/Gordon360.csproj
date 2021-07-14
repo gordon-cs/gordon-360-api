@@ -520,5 +520,6 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UserSecretsId>6b677d3a-d64b-4693-bfe1-4883788ecf0f</UserSecretsId>
   </PropertyGroup>
 </Project>

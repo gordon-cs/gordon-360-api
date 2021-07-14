@@ -335,12 +335,12 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity Info was not found." };
             }
-
+            
+            /* @TODO: fix images
             original.ACT_IMG_PATH = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_ACTIVITY_IMAGE_PATH"];
-
+            */
             _unitOfWork.Save();
         }
-
         // Helper method to validate an activity info post. Throws an exception that gets caught later if something is not valid.
         // Returns true if all is well. The return value is not really used though. This could be of type void.
         private bool validateActivityInfo(ACT_INFO activity)

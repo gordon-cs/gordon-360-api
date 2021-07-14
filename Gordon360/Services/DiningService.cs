@@ -29,15 +29,16 @@ namespace Gordon360.Services
     /// </summary>
     public class DiningService : IDiningService
     {
+        // @TODO remove unit of work code, unused
         // See UnitOfWork class
-        private IUnitOfWork _unitOfWork;
+        // private IUnitOfWork _unitOfWork;
         private static string issuerID = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitIssuerID"];
         private static string applicationId = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitApplicationID"];
         private static string secret = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitSecret"];
 
         public DiningService(IUnitOfWork unitOfWork)
         {
-            _unitOfWork = unitOfWork;
+            // _unitOfWork = unitOfWork;
         }
 
         private static string getTimestamp()
