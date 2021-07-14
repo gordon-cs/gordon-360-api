@@ -98,7 +98,7 @@ namespace Gordon360.ApiControllers
             var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             var viewerType = _roleCheckingService.getCollegeRole(viewerName);
 
-            var accounts = viewerType == Position.STUDENT ? Data.AllBasicInfoWithoutAlumni : Data.AllBasicInfo;
+            var accounts = Data.AllBasicInfoWithoutAlumni;
 
             int precedence = 0;
 
@@ -286,7 +286,7 @@ namespace Gordon360.ApiControllers
             };
 
             // Create accounts viewmodel to search
-            var accounts = viewerType == Position.STUDENT ? Data.AllBasicInfoWithoutAlumni : Data.AllBasicInfo;
+            var accounts = Data.AllBasicInfoWithoutAlumni;
 
             if (!string.IsNullOrEmpty(searchString) && !string.IsNullOrEmpty(secondaryString))
             {
