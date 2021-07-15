@@ -18,6 +18,7 @@ using System.Text;
 using System.IO;
 using System.Security.Cryptography;
 using System.Diagnostics;
+using Microsoft.Extensions.Configuration;
 
 // <summary>
 // We use this service to pull meal data from blackboard and parse it
@@ -29,16 +30,25 @@ namespace Gordon360.Services
     /// </summary>
     public class DiningService : IDiningService
     {
+        private readonly IConfiguration _config;
+
         // @TODO remove unit of work code, unused
         // See UnitOfWork class
         // private IUnitOfWork _unitOfWork;
-        private static string issuerID = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitIssuerID"];
-        private static string applicationId = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitApplicationID"];
-        private static string secret = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitSecret"];
+        private static string issuerID;
+        private static string applicationId;
+        private static string secret;
+        //private static string issuerID = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitIssuerID"];
+        //private static string applicationId = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitApplicationID"];
+        //private static string secret = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitSecret"];
 
-        public DiningService(IUnitOfWork unitOfWork)
+        public DiningService(IUnitOfWork unitOfWork, IConfiguration config)
         {
             // _unitOfWork = unitOfWork;
+            _config = config;
+            issuerID = _config["bonAppetitIssuerID"];
+            applicationId = _config["bonAppetitApplicationID"];
+            secret = _config["bonAppetitSecret"];
         }
 
         private static string getTimestamp()

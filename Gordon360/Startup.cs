@@ -12,6 +12,7 @@ using Gordon360.Models;
 //using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,7 @@ namespace Gordon360
 {
     public class Startup
     {
+        private string _bonAppetitIssuerID = null;
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -33,6 +35,8 @@ namespace Gordon360
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            _bonAppetitIssuerID = Configuration["bonAppetitIssuerID"];
+
             services.AddControllersWithViews(ConfigureMvcOptions)
                 // Newtonsoft.Json is added for compatibility reasons
                 // The recommended approach is to use System.Text.Json for serialization
@@ -43,16 +47,24 @@ namespace Gordon360
                     options.UseMemberCasing();
                 });
 
-            services.AddDbContext<ApplicationDbContext>(options =>
+            /*services.AddDbContext<ApplicationDbContext>(options =>
             {
                 // Configure the context to use Microsoft SQL Server.
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlServer(Configuration.GetConnectionString("CCTEntities1"));
 
                 // Register the entity sets needed by OpenIddict.
                 // Note: use the generic overload if you need
                 // to replace the default OpenIddict entities.
                 options.UseOpenIddict();
-            });
+            });*/
+            services.AddDbContext<ApplicationDbContext>(options =>
+                        options.UseSqlServer(Configuration.GetConnectionString("CCTEntities1")))
+                    .AddDbContext<ApplicationDbContext>(options =>
+                        options.UseSqlServer(Configuration.GetConnectionString("MyGordonEntities")))
+                    .AddDbContext<ApplicationDbContext>(options =>
+                        options.UseSqlServer(Configuration.GetConnectionString("StudentTimesheetsEntities")))
+                    .AddDbContext<ApplicationDbContext>(options =>
+                        options.UseSqlServer(Configuration.GetConnectionString("StaffTimesheetsEntities")));
 
             services.AddOpenIddict()
                 // Register the OpenIddict core components.
@@ -122,6 +134,12 @@ namespace Gordon360
             app.UseRouting();
             app.UseAuthorization();
             app.UseCors();
+
+            app.Run(async (context) =>
+            {
+                var result = string.IsNullOrEmpty(_bonAppetitIssuerID) ? "Null" : "Not Null";
+                await context.Response.WriteAsync($"Secret is {result}");
+            });
         }
 
         private void ConfigureMvcOptions(MvcOptions mvcOptions)

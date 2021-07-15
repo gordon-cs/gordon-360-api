@@ -7,6 +7,7 @@ using Gordon360.Static.Methods;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
 
 namespace Gordon360.ApiControllers
 {
@@ -17,10 +18,10 @@ namespace Gordon360.ApiControllers
     {
         public readonly IDiningService _diningService;
         private const string FACSTAFF_MEALPLAN_ID = "7295";
-        public DiningController()
+        public DiningController(IConfiguration config)
         {
             IUnitOfWork _unitOfWork = new UnitOfWork();
-            _diningService = new DiningService(_unitOfWork);
+            _diningService = new DiningService(_unitOfWork, config);
         }
 
         /// <summary>

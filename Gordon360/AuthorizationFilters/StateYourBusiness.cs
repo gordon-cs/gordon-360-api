@@ -45,7 +45,7 @@ namespace Gordon360.AuthorizationFilters
         {
             context = actionContext;
             // Step 1: Who is to be authorized
-            var authenticatedUser = actionContext.RequestContext.Principal as ClaimsPrincipal;
+            var authenticatedUser = actionContext.HttpContext.User;
             // var authenticatedUserUsername = actionContext.HttpContext.User.Identity.Name;
 
             if (authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role") != null)
@@ -76,7 +76,7 @@ namespace Gordon360.AuthorizationFilters
             isAuthorized = canPerformOperation(resource, operation);
             if (!isAuthorized)
             {
-                actionContext.Response = actionContext.Request.CreateResponse(System.Net.HttpStatusCode.Unauthorized,  new { Message = "Authorization has been denied for this request." });
+                throw new UnauthorizedAccessException("Authorization has been denied for this request.");
             }
 
             base.OnActionExecuting(actionContext);
