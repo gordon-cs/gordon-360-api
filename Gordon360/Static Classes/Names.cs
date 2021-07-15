@@ -125,14 +125,12 @@ namespace Gordon360.Static.Names
             "select A.firstname, A.lastname, S.Nickname, S.MaidenName, A.AD_Username as Username, " +
             "CONCAT(A.firstname, A.lastname, A.AD_Username) as ConcatonatedInfo " +
             "from Student as S " +
-            "left join ACCOUNT as A on A.AD_Username = S.AD_Username where A.AD_Username is not null " +
-            "and S.AD_Username is not null " +
+            "inner join ACCOUNT as A on A.AD_Username = S.AD_Username where S.AD_Username is not null " +
             "union " +
             "select A.firstname, A.lastname, F.NickName, F.MaidenName, A.AD_Username as Username, " +
             "CONCAT(A.firstname, A.lastname, A.AD_Username) as ConcatonatedInfo " +
             "from FacStaff as F " +
-            "left join ACCOUNT as A on F.AD_Username = A.AD_Username where A.AD_Username is not null " +
-            "and F.AD_Username is not null";
+            "inner join ACCOUNT as A on F.AD_Username = A.AD_Username where F.AD_Username is not null";
 
         // GoStalk
         public static string ALL_MAJORS = "SELECT DISTINCT MajorDescription FROM Majors ORDER BY MajorDescription ASC";
