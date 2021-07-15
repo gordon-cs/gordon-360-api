@@ -4,8 +4,21 @@
         <name>Gordon360</name>
     </assembly>
     <members>
-        <!-- Badly formed XML comment ignored for member "M:Gordon360.Controllers.Api.AcademicCheckInController.PutEmergencyContact(Gordon360.Models.EmergencyContact)" -->
-        <!-- Badly formed XML comment ignored for member "M:Gordon360.Controllers.Api.AcademicCheckInController.PutCellPhone(Gordon360.Models.ViewModels.AcademicCheckInViewModel)" -->
+        <member name="M:Gordon360.Controllers.Api.AcademicCheckInController.PutEmergencyContact(Gordon360.Models.EmergencyContact)">
+            <summary>Set emergency contacts for student</summary>
+            <param name="data"> The contact data to be stored </param>
+            <returns> The data stored </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.AcademicCheckInController.PutCellPhone(Gordon360.Models.ViewModels.AcademicCheckInViewModel)">
+            <summary> Sets the students cell phone number</summary>
+            <param name="data"> The phone number object to be added to the database </param>
+            <returns> The data stored </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.AcademicCheckInController.PutDemographic(Gordon360.Models.ViewModels.AcademicCheckInViewModel)">
+            <summary>Sets the students race and ethinicity</summary>
+            <param name="data"> The object containing the race numbers of the users </param>
+            <returns> The data stored </returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.HousingController.CheckIfHousingAdmin">
             <summary>
             Check if the currently logged in user is authorized to view the housing admin page
@@ -1279,6 +1292,7 @@
             <returns> The stored data </returns>
         </member>
         <!-- Badly formed XML comment ignored for member "M:Gordon360.Services.AcademicCheckInService.PutCellPhone(System.String,Gordon360.Models.ViewModels.AcademicCheckInViewModel)" -->
+        <!-- Badly formed XML comment ignored for member "M:Gordon360.Services.AcademicCheckInService.PutDemographic(System.String,Gordon360.Models.ViewModels.AcademicCheckInViewModel)" -->
         <member name="M:Gordon360.Services.AcademicCheckInService.FormatNumber(System.String)">
             <summary> Formats a phone number for insertion into the database </summary>
             <param name="phoneNum"> The phone number to be formatted </param>
