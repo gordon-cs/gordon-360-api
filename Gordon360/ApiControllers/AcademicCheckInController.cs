@@ -145,5 +145,29 @@ namespace Gordon360.Controllers.Api
 
         }
 
+        /// <summary> Gets and returns the users holds </summary>
+        /// <returns> The users stored holds </returns>
+        [HttpGet]
+        [Route("holds")]
+        public IHttpActionResult GetHolds()
+        {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            try
+            {
+                var result = _checkInService.GetHolds(id);
+                return Ok(result);
+            }
+            catch (System.Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error finding the check in data");
+                return NotFound();
+            }
+
+        }
+
     }
 }

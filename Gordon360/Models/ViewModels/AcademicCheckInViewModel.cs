@@ -18,14 +18,14 @@ namespace Gordon360.Models.ViewModels
         public int Ethnicity { get; set; }
 
         public String Race { get; set; }
-        public bool FinancialHold { get; set; }
-        public bool HighSchoolHold { get; set; }
-        public bool MedicalHold { get; set; }
-        public bool MajorHold { get; set; }
-        public bool RegistrarHold { get; set; }
-        public bool LaVidaHold { get; set; }
-        public bool MustRegisterForClasses { get; set; }
-        public bool NewStudent { get; set; }
+        public Boolean FinancialHold { get; set; }
+        public Boolean HighSchoolHold { get; set; }
+        public Boolean MedicalHold { get; set; }
+        public Boolean MajorHold { get; set; }
+        public Boolean RegistrarHold { get; set; }
+        public Boolean LaVidaHold { get; set; }
+        public Boolean MustRegisterForClasses { get; set; }
+        public Boolean NewStudent { get; set; }
 
         /*
         public static implicit operator AcademicCheckInViewModel(AcademicCheckIn n)

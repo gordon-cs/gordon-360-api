@@ -19,6 +19,10 @@
             <param name="data"> The object containing the race numbers of the users </param>
             <returns> The data stored </returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.AcademicCheckInController.GetHolds">
+            <summary> Gets and returns the users holds </summary>
+            <returns> The users stored holds </returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.HousingController.CheckIfHousingAdmin">
             <summary>
             Check if the currently logged in user is authorized to view the housing admin page
@@ -1293,6 +1297,11 @@
         </member>
         <!-- Badly formed XML comment ignored for member "M:Gordon360.Services.AcademicCheckInService.PutCellPhone(System.String,Gordon360.Models.ViewModels.AcademicCheckInViewModel)" -->
         <!-- Badly formed XML comment ignored for member "M:Gordon360.Services.AcademicCheckInService.PutDemographic(System.String,Gordon360.Models.ViewModels.AcademicCheckInViewModel)" -->
+        <member name="M:Gordon360.Services.AcademicCheckInService.GetHolds(System.String)">
+            <summary> Gets the holds of the user with the given ID </summary>
+            <param name="id"> The id of the user whose holds are to be found </param>
+            <returns> The stored data </returns>
+        </member>
         <member name="M:Gordon360.Services.AcademicCheckInService.FormatNumber(System.String)">
             <summary> Formats a phone number for insertion into the database </summary>
             <param name="phoneNum"> The phone number to be formatted </param>

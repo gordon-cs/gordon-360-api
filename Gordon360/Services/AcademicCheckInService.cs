@@ -92,6 +92,22 @@ namespace Gordon360.Services
             return data;
         }
 
+        /// <summary> Gets the holds of the user with the given ID </summary>
+        /// <param name="id"> The id of the user whose holds are to be found </param>
+        /// <returns> The stored data </returns>
+        public IEnumerable<AcademicCheckInViewModel> GetHolds(string id)
+        {
+            var studentIDParam = new SqlParameter("@ID_NUM", id);
+
+            // Run stored procedure
+            var result = RawSqlQuery<AcademicCheckInViewModel>.query("FINALIZATION_GETHOLDSBYID @ID_NUM", studentIDParam);
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+            return result;
+        }
+
 
         /// <summary> Formats a phone number for insertion into the database </summary>
         /// <param name="phoneNum"> The phone number to be formatted </param>
