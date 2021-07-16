@@ -121,6 +121,8 @@ namespace Gordon360.Static.Names
         //ALL_ALUMNI_REQUEST returns the set of all the alumni in the records
         //Other methods query this set to find a specific alum based on AD_Username (or the encrypted id)
         public static string ALL_ALUMNI_REQUEST = "SELECT ID, WebUpdate, Title, FirstName, MiddleName, LastName, Suffix, MaidenName, NickName, HomeStreet1, HomeStreet2, HomeCity, HomeState, HomePostalCode, HomeCountry, HomePhone, HomeFax, HomeEmail, JobTitle, MaritalStatus, SpouseName, College, ClassYear, PreferredClassYear, Major1, Major2, ShareName, ShareAddress, Gender, GradDate, Email, grad_student, Barcode, ISNULL(AD_Username, CONVERT(NVARCHAR(32),HashBytes('SHA2_256', ID),2)) as AD_Username, show_pic, preferred_photo, Country, Major2Description, Major1Description from Alumni";// WHERE AD_Username is not null";
+        // Retrieves basic static data of all active Students and Fac/Staff with accounts
+        // For use with Quick People Search
         public static string ALL_BASIC_INFO_NOT_ALUM = "ALL_BASIC_INFO_NOT_ALUMNI";
 
         // GoStalk
