@@ -157,8 +157,32 @@ namespace Gordon360.Controllers.Api
 
             try
             {
-                var result = _checkInService.GetHolds(id);
+                var result = (_checkInService.GetHolds(id)).First();
                 return Ok(result);
+            }
+            catch (System.Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error finding the check in data");
+                return NotFound();
+            }
+
+        }
+
+        /// <summary> Sets the user as having completed Academic Checkin </summary>
+        /// <returns> Ok() </returns>
+        [HttpPut]
+        [Route("status")]
+        public IHttpActionResult SetStatus()
+        {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            try
+            {
+                _checkInService.SetStatus(id);
+                return Ok();
             }
             catch (System.Exception e)
             {

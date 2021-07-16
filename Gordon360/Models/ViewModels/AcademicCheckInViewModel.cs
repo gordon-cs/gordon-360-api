@@ -25,7 +25,10 @@ namespace Gordon360.Models.ViewModels
         public Boolean RegistrarHold { get; set; }
         public Boolean LaVidaHold { get; set; }
         public Boolean MustRegisterForClasses { get; set; }
-        public Boolean NewStudent { get; set; }
+        public Int32 NewStudent { get; set; }
+        public String FinancialHoldText { get; set; }
+        public String MeetingDate { get; set; }
+        public String MeetingLocations { get; set; }
 
         /*
         public static implicit operator AcademicCheckInViewModel(AcademicCheckIn n)

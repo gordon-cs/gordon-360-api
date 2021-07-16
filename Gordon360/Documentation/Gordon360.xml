@@ -23,6 +23,10 @@
             <summary> Gets and returns the users holds </summary>
             <returns> The users stored holds </returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.AcademicCheckInController.SetStatus">
+            <summary> Sets the user as having completed Academic Checkin </summary>
+            <returns> Ok() </returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.HousingController.CheckIfHousingAdmin">
             <summary>
             Check if the currently logged in user is authorized to view the housing admin page
@@ -1301,6 +1305,10 @@
             <summary> Gets the holds of the user with the given ID </summary>
             <param name="id"> The id of the user whose holds are to be found </param>
             <returns> The stored data </returns>
+        </member>
+        <member name="M:Gordon360.Services.AcademicCheckInService.SetStatus(System.String)">
+            <summary> Sets the user as having been checked in </summary>
+            <param name="id"> The id of the user who is to be marked as checked in </param>
         </member>
         <member name="M:Gordon360.Services.AcademicCheckInService.FormatNumber(System.String)">
             <summary> Formats a phone number for insertion into the database </summary>

@@ -108,6 +108,21 @@ namespace Gordon360.Services
             return result;
         }
 
+        /// <summary> Sets the user as having been checked in </summary>
+        /// <param name="id"> The id of the user who is to be marked as checked in </param>
+        public void SetStatus(string id)
+        {
+            var studentIDParam = new SqlParameter("@UserID", id);
+
+            // Run stored procedure
+            var result = RawSqlQuery<AcademicCheckInViewModel>.query("FINALIZATION_MARK_AS_CURRENTLY_COMPLETED @UserID", studentIDParam);
+
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+        }
+
 
         /// <summary> Formats a phone number for insertion into the database </summary>
         /// <param name="phoneNum"> The phone number to be formatted </param>

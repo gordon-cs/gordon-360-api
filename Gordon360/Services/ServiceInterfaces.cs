@@ -296,6 +296,7 @@ namespace Gordon360.Services
         AcademicCheckInViewModel PutCellPhone(string id, AcademicCheckInViewModel data);
         EmergencyContact PutEmergencyContact(EmergencyContact data, string id);
         IEnumerable<AcademicCheckInViewModel> GetHolds(string id);
+        void SetStatus(string id);
         string FormatNumber(string phoneNum);
         AcademicCheckInViewModel PutDemographic(string id, AcademicCheckInViewModel data);
     }
