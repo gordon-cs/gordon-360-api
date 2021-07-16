@@ -123,16 +123,7 @@ namespace Gordon360.Static.Names
         public static string ALL_ALUMNI_REQUEST = "SELECT ID, WebUpdate, Title, FirstName, MiddleName, LastName, Suffix, MaidenName, NickName, HomeStreet1, HomeStreet2, HomeCity, HomeState, HomePostalCode, HomeCountry, HomePhone, HomeFax, HomeEmail, JobTitle, MaritalStatus, SpouseName, College, ClassYear, PreferredClassYear, Major1, Major2, ShareName, ShareAddress, Gender, GradDate, Email, grad_student, Barcode, ISNULL(AD_Username, CONVERT(NVARCHAR(32),HashBytes('SHA2_256', ID),2)) as AD_Username, show_pic, preferred_photo, Country, Major2Description, Major1Description from Alumni";// WHERE AD_Username is not null";
         // Retrieves basic static data of all active Students and Fac/Staff with accounts
         // For use with Quick People Search
-        public static string ALL_BASIC_INFO_NOT_ALUM =
-            "select A.firstname, A.lastname, S.Nickname, S.MaidenName, A.AD_Username as Username, " +
-            "CONCAT(A.firstname, A.lastname, A.AD_Username) as ConcatonatedInfo " +
-            "from Student as S " +
-            "inner join ACCOUNT as A on A.AD_Username = S.AD_Username where S.AD_Username is not null " +
-            "union " +
-            "select A.firstname, A.lastname, F.NickName, F.MaidenName, A.AD_Username as Username, " +
-            "CONCAT(A.firstname, A.lastname, A.AD_Username) as ConcatonatedInfo " +
-            "from FacStaff as F " +
-            "inner join ACCOUNT as A on F.AD_Username = A.AD_Username where F.AD_Username is not null";
+        public static string ALL_BASIC_INFO_NOT_ALUM = "ALL_BASIC_INFO_NOT_ALUMNI";
 
         // GoStalk
         public static string ALL_MAJORS = "SELECT DISTINCT MajorDescription FROM Majors ORDER BY MajorDescription ASC";
