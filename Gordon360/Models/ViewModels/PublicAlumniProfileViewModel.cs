@@ -72,7 +72,7 @@ namespace Gordon360.Models.ViewModels
                 Major1Description = alu.Major1Description ?? "",
                 Major2Description = alu.Major2Description ?? ""
             };
-            if (!vm.ShareName.Contains("Y"))
+            if (vm.ShareName.Contains("N") || vm.ShareName.Contains("n"))
             {
                 return null;
             }
