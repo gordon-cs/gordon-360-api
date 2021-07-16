@@ -121,17 +121,10 @@ namespace Gordon360.Static.Names
         //ALL_ALUMNI_REQUEST returns the set of all the alumni in the records
         //Other methods query this set to find a specific alum based on AD_Username (or the encrypted id)
         public static string ALL_ALUMNI_REQUEST = "SELECT ID, WebUpdate, Title, FirstName, MiddleName, LastName, Suffix, MaidenName, NickName, HomeStreet1, HomeStreet2, HomeCity, HomeState, HomePostalCode, HomeCountry, HomePhone, HomeFax, HomeEmail, JobTitle, MaritalStatus, SpouseName, College, ClassYear, PreferredClassYear, Major1, Major2, ShareName, ShareAddress, Gender, GradDate, Email, grad_student, Barcode, ISNULL(AD_Username, CONVERT(NVARCHAR(32),HashBytes('SHA2_256', ID),2)) as AD_Username, show_pic, preferred_photo, Country, Major2Description, Major1Description from Alumni";// WHERE AD_Username is not null";
-        public static string ALL_BASIC_INFO_NOT_ALUM = 
-            "select DISTINCT A.firstname as Firstname, A.lastname as Lastname, " +
-            "COALESCE(B.NickName, C.Nickname) as Nickname, " +
-            "COALESCE(B.MaidenName, C.MaidenName) as MaidenName, A.AD_Username as Username, " +
-            "CONCAT(A.firstname, A.lastname, A.AD_Username) as ConcatonatedInfo " +
-            "from ACCOUNT as A left join FacStaff as B on A.AD_Username = B.AD_Username " +
-            "left join Student as C on A.AD_Username = C.AD_Username " +
-            "where isnull(A.AD_Username, '') != '' " +
-            "and(isnull(B.AD_Username, '') != '' " +
-            "or isnull(C.AD_Username, '') !='')";
-            
+        // Retrieves basic static data of all active Students and Fac/Staff with accounts
+        // For use with Quick People Search
+        public static string ALL_BASIC_INFO_NOT_ALUM = "ALL_BASIC_INFO_NOT_ALUMNI";
+
         // GoStalk
         public static string ALL_MAJORS = "SELECT DISTINCT MajorDescription FROM Majors ORDER BY MajorDescription ASC";
         public static string ALL_MINORS = "SELECT DISTINCT Minor1Description FROM Student WHERE Minor1Description is not null";
