@@ -854,7 +854,7 @@
         </member>
         <member name="M:Gordon360.Controllers.Api.SessionsController.GetLastDayinSemester">
             <summary>
-            Gets the first day in the current session
+            Gets the last day in the current session
             </summary>
             <returns></returns>
         </member>
