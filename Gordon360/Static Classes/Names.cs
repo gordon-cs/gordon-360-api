@@ -114,7 +114,7 @@ namespace Gordon360.Static.Names
         //ALL_PUBLIC_ALUMNI_REQUEST returns search result to the advanced people search 
         //with encrypted id as the ad_username if their ad_username is null
         //ALL_PUBLIC_ALUMNI_REQUEST and ALL_ALUMNI_REQUEST queries work together
-        public static string ALL_PUBLIC_ALUMNI_REQUEST = "SELECT FirstName, LastName, NickName, MaidenName, Major1Description, Major2Description, HomeCity, HomeState, Country, Email, ShareName, PreferredClassYear, ISNULL(AD_Username, CONVERT(NVARCHAR(32),HashBytes('SHA2_256', ID),2)) as AD_Username FROM Alumni WHERE ShareName is null OR ShareName = 'Y';";
+        public static string ALL_PUBLIC_ALUMNI_REQUEST = "SELECT FirstName, LastName, NickName, MaidenName, Major1Description, Major2Description, HomeCity, HomeState, Country, Email, ShareName, PreferredClassYear, ShareAddress, ISNULL(AD_Username, CONVERT(NVARCHAR(32),HashBytes('SHA2_256', ID),2)) as AD_Username FROM Alumni WHERE ShareName is null OR ShareName = 'Y';";
 
         public static string ALL_STUDENT_REQUEST = "SELECT * from Student WHERE AD_Username is not null";
         public static string ALL_FACULTY_STAFF_REQUEST = "SELECT * from FacStaff WHERE AD_Username is not null";
