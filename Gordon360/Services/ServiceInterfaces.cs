@@ -299,6 +299,7 @@ namespace Gordon360.Services
         void SetStatus(string id);
         string FormatNumber(string phoneNum);
         AcademicCheckInViewModel PutDemographic(string id, AcademicCheckInViewModel data);
+        IEnumerable<AcademicCheckInViewModel> GetStatus(string id);
     }
 
 }

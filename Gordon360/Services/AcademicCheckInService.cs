@@ -123,6 +123,21 @@ namespace Gordon360.Services
             }
         }
 
+        /// <summary> Gets the users check in status </summary>
+        /// <param name="id"> The id of the user for which the data is to be found for </param>
+        public IEnumerable<AcademicCheckInViewModel> GetStatus(string id)
+        {
+            var studentIDParam = new SqlParameter("@UserID", id);
+
+            // Run stored procedure
+            var result = RawSqlQuery<AcademicCheckInViewModel>.query("FINALIZATION_GET_CURRENTLY_COMPLETED @UserID", studentIDParam);
+
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+            }
+            return result;
+        }
 
         /// <summary> Formats a phone number for insertion into the database </summary>
         /// <param name="phoneNum"> The phone number to be formatted </param>

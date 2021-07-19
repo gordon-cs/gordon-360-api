@@ -20,55 +20,13 @@ namespace Gordon360.Controllers.Api
     {
         private IAcademicCheckInService _checkInService;
         private IAccountService _accountService;
-                
-        public AcademicCheckInController() 
+
+        public AcademicCheckInController()
         {
             IUnitOfWork _unitOfWork = new UnitOfWork();
             _checkInService = new AcademicCheckInService(_unitOfWork);
             _accountService = new AccountService(_unitOfWork);
         }
-
-        /*
-        /// <summary>Gets a student's holds by id from the database</summary>
-        /// <returns>The student's current holds (if any)</returns>
-        [HttpGet]
-        [Route("holds")]
-        // TO DO: Add StateYourBusiness??
-        // Private route to authenticated users
-        public IHttpActionResult GetHolds()
-        {
-            // Get authenticated username/id
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-
-            var result = _checkInService.GetHolds(id);
-
-            if (result == null){
-                return NotFound();
-            }
-            return Ok(result);
-        }
-        */
-        /*
-        public IHttpActionResult getDemographics()
-        {
-            // Get authenticated username/id
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-
-            var result = _checkInService.getDemographics(id);
-
-            if (result == null){
-                return NotFound();
-            }
-            return Ok(result);
-        }
-        */
-
-
-
 
         /// <summary>Set emergency contacts for student</summary>
         /// <param name="data"> The contact data to be stored </param>
@@ -170,7 +128,7 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary> Sets the user as having completed Academic Checkin </summary>
-        /// <returns> Ok() </returns>
+        /// <returns> The HTTP result indicating whether the request was completed or not</returns>
         [HttpPut]
         [Route("status")]
         public IHttpActionResult SetStatus()
@@ -190,7 +148,29 @@ namespace Gordon360.Controllers.Api
                 Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error finding the check in data");
                 return NotFound();
             }
+        }
 
+        /// <summary> Gets whether the user has checked in or not </summary>
+        /// <returns> The HTTP result indicating whether the request was completed and returns the check in status of the student </returns>
+        [HttpGet]
+        [Route("status")]
+        public IHttpActionResult GetStatus()
+        {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+
+            try
+            {
+                var result = _checkInService.GetStatus(id).First();
+                return Ok(result);
+            }
+            catch (System.Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error finding the check in data");
+                return NotFound();
+            }
         }
 
     }
