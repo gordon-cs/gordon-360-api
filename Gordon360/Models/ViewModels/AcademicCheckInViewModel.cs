@@ -31,21 +31,5 @@ namespace Gordon360.Models.ViewModels
         public String MeetingLocations { get; set; }
         public String CheckInStatus { get; set; } //PLACEHOLDER FOR VALUE PASSED FROM DB
 
-        /*
-        public static implicit operator AcademicCheckInViewModel(AcademicCheckIn n)
-        {
-            AcademicCheckInViewModel vm = new AcademicCheckInViewModel
-            {
-                Race = n.Race,
-                Ethnicity = n.Ethnicity,
-                Holds = n.Holds,
-                phoneNum = n.phoneNum,
-                isPrivate = n.isPrivate,
-                noPhone = n.noPhone,
-            };
-
-            return vm;
-        }
-        */
     }
 }
