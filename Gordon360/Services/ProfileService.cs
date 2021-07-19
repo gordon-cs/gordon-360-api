@@ -95,19 +95,19 @@ namespace Gordon360.Services
         /// <returns></returns>
         public IEnumerable<AdvisorViewModel> GetAdvisors(string id)
         {
+            // Create empty advisor list to fill in and return.           
+            List<AdvisorViewModel> resultList = new List<AdvisorViewModel>();
             var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
             if (query == null)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+                //Return an empty list if the id account does not have advisor
+                return resultList;
             }
 
             var idParam = new SqlParameter("@ID", id);
             // Stored procedure returns row containing advisor1 ID, advisor2 ID, advisor3 ID 
             var idResult = RawSqlQuery<ADVISOR_SEPARATE_Result>.query("ADVISOR_SEPARATE @ID", idParam).FirstOrDefault();
 
-            // Create empty advisor list to fill in and return.           
-            List<AdvisorViewModel> resultList = new List<AdvisorViewModel>();
-            
             // If idResult equal null, it means this user do not have advisor
             if (idResult == null)
             {
@@ -127,15 +127,15 @@ namespace Gordon360.Services
                 if (!string.IsNullOrEmpty(idResult.Advisor2))
                 {
                     resultList.Add(new AdvisorViewModel(
-                        _accountService.Get(idResult.Advisor2).FirstName, 
-                        _accountService.Get(idResult.Advisor2).LastName, 
+                        _accountService.Get(idResult.Advisor2).FirstName,
+                        _accountService.Get(idResult.Advisor2).LastName,
                         _accountService.Get(idResult.Advisor2).ADUserName));
                 }
                 if (!string.IsNullOrEmpty(idResult.Advisor3))
                 {
                     resultList.Add(new AdvisorViewModel(
-                        _accountService.Get(idResult.Advisor3).FirstName, 
-                        _accountService.Get(idResult.Advisor3).LastName, 
+                        _accountService.Get(idResult.Advisor3).FirstName,
+                        _accountService.Get(idResult.Advisor3).LastName,
                         _accountService.Get(idResult.Advisor3).ADUserName));
                 }
             }
@@ -148,12 +148,7 @@ namespace Gordon360.Services
         /// <returns> Clifton strengths of the given user. </returns>
         public CliftonStrengthsViewModel GetCliftonStrengths(int id)
         {
-            var strengths = _unitOfWork.CliftonStrengthsRepository.GetById(id);
-            if(strengths == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "Clifton Strengths not found." };
-            }
-            return strengths;
+            return _unitOfWork.CliftonStrengthsRepository.FirstOrDefault(x => x.ID_NUM == id);
         }
 
         /// <summary> Gets the emergency contact information of a particular user </summary>
@@ -350,6 +345,31 @@ namespace Gordon360.Services
                 student.IsMobilePhonePrivate = (value == "Y" ? 1 : 0);
             }
 
+        }
+
+        /// <summary>
+        /// mobile phone number setting
+        /// </summary>
+        /// <param name="profile"> The profile for the user whose phone is to be updated </param>
+        public StudentProfileViewModel UpdateMobilePhoneNumber(StudentProfileViewModel profile)
+        {
+            var idParam = new SqlParameter("@UserID", profile.ID);
+            var newPhoneNumberParam = new SqlParameter("@PhoneUnformatted", profile.MobilePhone);
+            var result = RawSqlQuery<StudentProfileViewModel>.query("UPDATE_CELL_PHONE @UserID, @PhoneUnformatted", idParam, newPhoneNumberParam);
+
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+            }
+
+            // Update value in cached data
+            var student = Data.StudentData.FirstOrDefault(x => x.ID == profile.ID);
+            if (student != null)
+            {
+                student.MobilePhone = profile.MobilePhone;
+            }
+
+            return profile;
         }
 
         /// <summary>

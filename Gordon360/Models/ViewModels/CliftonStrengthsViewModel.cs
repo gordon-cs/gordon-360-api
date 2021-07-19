@@ -7,21 +7,23 @@ namespace Gordon360.Models.ViewModels
 {
     public class CliftonStrengthsViewModel
     {
-        public List<String> Strengths { get; set; }
+        public List<string> Strengths { get; set; }
 
         public static implicit operator CliftonStrengthsViewModel(Clifton_Strengths clif)
         {
             CliftonStrengthsViewModel vm = new CliftonStrengthsViewModel
             {
-                Strengths = new List<string>()
+                // if clif is null, just set Strengths to null to prevent exception when clif.THEME is called
+                Strengths = (clif == null) ? null : new List<string>()
                 {
                     clif.THEME_1,
                     clif.THEME_2,
                     clif.THEME_3,
                     clif.THEME_4,
-                    clif.THEME_5
+                    clif.THEME_5,
                 },
             };
+
             return vm;
         }
     }

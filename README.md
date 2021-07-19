@@ -113,11 +113,11 @@ Data which is stored upon startup includes:
 
 - If this is your first time on the virtual machine, you will need to clone this repository. You can do this by using Git Bash. It is possible that you will need to [add the SSH key to your Git account](https://help.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh), it will guide you to `cd .ssh` then `cat id_rsa.pub`, copy the output and go to your github settings and paste it in your SSH keys.
 
-  - Before you open the gordon-360-api folder, you will have to add the `secrets.config` file to it. The file is located on the CS-RDSH-02 virtual machine in `C:\Users\Public\Public Documents\` (or `/c/users/public/documents\` when in git-bash). Copy the file `secrets.config` to the same folder in your project that contains the `web.config` file; currently, this is in `gordon-360-api\Gordon360`. This file is a sort of keyring for the server to authorize itself at various points. You can do this by CDing into the Gordon360 folder and typing `cp /C/users/public/documents/secrets.config .`
+-   Before you open the gordon-360-api folder, you will have to add the `secrets.config` file to it. The file is located on the CS-RDSH-02 virtual machine in `C:\Users\Public\Public Documents\` (or `/c/users/public/documents\` when in git-bash). Copy the file `secrets.config` to the same folder in your project that contains the `web.config` file; currently, this is in `gordon-360-api\Gordon360`. This file is a sort of keyring for the server to authorize itself at various points. You can do this by CDing into the Gordon360 folder and typing `cp /C/users/public/documents/secrets.config .`
 
-  - Look for the desktop app Visual Studio 2017, which has a purple Visual Studio icon. You might have to search for it through the start menu. You will have to log in to a Microsoft account. Your Gordon email will work for this. Once you log in, go to `File > Open > Project/Solution`. In the navigation box that pops up, navigate to the directory where you cloned this repo, and select and open the file `/Gordon360.sln`.
+-   Look for the desktop app Visual Studio 2017, which has a purple Visual Studio icon. You might have to search for it through the start menu. You will have to log in to a Microsoft account. Your Gordon email will work for this. Once you log in, go to `File > Open > Project/Solution`. In the navigation box that pops up, navigate to the directory where you cloned this repo, and select and open the file `/Gordon360.sln`.
 
-  - In the solution explorer on the right, right click the name of the project (Gordon360) and select properties. From the tabs on the left, choose the Web tab and change the Project Url so it contains a port that is unused on the machine. For example, if you chose port 5555, change Project Url to `"http://localhost:5555"`. Then click Create Virtual Directory. Make sure that the protocol is `http`, not `https`. Press OK on the dialog box, and you all configured!
+-   In the solution explorer on the right, right click the name of the project (Gordon360) and select properties. From the tabs on the left, choose the Web tab and change the Project Url so it contains a port that is unused on the machine. For example, if you chose port 5555, change Project Url to `"http://localhost:5555"`. Then click Create Virtual Directory. Make sure that the protocol is `http`, not `https`. Press OK on the dialog box, and you all configured!
 
 ### Building and running
 
@@ -496,6 +496,8 @@ Here is a breakdown of the project folder:
 
 ## API Endpoints
 
+Notation: In the API endpoint descriptions below, some parameter values are indicated by a leading ":" (though convention is to surround the parameter with {curly-brackets}).  The ":" is not present in the URL, just the value.  Also, a trailing "/" is required after the last parameter value if the parameter includes a special character like a period (e.g. `360.studenttest` necessitates trailing slash).
+
 _Note:_ The shell script `get-route-list.sh` is run with `bash get-route-list.sh` from a linux shell or git-bash. It provides a list of the API routes that appear in the ApiController files.
 
 ### Accounts
@@ -512,7 +514,7 @@ What is it? Resource that represents a gordon account.
 
 `api/accounts/search/:searchString/:secondaryString` The same as above, used when the search string contains a space
 
-`api/accounts/advanced-people-search/{includeAlumniSearchParam}/{firstNameSearchParam}/{lastNameSearchParam}/{majorSearchParam}/{minorSearchParam}/{hallSearchParam}/{classTypeSearchParam}/{hometownSearchParam}/{stateSearchParam}/{countrySearchParam}/{departmentSearchParam}/{buildingSearchParam}` Get all the accounts matching the specified parameters. Access to accounts is based on your account type (e.g. Students can't get Alumni).
+`api/accounts/advanced-people-search/{includeStudentSearchParam}/{includeFacStaffSearchParam}/{includeAlumniSearchParam}/{firstNameSearchParam}/{lastNameSearchParam}/{majorSearchParam}/{minorSearchParam}/{hallSearchParam}/{classTypeSearchParam}/{hometownSearchParam}/{stateSearchParam}/{countrySearchParam}/{departmentSearchParam}/{buildingSearchParam}` Get all the accounts matching the specified parameters. Access to accounts is based on your account type (e.g. Students can't get Alumni).
 
 ### Activities
 
@@ -791,8 +793,12 @@ Who has access? Everyone.
 `api/sessions/:id` Get the session with session code `id`.
 
 `api/sessions/current` Get the current session.
+	
+`api/sessions/firstDay` Get the Gets the first day in the current session.
+	
+`api/sessions/lastDay` Get the Gets the last day in the current session.
 
-`api/sessions/daysLeft` Get the days left in the semester and the total days in the semester
+`api/sessions/daysLeft` Get the days left in the semester and the total days in the current session.
 
 ### Participation Definitions
 
@@ -816,9 +822,9 @@ What is it? Resource that represents users' profiles.
 
 Differences from GoSite:
 
-- Only displaying city and country as home address. (When the viewer is a student. Police, super admin, faculty and staff should still see all the information for home address)
-- Displaying minors.
-- On campus was changed to display more general information rather than completely getting rid of it like GoSite does now. (Shows on/off campus)
+-   Only displaying city and country as home address. (When the viewer is a student or alumni. Police, super admin, faculty, and staff should still see all the information for home address)
+-   Displaying minors.
+-   On campus was changed to display more general information rather than completely getting rid of it like GoSite does now. (Shows on/off campus)
 
 ##### GET
 
@@ -847,6 +853,8 @@ Differences from GoSite:
 `api/profiles/:type` Update a social media link of a type(facebook, twitter, linkedin,instagram, handshake) of current logged in user.
 
 ##### PUT
+
+`api/profiles/mobile_phone_number/:value` Update mobile phone number for the current logged in user.
 
 `api/profiles/mobile_privacy/:value` Update mobile phone number privacy with value(Y or N) for the current logged in user.
 
@@ -1079,11 +1087,11 @@ To manually test the API, use an API development/testing app like [Postman](http
   - Click the blue "Send" button - after a brief pause you should see the returned token appear.
 
 - You can use this token to make an API request. For example:
-
-  - Use the clipboard to make of copy of the _access-token_ value (do not include the double quotes, just copy the long string of characters between the quotes)
-  - Click on the "+" tab near the top of the window to open a new request frame
-  - Leave "GET" as the request type and enter in an appropriate API URL (e.g. `http://localhost:5555/api/memberships/activity/AJG`
-  - Just below the URL, click on "Headers" and enter the following key/value pairs replacing _access-token_ with the token string you copied:
+  
+    -   Use the clipboard to make of copy of the _access-token_ value (do not include the double quotes, just copy the long string of characters between the quotes)
+    -   Click on the "+" tab near the top of the window to open a new request frame
+    -   Leave "GET" as the request type and enter in an appropriate API URL (e.g. `http://localhost:5555/api/memberships/activity/AJG`, or `http://localhost:5555/api/profiles/360.studenttest/`).  Note that a trailing slash is needed after the last parameter value.
+    -   Just below the URL, click on "Headers" and enter the following key/value pairs replacing _access-token_ with the token string you copied:
 
     | Key             | Value                               |
     | --------------- | ----------------------------------- |

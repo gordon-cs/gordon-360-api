@@ -57,6 +57,7 @@ namespace Gordon360.Controllers.Api
             var student = _profileService.GetStudentProfileByUsername(username);
             var faculty = _profileService.GetFacultyStaffProfileByUsername(username);
             var alumni = _profileService.GetAlumniProfileByUsername(username);
+
             //get profile links
             var customInfo = _profileService.GetCustomUserInfo(username);
 
@@ -185,6 +186,7 @@ namespace Gordon360.Controllers.Api
             var _student = _profileService.GetStudentProfileByUsername(username);
             var _faculty = _profileService.GetFacultyStaffProfileByUsername(username);
             var _alumni = _profileService.GetAlumniProfileByUsername(username);
+                
             var _customInfo = _profileService.GetCustomUserInfo(username);
 
             object student = null;
@@ -329,10 +331,20 @@ namespace Gordon360.Controllers.Api
         public IHttpActionResult GetAdvisors(string username)
         {
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var _student = _profileService.GetStudentProfileByUsername(username);
-            var id = _accountService.GetAccountByUsername(username).GordonID;
 
-            var advisors = _profileService.GetAdvisors(id);
+            var _student = new StudentProfileViewModel();
+            var id = "";
+            try
+            {
+                _student = _profileService.GetStudentProfileByUsername(username);
+                id = _accountService.GetAccountByUsername(username).GordonID;
+            }
+            catch (ResourceNotFoundException)
+            {
+                NotFound();
+            }
+
+            var advisors = _profileService.GetAdvisors((id == username ? username : id));
 
             return Ok(advisors);
 
@@ -358,12 +370,22 @@ namespace Gordon360.Controllers.Api
         /// <returns> Emergency contact information of the given user. </returns>
         [HttpGet]
         [Route("emergency-contact/{username}")]
-        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.EMERGENCY_CONTACT)]
         public IHttpActionResult GetEmergencyContact(string username)
         {
-            var emrg = _profileService.GetEmergencyContact(username);
-
-            return Ok(emrg);
+            try
+            {
+                var emrg = _profileService.GetEmergencyContact(username);
+                return Ok(emrg);
+            }
+            catch (System.Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error getting the emergency contact.");
+                return NotFound();
+            }
+            
+            
         }
 
         /// <summary>Gets the mailbox information of currently logged in user</summary>
@@ -474,8 +496,17 @@ namespace Gordon360.Controllers.Api
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var viewerName = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
             var viewerType = _roleCheckingService.getCollegeRole(viewerName);
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-            var photoInfo = _profileService.GetPhotoPath(id);
+            var id = "";
+            var photoInfo = new PhotoPathViewModel();
+            try
+            {
+                id = _accountService.GetAccountByUsername(username).GordonID;
+                photoInfo = _profileService.GetPhotoPath(id);
+            }
+            catch (ResourceNotFoundException)
+            {
+                photoInfo = null;
+            }
 
             var filePath = "";
             var fileName = "";
@@ -829,6 +860,42 @@ namespace Gordon360.Controllers.Api
             return Ok();
 
         }
+
+        /// <summary>
+        /// Update mobile phone number
+        /// </summary>
+        /// <param name="value">phoneNumber</param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("mobile_phone_number/{value}")]
+        public IHttpActionResult UpdateMobilePhoneNumber(string value)
+        {
+            // Verify Input
+            
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            StudentProfileViewModel profile = _profileService.GetStudentProfileByUsername(username);
+            profile.MobilePhone = value;
+            StudentProfileViewModel result = _profileService.UpdateMobilePhoneNumber(profile);
+            
+            return Ok(result);
+
+        }
+
         /// <summary>
         /// Update privacy of mobile phone number
         /// </summary>

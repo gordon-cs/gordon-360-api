@@ -146,6 +146,10 @@ namespace Gordon360.AuthorizationFilters
             {
                 case Resource.PROFILE:
                     return true;
+                case Resource.EMERGENCY_CONTACT:
+                    if (user_position == Position.POLICE)
+                        return true;
+                    return false;
                 case Resource.MEMBERSHIP:
                     return true;
                 case Resource.MEMBERSHIP_REQUEST:

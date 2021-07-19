@@ -28,6 +28,7 @@ namespace Gordon360.Services
         ProfileCustomViewModel GetCustomUserInfo(string username);
         PhotoPathViewModel GetPhotoPath(string id);
         void UpdateProfileLink(string username, string type, CUSTOM_PROFILE path);
+        StudentProfileViewModel UpdateMobilePhoneNumber(StudentProfileViewModel profile);
         void UpdateMobilePrivacy(string id, string value);
         void UpdateImagePrivacy(string id, string value);
         void UpdateProfileImage(string id, string path, string name);

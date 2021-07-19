@@ -142,11 +142,11 @@ namespace Gordon360
             JObject publicStudent = Helpers.GetAllPublicStudents();
             IEnumerable<PublicFacultyStaffProfileViewModel> publicFacStaff = Helpers.GetAllPublicFacultyStaff();
             IEnumerable<PublicAlumniProfileViewModel> publicAlumni = Helpers.GetAllPublicAlumni();
-            IList<JObject> allPublicAccounts = new List<JObject>();
-            IList<JObject> allPublicAccountsWithoutAlumni = new List<JObject>();
-            IList<JObject> allPublicAccountsWithoutCurrentStudents = new List<JObject>();
+            IList<JObject> allPublicStudentAccounts = new List<JObject>();
+            IList<JObject> allPublicFacStaffAccounts = new List<JObject>();
+            IList<JObject> allPublicAlumniAccounts = new List<JObject>();
 
-            // storing in global variab
+            // storing in global variable
             Data.StudentData = student;
             Data.PublicStudentData = publicStudent;
 
@@ -167,8 +167,7 @@ namespace Gordon360
                 theStu.Add("Type", "Student");
                 theStu.Add("BuildingDescription", null);
                 theStu.Add("OnCampusDepartment", null);
-                allPublicAccounts.Add(theStu);
-                allPublicAccountsWithoutAlumni.Add(theStu);
+                allPublicStudentAccounts.Add(theStu);
             }
 
             foreach (PublicFacultyStaffProfileViewModel aFacStaff in Data.PublicFacultyStaffData)
@@ -182,10 +181,9 @@ namespace Gordon360
                 theFacStaff.Add("Minor1Description", null);
                 theFacStaff.Add("Minor2Description", null);
                 theFacStaff.Add("Minor3Description", null);
-                allPublicAccounts.Add(JObject.FromObject(theFacStaff));
-                allPublicAccountsWithoutAlumni.Add(JObject.FromObject(theFacStaff));
-                allPublicAccountsWithoutCurrentStudents.Add(JObject.FromObject(theFacStaff));
+                allPublicFacStaffAccounts.Add(JObject.FromObject(theFacStaff));
             }
+
             foreach (PublicAlumniProfileViewModel anAlum in Data.PublicAlumniData)
             {
                 JObject theAlum = JObject.FromObject(anAlum);
@@ -199,12 +197,13 @@ namespace Gordon360
                 theAlum.Add("Minor1Description", null);
                 theAlum.Add("Minor2Description", null);
                 theAlum.Add("Minor3Description", null);
-                allPublicAccounts.Add(theAlum);
-                allPublicAccountsWithoutCurrentStudents.Add(theAlum);
+                allPublicAlumniAccounts.Add(theAlum);
             }
-            Data.AllPublicAccountsWithoutCurrentStudents = allPublicAccountsWithoutCurrentStudents;
-            Data.AllPublicAccounts = allPublicAccounts;
-            Data.AllPublicAccountsWithoutAlumni = allPublicAccountsWithoutAlumni;
+
+            Data.AllPublicStudentAccounts = allPublicStudentAccounts;
+            Data.AllPublicFacStaffAccounts = allPublicFacStaffAccounts;
+            Data.AllPublicAlumniAccounts = allPublicAlumniAccounts;
+
         }
 
         // Inside the callback we do all the service work
