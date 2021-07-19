@@ -8,28 +8,6 @@ namespace Gordon360.Models.ViewModels
 {
     public class EmergencyContactViewModel
     {
-        /*
-        public static implicit operator StudentNewsViewModel(StudentNews n)
-        {
-            StudentNewsViewModel vm = new StudentNewsViewModel
-            {
-                SNID = n.SNID,
-                ADUN = n.ADUN,
-                categoryID = n.categoryID,
-                Subject = n.Subject,
-                Body = n.Body,
-                // should default to unapproved (if null)
-                Accepted = n.Accepted ?? false,
-                Sent = n.Sent,
-                thisPastMailing = n.thisPastMailing,
-                Entered = n.Entered,
-                categoryName = n.StudentNewsCategory.categoryName,
-                SortOrder = n.StudentNewsCategory.SortOrder,
-                ManualExpirationDate = n.ManualExpirationDate,
-            };
-
-            return vm;
-        }*/
 
         public static implicit operator EmergencyContactViewModel(EmergencyContact emrg)
         {
