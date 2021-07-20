@@ -43,9 +43,33 @@
         </member>
         <member name="M:Gordon360.ApiControllers.AccountsController.AdvancedPeopleSearch(System.Boolean,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
             <summary>
+            Deprecated route uses new route below with two leading parameters for
+            including students and facStaff.
+            
             Return a list of accounts matching some or all of the search parameters
             We are searching through all the info of a user, then narrowing it down to get only what we want
             </summary>
+            <param name="includeAlumniSearchParam"> For non-students: Include Alumni in search results or not </param>
+            <param name="firstNameSearchParam"> The first name to search for </param>
+            <param name="lastNameSearchParam"> The last name to search for </param>
+            <param name="majorSearchParam"></param>
+            <param name="minorSearchParam"></param>
+            <param name="hallSearchParam"></param>
+            <param name="classTypeSearchParam"></param>
+            <param name="hometownSearchParam"></param>
+            <param name="stateSearchParam"></param>
+            <param name="countrySearchParam"></param>
+            <param name="departmentSearchParam"></param>   
+            <param name="buildingSearchParam"></param>     
+            <returns> All accounts meeting some or all of the parameter</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AccountsController.AdvancedPeopleSearch(System.Boolean,System.Boolean,System.Boolean,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Return a list of accounts matching some or all of the search parameters
+            We are searching through all the info of a user, then narrowing it down to get only what we want
+            </summary>
+            <param name="includeStudentSearchParam"> Include Student in search results or not </param>
+            <param name="includeFacStaffSearchParam"> Include Faculty and Staff in search results or not </param>
             <param name="includeAlumniSearchParam"> For non-students: Include Alumni in search results or not </param>
             <param name="firstNameSearchParam"> The first name to search for </param>
             <param name="lastNameSearchParam"> The last name to search for </param>
@@ -731,10 +755,6 @@
             <param username="AD_Username"> The username for which to retrieve info </param>
             <returns> Emergency contact information of the given user. </returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.ProfilesController.GetMailInfo">
-            <summary>Gets the mailbox information of currently logged in user</summary>
-            <returns></returns>
-        </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.GetMyImg">
             <summary>Get the profile image of currently logged in user</summary>
             <returns></returns>
@@ -767,6 +787,13 @@
             </summary>
             <param name="type">The type of social media</param>
             <param name="path">The path of the links</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateMobilePhoneNumber(System.String)">
+            <summary>
+            Update mobile phone number
+            </summary>
+            <param name="value">phoneNumber</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.UpdateMobilePrivacy(System.String)">
@@ -819,9 +846,21 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.SessionsController.GetFirstDayinSemester">
+            <summary>
+            Gets the first day in the current session
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.SessionsController.GetLastDayinSemester">
+            <summary>
+            Gets the last day in the current session
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.SessionsController.GetDaysLeftinSemester">
             <summary>
-            Gets the days left in the current semester
+            Gets the days left in the current session
             </summary>
             <returns></returns>
         </member>
@@ -1775,13 +1814,6 @@
             <param name="username">username</param>
             <returns>AlumniProfileViewModel if found, null if not found</returns>
         </member>
-        <member name="M:Gordon360.Services.ProfileService.GetMailboxCombination(System.String)">
-            <summary>
-            get mailbox combination
-            </summary>
-            <param name="username">The current user's username</param>
-            <returns>MailboxViewModel with the combination</returns>
-        </member>
         <member name="M:Gordon360.Services.ProfileService.GetAdvisors(System.String)">
             <summary>
             get advisors for particular student
@@ -1842,6 +1874,12 @@
             </summary>
             <param name="id">id</param>
             <param name="value">Y or N</param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.UpdateMobilePhoneNumber(Gordon360.Models.ViewModels.StudentProfileViewModel)">
+            <summary>
+            mobile phone number setting
+            </summary>
+            <param name="profile"> The profile for the user whose phone is to be updated </param>
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateImagePrivacy(System.String,System.String)">
             <summary>
