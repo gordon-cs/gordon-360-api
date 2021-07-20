@@ -145,7 +145,6 @@ namespace Gordon360.Services
         public string FormatNumber(string phoneNum)
         {
             phoneNum = phoneNum.Replace("(", "").Replace(")", "").Replace(" ", "").Replace("-", "");
-            Console.WriteLine(phoneNum);
             if (Regex.IsMatch(phoneNum, @"\+?[0-9]*"))
             {
                 return phoneNum;
