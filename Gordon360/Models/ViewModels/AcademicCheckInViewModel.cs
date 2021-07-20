@@ -9,11 +9,11 @@ namespace Gordon360.Models.ViewModels
     {
         public string Holds { get; set; }
 
-        public string personalPhone { get; set; }
+        public string PersonalPhone { get; set; }
 
-        public bool makePrivate { get; set; }
+        public bool MakePrivate { get; set; }
 
-        public bool noPhone { get; set; }
+        public bool NoPhone { get; set; }
 
         public int Ethnicity { get; set; }
 

@@ -60,9 +60,9 @@ namespace Gordon360.Services
         public AcademicCheckInViewModel PutCellPhone(string id, AcademicCheckInViewModel data)
         {
             var studentIDParam = new SqlParameter("@UserID", id);
-            var personalPhoneParam = new SqlParameter("@PhoneUnformatted", FormatNumber(data.personalPhone));
-            var makePrivateParam = new SqlParameter("@DoNotPublish", data.makePrivate);
-            var noPhoneParam = new SqlParameter("@NoneProvided", data.noPhone);
+            var personalPhoneParam = new SqlParameter("@PhoneUnformatted", FormatNumber(data.PersonalPhone));
+            var makePrivateParam = new SqlParameter("@DoNotPublish", data.MakePrivate);
+            var noPhoneParam = new SqlParameter("@NoneProvided", data.NoPhone);
 
             // Run stored procedure
             var result = RawSqlQuery<AcademicCheckInViewModel>.query("FINALIZATION_UPDATECELLPHONE @UserID, @PhoneUnformatted, @DoNotPublish, @NoneProvided", studentIDParam, personalPhoneParam, makePrivateParam, noPhoneParam);
