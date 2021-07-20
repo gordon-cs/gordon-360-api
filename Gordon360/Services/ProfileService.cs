@@ -82,7 +82,7 @@ namespace Gordon360.Services
 
             if (mailboxNumber != null)
             {
-                info = _unitOfWork.MailboxRepository.GetById(mailboxNumber);
+                info = _unitOfWork.MailboxRepository.GetById(mailboxNumber) ?? new Mailboxes();
             }
 
             return info;
