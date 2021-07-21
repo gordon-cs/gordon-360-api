@@ -29,7 +29,6 @@ namespace Gordon360.Models.ViewModels
         public String FinancialHoldText { get; set; }
         public String MeetingDate { get; set; }
         public String MeetingLocations { get; set; }
-        public String CheckInStatus { get; set; } //PLACEHOLDER FOR VALUE PASSED FROM DB
-
+        public Boolean FinalizationCompleted { get; set; } //PLACEHOLDER FOR VALUE PASSED FROM DB
     }
 }

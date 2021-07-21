@@ -28,7 +28,7 @@
             <returns> The HTTP result indicating whether the request was completed or not</returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.AcademicCheckInController.GetStatus">
-            <summary> Gets whether the user has checked in or not </summary>
+            <summary> Gets whether the user has checked in or not. True if they have checked in, false if they have not checked in </summary>
             <returns> The HTTP result indicating whether the request was completed and returns the check in status of the student </returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.HousingController.CheckIfHousingAdmin">
@@ -1303,8 +1303,18 @@
             <param name="id"> The students id number</param>
             <returns> The stored data </returns>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:Gordon360.Services.AcademicCheckInService.PutCellPhone(System.String,Gordon360.Models.ViewModels.AcademicCheckInViewModel)" -->
-        <!-- Badly formed XML comment ignored for member "M:Gordon360.Services.AcademicCheckInService.PutDemographic(System.String,Gordon360.Models.ViewModels.AcademicCheckInViewModel)" -->
+        <member name="M:Gordon360.Services.AcademicCheckInService.PutCellPhone(System.String,Gordon360.Models.ViewModels.AcademicCheckInViewModel)">
+            <summary> Stores the cellphone preferences for the current user </summary>
+            <param name="data"> The phone number object for the user </param>
+            <param name="id"> The id of the student to be updated </param>
+            <returns> The stored data </returns>
+        </member>
+        <member name="M:Gordon360.Services.AcademicCheckInService.PutDemographic(System.String,Gordon360.Models.ViewModels.AcademicCheckInViewModel)">
+            <summary> Stores the demographic data (race and ethnicity) of the current user </summary>
+            <param name="data"> The race and ethnicity data for the user </param>
+            <param name="id"> The id of the user to be updated </param>
+            <returns> The stored data </returns>
+        </member>
         <member name="M:Gordon360.Services.AcademicCheckInService.GetHolds(System.String)">
             <summary> Gets the holds of the user with the given ID </summary>
             <param name="id"> The id of the user whose holds are to be found </param>

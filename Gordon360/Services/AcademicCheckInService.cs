@@ -6,6 +6,7 @@ using Gordon360.Services.ComplexQueries;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Gordon360.Services
@@ -55,7 +56,7 @@ namespace Gordon360.Services
         
         /// <summary> Stores the cellphone preferences for the current user </summary>
         /// <param name="data"> The phone number object for the user </param>
-        /// <param name="id"> The id of the student to be updated
+        /// <param name="id"> The id of the student to be updated </param>
         /// <returns> The stored data </returns>
         public AcademicCheckInViewModel PutCellPhone(string id, AcademicCheckInViewModel data)
         {
@@ -75,7 +76,7 @@ namespace Gordon360.Services
 
         /// <summary> Stores the demographic data (race and ethnicity) of the current user </summary>
         /// <param name="data"> The race and ethnicity data for the user </param>
-        /// <param name="id"> The id of the user to be updated
+        /// <param name="id"> The id of the user to be updated </param>
         /// <returns> The stored data </returns>
         public AcademicCheckInViewModel PutDemographic(string id, AcademicCheckInViewModel data)
         {
@@ -125,18 +126,19 @@ namespace Gordon360.Services
 
         /// <summary> Gets the users check in status </summary>
         /// <param name="id"> The id of the user for which the data is to be found for </param>
-        public IEnumerable<AcademicCheckInViewModel> GetStatus(string id)
+        public Boolean GetStatus(string id)
         {
             var studentIDParam = new SqlParameter("@UserID", id);
 
             // Run stored procedure
-            var result = RawSqlQuery<AcademicCheckInViewModel>.query("FINALIZATION_GET_CURRENTLY_COMPLETED @UserID", studentIDParam);
+            var result = RawSqlQuery<AcademicCheckInViewModel>.query("FINALIZATION_GET_FINALIZATION_STATUS @UserID", studentIDParam);
 
-            if (result == null)
+            if (result.Count() == 0)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+                return false; //This is due to the fact that the database returns nothing if the user is checked in
+            } else {
+                return result.First().FinalizationCompleted;
             }
-            return result;
         }
 
         /// <summary> Formats a phone number for insertion into the database </summary>

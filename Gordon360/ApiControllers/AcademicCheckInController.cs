@@ -150,7 +150,7 @@ namespace Gordon360.Controllers.Api
             }
         }
 
-        /// <summary> Gets whether the user has checked in or not </summary>
+        /// <summary> Gets whether the user has checked in or not. True if they have checked in, false if they have not checked in </summary>
         /// <returns> The HTTP result indicating whether the request was completed and returns the check in status of the student </returns>
         [HttpGet]
         [Route("status")]
@@ -162,7 +162,7 @@ namespace Gordon360.Controllers.Api
 
             try
             {
-                var result = _checkInService.GetStatus(id).First();
+                var result = _checkInService.GetStatus(id);
                 return Ok(result);
             }
             catch (System.Exception e)
