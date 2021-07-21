@@ -175,7 +175,23 @@ namespace Gordon360.Static.Methods
             return result; ;
         }
 
-        // Return the days left in the semester, and the total days in the semester
+        // Return the first day in the current session
+        public static String GetFirstDay()
+        {
+            DateTime firstDayRaw = GetCurrentSession().SessionBeginDate.Value;
+            String firstDay = firstDayRaw.ToString("MM/dd/yyyy");
+            return firstDay;
+        }
+
+        // Return the last day in the current session
+        public static String GetLastDay()
+        {
+            DateTime lastDayRaw = GetCurrentSession().SessionEndDate.Value;
+            String lastDay = lastDayRaw.ToString("MM/dd/yyyy");
+            return lastDay;
+        }
+
+        // Return the days left in the semester, and the total days in the current session
         public static double[] GetDaysLeft()
         {
             // The end of the current session
@@ -204,14 +220,14 @@ namespace Gordon360.Static.Methods
             // Send the request and parse 
             using (WebClient client = new WebClient())
             {
+                // Necessary to prevent HTTP error 429 from 25Live
+                client.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
                 MemoryStream stream = null;
                 // Commit contents of the request to temporary memory
                 try
                 {
-                    Uri request = new Uri(requestUrl);
-                    // Use an Async method to make sure we have completed the download 
-                    // We don't want to try and pull partial data!
-                    var data = client.DownloadData(request);
+                    // Get XML data as byte array and convet to memory stream
+                    var data = client.DownloadData(requestUrl);
                     stream = new MemoryStream(data);
                 }
                 // catch any errors thrown

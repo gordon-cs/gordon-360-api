@@ -332,7 +332,7 @@ namespace Gordon360.Services
         {
             var idParam = new SqlParameter("@UserID", profile.ID);
             var newPhoneNumberParam = new SqlParameter("@PhoneUnformatted", profile.MobilePhone);
-            var result = RawSqlQuery<StudentProfileViewModel>.query("UPDATECELLPHONE @UserID, @PhoneUnformatted", idParam, newPhoneNumberParam);
+            var result = RawSqlQuery<StudentProfileViewModel>.query("UPDATE_CELL_PHONE @UserID, @PhoneUnformatted", idParam, newPhoneNumberParam);
 
             if (result == null)
             {
