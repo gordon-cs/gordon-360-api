@@ -37,7 +37,7 @@ namespace Gordon360.Services
             var contactHomePhoneParam = new SqlParameter("@ContactHomePhone", FormatNumber(data.HomePhone));
             var contactMobilePhoneParam = new SqlParameter("@ContactMobilePhone", FormatNumber(data.MobilePhone));
             var contactRelationshipParam = new SqlParameter("@ContactRelationship", data.relationship);
-            var notesParam = new SqlParameter("@Notes", "");
+            var notesParam = new SqlParameter("@Notes", GetNotesValue(data.MobilePhone, data.HomePhone));
             var usernameParam = new SqlParameter("@Username", "360Web (" + data.lastname + ", " + data.firstname + ")");
             var jobNameParam = new SqlParameter("@JobName", "Enrollment-Checkin");
 
@@ -50,9 +50,22 @@ namespace Gordon360.Services
             return data;
         }
 
-        // need user ID, unformatted number, whether they would like their phone number private, and whether or not they have a phone number
-
-
+        private String GetNotesValue(String MobilePhone, String HomePhone)
+        {
+            Boolean HomePhoneINTL = HomePhone.StartsWith("+");
+            Boolean MobilePhoneINTL = MobilePhone.StartsWith("+");
+            String result = "";
+            if (HomePhoneINTL)
+            {
+                result = "Intl Home: " + HomePhone;
+            } else if (MobilePhoneINTL) {
+                result = "Intl Mobile: " + MobilePhone;
+            } else if (MobilePhoneINTL && HomePhoneINTL)
+            {
+                result = "Intl Home: " + HomePhone + " " + "Intl Mobile: " + MobilePhone;
+            }
+            return result;
+        }
         
         /// <summary> Stores the cellphone preferences for the current user </summary>
         /// <param name="data"> The phone number object for the user </param>
@@ -144,7 +157,7 @@ namespace Gordon360.Services
         /// <summary> Formats a phone number for insertion into the database </summary>
         /// <param name="phoneNum"> The phone number to be formatted </param>
         /// <returns> The formatted number </returns>
-        public string FormatNumber(string phoneNum)
+        private string FormatNumber(string phoneNum)
         {
             phoneNum = phoneNum.Replace("(", "").Replace(")", "").Replace(" ", "").Replace("-", "");
             if (Regex.IsMatch(phoneNum, @"\+?[0-9]*"))

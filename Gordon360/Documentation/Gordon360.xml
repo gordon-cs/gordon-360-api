@@ -4,428 +4,32 @@
         <name>Gordon360</name>
     </assembly>
     <members>
-        <member name="M:Gordon360.ApiControllers.AccountsController.Search(System.String)">
-            <summary>
-            Return a list of accounts matching some or all of the search parameter
-            </summary>
-            
-            
-            Full Explanation:
-            
-            Returns a list of accounts ordered by key of a combination of users first/last/user name in the following order
-                1.first or last name begins with search query,
-                2.first or last name in Username that begins with search query
-                3.first or last name that contains the search query
-                
-            If Full Names of any two accounts are the same the follow happens to the dictionary key to solve this problem
-                1. If there is a number attached to their account this is appened to the end of their key
-                2. Otherwise an '1' is appended to the end
-                
-            Note:
-            A '1' is added inbetween a key's first and last name or first and last username in order to preserve the presedence set by shorter names
-            as both first and last are used as a part of the key in order to order matching first/last names with the remaining part of their name
-            but this resulted in the presedence set by shorter names to be lost
-            
-            Note:
-            "z" s are added in order to keep each case split into each own group in the dictionary
-            
-            <param name="searchString"> The input to search for </param>
-            <returns> All accounts meeting some or all of the parameter</returns>
+        <member name="M:Gordon360.Controllers.Api.AcademicCheckInController.PutEmergencyContact(Gordon360.Models.EmergencyContact)">
+            <summary>Set emergency contacts for student</summary>
+            <param name="data"> The contact data to be stored </param>
+            <returns> The data stored </returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.AccountsController.SearchWithSpace(System.String,System.String)">
-            <summary>
-            Return a list of accounts matching some or all of the search parameter
-            We are searching through a concatonated string, containing several pieces of info about each user.
-            </summary>
-            <param name="searchString"> The input to search for </param>
-            <param name="secondaryString"> The second piece of the search terms </param>
-            <returns> All accounts meeting some or all of the parameter</returns>
+        <member name="M:Gordon360.Controllers.Api.AcademicCheckInController.PutCellPhone(Gordon360.Models.ViewModels.AcademicCheckInViewModel)">
+            <summary> Sets the students cell phone number</summary>
+            <param name="data"> The phone number object to be added to the database </param>
+            <returns> The data stored </returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.AccountsController.AdvancedPeopleSearch(System.Boolean,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
-            <summary>
-            Deprecated route uses new route below with two leading parameters for
-            including students and facStaff.
-            
-            Return a list of accounts matching some or all of the search parameters
-            We are searching through all the info of a user, then narrowing it down to get only what we want
-            </summary>
-            <param name="includeAlumniSearchParam"> For non-students: Include Alumni in search results or not </param>
-            <param name="firstNameSearchParam"> The first name to search for </param>
-            <param name="lastNameSearchParam"> The last name to search for </param>
-            <param name="majorSearchParam"></param>
-            <param name="minorSearchParam"></param>
-            <param name="hallSearchParam"></param>
-            <param name="classTypeSearchParam"></param>
-            <param name="hometownSearchParam"></param>
-            <param name="stateSearchParam"></param>
-            <param name="countrySearchParam"></param>
-            <param name="departmentSearchParam"></param>   
-            <param name="buildingSearchParam"></param>     
-            <returns> All accounts meeting some or all of the parameter</returns>
+        <member name="M:Gordon360.Controllers.Api.AcademicCheckInController.PutDemographic(Gordon360.Models.ViewModels.AcademicCheckInViewModel)">
+            <summary>Sets the students race and ethinicity</summary>
+            <param name="data"> The object containing the race numbers of the users </param>
+            <returns> The data stored </returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.AccountsController.AdvancedPeopleSearch(System.Boolean,System.Boolean,System.Boolean,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
-            <summary>
-            Return a list of accounts matching some or all of the search parameters
-            We are searching through all the info of a user, then narrowing it down to get only what we want
-            </summary>
-            <param name="includeStudentSearchParam"> Include Student in search results or not </param>
-            <param name="includeFacStaffSearchParam"> Include Faculty and Staff in search results or not </param>
-            <param name="includeAlumniSearchParam"> For non-students: Include Alumni in search results or not </param>
-            <param name="firstNameSearchParam"> The first name to search for </param>
-            <param name="lastNameSearchParam"> The last name to search for </param>
-            <param name="majorSearchParam"></param>
-            <param name="minorSearchParam"></param>
-            <param name="hallSearchParam"></param>
-            <param name="classTypeSearchParam"></param>
-            <param name="hometownSearchParam"></param>
-            <param name="stateSearchParam"></param>
-            <param name="countrySearchParam"></param>
-            <param name="departmentSearchParam"></param>   
-            <param name="buildingSearchParam"></param>     
-            <returns> All accounts meeting some or all of the parameter</returns>
+        <member name="M:Gordon360.Controllers.Api.AcademicCheckInController.GetHolds">
+            <summary> Gets and returns the users holds </summary>
+            <returns> The users stored holds </returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.AccountsController.GenerateKey(System.String,System.String,System.String,System.Int32)">
-             <Summary>
-               This function generates a key for each account
-             </Summary>
-            
-             <param name="keyPart1">This is what you would want to sort by first, used for first part of key</param>
-             <param name="keyPart2">This is what you want to sort by second, used for second part of key</param>
-             <param name="precedence">Set where in the dictionary this key group will be ordered</param>
-             <param name="userName">The User's Username</param>
+        <member name="M:Gordon360.Controllers.Api.AcademicCheckInController.SetStatus">
+            <summary> Sets the user as having completed Academic Checkin </summary>
+            <returns> The HTTP result indicating whether the request was completed or not</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.AdminsController.GetAll">
-            <summary>
-            Get all admins
-            </summary>
-            <returns>
-            A list of all admins
-            </returns>
-            <remarks>
-            Server makes call to the database and returns all admins
-            </remarks>
-        </member>
-        <member name="M:Gordon360.ApiControllers.AdminsController.GetByGordonId(System.String)">
-            <summary>
-            Get a specific admin
-            </summary>
-            <returns>
-            The specific admin
-            </returns>
-            <remarks>
-            Server makes call to the database and returns the specific admin
-            </remarks>
-        </member>
-        <member name="M:Gordon360.ApiControllers.AdminsController.Post(Gordon360.Models.ADMIN)">
-            <summary>Create a new admin to be added to database</summary>
-            <param name="admin">The admin item containing all required and relevant information</param>
-            <returns></returns>
-            <remarks>Posts a new admin to the server to be added into the database</remarks>
-        </member>
-        <member name="M:Gordon360.ApiControllers.AdminsController.Delete(System.Int32)">
-            <summary>Delete an existing admin</summary>
-            <param name="id">The identifier for the admin to be deleted</param>
-            <remarks>Calls the server to make a call and remove the given admin from the database</remarks>
-        </member>
-        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetMajors">
-            <summary>
-            Return a list majors.
-            </summary>
-            <returns> All majors</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetMinors">
-            <summary>
-            Return a list minors.
-            </summary>
-            <returns> All minors</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetHalls">
-            <summary>
-            Return a list minors.
-            </summary>
-            <returns> All minors</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetStates">
-            <summary>
-            Return a list states.
-            </summary>
-            <returns> All states</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetCountries">
-            <summary>
-            Return a list countries.
-            </summary>
-            <returns> All countries</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetDepartments">
-            <summary>
-            Return a list departments.
-            </summary>
-            <returns> All departments</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetBuildings">
-            <summary>
-            Return a list buildings.
-            </summary>
-            <returns> All buildings</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetMessages(System.String)">
-            <summary>
-             returns messages from a specified group
-            </summary>
-            <returns>MessageViewModel</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetSingleMessage(Gordon360.Models.MessageSearchViewModel)">
-            <summary>
-             returns single message from a specified group and message id
-            </summary>
-            <returns>MessageViewModel</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetRooms">
-            <summary>
-             returns room ids associated with this user
-            </summary>
-            <returns>MessageViewModel</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetRoomObject">
-            <summary>
-             returns a room object Identified by room id
-            </summary>
-            <returns>MessageViewModel</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetSingleRoom(System.Int32)">
-            <summary>
-             Gets a single room object specified by a room id
-            </summary>
-            <returns>true if successful </returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.DirectMessageController.CreateGroup(Gordon360.Models.ViewModels.CreateGroupViewModel)">
-            <summary>
-             creates a message room in the backend
-            </summary>
-            <returns>true if successful </returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.DirectMessageController.SendMessage(Gordon360.Models.ViewModels.SendTextViewModel)">
-            <summary>
-             stores sent message on the back end.
-            </summary>
-            <returns>true if successful </returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.DirectMessageController.StoreUserRooms(System.String)">
-            <summary>
-             stores rooms associated with a user id
-            </summary>
-            <returns>true if successful</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.DirectMessageController.StoreUserConnectionIds(System.String)">
-            <summary>
-             stores connection associated with a user id
-            </summary>
-            <returns>true if successful</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetConnectionIds(System.Collections.Generic.List{System.String})">
-            <summary>
-             Gets connection ids associated with a user id
-            </summary>
-            <returns>true if successful</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.DirectMessageController.DeleteConnectionIds(System.String)">
-            <summary>
-             Deletes connection ids associated with a user id
-            </summary>
-            <returns>true if successful</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.DiningController.Get">
-            <summary>
-             Gets information about student's dining plan and balance
-            </summary>
-            <returns>A DiningInfo object</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.ErrorLogController.Post(System.String)">
-            <summary>Create a new error log item to be added to database</summary>
-            <param name="error_message">The error message containing all required and relevant information</param>
-            <returns></returns>
-            <remarks>Posts a new message to the service to be added into the database</remarks>
-        </member>
-        <member name="M:Gordon360.ApiControllers.ErrorLogController.Post(Gordon360.Models.ERROR_LOG)">
-            <summary>Create a new error log item to be added to database</summary>
-            <param name="error_log">The error log containing the ERROR_TIME, and the LOG_MESSAGE</param>
-            <returns></returns>
-            <remarks>Posts a new error_log to the server to be added into the database. Useful if you want to input the datetime in the front end for greater accuracy</remarks>
-        </member>
-        <member name="M:Gordon360.ApiControllers.EventController.GetAllEvents">
-            <summary>
-            This makes use of our cached request to 25Live, which stores AllEvents
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.GetJobs(System.DateTime,System.DateTime)">
-            <summary>
-            Get a user's active jobs
-            </summary>
-            <param name="details"></param>
-            <returns>The user's active jobs</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.DEPRECATED_getJobsForUser(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
-            <summary>
-            Get a user's active jobs
-            </summary>
-            <param name="details"></param>
-            <returns>The user's active jobs</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.getSavedShiftsForUser">
-            <summary>
-            Get a user's saved shifts
-            </summary>
-            <returns>The user's saved shifts</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.saveShiftForUser(Gordon360.Models.ViewModels.ShiftViewModel)">
-            <summary>
-            Get a user's active jobs
-            </summary>
-            <param name="shiftDetails"></param>
-            <returns>The result of saving a shift</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.editShiftForUser(Gordon360.Models.ViewModels.ShiftViewModel)">
-            <summary>
-            Edit a shift
-            <param name="shiftDetails">The details that will be changed</param>
-            </summary>
-        </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.deleteShiftForUser(System.Int32)">
-            <summary>
-            Get a user's active jobs
-            </summary>
-            <returns>The result of deleting the shift</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.submitShiftsForUser(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.ShiftToSubmitViewModel})">
-            <summary>
-            Submit shifts
-            </summary>
-            <returns>The result of submitting the shifts</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.getSupervisorName(System.Int32)">
-            <summary>
-            Gets the name of a supervisor based on their ID number
-            </summary>
-            <returns>The name of the supervisor</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.ClockIn(System.Boolean)">
-            <summary>
-             sends the current clock in status to the back end
-             true if user is clocked in and false if clocked out
-            </summary>
-            <param name="state">detail to be saved in the back end, true if user just clocked in</param>
-            <returns>returns confirmation that the answer was recorded </returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.ClockOut">
-            <summary>
-             gets the the clock in status from the back end
-             true if user is clocked in and false if clocked out
-            </summary>
-            <returns>ClockInViewModel</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.DeleteClockIn">
-            <summary>
-            deletes the last clocked in status of a user
-            </summary>
-            <returns>returns confirmation that clock in status was deleted</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.CanUsePage">
-            <summary>
-             gets the response as to whether the user can use staff timesheets
-             returns true if the staff member has at least one qualifying active job as hourly staff
-            </summary>
-            <returns>Boolean</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.getJobsForStaff(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
-            <summary>
-            Get a user's active jobs
-            </summary>
-            <param name="details"> deatils of the current Staff</param>
-            <returns>The Staff's active jobs</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.getSavedShiftsForStaff">
-            <summary>
-            Get a user's saved shifts
-            </summary>
-            <returns>The staff's saved shifts</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.saveShiftForStaff(Gordon360.Models.ViewModels.ShiftViewModel)">
-            <summary>
-            Get a user's active jobs
-            </summary>
-            <param name="shiftDetails">The details that will be changed</param>
-            <returns>The result of saving a shift for a staff</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.editShiftForStaff(Gordon360.Models.ViewModels.ShiftViewModel)">
-            <summary>
-            Edit a shift for staff
-            <param name="shiftDetails">The details that will be changed</param>
-            </summary>
-        </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.deleteShiftForStaff(System.Int32)">
-            <summary>
-            Delete a user's active job
-            </summary>
-            <returns>The result of deleting the shift for a Staff</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.submitShiftsForStaff(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.ShiftToSubmitViewModel})">
-            <summary>
-            Submit shift for staff
-            </summary>
-            <returns>The result of submitting the shifts for staff</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.getSupervisorNameStaff(System.Int32)">
-            <summary>
-            Gets the name of a supervisor based on their ID number for Staff
-            </summary>
-            <returns>The name of the supervisor</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.getHourTypes">
-            <summary>
-            Gets the hour types for Staff
-            </summary>
-            <returns>The hour types for staff</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.SaveController.GetUpcomingRides">
-            <summary>
-             Gets all upcoming ride objects
-            </summary>
-            <returns>A IEnumerable of rides objects</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.SaveController.GetUpcomingRidesForUser">
-            <summary>
-             Gets all upcoming ride objects for a user
-            </summary>
-            <returns>A IEnumerable of rides objects</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.SaveController.PostRide(Gordon360.Models.Save_Rides)">
-            <summary>
-             Create new ride object for a user
-            </summary>
-            <returns>Successfully posted ride object</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.SaveController.CancelRide(System.String)">
-            <summary>Cancel an existing ride item</summary>
-            <param name="rideID">The identifier for the ride to be cancel</param>
-            <remarks>Calls the server to make a call and remove the given ride from the database</remarks>
-        </member>
-        <member name="M:Gordon360.ApiControllers.SaveController.DeleteRide(System.String)">
-            <summary>Delete an existing ride item</summary>
-            <param name="rideID">The identifier for the ride to be deleted</param>
-            <remarks>Calls the server to make a call and remove the given ride from the database</remarks>
-        </member>
-        <member name="M:Gordon360.ApiControllers.SaveController.PostBooking(Gordon360.Models.Save_Bookings)">
-            <summary>
-             Create new booking object for a user
-            </summary>
-            <returns>Successfully posted booking object</returns>
-        </member>
-        <member name="M:Gordon360.ApiControllers.SaveController.DeleteBooking(System.String)">
-            <summary>Delete an existing booking item</summary>
-            <param name="rideID">The identifier for the booking to be deleted</param>
-            <remarks>Calls the server to make a call and remove the given booking from the database</remarks>
+        <member name="M:Gordon360.Controllers.Api.AcademicCheckInController.GetStatus">
+            <summary> Gets whether the user has checked in or not. True if they have checked in, false if they have not checked in </summary>
+            <returns> The HTTP result indicating whether the request was completed and returns the check in status of the student </returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.HousingController.CheckIfHousingAdmin">
             <summary>
@@ -1064,6 +668,429 @@
             </summary>
             <returns>A VP Json</returns>
         </member>
+        <member name="M:Gordon360.ApiControllers.AccountsController.Search(System.String)">
+            <summary>
+            Return a list of accounts matching some or all of the search parameter
+            </summary>
+            
+            
+            Full Explanation:
+            
+            Returns a list of accounts ordered by key of a combination of users first/last/user name in the following order
+                1.first or last name begins with search query,
+                2.first or last name in Username that begins with search query
+                3.first or last name that contains the search query
+                
+            If Full Names of any two accounts are the same the follow happens to the dictionary key to solve this problem
+                1. If there is a number attached to their account this is appened to the end of their key
+                2. Otherwise an '1' is appended to the end
+                
+            Note:
+            A '1' is added inbetween a key's first and last name or first and last username in order to preserve the presedence set by shorter names
+            as both first and last are used as a part of the key in order to order matching first/last names with the remaining part of their name
+            but this resulted in the presedence set by shorter names to be lost
+            
+            Note:
+            "z" s are added in order to keep each case split into each own group in the dictionary
+            
+            <param name="searchString"> The input to search for </param>
+            <returns> All accounts meeting some or all of the parameter</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AccountsController.SearchWithSpace(System.String,System.String)">
+            <summary>
+            Return a list of accounts matching some or all of the search parameter
+            We are searching through a concatonated string, containing several pieces of info about each user.
+            </summary>
+            <param name="searchString"> The input to search for </param>
+            <param name="secondaryString"> The second piece of the search terms </param>
+            <returns> All accounts meeting some or all of the parameter</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AccountsController.AdvancedPeopleSearch(System.Boolean,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Deprecated route uses new route below with two leading parameters for
+            including students and facStaff.
+            
+            Return a list of accounts matching some or all of the search parameters
+            We are searching through all the info of a user, then narrowing it down to get only what we want
+            </summary>
+            <param name="includeAlumniSearchParam"> For non-students: Include Alumni in search results or not </param>
+            <param name="firstNameSearchParam"> The first name to search for </param>
+            <param name="lastNameSearchParam"> The last name to search for </param>
+            <param name="majorSearchParam"></param>
+            <param name="minorSearchParam"></param>
+            <param name="hallSearchParam"></param>
+            <param name="classTypeSearchParam"></param>
+            <param name="hometownSearchParam"></param>
+            <param name="stateSearchParam"></param>
+            <param name="countrySearchParam"></param>
+            <param name="departmentSearchParam"></param>   
+            <param name="buildingSearchParam"></param>     
+            <returns> All accounts meeting some or all of the parameter</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AccountsController.AdvancedPeopleSearch(System.Boolean,System.Boolean,System.Boolean,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Return a list of accounts matching some or all of the search parameters
+            We are searching through all the info of a user, then narrowing it down to get only what we want
+            </summary>
+            <param name="includeStudentSearchParam"> Include Student in search results or not </param>
+            <param name="includeFacStaffSearchParam"> Include Faculty and Staff in search results or not </param>
+            <param name="includeAlumniSearchParam"> For non-students: Include Alumni in search results or not </param>
+            <param name="firstNameSearchParam"> The first name to search for </param>
+            <param name="lastNameSearchParam"> The last name to search for </param>
+            <param name="majorSearchParam"></param>
+            <param name="minorSearchParam"></param>
+            <param name="hallSearchParam"></param>
+            <param name="classTypeSearchParam"></param>
+            <param name="hometownSearchParam"></param>
+            <param name="stateSearchParam"></param>
+            <param name="countrySearchParam"></param>
+            <param name="departmentSearchParam"></param>   
+            <param name="buildingSearchParam"></param>     
+            <returns> All accounts meeting some or all of the parameter</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AccountsController.GenerateKey(System.String,System.String,System.String,System.Int32)">
+             <Summary>
+               This function generates a key for each account
+             </Summary>
+            
+             <param name="keyPart1">This is what you would want to sort by first, used for first part of key</param>
+             <param name="keyPart2">This is what you want to sort by second, used for second part of key</param>
+             <param name="precedence">Set where in the dictionary this key group will be ordered</param>
+             <param name="userName">The User's Username</param>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AdminsController.GetAll">
+            <summary>
+            Get all admins
+            </summary>
+            <returns>
+            A list of all admins
+            </returns>
+            <remarks>
+            Server makes call to the database and returns all admins
+            </remarks>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AdminsController.GetByGordonId(System.String)">
+            <summary>
+            Get a specific admin
+            </summary>
+            <returns>
+            The specific admin
+            </returns>
+            <remarks>
+            Server makes call to the database and returns the specific admin
+            </remarks>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AdminsController.Post(Gordon360.Models.ADMIN)">
+            <summary>Create a new admin to be added to database</summary>
+            <param name="admin">The admin item containing all required and relevant information</param>
+            <returns></returns>
+            <remarks>Posts a new admin to the server to be added into the database</remarks>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AdminsController.Delete(System.Int32)">
+            <summary>Delete an existing admin</summary>
+            <param name="id">The identifier for the admin to be deleted</param>
+            <remarks>Calls the server to make a call and remove the given admin from the database</remarks>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetMajors">
+            <summary>
+            Return a list majors.
+            </summary>
+            <returns> All majors</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetMinors">
+            <summary>
+            Return a list minors.
+            </summary>
+            <returns> All minors</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetHalls">
+            <summary>
+            Return a list minors.
+            </summary>
+            <returns> All minors</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetStates">
+            <summary>
+            Return a list states.
+            </summary>
+            <returns> All states</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetCountries">
+            <summary>
+            Return a list countries.
+            </summary>
+            <returns> All countries</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetDepartments">
+            <summary>
+            Return a list departments.
+            </summary>
+            <returns> All departments</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetBuildings">
+            <summary>
+            Return a list buildings.
+            </summary>
+            <returns> All buildings</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetMessages(System.String)">
+            <summary>
+             returns messages from a specified group
+            </summary>
+            <returns>MessageViewModel</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetSingleMessage(Gordon360.Models.MessageSearchViewModel)">
+            <summary>
+             returns single message from a specified group and message id
+            </summary>
+            <returns>MessageViewModel</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetRooms">
+            <summary>
+             returns room ids associated with this user
+            </summary>
+            <returns>MessageViewModel</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetRoomObject">
+            <summary>
+             returns a room object Identified by room id
+            </summary>
+            <returns>MessageViewModel</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetSingleRoom(System.Int32)">
+            <summary>
+             Gets a single room object specified by a room id
+            </summary>
+            <returns>true if successful </returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.CreateGroup(Gordon360.Models.ViewModels.CreateGroupViewModel)">
+            <summary>
+             creates a message room in the backend
+            </summary>
+            <returns>true if successful </returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.SendMessage(Gordon360.Models.ViewModels.SendTextViewModel)">
+            <summary>
+             stores sent message on the back end.
+            </summary>
+            <returns>true if successful </returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.StoreUserRooms(System.String)">
+            <summary>
+             stores rooms associated with a user id
+            </summary>
+            <returns>true if successful</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.StoreUserConnectionIds(System.String)">
+            <summary>
+             stores connection associated with a user id
+            </summary>
+            <returns>true if successful</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.GetConnectionIds(System.Collections.Generic.List{System.String})">
+            <summary>
+             Gets connection ids associated with a user id
+            </summary>
+            <returns>true if successful</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DirectMessageController.DeleteConnectionIds(System.String)">
+            <summary>
+             Deletes connection ids associated with a user id
+            </summary>
+            <returns>true if successful</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.DiningController.Get">
+            <summary>
+             Gets information about student's dining plan and balance
+            </summary>
+            <returns>A DiningInfo object</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.ErrorLogController.Post(System.String)">
+            <summary>Create a new error log item to be added to database</summary>
+            <param name="error_message">The error message containing all required and relevant information</param>
+            <returns></returns>
+            <remarks>Posts a new message to the service to be added into the database</remarks>
+        </member>
+        <member name="M:Gordon360.ApiControllers.ErrorLogController.Post(Gordon360.Models.ERROR_LOG)">
+            <summary>Create a new error log item to be added to database</summary>
+            <param name="error_log">The error log containing the ERROR_TIME, and the LOG_MESSAGE</param>
+            <returns></returns>
+            <remarks>Posts a new error_log to the server to be added into the database. Useful if you want to input the datetime in the front end for greater accuracy</remarks>
+        </member>
+        <member name="M:Gordon360.ApiControllers.EventController.GetAllEvents">
+            <summary>
+            This makes use of our cached request to 25Live, which stores AllEvents
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.GetJobs(System.DateTime,System.DateTime)">
+            <summary>
+            Get a user's active jobs
+            </summary>
+            <param name="details"></param>
+            <returns>The user's active jobs</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.DEPRECATED_getJobsForUser(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
+            <summary>
+            Get a user's active jobs
+            </summary>
+            <param name="details"></param>
+            <returns>The user's active jobs</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.getSavedShiftsForUser">
+            <summary>
+            Get a user's saved shifts
+            </summary>
+            <returns>The user's saved shifts</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.saveShiftForUser(Gordon360.Models.ViewModels.ShiftViewModel)">
+            <summary>
+            Get a user's active jobs
+            </summary>
+            <param name="shiftDetails"></param>
+            <returns>The result of saving a shift</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.editShiftForUser(Gordon360.Models.ViewModels.ShiftViewModel)">
+            <summary>
+            Edit a shift
+            <param name="shiftDetails">The details that will be changed</param>
+            </summary>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.deleteShiftForUser(System.Int32)">
+            <summary>
+            Get a user's active jobs
+            </summary>
+            <returns>The result of deleting the shift</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.submitShiftsForUser(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.ShiftToSubmitViewModel})">
+            <summary>
+            Submit shifts
+            </summary>
+            <returns>The result of submitting the shifts</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.getSupervisorName(System.Int32)">
+            <summary>
+            Gets the name of a supervisor based on their ID number
+            </summary>
+            <returns>The name of the supervisor</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.ClockIn(System.Boolean)">
+            <summary>
+             sends the current clock in status to the back end
+             true if user is clocked in and false if clocked out
+            </summary>
+            <param name="state">detail to be saved in the back end, true if user just clocked in</param>
+            <returns>returns confirmation that the answer was recorded </returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.ClockOut">
+            <summary>
+             gets the the clock in status from the back end
+             true if user is clocked in and false if clocked out
+            </summary>
+            <returns>ClockInViewModel</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.DeleteClockIn">
+            <summary>
+            deletes the last clocked in status of a user
+            </summary>
+            <returns>returns confirmation that clock in status was deleted</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.CanUsePage">
+            <summary>
+             gets the response as to whether the user can use staff timesheets
+             returns true if the staff member has at least one qualifying active job as hourly staff
+            </summary>
+            <returns>Boolean</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.getJobsForStaff(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
+            <summary>
+            Get a user's active jobs
+            </summary>
+            <param name="details"> deatils of the current Staff</param>
+            <returns>The Staff's active jobs</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.getSavedShiftsForStaff">
+            <summary>
+            Get a user's saved shifts
+            </summary>
+            <returns>The staff's saved shifts</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.saveShiftForStaff(Gordon360.Models.ViewModels.ShiftViewModel)">
+            <summary>
+            Get a user's active jobs
+            </summary>
+            <param name="shiftDetails">The details that will be changed</param>
+            <returns>The result of saving a shift for a staff</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.editShiftForStaff(Gordon360.Models.ViewModels.ShiftViewModel)">
+            <summary>
+            Edit a shift for staff
+            <param name="shiftDetails">The details that will be changed</param>
+            </summary>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.deleteShiftForStaff(System.Int32)">
+            <summary>
+            Delete a user's active job
+            </summary>
+            <returns>The result of deleting the shift for a Staff</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.submitShiftsForStaff(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.ShiftToSubmitViewModel})">
+            <summary>
+            Submit shift for staff
+            </summary>
+            <returns>The result of submitting the shifts for staff</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.getSupervisorNameStaff(System.Int32)">
+            <summary>
+            Gets the name of a supervisor based on their ID number for Staff
+            </summary>
+            <returns>The name of the supervisor</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.JobsController.getHourTypes">
+            <summary>
+            Gets the hour types for Staff
+            </summary>
+            <returns>The hour types for staff</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.SaveController.GetUpcomingRides">
+            <summary>
+             Gets all upcoming ride objects
+            </summary>
+            <returns>A IEnumerable of rides objects</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.SaveController.GetUpcomingRidesForUser">
+            <summary>
+             Gets all upcoming ride objects for a user
+            </summary>
+            <returns>A IEnumerable of rides objects</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.SaveController.PostRide(Gordon360.Models.Save_Rides)">
+            <summary>
+             Create new ride object for a user
+            </summary>
+            <returns>Successfully posted ride object</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.SaveController.CancelRide(System.String)">
+            <summary>Cancel an existing ride item</summary>
+            <param name="rideID">The identifier for the ride to be cancel</param>
+            <remarks>Calls the server to make a call and remove the given ride from the database</remarks>
+        </member>
+        <member name="M:Gordon360.ApiControllers.SaveController.DeleteRide(System.String)">
+            <summary>Delete an existing ride item</summary>
+            <param name="rideID">The identifier for the ride to be deleted</param>
+            <remarks>Calls the server to make a call and remove the given ride from the database</remarks>
+        </member>
+        <member name="M:Gordon360.ApiControllers.SaveController.PostBooking(Gordon360.Models.Save_Bookings)">
+            <summary>
+             Create new booking object for a user
+            </summary>
+            <returns>Successfully posted booking object</returns>
+        </member>
+        <member name="M:Gordon360.ApiControllers.SaveController.DeleteBooking(System.String)">
+            <summary>Delete an existing booking item</summary>
+            <param name="rideID">The identifier for the booking to be deleted</param>
+            <remarks>Calls the server to make a call and remove the given booking from the database</remarks>
+        </member>
         <member name="F:Gordon360.Repositories.GenericRepository`1._context">
             <summary>
                 The database context for the repository
@@ -1275,6 +1302,48 @@
             </summary>
             <param name="query">Name of the stored procedure </param>
             <param name="parameters">Parameters to pass to the stored procedure</param>
+        </member>
+        <member name="T:Gordon360.Services.AcademicCheckInService">
+            <summary>
+            Service Class that facilitates data transactions between the AcademicCheckInController and the CheckIn database model.
+            </summary>
+            
+        </member>
+        <member name="M:Gordon360.Services.AcademicCheckInService.PutEmergencyContact(Gordon360.Models.EmergencyContact,System.String)">
+            <summary> Stores the emergency contact information of a particular user </summary>
+            <param name="data"> The object that stores the contact info </param>
+            <param name="id"> The students id number</param>
+            <returns> The stored data </returns>
+        </member>
+        <member name="M:Gordon360.Services.AcademicCheckInService.PutCellPhone(System.String,Gordon360.Models.ViewModels.AcademicCheckInViewModel)">
+            <summary> Stores the cellphone preferences for the current user </summary>
+            <param name="data"> The phone number object for the user </param>
+            <param name="id"> The id of the student to be updated </param>
+            <returns> The stored data </returns>
+        </member>
+        <member name="M:Gordon360.Services.AcademicCheckInService.PutDemographic(System.String,Gordon360.Models.ViewModels.AcademicCheckInViewModel)">
+            <summary> Stores the demographic data (race and ethnicity) of the current user </summary>
+            <param name="data"> The race and ethnicity data for the user </param>
+            <param name="id"> The id of the user to be updated </param>
+            <returns> The stored data </returns>
+        </member>
+        <member name="M:Gordon360.Services.AcademicCheckInService.GetHolds(System.String)">
+            <summary> Gets the holds of the user with the given ID </summary>
+            <param name="id"> The id of the user whose holds are to be found </param>
+            <returns> The stored data </returns>
+        </member>
+        <member name="M:Gordon360.Services.AcademicCheckInService.SetStatus(System.String)">
+            <summary> Sets the user as having been checked in </summary>
+            <param name="id"> The id of the user who is to be marked as checked in </param>
+        </member>
+        <member name="M:Gordon360.Services.AcademicCheckInService.GetStatus(System.String)">
+            <summary> Gets the users check in status </summary>
+            <param name="id"> The id of the user for which the data is to be found for </param>
+        </member>
+        <member name="M:Gordon360.Services.AcademicCheckInService.FormatNumber(System.String)">
+            <summary> Formats a phone number for insertion into the database </summary>
+            <param name="phoneNum"> The phone number to be formatted </param>
+            <returns> The formatted number </returns>
         </member>
         <member name="T:Gordon360.Services.AccountService">
             <summary>

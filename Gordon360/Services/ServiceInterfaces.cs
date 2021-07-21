@@ -297,7 +297,6 @@ namespace Gordon360.Services
         EmergencyContact PutEmergencyContact(EmergencyContact data, string id);
         IEnumerable<AcademicCheckInViewModel> GetHolds(string id);
         void SetStatus(string id);
-        string FormatNumber(string phoneNum);
         AcademicCheckInViewModel PutDemographic(string id, AcademicCheckInViewModel data);
         Boolean GetStatus(string id);
     }
