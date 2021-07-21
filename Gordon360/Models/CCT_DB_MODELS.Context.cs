@@ -75,6 +75,7 @@ namespace Gordon360.Models
         public virtual DbSet<PART_DEF> PART_DEF { get; set; }
         public virtual DbSet<RoomAssign> RoomAssign { get; set; }
         public virtual DbSet<Student> Student { get; set; }
+        public virtual DbSet<Mailboxes> Mailboxes { get; set; }
     
         public virtual ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> ACTIVE_CLUBS_PER_SESS_ID(string sESS_CDE)
         {
@@ -1522,6 +1523,15 @@ namespace Gordon360.Models
                 new ObjectParameter("STUDENT_ID", typeof(int));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<VICTORY_PROMISE_BY_STUDENT_ID_Result>("VICTORY_PROMISE_BY_STUDENT_ID", sTUDENT_IDParameter);
+        }
+    
+        public virtual int FINALIZATION_GETHOLDSBYID(Nullable<int> iD_NUM)
+        {
+            var iD_NUMParameter = iD_NUM.HasValue ?
+                new ObjectParameter("ID_NUM", iD_NUM) :
+                new ObjectParameter("ID_NUM", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("FINALIZATION_GETHOLDSBYID", iD_NUMParameter);
         }
     }
 }
