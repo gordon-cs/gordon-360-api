@@ -388,6 +388,20 @@ namespace Gordon360.Controllers.Api
             
         }
 
+        /// <summary>Gets the mailbox information of currently logged in user</summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("mailbox-combination")]
+        public IHttpActionResult GetMailInfo()
+        {
+            //get token data from context, username is the username of current logged in person
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+            var result = _profileService.GetMailboxCombination(username);
+            return Ok(result);
+        }
+
         /// <summary>Get the profile image of currently logged in user</summary>
         /// <returns></returns>
         [HttpGet]

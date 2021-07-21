@@ -57,6 +57,7 @@
         <AssociationConnector Association="Gordon360.FK_Applicants_HousingAppID" ManuallyRouted="false" />
         <AssociationConnector Association="Gordon360.FK_HallChoices_HousingAppID" ManuallyRouted="false" />
         <AssociationConnector Association="Gordon360.FK_booking_rides" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="Gordon360.Mailboxes" Width="1.5" PointX="0.75" PointY="21.75" IsExpanded="true" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
