@@ -135,7 +135,7 @@ namespace Gordon360.Services
 
             if (result.Count() == 0)
             {
-                return false; //This is due to the fact that the database returns nothing if the user is checked in
+                return true; //This is due to the fact that the database returns nothing if the user is checked in
             } else {
                 return result.First().FinalizationCompleted;
             }
