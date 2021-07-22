@@ -104,7 +104,7 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary> Gets and returns the user's holds </summary>
-        /// <returns> The users stored hold's </returns>
+        /// <returns> The user's stored holds </returns>
         [HttpGet]
         [Route("holds")]
         public IHttpActionResult GetHolds()

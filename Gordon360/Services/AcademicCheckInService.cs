@@ -144,7 +144,7 @@ namespace Gordon360.Services
             }
         }
 
-        /// <summary> Gets the users check in status </summary>
+        /// <summary> Gets the whether the user has completed Academic Checkin </summary>
         /// <param name="id"> The id of the user for which the data is to be found for </param>
         public Boolean GetStatus(string id)
         {
@@ -155,7 +155,7 @@ namespace Gordon360.Services
 
             if (result.Count() == 0)
             {
-                return false; //This is due to the fact that the database returns nothing if the user is checked in
+                return true; //This is due to the fact that the database returns nothing if the user is checked in
             } else {
                 return result.First().FinalizationCompleted;
             }

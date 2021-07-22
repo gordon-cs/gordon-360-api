@@ -21,7 +21,7 @@
         </member>
         <member name="M:Gordon360.Controllers.Api.AcademicCheckInController.GetHolds">
             <summary> Gets and returns the user's holds </summary>
-            <returns> The users stored hold's </returns>
+            <returns> The user's stored holds </returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.AcademicCheckInController.SetStatus">
             <summary> Sets the user as having completed Academic Checkin </summary>
@@ -1346,7 +1346,7 @@
             <param name="id"> The id of the user who is to be marked as checked in </param>
         </member>
         <member name="M:Gordon360.Services.AcademicCheckInService.GetStatus(System.String)">
-            <summary> Gets the users check in status </summary>
+            <summary> Gets the whether the user has completed Academic Checkin </summary>
             <param name="id"> The id of the user for which the data is to be found for </param>
         </member>
         <member name="M:Gordon360.Services.AcademicCheckInService.FormatNumber(System.String)">
