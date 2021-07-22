@@ -6,54 +6,54 @@ Dive in.
 
 ## Table of Contents
 
--   [Machines and Sites](#machines-and-sites)
--   [API Maintenance](#api-maintenance)
-    -   [Continuous Integration](#continuous-integration)
-    -   [Continuous Deployment](#continuous-deployment)
-    -   [Deploying Manually](#deploying-manually)
--   [Caching](#caching)
--   [Running the API locally](#running-the-api-locally)
-    -   [Preliminary setup](#preliminary-setup)
-    -   [Building and running](#building-and-running)
--   [The Database](#the-database)
-    -   [Tables](#CCT-tables)
-    -   [Stored Procedures](#CCT-stored-procedures)
-    -   [Triggers](#CCT-triggers)
-    -   [Manual and Debugging Access](#manual-and-debugging-access)
-    -   [Updating or creating .edmx](#updating-or-creating-edmx)
--   [The Code](#the-code)
-    -   [Introduction](#introduction)
-    -   [Adding New Queries](#adding-new-queries)
--   [Caching](#caching)
--   [API Endpoints](#api-endpoints)
-    -   [Accounts](#accounts)
-    -   [Activities](#activities)
-    -   [Admins](#admins)
-    -   [Advanced Search](#advanced-search)
-    -   [Authentication](#authentication)
-    -   [Content Management](#content-management)
-    -   [Emails](#emails)
-    -   [Events](#events)
-    -   [Housing](#housing)
-    -   [Memberships](#memberships)
-    -   [Membership Requests](#membership-requests)
-    -   [Participation Definitions](#participation-definitions)
-    -   [Profiles](#profiles)
-    -   [Sessions](#sessions)
-    -   [Dining](#dining)
-    -   [Student Employment](#student-employment)
-    -   [Schedule](#schedule)
-    -   [MySchedule](#my-schedule)
-    -   [ScheduleControl](#schedule-control)
-    -   [Victory Promise](#victory-promise)
-    -   [News](#news)
-    -   [Wellness Check](#wellness-check)
--   [API Testing](#api-testing)
-    -   [Testing Introduction](#testing-introduction)
-    -   [Running the Tests](#running-the-tests)
-    -   [Writing the Tests](#writing-the-tests)
--   [Troubleshooting](#troubleshooting)
--   [Documentation](#documentation)
+- [Machines and Sites](#machines-and-sites)
+- [API Maintenance](#api-maintenance)
+  - [Continuous Integration](#continuous-integration)
+  - [Continuous Deployment](#continuous-deployment)
+  - [Deploying Manually](#deploying-manually)
+- [Caching](#caching)
+- [Running the API locally](#running-the-api-locally)
+  - [Preliminary setup](#preliminary-setup)
+  - [Building and running](#building-and-running)
+- [The Database](#the-database)
+  - [Tables](#CCT-tables)
+  - [Stored Procedures](#CCT-stored-procedures)
+  - [Triggers](#CCT-triggers)
+  - [Manual and Debugging Access](#manual-and-debugging-access)
+  - [Updating or creating .edmx](#updating-or-creating-edmx)
+- [The Code](#the-code)
+  - [Introduction](#introduction)
+  - [Adding New Queries](#adding-new-queries)
+- [Caching](#caching)
+- [API Endpoints](#api-endpoints)
+  - [Accounts](#accounts)
+  - [Activities](#activities)
+  - [Admins](#admins)
+  - [Advanced Search](#advanced-search)
+  - [Authentication](#authentication)
+  - [Content Management](#content-management)
+  - [Emails](#emails)
+  - [Events](#events)
+  - [Housing](#housing)
+  - [Memberships](#memberships)
+  - [Membership Requests](#membership-requests)
+  - [Participation Definitions](#participation-definitions)
+  - [Profiles](#profiles)
+  - [Sessions](#sessions)
+  - [Dining](#dining)
+  - [Student Employment](#student-employment)
+  - [Schedule](#schedule)
+  - [MySchedule](#my-schedule)
+  - [ScheduleControl](#schedule-control)
+  - [Victory Promise](#victory-promise)
+  - [News](#news)
+  - [Wellness Check](#wellness-check)
+- [API Testing](#api-testing)
+  - [Testing Introduction](#testing-introduction)
+  - [Running the Tests](#running-the-tests)
+  - [Writing the Tests](#writing-the-tests)
+- [Troubleshooting](#troubleshooting)
+- [Documentation](#documentation)
 
 ## Machines and Sites
 
@@ -77,19 +77,19 @@ To detect and deploy successful builds, the scheduled task `Deploy 360Api[Train]
 
 If there are problems with continuous deployment, or a specific need arises to revert or push manually, then this older procedure can be used.
 
--   Access the cts-360.gordon.edu VM (see [RemoteDesktopToVM.md](RemoteDesktopToVM.md#How-to-connect-to-a-CS-RDSH-virtual-machine) for instructions) as the cct.service user.
--   Before you publish your new version, be sure to copy the current stable version to make a backup. To do so:
-    -   Navigate in File Explorer to `F:\Sites` and copy either 360Api or 360ApiTrain, whichever you're planning to publish to.
-    -   Paste that copy in the same place (`F:\Sites`), and rename it to a backup including the date. For example, if you backed up the Train site on January 1, 2001, then the copy would be named `360ApiTrain-backup-2001-01-01`.
--   Open gitbash and cd to `C:\users\cct.service\code\gordon-360-api`. Make sure that you are on the branch you wish to deploy, and that it has been pulled up to date.
-    **Note: if you clone a new repository on this VM, it will not have the necessary publish profiles or secrets.config. See [MakePublishProfiles.md](MakePublishProfiles.md#How-to-create-the-Publish-Profiles-to-publish-the-API-to-the-Sites) to restore the Publish Profiles.**
--   Start Visual Studio as an administrator (right click) and open the existing project/solution file - `C:\users\cct.service\code\gordon-360-api\Gordon360.sln` (the solution file).
--   Menu Bar -> Build - Publish Gordon360.
--   Choose the right publish profile.
-    -   DEV -- Development ( Connects to the admintrainsql database server, and used for 360train.gordon.edu).
-    -   Prod -- Production ( Connects to the adminprodsql database server, and used for the real site 360.gordon.edu).
-    -   If you don't see the publish profile you want (or you are automatically taken to the "Pick a Publish Target" Window) see [MakePublishProfiles.md](MakePublishProfiles.md#How-to-create-the-Publish-Profiles-to-publish-the-API-to-the-Sites) to restore the Publish Profiles.
--   Clicking publish pushes your changes to the API for either 360ApiTrain.gordon.edu or 360Api.gordon.edu, depending on which publish profile you used.
+- Access the cts-360.gordon.edu VM (see [RemoteDesktopToVM.md](RemoteDesktopToVM.md#How-to-connect-to-a-CS-RDSH-virtual-machine) for instructions) as the cct.service user.
+- Before you publish your new version, be sure to copy the current stable version to make a backup. To do so:
+  - Navigate in File Explorer to `F:\Sites` and copy either 360Api or 360ApiTrain, whichever you're planning to publish to.
+  - Paste that copy in the same place (`F:\Sites`), and rename it to a backup including the date. For example, if you backed up the Train site on January 1, 2001, then the copy would be named `360ApiTrain-backup-2001-01-01`.
+- Open gitbash and cd to `C:\users\cct.service\code\gordon-360-api`. Make sure that you are on the branch you wish to deploy, and that it has been pulled up to date.
+  **Note: if you clone a new repository on this VM, it will not have the necessary publish profiles or secrets.config. See [MakePublishProfiles.md](MakePublishProfiles.md#How-to-create-the-Publish-Profiles-to-publish-the-API-to-the-Sites) to restore the Publish Profiles.**
+- Start Visual Studio as an administrator (right click) and open the existing project/solution file - `C:\users\cct.service\code\gordon-360-api\Gordon360.sln` (the solution file).
+- Menu Bar -> Build - Publish Gordon360.
+- Choose the right publish profile.
+  - DEV -- Development ( Connects to the admintrainsql database server, and used for 360train.gordon.edu).
+  - Prod -- Production ( Connects to the adminprodsql database server, and used for the real site 360.gordon.edu).
+  - If you don't see the publish profile you want (or you are automatically taken to the "Pick a Publish Target" Window) see [MakePublishProfiles.md](MakePublishProfiles.md#How-to-create-the-Publish-Profiles-to-publish-the-API-to-the-Sites) to restore the Publish Profiles.
+- Clicking publish pushes your changes to the API for either 360ApiTrain.gordon.edu or 360Api.gordon.edu, depending on which publish profile you used.
 
 ## Caching
 
@@ -101,15 +101,15 @@ This process makes use of static names, methods, and data, since ASP.NET does no
 
 Data which is stored upon startup includes:
 
--   All events in 25Live ending after the start of the current academic year
--   All basic information on every account with an AD Username
--   All student, faculty, staff and alumni profile info
+- All events in 25Live ending after the start of the current academic year
+- All basic information on every account with an AD Username
+- All student, faculty, staff and alumni profile info
 
 ## Running the API locally
 
 ### Preliminary setup
 
--   It is easiest to use the development virtual machine to work on this project. Follow [these instructions](RemoteDesktopToVM.md#How-to-connect-to-a-CS-RDSH-virtual-machine) to set up and connect to the virtual machine using your Gordon account.
+- It is easiest to use the development virtual machine to work on this project. Follow [these instructions](RemoteDesktopToVM.md#How-to-connect-to-a-CS-RDSH-virtual-machine) to set up and connect to the virtual machine using your Gordon account.
 
 -   If this is your first time on the virtual machine, you will need to clone this repository. You can do this by using Git Bash. It is possible that you will need to [add the SSH key to your Git account](https://help.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh), it will guide you to create an ssh key if necessary, then copy and paste it into your github settings.
 
@@ -123,18 +123,18 @@ Data which is stored upon startup includes:
 
 ### Building and running
 
--   Now, you can press the Start button in Visual Studio to run the server (it is a green play button in the top middle of the tool bar). It will open the web browser and, after a period that should just be a few minutes long but sometimes lasts half an hour or more, display an Error 403.14 - Forbidden. This is expected. You can now begin manually testing the API.
+- Now, you can press the Start button in Visual Studio to run the server (it is a green play button in the top middle of the tool bar). It will open the web browser and, after a period that should just be a few minutes long but sometimes lasts half an hour or more, display an Error 403.14 - Forbidden. This is expected. You can now begin manually testing the API.
 
--   If you haven't already, you'll need to `npm install` in the gordon-360-ui repo. This only needs to be done once, then you can just `npm start`.
+- If you haven't already, you'll need to `npm install` in the gordon-360-ui repo. This only needs to be done once, then you can just `npm start`.
 
--   If you want to test the UI, keep the server running and follow the directions found [here](https://github.com/gordon-cs/gordon-360-ui/blob/develop/README.md#connect-local-backend-to-react) under "Connect Local Backend to React".
+- If you want to test the UI, keep the server running and follow the directions found [here](https://github.com/gordon-cs/gordon-360-ui/blob/develop/README.md#connect-local-backend-to-react) under "Connect Local Backend to React".
 
 ## The Database
 
 The `CCT` and `MyGordon` databases exist in:
 
--   `admintrainsql.gordon.edu` - The development/test database server
--   `adminprodsql.gordon.edu` - The production/live database server.
+- `admintrainsql.gordon.edu` - The development/test database server
+- `adminprodsql.gordon.edu` - The production/live database server.
 
 ### CCT Tables
 
@@ -142,19 +142,19 @@ All the tables were created from scratch by our team.
 
 Misc Information:
 
--   Apart from a few exceptions, the tables don't make use of foreign key constraints. This is because the relevant primary keys are in the tables referenced by Views. Unfortunately, one cannot make foreign keys that reference Views.
+- Apart from a few exceptions, the tables don't make use of foreign key constraints. This is because the relevant primary keys are in the tables referenced by Views. Unfortunately, one cannot make foreign keys that reference Views.
 
 ###### ACT_INFO
 
 A record in this table stores:
 
--   ACT_CDE - The short code for the activity.
--   ACT_DESC - The name of the activity.
--   ACT_BLURB - A short description of what the activity is about. This will be filled out by a leader.
--   ACT_URL - URL to the website for the club/organization (if they have one).
--   ACT_IMAGE_PATH - Path to where the activity logo is stored in the browseable folder.
--   ACT_TYPE - Short code for the type of the activity
--   ACT_TYPE_DESC - Full name of the type of the activity
+- ACT_CDE - The short code for the activity.
+- ACT_DESC - The name of the activity.
+- ACT_BLURB - A short description of what the activity is about. This will be filled out by a leader.
+- ACT_URL - URL to the website for the club/organization (if they have one).
+- ACT_IMAGE_PATH - Path to where the activity logo is stored in the browseable folder.
+- ACT_TYPE - Short code for the type of the activity
+- ACT_TYPE_DESC - Full name of the type of the activity
 
 You might notice that this table is an extension of the ACT_CLUB_DEF view. It contains extra information that the view does not have, but that we need. This is clearly a case of Information Duplication; information is available in two places and can easily fall out of sync. To remedy this, the stored procedure [UPDATE_ACT_INFO](#update_act_info) was made.
 
@@ -162,10 +162,10 @@ You might notice that this table is an extension of the ACT_CLUB_DEF view. It co
 
 A record in this table stores:
 
--   ID_NUM - The gordon id number of the administrator
--   USER_NAME - The administrator's username
--   EMAIL - The administrator's email.
--   SUPER_ADMIN - Whether or not the admin has super admin privilege
+- ID_NUM - The gordon id number of the administrator
+- USER_NAME - The administrator's username
+- EMAIL - The administrator's email.
+- SUPER_ADMIN - Whether or not the admin has super admin privilege
 
 To make someone an admin, simply insert a record into this table through MSSQL Studio.
 
@@ -173,12 +173,12 @@ To make someone an admin, simply insert a record into this table through MSSQL S
 
 A record in this table stores:
 
--   username - The gordon username of the current user (firstname.lastname)
--   facebook - The URL of the user's facebook without its domain name
--   twitter - The URL of the user's twitter without its domain name
--   instagram - The URL of the user's instagram without its domain name
--   linkedin - The URL of the user's linkedin without its domain name
--   handshake - The URL of the user's handshake without its domain name (just user id)
+- username - The gordon username of the current user (firstname.lastname)
+- facebook - The URL of the user's facebook without its domain name
+- twitter - The URL of the user's twitter without its domain name
+- instagram - The URL of the user's instagram without its domain name
+- linkedin - The URL of the user's linkedin without its domain name
+- handshake - The URL of the user's handshake without its domain name (just user id)
 
 Users don't exist in the table unless they add/edit their social media links on 360 site. Once a user adds any links, the user will be added to the table. This logic is done so that there won't be unused users in the table which can possibly slow down the website.
 
@@ -186,20 +186,20 @@ Users don't exist in the table unless they add/edit their social media links on 
 
 A record in this table stores:
 
--   EVENT_ID - The event id number of this schedule (always has to be above 1000, to differentiate between a course schedule)
--   GORDON_ID - The gordon id number of the user having this event
--   LOCATION - The location of the event
--   DESCRIPTION - The description of the event
--   MON_CDE - Whether or not the event is in monday ('M')
--   TUE_CDE - Whether or not the event is in tuesday ('T')
--   WED_CDE - Whether or not the event is in wednesday ('W')
--   THU_CDE - Whether or not the event is in thursday ('R')
--   FRI_CDE - Whether or not the event is in friday ('F')
--   SAT_CDE - Whether or not the event is in saturday ('S')
--   SUN_CDE - Whether or not the event is in sunday ('N')
--   IS_ALLDAY - Whether or not the event is happening for all day '0' for no and '1' for all day.
--   BEGIN_TIME - The start time of the event in Timespan format
--   END_TIME - The end time of the event in Timespan format
+- EVENT_ID - The event id number of this schedule (always has to be above 1000, to differentiate between a course schedule)
+- GORDON_ID - The gordon id number of the user having this event
+- LOCATION - The location of the event
+- DESCRIPTION - The description of the event
+- MON_CDE - Whether or not the event is in monday ('M')
+- TUE_CDE - Whether or not the event is in tuesday ('T')
+- WED_CDE - Whether or not the event is in wednesday ('W')
+- THU_CDE - Whether or not the event is in thursday ('R')
+- FRI_CDE - Whether or not the event is in friday ('F')
+- SAT_CDE - Whether or not the event is in saturday ('S')
+- SUN_CDE - Whether or not the event is in sunday ('N')
+- IS_ALLDAY - Whether or not the event is happening for all day '0' for no and '1' for all day.
+- BEGIN_TIME - The start time of the event in Timespan format
+- END_TIME - The end time of the event in Timespan format
 
 Myschedules doesn't exist in the table unless a user add/edit myschedule on 360 site. Once a user adds any customized event, the event will be added to the table. The structure is adopted from the course schedule format stored in other database. There are two primary keys - EVENT_ID and GORDON_ID. They have to match together to get any event schedule
 
@@ -207,10 +207,10 @@ Myschedules doesn't exist in the table unless a user add/edit myschedule on 360 
 
 A record in this table stores:
 
--   IsSchedulePrivate - Whether or not the schedule is private (only applied to students and their course schedule. FacStaff and mySchedule won't be affected)
--   ModifiedTimeStamp - The last time when the user modified the event or description
--   Description - The schedule description for additional links
--   gordon_id - The gordon id number of the current user
+- IsSchedulePrivate - Whether or not the schedule is private (only applied to students and their course schedule. FacStaff and mySchedule won't be affected)
+- ModifiedTimeStamp - The last time when the user modified the event or description
+- Description - The schedule description for additional links
+- gordon_id - The gordon id number of the current user
 
 Schedule Controls also don't exist in the table unless a user add/edit their settings on 360 site.
 
@@ -223,14 +223,14 @@ The goal of this table was to contain membership information that was to be move
 
 A record in this table stores:
 
--   ACT_CDE - The short code for the activity.
--   SESS_CDE - The short code for the session when this membership took place.
--   ID_NUM - The gordon id number of the member.
--   PART_CDE - The short code for the participation level of the member.
--   BEGIN_DTE - The date the membership began
--   END_DTE - The date the membership ended
--   COMMENT_TXT - Comment about the membership
--   GRP_ADMIN - A boolean indicating whether or not this member has group admin privileges, allowing them to edit the group's page on the site
+- ACT_CDE - The short code for the activity.
+- SESS_CDE - The short code for the session when this membership took place.
+- ID_NUM - The gordon id number of the member.
+- PART_CDE - The short code for the participation level of the member.
+- BEGIN_DTE - The date the membership began
+- END_DTE - The date the membership ended
+- COMMENT_TXT - Comment about the membership
+- GRP_ADMIN - A boolean indicating whether or not this member has group admin privileges, allowing them to edit the group's page on the site
 
 The other three fields (USER_NAME, JOB_NAME and JOB_TIME) where meant to be administrative fields to store data about who inserted records and when they did it. We ended up not using them. We kept them because they have good potential use.
 
@@ -238,20 +238,20 @@ The other three fields (USER_NAME, JOB_NAME and JOB_TIME) where meant to be admi
 
 A record in this table stores:
 
--   SESS_CDE - The short code for the session they are requesting to join.
--   ACT_CDE - The short code of the activity they are requesting to join.
--   ID_NUM - The gordon id number of the potential member.
--   PART_CDE - The short code for the participation level they want to join as.
--   DATE_SENT - The date the request was made.
--   COMMENT_TXT - Comments to accompany the request.
--   STATUS - Status of the request. Should be either Pending, Approved or Denied.\
+- SESS_CDE - The short code for the session they are requesting to join.
+- ACT_CDE - The short code of the activity they are requesting to join.
+- ID_NUM - The gordon id number of the potential member.
+- PART_CDE - The short code for the participation level they want to join as.
+- DATE_SENT - The date the request was made.
+- COMMENT_TXT - Comments to accompany the request.
+- STATUS - Status of the request. Should be either Pending, Approved or Denied.\
 
 ###### ACT_CLUB_DEF
 
 A record in this table stores
 
--   ACT_CDE - The activity short code.
--   ACT_DESC - The name of the activity.
+- ACT_CDE - The activity short code.
+- ACT_DESC - The name of the activity.
 
 This table is an exact duplicate of the JENZ_ACT_CLUB_DEF view. It is periodically updated by making sure what is in it corresponds to what is in JENZ_ACT_CLUB_DEF. When a new activity is found in JENZ_ACT_CLUB_DEF, it is inserted into ACT_CLUB_DEF and the stored procedure UPDATE_ACT_INFO is run.
 
@@ -263,26 +263,26 @@ These are just the MyGordon tables used by 360. They were originally not made fo
 
 A record in this table stores
 
--   SNID - unique integer identifier for a news entry
--   ADUN - username (first.last) of the person who posted the entry
--   categoryID - foreign key that links this entry to its category
--   Subject - subject, written by the poster, of the news entry
--   Body - the actual text of the news entry, written by the poster
--   Accepted - whether this entry has been approved to be shown publicly
--   Sent - whether the item has been sent
--   thisPastMailing - whether it belongs to this past mailing
--   Entered - when, in datetime format, the post was submitted by the poster
--   fname - not used (NULL)
--   lname - not used (NULL)
--   ManualExpirationDate - given by the poster, the last day on which this entry should be displayed publicly
+- SNID - unique integer identifier for a news entry
+- ADUN - username (first.last) of the person who posted the entry
+- categoryID - foreign key that links this entry to its category
+- Subject - subject, written by the poster, of the news entry
+- Body - the actual text of the news entry, written by the poster
+- Accepted - whether this entry has been approved to be shown publicly
+- Sent - whether the item has been sent
+- thisPastMailing - whether it belongs to this past mailing
+- Entered - when, in datetime format, the post was submitted by the poster
+- fname - not used (NULL)
+- lname - not used (NULL)
+- ManualExpirationDate - given by the poster, the last day on which this entry should be displayed publicly
 
 ##### StudentNewsCategory
 
 A record in this table stores
 
--   categoryID - a unique integer identifier
--   categoryName - the name of a category, ex. "Found Items"
--   SortOrder - an integer representing the category's placement in the preferred display order
+- categoryID - a unique integer identifier
+- categoryName - the name of a category, ex. "Found Items"
+- SortOrder - an integer representing the category's placement in the preferred display order
 
 ### CCT Views
 
@@ -362,14 +362,17 @@ Pulls firstname, lastname, category (student, staff, faculty), and AD_Username (
 This stored procedures is simple. It returns separate advisor(s) ID (Max is 3, Advisor1, Advisor2, and Advisor 3) for a particular student based upon their ID.
 
 ###### UPDATE_ACT_CLUB_DEF
+
 This keeps the ACT_CLUB_DEF table in sync with the JENZ_ACT_CLUB_DEF view. It should be run periodically.
 
 ###### UPDATE_ACT_INFO
+
 Because ACT_INFO is basically a duplicate of ACT_CLUB_DEF, this stored procedure tries to keep them synced. Ideally it should be run automatically anytime ACT_CLUB_DEF changes.
 
 In non-sql terms, this procedure makes sure all the activities defined in ACT_CLUB_DEF are also present in ACT_INFO. If something has been added/removed to ACT_CLUB_DEF but not in ACT_INFO, it adds/removes the corresponding record to ACT_INFO.
 
 ###### UPDATE_JNZB_ACTIVITIES
+
 This stored procedures is pretty simple. It moves all the relevant information from the MEMBERSHIP table and puts it in the JNZB_ACTIVITIES table. To prevent duplication, it will only add records that are present in the MEMBERSHIP table, but missing the JNZB_ACTIVITIES table.
 
 ### CCT Triggers
@@ -382,14 +385,14 @@ Every time a record is inserted into the ACT_CLUB_DEF table, this trigger runs t
 
 It's sometimes useful to look at the database directly, to see the schema or check data. Here is how.
 
--   Use remote desktop to get to the Windows server VM
--   If SQL Server Management Studio is not pinned to the task bar, pin it by starting it and right clicking on it in the task bar to pin it)
--   Shift-right-click SSMS (SQL Server Management Studio) and select "Run as ..."
--   Run as "cct.service"
--   Connect to "ADMINTRAINSQL" database server (or "ADMINPRODSQL")
--   Expand "Databases" then "CCT" or "MyGordon" (the two currently used databases) then "Views"
--   To see schemas, expand "dbo." entries and their "columns"
--   To see data, right-click a view and select "Select top 1000 rows"
+- Use remote desktop to get to the Windows server VM
+- If SQL Server Management Studio is not pinned to the task bar, pin it by starting it and right clicking on it in the task bar to pin it)
+- Shift-right-click SSMS (SQL Server Management Studio) and select "Run as ..."
+- Run as "cct.service"
+- Connect to "ADMINTRAINSQL" database server (or "ADMINPRODSQL")
+- Expand "Databases" then "CCT" or "MyGordon" (the two currently used databases) then "Views"
+- To see schemas, expand "dbo." entries and their "columns"
+- To see data, right-click a view and select "Select top 1000 rows"
 
 ### Updating or Creating edmx
 
@@ -403,40 +406,40 @@ Everytime you update the one of the databases with a new table, column, view or 
 
 Visual Studio provides auto-generation of .edmx files, with the following procedure:
 
--   _Setup_
+- _Setup_
 
-    -   Use remote desktop to get to the Windows server VM
-    -   Open Visual Studio and load the solution file
+  - Use remote desktop to get to the Windows server VM
+  - Open Visual Studio and load the solution file
 
--   _Deleting the old edmx files_
+- _Deleting the old edmx files_
 
-    -   In the solution explorer, expand the "Models" folder and delete the previous `<database name>_DB_MODELS.edmx` which represents the database to which you made changes; for example, if it was the CCT database that was changed, delete CCT_DB_MODELS.edmx by right clicking and selecting 'delete' (it's okay, we can remake it)
-    -   At the bottom of the `web.config` file there is a `<connectionStrings>` tag with an `<add ...>` tag for every connection string nested within. Delete the connection string (the `<add ...>` tag) for the DB connection you are regenerating (if this is confusing, [this step](#connection-string) explains why you may need it deleted)
+  - In the solution explorer, expand the "Models" folder and delete the previous `<database name>_DB_MODELS.edmx` which represents the database to which you made changes; for example, if it was the CCT database that was changed, delete CCT_DB_MODELS.edmx by right clicking and selecting 'delete' (it's okay, we can remake it)
+  - At the bottom of the `web.config` file there is a `<connectionStrings>` tag with an `<add ...>` tag for every connection string nested within. Delete the connection string (the `<add ...>` tag) for the DB connection you are regenerating (if this is confusing, [this step](#connection-string) explains why you may need it deleted)
 
--   _Generating the new edmx files_
-    -   Right-click "Models", expand "Add" and press "New Item" (If you can see ADO.NET Entity Data Model in here, you may press that as well)
-    -   Under Visual C# panel, access "Data" and find ADO.NET Entity Data Model. Name it `<database name>_DB_Models` and create it
-    -   In the Wizard, the default option should be "EF Designer from database". If it is not, change to this option and head next
-    -   Choose the data connection "`<database name>Entities` (Gordon360)" (though, if it is CCT, there should be a "1" after "Entities"). If the appropriate connection does not exist, see <a href="#create-connection">below</a> to create one
-    -   <span id="connection-string"><!--anchor--></span>
-        Make sure you check "Save connection setting in Web.Config as:" and name the saved settings `<database name>Entities` (again, if it is CCT, it should be "CCTEntities1" with that additional "1"). If there is an error that the name already exists, it is because the connection string needs to be removed from `web.config` (see above)
-    -   Next, you will see the wizard retrieving the database objects from our CCT database; check all boxes in the panel but you should uncheck the option "Pluralize or singularize generated object names"
-    -   Name the Model Namespace as `Gordon360` and press finish
+- _Generating the new edmx files_
+  - Right-click "Models", expand "Add" and press "New Item" (If you can see ADO.NET Entity Data Model in here, you may press that as well)
+  - Under Visual C# panel, access "Data" and find ADO.NET Entity Data Model. Name it `<database name>_DB_Models` and create it
+  - In the Wizard, the default option should be "EF Designer from database". If it is not, change to this option and head next
+  - Choose the data connection "`<database name>Entities` (Gordon360)" (though, if it is CCT, there should be a "1" after "Entities"). If the appropriate connection does not exist, see <a href="#create-connection">below</a> to create one
+  - <span id="connection-string"><!--anchor--></span>
+    Make sure you check "Save connection setting in Web.Config as:" and name the saved settings `<database name>Entities` (again, if it is CCT, it should be "CCTEntities1" with that additional "1"). If there is an error that the name already exists, it is because the connection string needs to be removed from `web.config` (see above)
+  - Next, you will see the wizard retrieving the database objects from our CCT database; check all boxes in the panel but you should uncheck the option "Pluralize or singularize generated object names"
+  - Name the Model Namespace as `Gordon360` and press finish
 
 #### CREATE NEW EDMX FILES
 
 If you are attempting to connect the API to a database other than the ones to which it is already connected, you will need to create an entirely new edmx. To do this, follow the instructions above for updating, taking note of the following points:
 
--   You do not need to delete any edmx files, since you are now creating the first instance of a different edmx
--   <span id="create-connection"><!--anchor--></span>
-    None of the options for data connection will fit your needs, so you will need to create a new option:
-    -   Click "New Connection..."
-    -   If prompted "Choose Data Source", choose "Microsoft SQL Server"
-    -   For "Server name", put `admintrainsql.gordon.edu`
-    -   Under "Connect to a Database", make sure "Select or enter a database name:" is selected and enter `<database name>`
-    -   Go to Advanced settings, scroll to the top, and make sure "MultipleActiveResultSets" is set to True; then, scroll towards the bottom to find "Integrated Security" and make sure that is set to True
-    -   Click OK to close Advanced settings, then OK again to save the data connection you have just made
--   Now, you can select the data connection you just made from the drop down and pick up with the above directions at 'Make sure you check "Save connection...'
+- You do not need to delete any edmx files, since you are now creating the first instance of a different edmx
+- <span id="create-connection"><!--anchor--></span>
+  None of the options for data connection will fit your needs, so you will need to create a new option:
+  - Click "New Connection..."
+  - If prompted "Choose Data Source", choose "Microsoft SQL Server"
+  - For "Server name", put `admintrainsql.gordon.edu`
+  - Under "Connect to a Database", make sure "Select or enter a database name:" is selected and enter `<database name>`
+  - Go to Advanced settings, scroll to the top, and make sure "MultipleActiveResultSets" is set to True; then, scroll towards the bottom to find "Integrated Security" and make sure that is set to True
+  - Click OK to close Advanced settings, then OK again to save the data connection you have just made
+- Now, you can select the data connection you just made from the drop down and pick up with the above directions at 'Make sure you check "Save connection...'
 
 ## The Code
 
@@ -446,54 +449,56 @@ The server was written using ASP.NET and is generally structured as such. As a M
 
 Here is a breakdown of the project folder:
 
--   gordon-360-api/
-    -   Design_Documents/ - currently empty. I do not actually remember why we had this.
-    -   Gordon360/ - The main project. Most of the work will be done here.
-        -   ApiControllers/ - Folder containing the Controllers for the API endpoints.
-        -   AuthorizationFilters/ - Contains code that enforces rules about who can access what.
-        -   AuthorizationServer/ (The folder should really be called AuthenticationServer) - Contains code that does user authentication.
-        -   bin/ - binary files. nothing to see here.
-        -   browseable/ - Placeholder folder that will be moved AS-IS to the built product. It will end up containing user-generated content. Right now, it only contains uploaded activity pictures.
-        -   Documentation/ - All the comments in the code are concatenated and made into this file. This is an automatic ASP.NET feature. We were going to somehow use the generated file for documentation, but didn't go through with it.
-        -   Exceptions/ - Custom exceptions that are thrown in the code. These exceptions get thrown instead of the default 500 Server Error Exception.
-        -   Models/ Code for the models (Model as in MODEL-View-Controller, or MVC)
-        -   obj/ - Not really sure what this is. It is also automatically generated by ASP.NET.
-        -   Properties/ - Contains files that Visual Studio uses to build and publish the project. No need to dig into this unless you want to fine tune the build process.
-        -   Repositories/ - Contains Repository files and Unit of Work Files. Both of these are object-oriented design patterns. They help with separation of concerns and general code organization.
-        -   Services/ - Services that are used by the ApiController. The concept of a Service is also a design pattern. It is very useful for decoupling. (e.g. Making sure Controller code is separate from code that accesses the database).
-        -   Static Classes/ - Helper classes that are used throughout the code.
-        -   Stored Procedures/ - This folder can be deleted. It is a relic from the past when I used to hard-code my stored procedures.
-    -   packages/ - ASP.NET packages that the project depends on. You will not be making any changes here.
-    -   Tests/ - Folder for tests
-        -   ApiEndpoints/ - I talk about this more in the Testing section.
+- gordon-360-api/
+  - Design_Documents/ - currently empty. I do not actually remember why we had this.
+  - Gordon360/ - The main project. Most of the work will be done here.
+    - ApiControllers/ - Folder containing the Controllers for the API endpoints.
+    - AuthorizationFilters/ - Contains code that enforces rules about who can access what.
+    - AuthorizationServer/ (The folder should really be called AuthenticationServer) - Contains code that does user authentication.
+    - bin/ - binary files. nothing to see here.
+    - browseable/ - Placeholder folder that will be moved AS-IS to the built product. It will end up containing user-generated content. Right now, it only contains uploaded activity pictures.
+    - Documentation/ - All the comments in the code are concatenated and made into this file. This is an automatic ASP.NET feature. We were going to somehow use the generated file for documentation, but didn't go through with it.
+    - Exceptions/ - Custom exceptions that are thrown in the code. These exceptions get thrown instead of the default 500 Server Error Exception.
+    - Models/ Code for the models (Model as in MODEL-View-Controller, or MVC)
+    - obj/ - Not really sure what this is. It is also automatically generated by ASP.NET.
+    - Properties/ - Contains files that Visual Studio uses to build and publish the project. No need to dig into this unless you want to fine tune the build process.
+    - Repositories/ - Contains Repository files and Unit of Work Files. Both of these are object-oriented design patterns. They help with separation of concerns and general code organization.
+    - Services/ - Services that are used by the ApiController. The concept of a Service is also a design pattern. It is very useful for decoupling. (e.g. Making sure Controller code is separate from code that accesses the database).
+    - Static Classes/ - Helper classes that are used throughout the code.
+    - Stored Procedures/ - This folder can be deleted. It is a relic from the past when I used to hard-code my stored procedures.
+  - packages/ - ASP.NET packages that the project depends on. You will not be making any changes here.
+  - Tests/ - Folder for tests
+    - ApiEndpoints/ - I talk about this more in the Testing section.
 
 ### Adding New Queries
 
--   (\*) is your new Title (ex: Membership, Account, Session)
--   (+) is your new stored procedure name (ex: MEMBERSHIPS_PER_STUDENT_ID)
--   New Files:
-    -   \*Controller.cs under ApiControllers
-        -   create new route
-        -   calls the \*service function
-        -   returns ok
-    -   \*Service.cs under Services
-        -   calls the stored procedure that returns view model
-    -   \*ViewModel.cs under ViewModels
-        -   function names correspond to the columns of the data the stored procedure returns (Does not have to be exact names)
-        -   static implicit operator converts * model to *ViewModel
--   Update Files:
-    -   ServiceInterfaces.cs under Services
-        -   Add a public interface I\*/
-        -   Add all functions you have in \*Service under this interface
-    -   IUnitOfWork.cs under Repositories
-        -   Make corresponding IRepository for \* (ex. IRepository<STUDENTEMPLOYMENT> StudentEmploymentRepository {get;})
-    -   UnitOfWork.cs under Repositories
-        -   Make private IRepository<\*> variable
-        -   Write public function called \*Repository
-    -   Names.cs under Static Classes
-        -   Add public const string \*
+- (\*) is your new Title (ex: Membership, Account, Session)
+- (+) is your new stored procedure name (ex: MEMBERSHIPS_PER_STUDENT_ID)
+- New Files:
+  - \*Controller.cs under ApiControllers
+    - create new route
+    - calls the \*service function
+    - returns ok
+  - \*Service.cs under Services
+    - calls the stored procedure that returns view model
+  - \*ViewModel.cs under ViewModels
+    - function names correspond to the columns of the data the stored procedure returns (Does not have to be exact names)
+    - static implicit operator converts * model to *ViewModel
+- Update Files:
+  - ServiceInterfaces.cs under Services
+    - Add a public interface I\*/
+    - Add all functions you have in \*Service under this interface
+  - IUnitOfWork.cs under Repositories
+    - Make corresponding IRepository for \* (ex. IRepository<STUDENTEMPLOYMENT> StudentEmploymentRepository {get;})
+  - UnitOfWork.cs under Repositories
+    - Make private IRepository<\*> variable
+    - Write public function called \*Repository
+  - Names.cs under Static Classes
+    - Add public const string \*
 
 ## API Endpoints
+
+Notation: In the API endpoint descriptions below, some parameter values are indicated by a leading ":" (though convention is to surround the parameter with {curly-brackets}).  The ":" is not present in the URL, just the value.  Also, a trailing "/" is required after the last parameter value if the parameter includes a special character like a period (e.g. `360.studenttest` necessitates trailing slash).
 
 _Note:_ The shell script `get-route-list.sh` is run with `bash get-route-list.sh` from a linux shell or git-bash. It provides a list of the API routes that appear in the ApiController files.
 
@@ -511,7 +516,7 @@ What is it? Resource that represents a gordon account.
 
 `api/accounts/search/:searchString/:secondaryString` The same as above, used when the search string contains a space
 
-`api/accounts/advanced-people-search/{includeAlumniSearchParam}/{firstNameSearchParam}/{lastNameSearchParam}/{majorSearchParam}/{minorSearchParam}/{hallSearchParam}/{classTypeSearchParam}/{hometownSearchParam}/{stateSearchParam}/{countrySearchParam}/{departmentSearchParam}/{buildingSearchParam}` Get all the accounts matching the specified parameters. Access to accounts is based on your account type (e.g. Students can't get Alumni).
+`api/accounts/advanced-people-search/{includeStudentSearchParam}/{includeFacStaffSearchParam}/{includeAlumniSearchParam}/{firstNameSearchParam}/{lastNameSearchParam}/{majorSearchParam}/{minorSearchParam}/{hallSearchParam}/{classTypeSearchParam}/{hometownSearchParam}/{stateSearchParam}/{countrySearchParam}/{departmentSearchParam}/{buildingSearchParam}` Get all the accounts matching the specified parameters. Access to accounts is based on your account type (e.g. Students can't get Alumni).
 
 ### Activities
 
@@ -658,10 +663,10 @@ What is it? Resource that represents emails.
 
 What is it? Resources to get information on Events from the 25Live system
 
--   Only confirmed events are pulled
--   Only events with event_type_id 14 `Calendar Announcement` or 57 `Event`.
--   Only events ending after the start of the current academic year are requested from 25Live
--   Data from 25Live is retrieved every four minutes using a cached request
+- Only confirmed events are pulled
+- Only events with event_type_id 14 `Calendar Announcement` or 57 `Event`.
+- Only events ending after the start of the current academic year are requested from 25Live
+- Data from 25Live is retrieved every four minutes using a cached request
 
 ##### GET
 
@@ -674,6 +679,7 @@ What is it? Resources to get information on Events from the 25Live system
 `api/events/25Live/Public` Returns all events in 25Live marked to promote on public calendars (Requirement_ID = 3).
 
 ### Housing
+
 What is it? Resource that represents residence hall information that would concern the residents or housing director.
 
 ##### GET
@@ -697,8 +703,6 @@ What is it? Resource that represents residence hall information that would conce
 ##### DELETE
 
 `apartment/applications/{applicationID}` Deletes an application (and consequently all rows that reference it)
-
-
 
 ### Memberships
 
@@ -792,7 +796,11 @@ Who has access? Everyone.
 
 `api/sessions/current` Get the current session.
 
-`api/sessions/daysLeft` Get the days left in the semester and the total days in the semester
+`api/sessions/firstDay` Get the Gets the first day in the current session.
+
+`api/sessions/lastDay` Get the Gets the last day in the current session.
+
+`api/sessions/daysLeft` Get the days left in the semester and the total days in the current session.
 
 ### Participation Definitions
 
@@ -816,7 +824,7 @@ What is it? Resource that represents users' profiles.
 
 Differences from GoSite:
 
--   Only displaying city and country as home address. (When the viewer is a student. Police, super admin, faculty and staff should still see all the information for home address)
+-   Only displaying city and country as home address. (When the viewer is a student or alumni. Police, super admin, faculty, and staff should still see all the information for home address)
 -   Displaying minors.
 -   On campus was changed to display more general information rather than completely getting rid of it like GoSite does now. (Shows on/off campus)
 
@@ -829,6 +837,8 @@ Differences from GoSite:
 `api/profiles/Advisors/:username` Get advisor(s) info of a user with username `username` as a parameter.
 
 `api/profiles/clifton/:username` Get the Clifton Strengths of a user with username `username` as a parameter.
+
+`api/profiles/mailbox-combination` Get the mailbox combination of the current logged in user.
 
 `api/profiles/Image/` Get profile image of the current logged in user. Image is stored in a base 64 string.
 
@@ -846,6 +856,8 @@ Differences from GoSite:
 
 ##### PUT
 
+`api/profiles/mobile_phone_number/:value` Update mobile phone number for the current logged in user.
+
 `api/profiles/mobile_privacy/:value` Update mobile phone number privacy with value(Y or N) for the current logged in user.
 
 `api/profiles/image_privacy/:value` Update profile image privacy with value(Y or N) for the current logged in user.
@@ -860,9 +872,9 @@ Who has access? Everyone.
 
 `api/dining` Get all possible meal plan info.
 
--   If user has one or more meal plans, then current balances for each plan are included in a JSON response.
--   If user does not have a meal plan but has a faculty-staff dining balance, then the balance is returned as a string.
--   If there is no plan or balance then the string "0" (equivalent to no balance) is returned.
+- If user has one or more meal plans, then current balances for each plan are included in a JSON response.
+- If user does not have a meal plan but has a faculty-staff dining balance, then the balance is returned as a string.
+- If there is no plan or balance then the string "0" (equivalent to no balance) is returned.
 
 ### Student Employment
 
@@ -936,6 +948,10 @@ What is it? Resource that represents accepted student news entries and news cate
 
 ##### GET
 
+`api/news/:newsID` Gets a student news item from the database.
+
+`api/news/:newsID/image` Gets the base64 for an image associated with a student news entry.
+
 `api/news/category` Gets the full list of category names used to categorize student news as well as category ids and sort order.
 
 `api/news/not-expired` Gets every student news entry that has been accepted and has not yet been in the database 2 weeks or, if the poster set a specific date of expiration, has an expiration date later than the current day.
@@ -954,8 +970,8 @@ _(uses stored procedure)_
 
 `api/news/:id` Deletes a news item from the database by its id (SNID = student news id). In order to delete, the following conditions must be met:
 
--   news item is unexpired
--   user is author of news item or SUPER_ADMIN (perhaps should be changed in future)
+- news item is unexpired
+- user is author of news item or SUPER_ADMIN (perhaps should be changed in future)
 
 _(uses repository)_
 
@@ -963,9 +979,9 @@ _(uses repository)_
 
 `api/news/:id` Edits a news item in the database by its id. In order to edit, the following conditions must be met:
 
--   news item is unexpired
--   user is author of news item or SUPER_ADMIN (perhaps should be changed in future)
--   news item has not yet been approved
+- news item is unexpired
+- user is author of news item or SUPER_ADMIN (perhaps should be changed in future)
+- news item has not yet been approved
 
 _(uses repository)_
 
@@ -989,34 +1005,34 @@ Back endpoint responsible for fetching and sending information to the database r
 
 A test suite is available at `Tests/ApiEndpoints` to exercise the different endpoints. The most important files here are:
 
--   `test_gordon360_pytest` -- Stores all the necessary variables and authentication.
-    -   `activity_code` -- The activity that will be used for testing.
-    -   `random_id_number` -- A random id number that is used when we want to verify if we can do things on behalf of someone else. E.g. An advisor can create memberships for anyone. A regular member can only create a membership for him/herself.
-    -   `leadership_positions` -- A list of participation levels considered to be leadership positions.
-    -   `hostURL` -- Base url of the api
-    -   `username` -- String with the username of a test account that is a member of `activity_code`
-    -   `password` -- String with the password of a test account that is a member of `activity_code`
-    -   `id_number` -- Integer with the id number of the `username`.
-    -   `username_activity_leader` -- String with the username of a test account that is a leader of `activity_code`
--   `test_allaccount_pytest` -- Tests for api/accounts/ endpoint
--   `test_allactivities_pytest` -- Tests for api/activities/ endpoint
--   `test_alladmin_pytest` -- Tests for api/admins/ endpoint
--   `test_allauthentication_pytest` -- Tests for token/ endpoint
--   `test_alldining_pytest` -- Tests for api/dining/ endpoint
--   `test_allemail_pytest` -- Tests for api/emails/activity/ endpoint
--   `test_allevents_pytest` -- Tests for api/events/ endpoint
--   `test_allhousingapp_pytest` -- Tests for api/housing/ endpoint
--   `test_allmembership_pytest` -- Tests for api/memberships/ endpoint
--   `test_allmembershiprequest_pytest` -- Tests for api/requests/ endpoint
--   `test_allmyschedule_pytest` -- Tests for api/myschedule/ endpoint
--   `test_allnews_pytest` -- Tests for api/news/ endpoint
--   `test_allprofile_pytest` -- Tests for api/profiles/ endpoint
--   `test_allschedule_pytest` -- Tests for api/schedule/:username/ endpoint
--   `test_allschedulecontrol_pytest` -- Tests for api/schedulecontrol/ endpoint
--   `test_allsession_pytest` -- Tests for api/sessions/ endpoint
--   `test_allstudentemployment_pytest` -- Tests for api/studentemployment/ endpoint
--   `test_allvictorypromise_pytest` -- Tests for api/vpscore/ endpoint
--   `test_allwellnesscheck_pytest` -- Tests for api/wellness/ endpoint
+- `test_gordon360_pytest` -- Stores all the necessary variables and authentication.
+  - `activity_code` -- The activity that will be used for testing.
+  - `random_id_number` -- A random id number that is used when we want to verify if we can do things on behalf of someone else. E.g. An advisor can create memberships for anyone. A regular member can only create a membership for him/herself.
+  - `leadership_positions` -- A list of participation levels considered to be leadership positions.
+  - `hostURL` -- Base url of the api
+  - `username` -- String with the username of a test account that is a member of `activity_code`
+  - `password` -- String with the password of a test account that is a member of `activity_code`
+  - `id_number` -- Integer with the id number of the `username`.
+  - `username_activity_leader` -- String with the username of a test account that is a leader of `activity_code`
+- `test_allaccount_pytest` -- Tests for api/accounts/ endpoint
+- `test_allactivities_pytest` -- Tests for api/activities/ endpoint
+- `test_alladmin_pytest` -- Tests for api/admins/ endpoint
+- `test_allauthentication_pytest` -- Tests for token/ endpoint
+- `test_alldining_pytest` -- Tests for api/dining/ endpoint
+- `test_allemail_pytest` -- Tests for api/emails/activity/ endpoint
+- `test_allevents_pytest` -- Tests for api/events/ endpoint
+- `test_allhousingapp_pytest` -- Tests for api/housing/ endpoint
+- `test_allmembership_pytest` -- Tests for api/memberships/ endpoint
+- `test_allmembershiprequest_pytest` -- Tests for api/requests/ endpoint
+- `test_allmyschedule_pytest` -- Tests for api/myschedule/ endpoint
+- `test_allnews_pytest` -- Tests for api/news/ endpoint
+- `test_allprofile_pytest` -- Tests for api/profiles/ endpoint
+- `test_allschedule_pytest` -- Tests for api/schedule/:username/ endpoint
+- `test_allschedulecontrol_pytest` -- Tests for api/schedulecontrol/ endpoint
+- `test_allsession_pytest` -- Tests for api/sessions/ endpoint
+- `test_allstudentemployment_pytest` -- Tests for api/studentemployment/ endpoint
+- `test_allvictorypromise_pytest` -- Tests for api/vpscore/ endpoint
+- `test_allwellnesscheck_pytest` -- Tests for api/wellness/ endpoint
 
 ### Running the Tests
 
@@ -1045,9 +1061,9 @@ To ensure fewer assertion errors due to future value changes, asserts should avo
 
 Suggestions to make tests more robust:
 
--   Check to see that the response is a list
--   Assert that one of the dictionaries in the list has a certain key
--   Check that the list isn't empty before checking for its content
+- Check to see that the response is a list
+- Assert that one of the dictionaries in the list has a certain key
+- Check that the list isn't empty before checking for its content
 
 <span id="manual-test"><!--anchor--></span>
 
@@ -1055,36 +1071,36 @@ Suggestions to make tests more robust:
 
 To manually test the API, use an API development/testing app like [Postman](https://www.getpostman.com/).
 
--   Here you can create HTTP requests to hit the API endpoints that you want to test, and see what data response you get back.
--   _Before you can call any normal API endpoints_, you must first call the authentication endpoint with a PUT request, which will give you a token. After starting Postman, use the following steps:
+- Here you can create HTTP requests to hit the API endpoints that you want to test, and see what data response you get back.
+- _Before you can call any normal API endpoints_, you must first call the authentication endpoint with a PUT request, which will give you a token. After starting Postman, use the following steps:
 
-    -   Near the top of the workspace window, change the request type from "GET" to "PUT" using the drop-down menu
-    -   Enter the local back-end URL with `/token` appended. It should look something like `http://localhost:5555/token`, but use the port number you selected when carrying out the steps under [Running the server locally](#running-the-server-locally) rather than 5555
-    -   Just below the URL you entered, click on "Body"
-    -   Check the radio-button for `x-www-form-urlencoded`
-    -   Enter the following three pairs in the Key/Value fields, replacing _username_ and _password_ with valid data:
+  - Near the top of the workspace window, change the request type from "GET" to "PUT" using the drop-down menu
+  - Enter the local back-end URL with `/token` appended. It should look something like `http://localhost:5555/token`, but use the port number you selected when carrying out the steps under [Running the server locally](#running-the-server-locally) rather than 5555
+  - Just below the URL you entered, click on "Body"
+  - Check the radio-button for `x-www-form-urlencoded`
+  - Enter the following three pairs in the Key/Value fields, replacing _username_ and _password_ with valid data:
 
-        | Key          | Value      |
-        | ------------ | ---------- |
-        | `grant_type` | `password` |
-        | `username`   | _username_ |
-        | `password`   | _password_ |
+    | Key          | Value      |
+    | ------------ | ---------- |
+    | `grant_type` | `password` |
+    | `username`   | _username_ |
+    | `password`   | _password_ |
 
-    -   Click the blue "Send" button - after a brief pause you should see the returned token appear.
+  - Click the blue "Send" button - after a brief pause you should see the returned token appear.
 
--   You can use this token to make an API request. For example:
+- You can use this token to make an API request. For example:
 
     -   Use the clipboard to make of copy of the _access-token_ value (do not include the double quotes, just copy the long string of characters between the quotes)
     -   Click on the "+" tab near the top of the window to open a new request frame
-    -   Leave "GET" as the request type and enter in an appropriate API URL (e.g. `http://localhost:5555/api/memberships/activity/AJG`
+    -   Leave "GET" as the request type and enter in an appropriate API URL (e.g. `http://localhost:5555/api/memberships/activity/AJG`, or `http://localhost:5555/api/profiles/360.studenttest/`).  Note that a trailing slash is needed after the last parameter value.
     -   Just below the URL, click on "Headers" and enter the following key/value pairs replacing _access-token_ with the token string you copied:
 
-        | Key             | Value                               |
-        | --------------- | ----------------------------------- |
-        | `Content-Type`  | `application/x-www-form-urlencoded` |
-        | `Authorization` | `Bearer ` _access-token_            |
+    | Key             | Value                               |
+    | --------------- | ----------------------------------- |
+    | `Content-Type`  | `application/x-www-form-urlencoded` |
+    | `Authorization` | `Bearer ` _access-token_            |
 
-    -   Click the blue "Send" button
+  - Click the blue "Send" button
 
 ## Troubleshooting
 
@@ -1105,9 +1121,9 @@ Note that the permissions are reset every time a new `browseable` folder is crea
 At this point, I think we eliminated most c#-related problems. Potential c#-related errors will be throwing custom exceptions that will tell you more about what is wrong. If you do get plain 500 error though, the problem might be a database one.
 Check:
 
--   That the ACT_INFO and ACT_CLUB_DEF tables are in sync.
--   That the stored procedures return exactly what the models expect.
--   That the views are up. Sometimes CTS unexpectedly does maintenance. Try running simple select statements against the Views.
+- That the ACT_INFO and ACT_CLUB_DEF tables are in sync.
+- That the stored procedures return exactly what the models expect.
+- That the views are up. Sometimes CTS unexpectedly does maintenance. Try running simple select statements against the Views.
 
 #### 500 Internal Server Error in pytest
 
@@ -1117,9 +1133,9 @@ Check:
 
 This error will only pop up when you are testing the server directly by running it with visual studio. When you run the gordon360 server from visual studio it automatically "hosts" it on `localhost:3000`. By default, the server doesn't accept non-HTTPS (anything not on port 443) connections. There are two solutions:
 
--   Change Visual studio settings to run on `localhost:443` by default. I tried this a bit, but didn't get very far. I don't think it is that hard though, I just didn't have the motivation to continue.
--   Allow non-HTTPS connections by commenting out some code. This is what I did. DON'T FORGET TO REMOVE THE COMMENT SYMBOLS AFTER YOU FINISH THOUGH.
-    -   The code that restricts non-HTTPS connections is located under the `Startup.cs` file. Look for the "#if DEBUG" and "#endif" code-blocks. Comment both out.
+- Change Visual studio settings to run on `localhost:443` by default. I tried this a bit, but didn't get very far. I don't think it is that hard though, I just didn't have the motivation to continue.
+- Allow non-HTTPS connections by commenting out some code. This is what I did. DON'T FORGET TO REMOVE THE COMMENT SYMBOLS AFTER YOU FINISH THOUGH.
+  - The code that restricts non-HTTPS connections is located under the `Startup.cs` file. Look for the "#if DEBUG" and "#endif" code-blocks. Comment both out.
 
 #### 415 Unsupported Media Error
 
@@ -1129,9 +1145,9 @@ This error might occurs while testing 'test_post_profile_image' and 'test_post_I
 
 The documentation folder currently contains the ColdFusion files from go.gordon that contain the logic behind the people search.
 
--   Index.cfm is the page used to select search criteria.
--   Searchresults.cfm is the list of people you get back based on that criteria. It selects from a student view, facstaff view, and alumni view all separately and then sorts all the results together.
--   Showperson.cfm is the detail page of the person you select from the searchresults.cfm page.
+- Index.cfm is the page used to select search criteria.
+- Searchresults.cfm is the list of people you get back based on that criteria. It selects from a student view, facstaff view, and alumni view all separately and then sorts all the results together.
+- Showperson.cfm is the detail page of the person you select from the searchresults.cfm page.
 
 Team members: Bradley Boutcher, Chris Qiao, Jenny Kim, Joe Ross, Matt Felgate, Sam Nguyen
 

@@ -9,6 +9,7 @@ namespace Gordon360.Models.ViewModels
         public string UserName { get; set; }
         public string ConcatonatedInfo { get; set; }
         public string Nickname { get; set; }
+        public string MaidenName { get; set; }
 
         public static implicit operator BasicInfoViewModel(ACCOUNT a)
         {
@@ -18,7 +19,8 @@ namespace Gordon360.Models.ViewModels
                 LastName = a.lastname,
                 UserName = a.AD_Username ?? "",
                 ConcatonatedInfo = "",
-                Nickname = ""
+                Nickname = "",
+                MaidenName = ""
             };
 
             return vm;
@@ -86,12 +88,27 @@ namespace Gordon360.Models.ViewModels
 
         public bool NicknameStartsWith(string searchString)
         {
-            return Nickname?.ToLower()?.StartsWith(searchString) ?? false;
+            return Nickname?.ToLower().StartsWith(searchString) ?? false;
         }
 
         public bool NicknameContains(string searchString)
         {
-            return Nickname?.ToLower()?.Contains(searchString) ?? false;
+            return Nickname?.ToLower().Contains(searchString) ?? false;
+        }
+
+        public bool MaidenNameMatches(string matchString)
+        {
+            return MaidenName?.ToLower() == matchString;
+        }
+
+        public bool MaidenNameStartsWith(string searchString)
+        {
+            return MaidenName?.ToLower().StartsWith(searchString) ?? false;
+        }
+
+        public bool MaidenNameContains(string searchString)
+        {
+            return MaidenName?.ToLower().Contains(searchString) ?? false;
         }
     }
 }
