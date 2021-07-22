@@ -103,8 +103,8 @@ namespace Gordon360.Controllers.Api
 
         }
 
-        /// <summary> Gets and returns the users holds </summary>
-        /// <returns> The users stored holds </returns>
+        /// <summary> Gets and returns the user's holds </summary>
+        /// <returns> The users stored hold's </returns>
         [HttpGet]
         [Route("holds")]
         public IHttpActionResult GetHolds()
@@ -128,7 +128,7 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary> Sets the user as having completed Academic Checkin </summary>
-        /// <returns> The HTTP result indicating whether the request was completed or not</returns>
+        /// <returns> The HTTP status indicating whether the request was completed or not</returns>
         [HttpPut]
         [Route("status")]
         public IHttpActionResult SetStatus()
@@ -151,7 +151,7 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary> Gets whether the user has checked in or not. True if they have checked in, false if they have not checked in </summary>
-        /// <returns> The HTTP result indicating whether the request was completed and returns the check in status of the student </returns>
+        /// <returns> The HTTP status indicating whether the request was completed and returns the check in status of the student </returns>
         [HttpGet]
         [Route("status")]
         public IHttpActionResult GetStatus()

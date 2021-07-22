@@ -37,7 +37,7 @@ namespace Gordon360.Services
             var contactHomePhoneParam = new SqlParameter("@ContactHomePhone", FormatNumber(data.HomePhone));
             var contactMobilePhoneParam = new SqlParameter("@ContactMobilePhone", FormatNumber(data.MobilePhone));
             var contactRelationshipParam = new SqlParameter("@ContactRelationship", data.relationship);
-            var notesParam = new SqlParameter("@Notes", GetNotesValue(data.MobilePhone, data.HomePhone));
+            var notesParam = new SqlParameter("@Notes", CreateNotesValue(data.MobilePhone, data.HomePhone));
             var usernameParam = new SqlParameter("@Username", "360Web (" + data.lastname + ", " + data.firstname + ")");
             var jobNameParam = new SqlParameter("@JobName", "Enrollment-Checkin");
 
@@ -50,7 +50,14 @@ namespace Gordon360.Services
             return data;
         }
 
-        private String GetNotesValue(String MobilePhone, String HomePhone)
+        /// <summary>
+        /// Create the notes value for the database to be passed in with the rest of the data.
+        /// The reason for this is that the notes column in the database is only made up of what phone numbers a contact has that are international
+        /// </summary>
+        /// <param name="MobilePhone"> The mobile phone of the contact</param>
+        /// <param name="HomePhone"> The home phone of the contact </param>
+        /// <returns> The formatted notes parameter to be passed to the database </returns>
+        private String CreateNotesValue(String MobilePhone, String HomePhone)
         {
             Boolean HomePhoneINTL = HomePhone.StartsWith("+");
             Boolean MobilePhoneINTL = MobilePhone.StartsWith("+");
@@ -148,7 +155,7 @@ namespace Gordon360.Services
 
             if (result.Count() == 0)
             {
-                return true; //This is due to the fact that the database returns nothing if the user is checked in
+                return false; //This is due to the fact that the database returns nothing if the user is checked in
             } else {
                 return result.First().FinalizationCompleted;
             }
