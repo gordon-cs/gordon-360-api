@@ -28,8 +28,9 @@ namespace Gordon360.Services
         /// <param name="data"> The object that stores the contact info </param>
         /// <param name="id"> The students id number</param>
         /// <returns> The stored data </returns>
-        public EmergencyContact PutEmergencyContact(EmergencyContact data, string id)
+        public EmergencyContact PutEmergencyContact(EmergencyContact data, string id, string username)
         {
+            var splitUsername = username.Split('.');
             var studentIDParam = new SqlParameter("@StudentID", Int32.Parse(id));
             var contactIDParam = new SqlParameter("@ContactNum", data.SEQ_NUM);
             var contactLastNameParam = new SqlParameter("@ContactLastName", data.lastname);
@@ -38,7 +39,7 @@ namespace Gordon360.Services
             var contactMobilePhoneParam = new SqlParameter("@ContactMobilePhone", FormatNumber(data.MobilePhone));
             var contactRelationshipParam = new SqlParameter("@ContactRelationship", data.relationship);
             var notesParam = new SqlParameter("@Notes", CreateNotesValue(data.MobilePhone, data.HomePhone));
-            var usernameParam = new SqlParameter("@Username", "360Web (" + data.lastname + ", " + data.firstname + ")");
+            var usernameParam = new SqlParameter("@Username", "360Web (" + splitUsername[1] + ", " + splitUsername[0] + ")");
             var jobNameParam = new SqlParameter("@JobName", "Enrollment-Checkin");
 
             // Run stored procedure

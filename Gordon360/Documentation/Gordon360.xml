@@ -1313,7 +1313,7 @@
             </summary>
             
         </member>
-        <member name="M:Gordon360.Services.AcademicCheckInService.PutEmergencyContact(Gordon360.Models.EmergencyContact,System.String)">
+        <member name="M:Gordon360.Services.AcademicCheckInService.PutEmergencyContact(Gordon360.Models.EmergencyContact,System.String,System.String)">
             <summary> Stores the emergency contact information of a particular user </summary>
             <param name="data"> The object that stores the contact info </param>
             <param name="id"> The students id number</param>

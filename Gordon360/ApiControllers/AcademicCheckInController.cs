@@ -40,7 +40,7 @@ namespace Gordon360.Controllers.Api
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
             try {
-                var result = _checkInService.PutEmergencyContact(data, id);
+                var result = _checkInService.PutEmergencyContact(data, id, username);
                 return Created("Emergency Contact", result);
             }
             catch (System.Exception e)
