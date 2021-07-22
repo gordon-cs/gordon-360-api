@@ -999,6 +999,28 @@ Back endpoint responsible for fetching and sending information to the database r
 
 `api/wellness` Sends an answer boolean to the database that specifies whether a student is symptomatic or not: true = symptomatic, false = not symptomatic.
 
+### Academic Check-In
+
+What is it? Framework responsible for fetching and sending information to the database relating to a student's Academic Check-In. 
+
+##### GET 
+
+`api/checkIn/holds` Gets a list of student's current academic holds and returns them to the front end.
+
+`api/checkIn/status` Gets a student's current check-in status to determine if they need to complete check-in.
+
+##### Post
+
+`api/checkIn/emergencycontact` Posts a student's emergency contact data to the database for storage.
+
+##### Put
+
+`api/checkIn/cellphone` Updates a student's personal cellphone data in the database.
+
+`api/checkIn/demographic` Updates a student's demographic data (race/ethnicity) in the database.
+
+`api/checkIn/status` Updates a student's check-in status to mark them as completed.
+
 ## API Testing
 
 ### Testing Introduction

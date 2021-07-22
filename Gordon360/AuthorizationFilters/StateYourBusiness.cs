@@ -149,7 +149,12 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.EMERGENCY_CONTACT:
                     if (user_position == Position.POLICE)
                         return true;
-                    return false;
+                    else
+                    {
+                        var username = (string)context.ActionArguments["username"];
+                        var isSelf = username.Equals(user_name.ToLower());
+                        return isSelf;
+                    }
                 case Resource.MEMBERSHIP:
                     return true;
                 case Resource.MEMBERSHIP_REQUEST:
@@ -643,6 +648,13 @@ namespace Gordon360.AuthorizationFilters
 
                         return false;
                     }
+                case Resource.EMERGENCY_CONTACT:
+                    {
+                        var username = (string)context.ActionArguments["username"];
+                        var isSelf = username.Equals(user_name);
+                        return isSelf;
+                    }
+
                 case Resource.NEWS:
                     var newsID = context.ActionArguments["newsID"];
                     var newsService = new NewsService(new UnitOfWork());
