@@ -359,6 +359,10 @@
             <param username="AD_Username"> The username for which to retrieve info </param>
             <returns> Emergency contact information of the given user. </returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.GetMailInfo">
+            <summary>Gets the mailbox information of currently logged in user</summary>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.GetMyImg">
             <summary>Get the profile image of currently logged in user</summary>
             <returns></returns>
@@ -1891,6 +1895,13 @@
             </summary>
             <param name="username">username</param>
             <returns>AlumniProfileViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetMailboxCombination(System.String)">
+            <summary>
+            get mailbox combination
+            </summary>
+            <param name="username">The current user's username</param>
+            <returns>MailboxViewModel with the combination</returns>
         </member>
         <member name="M:Gordon360.Services.ProfileService.GetAdvisors(System.String)">
             <summary>
