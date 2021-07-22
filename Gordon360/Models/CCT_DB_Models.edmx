@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="Gordon360.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="Gordon360.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="ACT_INFO">
           <Key>
             <PropertyRef Name="ACT_CDE" />
@@ -713,6 +713,18 @@ warning 6002: The table/view 'CCT.dbo.JENZ_ACT_CLUB_DEF' does not have a primary
           <Property Name="VPL_LW" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6002: The table/view 'CCT.dbo.Mailboxes' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Mailboxes">
+          <Key>
+            <PropertyRef Name="BoxNo" />
+          </Key>
+          <Property Name="BoxId" Type="int" Nullable="false" />
+          <Property Name="BoxNo" Type="varchar" MaxLength="32" Nullable="false" />
+          <Property Name="Combination" Type="varchar" MaxLength="16" />
+          <Property Name="Type" Type="varchar" MaxLength="32" Nullable="false" />
+          <Property Name="HolderAccountId" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
 warning 6013: The table/view 'CCT.dbo.Majors' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
         <EntityType Name="Majors">
           <Property Name="MajorCode" Type="varchar" MaxLength="5" />
@@ -1006,6 +1018,9 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
         </Function>
         <Function Name="EVENTS_BY_STUDENT_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="STU_USERNAME" Type="char" Mode="In" />
+        </Function>
+        <Function Name="FINALIZATION_GETHOLDSBYID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID_NUM" Type="int" Mode="In" />
         </Function>
         <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
         <Function Name="GET_AA_ADMIN" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
@@ -1667,6 +1682,15 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
     [JENZ_ACT_CLUB_DEF].[VPL_LW] AS [VPL_LW]
     FROM [dbo].[JENZ_ACT_CLUB_DEF] AS [JENZ_ACT_CLUB_DEF]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="Mailboxes" EntityType="Self.Mailboxes" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Mailboxes].[BoxId] AS [BoxId], 
+    [Mailboxes].[BoxNo] AS [BoxNo], 
+    [Mailboxes].[Combination] AS [Combination], 
+    [Mailboxes].[Type] AS [Type], 
+    [Mailboxes].[HolderAccountId] AS [HolderAccountId]
+    FROM [dbo].[Mailboxes] AS [Mailboxes]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="PART_DEF" EntityType="Self.PART_DEF" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [PART_DEF].[PART_CDE] AS [PART_CDE], 
@@ -1770,8 +1794,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <End Role="Health_Status" EntitySet="Health_Status" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="Gordon360" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -2658,14 +2681,14 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <End Role="Save_Bookings" EntitySet="Save_Bookings" />
           </AssociationSet>
           <FunctionImport Name="ACTIVE_CLUBS_PER_SESS_ID" ReturnType="Collection(Gordon360.ACTIVE_CLUBS_PER_SESS_ID_Result)">
-            <Parameter Name="SESS_CDE" Mode="In" Type="String" />
+          <Parameter Name="SESS_CDE" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="ADVISOR_EMAILS_PER_ACT_CDE" ReturnType="Collection(Gordon360.ADVISOR_EMAILS_PER_ACT_CDE_Result)">
             <Parameter Name="ACT_CDE" Mode="In" Type="String" />
             <Parameter Name="SESS_CDE" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="ADVISOR_SEPARATE" ReturnType="Collection(Gordon360.ADVISOR_SEPARATE_Result)">
-            <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
+          <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="ALL_BASIC_INFO" ReturnType="Collection(Gordon360.ALL_BASIC_INFO_Result)" />
           <FunctionImport Name="ALL_BASIC_INFO_NOT_ALUMNI" ReturnType="Collection(Gordon360.ALL_BASIC_INFO_NOT_ALUMNI_Result)" />
@@ -2677,7 +2700,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="RIDE_ID" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="CHECK_ID" ReturnType="Collection(Boolean)">
-            <Parameter Name="p_id" Mode="In" Type="String" />
+          <Parameter Name="p_id" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="COURSES_FOR_PROFESSOR" ReturnType="Collection(Gordon360.COURSES_FOR_PROFESSOR_Result)">
             <Parameter Name="professor_id" Mode="In" Type="Int32" />
@@ -2729,7 +2752,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           </FunctionImport>
           <FunctionImport Name="CURRENT_SESSION" ReturnType="Collection(String)" />
           <FunctionImport Name="DELETE_AA_ADMIN">
-            <Parameter Name="ADMIN_ID" Mode="In" Type="String" />
+          <Parameter Name="ADMIN_ID" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="DELETE_AA_APARTMENT_CHOICE">
             <Parameter Name="APPLICATION_ID" Mode="In" Type="Int32" />
@@ -2741,17 +2764,17 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="SESS_CDE" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="DELETE_AA_APPLICATION">
-            <Parameter Name="APP_ID" Mode="In" Type="Int32" />
+          <Parameter Name="APP_ID" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="DELETE_BOOKING">
             <Parameter Name="RIDE_ID" Mode="In" Type="String" />
             <Parameter Name="ID" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="DELETE_BOOKINGS">
-            <Parameter Name="RIDE_ID" Mode="In" Type="String" />
+          <Parameter Name="RIDE_ID" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="DELETE_CLOCK_IN">
-            <Parameter Name="ID_Num" Mode="In" Type="String" />
+          <Parameter Name="ID_Num" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="DELETE_MYSCHEDULE">
             <Parameter Name="EVENTID" Mode="In" Type="String" />
@@ -2762,10 +2785,10 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="Username" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="DELETE_RIDE">
-            <Parameter Name="RIDE_ID" Mode="In" Type="String" />
+          <Parameter Name="RIDE_ID" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="DELETE_USER_CONNECTION_ID">
-            <Parameter Name="connection_id" Mode="In" Type="String" />
+          <Parameter Name="connection_id" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="DELETE_USER_ROOM">
             <Parameter Name="room_id" Mode="In" Type="String" />
@@ -2776,20 +2799,20 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="SESS_CDE" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="DISTINCT_ACT_TYPE" ReturnType="Collection(String)">
-            <Parameter Name="SESS_CDE" Mode="In" Type="String" />
+          <Parameter Name="SESS_CDE" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="EMAILS_PER_ACT_CDE" ReturnType="Collection(Gordon360.EMAILS_PER_ACT_CDE_Result)">
             <Parameter Name="ACT_CDE" Mode="In" Type="String" />
             <Parameter Name="SESS_CDE" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="EVENTS_BY_STUDENT_ID" ReturnType="Collection(Gordon360.EVENTS_BY_STUDENT_ID_Result)">
-            <Parameter Name="STU_USERNAME" Mode="In" Type="String" />
+          <Parameter Name="STU_USERNAME" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="GET_AA_ADMIN" ReturnType="Collection(String)">
-            <Parameter Name="ADMIN_ID" Mode="In" Type="String" />
+          <Parameter Name="ADMIN_ID" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="GET_AA_APARTMENT_CHOICES_BY_APP_ID" ReturnType="Collection(Gordon360.GET_AA_APARTMENT_CHOICES_BY_APP_ID_Result)">
-            <Parameter Name="APPLICATION_ID" Mode="In" Type="Int32" />
+          <Parameter Name="APPLICATION_ID" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="GET_AA_APARTMENT_HALLS" ReturnType="Collection(String)" />
           <FunctionImport Name="GET_AA_APPID_BY_NAME_AND_DATE" ReturnType="Collection(Int32)">
@@ -2801,55 +2824,55 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="STUDENT_USERNAME" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="GET_AA_APPLICANTS_BY_APPID" ReturnType="Collection(Gordon360.GET_AA_APPLICANTS_BY_APPID_Result)">
-            <Parameter Name="APPLICATION_ID" Mode="In" Type="Int32" />
+          <Parameter Name="APPLICATION_ID" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="GET_AA_APPLICANTS_DETAILS" ReturnType="Collection(Gordon360.GET_AA_APPLICANTS_DETAILS_Result)" />
           <FunctionImport Name="GET_AA_APPLICATIONS" ReturnType="Collection(Gordon360.GET_AA_APPLICATIONS_Result)" />
           <FunctionImport Name="GET_AA_APPLICATIONS_BY_ID" ReturnType="Collection(Gordon360.GET_AA_APPLICATIONS_BY_ID_Result)">
-            <Parameter Name="APPLICATION_ID" Mode="In" Type="Int32" />
+          <Parameter Name="APPLICATION_ID" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="GET_AA_CURRENT_APP_IDS" ReturnType="Collection(Int32)" />
           <FunctionImport Name="GET_AA_CURRENT_APPLICATIONS" ReturnType="Collection(Gordon360.GET_AA_CURRENT_APPLICATIONS_Result)" />
           <FunctionImport Name="GET_AA_EDITOR_BY_APPID" ReturnType="Collection(String)">
-            <Parameter Name="APPLICATION_ID" Mode="In" Type="Int32" />
+          <Parameter Name="APPLICATION_ID" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="GET_ALL_CONNECTION_IDS_BY_ID" ReturnType="Collection(String)">
-            <Parameter Name="user_id" Mode="In" Type="Int32" />
+          <Parameter Name="user_id" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="GET_ALL_CONNECTION_IDS_BY_ID_LIST" ReturnType="Collection(String)">
-            <Parameter Name="user_id_list" Mode="In" Type="String" />
+          <Parameter Name="user_id_list" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="GET_ALL_HEALTH_STATUS" />
           <FunctionImport Name="GET_ALL_MESSAGES_BY_ID" ReturnType="Collection(Gordon360.GET_ALL_MESSAGES_BY_ID_Result)">
-            <Parameter Name="room_id" Mode="In" Type="Int32" />
+          <Parameter Name="room_id" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="GET_ALL_ROOMS_BY_ID" ReturnType="Collection(String)">
-            <Parameter Name="user_id" Mode="In" Type="String" />
+          <Parameter Name="user_id" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="GET_ALL_USERS_BY_ROOM_ID" ReturnType="Collection(String)">
-            <Parameter Name="room_id" Mode="In" Type="Int32" />
+          <Parameter Name="room_id" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="GET_BIRTH_DATE_BY_ID" ReturnType="Collection(DateTime)">
-            <Parameter Name="ID" Mode="In" Type="String" />
+          <Parameter Name="ID" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="GET_HEALTH_CHECK_QUESTION" ReturnType="Collection(Gordon360.GET_HEALTH_CHECK_QUESTION_Result)" />
           <FunctionImport Name="GET_LATEST_ROOM" ReturnType="Collection(Int32)" />
           <FunctionImport Name="GET_ROOM_BY_ID" ReturnType="Collection(Gordon360.GET_ROOM_BY_ID_Result)">
-            <Parameter Name="room_id" Mode="In" Type="Int32" />
+          <Parameter Name="room_id" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="GET_SINGLE_MESSAGE_BY_ID" ReturnType="Collection(Gordon360.GET_SINGLE_MESSAGE_BY_ID_Result)">
             <Parameter Name="room_id" Mode="In" Type="Int32" />
             <Parameter Name="message_id" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="GET_TIMESHEETS_CLOCK_IN_OUT" ReturnType="Collection(Gordon360.GET_TIMESHEETS_CLOCK_IN_OUT_Result)">
-            <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
+          <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="GRP_ADMIN_EMAILS_PER_ACT_CDE" ReturnType="Collection(Gordon360.GRP_ADMIN_EMAILS_PER_ACT_CDE_Result)">
             <Parameter Name="ACT_CDE" Mode="In" Type="String" />
             <Parameter Name="SESS_CDE" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="INSERT_AA_ADMIN">
-            <Parameter Name="ADMIN_ID" Mode="In" Type="String" />
+          <Parameter Name="ADMIN_ID" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="INSERT_AA_APARTMENT_CHOICE">
             <Parameter Name="APPLICATION_ID" Mode="In" Type="Int32" />
@@ -2917,37 +2940,37 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="SESS_CDE" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="LEADER_MEMBERSHIPS_PER_ACT_CDE" ReturnType="Collection(Gordon360.LEADER_MEMBERSHIPS_PER_ACT_CDE_Result)">
-            <Parameter Name="ACT_CDE" Mode="In" Type="String" />
+          <Parameter Name="ACT_CDE" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="MEMBERSHIPS_PER_ACT_CDE" ReturnType="Collection(Gordon360.MEMBERSHIPS_PER_ACT_CDE_Result)">
-            <Parameter Name="ACT_CDE" Mode="In" Type="String" />
+          <Parameter Name="ACT_CDE" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="MEMBERSHIPS_PER_STUDENT_ID" ReturnType="Collection(Gordon360.MEMBERSHIPS_PER_STUDENT_ID_Result)">
-            <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
+          <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="MYSCHEDULE_BY_ID" ReturnType="Collection(Gordon360.MYSCHEDULE_BY_ID_Result)">
-            <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
+          <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="NEWS_CATEGORIES" ReturnType="Collection(Gordon360.NEWS_CATEGORIES_Result)" />
           <FunctionImport Name="NEWS_NEW" ReturnType="Collection(Gordon360.NEWS_NEW_Result)" />
           <FunctionImport Name="NEWS_NOT_EXPIRED" ReturnType="Collection(Gordon360.NEWS_NOT_EXPIRED_Result)" />
           <FunctionImport Name="NEWS_PERSONAL_UNAPPROVED" ReturnType="Collection(Gordon360.NEWS_PERSONAL_UNAPPROVED_Result)">
-            <Parameter Name="Username" Mode="In" Type="String" />
+          <Parameter Name="Username" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="PHOTO_INFO_PER_USER_NAME" ReturnType="Collection(Gordon360.PHOTO_INFO_PER_USER_NAME_Result)">
-            <Parameter Name="ID" Mode="In" Type="Int32" />
+          <Parameter Name="ID" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="REQUEST_PER_REQUEST_ID" ReturnType="Collection(Gordon360.REQUEST_PER_REQUEST_ID_Result)">
-            <Parameter Name="REQUEST_ID" Mode="In" Type="Int32" />
+          <Parameter Name="REQUEST_ID" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="REQUESTS_PER_ACT_CDE" ReturnType="Collection(Gordon360.REQUESTS_PER_ACT_CDE_Result)">
-            <Parameter Name="ACT_CDE" Mode="In" Type="String" />
+          <Parameter Name="ACT_CDE" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="REQUESTS_PER_STUDENT_ID" ReturnType="Collection(Gordon360.REQUESTS_PER_STUDENT_ID_Result)">
-            <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
+          <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="RIDERS_BY_RIDE_ID" ReturnType="Collection(Gordon360.RIDERS_BY_RIDE_ID_Result)">
-            <Parameter Name="RIDE_ID" Mode="In" Type="String" />
+          <Parameter Name="RIDE_ID" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="sp_alterdiagram">
             <Parameter Name="diagramname" Mode="In" Type="String" />
@@ -2984,23 +3007,23 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="sess_cde" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="STUDENT_JOBS_PER_ID_NUM" ReturnType="Collection(Gordon360.STUDENT_JOBS_PER_ID_NUM_Result)">
-            <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
+          <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="SUPERVISOR_PER_SUP_ID">
-            <Parameter Name="SUP_ID" Mode="In" Type="Int32" />
+          <Parameter Name="SUP_ID" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="SUPERVISORS_PER_ACT_CDE">
-            <Parameter Name="ACT_CDE" Mode="In" Type="String" />
+          <Parameter Name="ACT_CDE" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="SUPERVISORS_PER_ID_NUM">
-            <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
+          <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="TRUNCATE_AA_ALL_APPLICATION_TABLES" />
           <FunctionImport Name="UPCOMING_RIDES" ReturnType="Collection(Gordon360.UPCOMING_RIDES_Result)">
-            <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
+          <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="UPCOMING_RIDES_BY_STUDENT_ID" ReturnType="Collection(Gordon360.UPCOMING_RIDES_BY_STUDENT_ID_Result)">
-            <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
+          <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="UPDATE_AA_APARTMENT_CHOICES">
             <Parameter Name="APPLICATION_ID" Mode="In" Type="Int32" />
@@ -3066,7 +3089,7 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="FILE_NAME" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="UPDATE_ROOM">
-            <Parameter Name="room_id" Mode="In" Type="Int32" />
+          <Parameter Name="room_id" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="UPDATE_SCHEDULE_PRIVACY">
             <Parameter Name="ID" Mode="In" Type="Int32" />
@@ -3081,10 +3104,14 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
             <Parameter Name="VALUE" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="VALID_DRIVES_BY_ID" ReturnType="Collection(Int32)">
-            <Parameter Name="DRIVERID" Mode="In" Type="String" />
+          <Parameter Name="DRIVERID" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="VICTORY_PROMISE_BY_STUDENT_ID" ReturnType="Collection(Gordon360.VICTORY_PROMISE_BY_STUDENT_ID_Result)">
-            <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
+          <Parameter Name="STUDENT_ID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <EntitySet Name="Mailboxes" EntityType="Gordon360.Mailboxes" />
+          <FunctionImport Name="FINALIZATION_GETHOLDSBYID">
+            <Parameter Name="ID_NUM" Mode="In" Type="Int32" />
           </FunctionImport>
         </EntityContainer>
         <ComplexType Name="ACTIVE_CLUBS_PER_SESS_ID_Result">
@@ -3541,6 +3568,16 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
           <Property Type="Int32" Name="TOTAL_VP_LS_SCORE" Nullable="true" />
           <Property Type="Int32" Name="TOTAL_VP_LW_SCORE" Nullable="true" />
         </ComplexType>
+        <EntityType Name="Mailboxes">
+          <Key>
+            <PropertyRef Name="BoxNo" />
+          </Key>
+          <Property Name="BoxId" Type="Int32" Nullable="false" />
+          <Property Name="BoxNo" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="Combination" Type="String" MaxLength="16" FixedLength="false" Unicode="false" />
+          <Property Name="Type" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="HolderAccountId" Type="Int32" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4984,6 +5021,18 @@ warning 6002: The table/view 'CCT.dbo.Student' does not have a primary key defin
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <EntitySetMapping Name="Mailboxes">
+            <EntityTypeMapping TypeName="Gordon360.Mailboxes">
+              <MappingFragment StoreEntitySet="Mailboxes">
+                <ScalarProperty Name="HolderAccountId" ColumnName="HolderAccountId" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Combination" ColumnName="Combination" />
+                <ScalarProperty Name="BoxNo" ColumnName="BoxNo" />
+                <ScalarProperty Name="BoxId" ColumnName="BoxId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="FINALIZATION_GETHOLDSBYID" FunctionName="Gordon360.Store.FINALIZATION_GETHOLDSBYID" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

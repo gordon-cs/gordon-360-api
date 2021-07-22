@@ -65,6 +65,29 @@ namespace Gordon360.Services
                 result = alumni;
             return result;
         }
+
+        /// <summary>
+        /// get mailbox combination
+        /// </summary>
+        /// <param name="username">The current user's username</param>
+        /// <returns>MailboxViewModel with the combination</returns>
+        public MailboxViewModel GetMailboxCombination(string username)
+        {
+            var mailboxNumber = 
+                Data.StudentData
+                .FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower())
+                .Mail_Location;
+
+            MailboxViewModel info = new MailboxViewModel();
+
+            if (mailboxNumber != null)
+            {
+                info = _unitOfWork.MailboxRepository.GetById(mailboxNumber) ?? new Mailboxes();
+            }
+
+            return info;
+        }
+
         /// <summary>
         /// get advisors for particular student
         /// </summary>

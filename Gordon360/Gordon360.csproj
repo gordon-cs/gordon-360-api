@@ -425,6 +425,9 @@
     <Compile Include="Models\LEADER_MEMBERSHIPS_PER_ACT_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Mailboxes.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\MEMBERSHIP.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
