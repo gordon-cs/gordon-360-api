@@ -331,6 +331,9 @@
     <Compile Include="Models\EMAILS_PER_ACT_CDE_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\EmergencyContact.cs">
+      <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ERROR_LOG.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -436,6 +439,21 @@
     <Compile Include="Models\Message_Rooms.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\MyGordon_DB_Models.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MyGordon_DB_Models.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\MyGordon_DB_Models.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\MyGordon_DB_Models.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
+    </Compile>
     <Compile Include="Models\MYSCHEDULE.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -499,6 +517,12 @@
     <Compile Include="Models\Student.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\StudentNews.cs">
+      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\StudentNewsCategory.cs">
+      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\StudentNewsExpiration.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -532,22 +556,8 @@
     <Compile Include="Models\VICTORY_PROMISE_BY_STUDENT_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModels\EmergencyCotnactViewModel.cs" />
     <Compile Include="Models\ViewModels\MessageSearchViewModel.cs" />
-    <Compile Include="Models\MyGordon_DB_Models.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>MyGordon_DB_Models.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\MyGordon_DB_Models.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\MyGordon_DB_Models.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
-    </Compile>
     <Compile Include="Models\paid_shifts.cs">
       <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
     </Compile>
@@ -585,12 +595,6 @@
       <DependentUpon>StaffTimesheets_DB_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\StudentEmployment.cs" />
-    <Compile Include="Models\StudentNews.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\StudentNewsCategory.cs">
-      <DependentUpon>MyGordon_DB_Models.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\StudentTimesheet_DB_Models.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -725,6 +729,7 @@
     <Compile Include="Services\ActivityService.cs" />
     <Compile Include="Services\AdministratorService.cs" />
     <Compile Include="Services\DirectMessageService.cs" />
+    <Compile Include="Utils\ImageUtils.cs" />
     <Compile Include="Services\JobsService.cs" />
     <Compile Include="Services\DiningService.cs" />
     <Compile Include="Services\ErrorLogService.cs" />
@@ -753,6 +758,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="Static Classes\Names.cs" />
     <Compile Include="Hubs\SignalRHub.cs" />
+    <Compile Include="Utils\UtilsInterfaces.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="browseable\profile\Default\profile.png" />
@@ -794,13 +800,6 @@
     <Content Include="Models\StudentTimesheet_DB_Models.edmx.diagram">
       <DependentUpon>StudentTimesheet_DB_Models.edmx</DependentUpon>
     </Content>
-    <EntityDeploy Include="Models\MyGordon_DB_Models.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>MyGordon_DB_Models.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\MyGordon_DB_Models.edmx.diagram">
-      <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
-    </Content>
     <EntityDeploy Include="Models\StaffTimesheets_DB_Models.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>StaffTimesheets_DB_Models.Designer.cs</LastGenOutput>
@@ -809,6 +808,13 @@
       <DependentUpon>StaffTimesheets_DB_Models.edmx</DependentUpon>
     </Content>
     <Content Include="libman.json" />
+    <EntityDeploy Include="Models\MyGordon_DB_Models.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>MyGordon_DB_Models.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\MyGordon_DB_Models.edmx.diagram">
+      <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
+    </Content>
     <EntityDeploy Include="Models\CCT_DB_Models.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>CCT_DB_Models.Designer.cs</LastGenOutput>
@@ -892,7 +898,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:2626</IISUrl>
+          <IISUrl>http://localhost:5555</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

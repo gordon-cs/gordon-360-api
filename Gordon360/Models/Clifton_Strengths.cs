@@ -17,7 +17,7 @@ namespace Gordon360.Models
         public int ID_NUM { get; set; }
         public string ACCESS_CODE { get; set; }
         public string EMAIL { get; set; }
-        public System.DateTime DTE_COMPLETED { get; set; }
+        public Nullable<System.DateTime> DTE_COMPLETED { get; set; }
         public string THEME_1 { get; set; }
         public string THEME_2 { get; set; }
         public string THEME_3 { get; set; }

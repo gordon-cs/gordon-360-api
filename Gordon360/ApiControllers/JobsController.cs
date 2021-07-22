@@ -46,6 +46,7 @@ namespace Gordon360.ApiControllers
             return userID;
         }
 
+        /// <summary>
         /// Get a user's active jobs
         /// </summary>
         /// <param name="details"></param>

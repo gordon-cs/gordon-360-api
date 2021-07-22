@@ -20,6 +20,7 @@
           <Property Name="CreditHrs" Type="numeric" Precision="5" Scale="2" />
           <Property Name="GEO" Type="varchar" MaxLength="5" />
           <Property Name="Commuter" Type="varchar" MaxLength="1" />
+          <Property Name="Remote" Type="varchar" MaxLength="1" />
           <Property Name="GradFlag" Type="varchar" MaxLength="5" />
           <Property Name="Required" Type="int" />
           <Property Name="Attended" Type="int" />
@@ -63,6 +64,7 @@
           <Property Name="fname" Type="varchar" MaxLength="30" />
           <Property Name="lname" Type="varchar" MaxLength="30" />
           <Property Name="ManualExpirationDate" Type="datetime" />
+          <Property Name="Image" Type="varchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="StudentNewsCategory">
           <Key>
@@ -400,6 +402,7 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
           <Parameter Name="vchPassword" Type="nvarchar" Mode="In" />
         </Function>
         <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
+        <Function Name="select_departments" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
           <Parameter Name="owner_id" Type="int" Mode="In" />
@@ -611,6 +614,7 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
           <Property Name="CreditHrs" Type="Decimal" Precision="5" Scale="2" />
           <Property Name="GEO" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="Commuter" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="Remote" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="GradFlag" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="Required" Type="Int32" />
           <Property Name="Attended" Type="Int32" />
@@ -654,6 +658,7 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
           <Property Name="fname" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
           <Property Name="lname" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
           <Property Name="ManualExpirationDate" Type="DateTime" Precision="3" />
+          <Property Name="Image" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="StudentNewsCategory" Relationship="Self.FK_StudentNews_StudentNewsCategory" FromRole="StudentNews" ToRole="StudentNewsCategory" />
         </EntityType>
         <EntityType Name="StudentNewsCategory">
@@ -996,6 +1001,7 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
             <Parameter Name="vchLoginName" Mode="In" Type="String" />
             <Parameter Name="vchPassword" Mode="In" Type="String" />
           </FunctionImport>
+          <FunctionImport Name="select_departments" />
           <FunctionImport Name="sp_alterdiagram">
             <Parameter Name="diagramname" Mode="In" Type="String" />
             <Parameter Name="owner_id" Mode="In" Type="Int32" />
@@ -1068,6 +1074,7 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
                 <ScalarProperty Name="CreditHrs" ColumnName="CreditHrs" />
                 <ScalarProperty Name="GEO" ColumnName="GEO" />
                 <ScalarProperty Name="Commuter" ColumnName="Commuter" />
+                <ScalarProperty Name="Remote" ColumnName="Remote" />
                 <ScalarProperty Name="GradFlag" ColumnName="GradFlag" />
                 <ScalarProperty Name="Required" ColumnName="Required" />
                 <ScalarProperty Name="Attended" ColumnName="Attended" />
@@ -1112,6 +1119,7 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
                 <ScalarProperty Name="fname" ColumnName="fname" />
                 <ScalarProperty Name="lname" ColumnName="lname" />
                 <ScalarProperty Name="ManualExpirationDate" ColumnName="ManualExpirationDate" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1330,6 +1338,7 @@ warning 6002: The table/view 'MyGordon.dbo.view_cct_student' does not have a pri
           <FunctionImportMapping FunctionImportName="dt_verstamp007" FunctionName="Gordon360.Store.dt_verstamp007" />
           <FunctionImportMapping FunctionImportName="dt_whocheckedout" FunctionName="Gordon360.Store.dt_whocheckedout" />
           <FunctionImportMapping FunctionImportName="dt_whocheckedout_u" FunctionName="Gordon360.Store.dt_whocheckedout_u" />
+          <FunctionImportMapping FunctionImportName="select_departments" FunctionName="Gordon360.Store.select_departments" />
           <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="Gordon360.Store.sp_alterdiagram" />
           <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="Gordon360.Store.sp_creatediagram" />
           <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="Gordon360.Store.sp_dropdiagram" />

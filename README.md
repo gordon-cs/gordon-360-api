@@ -826,8 +826,6 @@ Differences from GoSite:
 
 `api/profiles/:username` Get public profile info of a user with username `username` as a parameter.
 
-`api/profiles/role/:username` Get college role of a user with username `username` as a parameter --- College roles: super admin, faculty and staff, student and police.
-
 `api/profiles/Advisors/:username` Get advisor(s) info of a user with username `username` as a parameter.
 
 `api/profiles/clifton/:username` Get the Clifton Strengths of a user with username `username` as a parameter.
