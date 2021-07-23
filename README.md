@@ -111,11 +111,13 @@ Data which is stored upon startup includes:
 
 - It is easiest to use the development virtual machine to work on this project. Follow [these instructions](RemoteDesktopToVM.md#How-to-connect-to-a-CS-RDSH-virtual-machine) to set up and connect to the virtual machine using your Gordon account.
 
-- If this is your first time on the virtual machine, you will need to clone this repository. You can do this by using Git Bash. It is possible that you will need to [add the SSH key to your Git account](https://help.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh), it will guide you to `cd .ssh` then `cat id_rsa.pub`, copy the output and go to your github settings and paste it in your SSH keys.
+-   If this is your first time on the virtual machine, you will need to clone this repository. You can do this by using Git Bash. It is possible that you will need to [add the SSH key to your Git account](https://help.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh), it will guide you to create an ssh key if necessary, then copy and paste it into your github settings.
+
+-   On Windows, you will also need to setup ssh-agent to use your ssh key.  This can be as simple as two commands in git-bash: `ssh-agent -s` and `ssh-add ~/.ssh/id_rsa` (or whatever your ssh key is called).  For more details, see https://stackoverflow.com/questions/18683092/how-to-run-ssh-add-on-windows.
 
 -   Before you open the gordon-360-api folder, you will have to add the `secrets.config` file to it. The file is located on the CS-RDSH-02 virtual machine in `C:\Users\Public\Public Documents\` (or `/c/users/public/documents\` when in git-bash). Copy the file `secrets.config` to the same folder in your project that contains the `web.config` file; currently, this is in `gordon-360-api\Gordon360`. This file is a sort of keyring for the server to authorize itself at various points. You can do this by CDing into the Gordon360 folder and typing `cp /C/users/public/documents/secrets.config .`
 
--   Look for the desktop app Visual Studio 2017, which has a purple Visual Studio icon. You might have to search for it through the start menu. You will have to log in to a Microsoft account. Your Gordon email will work for this. Once you log in, go to `File > Open > Project/Solution`. In the navigation box that pops up, navigate to the directory where you cloned this repo, and select and open the file `/Gordon360.sln`.
+-   Look for the desktop app Visual Studio, which has a purple Visual Studio icon. You might have to search for it through the start menu. You will have to log in to a Microsoft account. Your Gordon email will work for this. Once you log in, go to `File > Open > Project/Solution`. In the navigation box that pops up, navigate to the directory where you cloned this repo, and select and open the file `/Gordon360.sln`.
 
 -   In the solution explorer on the right, right click the name of the project (Gordon360) and select properties. From the tabs on the left, choose the Web tab and change the Project Url so it contains a port that is unused on the machine. For example, if you chose port 5555, change Project Url to `"http://localhost:5555"`. Then click Create Virtual Directory. Make sure that the protocol is `http`, not `https`. Press OK on the dialog box, and you all configured!
 
@@ -793,9 +795,9 @@ Who has access? Everyone.
 `api/sessions/:id` Get the session with session code `id`.
 
 `api/sessions/current` Get the current session.
-	
+
 `api/sessions/firstDay` Get the Gets the first day in the current session.
-	
+
 `api/sessions/lastDay` Get the Gets the last day in the current session.
 
 `api/sessions/daysLeft` Get the days left in the semester and the total days in the current session.
@@ -997,6 +999,28 @@ Back endpoint responsible for fetching and sending information to the database r
 
 `api/wellness` Sends an answer boolean to the database that specifies whether a student is symptomatic or not: true = symptomatic, false = not symptomatic.
 
+### Academic Check-In
+
+What is it? Framework responsible for fetching and sending information to the database relating to a student's Academic Check-In. 
+
+##### GET 
+
+`api/checkIn/holds` Gets a list of student's current academic holds and returns them to the front end.
+
+`api/checkIn/status` Gets a student's current check-in status to determine if they need to complete check-in.
+
+##### Post
+
+`api/checkIn/emergencycontact` Posts a student's emergency contact data to the database for storage.
+
+##### Put
+
+`api/checkIn/cellphone` Updates a student's personal cellphone data in the database.
+
+`api/checkIn/demographic` Updates a student's demographic data (race/ethnicity) in the database.
+
+`api/checkIn/status` Updates a student's check-in status to mark them as completed.
+
 ## API Testing
 
 ### Testing Introduction
@@ -1087,7 +1111,7 @@ To manually test the API, use an API development/testing app like [Postman](http
   - Click the blue "Send" button - after a brief pause you should see the returned token appear.
 
 - You can use this token to make an API request. For example:
-  
+
     -   Use the clipboard to make of copy of the _access-token_ value (do not include the double quotes, just copy the long string of characters between the quotes)
     -   Click on the "+" tab near the top of the window to open a new request frame
     -   Leave "GET" as the request type and enter in an appropriate API URL (e.g. `http://localhost:5555/api/memberships/activity/AJG`, or `http://localhost:5555/api/profiles/360.studenttest/`).  Note that a trailing slash is needed after the last parameter value.

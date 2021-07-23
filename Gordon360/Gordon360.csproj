@@ -206,6 +206,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApiControllers\AcademicCheckInController.cs" />
     <Compile Include="ApiControllers\AccountsController.cs" />
     <Compile Include="ApiControllers\AdminsController.cs" />
     <Compile Include="ApiControllers\AdvancedSearchController.cs" />
@@ -559,7 +560,8 @@
     <Compile Include="Models\VICTORY_PROMISE_BY_STUDENT_ID_Result.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ViewModels\EmergencyCotnactViewModel.cs" />
+    <Compile Include="Models\ViewModels\AcademicCheckInViewModel.cs" />
+    <Compile Include="Models\ViewModels\EmergencyContactViewModel.cs" />
     <Compile Include="Models\ViewModels\MailboxViewModel.cs" />
     <Compile Include="Models\ViewModels\MessageSearchViewModel.cs" />
     <Compile Include="Models\paid_shifts.cs">
@@ -729,6 +731,7 @@
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Repositories\IUnitOfWork.cs" />
     <Compile Include="Repositories\UnitOfWork.cs" />
+    <Compile Include="Services\AcademicCheckInService.cs" />
     <Compile Include="Services\AccountService.cs" />
     <Compile Include="Services\ActivityService.cs" />
     <Compile Include="Services\AdministratorService.cs" />

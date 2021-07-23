@@ -25,6 +25,7 @@ namespace Gordon360.Static.Names
         public const string Save_Rides = "A ride resource";
         public const string SCHEDULE = "A course schedule resource";
         public const string NEWS = "A student news resource";
+        public const string CHECKIN = "Info relating to a student's Academic Check-In";
         public const string SHIFT = "A shift that a student has worked";
 
         // Partial resources, to be targetted by Operation.READ_PARTIAL
