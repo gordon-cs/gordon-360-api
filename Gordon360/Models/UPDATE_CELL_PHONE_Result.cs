@@ -11,13 +11,9 @@ namespace Gordon360.Models
 {
     using System;
     
-    public partial class ALL_BASIC_INFO_Result
+    public partial class UPDATE_CELL_PHONE_Result
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Nickname { get; set; }
-        public string MaidenName { get; set; }
-        public string UserName { get; set; }
-        public string ConcatonatedInfo { get; set; }
+        public Nullable<bool> Success { get; set; }
+        public string Message { get; set; }
     }
 }

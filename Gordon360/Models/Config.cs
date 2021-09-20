@@ -10,14 +10,12 @@
 namespace Gordon360.Models
 {
     using System;
+    using System.Collections.Generic;
     
-    public partial class ALL_BASIC_INFO_Result
+    public partial class Config
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Nickname { get; set; }
-        public string MaidenName { get; set; }
-        public string UserName { get; set; }
-        public string ConcatonatedInfo { get; set; }
+        public int ID { get; set; }
+        public string Key { get; set; }
+        public string Value { get; set; }
     }
 }

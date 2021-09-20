@@ -10,14 +10,12 @@
 namespace Gordon360.Models
 {
     using System;
+    using System.Collections.Generic;
     
-    public partial class ALL_BASIC_INFO_Result
+    public partial class Graduation
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Nickname { get; set; }
-        public string MaidenName { get; set; }
-        public string UserName { get; set; }
-        public string ConcatonatedInfo { get; set; }
+        public int ID_NUM { get; set; }
+        public string WHEN_GRAD { get; set; }
+        public string HAS_GRADUATED { get; set; }
     }
 }
