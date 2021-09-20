@@ -30,6 +30,7 @@ namespace Gordon360.Models
         public virtual DbSet<ACT_INFO> ACT_INFO { get; set; }
         public virtual DbSet<ADMIN> ADMIN { get; set; }
         public virtual DbSet<Clifton_Strengths> Clifton_Strengths { get; set; }
+        public virtual DbSet<Config> Config { get; set; }
         public virtual DbSet<CUSTOM_PROFILE> CUSTOM_PROFILE { get; set; }
         public virtual DbSet<ERROR_LOG> ERROR_LOG { get; set; }
         public virtual DbSet<Health_Status> Health_Status { get; set; }
@@ -70,12 +71,13 @@ namespace Gordon360.Models
         public virtual DbSet<DiningInfo> DiningInfo { get; set; }
         public virtual DbSet<EmergencyContact> EmergencyContact { get; set; }
         public virtual DbSet<FacStaff> FacStaff { get; set; }
+        public virtual DbSet<Graduation> Graduation { get; set; }
         public virtual DbSet<Internships_as_Involvements> Internships_as_Involvements { get; set; }
         public virtual DbSet<JENZ_ACT_CLUB_DEF> JENZ_ACT_CLUB_DEF { get; set; }
+        public virtual DbSet<Mailboxes> Mailboxes { get; set; }
         public virtual DbSet<PART_DEF> PART_DEF { get; set; }
         public virtual DbSet<RoomAssign> RoomAssign { get; set; }
         public virtual DbSet<Student> Student { get; set; }
-        public virtual DbSet<Mailboxes> Mailboxes { get; set; }
     
         public virtual ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> ACTIVE_CLUBS_PER_SESS_ID(string sESS_CDE)
         {
@@ -512,6 +514,84 @@ namespace Gordon360.Models
                 new ObjectParameter("STU_USERNAME", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<EVENTS_BY_STUDENT_ID_Result>("EVENTS_BY_STUDENT_ID", sTU_USERNAMEParameter);
+        }
+    
+        public virtual ObjectResult<FINALIZATION_GET_FINALIZATION_STATUS_Result> FINALIZATION_GET_FINALIZATION_STATUS(Nullable<int> userID)
+        {
+            var userIDParameter = userID.HasValue ?
+                new ObjectParameter("UserID", userID) :
+                new ObjectParameter("UserID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<FINALIZATION_GET_FINALIZATION_STATUS_Result>("FINALIZATION_GET_FINALIZATION_STATUS", userIDParameter);
+        }
+    
+        public virtual ObjectResult<Nullable<int>> FINALIZATION_GETDEMOGRAPHIC(string userID, string featureID)
+        {
+            var userIDParameter = userID != null ?
+                new ObjectParameter("UserID", userID) :
+                new ObjectParameter("UserID", typeof(string));
+    
+            var featureIDParameter = featureID != null ?
+                new ObjectParameter("FeatureID", featureID) :
+                new ObjectParameter("FeatureID", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("FINALIZATION_GETDEMOGRAPHIC", userIDParameter, featureIDParameter);
+        }
+    
+        public virtual ObjectResult<FINALIZATION_GETHOLDSBYID_Result> FINALIZATION_GETHOLDSBYID(Nullable<int> iD_NUM)
+        {
+            var iD_NUMParameter = iD_NUM.HasValue ?
+                new ObjectParameter("ID_NUM", iD_NUM) :
+                new ObjectParameter("ID_NUM", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<FINALIZATION_GETHOLDSBYID_Result>("FINALIZATION_GETHOLDSBYID", iD_NUMParameter);
+        }
+    
+        public virtual ObjectResult<FINALIZATION_MARK_AS_CURRENTLY_COMPLETED_Result> FINALIZATION_MARK_AS_CURRENTLY_COMPLETED(string userID)
+        {
+            var userIDParameter = userID != null ?
+                new ObjectParameter("UserID", userID) :
+                new ObjectParameter("UserID", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<FINALIZATION_MARK_AS_CURRENTLY_COMPLETED_Result>("FINALIZATION_MARK_AS_CURRENTLY_COMPLETED", userIDParameter);
+        }
+    
+        public virtual ObjectResult<FINALIZATION_UPDATECELLPHONE_Result> FINALIZATION_UPDATECELLPHONE(string userID, string phoneUnformatted, Nullable<bool> doNotPublish, Nullable<bool> noneProvided)
+        {
+            var userIDParameter = userID != null ?
+                new ObjectParameter("UserID", userID) :
+                new ObjectParameter("UserID", typeof(string));
+    
+            var phoneUnformattedParameter = phoneUnformatted != null ?
+                new ObjectParameter("PhoneUnformatted", phoneUnformatted) :
+                new ObjectParameter("PhoneUnformatted", typeof(string));
+    
+            var doNotPublishParameter = doNotPublish.HasValue ?
+                new ObjectParameter("DoNotPublish", doNotPublish) :
+                new ObjectParameter("DoNotPublish", typeof(bool));
+    
+            var noneProvidedParameter = noneProvided.HasValue ?
+                new ObjectParameter("NoneProvided", noneProvided) :
+                new ObjectParameter("NoneProvided", typeof(bool));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<FINALIZATION_UPDATECELLPHONE_Result>("FINALIZATION_UPDATECELLPHONE", userIDParameter, phoneUnformattedParameter, doNotPublishParameter, noneProvidedParameter);
+        }
+    
+        public virtual int FINALIZATION_UPDATEDEMOGRAPHIC(string userID, string raceValue, Nullable<int> ethnicityValue)
+        {
+            var userIDParameter = userID != null ?
+                new ObjectParameter("UserID", userID) :
+                new ObjectParameter("UserID", typeof(string));
+    
+            var raceValueParameter = raceValue != null ?
+                new ObjectParameter("RaceValue", raceValue) :
+                new ObjectParameter("RaceValue", typeof(string));
+    
+            var ethnicityValueParameter = ethnicityValue.HasValue ?
+                new ObjectParameter("EthnicityValue", ethnicityValue) :
+                new ObjectParameter("EthnicityValue", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("FINALIZATION_UPDATEDEMOGRAPHIC", userIDParameter, raceValueParameter, ethnicityValueParameter);
         }
     
         public virtual ObjectResult<string> GET_AA_ADMIN(string aDMIN_ID)
@@ -1326,6 +1406,19 @@ namespace Gordon360.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_ACT_INFO");
         }
     
+        public virtual ObjectResult<UPDATE_CELL_PHONE_Result> UPDATE_CELL_PHONE(string userID, string phoneUnformatted)
+        {
+            var userIDParameter = userID != null ?
+                new ObjectParameter("UserID", userID) :
+                new ObjectParameter("UserID", typeof(string));
+    
+            var phoneUnformattedParameter = phoneUnformatted != null ?
+                new ObjectParameter("PhoneUnformatted", phoneUnformatted) :
+                new ObjectParameter("PhoneUnformatted", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<UPDATE_CELL_PHONE_Result>("UPDATE_CELL_PHONE", userIDParameter, phoneUnformattedParameter);
+        }
+    
         public virtual int UPDATE_DESCRIPTION(Nullable<int> iD, string vALUE)
         {
             var iDParameter = iD.HasValue ?
@@ -1337,6 +1430,60 @@ namespace Gordon360.Models
                 new ObjectParameter("VALUE", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_DESCRIPTION", iDParameter, vALUEParameter);
+        }
+    
+        public virtual int UPDATE_EMRGCONTACT(Nullable<int> studentID, Nullable<int> contactNum, string contactLastName, string contactFirstName, string contactHomePhone, string contactMobilePhone, string contactRelationship, string notes, string username, string jobName)
+        {
+            var studentIDParameter = studentID.HasValue ?
+                new ObjectParameter("StudentID", studentID) :
+                new ObjectParameter("StudentID", typeof(int));
+    
+            var contactNumParameter = contactNum.HasValue ?
+                new ObjectParameter("ContactNum", contactNum) :
+                new ObjectParameter("ContactNum", typeof(int));
+    
+            var contactLastNameParameter = contactLastName != null ?
+                new ObjectParameter("ContactLastName", contactLastName) :
+                new ObjectParameter("ContactLastName", typeof(string));
+    
+            var contactFirstNameParameter = contactFirstName != null ?
+                new ObjectParameter("ContactFirstName", contactFirstName) :
+                new ObjectParameter("ContactFirstName", typeof(string));
+    
+            var contactHomePhoneParameter = contactHomePhone != null ?
+                new ObjectParameter("ContactHomePhone", contactHomePhone) :
+                new ObjectParameter("ContactHomePhone", typeof(string));
+    
+            var contactMobilePhoneParameter = contactMobilePhone != null ?
+                new ObjectParameter("ContactMobilePhone", contactMobilePhone) :
+                new ObjectParameter("ContactMobilePhone", typeof(string));
+    
+            var contactRelationshipParameter = contactRelationship != null ?
+                new ObjectParameter("ContactRelationship", contactRelationship) :
+                new ObjectParameter("ContactRelationship", typeof(string));
+    
+            var notesParameter = notes != null ?
+                new ObjectParameter("Notes", notes) :
+                new ObjectParameter("Notes", typeof(string));
+    
+            var usernameParameter = username != null ?
+                new ObjectParameter("Username", username) :
+                new ObjectParameter("Username", typeof(string));
+    
+            var jobNameParameter = jobName != null ?
+                new ObjectParameter("JobName", jobName) :
+                new ObjectParameter("JobName", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_EMRGCONTACT", studentIDParameter, contactNumParameter, contactLastNameParameter, contactFirstNameParameter, contactHomePhoneParameter, contactMobilePhoneParameter, contactRelationshipParameter, notesParameter, usernameParameter, jobNameParameter);
+        }
+    
+        public virtual int Update_Health_Status_Upon_Form_Completion(string responderEmail)
+        {
+            var responderEmailParameter = responderEmail != null ?
+                new ObjectParameter("ResponderEmail", responderEmail) :
+                new ObjectParameter("ResponderEmail", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("Update_Health_Status_Upon_Form_Completion", responderEmailParameter);
         }
     
         public virtual int UPDATE_MYSCHEDULE(string eVENTID, string gORDONID, string lOCATION, string dESCRIPTION, string mON_CDE, string tUE_CDE, string wED_CDE, string tHU_CDE, string fRI_CDE, string sAT_CDE, string sUN_CDE, Nullable<int> iS_ALLDAY, Nullable<System.TimeSpan> bEGINTIME, Nullable<System.TimeSpan> eNDTIME)
@@ -1441,7 +1588,7 @@ namespace Gordon360.Models
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATE_PHONE_PRIVACY", iDParameter, vALUEParameter);
         }
-
+    
         public virtual int UPDATE_PHOTO_PATH(Nullable<int> iD, string fILE_PATH, string fILE_NAME)
         {
             var iDParameter = iD.HasValue ?
@@ -1523,15 +1670,6 @@ namespace Gordon360.Models
                 new ObjectParameter("STUDENT_ID", typeof(int));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<VICTORY_PROMISE_BY_STUDENT_ID_Result>("VICTORY_PROMISE_BY_STUDENT_ID", sTUDENT_IDParameter);
-        }
-    
-        public virtual int FINALIZATION_GETHOLDSBYID(Nullable<int> iD_NUM)
-        {
-            var iD_NUMParameter = iD_NUM.HasValue ?
-                new ObjectParameter("ID_NUM", iD_NUM) :
-                new ObjectParameter("ID_NUM", typeof(int));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("FINALIZATION_GETHOLDSBYID", iD_NUMParameter);
         }
     }
 }
