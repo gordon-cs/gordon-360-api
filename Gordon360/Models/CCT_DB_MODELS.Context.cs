@@ -15,10 +15,10 @@ namespace Gordon360.Models
     using System.Data.Entity.Core.Objects;
     using System.Linq;
     
-    public partial class CCTEntities : DbContext
+    public partial class CCTEntities1 : DbContext
     {
-        public CCTEntities()
-            : base("name=CCTEntities")
+        public CCTEntities1()
+            : base("name=CCTEntities1")
         {
         }
     
