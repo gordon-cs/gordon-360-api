@@ -268,6 +268,7 @@ A record in this table stores
 - categoryID - foreign key that links this entry to its category
 - Subject - subject, written by the poster, of the news entry
 - Body - the actual text of the news entry, written by the poster
+- Image - the path to the image (if there is one) associated with the news item
 - Accepted - whether this entry has been approved to be shown publicly
 - Sent - whether the item has been sent
 - thisPastMailing - whether it belongs to this past mailing
@@ -508,13 +509,13 @@ What is it? Resource that represents a gordon account.
 
 ##### GET
 
-`api/accounts/email/:email` Get the account with email `email`. Currently restricted to FacStaff, Police, and Group Admins.
+`api/accounts/email/{email}` Get the account with email `email`. Currently restricted to FacStaff, Police, and Group Admins.
 
-`api/accounts/username/:username` Get the account with `username`. Currently restricted to FacStaff, Police, and Group Admins.
+`api/accounts/username/{username}` Get the account with `username`. Currently restricted to FacStaff, Police, and Group Admins.
 
-`api/accounts/search/:searchString` Returns the basicinfoviewmodel with a Concatenated attribute matching some or all of the searchstring
+`api/accounts/search/{searchString}` Returns the basicinfoviewmodel with a Concatenated attribute matching some or all of the searchstring
 
-`api/accounts/search/:searchString/:secondaryString` The same as above, used when the search string contains a space
+`api/accounts/search/{searchString}/{secondaryString}` The same as above, used when the search string contains a space
 
 `api/accounts/advanced-people-search/{includeStudentSearchParam}/{includeFacStaffSearchParam}/{includeAlumniSearchParam}/{firstNameSearchParam}/{lastNameSearchParam}/{majorSearchParam}/{minorSearchParam}/{hallSearchParam}/{classTypeSearchParam}/{hometownSearchParam}/{stateSearchParam}/{countrySearchParam}/{departmentSearchParam}/{buildingSearchParam}` Get all the accounts matching the specified parameters. Access to accounts is based on your account type (e.g. Students can't get Alumni).
 
@@ -526,37 +527,37 @@ What is it? Resource that represents some activity - such as a club, ministry, l
 
 `api/activities` Get all the activities.
 
-`api/activities/:id` Get the activity with activity code `id`.
+`api/activities/{id}` Get the activity with activity code `id`.
 
-`api/activities/session/:id` Get the activities offered during the session with session code `id`.
+`api/activities/session/{id}` Get the activities offered during the session with session code `id`.
 
-`api/activities/session/:id/types` Get the different activity types among the activities offered during the session with session code `id`.
+`api/activities/session/{id}/types` Get the different activity types among the activities offered during the session with session code `id`.
 
 `api/activities/{sessionCode}/{id}/status` Get the status of an activity (either open or closed), which indicates whether or not new members can be added to the activity for this session.
 
 `api/activities/open` Get all the open activities for the current session.
 
-`api/activities/:id/open` Get only the open activities for which a given user (identified by their user `id`) is the group admin.
+`api/activities/{id}/open` Get only the open activities for which a given user (identified by their user `id`) is the group admin.
 
 `api/activities/closed` Get all the closed activities for the current session.
 
-`api/activities/:id/closed` Get only the closed activities for which a given user (identified by their user `id`) is the group admin.
+`api/activities/{id}/closed` Get only the closed activities for which a given user (identified by their user `id`) is the group admin.
 
 ##### PUT
 
-`api/activities/:id/session/{sess_cde}/close` Close out an activity for a given session (this is like confirming the final roster of an activity for a given session).
+`api/activities/{id}/session/{sess_cde}/close` Close out an activity for a given session (this is like confirming the final roster of an activity for a given session).
 
-`api/activities/:id/session/{sess_cde}/open` Reopen an activity for a given session.
+`api/activities/{id}/session/{sess_cde}/open` Reopen an activity for a given session.
 
-`api/activities/:id` Edit activity information for the club with activity code `id`.
+`api/activities/{id}` Edit activity information for the club with activity code `id`.
 
-`api/activities/:id/privacy/:p` Update a given activity to private or not private with boolean value `p`. The `id` parameter is the activity id.
+`api/activities/{id}/privacy/{p}` Update a given activity to private or not private with boolean value `p`. The `id` parameter is the activity id.
 
 ##### POST
 
-`api/activities/:id/image` Set an image for the activity with activity code `id`.
+`api/activities/{id}/image` Set an image for the activity with activity code `id`.
 
-`api/activites/:id/image/reset` Reset the image to default for the activity with activity code `id`.
+`api/activites/{id}/image/reset` Reset the image to default for the activity with activity code `id`.
 
 ### Admins
 
@@ -570,7 +571,7 @@ NOTE: facultytest is a super admins in PRODAPIDATA, stafftest is a super admins 
 
 `api/admins` Get all the admins.
 
-`api/admins/:id` Get a specific admin with the Gordon ID specified.
+`api/admins/{id}` Get a specific admin with the Gordon ID specified.
 
 ##### POST
 
@@ -578,7 +579,7 @@ NOTE: facultytest is a super admins in PRODAPIDATA, stafftest is a super admins 
 
 ##### DELETE
 
-`api/admins/:id` Delete the admin with the admin id `id`.
+`api/admins/{id}` Delete the admin with the admin id `id`.
 
 ### Advanced Search
 
@@ -602,7 +603,7 @@ NOTE: facultytest is a super admins in PRODAPIDATA, stafftest is a super admins 
 
 ##### POST
 
-`/token:` The authentication process uses a simplified version of what is called Open Authentication (OAuth).
+`/token` The authentication process uses a simplified version of what is called Open Authentication (OAuth).
 
 In OAuth, there are two servers including the one running your app. The server running your app doesn't authenticate people directly, it relies on the second server to tell it if a given person is allowed access. This second server is called the Authentication Server.
 
@@ -637,27 +638,27 @@ What is it? Resource that represents emails.
 
 ##### GET
 
-`api/emails/activity/:id` Get the emails for members of the activity with activity code `id` during the current session.
+`api/emails/activity/{id}` Get the emails for members of the activity with activity code `id` during the current session.
 
-`api/emails/activity/:id/session/:sessionid` Get the emails for the members of the activity with activity code `id` during the session with session code `sessionid`.
+`api/emails/activity/{id}/session/{sessionid}` Get the emails for the members of the activity with activity code `id` during the session with session code `sessionid`.
 
-`api/emails/activity/:id/leaders` Get the emails for the leaders of the activity with activity code `id` during the current session.
+`api/emails/activity/{id}/leaders` Get the emails for the leaders of the activity with activity code `id` during the current session.
 
-`api/emails/activity/:id/leaders/session/:sessionid` Get the emails for the leaders of the activity with activity code `id` during the session with session code `sessionid`.
+`api/emails/activity/{id}/leaders/session/{sessionid}` Get the emails for the leaders of the activity with activity code `id` during the session with session code `sessionid`.
 
-`api/emails/activity/:id/group-admin/session/:sessionid` Get the emails for the group admins of the activity with activity code `id` during the session with session code `sessionid`.
+`api/emails/activity/{id}/group-admin/session/{sessionid}` Get the emails for the group admins of the activity with activity code `id` during the session with session code `sessionid`.
 
-`api/emails/activity/:id/advisors` Get the emails for the advisors of the activity with activity code `id` during the current session.
+`api/emails/activity/{id}/advisors` Get the emails for the advisors of the activity with activity code `id` during the current session.
 
-`api/emails/activity/:id/advisors/session/:sessionid` Get the emails for the advisors of the activity with activity code `id` during the session with session code `sessionid`.
+`api/emails/activity/{id}/advisors/session/{sessionid}` Get the emails for the advisors of the activity with activity code `id` during the session with session code `sessionid`.
 
 ##### PUT
 
 `api/emails` Sends an email.
 
-`api/emails/activity/:id/session/:sessionid` Sends an email to the participants of the activity with activity code `id` during the session with session code `sessionid`.
+`api/emails/activity/{id}/session/{sessionid}` Sends an email to the participants of the activity with activity code `id` during the session with session code `sessionid`.
 
-`api/emails/activity/:id/leaders/session/:sessionid` Sends an email to the leaders of the activity with activity code `id` during the session with session code `sessionid`.
+`api/emails/activity/{id}/leaders/session/{sessionid}` Sends an email to the leaders of the activity with activity code `id` during the session with session code `sessionid`.
 
 ### Events
 
@@ -670,7 +671,7 @@ What is it? Resources to get information on Events from the 25Live system
 
 ##### GET
 
-`api/events/chapel/:term` Get all events attended by the logged-in user in a specific term
+`api/events/chapel/{term}` Get all events attended by the logged-in user in a specific term
 
 `api/events/25Live/All` Returns all events in 25Live under predefined categories.
 
@@ -690,7 +691,7 @@ What is it? Resource that represents residence hall information that would conce
 
 `api/housing/apartment/` Gets the application ID matching the current user if that user is on an application saved for the current semester, otherwise returns a Not Found code
 
-`api/housing/apartment/${username}/` Gets the application ID matching the given username if that user is on an application saved for the current semester, otherwise returns a Not Found code
+`api/housing/apartment/{username}/` Gets the application ID matching the given username if that user is on an application saved for the current semester, otherwise returns a Not Found code
 
 `api/housing/apartment/applications/{applicationID}/` Gets the apartment application info matching the given application ID if it is found in the database, otherwise returns a Not Found code
 
@@ -712,29 +713,29 @@ What is it? Resource that represents the affiliation between a student and a clu
 
 `api/memberships` Get all the memberships.
 
-`api/memberships/:id` Get the membership with membership id `id`.
+`api/memberships/{id}` Get the membership with membership id `id`.
 
-`api/memberships/activity/:id` Get the memberships associated with the activity with activity code `id`.
+`api/memberships/activity/{id}` Get the memberships associated with the activity with activity code `id`.
 
-`api/memberships/activity/:id/leaders` Get the memberships of the leaders for the activity with activity code `id`.
+`api/memberships/activity/{id}/leaders` Get the memberships of the leaders for the activity with activity code `id`.
 
-`api/memberships/activity/:id/advisors` Get the memberships of the advisors for the activity with activity code `id`.
+`api/memberships/activity/{id}/advisors` Get the memberships of the advisors for the activity with activity code `id`.
 
-`api/memberships/activity/:id/group-admin` Get the memberships of the group admin (displayed as "Group Contacts") for the activity with activity code `id`.
+`api/memberships/activity/{id}/group-admin` Get the memberships of the group admin (displayed as "Group Contacts") for the activity with activity code `id`.
 
-`api/memberships/activity/:id/followers` Get the number of followers of an activity with activity code `id`.
+`api/memberships/activity/{id}/followers` Get the number of followers of an activity with activity code `id`.
 
-`api/memberships/activity/:id/members` Get the number of members (excluding followers) of an activity with activity code `id`.
+`api/memberships/activity/{id}/members` Get the number of members (excluding followers) of an activity with activity code `id`.
 
-`api/memberships/activity/:id/followers/:sess_cde` Get the number of followers of an activity with activity code `id` in session `:sess_cde`.
+`api/memberships/activity/{id}/followers/{sess_cde}` Get the number of followers of an activity with activity code `id` in session `sess_cde`.
 
-`api/memberships/activity/:id/members/:sess_cde` Get the number of members (excluding followers) of an activity with activity code `id` in session `:sess_cde`.
+`api/memberships/activity/{id}/members/{sess_cde}` Get the number of members (excluding followers) of an activity with activity code `id` in session `sess_cde`.
 
-`api/memberships/student/:id` Get the memberships of the student with student id `id`.
+`api/memberships/student/{id}` Get the memberships of the student with student id `id`.
 
-`api/memberships/student/username:username` Get the public version of memberships of the student with student username `username`.
+`api/memberships/student/username/{username}` Get the public version of memberships of the student with student username `username`.
 
-`api/memberships/isgroupadmin/:id` Get whether or not a student with id `id` is a Group Admin for some activity. Service method is used for security purposes but Controller is currently just for testing convenience.
+`api/memberships/isgroupadmin/{id}` Get whether or not a student with id `id` is a Group Admin for some activity. Service method is used for security purposes but Controller is currently just for testing convenience.
 
 ##### POST
 
@@ -742,15 +743,15 @@ What is it? Resource that represents the affiliation between a student and a clu
 
 ##### PUT
 
-`api/memberships/:id` Edit the membership with membership id `id`.
+`api/memberships/{id}` Edit the membership with membership id `id`.
 
-`api/memberships/:id/group-admin` Toggle whether or not a given member is in a group admin role for a given activity. The `id` parameter is the membership id.
+`api/memberships/{id}/group-admin` Toggle whether or not a given member is in a group admin role for a given activity. The `id` parameter is the membership id.
 
-`api/memberships/:id/privacy/:p` Update a given membership to private or not private with boolean value `p`. The `id` parameter is the membership id.
+`api/memberships/{id}/privacy/{p}` Update a given membership to private or not private with boolean value `p`. The `id` parameter is the membership id.
 
 ##### DELETE
 
-`api/memberships/:id` Delete the membership with membership id `id`.
+`api/memberships/{id}` Delete the membership with membership id `id`.
 
 ### Membership Requests
 
@@ -760,27 +761,27 @@ What is it? Resource that represents a person's application/request to join an a
 
 `api/requests` Get all the membership applications.
 
-`api/requests/:id` Get the membership application with request id `id`.
+`api/requests/{id}` Get the membership application with request id `id`.
 
-`api/requests/student/:id` Get all the membership applications for the student with student id `id`.
+`api/requests/student/{id}` Get all the membership applications for the student with student id `id`.
 
-`api/requests/activity/:id` Get all the membership applications for the club with activity code `id`.
+`api/requests/activity/{id}` Get all the membership applications for the club with activity code `id`.
 
 ##### PUT
 
-`api/requests/:id` Edits an existing memberships application.
+`api/requests/{id}` Edits an existing memberships application.
 
 ##### POST
 
 `api/requests` Create a new membership application.
 
-`api/requests/:id/deny` Deny the membership application with request id `id`.
+`api/requests/{id}/deny` Deny the membership application with request id `id`.
 
-`api/requests/:id/approve` Approve the membership application with request id `id`.
+`api/requests/{id}/approve` Approve the membership application with request id `id`.
 
 ##### DELETE
 
-`api/requests/:id` Delete the membership application with id `id`.
+`api/requests/{id}` Delete the membership application with id `id`.
 
 ### Sessions
 
@@ -792,7 +793,7 @@ Who has access? Everyone.
 
 `api/sessions` Get all the sessions.
 
-`api/sessions/:id` Get the session with session code `id`.
+`api/sessions/{id}` Get the session with session code `id`.
 
 `api/sessions/current` Get the current session.
 
@@ -812,7 +813,7 @@ Who has access? Everyone.
 
 `api/participations` Get all the possible participation levels.
 
-`api/participations/:id` Get the participation level with code `id`.
+`api/participations/{id}` Get the participation level with code `id`.
 
 `api/participations/leaders` Get the participation levels that are considered leaders.
 
@@ -832,17 +833,17 @@ Differences from GoSite:
 
 `api/profiles` Get profile info of the current logged in user.
 
-`api/profiles/:username` Get public profile info of a user with username `username` as a parameter.
+`api/profiles/{username}` Get public profile info of a user with username `username` as a parameter.
 
-`api/profiles/Advisors/:username` Get advisor(s) info of a user with username `username` as a parameter.
+`api/profiles/Advisors/{username}` Get advisor(s) info of a user with username `username` as a parameter.
 
-`api/profiles/clifton/:username` Get the Clifton Strengths of a user with username `username` as a parameter.
+`api/profiles/clifton/{username}` Get the Clifton Strengths of a user with username `username` as a parameter.
 
 `api/profiles/mailbox-combination` Get the mailbox combination of the current logged in user.
 
-`api/profiles/Image/` Get profile image of the current logged in user. Image is stored in a base 64 string.
+`api/profiles/Image` Get profile image of the current logged in user. Image is stored in a base 64 string.
 
-`api/profiles/Image/:username` Get the profile image(s) of a user with username `username` as a parameter. Image is stored in a base 64 string. Police, super admin, faculty and staff can view both default and preferred profile image of students. Only police and super admin can view both images of everyone including faculty and staff.
+`api/profiles/Image/{username}` Get the profile image(s) of a user with username `username` as a parameter. Image is stored in a base 64 string. Police, super admin, faculty and staff can view both default and preferred profile image of students. Only police and super admin can view both images of everyone including faculty and staff.
 
 ##### POST
 
@@ -852,15 +853,15 @@ Differences from GoSite:
 
 `api/profiles/image/reset` Delete preferred image and set profile image to default for the current logged in user.
 
-`api/profiles/:type` Update a social media link of a type(facebook, twitter, linkedin,instagram, handshake) of current logged in user.
+`api/profiles/{type}` Update a social media link of a type (Facebook, Twitter, LinkedIn, Instagram, Handshake) of current logged in user.
 
 ##### PUT
 
-`api/profiles/mobile_phone_number/:value` Update mobile phone number for the current logged in user.
+`api/profiles/mobile_phone_number/{value}` Update mobile phone number for the current logged in user.
 
-`api/profiles/mobile_privacy/:value` Update mobile phone number privacy with value(Y or N) for the current logged in user.
+`api/profiles/mobile_privacy/{value}` Update mobile phone number privacy with value (Y or N) for the current logged in user.
 
-`api/profiles/image_privacy/:value` Update profile image privacy with value(Y or N) for the current logged in user.
+`api/profiles/image_privacy/{value}` Update profile image privacy with value (Y or N) for the current logged in user.
 
 ### Dining
 
@@ -892,7 +893,7 @@ What is it? Resource that represents a course schedule of user.
 
 `api/schedule` Get all schedule objects of the currently logged in user.
 
-`api/schedule/:username` Get all schedule objects of a user with username `username` as a parameter.
+`api/schedule/{username}` Get all schedule objects of a user with username `username` as a parameter.
 
 ### My Schedule
 
@@ -902,9 +903,9 @@ What is it? Resource that represents a customized schedule of user.
 
 `api/myschedule` Get all custom events of the currently logged in user.
 
-`api/myschedule/:username` Get all custom events of a user with username `username` as a parameter.
+`api/myschedule/{username}` Get all custom events of a user with username `username` as a parameter.
 
-`api/myschedule/event/:eventId` Get a specific custom event of the currently logged in user with `eventId` as a parameter
+`api/myschedule/event/{eventId}` Get a specific custom event of the currently logged in user with `eventId` as a parameter
 
 ##### PUT
 
@@ -916,7 +917,7 @@ What is it? Resource that represents a customized schedule of user.
 
 ##### DELETE
 
-`api/myschedule/:eventID` Delete a custom event of the currently logged in user.
+`api/myschedule/{eventID}` Delete a custom event of the currently logged in user.
 
 ### Schedule Control
 
@@ -926,13 +927,13 @@ What is it? Resource that represents information related to schedule.
 
 `api/schedulecontrol` Get the schedulecontrol object of the currently logged in user. Specifically, get the privacy, time last updated, description, and Gordon ID of the currently logged in user's schedule.
 
-`api/schedulecontrol/:username` Get the schedulecontrol object of a user with username `username` as a parameter. Specifically, Get the privacy, time last updated, description, and Gordon ID of the user's schedule.
+`api/schedulecontrol/{username}` Get the schedulecontrol object of a user with username `username` as a parameter. Specifically, Get the privacy, time last updated, description, and Gordon ID of the user's schedule.
 
 ##### PUT
 
-`api/schedulecontrol/privacy/:value` Update a schedule privacy of the currently logged in user.
+`api/schedulecontrol/privacy/{value}` Update a schedule privacy of the currently logged in user.
 
-`api/schedulecontrol/description/:value` Update a schedule description of the currently logged in user.
+`api/schedulecontrol/description/{value}` Update a schedule description of the currently logged in user.
 
 ### Victory Promise
 
@@ -948,9 +949,9 @@ What is it? Resource that represents accepted student news entries and news cate
 
 ##### GET
 
-`api/news/:newsID` Gets a student news item from the database.
+`api/news/{newsID}` Gets a student news item from the database.
 
-`api/news/:newsID/image` Gets the base64 for an image associated with a student news entry.
+`api/news/{newsID}/image` Gets the base64 data for an image associated with a student news entry.
 
 `api/news/category` Gets the full list of category names used to categorize student news as well as category ids and sort order.
 
@@ -968,7 +969,7 @@ _(uses stored procedure)_
 
 ##### DELETE
 
-`api/news/:id` Deletes a news item from the database by its id (SNID = student news id). In order to delete, the following conditions must be met:
+`api/news/{id}` Deletes a news item from the database by its id (SNID = student news id). In order to delete, the following conditions must be met:
 
 - news item is unexpired
 - user is author of news item or SUPER_ADMIN (perhaps should be changed in future)
@@ -977,7 +978,7 @@ _(uses repository)_
 
 ##### PUT
 
-`api/news/:id` Edits a news item in the database by its id. In order to edit, the following conditions must be met:
+`api/news/{id}` Edits a news item in the database by its id. In order to edit, the following conditions must be met:
 
 - news item is unexpired
 - user is author of news item or SUPER_ADMIN (perhaps should be changed in future)
