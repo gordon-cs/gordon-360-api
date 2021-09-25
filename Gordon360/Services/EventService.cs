@@ -35,21 +35,18 @@ namespace Gordon360.Services
 
         /// <summary>
         /// Access the memory stream created by the cached task and parse it into events
+        /// Splits events with multiple repeated occurrences into individual records for each occurrence
         /// </summary>
         /// <returns>All events for the current academic year.</returns>
         public IEnumerable<EventViewModel> GetAllEvents()
         {
             var events = Data.AllEvents.Descendants(r25 + "event").Select(e => new EventViewModel(e));
-
             var multiple = events.Where(e => e.Occurrences.Count > 1);
-
             events = events.Where(e => e.Occurrences.Count == 1);
-
-            EventViewModel[] splitEvents = new EventViewModel[multiple.Select((e) => e.Occurrences.Count).Aggregate((last,current) => last + current)];
+            List<EventViewModel> splitEvents = new List<EventViewModel>();// (multiple.Select((e) => e.Occurrences.Count).Aggregate((last,current) => last + current)];
 
             int count = 0;
             int occurrenceIndex = 0;
-
             foreach (EventViewModel e in multiple)
             {
                 occurrenceIndex = 0;
@@ -57,13 +54,9 @@ namespace Gordon360.Services
                 {
                     List<EventOccurence> oneOccurrence = new List<EventOccurence>(1);
                     oneOccurrence.Add(e.Occurrences[occurrenceIndex++]);
-
-                    splitEvents[count++] = new EventViewModel(e.Event_ID + "_" + occurrenceIndex.ToString(),e.Event_Name,e.Event_Title,e.Event_Type_Name,e.Description,e.Organization,e.IsPublic,e.HasCLAWCredit,oneOccurrence);
+                    splitEvents.Add(new EventViewModel(e.Event_ID + "_" + occurrenceIndex.ToString(),e.Event_Name,e.Event_Title,e.Event_Type_Name,e.Description,e.Organization,e.IsPublic,e.HasCLAWCredit,oneOccurrence));
                 }
             }
-
-
-
             return events.Concat(splitEvents);
         }
 

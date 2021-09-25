@@ -42,6 +42,10 @@ namespace Gordon360.Models.ViewModels
                 Location = o.Element(r25 + "space_reservation")?.Element(r25 + "space")?.Element(r25 + "formal_name")?.Value
             }).ToList();
         }
+
+        /// <summary>
+        /// Initializes a new custom instance of the <see cref="EventViewModel"/> class.
+        /// </summary>
         public EventViewModel(string Event_ID,string Event_Name,string Event_Title,string Event_Type_Name,string Description,string Organization,bool IsPublic,bool HasClawCredit,List<EventOccurence> Occurrences)
         {
             this.Event_ID = Event_ID;

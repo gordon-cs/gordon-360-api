@@ -1607,6 +1607,7 @@
         <member name="M:Gordon360.Services.EventService.GetAllEvents">
             <summary>
             Access the memory stream created by the cached task and parse it into events
+            Splits events with multiple repeated occurrences into individual records for each occurrence
             </summary>
             <returns>All events for the current academic year.</returns>
         </member>
