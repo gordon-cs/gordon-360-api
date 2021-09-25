@@ -42,7 +42,20 @@ namespace Gordon360.Models.ViewModels
                 Location = o.Element(r25 + "space_reservation")?.Element(r25 + "space")?.Element(r25 + "formal_name")?.Value
             }).ToList();
         }
+        public EventViewModel(string Event_ID,string Event_Name,string Event_Title,string Event_Type_Name,string Description,string Organization,bool IsPublic,bool HasClawCredit,List<EventOccurence> Occurrences)
+        {
+            this.Event_ID = Event_ID;
+            this.Event_Name = Event_Name;
+            this.Event_Title = Event_Title;
+            this.Event_Type_Name = Event_Type_Name;
+            this.Description = Description;
+            this.Organization = Organization;
+            this.IsPublic = IsPublic;
+            this.HasCLAWCredit = HasCLAWCredit;
+            this.Occurrences = Occurrences;
+        }
     }
+
 
     public class EventOccurence
     {

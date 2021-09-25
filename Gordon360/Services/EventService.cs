@@ -8,6 +8,7 @@ using System.Data;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Static.Data;
 using System.Xml.Linq;
+using System;
 
 
 // <summary>
@@ -38,7 +39,32 @@ namespace Gordon360.Services
         /// <returns>All events for the current academic year.</returns>
         public IEnumerable<EventViewModel> GetAllEvents()
         {
-            return Data.AllEvents.Descendants(r25 + "event").Select(e => new EventViewModel(e));
+            var events = Data.AllEvents.Descendants(r25 + "event").Select(e => new EventViewModel(e));
+
+            var multiple = events.Where(e => e.Occurrences.Count > 1);
+
+            events = events.Where(e => e.Occurrences.Count == 1);
+
+            EventViewModel[] splitEvents = new EventViewModel[multiple.Select((e) => e.Occurrences.Count).Aggregate((last,current) => last + current)];
+
+            int count = 0;
+            int occurrenceIndex = 0;
+
+            foreach (EventViewModel e in multiple)
+            {
+                occurrenceIndex = 0;
+                foreach (EventOccurence o in e.Occurrences)
+                {
+                    List<EventOccurence> oneOccurrence = new List<EventOccurence>(1);
+                    oneOccurrence.Add(e.Occurrences[occurrenceIndex++]);
+
+                    splitEvents[count++] = new EventViewModel(e.Event_ID + "_" + occurrenceIndex.ToString(),e.Event_Name,e.Event_Title,e.Event_Type_Name,e.Description,e.Organization,e.IsPublic,e.HasCLAWCredit,oneOccurrence);
+                }
+            }
+
+
+
+            return events.Concat(splitEvents);
         }
 
         /// <summary>
