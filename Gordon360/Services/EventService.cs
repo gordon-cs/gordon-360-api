@@ -10,7 +10,6 @@ using Gordon360.Static.Data;
 using System.Xml.Linq;
 using System;
 
-
 // <summary>
 // We use this service to pull data from 25Live as well as parsing it
 // The data is retrieved from the cache maintained by Startup.cs
@@ -41,19 +40,28 @@ namespace Gordon360.Services
         public IEnumerable<EventViewModel> GetAllEvents()
         {
             var events = Data.AllEvents.Descendants(r25 + "event").Select(e => new EventViewModel(e));
+            
+            // Split events into thise with multiple occurrences and those with one
             var multiple = events.Where(e => e.Occurrences.Count > 1);
             events = events.Where(e => e.Occurrences.Count == 1);
-            List<EventViewModel> splitEvents = new List<EventViewModel>();// (multiple.Select((e) => e.Occurrences.Count).Aggregate((last,current) => last + current)];
-
+            
+            // Initialize loop variables
             int count = 0;
             int occurrenceIndex = 0;
+            List<EventViewModel> splitEvents = new List<EventViewModel>();
+            
+            // Loop over multiple-occurrence events
             foreach (EventViewModel e in multiple)
             {
                 occurrenceIndex = 0;
+                
+                // Loop over occurrences in one event
                 foreach (EventOccurence o in e.Occurrences)
                 {
                     List<EventOccurence> oneOccurrence = new List<EventOccurence>(1);
                     oneOccurrence.Add(e.Occurrences[occurrenceIndex++]);
+                    
+                    // Create a new event with information from the occurrence
                     splitEvents.Add(new EventViewModel(e.Event_ID + "_" + occurrenceIndex.ToString(),e.Event_Name,e.Event_Title,e.Event_Type_Name,e.Description,e.Organization,e.IsPublic,e.HasCLAWCredit,oneOccurrence));
                 }
             }
@@ -77,7 +85,6 @@ namespace Gordon360.Services
         {
             return GetAllEvents().Where(e => e.HasCLAWCredit);
         }
-
 
         /// <summary>
         /// Returns all attended events for a student in a specific term
