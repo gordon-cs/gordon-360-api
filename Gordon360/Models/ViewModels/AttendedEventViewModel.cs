@@ -13,7 +13,9 @@ namespace Gordon360.Models.ViewModels
         public string Event_Title { get; set; }
         public string Description { get; set; }
         public string Organization { get; set; }
-        public List<EventOccurence> Occurrences { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
+        public string Location { get; set; }
 
         // We're gonna take an eventviewmodel (info from 25Live) and a Chapeleventviewmodel (info form our database) 
         // then mash 'em together
@@ -31,7 +33,9 @@ namespace Gordon360.Models.ViewModels
                 Event_Title = a.Event_Title ?? "";
                 Description = a.Description ?? "";
                 Organization = a.Organization ?? "";
-                Occurrences = a.Occurrences ?? null;
+                StartDate = a.StartDate ?? "";
+                EndDate = a.EndDate ?? "";
+                Location = a.Location ?? "";
 
             }
             // If it's null, fill it with empty strings so we don't crash
@@ -41,7 +45,9 @@ namespace Gordon360.Models.ViewModels
                 Event_Title = "";
                 Description =  "";
                 Organization =  "";
-                Occurrences = null;
+                StartDate = "";
+                EndDate = "";
+                Location = "";
             }
  
         }

@@ -8,7 +8,6 @@ using System.Data;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Static.Data;
 using System.Xml.Linq;
-using System;
 
 // <summary>
 // We use this service to pull data from 25Live as well as parsing it
@@ -24,9 +23,6 @@ namespace Gordon360.Services
         // See UnitOfWork class
         private readonly IUnitOfWork _unitOfWork;
 
-        // Set the namespace for XML Paths
-        private readonly XNamespace r25 = "http://www.collegenet.com/r25";
-
         public EventService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
@@ -39,33 +35,16 @@ namespace Gordon360.Services
         /// <returns>All events for the current academic year.</returns>
         public IEnumerable<EventViewModel> GetAllEvents()
         {
-            var events = Data.AllEvents.Descendants(r25 + "event").Select(e => new EventViewModel(e));
-            
-            // Split events into thise with multiple occurrences and those with one
-            var multiple = events.Where(e => e.Occurrences.Count > 1);
-            events = events.Where(e => e.Occurrences.Count == 1);
-            
-            // Initialize loop variables
-            int count = 0;
-            int occurrenceIndex = 0;
-            List<EventViewModel> splitEvents = new List<EventViewModel>();
-            
-            // Loop over multiple-occurrence events
-            foreach (EventViewModel e in multiple)
-            {
-                occurrenceIndex = 0;
-                
-                // Loop over occurrences in one event
-                foreach (EventOccurence o in e.Occurrences)
-                {
-                    List<EventOccurence> oneOccurrence = new List<EventOccurence>(1);
-                    oneOccurrence.Add(e.Occurrences[occurrenceIndex++]);
-                    
-                    // Create a new event with information from the occurrence
-                    splitEvents.Add(new EventViewModel(e.Event_ID + "_" + occurrenceIndex.ToString(),e.Event_Name,e.Event_Title,e.Event_Type_Name,e.Description,e.Organization,e.IsPublic,e.HasCLAWCredit,oneOccurrence));
-                }
-            }
-            return events.Concat(splitEvents);
+            return Data
+                    .AllEvents
+                    // Select the event elements
+                    .Descendants(EventViewModel.r25 + "event")
+                    .SelectMany(
+                        // Select occurrences of each events
+                        elem => elem.Element(EventViewModel.r25 + "profile")?.Descendants(EventViewModel.r25 + "reservation"),
+                        // Map the event and with it's occurrence details o to a new EventViewModel
+                        (e, o) => new EventViewModel(e, o)
+                    );
         }
 
         /// <summary>
