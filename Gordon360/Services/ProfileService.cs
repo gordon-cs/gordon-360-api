@@ -71,14 +71,14 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">The current user's username</param>
         /// <returns>MailboxViewModel with the combination</returns>
-        public string GetMailboxCombination(string username)
+        public MailboxViewModel GetMailboxCombination(string username)
         {
             var mailboxNumber = 
                 Data.StudentData
                 .FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower())
                 .Mail_Location;
 
-            var combo = _unitOfWork.MailboxRepository.FirstOrDefault(m => m.BoxNo == mailboxNumber).Combination;
+            MailboxViewModel combo = _unitOfWork.MailboxRepository.FirstOrDefault(m => m.BoxNo == mailboxNumber);
 
             if (combo == null)
             {
