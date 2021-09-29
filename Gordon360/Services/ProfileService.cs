@@ -71,21 +71,21 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">The current user's username</param>
         /// <returns>MailboxViewModel with the combination</returns>
-        public MailboxViewModel GetMailboxCombination(string username)
+        public string GetMailboxCombination(string username)
         {
             var mailboxNumber = 
                 Data.StudentData
                 .FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower())
                 .Mail_Location;
 
-            MailboxViewModel info = new MailboxViewModel();
+            var combo = _unitOfWork.MailboxRepository.FirstOrDefault(m => m.BoxNo == mailboxNumber).Combination;
 
-            if (mailboxNumber != null)
+            if (combo == null)
             {
-                info = _unitOfWork.MailboxRepository.GetById(mailboxNumber) ?? new Mailboxes();
+                throw new ResourceNotFoundException() { ExceptionMessage = "A combination was not found for the specified mailbox number." };
             }
 
-            return info;
+            return combo;
         }
 
         /// <summary>
