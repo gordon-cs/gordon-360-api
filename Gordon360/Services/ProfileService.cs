@@ -78,14 +78,14 @@ namespace Gordon360.Services
                 .FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower())
                 .Mail_Location;
 
-            MailboxViewModel info = new MailboxViewModel();
+            MailboxViewModel combo = _unitOfWork.MailboxRepository.FirstOrDefault(m => m.BoxNo == mailboxNumber);
 
-            if (mailboxNumber != null)
+            if (combo == null)
             {
-                info = _unitOfWork.MailboxRepository.GetById(mailboxNumber) ?? new Mailboxes();
+                throw new ResourceNotFoundException() { ExceptionMessage = "A combination was not found for the specified mailbox number." };
             }
 
-            return info;
+            return combo;
         }
 
         /// <summary>
