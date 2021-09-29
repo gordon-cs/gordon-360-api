@@ -40,6 +40,10 @@ namespace Gordon360.Services
         IEnumerable<EventViewModel> GetAllEvents();
         IEnumerable<EventViewModel> GetPublicEvents();
         IEnumerable<EventViewModel> GetCLAWEvents();
+        IEnumerable<DEPRECATED_AttendedEventViewModel> DEPRECATED_GetEventsForStudentByTerm(string id, string term);
+        IEnumerable<DEPRECATED_EventViewModel> DEPRECATED_GetAllEvents();
+        IEnumerable<DEPRECATED_EventViewModel> DEPRECATED_GetPublicEvents();
+        IEnumerable<DEPRECATED_EventViewModel> DEPRECATED_GetCLAWEvents();
     }
 
     public interface IDiningService

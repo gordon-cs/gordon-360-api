@@ -100,5 +100,70 @@ namespace Gordon360.Services
                     (c, e) => new AttendedEventViewModel(e, c)
                 );
         }
+
+        // <summary>
+        /// Access the memory stream created by the cached task and parse it into events
+        /// Splits events with multiple repeated occurrences into individual records for each occurrence
+        /// </summary>
+        /// <returns>All events for the current academic year.</returns>
+        public IEnumerable<DEPRECATED_EventViewModel> DEPRECATED_GetAllEvents()
+        {
+            var events = Data.AllEvents.Descendants(EventViewModel.r25 + "event").Select(e => new DEPRECATED_EventViewModel(e));
+            return events.SelectMany(e => e.Occurrences, (e, o) => new DEPRECATED_EventViewModel(e, o));
+        }
+
+        /// <summary>
+        /// Select only events that are marked for Public promotion
+        /// </summary>
+        /// <returns>All Public Events</returns>
+        public IEnumerable<DEPRECATED_EventViewModel> DEPRECATED_GetPublicEvents()
+        {
+            return DEPRECATED_GetAllEvents().Where(e => e.IsPublic);
+        }
+
+        /// <summary>
+        /// Select only events that are Approved to give CLAW credit
+        /// </summary>
+        /// <returns>All CLAW Events</returns>
+        public IEnumerable<DEPRECATED_EventViewModel> DEPRECATED_GetCLAWEvents()
+        {
+            return DEPRECATED_GetAllEvents().Where(e => e.HasCLAWCredit);
+        }
+
+        /// <summary>
+        /// Returns all attended events for a student in a specific term
+        /// </summary>
+        /// <param name="user_name"> The student's ID</param>
+        /// <param name="term"> The current term</param>
+        /// <returns></returns>
+        public IEnumerable<DEPRECATED_AttendedEventViewModel> DEPRECATED_GetEventsForStudentByTerm(string user_name, string term)
+        {
+            var studentExists = _unitOfWork.AccountRepository.Where(x => x.AD_Username.Trim() == user_name.Trim()).Count() > 0;
+            if (!studentExists)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
+            }
+
+            // Declare the variables used
+            var idParam = new SqlParameter("@STU_USERNAME", user_name.Trim());
+
+            // Run the stored query  and return an iterable list of objects
+            var result = RawSqlQuery<ChapelEventViewModel>.query("EVENTS_BY_STUDENT_ID @STU_USERNAME", idParam);
+
+            // Confirm that result is not empty
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The student was not found" };
+            }
+
+            return result
+                .Where(x => x.CHTermCD.Trim().Equals(term))
+                .Join(
+                    DEPRECATED_GetAllEvents(),
+                    c => c.LiveID,
+                    e => e.Event_ID,
+                    (c, e) => new DEPRECATED_AttendedEventViewModel(e, c)
+                );
+        }
     }
 }
