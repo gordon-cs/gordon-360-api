@@ -23,7 +23,7 @@ namespace Gordon360.ApiControllers
 
         [Authorize]
         [HttpGet]
-        [Route("chapel/{term}")]
+        [Route("attended/{term}")]
         public IHttpActionResult GetEventsByTerm(string term)
         {
             //get token data from context, username is the username of current logged in person
@@ -59,11 +59,11 @@ namespace Gordon360.ApiControllers
         /// <returns></returns>
         [Authorize]
         [HttpGet]
-        [Route("25Live/All")]
+        [Route("")]
         public IHttpActionResult GetAllEvents()
         {
 
-            if (!ModelState.IsValid )
+            if (!ModelState.IsValid)
             {
                 string errors = "";
                 foreach (var modelstate in ModelState.Values)
@@ -91,7 +91,7 @@ namespace Gordon360.ApiControllers
 
         [Authorize]
         [HttpGet]
-        [Route("25Live/CLAW")]
+        [Route("claw")]
         public IHttpActionResult GetAllChapelEvents()
         {
 
@@ -123,7 +123,7 @@ namespace Gordon360.ApiControllers
         }
 
         [HttpGet]
-        [Route("25Live/Public")]
+        [Route("public")]
         public IHttpActionResult GetAllPublicEvents()
         {
             if (!ModelState.IsValid)
@@ -142,6 +142,138 @@ namespace Gordon360.ApiControllers
             }
 
             var result = _eventService.GetPublicEvents();
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+
+
+        [Authorize]
+        [HttpGet]
+        [Route("chapel/{term}")]
+        public IHttpActionResult DEPRECATED_GetEventsByTerm(string term)
+        {
+            //get token data from context, username is the username of current logged in person
+            var authenticatedUser = ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var user_name = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(user_name) || string.IsNullOrWhiteSpace(term))
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            var result = _eventService.DEPRECATED_GetEventsForStudentByTerm(user_name, term);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// This makes use of our cached request to 25Live, which stores AllEvents
+        /// </summary>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet]
+        [Route("25Live/All")]
+        public IHttpActionResult DEPRECATED_GetAllEvents()
+        {
+
+            if (!ModelState.IsValid )
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            var result = _eventService.DEPRECATED_GetAllEvents();
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+
+        }
+
+        [Authorize]
+        [HttpGet]
+        [Route("25Live/CLAW")]
+        public IHttpActionResult DEPRECATED_GetAllChapelEvents()
+        {
+
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            var result = _eventService.DEPRECATED_GetCLAWEvents();
+
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+
+        }
+
+        [HttpGet]
+        [Route("25Live/Public")]
+        public IHttpActionResult DEPRECATED_GetAllPublicEvents()
+        {
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+
+            var result = _eventService.DEPRECATED_GetPublicEvents();
 
             if (result == null)
             {
