@@ -157,6 +157,57 @@ namespace Gordon360.Controllers.Api
                 return NotFound();
             }
         }
+
+        /// <summary>Get person type of currently logged in user</summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("persontype")]
+        public IHttpActionResult GetPersonType()
+        {
+            //get token data from context, username is the username of current logged in person
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            // search username in cached data
+            var student = _profileService.GetStudentProfileByUsername(username);
+            var faculty = _profileService.GetFacultyStaffProfileByUsername(username);
+            var alumni = _profileService.GetAlumniProfileByUsername(username);
+
+
+            // merge the person's info if this person is in multiple tables and return result 
+            if (student != null)
+            {
+                if (faculty != null)
+                {
+                    if (alumni != null)
+                    {
+                        return Ok("stualufac");
+                    }
+                    return Ok("stufac");
+                }
+                else if (alumni != null)
+                {
+                    return Ok("stualu");
+                }
+                return Ok("stu");
+            }
+            else if (faculty != null)
+            {
+                if (alumni != null)
+                {
+                    return Ok("alufac");
+                }
+                return Ok("fac");
+            }
+            else if (alumni != null)
+            {
+                return Ok("alu");
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
         /// <summary>Get public profile info for a user</summary>
         /// <param name="username">username of the profile info</param>
         /// <returns></returns>

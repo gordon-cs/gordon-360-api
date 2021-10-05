@@ -337,6 +337,10 @@
             <summary>Get profile info of currently logged in user</summary>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.GetPersonType">
+            <summary>Get person type of currently logged in user</summary>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.GetUserProfile(System.String)">
             <summary>Get public profile info for a user</summary>
             <param name="username">username of the profile info</param>
