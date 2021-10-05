@@ -173,38 +173,13 @@ namespace Gordon360.Controllers.Api
             var alumni = _profileService.GetAlumniProfileByUsername(username);
 
 
-            // merge the person's info if this person is in multiple tables and return result 
-            if (student != null)
-            {
-                if (faculty != null)
-                {
-                    if (alumni != null)
-                    {
-                        return Ok("stualufac");
-                    }
-                    return Ok("stufac");
-                }
-                else if (alumni != null)
-                {
-                    return Ok("stualu");
-                }
-                return Ok("stu");
-            }
-            else if (faculty != null)
-            {
-                if (alumni != null)
-                {
-                    return Ok("alufac");
-                }
-                return Ok("fac");
-            }
-            else if (alumni != null)
-            {
-                return Ok("alu");
-            }
-            else
-            {
+            var stualufac =  (student != null ? "stu" : "")
+                + (alumni != null ? "alu" : "")
+                + (faculty != null ? "fac" : "");
+            if (stualufac == "") {
                 return NotFound();
+            } else {
+                return Ok(stualufac);
             }
         }
 
