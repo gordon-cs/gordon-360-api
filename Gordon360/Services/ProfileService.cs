@@ -156,7 +156,7 @@ namespace Gordon360.Services
         /// <returns> Emergency contact information of the given user. </returns>
         public IEnumerable<EmergencyContactViewModel> GetEmergencyContact(string username)
         {
-            var result = (IEnumerable<EmergencyContactViewModel>)_unitOfWork.EmergencyContactRepository.GetAll((x) => x.AD_Username == username);
+            var result = _unitOfWork.EmergencyContactRepository.GetAll((x) => x.AD_Username == username).Select(x => (EmergencyContactViewModel)x);
 
             if (result == null)
             {
