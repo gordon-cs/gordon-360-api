@@ -231,6 +231,7 @@ namespace Gordon360.Services
     {
         IEnumerable<ScheduleViewModel> GetScheduleStudent(string id);
         IEnumerable<ScheduleViewModel> GetScheduleFaculty(string id);
+        bool CanReadStudentSchedules(string username);
     }
 
     public interface IScheduleControlService

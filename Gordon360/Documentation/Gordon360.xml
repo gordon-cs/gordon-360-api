@@ -430,6 +430,12 @@
             </summary>
             <returns>A IEnumerable of schedule objects</returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.ScheduleController.GetCanReadStudentSchedules">
+            <summary>
+            Get whether the currently logged-in user can read student schedules
+            </summary>
+            <returns>Whether they can read student schedules</returns>
+        </member>
         <member name="T:Gordon360.Controllers.Api.VersionController">
             <summary>
             Get the short git SHA-1 and build date for the backend
@@ -1667,7 +1673,7 @@
             <summary>
             Helper class to execute Sql statements.
             </summary>
-            <typeparam name="T">The class to which the result will be bound</typeparam>
+            <typeparam name="T">The type to which the result will be bound</typeparam>
         </member>
         <member name="M:Gordon360.Services.ComplexQueries.RawSqlQuery`1.query(System.String,System.Object[])">
             <summary>
@@ -2106,6 +2112,13 @@
             </summary>
             <param name="id">The id of the instructor</param>
             <returns>StudentScheduleViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleService.CanReadStudentSchedules(System.String)">
+            <summary>
+            Determine whether the specified user can read student schedules, based on the logic in the stored procedure
+            </summary>
+            <param name="username">The username to determine it for</param>
+            <returns>Whether the specified user can read student schedules</returns>
         </member>
         <member name="M:Gordon360.Services.StudentEmploymentService.GetEmployment(System.String)">
             <summary>
