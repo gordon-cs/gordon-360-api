@@ -40,22 +40,12 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Schedule was not found." };
             }
 
-
             var currentSessionCode = Helpers.GetCurrentSession().SessionCode;
-
-            // This is a test code for 2019 Summer. Next time you see this, delete this part
-            if (currentSessionCode == "201905" && id != "999999097")
-            {
-                currentSessionCode = "201909";
-            }
-
-
 
             var idInt = Int32.Parse(id);
             var idParam = new SqlParameter("@stu_num", idInt);
             var sessParam = new SqlParameter("@sess_cde", currentSessionCode);
             var result = RawSqlQuery<ScheduleViewModel>.query("STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE @stu_num, @sess_cde", idParam, sessParam);
-            //var result = RawSqlQuery<ScheduleViewModel>.query("SELECT STUDENT_ID as ID_NUM, CRS_CDE, CRS_TITLE, BLDG_CDE, ROOM_CDE, MONDAY_CDE, TUESDAY_CDE, WEDNESDAY_CDE, THURSDAY_CDE, FRIDAY_CDE, BEGIN_TIME, END_TIME FROM TmsEPrd.dbo.GORD_CCT_COURSES WHERE yr_cde = 18 and trm_cde = 'SP' and Student_ID = 50153273");
             if (result == null)
             {
                 return null;
@@ -97,6 +87,18 @@ namespace Gordon360.Services
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Determine whether the specified user can read student schedules, based on the logic in the stored procedure
+        /// </summary>
+        /// <param name="username">The username to determine it for</param>
+        /// <returns>Whether the specified user can read student schedules</returns>
+        public bool CanReadStudentSchedules(string username)
+        {
+            var usernameParam = new SqlParameter("@username", username);
+
+            return RawSqlQuery<int>.query("CAN_READ_STUDENT_SCHEDULES @username", usernameParam).FirstOrDefault() == 1;
         }
     }
 }
