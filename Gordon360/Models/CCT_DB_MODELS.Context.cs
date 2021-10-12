@@ -100,7 +100,7 @@ namespace Gordon360.Models
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ADVISOR_EMAILS_PER_ACT_CDE_Result>("ADVISOR_EMAILS_PER_ACT_CDE", aCT_CDEParameter, sESS_CDEParameter);
         }
-    
+
         public virtual ObjectResult<ADVISOR_SEPARATE_Result> ADVISOR_SEPARATE(Nullable<int> sTUDENT_ID)
         {
             var sTUDENT_IDParameter = sTUDENT_ID.HasValue ?
