@@ -89,6 +89,29 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// get the current user's birthday
+        /// </summary>
+        /// <param name="username">The current user's username</param>
+        /// <returns>Date the user's date of birth</returns>
+        public DateTime GetBirthday(string username)
+        {
+            var dob = _unitOfWork.AccountRepository.FirstOrDefault(a => a.AD_Username == username).Birth_Date;
+
+            if (dob == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "A birthday was not found for this user." };
+            }
+
+            try
+            {
+                return (DateTime)(dob);
+            } catch
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "A birthday was not found for this user." };
+            }
+        }
+
+        /// <summary>
         /// get advisors for particular student
         /// </summary>
         /// <param name="id">student id</param>
