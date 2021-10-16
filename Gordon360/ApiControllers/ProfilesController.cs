@@ -406,14 +406,14 @@ namespace Gordon360.Controllers.Api
         /// <summary>Gets the date of birth of the current logged-in user</summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("dob")]
-        public IHttpActionResult GetBirthday()
+        [Route("birthdate")]
+        public IHttpActionResult GetBirthdate()
         {
             //get token data from context, username is the username of current logged in person
             var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
             var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
 
-            var result = _profileService.GetBirthday(username);
+            var result = _profileService.GetBirthdate(username);
             return Ok(result);
         }
 

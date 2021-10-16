@@ -93,21 +93,21 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">The current user's username</param>
         /// <returns>Date the user's date of birth</returns>
-        public DateTime GetBirthday(string username)
+        public DateTime GetBirthdate(string username)
         {
-            var dob = _unitOfWork.AccountRepository.FirstOrDefault(a => a.AD_Username == username).Birth_Date;
+            var birthdate = _unitOfWork.AccountRepository.FirstOrDefault(a => a.AD_Username == username).Birth_Date;
 
-            if (dob == null)
+            if (birthdate == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "A birthday was not found for this user." };
             }
 
             try
             {
-                return (DateTime)(dob);
+                return (DateTime)(birthdate);
             } catch
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "A birthday was not found for this user." };
+                throw new ResourceNotFoundException() { ExceptionMessage = "The user's birthdate was invalid." };
             }
         }
 
