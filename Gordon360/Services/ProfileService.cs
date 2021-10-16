@@ -95,7 +95,7 @@ namespace Gordon360.Services
         /// <returns>Date the user's date of birth</returns>
         public DateTime GetBirthday(string username)
         {
-            var dob = _unitOfWork.AccountRepository.FirstOrDefault(a => a.AD_Username == username).Birth_Date;
+            var dob = _unitOfWork.AccountRepository.FirstOrDefault(a => a.AD_Username == username)?.Birth_Date;
 
             if (dob == null)
             {
