@@ -10,6 +10,7 @@ using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Static.Methods;
 using System.Net.Mail;
 using System.Net;
+using Gordon360.Services;
 
 namespace Gordon360.Services
 {
@@ -167,7 +168,7 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// Get a list of emails for leaders in the activity during a specified session
+        /// Get a list of emails for advisors in the activity during a specified session
         /// </summary>
         /// <param name="activity_code">The activity code</param>
         /// <param name="session_code">The session code</param>
@@ -176,13 +177,47 @@ namespace Gordon360.Services
         {
             var idParam = new SqlParameter("@ACT_CDE", activity_code);
             var sessParam = new SqlParameter("@SESS_CDE", session_code);
-            var result = RawSqlQuery<EmailViewModel>.query("ADVISOR_EMAILS_PER_ACT_CDE @ACT_CDE, @SESS_CDE", idParam, sessParam);
-            if (result == null)
+            var emailResult = RawSqlQuery<EmailViewModel>.query("ADVISOR_EMAILS_PER_ACT_CDE @ACT_CDE, @SESS_CDE", idParam, sessParam);
+            var membershipResult = RawSqlQuery<MembershipViewModel>.query("MEMBERSHIPS_PER_ACT_CDE @ACT_CDE", idParam);
+
+            // Filter advisors
+            var advisorRole = Helpers.GetAdvisorRoleCodes();
+            membershipResult = membershipResult.Where(x => advisorRole == x.Participation.Trim());
+
+            // Getting rid of whitespace inherited from the database .__.
+            var trimmedResult = membershipResult.Select(x =>
+            {
+                var trim = x;
+                trim.ActivityCode = x.ActivityCode.Trim();
+                trim.ActivityDescription = x.ActivityDescription.Trim();
+                trim.SessionCode = x.SessionCode.Trim();
+                trim.SessionDescription = x.SessionDescription.Trim();
+                trim.IDNumber = x.IDNumber;
+                trim.FirstName = x.FirstName.Trim();
+                trim.LastName = x.LastName.Trim();
+                trim.Participation = x.Participation.Trim();
+                trim.ParticipationDescription = x.ParticipationDescription.Trim();
+                return trim;
+            });
+
+            var skippedResult = trimmedResult.SkipWhile((advisor) => advisor.SessionCode != session_code);
+
+            if (skippedResult == null || membershipResult == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
             }
 
-            return result;
+            for (int i = 0; i < emailResult.Count(); i++)
+            {
+                var membershipInfo = skippedResult.FirstOrDefault(advisor => 
+                    advisor.FirstName == emailResult.ElementAt(i).FirstName
+                    && advisor.LastName == emailResult.ElementAt(i).LastName);
+                emailResult.ElementAt(i).Description = membershipInfo.ParticipationDescription == ""? 
+                    membershipInfo.Description 
+                    : membershipInfo.ParticipationDescription;
+            }
+
+            return emailResult;
         }
 
         /// <summary>
