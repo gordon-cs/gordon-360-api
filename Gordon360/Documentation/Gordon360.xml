@@ -363,6 +363,10 @@
             <summary>Gets the mailbox information of currently logged in user</summary>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.ProfilesController.GetBirthdate">
+            <summary>Gets the date of birth of the current logged-in user</summary>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.ProfilesController.GetMyImg">
             <summary>Get the profile image of currently logged in user</summary>
             <returns></returns>
@@ -1941,6 +1945,13 @@
             </summary>
             <param name="username">The current user's username</param>
             <returns>MailboxViewModel with the combination</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetBirthdate(System.String)">
+            <summary>
+            get the current user's birthday
+            </summary>
+            <param name="username">The current user's username</param>
+            <returns>Date the user's date of birth</returns>
         </member>
         <member name="M:Gordon360.Services.ProfileService.GetAdvisors(System.String)">
             <summary>
