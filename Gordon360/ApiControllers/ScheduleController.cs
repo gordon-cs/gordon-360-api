@@ -130,7 +130,10 @@ namespace Gordon360.Controllers.Api
                         }
                         break;
                     case Position.FACSTAFF:
-                        scheduleResult = _scheduleService.GetScheduleStudent(id);
+                        if (_scheduleService.CanReadStudentSchedules(viewerName))
+                        {
+                            scheduleResult = _scheduleService.GetScheduleStudent(id);
+                        }
                         break;
                 }
             }
@@ -154,6 +157,20 @@ namespace Gordon360.Controllers.Api
             }
 
             return Ok(result);
+        }
+
+        /// <summary>
+        /// Get whether the currently logged-in user can read student schedules
+        /// </summary>
+        /// <returns>Whether they can read student schedules</returns>
+        [HttpGet]
+        [Route("canreadstudent")]
+        public IHttpActionResult GetCanReadStudentSchedules()
+        {
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+
+            return Ok(_scheduleService.CanReadStudentSchedules(username));
         }
     }
 }

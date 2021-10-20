@@ -9,8 +9,8 @@ namespace Gordon360.Services.ComplexQueries
     /// <summary>
     /// Helper class to execute Sql statements.
     /// </summary>
-    /// <typeparam name="T">The class to which the result will be bound</typeparam>
-    public static class RawSqlQuery<T> where T: class
+    /// <typeparam name="T">The type to which the result will be bound</typeparam>
+    public static class RawSqlQuery<T>
     {
         /// <summary>
         /// Execute the sql query
