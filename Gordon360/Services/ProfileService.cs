@@ -89,9 +89,9 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// get the current user's birthday
+        /// get a user's birthday
         /// </summary>
-        /// <param name="username">The current user's username</param>
+        /// <param name="username">The username of the person to get the birthdate of</param>
         /// <returns>Date the user's date of birth</returns>
         public DateTime GetBirthdate(string username)
         {
