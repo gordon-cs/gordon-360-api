@@ -83,6 +83,7 @@ namespace Gordon360.Services
                 Created = now,
                 Expires = ExpirationDate(now),
                 CreatedBy = "360.WellnessCheck",
+                Notes = status == WellnessStatusColor.YELLOW ? $"STATUS: {status};" : null,
                 Emailed = null
             };
 
