@@ -54,7 +54,8 @@ namespace Gordon360.Services
                 {
                     Status = ((WellnessStatusColor)result.HealthStatusID).ToString(),
                     Created = result.Created,
-                    IsValid = result.Expires == null || DateTime.Now < result.Expires
+                    IsValid = result.Expires == null || DateTime.Now < result.Expires,
+                    StatusDescription = result.Notes?.StartsWith("STATUS: ") ?? false ? result.Notes.Substring(8, result.Notes.IndexOf(";") - 8) : null
                 };
             }
         }

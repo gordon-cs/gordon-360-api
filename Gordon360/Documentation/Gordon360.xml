@@ -1948,9 +1948,9 @@
         </member>
         <member name="M:Gordon360.Services.ProfileService.GetBirthdate(System.String)">
             <summary>
-            get the current user's birthday
+            get a user's birthday
             </summary>
-            <param name="username">The current user's username</param>
+            <param name="username">The username of the person to get the birthdate of</param>
             <returns>Date the user's date of birth</returns>
         </member>
         <member name="M:Gordon360.Services.ProfileService.GetAdvisors(System.String)">
