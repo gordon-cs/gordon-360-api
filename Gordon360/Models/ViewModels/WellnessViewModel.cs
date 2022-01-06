@@ -12,5 +12,7 @@ namespace Gordon360.Models.ViewModels
         public DateTime Created { get; set; }
 
         public bool IsValid { get; set; }
+
+        public string StatusDescription {  get; set; }
     }
 }
