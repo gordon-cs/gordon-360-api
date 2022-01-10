@@ -28,16 +28,16 @@ namespace Gordon360.Services
         /// <param name="data"> The object that stores the contact info </param>
         /// <param name="id"> The students id number</param>
         /// <returns> The stored data </returns>
-        public EmergencyContact PutEmergencyContact(EmergencyContact data, string id, string username)
+        public EmergencyContactViewModel PutEmergencyContact(EmergencyContactViewModel data, string id, string username)
         {
             var splitUsername = username.Split('.');
             var studentIDParam = new SqlParameter("@StudentID", Int32.Parse(id));
-            var contactIDParam = new SqlParameter("@ContactNum", data.SEQ_NUM);
-            var contactLastNameParam = new SqlParameter("@ContactLastName", data.lastname);
-            var contactFirstNameParam = new SqlParameter("@ContactFirstName", data.firstname);
+            var contactIDParam = new SqlParameter("@ContactNum", data.SEQ_NUMBER);
+            var contactLastNameParam = new SqlParameter("@ContactLastName", data.LastName);
+            var contactFirstNameParam = new SqlParameter("@ContactFirstName", data.FirstName);
             var contactHomePhoneParam = new SqlParameter("@ContactHomePhone", FormatNumber(data.HomePhone));
             var contactMobilePhoneParam = new SqlParameter("@ContactMobilePhone", FormatNumber(data.MobilePhone));
-            var contactRelationshipParam = new SqlParameter("@ContactRelationship", data.relationship);
+            var contactRelationshipParam = new SqlParameter("@ContactRelationship", data.Relationship);
             var notesParam = new SqlParameter("@Notes", CreateNotesValue(data.MobilePhone, data.HomePhone));
             var usernameParam = new SqlParameter("@Username", "360Web (" + splitUsername[1] + ", " + splitUsername[0] + ")");
             var jobNameParam = new SqlParameter("@JobName", "Enrollment-Checkin");
