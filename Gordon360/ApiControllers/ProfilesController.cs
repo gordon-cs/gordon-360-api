@@ -366,7 +366,7 @@ namespace Gordon360.Controllers.Api
         }
 
         /// <summary> Gets the emergency contact information of a particular user </summary>
-        /// <param username="AD_Username"> The username for which to retrieve info </param>
+        /// <param name="username"> The username for which to retrieve info </param>
         /// <returns> Emergency contact information of the given user. </returns>
         [HttpGet]
         [Route("emergency-contact/{username}")]

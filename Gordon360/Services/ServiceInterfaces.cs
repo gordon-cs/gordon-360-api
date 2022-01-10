@@ -301,7 +301,7 @@ namespace Gordon360.Services
     public interface IAcademicCheckInService
     {
         AcademicCheckInViewModel PutCellPhone(string id, AcademicCheckInViewModel data);
-        EmergencyContact PutEmergencyContact(EmergencyContact data, string id, string username);
+        EmergencyContactViewModel PutEmergencyContact(EmergencyContactViewModel data, string id, string username);
         IEnumerable<AcademicCheckInViewModel> GetHolds(string id);
         void SetStatus(string id);
         AcademicCheckInViewModel PutDemographic(string id, AcademicCheckInViewModel data);
