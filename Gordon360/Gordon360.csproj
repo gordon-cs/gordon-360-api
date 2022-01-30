@@ -759,6 +759,7 @@
     <Compile Include="Services\ActivityService.cs" />
     <Compile Include="Services\AdministratorService.cs" />
     <Compile Include="Services\DirectMessageService.cs" />
+    <Compile Include="Services\UpdateService.cs" />
     <Compile Include="Utils\ImageUtils.cs" />
     <Compile Include="Services\JobsService.cs" />
     <Compile Include="Services\DiningService.cs" />
@@ -902,7 +903,9 @@
     <None Include="Properties\PublishProfiles\DEV.pubxml" />
     <None Include="Properties\PublishProfiles\PROD.pubxml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Views\UpdateService\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
