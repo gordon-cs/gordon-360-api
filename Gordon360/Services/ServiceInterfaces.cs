@@ -209,6 +209,10 @@ namespace Gordon360.Services
         IEnumerable<HourTypesViewModel> GetHourTypes();
     }
 
+    public interface IUpdateService
+    {
+        IEnumerable<UpdateAlumniViewModel> updateInfo(int rowID, string email, string homePhone, string mobilePhone, string address1, string address2, string city, string state);
+    }
     public interface IParticipationService
     {
         ParticipationViewModel Get(string id);

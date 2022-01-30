@@ -732,6 +732,7 @@
     <Compile Include="Models\ViewModels\SessionViewModel.cs" />
     <Compile Include="Models\ViewModels\SliderViewModel.cs" />
     <Compile Include="Models\ViewModels\SupervisorViewModel.cs" />
+    <Compile Include="Models\ViewModels\UpdateViewModel.cs" />
     <Compile Include="Models\ViewModels\UserViewModel.cs" />
     <Compile Include="Models\ViewModels\VictoryPromiseViewModel.cs" />
     <Compile Include="Models\ViewModels\WellnessQuestionViewModel.cs" />
@@ -905,6 +906,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\UpdateService\" />
+    <Folder Include="Views\UpdateViewModel\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

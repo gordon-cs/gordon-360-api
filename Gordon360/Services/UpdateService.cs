@@ -48,9 +48,10 @@ namespace Gordon360.Services
 
             try
             {
-                Debug.WriteLine(
-                    "ID Num: {}   Email: {}   Home Phone: {}   Mobile Phone: {}    Address 1: {}   Address 2: {}   City: {}   State: {}", rowID, email, homePhone, mobilePhone, address1, address2, city, state);
-                // result = RawSqlQuery<StudentTimesheetsViewModel>.query("UPDATE student_info SET STATUS = 'Saved', EMAIL = @newEmail, HOME_PHONE = @newHomePhone , MOBILE_PHONE = @newMobilePhone, ADDRESS_1 = @newAddress1, ADDRESS_2 = @newAddress2, CITY = @newCity, STATE = @newState);
+                Debug.WriteLine("ID Num: {}   Email: {}   Home Phone: {}   Mobile Phone: {}    Address 1: {}   Address 2: {}   City: {}   State: {}", rowID, email, homePhone, mobilePhone, address1, address2, city, state);
+                // result = RawSqlQuery<
+                // >.query("UPDATE student_info SET STATUS = 'Saved', EMAIL = @newEmail, HOME_PHONE = @newHomePhone , MOBILE_PHONE = @newMobilePhone, ADDRESS_1 = @newAddress1, ADDRESS_2 = @newAddress2, CITY = @newCity, STATE = @newState);
+            }
             catch (Exception e)
             {
                 Debug.WriteLine(e.Message);
