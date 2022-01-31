@@ -223,6 +223,7 @@
     <Compile Include="ApiControllers\MyScheduleController.cs" />
     <Compile Include="ApiControllers\SaveController.cs" />
     <Compile Include="ApiControllers\ScheduleControlController.cs" />
+    <Compile Include="ApiControllers\UpdateController.cs" />
     <Compile Include="ApiControllers\WellnessController.cs" />
     <Compile Include="Models\ACCOUNT.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
@@ -732,7 +733,7 @@
     <Compile Include="Models\ViewModels\SessionViewModel.cs" />
     <Compile Include="Models\ViewModels\SliderViewModel.cs" />
     <Compile Include="Models\ViewModels\SupervisorViewModel.cs" />
-    <Compile Include="Models\ViewModels\UpdateViewModel.cs" />
+    <Compile Include="Models\ViewModels\UpdateAlumniViewModel.cs" />
     <Compile Include="Models\ViewModels\UserViewModel.cs" />
     <Compile Include="Models\ViewModels\VictoryPromiseViewModel.cs" />
     <Compile Include="Models\ViewModels\WellnessQuestionViewModel.cs" />
@@ -905,8 +906,9 @@
     <None Include="Properties\PublishProfiles\PROD.pubxml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Views\UpdateAlumniViewModel\" />
     <Folder Include="Views\UpdateService\" />
-    <Folder Include="Views\UpdateViewModel\" />
+    <Folder Include="Views\Update\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
