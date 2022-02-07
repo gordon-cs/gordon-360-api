@@ -25,6 +25,11 @@ namespace Gordon360.Services
     /// </summary>
     public class UpdateService : IUpdateService
     {
+        private IUnitOfWork _unitOfWork;
+        public UpdateService(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
         public IEnumerable<UpdateAlumniViewModel> updateInfo(int rowID, string email, string homePhone, string mobilePhone, string address1, string address2, string city, string state)
         {
             IEnumerable<UpdateAlumniViewModel> result = null;

@@ -25,6 +25,15 @@ namespace Gordon360.ApiControllers
     public class UpdateController : ApiController
     {
         private IUpdateService _updateservice;
+        private IAccountService _accountService;
+
+
+        public UpdateController()
+        {
+            IUnitOfWork _unitOfWork = new UnitOfWork();
+            _updateservice = new UpdateService(_unitOfWork);
+            _accountService = new AccountService(_unitOfWork);
+        }
 
         private int GetCurrentUserID()
         {
