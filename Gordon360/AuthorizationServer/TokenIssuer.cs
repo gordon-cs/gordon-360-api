@@ -105,7 +105,7 @@ namespace Gordon360.AuthorizationServer
                         {
                             collegeRole = Position.READONLY;
                         }
-                        else if(distinguishedName.Contains("OU=Students"))
+                        else if(distinguishedName.Contains("OU=Students") || username.ToLower() == "360.studenttest")
                         {
                             collegeRole = Position.STUDENT;
                         }
