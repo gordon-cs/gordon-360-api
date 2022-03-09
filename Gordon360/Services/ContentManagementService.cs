@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Gordon360.Database.CCT;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Models;
+using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using Gordon360.Utils;
@@ -16,14 +18,15 @@ namespace Gordon360.Services
     /// </summary>
     public class ContentManagementService : IContentManagementService
     {
-        private IUnitOfWork _unitOfWork;
+        private CCTContext _context;
         private readonly ImageUtils _imageUtils = new ImageUtils();
 
         private readonly string SlideUploadPath = "browseable/slider";
 
-        public ContentManagementService(UnitOfWork unitOfWork)
+
+        public ContentManagementService(CCTContext context)
         {
-            _unitOfWork = unitOfWork;
+            _context = context;
         }
 
         /// <summary>
@@ -33,10 +36,7 @@ namespace Gordon360.Services
         /// If not returns an empty IEnumerable.</returns>
         public IEnumerable<SliderViewModel> DEPRECATED_GetSliderContent()
         {
-            var query = _unitOfWork.SliderRepository.GetAll();
-            var result = query.Select<Slider_Images, SliderViewModel>(x => x);
-
-            return result;
+           return _context.Slider_Images.Select<Slider_Images, SliderViewModel>(x => x);
         }
 
         /// <summary>

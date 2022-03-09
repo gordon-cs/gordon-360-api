@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Security.Claims;
+using Gordon360.Database.CCT;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
@@ -16,10 +17,9 @@ namespace Gordon360.Controllers.Api
     {
         private readonly IVictoryPromiseService _victoryPromiseService;
 
-        public VictoryPromiseController()
+        public VictoryPromiseController(CCTContext context)
         {
-            var _unitOfWork = new UnitOfWork();
-            _victoryPromiseService = new VictoryPromiseService(_unitOfWork);
+            _victoryPromiseService = new VictoryPromiseService(context);
         }
         public VictoryPromiseController(IVictoryPromiseService victoryPromiseService)
         {

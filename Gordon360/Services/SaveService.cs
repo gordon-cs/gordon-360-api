@@ -1,42 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Gordon360.Models;
-using Gordon360.Models.ViewModels;
-using Gordon360.Repositories;
-using Gordon360.Services.ComplexQueries;
-using System.Data.SqlClient;
-using System.Data;
+﻿using Gordon360.Database.CCT;
 using Gordon360.Exceptions.CustomExceptions;
-using Gordon360.Static.Methods;
-using System.Diagnostics;
+using Gordon360.Models;
+using Gordon360.Models.CCT;
+using Gordon360.Services.ComplexQueries;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Gordon360.Services
 {
     public class SaveService : ISaveService
     {
-        private IUnitOfWork _unitOfWork;
+        private readonly CCTContext _context;
 
-        public SaveService(IUnitOfWork unitOfWork)
+        public SaveService(CCTContext context)
         {
-            _unitOfWork = unitOfWork;
+            _context = context;
         }
 
         /// <summary>
         /// Fetch all upcoming ride items
         /// </summary>
         /// <returns> IEnumerable of ride items if found, null if not found</returns>
-        public IEnumerable<UPCOMING_RIDES_Result> GetUpcoming(string gordon_id)
+        public IEnumerable<UPCOMING_RIDESResult> GetUpcoming(string gordon_id)
         {
-            var idParam = new SqlParameter("@STUDENT_ID", gordon_id);
-            var result = RawSqlQuery<UPCOMING_RIDES_Result>.query("UPCOMING_RIDES @STUDENT_ID", idParam); //run stored procedure
+            var result = _context.Procedures.UPCOMING_RIDESAsync(int.Parse(gordon_id));
 
             if (result == null)
             {
                 return null;
             }
 
-            return result;
+            return (IEnumerable<UPCOMING_RIDESResult>)result;
         }
 
         /// <summary>
@@ -44,31 +42,30 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="gordon_id">The ride id</param>
         /// <returns> ride items if found, null if not found</returns>
-        public IEnumerable<UPCOMING_RIDES_BY_STUDENT_ID_Result> GetUpcomingForUser(string gordon_id)
+        public IEnumerable<UPCOMING_RIDES_BY_STUDENT_IDResult> GetUpcomingForUser(string gordon_id)
         {
-            var idParam = new SqlParameter("@STUDENT_ID", gordon_id);
-            var result = RawSqlQuery<UPCOMING_RIDES_BY_STUDENT_ID_Result>.query("UPCOMING_RIDES_BY_STUDENT_ID @STUDENT_ID", idParam); //run stored procedure
+            var result = _context.Procedures.UPCOMING_RIDES_BY_STUDENT_IDAsync(int.Parse(gordon_id));
 
             if (result == null)
             {
                 return null;
             }
 
-            return result;
+            return (IEnumerable<UPCOMING_RIDES_BY_STUDENT_IDResult>)result;
         }
 
 
-            /// <summary>
-            /// Adds a new ride record to storage.
-            /// </summary>
-            /// <param name="newRide">The Save_Rides object to be added</param>
-            /// <param name="gordon_id">The gordon_id of the user creating the ride</param>
-            /// <returns>The newly added custom event</returns>
-            public Save_Rides AddRide(Save_Rides newRide, string gordon_id)
+        /// <summary>
+        /// Adds a new ride record to storage.
+        /// </summary>
+        /// <param name="newRide">The Save_Rides object to be added</param>
+        /// <param name="gordon_id">The gordon_id of the user creating the ride</param>
+        /// <returns>The newly added custom event</returns>
+        public async Task<Save_Rides> AddRide(Save_Rides newRide, string gordon_id)
         {
 
             // Assign event id
-            var rideList = _unitOfWork.RideRepository.GetAll(x => x.rideID == newRide.rideID);
+            var rideList = _context.Save_Rides.Where(x => x.rideID == newRide.rideID);
             int highestRideID = 1;
             foreach (var ride in rideList)
             {
@@ -76,30 +73,16 @@ namespace Gordon360.Services
             }
             var newRideID = highestRideID.ToString();
 
-            var idParam = new SqlParameter("@ID", gordon_id);
-            var rideIdParam = new SqlParameter("@RIDEID", newRide.rideID);
-            var isDriverParam = new SqlParameter("@ISDRIVER", 1);
-
-            var context = new CCTEntities1();
-
-            var rideIdParam2 = new SqlParameter("@RIDEID", newRide.rideID);
-            var destinationParam = new SqlParameter("@DESTINATION", newRide.destination);
-            var meetingPointParam = new SqlParameter("@MEETINGPOINT", newRide.meetingPoint);
-            var startTimeParam = new SqlParameter("@STARTTIME", newRide.startTime);
-            var endTimeParam = new SqlParameter("@ENDTIME", newRide.endTime);
-            var capacityParam = new SqlParameter("@CAPACITY", newRide.capacity);
-            var notesParam = new SqlParameter("@NOTES", newRide.notes);
-            var canceledParam = new SqlParameter("@CANCELED", newRide.canceled);
-            var result = context.Database.ExecuteSqlCommand("CREATE_RIDE @RIDEID, @DESTINATION, @MEETINGPOINT, @STARTTIME, @ENDTIME, @CAPACITY, @NOTES, @CANCELED", rideIdParam2, destinationParam, meetingPointParam, startTimeParam, endTimeParam, capacityParam, notesParam, canceledParam);
+            var result =  await _context.Procedures.CREATE_RIDEAsync(newRideID, newRide.destination, newRide.meetingPoint, newRide.startTime, newRide.endTime, newRide.capacity, newRide.notes, newRide.canceled);
 
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The ride could not be created." };
             }
 
-            context.Database.ExecuteSqlCommand("CREATE_BOOKING @ID, @RIDEID, @ISDRIVER", idParam, rideIdParam, isDriverParam); // run stored procedure.
+            await _context.Procedures.CREATE_BOOKINGAsync(gordon_id, newRideID, 1);
 
-            _unitOfWork.Save();
+            _context.SaveChanges();
 
             return newRide;
 
@@ -111,25 +94,21 @@ namespace Gordon360.Services
         /// <param name="rideID">The myschedule id</param>
         /// <param name="gordon_id">The gordon id</param>
         /// <returns>The myschedule that was just deleted</returns>
-        public Save_Rides DeleteRide(string rideID, string gordon_id)
+        public async Task<Save_Rides> DeleteRide(string rideID, string gordon_id)
         {
             //make get first or default then use generic repository delete on result
-            var result = _unitOfWork.RideRepository.FirstOrDefault(x => x.rideID == rideID);
-            var booking = _unitOfWork.BookingRepository.FirstOrDefault(x => x.ID == gordon_id && x.rideID == rideID && x.isDriver == 1);
+            var result = await _context.Save_Rides.FirstOrDefaultAsync(x => x.rideID == rideID);
+            var booking = await _context.Save_Bookings.FirstOrDefaultAsync(x => x.ID == gordon_id && x.rideID == rideID && x.isDriver == 1);
             if (!(booking == null))
             {
                 if (result == null)
                 {
                     throw new ResourceNotFoundException() { ExceptionMessage = "The ride was not found." };
                 }
-                var idParam = new SqlParameter("@RIDE_ID", rideID);
-                var context = new CCTEntities1();
 
-                context.Database.ExecuteSqlCommand("DELETE_RIDE @RIDE_ID", idParam); // run stored procedure.
-                _unitOfWork.Save();
-                var idParam2 = new SqlParameter("@RIDE_ID", rideID);
-                context.Database.ExecuteSqlCommand("DELETE_BOOKINGS @RIDE_ID", idParam2); // run stored procedure.
-                _unitOfWork.Save();
+                await _context.Procedures.DELETE_RIDEAsync(rideID); 
+                await _context.Procedures.DELETE_BOOKINGSAsync(rideID); 
+                _context.SaveChanges();
             }
 
             return result;
@@ -141,14 +120,10 @@ namespace Gordon360.Services
         /// <param name="rideID">The ride id</param>
         /// <param name="gordon_id">The gordon id</param>
         /// <returns>The ride that was just deleted</returns>
-        public int CancelRide(string rideID, string gordon_id)
+        public async Task<int> CancelRide(string rideID, string gordon_id)
         {
-            var idParam = new SqlParameter("@STUDENT_ID", gordon_id);
-            var rideIdParam = new SqlParameter("@RIDE_ID", rideID);
-            var context = new CCTEntities1();
-
-            var result = context.Database.ExecuteSqlCommand("CANCEL_RIDE @STUDENT_ID, @RIDE_ID", idParam, rideIdParam); // run stored procedure.
-            _unitOfWork.Save();
+            var result = await _context.Procedures.CANCEL_RIDEAsync(int.Parse(gordon_id), rideID);
+            _context.SaveChanges();
 
             return result;
         }
@@ -158,10 +133,10 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="newBooking">The Save_Bookings object to be added</param>
         /// <returns>The newly added custom event</returns>
-        public Save_Bookings AddBooking(Save_Bookings newBooking)
+        public async Task<Save_Bookings> AddBooking(Save_Bookings newBooking)
         {
-            var ride = _unitOfWork.RideRepository.FirstOrDefault(x => x.rideID == newBooking.rideID);
-            var bookings = _unitOfWork.BookingRepository.GetAll(x => x.rideID == newBooking.rideID);
+            var ride = await _context.Save_Rides.FirstOrDefaultAsync(x => x.rideID == newBooking.rideID);
+            var bookings = _context.Save_Bookings.Where(x => x.rideID == newBooking.rideID);
             int bookedCount = 0;
             foreach (var booking in bookings)
             {
@@ -173,13 +148,9 @@ namespace Gordon360.Services
                 throw new ResourceCreationException() { ExceptionMessage = "Ride is full!" };
             }
 
-            var idParam = new SqlParameter("@ID", newBooking.ID);
-            var rideIdParam = new SqlParameter("@RIDEID", newBooking.rideID);
-            var isDriverParam = new SqlParameter("@ISDRIVER", newBooking.isDriver);
-            var context = new CCTEntities1();
-            context.Database.ExecuteSqlCommand("CREATE_BOOKING @ID, @RIDEID, @ISDRIVER", idParam, rideIdParam, isDriverParam);
+            await _context.Procedures.CREATE_BOOKINGAsync(newBooking.ID, newBooking.rideID, newBooking.isDriver);
 
-            _unitOfWork.Save();
+            await _context.SaveChangesAsync();
 
             return newBooking;
         }
@@ -191,23 +162,20 @@ namespace Gordon360.Services
         /// <param name="rideID">The myschedule id</param>
         /// <param name="gordon_id">The gordon id</param>
         /// <returns>The myschedule that was just deleted</returns>
-        public Save_Bookings DeleteBooking(string rideID, string gordon_id)
+        public async Task<Save_Bookings> DeleteBooking(string rideID, string gordon_id)
         {
-            var result = _unitOfWork.BookingRepository.FirstOrDefault(x => x.ID == gordon_id && x.rideID == rideID);
+            var result = await _context.Save_Bookings.FirstOrDefaultAsync(x => x.ID == gordon_id && x.rideID == rideID);
             if (result != null)
             {
-                var rideIDParam = new SqlParameter("@RIDE_ID", rideID);
-                var gordonIDParam = new SqlParameter("@ID", gordon_id);
-                var context = new CCTEntities1();
                 // If driver booking is deleted, ride is deleted
                 // TODO: notify users
                 if (result.isDriver == 1)
                 {
-                    context.Database.ExecuteSqlCommand("DELETE_RIDE @RIDE_ID", rideIDParam); // run stored procedure.
-                    _unitOfWork.Save();
+                    await _context.Procedures.DELETE_RIDEAsync(rideID);
+                    await _context.SaveChangesAsync();
                 }
-                context.Database.ExecuteSqlCommand("DELETE_BOOKING @RIDE_ID, @ID", rideIDParam, gordonIDParam); // run stored procedure.
-                _unitOfWork.Save();
+                await _context.Procedures.DELETE_BOOKINGAsync(rideID, gordon_id);
+                await _context.SaveChangesAsync();
             }
 
             return result;

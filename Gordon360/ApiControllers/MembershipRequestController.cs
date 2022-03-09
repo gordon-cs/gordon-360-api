@@ -10,6 +10,8 @@ using Gordon360.Exceptions.CustomExceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Gordon360.Models.ViewModels;
+using Gordon360.Database.CCT;
+using Gordon360.Models.CCT;
 
 namespace Gordon360.Controllers.Api
 {
@@ -21,10 +23,9 @@ namespace Gordon360.Controllers.Api
 
         public IMembershipRequestService _membershipRequestService;
 
-        public MembershipRequestController()
+        public MembershipRequestController(CCTContext context)
         {
-            var _unitOfWork = new UnitOfWork();
-            _membershipRequestService = new MembershipRequestService(_unitOfWork);
+            _membershipRequestService = new MembershipRequestService(context);
         }
 
         public MembershipRequestController(IMembershipRequestService membershipRequestService)

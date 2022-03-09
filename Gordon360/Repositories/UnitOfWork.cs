@@ -2,9 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Gordon360.Models;
-using System.Data.Entity.Validation;
+using Gordon360.Models.CCT;
+using Gordon360.Models.MyGordon;
 using System.Text;
+using Gordon360.Database.CCT;
+using Gordon360.Database.MyGordon;
 
 namespace Gordon360.Repositories
 {
@@ -18,16 +20,15 @@ namespace Gordon360.Repositories
         private IRepository<CM_SESSION_MSTR> _SessionRepository;
         private IRepository<JNZB_ACTIVITIES> _JenzibarActvityRepository;
         private IRepository<MEMBERSHIP> _MembershipRepository;
-        private IRepository<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> _FacultyScheduleRepository;
-        private IRepository<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> _StudentScheduleRepository;
+        private IRepository<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDEResult> _FacultyScheduleRepository;
+        private IRepository<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDEResult> _StudentScheduleRepository;
         private IRepository<Mailboxes> _MailboxRepository;
         private IRepository<MYSCHEDULE> _MyScheduleRepository;
         private IRepository<Save_Rides> _RideRepository;
         private IRepository<Save_Bookings> _BookingRepository;
         private IRepository<PART_DEF> _ParticipationRepository;
-        private IRepository<SUPERVISOR> _SupervisorRepository;
-        private IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> _ActivityPerSessionRepository;
-        private IRepository<VICTORY_PROMISE_BY_STUDENT_ID_Result> _VictoryPromiseByStudentIDRepository;
+        private IRepository<ACTIVE_CLUBS_PER_SESS_IDResult> _ActivityPerSessionRepository;
+        private IRepository<VICTORY_PROMISE_BY_STUDENT_IDResult> _VictoryPromiseByStudentIDRepository;
         //private IRepository<STUDENT_JOBS_PER_ID_NUM_Result> _StudentEmploymentByStudentIDRepository;
         private IRepository<REQUEST> _MembershipRequestRepository;
         private IRepository<ACT_INFO> _ActivityInfoRepository;
@@ -43,13 +44,13 @@ namespace Gordon360.Repositories
         private IRepository<Health_Status> _WellnessRepository;
         private IRepository<Clifton_Strengths> _CliftonStrengthsRepository;
 
-        private CCTEntities1 _context;
-        private MyGordonEntities _myGordonCtx;
+        private CCTContext _context;
+        private MyGordonContext _myGordonCtx;
 
         public UnitOfWork()
         {
-            _context = new CCTEntities1();
-            _myGordonCtx = new MyGordonEntities();
+            _context = new CCTContext();
+            _myGordonCtx = new MyGordonContext();
         }
         public IRepository<Student> StudentRepository
         {
@@ -87,13 +88,13 @@ namespace Gordon360.Repositories
         {
             get { return _MembershipRepository ?? (_MembershipRepository = new GenericRepository<MEMBERSHIP>(_context)); }
         }
-        public IRepository<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> StudentScheduleRepository
+        public IRepository<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDEResult> StudentScheduleRepository
         {
-            get { return _StudentScheduleRepository ?? (_StudentScheduleRepository = new GenericRepository<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result>(_context)); }
+            get { return _StudentScheduleRepository ?? (_StudentScheduleRepository = new GenericRepository<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDEResult>(_context)); }
         }
-        public IRepository<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> FacultyScheduleRepository
+        public IRepository<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDEResult> FacultyScheduleRepository
         {
-            get { return _FacultyScheduleRepository ?? (_FacultyScheduleRepository = new GenericRepository<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result>(_context)); }
+            get { return _FacultyScheduleRepository ?? (_FacultyScheduleRepository = new GenericRepository<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDEResult>(_context)); }
         }
         public IRepository<Mailboxes> MailboxRepository
         {
@@ -108,10 +109,6 @@ namespace Gordon360.Repositories
         {
             get { return _ParticipationRepository ?? (_ParticipationRepository = new GenericRepository<PART_DEF>(_context)); }
         }
-        public IRepository<SUPERVISOR> SupervisorRepository
-        {
-            get { return _SupervisorRepository ?? (_SupervisorRepository = new GenericRepository<SUPERVISOR>(_context)); }
-        }
         public IRepository<Schedule_Control> ScheduleControlRepository
         {
             get { return _ScheduleControlRepository ?? (_ScheduleControlRepository = new GenericRepository<Schedule_Control>(_context)); }
@@ -121,18 +118,18 @@ namespace Gordon360.Repositories
             get { return _WellnessRepository ?? (_WellnessRepository = new GenericRepository<Health_Status>(_context)); }
         }
 
-        IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> IUnitOfWork.ActivityPerSessionRepository
+        IRepository<ACTIVE_CLUBS_PER_SESS_IDResult> IUnitOfWork.ActivityPerSessionRepository
         {
             get
             {
-                return _ActivityPerSessionRepository ?? (_ActivityPerSessionRepository = new GenericRepository<ACTIVE_CLUBS_PER_SESS_ID_Result>(_context));
+                return _ActivityPerSessionRepository ?? (_ActivityPerSessionRepository = new GenericRepository<ACTIVE_CLUBS_PER_SESS_IDResult>(_context));
             }
         }
-        IRepository<VICTORY_PROMISE_BY_STUDENT_ID_Result> IUnitOfWork.VictoryPromiseByStudentIDRepository
+        IRepository<VICTORY_PROMISE_BY_STUDENT_IDResult> IUnitOfWork.VictoryPromiseByStudentIDRepository
         {
             get
             {
-                return _VictoryPromiseByStudentIDRepository ?? (_VictoryPromiseByStudentIDRepository = new GenericRepository<VICTORY_PROMISE_BY_STUDENT_ID_Result>(_context));
+                return _VictoryPromiseByStudentIDRepository ?? (_VictoryPromiseByStudentIDRepository = new GenericRepository<VICTORY_PROMISE_BY_STUDENT_IDResult>(_context));
             }
         }
         //IRepository<STUDENT_JOBS_PER_ID_NUM_Result> IUnitOfWork.StudentEmploymentByStudentIDRepository
@@ -193,35 +190,5 @@ namespace Gordon360.Repositories
             get { return _CliftonStrengthsRepository ?? (_CliftonStrengthsRepository = new GenericRepository<Clifton_Strengths>(_context)); }
         }
 
-        public bool Save()
-        {
-
-            try
-            {
-                _context.SaveChanges();
-                _myGordonCtx.SaveChanges();
-            }
-            catch (DbEntityValidationException ex)
-            {
-                StringBuilder sb = new StringBuilder();
-
-                foreach (var failure in ex.EntityValidationErrors)
-                {
-                    sb.AppendFormat("{0} failed validation\n", failure.Entry.Entity.GetType());
-                    foreach (var error in failure.ValidationErrors)
-                    {
-                        sb.AppendFormat("- {0} : {1}", error.PropertyName, error.ErrorMessage);
-                        sb.AppendLine();
-                    }
-                }
-
-                throw new DbEntityValidationException(
-                    "Entity Validation Failed - errors follow:\n" +
-                    sb.ToString(), ex
-                ); // Add the original exception as the innerException
-            }
-            return true;
-
-        }
     }
 }

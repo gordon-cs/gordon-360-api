@@ -7,18 +7,21 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Gordon360.Models.ViewModels;
 using System.Collections.Generic;
+using Gordon360.Models;
+using Gordon360.Database.CCT;
 
-namespace Gordon360.ApiControllers
+namespace Gordon360.Controllers
 {
     [CustomExceptionFilter]
-    [Route("api/events")]
+    [Route("api/[controller]")]
+    [ApiController]
     public class EventController : ControllerBase
     {
         private readonly IEventService _eventService;
-        public EventController()
+
+        public EventController(CCTContext context)
         {
-            IUnitOfWork unitOfWork = new UnitOfWork();
-            _eventService = new EventService(unitOfWork);
+            _eventService = new EventService(context);
         }
 
         [Authorize]

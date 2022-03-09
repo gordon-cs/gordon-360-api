@@ -6,6 +6,7 @@ using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Gordon360.Models.ViewModels;
+using Gordon360.Database.CCT;
 
 namespace Gordon360.Controllers.Api
 {
@@ -16,10 +17,9 @@ namespace Gordon360.Controllers.Api
     {
         private readonly IContentManagementService _contentManagementService;
 
-        public ContentManagementController()
+        public ContentManagementController(CCTContext context)
         {
-            var _unitOfWork = new UnitOfWork();
-            _contentManagementService = new ContentManagementService(_unitOfWork);
+            _contentManagementService = new ContentManagementService(context);
         }
 
         public ContentManagementController(IContentManagementService contentManagementService)

@@ -10,6 +10,8 @@ using System.Data;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Static.Methods;
 using System.Diagnostics;
+using Gordon360.Database.CCT;
+using System.Threading.Tasks;
 
 namespace Gordon360.Services
 {
@@ -18,11 +20,11 @@ namespace Gordon360.Services
     /// </summary>
     public class ScheduleService : IScheduleService
     {
-        private IUnitOfWork _unitOfWork;
+        private CCTContext _context;
 
-        public ScheduleService(IUnitOfWork unitOfWork)
+        public ScheduleService(CCTContext context)
         {
-            _unitOfWork = unitOfWork;
+            _context = context;
         }
 
         /// <summary>
@@ -30,27 +32,20 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="id">The id of the student</param>
         /// <returns>StudentScheduleViewModel if found, null if not found</returns>
-        public IEnumerable<ScheduleViewModel> GetScheduleStudent(string id)
+        public async Task<IEnumerable<ScheduleViewModel>> GetScheduleStudent(string id)
         {
-            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            var query = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
 
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Schedule was not found." };
             }
 
-            var currentSessionCode = Helpers.GetCurrentSession().SessionCode;
 
-            var idInt = Int32.Parse(id);
-            var idParam = new SqlParameter("@stu_num", idInt);
-            var sessParam = new SqlParameter("@sess_cde", currentSessionCode);
-            var result = RawSqlQuery<ScheduleViewModel>.query("STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE @stu_num, @sess_cde", idParam, sessParam);
-            if (result == null)
-            {
-                return null;
-            }
+            var currentSession = await Helpers.GetCurrentSession();
+            var result = await _context.Procedures.STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDEAsync(int.Parse(id), currentSession.SessionCode);
 
-            return result;
+            return (IEnumerable<ScheduleViewModel>)result;
         }
 
 
@@ -59,33 +54,19 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="id">The id of the instructor</param>
         /// <returns>StudentScheduleViewModel if found, null if not found</returns>
-        public IEnumerable<ScheduleViewModel> GetScheduleFaculty(string id)
+        public async Task<IEnumerable<ScheduleViewModel>> GetScheduleFaculty(string id)
         {
-            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            var query = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
             //var currentSessionCode = Helpers.GetCurrentSession().SessionCode;
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Schedule was not found." };
             }
 
-            var currentSessionCode = Helpers.GetCurrentSession().SessionCode;
-            // This is a test code for 2019 Summer. Next time you see this, delete this part
-            if (currentSessionCode == "201905" && id != "999999099")
-            {
-                currentSessionCode = "201909";
-            }
+            var currentSession = await Helpers.GetCurrentSession();
+            var result = await _context.Procedures.INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDEAsync(int.Parse(id), currentSession.SessionCode);
 
-            //var idInt = Int32.Parse(id);
-            var idParam = new SqlParameter("@instructor_id", id);
-            var sessParam = new SqlParameter("@sess_cde", currentSessionCode);
-            var result = RawSqlQuery<ScheduleViewModel>.query("INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE @instructor_id, @sess_cde", idParam, sessParam);
-
-            if (result == null)
-            {
-                return null;
-            }
-
-            return result;
+            return (IEnumerable<ScheduleViewModel>)result;
         }
 
         /// <summary>

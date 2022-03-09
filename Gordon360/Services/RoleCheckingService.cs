@@ -1,15 +1,18 @@
-﻿using Gordon360.Repositories;
+﻿using Gordon360.Database.CCT;
+using Gordon360.Models;
+using Gordon360.Repositories;
 using Gordon360.Static.Names;
+using System.Linq;
 
 namespace Gordon360.Services
 {
     public class RoleCheckingService: IRoleCheckingService
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly CCTContext _context;
 
-        public RoleCheckingService(IUnitOfWork unitOfWork)
+        public RoleCheckingService(CCTContext context)
         {
-            _unitOfWork = unitOfWork;
+            _context = context;
         }
 
         /// <summary>
@@ -19,9 +22,9 @@ namespace Gordon360.Services
         /// <returns>(string) college role of the user</returns>
         public string GetCollegeRole(int id)
         {
-            var viewer = _unitOfWork.AccountRepository.FirstOrDefault(x => x.account_id == id);
+            var viewer = _context.ACCOUNT.FirstOrDefault(x => x.account_id == id);
             string type = viewer.account_type;
-            bool isAdmin = _unitOfWork.AdministratorRepository.Any(x => x.ID_NUM == id);
+            bool isAdmin = _context.ADMIN.Any(x => x.ID_NUM == id);
             bool isPolice = viewer.is_police == 1;
 
             if (isAdmin)
@@ -41,21 +44,10 @@ namespace Gordon360.Services
         // Get the college role of a given user
         public string getCollegeRole(string username)
         {
-            var userAccount = _unitOfWork.AccountRepository.FirstOrDefault(x => x.AD_Username == username);
-
-            if (userAccount == null)
-            {
-                // If user == ALUMNI
-                if(_unitOfWork.AlumniRepository.Any(x => x.AD_Username == username))
-                {
-                    return Position.ALUMNI;
-                }
-            }
-
-            var viewer = userAccount;
+            var viewer = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
             string type = viewer.account_type;
             var id = viewer.gordon_id;
-            bool isAdmin = _unitOfWork.AdministratorRepository.FirstOrDefault(x => x.ID_NUM.ToString() == id) != null;
+            bool isAdmin = _context.ADMIN.FirstOrDefault(x => x.ID_NUM.ToString() == id) != null;
             bool isPolice = viewer.is_police == 1;
 
             if (isAdmin)

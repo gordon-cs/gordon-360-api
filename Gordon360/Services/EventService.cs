@@ -8,6 +8,9 @@ using System.Data;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Static.Data;
 using System.Xml.Linq;
+using Gordon360.Models;
+using Gordon360.Database.CCT;
+using System.Threading.Tasks;
 
 // <summary>
 // We use this service to pull data from 25Live as well as parsing it
@@ -20,12 +23,14 @@ namespace Gordon360.Services
     /// </summary>
     public class EventService : IEventService
     {
-        // See UnitOfWork class
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly CCTContext _context;
 
-        public EventService(IUnitOfWork unitOfWork)
+        // Set the namespace for XML Paths
+        private readonly XNamespace r25 = "http://www.collegenet.com/r25";
+
+        public EventService(CCTContext context)
         {
-            _unitOfWork = unitOfWork;
+            _context = context;
         }
 
         /// <summary>
@@ -71,19 +76,15 @@ namespace Gordon360.Services
         /// <param name="user_name"> The student's ID</param>
         /// <param name="term"> The current term</param>
         /// <returns></returns>
-        public IEnumerable<AttendedEventViewModel> GetEventsForStudentByTerm(string user_name, string term)
+        public async Task<IEnumerable<AttendedEventViewModel>> GetEventsForStudentByTerm(string user_name, string term)
         {
-            var studentExists = _unitOfWork.AccountRepository.Where(x => x.AD_Username.Trim() == user_name.Trim()).Count() > 0;
+            var studentExists = _context.ACCOUNT.Where(x => x.AD_Username.Trim() == user_name.Trim()).Any();
             if (!studentExists)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
             }
 
-            // Declare the variables used
-            var idParam = new SqlParameter("@STU_USERNAME", user_name.Trim());
-
-            // Run the stored query  and return an iterable list of objects
-            var result = RawSqlQuery<ChapelEventViewModel>.query("EVENTS_BY_STUDENT_ID @STU_USERNAME", idParam);
+            var result = (IEnumerable<ChapelEventViewModel>)await _context.Procedures.EVENTS_BY_STUDENT_IDAsync(user_name);
 
             // Confirm that result is not empty
             if (result == null)

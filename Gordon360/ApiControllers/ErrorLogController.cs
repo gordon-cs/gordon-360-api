@@ -7,8 +7,10 @@ using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Exceptions.CustomExceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Gordon360.Models.CCT;
+using Gordon360.Database.CCT;
 
-namespace Gordon360.ApiControllers
+namespace Gordon360.Controllers
 {
     [Route("api/log")]
     [Authorize]
@@ -18,10 +20,9 @@ namespace Gordon360.ApiControllers
 
         private readonly IErrorLogService _errorLogService;
 
-        public ErrorLogController()
+        public ErrorLogController(CCTContext context)
         {
-            IUnitOfWork _unitOfWork = new UnitOfWork();
-            _errorLogService = new ErrorLogService(_unitOfWork);
+            _errorLogService = new ErrorLogService(context);
         }
         public ErrorLogController(IErrorLogService errorLogService)
         {

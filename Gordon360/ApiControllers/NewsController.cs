@@ -12,6 +12,9 @@ using Gordon360.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
+using Gordon360.Database.CCT;
+using Gordon360.Models.MyGordon;
+using Gordon360.Database.MyGordon;
 
 namespace Gordon360.Controllers.Api
 {
@@ -24,11 +27,9 @@ namespace Gordon360.Controllers.Api
         private readonly IImageUtils _imageUtils = new ImageUtils();
 
         // Constructor
-        public NewsController()
+        public NewsController(MyGordonContext context, CCTContext contextCCT)
         {
-            // Connect to service through which data (from the database) can be accessed
-            IUnitOfWork _unitOfWork = new UnitOfWork();
-            _newsService = new NewsService(_unitOfWork);
+            _newsService = new NewsService(context, contextCCT);
         }
 
         public NewsController(INewsService newsService)

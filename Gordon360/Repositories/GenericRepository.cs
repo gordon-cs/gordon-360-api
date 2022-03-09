@@ -1,8 +1,9 @@
-﻿using Gordon360.Models;
+﻿using Gordon360.Database.CCT;
+using Gordon360.Database.MyGordon;
+using Gordon360.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -13,19 +14,19 @@ namespace Gordon360.Repositories
         /// <summary>
         ///     The database context for the repository
         /// </summary>
-        private readonly CCTEntities1 _context;
-        private readonly MyGordonEntities _myGordonCtx;
+        private readonly CCTContext _context;
+        private readonly MyGordonContext _myGordonCtx;
 
         /// <summary>
         ///     The data set of the repository
         /// </summary>
-        private readonly IDbSet<T> _dbSet;
+        private readonly DbSet<T> _dbSet;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="GenericRepository{T}" /> class.
         /// </summary>
         /// <param name="context">The context for the repository</param>
-        public GenericRepository(CCTEntities1 context)
+        public GenericRepository(CCTContext context)
         {
             _context = context;
             _dbSet = _context.Set<T>();
@@ -35,7 +36,7 @@ namespace Gordon360.Repositories
         ///     Initializes a new instance of the <see cref="GenericRepository{T}" /> class.
         /// </summary>
         /// <param name="context">The context for the repository</param>
-        public GenericRepository(MyGordonEntities context)
+        public GenericRepository(MyGordonContext context)
         {
             _myGordonCtx = context;
             _dbSet = _myGordonCtx.Set<T>();
@@ -138,37 +139,6 @@ namespace Gordon360.Repositories
         }
 
         /// <summary>
-        ///     Adds a given entity to the context
-        /// </summary>
-        /// <param name="entity">The entity to add to the context</param>
-        public T Add(T entity)
-        {
-            return _dbSet.Add(entity);
-        }
-
-        /// <summary>
-        ///     Deletes a given entity from the context
-        /// </summary>
-        /// <param name="entity">The entity to delete</param>
-        public T Delete(T entity)
-        {
-            return _dbSet.Remove(entity);
-        }
-
-        public void DeleteCollection(T entity, string collectionName, ICollection<object> collectionToRemove)
-        {
-            var objectContext = (_context as IObjectContextAdapter).ObjectContext;
-
-            while (collectionToRemove.Any())
-                objectContext.DeleteObject(collectionToRemove.First());
-
-            //_context.Entry(entity).Collection(collectionName).Load();
-            //var list = _context.Entry(entity).Collection(collectionName).EntityEntry.CurrentValues;
-            //while (list.Any())
-            //    list.Remove(collectionToRemove.First());
-        }
-
-        /// <summary>
         ///     Attaches a given entity to the context
         /// </summary>
         /// <param name="entity">The entity to attach</param>
@@ -177,15 +147,15 @@ namespace Gordon360.Repositories
             _dbSet.Attach(entity);
         }
 
-        /// <summary>
-        /// Executes a stored procedure
-        /// </summary>
-        /// <param name="query">Name of the stored procedure </param>
-        /// <param name="parameters">Parameters to pass to the stored procedure</param>
-        public IEnumerable<T> ExecWithStoredProcedure(string query, params object[] parameters)
-        {
-            return _context.Database.SqlQuery<T>(query, parameters);
-        }
+        ///// <summary>
+        ///// Executes a stored procedure
+        ///// </summary>
+        ///// <param name="query">Name of the stored procedure </param>
+        ///// <param name="parameters">Parameters to pass to the stored procedure</param>
+        //public IEnumerable<T> ExecWithStoredProcedure(string query, params object[] parameters)
+        //{
+        //    return _context.Database.SqlQuery<T>(query, parameters);
+        //}
 
         
 

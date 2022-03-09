@@ -4,9 +4,7 @@ using Gordon360.Exceptions.CustomExceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-/// <summary>
-/// These exception filters catch unhandled exceptions and convert them into HTTP Responses
-/// </summary>
+// These exception filters catch unhandled exceptions and convert them into HTTP Responses
 namespace Gordon360.Exceptions.ExceptionFilters
 {
     // Use on Controllers (classes) and Actions (methods)

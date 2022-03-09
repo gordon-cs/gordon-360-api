@@ -19,6 +19,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Diagnostics;
 using Microsoft.Extensions.Configuration;
+using Gordon360.Database.CCT;
 
 // <summary>
 // We use this service to pull meal data from blackboard and parse it
@@ -32,9 +33,7 @@ namespace Gordon360.Services
     {
         private readonly IConfiguration _config;
 
-        // @TODO remove unit of work code, unused
-        // See UnitOfWork class
-        // private IUnitOfWork _unitOfWork;
+        private CCTContext _context;
         private static string issuerID;
         private static string applicationId;
         private static string secret;
@@ -42,9 +41,9 @@ namespace Gordon360.Services
         //private static string applicationId = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitApplicationID"];
         //private static string secret = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitSecret"];
 
-        public DiningService(IUnitOfWork unitOfWork, IConfiguration config)
+        public DiningService(CCTContext context, IConfiguration config)
         {
-            // _unitOfWork = unitOfWork;
+            _context = context;
             _config = config;
             issuerID = _config["bonAppetitIssuerID"];
             applicationId = _config["bonAppetitApplicationID"];
@@ -87,7 +86,8 @@ namespace Gordon360.Services
         public string GetBalance(int cardHolderID, string planID)
         {
             string balance = "";
-            try {
+            try
+            {
                 ServicePointManager.Expect100Continue = false;
 
                 WebRequest request = WebRequest.Create("https://bbapi.campuscardcenter.com/cs/api/mealplanDrCr");
@@ -151,10 +151,16 @@ namespace Gordon360.Services
         /// <returns></returns>
         public DiningViewModel GetDiningPlanInfo(int cardHolderID, string sessionCode)
         {
-            var idParam = new SqlParameter("@STUDENT_ID", cardHolderID);
-            var sessionParam = new SqlParameter("@SESS_CDE", sessionCode);
-            String query = "SELECT ChoiceDescription, PlanDescriptions, PlanID, PlanType, InitialBalance FROM DiningInfo WHERE StudentId = @STUDENT_ID AND SessionCode = @SESS_CDE";
-            var result = RawSqlQuery<DiningTableViewModel>.query(query, idParam, sessionParam);
+            var result = _context.DiningInfo.Where(d => d.StudentId == cardHolderID && d.SessionCode == sessionCode)
+                .Select(d => new DiningTableViewModel
+                { 
+                    ChoiceDescription = d.ChoiceDescription,
+                    PlanDescriptions = d.PlanDescriptions,
+                    PlanId = d.PlanId,
+                    PlanType = d.PlanType,
+                    InitialBalance = d.InitialBalance ?? 0 
+                });
+
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The plan was not found." };
@@ -165,9 +171,7 @@ namespace Gordon360.Services
                 row.CurrentBalance = GetBalance(cardHolderID, row.PlanId);
             }
 
-            var return_value = new DiningViewModel(result);
-
-            return return_value;
+            return new DiningViewModel(result);
         }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Gordon360.Database.CCT;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Exceptions.ExceptionFilters;
+using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using Gordon360.Services;
@@ -17,10 +20,9 @@ namespace Gordon360.Controllers.Api
     {
         private readonly ISessionService _sessionService;
 
-        public SessionsController()
+        public SessionsController(CCTContext context)
         {
-            var _unitOfWork = new UnitOfWork();
-            _sessionService = new SessionService(_unitOfWork);
+            _sessionService = new SessionService(context);
         }
         public SessionsController(ISessionService sessionService)
         {
@@ -135,9 +137,9 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("daysLeft")]
         //Public Route
-        public ActionResult<double[]> GetDaysLeftinSemester()
+        public async Task<ActionResult<double[]>> GetDaysLeftinSemester()
         {
-            var days = Helpers.GetDaysLeft();
+            var days = await Helpers.GetDaysLeft();
             if ((days[1] == 0 && days[2] == 0) || days == null)
             {
                 return NotFound();

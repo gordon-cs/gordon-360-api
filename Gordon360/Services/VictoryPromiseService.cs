@@ -8,16 +8,18 @@ using Gordon360.Exceptions.CustomExceptions;
 using System.Data.SqlClient;
 using Gordon360.Services.ComplexQueries;
 using System.Diagnostics;
+using Gordon360.Database.CCT;
+using System.Threading.Tasks;
 
 namespace Gordon360.Services
 {
     public class VictoryPromiseService : IVictoryPromiseService
     {
-        private IUnitOfWork _unitOfWork;
+        private readonly CCTContext _context;
 
-        public VictoryPromiseService(IUnitOfWork unitOfWork)
+        public VictoryPromiseService(CCTContext context)
         {
-            _unitOfWork = unitOfWork;
+            _context = context;
         }
 
         /// <summary>
@@ -25,32 +27,21 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="id">id</param>
         /// <returns>VictoryPromiseViewModel if found, null if not found</returns>
-        public IEnumerable<VictoryPromiseViewModel> GetVPScores(string id)
+        public async Task<IEnumerable<VictoryPromiseViewModel>> GetVPScores(string id)
         {
-            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            var query = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            var idParam = new SqlParameter("@ID", id);
-            var result = RawSqlQuery<VictoryPromiseViewModel>.query("VICTORY_PROMISE_BY_STUDENT_ID @ID", idParam); //run stored procedure
+            var result = await _context.Procedures.VICTORY_PROMISE_BY_STUDENT_IDAsync(int.Parse(id));
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
             }
-            // Transform the ActivityViewModel (ACT_CLUB_DEF) into ActivityInfoViewModel
-            var victoryPromiseModel = result.Select(x =>
-            {
-                VictoryPromiseViewModel y = new VictoryPromiseViewModel();
-                y.TOTAL_VP_CC_SCORE = x.TOTAL_VP_CC_SCORE ?? 0;
-                y.TOTAL_VP_IM_SCORE = x.TOTAL_VP_IM_SCORE ?? 0;
-                y.TOTAL_VP_LS_SCORE = x.TOTAL_VP_LS_SCORE ?? 0;
-                y.TOTAL_VP_LW_SCORE = x.TOTAL_VP_LW_SCORE ?? 0;
-                return y;
-            });
-            return victoryPromiseModel;
 
+            return (IEnumerable<VictoryPromiseViewModel>)result;
         }
     }
 }

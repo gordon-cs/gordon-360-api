@@ -9,6 +9,8 @@ using System.Security.Claims;
 using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Gordon360.Models.CCT;
+using Gordon360.Database.CCT;
 
 namespace Gordon360.Controllers.Api
 {
@@ -24,14 +26,13 @@ namespace Gordon360.Controllers.Api
         private readonly IScheduleControlService _scheduleControlService;
         private readonly IMyScheduleService _myScheduleService;
 
-        public MyScheduleController()
+        public MyScheduleController(CCTContext context)
         {
-            var _unitOfWork = new UnitOfWork();
-            _myScheduleService = new MyScheduleService(_unitOfWork);
-            _profileService = new ProfileService(_unitOfWork);
-            _accountService = new AccountService(_unitOfWork);
-            _roleCheckingService = new RoleCheckingService(_unitOfWork);
-            _scheduleControlService = new ScheduleControlService(_unitOfWork);
+            _myScheduleService = new MyScheduleService(context);
+            _profileService = new ProfileService(context);
+            _accountService = new AccountService(context);
+            _roleCheckingService = new RoleCheckingService(context);
+            _scheduleControlService = new ScheduleControlService(context);
         }
 
         public MyScheduleController(IMyScheduleService myScheduleService)

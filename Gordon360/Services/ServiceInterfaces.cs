@@ -4,6 +4,9 @@ using static Gordon360.Controllers.Api.WellnessController;
 using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
+using Gordon360.Models.CCT;
+using Gordon360.Models.MyGordon;
+using System.Threading.Tasks;
 
 // <summary>
 // Namespace with all the Service Interfaces that are to be implemented. I don't think making this interface is required, the services can work fine on their own.
@@ -23,11 +26,11 @@ namespace Gordon360.Services
         AlumniProfileViewModel GetAlumniProfileByUsername(string username);
         MailboxViewModel GetMailboxCombination(string username);
         DateTime GetBirthdate(string username);
-        IEnumerable<AdvisorViewModel> GetAdvisors(string id);
+        Task<IEnumerable<AdvisorViewModel>> GetAdvisors(string id);
         CliftonStrengthsViewModel GetCliftonStrengths(int id);
         IEnumerable<EmergencyContactViewModel> GetEmergencyContact(string username);
         ProfileCustomViewModel GetCustomUserInfo(string username);
-        PhotoPathViewModel GetPhotoPath(string id);
+        Task<PhotoPathViewModel> GetPhotoPath(string id);
         void UpdateProfileLink(string username, string type, CUSTOM_PROFILE path);
         StudentProfileViewModel UpdateMobilePhoneNumber(StudentProfileViewModel profile);
         void UpdateMobilePrivacy(string id, string value);
@@ -37,7 +40,7 @@ namespace Gordon360.Services
 
     public interface IEventService
     {
-        IEnumerable<AttendedEventViewModel> GetEventsForStudentByTerm(string id, string term);
+        Task<IEnumerable<AttendedEventViewModel>> GetEventsForStudentByTerm(string id, string term);
         IEnumerable<EventViewModel> GetAllEvents();
         IEnumerable<EventViewModel> GetPublicEvents();
         IEnumerable<EventViewModel> GetCLAWEvents();
@@ -86,8 +89,8 @@ namespace Gordon360.Services
     public interface IActivityService
     {
         ActivityInfoViewModel Get(string id);
-        IEnumerable<ActivityInfoViewModel> GetActivitiesForSession(string id);
-        IEnumerable<String> GetActivityTypesForSession(string id);
+        Task<IEnumerable<ActivityInfoViewModel>> GetActivitiesForSession(string id);
+        Task<IEnumerable<string>> GetActivityTypesForSession(string id);
         IEnumerable<ActivityInfoViewModel> GetAll();
         bool IsOpen(string id, string sessionCode);
         IEnumerable<string> GetOpenActivities(string sess_cde);
@@ -103,11 +106,11 @@ namespace Gordon360.Services
     }
     public interface IVictoryPromiseService
     {
-        IEnumerable<VictoryPromiseViewModel> GetVPScores(string id);
+        Task<IEnumerable<VictoryPromiseViewModel>> GetVPScores(string id);
     }
     public interface IStudentEmploymentService
     {
-        IEnumerable<StudentEmploymentViewModel> GetEmployment(string id);
+        Task<IEnumerable<StudentEmploymentViewModel>> GetEmployment(string id);
     }
 
     public interface IActivityInfoService
@@ -128,18 +131,18 @@ namespace Gordon360.Services
     public interface IEmailService
     {
         // Get emails for the current session.
-        IEnumerable<EmailViewModel> GetEmailsForGroupAdmin(string id);
-        IEnumerable<EmailViewModel> GetEmailsForActivityLeaders(string id);
-        IEnumerable<EmailViewModel> GetEmailsForActivityAdvisors(string id);
-        IEnumerable<EmailViewModel> GetEmailsForActivity(string id);
+        Task<IEnumerable<EmailViewModel>> GetEmailsForGroupAdmin(string id);
+        Task<IEnumerable<EmailViewModel>> GetEmailsForActivityLeaders(string id);
+        Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAdvisors(string id);
+        Task<IEnumerable<EmailViewModel>> GetEmailsForActivity(string id);
         // Get emails for some other session
-        IEnumerable<EmailViewModel> GetEmailsForGroupAdmin(string id, string session_code);
-        IEnumerable<EmailViewModel> GetEmailsForActivityLeaders(string activity_code, string session_code);
-        IEnumerable<EmailViewModel> GetEmailsForActivityAdvisors(string activity_code, string session_code);
-        IEnumerable<EmailViewModel> GetEmailsForActivity(string activity_code, string session_code);
+        Task<IEnumerable<EmailViewModel>> GetEmailsForGroupAdmin(string id, string session_code);
+        Task<IEnumerable<EmailViewModel>> GetEmailsForActivityLeaders(string activity_code, string session_code);
+        Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAdvisors(string activity_code, string session_code);
+        Task<IEnumerable<EmailViewModel>> GetEmailsForActivity(string activity_code, string session_code);
         // Send emails
         void SendEmails(string[] to_emails, string to_email, string subject, string email_content, string password);
-        void SendEmailToActivity(string activityCode, string sessionCode, string from_email, string subject, string email_content, string password);
+        Task SendEmailToActivity(string activityCode, string sessionCode, string from_email, string subject, string email_content, string password);
     }
 
     public interface IErrorLogService
@@ -163,17 +166,17 @@ namespace Gordon360.Services
 
     public interface IMembershipService
     {
-        IEnumerable<MembershipViewModel> GetLeaderMembershipsForActivity(string id);
-        IEnumerable<MembershipViewModel> GetAdvisorMembershipsForActivity(string id);
-        IEnumerable<MembershipViewModel> GetGroupAdminMembershipsForActivity(string id);
-        IEnumerable<MembershipViewModel> GetMembershipsForActivity(string id);
-        IEnumerable<MembershipViewModel> GetMembershipsForStudent(string id);
-        int GetActivityFollowersCountForSession(string id, string sess_cde);
-        int GetActivityMembersCountForSession(string id, string sess_cde);
-        IEnumerable<MembershipViewModel> GetAll();
+        Task<IEnumerable<MembershipViewModel>> GetLeaderMembershipsForActivity(string id);
+        Task<IEnumerable<MembershipViewModel>> GetAdvisorMembershipsForActivity(string id);
+        Task<IEnumerable<MembershipViewModel>> GetGroupAdminMembershipsForActivity(string id);
+        Task<IEnumerable<MembershipViewModel>> GetMembershipsForActivity(string id);
+        Task<IEnumerable<MembershipViewModel>> GetMembershipsForStudent(string id);
+        Task<int> GetActivityFollowersCountForSession(string id, string sess_cde);
+        Task<int> GetActivityMembersCountForSession(string id, string sess_cde);
+        Task<IEnumerable<MembershipViewModel>> GetAll();
         MEMBERSHIP GetSpecificMembership(int id);
-        int GetActivityFollowersCount(string id);
-        int GetActivityMembersCount(string id);
+        Task<int> GetActivityFollowersCount(string id);
+        Task<int> GetActivityMembersCount(string id);
         MEMBERSHIP Add(MEMBERSHIP membership);
         MEMBERSHIP Update(int id, MEMBERSHIP membership);
         MEMBERSHIP ToggleGroupAdmin(int id, MEMBERSHIP membership);
@@ -185,28 +188,17 @@ namespace Gordon360.Services
     public interface IJobsService
     {
         IEnumerable<StudentTimesheetsViewModel> getSavedShiftsForUser(int ID_NUM);
-        IEnumerable<StudentTimesheetsViewModel> saveShiftForUser(int studentID, int jobID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string shiftNotes, string lastChangedBy);
-        IEnumerable<StudentTimesheetsViewModel> editShift(int rowID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string username);
-        IEnumerable<StudentTimesheetsViewModel> deleteShiftForUser(int rowID, int studentID);
-        IEnumerable<StudentTimesheetsViewModel> submitShiftForUser(int studentID, int jobID, DateTime shiftEnd, int submittedTo, string lastChangedBy);
-        IEnumerable<SupervisorViewModel> getsupervisorNameForJob(int supervisorID);
-        IEnumerable<ActiveJobViewModel> getActiveJobs(DateTime shiftStart, DateTime shiftEnd, int studentID);
+        void saveShiftForUser(int studentID, int jobID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string shiftNotes, string lastChangedBy);
+        StudentTimesheetsViewModel editShift(int rowID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string username);
+        void deleteShiftForUser(int rowID, int studentID);
+        void submitShiftForUser(int studentID, int jobID, DateTime shiftEnd, int submittedTo, string lastChangedBy);
+        Task<IEnumerable<SupervisorViewModel>> getsupervisorNameForJob(int supervisorID);
+        Task<IEnumerable<ActiveJobViewModel>> getActiveJobs(DateTime shiftStart, DateTime shiftEnd, int studentID);
         IEnumerable<OverlappingShiftIdViewModel> editShiftOverlapCheck(int studentID, DateTime shiftStart, DateTime shiftEnd, int rowID);
         IEnumerable<OverlappingShiftIdViewModel> checkForOverlappingShift(int studentID, DateTime shiftStart, DateTime shiftEnd);
-        IEnumerable<StaffTimesheetsViewModel> saveShiftForStaff(int staffID, int jobID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, char hoursType, string shiftNotes, string lastChangedBy);
-        IEnumerable<StaffTimesheetsViewModel> getSavedShiftsForStaff(int ID_NUM);
-        IEnumerable<StaffTimesheetsViewModel> editShiftStaff(int rowID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string username);
-        IEnumerable<StaffTimesheetsViewModel> deleteShiftForStaff(int rowID, int staffID);
-        IEnumerable<StaffTimesheetsViewModel> submitShiftForStaff(int staffID, int jobID, DateTime shiftEnd, int submittedTo, string lastChangedBy);
-        IEnumerable<ActiveJobViewModel> getActiveJobsStaff(DateTime shiftStart, DateTime shiftEnd, int staffID);
-        IEnumerable<SupervisorViewModel> getStaffSupervisorNameForJob(int supervisorID);
-        IEnumerable<OverlappingShiftIdViewModel> editShiftOverlapCheckStaff(int staffID, DateTime shiftStart, DateTime shiftEnd, int rowID);
-        IEnumerable<OverlappingShiftIdViewModel> checkForOverlappingShiftStaff(int staffID, DateTime shiftStart, DateTime shiftEnd);
         IEnumerable<ClockInViewModel> ClockOut(string id);
         ClockInViewModel ClockIn(bool state, string id);
         ClockInViewModel DeleteClockIn(string id);
-        IEnumerable<StaffCheckViewModel> CanUsePage(string id);
-        IEnumerable<HourTypesViewModel> GetHourTypes();
     }
 
     public interface IParticipationService
@@ -217,10 +209,10 @@ namespace Gordon360.Services
 
     public interface IMembershipRequestService
     {
-        MembershipRequestViewModel Get(int id);
-        IEnumerable<MembershipRequestViewModel> GetAll();
-        IEnumerable<MembershipRequestViewModel> GetMembershipRequestsForActivity(string id);
-        IEnumerable<MembershipRequestViewModel> GetMembershipRequestsForStudent(string id);
+        Task<MembershipRequestViewModel> Get(int id);
+        Task<IEnumerable<MembershipRequestViewModel>> GetAll();
+        Task<IEnumerable<MembershipRequestViewModel>> GetMembershipRequestsForActivity(string id);
+        Task<IEnumerable<MembershipRequestViewModel>> GetMembershipRequestsForStudent(string id);
         REQUEST Add(REQUEST membershipRequest);
         REQUEST Update(int id, REQUEST membershipRequest);
         // The ODD one out. When we approve a request, we would like to get back the new membership.
@@ -230,16 +222,16 @@ namespace Gordon360.Services
     }
     public interface IScheduleService
     {
-        IEnumerable<ScheduleViewModel> GetScheduleStudent(string id);
-        IEnumerable<ScheduleViewModel> GetScheduleFaculty(string id);
+        Task<IEnumerable<ScheduleViewModel>> GetScheduleStudent(string id);
+        Task<IEnumerable<ScheduleViewModel>> GetScheduleFaculty(string id);
         bool CanReadStudentSchedules(string username);
     }
 
     public interface IScheduleControlService
     {
-        void UpdateSchedulePrivacy(string id, string value);
-        void UpdateDescription(string id, string value);
-        void UpdateModifiedTimeStamp(string id, DateTime value);
+        Task UpdateSchedulePrivacy(string id, string value);
+        Task UpdateDescription(string id, string value);
+        Task UpdateModifiedTimeStamp(string id, DateTime value);
     }
 
 
@@ -254,13 +246,13 @@ namespace Gordon360.Services
 
     public interface ISaveService
     {
-        IEnumerable<UPCOMING_RIDES_Result> GetUpcoming(string gordon_id); // done
-        IEnumerable<UPCOMING_RIDES_BY_STUDENT_ID_Result> GetUpcomingForUser(string gordon_id); //done
-        Save_Rides AddRide(Save_Rides newRide, string gordon_id); //done
-        Save_Rides DeleteRide(string rideID, string gordon_id); //done
-        int CancelRide(string rideID, string gordon_id);
-        Save_Bookings AddBooking(Save_Bookings newBooking); //done
-        Save_Bookings DeleteBooking(string rideID, string gordon_id); //done
+        IEnumerable<UPCOMING_RIDESResult> GetUpcoming(string gordon_id); // done
+        IEnumerable<UPCOMING_RIDES_BY_STUDENT_IDResult> GetUpcomingForUser(string gordon_id); //done
+        Task<Save_Rides> AddRide(Save_Rides newRide, string gordon_id); //done
+        Task<Save_Rides> DeleteRide(string rideID, string gordon_id); //done
+        Task<int> CancelRide(string rideID, string gordon_id);
+        Task<Save_Bookings> AddBooking(Save_Bookings newBooking); //done
+        Task<Save_Bookings> DeleteBooking(string rideID, string gordon_id); //done
 
     }
 
@@ -275,10 +267,10 @@ namespace Gordon360.Services
     public interface INewsService
     {
         StudentNews Get(int newsID);
-        IEnumerable<StudentNewsViewModel> GetNewsNotExpired();
-        IEnumerable<StudentNewsViewModel> GetNewsNew();
+        Task<IEnumerable<StudentNewsViewModel>> GetNewsNotExpired();
+        Task<IEnumerable<StudentNewsViewModel>> GetNewsNew();
         IEnumerable<StudentNewsCategoryViewModel> GetNewsCategories();
-        IEnumerable<StudentNewsViewModel> GetNewsPersonalUnapproved(string id, string username);
+        Task<IEnumerable<StudentNewsViewModel>> GetNewsPersonalUnapproved(string id, string username);
         StudentNews SubmitNews(StudentNews newsItem, string username, string id);
         StudentNews DeleteNews(int newsID);
         StudentNewsViewModel EditPosting(int newsID, StudentNews newsItem);
@@ -295,8 +287,8 @@ namespace Gordon360.Services
         int? GetApplicationID(string username, string sess_cde);
         ApartmentApplicationViewModel GetApartmentApplication(int applicationID, bool isAdmin = false);
         ApartmentApplicationViewModel[] GetAllApartmentApplication();
-        int SaveApplication(string username, string sess_cde, string editorUsername, ApartmentApplicantViewModel[] apartmentApplicants, ApartmentChoiceViewModel[] apartmentChoices);
-        int EditApplication(string username, string sess_cde, int applicationID, string newEditorUsername, ApartmentApplicantViewModel[] newApartmentApplicants, ApartmentChoiceViewModel[] newApartmentChoices);
+        int SaveApplication(string sess_cde, string editorUsername, List<ApartmentApplicantViewModel> apartmentApplicants, List<ApartmentChoiceViewModel> apartmentChoices);
+        int EditApplication(string username, string sess_cde, int applicationID, string newEditorUsername, List<ApartmentApplicantViewModel> newApartmentApplicants, List<ApartmentChoiceViewModel> newApartmentChoices);
         bool ChangeApplicationEditor(string username, int applicationID, string newEditorUsername);
         bool ChangeApplicationDateSubmitted(int applicationID);
     }

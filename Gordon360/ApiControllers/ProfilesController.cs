@@ -18,6 +18,8 @@ using System.Security.Claims;
 using Gordon360.AuthorizationFilters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Gordon360.Models.CCT;
+using Gordon360.Database.CCT;
 
 namespace Gordon360.Controllers.Api
 {
@@ -30,12 +32,11 @@ namespace Gordon360.Controllers.Api
         private readonly IAccountService _accountService;
         private readonly IRoleCheckingService _roleCheckingService;
 
-        public ProfilesController()
+        public ProfilesController(CCTContext context)
         {
-            IUnitOfWork _unitOfWork = new UnitOfWork();
-            _profileService = new ProfileService(_unitOfWork);
-            _accountService = new AccountService(_unitOfWork);
-            _roleCheckingService = new RoleCheckingService(_unitOfWork);
+            _profileService = new ProfileService(context);
+            _accountService = new AccountService(context);
+            _roleCheckingService = new RoleCheckingService(context);
         }
 
         public ProfilesController(IProfileService profileService)

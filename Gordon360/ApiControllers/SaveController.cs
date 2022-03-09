@@ -6,8 +6,11 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Gordon360.Database.CCT;
+using Gordon360.Models.CCT;
+using System.Threading.Tasks;
 
-namespace Gordon360.ApiControllers
+namespace Gordon360.Controllers
 {
     [Route("api/save")]
     [Authorize]
@@ -17,10 +20,9 @@ namespace Gordon360.ApiControllers
 
         private readonly ISaveService _saveService;
 
-        public SaveController()
+        public SaveController(CCTContext context)
         {
-            IUnitOfWork _unitOfWork = new UnitOfWork();
-            _saveService = new SaveService(_unitOfWork);
+            _saveService = new SaveService(context);
         }
         public SaveController(ISaveService saveService)
         {
@@ -33,7 +35,7 @@ namespace Gordon360.ApiControllers
         /// <returns>A IEnumerable of rides objects</returns>
         [HttpGet]
         [Route("rides")]
-        public ActionResult<IEnumerable<UPCOMING_RIDES_Result>> GetUpcomingRides()
+        public ActionResult<IEnumerable<UPCOMING_RIDESResult>> GetUpcomingRides()
         {
             var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
@@ -53,7 +55,7 @@ namespace Gordon360.ApiControllers
         /// <returns>A IEnumerable of rides objects</returns>
         [HttpGet]
         [Route("myrides")]
-        public ActionResult<IEnumerable<UPCOMING_RIDES_BY_STUDENT_ID_Result>> GetUpcomingRidesForUser()
+        public ActionResult<IEnumerable<UPCOMING_RIDES_BY_STUDENT_IDResult>> GetUpcomingRidesForUser()
         {
             var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
@@ -92,11 +94,11 @@ namespace Gordon360.ApiControllers
         /// <remarks>Calls the server to make a call and remove the given ride from the database</remarks>
         [HttpPut]
         [Route("rides/cancel/{rideID}")]
-        public ActionResult<int> CancelRide(string rideID)
+        public async Task<ActionResult<int>> CancelRide(string rideID)
         {
             var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var result = _saveService.CancelRide(rideID, authenticatedUserIdString);
+            var result = await _saveService.CancelRide(rideID, authenticatedUserIdString);
 
             if (result != 0)
             {

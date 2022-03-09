@@ -11,9 +11,13 @@ using Gordon360.Static.Names;
 using Gordon360.Exceptions.CustomExceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Gordon360.Models;
+using Gordon360.Database.CCT;
+using Gordon360.Database.StudentTimesheets;
 
-namespace Gordon360.ApiControllers
+namespace Gordon360.Controllers
 {
+    [ApiController]
     [Authorize]
     [CustomExceptionFilter]
     [Route("api/jobs")]
@@ -22,11 +26,10 @@ namespace Gordon360.ApiControllers
         private readonly IJobsService _jobsService;
         private readonly IErrorLogService _errorLogService;
 
-        public JobsController()
+        public JobsController(StudentTimesheetsContext context, CCTContext cctContext)
         {
-            IUnitOfWork _unitOfWork = new UnitOfWork();
-            _jobsService = new JobsService(_unitOfWork);
-            _errorLogService = new ErrorLogService(_unitOfWork);
+            _jobsService = new JobsService(context, cctContext);
+            _errorLogService = new ErrorLogService(cctContext);
         }
 
         private int GetCurrentUserID()
@@ -40,19 +43,14 @@ namespace Gordon360.ApiControllers
         /// <summary>
         /// Get a user's active jobs
         /// </summary>
-        /// <param name="details"></param>
+        /// <param name="shiftStart">The datetime that the shift started</param>
+        /// <param name="shiftEnd">The datetime that the shift ended</param>
         /// <returns>The user's active jobs</returns>
         [HttpGet]
         [Route("")]
-        public ActionResult<IEnumerable<ActiveJobViewModel>> GetJobs(DateTime shiftStart, DateTime shiftEnd) {
-            IEnumerable<ActiveJobViewModel> result;
-            //try {
-                result = _jobsService.getActiveJobs(shiftStart, shiftEnd, GetCurrentUserID());
-            //}
-            //catch(Exception e) {
-            //    System.Diagnostics.Debug.WriteLine(e.Message);
-            //    return InternalServerError();
-            //}
+        public ActionResult<IEnumerable<ActiveJobViewModel>> GetJobs(DateTime shiftStart, DateTime shiftEnd)
+        {
+            var result = _jobsService.getActiveJobs(shiftStart, shiftEnd, GetCurrentUserID());
             return Ok(result);
         }
 
@@ -65,17 +63,8 @@ namespace Gordon360.ApiControllers
         [Route("getJobs")]
         public ActionResult<IEnumerable<ActiveJobViewModel>> DEPRECATED_getJobsForUser([FromBody] ActiveJobSelectionParametersModel details)
         {
-            IEnumerable<ActiveJobViewModel> result = null;
             int userID = GetCurrentUserID();
-            //try
-            //{
-                result = _jobsService.getActiveJobs(details.SHIFT_START_DATETIME, details.SHIFT_END_DATETIME, userID);
-            //}
-            //catch (Exception e)
-            //{
-            //    System.Diagnostics.Debug.WriteLine(e.Message);
-            //    return InternalServerError();
-            //}
+            var result = _jobsService.getActiveJobs(details.SHIFT_START_DATETIME, details.SHIFT_END_DATETIME, userID);
             return Ok(result);
         }
 
@@ -88,18 +77,7 @@ namespace Gordon360.ApiControllers
         public ActionResult<StudentTimesheetsViewModel> getSavedShiftsForUser()
         {
             int userID = GetCurrentUserID();
-
-            IEnumerable<StudentTimesheetsViewModel> result = null;
-
-            //try
-            //{
-                result = _jobsService.getSavedShiftsForUser(userID);
-            //}
-            //catch (Exception e)
-            //{
-            //    System.Diagnostics.Debug.WriteLine(e.Message);
-            //    return Request.CreateResponse(HttpStatusCode.InternalServerError, e);
-            //}
+            var result = _jobsService.getSavedShiftsForUser(userID);
             return Ok(result);
         }
 
@@ -111,36 +89,25 @@ namespace Gordon360.ApiControllers
         [HttpPost]
         [Route("saveShift")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.SHIFT)]
-        public ActionResult<IEnumerable<StudentTimesheetsViewModel>> saveShiftForUser([FromBody] ShiftViewModel shiftDetails)
+        public ActionResult saveShiftForUser([FromBody] ShiftViewModel shiftDetails)
         {
-            IEnumerable<StudentTimesheetsViewModel> result = null;
-            IEnumerable<OverlappingShiftIdViewModel> overlapCheckResult = null;
-
             int userID = GetCurrentUserID();
             var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
 
-            //try
-            //{
+            if (shiftDetails.SHIFT_START_DATETIME == null || shiftDetails.SHIFT_END_DATETIME == null || shiftDetails.SHIFT_START_DATETIME == shiftDetails.SHIFT_END_DATETIME)
+            {
+                _errorLogService.Log($"Invalid timesheets shift saved. Student ID: {shiftDetails.ID}, job ID: {shiftDetails.EML}, shiftStart: {shiftDetails.SHIFT_START_DATETIME}, shift end time: {shiftDetails.SHIFT_END_DATETIME}, hours worked: {shiftDetails.HOURS_WORKED} at time {DateTime.Now}");
+                throw new Exception("Invalid shift times. shiftStart and shiftEnd must be non-null and not the same.");
+            };
 
-                if (shiftDetails.SHIFT_START_DATETIME == null || shiftDetails.SHIFT_END_DATETIME == null || shiftDetails.SHIFT_START_DATETIME == shiftDetails.SHIFT_END_DATETIME)
-                {
-                    _errorLogService.Log($"Invalid timesheets shift saved. Student ID: {shiftDetails.ID}, job ID: {shiftDetails.EML}, shiftStart: {shiftDetails.SHIFT_START_DATETIME}, shift end time: {shiftDetails.SHIFT_END_DATETIME}, hours worked: {shiftDetails.HOURS_WORKED} at time {DateTime.Now}");
-                    throw new Exception("Invalid shift times. shiftStart and shiftEnd must be non-null and not the same.");
-                };
+            IEnumerable<OverlappingShiftIdViewModel> overlapCheckResult = _jobsService.checkForOverlappingShift(userID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME);
+            if (overlapCheckResult.Any())
+            {
+                throw new ResourceCreationException() { ExceptionMessage = "Error: shift overlap detected" };
+            }
+            _jobsService.saveShiftForUser(userID, shiftDetails.EML, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, shiftDetails.SHIFT_NOTES, authenticatedUserUsername);
 
-                overlapCheckResult = _jobsService.checkForOverlappingShift(userID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME);
-                if (overlapCheckResult.Count() > 0)
-                {
-                    throw new ResourceCreationException() { ExceptionMessage = "Error: shift overlap detected" };
-                }
-                result = _jobsService.saveShiftForUser(userID, shiftDetails.EML, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, shiftDetails.SHIFT_NOTES, authenticatedUserUsername);
-            //}
-            //catch (Exception e)
-            //{
-            //    System.Diagnostics.Debug.WriteLine(e.Message);
-            //    return Request.CreateResponse(HttpStatusCode.InternalServerError, e);
-            //}
-            return Ok(result);
+            return Ok();
         }
 
         /// <summary>
@@ -149,28 +116,19 @@ namespace Gordon360.ApiControllers
         /// </summary>
         [HttpPut]
         [Route("editShift/")]
-        public ActionResult<IEnumerable<StudentTimesheetsViewModel>> editShiftForUser([FromBody] ShiftViewModel shiftDetails)
+        public ActionResult<StudentTimesheetsViewModel> editShiftForUser([FromBody] ShiftViewModel shiftDetails)
         {
-            IEnumerable<StudentTimesheetsViewModel> result = null;
             IEnumerable<OverlappingShiftIdViewModel> overlapCheckResult = null;
 
             int userID = GetCurrentUserID();
             var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
 
-            //try
-            //{
             overlapCheckResult = _jobsService.editShiftOverlapCheck(userID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.ID);
-                if (overlapCheckResult.Count() > 0)
-                {
+            if (overlapCheckResult.Any())
+            {
                 throw new ResourceCreationException() { ExceptionMessage = "Error: shift overlap detected" };
             }
-                result = _jobsService.editShift(shiftDetails.ID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, authenticatedUserUsername);
-            //}
-            //catch (Exception e)
-            //{
-            //    System.Diagnostics.Debug.WriteLine(e.Message);
-            //    return Request.CreateResponse(HttpStatusCode.InternalServerError, e);
-            //}
+            var result = _jobsService.editShift(shiftDetails.ID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, authenticatedUserUsername);
             return Ok(result);
         }
 
@@ -181,21 +139,20 @@ namespace Gordon360.ApiControllers
         [HttpDelete]
         [Route("deleteShift/{rowID}")]
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.SHIFT)]
-        public ActionResult<IEnumerable<StudentTimesheetsViewModel>> deleteShiftForUser(int rowID)
+        public ActionResult deleteShiftForUser(int rowID)
         {
-            IEnumerable<StudentTimesheetsViewModel> result = null;
             int userID = GetCurrentUserID();
 
             //try
             //{
-                result = _jobsService.deleteShiftForUser(rowID, userID);
+            _jobsService.deleteShiftForUser(rowID, userID);
             //}
             //catch (Exception e)
             //{
             //    System.Diagnostics.Debug.WriteLine(e.Message);
             //    return InternalServerError();
             //}
-            return Ok(result);
+            return Ok();
         }
 
         /// <summary>
@@ -205,24 +162,23 @@ namespace Gordon360.ApiControllers
         [HttpPost]
         [Route("submitShifts")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.SHIFT)]
-        public ActionResult<IEnumerable<StudentTimesheetsViewModel>> submitShiftsForUser([FromBody] IEnumerable<ShiftToSubmitViewModel> shifts)
+        public ActionResult submitShiftsForUser([FromBody] IEnumerable<ShiftToSubmitViewModel> shifts)
         {
-            IEnumerable<StudentTimesheetsViewModel> result = null;
             int userID = GetCurrentUserID();
 
             //try
             //{
-                foreach (ShiftToSubmitViewModel shift in shifts)
-                {
-                    result = _jobsService.submitShiftForUser(userID, shift.EML, shift.SHIFT_END_DATETIME, shift.SUBMITTED_TO, shift.LAST_CHANGED_BY);
-                }
+            foreach (ShiftToSubmitViewModel shift in shifts)
+            {
+                _jobsService.submitShiftForUser(userID, shift.EML, shift.SHIFT_END_DATETIME, shift.SUBMITTED_TO, shift.LAST_CHANGED_BY);
+            }
             //}
             //catch (Exception e)
             //{
             //    System.Diagnostics.Debug.WriteLine(e.Message);
             //    return InternalServerError();
             //}
-            return Ok(result);
+            return Ok();
         }
 
         /// <summary>
@@ -234,17 +190,7 @@ namespace Gordon360.ApiControllers
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.SHIFT)]
         public ActionResult<IEnumerable<SupervisorViewModel>> getSupervisorName(int supervisorID)
         {
-            IEnumerable<SupervisorViewModel> result = null;
-
-            //try
-            //{
-                result = _jobsService.getsupervisorNameForJob(supervisorID);
-            //}
-            //catch (Exception e)
-            //{
-            //    System.Diagnostics.Debug.WriteLine(e.Message);
-            //    return InternalServerError();
-            //}
+            var result = _jobsService.getsupervisorNameForJob(supervisorID);
             return Ok(result);
         }
 
@@ -259,7 +205,7 @@ namespace Gordon360.ApiControllers
         public ActionResult<ClockInViewModel> ClockIn([FromBody] bool state)
         {
 
-            if (!ModelState.IsValid || state == null)
+            if (!ModelState.IsValid)
             {
                 string errors = "";
                 foreach (var modelstate in ModelState.Values)
@@ -336,18 +282,18 @@ namespace Gordon360.ApiControllers
         [Route("canUsePage")]
         public ActionResult<IEnumerable<StaffCheckViewModel>> CanUsePage()
         {
-            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            //var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var result = _jobsService.CanUsePage(authenticatedUserIdString);
+            //var result = _jobsService.CanUsePage(authenticatedUserIdString);
 
-            if (result == null)
-            {
-                return NotFound();
-            }
+            //if (result == null)
+            //{
+            //    return NotFound();
+            //}
 
-            return Ok(result);
+            return Ok(new[] { new StaffCheckViewModel() { EmIID = false } });
         }
-        
+
         //staff routes
 
 
@@ -360,11 +306,11 @@ namespace Gordon360.ApiControllers
         [Route("jobsStaff")]
         public ActionResult<IEnumerable<ActiveJobViewModel>> getJobsForStaff([FromBody] ActiveJobSelectionParametersModel details)
         {
-            IEnumerable<ActiveJobViewModel> result;
-            int userID = GetCurrentUserID();
+            IEnumerable<ActiveJobViewModel> result = null;
+            //int userID = GetCurrentUserID();
             //try
             //{
-                result = _jobsService.getActiveJobsStaff(details.SHIFT_START_DATETIME, details.SHIFT_END_DATETIME, userID);
+            //result = _jobsService.getActiveJobsStaff(details.SHIFT_START_DATETIME, details.SHIFT_END_DATETIME, userID);
             //}
             //catch (Exception e)
             //{
@@ -382,13 +328,12 @@ namespace Gordon360.ApiControllers
         [Route("savedShiftsForStaff")]
         public ActionResult<IEnumerable<StaffTimesheetsViewModel>> getSavedShiftsForStaff()
         {
-            int userID = GetCurrentUserID();
-
             IEnumerable<StaffTimesheetsViewModel> result = null;
 
+            //int userID = GetCurrentUserID();
             //try
             //{
-                result = _jobsService.getSavedShiftsForStaff(userID);
+            //result = _jobsService.getSavedShiftsForStaff(userID);
             //}
             //catch (Exception e)
             //{
@@ -408,20 +353,20 @@ namespace Gordon360.ApiControllers
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.SHIFT)]
         public ActionResult<IEnumerable<StudentTimesheetsViewModel>> saveShiftForStaff([FromBody] ShiftViewModel shiftDetails)
         {
-            IEnumerable<StaffTimesheetsViewModel> result;
-            IEnumerable<OverlappingShiftIdViewModel> overlapCheckResult;
+            IEnumerable<StaffTimesheetsViewModel> result = null;
+            //IEnumerable<OverlappingShiftIdViewModel> overlapCheckResult;
 
-            int userID = GetCurrentUserID();
-            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            //int userID = GetCurrentUserID();
+            //var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            //try
+            ////try
+            ////{
+            //overlapCheckResult = _jobsService.checkForOverlappingShiftStaff(userID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME);
+            //if (overlapCheckResult.Count() > 0)
             //{
-                overlapCheckResult = _jobsService.checkForOverlappingShiftStaff(userID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME);
-                if (overlapCheckResult.Count() > 0)
-                {
-                    throw new ResourceCreationException() { ExceptionMessage = "Error: shift overlap detected" };
-                }
-                result = _jobsService.saveShiftForStaff(userID, shiftDetails.EML, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, shiftDetails.HOURS_TYPE, shiftDetails.SHIFT_NOTES, authenticatedUserIdString);
+            //    throw new ResourceCreationException() { ExceptionMessage = "Error: shift overlap detected" };
+            //}
+            //result = _jobsService.saveShiftForStaff(userID, shiftDetails.EML, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, shiftDetails.HOURS_TYPE, shiftDetails.SHIFT_NOTES, authenticatedUserIdString);
             //}
             //catch (Exception e)
             //{
@@ -440,19 +385,19 @@ namespace Gordon360.ApiControllers
         public ActionResult<IEnumerable<StudentTimesheetsViewModel>> editShiftForStaff([FromBody] ShiftViewModel shiftDetails)
         {
             IEnumerable<StaffTimesheetsViewModel> result = null;
-            IEnumerable<OverlappingShiftIdViewModel> overlapCheckResult = null;
+            //IEnumerable<OverlappingShiftIdViewModel> overlapCheckResult = null;
 
-            int userID = GetCurrentUserID();
-            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
+            //int userID = GetCurrentUserID();
+            //var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
 
             //try
             //{
-            overlapCheckResult = _jobsService.editShiftOverlapCheck(userID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.ID);
-                if (overlapCheckResult.Count() > 0)
-                {
-                    throw new ResourceCreationException() { ExceptionMessage = "Error: shift overlap detected" };
-                }
-                result = _jobsService.editShiftStaff(shiftDetails.ID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, authenticatedUserUsername);
+            //overlapCheckResult = _jobsService.editShiftOverlapCheck(userID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.ID);
+            //if (overlapCheckResult.Count() > 0)
+            //{
+            //    throw new ResourceCreationException() { ExceptionMessage = "Error: shift overlap detected" };
+            //}
+            //result = _jobsService.editShiftStaff(shiftDetails.ID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, authenticatedUserUsername);
             //}
             //catch (Exception e)
             //{
@@ -472,11 +417,11 @@ namespace Gordon360.ApiControllers
         public ActionResult<IEnumerable<StudentTimesheetsViewModel>> deleteShiftForStaff(int rowID)
         {
             IEnumerable<StaffTimesheetsViewModel> result = null;
-            int userID = GetCurrentUserID();
+            //int userID = GetCurrentUserID();
 
             //try
             //{
-                result = _jobsService.deleteShiftForStaff(rowID, userID);
+            //result = _jobsService.deleteShiftForStaff(rowID, userID);
             //}
             //catch (Exception e)
             //{
@@ -496,14 +441,14 @@ namespace Gordon360.ApiControllers
         public ActionResult<IEnumerable<StudentTimesheetsViewModel>> submitShiftsForStaff([FromBody] IEnumerable<ShiftToSubmitViewModel> shifts)
         {
             IEnumerable<StaffTimesheetsViewModel> result = null;
-            int userID = GetCurrentUserID();
+            //int userID = GetCurrentUserID();
 
             //try
             //{
-                foreach (ShiftToSubmitViewModel shift in shifts)
-                {
-                    result = _jobsService.submitShiftForStaff(userID, shift.EML, shift.SHIFT_END_DATETIME, shift.SUBMITTED_TO, shift.LAST_CHANGED_BY);
-                }
+            //foreach (ShiftToSubmitViewModel shift in shifts)
+            //{
+            //    result = _jobsService.submitShiftForStaff(userID, shift.EML, shift.SHIFT_END_DATETIME, shift.SUBMITTED_TO, shift.LAST_CHANGED_BY);
+            //}
             //}
             //catch (Exception e)
             //{
@@ -526,7 +471,7 @@ namespace Gordon360.ApiControllers
 
             //try
             //{
-                result = _jobsService.getStaffSupervisorNameForJob(supervisorID);
+            //result = _jobsService.getStaffSupervisorNameForJob(supervisorID);
             //}
             //catch (Exception e)
             //{
@@ -548,7 +493,7 @@ namespace Gordon360.ApiControllers
 
             //try
             //{
-                result = _jobsService.GetHourTypes();
+            //result = _jobsService.GetHourTypes();
             //}
             //catch (Exception e)
             //{

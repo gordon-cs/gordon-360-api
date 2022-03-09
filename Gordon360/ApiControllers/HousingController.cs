@@ -11,6 +11,9 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System;
+using Gordon360.Database.CCT;
+using Gordon360.Models.CCT;
+using System.Threading.Tasks;
 
 namespace Gordon360.Controllers.Api
 {
@@ -24,13 +27,12 @@ namespace Gordon360.Controllers.Api
         private readonly IAdministratorService _administratorService;
         private readonly IProfileService _profileService;
 
-        public HousingController()
+        public HousingController(CCTContext context)
         {
-            IUnitOfWork _unitOfWork = new UnitOfWork();
-            _housingService = new HousingService(_unitOfWork);
-            _accountService = new AccountService(_unitOfWork);
-            _administratorService = new AdministratorService(_unitOfWork);
-            _profileService = new ProfileService(_unitOfWork);
+            _housingService = new HousingService(context);
+            _accountService = new AccountService(context);
+            _administratorService = new AdministratorService(context);
+            _profileService = new ProfileService(context);
         }
 
         /// <summary>
@@ -126,12 +128,12 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpGet]
         [Route("apartment")]
-        public ActionResult<int?> GetApplicationID()
+        public async Task<ActionResult<int?>> GetApplicationID()
         {
             //get token data from context, username is the username of current logged in person
             var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
 
-            string sessionID = Helpers.GetCurrentSession().SessionCode;
+            string sessionID = (await Helpers.GetCurrentSession()).SessionCode;
 
             int? result = _housingService.GetApplicationID(authenticatedUserUsername, sessionID);
             if (result != null)
@@ -151,9 +153,9 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpGet]
         [Route("apartment/{username}")]
-        public ActionResult<int?> GetUserApplicationID(string username)
+        public async Task<ActionResult<int?>> GetUserApplicationID(string username)
         {
-            string sessionID = Helpers.GetCurrentSession().SessionCode;
+            string sessionID = (await Helpers.GetCurrentSession()).SessionCode;
 
             int? result = _housingService.GetApplicationID(username, sessionID);
             if (result != null)
@@ -173,7 +175,7 @@ namespace Gordon360.Controllers.Api
         [HttpPost]
         [Route("apartment/applications")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING)]
-        public ActionResult<int> SaveApplication([FromBody] ApartmentApplicationViewModel applicationDetails)
+        public async Task<ActionResult<int>> SaveApplication([FromBody] ApartmentApplicationViewModel applicationDetails)
         {
             // Verify Input
             if (!ModelState.IsValid)
@@ -189,14 +191,12 @@ namespace Gordon360.Controllers.Api
                 }
                 throw new BadInputException() { ExceptionMessage = errors };
             }
-            //get token data from context, username is the username of current logged in person
-            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
 
-            string sessionID = Helpers.GetCurrentSession().SessionCode;
+            string sessionID = (await Helpers.GetCurrentSession()).SessionCode;
 
             string editorUsername = applicationDetails?.EditorProfile?.AD_Username ?? applicationDetails?.EditorUsername;
 
-            ApartmentApplicantViewModel[] apartmentApplicants = applicationDetails.Applicants;
+            var apartmentApplicants = applicationDetails.Applicants;
             foreach (ApartmentApplicantViewModel applicant in apartmentApplicants)
             {
                 if (applicant.Profile == null)
@@ -205,9 +205,7 @@ namespace Gordon360.Controllers.Api
                 }
             }
 
-            ApartmentChoiceViewModel[] apartmentChoices = applicationDetails.ApartmentChoices;
-
-            int result = _housingService.SaveApplication(authenticatedUserUsername, sessionID, editorUsername, apartmentApplicants, apartmentChoices);
+            int result = _housingService.SaveApplication(sessionID, editorUsername, apartmentApplicants, applicationDetails.ApartmentChoices);
 
             return Created("Status of application saving: ", result);
         }
@@ -219,7 +217,7 @@ namespace Gordon360.Controllers.Api
         [HttpPut]
         [Route("apartment/applications/{applicationID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)]
-        public ActionResult<int> EditApplication(int applicationID, [FromBody] ApartmentApplicationViewModel applicationDetails)
+        public async Task<ActionResult<int>> EditApplication(int applicationID, [FromBody] ApartmentApplicationViewModel applicationDetails)
         {
             // Verify Input
             if (!ModelState.IsValid)
@@ -238,11 +236,11 @@ namespace Gordon360.Controllers.Api
             //get token data from context, username is the username of current logged in person
             var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
 
-            string sessionID = Helpers.GetCurrentSession().SessionCode;
+            string sessionID = (await Helpers.GetCurrentSession()).SessionCode;
 
             string newEditorUsername = applicationDetails?.EditorProfile?.AD_Username ?? applicationDetails?.EditorUsername;
 
-            ApartmentApplicantViewModel[] newApartmentApplicants = applicationDetails.Applicants;
+            var newApartmentApplicants = applicationDetails.Applicants;
             foreach (ApartmentApplicantViewModel applicant in newApartmentApplicants)
             {
                 if (applicant.Profile == null)
@@ -251,9 +249,7 @@ namespace Gordon360.Controllers.Api
                 }
             }
 
-            ApartmentChoiceViewModel[] newApartmentChoices = applicationDetails.ApartmentChoices;
-
-            int result = _housingService.EditApplication(authenticatedUserUsername, sessionID, applicationID, newEditorUsername, newApartmentApplicants, newApartmentChoices);
+            int result = _housingService.EditApplication(authenticatedUserUsername, sessionID, applicationID, newEditorUsername, newApartmentApplicants, applicationDetails.ApartmentChoices);
 
             return Created("Status of application saving: ", result);
         }

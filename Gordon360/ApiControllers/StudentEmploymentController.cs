@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Gordon360.Database.CCT;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
@@ -16,10 +17,9 @@ namespace Gordon360.Controllers.Api
         //declare services we are going to use.
         private readonly IStudentEmploymentService _studentEmploymentService;
 
-        public StudentEmploymentController()
+        public StudentEmploymentController(CCTContext context)
         {
-            var _unitOfWork = new UnitOfWork();
-            _studentEmploymentService = new StudentEmploymentService(_unitOfWork);
+            _studentEmploymentService = new StudentEmploymentService(context);
         }
         public StudentEmploymentController(IStudentEmploymentService studentEmploymentService)
         {

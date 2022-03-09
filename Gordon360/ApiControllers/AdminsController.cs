@@ -1,15 +1,17 @@
 ﻿using System.Collections.Generic;
 using Gordon360.AuthorizationFilters;
+using Gordon360.Database.CCT;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Models;
+using Gordon360.Models.CCT;
 using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Gordon360.ApiControllers
+namespace Gordon360.Controllers
 {
     [Route("api/admins")]
     [Authorize]
@@ -19,10 +21,9 @@ namespace Gordon360.ApiControllers
 
         private readonly IAdministratorService _adminService;
 
-        public AdminsController()
+        public AdminsController(CCTContext context)
         {
-            IUnitOfWork _unitOfWork = new UnitOfWork();
-            _adminService = new AdministratorService(_unitOfWork);
+            _adminService = new AdministratorService(context);
         }
         public AdminsController(IAdministratorService adminService)
         {

@@ -5,7 +5,7 @@ using Gordon360.Static.Methods;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Gordon360.ApiControllers
+namespace Gordon360.Controllers
 {
     [Authorize]
     [CustomExceptionFilter]

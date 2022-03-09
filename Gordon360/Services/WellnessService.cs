@@ -8,17 +8,19 @@ using System.Data.SqlClient;
 using Gordon360.Services.ComplexQueries;
 using static Gordon360.Controllers.Api.WellnessController;
 using Gordon360.Models;
+using Gordon360.Models.CCT;
+using Gordon360.Database.CCT;
 
 namespace Gordon360.Services
 {
     public class WellnessService : IWellnessService
     {
 
-        private IUnitOfWork _unitOfWork;
+        private CCTContext _context;
 
-        public WellnessService()
+        public WellnessService(CCTContext context)
         {
-            _unitOfWork = new UnitOfWork();
+            _context = context;
         }
 
         /// <summary>
@@ -29,14 +31,14 @@ namespace Gordon360.Services
 
         public WellnessViewModel GetStatus(string id)
         {
-            var account = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            var account = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
             if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
             int IDNum = int.Parse(id);
-            var result = _unitOfWork.WellnessRepository.Where(x => x.ID_Num == IDNum).OrderByDescending(x => x.Created).FirstOrDefault();
+            var result = _context.Health_Status.Where(x => x.ID_Num == IDNum).OrderByDescending(x => x.Created).FirstOrDefault();
 
             if (result == null)
             {
@@ -66,10 +68,10 @@ namespace Gordon360.Services
         /// <param name="id"> ID of the user to post the status for</param>
         /// <param name="status"> Status that is being posted, one of the WellnessStatusColors </param>
         /// <returns>Status that was successfully recorded</returns>
-        
+
         public Health_Status PostStatus(WellnessStatusColor status, string id)
         {
-            var account = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            var account = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
             if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
@@ -80,7 +82,7 @@ namespace Gordon360.Services
             var statusObject = new Health_Status
             {
                 ID_Num = int.Parse(id),
-                HealthStatusID = (byte) status,
+                HealthStatusID = (byte)status,
                 Created = now,
                 Expires = ExpirationDate(now),
                 CreatedBy = "360.WellnessCheck",
@@ -88,14 +90,14 @@ namespace Gordon360.Services
                 Emailed = null
             };
 
-            var result = _unitOfWork.WellnessRepository.Add(statusObject);
+            var result = _context.Health_Status.Add(statusObject);
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
             }
-            _unitOfWork.Save();
+            _context.SaveChanges();
 
-            return result;
+            return statusObject;
         }
 
         /// <summary>
@@ -106,16 +108,18 @@ namespace Gordon360.Services
         public WellnessQuestionViewModel GetQuestion()
         {
 
-            var result = RawSqlQuery<WellnessQuestionViewModel>.query("GET_HEALTH_CHECK_QUESTION"); //run stored procedure
-            
+            var result = _context.Health_Question.Select(q => new WellnessQuestionViewModel {
+                question = q.Question,
+                noPrompt = q.NoPrompt,
+                yesPrompt = q.YesPrompt
+            }).FirstOrDefault();
+
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
             }
 
-            var wellnessQuestionModel = result.SingleOrDefault();
-
-            return wellnessQuestionModel;
+            return result;
         }
 
 

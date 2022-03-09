@@ -8,6 +8,8 @@ using Gordon360.Exceptions.ExceptionFilters;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Gordon360.Models;
+using Gordon360.Database.CCT;
 
 namespace Gordon360.Controllers.Api
 {
@@ -16,18 +18,18 @@ namespace Gordon360.Controllers.Api
     [Authorize]
     public class ScheduleController : ControllerBase
     {
-        private IUnitOfWork _unitOfWork;
+        private CCTContext _context;
 
         private readonly IAccountService _accountService;
         private readonly IRoleCheckingService _roleCheckingService;
         private readonly IScheduleService _scheduleService;
 
-        public ScheduleController()
+        public ScheduleController(CCTContext context)
         {
-            _unitOfWork = new UnitOfWork();
-            _scheduleService = new ScheduleService(_unitOfWork);
-            _accountService = new AccountService(_unitOfWork);
-            _roleCheckingService = new RoleCheckingService(_unitOfWork);
+            _context = context;
+            _scheduleService = new ScheduleService(context);
+            _accountService = new AccountService(context);
+            _roleCheckingService = new RoleCheckingService(context);
         }
 
         public ScheduleController(IScheduleService scheduleService)
@@ -85,7 +87,7 @@ namespace Gordon360.Controllers.Api
             var role = _roleCheckingService.getCollegeRole(username);
             var id = _accountService.GetAccountByUsername(username).GordonID;
             object scheduleResult = null;
-            var scheduleControl = _unitOfWork.ScheduleControlRepository.GetById(authenticatedUserId);
+            var scheduleControl = _context.Schedule_Control.Find(authenticatedUserId);
             int schedulePrivacy = 1;
 
             // Getting student schedule

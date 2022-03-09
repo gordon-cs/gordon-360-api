@@ -8,16 +8,18 @@ using Gordon360.Exceptions.CustomExceptions;
 using System.Data.SqlClient;
 using Gordon360.Services.ComplexQueries;
 using System.Diagnostics;
+using Gordon360.Database.CCT;
+using System.Threading.Tasks;
 
 namespace Gordon360.Services
 {
     public class StudentEmploymentService : IStudentEmploymentService
     {
-        private IUnitOfWork _unitOfWork;
+        private CCTContext _context;
 
-        public StudentEmploymentService(IUnitOfWork unitOfWork)
+        public StudentEmploymentService(CCTContext context)
         {
-            _unitOfWork = unitOfWork;
+            _context = context;
         }
 
         /// <summary>
@@ -25,31 +27,28 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="id">id</param>
         /// <returns>VictoryPromiseViewModel if found, null if not found</returns>
-        public IEnumerable<StudentEmploymentViewModel> GetEmployment(string id)
+        public async Task<IEnumerable<StudentEmploymentViewModel>> GetEmployment(string id)
         {
-            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            var query = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            var idParam = new SqlParameter("@ID", id);
-            var result = RawSqlQuery<StudentEmploymentViewModel>.query("STUDENT_JOBS_PER_ID_NUM @ID", idParam); //run stored procedure
+            var result = await _context.Procedures.STUDENT_JOBS_PER_ID_NUMAsync(int.Parse(id));
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
             }
             // Transform the ActivityViewModel (ACT_CLUB_DEF) into ActivityInfoViewModel
-            var studentEmploymentModel = result.Select(x =>
+            var studentEmploymentModel = result.Select(x => new StudentEmploymentViewModel
             {
-                StudentEmploymentViewModel y = new StudentEmploymentViewModel();
-                y.Job_Title = x.Job_Title ?? "";
-                y.Job_Department = x.Job_Department ?? "";
-                y.Job_Department_Name = x.Job_Department_Name ?? "";
-                y.Job_Start_Date = x.Job_Start_Date ?? DateTime.MinValue;
-                y.Job_End_Date = x.Job_End_Date ?? DateTime.Now;
-                y.Job_Expected_End_Date = x.Job_Expected_End_Date ?? DateTime.Now;
-                return y;
+                Job_Title = x.Job_Title ?? "",
+                Job_Department = x.Job_Department ?? "",
+                Job_Department_Name = x.Job_Department_Name ?? "",
+                Job_Start_Date = x.Job_Start_Date ?? DateTime.MinValue,
+                Job_End_Date = x.Job_End_Date ?? DateTime.Now,
+                Job_Expected_End_Date = x.Job_Expected_End_Date ?? DateTime.Now,
             });
             return studentEmploymentModel;
 

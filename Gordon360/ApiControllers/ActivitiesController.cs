@@ -17,6 +17,8 @@ using Gordon360.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Gordon360.Database.CCT;
+using Gordon360.Models.CCT;
 
 namespace Gordon360.Controllers.Api
 {
@@ -27,19 +29,10 @@ namespace Gordon360.Controllers.Api
     public class ActivitiesController : ControllerBase
     {
         private readonly IActivityService _activityService;
-        private readonly IWebHostEnvironment _env;
         
-        public ActivitiesController(IWebHostEnvironment env)
+        public ActivitiesController(CCTContext context)
         {
-            var _unitOfWork = new UnitOfWork();
-            _activityService = new ActivityService(_unitOfWork);
-            _env = env;
-        }
-
-        public ActivitiesController(IActivityService activityService, IWebHostEnvironment env)
-        {
-            _activityService = activityService;
-            _env = env;
+            _activityService = new ActivityService(context);
         }
 
         [HttpGet]
@@ -170,9 +163,9 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("open")]
         //Public Route 
-        public ActionResult<IEnumerable<string>> GetOpenActivities()
+        public async Task<ActionResult<IEnumerable<string>>> GetOpenActivities()
         {
-            var sessionCode = Helpers.GetCurrentSession().SessionCode;
+            var sessionCode = (await Helpers.GetCurrentSession()).SessionCode;
 
             var activity_codes = _activityService.GetOpenActivities(sessionCode);
 
@@ -195,9 +188,9 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("{id}/open")]
         //Public Route 
-        public ActionResult<IEnumerable<string>> GetOpenActivities(int id)
+        public async Task<ActionResult<IEnumerable<string>>> GetOpenActivities(int id)
         {
-            var sessionCode = Helpers.GetCurrentSession().SessionCode;
+            var sessionCode = (await Helpers.GetCurrentSession()).SessionCode;
 
             var activity_codes = _activityService.GetOpenActivities(sessionCode, id);
 
@@ -218,9 +211,9 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("closed")]
         //Public Route 
-        public ActionResult<IEnumerable<string>> GetClosedActivities()
+        public async Task<ActionResult<IEnumerable<string>>> GetClosedActivities()
         {
-            var sessionCode = Helpers.GetCurrentSession().SessionCode;
+            var sessionCode = (await Helpers.GetCurrentSession()).SessionCode;
 
             var activity_codes = _activityService.GetClosedActivities(sessionCode);
 
@@ -243,9 +236,9 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("{id}/closed")]
         //Public Route 
-        public ActionResult<IEnumerable<string>> GetClosedActivities(int id)
+        public async Task<ActionResult<IEnumerable<string>>> GetClosedActivities(int id)
         {
-            var sessionCode = Helpers.GetCurrentSession().SessionCode;
+            var sessionCode = (await Helpers.GetCurrentSession()).SessionCode;
 
             var activity_codes = _activityService.GetClosedActivities(sessionCode, id);
 

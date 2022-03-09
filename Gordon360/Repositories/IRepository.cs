@@ -77,37 +77,17 @@ namespace Gordon360.Repositories
         T FirstOrDefault(Expression<Func<T, bool>> predicate);
 
         /// <summary>
-        /// Adds a given entity to the context
-        /// </summary>
-        /// <param name="entity">The entity to add to the context</param>
-        T Add(T entity);
-
-        /// <summary>
-        /// Deletes a given entity from the context
-        /// </summary>
-        /// <param name="entity">The entity to delete</param>
-        T Delete(T entity);
-
-        /// <summary>
-        /// Delete the child collection
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <param name="collectionName"></param>
-        /// <param name="collectionToRemove"></param>
-        void DeleteCollection(T entity, string collectionName, ICollection<Object> collectionToRemove);
-
-        /// <summary>
         /// Attaches a given entity to the context
         /// </summary>
         /// <param name="entity">The entity to attach</param>
         void Attach(T entity);
 
-        /// <summary>
-        /// Executes a stored procedure
-        /// </summary>
-        /// <param name="query">Name of the stored procedure </param>
-        /// <param name="parameters">Parameters to pass to the stored procedure</param>
-        IEnumerable<T> ExecWithStoredProcedure(string query, params object[] parameters);
+        ///// <summary>
+        ///// Executes a stored procedure
+        ///// </summary>
+        ///// <param name="query">Name of the stored procedure </param>
+        ///// <param name="parameters">Parameters to pass to the stored procedure</param>
+        //IEnumerable<T> ExecWithStoredProcedure(string query, params object[] parameters);
 
 
 

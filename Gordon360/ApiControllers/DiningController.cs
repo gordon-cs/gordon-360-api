@@ -8,8 +8,10 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
+using Gordon360.Database.CCT;
+using System.Threading.Tasks;
 
-namespace Gordon360.ApiControllers
+namespace Gordon360.Controllers
 {
     [Route("api/dining")]
     [CustomExceptionFilter]
@@ -18,10 +20,9 @@ namespace Gordon360.ApiControllers
     {
         public readonly IDiningService _diningService;
         private const string FACSTAFF_MEALPLAN_ID = "7295";
-        public DiningController(IConfiguration config)
+        public DiningController(IConfiguration config, CCTContext context)
         {
-            IUnitOfWork _unitOfWork = new UnitOfWork();
-            _diningService = new DiningService(_unitOfWork, config);
+            _diningService = new DiningService(context, config);
         }
 
         /// <summary>
@@ -30,7 +31,7 @@ namespace Gordon360.ApiControllers
         /// <returns>A DiningInfo object</returns>
         [HttpGet]
         [Route("")]
-        public ActionResult<string> Get()
+        public async Task<ActionResult<string>> Get()
         {
             if (!ModelState.IsValid)
             {
@@ -45,9 +46,9 @@ namespace Gordon360.ApiControllers
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var sessionCode = Helpers.GetCurrentSession().SessionCode;
+            var currentSession = await Helpers.GetCurrentSession();
             var authenticatedUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var diningInfo = _diningService.GetDiningPlanInfo(authenticatedUserId, sessionCode);
+            var diningInfo = _diningService.GetDiningPlanInfo(authenticatedUserId, currentSession.SessionCode);
 
             if (diningInfo == null)
             {

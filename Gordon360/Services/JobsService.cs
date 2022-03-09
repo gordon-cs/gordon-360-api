@@ -10,6 +10,10 @@ using System.Data;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Static.Methods;
 using System.Diagnostics;
+using Gordon360.Database.CCT;
+using Gordon360.Database.StudentTimesheets;
+using Gordon360.Models.StudentTimesheets;
+using System.Threading.Tasks;
 
 namespace Gordon360.Services
 {
@@ -18,167 +22,76 @@ namespace Gordon360.Services
     /// </summary>
     public class JobsService : IJobsService
     {
-        private IUnitOfWork _unitOfWork;
+        private readonly StudentTimesheetsContext _context;
+        private readonly CCTContext _CCTContext;
 
-        public JobsService(IUnitOfWork unitOfWork)
+        public JobsService(StudentTimesheetsContext context, CCTContext cctContext)
         {
-            _unitOfWork = unitOfWork;
+            _context = context;
+            _CCTContext = cctContext;
         }
 
         public IEnumerable<StudentTimesheetsViewModel> getSavedShiftsForUser(int ID_NUM)
         {
-            IEnumerable<StudentTimesheetsViewModel> result = null;
+            return _context.student_timesheets
+                .Where(t => t.ID_NUM == ID_NUM && t.status != "PAID")
+                .OrderBy(t => t.eml)
+                .ThenBy(t => t.shift_start_datetime)
+                .ThenBy(t => t.status)
+                .Select<student_timesheets, StudentTimesheetsViewModel>(t => t);
+        }
 
-            var id_num = new SqlParameter("@ID_NUM", ID_NUM);
-            string query = "SELECT ID, ID_NUM, EML, EML_DESCRIPTION, SHIFT_START_DATETIME, SHIFT_END_DATETIME, HOURLY_RATE, HOURS_WORKED, SUPERVISOR, COMP_SUPERVISOR, STATUS, SUBMITTED_TO, SHIFT_NOTES, COMMENTS, PAY_WEEK_DATE, PAY_PERIOD_DATE, PAY_PERIOD_ID, LAST_CHANGED_BY, DATETIME_ENTERED from student_timesheets where ID_NUM = @ID_NUM AND STATUS != 'Paid' order by EML, SHIFT_START_DATETIME, STATUS";
-            try
-            {
-                result = RawSqlQuery<StudentTimesheetsViewModel>.StudentTimesheetQuery(query, id_num);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-            }
+        public async void saveShiftForUser(int studentID, int jobID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string shiftNotes, string lastChangedBy)
+        {
+            await _context.Procedures.student_timesheets_insert_shiftAsync(studentID, jobID, shiftStart, shiftEnd, hoursWorked, shiftNotes, lastChangedBy);
+        }
+
+        public StudentTimesheetsViewModel editShift(int rowID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string username)
+        {
+
+            var result = _context.student_timesheets.Find(rowID);
+            result.status = "Saved";
+            result.shift_start_datetime = shiftStart;
+            result.shift_end_datetime = shiftEnd;
+            result.hours_worked = decimal.Parse(hoursWorked);
+            result.last_changed_by = username;
+            result.comments = null;
+            _context.SaveChanges();
 
             return result;
         }
 
-        public IEnumerable<StudentTimesheetsViewModel> saveShiftForUser(int studentID, int jobID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string shiftNotes, string lastChangedBy)
+        public void deleteShiftForUser(int rowID, int studentID)
         {
-            IEnumerable<StudentTimesheetsViewModel> result = null;
-
-            var id_num = new SqlParameter("@ID_NUM", studentID);
-            var eml = new SqlParameter("@eml", jobID);
-            var shiftStartDateTime = new SqlParameter("@shift_start_datetime", shiftStart);
-            var shiftEndDateTime = new SqlParameter("@shift_end_datetime", shiftEnd);
-            var hours_worked = new SqlParameter("@hours_worked", hoursWorked);
-            var notes = new SqlParameter("@shift_notes", shiftNotes);
-            var changedBy = new SqlParameter("@last_changed_by", lastChangedBy);
-
-            try
-            {
-                result = RawSqlQuery<StudentTimesheetsViewModel>.StudentTimesheetQuery("student_timesheets_insert_shift @ID_NUM, @eml, @shift_start_datetime, @shift_end_datetime, @hours_worked, @shift_notes, @last_changed_by", id_num, eml, shiftStartDateTime, shiftEndDateTime, hours_worked, notes, changedBy);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-            }
-
-            return result;
+            _context.student_timesheets.Remove(new student_timesheets { ID = rowID, ID_NUM = studentID });
+            _context.SaveChanges();
         }
 
-        public IEnumerable<StudentTimesheetsViewModel> editShift(int rowID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string username)
+        public async void submitShiftForUser(int studentID, int jobID, DateTime shiftEnd, int submittedTo, string lastChangedBy)
         {
-            IEnumerable<StudentTimesheetsViewModel> result = null;
-            var id = new SqlParameter("@ID", rowID);
-            var newStart = new SqlParameter("@newStart", shiftStart);
-            var newEnd = new SqlParameter("@newEnd", shiftEnd);
-            var newHours = new SqlParameter("@newHours", hoursWorked);
-            var lastChangedBy = new SqlParameter("@lastChangedBy", username);
-
-            try
-            {
-                result = RawSqlQuery<StudentTimesheetsViewModel>.StudentTimesheetQuery("UPDATE student_timesheets SET STATUS = 'Saved', SHIFT_START_DATETIME = @newStart, SHIFT_END_DATETIME = @newEnd, HOURS_WORKED = @newHours, LAST_CHANGED_BY = @lastChangedBy, COMMENTS = null WHERE ID = @ID;", newStart, newEnd, newHours, id, lastChangedBy);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-            }
-
-            return result;
+            await _context.Procedures.student_timesheets_submit_job_shiftAsync(studentID, jobID, shiftEnd, submittedTo, lastChangedBy);
         }
 
-        public IEnumerable<StudentTimesheetsViewModel> deleteShiftForUser(int rowID, int studentID)
+        public async Task<IEnumerable<SupervisorViewModel>> getsupervisorNameForJob(int supervisorID)
         {
-            IEnumerable<StudentTimesheetsViewModel> result = null;
-
-            var row_id = new SqlParameter("@row_num", rowID);
-            var ID_NUM = new SqlParameter("@ID_NUM", studentID);
-
-            try
-            {
-                result = RawSqlQuery<StudentTimesheetsViewModel>.StudentTimesheetQuery("student_timesheets_delete_shift @row_num, @ID_NUM", row_id, ID_NUM);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-            }
-
-            return result;
+            return (await _context.Procedures.student_timesheets_select_supervisor_nameAsync(supervisorID))
+                .Select(s => new SupervisorViewModel { FIRST_NAME = s.first_name, LAST_NAME = s.last_name, PREFERRED_NAME = s.preferred_name });
         }
 
-        public IEnumerable<StudentTimesheetsViewModel> submitShiftForUser(int studentID, int jobID, DateTime shiftEnd, int submittedTo, string lastChangedBy)
+        public async Task<IEnumerable<ActiveJobViewModel>> getActiveJobs(DateTime shiftStart, DateTime shiftEnd, int studentID)
         {
-            IEnumerable<StudentTimesheetsViewModel> result = null;
-
-            var ID_NUM = new SqlParameter("@ID_NUM", studentID);
-            var eml = new SqlParameter("@eml", jobID);
-            var shiftEndDateTime = new SqlParameter("@shift_end_datetime", shiftEnd);
-            var submitted_to = new SqlParameter("@submitted_to", submittedTo);
-            var changedBy = new SqlParameter("@last_changed_by", lastChangedBy);
-
-            try
-            {
-                result = RawSqlQuery<StudentTimesheetsViewModel>.StudentTimesheetQuery("student_timesheets_submit_job_shift @ID_NUM, @eml, @shift_end_datetime, @submitted_to, @last_changed_by", ID_NUM, eml, shiftEndDateTime, submitted_to, changedBy);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-            }
-
-            return result;
-        }
-
-        public IEnumerable<SupervisorViewModel> getsupervisorNameForJob(int supervisorID)
-        {
-            IEnumerable<SupervisorViewModel> result = null;
-
-            var supervisor = new SqlParameter("@supervisor", supervisorID);
-
-            try
-            {
-                result = RawSqlQuery<SupervisorViewModel>.StudentTimesheetQuery("student_timesheets_select_supervisor_name @supervisor", supervisor);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-            }
-            return result;
-        }
-
-        public IEnumerable<ActiveJobViewModel> getActiveJobs(DateTime shiftStart, DateTime shiftEnd, int studentID)
-        {
-            IEnumerable<ActiveJobViewModel> result = null;
-
-            var start_datetime = new SqlParameter("@start_datetime", shiftStart);
-            var end_datetime = new SqlParameter("@end_datetime", shiftEnd);
-            var id_num = new SqlParameter("@ID_NUM", studentID);
-
-            try
-            {
-                result = RawSqlQuery<ActiveJobViewModel>.StudentTimesheetQuery("student_timesheets_select_emls_for_ajax_selectbox @start_datetime, @end_datetime, @ID_NUM", start_datetime, end_datetime, id_num);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-            }
-
-            return result;
+            return (await _context.Procedures.student_timesheets_select_emls_for_ajax_selectboxAsync(shiftStart, shiftEnd, studentID)).Select(j => new ActiveJobViewModel { EMLID = j.EmlID, POSTITLE = j.postitle });
         }
 
         public IEnumerable<OverlappingShiftIdViewModel> editShiftOverlapCheck(int studentID, DateTime shiftStart, DateTime shiftEnd, int rowID)
         {
             IEnumerable<OverlappingShiftIdViewModel> result = null;
-            var id_num = new SqlParameter("@ID_NUM", studentID);
-            var start_datetime = new SqlParameter("@start_datetime", shiftStart);
-            var end_datetime = new SqlParameter("@end_datetime", shiftEnd);
-            var shift_being_edited = new SqlParameter("@shift_being_edited", rowID);
 
             try
             {
-                result = RawSqlQuery<OverlappingShiftIdViewModel>.StudentTimesheetQuery("student_timesheets_edit_shift_already_worked_these_hours @ID_NUM, @start_datetime, @end_datetime, @shift_being_edited", id_num, start_datetime, end_datetime, shift_being_edited);
+                result = (IEnumerable<OverlappingShiftIdViewModel>)_context.Procedures.student_timesheets_edit_shift_already_worked_these_hoursAsync(studentID, shiftStart, shiftEnd, rowID);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Debug.WriteLine(e.Message);
             }
@@ -189,15 +102,11 @@ namespace Gordon360.Services
         {
             IEnumerable<OverlappingShiftIdViewModel> result = null;
 
-            var id_num = new SqlParameter("@ID_NUM", studentID);
-            var start_datetime = new SqlParameter("@start_datetime", shiftStart);
-            var end_datetime = new SqlParameter("@end_datetime", shiftEnd);
-
             try
             {
-                result = RawSqlQuery<OverlappingShiftIdViewModel>.StudentTimesheetQuery("student_timesheets_already_worked_these_hours @ID_NUM, @start_datetime, @end_datetime", id_num, start_datetime, end_datetime);
+                result = (IEnumerable<OverlappingShiftIdViewModel>)_context.Procedures.student_timesheets_already_worked_these_hoursAsync(studentID, shiftStart, shiftEnd);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Debug.WriteLine(e.Message);
             }
@@ -208,18 +117,13 @@ namespace Gordon360.Services
 
         public ClockInViewModel ClockIn(bool state, string id)
         {
-
-            var _unitOfWork = new UnitOfWork();
-            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            var query = _CCTContext.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            var idParam = new SqlParameter("@ID_Num", id);
-            var stateParam = new SqlParameter("@CurrentState", state);
-
-            var result = RawSqlQuery<ClockInViewModel>.query("INSERT_TIMESHEETS_CLOCK_IN_OUT @ID_Num, @CurrentState", idParam, stateParam); //run stored procedure
+            var result = _CCTContext.Procedures.INSERT_TIMESHEETS_CLOCK_IN_OUTAsync(int.Parse(id), state);
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
@@ -235,56 +139,33 @@ namespace Gordon360.Services
             return y;
         }
 
-        public IEnumerable<ClockInViewModel> ClockOut(string id )
+        public IEnumerable<ClockInViewModel> ClockOut(string id)
         {
-            var _unitOfWork = new UnitOfWork();
-            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            var query = _CCTContext.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            var idParam = new SqlParameter("@ID_Num", id);
-
-            var result = RawSqlQuery<ClockInViewModel>.query("GET_TIMESHEETS_CLOCK_IN_OUT @ID_NUM", idParam); //run stored procedure
-
-
+            var result = _CCTContext.Procedures.GET_TIMESHEETS_CLOCK_IN_OUTAsync(int.Parse(id));
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
             }
 
-
-            var clockOutModel = result.Select(x =>
-            {
-                ClockInViewModel y = new ClockInViewModel();
-
-                y.currentState = x.currentState;
-
-                y.timestamp = x.timestamp;
-
-
-                return y;
-            });
-
-
-
-            return clockOutModel;
+            return (IEnumerable<ClockInViewModel>)result;
 
         }
 
         public ClockInViewModel DeleteClockIn(string id)
         {
-            var _unitOfWork = new UnitOfWork();
-            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            var query = _CCTContext.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            var idParam = new SqlParameter("@ID_Num", id);
-
-            var result = RawSqlQuery<ClockInViewModel>.query("DELETE_CLOCK_IN @ID_NUM", idParam); //run stored procedure
+            var result = _CCTContext.Procedures.DELETE_CLOCK_INAsync(id);
 
 
             if (result == null)
@@ -292,250 +173,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
             }
 
-
-
-            ClockInViewModel y = new ClockInViewModel();
-
-            return y;
-
+            return new ClockInViewModel();
         }
-
-
-        public IEnumerable<StaffCheckViewModel> CanUsePage(string id)
-        {
-            var _unitOfWork = new UnitOfWork();
-            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
-            if (query == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
-            }
-            var idParam = new SqlParameter("@ID_Num", id);
-
-            var result = RawSqlQuery<StaffCheckViewModel>.StaffTimesheetQuery("staff_timesheets_can_use_this_page @ID_NUM", idParam); // run stored procedure
-
-            if (result == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
-            }
-
-            var staffTimesheet = result.Select(x =>
-            {
-                StaffCheckViewModel y = new StaffCheckViewModel();
-                y.EmIID = true;
-
-                return y;
-            });
-
-            return staffTimesheet;
-
-        }
-
-
-        //staff functions
-
-        public IEnumerable<StaffTimesheetsViewModel> saveShiftForStaff(int staffID, int jobID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, char hoursType, string shiftNotes, string lastChangedBy)
-        {
-            IEnumerable<StaffTimesheetsViewModel> result = null;
-
-            var id_num = new SqlParameter("@ID_NUM", staffID);
-            var eml = new SqlParameter("@eml", jobID);
-            var shiftStartDateTime = new SqlParameter("@shift_start_datetime", shiftStart);
-            var shiftEndDateTime = new SqlParameter("@shift_end_datetime", shiftEnd);
-            var hours_worked = new SqlParameter("@hours_worked", hoursWorked);
-            var hours_type = new SqlParameter("@hours_type", hoursType);
-            var notes = new SqlParameter("@shift_notes", shiftNotes);
-            var changedBy = new SqlParameter("@last_changed_by", lastChangedBy);
-
-            try
-            {
-                result = RawSqlQuery<StaffTimesheetsViewModel>.StaffTimesheetQuery("staff_timesheets_insert_shift @ID_NUM, @eml, @shift_start_datetime, @shift_end_datetime, @hours_worked, @hours_type, @shift_notes, @last_changed_by", id_num, eml, shiftStartDateTime, shiftEndDateTime, hours_worked, hours_type, notes, changedBy);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-            }
-
-            return result;
-        }
-
-
-        public IEnumerable<StaffTimesheetsViewModel> getSavedShiftsForStaff(int ID_NUM)
-        {
-            IEnumerable<StaffTimesheetsViewModel> result = null;
-
-            var id_num = new SqlParameter("@ID_NUM", ID_NUM);
-            // HOURLY_RATE taken out as it doesn't seem to be in database when running query in SSMS
-            string query = "SELECT ID_NUM, EML, EML_DESCRIPTION, SHIFT_START_DATETIME, SHIFT_END_DATETIME, HOURS_WORKED, SUPERVISOR, COMP_SUPERVISOR, STATUS, SUBMITTED_TO, SHIFT_NOTES, COMMENTS, PAY_WEEK_DATE, PAY_PERIOD_DATE, PAY_PERIOD_ID, LAST_CHANGED_BY, DATETIME_ENTERED, HOURS_TYPE from staff_timesheets where ID_NUM = @ID_NUM AND STATUS != 'Paid' order by EML, SHIFT_START_DATETIME, STATUS";
-            try
-            {
-                result = RawSqlQuery<StaffTimesheetsViewModel>.StaffTimesheetQuery(query, id_num);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-            }
-
-            return result;
-        }
-
-        public IEnumerable<StaffTimesheetsViewModel> editShiftStaff(int rowID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string username)
-        {
-            IEnumerable<StaffTimesheetsViewModel> result = null;
-            var id = new SqlParameter("@ID", rowID);
-            var newStart = new SqlParameter("@newStart", shiftStart);
-            var newEnd = new SqlParameter("@newEnd", shiftEnd);
-            var newHours = new SqlParameter("@newHours", hoursWorked);
-            var lastChangedBy = new SqlParameter("@lastChangedBy", username);
-
-            try
-            {
-                result = RawSqlQuery<StaffTimesheetsViewModel>.StaffTimesheetQuery("UPDATE staff_timesheets SET STATUS = 'Saved', SHIFT_START_DATETIME = @newStart, SHIFT_END_DATETIME = @newEnd, HOURS_WORKED = @newHours, LAST_CHANGED_BY = @lastChangedBy, COMMENTS = null WHERE ID = @ID;", newStart, newEnd, newHours, lastChangedBy, id);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-            }
-
-            return result;
-        }
-
-        public IEnumerable<StaffTimesheetsViewModel> deleteShiftForStaff(int rowID, int staffID)
-        {
-            IEnumerable<StaffTimesheetsViewModel> result = null;
-
-            var row_id = new SqlParameter("@row_num", rowID);
-            var ID_NUM = new SqlParameter("@ID_NUM", staffID);
-
-            try
-            {
-                result = RawSqlQuery<StaffTimesheetsViewModel>.StaffTimesheetQuery("staff_timesheets_delete_shift @row_num, @ID_NUM", row_id, ID_NUM);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-            }
-
-            return result;
-        }
-
-        public IEnumerable<StaffTimesheetsViewModel> submitShiftForStaff(int staffID, int jobID, DateTime shiftEnd, int submittedTo, string lastChangedBy)
-        {
-            IEnumerable<StaffTimesheetsViewModel> result = null;
-
-            var ID_NUM = new SqlParameter("@ID_NUM", staffID);
-            var eml = new SqlParameter("@eml", jobID);
-            var shiftEndDateTime = new SqlParameter("@shift_end_datetime", shiftEnd);
-            var submitted_to = new SqlParameter("@submitted_to", submittedTo);
-            var changedBy = new SqlParameter("@last_changed_by", lastChangedBy);
-
-            try
-            {
-                result = RawSqlQuery<StaffTimesheetsViewModel>.StaffTimesheetQuery("staff_timesheets_submit_job_shift @ID_NUM, @eml, @shift_end_datetime, @submitted_to, @last_changed_by", ID_NUM, eml, shiftEndDateTime, submitted_to, changedBy);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-            }
-
-            return result;
-        }
-
-        public IEnumerable<ActiveJobViewModel> getActiveJobsStaff(DateTime shiftStart, DateTime shiftEnd, int staffID)
-        {
-            IEnumerable<ActiveJobViewModel> result = null;
-
-            var start_datetime = new SqlParameter("@start_datetime", shiftStart);
-            var end_datetime = new SqlParameter("@end_datetime", shiftEnd);
-            var id_num = new SqlParameter("@ID_NUM", staffID);
-
-            try
-            {
-                result = RawSqlQuery<ActiveJobViewModel>.StaffTimesheetQuery("staff_timesheets_select_emls_for_ajax_selectbox @start_datetime, @end_datetime, @ID_NUM", start_datetime, end_datetime, id_num);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-            }
-
-            return result;
-        }
-
-        public IEnumerable<SupervisorViewModel> getStaffSupervisorNameForJob(int supervisorID)
-        {
-            IEnumerable<SupervisorViewModel> result = null;
-
-            var supervisor = new SqlParameter("@supervisor", supervisorID);
-
-            try
-            {
-                result = RawSqlQuery<SupervisorViewModel>.StaffTimesheetQuery("staff_timesheets_select_supervisor_name @supervisor", supervisor);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-            }
-            return result;
-        }
-
-        public IEnumerable<OverlappingShiftIdViewModel> editShiftOverlapCheckStaff(int staffID, DateTime shiftStart, DateTime shiftEnd, int rowID)
-        {
-            IEnumerable<OverlappingShiftIdViewModel> result = null;
-            var id_num = new SqlParameter("@ID_NUM", staffID);
-            var start_datetime = new SqlParameter("@start_datetime", shiftStart);
-            var end_datetime = new SqlParameter("@end_datetime", shiftEnd);
-            var shift_being_edited = new SqlParameter("@shift_being_edited", rowID);
-
-            try
-            {
-                result = RawSqlQuery<OverlappingShiftIdViewModel>.StaffTimesheetQuery("staff_timesheets_edit_shift_already_worked_these_hours @ID_NUM, @start_datetime, @end_datetime, @shift_being_edited", id_num, start_datetime, end_datetime, shift_being_edited);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-            }
-            return result;
-        }
-
-        public IEnumerable<OverlappingShiftIdViewModel> checkForOverlappingShiftStaff(int staffID, DateTime shiftStart, DateTime shiftEnd)
-        {
-            IEnumerable<OverlappingShiftIdViewModel> result = null;
-
-            var id_num = new SqlParameter("@ID_NUM", staffID);
-            var start_datetime = new SqlParameter("@start_datetime", shiftStart);
-            var end_datetime = new SqlParameter("@end_datetime", shiftEnd);
-
-            try
-            {
-                result = RawSqlQuery<OverlappingShiftIdViewModel>.StaffTimesheetQuery("staff_timesheets_already_worked_these_hours @ID_NUM, @start_datetime, @end_datetime", id_num, start_datetime, end_datetime);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-            }
-
-            return result;
-        }
-
-        public IEnumerable<HourTypesViewModel> GetHourTypes()
-        {
-            var result = RawSqlQuery<HourTypesViewModel>.StaffTimesheetQuery("staff_timesheets_select_hour_types"); // run stored procedure
-
-            if (result == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
-            }
-
-            var staffTimesheet = result.Select(x =>
-            {
-                HourTypesViewModel y = new HourTypesViewModel();
-                y.type_id = x.type_id;
-                y.type_description = x.type_description;
-
-                return y;
-            });
-
-            return staffTimesheet;
-        }
-
     }
 }

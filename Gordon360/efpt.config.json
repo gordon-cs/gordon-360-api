@@ -1,0 +1,83 @@
+﻿{
+   "CodeGenerationMode": 2,
+   "ContextClassName": "StudentTimesheetsContext",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": true,
+   "ModelNamespace": null,
+   "OutputContextPath": "Database\/StudentTimesheets",
+   "OutputPath": "Models\/StudentTimesheets",
+   "ProjectRootNamespace": "Gordon360",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 0,
+   "Tables": [
+      {
+         "Name": "[dbo].[student_timesheets]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[student_timesheets_already_worked_these_hours]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[student_timesheets_delete_shift]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[student_timesheets_edit_shift_already_worked_these_hours]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[student_timesheets_insert_shift]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[student_timesheets_select_active_status_shifts]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[student_timesheets_select_emls_for_ajax_selectbox]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[student_timesheets_select_end_datetimes]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[student_timesheets_select_fixed_status_shifts]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[student_timesheets_select_if_student_has_paid_shifts]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[student_timesheets_select_supervisor_name]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[student_timesheets_submit_job_shift]",
+         "ObjectType": 1
+      }
+   ],
+   "UiHint": "SQLTrain1.StudentTimesheets",
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": true,
+   "UseDbContextSplitting": false,
+   "UseFluentApiOnly": false,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": false,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoConstructor": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UseSchemaFolders": false,
+   "UseSpatial": false
+}

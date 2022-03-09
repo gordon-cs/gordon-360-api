@@ -11,6 +11,9 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Gordon360.Models.CCT;
+using Gordon360.Database.CCT;
+using System.Threading.Tasks;
 
 namespace Gordon360.Controllers.Api
 {
@@ -24,13 +27,12 @@ namespace Gordon360.Controllers.Api
         private readonly IActivityService _activityService;
         private readonly IRoleCheckingService _roleCheckingService;
 
-        public MembershipsController()
+        public MembershipsController(CCTContext context)
         {
-            IUnitOfWork _unitOfWork = new UnitOfWork();
-            _membershipService = new MembershipService(_unitOfWork);
-            _accountService = new AccountService(_unitOfWork);
-            _activityService = new ActivityService(_unitOfWork);
-            _roleCheckingService = new RoleCheckingService(_unitOfWork);
+            _membershipService = new MembershipService(context);
+            _accountService = new AccountService(context);
+            _activityService = new ActivityService(context);
+            _roleCheckingService = new RoleCheckingService(context);
         }
         public MembershipsController(IMembershipService membershipService)
         {
@@ -373,7 +375,7 @@ namespace Gordon360.Controllers.Api
         /// <returns>The membership information that the student is a part of</returns>
         [Route("student/username/{username}")]
         [HttpGet]
-        public ActionResult<List<MembershipViewModel>> GetMembershipsForStudentByUsename(string username)
+        public async Task<ActionResult<List<MembershipViewModel>>> GetMembershipsForStudentByUsename(string username)
         {
 
             if (!ModelState.IsValid || String.IsNullOrWhiteSpace(username))
@@ -390,17 +392,8 @@ namespace Gordon360.Controllers.Api
                 throw new BadInputException() { ExceptionMessage = errors };
             }
 
-            var id = "";
-            var result = Enumerable.Empty<MembershipViewModel>();
-            try
-            {
-                id = _accountService.GetAccountByUsername(username).GordonID;
-                result = _membershipService.GetMembershipsForStudent(id);
-            }
-            catch (ResourceNotFoundException)
-            {
-                NotFound();
-            }
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+            var result = await _membershipService.GetMembershipsForStudent(id);
 
             if (result == null)
             {
@@ -418,7 +411,7 @@ namespace Gordon360.Controllers.Api
                 foreach (var item in result)
                 {
                     var act = _activityService.Get(item.ActivityCode);
-                    var admins = _membershipService.GetGroupAdminMembershipsForActivity(item.ActivityCode);
+                    var admins = await _membershipService.GetGroupAdminMembershipsForActivity(item.ActivityCode);
                     bool groupAdmin = false;
                     foreach (var admin in admins)               // group admin of a group can read membership of this group
                     {

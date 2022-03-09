@@ -7,6 +7,8 @@ using Gordon360.Exceptions.CustomExceptions;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Gordon360.Models;
+using Gordon360.Database.CCT;
 
 namespace Gordon360.Controllers.Api
 {
@@ -15,15 +17,15 @@ namespace Gordon360.Controllers.Api
     [Authorize]
     public class ScheduleControlController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly CCTContext _context;
         private readonly IAccountService _accountService;
         private readonly IScheduleControlService _scheduleControlService;
 
-        public ScheduleControlController()
+        public ScheduleControlController(CCTContext context)
         {
-            _unitOfWork = new UnitOfWork();
-            _scheduleControlService = new ScheduleControlService(_unitOfWork);
-            _accountService = new AccountService(_unitOfWork);
+            _context = context;
+            _scheduleControlService = new ScheduleControlService(context);
+            _accountService = new AccountService(context);
         }
 
         public ScheduleControlController(IScheduleControlService scheduleControlService)
@@ -43,14 +45,15 @@ namespace Gordon360.Controllers.Api
         {
             var authenticatedUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             
-            object scheduleControlResult = _unitOfWork.ScheduleControlRepository.GetById(authenticatedUserId);
+            //object scheduleControlResult = _unitOfWork.ScheduleControlRepository.GetById(authenticatedUserId);
+            var result = _context.Schedule_Control.Find(authenticatedUserId);
 
-            if (scheduleControlResult == null)
+            if (result == null)
             {
                 return NotFound();
             }
 
-            JObject jresult = JObject.FromObject(scheduleControlResult);
+            JObject jresult = JObject.FromObject(result);
 
             jresult.Property("gordon_id").Remove();
 
@@ -70,7 +73,8 @@ namespace Gordon360.Controllers.Api
         public ActionResult<object> Get(string username)
         {
             var id = _accountService.GetAccountByUsername(username).GordonID;
-            object scheduleControlResult = _unitOfWork.ScheduleControlRepository.GetById(id);
+            //object scheduleControlResult = _unitOfWork.ScheduleControlRepository.GetById(id);
+            var scheduleControlResult = _context.Schedule_Control.Find(id);
             
             if (scheduleControlResult == null)
             {

@@ -1,4 +1,5 @@
-﻿using Gordon360.Static.Data;
+﻿using Gordon360.Models.CCT;
+using Gordon360.Static.Data;
 using System;
 using System.Linq;
 
@@ -34,21 +35,15 @@ namespace Gordon360.Models.ViewModels
         public bool Probation { get; set; }
         public int Points { get; set; }
 
-        public static implicit operator ApartmentApplicantViewModel(GET_AA_APPLICANTS_BY_APPID_Result applicantDBModel)
+        public static implicit operator ApartmentApplicantViewModel(Housing_Applicants applicantDBModel) => new ApartmentApplicantViewModel
         {
-            ApartmentApplicantViewModel applicantModel = new ApartmentApplicantViewModel
-            {
-                ApplicationID = applicantDBModel.HousingAppID,
-                Username = applicantDBModel.Username,
-                // search username in cached data
-                Profile = (StudentProfileViewModel)Data.StudentData.FirstOrDefault(x => x.AD_Username.ToLower() == applicantDBModel.Username.ToLower()),
-                BirthDate = null, // Initialize to null. The actual value is determined and set in HousingService if and only if the user is housing admin
-                OffCampusProgram = applicantDBModel.AprtProgram,
-                Probation = false, // Initialize to false. The actual value is determined and set in HousingService if and only if the user is housing admin
-                Points = 0, // Initialize to zero. The point actual points are calculated in HousingService
-            };
-
-            return applicantModel;
-        }
+            ApplicationID = applicantDBModel.HousingAppID,
+            Username = applicantDBModel.Username, // search username in cached data
+            Profile = (StudentProfileViewModel)Data.StudentData.FirstOrDefault(x => x.AD_Username.ToLower() == applicantDBModel.Username.ToLower()),
+            BirthDate = null, // Initialize to null. The actual value is determined and set in HousingService if and only if the user is housing admin
+            OffCampusProgram = applicantDBModel.AprtProgram,
+            Probation = false, // Initialize to false. The actual value is determined and set in HousingService if and only if the user is housing admin
+            Points = 0, // Initialize to zero. The point actual points are calculated in HousingService
+        };
     }
 }

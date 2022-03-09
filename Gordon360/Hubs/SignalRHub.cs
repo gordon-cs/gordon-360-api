@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Gordon360;
 using Gordon360.Services;
-using Gordon360.ApiControllers;
+using Gordon360.Controllers;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using System.Security.Claims;

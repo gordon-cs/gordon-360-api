@@ -10,6 +10,8 @@ using System.Data;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Static.Methods;
 using System.Diagnostics;
+using Gordon360.Models.CCT;
+using Gordon360.Database.CCT;
 
 namespace Gordon360.Services
 {
@@ -18,11 +20,11 @@ namespace Gordon360.Services
     /// </summary>
     public class ErrorLogService : IErrorLogService
     {
-        private IUnitOfWork _unitOfWork;
+        private CCTContext _context;
 
-        public ErrorLogService(IUnitOfWork unitOfWork)
+        public ErrorLogService(CCTContext context)
         {
-            _unitOfWork = unitOfWork;
+            _context = context;
         }
 
         /// <summary>
@@ -34,15 +36,15 @@ namespace Gordon360.Services
         {
 
             // The Add() method returns the added error_log.
-            var payload = _unitOfWork.ErrorLogRepository.Add(error_log);
+            var payload = _context.ERROR_LOG.Add(error_log);
 
             if (payload == null)
             {
                 throw new ResourceCreationException() { ExceptionMessage = "There was an error creating the error_log. Perhaps the error is a duplicate." };
             }
-            _unitOfWork.Save();
+            _context.SaveChanges();
 
-            return payload;
+            return error_log;
 
         }
 
@@ -67,15 +69,15 @@ namespace Gordon360.Services
             };
 
             // The Add() method returns the added error_log.
-            var payload = _unitOfWork.ErrorLogRepository.Add(error_log);
+            var payload = _context.ERROR_LOG.Add(error_log);
 
             if (payload == null)
             {
                 throw new ResourceCreationException() { ExceptionMessage = "There was an error creating the error_log. Perhaps the error is a duplicate." };
             }
-            _unitOfWork.Save();
+            _context.SaveChanges();
 
-            return payload;
+            return error_log;
 
         }
     }

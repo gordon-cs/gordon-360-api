@@ -1,13 +1,15 @@
-﻿using System;
+﻿using Gordon360.Database.CCT;
+using Gordon360.Exceptions.CustomExceptions;
+using Gordon360.Models;
+using Gordon360.Models.CCT;
+using Gordon360.Models.ViewModels;
+using Gordon360.Services.ComplexQueries;
+using Gordon360.Static.Names;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using Gordon360.Exceptions.CustomExceptions;
-using Gordon360.Models;
-using Gordon360.Models.ViewModels;
-using Gordon360.Repositories;
-using Gordon360.Services.ComplexQueries;
-using Gordon360.Static.Names;
+using System.Threading.Tasks;
 
 namespace Gordon360.Services
 {
@@ -16,11 +18,11 @@ namespace Gordon360.Services
     /// </summary>
     public class MembershipRequestService : IMembershipRequestService
     {
-        private IUnitOfWork _unitOfWork;
+        private CCTContext _context;
 
-        public MembershipRequestService(IUnitOfWork unitOfWork)
+        public MembershipRequestService(CCTContext context)
         {
-            _unitOfWork = unitOfWork;
+            _context = context;
         }
 
         /// <summary>
@@ -35,10 +37,10 @@ namespace Gordon360.Services
             isPersonAlreadyInActivity(membershipRequest);
 
             membershipRequest.STATUS = Request_Status.PENDING;
-            var addedMembershipRequest = _unitOfWork.MembershipRequestRepository.Add(membershipRequest);
-            _unitOfWork.Save();
+            var addedMembershipRequest = _context.REQUEST.Add(membershipRequest);
+            _context.SaveChanges();
 
-            return addedMembershipRequest;
+            return membershipRequest;
 
         }
 
@@ -49,7 +51,7 @@ namespace Gordon360.Services
         /// <returns>The approved membership</returns>
         public MEMBERSHIP ApproveRequest(int id)
         {
-            var query = _unitOfWork.MembershipRequestRepository.GetById(id);
+            var query = _context.REQUEST.Find(id);
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Request was not found." };
@@ -69,11 +71,11 @@ namespace Gordon360.Services
 
             MEMBERSHIP created;
 
-            var personAlreadyInActivity = _unitOfWork.MembershipRepository.Where(x => x.SESS_CDE == query.SESS_CDE &&
+            var personAlreadyInActivity = _context.MEMBERSHIP.Where(x => x.SESS_CDE == query.SESS_CDE &&
                 x.ACT_CDE == query.ACT_CDE && x.ID_NUM == query.ID_NUM);
 
             // If the person is already in the activity, we simply change his or her role
-            if (personAlreadyInActivity.Count() > 0)
+            if (personAlreadyInActivity.Any())
             {
                 created = personAlreadyInActivity.First();
 
@@ -90,16 +92,20 @@ namespace Gordon360.Services
             else
             {
                 // The add will fail if they are already a member.
-                created = _unitOfWork.MembershipRepository.Add(newMembership);
+                var added = _context.MEMBERSHIP.Add(newMembership);
 
-                if (created == null)
+                if (added == null)
                 {
                     // The main reason why a membership won't be added is if a similar one (similar id_num, part_lvl, sess_cde and act_cde ) exists.
                     throw new ResourceCreationException() { ExceptionMessage = "There was an error creating the membership. Verify that a similar membership doesn't already exist." };
                 }
+                else
+                {
+                    created = newMembership;
+                }
             }
-            
-            _unitOfWork.Save();
+
+            _context.SaveChanges();
 
             return created;
 
@@ -112,13 +118,13 @@ namespace Gordon360.Services
         /// <returns>A copy of the deleted membership request</returns>
         public REQUEST Delete(int id)
         {
-            var result = _unitOfWork.MembershipRequestRepository.GetById(id);
+            var result = _context.REQUEST.Find(id);
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Request was not found." };
             }
-            result = _unitOfWork.MembershipRequestRepository.Delete(result);
-            _unitOfWork.Save();
+            _context.REQUEST.Remove(result);
+            _context.SaveChanges();
             return result;
         }
 
@@ -129,14 +135,14 @@ namespace Gordon360.Services
         /// <returns></returns>
         public REQUEST DenyRequest(int id)
         {
-            var query = _unitOfWork.MembershipRequestRepository.GetById(id);
+            var query = _context.REQUEST.Find(id);
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Request was not found." };
             }
 
             query.STATUS = Request_Status.DENIED;
-            _unitOfWork.Save();
+            _context.SaveChanges();
             return query;
         }
 
@@ -145,53 +151,58 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="id">The membership request id</param>
         /// <returns>If found, returns MembershipRequestViewModel. If not found, returns null.</returns>
-        public MembershipRequestViewModel Get(int id)
+        public async Task<MembershipRequestViewModel> Get(int id)
         {
-            
-            var idParameter = new SqlParameter("@REQUEST_ID", id);
-            var result = RawSqlQuery<MembershipRequestViewModel>.query("REQUEST_PER_REQUEST_ID @REQUEST_ID", idParameter).FirstOrDefault();
-            if (result == null)
+            var requests = await _context.Procedures.REQUEST_PER_REQUEST_IDAsync(id);
+
+            if (requests == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Request was not found." };
             }
 
-            // Getting rid of database-inherited whitespace
-            result.ActivityCode = result.ActivityCode.Trim();
-            result.ActivityDescription = result.ActivityDescription.Trim();
-            result.SessionCode = result.SessionCode.Trim();
-            result.SessionDescription = result.SessionDescription.Trim();
-            result.IDNumber = result.IDNumber;
-            result.FirstName = result.FirstName.Trim();
-            result.LastName = result.LastName.Trim();
-            result.Participation = result.Participation.Trim();
-            result.ParticipationDescription = result.ParticipationDescription.Trim();
-
-            return result;
+            return requests.Select(result => new MembershipRequestViewModel
+            {
+                ActivityCode = result.ActivityCode.Trim(),
+                ActivityDescription = result.ActivityDescription.Trim(),
+                IDNumber = result.IDNumber,
+                FirstName = result.FirstName.Trim(),
+                LastName = result.LastName.Trim(),
+                Participation = result.Participation.Trim(),
+                ParticipationDescription = result.ParticipationDescription.Trim(),
+                DateSent = result.DateSent,
+                RequestID = result.RequestID,
+                CommentText = result.CommentText.Trim(),
+                SessionCode = result.SessionCode.Trim(),
+                SessionDescription = result.SessionDescription.Trim(),
+                RequestApproved = result.RequestApproved.Trim(),
+            }).FirstOrDefault();
         }
 
         /// <summary>
         /// Fetches all the membership request objects from the database.
         /// </summary>
         /// <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
-        public IEnumerable<MembershipRequestViewModel> GetAll()
+        public async Task<IEnumerable<MembershipRequestViewModel>> GetAll()
         {
-            
-            var result = RawSqlQuery<MembershipRequestViewModel>.query("ALL_REQUESTS");
-            var trimmedResult = result.Select(x =>
+
+            var allRequests = await _context.Procedures.ALL_REQUESTSAsync();
+
+            return allRequests.Select(r => new MembershipRequestViewModel
             {
-                var trim = x;
-                trim.ActivityCode = x.ActivityCode.Trim();
-                trim.ActivityDescription = x.ActivityDescription.Trim();
-                trim.SessionCode = x.SessionCode.Trim();
-                trim.SessionDescription = x.SessionDescription.Trim();
-                trim.IDNumber = x.IDNumber;
-                trim.FirstName = x.FirstName.Trim();
-                trim.LastName = x.LastName.Trim();
-                trim.Participation = x.Participation.Trim();
-                trim.ParticipationDescription = x.ParticipationDescription.Trim();
-                return trim;
+                ActivityCode = r.ActivityCode.Trim(),
+                ActivityDescription = r.ActivityDescription.Trim(),
+                IDNumber = r.IDNumber,
+                FirstName = r.FirstName.Trim(),
+                LastName = r.LastName.Trim(),
+                Participation = r.Participation.Trim(),
+                ParticipationDescription = r.ParticipationDescription.Trim(),
+                DateSent = r.DateSent,
+                RequestID = r.RequestID,
+                CommentText = r.CommentText.Trim(),
+                SessionCode = r.SessionCode.Trim(),
+                SessionDescription = r.SessionDescription.Trim(),
+                RequestApproved = r.RequestApproved.Trim(),
             });
-            return trimmedResult;
         }
 
         /// <summary>
@@ -199,27 +210,26 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="id">The activity id</param>
         /// <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
-        public IEnumerable<MembershipRequestViewModel> GetMembershipRequestsForActivity(string id)
+        public async Task<IEnumerable<MembershipRequestViewModel>> GetMembershipRequestsForActivity(string id)
         {
-            
-            var idParameter = new SqlParameter("@ACT_CDE", id);
-            var result = RawSqlQuery<MembershipRequestViewModel>.query("REQUESTS_PER_ACT_CDE @ACT_CDE", idParameter);
+            var allRequests = await _context.Procedures.REQUESTS_PER_ACT_CDEAsync(id);
 
-            var trimmedResult = result.Select(x =>
+            return allRequests.Select(r => new MembershipRequestViewModel
             {
-                var trim = x;
-                trim.ActivityCode = x.ActivityCode.Trim();
-                trim.ActivityDescription = x.ActivityDescription.Trim();
-                trim.SessionCode = x.SessionCode.Trim();
-                trim.SessionDescription = x.SessionDescription.Trim();
-                trim.IDNumber = x.IDNumber;
-                trim.FirstName = x.FirstName.Trim();
-                trim.LastName = x.LastName.Trim();
-                trim.Participation = x.Participation.Trim();
-                trim.ParticipationDescription = x.ParticipationDescription.Trim();
-                return trim;
+                ActivityCode = r.ActivityCode.Trim(),
+                ActivityDescription = r.ActivityDescription.Trim(),
+                IDNumber = r.IDNumber,
+                FirstName = r.FirstName.Trim(),
+                LastName = r.LastName.Trim(),
+                Participation = r.Participation.Trim(),
+                ParticipationDescription = r.ParticipationDescription.Trim(),
+                DateSent = r.DateSent,
+                RequestID = r.RequestID,
+                CommentText = r.CommentText.Trim(),
+                SessionCode = r.SessionCode.Trim(),
+                SessionDescription = r.SessionDescription.Trim(),
+                RequestApproved = r.RequestApproved.Trim(),
             });
-            return trimmedResult; 
         }
 
         /// <summary>
@@ -227,25 +237,26 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="id">The student id</param>
         /// <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
-        public IEnumerable<MembershipRequestViewModel> GetMembershipRequestsForStudent(string id)
+        public async Task<IEnumerable<MembershipRequestViewModel>> GetMembershipRequestsForStudent(string id)
         {
-            
-            var idParameter = new SqlParameter("@STUDENT_ID", id);
-            var result = RawSqlQuery<MembershipRequestViewModel>.query("REQUESTS_PER_STUDENT_ID @STUDENT_ID", idParameter);
-            var trimmedResult = result.Select(x =>
+            var allRequests = await _context.Procedures.REQUESTS_PER_STUDENT_IDAsync(int.Parse(id));
+
+            return allRequests.Select(r => new MembershipRequestViewModel
             {
-                var trim = x;
-                trim.ActivityCode = x.ActivityCode.Trim();
-                trim.ActivityDescription = x.ActivityDescription.Trim();
-                trim.SessionCode = x.SessionCode.Trim();
-                trim.SessionDescription = x.SessionDescription.Trim();
-                trim.FirstName = x.FirstName.Trim();
-                trim.LastName = x.LastName.Trim();
-                trim.Participation = x.Participation.Trim();
-                trim.ParticipationDescription = x.ParticipationDescription.Trim();
-                return trim;
+                ActivityCode = r.ActivityCode.Trim(),
+                ActivityDescription = r.ActivityDescription.Trim(),
+                IDNumber = r.IDNumber,
+                FirstName = r.FirstName.Trim(),
+                LastName = r.LastName.Trim(),
+                Participation = r.Participation.Trim(),
+                ParticipationDescription = r.ParticipationDescription.Trim(),
+                DateSent = r.DateSent,
+                RequestID = r.RequestID,
+                CommentText = r.CommentText.Trim(),
+                SessionCode = r.SessionCode.Trim(),
+                SessionDescription = r.SessionDescription.Trim(),
+                RequestApproved = r.RequestApproved.Trim(),
             });
-            return trimmedResult;
         }
 
         /// <summary>
@@ -256,7 +267,7 @@ namespace Gordon360.Services
         /// <returns></returns>
         public REQUEST Update(int id, REQUEST membershipRequest)
         {
-            var original = _unitOfWork.MembershipRequestRepository.GetById(id);
+            var original = _context.REQUEST.Find(id);
             if (original == null)
             {
                 return null;
@@ -271,7 +282,7 @@ namespace Gordon360.Services
             original.DATE_SENT = membershipRequest.DATE_SENT;
             original.PART_CDE = membershipRequest.PART_CDE;
 
-            _unitOfWork.Save();
+            _context.SaveChanges();
 
             return original;
         }
@@ -280,29 +291,29 @@ namespace Gordon360.Services
         // Return true if it is valid. Throws an exception if not. Exception is cauth in an Exception filter.
         private bool validateMembershipRequest(REQUEST membershipRequest)
         {
-            var personExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id.Trim() == membershipRequest.ID_NUM.ToString()).Count() > 0;
-            if(!personExists)
+            var personExists = _context.ACCOUNT.Where(x => x.gordon_id.Trim() == membershipRequest.ID_NUM.ToString()).Any();
+            if (!personExists)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Person was not found." };
             }
-            var activityExists = _unitOfWork.ActivityInfoRepository.Where(x => x.ACT_CDE.Trim() == membershipRequest.ACT_CDE).Count() > 0;
-            if(!activityExists)
+            var activityExists = _context.ACT_INFO.Where(x => x.ACT_CDE.Trim() == membershipRequest.ACT_CDE).Any();
+            if (!activityExists)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
             }
-            var participationExists = _unitOfWork.ParticipationRepository.Where(x => x.PART_CDE.Trim() == membershipRequest.PART_CDE).Count() > 0;
-            if(!participationExists)
+            var participationExists = _context.PART_DEF.Where(x => x.PART_CDE.Trim() == membershipRequest.PART_CDE).Any();
+            if (!participationExists)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Participation level was not found." };
             }
-            var sessionExists = _unitOfWork.SessionRepository.Where(x => x.SESS_CDE.Trim() == membershipRequest.SESS_CDE).Count() > 0;
-            if(!sessionExists)
+            var sessionExists = _context.CM_SESSION_MSTR.Where(x => x.SESS_CDE.Trim() == membershipRequest.SESS_CDE).Any();
+            if (!sessionExists)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Session was not found." };
             }
             // Check for a pending request
-            var pendingRequest = _unitOfWork.MembershipRequestRepository.Any(x => x.ID_NUM == membershipRequest.ID_NUM &&
-                x.SESS_CDE.Equals(membershipRequest.SESS_CDE) && x.ACT_CDE.Equals(membershipRequest.ACT_CDE) && 
+            var pendingRequest = _context.REQUEST.Any(x => x.ID_NUM == membershipRequest.ID_NUM &&
+                x.SESS_CDE.Equals(membershipRequest.SESS_CDE) && x.ACT_CDE.Equals(membershipRequest.ACT_CDE) &&
                 x.STATUS.Equals("Pending"));
             if (pendingRequest)
             {
@@ -314,8 +325,8 @@ namespace Gordon360.Services
 
         private bool isPersonAlreadyInActivity(REQUEST membershipRequest)
         {
-            var personAlreadyInActivity = _unitOfWork.MembershipRepository.Where(x => x.SESS_CDE == membershipRequest.SESS_CDE &&
-                x.ACT_CDE == membershipRequest.ACT_CDE && x.ID_NUM == membershipRequest.ID_NUM).Count() > 0;
+            var personAlreadyInActivity = _context.MEMBERSHIP.Where(x => x.SESS_CDE == membershipRequest.SESS_CDE &&
+                x.ACT_CDE == membershipRequest.ACT_CDE && x.ID_NUM == membershipRequest.ID_NUM).Any();
             if (personAlreadyInActivity)
             {
                 throw new ResourceCreationException() { ExceptionMessage = "You are already part of the activity." };

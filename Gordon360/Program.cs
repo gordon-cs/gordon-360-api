@@ -1,37 +1,42 @@
-﻿// This application entry point is based on ASP.NET Core new project templates and is included
-// as a starting point for app host configuration.
-// This file may need updated according to the specific scenario of the application being upgraded.
-// For more information on ASP.NET Core hosting, see https://docs.microsoft.com/aspnet/core/fundamentals/host/web-host
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
+﻿using Gordon360.Database.CCT;
+using Gordon360.Database.MyGordon;
+using Gordon360.Database.StudentTimesheets;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Gordon360
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateWebHostBuilder(args).Build().Run();
-            //CreateHostBuilder(args).Build().Run();
-        }
+var builder = WebApplication.CreateBuilder(args);
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+// Add services to the container.
 
-        /*public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });*/
-    }
-}
+builder.Services.AddControllers();
+
+//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
+
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContext<CCTContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Train-CCT"))
+).AddDbContext<MyGordonContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Train-MyGordon"))
+).AddDbContext<StudentTimesheetsContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Train-StudentTimesheets"))
+);
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+app.UseSwagger();
+app.UseSwaggerUI();
+
+//app.UseHttpsRedirection();
+
+//app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();

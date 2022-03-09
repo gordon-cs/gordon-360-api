@@ -9,24 +9,25 @@ using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using Gordon360.Static.Data;
 using System.Data.SqlClient;
+using Gordon360.Database.CCT;
 
 namespace Gordon360.Services
 {
-    
+
     /// <summary>
     /// Service Class that facilitates data transactions between the AccountsController and the Account database model.
     /// </summary>
     public class AccountService : IAccountService
     {
         // See UnitOfWork class
-        private IUnitOfWork _unitOfWork;
+        private CCTContext _context;
 
-        public AccountService(IUnitOfWork unitOfWork)
+        public AccountService(CCTContext context)
         {
-            _unitOfWork = unitOfWork;
+            _context = context;
         }
-        
- 
+
+
 
         /// <summary>
         /// Fetches a single account record whose id matches the id provided as an argument
@@ -36,7 +37,7 @@ namespace Gordon360.Services
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
         public AccountViewModel Get(string id)
         {
-            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            var query = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
             if (query == null)
             {
                 // Custom Exception is thrown that will be cauth in the controller Exception filter.
@@ -53,9 +54,7 @@ namespace Gordon360.Services
         [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.ACCOUNT)]
         public IEnumerable<AccountViewModel> GetAll()
         {
-            var query = _unitOfWork.AccountRepository.GetAll();
-            var result = query.Select<ACCOUNT, AccountViewModel>(x => x); //Map the database model to a more presentable version (a ViewModel)
-            return result;
+            return (IEnumerable<AccountViewModel>)_context.ACCOUNT; //Map the database model to a more presentable version (a ViewModel)
         }
 
         /// <summary>
@@ -65,7 +64,7 @@ namespace Gordon360.Services
         /// <returns>the student account information</returns>
         public AccountViewModel GetAccountByEmail(string email)
         {
-            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.email == email);
+            var query = _context.ACCOUNT.FirstOrDefault(x => x.email == email);
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
@@ -81,7 +80,7 @@ namespace Gordon360.Services
         /// <returns>the student account information</returns>
         public AccountViewModel GetAccountByUsername(string username)
         {
-            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.AD_Username == username);
+            var query = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
@@ -92,7 +91,7 @@ namespace Gordon360.Services
 
 
 
-        
+
     }
 
 }

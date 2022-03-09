@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Gordon360.Models.CCT;
+using System;
 using System.Globalization;
 namespace Gordon360.Models.ViewModels
 {

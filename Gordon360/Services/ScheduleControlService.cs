@@ -11,6 +11,8 @@
     using Gordon360.Exceptions.CustomExceptions;
     using Gordon360.Static.Methods;
     using System.Diagnostics;
+using Gordon360.Database.CCT;
+using System.Threading.Tasks;
 
 namespace Gordon360.Services
 {
@@ -19,11 +21,11 @@ namespace Gordon360.Services
     /// </summary>
     public class ScheduleControlService : IScheduleControlService
     {
-        private IUnitOfWork _unitOfWork;
+        private CCTContext _context;
 
-        public ScheduleControlService(IUnitOfWork unitOfWork)
+        public ScheduleControlService(CCTContext context)
         {
-            _unitOfWork = unitOfWork;
+            _context = context;
         }
 
         /// <summary>
@@ -31,42 +33,34 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="id">id</param>
         /// <param name="value">Y or N</param>
-        public void UpdateSchedulePrivacy(string id, string value)
+        public async Task UpdateSchedulePrivacy(string id, string value)
         {
-            var original = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            var original = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
 
             if (original == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
-            
-            var idParam = new SqlParameter("@ID", id);
-            var valueParam = new SqlParameter("@VALUE", value);
-            var context = new CCTEntities1();
-            context.Database.ExecuteSqlCommand("UPDATE_SCHEDULE_PRIVACY @ID, @VALUE", idParam, valueParam); // run stored procedure.
+
+            await _context.Procedures.UPDATE_SCHEDULE_PRIVACYAsync(int.Parse(id), value);
 
         }
-
 
         /// <summary>
         /// description of schedule.
         /// </summary>
         /// <param name="id">id</param>
         /// <param name="value">New description</param>
-        public void UpdateDescription(string id, string value)
+        public async Task UpdateDescription(string id, string value)
         {
-            var original = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            var original = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
 
             if (original == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            var idParam = new SqlParameter("@ID", id);
-            var valueParam = new SqlParameter("@VALUE", value);
-            var context = new CCTEntities1();
-            context.Database.ExecuteSqlCommand("UPDATE_DESCRIPTION @ID, @VALUE", idParam, valueParam); // run stored procedure.
-
+            await _context.Procedures.UPDATE_DESCRIPTIONAsync(int.Parse(id), value);
         }
 
 
@@ -75,20 +69,16 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="id">id</param>
         /// <param name="value">Modified Time</param>
-        public void UpdateModifiedTimeStamp(string id, DateTime value)
+        public async Task UpdateModifiedTimeStamp(string id, DateTime value)
         {
-            var original = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
+            var original = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
 
             if (original == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            var idParam = new SqlParameter("@ID", id);
-            var valueParam = new SqlParameter("@VALUE", value);
-            var context = new CCTEntities1();
-            context.Database.ExecuteSqlCommand("UPDATE_TIMESTAMP @ID, @VALUE", idParam, valueParam); // run stored procedure.
-
+            await _context.Procedures.UPDATE_TIMESTAMPAsync(int.Parse(id), value);
         }
     }
 }

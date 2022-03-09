@@ -6,6 +6,7 @@
  * The implicit operator allows conversion between the model and the view model
  ********************************/
 
+using Gordon360.Models.MyGordon;
 using System;
 
 namespace Gordon360.Models.ViewModels
@@ -29,7 +30,7 @@ namespace Gordon360.Models.ViewModels
 
         public static implicit operator StudentNewsViewModel(StudentNews n)
         {
-            StudentNewsViewModel vm = new StudentNewsViewModel
+            return new StudentNewsViewModel
             {
                 SNID = n.SNID,
                 ADUN = n.ADUN,
@@ -42,12 +43,10 @@ namespace Gordon360.Models.ViewModels
                 Sent = n.Sent,
                 thisPastMailing = n.thisPastMailing,
                 Entered = n.Entered,
-                categoryName = n.StudentNewsCategory.categoryName,
-                SortOrder = n.StudentNewsCategory.SortOrder,
+                categoryName = n.category.categoryName,
+                SortOrder = n.category.SortOrder,
                 ManualExpirationDate = n.ManualExpirationDate,
             };
-
-            return vm;
         }
     }
 }

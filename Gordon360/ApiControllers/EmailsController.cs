@@ -8,8 +8,10 @@ using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Gordon360.Models;
+using Gordon360.Database.CCT;
 
-namespace Gordon360.ApiControllers
+namespace Gordon360.Controllers
 {
 
     [Authorize]
@@ -19,10 +21,9 @@ namespace Gordon360.ApiControllers
     {
         private readonly EmailService _emailService;
 
-        public EmailsController()
+        public EmailsController(CCTContext context)
         {
-            IUnitOfWork unitOfWork = new UnitOfWork();
-            _emailService = new EmailService(unitOfWork);
+            _emailService = new EmailService(context);
         }
 
         [Route("activity/{id}")]

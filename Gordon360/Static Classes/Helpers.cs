@@ -13,6 +13,9 @@ using System.Collections.Generic;
 using Gordon360.Static.Names;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
+using Gordon360.Models.CCT;
+using Gordon360.Database.CCT;
+using System.Threading.Tasks;
 
 namespace Gordon360.Static.Methods
 {
@@ -21,158 +24,123 @@ namespace Gordon360.Static.Methods
     /// </summary>
     public static class Helpers
     {
+        private static CCTContext Context => new();
 
-        public static IEnumerable<Student> GetAllStudent()
-        {
+        //public static IEnumerable<Student> GetAllStudent()
+        //{
+        //    return Context.Student.Where(s => s.AD_Username != null);
+        //}
 
-            // Create a list to be filled
-            IEnumerable<Student> result = null;
-            try
-            {
-                // Attempt to query the DB
-                result = RawSqlQuery<Student>.query(SQLQuery.ALL_STUDENT_REQUEST);
-            }
-            catch
-            {
-                //
-            }
-            // Filter out results with null or empty active directory names
-            return result;
-        }
+        //public static JObject GetAllPublicStudents()
+        //{
+        //    // JSON string result
+        //    IEnumerable<string> fragmentedString = null;
+        //    string result = null;
+        //    JObject publicStudentData = null;
+        //    try
+        //    {
+        //        // Attempt to query the DB
+        //        fragmentedString = RawSqlQuery<string>.query(SQLQuery.ALL_PUBLIC_STUDENT_REQUEST).Cast<string>();
+        //        foreach (string fragment in fragmentedString)
+        //        {
+        //            result = result + fragment;
+        //        }
+        //        publicStudentData = JObject.Parse(result);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        //
+        //        Debug.WriteLine("Failed to parse JSON data:");
+        //        Debug.WriteLine(e.Message);
+        //    }
+        //    // Filter out results with null or empty active directory names
+        //    return publicStudentData;
+        //}
 
-        public static JObject GetAllPublicStudents()
-        {
-            // JSON string result
-            IEnumerable<string> fragmentedString = null;
-            string result = null;
-            JObject publicStudentData = null;
-            try
-            {
-                // Attempt to query the DB
-                fragmentedString = RawSqlQuery<string>.query(SQLQuery.ALL_PUBLIC_STUDENT_REQUEST).Cast<string>();
-                foreach (string fragment in fragmentedString)
-                {
-                    result = result + fragment;
-                }
-                publicStudentData = JObject.Parse(result);
-            }
-            catch (Exception e)
-            {
-                //
-                Debug.WriteLine("Failed to parse JSON data:");
-                Debug.WriteLine(e.Message);
-            }
-            // Filter out results with null or empty active directory names
-            return publicStudentData;
-        }
+        //public static IEnumerable<FacStaff> GetAllFacultyStaff()
+        //{
+        //    return Context.FacStaff.Where(fs => fs.AD_Username != null);
+        //}
 
-        public static IEnumerable<FacStaff> GetAllFacultyStaff()
-        {
-            IEnumerable<FacStaff> result = null;
-            try
-            {
-                // Attempt to query the DB
-                result = RawSqlQuery<FacStaff>.query(SQLQuery.ALL_FACULTY_STAFF_REQUEST);
-            }
-            catch
-            {
-                //
-            }
-            // Filter out results with null or empty active directory names
-            return result;
-        }
+        //public static IEnumerable<PublicFacultyStaffProfileViewModel> GetAllPublicFacultyStaff()
+        //{
+        //    // Create a list to be filled
+        //    IEnumerable<PublicFacultyStaffProfileViewModel> result = null;
 
-        public static IEnumerable<PublicFacultyStaffProfileViewModel> GetAllPublicFacultyStaff()
-        {
-            // Create a list to be filled
-            IEnumerable<PublicFacultyStaffProfileViewModel> result = null;
+        //    try
+        //    {
+        //        // Attempt to query the DB
+        //        result = RawSqlQuery<PublicFacultyStaffProfileViewModel>.query(SQLQuery.ALL_PUBLIC_FACULTY_STAFF_REQUEST);
+        //    }
+        //    catch
+        //    {
+        //        //
+        //    }
+        //    // Filter out results with null or empty active directory names
+        //    return result;
+        //}
 
-            try
-            {
-                // Attempt to query the DB
-                result = RawSqlQuery<PublicFacultyStaffProfileViewModel>.query(SQLQuery.ALL_PUBLIC_FACULTY_STAFF_REQUEST);
-            }
-            catch
-            {
-                //
-            }
-            // Filter out results with null or empty active directory names
-            return result;
-        }
+        //public static IEnumerable<PublicAlumniProfileViewModel> GetAllPublicAlumni()
+        //{
+        //    // Create a list to be filled
+        //    IEnumerable<PublicAlumniProfileViewModel> result = null;
 
-        public static IEnumerable<PublicAlumniProfileViewModel> GetAllPublicAlumni()
-        {
-            // Create a list to be filled
-            IEnumerable<PublicAlumniProfileViewModel> result = null;
+        //    try
+        //    {
+        //        // Attempt to query the DB
+        //        result = RawSqlQuery<PublicAlumniProfileViewModel>.query(SQLQuery.ALL_PUBLIC_ALUMNI_REQUEST);
+        //    }
+        //    catch
+        //    {
+        //        //
+        //    }
+        //    // Filter out results with null or empty active directory names
+        //    return result;
+        //}
 
-            try
-            {
-                // Attempt to query the DB
-                result = RawSqlQuery<PublicAlumniProfileViewModel>.query(SQLQuery.ALL_PUBLIC_ALUMNI_REQUEST);
-            }
-            catch
-            {
-                //
-            }
-            // Filter out results with null or empty active directory names
-            return result;
-        }
+        //public static IEnumerable<Alumni> GetAllAlumni()
+        //{
+        //    return Context.Alumni.Where(s => s.AD_Username != null);
+        //}
 
-        public static IEnumerable<Alumni> GetAllAlumni()
-        {
-            IEnumerable<Alumni> result = null;
-            try
-            {
-                // Attempt to query the DB
-                result = RawSqlQuery<Alumni>.query(SQLQuery.ALL_ALUMNI_REQUEST);
-            }
-            catch
-            {
-                //
-            }
-            // Filter out results with null or empty active directory names
-            return result;
-        }
+        //public static IEnumerable<BasicInfoViewModel> GetAllBasicInfoExcludeAlumni()
+        //{
+        //    IEnumerable<BasicInfoViewModel> result = null;
+        //    try
+        //    {
+        //        // Attempt to query the DB
+        //        result = RawSqlQuery<BasicInfoViewModel>.query(SQLQuery.ALL_BASIC_INFO_NOT_ALUM);
+        //    }
+        //    catch
+        //    {
+        //        //
+        //    }
+        //    // Filter out results with null or empty active directory names
+        //    return result;
+        //}
 
-        public static IEnumerable<BasicInfoViewModel> GetAllBasicInfoExcludeAlumni()
-        {
-            IEnumerable<BasicInfoViewModel> result = null;
-            try
-            {
-                // Attempt to query the DB
-                result = RawSqlQuery<BasicInfoViewModel>.query(SQLQuery.ALL_BASIC_INFO_NOT_ALUM);
-            }
-            catch
-            {
-                //
-            }
-            // Filter out results with null or empty active directory names
-            return result;
-        }
-
-        // Get all basic info without Alumni
-        public static IEnumerable<BasicInfoViewModel> GetBasicInfoWithoutAlumni( IEnumerable<AlumniProfileViewModel> alumni, IEnumerable<BasicInfoViewModel> basic)
-        {
-            IEnumerable<BasicInfoViewModel> result = null;
-            result = basic.Where(b => !alumni.Any(a => a.AD_Username == b.UserName));
-            return result;
-        }
+        //// Get all basic info without Alumni
+        //public static IEnumerable<BasicInfoViewModel> GetBasicInfoWithoutAlumni( IEnumerable<AlumniProfileViewModel> alumni, IEnumerable<BasicInfoViewModel> basic)
+        //{
+        //    IEnumerable<BasicInfoViewModel> result = null;
+        //    result = basic.Where(b => !alumni.Any(a => a.AD_Username == b.UserName));
+        //    return result;
+        //}
 
         /// <summary>
         /// Service method that gets the current session we are in.
         /// </summary>
         /// <returns>SessionViewModel of the current session. If no session is found for our current date, returns null.</returns>
-        public static SessionViewModel GetCurrentSession()
+        public static async Task<SessionViewModel> GetCurrentSession()
         {
-            var tempUnitOfWork = new UnitOfWork();
-            var sessionService = new SessionService(tempUnitOfWork);
+            // TODO: Pass CCTEntities context by configuration/options from startup
+            var context = new CCTContext();
+            var sessionService = new SessionService(context);
 
-            var query = RawSqlQuery<String>.query("CURRENT_SESSION");
-            var currentSessionCode = query.Select(x => x).FirstOrDefault();
+            var query = await context.Procedures.CURRENT_SESSIONAsync();
+            var currentSessionCode = query.Select(x => x.DEFAULT_SESS_CDE).FirstOrDefault();
 
-            SessionViewModel result = sessionService.Get(currentSessionCode);
-
-            return result; ;
+            return sessionService.Get(currentSessionCode);
         }
 
         // Return the first day in the current session
@@ -192,11 +160,12 @@ namespace Gordon360.Static.Methods
         }
 
         // Return the days left in the semester, and the total days in the current session
-        public static double[] GetDaysLeft()
+        public static async Task<double[]> GetDaysLeft()
         {
+            var currentSession = await GetCurrentSession();
             // The end of the current session
-            DateTime sessionEnd = GetCurrentSession().SessionEndDate.Value;
-            DateTime sessionBegin = GetCurrentSession().SessionBeginDate.Value;
+            DateTime sessionEnd = currentSession.SessionEndDate.Value;
+            DateTime sessionBegin = currentSession.SessionBeginDate.Value;
             // Get todays date
             DateTime startTime = DateTime.Today;
             //Initialize array
@@ -265,7 +234,7 @@ namespace Gordon360.Static.Methods
             }
 
         }
-        
+
 
         /// <summary>
         ///  Helper function to determine the current academic year
@@ -282,32 +251,32 @@ namespace Gordon360.Static.Methods
             DateTime today = DateTime.Today;
             if (today.Month < 06)
             {
-                return (today.Year - 1).ToString()+fallDate;
+                return (today.Year - 1).ToString() + fallDate;
             }
             else if (today.Month > 07)
             {
-                return (today.Year).ToString()+fallDate;
+                return (today.Year).ToString() + fallDate;
             }
-            return today.Year.ToString()+summerDate;
+            return today.Year.ToString() + summerDate;
         }
 
-        // Fill an iterable list of basicinfo from a query to the database
-        public static IEnumerable<BasicInfoViewModel> GetAllBasicInfo()
-        {
-            // Create a list to be filled
-            IEnumerable<BasicInfoViewModel> result = null;
-            try
-            {
-                // Attempt to query the DB
-                result = RawSqlQuery<BasicInfoViewModel>.query("ALL_BASIC_INFO");
-            }
-            catch
-            {
-                //
-            }
-            // Filter out results with null or empty active directory names
-            return result;
-        }
+        //// Fill an iterable list of basicinfo from a query to the database
+        //public static IEnumerable<BasicInfoViewModel> GetAllBasicInfo()
+        //{
+        //    // Create a list to be filled
+        //    IEnumerable<BasicInfoViewModel> result = null;
+        //    try
+        //    {
+        //        // Attempt to query the DB
+        //        result = RawSqlQuery<BasicInfoViewModel>.query("ALL_BASIC_INFO");
+        //    }
+        //    catch
+        //    {
+        //        //
+        //    }
+        //    // Filter out results with null or empty active directory names
+        //    return result;
+        //}
 
         public static string GetLeaderRoleCodes()
         {
@@ -329,129 +298,71 @@ namespace Gordon360.Static.Methods
         // For goStalk/Advanced People Search:
 
         // Fill an iterable list of majors from a query to the database
-        public static IEnumerable<String> GetMajors()
+        public static IEnumerable<string> GetMajors()
         {
-            // Create a list to be filled
-            IEnumerable<String> result = null;
-            try
-            {
-                // Attempt to query the DB
-                result = RawSqlQuery<String>.query(SQLQuery.ALL_MAJORS);
-            }
-            catch
-            {
-                //
-            }
-            // Filter out results with null or empty active directory names
-            return result;
+
+            return Context.Majors.OrderBy(m => m.MajorDescription)
+                                 .Select(m => m.MajorDescription)
+                                 .Distinct();
         }
 
         // Fill an iterable list of minors from a query to the database
-        public static IEnumerable<String> GetMinors()
+        public static IEnumerable<string> GetMinors()
         {
-            // Create a list to be filled
-            IEnumerable<String> result = null;
-            try
-            {
-                // Attempt to query the DB
-                result = RawSqlQuery<String>.query(SQLQuery.ALL_MINORS);
-            }
-            catch
-            {
-                //
-            }
-            // Filter out results with null or empty active directory names
-            return result;
+            return Context.Student.Select(s => s.Minor1Description)
+                                  .Distinct()
+                                  .Where(s => s != null);
         }
 
         // Fill an iterable list of halls from a query to the database
-        public static IEnumerable<String> GetHalls()
+        public static IEnumerable<string> GetHalls()
         {
-            // Create a list to be filled
-            IEnumerable<String> result = null;
-            try
-            {
-                // Attempt to query the DB
-                result = RawSqlQuery<String>.query(SQLQuery.ALL_STUDENT_HALLS);
-            }
-            catch
-            {
-                //
-            }
-            // Filter out results with null or empty active directory names
-            return result;
+            return Context.Student.Select(s => s.BuildingDescription)
+                                  .Distinct()
+                                  .Where(b => b != null)
+                                  .OrderBy(b => b);
         }
 
         // Fill an iterable list of states from a query to the database
-        public static IEnumerable<String> GetStates()
+        public static IEnumerable<string> GetStates()
         {
-            // Create a list to be filled
-            IEnumerable<String> result = null;
-            try
-            {
-                // Attempt to query the DB for data
-                result = RawSqlQuery<String>.query(SQLQuery.ALL_ACCOUNTS_STATES);
-            }
-            catch
-            {
-                //
-            }
-            // Filter out results with null or empty active directory names
-            return result;
+            var context = Context;
+            return context.Student.Select(s => s.HomeState)
+                                  .Union(context.FacStaff.Select(fs => fs.HomeState))
+                                  .Union(context.Alumni.Select(a => a.HomeState))
+                                  .Distinct()
+                                  .Where(s => s != null)
+                                  .OrderBy(s => s);
         }
 
         // Fill an iterable list of countries from a query to the database
-        public static IEnumerable<String> GetCountries()
+        public static IEnumerable<string> GetCountries()
         {
-            // Create a list to be filled
-            IEnumerable<String> result = null;
-            try
-            {
-                // Attempt to query the DB
-                result = RawSqlQuery<String>.query(SQLQuery.ALL_ACCOUNTS_COUNTRIES);
-            }
-            catch
-            {
-                //
-            }
-            // Filter out results with null or empty active directory names
-            return result;
+            var context = Context;
+            return context.Student.Select(s => s.HomeCountry)
+                                  .Union(context.FacStaff.Select(fs => fs.HomeCountry))
+                                  .Union(context.Alumni.Select(a => a.HomeCountry))
+                                  .Distinct()
+                                  .Where(s => s != null)
+                                  .OrderBy(s => s);
         }
 
         // Fill an iterable list of departments from a query to the database
-        public static IEnumerable<String> GetDepartments()
+        public static IEnumerable<string> GetDepartments()
         {
-            // Create a list to be filled
-            IEnumerable<String> result = null;
-            try
-            {
-                // Attempt to query the DB
-                result = RawSqlQuery<String>.query(SQLQuery.ALL_FACSTAFF_DEPARTMENTS);
-            }
-            catch
-            {
-                //
-            }
-            // Filter out results with null or empty active directory names
-            return result;
+            return Context.FacStaff.Select(fs => fs.OnCampusDepartment)
+                                   .Distinct()
+                                   .Where(d => d != null)
+                                   .OrderBy(d => d);
         }
 
         // Fill an iterable list of buildings from a query to the database
-        public static IEnumerable<String> GetBuildings()
+        public static IEnumerable<string> GetBuildings()
         {
-            // Create a list to be filled
-            IEnumerable<String> result = null;
-            try
-            {
-                // Attempt to query the DB
-                result = RawSqlQuery<String>.query(SQLQuery.ALL_FACSTAFF_BUILDINGS);
-            }
-            catch
-            {
-                //
-            }
-            // Filter out results with null or empty active directory names
-            return result;
+            return Context.FacStaff.Select(fs => fs.BuildingDescription)
+                                   .Distinct()
+                                   .Where(d => d != null)
+                                   .OrderBy(d => d);
         }
     }
 }

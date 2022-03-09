@@ -14,22 +14,24 @@ using Newtonsoft.Json.Linq;
 using Gordon360.AuthorizationFilters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Gordon360.Models;
+using Gordon360.Database.CCT;
 
-namespace Gordon360.ApiControllers
+namespace Gordon360.Controllers
 {
     [Authorize]
     [CustomExceptionFilter]
-    [Route("api/accounts")]
+    [Route("api/[controller]")]
+    [ApiController]
     public class AccountsController : ControllerBase
     {
         private readonly IRoleCheckingService _roleCheckingService;
         private readonly IAccountService _accountService;
 
-        public AccountsController()
+        public AccountsController(CCTContext context)
         {
-            IUnitOfWork _unitOfWork = new UnitOfWork();
-            _accountService = new AccountService(_unitOfWork);
-            _roleCheckingService = new RoleCheckingService(_unitOfWork);
+            _accountService = new AccountService(context);
+            _roleCheckingService = new RoleCheckingService(context);
         }
 
         [HttpGet]
