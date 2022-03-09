@@ -1,16 +1,7 @@
 ﻿
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Gordon360.Models;
-    using Gordon360.Models.ViewModels;
-    using Gordon360.Repositories;
-    using Gordon360.Services.ComplexQueries;
-    using System.Data.SqlClient;
-    using System.Data;
-    using Gordon360.Exceptions.CustomExceptions;
-    using Gordon360.Static.Methods;
-    using System.Diagnostics;
+using System;
+using System.Linq;
+using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Database.CCT;
 using System.Threading.Tasks;
 

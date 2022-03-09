@@ -1,7 +1,6 @@
 ﻿using System.Xml.Linq;
 using Gordon360.Models.ViewModels;
 using System.Collections.Generic;
-using Gordon360.Models;
 using Newtonsoft.Json.Linq;
 using Gordon360.Models.CCT;
 

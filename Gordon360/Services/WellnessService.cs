@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Gordon360.Models.ViewModels;
-using Gordon360.Repositories;
 using Gordon360.Exceptions.CustomExceptions;
-using System.Data.SqlClient;
-using Gordon360.Services.ComplexQueries;
 using static Gordon360.Controllers.Api.WellnessController;
-using Gordon360.Models;
 using Gordon360.Models.CCT;
 using Gordon360.Database.CCT;
 

@@ -1,12 +1,8 @@
-﻿using Gordon360.Models;
-using Gordon360.Repositories;
-using Gordon360.Services;
+﻿using Gordon360.Services;
 using Gordon360.Static.Names;
 using Gordon360.Static.Methods;
 using System;
 using System.Linq;
-using System.Net.Http;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Gordon360.Database.CCT;
 using Gordon360.Database.MyGordon;

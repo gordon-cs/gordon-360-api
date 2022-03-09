@@ -1,14 +1,9 @@
 ﻿using System.Collections.Generic;
-using System;
 using System.Linq;
-using Gordon360.Models;
 using Gordon360.Models.ViewModels;
-using Gordon360.Repositories;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
-using Gordon360.Static.Data;
-using System.Data.SqlClient;
 using Gordon360.Database.CCT;
 
 namespace Gordon360.Services

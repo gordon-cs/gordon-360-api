@@ -1,6 +1,4 @@
 ﻿using Gordon360.Database.CCT;
-using Gordon360.Models;
-using Gordon360.Repositories;
 using Gordon360.Static.Names;
 using System.Linq;
 

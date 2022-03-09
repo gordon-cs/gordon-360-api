@@ -1,5 +1,4 @@
 ﻿using Gordon360.Services;
-using Gordon360.Repositories;
 using System;
 using Newtonsoft.Json.Linq;
 using Gordon360.Exceptions.ExceptionFilters;
@@ -7,7 +6,6 @@ using Gordon360.Exceptions.CustomExceptions;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Gordon360.Models;
 using Gordon360.Database.CCT;
 
 namespace Gordon360.Controllers.Api

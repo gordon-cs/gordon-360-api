@@ -1,5 +1,4 @@
-﻿using Gordon360.Repositories;
-using Gordon360.Services;
+﻿using Gordon360.Services;
 using System.Collections.Generic;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
@@ -8,7 +7,6 @@ using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Gordon360.Models;
 using Gordon360.Database.CCT;
 
 namespace Gordon360.Controllers

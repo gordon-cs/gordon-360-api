@@ -2,13 +2,9 @@ using Gordon360.Database.CCT;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
-using Gordon360.Repositories;
-using Gordon360.Services.ComplexQueries;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Gordon360.Services
 {

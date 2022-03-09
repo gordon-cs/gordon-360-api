@@ -4,7 +4,6 @@ using System.Linq;
 using Gordon360.Static.Data;
 using Gordon360.Static.Names;
 using Gordon360.Exceptions.ExceptionFilters;
-using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.Exceptions.CustomExceptions;
 using System.Collections.Generic;
@@ -14,7 +13,6 @@ using Newtonsoft.Json.Linq;
 using Gordon360.AuthorizationFilters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Gordon360.Models;
 using Gordon360.Database.CCT;
 
 namespace Gordon360.Controllers

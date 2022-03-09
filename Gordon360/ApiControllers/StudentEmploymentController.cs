@@ -2,7 +2,6 @@ using System.Security.Claims;
 using Gordon360.Database.CCT;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Models.ViewModels;
-using Gordon360.Repositories;
 using Gordon360.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

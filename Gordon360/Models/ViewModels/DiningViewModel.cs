@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Models.ViewModels
 {
-    
+
 
 
     public class MealPlanComponent

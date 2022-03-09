@@ -1,7 +1,5 @@
 ﻿using Gordon360.Exceptions.CustomExceptions;
-using Gordon360.Repositories;
 using Gordon360.Services;
-using Gordon360.Models;
 using System.Linq;
 using System.Security.Claims;
 using Gordon360.Exceptions.ExceptionFilters;

@@ -1,9 +1,7 @@
-﻿using Gordon360.Models;
-using Gordon360.Models.ViewModels;
+﻿using Gordon360.Models.ViewModels;
 using static Gordon360.Controllers.Api.WellnessController;
 using System;
 using System.Collections.Generic;
-using System.Xml.Linq;
 using Gordon360.Models.CCT;
 using Gordon360.Models.MyGordon;
 using System.Threading.Tasks;
@@ -14,6 +12,11 @@ using System.Threading.Tasks;
 // </summary>
 namespace Gordon360.Services
 {
+    public interface IAuthenticationService
+    {
+        Task<bool> AuthenticateAsync(string username, string password);
+    }
+
     public interface IRoleCheckingService
     {
         string GetCollegeRole(int id);

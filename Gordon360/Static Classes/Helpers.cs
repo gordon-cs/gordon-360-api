@@ -1,19 +1,12 @@
 ﻿using Gordon360.Models.ViewModels;
-using Gordon360.Repositories;
 using System;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Xml.Linq;
 using System.Text;
-using Gordon360.Services.ComplexQueries;
 using Gordon360.Services;
-using Gordon360.Models;
 using System.Collections.Generic;
-using Gordon360.Static.Names;
-using Newtonsoft.Json.Linq;
-using System.Diagnostics;
-using Gordon360.Models.CCT;
 using Gordon360.Database.CCT;
 using System.Threading.Tasks;
 

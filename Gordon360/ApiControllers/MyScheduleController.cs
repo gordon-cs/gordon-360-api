@@ -1,6 +1,4 @@
-﻿using Gordon360.Models;
-using Gordon360.Services;
-using Gordon360.Repositories;
+﻿using Gordon360.Services;
 using System;
 using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.Exceptions.CustomExceptions;

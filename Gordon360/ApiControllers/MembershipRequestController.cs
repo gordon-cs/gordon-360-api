@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Security.Claims;
-using Gordon360.Models;
-using Gordon360.Repositories;
 using Gordon360.Services;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;

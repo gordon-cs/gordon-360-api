@@ -1,6 +1,5 @@
 ﻿using Gordon360.Models.CCT;
 using System;
-using System.Globalization;
 namespace Gordon360.Models.ViewModels
 {
     public class MembershipViewModel

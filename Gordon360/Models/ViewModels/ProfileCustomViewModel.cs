@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Gordon360.Models.CCT;
-using Gordon360.Static.Names;
+﻿using Gordon360.Models.CCT;
 namespace Gordon360.Models.ViewModels
 {
     public class ProfileCustomViewModel

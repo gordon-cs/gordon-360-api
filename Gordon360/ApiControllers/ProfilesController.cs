@@ -1,6 +1,5 @@
 ﻿using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Exceptions.ExceptionFilters;
-using Gordon360.Repositories;
 using Gordon360.Services;
 using System;
 using System.Linq;
@@ -8,11 +7,6 @@ using System.Net;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using Gordon360.Static.Names;
-using System.Threading.Tasks;
-using Gordon360.Models;
-using System.Diagnostics;
-using Gordon360.Providers;
-using System.IO;
 using Gordon360.Models.ViewModels;
 using System.Security.Claims;
 using Gordon360.AuthorizationFilters;
