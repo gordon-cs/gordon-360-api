@@ -33,19 +33,20 @@ namespace Gordon360.Controllers.Api
             _roleCheckingService = new RoleCheckingService(context);
         }
 
-        public ProfilesController(IProfileService profileService)
-        {
-            _profileService = profileService;
-        }
-
         /// <summary>Get profile info of currently logged in user</summary>
         /// <returns></returns>
         [HttpGet]
         [Route("")]
-        public ActionResult<ProfileCustomViewModel> Get()
+        public ProfileViewModel Get()
         {
             //get token data from context, username is the username of current logged in person
-            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
+            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name)?.Value?.Split('@')[0];
+
+            if (authenticatedUserUsername == null)
+            {
+                throw new ResourceNotFoundException { ExceptionMessage = "No logged-in user was found" };
+            }
+
             // search username in cached data
             var student = _profileService.GetStudentProfileByUsername(authenticatedUserUsername);
             var faculty = _profileService.GetFacultyStaffProfileByUsername(authenticatedUserUsername);
@@ -74,7 +75,7 @@ namespace Gordon360.Controllers.Api
                             MergeArrayHandling = MergeArrayHandling.Union
                         });
                         stualufac.Add("PersonType", "stualufac");                                         // assign a type to the json object 
-                        return Ok(stualufac);
+                        return student;
                     }
                     JObject stufac = JObject.FromObject(student);
                     stufac.Merge(JObject.FromObject(faculty), new JsonMergeSettings
@@ -86,7 +87,7 @@ namespace Gordon360.Controllers.Api
                         MergeArrayHandling = MergeArrayHandling.Union
                     });
                     stufac.Add("PersonType", "stufac");
-                    return Ok(stufac);
+                    return student;
                 }
                 else if (alumni != null)
                 {
@@ -100,7 +101,7 @@ namespace Gordon360.Controllers.Api
                         MergeArrayHandling = MergeArrayHandling.Union
                     });
                     stualu.Add("PersonType", "stualu");
-                    return Ok(stualu);
+                    return student;
                 }
                 JObject stu = JObject.FromObject(student);
                 stu.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
@@ -108,7 +109,7 @@ namespace Gordon360.Controllers.Api
                     MergeArrayHandling = MergeArrayHandling.Union
                 });
                 stu.Add("PersonType", "stu");
-                return Ok(stu);
+                return student;
             }
             else if (faculty != null)
             {
@@ -124,7 +125,7 @@ namespace Gordon360.Controllers.Api
                         MergeArrayHandling = MergeArrayHandling.Union
                     });
                     alufac.Add("PersonType", "alufac");
-                    return Ok(alufac);
+                    return faculty;
                 }
                 JObject fac = JObject.FromObject(faculty);
                 fac.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
@@ -132,7 +133,7 @@ namespace Gordon360.Controllers.Api
                     MergeArrayHandling = MergeArrayHandling.Union
                 });
                 fac.Add("PersonType", "fac");
-                return Ok(fac);
+                return faculty;
             }
             else if (alumni != null)
             {
@@ -142,11 +143,11 @@ namespace Gordon360.Controllers.Api
                     MergeArrayHandling = MergeArrayHandling.Union
                 });
                 alu.Add("PersonType", "alu");
-                return Ok(alu);
+                return alumni;
             }
             else
             {
-                return NotFound();
+                return null;
             }
         }
 

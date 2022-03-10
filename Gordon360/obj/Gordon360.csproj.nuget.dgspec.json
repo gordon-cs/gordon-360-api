@@ -48,19 +48,11 @@
               "target": "Package",
               "version": "[5.2.7, )"
             },
-            "Microsoft.AspNet.SignalR": {
-              "target": "Package",
-              "version": "[2.4.2, )"
-            },
             "Microsoft.AspNet.WebApi": {
               "target": "Package",
               "version": "[5.2.7, )"
             },
-            "Microsoft.AspNet.WebApi.Owin": {
-              "target": "Package",
-              "version": "[5.2.7, )"
-            },
-            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+            "Microsoft.AspNetCore.Authentication.Negotiate": {
               "target": "Package",
               "version": "[6.0.3, )"
             },
@@ -75,6 +67,10 @@
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
               "version": "[6.0.3, )"
+            },
+            "Microsoft.Identity.Web": {
+              "target": "Package",
+              "version": "[1.23.0, )"
             },
             "Microsoft.Owin.Cors": {
               "target": "Package",
@@ -123,10 +119,6 @@
             "System.DirectoryServices.AccountManagement": {
               "target": "Package",
               "version": "[5.0.0, )"
-            },
-            "Thinktecture.IdentityModel.Core": {
-              "target": "Package",
-              "version": "[1.4.0, )"
             },
             "WebActivatorEx": {
               "target": "Package",

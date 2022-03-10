@@ -12,6 +12,7 @@ namespace Gordon360.Controllers
 {
     [CustomExceptionFilter]
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class EventController : ControllerBase
     {
@@ -22,7 +23,6 @@ namespace Gordon360.Controllers
             _eventService = new EventService(context);
         }
 
-        [Authorize]
         [HttpGet]
         [Route("attended/{term}")]
         public ActionResult<IEnumerable<AttendedEventViewModel>> GetEventsByTerm(string term)
@@ -58,7 +58,6 @@ namespace Gordon360.Controllers
         /// This makes use of our cached request to 25Live, which stores AllEvents
         /// </summary>
         /// <returns></returns>
-        [Authorize]
         [HttpGet]
         [Route("")]
         public ActionResult<IEnumerable<EventViewModel>> GetAllEvents()
@@ -89,7 +88,6 @@ namespace Gordon360.Controllers
 
         }
 
-        [Authorize]
         [HttpGet]
         [Route("claw")]
         public ActionResult<IEnumerable<EventViewModel>> GetAllChapelEvents()
@@ -122,6 +120,7 @@ namespace Gordon360.Controllers
 
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [Route("public")]
         public ActionResult<IEnumerable<EventViewModel>> GetAllPublicEvents()

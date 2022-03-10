@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Gordon360.Models.CCT;
 using Gordon360.Models.MyGordon;
 using System.Threading.Tasks;
+using Gordon360.Models;
 
 // <summary>
 // Namespace with all the Service Interfaces that are to be implemented. I don't think making this interface is required, the services can work fine on their own.
@@ -12,11 +13,6 @@ using System.Threading.Tasks;
 // </summary>
 namespace Gordon360.Services
 {
-    public interface IAuthenticationService
-    {
-        Task<bool> AuthenticateAsync(string username, string password);
-    }
-
     public interface IRoleCheckingService
     {
         string GetCollegeRole(int id);

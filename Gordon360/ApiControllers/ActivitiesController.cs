@@ -18,7 +18,7 @@ namespace Gordon360.Controllers.Api
 
     [Route("api/activities")]
     [CustomExceptionFilter]
-    //All GET routes are public (No Authorization Needed)
+    [Authorize]
     public class ActivitiesController : ControllerBase
     {
         private readonly IActivityService _activityService;
@@ -30,7 +30,7 @@ namespace Gordon360.Controllers.Api
 
         [HttpGet]
         [Route("")]
-        //Public Route
+        [AllowAnonymous]
         public ActionResult<ActivityInfoViewModel> Get()
         {
             var all = _activityService.GetAll();
@@ -39,7 +39,7 @@ namespace Gordon360.Controllers.Api
 
         [HttpGet]
         [Route("{id}")]
-        //Public Route 
+        [AllowAnonymous]
         public ActionResult<ActivityInfoViewModel> Get(string id)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
@@ -71,7 +71,7 @@ namespace Gordon360.Controllers.Api
         // GET: api/sessions/id/activities
         [HttpGet]
         [Route("session/{id}")]
-        //Public Route
+        [AllowAnonymous]
         public ActionResult<IEnumerable<ActivityInfoViewModel>> GetActivitiesForSession(string id)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
@@ -105,7 +105,7 @@ namespace Gordon360.Controllers.Api
         /// <remarks>Queries the database to find the distinct activities type of activities that are active during the session desired</remarks>
         [HttpGet]
         [Route("session/{id}/types")]
-        //Public Route 
+        [AllowAnonymous]
         public ActionResult<IEnumerable<String>> GetActivityTypesForSession(string id)
         {
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
@@ -141,7 +141,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpGet]
         [Route("{sessionCode}/{id}/status")]
-        //Public Route 
+        [AllowAnonymous]
         public ActionResult<bool> GetActivityStatus(string sessionCode, string id)
         {
             var result = _activityService.IsOpen(id, sessionCode) ? "OPEN" : "CLOSED";
@@ -155,7 +155,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpGet]
         [Route("open")]
-        //Public Route 
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<string>>> GetOpenActivities()
         {
             var sessionCode = (await Helpers.GetCurrentSession()).SessionCode;
@@ -180,7 +180,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpGet]
         [Route("{id}/open")]
-        //Public Route 
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<string>>> GetOpenActivities(int id)
         {
             var sessionCode = (await Helpers.GetCurrentSession()).SessionCode;
@@ -203,7 +203,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpGet]
         [Route("closed")]
-        //Public Route 
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<string>>> GetClosedActivities()
         {
             var sessionCode = (await Helpers.GetCurrentSession()).SessionCode;
@@ -228,7 +228,7 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpGet]
         [Route("{id}/closed")]
-        //Public Route 
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<string>>> GetClosedActivities(int id)
         {
             var sessionCode = (await Helpers.GetCurrentSession()).SessionCode;
@@ -251,7 +251,6 @@ namespace Gordon360.Controllers.Api
         /// <param name="activity"></param>
         /// <returns></returns>
         [HttpPut]
-        [Authorize]
         [Route("{id}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
         public ActionResult<ACT_INFO> Put(string id, ACT_INFO activity)
@@ -281,7 +280,6 @@ namespace Gordon360.Controllers.Api
         }
 
         [HttpPut]
-        [Authorize]
         [Route("{id}/session/{sess_cde}/close")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_STATUS)]
         public ActionResult CloseSession(string id, string sess_cde)
@@ -292,7 +290,6 @@ namespace Gordon360.Controllers.Api
         }
 
         [HttpPut]
-        [Authorize]
         [Route("{id}/session/{sess_cde}/open")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_STATUS)]
         public ActionResult OpenSession(string id, string sess_cde)
@@ -308,7 +305,6 @@ namespace Gordon360.Controllers.Api
         /// <param name="id">The activity Code</param>
         /// <returns></returns>
         [HttpPost]
-        [Authorize]
         [Route("{id}/image")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
         public async Task<ActionResult> PostImage(string id)
@@ -411,7 +407,6 @@ namespace Gordon360.Controllers.Api
         /// <param name="id">The activity code</param>
         /// <returns></returns>
         [HttpPost]
-        [Authorize]
         [Route("{id}/image/reset")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
         public ActionResult ResetImage(string id)
@@ -441,7 +436,6 @@ namespace Gordon360.Controllers.Api
         /// <param name = "p">the boolean value</param>
         /// <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         [HttpPut]
-        [Authorize]
         [Route("{id}/privacy/{p}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
         public ActionResult TogglePrivacy(string id, bool p)

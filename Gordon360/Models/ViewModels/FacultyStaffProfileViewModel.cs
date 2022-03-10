@@ -3,93 +3,64 @@ using System;
 
 namespace Gordon360.Models.ViewModels
 {
-    public class FacultyStaffProfileViewModel
+    public record FacultyStaffProfileViewModel
+        (
+            string ID, string Title, string FirstName, string MiddleName, string LastName, string Suffix,
+            string MaidenName, string NickName, string OnCampusDepartment, string OnCampusBuilding, string OnCampusRoom,
+            string OnCampusPhone, string OnCampusPrivatePhone, string OnCampusFax, string HomeStreet1,
+            string HomeStreet2, string HomeCity, string HomeState, string HomePostalCode, string HomeCountry,
+            string HomePhone, string HomeFax, string KeepPrivate, string JobTitle, string Dept, string SpouseName,
+            string Barcode, string Gender, string Email, string Type, string AD_Username, string office_hours,
+            int? preferred_photo, int? show_pic, string BuildingDescription, string Country, string Mail_Location, string Mail_Description
+        ) : ProfileViewModel()
     {
-        public string ID { get; set; }
-        public string Title { get; set; }
-        public string FirstName { get; set; }
-        public string MiddleName { get; set; }
-        public string LastName { get; set; }
-        public string Suffix { get; set; }
-        public string MaidenName { get; set; }
-        public string NickName { get; set; }
-        public string OnCampusDepartment { get; set; }
-        public string OnCampusBuilding { get; set; }
-        public string OnCampusRoom { get; set; }
-        public string OnCampusPhone { get; set; }
-        public string OnCampusPrivatePhone { get; set; }
-        public string OnCampusFax { get; set; }
-        public string HomeStreet1 { get; set; }
-        public string HomeStreet2 { get; set; }
-        public string HomeCity { get; set; }
-        public string HomeState { get; set; }
-        public string HomePostalCode { get; set; }
-        public string HomeCountry { get; set; }
-        public string HomePhone { get; set; }
-        public string HomeFax { get; set; }
-        public string KeepPrivate { get; set; }
-        public string JobTitle { get; set; }
-        public string SpouseName { get; set; }
-        public string Dept { get; set; }
-        public string Barcode { get; set; }
-        public string Gender { get; set; }
-        public string Email { get; set; }
-        public string Type { get; set; }
-        public string AD_Username { get; set; }
-        public string office_hours { get; set; }
-        public Nullable<int> preferred_photo { get; set; }
-        public Nullable<int> show_pic { get; set; }
-        public string BuildingDescription { get; set; }
-        public string Country { get; set; }
-        public string Mail_Location { get; set; }
-        public string Mail_Description { get; set; }
-
-
-        public static implicit operator FacultyStaffProfileViewModel(FacStaff fac)
+        public static implicit operator FacultyStaffProfileViewModel?(FacStaff? fac)
         {
-            FacultyStaffProfileViewModel vm = new FacultyStaffProfileViewModel
+            if (fac == null)
             {
-                ID = fac.ID.Trim(),
-                Title = fac.Title ?? "",
-                Suffix = fac.Suffix ?? "",
-                MaidenName = fac.MaidenName ?? "",
-                FirstName = fac.FirstName ?? "",
-                LastName = fac.LastName ?? "",
-                MiddleName = fac.MiddleName ?? "",
-                NickName = fac.Nickname ?? "", 
-                AD_Username = fac.AD_Username ?? "",
-                OnCampusDepartment = fac.OnCampusDepartment ?? "",
-                OnCampusBuilding = fac.OnCampusBuilding ?? "",
-                OnCampusRoom = fac.OnCampusRoom ?? "",
-                OnCampusPhone = fac.OnCampusPhone ?? "",
-                OnCampusPrivatePhone = fac.OnCampusPrivatePhone ?? "",
-                OnCampusFax = fac.OnCampusFax ?? "",
-                HomeStreet1 = fac.HomeStreet1 ?? "",
-                HomeStreet2 = fac.HomeStreet2 ?? "",
-                HomeCity = fac.HomeCity ?? "",
-                HomeState = fac.HomeState ?? "",
-                HomePostalCode = fac.HomePostalCode ?? "",
-                HomeCountry = fac.HomeCountry ?? "",
-                HomePhone = fac.HomePhone ?? "",
-                HomeFax = fac.HomeFax ?? "",
-                KeepPrivate = fac.KeepPrivate ?? "",
-                JobTitle = fac.JobTitle ?? "",
-                Dept = fac.Dept ?? "",
-                SpouseName = fac.SpouseName ?? "",
-                Barcode = fac.Barcode ?? "",
-                Email = fac.Email ?? "",
-                Type = fac.Type ?? "",
-                Gender = fac.Gender ?? "",
-                office_hours = fac.office_hours ?? "",
-                show_pic = fac.show_pic,
-                preferred_photo = fac.preferred_photo,
-                BuildingDescription = fac.BuildingDescription ?? "",
-                Country = fac.Country ?? "",
-                Mail_Location = fac.Mail_Location ?? "",
-                Mail_Description = fac.Mail_Description ?? ""
-            };
+                return null;
+            }
 
-            return vm;
+            return new FacultyStaffProfileViewModel(
+                fac.ID.Trim(),
+                fac.Title ?? "",
+                fac.FirstName ?? "",
+                fac.MiddleName ?? "",
+                fac.LastName ?? "",
+                fac.Suffix ?? "",
+                fac.MaidenName ?? "",
+                fac.Nickname ?? "",
+                fac.OnCampusDepartment ?? "",
+                fac.OnCampusBuilding ?? "",
+                fac.OnCampusRoom ?? "",
+                fac.OnCampusPhone ?? "",
+                fac.OnCampusPrivatePhone ?? "",
+                fac.OnCampusFax ?? "",
+                fac.HomeStreet1 ?? "",
+                fac.HomeStreet2 ?? "",
+                fac.HomeCity ?? "",
+                fac.HomeState ?? "",
+                fac.HomePostalCode ?? "",
+                fac.HomeCountry ?? "",
+                fac.HomePhone ?? "",
+                fac.HomeFax ?? "",
+                fac.KeepPrivate ?? "",
+                fac.JobTitle ?? "",
+                fac.Dept ?? "",
+                fac.SpouseName ?? "",
+                fac.Barcode ?? "",
+                fac.Gender ?? "",
+                fac.Email ?? "",
+                fac.Type ?? "",
+                fac.AD_Username ?? "",
+                fac.office_hours ?? "",
+                fac.preferred_photo,
+                fac.show_pic,
+                fac.BuildingDescription ?? "",
+                fac.Country ?? "",
+                fac.Mail_Location ?? "",
+                fac.Mail_Description ?? ""
+            );
         }
     }
 }

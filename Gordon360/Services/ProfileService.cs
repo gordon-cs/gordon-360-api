@@ -25,9 +25,9 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">username</param>
         /// <returns>StudentProfileViewModel if found, null if not found</returns>
-        public StudentProfileViewModel GetStudentProfileByUsername(string username)
+        public StudentProfileViewModel? GetStudentProfileByUsername(string username)
         {
-            return Data.StudentData.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
+            return _context.Student.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
         }
 
         /// <summary>
@@ -35,9 +35,9 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">username</param>
         /// <returns>FacultyStaffProfileViewModel if found, null if not found</returns>
-        public FacultyStaffProfileViewModel GetFacultyStaffProfileByUsername(string username)
+        public FacultyStaffProfileViewModel? GetFacultyStaffProfileByUsername(string username)
         {
-            return Data.FacultyStaffData.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
+            return _context.FacStaff.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
         }
 
         /// <summary>
@@ -45,9 +45,9 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">username</param>
         /// <returns>AlumniProfileViewModel if found, null if not found</returns>
-        public AlumniProfileViewModel GetAlumniProfileByUsername(string username)
+        public AlumniProfileViewModel? GetAlumniProfileByUsername(string username)
         {
-            return Data.AlumniData.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
+            return _context.Alumni.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
         }
 
         /// <summary>
@@ -132,7 +132,7 @@ namespace Gordon360.Services
         /// <returns> Clifton strengths of the given user. </returns>
         public CliftonStrengthsViewModel GetCliftonStrengths(int id)
         {
-            var strengths = _context.Clifton_Strengths.Find(id);
+            var strengths = _context.Clifton_Strengths.Where(c => c.ID_NUM == id).FirstOrDefault();
             if (strengths == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "No emergency contacts found." };
