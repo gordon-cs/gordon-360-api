@@ -11,6 +11,7 @@ using System.Security.Claims;
 
 namespace Gordon360.ApiControllers
 {
+    [Route("api/[controller]")]
     public class NewsController : GordonControllerBase
     {
         private readonly INewsService _newsService;

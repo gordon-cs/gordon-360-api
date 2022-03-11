@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace Gordon360.ApiControllers
 {
+    [Route("api/[controller]")]
     public class HousingController : GordonControllerBase
     {
         private readonly IHousingService _housingService;

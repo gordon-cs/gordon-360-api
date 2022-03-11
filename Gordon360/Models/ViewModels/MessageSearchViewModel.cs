@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Gordon360.Models.ViewModels
+﻿namespace Gordon360.Models.ViewModels
 {
     public class MessageSearchViewModel
     {

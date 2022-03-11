@@ -3,12 +3,12 @@ using Gordon360.Services;
 using Gordon360.Static.Methods;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Gordon360.ApiControllers
 {
+    [Route("api/[controller]")]
     public class DiningController : GordonControllerBase
     {
         public readonly IDiningService _diningService;

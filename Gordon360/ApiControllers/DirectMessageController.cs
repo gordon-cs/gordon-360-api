@@ -1,7 +1,7 @@
 ﻿//using System;
 //using System.Security.Claims;
 //using System.Net.Http;
-//using Gordon360.Exceptions.ExceptionFilters;
+//using Gordon360.Exceptions;
 //using Gordon360.Repositories;
 //using System.Collections.Generic;
 //using Gordon360.Services;
@@ -15,10 +15,8 @@
 
 //namespace Gordon360.Controllers
 //{
-//    [Route("api/dm")]
-//    [CustomExceptionFilter]
-//    [Authorize]
-//    public class DirectMessageController : ControllerBase
+//    [Route("api/[controller]")]
+//    public class DirectMessageController : GordonControllerBase
 //    {
 //        private IProfileService _profileService;
 //        private IAccountService _accountService;

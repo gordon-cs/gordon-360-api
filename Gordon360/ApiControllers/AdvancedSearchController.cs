@@ -1,10 +1,10 @@
 ﻿using Gordon360.Static.Methods;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 
 namespace Gordon360.ApiControllers
 {
+    [Route("api/[controller]")]
     public class AdvancedSearchController : GordonControllerBase
     {
         public AdvancedSearchController()

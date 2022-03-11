@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.ApiControllers
 {
+    [Route("api/[controller]")]
     public class ContentManagementController : GordonControllerBase
     {
         private readonly IContentManagementService _contentManagementService;

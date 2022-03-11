@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Gordon360.ApiControllers
 {
+    [Route("api/[controller]")]
     public class SaveController : GordonControllerBase
     {
         private readonly ISaveService _saveService;

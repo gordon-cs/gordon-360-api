@@ -9,6 +9,7 @@ using System.Security.Claims;
 
 namespace Gordon360.ApiControllers
 {
+    [Route("api/[controller]")]
     public class MyScheduleController : GordonControllerBase
     {
         private readonly IAccountService _accountService;

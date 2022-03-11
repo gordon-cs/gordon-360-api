@@ -13,6 +13,7 @@ using System.Security.Claims;
 
 namespace Gordon360.ApiControllers
 {
+    [Route("api/[controller]")]
     public class JobsController : GordonControllerBase
     {
         private readonly IJobsService _jobsService;

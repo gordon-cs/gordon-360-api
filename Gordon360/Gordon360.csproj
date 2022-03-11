@@ -11,10 +11,6 @@
     <OutputPath>bin\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.IdentityModel" />
-    <Reference Include="System.Security" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="secrets.config">
       <SubType>Designer</SubType>
     </None>
@@ -36,7 +32,6 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <!--<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.7" />-->
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="6.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.3" />
@@ -50,10 +45,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="ApiControllers\RolesController.cs" />
-    <Compile Remove="Services\ParticipationService.cs" />
   </ItemGroup>
   <PropertyGroup>
     <StartupObject></StartupObject>

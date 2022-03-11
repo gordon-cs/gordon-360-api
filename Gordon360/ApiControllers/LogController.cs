@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.ApiControllers
 {
+    [Route("api/[controller]")]
     public class LogController : GordonControllerBase
     {
         private readonly IErrorLogService _errorLogService;

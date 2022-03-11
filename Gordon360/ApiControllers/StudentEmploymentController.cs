@@ -5,6 +5,7 @@ using System.Security.Claims;
 
 namespace Gordon360.ApiControllers
 {
+    [Route("api/[controller]")]
     public class StudentEmploymentController : ControllerBase
     {
         //declare services we are going to use.

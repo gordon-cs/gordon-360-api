@@ -7,6 +7,7 @@ using System.Security.Claims;
 
 namespace Gordon360.ApiControllers
 {
+    [Route("api/[controller]")]
     public class ScheduleControlController : GordonControllerBase
     {
         private readonly CCTContext _context;

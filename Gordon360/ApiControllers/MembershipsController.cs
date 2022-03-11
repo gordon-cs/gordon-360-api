@@ -5,13 +5,13 @@ using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Gordon360.ApiControllers
 {
+    [Route("api/[controller]")]
     public class MembershipsController : GordonControllerBase
     {
         private readonly IMembershipService _membershipService;

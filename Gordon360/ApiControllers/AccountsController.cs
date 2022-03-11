@@ -14,6 +14,7 @@ using System.Text.RegularExpressions;
 
 namespace Gordon360.ApiControllers
 {
+    [Route("api/[controller]")]
     public class AccountsController : GordonControllerBase
     {
         private readonly IRoleCheckingService _roleCheckingService;

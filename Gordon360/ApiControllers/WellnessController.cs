@@ -6,6 +6,7 @@ using System.Security.Claims;
 
 namespace Gordon360.ApiControllers
 {
+    [Route("api/[controller]")]
     public class WellnessController : GordonControllerBase
     {
         private readonly IWellnessService _wellnessService;

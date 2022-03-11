@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
 using System.IO;
 using System.Reflection;
 
@@ -10,6 +9,7 @@ namespace Gordon360.ApiControllers
     /// </summary>
     /// <returns>"Git Hash: {hashCode}; Build Time: {date and time}"</returns>
     /// <remarks></remarks>
+    [Route("api/[controller]")]
     public class VersionController : ControllerBase
     {
         [HttpGet]

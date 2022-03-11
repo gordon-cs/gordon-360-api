@@ -19,6 +19,7 @@ using System.Security.Claims;
 
 namespace Gordon360.ApiControllers
 {
+    [Route("api/[controller]")]
     public class ProfilesController : GordonControllerBase
     {
         private readonly IProfileService _profileService;

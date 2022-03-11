@@ -8,6 +8,7 @@ using System.Collections.Generic;
 
 namespace Gordon360.ApiControllers
 {
+    [Route("api/[controller]")]
     public class EmailsController : GordonControllerBase
     {
         private readonly EmailService _emailService;

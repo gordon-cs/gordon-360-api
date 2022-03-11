@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Gordon360.ApiControllers
 {
+    [Route("api/[controller]")]
     public class SessionsController : GordonControllerBase
     {
         private readonly ISessionService _sessionService;

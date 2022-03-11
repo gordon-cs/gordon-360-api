@@ -7,12 +7,12 @@ using Gordon360.Static.Methods;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Gordon360.ApiControllers
 {
+    [Route("api/[controller]")]
     public class ActivitiesController : GordonControllerBase
     {
         private readonly IActivityService _activityService;
