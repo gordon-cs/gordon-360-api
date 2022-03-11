@@ -1,22 +1,17 @@
-﻿using Gordon360.Services;
+﻿using Gordon360.Database.CCT;
 using Gordon360.Models.ViewModels;
+using Gordon360.Services;
 using Gordon360.Static.Names;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System;
-using Gordon360.Exceptions.ExceptionFilters;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Gordon360.Database.CCT;
 
-namespace Gordon360.Controllers.Api
+namespace Gordon360.ApiControllers
 {
-    [Route("api/schedule")]
-    [CustomExceptionFilter]
-    [Authorize]
     public class ScheduleController : ControllerBase
     {
-        private CCTContext _context;
+        private readonly CCTContext _context;
 
         private readonly IAccountService _accountService;
         private readonly IRoleCheckingService _roleCheckingService;
@@ -30,11 +25,6 @@ namespace Gordon360.Controllers.Api
             _roleCheckingService = new RoleCheckingService(context);
         }
 
-        public ScheduleController(IScheduleService scheduleService)
-        {
-            _scheduleService = scheduleService;
-        }
-
         /// <summary>
         ///  Gets all schedule objects for a user
         /// </summary>
@@ -44,10 +34,11 @@ namespace Gordon360.Controllers.Api
         public ActionResult<ScheduleViewModel> Get()
         {
             var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var authenticatedUserId = Int32.Parse(authenticatedUserIdString);
+            var authenticatedUserId = int.Parse(authenticatedUserIdString);
             var role = _roleCheckingService.GetCollegeRole(authenticatedUserId);
 
-            if (role=="student"){
+            if (role == "student")
+            {
                 var result = _scheduleService.GetScheduleStudent(authenticatedUserIdString);
                 if (result == null)
                 {
@@ -56,7 +47,8 @@ namespace Gordon360.Controllers.Api
                 return Ok(result);
             }
 
-            else if (role=="facstaff"){
+            else if (role == "facstaff")
+            {
                 var result = _scheduleService.GetScheduleFaculty(authenticatedUserIdString);
                 if (result == null)
                 {
@@ -65,7 +57,7 @@ namespace Gordon360.Controllers.Api
                 return Ok(result);
             }
             return NotFound();
-           
+
         }
 
         /// <summary>
@@ -79,7 +71,7 @@ namespace Gordon360.Controllers.Api
             //probably needs privacy stuff like ProfilesController and service
             //get token data from context, username is the username of current logged in person
 
-            var authenticatedUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var authenticatedUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var viewerRole = _roleCheckingService.GetCollegeRole(authenticatedUserId);
 
             var role = _roleCheckingService.getCollegeRole(username);
@@ -128,7 +120,7 @@ namespace Gordon360.Controllers.Api
             {
                 scheduleResult = _scheduleService.GetScheduleFaculty(id);
             }
-            
+
             if (scheduleResult == null)
             {
                 return NotFound();
@@ -136,7 +128,7 @@ namespace Gordon360.Controllers.Api
 
             JArray result = JArray.FromObject(scheduleResult);
 
-            foreach(JObject elem in result)
+            foreach (JObject elem in result)
             {
                 elem.Property("ID_NUM").Remove();
             }

@@ -1,32 +1,19 @@
-﻿using System.Collections.Generic;
-using System.Security.Claims;
-using Gordon360.Services;
-using Gordon360.AuthorizationFilters;
-using Gordon360.Static.Names;
-using Gordon360.Exceptions.ExceptionFilters;
-using Gordon360.Exceptions.CustomExceptions;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Gordon360.Models.ViewModels;
-using Gordon360.Database.CCT;
+﻿using Gordon360.AuthorizationFilters;
 using Gordon360.Models.CCT;
+using Gordon360.Models.ViewModels;
+using Gordon360.Services;
+using Gordon360.Static.Names;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Security.Claims;
 
-namespace Gordon360.Controllers.Api
+namespace Gordon360.ApiControllers
 {
-    [Route("api/requests")]
-    [Authorize]
-    [CustomExceptionFilter]
-    public class MembershipRequestController : ControllerBase
+    public class RequestsController : GordonControllerBase
     {
-
         public IMembershipRequestService _membershipRequestService;
 
-        public MembershipRequestController(CCTContext context)
-        {
-            _membershipRequestService = new MembershipRequestService(context);
-        }
-
-        public MembershipRequestController(IMembershipRequestService membershipRequestService)
+        public RequestsController(IMembershipRequestService membershipRequestService)
         {
             _membershipRequestService = membershipRequestService;
         }
@@ -54,20 +41,6 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP_REQUEST)]
         public ActionResult<MembershipViewModel> Get(int id)
         {
-            if (!ModelState.IsValid)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
             var result = _membershipRequestService.Get(id);
 
             if (result == null)
@@ -89,23 +62,9 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_REQUEST_BY_ACTIVITY)]
         public ActionResult<IEnumerable<MembershipViewModel>> GetMembershipsRequestsForActivity(string id)
         {
-            if(!ModelState.IsValid)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
             var result = _membershipRequestService.GetMembershipRequestsForActivity(id);
 
-            if(result == null)
+            if (result == null)
             {
                 return NotFound();
             }
@@ -122,20 +81,6 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_REQUEST_BY_STUDENT)]
         public ActionResult<IEnumerable<MembershipViewModel>> GetMembershipsRequestsForStudent()
         {
-            if (!ModelState.IsValid)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
             var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var result = _membershipRequestService.GetMembershipRequestsForStudent(authenticatedUserIdString);
 
@@ -153,24 +98,10 @@ namespace Gordon360.Controllers.Api
         /// <param name="membershipRequest">The request to be added</param>
         /// <returns>The added request if successful. HTTP error message if not.</returns>
         [HttpPost]
-        [Route("",Name = "membershipRequest")]
+        [Route("", Name = "membershipRequest")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.MEMBERSHIP_REQUEST)]
         public ActionResult<REQUEST> Post([FromBody] REQUEST membershipRequest)
         {
-            if( !ModelState.IsValid || membershipRequest == null)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
             var result = _membershipRequestService.Add(membershipRequest);
 
             if (result == null)
@@ -192,20 +123,6 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP_REQUEST)]
         public ActionResult<REQUEST> Put(int id, REQUEST membershipRequest)
         {
-            if (!ModelState.IsValid || membershipRequest == null || id != membershipRequest.REQUEST_ID)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
             var result = _membershipRequestService.Update(id, membershipRequest);
 
             if (result == null)
@@ -225,23 +142,9 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.DENY_ALLOW, resource = Resource.MEMBERSHIP_REQUEST)]
         public ActionResult<MEMBERSHIP> ApproveRequest(int id)
         {
-            if(!ModelState.IsValid)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
             var result = _membershipRequestService.ApproveRequest(id);
 
-            if(result == null)
+            if (result == null)
             {
                 return NotFound();
             }
@@ -259,23 +162,9 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.DENY_ALLOW, resource = Resource.MEMBERSHIP_REQUEST)]
         public ActionResult<REQUEST> DenyRequest(int id)
         {
-            if(!ModelState.IsValid)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
             var result = _membershipRequestService.DenyRequest(id);
 
-            if(result == null)
+            if (result == null)
             {
                 return NotFound();
             }

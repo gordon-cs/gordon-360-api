@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Gordon360.Models.ViewModels;
-using System.Data;
-using Gordon360.Exceptions.CustomExceptions;
-using Gordon360.Static.Methods;
+﻿using Gordon360.Database.CCT;
+using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
-using Gordon360.Database.CCT;
+using Gordon360.Models.ViewModels;
+using Gordon360.Static.Methods;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Gordon360.Services
@@ -230,7 +230,7 @@ namespace Gordon360.Services
         public async Task<int> GetActivityFollowersCount(string id)
         {
             var memberships = await GetMembershipsForActivity(id);
-                return memberships.Where(x => x.Participation == "GUEST").Count();
+            return memberships.Where(x => x.Participation == "GUEST").Count();
         }
 
         /// <summary>
@@ -372,7 +372,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
             }
 
-            if (! (await _context.Procedures.ACTIVE_CLUBS_PER_SESS_IDAsync(membership.SESS_CDE)).Any(a => a.ACT_CDE.Trim() == membership.ACT_CDE))
+            if (!(await _context.Procedures.ACTIVE_CLUBS_PER_SESS_IDAsync(membership.SESS_CDE)).Any(a => a.ACT_CDE.Trim() == membership.ACT_CDE))
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity is not available for this session." };
             }

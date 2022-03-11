@@ -1,34 +1,20 @@
-﻿using Gordon360.Exceptions.CustomExceptions;
-using Gordon360.Services;
-using System.Linq;
-using System.Security.Claims;
-using Gordon360.Exceptions.ExceptionFilters;
-using Gordon360.AuthorizationFilters;
-using Gordon360.Static.Names;
+﻿using Gordon360.AuthorizationFilters;
+using Gordon360.Models.MyGordon;
 using Gordon360.Models.ViewModels;
 using Gordon360.Utils;
+using Gordon360.Services;
+using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
-using Gordon360.Database.CCT;
-using Gordon360.Models.MyGordon;
-using Gordon360.Database.MyGordon;
+using System.Linq;
+using System.Security.Claims;
 
-namespace Gordon360.Controllers.Api
+namespace Gordon360.ApiControllers
 {
-    [Route("api/news")]
-    [Authorize]
-    [CustomExceptionFilter]
-    public class NewsController : ControllerBase
+    public class NewsController : GordonControllerBase
     {
         private readonly INewsService _newsService;
         private readonly IImageUtils _imageUtils = new ImageUtils();
-
-        // Constructor
-        public NewsController(MyGordonContext context, CCTContext contextCCT)
-        {
-            _newsService = new NewsService(context, contextCCT);
-        }
 
         public NewsController(INewsService newsService)
         {
@@ -149,20 +135,6 @@ namespace Gordon360.Controllers.Api
         [Route("")]
         public ActionResult<StudentNews> Post([FromBody] StudentNews newsItem)
         {
-            // Check for bad input
-            if (!ModelState.IsValid || newsItem == null )
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
             // Get authenticated username/id
             var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
@@ -191,7 +163,7 @@ namespace Gordon360.Controllers.Api
             // News item must not have already expired
             var result = _newsService.DeleteNews(newsID);
             // Shouldn't be necessary
-            if(result == null)
+            if (result == null)
             {
                 return NotFound();
             }
@@ -209,7 +181,7 @@ namespace Gordon360.Controllers.Api
         [Route("{newsID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.NEWS)]
         // Private route to authenticated users - authors of posting or admins
-        public ActionResult<StudentNewsViewModel> EditPosting(int newsID,[FromBody] StudentNews newData)
+        public ActionResult<StudentNewsViewModel> EditPosting(int newsID, [FromBody] StudentNews newData)
         {
             // StateYourBusiness verifies that user is authenticated
             var result = _newsService.EditPosting(newsID, newData);

@@ -1,9 +1,9 @@
+using Gordon360.Database.CCT;
+using Gordon360.Exceptions;
+using Gordon360.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Gordon360.Models.ViewModels;
-using Gordon360.Exceptions.CustomExceptions;
-using Gordon360.Database.CCT;
 using System.Threading.Tasks;
 
 namespace Gordon360.Services

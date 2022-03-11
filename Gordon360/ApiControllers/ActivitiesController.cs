@@ -1,28 +1,22 @@
-﻿using Gordon360.Services;
-using Gordon360.AuthorizationFilters;
-using Gordon360.Static.Names;
-using System;
-using Gordon360.Exceptions.ExceptionFilters;
-using Gordon360.Exceptions.CustomExceptions;
-using System.Threading.Tasks;
-using Gordon360.Static.Methods;
-using System.Collections.Generic;
-using Gordon360.Models.ViewModels;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
+﻿using Gordon360.AuthorizationFilters;
 using Gordon360.Database.CCT;
 using Gordon360.Models.CCT;
+using Gordon360.Models.ViewModels;
+using Gordon360.Services;
+using Gordon360.Static.Methods;
+using Gordon360.Static.Names;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace Gordon360.Controllers.Api
+namespace Gordon360.ApiControllers
 {
-
-    [Route("api/activities")]
-    [CustomExceptionFilter]
-    [Authorize]
-    public class ActivitiesController : ControllerBase
+    public class ActivitiesController : GordonControllerBase
     {
         private readonly IActivityService _activityService;
-        
+
         public ActivitiesController(CCTContext context)
         {
             _activityService = new ActivityService(context);
@@ -42,22 +36,9 @@ namespace Gordon360.Controllers.Api
         [AllowAnonymous]
         public ActionResult<ActivityInfoViewModel> Get(string id)
         {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
             var result = _activityService.Get(id);
 
-            if ( result == null)
+            if (result == null)
             {
                 return NotFound();
             }
@@ -74,20 +55,6 @@ namespace Gordon360.Controllers.Api
         [AllowAnonymous]
         public ActionResult<IEnumerable<ActivityInfoViewModel>> GetActivitiesForSession(string id)
         {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
             var result = _activityService.GetActivitiesForSession(id);
 
             if (result == null)
@@ -106,22 +73,8 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         [Route("session/{id}/types")]
         [AllowAnonymous]
-        public ActionResult<IEnumerable<String>> GetActivityTypesForSession(string id)
+        public ActionResult<IEnumerable<string>> GetActivityTypesForSession(string id)
         {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
             var result = _activityService.GetActivityTypesForSession(id);
 
             if (result == null)
@@ -164,7 +117,7 @@ namespace Gordon360.Controllers.Api
 
             var activities = new List<ActivityInfoViewModel>();
 
-            foreach( var code in activity_codes)
+            foreach (var code in activity_codes)
             {
                 activities.Add(_activityService.Get(code));
             }
@@ -255,23 +208,9 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
         public ActionResult<ACT_INFO> Put(string id, ACT_INFO activity)
         {
-            if(!ModelState.IsValid)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
             var result = _activityService.Update(id, activity);
 
-            if(result == null)
+            if (result == null)
             {
                 return NotFound();
             }
@@ -315,20 +254,6 @@ namespace Gordon360.Controllers.Api
             // https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-5.0
             return Ok();
             /*
-            // Verify Input
-            if(!ModelState.IsValid)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
             var uploadsFolder = "/browseable/uploads/" + id + "/";
             if (!Request.Content.IsMimeMultipartContent())
             {
@@ -411,21 +336,6 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
         public ActionResult ResetImage(string id)
         {
-            // Verify Input
-            if (!ModelState.IsValid)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
             _activityService.ResetActivityImage(id);
 
             return Ok();
@@ -440,20 +350,6 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
         public ActionResult TogglePrivacy(string id, bool p)
         {
-            if (!ModelState.IsValid)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
             _activityService.TogglePrivacy(id, p);
             return Ok();
         }

@@ -1,12 +1,12 @@
-﻿using Gordon360.Services;
-using Gordon360.Static.Names;
-using Gordon360.Static.Methods;
-using System;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Gordon360.Database.CCT;
+﻿using Gordon360.Database.CCT;
 using Gordon360.Database.MyGordon;
 using Gordon360.Models.CCT;
+using Gordon360.Services;
+using Gordon360.Static.Methods;
+using Gordon360.Static.Names;
+using Microsoft.AspNetCore.Mvc.Filters;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Gordon360.AuthorizationFilters
@@ -73,7 +73,7 @@ namespace Gordon360.AuthorizationFilters
                     }
                 }
             }
-           
+
             // Can the user perform the operation on the resource?
             isAuthorized = await canPerformOperation(resource, operation);
             if (!isAuthorized)
@@ -84,10 +84,10 @@ namespace Gordon360.AuthorizationFilters
             await next();
         }
 
-       
+
         private async Task<bool> canPerformOperation(string resource, string operation)
         {
-            switch(operation)
+            switch (operation)
             {
                 case Operation.READ_ONE: return await canReadOne(resource);
                 case Operation.READ_ALL: return canReadAll(resource);
@@ -104,9 +104,9 @@ namespace Gordon360.AuthorizationFilters
         /*
          * Operations
          */
-         // This operation is specifically for authorizing deny and allow operations on membership requests. These two operations don't
-         // Fit in nicely with the REST specification which is why there is a seperate case for them.
-         private async Task<bool> canDenyAllow(string resource)
+        // This operation is specifically for authorizing deny and allow operations on membership requests. These two operations don't
+        // Fit in nicely with the REST specification which is why there is a seperate case for them.
+        private async Task<bool> canDenyAllow(string resource)
         {
             // User is admin
             if (user_position == Position.SUPERADMIN)
@@ -114,7 +114,7 @@ namespace Gordon360.AuthorizationFilters
 
             switch (resource)
             {
-                
+
                 case Resource.MEMBERSHIP_REQUEST:
                     {
                         var mrID = (int)context.ActionArguments["id"];
@@ -134,11 +134,11 @@ namespace Gordon360.AuthorizationFilters
                         return false;
                     }
                 default: return false;
-                    
+
             }
         }
 
-         private async Task<bool> canReadOne(string resource)
+        private async Task<bool> canReadOne(string resource)
         {
             // User is admin
             if (user_position == Position.SUPERADMIN)
@@ -220,7 +220,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.NEWS:
                     return true;
                 default: return false;
-                    
+
             }
         }
         // For reads that access a group of resources filterd in a specific way 
@@ -274,7 +274,7 @@ namespace Gordon360.AuthorizationFilters
                     {
                         return true;
                     }
-                 // Only activity leaders/advisors should be to get emails for his/her members.
+                // Only activity leaders/advisors should be to get emails for his/her members.
                 case Resource.EMAILS_BY_ACTIVITY:
                     {
                         var activityCode = (string)context.ActionArguments["id"];
@@ -358,7 +358,7 @@ namespace Gordon360.AuthorizationFilters
                         return true;
                     else
                         return false; // See reasons for this in CanReadOne(). No one (except for super admin) should be able to access student records through
-                        // our API.
+                                      // our API.
                 case Resource.ADVISOR:
                     // User is admin
                     if (user_position == Position.SUPERADMIN)
@@ -434,7 +434,7 @@ namespace Gordon360.AuthorizationFilters
                             return true;
                         return false;
                     }
-                    
+
                 case Resource.MEMBERSHIP_REQUEST:
                     {
                         // User is admin
@@ -447,7 +447,7 @@ namespace Gordon360.AuthorizationFilters
                             return true;
                         // No one should be able to add requests on behalf of another person.
                         return false;
-                    } 
+                    }
                 case Resource.STUDENT:
                     return false; // No one should be able to add students through this API
                 case Resource.ADVISOR:
@@ -480,7 +480,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.ERROR_LOG:
                     return true;
                 case Resource.NEWS:
-                    return true;  
+                    return true;
                 default: return false;
             }
         }
@@ -501,7 +501,7 @@ namespace Gordon360.AuthorizationFilters
                             return true;
                         var membershipToConsider = (MEMBERSHIP)context.ActionArguments["membership"];
                         var activityCode = membershipToConsider.ACT_CDE;
-                       
+
 
                         var membershipService = new MembershipService(CCTContext);
                         //var is_membershipLeader = membershipService.GetLeaderMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
@@ -524,11 +524,11 @@ namespace Gordon360.AuthorizationFilters
                             if (originalMembership.PART_CDE == membershipToConsider.PART_CDE)
                                 return true;
                         }
-                       
+
 
                         return false;
                     }
-                    
+
                 case Resource.MEMBERSHIP_REQUEST:
                     {
                         // Once a request is sent, no one should be able to edit its contents.
@@ -643,7 +643,7 @@ namespace Gordon360.AuthorizationFilters
                             {
                                 return true;
                             }
-                        }   
+                        }
 
                         // If an activity is currently closed, only super admin has permission to edit its closed/open status   
 
@@ -700,7 +700,7 @@ namespace Gordon360.AuthorizationFilters
                         var isGroupAdmin = (await membershipService.GetGroupAdminMembershipsForActivity(activityCode)).Any(x => x.IDNumber.ToString() == user_id);
                         if (isGroupAdmin)
                             return true;
-                        
+
                         return false;
                     }
                 case Resource.MEMBERSHIP_REQUEST:
@@ -793,6 +793,6 @@ namespace Gordon360.AuthorizationFilters
             }
         }
 
-       
+
     }
 }

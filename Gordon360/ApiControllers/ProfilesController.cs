@@ -1,6 +1,12 @@
-﻿using Gordon360.Exceptions.CustomExceptions;
-using Gordon360.Exceptions.ExceptionFilters;
+﻿using Gordon360.AuthorizationFilters;
+using Gordon360.Database.CCT;
+using Gordon360.Exceptions;
+using Gordon360.Models.CCT;
+using Gordon360.Models.ViewModels;
 using Gordon360.Services;
+using Gordon360.Static.Names;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 using System.Net;
@@ -8,19 +14,12 @@ using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using Gordon360.Static.Names;
 using Gordon360.Models.ViewModels;
+using System.Collections.Generic;
 using System.Security.Claims;
-using Gordon360.AuthorizationFilters;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Gordon360.Models.CCT;
-using Gordon360.Database.CCT;
 
-namespace Gordon360.Controllers.Api
+namespace Gordon360.ApiControllers
 {
-    [Route("api/profiles")]
-    [CustomExceptionFilter]
-    [Authorize]
-    public class ProfilesController : ControllerBase
+    public class ProfilesController : GordonControllerBase
     {
         private readonly IProfileService _profileService;
         private readonly IAccountService _accountService;
@@ -158,19 +157,6 @@ namespace Gordon360.Controllers.Api
         [Route("{username}")]
         public ActionResult<StudentProfileViewModel> GetUserProfile(string username)
         {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(username))
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
             //get token data from context, username is the username of current logged in person
             var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
             var viewerType = _roleCheckingService.getCollegeRole(authenticatedUserUsername);
@@ -203,15 +189,15 @@ namespace Gordon360.Controllers.Api
                     customInfo = _customInfo;
                     break;
                 case Position.STUDENT:
-                    student = (_student == null) ? null : (PublicStudentProfileViewModel)_student;         //implicit conversion
-                    faculty = (_faculty == null) ? null : (PublicFacultyStaffProfileViewModel)_faculty;
+                    student = _student == null ? null : (PublicStudentProfileViewModel)_student;         //implicit conversion
+                    faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
                     alumni = null;  //student can't see alumini
                     customInfo = _customInfo;
                     break;
                 case Position.FACSTAFF:
                     student = _student;
-                    faculty = (_faculty == null) ? null : (PublicFacultyStaffProfileViewModel)_faculty;
-                    alumni = (_alumni == null) ? null : (PublicAlumniProfileViewModel)_alumni;
+                    faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
+                    alumni = _alumni == null ? null : (PublicAlumniProfileViewModel)_alumni;
                     customInfo = _customInfo;
                     break;
             }
@@ -341,7 +327,7 @@ namespace Gordon360.Controllers.Api
         public ActionResult<IEnumerable<CliftonStrengthsViewModel>> GetCliftonStrengths(string username)
         {
             var id = _accountService.GetAccountByUsername(username).GordonID;
-            var strengths = _profileService.GetCliftonStrengths(Int32.Parse(id));
+            var strengths = _profileService.GetCliftonStrengths(int.Parse(id));
 
             return Ok(strengths);
 
@@ -815,20 +801,6 @@ namespace Gordon360.Controllers.Api
         [Route("{type}")]
         public ActionResult UpdateLink(string type, CUSTOM_PROFILE path)
         {
-            // Verify Input
-            if (!ModelState.IsValid)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
             var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
 
             _profileService.UpdateProfileLink(authenticatedUserUsername, type, path);
@@ -880,21 +852,6 @@ namespace Gordon360.Controllers.Api
         [Route("mobile_privacy/{value}")]
         public ActionResult UpdateMobilePrivacy(string value)
         {
-            // Verify Input
-            if (!ModelState.IsValid)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
             var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             _profileService.UpdateMobilePrivacy(authenticatedUserIdString, value);
 
@@ -910,21 +867,6 @@ namespace Gordon360.Controllers.Api
         [Route("image_privacy/{value}")]
         public ActionResult UpdateImagePrivacy(string value)
         {
-            // Verify Input
-            if (!ModelState.IsValid)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
             var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             _profileService.UpdateImagePrivacy(authenticatedUserIdString, value);
 

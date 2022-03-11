@@ -1,27 +1,16 @@
-﻿using Gordon360.Services;
-using Gordon360.Exceptions.ExceptionFilters;
+﻿using Gordon360.Models.CCT;
+using Gordon360.Services;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Gordon360.Database.CCT;
-using Gordon360.Models.CCT;
 using System.Threading.Tasks;
 
-namespace Gordon360.Controllers
+namespace Gordon360.ApiControllers
 {
-    [Route("api/save")]
-    [Authorize]
-    [CustomExceptionFilter]
-    public class SaveController : ControllerBase
+    public class SaveController : GordonControllerBase
     {
-
         private readonly ISaveService _saveService;
 
-        public SaveController(CCTContext context)
-        {
-            _saveService = new SaveService(context);
-        }
         public SaveController(ISaveService saveService)
         {
             _saveService = saveService;
@@ -231,22 +220,6 @@ namespace Gordon360.Controllers
         //[Route("rides/create")]
         //public IHttpActionResult Post([FromBody] RIDE newRide)
         //{
-
-        //    // Verify Input
-        //    if (!ModelState.IsValid || newRide == null)
-        //    {
-        //        string errors = "";
-        //        foreach (var modelstate in ModelState.Values)
-        //        {
-        //            foreach (var error in modelstate.Errors)
-        //            {
-        //                errors += "|" + error.ErrorMessage + "|" + error.Exception;
-        //            }
-
-        //        }
-        //        throw new BadInputException() { ExceptionMessage = errors };
-        //    }
-
         //    // Check if maximum
         //    var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
         //    var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Data;
-using Gordon360.Exceptions.CustomExceptions;
+﻿using Gordon360.Database.CCT;
+using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
-using Gordon360.Database.CCT;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 
 namespace Gordon360.Services
 {
@@ -93,20 +93,20 @@ namespace Gordon360.Services
             var myScheduleList = _context.MYSCHEDULE.Where(x => x.GORDON_ID == mySchedule.GORDON_ID);
             int largestEventId = 1000;
             int i = 0;
-                foreach (var schedule in myScheduleList)
-                {
+            foreach (var schedule in myScheduleList)
+            {
 
-                    if (!Int32.TryParse(schedule.EVENT_ID, out i))
-                    {
-                        i = -1;
-                    }
-                    if (largestEventId < i)
-                    {
-                        largestEventId = i;
-                    }
+                if (!Int32.TryParse(schedule.EVENT_ID, out i))
+                {
+                    i = -1;
                 }
-                largestEventId++;
-                mySchedule.EVENT_ID = largestEventId.ToString();
+                if (largestEventId < i)
+                {
+                    largestEventId = i;
+                }
+            }
+            largestEventId++;
+            mySchedule.EVENT_ID = largestEventId.ToString();
 
 
             // The Add() method returns the added schedule
@@ -169,7 +169,7 @@ namespace Gordon360.Services
             }
 
             var original = _context.MYSCHEDULE.FirstOrDefault(x => x.GORDON_ID == gordon_id && x.EVENT_ID == event_id);
-            
+
 
             if (original == null)
             {

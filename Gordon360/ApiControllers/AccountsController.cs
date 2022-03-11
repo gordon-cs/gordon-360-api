@@ -1,27 +1,20 @@
-using System;
-using System.Security.Claims;
-using System.Linq;
+using Gordon360.AuthorizationFilters;
+using Gordon360.Database.CCT;
+using Gordon360.Models.ViewModels;
+using Gordon360.Services;
 using Gordon360.Static.Data;
 using Gordon360.Static.Names;
-using Gordon360.Exceptions.ExceptionFilters;
-using Gordon360.Services;
-using Gordon360.Exceptions.CustomExceptions;
-using System.Collections.Generic;
-using Gordon360.Models.ViewModels;
-using System.Text.RegularExpressions;
-using Newtonsoft.Json.Linq;
-using Gordon360.AuthorizationFilters;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Gordon360.Database.CCT;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Text.RegularExpressions;
 
-namespace Gordon360.Controllers
+namespace Gordon360.ApiControllers
 {
-    [Authorize]
-    [CustomExceptionFilter]
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AccountsController : ControllerBase
+    public class AccountsController : GordonControllerBase
     {
         private readonly IRoleCheckingService _roleCheckingService;
         private readonly IAccountService _accountService;
@@ -37,19 +30,6 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
         public ActionResult<AccountViewModel> GetByAccountEmail(string email)
         {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(email))
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
             var result = _accountService.GetAccountByEmail(email);
 
             if (result == null)
@@ -91,7 +71,7 @@ namespace Gordon360.Controllers
         [Route("search/{searchString}")]
         public ActionResult<IEnumerable<BasicInfoViewModel>> Search(string searchString)
         {
-            var authenticatedUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var authenticatedUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserId);
 
             var accounts = Data.AllBasicInfoWithoutAlumni;
@@ -100,7 +80,7 @@ namespace Gordon360.Controllers
 
             var allMatches = new SortedDictionary<string, BasicInfoViewModel>();
 
-            Action<string, BasicInfoViewModel> appendMatch = (string key, BasicInfoViewModel match) =>
+            Action<string, BasicInfoViewModel> appendMatch = (key, match) =>
             {
                 while (allMatches.ContainsKey(key))
                 {
@@ -227,13 +207,16 @@ namespace Gordon360.Controllers
                                         .Where(s => s.FirstNameContains(searchString) || s.NicknameContains(searchString) || s.LastNameContains(searchString) || s.MaidenNameContains(searchString) || s.UsernameContains(searchString)))
                 {
                     string key;
-                    if (match.FirstNameContains(searchString)) {
+                    if (match.FirstNameContains(searchString))
+                    {
                         key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
                     }
-                    else if (match.NicknameContains(searchString)) {
+                    else if (match.NicknameContains(searchString))
+                    {
                         key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
                     }
-                    else if (match.LastNameContains(searchString)) {
+                    else if (match.LastNameContains(searchString))
+                    {
                         key = GenerateKey(match.LastName, match.FirstName, match.UserName, precedence);
                     }
                     else if (match.MaidenNameContains(searchString))
@@ -266,14 +249,14 @@ namespace Gordon360.Controllers
         [Route("search/{searchString}/{secondaryString}")]
         public ActionResult<IEnumerable<BasicInfoViewModel>> SearchWithSpace(string searchString, string secondaryString)
         {
-            var authenticatedUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var authenticatedUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserId);
 
             int precedence = 0;
 
             var allMatches = new SortedDictionary<string, BasicInfoViewModel>();
 
-            Action<string, BasicInfoViewModel> appendMatch = (string key, BasicInfoViewModel match) =>
+            Action<string, BasicInfoViewModel> appendMatch = (key, match) =>
             {
                 while (allMatches.ContainsKey(key)) key += "1";
                 allMatches.Add(key, match);
@@ -370,20 +353,6 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
         public ActionResult<AccountViewModel> GetByAccountUsername(string username)
         {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(username))
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
             var result = _accountService.GetAccountByUsername(username);
 
             if (result == null)
@@ -532,7 +501,7 @@ namespace Gordon360.Controllers
                 buildingSearchParam = buildingSearchParam.Replace("_", ".");
             }
 
-            var authenticatedUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var authenticatedUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserId);
 
             // Create accounts viewmodel to search
@@ -576,14 +545,14 @@ namespace Gordon360.Controllers
         /// <param name="keyPart2">This is what you want to sort by second, used for second part of key</param>
         /// <param name="precedence">Set where in the dictionary this key group will be ordered</param>
         /// <param name="userName">The User's Username</param>
-        public String GenerateKey(String keyPart1, String keyPart2, String userName, int precedence)
+        public string GenerateKey(string keyPart1, string keyPart2, string userName, int precedence)
         {
-            String key = keyPart1 + "1" + keyPart2;
+            string key = keyPart1 + "1" + keyPart2;
 
             if (Regex.Match(userName, "[0-9]+").Success)
                 key += Regex.Match(userName, "[0-9]+").Value;
 
-            key = String.Concat(Enumerable.Repeat("z", precedence)) + key;
+            key = string.Concat(Enumerable.Repeat("z", precedence)) + key;
 
             return key;
         }

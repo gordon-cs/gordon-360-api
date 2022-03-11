@@ -4,7 +4,7 @@
 //using Gordon360.Models;
 //using Gordon360.Models.ViewModels;
 //using Gordon360.Repositories;
-//using Gordon360.Exceptions.CustomExceptions;
+//using Gordon360.Exceptions;
 //using System.Data.SqlClient;
 //using Gordon360.Services.ComplexQueries;
 //using System.Diagnostics;
@@ -270,7 +270,7 @@
 
 
 //            var result = RawSqlQuery<ReturnGroupViewModel>.query("CREATE_MESSAGE_ROOM @name, @group, @roomImage", nameParam, groupParam, groupImageParam); //run stored procedure
-      
+
 //            if (result == null)
 //            {
 //                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
@@ -293,8 +293,8 @@
 //                groupObject.group = model.group;
 //                groupObject.createdAt = model.createdAt;
 //                groupObject.lastUpdated = model.lastUpdated;
-                
-            
+
+
 //                string encodedByteArray = null;
 
 //                if (model.image != null)
@@ -303,7 +303,7 @@
 //                }
 
 //                groupObject.image = encodedByteArray;
-                
+
 //            }
 
 //            foreach (string userid in idlist)
@@ -373,7 +373,7 @@
 
 //        }
 
-        
+
 //        //stores a room id along with a user id in order to create an association between the two
 //        public bool StoreUserRooms(String userId, String roomId)
 //        {
@@ -386,7 +386,7 @@
 
 //            var userIdParam = new SqlParameter("@user_id", userId);
 //            var roomIdParam = new SqlParameter("@room_id", roomId);
-            
+
 
 //            var result = RawSqlQuery<MessageViewModel>.query("INSERT_USER_ROOMS @user_id, @room_id", userIdParam, roomIdParam); //run stored procedure
 

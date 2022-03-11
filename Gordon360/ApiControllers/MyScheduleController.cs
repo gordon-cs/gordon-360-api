@@ -1,41 +1,25 @@
-﻿using Gordon360.Services;
+﻿using Gordon360.Database.CCT;
+using Gordon360.Models.CCT;
+using Gordon360.Services;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using System;
-using Gordon360.Exceptions.ExceptionFilters;
-using Gordon360.Exceptions.CustomExceptions;
 using System.Collections.Generic;
 using System.Security.Claims;
-using Newtonsoft.Json.Linq;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Gordon360.Models.CCT;
-using Gordon360.Database.CCT;
 
-namespace Gordon360.Controllers.Api
+namespace Gordon360.ApiControllers
 {
-    [Route("api/myschedule")]
-    [CustomExceptionFilter]
-    [Authorize]
-    public class MyScheduleController : ControllerBase
+    public class MyScheduleController : GordonControllerBase
     {
-        //declare services we are going to use.
-        private readonly IProfileService _profileService;
         private readonly IAccountService _accountService;
-        private readonly IRoleCheckingService _roleCheckingService;
         private readonly IScheduleControlService _scheduleControlService;
         private readonly IMyScheduleService _myScheduleService;
 
         public MyScheduleController(CCTContext context)
         {
             _myScheduleService = new MyScheduleService(context);
-            _profileService = new ProfileService(context);
             _accountService = new AccountService(context);
-            _roleCheckingService = new RoleCheckingService(context);
             _scheduleControlService = new ScheduleControlService(context);
-        }
-
-        public MyScheduleController(IMyScheduleService myScheduleService)
-        {
-            _myScheduleService = myScheduleService;
         }
 
         /// <summary>
@@ -83,7 +67,7 @@ namespace Gordon360.Controllers.Api
 
             JObject jresult = JObject.FromObject(result);
 
-                jresult.Property("GORDON_ID").Remove();
+            jresult.Property("GORDON_ID").Remove();
 
             return Ok(jresult);
         }
@@ -118,21 +102,6 @@ namespace Gordon360.Controllers.Api
         {
             const int MAX = 50;
             DateTime localDate = DateTime.Now;
-
-            // Verify Input
-            if (!ModelState.IsValid || mySchedule == null)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
 
             // Check if maximum
             var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -190,19 +159,6 @@ namespace Gordon360.Controllers.Api
         public ActionResult<MYSCHEDULE> Put([FromBody] MYSCHEDULE mySchedule)
         {
             DateTime localDate = DateTime.Now;
-            if (!ModelState.IsValid || mySchedule == null)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
 
             var result = _myScheduleService.Update(mySchedule);
 

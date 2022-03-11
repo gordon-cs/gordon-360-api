@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Gordon360.Models.ViewModels;
-using System.Data;
-using Gordon360.Exceptions.CustomExceptions;
-using System.Diagnostics;
-using Gordon360.Database.CCT;
+﻿using Gordon360.Database.CCT;
 using Gordon360.Database.StudentTimesheets;
+using Gordon360.Exceptions;
 using Gordon360.Models.StudentTimesheets;
+using Gordon360.Models.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Gordon360.Services

@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Gordon360.Services
 {
-    public class RoleCheckingService: IRoleCheckingService
+    public class RoleCheckingService : IRoleCheckingService
     {
         private readonly CCTContext _context;
 

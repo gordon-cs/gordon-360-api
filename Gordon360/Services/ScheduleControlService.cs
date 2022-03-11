@@ -1,8 +1,8 @@
 ﻿
+using Gordon360.Database.CCT;
+using Gordon360.Exceptions;
 using System;
 using System.Linq;
-using Gordon360.Exceptions.CustomExceptions;
-using Gordon360.Database.CCT;
 using System.Threading.Tasks;
 
 namespace Gordon360.Services

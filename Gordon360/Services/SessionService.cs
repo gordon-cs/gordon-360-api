@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Gordon360.Database.CCT;
+using Gordon360.Exceptions;
 using Gordon360.Models.ViewModels;
-using Gordon360.Exceptions.CustomExceptions;
-using Gordon360.Database.CCT;
+using System.Collections.Generic;
 
 namespace Gordon360.Services
 {
@@ -12,10 +12,10 @@ namespace Gordon360.Services
     {
         private CCTContext _context;
 
-		public SessionService(CCTContext context)
-		{
-			_context = context;
-		}
+        public SessionService(CCTContext context)
+        {
+            _context = context;
+        }
 
         /// <summary>
         /// Get the session record whose sesssion code matches the parameter.
@@ -42,6 +42,6 @@ namespace Gordon360.Services
             return (IEnumerable<SessionViewModel>)_context.CM_SESSION_MSTR;
         }
 
-        
+
     }
 }

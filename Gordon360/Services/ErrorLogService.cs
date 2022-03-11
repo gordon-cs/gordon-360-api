@@ -1,7 +1,7 @@
-﻿using System;
-using Gordon360.Exceptions.CustomExceptions;
+﻿using Gordon360.Database.CCT;
+using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
-using Gordon360.Database.CCT;
+using System;
 
 namespace Gordon360.Services
 {

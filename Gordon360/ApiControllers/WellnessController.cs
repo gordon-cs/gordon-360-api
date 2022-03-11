@@ -1,26 +1,14 @@
-﻿using System.Security.Claims;
-using Gordon360.Exceptions.ExceptionFilters;
-using Gordon360.Services;
-using Gordon360.Exceptions.CustomExceptions;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
+﻿using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
-using Gordon360.Models.CCT;
-using Gordon360.Database.CCT;
+using Gordon360.Services;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
-namespace Gordon360.Controllers.Api
+namespace Gordon360.ApiControllers
 {
-    [Route("api/wellness")]
-    [CustomExceptionFilter]
-    [Authorize]
-    public class WellnessController : ControllerBase
+    public class WellnessController : GordonControllerBase
     {
         private readonly IWellnessService _wellnessService;
-
-        public WellnessController(CCTContext context)
-        {
-            _wellnessService = new WellnessService(context);
-        }
 
         public WellnessController(IWellnessService wellnessService)
         {
@@ -86,21 +74,6 @@ namespace Gordon360.Controllers.Api
         [Route("")]
         public ActionResult<Health_Status> Post([FromBody] WellnessStatusColor status)
         {
-
-            if (!ModelState.IsValid)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
             var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             var result = _wellnessService.PostStatus(status, authenticatedUserIdString);

@@ -3,7 +3,7 @@
 // <summary>
 // Namespace where we define custom exceptions to be thrown by Controllers
 // </summary>
-namespace Gordon360.Exceptions.CustomExceptions
+namespace Gordon360.Exceptions
 {
     public class ResourceNotFoundException : Exception
     {

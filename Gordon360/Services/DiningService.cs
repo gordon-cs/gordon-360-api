@@ -1,15 +1,15 @@
-﻿using System;
-using System.Linq;
+﻿using Gordon360.Database.CCT;
+using Gordon360.Exceptions;
 using Gordon360.Models.ViewModels;
-using System.Data;
-using Gordon360.Exceptions.CustomExceptions;
-using Newtonsoft.Json.Linq;
-using System.Net;
-using System.Text;
-using System.IO;
-using System.Security.Cryptography;
 using Microsoft.Extensions.Configuration;
-using Gordon360.Database.CCT;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Data;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Security.Cryptography;
+using System.Text;
 
 // <summary>
 // We use this service to pull meal data from blackboard and parse it
@@ -143,12 +143,12 @@ namespace Gordon360.Services
         {
             var result = _context.DiningInfo.Where(d => d.StudentId == cardHolderID && d.SessionCode == sessionCode)
                 .Select(d => new DiningTableViewModel
-                { 
+                {
                     ChoiceDescription = d.ChoiceDescription,
                     PlanDescriptions = d.PlanDescriptions,
                     PlanId = d.PlanId,
                     PlanType = d.PlanType,
-                    InitialBalance = d.InitialBalance ?? 0 
+                    InitialBalance = d.InitialBalance ?? 0
                 });
 
             if (result == null)

@@ -1,24 +1,18 @@
-﻿using Gordon360.Services;
+﻿using Gordon360.AuthorizationFilters;
+using Gordon360.Database.CCT;
+using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
-using Gordon360.AuthorizationFilters;
+using Gordon360.Services;
 using Gordon360.Static.Names;
+using Microsoft.AspNetCore.Mvc;
 using System;
-using Gordon360.Exceptions.ExceptionFilters;
-using Gordon360.Exceptions.CustomExceptions;
 using System.Collections.Generic;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Gordon360.Models.CCT;
-using Gordon360.Database.CCT;
 using System.Threading.Tasks;
 
-namespace Gordon360.Controllers.Api
+namespace Gordon360.ApiControllers
 {
-    [Route("api/memberships")]
-    [Authorize]
-    [CustomExceptionFilter]
-    public class MembershipsController : ControllerBase
+    public class MembershipsController : GordonControllerBase
     {
         private readonly IMembershipService _membershipService;
         private readonly IAccountService _accountService;
@@ -31,10 +25,6 @@ namespace Gordon360.Controllers.Api
             _accountService = new AccountService(context);
             _activityService = new ActivityService(context);
             _roleCheckingService = new RoleCheckingService(context);
-        }
-        public MembershipsController(IMembershipService membershipService)
-        {
-            _membershipService = membershipService;
         }
 
         /// <summary>
@@ -66,20 +56,6 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_BY_ACTIVITY)]
         public ActionResult<IEnumerable<MembershipViewModel>> GetMembershipsForActivity(string id)
         {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
             var result = _membershipService.GetMembershipsForActivity(id);
 
             if (result == null)
@@ -99,19 +75,6 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.GROUP_ADMIN_BY_ACTIVITY)]
         public ActionResult<IEnumerable<MembershipViewModel>> GetGroupAdminForActivity(string id)
         {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
             var result = _membershipService.GetGroupAdminMembershipsForActivity(id);
 
             if (result == null)
@@ -131,19 +94,6 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.LEADER_BY_ACTIVITY)]
         public ActionResult<IEnumerable<MembershipViewModel>> GetLeadersForActivity(string id)
         {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
             var result = _membershipService.GetLeaderMembershipsForActivity(id);
 
             if (result == null)
@@ -163,19 +113,6 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.ADVISOR_BY_ACTIVITY)]
         public ActionResult<IEnumerable<MembershipViewModel>> GetAdvisorsForActivity(string id)
         {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
             var result = _membershipService.GetAdvisorMembershipsForActivity(id);
 
             if (result == null)
@@ -195,19 +132,6 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
         public ActionResult<int> GetActivityFollowersCount(string id)
         {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
             var result = _membershipService.GetActivityFollowersCount(id);
 
             return Ok(result);
@@ -223,19 +147,6 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
         public ActionResult<int> GetActivityMembersCount(string id)
         {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
             var result = _membershipService.GetActivityMembersCount(id);
 
             return Ok(result);
@@ -252,19 +163,6 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
         public ActionResult<int> GetActivityFollowersCountForSession(string id, string sess_cde)
         {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
             var result = _membershipService.GetActivityFollowersCountForSession(id, sess_cde);
 
             return Ok(result);
@@ -281,19 +179,6 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
         public ActionResult<int> GetActivityMembersCountForSession(string id, string sess_cde)
         {
-            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(id))
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
             var result = _membershipService.GetActivityMembersCountForSession(id, sess_cde);
 
             return Ok(result);
@@ -305,27 +190,13 @@ namespace Gordon360.Controllers.Api
         /// <remarks>Posts a new membership to the server to be added into the database</remarks>
         // POST api/<controller>
         [HttpPost]
-        [Route("", Name="Memberships")]
+        [Route("", Name = "Memberships")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.MEMBERSHIP)]
         public ActionResult<MEMBERSHIP> Post([FromBody] MEMBERSHIP membership)
         {
-            if(!ModelState.IsValid || membership == null)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach(var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
             var result = _membershipService.Add(membership);
 
-            if ( result == null)
+            if (result == null)
             {
                 return NotFound();
             }
@@ -342,20 +213,6 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_BY_STUDENT)]
         public ActionResult<IEnumerable<MembershipViewModel>> GetMembershipsForStudent(string id)
         {
-
-            if (!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
             var result = _membershipService.GetMembershipsForStudent(id);
 
             if (result == null)
@@ -375,21 +232,6 @@ namespace Gordon360.Controllers.Api
         [HttpGet]
         public async Task<ActionResult<List<MembershipViewModel>>> GetMembershipsForStudentByUsename(string username)
         {
-
-            if (!ModelState.IsValid || String.IsNullOrWhiteSpace(username))
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
             var id = _accountService.GetAccountByUsername(username).GordonID;
             var result = await _membershipService.GetMembershipsForStudent(id);
 
@@ -398,7 +240,7 @@ namespace Gordon360.Controllers.Api
                 return NotFound();
             }
             // privacy control of membership view model
-            var authenticatedUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var authenticatedUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserId);
 
             if (viewerType == Position.SUPERADMIN || viewerType == Position.POLICE)              //super admin and gordon police reads all
@@ -440,22 +282,8 @@ namespace Gordon360.Controllers.Api
         [HttpPut]
         [Route("{id}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP)]
-        public ActionResult<MEMBERSHIP> Put(int id, [FromBody]MEMBERSHIP membership)
+        public ActionResult<MEMBERSHIP> Put(int id, [FromBody] MEMBERSHIP membership)
         {
-            if (!ModelState.IsValid || membership == null || id != membership.MEMBERSHIP_ID)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
             var result = _membershipService.Update(id, membership);
 
             if (result == null)
@@ -471,21 +299,8 @@ namespace Gordon360.Controllers.Api
         [HttpPut]
         [Route("{id}/group-admin")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP)]
-        public ActionResult<MEMBERSHIP> ToggleGroupAdmin([FromBody]MEMBERSHIP membership)
+        public ActionResult<MEMBERSHIP> ToggleGroupAdmin([FromBody] MEMBERSHIP membership)
         {
-            if (!ModelState.IsValid || membership == null)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
             var id = membership.MEMBERSHIP_ID;
 
             var result = _membershipService.ToggleGroupAdmin(id, membership);
@@ -506,20 +321,6 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP_PRIVACY)]
         public ActionResult TogglePrivacy(int id, bool p)
         {
-            if (!ModelState.IsValid)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
             _membershipService.TogglePrivacy(id, p);
             return Ok();
         }
@@ -535,7 +336,7 @@ namespace Gordon360.Controllers.Api
         {
             var result = _membershipService.Delete(id);
 
-            if(result == null)
+            if (result == null)
             {
                 return NotFound();
             }

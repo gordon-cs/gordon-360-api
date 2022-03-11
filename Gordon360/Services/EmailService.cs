@@ -1,5 +1,5 @@
 ﻿using Gordon360.Database.CCT;
-using Gordon360.Exceptions.CustomExceptions;
+using Gordon360.Exceptions;
 using Gordon360.Models.ViewModels;
 using Gordon360.Static.Methods;
 using System.Collections.Generic;

@@ -1,14 +1,14 @@
-﻿using Gordon360.Models.ViewModels;
+﻿using Gordon360.Database.CCT;
+using Gordon360.Models.ViewModels;
+using Gordon360.Services;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Xml.Linq;
 using System.Text;
-using Gordon360.Services;
-using System.Collections.Generic;
-using Gordon360.Database.CCT;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Gordon360.Static.Methods
 {

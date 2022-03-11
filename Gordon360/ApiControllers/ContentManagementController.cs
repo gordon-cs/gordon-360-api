@@ -1,25 +1,15 @@
-﻿using Gordon360.Services;
-using Gordon360.Exceptions.ExceptionFilters;
-using Gordon360.AuthorizationFilters;
-using Gordon360.Static.Names;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
+﻿using Gordon360.AuthorizationFilters;
 using Gordon360.Models.ViewModels;
-using Gordon360.Database.CCT;
+using Gordon360.Services;
+using Gordon360.Static.Names;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Gordon360.Controllers.Api
+namespace Gordon360.ApiControllers
 {
-    [Route("api/cms")]
-    [Authorize]
-    [CustomExceptionFilter]
-    public class ContentManagementController : ControllerBase
+    public class ContentManagementController : GordonControllerBase
     {
         private readonly IContentManagementService _contentManagementService;
-
-        public ContentManagementController(CCTContext context)
-        {
-            _contentManagementService = new ContentManagementService(context);
-        }
 
         public ContentManagementController(IContentManagementService contentManagementService)
         {

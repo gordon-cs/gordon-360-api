@@ -26,20 +26,20 @@ namespace Gordon360.Models.ViewModels
             MyScheduleViewModel vm = new MyScheduleViewModel
             {
                 EventID = sch.EVENT_ID,
-            GordonID = sch.GORDON_ID,
-            Location = sch.LOCATION ?? "", // For Null locations;
-            Description = sch.DESCRIPTION ?? "", // For Null descriptions
-            MonCode = sch.MON_CDE.Trim() ?? "", // For Null days
-            TueCode = sch.TUE_CDE.Trim() ?? "", // For Null days
-            WedCode = sch.WED_CDE.Trim() ?? "", // For Null days
-            ThuCode = sch.THU_CDE.Trim() ?? "", // For Null days
-            FriCode = sch.FRI_CDE.Trim() ?? "", // For Null days
-            SatCode = sch.SAT_CDE.Trim() ?? "", // For Null days
-            SunCode = sch.SUN_CDE.Trim() ?? "", // For Null days
-            IsAllDay = sch.IS_ALLDAY,
-            BeginTime = sch.BEGIN_TIME,
-            EndTime = sch.END_TIME,
-        };
+                GordonID = sch.GORDON_ID,
+                Location = sch.LOCATION ?? "", // For Null locations;
+                Description = sch.DESCRIPTION ?? "", // For Null descriptions
+                MonCode = sch.MON_CDE.Trim() ?? "", // For Null days
+                TueCode = sch.TUE_CDE.Trim() ?? "", // For Null days
+                WedCode = sch.WED_CDE.Trim() ?? "", // For Null days
+                ThuCode = sch.THU_CDE.Trim() ?? "", // For Null days
+                FriCode = sch.FRI_CDE.Trim() ?? "", // For Null days
+                SatCode = sch.SAT_CDE.Trim() ?? "", // For Null days
+                SunCode = sch.SUN_CDE.Trim() ?? "", // For Null days
+                IsAllDay = sch.IS_ALLDAY,
+                BeginTime = sch.BEGIN_TIME,
+                EndTime = sch.END_TIME,
+            };
 
             return vm;
         }

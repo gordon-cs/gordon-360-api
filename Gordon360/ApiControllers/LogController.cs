@@ -1,28 +1,22 @@
-﻿using Gordon360.Services;
-using Gordon360.AuthorizationFilters;
-using Gordon360.Static.Names;
-using Gordon360.Exceptions.ExceptionFilters;
-using Gordon360.Exceptions.CustomExceptions;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Gordon360.Models.CCT;
+﻿using Gordon360.AuthorizationFilters;
 using Gordon360.Database.CCT;
+using Gordon360.Exceptions;
+using Gordon360.Models.CCT;
+using Gordon360.Services;
+using Gordon360.Static.Names;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Gordon360.Controllers
+namespace Gordon360.ApiControllers
 {
-    [Route("api/log")]
-    [Authorize]
-    [CustomExceptionFilter]
-    public class ErrorLogController : ControllerBase
+    public class LogController : GordonControllerBase
     {
-
         private readonly IErrorLogService _errorLogService;
 
-        public ErrorLogController(CCTContext context)
+        public LogController(CCTContext context)
         {
             _errorLogService = new ErrorLogService(context);
         }
-        public ErrorLogController(IErrorLogService errorLogService)
+        public LogController(IErrorLogService errorLogService)
         {
             _errorLogService = errorLogService;
         }
@@ -37,7 +31,6 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.ERROR_LOG)]
         public ActionResult<ERROR_LOG> Post([FromBody] string error_message)
         {
-
             if (error_message == null)
             {
                 throw new BadInputException();
@@ -46,7 +39,6 @@ namespace Gordon360.Controllers
             var result = _errorLogService.Log(error_message);
 
             return Created("error log", result);
-
         }
 
 
@@ -60,21 +52,6 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.ERROR_LOG)]
         public ActionResult<ERROR_LOG> Post([FromBody] ERROR_LOG error_log)
         {
-
-            if (!ModelState.IsValid || error_log == null)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
             var result = _errorLogService.Add(error_log);
 
             return Created("error log", result);

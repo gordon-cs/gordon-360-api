@@ -38,7 +38,7 @@
 //        {
 //            _DirectMessageService = DirectMessageService;
 //        }
-        
+
 //        /// <summary>
 //        ///  returns messages from a specified group
 //        /// </summary>
@@ -97,7 +97,7 @@
 //            return Ok(result);
 //        }
 
-        
+
 //        /// <summary>
 //        ///  returns a room object Identified by room id
 //        /// </summary>
@@ -178,7 +178,7 @@
 //                var data = new NotificationDataViewModel();
 //                data.messageID = textInfo.id;
 //                data.roomID = textInfo.room_id;
-                
+
 //                var connectionIDs = _DirectMessageService.GetUserConnectionIds(textInfo.users_ids);
 
 //                if (result == false || connectionIDs == null)
@@ -207,7 +207,7 @@
 //                        var post = httpClient.PostAsync("https://exp.host/--/api/v2/push/send", content).Result;
 //                    }
 //                 }
-            
+
 //                return Ok(result);
 
 //            }
@@ -235,8 +235,8 @@
 
 //            }
 
-            
-        
+
+
 //            /// <summary>
 //            ///  stores connection associated with a user id
 //            /// </summary>

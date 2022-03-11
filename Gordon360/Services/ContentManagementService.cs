@@ -33,7 +33,7 @@ namespace Gordon360.Services
         /// If not returns an empty IEnumerable.</returns>
         public IEnumerable<SliderViewModel> DEPRECATED_GetSliderContent()
         {
-           return _context.Slider_Images.Select<Slider_Images, SliderViewModel>(x => x);
+            return _context.Slider_Images.Select<Slider_Images, SliderViewModel>(x => x);
         }
 
         /// <summary>

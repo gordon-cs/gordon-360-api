@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Gordon360.Database.CCT;
-using Gordon360.Exceptions.CustomExceptions;
+﻿using Gordon360.Database.CCT;
+using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Gordon360.Services
 {
@@ -13,11 +13,11 @@ namespace Gordon360.Services
     {
         private CCTContext _context;
 
-		public AdministratorService(CCTContext context)
-		{
-			_context = context;
-		}
-        
+        public AdministratorService(CCTContext context)
+        {
+            _context = context;
+        }
+
         /// <summary>
         /// Fetches the admin resource whose id is specified as an argument.
         /// </summary>
@@ -41,7 +41,7 @@ namespace Gordon360.Services
         public ADMIN Get(string gordon_id)
         {
             var query = _context.ADMIN.FirstOrDefault(x => x.ID_NUM.ToString() == gordon_id);
-            if(query == null)
+            if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Administrator was not found." };
             }

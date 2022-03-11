@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using Gordon360.Exceptions.ExceptionFilters;
-using Gordon360.Static.Methods;
-using Microsoft.AspNetCore.Authorization;
+﻿using Gordon360.Static.Methods;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
 
-namespace Gordon360.Controllers
+namespace Gordon360.ApiControllers
 {
-    [Authorize]
-    [CustomExceptionFilter]
-    [Route("api/advanced-search")]
-    public class AdvancedSearchController : ControllerBase
+    public class AdvancedSearchController : GordonControllerBase
     {
         public AdvancedSearchController()
         {
@@ -22,9 +17,9 @@ namespace Gordon360.Controllers
         /// <returns> All majors</returns>
         [HttpGet]
         [Route("majors")]
-        public ActionResult<IEnumerable<String>> GetMajors()
+        public ActionResult<IEnumerable<string>> GetMajors()
         {
-            IEnumerable<String> majors = Helpers.GetMajors();
+            IEnumerable<string> majors = Helpers.GetMajors();
             // Return all of the majors
             return Ok(majors);
         }
@@ -35,9 +30,9 @@ namespace Gordon360.Controllers
         /// <returns> All minors</returns>
         [HttpGet]
         [Route("minors")]
-        public ActionResult<IEnumerable<String>> GetMinors()
+        public ActionResult<IEnumerable<string>> GetMinors()
         {
-            IEnumerable<String> minors = Helpers.GetMinors();
+            IEnumerable<string> minors = Helpers.GetMinors();
             // Return all of the minors
             return Ok(minors);
         }
@@ -48,9 +43,9 @@ namespace Gordon360.Controllers
         /// <returns> All minors</returns>
         [HttpGet]
         [Route("halls")]
-        public ActionResult<IEnumerable<String>> GetHalls()
+        public ActionResult<IEnumerable<string>> GetHalls()
         {
-            IEnumerable<String> halls = Helpers.GetHalls();
+            IEnumerable<string> halls = Helpers.GetHalls();
             // Return all of the halls
             return Ok(halls);
         }
@@ -61,9 +56,9 @@ namespace Gordon360.Controllers
         /// <returns> All states</returns>
         [HttpGet]
         [Route("states")]
-        public ActionResult<IEnumerable<String>> GetStates()
+        public ActionResult<IEnumerable<string>> GetStates()
         {
-            IEnumerable<String> states = Helpers.GetStates();
+            IEnumerable<string> states = Helpers.GetStates();
             // Return all of the states
             return Ok(states);
         }
@@ -75,9 +70,9 @@ namespace Gordon360.Controllers
         /// <returns> All countries</returns>
         [HttpGet]
         [Route("countries")]
-        public ActionResult<IEnumerable<String>> GetCountries()
+        public ActionResult<IEnumerable<string>> GetCountries()
         {
-            IEnumerable<String> countries = Helpers.GetCountries();
+            IEnumerable<string> countries = Helpers.GetCountries();
             // Return all of the countries
             return Ok(countries);
         }
@@ -88,9 +83,9 @@ namespace Gordon360.Controllers
         /// <returns> All departments</returns>
         [HttpGet]
         [Route("departments")]
-        public ActionResult<IEnumerable<String>> GetDepartments()
+        public ActionResult<IEnumerable<string>> GetDepartments()
         {
-            IEnumerable<String> departments = Helpers.GetDepartments();
+            IEnumerable<string> departments = Helpers.GetDepartments();
             // Return all of the departments
             return Ok(departments);
         }
@@ -102,9 +97,9 @@ namespace Gordon360.Controllers
         /// <returns> All buildings</returns>
         [HttpGet]
         [Route("buildings")]
-        public ActionResult<IEnumerable<String>> GetBuildings()
+        public ActionResult<IEnumerable<string>> GetBuildings()
         {
-            IEnumerable<String> buildings = Helpers.GetBuildings();
+            IEnumerable<string> buildings = Helpers.GetBuildings();
             // Return all of the buildings
             return Ok(buildings);
         }

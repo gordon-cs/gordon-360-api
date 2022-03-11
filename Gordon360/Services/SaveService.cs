@@ -1,5 +1,5 @@
 ﻿using Gordon360.Database.CCT;
-using Gordon360.Exceptions.CustomExceptions;
+using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -70,7 +70,7 @@ namespace Gordon360.Services
             }
             var newRideID = highestRideID.ToString();
 
-            var result =  await _context.Procedures.CREATE_RIDEAsync(newRideID, newRide.destination, newRide.meetingPoint, newRide.startTime, newRide.endTime, newRide.capacity, newRide.notes, newRide.canceled);
+            var result = await _context.Procedures.CREATE_RIDEAsync(newRideID, newRide.destination, newRide.meetingPoint, newRide.startTime, newRide.endTime, newRide.capacity, newRide.notes, newRide.canceled);
 
             if (result == null)
             {
@@ -103,8 +103,8 @@ namespace Gordon360.Services
                     throw new ResourceNotFoundException() { ExceptionMessage = "The ride was not found." };
                 }
 
-                await _context.Procedures.DELETE_RIDEAsync(rideID); 
-                await _context.Procedures.DELETE_BOOKINGSAsync(rideID); 
+                await _context.Procedures.DELETE_RIDEAsync(rideID);
+                await _context.Procedures.DELETE_BOOKINGSAsync(rideID);
                 _context.SaveChanges();
             }
 

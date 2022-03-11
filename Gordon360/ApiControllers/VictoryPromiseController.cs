@@ -1,17 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Security.Claims;
-using Gordon360.Database.CCT;
-using Gordon360.Exceptions.ExceptionFilters;
+﻿using Gordon360.Database.CCT;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Security.Claims;
 
-namespace Gordon360.Controllers.Api
+namespace Gordon360.ApiControllers
 {
-    [Route("api/vpscore")]
-    [CustomExceptionFilter]
-    [Authorize]
     public class VictoryPromiseController : ControllerBase
     {
         private readonly IVictoryPromiseService _victoryPromiseService;

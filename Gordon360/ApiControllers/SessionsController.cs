@@ -1,30 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Gordon360.Database.CCT;
-using Gordon360.Exceptions.CustomExceptions;
-using Gordon360.Exceptions.ExceptionFilters;
+﻿using Gordon360.Database.CCT;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Methods;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace Gordon360.Controllers.Api
+namespace Gordon360.ApiControllers
 {
-    [Route("api/sessions")]
-    [CustomExceptionFilter]
-    //All Routes made public for Guest View (No authorization needed)
-    public class SessionsController : ControllerBase
+    public class SessionsController : GordonControllerBase
     {
         private readonly ISessionService _sessionService;
 
         public SessionsController(CCTContext context)
         {
             _sessionService = new SessionService(context);
-        }
-        public SessionsController(ISessionService sessionService)
-        {
-            _sessionService = sessionService;
         }
 
         /// <summary>Get a list of all sessions</summary>
@@ -33,7 +24,7 @@ namespace Gordon360.Controllers.Api
         // GET: api/Sessions
         [HttpGet]
         [Route("")]
-        //Public Route
+        [AllowAnonymous]
         public ActionResult<IEnumerable<SessionViewModel>> Get()
         {
             var all = _sessionService.GetAll();
@@ -47,23 +38,9 @@ namespace Gordon360.Controllers.Api
         // GET: api/Sessions/5
         [HttpGet]
         [Route("{id}")]
-        //Public Route
+        [AllowAnonymous]
         public ActionResult<SessionViewModel> Get(string id)
         {
-            if (!ModelState.IsValid || String.IsNullOrWhiteSpace(id))
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
             var result = _sessionService.Get(id);
 
             if (result == null)
@@ -80,11 +57,11 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpGet]
         [Route("current")]
-        //Public Route
+        [AllowAnonymous]
         public ActionResult<SessionViewModel> GetCurrentSession()
         {
             var currentSession = Helpers.GetCurrentSession();
-            if(currentSession == null)
+            if (currentSession == null)
             {
                 return NotFound();
             }
@@ -134,11 +111,11 @@ namespace Gordon360.Controllers.Api
         /// <returns></returns>
         [HttpGet]
         [Route("daysLeft")]
-        //Public Route
+        [AllowAnonymous]
         public async Task<ActionResult<double[]>> GetDaysLeftinSemester()
         {
             var days = await Helpers.GetDaysLeft();
-            if ((days[1] == 0 && days[2] == 0) || days == null)
+            if (days[1] == 0 && days[2] == 0 || days == null)
             {
                 return NotFound();
             }

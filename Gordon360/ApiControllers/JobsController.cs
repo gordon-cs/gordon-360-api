@@ -1,25 +1,19 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Security.Claims;
-using Gordon360.Exceptions.ExceptionFilters;
-using Gordon360.Models.ViewModels;
-using Gordon360.Services;
-using Gordon360.AuthorizationFilters;
-using Gordon360.Static.Names;
-using Gordon360.Exceptions.CustomExceptions;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
+﻿using Gordon360.AuthorizationFilters;
 using Gordon360.Database.CCT;
 using Gordon360.Database.StudentTimesheets;
+using Gordon360.Exceptions;
+using Gordon360.Models.ViewModels;
+using Gordon360.Services;
+using Gordon360.Static.Names;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 
-namespace Gordon360.Controllers
+namespace Gordon360.ApiControllers
 {
-    [ApiController]
-    [Authorize]
-    [CustomExceptionFilter]
-    [Route("api/jobs")]
-    public class JobsController : ControllerBase
+    public class JobsController : GordonControllerBase
     {
         private readonly IJobsService _jobsService;
         private readonly IErrorLogService _errorLogService;
@@ -33,7 +27,7 @@ namespace Gordon360.Controllers
         private int GetCurrentUserID()
         {
             int userID = -1;
-            var authenticatedUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var authenticatedUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
             return userID;
         }
@@ -202,21 +196,6 @@ namespace Gordon360.Controllers
         [Route("clockIn")]
         public ActionResult<ClockInViewModel> ClockIn([FromBody] bool state)
         {
-
-            if (!ModelState.IsValid)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
             var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             var result = _jobsService.ClockIn(state, authenticatedUserIdString);

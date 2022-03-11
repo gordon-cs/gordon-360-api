@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using Gordon360.Database.CCT;
+using Gordon360.Exceptions;
 using Gordon360.Models.ViewModels;
-using System.Data;
-using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Static.Data;
-using System.Xml.Linq;
-using Gordon360.Database.CCT;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 // <summary>
 // We use this service to pull data from 25Live as well as parsing it

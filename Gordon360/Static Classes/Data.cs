@@ -1,8 +1,8 @@
-﻿using System.Xml.Linq;
+﻿using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
-using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
-using Gordon360.Models.CCT;
+using System.Collections.Generic;
+using System.Xml.Linq;
 
 namespace Gordon360.Static.Data
 {

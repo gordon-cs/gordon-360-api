@@ -20,7 +20,7 @@ namespace Gordon360.Models.ViewModels
         // We're gonna take an eventviewmodel (info from 25Live) and a Chapeleventviewmodel (info form our database) 
         // then mash 'em together
         public AttendedEventViewModel(EventViewModel a, ChapelEventViewModel b)
-        {   
+        {
             // First the EventViewModel
             LiveID = b.LiveID;
             CHDate = b.CHDate.Value.Add(b.CHTime.Value.TimeOfDay);
@@ -41,7 +41,7 @@ namespace Gordon360.Models.ViewModels
             // If it's null, fill it with empty strings so we don't crash
             else
             {
-                Event_Name =  "";
+                Event_Name = "";
                 Event_Title = "";
                 Description =  "";
                 Organization =  "";
@@ -49,7 +49,7 @@ namespace Gordon360.Models.ViewModels
                 EndDate = "";
                 Location = "";
             }
- 
+
         }
     }
 

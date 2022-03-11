@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using Gordon360.Database.CCT;
+using Gordon360.Exceptions;
+using Gordon360.Models.CCT;
+using Gordon360.Models.ViewModels;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Gordon360.Database.CCT;
-using Gordon360.Exceptions.CustomExceptions;
-using Gordon360.Models.CCT;
-using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Services
 {

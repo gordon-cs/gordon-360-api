@@ -1,17 +1,17 @@
-﻿using System;
-using System.Linq;
-using Gordon360.Models.ViewModels;
-using Gordon360.Exceptions.CustomExceptions;
-using static Gordon360.Controllers.Api.WellnessController;
+﻿using Gordon360.Database.CCT;
+using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
-using Gordon360.Database.CCT;
+using Gordon360.Models.ViewModels;
+using System;
+using System.Linq;
+using static Gordon360.ApiControllers.WellnessController;
 
 namespace Gordon360.Services
 {
     public class WellnessService : IWellnessService
     {
 
-        private CCTContext _context;
+        private readonly CCTContext _context;
 
         public WellnessService(CCTContext context)
         {
@@ -103,7 +103,8 @@ namespace Gordon360.Services
         public WellnessQuestionViewModel GetQuestion()
         {
 
-            var result = _context.Health_Question.Select(q => new WellnessQuestionViewModel {
+            var result = _context.Health_Question.Select(q => new WellnessQuestionViewModel
+            {
                 question = q.Question,
                 noPrompt = q.NoPrompt,
                 yesPrompt = q.YesPrompt

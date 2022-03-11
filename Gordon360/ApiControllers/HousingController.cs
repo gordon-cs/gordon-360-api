@@ -1,24 +1,18 @@
-using Gordon360.Exceptions.CustomExceptions;
-using Gordon360.Exceptions.ExceptionFilters;
 using Gordon360.AuthorizationFilters;
+using Gordon360.Database.CCT;
+using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Methods;
 using Gordon360.Static.Names;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using System;
-using Gordon360.Database.CCT;
-using Gordon360.Models.CCT;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Gordon360.Controllers.Api
+namespace Gordon360.ApiControllers
 {
-    [Route("api/housing")]
-    [Authorize]
-    [CustomExceptionFilter]
-    public class HousingController : ControllerBase
+    public class HousingController : GordonControllerBase
     {
         private readonly IHousingService _housingService;
         private readonly IAccountService _accountService;
@@ -175,21 +169,6 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING)]
         public async Task<ActionResult<int>> SaveApplication([FromBody] ApartmentApplicationViewModel applicationDetails)
         {
-            // Verify Input
-            if (!ModelState.IsValid)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
             string sessionID = (await Helpers.GetCurrentSession()).SessionCode;
 
             string editorUsername = applicationDetails?.EditorProfile?.AD_Username ?? applicationDetails?.EditorUsername;
@@ -217,20 +196,6 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)]
         public async Task<ActionResult<int>> EditApplication(int applicationID, [FromBody] ApartmentApplicationViewModel applicationDetails)
         {
-            // Verify Input
-            if (!ModelState.IsValid)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
             //get token data from context, username is the username of current logged in person
             var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
 
@@ -260,20 +225,6 @@ namespace Gordon360.Controllers.Api
         [Route("apartment/applications/{applicationID}/editor")]
         public ActionResult<bool> ChangeEditor(int applicationID, [FromBody] ApartmentApplicationViewModel applicationDetails)
         {
-            // Verify Input
-            if (!ModelState.IsValid)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
             //get token data from context, username is the username of current logged in person
             var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
 
@@ -316,7 +267,7 @@ namespace Gordon360.Controllers.Api
             try
             {
                 ADMIN adminModel = _administratorService.Get(userID);
-                isAdmin = (adminModel != null);
+                isAdmin = adminModel != null;
             }
             catch
             {

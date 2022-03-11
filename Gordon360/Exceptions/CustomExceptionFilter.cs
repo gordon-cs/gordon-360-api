@@ -1,11 +1,10 @@
-﻿using System;
-using System.Net;
-using Gordon360.Exceptions.CustomExceptions;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System;
+using System.Net;
 
 // These exception filters catch unhandled exceptions and convert them into HTTP Responses
-namespace Gordon360.Exceptions.ExceptionFilters
+namespace Gordon360.Exceptions
 {
     // Use on Controllers (classes) and Actions (methods)
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
@@ -15,7 +14,8 @@ namespace Gordon360.Exceptions.ExceptionFilters
         {
             var statusCode = HttpStatusCode.InternalServerError;
 
-            switch (context.Exception) {
+            switch (context.Exception)
+            {
                 case ResourceNotFoundException:
                     statusCode = HttpStatusCode.NotFound;
                     break;
@@ -36,7 +36,7 @@ namespace Gordon360.Exceptions.ExceptionFilters
 
             // Create Http Response
             context.HttpContext.Response.ContentType = "application/json";
-            context.HttpContext.Response.StatusCode = (int) statusCode;
+            context.HttpContext.Response.StatusCode = (int)statusCode;
             context.Result = new JsonResult(new
             {
                 error = new[] { context.Exception.Message },

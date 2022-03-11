@@ -40,7 +40,7 @@ namespace Gordon360.Models.ViewModels
                 this.ChoiceDescription = "None";
             }
             else
-            { 
+            {
                 this.ChoiceDescription = diningTableList[0].ChoiceDescription;
 
                 foreach (DiningTableViewModel m in diningTableEnumerable)
@@ -69,11 +69,11 @@ namespace Gordon360.Models.ViewModels
                 }
             }
 
-            
 
-            
 
-            
+
+
+
         }
     }
 }

@@ -40,20 +40,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="6.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.3" />
-    <PackageReference Include="Microsoft.Identity.Web" Version="1.23.0" />
-    <PackageReference Include="OpenIddict.AspNetCore" Version="3.0.5" />
-    <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="3.0.5" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="1.23.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-    <PackageReference Include="System.DirectoryServices" Version="6.0.0" />
-    <PackageReference Include="System.DirectoryServices.AccountManagement" Version="5.0.0" />
-    <PackageReference Include="CommonServiceLocator" Version="2.0.6" />
-    <PackageReference Include="Microsoft.Owin.Cors" Version="4.2.0" />
-    <PackageReference Include="WebActivatorEx" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.7" />
-    <PackageReference Include="Microsoft.Owin.Security.Jwt" Version="4.2.0" />
-    <PackageReference Include="Microsoft.Owin.Hosting" Version="4.2.0" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
@@ -61,9 +49,6 @@
     <None Include="Properties\PublishProfiles\PROD.pubxml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNet.Cors" Version="5.2.7" />
-    <PackageReference Include="Microsoft.AspNet.WebApi" Version="5.2.7" />
-    <PackageReference Include="Microsoft.Owin.Host.HttpListener" Version="4.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
   <ItemGroup>
