@@ -5,7 +5,7 @@ using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Gordon360.ApiControllers
+namespace Gordon360.Controllers
 {
     [Route("api/[controller]")]
     public class ContentManagementController : GordonControllerBase

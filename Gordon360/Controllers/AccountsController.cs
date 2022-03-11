@@ -12,7 +12,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 
-namespace Gordon360.ApiControllers
+namespace Gordon360.Controllers
 {
     [Route("api/[controller]")]
     public class AccountsController : GordonControllerBase

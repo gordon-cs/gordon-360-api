@@ -2,7 +2,7 @@
 using System.IO;
 using System.Reflection;
 
-namespace Gordon360.ApiControllers
+namespace Gordon360.Controllers
 {
     /// <summary>
     /// Get the short git SHA-1 and build date for the backend

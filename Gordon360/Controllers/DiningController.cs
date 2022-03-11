@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Gordon360.ApiControllers
+namespace Gordon360.Controllers
 {
     [Route("api/[controller]")]
     public class DiningController : GordonControllerBase

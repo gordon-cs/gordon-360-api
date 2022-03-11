@@ -4,7 +4,7 @@ using Gordon360.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using static Gordon360.ApiControllers.WellnessController;
+using static Gordon360.Controllers.WellnessController;
 
 // <summary>
 // Namespace with all the Service Interfaces that are to be implemented. I don't think making this interface is required, the services can work fine on their own.

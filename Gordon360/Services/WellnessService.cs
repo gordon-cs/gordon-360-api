@@ -4,7 +4,7 @@ using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
 using System;
 using System.Linq;
-using static Gordon360.ApiControllers.WellnessController;
+using static Gordon360.Controllers.WellnessController;
 
 namespace Gordon360.Services
 {

@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Security.Claims;
 
-namespace Gordon360.ApiControllers
+namespace Gordon360.Controllers
 {
     [Route("api/[controller]")]
     public class ScheduleControlController : GordonControllerBase

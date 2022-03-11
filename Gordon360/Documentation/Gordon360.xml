@@ -4,7 +4,7 @@
         <name>Gordon360</name>
     </assembly>
     <members>
-        <member name="M:Gordon360.ApiControllers.AccountsController.Search(System.String)">
+        <member name="M:Gordon360.Controllers.AccountsController.Search(System.String)">
             <summary>
             Return a list of accounts matching some or all of the search parameter
             </summary>
@@ -32,7 +32,7 @@
             <param name="searchString"> The input to search for </param>
             <returns> All accounts meeting some or all of the parameter</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.AccountsController.SearchWithSpace(System.String,System.String)">
+        <member name="M:Gordon360.Controllers.AccountsController.SearchWithSpace(System.String,System.String)">
             <summary>
             Return a list of accounts matching some or all of the search parameter
             We are searching through a concatonated string, containing several pieces of info about each user.
@@ -41,7 +41,7 @@
             <param name="secondaryString"> The second piece of the search terms </param>
             <returns> All accounts meeting some or all of the parameter</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.AccountsController.AdvancedPeopleSearch(System.Boolean,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+        <member name="M:Gordon360.Controllers.AccountsController.AdvancedPeopleSearch(System.Boolean,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
             <summary>
             Return a list of accounts matching some or all of the search parameters
             We are searching through all the info of a user, then narrowing it down to get only what we want
@@ -60,7 +60,7 @@
             <param name="buildingSearchParam"></param>     
             <returns> All accounts meeting some or all of the parameter</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.AccountsController.GenerateKey(System.String,System.String,System.String,System.Int32)">
+        <member name="M:Gordon360.Controllers.AccountsController.GenerateKey(System.String,System.String,System.String,System.Int32)">
              <Summary>
                This function generates a key for each account
              </Summary>
@@ -70,19 +70,19 @@
              <param name="precedence">Set where in the dictionary this key group will be ordered</param>
              <param name="userName">The User's Username</param>
         </member>
-        <member name="M:Gordon360.ApiControllers.ActivitiesController.GetActivitiesForSession(System.String)">
+        <member name="M:Gordon360.Controllers.ActivitiesController.GetActivitiesForSession(System.String)">
             <summary>Gets the activities taking place during a given session</summary>
             <param name="id">The session identifier</param>
             <returns>A list of all activities that are active during the given session determined by the id parameter</returns>
             <remarks>Queries the database to find which activities are active during the session desired</remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.ActivitiesController.GetActivityTypesForSession(System.String)">
+        <member name="M:Gordon360.Controllers.ActivitiesController.GetActivityTypesForSession(System.String)">
             <summary>Gets the different types of activities taking place during a given session</summary>
             <param name="id">The session identifier</param>
             <returns>A list of all the different types of activities that are active during the given session determined by the id parameter</returns>
             <remarks>Queries the database to find the distinct activities type of activities that are active during the session desired</remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.ActivitiesController.GetActivityStatus(System.String,System.String)">
+        <member name="M:Gordon360.Controllers.ActivitiesController.GetActivityStatus(System.String,System.String)">
             <summary>
             Get the status (open or closed) of an activity for a given session
             </summary>
@@ -90,13 +90,13 @@
             <param name="id"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.ActivitiesController.GetOpenActivities">
+        <member name="M:Gordon360.Controllers.ActivitiesController.GetOpenActivities">
             <summary>
             Get all the activities that have not yet been closed out for the current session
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.ActivitiesController.GetOpenActivities(System.Int32)">
+        <member name="M:Gordon360.Controllers.ActivitiesController.GetOpenActivities(System.Int32)">
             <summary>
             Get all the activities that have not yet been closed out for the current session for 
             which a given user is the group admin
@@ -104,13 +104,13 @@
             <param name="id">The id of the user who is group admin</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.ActivitiesController.GetClosedActivities">
+        <member name="M:Gordon360.Controllers.ActivitiesController.GetClosedActivities">
             <summary>
             Get all the activities that are already closed out for the current session
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.ActivitiesController.GetClosedActivities(System.Int32)">
+        <member name="M:Gordon360.Controllers.ActivitiesController.GetClosedActivities(System.Int32)">
             <summary>
             Get all the activities that are already closed out for the current session for
             which a given user is group admin
@@ -118,34 +118,34 @@
             <param name="id">The id of the user who is group admin</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.ActivitiesController.Put(System.String,Gordon360.Models.CCT.ACT_INFO)">
+        <member name="M:Gordon360.Controllers.ActivitiesController.Put(System.String,Gordon360.Models.CCT.ACT_INFO)">
             <summary>
             </summary>
             <param name="id"></param>
             <param name="activity"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.ActivitiesController.PostImage(System.String)">
+        <member name="M:Gordon360.Controllers.ActivitiesController.PostImage(System.String)">
             <summary>
             Set an image for the activity
             </summary>
             <param name="id">The activity Code</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.ActivitiesController.ResetImage(System.String)">
+        <member name="M:Gordon360.Controllers.ActivitiesController.ResetImage(System.String)">
             <summary>
             Reset the activity Image
             </summary>
             <param name="id">The activity code</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.ActivitiesController.TogglePrivacy(System.String,System.Boolean)">
+        <member name="M:Gordon360.Controllers.ActivitiesController.TogglePrivacy(System.String,System.Boolean)">
             <summary>Update an existing activity to be private or not</summary>
             <param name="id">The id of the activity</param>
             <param name = "p">the boolean value</param>
             <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.AdminsController.GetAll">
+        <member name="M:Gordon360.Controllers.AdminsController.GetAll">
             <summary>
             Get all admins
             </summary>
@@ -156,7 +156,7 @@
             Server makes call to the database and returns all admins
             </remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.AdminsController.GetByGordonId(System.String)">
+        <member name="M:Gordon360.Controllers.AdminsController.GetByGordonId(System.String)">
             <summary>
             Get a specific admin
             </summary>
@@ -167,157 +167,157 @@
             Server makes call to the database and returns the specific admin
             </remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.AdminsController.Post(Gordon360.Models.CCT.ADMIN)">
+        <member name="M:Gordon360.Controllers.AdminsController.Post(Gordon360.Models.CCT.ADMIN)">
             <summary>Create a new admin to be added to database</summary>
             <param name="admin">The admin item containing all required and relevant information</param>
             <returns></returns>
             <remarks>Posts a new admin to the server to be added into the database</remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.AdminsController.Delete(System.Int32)">
+        <member name="M:Gordon360.Controllers.AdminsController.Delete(System.Int32)">
             <summary>Delete an existing admin</summary>
             <param name="id">The identifier for the admin to be deleted</param>
             <remarks>Calls the server to make a call and remove the given admin from the database</remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetMajors">
+        <member name="M:Gordon360.Controllers.AdvancedSearchController.GetMajors">
             <summary>
             Return a list majors.
             </summary>
             <returns> All majors</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetMinors">
+        <member name="M:Gordon360.Controllers.AdvancedSearchController.GetMinors">
             <summary>
             Return a list minors.
             </summary>
             <returns> All minors</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetHalls">
+        <member name="M:Gordon360.Controllers.AdvancedSearchController.GetHalls">
             <summary>
             Return a list minors.
             </summary>
             <returns> All minors</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetStates">
+        <member name="M:Gordon360.Controllers.AdvancedSearchController.GetStates">
             <summary>
             Return a list states.
             </summary>
             <returns> All states</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetCountries">
+        <member name="M:Gordon360.Controllers.AdvancedSearchController.GetCountries">
             <summary>
             Return a list countries.
             </summary>
             <returns> All countries</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetDepartments">
+        <member name="M:Gordon360.Controllers.AdvancedSearchController.GetDepartments">
             <summary>
             Return a list departments.
             </summary>
             <returns> All departments</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.AdvancedSearchController.GetBuildings">
+        <member name="M:Gordon360.Controllers.AdvancedSearchController.GetBuildings">
             <summary>
             Return a list buildings.
             </summary>
             <returns> All buildings</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.ContentManagementController.GetSliderContent">
+        <member name="M:Gordon360.Controllers.ContentManagementController.GetSliderContent">
             <summary>Get all the slider content for the dashboard slider</summary>
             <returns>A list of all the slides for the slider</returns>
             <remarks>Queries the database for all entries in slider table</remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.DiningController.Get">
+        <member name="M:Gordon360.Controllers.DiningController.Get">
             <summary>
              Gets information about student's dining plan and balance
             </summary>
             <returns>A DiningInfo object</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.EventsController.GetAllEvents">
+        <member name="M:Gordon360.Controllers.EventsController.GetAllEvents">
             <summary>
             This makes use of our cached request to 25Live, which stores AllEvents
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.HousingController.CheckIfHousingAdmin">
+        <member name="M:Gordon360.Controllers.HousingController.CheckIfHousingAdmin">
             <summary>
             Check if the currently logged in user is authorized to view the housing admin page
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.HousingController.AddHousingAdmin(System.String)">
+        <member name="M:Gordon360.Controllers.HousingController.AddHousingAdmin(System.String)">
             <summary>
             Add a user to the admin whitelist
             </summary>
             <param name="id"> The id of the user to add </param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.HousingController.RemoveHousingAdmin(System.String)">
+        <member name="M:Gordon360.Controllers.HousingController.RemoveHousingAdmin(System.String)">
             <summary>
             Remove a user from the admin whitelist
             </summary>
             <param name="id"> The id of the user to remove </param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.HousingController.DeleteApplication(System.Int32)">
+        <member name="M:Gordon360.Controllers.HousingController.DeleteApplication(System.Int32)">
             <summary>
             Delete an application (and consequently all rows that reference it)
             </summary>
             <param name="applicationID"> The id of the application to remove </param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.HousingController.GetApartmentHalls">
+        <member name="M:Gordon360.Controllers.HousingController.GetApartmentHalls">
             <summary>
             Get a list of the apartment-style halls
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.HousingController.GetApplicationID">
+        <member name="M:Gordon360.Controllers.HousingController.GetApplicationID">
             <summary>
             Get apartment application ID number of currently logged in user if that user is on an existing application
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.HousingController.GetUserApplicationID(System.String)">
+        <member name="M:Gordon360.Controllers.HousingController.GetUserApplicationID(System.String)">
             <summary>
             Get apartment application ID number for a user if that user is on an existing application
             </summary>
             <param name="username">username of the profile info</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.HousingController.SaveApplication(Gordon360.Models.ViewModels.ApartmentApplicationViewModel)">
+        <member name="M:Gordon360.Controllers.HousingController.SaveApplication(Gordon360.Models.ViewModels.ApartmentApplicationViewModel)">
             <summary>
             save application
             </summary>
             <returns>Returns the application ID number if all the queries succeeded</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.HousingController.EditApplication(System.Int32,Gordon360.Models.ViewModels.ApartmentApplicationViewModel)">
+        <member name="M:Gordon360.Controllers.HousingController.EditApplication(System.Int32,Gordon360.Models.ViewModels.ApartmentApplicationViewModel)">
             <summary>
             update existing application (Differentiated by HttpPut instead of HttpPost)
             </summary>
             <returns>Returns the application ID number if all the queries succeeded</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.HousingController.ChangeEditor(System.Int32,Gordon360.Models.ViewModels.ApartmentApplicationViewModel)">
+        <member name="M:Gordon360.Controllers.HousingController.ChangeEditor(System.Int32,Gordon360.Models.ViewModels.ApartmentApplicationViewModel)">
             <summary>
             change the editor (i.e. primary applicant) of the application
             </summary>
             <returns>The result of changing the editor</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.HousingController.ChangeApplicationDateSubmitted(System.Int32)">
+        <member name="M:Gordon360.Controllers.HousingController.ChangeApplicationDateSubmitted(System.Int32)">
             <summary>
             change the date an application was submitted
             (changes it from null the first time they submit)
             </summary>
             <returns>The result of changing the date submitted</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.HousingController.GetApartmentApplication(System.Int32)">
+        <member name="M:Gordon360.Controllers.HousingController.GetApartmentApplication(System.Int32)">
             <summary>Get apartment application info for a given application ID number</summary>
             <param name="applicationID">application ID number of the apartment application</param>
             <returns>Object of type ApartmentAppViewModel</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.HousingController.GetAllApartmentApplication">
+        <member name="M:Gordon360.Controllers.HousingController.GetAllApartmentApplication">
             <summary>Get apartment application info for all applications if the current user is a housing admin</summary>
             <returns>Object of type ApartmentApplicationViewModel</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.GetJobs(System.DateTime,System.DateTime)">
+        <member name="M:Gordon360.Controllers.JobsController.GetJobs(System.DateTime,System.DateTime)">
             <summary>
             Get a user's active jobs
             </summary>
@@ -325,51 +325,51 @@
             <param name="shiftEnd">The datetime that the shift ended</param>
             <returns>The user's active jobs</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.DEPRECATED_getJobsForUser(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
+        <member name="M:Gordon360.Controllers.JobsController.DEPRECATED_getJobsForUser(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
             <summary>
             Get a user's active jobs
             </summary>
             <param name="details"></param>
             <returns>The user's active jobs</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.getSavedShiftsForUser">
+        <member name="M:Gordon360.Controllers.JobsController.getSavedShiftsForUser">
             <summary>
             Get a user's saved shifts
             </summary>
             <returns>The user's saved shifts</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.saveShiftForUser(Gordon360.Models.ViewModels.ShiftViewModel)">
+        <member name="M:Gordon360.Controllers.JobsController.saveShiftForUser(Gordon360.Models.ViewModels.ShiftViewModel)">
             <summary>
             Get a user's active jobs
             </summary>
             <param name="shiftDetails"></param>
             <returns>The result of saving a shift</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.editShiftForUser(Gordon360.Models.ViewModels.ShiftViewModel)">
+        <member name="M:Gordon360.Controllers.JobsController.editShiftForUser(Gordon360.Models.ViewModels.ShiftViewModel)">
             <summary>
             Edit a shift
             <param name="shiftDetails">The details that will be changed</param>
             </summary>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.deleteShiftForUser(System.Int32)">
+        <member name="M:Gordon360.Controllers.JobsController.deleteShiftForUser(System.Int32)">
             <summary>
             Get a user's active jobs
             </summary>
             <returns>The result of deleting the shift</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.submitShiftsForUser(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.ShiftToSubmitViewModel})">
+        <member name="M:Gordon360.Controllers.JobsController.submitShiftsForUser(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.ShiftToSubmitViewModel})">
             <summary>
             Submit shifts
             </summary>
             <returns>The result of submitting the shifts</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.getSupervisorName(System.Int32)">
+        <member name="M:Gordon360.Controllers.JobsController.getSupervisorName(System.Int32)">
             <summary>
             Gets the name of a supervisor based on their ID number
             </summary>
             <returns>The name of the supervisor</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.ClockIn(System.Boolean)">
+        <member name="M:Gordon360.Controllers.JobsController.ClockIn(System.Boolean)">
             <summary>
              sends the current clock in status to the back end
              true if user is clocked in and false if clocked out
@@ -377,89 +377,89 @@
             <param name="state">detail to be saved in the back end, true if user just clocked in</param>
             <returns>returns confirmation that the answer was recorded </returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.ClockOut">
+        <member name="M:Gordon360.Controllers.JobsController.ClockOut">
             <summary>
              gets the the clock in status from the back end
              true if user is clocked in and false if clocked out
             </summary>
             <returns>ClockInViewModel</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.DeleteClockIn">
+        <member name="M:Gordon360.Controllers.JobsController.DeleteClockIn">
             <summary>
             deletes the last clocked in status of a user
             </summary>
             <returns>returns confirmation that clock in status was deleted</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.CanUsePage">
+        <member name="M:Gordon360.Controllers.JobsController.CanUsePage">
             <summary>
              gets the response as to whether the user can use staff timesheets
              returns true if the staff member has at least one qualifying active job as hourly staff
             </summary>
             <returns>Boolean</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.getJobsForStaff(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
+        <member name="M:Gordon360.Controllers.JobsController.getJobsForStaff(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
             <summary>
             Get a user's active jobs
             </summary>
             <param name="details"> deatils of the current Staff</param>
             <returns>The Staff's active jobs</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.getSavedShiftsForStaff">
+        <member name="M:Gordon360.Controllers.JobsController.getSavedShiftsForStaff">
             <summary>
             Get a user's saved shifts
             </summary>
             <returns>The staff's saved shifts</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.saveShiftForStaff(Gordon360.Models.ViewModels.ShiftViewModel)">
+        <member name="M:Gordon360.Controllers.JobsController.saveShiftForStaff(Gordon360.Models.ViewModels.ShiftViewModel)">
             <summary>
             Get a user's active jobs
             </summary>
             <param name="shiftDetails">The details that will be changed</param>
             <returns>The result of saving a shift for a staff</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.editShiftForStaff(Gordon360.Models.ViewModels.ShiftViewModel)">
+        <member name="M:Gordon360.Controllers.JobsController.editShiftForStaff(Gordon360.Models.ViewModels.ShiftViewModel)">
             <summary>
             Edit a shift for staff
             <param name="shiftDetails">The details that will be changed</param>
             </summary>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.deleteShiftForStaff(System.Int32)">
+        <member name="M:Gordon360.Controllers.JobsController.deleteShiftForStaff(System.Int32)">
             <summary>
             Delete a user's active job
             </summary>
             <returns>The result of deleting the shift for a Staff</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.submitShiftsForStaff(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.ShiftToSubmitViewModel})">
+        <member name="M:Gordon360.Controllers.JobsController.submitShiftsForStaff(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.ShiftToSubmitViewModel})">
             <summary>
             Submit shift for staff
             </summary>
             <returns>The result of submitting the shifts for staff</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.getSupervisorNameStaff(System.Int32)">
+        <member name="M:Gordon360.Controllers.JobsController.getSupervisorNameStaff(System.Int32)">
             <summary>
             Gets the name of a supervisor based on their ID number for Staff
             </summary>
             <returns>The name of the supervisor</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.JobsController.getHourTypes">
+        <member name="M:Gordon360.Controllers.JobsController.getHourTypes">
             <summary>
             Gets the hour types for Staff
             </summary>
             <returns>The hour types for staff</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.LogController.Post(System.String)">
+        <member name="M:Gordon360.Controllers.LogController.Post(System.String)">
             <summary>Create a new error log item to be added to database</summary>
             <param name="error_message">The error message containing all required and relevant information</param>
             <returns></returns>
             <remarks>Posts a new message to the service to be added into the database</remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.LogController.Post(Gordon360.Models.CCT.ERROR_LOG)">
+        <member name="M:Gordon360.Controllers.LogController.Post(Gordon360.Models.CCT.ERROR_LOG)">
             <summary>Create a new error log item to be added to database</summary>
             <param name="error_log">The error log containing the ERROR_TIME, and the LOG_MESSAGE</param>
             <returns></returns>
             <remarks>Posts a new error_log to the server to be added into the database. Useful if you want to input the datetime in the front end for greater accuracy</remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.MembershipsController.Get">
+        <member name="M:Gordon360.Controllers.MembershipsController.Get">
             <summary>
             Get all memberships
             </summary>
@@ -470,49 +470,49 @@
             Server makes call to the database and returns all current memberships
             </remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.MembershipsController.GetMembershipsForActivity(System.String)">
+        <member name="M:Gordon360.Controllers.MembershipsController.GetMembershipsForActivity(System.String)">
             <summary>
             Get all the memberships associated with a given activity
             </summary>
             <param name="id">The activity ID</param>
             <returns>IHttpActionResult</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.MembershipsController.GetGroupAdminForActivity(System.String)">
+        <member name="M:Gordon360.Controllers.MembershipsController.GetGroupAdminForActivity(System.String)">
             <summary>
             Gets the group admin memberships associated with a given activity.
             </summary>
             <param name="id">The activity ID.</param>
             <returns>A list of all leader-type memberships for the specified activity.</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.MembershipsController.GetLeadersForActivity(System.String)">
+        <member name="M:Gordon360.Controllers.MembershipsController.GetLeadersForActivity(System.String)">
             <summary>
             Gets the leader-type memberships associated with a given activity.
             </summary>
             <param name="id">The activity ID.</param>
             <returns>A list of all leader-type memberships for the specified activity.</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.MembershipsController.GetAdvisorsForActivity(System.String)">
+        <member name="M:Gordon360.Controllers.MembershipsController.GetAdvisorsForActivity(System.String)">
             <summary>
             Gets the advisor-type memberships associated with a given activity.
             </summary>
             <param name="id">The activity ID.</param>
             <returns>A list of all advisor-type memberships for the specified activity.</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.MembershipsController.GetActivityFollowersCount(System.String)">
+        <member name="M:Gordon360.Controllers.MembershipsController.GetActivityFollowersCount(System.String)">
             <summary>
             Gets the number of followers of an activity
             </summary>
             <param name="id">The activity ID.</param>
             <returns>The number of followers of the activity</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.MembershipsController.GetActivityMembersCount(System.String)">
+        <member name="M:Gordon360.Controllers.MembershipsController.GetActivityMembersCount(System.String)">
             <summary>
             Gets the number of members (besides followers) of an activity
             </summary>
             <param name="id">The activity ID.</param>
             <returns>The number of members of the activity</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.MembershipsController.GetActivityFollowersCountForSession(System.String,System.String)">
+        <member name="M:Gordon360.Controllers.MembershipsController.GetActivityFollowersCountForSession(System.String,System.String)">
             <summary>
             Gets the number of followers of an activity
             </summary>
@@ -520,7 +520,7 @@
             <param name="sess_cde">The session code</param>
             <returns>The number of followers of the activity</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.MembershipsController.GetActivityMembersCountForSession(System.String,System.String)">
+        <member name="M:Gordon360.Controllers.MembershipsController.GetActivityMembersCountForSession(System.String,System.String)">
             <summary>
             Gets the number of members (excluding followers) of an activity
             </summary>
@@ -528,18 +528,18 @@
             <param name="sess_cde">The session code</param>
             <returns>The number of members of the activity</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.MembershipsController.Post(Gordon360.Models.CCT.MEMBERSHIP)">
+        <member name="M:Gordon360.Controllers.MembershipsController.Post(Gordon360.Models.CCT.MEMBERSHIP)">
             <summary>Create a new membership item to be added to database</summary>
             <param name="membership">The membership item containing all required and relevant information</param>
             <returns></returns>
             <remarks>Posts a new membership to the server to be added into the database</remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.MembershipsController.GetMembershipsForStudent(System.String)">
+        <member name="M:Gordon360.Controllers.MembershipsController.GetMembershipsForStudent(System.String)">
             <summary>Fetch memberships that a specific student has been a part of</summary>
             <param name="id">The Student id</param>
             <returns>The membership information that the student is a part of</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.MembershipsController.GetMembershipsForStudentByUsename(System.String)">
+        <member name="M:Gordon360.Controllers.MembershipsController.GetMembershipsForStudentByUsename(System.String)">
             <summary>
             Fetch memberships that a specific student has been a part of
             @TODO: Move security checks to state your business? Or consider changing implementation here
@@ -547,104 +547,104 @@
             <param name="username">The Student Username</param>
             <returns>The membership information that the student is a part of</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.MembershipsController.Put(System.Int32,Gordon360.Models.CCT.MEMBERSHIP)">
+        <member name="M:Gordon360.Controllers.MembershipsController.Put(System.Int32,Gordon360.Models.CCT.MEMBERSHIP)">
             <summary>Update an existing membership item</summary>
             <param name="id">The membership id of whichever one is to be changed</param>
             <param name="membership">The content within the membership that is to be changed and what it will change to</param>
             <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.MembershipsController.ToggleGroupAdmin(Gordon360.Models.CCT.MEMBERSHIP)">
+        <member name="M:Gordon360.Controllers.MembershipsController.ToggleGroupAdmin(Gordon360.Models.CCT.MEMBERSHIP)">
             <summary>Update an existing membership item to be a group admin or not</summary>
              /// <param name="membership">The content within the membership that is to be changed</param>
             <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.MembershipsController.TogglePrivacy(System.Int32,System.Boolean)">
+        <member name="M:Gordon360.Controllers.MembershipsController.TogglePrivacy(System.Int32,System.Boolean)">
             <summary>Update an existing membership item to be private or not</summary>
             <param name="id">The id of the membership</param>
             <param name = "p">the boolean value</param>
             <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.MembershipsController.Delete(System.Int32)">
+        <member name="M:Gordon360.Controllers.MembershipsController.Delete(System.Int32)">
             <summary>Delete an existing membership</summary>
             <param name="id">The identifier for the membership to be deleted</param>
             <remarks>Calls the server to make a call and remove the given membership from the database</remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.MembershipsController.IsGroupAdmin(System.Int32)">
+        <member name="M:Gordon360.Controllers.MembershipsController.IsGroupAdmin(System.Int32)">
             <summary>	
             Determines whether or not the given student is a Group Admin of some activity	
             </summary>
             <param name="id">The student id</param>
         </member>
-        <member name="M:Gordon360.ApiControllers.MyScheduleController.Get">
+        <member name="M:Gordon360.Controllers.MyScheduleController.Get">
             <summary>
              Gets all custom events for a user
             </summary>
             <returns>A IEnumerable of custom events</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.MyScheduleController.GetByEventId(System.String)">
+        <member name="M:Gordon360.Controllers.MyScheduleController.GetByEventId(System.String)">
             <summary>
              Gets specific custom event for a user
             </summary>
             <returns>The requested custom event</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.MyScheduleController.Get(System.String)">
+        <member name="M:Gordon360.Controllers.MyScheduleController.Get(System.String)">
             <summary>
              Gets all myschedule objects for a user
             </summary>
             <returns>A IEnumerable of myschedule objects</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.MyScheduleController.Post(Gordon360.Models.CCT.MYSCHEDULE)">
+        <member name="M:Gordon360.Controllers.MyScheduleController.Post(Gordon360.Models.CCT.MYSCHEDULE)">
             <summary>Create a new myschedule to be added to database</summary>
             <param name="mySchedule">The myschedule item containing all required and relevant information</param>
             <returns>Created schedule</returns>
             <remarks>Posts a new myschedule to the server to be added into the database</remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.MyScheduleController.Delete(System.String)">
+        <member name="M:Gordon360.Controllers.MyScheduleController.Delete(System.String)">
             <summary>Delete an existing myschedule item</summary>
             <param name="event_id">The identifier for the myschedule to be deleted</param>
             <remarks>Calls the server to make a call and remove the given myschedule from the database</remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.MyScheduleController.Put(Gordon360.Models.CCT.MYSCHEDULE)">
+        <member name="M:Gordon360.Controllers.MyScheduleController.Put(Gordon360.Models.CCT.MYSCHEDULE)">
             <summary>Update the existing myschedule in database</summary>
             <param name="mySchedule">The updated myschedule item containing all required and relevant information</param>
             <returns>Original schedule</returns>
             <remarks>Put a myschedule to the server to be updated</remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.NewsController.GetByID(System.Int32)">
+        <member name="M:Gordon360.Controllers.NewsController.GetByID(System.Int32)">
             <summary>Gets a news item by id from the database</summary>
             <param name="newsID">The id of the news item to retrieve</param>
             <returns>The news item</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.NewsController.GetNotExpired">
+        <member name="M:Gordon360.Controllers.NewsController.GetNotExpired">
             Call the service that gets all approved student news entries not yet expired, filtering
             out the expired by comparing 2 weeks past date entered to current date
         </member>
-        <member name="M:Gordon360.ApiControllers.NewsController.GetNew">
+        <member name="M:Gordon360.Controllers.NewsController.GetNew">
             Call the service that gets all new and approved student news entries
             which have not already expired,
             checking novelty by comparing an entry's date entered to 10am on the previous day
         </member>
-        <member name="M:Gordon360.ApiControllers.NewsController.GetCategories">
+        <member name="M:Gordon360.Controllers.NewsController.GetCategories">
             Call the service that gets the list of categories
         </member>
-        <member name="M:Gordon360.ApiControllers.NewsController.GetNewsPersonalUnapproved">
+        <member name="M:Gordon360.Controllers.NewsController.GetNewsPersonalUnapproved">
             Call the service that gets all unapproved student news entries (by a particular user)
             not yet expired, filtering out the expired news
             @TODO: Remove redundant username/id from this and service
             @TODO: fix documentation comments
         </member>
-        <member name="M:Gordon360.ApiControllers.NewsController.Post(Gordon360.Models.MyGordon.StudentNews)">
+        <member name="M:Gordon360.Controllers.NewsController.Post(Gordon360.Models.MyGordon.StudentNews)">
             Create a new news item to be added to the database
             @TODO: Remove redundant username/id from this and service
             @TODO: fix documentation comments
         </member>
-        <member name="M:Gordon360.ApiControllers.NewsController.Delete(System.Int32)">
+        <member name="M:Gordon360.Controllers.NewsController.Delete(System.Int32)">
             <summary>Deletes a news item from the database</summary>
             <param name="newsID">The id of the news item to delete</param>
             <returns>The deleted news item</returns>
             <remarks>The news item must be authored by the user and must not be expired</remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.NewsController.EditPosting(System.Int32,Gordon360.Models.MyGordon.StudentNews)">
+        <member name="M:Gordon360.Controllers.NewsController.EditPosting(System.Int32,Gordon360.Models.MyGordon.StudentNews)">
             <summary>
             (Controller) Edits a news item in the database
             </summary>
@@ -653,28 +653,28 @@
             <returns>The updated news item</returns>
             <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.ProfilesController.Get">
+        <member name="M:Gordon360.Controllers.ProfilesController.Get">
             <summary>Get profile info of currently logged in user</summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.ProfilesController.GetUserProfile(System.String)">
+        <member name="M:Gordon360.Controllers.ProfilesController.GetUserProfile(System.String)">
             <summary>Get public profile info for a user</summary>
             <param name="username">username of the profile info</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.ProfilesController.GetAdvisors(System.String)">
+        <member name="M:Gordon360.Controllers.ProfilesController.GetAdvisors(System.String)">
             <summary>Get the advisor(s) of a particular student</summary>
              <returns>
              All advisors of the given student.  For each advisor,
              provides first name, last name, and username.
              </returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.ProfilesController.GetCliftonStrengths(System.String)">
+        <member name="M:Gordon360.Controllers.ProfilesController.GetCliftonStrengths(System.String)">
             <summary> Gets the clifton strengths of a particular user </summary>
             <param name="username"> The username for which to retrieve info </param>
             <returns> Clifton strengths of the given user. </returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.ProfilesController.UpdateLink(System.String,Gordon360.Models.CCT.CUSTOM_PROFILE)">
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdateLink(System.String,Gordon360.Models.CCT.CUSTOM_PROFILE)">
             <summary>
             Update the profile social media links
             </summary>
@@ -682,54 +682,54 @@
             <param name="path">The path of the links</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.ProfilesController.UpdateMobilePrivacy(System.String)">
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdateMobilePrivacy(System.String)">
             <summary>
             Update privacy of mobile phone number
             </summary>
             <param name="value">Y or N</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.ProfilesController.UpdateImagePrivacy(System.String)">
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdateImagePrivacy(System.String)">
             <summary>
             Update privacy of profile image
             </summary>
             <param name="value">Y or N</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.RequestsController.Get">
+        <member name="M:Gordon360.Controllers.RequestsController.Get">
             <summary>
             Gets all Membership Request Objects
             </summary>
             <returns>List of all requests for membership</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.RequestsController.Get(System.Int32)">
+        <member name="M:Gordon360.Controllers.RequestsController.Get(System.Int32)">
             <summary>
              Gets a specific Membership Request Object
             </summary>
             <param name="id">The ID of the membership request</param>
             <returns>A memberships request with the specified id</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.RequestsController.GetMembershipsRequestsForActivity(System.String)">
+        <member name="M:Gordon360.Controllers.RequestsController.GetMembershipsRequestsForActivity(System.String)">
             <summary>
             Gets the memberships requests for the specified activity
             </summary>
             <param name="id">The activity code</param>
             <returns>All membership requests associated with the activity</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.RequestsController.GetMembershipsRequestsForStudent">
+        <member name="M:Gordon360.Controllers.RequestsController.GetMembershipsRequestsForStudent">
             <summary>
             Gets the memberships requests for the person making the request
             </summary>
             <returns>All membership requests associated with the student</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.RequestsController.Post(Gordon360.Models.CCT.REQUEST)">
+        <member name="M:Gordon360.Controllers.RequestsController.Post(Gordon360.Models.CCT.REQUEST)">
             <summary>
             Creates a new membership request
             </summary>
             <param name="membershipRequest">The request to be added</param>
             <returns>The added request if successful. HTTP error message if not.</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.RequestsController.Put(System.Int32,Gordon360.Models.CCT.REQUEST)">
+        <member name="M:Gordon360.Controllers.RequestsController.Put(System.Int32,Gordon360.Models.CCT.REQUEST)">
             <summary>
             Updates a membership request
             </summary>
@@ -737,67 +737,67 @@
             <param name="membershipRequest">The updated membership request object</param>
             <returns>The updated request if successful. HTTP error message if not.</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.RequestsController.ApproveRequest(System.Int32)">
+        <member name="M:Gordon360.Controllers.RequestsController.ApproveRequest(System.Int32)">
             <summary>
             Sets a membership request to Approved
             </summary>
             <param name="id">The id of the membership request in question.</param>
             <returns>If successful: THe updated membership request wrapped in an OK Http status code.</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.RequestsController.DenyRequest(System.Int32)">
+        <member name="M:Gordon360.Controllers.RequestsController.DenyRequest(System.Int32)">
             <summary>
             Sets the membership request to Denied
             </summary>
             <param name="id">The id of the membership request in question.</param>
             <returns>If successful: The updated membership request wrapped in an OK Http status code.</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.RequestsController.Delete(System.Int32)">
+        <member name="M:Gordon360.Controllers.RequestsController.Delete(System.Int32)">
             <summary>
             Deletes a membership request
             </summary>
             <param name="id">The id of the membership request to delete</param>
             <returns>The deleted object</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.SaveController.GetUpcomingRides">
+        <member name="M:Gordon360.Controllers.SaveController.GetUpcomingRides">
             <summary>
              Gets all upcoming ride objects
             </summary>
             <returns>A IEnumerable of rides objects</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.SaveController.GetUpcomingRidesForUser">
+        <member name="M:Gordon360.Controllers.SaveController.GetUpcomingRidesForUser">
             <summary>
              Gets all upcoming ride objects for a user
             </summary>
             <returns>A IEnumerable of rides objects</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.SaveController.PostRide(Gordon360.Models.CCT.Save_Rides)">
+        <member name="M:Gordon360.Controllers.SaveController.PostRide(Gordon360.Models.CCT.Save_Rides)">
             <summary>
              Create new ride object for a user
             </summary>
             <returns>Successfully posted ride object</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.SaveController.CancelRide(System.String)">
+        <member name="M:Gordon360.Controllers.SaveController.CancelRide(System.String)">
             <summary>Cancel an existing ride item</summary>
             <param name="rideID">The identifier for the ride to be cancel</param>
             <remarks>Calls the server to make a call and remove the given ride from the database</remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.SaveController.DeleteRide(System.String)">
+        <member name="M:Gordon360.Controllers.SaveController.DeleteRide(System.String)">
             <summary>Delete an existing ride item</summary>
             <param name="rideID">The identifier for the ride to be deleted</param>
             <remarks>Calls the server to make a call and remove the given ride from the database</remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.SaveController.PostBooking(Gordon360.Models.CCT.Save_Bookings)">
+        <member name="M:Gordon360.Controllers.SaveController.PostBooking(Gordon360.Models.CCT.Save_Bookings)">
             <summary>
              Create new booking object for a user
             </summary>
             <returns>Successfully posted booking object</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.SaveController.DeleteBooking(System.String)">
+        <member name="M:Gordon360.Controllers.SaveController.DeleteBooking(System.String)">
             <summary>Delete an existing booking item</summary>
             <param name="rideID">The identifier for the booking to be deleted</param>
             <remarks>Calls the server to make a call and remove the given booking from the database</remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.ScheduleControlController.Get">
+        <member name="M:Gordon360.Controllers.ScheduleControlController.Get">
             <summary>
             Get schedule information of logged in user
             Info one gets: privacy, time last updated, description, and Gordon ID
@@ -805,7 +805,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.ScheduleControlController.Get(System.String)">
+        <member name="M:Gordon360.Controllers.ScheduleControlController.Get(System.String)">
             <summary>
             Get schedule information of specific user
             Info one gets: privacy, time last updated, description, and Gordon ID
@@ -814,75 +814,75 @@
             <param name="username">username</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.ScheduleControlController.UpdateSchedulePrivacy(System.String)">
+        <member name="M:Gordon360.Controllers.ScheduleControlController.UpdateSchedulePrivacy(System.String)">
             <summary>
             Update privacy of schedule
             </summary>
             <param name="value">Y or N</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.ScheduleControlController.UpdateDescription(System.String)">
+        <member name="M:Gordon360.Controllers.ScheduleControlController.UpdateDescription(System.String)">
             <summary>
             Update schedule description
             </summary>
             <param name="value">New description</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.ScheduleController.Get">
+        <member name="M:Gordon360.Controllers.ScheduleController.Get">
             <summary>
              Gets all schedule objects for a user
             </summary>
             <returns>A IEnumerable of schedule objects</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.ScheduleController.Get(System.String)">
+        <member name="M:Gordon360.Controllers.ScheduleController.Get(System.String)">
             <summary>
              Gets all schedule objects for a user
             </summary>
             <returns>A IEnumerable of schedule objects</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.SessionsController.Get">
+        <member name="M:Gordon360.Controllers.SessionsController.Get">
             <summary>Get a list of all sessions</summary>
             <returns>All sessions within the database</returns>
             <remarks>Queries the database for all sessions, current and past</remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.SessionsController.Get(System.String)">
+        <member name="M:Gordon360.Controllers.SessionsController.Get(System.String)">
             <summary>Get one specific session specified by the id in the URL string</summary>
             <param name="id">The identifier for one specific session</param>
             <returns>The information about one specific session</returns>
             <remarks>Queries the database regarding a specific session with the given identifier</remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.SessionsController.GetCurrentSession">
+        <member name="M:Gordon360.Controllers.SessionsController.GetCurrentSession">
             <summary>
             Gets the current active session
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.SessionsController.GetDaysLeftinSemester">
+        <member name="M:Gordon360.Controllers.SessionsController.GetDaysLeftinSemester">
             <summary>
             Gets the days left in the current semester
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.StudentEmploymentController.Get">
+        <member name="M:Gordon360.Controllers.StudentEmploymentController.Get">
             <summary>
              Gets student employment information about the user
             </summary>
             <returns>A Student Employment Json</returns>
         </member>
-        <member name="T:Gordon360.ApiControllers.VersionController">
+        <member name="T:Gordon360.Controllers.VersionController">
             <summary>
             Get the short git SHA-1 and build date for the backend
             </summary>
             <returns>"Git Hash: {hashCode}; Build Time: {date and time}"</returns>
             <remarks></remarks>
         </member>
-        <member name="M:Gordon360.ApiControllers.VictoryPromiseController.Get">
+        <member name="M:Gordon360.Controllers.VictoryPromiseController.Get">
             <summary>
              Gets current victory promise scores
             </summary>
             <returns>A VP Json</returns>
         </member>
-        <member name="T:Gordon360.ApiControllers.WellnessController.WellnessStatusColor">
+        <member name="T:Gordon360.Controllers.WellnessController.WellnessStatusColor">
             <summary>
             Enum representing three possible wellness statuses.
             GREEN - Healthy, no known contact/symptoms
@@ -890,19 +890,19 @@
             RED - Quarantine/Isolation
             </summary>
         </member>
-        <member name="M:Gordon360.ApiControllers.WellnessController.Get">
+        <member name="M:Gordon360.Controllers.WellnessController.Get">
             <summary>
              Gets wellness status of current user
             </summary>
             <returns>A WellnessViewModel representing the most recent status of the user</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.WellnessController.GetQuestion">
+        <member name="M:Gordon360.Controllers.WellnessController.GetQuestion">
             <summary>
              Gets question for wellness check from the back end
             </summary>
             <returns>A WellnessQuestionViewModel</returns>
         </member>
-        <member name="M:Gordon360.ApiControllers.WellnessController.Post(Gordon360.ApiControllers.WellnessController.WellnessStatusColor)">
+        <member name="M:Gordon360.Controllers.WellnessController.Post(Gordon360.Controllers.WellnessController.WellnessStatusColor)">
             <summary>
              Stores the user's wellness status
              @TODO: Return view model rather than Health_Status model directly
@@ -1944,7 +1944,7 @@
             <param name="id">ID of the user to get the status of</param>
             <returns> The status of the user, a WellnessViewModel </returns>
         </member>
-        <member name="M:Gordon360.Services.WellnessService.PostStatus(Gordon360.ApiControllers.WellnessController.WellnessStatusColor,System.String)">
+        <member name="M:Gordon360.Services.WellnessService.PostStatus(Gordon360.Controllers.WellnessController.WellnessStatusColor,System.String)">
             <summary>
             Stores wellness Status in database.
             </summary>

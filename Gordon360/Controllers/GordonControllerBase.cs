@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Gordon360.ApiControllers
+namespace Gordon360.Controllers
 {
     /* Set standard, opinionated controller behavior for all our controllers
      * With the ApiController Attribute, we enforce
