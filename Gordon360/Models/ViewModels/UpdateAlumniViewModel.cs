@@ -8,6 +8,8 @@ namespace Gordon360.Models.ViewModels
 {
     public class UpdateAlumniViewModel
     {
+        public string Content { get; set; }
+        /*
         public string SALUTATION { get; set; }
         public string FIRST_NAME { get; set; }
         public string LAST_NAME { get; set; }
@@ -29,5 +31,6 @@ namespace Gordon360.Models.ViewModels
         public string MAILING_ZIP { get; set; }
         public string MAILING_COUNTRY { get; set; }
         public string MARITAL_STATUS { get; set; }
+        */
     }
 }

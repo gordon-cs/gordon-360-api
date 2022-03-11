@@ -211,7 +211,7 @@ namespace Gordon360.Services
 
     public interface IUpdateService
     {
-        void SendUpdateRequest(string to_email, string from_email, string subject, string email_content, string password);
+        void SendUpdateRequest(int userID, string email_content);
         /*
         IEnumerable<UpdateAlumniViewModel> updateInfo(
         int userID,

@@ -34,14 +34,17 @@ namespace Gordon360.Services
             _unitOfWork = unitOfWork;
         }
         
-        public void SendUpdateRequest(string to_email, string from_email, string subject, string email_content, string password)
+        public void SendUpdateRequest(int userID, string email_content)
         {
             using (var smtp = new SmtpClient())
             {
+                string to_email = "EMAIL";
+                string from_email = "EMAIL";
+                string subject = String.Format("UPDATE REQUEST: Alumni {0}", userID);
                 var credential = new NetworkCredential
                 {
                     UserName = from_email,
-                    Password = password
+                    Password = "PASSWORD"
                 };
                 smtp.Credentials = credential;
                 smtp.Host = "smtp.office365.com";
