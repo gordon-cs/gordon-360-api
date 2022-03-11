@@ -11,6 +11,8 @@ using System.Data;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Static.Methods;
 using System.Diagnostics;
+using System.Net.Mail;
+using System.Net;
 
 namespace Gordon360.Services
 {
@@ -26,11 +28,61 @@ namespace Gordon360.Services
     public class UpdateService : IUpdateService
     {
         private IUnitOfWork _unitOfWork;
+
         public UpdateService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
-        public IEnumerable<UpdateAlumniViewModel> updateInfo(int rowID, string email, string homePhone, string mobilePhone, string address1, string address2, string city, string state)
+        
+        public void SendUpdateRequest(string to_email, string from_email, string subject, string email_content, string password)
+        {
+            using (var smtp = new SmtpClient())
+            {
+                var credential = new NetworkCredential
+                {
+                    UserName = from_email,
+                    Password = password
+                };
+                smtp.Credentials = credential;
+                smtp.Host = "smtp.office365.com";
+                smtp.Port = 587;
+                smtp.EnableSsl = true;
+                var message = new MailMessage();
+                message.From = new MailAddress(from_email);
+                message.Bcc.Add(new MailAddress(from_email));
+                message.To.Add(new MailAddress(to_email));
+                message.Subject = subject;
+                message.Body = email_content;
+                message.IsBodyHtml = true;
+
+                smtp.Send(message);
+            }
+        }
+        /*
+        public IEnumerable<UpdateAlumniViewModel> updateInfo(
+        int userID, 
+        string userSalutation, 
+        string userFirstName,
+        string userLastName, 
+        string userMiddleName, 
+        string userPreferredName,
+        string userPersonalEmail,
+        string userWorkEmail,
+        string userAlternateEmail,
+        string userPreferredEmail,
+        string userDoNotContact,
+        string userDoNotMail,
+        string userHomePhone,
+        string userWorkPhone,
+        string userMobilePhone,
+        string userPreferredPhone,
+        string userMailingStreet,
+        string userMailingCity,
+        string userMailingState,
+        string userMailingZip,
+        string userMailingCountry,
+        string userMaritalStatus
+        )
         {
             IEnumerable<UpdateAlumniViewModel> result = null;
 
@@ -45,8 +97,7 @@ namespace Gordon360.Services
 
             try
             {
-                Debug.WriteLine("ID Num: {}   Email: {}   Home Phone: {}   Mobile Phone: {}    Address 1: {}   Address 2: {}   City: {}   State: {}", rowID, email, homePhone, mobilePhone, address1, address2, city, state);
-                // result = RawSqlQuery<UpdateAlumniViewModel>.query("UPDATE student_info SET STATUS = 'Saved', EMAIL = @newEmail, HOME_PHONE = @newHomePhone , MOBILE_PHONE = @newMobilePhone, ADDRESS_1 = @newAddress1, ADDRESS_2 = @newAddress2, CITY = @newCity, STATE = @newState);
+                result = <UpdateAlumniViewModel>.query("UPDATE student_info SET STATUS = 'Saved', EMAIL = @newEmail, HOME_PHONE = @newHomePhone , MOBILE_PHONE = @newMobilePhone, ADDRESS_1 = @newAddress1, ADDRESS_2 = @newAddress2, CITY = @newCity, STATE = @newState);
             }
             catch (Exception e)
             {
@@ -55,5 +106,6 @@ namespace Gordon360.Services
 
             return result;
         }
+        */
     }
 }

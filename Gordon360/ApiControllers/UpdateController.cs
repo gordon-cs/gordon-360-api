@@ -16,7 +16,6 @@ using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
 using Gordon360.Exceptions.CustomExceptions;
 
-
 namespace Gordon360.ApiControllers
 {
     [Authorize]
@@ -47,6 +46,29 @@ namespace Gordon360.ApiControllers
         }
 
         [HttpPost]
+        [Route("updateRequest")]
+        public IHttpActionResult SendUpdateRequest([FromBody] EmailContentViewModel email)
+        {
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+            System.Diagnostics.Debug.WriteLine("Test");
+            _updateservice.SendUpdateRequest(email.ToAddress, email.FromAddress, email.Subject, email.Content, email.Password);
+            return Ok();
+        }
+
+        /*
+        [HttpPost]
         [Route("updateRequest/")]
         public HttpResponseMessage updateUserInfo([FromBody] UpdateAlumniViewModel alumniInfo)
         {
@@ -55,8 +77,20 @@ namespace Gordon360.ApiControllers
             int userID = GetCurrentUserID();
             try
             {
-                result = _updateservice.updateInfo(userID, alumniInfo.EMAIL, alumniInfo.HOME_PHONE, alumniInfo.MOBILE_PHONE, alumniInfo.ADDRESS_1, alumniInfo.ADDRESS_2, alumniInfo.CITY, alumniInfo.STATE);
+                if (alumniInfo.FIRST_NAME == null || alumniInfo.LAST_NAME == null)
+                {
+                    throw new Exception("Invalid first and last name.");
+                };
+                result = _updateservice.updateInfo(
+                    userID, alumniInfo.SALUTATION, alumniInfo.FIRST_NAME, alumniInfo.LAST_NAME,
+                    alumniInfo.MIDDLE_NAME, alumniInfo.PREFERRED_NAME, alumniInfo.PERSONAL_EMAIL,
+                    alumniInfo.WORK_EMAIL, alumniInfo.ALTERNATE_EMAIL, alumniInfo.PREFERRED_EMAIL,
+                    alumniInfo.DO_NOT_CONTACT, alumniInfo.DO_NOT_MAIL, alumniInfo.HOME_PHONE,
+                    alumniInfo.WORK_PHONE, alumniInfo.MOBILE_PHONE, alumniInfo.PREFERRED_PHONE,
+                    alumniInfo.MAILING_STREET, alumniInfo.MAILING_CITY, alumniInfo.MAILING_STATE,
+                    alumniInfo.MAILING_ZIP, alumniInfo.MAILING_COUNTRY, alumniInfo.MARITAL_STATUS);
             }
+
             catch (Exception e)
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
@@ -64,5 +98,6 @@ namespace Gordon360.ApiControllers
             }
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
+        */
     }
 }
