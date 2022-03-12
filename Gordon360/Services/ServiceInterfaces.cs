@@ -212,33 +212,6 @@ namespace Gordon360.Services
     public interface IUpdateService
     {
         void SendUpdateRequest(int userID, string email_content);
-        /*
-        IEnumerable<UpdateAlumniViewModel> updateInfo(
-        int userID,
-        string userSalutation,
-        string userFirstName,
-        string userLastName,
-        string userMiddleName,
-        string userPreferredName,
-        string userPersonal
-            ,
-        string userWorkEmail,
-        string userAlternateEmail,
-        string userPreferredEmail,
-        string userDoNotContact,
-        string userDoNotMail,
-        string userHomePhone,
-        string userWorkPhone,
-        string userMobilePhone,
-        string userPreferredPhone,
-        string userMailingStreet,
-        string userMailingCity,
-        string userMailingState,
-        string userMailingZip,
-        string userMailingCountry,
-        string userMaritalStatus
-        );
-        */
     }
     public interface IParticipationService
     {

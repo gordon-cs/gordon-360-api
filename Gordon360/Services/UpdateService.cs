@@ -16,14 +16,8 @@ using System.Net;
 
 namespace Gordon360.Services
 {
-
-    /// TODO: Replace dummy variables with their actual variable names, change SQL feature names with the correct names
-    /// NOTE: Not sure if "query" in RawSqlQuery.cs is the correct query to use. We may have to create our own method
-
-    /// TODO: Change the following variable types to their appropriate types
-
     /// <summary>
-    /// Service Class that facilitates data transactions between the UpdateController and the student_info database model.
+    /// Service Class that facilitates data transactions between the UpdateController and the email sender.
     /// </summary>
     public class UpdateService : IUpdateService
     {
@@ -38,8 +32,8 @@ namespace Gordon360.Services
         {
             using (var smtp = new SmtpClient())
             {
-                string to_email = "EMAIL";
-                string from_email = "EMAIL";
+                string to_email = "TO EMAIL";
+                string from_email = "FROM EMAIL";
                 string subject = String.Format("UPDATE REQUEST: Alumni {0}", userID);
                 var credential = new NetworkCredential
                 {
@@ -61,54 +55,5 @@ namespace Gordon360.Services
                 smtp.Send(message);
             }
         }
-        /*
-        public IEnumerable<UpdateAlumniViewModel> updateInfo(
-        int userID, 
-        string userSalutation, 
-        string userFirstName,
-        string userLastName, 
-        string userMiddleName, 
-        string userPreferredName,
-        string userPersonalEmail,
-        string userWorkEmail,
-        string userAlternateEmail,
-        string userPreferredEmail,
-        string userDoNotContact,
-        string userDoNotMail,
-        string userHomePhone,
-        string userWorkPhone,
-        string userMobilePhone,
-        string userPreferredPhone,
-        string userMailingStreet,
-        string userMailingCity,
-        string userMailingState,
-        string userMailingZip,
-        string userMailingCountry,
-        string userMaritalStatus
-        )
-        {
-            IEnumerable<UpdateAlumniViewModel> result = null;
-
-            var id = new SqlParameter("@ID", rowID);
-            var newEmail = new SqlParameter("@newEmail", email);
-            var newHomePhone = new SqlParameter("@newHomePhone", homePhone);
-            var newMobilePhone = new SqlParameter("@newMobilePhone", mobilePhone);
-            var newAddress1 = new SqlParameter("@newAddress1", address1);
-            var newAddress2 = new SqlParameter("@newAddress2", address2);
-            var newCity = new SqlParameter("@newCity", city);
-            var newState = new SqlParameter("@newState", state);
-
-            try
-            {
-                result = <UpdateAlumniViewModel>.query("UPDATE student_info SET STATUS = 'Saved', EMAIL = @newEmail, HOME_PHONE = @newHomePhone , MOBILE_PHONE = @newMobilePhone, ADDRESS_1 = @newAddress1, ADDRESS_2 = @newAddress2, CITY = @newCity, STATE = @newState);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-            }
-
-            return result;
-        }
-        */
     }
 }

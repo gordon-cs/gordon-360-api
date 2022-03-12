@@ -66,38 +66,5 @@ namespace Gordon360.ApiControllers
             _updateservice.SendUpdateRequest(userID, email.Content);
             return Ok();
         }
-
-        /*
-        [HttpPost]
-        [Route("updateRequest/")]
-        public HttpResponseMessage updateUserInfo([FromBody] UpdateAlumniViewModel alumniInfo)
-        {
-            IEnumerable<UpdateAlumniViewModel> result = null;
-
-            int userID = GetCurrentUserID();
-            try
-            {
-                if (alumniInfo.FIRST_NAME == null || alumniInfo.LAST_NAME == null)
-                {
-                    throw new Exception("Invalid first and last name.");
-                };
-                result = _updateservice.updateInfo(
-                    userID, alumniInfo.SALUTATION, alumniInfo.FIRST_NAME, alumniInfo.LAST_NAME,
-                    alumniInfo.MIDDLE_NAME, alumniInfo.PREFERRED_NAME, alumniInfo.PERSONAL_EMAIL,
-                    alumniInfo.WORK_EMAIL, alumniInfo.ALTERNATE_EMAIL, alumniInfo.PREFERRED_EMAIL,
-                    alumniInfo.DO_NOT_CONTACT, alumniInfo.DO_NOT_MAIL, alumniInfo.HOME_PHONE,
-                    alumniInfo.WORK_PHONE, alumniInfo.MOBILE_PHONE, alumniInfo.PREFERRED_PHONE,
-                    alumniInfo.MAILING_STREET, alumniInfo.MAILING_CITY, alumniInfo.MAILING_STATE,
-                    alumniInfo.MAILING_ZIP, alumniInfo.MAILING_COUNTRY, alumniInfo.MARITAL_STATUS);
-            }
-
-            catch (Exception e)
-            {
-                System.Diagnostics.Debug.WriteLine(e.Message);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, e);
-            }
-            return Request.CreateResponse(HttpStatusCode.OK, result);
-        }
-        */
     }
 }
