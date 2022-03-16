@@ -36,12 +36,12 @@ namespace Gordon360.Services
                 .Select<student_timesheets, StudentTimesheetsViewModel>(t => t);
         }
 
-        public async void saveShiftForUser(int studentID, int jobID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string shiftNotes, string lastChangedBy)
+        public async void SaveShiftForUserAsync(int studentID, int jobID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string shiftNotes, string lastChangedBy)
         {
             await _context.Procedures.student_timesheets_insert_shiftAsync(studentID, jobID, shiftStart, shiftEnd, hoursWorked, shiftNotes, lastChangedBy);
         }
 
-        public StudentTimesheetsViewModel editShift(int rowID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string username)
+        public StudentTimesheetsViewModel EditShift(int rowID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string username)
         {
 
             var result = _context.student_timesheets.Find(rowID);
@@ -56,29 +56,29 @@ namespace Gordon360.Services
             return result;
         }
 
-        public void deleteShiftForUser(int rowID, int studentID)
+        public void DeleteShiftForUser(int rowID, int studentID)
         {
             _context.student_timesheets.Remove(new student_timesheets { ID = rowID, ID_NUM = studentID });
             _context.SaveChanges();
         }
 
-        public async void submitShiftForUser(int studentID, int jobID, DateTime shiftEnd, int submittedTo, string lastChangedBy)
+        public async void SubmitShiftForUserAsync(int studentID, int jobID, DateTime shiftEnd, int submittedTo, string lastChangedBy)
         {
             await _context.Procedures.student_timesheets_submit_job_shiftAsync(studentID, jobID, shiftEnd, submittedTo, lastChangedBy);
         }
 
-        public async Task<IEnumerable<SupervisorViewModel>> getsupervisorNameForJob(int supervisorID)
+        public async Task<IEnumerable<SupervisorViewModel>> GetsupervisorNameForJobAsync(int supervisorID)
         {
             return (await _context.Procedures.student_timesheets_select_supervisor_nameAsync(supervisorID))
                 .Select(s => new SupervisorViewModel { FIRST_NAME = s.first_name, LAST_NAME = s.last_name, PREFERRED_NAME = s.preferred_name });
         }
 
-        public async Task<IEnumerable<ActiveJobViewModel>> getActiveJobs(DateTime shiftStart, DateTime shiftEnd, int studentID)
+        public async Task<IEnumerable<ActiveJobViewModel>> GetActiveJobsAsync(DateTime shiftStart, DateTime shiftEnd, int studentID)
         {
             return (await _context.Procedures.student_timesheets_select_emls_for_ajax_selectboxAsync(shiftStart, shiftEnd, studentID)).Select(j => new ActiveJobViewModel { EMLID = j.EmlID, POSTITLE = j.postitle });
         }
 
-        public IEnumerable<OverlappingShiftIdViewModel> editShiftOverlapCheck(int studentID, DateTime shiftStart, DateTime shiftEnd, int rowID)
+        public IEnumerable<OverlappingShiftIdViewModel> EditShiftOverlapCheck(int studentID, DateTime shiftStart, DateTime shiftEnd, int rowID)
         {
             IEnumerable<OverlappingShiftIdViewModel> result = null;
 
@@ -93,7 +93,7 @@ namespace Gordon360.Services
             return result;
         }
 
-        public IEnumerable<OverlappingShiftIdViewModel> checkForOverlappingShift(int studentID, DateTime shiftStart, DateTime shiftEnd)
+        public IEnumerable<OverlappingShiftIdViewModel> CheckForOverlappingShift(int studentID, DateTime shiftStart, DateTime shiftEnd)
         {
             IEnumerable<OverlappingShiftIdViewModel> result = null;
 

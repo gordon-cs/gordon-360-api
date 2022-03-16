@@ -22,7 +22,7 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_ACTIVITY)]
         public ActionResult<IEnumerable<EmailViewModel>> GetEmailsForActivity(string id)
         {
-            var result = _emailService.GetEmailsForActivity(id);
+            var result = _emailService.GetEmailsForActivityAsync(id);
 
             if (result == null)
             {
@@ -36,7 +36,7 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_ACTIVITY)]
         public ActionResult<IEnumerable<EmailViewModel>> GetEmailsForActivity(string id, string session)
         {
-            var result = _emailService.GetEmailsForActivity(id, session);
+            var result = _emailService.GetEmailsForActivityAsync(id, session);
 
             if (result == null)
             {
@@ -50,7 +50,7 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_LEADERS)]
         public ActionResult<IEnumerable<EmailViewModel>> GetEmailsForleader(string id)
         {
-            var result = _emailService.GetEmailsForActivityLeaders(id);
+            var result = _emailService.GetEmailsForActivityLeadersAsync(id);
 
             if (result == null)
             {
@@ -63,7 +63,7 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_GROUP_ADMIN)]
         public ActionResult<IEnumerable<EmailViewModel>> GetEmailsForGroupAdmin(string id, string session)
         {
-            var result = _emailService.GetEmailsForGroupAdmin(id, session);
+            var result = _emailService.GetEmailsForGroupAdminAsync(id, session);
 
             if (result == null)
             {
@@ -76,7 +76,7 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_LEADERS)]
         public ActionResult<IEnumerable<EmailViewModel>> GetEmailsForleader(string id, string session)
         {
-            var result = _emailService.GetEmailsForActivityLeaders(id, session);
+            var result = _emailService.GetEmailsForActivityLeadersAsync(id, session);
 
             if (result == null)
             {
@@ -89,7 +89,7 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_LEADERS)]
         public ActionResult<IEnumerable<EmailViewModel>> GetEmailsForAdvisor(string id)
         {
-            var result = _emailService.GetEmailsForActivityAdvisors(id);
+            var result = _emailService.GetEmailsForActivityAdvisorsAsync(id);
 
             if (result == null)
             {
@@ -102,7 +102,7 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_LEADERS)]
         public ActionResult<IEnumerable<EmailViewModel>> GetEmailsForAdvisor(string id, string session)
         {
-            var result = _emailService.GetEmailsForActivityAdvisors(id, session);
+            var result = _emailService.GetEmailsForActivityAdvisorsAsync(id, session);
 
             if (result == null)
             {
@@ -138,7 +138,7 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_ACTIVITY)]
         public ActionResult SendEmailToActivity(string id, string session, [FromBody] EmailContentViewModel email)
         {
-            _emailService.SendEmailToActivity(id, session, email.FromAddress, email.Subject, email.Content, email.Password);
+            _emailService.SendEmailToActivityAsync(id, session, email.FromAddress, email.Subject, email.Content, email.Password);
 
             //if (result == null)
             //{

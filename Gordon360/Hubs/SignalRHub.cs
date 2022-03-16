@@ -17,7 +17,7 @@ namespace Gordon360.Hubs
     [HubName("ChatHub")]
     public class ChatHub : Hub
     {
-        public async Task refreshMessages(List<string> userIds, SendTextViewModel message, string userId)
+        public async Task RefreshMessagesAsync(List<string> userIds, SendTextViewModel message, string userId)
          {
             DirectMessageService _DirectMessageService = new DirectMessageService();
             var connectionIds =_DirectMessageService.GetUserConnectionIds(userIds);
@@ -34,17 +34,17 @@ namespace Gordon360.Hubs
         public string savedUserId;
         public string savedConnectionId;
 
-        public async Task saveFunction(string id)
+        public async Task SaveFunctionAsync(string id)
         {
             DirectMessageService _DirectMessageService = new DirectMessageService();
             _DirectMessageService.StoreUserConnectionIds(id, Context.ConnectionId);
         }
 
-        public  async Task saveConnection(string id)
+        public  async Task SaveConnectionAsync(string id)
         {
             savedUserId = id;
             savedConnectionId = Context.ConnectionId;
-            await saveFunction(id);
+            await SaveFunctionAsync(id);
 
             Clients.All.BroadcastMessage("Saved Connection!");
 

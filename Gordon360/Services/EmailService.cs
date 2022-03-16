@@ -27,10 +27,10 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="activity_code"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivity(string activity_code)
+        public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAsync(string activity_code)
         {
-            var currentSession = await Helpers.GetCurrentSession();
-            return await GetEmailsForActivity(activity_code, currentSession.SessionCode);
+            var currentSession = await Helpers.GetCurrentSessionAsync();
+            return await GetEmailsForActivityAsync(activity_code, currentSession.SessionCode);
         }
 
 
@@ -39,10 +39,10 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="activityCode"></param>
         /// <returns>A collection of group admin emails</returns>
-        public async Task<IEnumerable<EmailViewModel>> GetEmailsForGroupAdmin(string activityCode)
+        public async Task<IEnumerable<EmailViewModel>> GetEmailsForGroupAdminAsync(string activityCode)
         {
-            var currentSession = await Helpers.GetCurrentSession();
-            return await GetEmailsForGroupAdmin(activityCode, currentSession.SessionCode);
+            var currentSession = await Helpers.GetCurrentSessionAsync();
+            return await GetEmailsForGroupAdminAsync(activityCode, currentSession.SessionCode);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace Gordon360.Services
         /// <param name="activityCode"></param>
         /// <param name="sessionCode"></param>
         /// <returns>A collection of the group admin emails</returns>
-        public async Task<IEnumerable<EmailViewModel>> GetEmailsForGroupAdmin(string activityCode, string sessionCode)
+        public async Task<IEnumerable<EmailViewModel>> GetEmailsForGroupAdminAsync(string activityCode, string sessionCode)
         {
             var result = await _context.Procedures.GRP_ADMIN_EMAILS_PER_ACT_CDEAsync(activityCode, sessionCode);
 
@@ -68,10 +68,10 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="activityCode"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivityLeaders(string activityCode)
+        public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivityLeadersAsync(string activityCode)
         {
-            var currentSession = await Helpers.GetCurrentSession();
-            return await GetEmailsForActivityLeaders(activityCode, currentSession.SessionCode);
+            var currentSession = await Helpers.GetCurrentSessionAsync();
+            return await GetEmailsForActivityLeadersAsync(activityCode, currentSession.SessionCode);
         }
 
         /// <summary>
@@ -79,10 +79,10 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="activityCode"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAdvisors(string activityCode)
+        public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAdvisorsAsync(string activityCode)
         {
-            var currentSession = await Helpers.GetCurrentSession();
-            return await GetEmailsForActivityAdvisors(activityCode, currentSession.SessionCode);
+            var currentSession = await Helpers.GetCurrentSessionAsync();
+            return await GetEmailsForActivityAdvisorsAsync(activityCode, currentSession.SessionCode);
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace Gordon360.Services
         /// <param name="activityCode">The activity code</param>
         /// <param name="sessionCode">The session code</param>
         /// <returns>List of the emails for the members of this activity</returns>
-        public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivity(string activityCode, string sessionCode)
+        public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAsync(string activityCode, string sessionCode)
         {
             var result = await _context.Procedures.EMAILS_PER_ACT_CDEAsync(activityCode, sessionCode);
             if (result == null)
@@ -109,7 +109,7 @@ namespace Gordon360.Services
         /// <param name="activityCode">The activity code</param>
         /// <param name="sessionCode">The session code</param>
         /// <returns>List of emails for the leaders of this activity</returns>
-        public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivityLeaders(string activityCode, string sessionCode)
+        public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivityLeadersAsync(string activityCode, string sessionCode)
         {
             var result = await _context.Procedures.LEADER_EMAILS_PER_ACT_CDEAsync(activityCode, sessionCode);
             if (result == null)
@@ -126,7 +126,7 @@ namespace Gordon360.Services
         /// <param name="activityCode">The activity code</param>
         /// <param name="sessionCode">The session code</param>
         /// <returns>List of emails for the leaders of this activity</returns>
-        public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAdvisors(string activityCode, string sessionCode)
+        public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAdvisorsAsync(string activityCode, string sessionCode)
         {
             var result = await _context.Procedures.ADVISOR_EMAILS_PER_ACT_CDEAsync(activityCode, sessionCode);
             if (result == null)
@@ -184,7 +184,7 @@ namespace Gordon360.Services
         /// <param name="email_content">The content of the email to be sent</param>
         /// <param name="password">Password of the email sender</param>
         /// <returns></returns>
-        public async Task SendEmailToActivity(string activityCode, string sessionCode, string from_email, string subject, string email_content, string password)
+        public async Task SendEmailToActivityAsync(string activityCode, string sessionCode, string from_email, string subject, string email_content, string password)
         {
             var credential = new NetworkCredential
             {
@@ -209,7 +209,7 @@ namespace Gordon360.Services
             };
             message.To.Add(new MailAddress(from_email));
 
-            var to_emails = (await GetEmailsForActivity(activityCode, sessionCode)).Select(x => x.Email);
+            var to_emails = (await GetEmailsForActivityAsync(activityCode, sessionCode)).Select(x => x.Email);
             foreach (string to_email in to_emails)
             {
                 message.Bcc.Add(new MailAddress(to_email));

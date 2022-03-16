@@ -27,7 +27,7 @@ namespace Gordon360.Controllers
         {
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
-            var result = _studentEmploymentService.GetEmployment(authenticatedUserUsername);
+            var result = _studentEmploymentService.GetEmploymentAsync(authenticatedUserUsername);
             if (result == null)
             {
                 return NotFound();

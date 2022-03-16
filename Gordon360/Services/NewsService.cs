@@ -46,13 +46,13 @@ namespace Gordon360.Services
             return newsItem;
         }
 
-        public async Task<IEnumerable<StudentNewsViewModel>> GetNewsNotExpired()
+        public async Task<IEnumerable<StudentNewsViewModel>> GetNewsNotExpiredAsync()
         {
             var news = await _contextCCT.Procedures.NEWS_NOT_EXPIREDAsync();
             return (IEnumerable<StudentNewsViewModel>)news;
         }
 
-        public async Task<IEnumerable<StudentNewsViewModel>> GetNewsNew()
+        public async Task<IEnumerable<StudentNewsViewModel>> GetNewsNewAsync()
         {
             var news = await _contextCCT.Procedures.NEWS_NEWAsync();
             return (IEnumerable<StudentNewsViewModel>)news;
@@ -68,7 +68,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">username</param>
         /// <returns>Result of query</returns>
-        public async Task<IEnumerable<StudentNewsViewModel>> GetNewsPersonalUnapproved(string username)
+        public async Task<IEnumerable<StudentNewsViewModel>> GetNewsPersonalUnapprovedAsync(string username)
         {
             // Verify account
             var account = _contextCCT.ACCOUNT.FirstOrDefaultAsync(x => x.AD_Username == username);

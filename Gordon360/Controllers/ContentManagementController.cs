@@ -1,4 +1,5 @@
 ﻿using Gordon360.AuthorizationFilters;
+using Gordon360.Database.CCT;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
@@ -12,9 +13,9 @@ namespace Gordon360.Controllers
     {
         private readonly IContentManagementService _contentManagementService;
 
-        public ContentManagementController(IContentManagementService contentManagementService)
+        public ContentManagementController(CCTContext context)
         {
-            _contentManagementService = contentManagementService;
+            _contentManagementService = new ContentManagementService(context);
         }
 
         /// <summary>Get all the slider content for the dashboard slider</summary>

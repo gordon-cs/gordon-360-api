@@ -124,7 +124,7 @@ namespace Gordon360.Static.Methods
         /// Service method that gets the current session we are in.
         /// </summary>
         /// <returns>SessionViewModel of the current session. If no session is found for our current date, returns null.</returns>
-        public static async Task<SessionViewModel> GetCurrentSession()
+        public static async Task<SessionViewModel> GetCurrentSessionAsync()
         {
             // TODO: Pass CCTEntities context by configuration/options from startup
             var context = new CCTContext();
@@ -139,23 +139,25 @@ namespace Gordon360.Static.Methods
         // Return the first day in the current session
         public static String GetFirstDay()
         {
-            DateTime firstDayRaw = GetCurrentSession().SessionBeginDate.Value;
-            String firstDay = firstDayRaw.ToString("MM/dd/yyyy");
+            var currentSession = await GetCurrentSessionAsync();
+            DateTime firstDayRaw = currentSession.SessionBeginDate.Value;
+            string firstDay = firstDayRaw.ToString("MM/dd/yyyy");
             return firstDay;
         }
 
         // Return the last day in the current session
-        public static String GetLastDay()
+        public static async Task<string> GetLastDayAsync()
         {
-            DateTime lastDayRaw = GetCurrentSession().SessionEndDate.Value;
-            String lastDay = lastDayRaw.ToString("MM/dd/yyyy");
+            var currentSession = await GetCurrentSessionAsync();
+            DateTime lastDayRaw = currentSession.SessionEndDate.Value;
+            string lastDay = lastDayRaw.ToString("MM/dd/yyyy");
             return lastDay;
         }
 
         // Return the days left in the semester, and the total days in the current session
-        public static async Task<double[]> GetDaysLeft()
+        public static async Task<double[]> GetDaysLeftAsync()
         {
-            var currentSession = await GetCurrentSession();
+            var currentSession = await GetCurrentSessionAsync();
             // The end of the current session
             DateTime sessionEnd = currentSession.SessionEndDate.Value;
             DateTime sessionBegin = currentSession.SessionBeginDate.Value;

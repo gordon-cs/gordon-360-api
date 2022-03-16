@@ -1,4 +1,6 @@
 ﻿using Gordon360.AuthorizationFilters;
+using Gordon360.Database.CCT;
+using Gordon360.Database.MyGordon;
 using Gordon360.Models.MyGordon;
 using Gordon360.Models.ViewModels;
 using Gordon360.Utils;
@@ -8,7 +10,7 @@ using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Gordon360.Controllers
 {
@@ -18,9 +20,9 @@ namespace Gordon360.Controllers
         private readonly INewsService _newsService;
         private readonly IImageUtils _imageUtils = new ImageUtils();
 
-        public NewsController(INewsService newsService)
+        public NewsController(CCTContext context, MyGordonContext myGordonContext)
         {
-            _newsService = newsService;
+            _newsService = new NewsService(myGordonContext, context);
         }
 
         /// <summary>Gets a news item by id from the database</summary>
@@ -67,9 +69,9 @@ namespace Gordon360.Controllers
          */
         [HttpGet]
         [Route("not-expired")]
-        public ActionResult<IOrderedEnumerable<StudentNewsViewModel>> GetNotExpired()
+        public async Task<ActionResult<IOrderedEnumerable<StudentNewsViewModel>>> GetNotExpiredAsync()
         {
-            var result = _newsService.GetNewsNotExpired();
+            var result = await _newsService.GetNewsNotExpiredAsync();
             if (result == null)
             {
                 return NotFound();
@@ -83,9 +85,9 @@ namespace Gordon360.Controllers
          */
         [HttpGet]
         [Route("new")]
-        public ActionResult<IEnumerable<StudentNewsViewModel>> GetNew()
+        public async Task<ActionResult<IEnumerable<StudentNewsViewModel>>> GetNewAsync()
         {
-            var result = _newsService.GetNewsNew();
+            var result = await _newsService.GetNewsNewAsync();
             if (result == null)
             {
                 return NotFound();
@@ -119,7 +121,7 @@ namespace Gordon360.Controllers
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
             // Call appropriate service
-            var result = _newsService.GetNewsPersonalUnapproved(authenticatedUserUsername);
+            var result = _newsService.GetNewsPersonalUnapprovedAsync(authenticatedUserUsername);
             if (result == null)
             {
                 return NotFound();

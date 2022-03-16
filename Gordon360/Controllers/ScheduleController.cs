@@ -39,7 +39,7 @@ namespace Gordon360.Controllers
 
             if (role == "student")
             {
-                var result = _scheduleService.GetScheduleStudent(authenticatedUserUsername);
+                var result = _scheduleService.GetScheduleStudentAsync(authenticatedUserUsername);
                 if (result == null)
                 {
                     return NotFound();
@@ -49,7 +49,7 @@ namespace Gordon360.Controllers
 
             else if (role == "facstaff")
             {
-                var result = _scheduleService.GetScheduleFaculty(authenticatedUserUsername);
+                var result = _scheduleService.GetScheduleFacultyAsync(authenticatedUserUsername);
                 if (result == null)
                 {
                     return NotFound();
@@ -93,21 +93,21 @@ namespace Gordon360.Controllers
                 switch (viewerRole)
                 {
                     case Position.SUPERADMIN:
-                        scheduleResult = _scheduleService.GetScheduleStudent(id);
+                        scheduleResult = _scheduleService.GetScheduleStudentAsync(id);
                         break;
                     case Position.POLICE:
-                        scheduleResult = _scheduleService.GetScheduleStudent(id);
+                        scheduleResult = _scheduleService.GetScheduleStudentAsync(id);
                         break;
                     case Position.STUDENT:
                         if (schedulePrivacy == 0)
                         {
-                            scheduleResult = _scheduleService.GetScheduleStudent(id);
+                            scheduleResult = _scheduleService.GetScheduleStudentAsync(id);
                         }
                         break;
                     case Position.FACSTAFF:
                         if (_scheduleService.CanReadStudentSchedules(viewerName))
                         {
-                            scheduleResult = _scheduleService.GetScheduleStudent(id);
+                            scheduleResult = _scheduleService.GetScheduleStudentAsync(id);
                         }
                         break;
                 }
@@ -115,7 +115,7 @@ namespace Gordon360.Controllers
             // Getting faculty / staff schedule
             else if (role == "facstaff")
             {
-                scheduleResult = _scheduleService.GetScheduleFaculty(id);
+                scheduleResult = _scheduleService.GetScheduleFacultyAsync(id);
             }
             else
             {

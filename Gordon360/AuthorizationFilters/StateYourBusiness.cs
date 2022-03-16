@@ -75,7 +75,7 @@ namespace Gordon360.AuthorizationFilters
             }
 
             // Can the user perform the operation on the resource?
-            isAuthorized = await canPerformOperation(resource, operation);
+            isAuthorized = await CanPerformOperationAsync(resource, operation);
             if (!isAuthorized)
             {
                 throw new UnauthorizedAccessException("Authorization has been denied for this request.");
@@ -85,18 +85,18 @@ namespace Gordon360.AuthorizationFilters
         }
 
 
-        private async Task<bool> canPerformOperation(string resource, string operation)
+        private async Task<bool> CanPerformOperationAsync(string resource, string operation)
         {
             switch (operation)
             {
-                case Operation.READ_ONE: return await canReadOne(resource);
-                case Operation.READ_ALL: return canReadAll(resource);
-                case Operation.READ_PARTIAL: return await canReadPartial(resource);
-                case Operation.ADD: return await canAdd(resource);
-                case Operation.DENY_ALLOW: return await canDenyAllow(resource);
-                case Operation.UPDATE: return await canUpdate(resource);
-                case Operation.DELETE: return await canDelete(resource);
-                case Operation.READ_PUBLIC: return canReadPublic(resource);
+                case Operation.READ_ONE: return await CanReadOneAsync(resource);
+                case Operation.READ_ALL: return CanReadAll(resource);
+                case Operation.READ_PARTIAL: return await CanReadPartialAsync(resource);
+                case Operation.ADD: return await CanAddAsync(resource);
+                case Operation.DENY_ALLOW: return await CanDenyAllowAsync(resource);
+                case Operation.UPDATE: return await CanUpdateAsync(resource);
+                case Operation.DELETE: return await CanDeleteAsync(resource);
+                case Operation.READ_PUBLIC: return CanReadPublic(resource);
                 default: return false;
             }
         }
@@ -106,7 +106,7 @@ namespace Gordon360.AuthorizationFilters
          */
         // This operation is specifically for authorizing deny and allow operations on membership requests. These two operations don't
         // Fit in nicely with the REST specification which is why there is a seperate case for them.
-        private async Task<bool> canDenyAllow(string resource)
+        private async Task<bool> CanDenyAllowAsync(string resource)
         {
             // User is admin
             if (user_position == Position.SUPERADMIN)
@@ -120,14 +120,14 @@ namespace Gordon360.AuthorizationFilters
                         var mrID = (int)context.ActionArguments["id"];
                         // Get the view model from the repository
                         var mrService = new MembershipRequestService(CCTContext);
-                        var mrToConsider = await mrService.Get(mrID);
+                        var mrToConsider = await mrService.GetAsync(mrID);
                         // Populate the membershipRequest manually. Omit fields I don't need.
                         var activityCode = mrToConsider.ActivityCode;
                         var membershipService = new MembershipService(CCTContext);
-                        var is_activityLeader = (await membershipService.GetLeaderMembershipsForActivity(activityCode)).Any(x => x.IDNumber.ToString() == user_id);
+                        var is_activityLeader = (await membershipService.GetLeaderMembershipsForActivityAsync(activityCode)).Any(x => x.IDNumber.ToString() == user_id);
                         if (is_activityLeader) // If user is the leader of the activity that the request is sent to.
                             return true;
-                        var is_activityAdvisor = (await membershipService.GetAdvisorMembershipsForActivity(activityCode)).Any(x => x.IDNumber.ToString() == user_id);
+                        var is_activityAdvisor = (await membershipService.GetAdvisorMembershipsForActivityAsync(activityCode)).Any(x => x.IDNumber.ToString() == user_id);
                         if (is_activityAdvisor) // If user is the advisor of the activity that the request is sent to.
                             return true;
 
@@ -138,7 +138,7 @@ namespace Gordon360.AuthorizationFilters
             }
         }
 
-        private async Task<bool> canReadOne(string resource)
+        private async Task<bool> CanReadOneAsync(string resource)
         {
             // User is admin
             if (user_position == Position.SUPERADMIN)
@@ -164,7 +164,7 @@ namespace Gordon360.AuthorizationFilters
                         // membershipRequest = mr
                         var mrService = new MembershipRequestService(CCTContext);
                         var mrID = (int)context.ActionArguments["id"];
-                        var mrToConsider = await mrService.Get(mrID);
+                        var mrToConsider = await mrService.GetAsync(mrID);
                         var is_mrOwner = mrToConsider.IDNumber.ToString() == user_id; // User_id is an instance variable.
 
                         if (is_mrOwner) // If user owns the request
@@ -172,7 +172,7 @@ namespace Gordon360.AuthorizationFilters
 
                         var activityCode = mrToConsider.ActivityCode;
                         var membershipService = new MembershipService(CCTContext);
-                        var isGroupAdmin = (await membershipService.GetGroupAdminMembershipsForActivity(activityCode)).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        var isGroupAdmin = (await membershipService.GetGroupAdminMembershipsForActivityAsync(activityCode)).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
                         if (isGroupAdmin) // If user is a group admin of the activity that the request is sent to
                             return true;
 
@@ -208,7 +208,7 @@ namespace Gordon360.AuthorizationFilters
                     {
                         // The members of the apartment application can only read their application
                         HousingService housingService = new HousingService(CCTContext);
-                        string sess_cde = (await Helpers.GetCurrentSession()).SessionCode;
+                        string sess_cde = (await Helpers.GetCurrentSessionAsync()).SessionCode;
                         int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
                         int requestedApplicationID = (int)context.ActionArguments["applicationID"];
                         if (applicationID.HasValue && applicationID.Value == requestedApplicationID)
@@ -224,7 +224,7 @@ namespace Gordon360.AuthorizationFilters
             }
         }
         // For reads that access a group of resources filterd in a specific way 
-        private async Task<bool> canReadPartial(string resource)
+        private async Task<bool> CanReadPartialAsync(string resource)
         {
             // User is admin
             if (user_position == Position.SUPERADMIN)
@@ -237,7 +237,7 @@ namespace Gordon360.AuthorizationFilters
                         // Only people that are part of the activity should be able to see members
                         var membershipService = new MembershipService(CCTContext);
                         var activityCode = (string)context.ActionArguments["id"];
-                        var activityMembers = await membershipService.GetMembershipsForActivity(activityCode);
+                        var activityMembers = await membershipService.GetMembershipsForActivityAsync(activityCode);
                         var is_personAMember = activityMembers.Where(x => x.IDNumber.ToString() == user_id && x.Participation != "GUEST").Count() > 0;
                         if (is_personAMember)
                             return true;
@@ -263,7 +263,7 @@ namespace Gordon360.AuthorizationFilters
                         // An activity leader should be able to see the membership requests that belong to the activity he is leading.
                         var membershipService = new MembershipService(CCTContext);
                         var activityCode = (string)context.ActionArguments["id"];
-                        var groupAdmins = await membershipService.GetGroupAdminMembershipsForActivity(activityCode);
+                        var groupAdmins = await membershipService.GetGroupAdminMembershipsForActivityAsync(activityCode);
                         var isGroupAdmin = groupAdmins.Any(x => x.IDNumber.ToString() == user_id);
                         if (isGroupAdmin) // If user is a group admin of the activity that the request is sent to
                             return true;
@@ -279,17 +279,17 @@ namespace Gordon360.AuthorizationFilters
                     {
                         var activityCode = (string)context.ActionArguments["id"];
                         var membershipService = new MembershipService(CCTContext);
-                        var leaders = await membershipService.GetLeaderMembershipsForActivity(activityCode);
+                        var leaders = await membershipService.GetLeaderMembershipsForActivityAsync(activityCode);
                         var is_activity_leader = leaders.Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
                         if (is_activity_leader)
                             return true;
 
-                        var advisors = await membershipService.GetAdvisorMembershipsForActivity(activityCode);
+                        var advisors = await membershipService.GetAdvisorMembershipsForActivityAsync(activityCode);
                         var is_activityAdvisor = advisors.Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
                         if (is_activityAdvisor)
                             return true;
 
-                        var groupAdmin = await membershipService.GetGroupAdminMembershipsForActivity(activityCode);
+                        var groupAdmin = await membershipService.GetGroupAdminMembershipsForActivityAsync(activityCode);
                         var is_groupAdmin = groupAdmin.Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
                         if (is_groupAdmin)
                             return true;
@@ -323,7 +323,7 @@ namespace Gordon360.AuthorizationFilters
                 default: return false;
             }
         }
-        private bool canReadAll(string resource)
+        private bool CanReadAll(string resource)
         {
             switch (resource)
             {
@@ -392,7 +392,7 @@ namespace Gordon360.AuthorizationFilters
             }
         }
 
-        private bool canReadPublic(string resource)
+        private bool CanReadPublic(string resource)
         {
             switch (resource)
             {
@@ -404,7 +404,7 @@ namespace Gordon360.AuthorizationFilters
 
             }
         }
-        private async Task<bool> canAdd(string resource)
+        private async Task<bool> CanAddAsync(string resource)
         {
             switch (resource)
             {
@@ -429,7 +429,7 @@ namespace Gordon360.AuthorizationFilters
                         var activityCode = membershipToConsider.ACT_CDE;
                         var membershipService = new MembershipService(CCTContext);
 
-                        var isGroupAdmin = (await membershipService.GetGroupAdminMembershipsForActivity(activityCode)).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        var isGroupAdmin = (await membershipService.GetGroupAdminMembershipsForActivityAsync(activityCode)).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
                         if (isGroupAdmin) // If user is the advisor of the activity that the request is sent to.
                             return true;
                         return false;
@@ -465,7 +465,7 @@ namespace Gordon360.AuthorizationFilters
                         var housingService = new HousingService(CCTContext);
                         if (user_position == Position.STUDENT)
                         {
-                            var sess_cde = (await Helpers.GetCurrentSession()).SessionCode;
+                            var sess_cde = (await Helpers.GetCurrentSessionAsync()).SessionCode;
                             int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
                             if (!applicationID.HasValue)
                             {
@@ -484,7 +484,7 @@ namespace Gordon360.AuthorizationFilters
                 default: return false;
             }
         }
-        private async Task<bool> canUpdate(string resource)
+        private async Task<bool> CanUpdateAsync(string resource)
         {
             switch (resource)
             {
@@ -511,7 +511,7 @@ namespace Gordon360.AuthorizationFilters
                         //var is_membershipAdvisor = membershipService.GetAdvisorMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
                         //if (is_membershipAdvisor)
                         //    return true; // Activity Advisors can update memberships of people in their activity.
-                        var isGroupAdmin = (await membershipService.GetGroupAdminMembershipsForActivity(activityCode)).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        var isGroupAdmin = (await membershipService.GetGroupAdminMembershipsForActivityAsync(activityCode)).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
                         if (isGroupAdmin)
                             return true; // Activity Advisors can update memberships of people in their activity.
 
@@ -550,7 +550,7 @@ namespace Gordon360.AuthorizationFilters
 
                         var activityCode = membershipToConsider.ACT_CDE;
 
-                        var isGroupAdmin = (await membershipService.GetGroupAdminMembershipsForActivity(activityCode)).Any(x => x.IDNumber.ToString() == user_id);
+                        var isGroupAdmin = (await membershipService.GetGroupAdminMembershipsForActivityAsync(activityCode)).Any(x => x.IDNumber.ToString() == user_id);
                         if (isGroupAdmin)
                             return true;
 
@@ -569,7 +569,7 @@ namespace Gordon360.AuthorizationFilters
                         }
                         else if (user_position == Position.STUDENT)
                         {
-                            string sess_cde = (await Helpers.GetCurrentSession()).SessionCode;
+                            string sess_cde = (await Helpers.GetCurrentSessionAsync()).SessionCode;
                             int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
                             int requestedApplicationID = (int)context.ActionArguments["applicationID"];
                             if (applicationID.HasValue && applicationID == requestedApplicationID)
@@ -593,7 +593,7 @@ namespace Gordon360.AuthorizationFilters
                         var membershipToConsider = (MEMBERSHIP)context.ActionArguments["membership"];
                         var activityCode = membershipToConsider.ACT_CDE;
 
-                        var is_advisor = (await membershipService.GetAdvisorMembershipsForActivity(activityCode)).Any(x => x.IDNumber.ToString() == user_id);
+                        var is_advisor = (await membershipService.GetAdvisorMembershipsForActivityAsync(activityCode)).Any(x => x.IDNumber.ToString() == user_id);
                         if (is_advisor)
                             return true; // Activity Advisors can update memberships of people in their activity.
 
@@ -618,7 +618,7 @@ namespace Gordon360.AuthorizationFilters
                         var activityCode = (string)context.ActionArguments["id"];
                         var membershipService = new MembershipService(CCTContext);
 
-                        var isGroupAdmin = (await membershipService.GetGroupAdminMembershipsForActivity(activityCode)).Any(x => x.IDNumber.ToString() == user_id);
+                        var isGroupAdmin = (await membershipService.GetGroupAdminMembershipsForActivityAsync(activityCode)).Any(x => x.IDNumber.ToString() == user_id);
                         if (isGroupAdmin)
                             return true;
                         return false;
@@ -634,7 +634,7 @@ namespace Gordon360.AuthorizationFilters
                         var sessionCode = (string)context.ActionArguments["sess_cde"];
 
                         var membershipService = new MembershipService(CCTContext);
-                        var isGroupAdmin = (await membershipService.GetGroupAdminMembershipsForActivity(activityCode)).Any(x => x.IDNumber.ToString() == user_id);
+                        var isGroupAdmin = (await membershipService.GetGroupAdminMembershipsForActivityAsync(activityCode)).Any(x => x.IDNumber.ToString() == user_id);
                         if (isGroupAdmin)
                         {
                             var activityService = new ActivityService(CCTContext);
@@ -675,7 +675,7 @@ namespace Gordon360.AuthorizationFilters
                 default: return false;
             }
         }
-        private async Task<bool> canDelete(string resource)
+        private async Task<bool> CanDeleteAsync(string resource)
         {
             switch (resource)
             {
@@ -697,7 +697,7 @@ namespace Gordon360.AuthorizationFilters
 
                         var activityCode = membershipToConsider.ACT_CDE;
 
-                        var isGroupAdmin = (await membershipService.GetGroupAdminMembershipsForActivity(activityCode)).Any(x => x.IDNumber.ToString() == user_id);
+                        var isGroupAdmin = (await membershipService.GetGroupAdminMembershipsForActivityAsync(activityCode)).Any(x => x.IDNumber.ToString() == user_id);
                         if (isGroupAdmin)
                             return true;
 
@@ -711,7 +711,7 @@ namespace Gordon360.AuthorizationFilters
                         // membershipRequest = mr
                         var mrService = new MembershipRequestService(CCTContext);
                         var mrID = (int)context.ActionArguments["id"];
-                        var mrToConsider = await mrService.Get(mrID);
+                        var mrToConsider = await mrService.GetAsync(mrID);
                         var is_mrOwner = mrToConsider.IDNumber.ToString() == user_id;
                         if (is_mrOwner)
                             return true;
@@ -719,7 +719,7 @@ namespace Gordon360.AuthorizationFilters
                         var activityCode = mrToConsider.ActivityCode;
                         var membershipService = new MembershipService(CCTContext);
 
-                        var isGroupAdmin = (await membershipService.GetGroupAdminMembershipsForActivity(activityCode)).Any(x => x.IDNumber.ToString() == user_id);
+                        var isGroupAdmin = (await membershipService.GetGroupAdminMembershipsForActivityAsync(activityCode)).Any(x => x.IDNumber.ToString() == user_id);
                         if (isGroupAdmin)
                             return true;
 
@@ -739,7 +739,7 @@ namespace Gordon360.AuthorizationFilters
                         }
                         else if (user_position == Position.STUDENT)
                         {
-                            string sess_cde = (await Helpers.GetCurrentSession()).SessionCode;
+                            string sess_cde = (await Helpers.GetCurrentSessionAsync()).SessionCode;
                             int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
                             int requestedApplicationID = (int)context.ActionArguments["applicationID"];
                             if (applicationID.HasValue && applicationID.Value == requestedApplicationID)

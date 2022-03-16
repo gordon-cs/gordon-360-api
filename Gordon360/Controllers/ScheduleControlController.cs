@@ -84,7 +84,7 @@ namespace Gordon360.Controllers
         public ActionResult UpdateSchedulePrivacy(string value)
         {
             var username = AuthUtils.GetAuthenticatedUserUsername(User);
-            _scheduleControlService.UpdateSchedulePrivacy(username, value);
+            _scheduleControlService.UpdateSchedulePrivacyAsync(username, value);
 
             return Ok();
         }
@@ -101,8 +101,8 @@ namespace Gordon360.Controllers
             DateTime localDate = DateTime.Now;
 
             var username = AuthUtils.GetAuthenticatedUserUsername(User);
-            _scheduleControlService.UpdateDescription(username, value);
-            _scheduleControlService.UpdateModifiedTimeStamp(username, localDate);
+            _scheduleControlService.UpdateDescriptionAsync(username, value);
+            _scheduleControlService.UpdateModifiedTimeStampAsync(username, localDate);
 
             return Ok();
         }

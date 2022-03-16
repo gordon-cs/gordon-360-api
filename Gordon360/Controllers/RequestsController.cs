@@ -28,7 +28,7 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.MEMBERSHIP_REQUEST)]
         public ActionResult<IEnumerable<MembershipViewModel>> Get()
         {
-            var all = _membershipRequestService.GetAll();
+            var all = _membershipRequestService.GetAllAsync();
             return Ok(all);
         }
 
@@ -42,7 +42,7 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP_REQUEST)]
         public ActionResult<MembershipViewModel> Get(int id)
         {
-            var result = _membershipRequestService.Get(id);
+            var result = _membershipRequestService.GetAsync(id);
 
             if (result == null)
             {
@@ -63,7 +63,7 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_REQUEST_BY_ACTIVITY)]
         public ActionResult<IEnumerable<MembershipViewModel>> GetMembershipsRequestsForActivity(string id)
         {
-            var result = _membershipRequestService.GetMembershipRequestsForActivity(id);
+            var result = _membershipRequestService.GetMembershipRequestsForActivityAsync(id);
 
             if (result == null)
             {
@@ -83,7 +83,7 @@ namespace Gordon360.Controllers
         public ActionResult<IEnumerable<MembershipViewModel>> GetMembershipsRequestsForStudent()
         {
             var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var result = _membershipRequestService.GetMembershipRequestsForStudent(authenticatedUserIdString);
+            var result = _membershipRequestService.GetMembershipRequestsForStudentAsync(authenticatedUserIdString);
 
             if (result == null)
             {

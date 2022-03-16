@@ -101,7 +101,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">AD username</param>
         /// <returns></returns>
-        public async Task<IEnumerable<AdvisorViewModel>> GetAdvisors(string username)
+        public async Task<IEnumerable<AdvisorViewModel>> GetAdvisorsAsync(string username)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
             if (account == null)
@@ -168,7 +168,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">AD username</param>
         /// <returns>PhotoPathViewModel if found, null if not found</returns>
-        public async Task<PhotoPathViewModel> GetPhotoPath(string username)
+        public async Task<PhotoPathViewModel> GetPhotoPathAsync(string username)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
             if (account == null)
@@ -198,7 +198,7 @@ namespace Gordon360.Services
         /// <param name="username">AD Username</param>
         /// <param name="path"></param>
         /// <param name="name"></param>
-        public async void UpdateProfileImage(string username, string path, string name)
+        public async void UpdateProfileImageAsync(string username, string path, string name)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
             if (account == null)
@@ -232,7 +232,7 @@ namespace Gordon360.Services
         /// <param name="username">The username</param>
         /// <param name="type"></param>
         /// <param name="path"></param>
-        public async void UpdateProfileLink(string username, string type, CUSTOM_PROFILE path)
+        public async void UpdateProfileLinkAsync(string username, string type, CUSTOM_PROFILE path)
         {
             var original = _context.CUSTOM_PROFILE.FirstOrDefault(p => p.username == username);
 
@@ -275,7 +275,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">AD Username</param>
         /// <param name="value">Y or N</param>
-        public async void UpdateMobilePrivacy(string username, string value)
+        public async void UpdateMobilePrivacyAsync(string username, string value)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
 
@@ -324,7 +324,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">AD Username</param>
         /// <param name="value">Y or N</param>
-        public async void UpdateImagePrivacy(string username, string value)
+        public async void UpdateImagePrivacyAsync(string username, string value)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
 

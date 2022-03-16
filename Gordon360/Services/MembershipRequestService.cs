@@ -148,7 +148,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="requestID">The membership request id</param>
         /// <returns>If found, returns MembershipRequestViewModel. If not found, returns null.</returns>
-        public async Task<MembershipRequestViewModel> Get(int requestID)
+        public async Task<MembershipRequestViewModel> GetAsync(int requestID)
         {
             var requests = await _context.Procedures.REQUEST_PER_REQUEST_IDAsync(requestID);
 
@@ -181,7 +181,7 @@ namespace Gordon360.Services
         /// Fetches all the membership request objects from the database.
         /// </summary>
         /// <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
-        public async Task<IEnumerable<MembershipRequestViewModel>> GetAll()
+        public async Task<IEnumerable<MembershipRequestViewModel>> GetAllAsync()
         {
 
             var allRequests = await _context.Procedures.ALL_REQUESTSAsync();
@@ -209,7 +209,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="activityCode">The activity id</param>
         /// <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
-        public async Task<IEnumerable<MembershipRequestViewModel>> GetMembershipRequestsForActivity(string activityCode)
+        public async Task<IEnumerable<MembershipRequestViewModel>> GetMembershipRequestsForActivityAsync(string activityCode)
         {
             var allRequests = await _context.Procedures.REQUESTS_PER_ACT_CDEAsync(activityCode);
 
@@ -236,7 +236,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="gordonID">The student id</param>
         /// <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
-        public async Task<IEnumerable<MembershipRequestViewModel>> GetMembershipRequestsForStudent(string gordonID)
+        public async Task<IEnumerable<MembershipRequestViewModel>> GetMembershipRequestsForStudentAsync(string gordonID)
         {
             var allRequests = await _context.Procedures.REQUESTS_PER_STUDENT_IDAsync(int.Parse(gordonID));
 

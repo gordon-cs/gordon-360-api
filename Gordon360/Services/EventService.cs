@@ -36,7 +36,7 @@ namespace Gordon360.Services
         private XDocument Events => _cache.GetOrCreate(CacheKeys.Events, (entry) =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
-            var task = Task.Run(FetchEvents);
+            var task = Task.Run(FetchEventsAsync);
 
             return task.GetAwaiter().GetResult();
         });
@@ -88,7 +88,7 @@ namespace Gordon360.Services
         /// <param name="username"> The student's AD Username</param>
         /// <param name="term"> The current term</param>
         /// <returns></returns>
-        public async Task<IEnumerable<AttendedEventViewModel>> GetEventsForStudentByTerm(string username, string term)
+        public async Task<IEnumerable<AttendedEventViewModel>> GetEventsForStudentByTermAsync(string username, string term)
         {
             var studentExists = _context.ACCOUNT.Where(x => x.AD_Username.Trim() == username.Trim()).Any();
             if (!studentExists)
@@ -117,7 +117,7 @@ namespace Gordon360.Services
         }
 
 
-        private static async Task<XDocument> FetchEvents()
+        private static async Task<XDocument> FetchEventsAsync()
         {
             using var client = new HttpClient();
             client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");

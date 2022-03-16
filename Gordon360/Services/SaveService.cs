@@ -58,7 +58,7 @@ namespace Gordon360.Services
         /// <param name="newRide">The Save_Rides object to be added</param>
         /// <param name="gordon_id">The gordon_id of the user creating the ride</param>
         /// <returns>The newly added custom event</returns>
-        public async Task<Save_Rides> AddRide(Save_Rides newRide, string gordon_id)
+        public async Task<Save_Rides> AddRideAsync(Save_Rides newRide, string gordon_id)
         {
 
             // Assign event id
@@ -91,7 +91,7 @@ namespace Gordon360.Services
         /// <param name="rideID">The myschedule id</param>
         /// <param name="gordon_id">The gordon id</param>
         /// <returns>The myschedule that was just deleted</returns>
-        public async Task<Save_Rides> DeleteRide(string rideID, string gordon_id)
+        public async Task<Save_Rides> DeleteRideAsync(string rideID, string gordon_id)
         {
             //make get first or default then use generic repository delete on result
             var result = await _context.Save_Rides.FirstOrDefaultAsync(x => x.rideID == rideID);
@@ -117,7 +117,7 @@ namespace Gordon360.Services
         /// <param name="rideID">The ride id</param>
         /// <param name="gordon_id">The gordon id</param>
         /// <returns>The ride that was just deleted</returns>
-        public async Task<int> CancelRide(string rideID, string gordon_id)
+        public async Task<int> CancelRideAsync(string rideID, string gordon_id)
         {
             var result = await _context.Procedures.CANCEL_RIDEAsync(int.Parse(gordon_id), rideID);
             _context.SaveChanges();
@@ -130,7 +130,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="newBooking">The Save_Bookings object to be added</param>
         /// <returns>The newly added custom event</returns>
-        public async Task<Save_Bookings> AddBooking(Save_Bookings newBooking)
+        public async Task<Save_Bookings> AddBookingAsync(Save_Bookings newBooking)
         {
             var ride = await _context.Save_Rides.FirstOrDefaultAsync(x => x.rideID == newBooking.rideID);
             var bookings = _context.Save_Bookings.Where(x => x.rideID == newBooking.rideID);
@@ -159,7 +159,7 @@ namespace Gordon360.Services
         /// <param name="rideID">The myschedule id</param>
         /// <param name="gordon_id">The gordon id</param>
         /// <returns>The myschedule that was just deleted</returns>
-        public async Task<Save_Bookings> DeleteBooking(string rideID, string gordon_id)
+        public async Task<Save_Bookings> DeleteBookingAsync(string rideID, string gordon_id)
         {
             var result = await _context.Save_Bookings.FirstOrDefaultAsync(x => x.ID == gordon_id && x.rideID == rideID);
             if (result != null)

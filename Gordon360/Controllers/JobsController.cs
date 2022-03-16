@@ -44,7 +44,7 @@ namespace Gordon360.Controllers
         [Route("")]
         public ActionResult<IEnumerable<ActiveJobViewModel>> GetJobs(DateTime shiftStart, DateTime shiftEnd)
         {
-            var result = _jobsService.getActiveJobs(shiftStart, shiftEnd, GetCurrentUserID());
+            var result = _jobsService.GetActiveJobsAsync(shiftStart, shiftEnd, GetCurrentUserID());
             return Ok(result);
         }
 
@@ -58,7 +58,7 @@ namespace Gordon360.Controllers
         public ActionResult<IEnumerable<ActiveJobViewModel>> DEPRECATED_getJobsForUser([FromBody] ActiveJobSelectionParametersModel details)
         {
             int userID = GetCurrentUserID();
-            var result = _jobsService.getActiveJobs(details.SHIFT_START_DATETIME, details.SHIFT_END_DATETIME, userID);
+            var result = _jobsService.GetActiveJobsAsync(details.SHIFT_START_DATETIME, details.SHIFT_END_DATETIME, userID);
             return Ok(result);
         }
 
@@ -94,12 +94,12 @@ namespace Gordon360.Controllers
                 throw new Exception("Invalid shift times. shiftStart and shiftEnd must be non-null and not the same.");
             };
 
-            IEnumerable<OverlappingShiftIdViewModel> overlapCheckResult = _jobsService.checkForOverlappingShift(userID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME);
+            IEnumerable<OverlappingShiftIdViewModel> overlapCheckResult = _jobsService.CheckForOverlappingShift(userID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME);
             if (overlapCheckResult.Any())
             {
                 throw new ResourceCreationException() { ExceptionMessage = "Error: shift overlap detected" };
             }
-            _jobsService.saveShiftForUser(userID, shiftDetails.EML, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, shiftDetails.SHIFT_NOTES, authenticatedUserUsername);
+            _jobsService.SaveShiftForUserAsync(userID, shiftDetails.EML, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, shiftDetails.SHIFT_NOTES, authenticatedUserUsername);
 
             return Ok();
         }
@@ -117,12 +117,12 @@ namespace Gordon360.Controllers
             int userID = GetCurrentUserID();
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
-            overlapCheckResult = _jobsService.editShiftOverlapCheck(userID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.ID);
+            overlapCheckResult = _jobsService.EditShiftOverlapCheck(userID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.ID);
             if (overlapCheckResult.Any())
             {
                 throw new ResourceCreationException() { ExceptionMessage = "Error: shift overlap detected" };
             }
-            var result = _jobsService.editShift(shiftDetails.ID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, authenticatedUserUsername);
+            var result = _jobsService.EditShift(shiftDetails.ID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, authenticatedUserUsername);
             return Ok(result);
         }
 
@@ -139,7 +139,7 @@ namespace Gordon360.Controllers
 
             //try
             //{
-            _jobsService.deleteShiftForUser(rowID, userID);
+            _jobsService.DeleteShiftForUser(rowID, userID);
             //}
             //catch (Exception e)
             //{
@@ -164,7 +164,7 @@ namespace Gordon360.Controllers
             //{
             foreach (ShiftToSubmitViewModel shift in shifts)
             {
-                _jobsService.submitShiftForUser(userID, shift.EML, shift.SHIFT_END_DATETIME, shift.SUBMITTED_TO, shift.LAST_CHANGED_BY);
+                _jobsService.SubmitShiftForUserAsync(userID, shift.EML, shift.SHIFT_END_DATETIME, shift.SUBMITTED_TO, shift.LAST_CHANGED_BY);
             }
             //}
             //catch (Exception e)
@@ -184,7 +184,7 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.SHIFT)]
         public ActionResult<IEnumerable<SupervisorViewModel>> getSupervisorName(int supervisorID)
         {
-            var result = _jobsService.getsupervisorNameForJob(supervisorID);
+            var result = _jobsService.GetsupervisorNameForJobAsync(supervisorID);
             return Ok(result);
         }
 

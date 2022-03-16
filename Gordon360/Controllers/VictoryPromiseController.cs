@@ -32,7 +32,7 @@ namespace Gordon360.Controllers
         {
             var username = AuthUtils.GetAuthenticatedUserUsername(User);
 
-            var result = _victoryPromiseService.GetVPScores(username);
+            var result = _victoryPromiseService.GetVPScoresAsync(username);
 
             if (result == null)
             {

@@ -122,7 +122,7 @@ namespace Gordon360.Controllers
             }
 
 
-            _scheduleControlService.UpdateModifiedTimeStamp(authenticatedUserUsername, localDate);
+            _scheduleControlService.UpdateModifiedTimeStampAsync(authenticatedUserUsername, localDate);
 
             return Created("myschedule", mySchedule);
         }
@@ -143,7 +143,7 @@ namespace Gordon360.Controllers
                 return NotFound();
             }
 
-            _scheduleControlService.UpdateModifiedTimeStamp(authenticatedUserUsername, localDate);
+            _scheduleControlService.UpdateModifiedTimeStampAsync(authenticatedUserUsername, localDate);
 
             return Ok(result);
         }
@@ -167,7 +167,7 @@ namespace Gordon360.Controllers
 
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
-            _scheduleControlService.UpdateModifiedTimeStamp(authenticatedUserUsername, localDate);
+            _scheduleControlService.UpdateModifiedTimeStampAsync(authenticatedUserUsername, localDate);
 
             return Ok(result);
         }

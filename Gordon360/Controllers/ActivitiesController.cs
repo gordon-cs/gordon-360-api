@@ -53,9 +53,9 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("session/{id}")]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<ActivityInfoViewModel>>> GetActivitiesForSession(string id)
+        public async Task<ActionResult<IEnumerable<ActivityInfoViewModel>>> GetActivitiesForSessionAsync(string id)
         {
-            var result = await _activityService.GetActivitiesForSession(id);
+            var result = await _activityService.GetActivitiesForSessionAsync(id);
 
             if (result == null)
             {
@@ -73,9 +73,9 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("session/{id}/types")]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<string>>> GetActivityTypesForSession(string id)
+        public async Task<ActionResult<IEnumerable<string>>> GetActivityTypesForSessionAsync(string id)
         {
-            var result = await _activityService.GetActivityTypesForSession(id);
+            var result = await _activityService.GetActivityTypesForSessionAsync(id);
 
             if (result == null)
             {
@@ -109,9 +109,9 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("open")]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<string>>> GetOpenActivities()
+        public async Task<ActionResult<IEnumerable<string>>> GetOpenActivitiesAsync()
         {
-            var sessionCode = (await Helpers.GetCurrentSession()).SessionCode;
+            var sessionCode = (await Helpers.GetCurrentSessionAsync()).SessionCode;
 
             var activity_codes = _activityService.GetOpenActivities(sessionCode);
 
@@ -134,9 +134,9 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("{id}/open")]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<string>>> GetOpenActivities(int id)
+        public async Task<ActionResult<IEnumerable<string>>> GetOpenActivitiesAsync(int id)
         {
-            var sessionCode = (await Helpers.GetCurrentSession()).SessionCode;
+            var sessionCode = (await Helpers.GetCurrentSessionAsync()).SessionCode;
 
             var activity_codes = _activityService.GetOpenActivities(sessionCode, id);
 
@@ -157,9 +157,9 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("closed")]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<string>>> GetClosedActivities()
+        public async Task<ActionResult<IEnumerable<string>>> GetClosedActivitiesAsync()
         {
-            var sessionCode = (await Helpers.GetCurrentSession()).SessionCode;
+            var sessionCode = (await Helpers.GetCurrentSessionAsync()).SessionCode;
 
             var activity_codes = _activityService.GetClosedActivities(sessionCode);
 
@@ -182,9 +182,9 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("{id}/closed")]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<string>>> GetClosedActivities(int id)
+        public async Task<ActionResult<IEnumerable<string>>> GetClosedActivitiesAsync(int id)
         {
-            var sessionCode = (await Helpers.GetCurrentSession()).SessionCode;
+            var sessionCode = (await Helpers.GetCurrentSessionAsync()).SessionCode;
 
             var activity_codes = _activityService.GetClosedActivities(sessionCode, id);
 
@@ -246,7 +246,7 @@ namespace Gordon360.Controllers
         [HttpPost]
         [Route("{id}/image")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
-        public async Task<ActionResult> PostImage(string id)
+        public async Task<ActionResult> PostImageAsync(string id)
         {
             // Commenting out until we can build and test rewriting this image code
             // https://www.fatalerrors.org/a/comparison-of-multi-file-upload-between-net-and-net-core-web-api-formdata.html

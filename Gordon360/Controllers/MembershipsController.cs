@@ -43,7 +43,7 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.MEMBERSHIP)]
         public ActionResult<IEnumerable<MembershipViewModel>> Get()
         {
-            var result = _membershipService.GetAll();
+            var result = _membershipService.GetAllAsync();
             return Ok(result);
         }
 
@@ -57,7 +57,7 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_BY_ACTIVITY)]
         public ActionResult<IEnumerable<MembershipViewModel>> GetMembershipsForActivity(string id)
         {
-            var result = _membershipService.GetMembershipsForActivity(id);
+            var result = _membershipService.GetMembershipsForActivityAsync(id);
 
             if (result == null)
             {
@@ -76,7 +76,7 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.GROUP_ADMIN_BY_ACTIVITY)]
         public ActionResult<IEnumerable<MembershipViewModel>> GetGroupAdminForActivity(string id)
         {
-            var result = _membershipService.GetGroupAdminMembershipsForActivity(id);
+            var result = _membershipService.GetGroupAdminMembershipsForActivityAsync(id);
 
             if (result == null)
             {
@@ -95,7 +95,7 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.LEADER_BY_ACTIVITY)]
         public ActionResult<IEnumerable<MembershipViewModel>> GetLeadersForActivity(string id)
         {
-            var result = _membershipService.GetLeaderMembershipsForActivity(id);
+            var result = _membershipService.GetLeaderMembershipsForActivityAsync(id);
 
             if (result == null)
             {
@@ -114,7 +114,7 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.ADVISOR_BY_ACTIVITY)]
         public ActionResult<IEnumerable<MembershipViewModel>> GetAdvisorsForActivity(string id)
         {
-            var result = _membershipService.GetAdvisorMembershipsForActivity(id);
+            var result = _membershipService.GetAdvisorMembershipsForActivityAsync(id);
 
             if (result == null)
             {
@@ -133,7 +133,7 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
         public ActionResult<int> GetActivityFollowersCount(string id)
         {
-            var result = _membershipService.GetActivityFollowersCount(id);
+            var result = _membershipService.GetActivityFollowersCountAsync(id);
 
             return Ok(result);
         }
@@ -148,7 +148,7 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
         public ActionResult<int> GetActivityMembersCount(string id)
         {
-            var result = _membershipService.GetActivityMembersCount(id);
+            var result = _membershipService.GetActivityMembersCountAsync(id);
 
             return Ok(result);
         }
@@ -164,7 +164,7 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
         public ActionResult<int> GetActivityFollowersCountForSession(string id, string sess_cde)
         {
-            var result = _membershipService.GetActivityFollowersCountForSession(id, sess_cde);
+            var result = _membershipService.GetActivityFollowersCountForSessionAsync(id, sess_cde);
 
             return Ok(result);
         }
@@ -180,7 +180,7 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
         public ActionResult<int> GetActivityMembersCountForSession(string id, string sess_cde)
         {
-            var result = _membershipService.GetActivityMembersCountForSession(id, sess_cde);
+            var result = _membershipService.GetActivityMembersCountForSessionAsync(id, sess_cde);
 
             return Ok(result);
         }
@@ -214,7 +214,7 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_BY_STUDENT)]
         public ActionResult<IEnumerable<MembershipViewModel>> GetMembershipsForStudent(string id)
         {
-            var result = _membershipService.GetMembershipsForStudent(id);
+            var result = _membershipService.GetMembershipsForStudentAsync(id);
 
             if (result == null)
             {
@@ -231,10 +231,10 @@ namespace Gordon360.Controllers
         /// <returns>The membership information that the student is a part of</returns>
         [Route("student/username/{username}")]
         [HttpGet]
-        public async Task<ActionResult<List<MembershipViewModel>>> GetMembershipsForStudentByUsename(string username)
+        public async Task<ActionResult<List<MembershipViewModel>>> GetMembershipsForStudentByUsenameAsync(string username)
         {
             var id = _accountService.GetAccountByUsername(username).GordonID;
-            var result = await _membershipService.GetMembershipsForStudent(id);
+            var result = await _membershipService.GetMembershipsForStudentAsync(id);
 
             if (result == null)
             {
@@ -252,7 +252,7 @@ namespace Gordon360.Controllers
                 foreach (var item in result)
                 {
                     var act = _activityService.Get(item.ActivityCode);
-                    var admins = await _membershipService.GetGroupAdminMembershipsForActivity(item.ActivityCode);
+                    var admins = await _membershipService.GetGroupAdminMembershipsForActivityAsync(item.ActivityCode);
                     bool groupAdmin = false;
                     foreach (var admin in admins)               // group admin of a group can read membership of this group
                     {

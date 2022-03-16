@@ -32,7 +32,7 @@ namespace Gordon360.Services
         public MEMBERSHIP Add(MEMBERSHIP membership)
         {
             // validate returns a boolean value.
-            ValidateMembership(membership);
+            ValidateMembershipAsync(membership);
             IsPersonAlreadyInActivity(membership);
 
             // Get session begin date of the membership
@@ -91,7 +91,7 @@ namespace Gordon360.Services
         /// Fetches all membership records from storage.
         /// </summary>
         /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        public async Task<IEnumerable<MembershipViewModel>> GetAll()
+        public async Task<IEnumerable<MembershipViewModel>> GetAllAsync()
         {
 
             var allMemberships = await _context.Procedures.ALL_MEMBERSHIPSAsync();
@@ -122,7 +122,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="activityCode">The activity code.</param>
         /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        public async Task<IEnumerable<MembershipViewModel>> GetMembershipsForActivity(string activityCode)
+        public async Task<IEnumerable<MembershipViewModel>> GetMembershipsForActivityAsync(string activityCode)
         {
             var memberships = await _context.Procedures.MEMBERSHIPS_PER_ACT_CDEAsync(activityCode);
 
@@ -153,9 +153,9 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="activityCode">The activity code.</param>
         /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        public async Task<IEnumerable<MembershipViewModel>> GetGroupAdminMembershipsForActivity(string activityCode)
+        public async Task<IEnumerable<MembershipViewModel>> GetGroupAdminMembershipsForActivityAsync(string activityCode)
         {
-            var memberships = await GetMembershipsForActivity(activityCode);
+            var memberships = await GetMembershipsForActivityAsync(activityCode);
             return memberships.Where(m => m.GroupAdmin == true);
         }
 
@@ -164,10 +164,10 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="activityCode">The activity code.</param>
         /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        public async Task<IEnumerable<MembershipViewModel>> GetLeaderMembershipsForActivity(string activityCode)
+        public async Task<IEnumerable<MembershipViewModel>> GetLeaderMembershipsForActivityAsync(string activityCode)
         {
             var leaderRole = Helpers.GetLeaderRoleCodes();
-            var memberships = await GetMembershipsForActivity(activityCode);
+            var memberships = await GetMembershipsForActivityAsync(activityCode);
             return memberships.Where(x => x.Participation == leaderRole);
         }
 
@@ -176,11 +176,11 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="activityCode">The activity code.</param>
         /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        public async Task<IEnumerable<MembershipViewModel>> GetAdvisorMembershipsForActivity(string activityCode)
+        public async Task<IEnumerable<MembershipViewModel>> GetAdvisorMembershipsForActivityAsync(string activityCode)
         {
 
             var advisorRole = Helpers.GetAdvisorRoleCodes();
-            var memberships = await GetMembershipsForActivity(activityCode);
+            var memberships = await GetMembershipsForActivityAsync(activityCode);
             return memberships.Where(x => x.Participation == advisorRole);
         }
 
@@ -189,7 +189,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">The student's AD Username.</param>
         /// <returns>A MembershipViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
-        public async Task<IEnumerable<MembershipViewModel>> GetMembershipsForStudent(string username)
+        public async Task<IEnumerable<MembershipViewModel>> GetMembershipsForStudentAsync(string username)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username.Trim() == username);
             if (account == null)
@@ -227,9 +227,9 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="activityCode">The activity code.</param>
         /// <returns>int.</returns>
-        public async Task<int> GetActivityFollowersCount(string activityCode)
+        public async Task<int> GetActivityFollowersCountAsync(string activityCode)
         {
-            var memberships = await GetMembershipsForActivity(activityCode);
+            var memberships = await GetMembershipsForActivityAsync(activityCode);
             return memberships.Where(x => x.Participation == "GUEST").Count();
         }
 
@@ -238,9 +238,9 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="activityCode">The activity code.</param>
         /// <returns>int.</returns>
-        public async Task<int> GetActivityMembersCount(string activityCode)
+        public async Task<int> GetActivityMembersCountAsync(string activityCode)
         {
-            var memberships = await GetMembershipsForActivity(activityCode);
+            var memberships = await GetMembershipsForActivityAsync(activityCode);
             return memberships.Where(x => x.Participation != "GUEST").Count();
         }
 
@@ -250,9 +250,9 @@ namespace Gordon360.Services
         /// <param name="activityCode">The activity code.</param>
         /// <param name="sessionCode">The session code</param>
         /// <returns>int.</returns>
-        public async Task<int> GetActivityFollowersCountForSession(string activityCode, string sessionCode)
+        public async Task<int> GetActivityFollowersCountForSessionAsync(string activityCode, string sessionCode)
         {
-            var memberships = await GetMembershipsForActivity(activityCode);
+            var memberships = await GetMembershipsForActivityAsync(activityCode);
             return memberships.Where(x => x.Participation == "GUEST" && x.SessionCode == sessionCode).Count();
         }
 
@@ -262,9 +262,9 @@ namespace Gordon360.Services
         /// <param name="activityCode">The activity code.</param>
         /// <param name="sessionCode">The session code</param>
         /// <returns>int.</returns>
-        public async Task<int> GetActivityMembersCountForSession(string activityCode, string sessionCode)
+        public async Task<int> GetActivityMembersCountForSessionAsync(string activityCode, string sessionCode)
         {
-            var memberships = await GetMembershipsForActivity(activityCode);
+            var memberships = await GetMembershipsForActivityAsync(activityCode);
             return memberships.Where(x => x.Participation != "GUEST" && x.SessionCode == sessionCode).Count();
         }
 
@@ -282,7 +282,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
             }
 
-            ValidateMembership(membership);
+            ValidateMembershipAsync(membership);
 
             // One can only update certain fields within a membrship
             //original.BEGIN_DTE = membership.BEGIN_DTE;
@@ -310,7 +310,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
             }
 
-            ValidateMembership(membership);
+            ValidateMembershipAsync(membership);
 
             var isGuest = original.PART_CDE == "GUEST";
 
@@ -349,7 +349,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="membership">The membership to validate</param>
         /// <returns>True if the membership is valid. Throws ResourceNotFoundException if not. Exception is caught in an Exception Filter</returns>
-        private async Task<bool> ValidateMembership(MEMBERSHIP membership)
+        private async Task<bool> ValidateMembershipAsync(MEMBERSHIP membership)
         {
             var personExists = _context.ACCOUNT.Where(x => x.gordon_id.Trim() == membership.ID_NUM.ToString()).Any();
             if (!personExists)
@@ -398,7 +398,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="gordonID">Gordon ID of the user to check</param>	
         /// <returns>true if student is a Group Admin, else false</returns>	
-        public Boolean IsGroupAdmin(int gordonID)
+        public bool IsGroupAdmin(int gordonID)
         {
             return _context.MEMBERSHIP.Any(membership => membership.ID_NUM == gordonID && membership.GRP_ADMIN == true);
         }

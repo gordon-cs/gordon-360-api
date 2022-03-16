@@ -24,9 +24,9 @@ namespace Gordon360.Controllers
         /// <returns>A DiningInfo object</returns>
         [HttpGet]
         [Route("")]
-        public async Task<ActionResult<string>> Get()
+        public async Task<ActionResult<string>> GetAsync()
         {
-            var currentSession = await Helpers.GetCurrentSession();
+            var currentSession = await Helpers.GetCurrentSessionAsync();
             var authenticatedUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var diningInfo = _diningService.GetDiningPlanInfo(authenticatedUserId, currentSession.SessionCode);
 

@@ -24,7 +24,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">AD Username</param>
         /// <param name="value">Y or N</param>
-        public async Task UpdateSchedulePrivacy(string username, string value)
+        public async Task UpdateSchedulePrivacyAsync(string username, string value)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
 
@@ -42,7 +42,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">AD Username</param>
         /// <param name="value">New description</param>
-        public async Task UpdateDescription(string username, string value)
+        public async Task UpdateDescriptionAsync(string username, string value)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
 
@@ -60,7 +60,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">AD Username</param>
         /// <param name="value">Modified Time</param>
-        public async Task UpdateModifiedTimeStamp(string username, DateTime value)
+        public async Task UpdateModifiedTimeStampAsync(string username, DateTime value)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
 

@@ -21,7 +21,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">id</param>
         /// <returns>VictoryPromiseViewModel if found, null if not found</returns>
-        public async Task<IEnumerable<VictoryPromiseViewModel>> GetVPScores(string username)
+        public async Task<IEnumerable<VictoryPromiseViewModel>> GetVPScoresAsync(string username)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
             if (account == null)

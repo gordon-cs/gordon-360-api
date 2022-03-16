@@ -43,7 +43,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="sessionCode">The session code</param>
         /// <returns>ActivityViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
-        public async Task<IEnumerable<ActivityInfoViewModel>> GetActivitiesForSession(string sessionCode)
+        public async Task<IEnumerable<ActivityInfoViewModel>> GetActivitiesForSessionAsync(string sessionCode)
         {
             var query = await _context.Procedures.ACTIVE_CLUBS_PER_SESS_IDAsync(sessionCode);
             if (query == null)
@@ -70,7 +70,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="sessionCode">The session code</param>
         /// <returns>ActivityViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
-        public async Task<IEnumerable<string>> GetActivityTypesForSession(string sessionCode)
+        public async Task<IEnumerable<string>> GetActivityTypesForSessionAsync(string sessionCode)
         {
             // Stored procedure returns column ACT_TYPE_DESC
             var query = await _context.Procedures.DISTINCT_ACT_TYPEAsync(sessionCode);

@@ -312,9 +312,9 @@ namespace Gordon360.Controllers
         /// </returns>
         [HttpGet]
         [Route("Advisors/{username}")]
-        public async Task<ActionResult<IEnumerable<AdvisorViewModel>>> GetAdvisors(string username)
+        public async Task<ActionResult<IEnumerable<AdvisorViewModel>>> GetAdvisorsAsync(string username)
         {
-            var advisors = await _profileService.GetAdvisors(username);
+            var advisors = await _profileService.GetAdvisorsAsync(username);
 
             return Ok(advisors);
         }
@@ -386,11 +386,11 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("image")]
-        public async Task<ActionResult<JObject>> GetMyImg()
+        public async Task<ActionResult<JObject>> GetMyImgAsync()
         {
             var username = AuthUtils.GetAuthenticatedUserUsername(User);
 
-            var photoModel = await _profileService.GetPhotoPath(username);
+            var photoModel = await _profileService.GetPhotoPathAsync(username);
 
             string pref_img = "";
             string default_img = "";
@@ -463,12 +463,12 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("image/{username}")]
-        public async Task<ActionResult<JObject>> getImg(string username)
+        public async Task<ActionResult<JObject>> GetImgAsync(string username)
         {
             var authUsername = AuthUtils.GetAuthenticatedUserUsername(User);
             var viewerType = _roleCheckingService.GetCollegeRole(authUsername);
             var id = _accountService.GetAccountByUsername(authUsername).GordonID;
-            var photoInfo = await _profileService.GetPhotoPath(id);
+            var photoInfo = await _profileService.GetPhotoPathAsync(id);
 
             var filePath = "";
             var fileName = "";
@@ -636,7 +636,7 @@ namespace Gordon360.Controllers
         ///// <returns></returns>
         //[HttpPost]
         //[Route("image")]
-        //public async Task<ActionResult> PostImage()
+        //public async Task<ActionResult> PostImageAsync()
         //{
         //    var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
         //    string root = _config["DEFAULT_PREF_IMAGE_PATH"];
@@ -688,7 +688,7 @@ namespace Gordon360.Controllers
         ///// <returns></returns>
         //[HttpPost]
         //[Route("IDimage")]
-        //public async Task<ActionResult> PostIDImage()
+        //public async Task<ActionResult> PostIDImageAsync()
         //{
         //    var authenticatedUserUsername = AuthUtils.GetUsername(User);
         //    string root = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_ID_SUBMISSION_PATH"];
@@ -767,7 +767,7 @@ namespace Gordon360.Controllers
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
             }
-            _profileService.UpdateProfileImage(authenticatedUserUsername, null, null);  //update database
+            _profileService.UpdateProfileImageAsync(authenticatedUserUsername, null, null);  //update database
             return Ok();
         }
 
@@ -784,7 +784,7 @@ namespace Gordon360.Controllers
         {
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
-            _profileService.UpdateProfileLink(authenticatedUserUsername, type, path);
+            _profileService.UpdateProfileLinkAsync(authenticatedUserUsername, type, path);
 
             return Ok();
         }
@@ -834,7 +834,7 @@ namespace Gordon360.Controllers
         public ActionResult UpdateMobilePrivacy(string value)
         {
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
-            _profileService.UpdateMobilePrivacy(authenticatedUserUsername, value);
+            _profileService.UpdateMobilePrivacyAsync(authenticatedUserUsername, value);
 
             return Ok();
         }
@@ -849,7 +849,7 @@ namespace Gordon360.Controllers
         public ActionResult UpdateImagePrivacy(string value)
         {
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
-            _profileService.UpdateImagePrivacy(authenticatedUserUsername, value);
+            _profileService.UpdateImagePrivacyAsync(authenticatedUserUsername, value);
 
             return Ok();
         }

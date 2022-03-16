@@ -67,7 +67,7 @@ namespace Gordon360.Controllers
         {
             var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var result = _saveService.AddRide(newRide, authenticatedUserIdString);
+            var result = _saveService.AddRideAsync(newRide, authenticatedUserIdString);
 
             if (result == null)
             {
@@ -82,11 +82,11 @@ namespace Gordon360.Controllers
         /// <remarks>Calls the server to make a call and remove the given ride from the database</remarks>
         [HttpPut]
         [Route("rides/cancel/{rideID}")]
-        public async Task<ActionResult<int>> CancelRide(string rideID)
+        public async Task<ActionResult<int>> CancelRideAsync(string rideID)
         {
             var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var result = await _saveService.CancelRide(rideID, authenticatedUserIdString);
+            var result = await _saveService.CancelRideAsync(rideID, authenticatedUserIdString);
 
             if (result != 0)
             {
@@ -101,11 +101,11 @@ namespace Gordon360.Controllers
         /// <remarks>Calls the server to make a call and remove the given ride from the database</remarks>
         [HttpDelete]
         [Route("rides/del/{rideID}")]
-        public ActionResult<Save_Rides> DeleteRide(string rideID)
+        public ActionResult<Save_Rides> DeleteRideAsync(string rideID)
         {
             var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var result = _saveService.DeleteRide(rideID, authenticatedUserIdString);
+            var result = _saveService.DeleteRideAsync(rideID, authenticatedUserIdString);
 
             if (result == null)
             {
@@ -126,7 +126,7 @@ namespace Gordon360.Controllers
             var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             newBooking.ID = authenticatedUserIdString;
 
-            var result = _saveService.AddBooking(newBooking);
+            var result = _saveService.AddBookingAsync(newBooking);
 
             if (result == null)
             {
@@ -145,7 +145,7 @@ namespace Gordon360.Controllers
         {
             var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var result = _saveService.DeleteBooking(rideID, authenticatedUserIdString);
+            var result = _saveService.DeleteBookingAsync(rideID, authenticatedUserIdString);
 
             if (result == null)
             {

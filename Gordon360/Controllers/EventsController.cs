@@ -23,12 +23,12 @@ namespace Gordon360.Controllers
 
         [HttpGet]
         [Route("attended/{term}")]
-        public async Task<ActionResult<IEnumerable<AttendedEventViewModel>>> GetEventsByTerm(string term)
+        public async Task<ActionResult<IEnumerable<AttendedEventViewModel>>> GetEventsByTermAsync(string term)
         {
             //get token data from context, username is the username of current logged in person
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
-            var result = await _eventService.GetEventsForStudentByTerm(authenticatedUserUsername, term);
+            var result = await _eventService.GetEventsForStudentByTermAsync(authenticatedUserUsername, term);
 
             if (result == null)
             {

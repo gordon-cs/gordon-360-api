@@ -25,7 +25,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">The AD Username of the student</param>
         /// <returns>StudentScheduleViewModel if found, null if not found</returns>
-        public async Task<IEnumerable<ScheduleViewModel>> GetScheduleStudent(string username)
+        public async Task<IEnumerable<ScheduleViewModel>> GetScheduleStudentAsync(string username)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
 
@@ -35,7 +35,7 @@ namespace Gordon360.Services
             }
 
 
-            var currentSession = await Helpers.GetCurrentSession();
+            var currentSession = await Helpers.GetCurrentSessionAsync();
             var result = await _context.Procedures.STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDEAsync(int.Parse(account.gordon_id), currentSession.SessionCode);
 
             return (IEnumerable<ScheduleViewModel>)result;
@@ -47,7 +47,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">The AD Username of the instructor</param>
         /// <returns>StudentScheduleViewModel if found, null if not found</returns>
-        public async Task<IEnumerable<ScheduleViewModel>> GetScheduleFaculty(string username)
+        public async Task<IEnumerable<ScheduleViewModel>> GetScheduleFacultyAsync(string username)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
             //var currentSessionCode = Helpers.GetCurrentSession().SessionCode;
@@ -56,7 +56,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Schedule was not found." };
             }
 
-            var currentSession = await Helpers.GetCurrentSession();
+            var currentSession = await Helpers.GetCurrentSessionAsync();
             var result = await _context.Procedures.INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDEAsync(int.Parse(account.gordon_id), currentSession.SessionCode);
 
             return (IEnumerable<ScheduleViewModel>)result;

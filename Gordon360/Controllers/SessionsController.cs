@@ -59,9 +59,9 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("current")]
         [AllowAnonymous]
-        public async Task<ActionResult<SessionViewModel>> GetCurrentSession()
+        public async Task<ActionResult<SessionViewModel>> GetCurrentSessionAsync()
         {
-            var currentSession = await Helpers.GetCurrentSession();
+            var currentSession = await Helpers.GetCurrentSessionAsync();
             if (currentSession == null)
             {
                 return NotFound();
@@ -113,9 +113,9 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("daysLeft")]
         [AllowAnonymous]
-        public async Task<ActionResult<double[]>> GetDaysLeftinSemester()
+        public async Task<ActionResult<double[]>> GetDaysLeftInSemesterAsync()
         {
-            var days = await Helpers.GetDaysLeft();
+            var days = await Helpers.GetDaysLeftAsync();
             if (days[1] == 0 && days[2] == 0 || days == null)
             {
                 return NotFound();

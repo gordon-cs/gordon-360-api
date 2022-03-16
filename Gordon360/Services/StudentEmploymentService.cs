@@ -22,7 +22,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">AD Username of user to get employment</param>
         /// <returns>VictoryPromiseViewModel if found, null if not found</returns>
-        public async Task<IEnumerable<StudentEmploymentViewModel>> GetEmployment(string username)
+        public async Task<IEnumerable<StudentEmploymentViewModel>> GetEmploymentAsync(string username)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
             if (account == null)
