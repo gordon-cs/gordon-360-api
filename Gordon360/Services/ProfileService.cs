@@ -6,6 +6,7 @@ using Gordon360.Static.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Services
 {
@@ -98,20 +99,25 @@ namespace Gordon360.Services
         /// <summary>
         /// get advisors for particular student
         /// </summary>
-        /// <param name="id">student id</param>
+        /// <param name="username">AD username</param>
         /// <returns></returns>
-        public async Task<IEnumerable<AdvisorViewModel>> GetAdvisors(string id)
+        public async Task<IEnumerable<AdvisorViewModel>> GetAdvisors(string username)
         {
-            var query = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
-            if (query == null)
+            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
+            if (account == null)
             {
                 //Return an empty list if the id account does not have advisor
                 return resultList;
             }
 
             // Stored procedure returns row containing advisor1 ID, advisor2 ID, advisor3 ID 
-            var advisorIDsEnumerable = await _context.Procedures.ADVISOR_SEPARATEAsync(int.Parse(id));
+            var advisorIDsEnumerable = await _context.Procedures.ADVISOR_SEPARATEAsync(int.Parse(account.gordon_id));
             var advisorIDs = advisorIDsEnumerable.FirstOrDefault();
+
+            if (advisorIDs == null)
+            {
+                return null;
+            }
 
             List<AdvisorViewModel> resultList = new();
 
@@ -119,7 +125,7 @@ namespace Gordon360.Services
             {
                 if (!string.IsNullOrEmpty(advisorID))
                 {
-                    var advisor = _accountService.Get(advisorID);
+                    var advisor = _accountService.GetAccountByID(advisorID);
                     resultList.Add(new AdvisorViewModel(advisor.FirstName, advisor.LastName, advisor.ADUserName));
                 }
             }
@@ -160,17 +166,17 @@ namespace Gordon360.Services
         /// <summary>
         /// Get photo path for profile
         /// </summary>
-        /// <param name="id">id</param>
+        /// <param name="username">AD username</param>
         /// <returns>PhotoPathViewModel if found, null if not found</returns>
-        public async Task<PhotoPathViewModel> GetPhotoPath(string id)
+        public async Task<PhotoPathViewModel> GetPhotoPath(string username)
         {
-            var query = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
-            if (query == null)
+            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
+            if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            var photoInfoList = await _context.Procedures.PHOTO_INFO_PER_USER_NAMEAsync(int.Parse(id));
+            var photoInfoList = await _context.Procedures.PHOTO_INFO_PER_USER_NAMEAsync(int.Parse(account.gordon_id));
             var photoInfo = photoInfoList.FirstOrDefault();
 
             return new PhotoPathViewModel { Img_Name = photoInfo.Img_Name, Img_Path = photoInfo.Img_Path, Pref_Img_Name = photoInfo.Pref_Img_Name, Pref_Img_Path = photoInfo.Pref_Img_Path };
@@ -181,7 +187,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">The username</param>
         /// <returns>ProfileViewModel if found, null if not found</returns>
-        public ProfileCustomViewModel GetCustomUserInfo(string username)
+        public ProfileCustomViewModel? GetCustomUserInfo(string username)
         {
             return _context.CUSTOM_PROFILE.FirstOrDefault(x => x.username == username);
         }
@@ -189,21 +195,22 @@ namespace Gordon360.Services
         /// <summary>
         /// Sets the path for the profile image.
         /// </summary>
-        /// <param name="id">The student id</param>
+        /// <param name="username">AD Username</param>
         /// <param name="path"></param>
         /// <param name="name"></param>
-        public async void UpdateProfileImage(string id, string path, string name)
+        public async void UpdateProfileImage(string username, string path, string name)
         {
-            if (_context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id) == null)
+            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
+            if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            await _context.Procedures.UPDATE_PHOTO_PATHAsync(int.Parse(id), path, name);
+            await _context.Procedures.UPDATE_PHOTO_PATHAsync(int.Parse(account.gordon_id), path, name);
             // Update value in cached data
-            var student = Data.StudentData.FirstOrDefault(x => x.ID == id);
-            var facStaff = Data.FacultyStaffData.FirstOrDefault(x => x.ID == id);
-            var alum = Data.AlumniData.FirstOrDefault(x => x.ID == id);
+            var student = Data.StudentData.FirstOrDefault(x => x.ID == account.gordon_id);
+            var facStaff = Data.FacultyStaffData.FirstOrDefault(x => x.ID == account.gordon_id);
+            var alum = Data.AlumniData.FirstOrDefault(x => x.ID == account.gordon_id);
             if (student != null)
             {
                 student.preferred_photo = (path == null ? 0 : 1);
@@ -266,19 +273,19 @@ namespace Gordon360.Services
         /// <summary>
         /// privacy setting of mobile phone.
         /// </summary>
-        /// <param name="id">id</param>
+        /// <param name="username">AD Username</param>
         /// <param name="value">Y or N</param>
-        public async void UpdateMobilePrivacy(string id, string value)
+        public async void UpdateMobilePrivacy(string username, string value)
         {
-            var original = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
+            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
 
-            if (original == null)
+            if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
-            await _context.Procedures.UPDATE_PHONE_PRIVACYAsync(int.Parse(id), value);
+            await _context.Procedures.UPDATE_PHONE_PRIVACYAsync(int.Parse(account.gordon_id), value);
             // Update value in cached data
-            var student = Data.StudentData.FirstOrDefault(x => x.ID == id);
+            var student = Data.StudentData.FirstOrDefault(x => x.ID == account.gordon_id);
             if (student != null)
             {
                 student.IsMobilePhonePrivate = (value == "Y" ? 1 : 0);
@@ -315,22 +322,22 @@ namespace Gordon360.Services
         /// <summary>
         /// privacy setting user profile photo.
         /// </summary>
-        /// <param name="id">id</param>
+        /// <param name="username">AD Username</param>
         /// <param name="value">Y or N</param>
-        public async void UpdateImagePrivacy(string id, string value)
+        public async void UpdateImagePrivacy(string username, string value)
         {
-            var original = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
+            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
 
-            if (original == null)
+            if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            await _context.Procedures.UPDATE_SHOW_PICAsync(original.account_id, value);
+            await _context.Procedures.UPDATE_SHOW_PICAsync(account.account_id, value);
             // Update value in cached data
-            var student = Data.StudentData.FirstOrDefault(x => x.ID == id);
-            var facStaff = Data.FacultyStaffData.FirstOrDefault(x => x.ID == id);
-            var alum = Data.AlumniData.FirstOrDefault(x => x.ID == id);
+            var student = Data.StudentData.FirstOrDefault(x => x.ID == account.gordon_id);
+            var facStaff = Data.FacultyStaffData.FirstOrDefault(x => x.ID == account.gordon_id);
+            var alum = Data.AlumniData.FirstOrDefault(x => x.ID == account.gordon_id);
             if (student != null)
             {
                 student.show_pic = (value == "Y" ? 1 : 0);

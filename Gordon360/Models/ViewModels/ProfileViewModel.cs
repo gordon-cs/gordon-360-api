@@ -1,16 +1,98 @@
 ﻿namespace Gordon360.Models.ViewModels
 {
-    public record ProfileViewModel
-    {
-        record FacultyStaffProfileViewModel
-        (
-            string ID, string Title, string FirstName, string MiddleName, string LastName, string Suffix,
-            string MaidenName, string NickName, string OnCampusDepartment, string OnCampusBuilding, string OnCampusRoom,
-            string OnCampusPhone, string OnCampusPrivatePhone, string OnCampusFax, string HomeStreet1,
-            string HomeStreet2, string HomeCity, string HomeState, string HomePostalCode, string HomeCountry,
-            string HomePhone, string HomeFax, string KeepPrivate, string JobTitle, string SpouseName, string Dept,
-            string Barcode, string Gender, string Email, string Type, string AD_Username, string office_hours,
-            int? preferred_photo, int? show_pic, string BuildingDescription, string Country, string Mail_Location
-        ) : ProfileViewModel();
-    }
+    public record ProfileViewModel(
+        // All Profiles
+        string ID,
+        string Title,
+        string FirstName,
+        string MiddleName,
+        string LastName,
+        string Suffix,
+        string MaidenName,
+        string NickName,
+        string Email,
+        string Gender,
+        string HomeStreet1,
+        string HomeStreet2,
+        string HomeCity,
+        string HomeState,
+        string HomePostalCode,
+        string HomeCountry,
+        string HomePhone,
+        string HomeFax,
+        string AD_Username,
+        int? show_pic,
+        int? preferred_photo,
+        string Country,
+        string Barcode,
+
+        // Student Only
+        string OnOffCampus,
+        string OffCampusStreet1,
+        string OffCampusStreet2,
+        string OffCampusCity,
+        string OffCampusState,
+        string OffCampusPostalCode,
+        string OffCampusCountry,
+        string OffCampusPhone,
+        string OffCampusFax,
+        string Major3,
+        string Major3Description,
+        string Minor1,
+        string Minor1Description,
+        string Minor2,
+        string Minor2Description,
+        string Minor3,
+        string Minor3Description,
+        string GradDate,
+        string MobilePhone,
+        bool IsMobilePhonePrivate,
+        int? ChapelRequired,
+        int? ChapelAttended,
+        string Cohort,
+        string Class,
+        string AdvisorIDs,
+        string Married,
+        string Commuter,
+
+        // Alumni Only
+        string? WebUpdate,
+        string HomeEmail,
+        string MaritalStatus,
+        string College,
+        string ClassYear,
+        string? PreferredClassYear,
+        string ShareName,
+        string? ShareAddress,
+
+        // Student And Alumni Only
+        string Major,
+        string Major1Description,
+        string Major2,
+        string Major2Description,
+        string grad_student,
+
+        // FacStaff Only
+        string? OnCampusDepartment,
+        string? Type,
+        string? office_hours,
+        string Dept,
+
+        // FacStaff and Alumni Only
+        string JobTitle,
+        string SpouseName,
+
+        // FacStaff and Student Only
+        string BuildingDescription,
+        string Mail_Location,
+        string OnCampusBuilding,
+        string OnCampusRoom,
+        string OnCampusPhone,
+        string OnCampusPrivatePhone,
+        string OnCampusFax,
+        string KeepPrivate,
+
+        // ProfileViewModel Only
+        string PersonType
+        );
 }

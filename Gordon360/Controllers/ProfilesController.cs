@@ -5,7 +5,9 @@ using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
+using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
@@ -15,7 +17,9 @@ using Newtonsoft.Json.Linq;
 using Gordon360.Static.Names;
 using Gordon360.Models.ViewModels;
 using System.Collections.Generic;
-using System.Security.Claims;
+using System.IO;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace Gordon360.Controllers
 {
@@ -25,22 +29,23 @@ namespace Gordon360.Controllers
         private readonly IProfileService _profileService;
         private readonly IAccountService _accountService;
         private readonly IRoleCheckingService _roleCheckingService;
+        private readonly IConfiguration _config;
 
-        public ProfilesController(CCTContext context)
+        public ProfilesController(CCTContext context, IConfiguration config)
         {
             _profileService = new ProfileService(context);
             _accountService = new AccountService(context);
             _roleCheckingService = new RoleCheckingService(context);
+            _config = config;
         }
 
         /// <summary>Get profile info of currently logged in user</summary>
         /// <returns></returns>
         [HttpGet]
         [Route("")]
-        public ProfileViewModel Get()
+        public ActionResult<ProfileViewModel> Get()
         {
-            //get token data from context, username is the username of current logged in person
-            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name)?.Value?.Split('@')[0];
+            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
             if (authenticatedUserUsername == null)
             {
@@ -75,7 +80,7 @@ namespace Gordon360.Controllers
                             MergeArrayHandling = MergeArrayHandling.Union
                         });
                         stualufac.Add("PersonType", "stualufac");                                         // assign a type to the json object 
-                        return student;
+                        return Ok(stualufac.ToObject<ProfileViewModel>());
                     }
                     JObject stufac = JObject.FromObject(student);
                     stufac.Merge(JObject.FromObject(faculty), new JsonMergeSettings
@@ -87,7 +92,7 @@ namespace Gordon360.Controllers
                         MergeArrayHandling = MergeArrayHandling.Union
                     });
                     stufac.Add("PersonType", "stufac");
-                    return student;
+                    return Ok(stufac.ToObject<ProfileViewModel>());
                 }
                 else if (alumni != null)
                 {
@@ -101,7 +106,7 @@ namespace Gordon360.Controllers
                         MergeArrayHandling = MergeArrayHandling.Union
                     });
                     stualu.Add("PersonType", "stualu");
-                    return student;
+                    return Ok(stualu.ToObject<ProfileViewModel>());
                 }
                 JObject stu = JObject.FromObject(student);
                 stu.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
@@ -109,7 +114,7 @@ namespace Gordon360.Controllers
                     MergeArrayHandling = MergeArrayHandling.Union
                 });
                 stu.Add("PersonType", "stu");
-                return student;
+                return Ok(stu.ToObject<ProfileViewModel>());
             }
             else if (faculty != null)
             {
@@ -125,7 +130,7 @@ namespace Gordon360.Controllers
                         MergeArrayHandling = MergeArrayHandling.Union
                     });
                     alufac.Add("PersonType", "alufac");
-                    return faculty;
+                    return Ok(alufac.ToObject<ProfileViewModel>());
                 }
                 JObject fac = JObject.FromObject(faculty);
                 fac.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
@@ -133,7 +138,7 @@ namespace Gordon360.Controllers
                     MergeArrayHandling = MergeArrayHandling.Union
                 });
                 fac.Add("PersonType", "fac");
-                return faculty;
+                return Ok(fac.ToObject<ProfileViewModel>());
             }
             else if (alumni != null)
             {
@@ -143,11 +148,11 @@ namespace Gordon360.Controllers
                     MergeArrayHandling = MergeArrayHandling.Union
                 });
                 alu.Add("PersonType", "alu");
-                return alumni;
+                return Ok(alu.ToObject<ProfileViewModel>());
             }
             else
             {
-                return null;
+                return NotFound();
             }
         }
 
@@ -156,11 +161,10 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("{username}")]
-        public ActionResult<StudentProfileViewModel> GetUserProfile(string username)
+        public ActionResult<ProfileViewModel> GetUserProfile(string username)
         {
-            //get token data from context, username is the username of current logged in person
-            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
-            var viewerType = _roleCheckingService.getCollegeRole(authenticatedUserUsername);
+            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserUsername);
 
             //search this person in cached data.
             var _student = _profileService.GetStudentProfileByUsername(username);
@@ -225,7 +229,7 @@ namespace Gordon360.Controllers
                             MergeArrayHandling = MergeArrayHandling.Union
                         });
                         stualufac.Add("PersonType", "stualufac");                                         // assign a type to the json object 
-                        return Ok(stualufac);
+                        return Ok(stualufac.ToObject<ProfileViewModel>());
                     }
                     JObject stufac = JObject.FromObject(student);
                     stufac.Merge(JObject.FromObject(faculty), new JsonMergeSettings
@@ -237,7 +241,7 @@ namespace Gordon360.Controllers
                         MergeArrayHandling = MergeArrayHandling.Union
                     });
                     stufac.Add("PersonType", "stufac");
-                    return Ok(stufac);
+                    return Ok(stufac.ToObject<ProfileViewModel>());
                 }
                 else if (alumni != null)
                 {
@@ -251,7 +255,7 @@ namespace Gordon360.Controllers
                         MergeArrayHandling = MergeArrayHandling.Union
                     });
                     stualu.Add("PersonType", "stualu");
-                    return Ok(stualu);
+                    return Ok(stualu.ToObject<ProfileViewModel>());
                 }
                 JObject stu = JObject.FromObject(student);
                 stu.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
@@ -259,7 +263,7 @@ namespace Gordon360.Controllers
                     MergeArrayHandling = MergeArrayHandling.Union
                 });
                 stu.Add("PersonType", "stu");
-                return Ok(stu);
+                return Ok(stu.ToObject<ProfileViewModel>());
             }
             else if (faculty != null)
             {
@@ -275,7 +279,7 @@ namespace Gordon360.Controllers
                         MergeArrayHandling = MergeArrayHandling.Union
                     });
                     alufac.Add("PersonType", "alufac");
-                    return Ok(alufac);
+                    return Ok(alufac.ToObject<ProfileViewModel>());
                 }
                 JObject fac = JObject.FromObject(faculty);
                 fac.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
@@ -283,7 +287,7 @@ namespace Gordon360.Controllers
                     MergeArrayHandling = MergeArrayHandling.Union
                 });
                 fac.Add("PersonType", "fac");
-                return Ok(fac);
+                return Ok(fac.ToObject<ProfileViewModel>());
             }
             else if (alumni != null)
             {
@@ -293,7 +297,7 @@ namespace Gordon360.Controllers
                     MergeArrayHandling = MergeArrayHandling.Union
                 });
                 alu.Add("PersonType", "alu");
-                return Ok(alu);
+                return Ok(alu.ToObject<ProfileViewModel>());
             }
             else
             {
@@ -308,13 +312,9 @@ namespace Gordon360.Controllers
         /// </returns>
         [HttpGet]
         [Route("Advisors/{username}")]
-        public ActionResult<IEnumerable<AdvisorViewModel>> GetAdvisors(string username)
+        public async Task<ActionResult<IEnumerable<AdvisorViewModel>>> GetAdvisors(string username)
         {
-            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-            var advisors = _profileService.GetAdvisors(authenticatedUserIdString);
-
-            var advisors = _profileService.GetAdvisors((id == username ? username : id));
+            var advisors = await _profileService.GetAdvisors(username);
 
             return Ok(advisors);
         }
@@ -385,32 +385,30 @@ namespace Gordon360.Controllers
         /// <summary>Get the profile image of currently logged in user</summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("Image")]
-        public ActionResult<JObject> GetMyImg()
+        [Route("image")]
+        public async Task<ActionResult<JObject>> GetMyImg()
         {
-            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var username = AuthUtils.GetAuthenticatedUserUsername(User);
 
-            var photoModel = _profileService.GetPhotoPath(authenticatedUserIdString);
+            var photoModel = await _profileService.GetPhotoPath(username);
 
             string pref_img = "";
             string default_img = "";
 
             var fileName = "";
-            var filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PREF_IMAGE_PATH"];
+            string filePath = _config["DEFAULT_PREF_IMAGE_PATH"];
 
             var unapprovedFileName = username + "_" + _accountService.GetAccountByUsername(username).account_id + ".jpg";
-            var unapprovedFilePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_ID_SUBMISSION_PATH"];
+            var unapprovedFilePath = _config["DEFAULT_ID_SUBMISSION_PATH"];
 
             byte[] imageBytes;
             JObject result = new JObject();
 
             if (photoModel == null) //There is no preferred or ID image
             {
-                if (File.Exists(unapprovedFilePath + unapprovedFileName))
+                if (System.IO.File.Exists(unapprovedFilePath + unapprovedFileName))
                 {
-
-                    var webClient = new WebClient();
-                    imageBytes = webClient.DownloadData(unapprovedFilePath + unapprovedFileName);
+                    imageBytes = await System.IO.File.ReadAllBytesAsync(unapprovedFilePath + unapprovedFileName);
 
                     string unapproved_img = Convert.ToBase64String(imageBytes);
                     result.Add("def", unapproved_img);
@@ -418,8 +416,7 @@ namespace Gordon360.Controllers
                 }
                 else
                 {
-                    var webClient = new WebClient();
-                    imageBytes = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
+                    imageBytes = await System.IO.File.ReadAllBytesAsync(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
                     default_img = Convert.ToBase64String(imageBytes);
                     result.Add("def", default_img);
                     return Ok(result);
@@ -429,19 +426,17 @@ namespace Gordon360.Controllers
 
             fileName = photoModel.Pref_Img_Name;
 
-            if (string.IsNullOrEmpty(fileName) || !File.Exists(filePath + fileName)) //check file existence for prefferred image.
+            if (string.IsNullOrEmpty(fileName) || !System.IO.File.Exists(filePath + fileName)) //check file existence for prefferred image.
             {
-                filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_IMAGE_PATH"];
+                filePath = _config["DEFAULT_IMAGE_PATH"];
                 fileName = photoModel.Img_Name;
                 try
                 {
-                    imageBytes = File.ReadAllBytes(filePath + fileName);
+                    imageBytes = await System.IO.File.ReadAllBytesAsync(filePath + fileName);
                 }
                 catch (FileNotFoundException e)
                 {
-                    Debug.WriteLine(e.Message);
-                    var webClient = new WebClient();
-                    imageBytes = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
+                    imageBytes = System.IO.File.ReadAllBytes(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
                 }
                 default_img = Convert.ToBase64String(imageBytes);
                 result.Add("def", default_img);
@@ -451,13 +446,12 @@ namespace Gordon360.Controllers
             {
                 try
                 {
-                    imageBytes = File.ReadAllBytes(filePath + fileName);
+                    imageBytes = await System.IO.File.ReadAllBytesAsync(filePath + fileName);
                 }
                 catch (FileNotFoundException e)
                 {
                     System.Diagnostics.Debug.WriteLine(e.Message);
-                    var webClient = new WebClient();
-                    imageBytes = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
+                    imageBytes = await System.IO.File.ReadAllBytesAsync(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
                 }
                 pref_img = Convert.ToBase64String(imageBytes);
                 result.Add("pref", pref_img);
@@ -465,16 +459,16 @@ namespace Gordon360.Controllers
             }
         }
 
-        /// <summary>Get the profile image of currently logged in user</summary>
+        /// <summary>Get the profile image of the given user</summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("Image/{username}")]
-        public ActionResult<JObject> getImg(string username)
+        [Route("image/{username}")]
+        public async Task<ActionResult<JObject>> getImg(string username)
         {
-            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
-            var viewerType = _roleCheckingService.getCollegeRole(authenticatedUserUsername);
-            var id = _accountService.GetAccountByUsername(authenticatedUserUsername).GordonID;
-            var photoInfo = _profileService.GetPhotoPath(id);
+            var authUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var viewerType = _roleCheckingService.GetCollegeRole(authUsername);
+            var id = _accountService.GetAccountByUsername(authUsername).GordonID;
+            var photoInfo = await _profileService.GetPhotoPath(id);
 
             var filePath = "";
             var fileName = "";
@@ -487,8 +481,7 @@ namespace Gordon360.Controllers
             //return default image if no photo info found for this user.
             if (photoInfo == null)
             {
-                var webClient = new WebClient();
-                default_image = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
+                default_image = await System.IO.File.ReadAllBytesAsync(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
                 default_img = Convert.ToBase64String(default_image);
                 result.Add("def", default_img);
                 return Ok(result);
@@ -498,66 +491,62 @@ namespace Gordon360.Controllers
             switch (viewerType)
             {
                 case Position.SUPERADMIN:
-                    filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PREF_IMAGE_PATH"];
+                    filePath = _config["DEFAULT_PREF_IMAGE_PATH"];
                     fileName = photoInfo.Pref_Img_Name;
-                    if (!string.IsNullOrEmpty(fileName) && File.Exists(filePath + fileName))
+                    if (!string.IsNullOrEmpty(fileName) && System.IO.File.Exists(filePath + fileName))
                     {
                         try
                         {
-                            pref_image = File.ReadAllBytes(filePath + fileName);
+                            pref_image = await System.IO.File.ReadAllBytesAsync(filePath + fileName);
                         }
                         catch (FileNotFoundException e)
                         {
                             System.Diagnostics.Debug.WriteLine(e.Message);
-                            var webClient = new WebClient();
-                            pref_image = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
+                            pref_image = await System.IO.File.ReadAllBytesAsync(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
                         }
                         pref_img = Convert.ToBase64String(pref_image);
                     }
-                    filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_IMAGE_PATH"];
+                    filePath = _config["DEFAULT_IMAGE_PATH"];
                     fileName = photoInfo.Img_Name;
                     try
                     {
-                        default_image = File.ReadAllBytes(filePath + fileName);
+                        default_image = await System.IO.File.ReadAllBytesAsync(filePath + fileName);
                     }
                     catch (FileNotFoundException e)
                     {
                         System.Diagnostics.Debug.WriteLine(e.Message);
-                        var webClient = new WebClient();
-                        default_image = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
+                        default_image = await System.IO.File.ReadAllBytesAsync(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
                     }
                     default_img = Convert.ToBase64String(default_image);
                     result.Add("def", default_img);
                     result.Add("pref", pref_img);
                     return Ok(result);
                 case Position.POLICE:
-                    filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PREF_IMAGE_PATH"];
+                    filePath = _config["DEFAULT_PREF_IMAGE_PATH"];
                     fileName = photoInfo.Pref_Img_Name;
-                    if (!string.IsNullOrEmpty(fileName) && File.Exists(filePath + fileName))
+                    if (!string.IsNullOrEmpty(fileName) && System.IO.File.Exists(filePath + fileName))
                     {
                         try
                         {
-                            pref_image = File.ReadAllBytes(filePath + fileName);
+                            pref_image = await System.IO.File.ReadAllBytesAsync(filePath + fileName);
                         }
                         catch (FileNotFoundException e)
                         {
                             System.Diagnostics.Debug.WriteLine(e.Message);
-                            var webClient = new WebClient();
-                            pref_image = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
+                            pref_image = await System.IO.File.ReadAllBytesAsync(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
                         }
                         pref_img = Convert.ToBase64String(pref_image);
                     }
-                    filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_IMAGE_PATH"];
+                    filePath = _config["DEFAULT_IMAGE_PATH"];
                     fileName = photoInfo.Img_Name;
                     try
                     {
-                        default_image = File.ReadAllBytes(filePath + fileName);
+                        default_image = await System.IO.File.ReadAllBytesAsync(filePath + fileName);
                     }
                     catch (FileNotFoundException e)
                     {
                         System.Diagnostics.Debug.WriteLine(e.Message);
-                        var webClient = new WebClient();
-                        default_image = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
+                        default_image = await System.IO.File.ReadAllBytesAsync(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
                     }
                     default_img = Convert.ToBase64String(default_image);
                     result.Add("def", default_img);
@@ -566,21 +555,20 @@ namespace Gordon360.Controllers
                 case Position.STUDENT:
                     if (_accountService.GetAccountByUsername(username).show_pic == 1)                  //check privacy setting of this user.
                     {
-                        filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PREF_IMAGE_PATH"];
+                        filePath = _config["DEFAULT_PREF_IMAGE_PATH"];
                         fileName = photoInfo.Pref_Img_Name;
-                        if (string.IsNullOrEmpty(fileName) || !File.Exists(filePath + fileName))
+                        if (string.IsNullOrEmpty(fileName) || !System.IO.File.Exists(filePath + fileName))
                         {
-                            filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_IMAGE_PATH"];
+                            filePath = _config["DEFAULT_IMAGE_PATH"];
                             fileName = photoInfo.Img_Name;
                             try
                             {
-                                default_image = File.ReadAllBytes(filePath + fileName);
+                                default_image = await System.IO.File.ReadAllBytesAsync(filePath + fileName);
                             }
                             catch (FileNotFoundException e)
                             {
                                 System.Diagnostics.Debug.WriteLine(e.Message);
-                                var webClient = new WebClient();
-                                default_image = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
+                                default_image = await System.IO.File.ReadAllBytesAsync(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
                             }
                             default_img = Convert.ToBase64String(default_image);
                             result.Add("def", default_img);
@@ -588,54 +576,50 @@ namespace Gordon360.Controllers
                         }
                         try
                         {
-                            pref_image = File.ReadAllBytes(filePath + fileName);
+                            pref_image = await System.IO.File.ReadAllBytesAsync(filePath + fileName);
                         }
                         catch (FileNotFoundException e)
                         {
                             System.Diagnostics.Debug.WriteLine(e.Message);
-                            var webClient = new WebClient();
-                            pref_image = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
+                            pref_image = await System.IO.File.ReadAllBytesAsync(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
                         }
                         pref_img = Convert.ToBase64String(pref_image);
                         result.Add("pref", pref_img);
                     }
                     else
                     {
-                        var webClient = new WebClient();
-                        default_image = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
+                        default_image = await System.IO.File.ReadAllBytesAsync(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
                         default_img = Convert.ToBase64String(default_image);
                         result.Add("def", default_img);
                         return Ok(result);
                     }
                     return Ok(result);
                 case Position.FACSTAFF:
-                    filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PREF_IMAGE_PATH"];
+                    filePath = _config["DEFAULT_PREF_IMAGE_PATH"];
                     fileName = photoInfo.Pref_Img_Name;
-                    if (!string.IsNullOrEmpty(fileName) && File.Exists(filePath + fileName))
+                    if (!string.IsNullOrEmpty(fileName) && System.IO.File.Exists(filePath + fileName))
                     {
                         try
                         {
-                            pref_image = File.ReadAllBytes(filePath + fileName);
+                            pref_image = await System.IO.File.ReadAllBytesAsync(filePath + fileName);
                         }
                         catch (FileNotFoundException e)
                         {
                             System.Diagnostics.Debug.WriteLine(e.Message);
-                            var webClient = new WebClient();
-                            pref_image = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
+                            pref_image = await System.IO.File.ReadAllBytesAsync(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
                         }
                         pref_img = Convert.ToBase64String(pref_image);
                     }
-                    filePath = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_IMAGE_PATH"];
+                    filePath = _config["DEFAULT_IMAGE_PATH"];
                     fileName = photoInfo.Img_Name;
                     try
                     {
-                        default_image = File.ReadAllBytes(filePath + fileName);
+                        default_image = await System.IO.File.ReadAllBytesAsync(filePath + fileName);
                     }
                     catch (FileNotFoundException e)
                     {
                         System.Diagnostics.Debug.WriteLine(e.Message);
-                        var webClient = new WebClient();
-                        default_image = webClient.DownloadData(System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PROFILE_IMAGE_PATH"]);
+                        default_image = await System.IO.File.ReadAllBytesAsync(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
                     }
                     default_img = Convert.ToBase64String(default_image);
                     result.Add("def", default_img);
@@ -646,122 +630,119 @@ namespace Gordon360.Controllers
             }
         }
 
-        /// <summary>
-        /// Set an image for profile
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        [Route("image")]
-        public async Task<HttpResponseMessage> PostImage()
-        {
-            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
-            string root = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PREF_IMAGE_PATH"];
-            var fileName = _accountService.GetAccountByUsername(authenticatedUserUsername).Barcode + ".jpg";
-            var pathInfo = _profileService.GetPhotoPath(authenticatedUserIdString);
-            var provider = new CustomMultipartFormDataStreamProvider(root);
+        ///// <summary>
+        ///// Set an image for profile
+        ///// </summary>
+        ///// <returns></returns>
+        //[HttpPost]
+        //[Route("image")]
+        //public async Task<ActionResult> PostImage()
+        //{
+        //    var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+        //    string root = _config["DEFAULT_PREF_IMAGE_PATH"];
+        //    var fileName = _accountService.GetAccountByUsername(authenticatedUserUsername).Barcode + ".jpg";
+        //    var pathInfo = _profileService.GetPhotoPath(authenticatedUserUsername);
+        //    var provider = new CustomMultipartFormDataStreamProvider(root);
 
-            if (!Request.Content.IsMimeMultipartContent())
-            {
-                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
-            }
+        //    if (!Request.Content.IsMimeMultipartContent())
+        //    {
+        //        throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+        //    }
 
-            try
-            {
-                if (pathInfo == null) // can't upload image if there is no record for this user in the database
-                    return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error uploading the image. Please contact the maintainers");
+        //    try
+        //    {
+        //        if (pathInfo == null) // can't upload image if there is no record for this user in the database
+        //            return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error uploading the image. Please contact the maintainers");
 
-                System.IO.DirectoryInfo di = new DirectoryInfo(root);
-                foreach (FileInfo file in di.GetFiles(fileName))
-                {
-                    file.Delete();                   //delete old image file if it exists.
-                }
+        //        System.IO.DirectoryInfo di = new DirectoryInfo(root);
+        //        foreach (FileInfo file in di.GetFiles(fileName))
+        //        {
+        //            file.Delete();                   //delete old image file if it exists.
+        //        }
 
-                // Read the form data.
-                await Request.Content.ReadAsMultipartAsync(provider);
+        //        // Read the form data.
+        //        await Request.Content.ReadAsMultipartAsync(provider);
 
-                foreach (MultipartFileData file in provider.FileData)
-                {
-                    var fileContent = provider.Contents.SingleOrDefault();
-                    var oldFileName = fileContent.Headers.ContentDisposition.FileName.Replace("\"", string.Empty);
+        //        foreach (MultipartFileData file in provider.FileData)
+        //        {
+        //            var fileContent = provider.Contents.SingleOrDefault();
+        //            var oldFileName = fileContent.Headers.ContentDisposition.FileName.Replace("\"", string.Empty);
 
-                    di = new DirectoryInfo(root);
-                    System.IO.File.Move(di.FullName + oldFileName, di.FullName + fileName); //rename
+        //            di = new DirectoryInfo(root);
+        //            System.IO.File.Move(di.FullName + oldFileName, di.FullName + fileName); //rename
 
-                    _profileService.UpdateProfileImage(id, Defaults.DATABASE_IMAGE_PATH, fileName); //update database
-                }
-                return Request.CreateResponse(HttpStatusCode.OK);
-            }
-            catch (System.Exception e)
-            {
-                System.Diagnostics.Debug.WriteLine(e.Message);
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error uploading the image. Please contact the maintainers");
-            }
-        }
+        //            _profileService.UpdateProfileImage(id, Defaults.DATABASE_IMAGE_PATH, fileName); //update database
+        //        }
+        //        return Request.CreateResponse(HttpStatusCode.OK);
+        //    }
+        //    catch (System.Exception e)
+        //    {
+        //        System.Diagnostics.Debug.WriteLine(e.Message);
+        //        return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error uploading the image. Please contact the maintainers");
+        //    }
+        //}
 
-        /// <summary>
-        /// Set an IDimage for a user
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        [Route("IDimage")]
-        public async Task<ActionResult> PostIDImage()
-        {
-            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
-            string root = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_ID_SUBMISSION_PATH"];
-            var fileName = username + "_" + _accountService.GetAccountByUsername(authenticatedUserUsername).account_id + ".jpg";
-            var provider = new CustomMultipartFormDataStreamProvider(root);
-            JObject result = new JObject();
+        ///// <summary>
+        ///// Set an IDimage for a user
+        ///// </summary>
+        ///// <returns></returns>
+        //[HttpPost]
+        //[Route("IDimage")]
+        //public async Task<ActionResult> PostIDImage()
+        //{
+        //    var authenticatedUserUsername = AuthUtils.GetUsername(User);
+        //    string root = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_ID_SUBMISSION_PATH"];
+        //    var fileName = username + "_" + _accountService.GetAccountByUsername(authenticatedUserUsername).account_id + ".jpg";
+        //    var provider = new CustomMultipartFormDataStreamProvider(root);
+        //    JObject result = new JObject();
 
-            if (!Request.Content.IsMimeMultipartContent())
-            {
-                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
-            }
-
-
-            try
-            {
-                System.IO.DirectoryInfo di = new DirectoryInfo(root);
-
-                //delete old image file if it exists.
-                foreach (FileInfo file in di.GetFiles(fileName))
-                {
-                    file.Delete();
-                }
-
-                // Read the form data.
-                await Request.Content.ReadAsMultipartAsync(provider);
-
-                foreach (MultipartFileData fileData in provider.FileData)
-                {
-                    Debug.WriteLine(fileData.LocalFileName);
-                    di = new DirectoryInfo(root); //di is declared at beginning of try.
-
-                    FileInfo f1 = new FileInfo(fileData.LocalFileName);
-                    long size1 = f1.Length;
+        //    if (!Request.Content.IsMimeMultipartContent())
+        //    {
+        //        throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+        //    }
 
 
-                    System.IO.File.Move(fileData.LocalFileName, Path.Combine(di.FullName, fileName)); //upload
+        //    try
+        //    {
+        //        System.IO.DirectoryInfo di = new DirectoryInfo(root);
 
-                    FileInfo f2 = new FileInfo(Path.Combine(di.FullName, fileName));
-                    long size2 = f2.Length;
+        //        //delete old image file if it exists.
+        //        foreach (FileInfo file in di.GetFiles(fileName))
+        //        {
+        //            file.Delete();
+        //        }
+
+        //        // Read the form data.
+        //        await Request.Content.ReadAsMultipartAsync(provider);
+
+        //        foreach (MultipartFileData fileData in provider.FileData)
+        //        {
+        //            Debug.WriteLine(fileData.LocalFileName);
+        //            di = new DirectoryInfo(root); //di is declared at beginning of try.
+
+        //            FileInfo f1 = new FileInfo(fileData.LocalFileName);
+        //            long size1 = f1.Length;
+
+
+        //            System.IO.File.Move(fileData.LocalFileName, Path.Combine(di.FullName, fileName)); //upload
+
+        //            FileInfo f2 = new FileInfo(Path.Combine(di.FullName, fileName));
+        //            long size2 = f2.Length;
 
 
 
-                    if (size1 < 3000 || size2 < 3000)
-                    {
-                        return BadRequest("The ID image was lost in transit. Resubmission should attempt automatically.");
-                    }
-                }
-                return Ok();
-            }
-            catch (System.Exception e)
-            {
-                return InternalServerError(e);
-            }
-        }
-
-
+        //            if (size1 < 3000 || size2 < 3000)
+        //            {
+        //                return BadRequest("The ID image was lost in transit. Resubmission should attempt automatically.");
+        //            }
+        //        }
+        //        return Ok();
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return InternalServerError(e);
+        //    }
+        //}
 
         /// <summary>
         /// Reset the profile Image
@@ -771,25 +752,24 @@ namespace Gordon360.Controllers
         [Route("image/reset")]
         public ActionResult ResetImage()
         {
-            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
-            string root = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_PREF_IMAGE_PATH"];
+            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            string root = _config["DEFAULT_PREF_IMAGE_PATH"];
             var fileName = _accountService.GetAccountByUsername(authenticatedUserUsername).Barcode + ".jpg";
             try
             {
-                System.IO.DirectoryInfo di = new DirectoryInfo(root);
+                DirectoryInfo di = new DirectoryInfo(root);
                 foreach (FileInfo file in di.GetFiles(fileName))
                 {
                     file.Delete();                  //delete old image file if it exists.
                 }
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
             }
-            _profileService.UpdateProfileImage(authenticatedUserIdString, null, null);  //update database
+            _profileService.UpdateProfileImage(authenticatedUserUsername, null, null);  //update database
             return Ok();
-        }*/
+        }
 
 
         /// <summary>
@@ -802,7 +782,7 @@ namespace Gordon360.Controllers
         [Route("{type}")]
         public ActionResult UpdateLink(string type, CUSTOM_PROFILE path)
         {
-            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
+            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
             _profileService.UpdateProfileLink(authenticatedUserUsername, type, path);
 
@@ -853,8 +833,8 @@ namespace Gordon360.Controllers
         [Route("mobile_privacy/{value}")]
         public ActionResult UpdateMobilePrivacy(string value)
         {
-            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            _profileService.UpdateMobilePrivacy(authenticatedUserIdString, value);
+            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            _profileService.UpdateMobilePrivacy(authenticatedUserUsername, value);
 
             return Ok();
         }
@@ -868,8 +848,8 @@ namespace Gordon360.Controllers
         [Route("image_privacy/{value}")]
         public ActionResult UpdateImagePrivacy(string value)
         {
-            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            _profileService.UpdateImagePrivacy(authenticatedUserIdString, value);
+            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            _profileService.UpdateImagePrivacy(authenticatedUserUsername, value);
 
             return Ok();
         }

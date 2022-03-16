@@ -4,14 +4,45 @@ namespace Gordon360.Models.ViewModels
 {
     public record AlumniProfileViewModel
         (
-            string ID, string WebUpdate, string Title, string FirstName, string MiddleName, string LastName,
-            string Suffix, string MaidenName, string NickName, string HomeStreet1, string HomeStreet2, string HomeCity,
-            string HomeState, string HomePostalCode, string HomeCountry, string HomePhone, string HomeFax,
-            string HomeEmail, string JobTitle, string MaritalStatus, string SpouseName, string College, string ClassYear,
-            string PreferredClassYear, string Major, string Major2, string ShareName, string ShareAddress, string Gender,
-            string GradDate, string Email, string grad_student, string Barcode, string AD_Username, int? show_pic,
-            int? preferred_photo, string Country, string Major1Description, string Major2Description
-        ) : ProfileViewModel()
+        string ID,
+        string WebUpdate,
+        string Title,
+        string FirstName,
+        string MiddleName,
+        string LastName,
+        string Suffix,
+        string MaidenName,
+        string NickName,
+        string HomeStreet1,
+        string HomeStreet2,
+        string HomeCity,
+        string HomeState,
+        string HomePostalCode,
+        string HomeCountry,
+        string HomePhone,
+        string HomeFax,
+        string HomeEmail,
+        string JobTitle,
+        string MaritalStatus,
+        string SpouseName,
+        string College,
+        string ClassYear,
+        string PreferredClassYear,
+        string Major,
+        string Major2,
+        string ShareName,
+        string ShareAddress,
+        string Gender,
+        string GradDate,
+        string Email,
+        string grad_student,
+        string Barcode,
+        string AD_Username,
+        int? show_pic,
+        int? preferred_photo,
+        string Country,
+        string Major1Description,
+        string Major2Description)
     {
         public static implicit operator AlumniProfileViewModel?(Alumni? alu)
         {

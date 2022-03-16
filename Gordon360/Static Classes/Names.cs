@@ -96,18 +96,6 @@ namespace Gordon360.Static.Names
 
     }
 
-    public static class URLs
-    {
-        /**
-         * Retrieve events from the 25Live API. 
-         * event_type_id parameter fetches only events of type 14 (Calendar Announcement) and 57 (Event).
-         * All other event types are not appropiate for the 360 events feed.
-         * end_after parameter  limits to request to events from the current academic year.
-         * state parameter fetches only confirmed events
-         */
-        public static string ALL_EVENTS_REQUEST = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=14+57&state=2&end_after=" + Helpers.GetFirstEventDate() + "&scope=extended";
-    }
-
     public static class SQLQuery
     {
         public static string ALL_PUBLIC_STUDENT_REQUEST = "SELECT ISNULL(Mail_Location, '') as Mail_Location, ISNULL(BuildingDescription, '') as Hall, ISNULL(FirstName, '') as FirstName, ISNULL(LastName, '') as LastName, ISNULL(NickName, '') as NickName, ISNULL(MaidenName, '') as MaidenName, ISNULL(Class, '') as Class, ISNULL(Major1Description, '') as Major1Description, ISNULL(Major2Description, '') as Major2Description, ISNULL(Major3Description, '') as Major3Description, ISNULL(Minor1Description, '') as Minor1Description, ISNULL(Minor2Description, '') as Minor2Description, ISNULL(Minor3Description, '') as Minor3Description, ISNULL(HomeCity, '') as HomeCity, ISNULL(HomeState, '') as HomeState, ISNULL(Country, '') as Country, ISNULL(KeepPrivate, '') as KeepPrivate, ISNULL(Email, '') as Email, AD_Username FROM STUDENT S WHERE AD_Username is not null FOR JSON PATH, ROOT('Students')";
