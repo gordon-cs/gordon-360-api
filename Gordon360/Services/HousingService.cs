@@ -21,23 +21,23 @@ namespace Gordon360.Services
         /// Calls a stored procedure that returns a row in the staff whitelist which has the given user id,
         /// if it is in the whitelist
         /// </summary>
-        /// <param name="userID"> The id of the person using the page </param>
+        /// <param name="gordonID"> The id of the person using the page </param>
         /// <returns> Whether or not the user is on the staff whitelist </returns>
-        public bool CheckIfHousingAdmin(string userID)
+        public bool CheckIfHousingAdmin(string gordonID)
         {
-            return _context.Housing_Admins.Find(userID) == null;
+            return _context.Housing_Admins.Find(gordonID) == null;
         }
 
         /// <summary>
         /// Inserts the given id into the whitelist table
         /// </summary>
-        /// <param name="id"> The id to insert </param>
+        /// <param name="gordonID"> The id to insert </param>
         /// <returns> Whether or not this was successful </returns>
-        public bool AddHousingAdmin(string id)
+        public bool AddHousingAdmin(string gordonID)
         {
             try
             {
-                var result = _context.Housing_Admins.Add(new Housing_Admins { AdminID = id });
+                var result = _context.Housing_Admins.Add(new Housing_Admins { AdminID = gordonID });
                 return result == null;
             }
             catch
@@ -49,13 +49,13 @@ namespace Gordon360.Services
         /// <summary>
         /// Deletes the given id from the whitelist table
         /// </summary>
-        /// <param name="id"> The id to remove </param>
+        /// <param name="gordonID"> The id to remove </param>
         /// <returns> Whether or not this was successful </returns>
-        public bool RemoveHousingAdmin(string id)
+        public bool RemoveHousingAdmin(string gordonID)
         {
             try
             {
-                var result = _context.Housing_Admins.Remove(new Housing_Admins { AdminID = id });
+                var result = _context.Housing_Admins.Remove(new Housing_Admins { AdminID = gordonID });
                 return result == null;
             }
             catch

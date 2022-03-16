@@ -19,17 +19,17 @@ namespace Gordon360.Services
         /// <summary>
         /// get victory promise scores
         /// </summary>
-        /// <param name="id">id</param>
+        /// <param name="username">id</param>
         /// <returns>VictoryPromiseViewModel if found, null if not found</returns>
-        public async Task<IEnumerable<VictoryPromiseViewModel>> GetVPScores(string id)
+        public async Task<IEnumerable<VictoryPromiseViewModel>> GetVPScores(string username)
         {
-            var query = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
-            if (query == null)
+            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
+            if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            var result = await _context.Procedures.VICTORY_PROMISE_BY_STUDENT_IDAsync(int.Parse(id));
+            var result = await _context.Procedures.VICTORY_PROMISE_BY_STUDENT_IDAsync(int.Parse(account.gordon_id));
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };

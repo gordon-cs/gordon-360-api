@@ -53,9 +53,9 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("session/{id}")]
         [AllowAnonymous]
-        public ActionResult<IEnumerable<ActivityInfoViewModel>> GetActivitiesForSession(string id)
+        public async Task<ActionResult<IEnumerable<ActivityInfoViewModel>>> GetActivitiesForSession(string id)
         {
-            var result = _activityService.GetActivitiesForSession(id);
+            var result = await _activityService.GetActivitiesForSession(id);
 
             if (result == null)
             {
@@ -73,9 +73,9 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("session/{id}/types")]
         [AllowAnonymous]
-        public ActionResult<IEnumerable<string>> GetActivityTypesForSession(string id)
+        public async Task<ActionResult<IEnumerable<string>>> GetActivityTypesForSession(string id)
         {
-            var result = _activityService.GetActivityTypesForSession(id);
+            var result = await _activityService.GetActivityTypesForSession(id);
 
             if (result == null)
             {

@@ -16,7 +16,7 @@ namespace Gordon360.Services
     /// </summary>
     public class ActivityService : IActivityService
     {
-        private CCTContext _context;
+        private readonly CCTContext _context;
 
         public ActivityService(CCTContext context)
         {
@@ -25,11 +25,11 @@ namespace Gordon360.Services
         /// <summary>
         /// Fetches a single activity record whose id matches the id provided as an argument
         /// </summary>
-        /// <param name="id">The activity code</param>
+        /// <param name="activityCode">The activity code</param>
         /// <returns>ActivityViewModel if found, null if not found</returns>
-        public ActivityInfoViewModel Get(string id)
+        public ActivityInfoViewModel Get(string activityCode)
         {
-            var query = _context.ACT_INFO.Find(id);
+            var query = _context.ACT_INFO.Find(activityCode);
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
@@ -41,47 +41,39 @@ namespace Gordon360.Services
         /// <summary>
         /// Fetches the Activities that are active during the session whose code is specified as parameter.
         /// </summary>
-        /// <param name="id">The session code</param>
+        /// <param name="sessionCode">The session code</param>
         /// <returns>ActivityViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
-        public async Task<IEnumerable<ActivityInfoViewModel>> GetActivitiesForSession(string id)
+        public async Task<IEnumerable<ActivityInfoViewModel>> GetActivitiesForSession(string sessionCode)
         {
-            var query = await _context.Procedures.ACTIVE_CLUBS_PER_SESS_IDAsync(id);
+            var query = await _context.Procedures.ACTIVE_CLUBS_PER_SESS_IDAsync(sessionCode);
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "No Activities for this session was not found." };
             }
 
             // Transform the ActivityViewModel (ACT_CLUB_DEF) into ActivityInfoViewModel
-            return query.Select(x =>
+            return query.Join(_context.ACT_INFO, act => act.ACT_CDE, actInfo => actInfo.ACT_CDE, (act, actInfo) => new ActivityInfoViewModel
             {
-                var record = _context.ACT_INFO.Find(x.ACT_CDE);
-                if (record == null)
-                {
-                    throw new ResourceNotFoundException() { ExceptionMessage = "The Activity Info was not found." };
-                }
-
-                return new ActivityInfoViewModel
-                {
-                    ActivityCode = x.ACT_CDE.Trim(),
-                    ActivityDescription = x.ACT_DESC ?? "",
-                    ActivityBlurb = record.ACT_BLURB ?? "",
-                    ActivityURL = record.ACT_URL ?? "",
-                    ActivityImagePath = record.ACT_IMG_PATH.Trim() ?? "",
-                    ActivityType = record.ACT_TYPE.Trim() ?? "",
-                    ActivityTypeDescription = record.ACT_TYPE_DESC.Trim() ?? "",
-                    ActivityJoinInfo = record.ACT_JOIN_INFO ?? ""
-                };
+                ActivityCode = act.ACT_CDE.Trim(),
+                ActivityDescription = act.ACT_DESC ?? "",
+                ActivityBlurb = actInfo.ACT_BLURB ?? "",
+                ActivityURL = actInfo.ACT_URL ?? "",
+                ActivityImagePath = actInfo.ACT_IMG_PATH.Trim() ?? "",
+                ActivityType = actInfo.ACT_TYPE.Trim() ?? "",
+                ActivityTypeDescription = actInfo.ACT_TYPE_DESC.Trim() ?? "",
+                ActivityJoinInfo = actInfo.ACT_JOIN_INFO ?? ""
             });
         }
+
         /// <summary>
         /// Fetches the Activity types of activities that are active during the session whose code is specified as parameter.
         /// </summary>
-        /// <param name="id">The session code</param>
+        /// <param name="sessionCode">The session code</param>
         /// <returns>ActivityViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
-        public async Task<IEnumerable<string>> GetActivityTypesForSession(string id)
+        public async Task<IEnumerable<string>> GetActivityTypesForSession(string sessionCode)
         {
             // Stored procedure returns column ACT_TYPE_DESC
-            var query = await _context.Procedures.DISTINCT_ACT_TYPEAsync(id);
+            var query = await _context.Procedures.DISTINCT_ACT_TYPEAsync(sessionCode);
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "No Activities for this session was not found." };
@@ -109,13 +101,13 @@ namespace Gordon360.Services
         /// When an activity is closed out, the END_DTE is set to the date on which the closing happened
         /// Otherwise, the END_DTE for all memberships of the activity will be null for that session
         /// </summary>
-        /// <param name="sessionCode">The activity code for the activity in question</param>
-        /// <param name="id"></param>
+        /// <param name="activityCode">The activity code for the activity in question</param>
+        /// <param name="sessionCode">Code of the session to check</param>
         /// <returns></returns>
-        public bool IsOpen(string id, string sessionCode)
+        public bool IsOpen(string activityCode, string sessionCode)
         {
             // Check to see if there are any memberships where END_DTE is not null
-            if (_context.MEMBERSHIP.Where(m => m.ACT_CDE.Equals(id) && m.SESS_CDE.Equals(sessionCode) && m.PART_CDE != "GUEST" && m.END_DTE != null).Any())
+            if (_context.MEMBERSHIP.Where(m => m.ACT_CDE.Equals(activityCode) && m.SESS_CDE.Equals(sessionCode) && m.PART_CDE != "GUEST" && m.END_DTE != null).Any())
             {
                 return false;
             }
@@ -153,10 +145,10 @@ namespace Gordon360.Services
         /// memberships with an END_DTE that is null
         /// </summary>
         /// <returns>The collection of activity codes for open activities</returns>
-        public IEnumerable<string> GetOpenActivities(string sess_cde, int id)
+        public IEnumerable<string> GetOpenActivities(string sess_cde, int gordonID)
         {
             var query = from mem in _context.MEMBERSHIP.Where(m => m.END_DTE == null &&
-                m.SESS_CDE.Equals(sess_cde) && m.ID_NUM == id && m.GRP_ADMIN == true)
+                m.SESS_CDE.Equals(sess_cde) && m.ID_NUM == gordonID && m.GRP_ADMIN == true)
                         group mem by mem.ACT_CDE into activities
                         select activities;
 
@@ -202,13 +194,13 @@ namespace Gordon360.Services
         /// Gets a collection of all the current closed activities for which a given user is group admin, by finding which activities have 
         /// memberships with an END_DTE that is not null
         /// </summary>
-        /// <param name="id">The user's id</param>
+        /// <param name="gordonID">The user's id</param>
         /// <param name="sess_cde">The session we want to get the closed activities for</param>
         /// <returns>The collection of activity codes for open activities</returns>
-        public IEnumerable<string> GetClosedActivities(string sess_cde, int id)
+        public IEnumerable<string> GetClosedActivities(string sess_cde, int gordonID)
         {
             var query = _context.MEMBERSHIP.Where(m => m.END_DTE != null &&
-                m.SESS_CDE.Equals(sess_cde) && m.ID_NUM == id && m.GRP_ADMIN == true);
+                m.SESS_CDE.Equals(sess_cde) && m.ID_NUM == gordonID && m.GRP_ADMIN == true);
 
             // Convert the query result into a simple list of strings
             List<string> activity_codes = new List<string>();
@@ -229,18 +221,18 @@ namespace Gordon360.Services
         /// Updates the Activity Info 
         /// </summary>
         /// <param name="activity">The activity info resource with the updated information</param>
-        /// <param name="id">The id of the activity info to be updated</param>
+        /// <param name="activityCode">The id of the activity info to be updated</param>
         /// <returns>The updated activity info resource</returns>
-        public ACT_INFO Update(string id, ACT_INFO activity)
+        public ACT_INFO Update(string activityCode, ACT_INFO activity)
         {
-            var original = _context.ACT_INFO.Find(id);
+            var original = _context.ACT_INFO.Find(activityCode);
 
             if (original == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity Info was not found." };
             }
 
-            validateActivityInfo(activity);
+            ValidateActivityInfo(activity);
 
             // One can only update certain fields within a membrship
             original.ACT_BLURB = activity.ACT_BLURB;
@@ -256,11 +248,11 @@ namespace Gordon360.Services
         /// <summary>
         /// Closes out a specific activity for a specific session
         /// </summary>
-        /// <param name="id">The activity code for the activity that will be closed</param>
+        /// <param name="activityCode">The activity code for the activity that will be closed</param>
         /// <param name="sess_cde">The session code for the session where the activity is being closed</param>
-        public void CloseOutActivityForSession(string id, string sess_cde)
+        public void CloseOutActivityForSession(string activityCode, string sess_cde)
         {
-            var memberships = _context.MEMBERSHIP.Where(x => x.ACT_CDE == id && x.SESS_CDE == sess_cde);
+            var memberships = _context.MEMBERSHIP.Where(x => x.ACT_CDE == activityCode && x.SESS_CDE == sess_cde);
 
             if (!memberships.Any())
             {
@@ -280,11 +272,11 @@ namespace Gordon360.Services
         /// <summary>
         /// Open a specific activity for a specific session
         /// </summary>
-        /// <param name="id">The activity code for the activity that will be closed</param>
+        /// <param name="activityCode">The activity code for the activity that will be closed</param>
         /// <param name="sess_cde">The session code for the session where the activity is being closed</param>
-        public void OpenActivityForSession(string id, string sess_cde)
+        public void OpenActivityForSession(string activityCode, string sess_cde)
         {
-            var memberships = _context.MEMBERSHIP.Where(x => x.ACT_CDE == id && x.SESS_CDE == sess_cde);
+            var memberships = _context.MEMBERSHIP.Where(x => x.ACT_CDE == activityCode && x.SESS_CDE == sess_cde);
 
             if (!memberships.Any())
             {
@@ -301,11 +293,11 @@ namespace Gordon360.Services
         /// <summary>
         /// Sets the path for the activity image.
         /// </summary>
-        /// <param name="id">The activity code</param>
+        /// <param name="activityCode">The activity code</param>
         /// <param name="path"></param>
-        public void UpdateActivityImage(string id, string path)
+        public void UpdateActivityImage(string activityCode, string path)
         {
-            var original = _context.ACT_INFO.Find(id);
+            var original = _context.ACT_INFO.Find(activityCode);
 
             if (original == null)
             {
@@ -319,10 +311,10 @@ namespace Gordon360.Services
         /// <summary>
         /// Reset the path for the activity image
         /// </summary>
-        /// <param name="id">The activity code</param>
-        public void ResetActivityImage(string id)
+        /// <param name="activityCode">The activity code</param>
+        public void ResetActivityImage(string activityCode)
         {
-            var original = _context.ACT_INFO.Find(id);
+            var original = _context.ACT_INFO.Find(activityCode);
 
             if (original == null)
             {
@@ -336,7 +328,7 @@ namespace Gordon360.Services
         }
         // Helper method to validate an activity info post. Throws an exception that gets caught later if something is not valid.
         // Returns true if all is well. The return value is not really used though. This could be of type void.
-        private bool validateActivityInfo(ACT_INFO activity)
+        private bool ValidateActivityInfo(ACT_INFO activity)
         {
             var activityExists = _context.ACT_INFO.Where(x => x.ACT_CDE == activity.ACT_CDE).Count() > 0;
             if (!activityExists)
@@ -349,18 +341,18 @@ namespace Gordon360.Services
         /// <summary>
         /// change activty privacy
         /// </summary>
-        /// <param name="id">The activity code</param>
-        /// <param name="p">activity private or not</param>
-        public void TogglePrivacy(string id, bool p)
+        /// <param name="activityCode">The activity code</param>
+        /// <param name="isPrivate">activity private or not</param>
+        public void TogglePrivacy(string activityCode, bool isPrivate)
         {
-            var original = _context.ACT_INFO.Find(id);
+            var original = _context.ACT_INFO.Find(activityCode);
 
             if (original == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity Info was not found." };
             }
 
-            original.PRIVACY = p;
+            original.PRIVACY = isPrivate;
 
             _context.SaveChanges();
         }

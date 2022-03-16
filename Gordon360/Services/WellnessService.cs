@@ -21,19 +21,19 @@ namespace Gordon360.Services
         /// <summary>
         /// Get the status of the user by id
         /// </summary>
-        /// <param name="id">ID of the user to get the status of</param>
+        /// <param name="username">AD Username of the user to get the status of</param>
         /// <returns> The status of the user, a WellnessViewModel </returns>
 
-        public WellnessViewModel GetStatus(string id)
+        public WellnessViewModel GetStatus(string username)
         {
-            var account = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
+            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
             if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            int IDNum = int.Parse(id);
-            var result = _context.Health_Status.Where(x => x.ID_Num == IDNum).OrderByDescending(x => x.Created).FirstOrDefault();
+            int ID = int.Parse(account.gordon_id);
+            var result = _context.Health_Status.Where(x => x.ID_Num == ID).OrderByDescending(x => x.Created).FirstOrDefault();
 
             if (result == null)
             {
@@ -60,13 +60,13 @@ namespace Gordon360.Services
         /// <summary>
         /// Stores wellness Status in database.
         /// </summary>
-        /// <param name="id"> ID of the user to post the status for</param>
+        /// <param name="username">AD Username of the user to post the status for</param>
         /// <param name="status"> Status that is being posted, one of the WellnessStatusColors </param>
         /// <returns>Status that was successfully recorded</returns>
 
-        public Health_Status PostStatus(WellnessStatusColor status, string id)
+        public Health_Status PostStatus(WellnessStatusColor status, string username)
         {
-            var account = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
+            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
             if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
@@ -76,7 +76,7 @@ namespace Gordon360.Services
 
             var statusObject = new Health_Status
             {
-                ID_Num = int.Parse(id),
+                ID_Num = int.Parse(account.gordon_id),
                 HealthStatusID = (byte)status,
                 Created = now,
                 Expires = ExpirationDate(now),

@@ -1,5 +1,6 @@
 ﻿using Gordon360.Database.CCT;
 using Gordon360.Services;
+using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System;
@@ -31,10 +32,11 @@ namespace Gordon360.Controllers
         [Route("")]
         public ActionResult<JObject> Get()
         {
-            var authenticatedUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var username = AuthUtils.GetAuthenticatedUserUsername(User);
+            var id = _accountService.GetAccountByUsername(username).GordonID;
 
             //object scheduleControlResult = _unitOfWork.ScheduleControlRepository.GetById(authenticatedUserId);
-            var result = _context.Schedule_Control.Find(authenticatedUserId);
+            var result = _context.Schedule_Control.Find(id);
 
             if (result == null)
             {
@@ -81,8 +83,8 @@ namespace Gordon360.Controllers
         [Route("privacy/{value}")]
         public ActionResult UpdateSchedulePrivacy(string value)
         {
-            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            _scheduleControlService.UpdateSchedulePrivacy(authenticatedUserIdString, value);
+            var username = AuthUtils.GetAuthenticatedUserUsername(User);
+            _scheduleControlService.UpdateSchedulePrivacy(username, value);
 
             return Ok();
         }
@@ -98,9 +100,9 @@ namespace Gordon360.Controllers
         {
             DateTime localDate = DateTime.Now;
 
-            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            _scheduleControlService.UpdateDescription(authenticatedUserIdString, value);
-            _scheduleControlService.UpdateModifiedTimeStamp(authenticatedUserIdString, localDate);
+            var username = AuthUtils.GetAuthenticatedUserUsername(User);
+            _scheduleControlService.UpdateDescription(username, value);
+            _scheduleControlService.UpdateModifiedTimeStamp(username, localDate);
 
             return Ok();
         }

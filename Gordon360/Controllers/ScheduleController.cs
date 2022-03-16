@@ -2,6 +2,7 @@
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
+using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System.Security.Claims;
@@ -33,13 +34,12 @@ namespace Gordon360.Controllers
         [Route("")]
         public ActionResult<ScheduleViewModel> Get()
         {
-            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var authenticatedUserId = int.Parse(authenticatedUserIdString);
-            var role = _roleCheckingService.GetCollegeRole(authenticatedUserId);
+            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var role = _roleCheckingService.GetCollegeRole(authenticatedUserUsername);
 
             if (role == "student")
             {
-                var result = _scheduleService.GetScheduleStudent(authenticatedUserIdString);
+                var result = _scheduleService.GetScheduleStudent(authenticatedUserUsername);
                 if (result == null)
                 {
                     return NotFound();
@@ -49,7 +49,7 @@ namespace Gordon360.Controllers
 
             else if (role == "facstaff")
             {
-                var result = _scheduleService.GetScheduleFaculty(authenticatedUserIdString);
+                var result = _scheduleService.GetScheduleFaculty(authenticatedUserUsername);
                 if (result == null)
                 {
                     return NotFound();
@@ -69,15 +69,13 @@ namespace Gordon360.Controllers
         public ActionResult<JArray> Get(string username)
         {
             //probably needs privacy stuff like ProfilesController and service
-            //get token data from context, username is the username of current logged in person
+            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var viewerRole = _roleCheckingService.GetCollegeRole(authenticatedUserUsername);
 
-            var authenticatedUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var viewerRole = _roleCheckingService.GetCollegeRole(authenticatedUserId);
-
-            var role = _roleCheckingService.getCollegeRole(username);
+            var role = _roleCheckingService.GetCollegeRole(username);
             var id = _accountService.GetAccountByUsername(username).GordonID;
             object scheduleResult = null;
-            var scheduleControl = _context.Schedule_Control.Find(authenticatedUserId);
+            var scheduleControl = _context.Schedule_Control.Find(id);
             int schedulePrivacy = 1;
 
             // Getting student schedule
@@ -114,14 +112,12 @@ namespace Gordon360.Controllers
                         break;
                 }
             }
-
             // Getting faculty / staff schedule
             else if (role == "facstaff")
             {
                 scheduleResult = _scheduleService.GetScheduleFaculty(id);
             }
-
-            if (scheduleResult == null)
+            else
             {
                 return NotFound();
             }

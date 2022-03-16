@@ -66,14 +66,13 @@ namespace Gordon360.Services
         /// <summary>
         /// Gets unapproved unexpired news submitted by user.
         /// </summary>
-        /// <param name="id">user id</param>
         /// <param name="username">username</param>
         /// <returns>Result of query</returns>
-        public async Task<IEnumerable<StudentNewsViewModel>> GetNewsPersonalUnapproved(string id, string username)
+        public async Task<IEnumerable<StudentNewsViewModel>> GetNewsPersonalUnapproved(string username)
         {
             // Verify account
-            var query = _contextCCT.ACCOUNT.FirstOrDefaultAsync(x => x.gordon_id == id);
-            if (query == null)
+            var account = _contextCCT.ACCOUNT.FirstOrDefaultAsync(x => x.AD_Username == username);
+            if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
@@ -87,14 +86,13 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="newsItem">The news item to be added</param>
         /// <param name="username">username</param>
-        /// <param name="id">id</param>
         /// <returns>The newly added Membership object</returns>
-        public StudentNews SubmitNews(StudentNews newsItem, string username, string id)
+        public StudentNews SubmitNews(StudentNews newsItem, string username)
         {
             // Not currently used
             ValidateNewsItem(newsItem);
 
-            VerifyAccount(id);
+            VerifyAccount(username);
 
             var itemToSubmit = new StudentNews
             {
@@ -267,13 +265,13 @@ namespace Gordon360.Services
         /// <summary>
         /// Verifies that a student account exists
         /// </summary>
-        /// <param name="id">The id of the student</param>
+        /// <param name="username">The AD Username of the student</param>
         /// <returns>true if account exists, ResourceNotFoundException if null</returns>
-        private bool VerifyAccount(string id)
+        private bool VerifyAccount(string username)
         {
             // Verify account
-            var query = _contextCCT.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
-            if (query == null)
+            var account = _contextCCT.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
+            if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }

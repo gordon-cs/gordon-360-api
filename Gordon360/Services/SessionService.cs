@@ -1,7 +1,9 @@
 ﻿using Gordon360.Database.CCT;
 using Gordon360.Exceptions;
+using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Gordon360.Services
 {
@@ -20,11 +22,11 @@ namespace Gordon360.Services
         /// <summary>
         /// Get the session record whose sesssion code matches the parameter.
         /// </summary>
-        /// <param name="id">The session code.</param>
+        /// <param name="sessionCode">The session code.</param>
         /// <returns>A SessionViewModel if found, null if not found.</returns>
-        public SessionViewModel Get(string id)
+        public SessionViewModel Get(string sessionCode)
         {
-            var query = _context.CM_SESSION_MSTR.Find(id);
+            var query = _context.CM_SESSION_MSTR.Where(s => s.SESS_CDE == sessionCode).FirstOrDefault();
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Session was not found." };
@@ -39,7 +41,7 @@ namespace Gordon360.Services
         /// <returns>A SessionViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
         public IEnumerable<SessionViewModel> GetAll()
         {
-            return (IEnumerable<SessionViewModel>)_context.CM_SESSION_MSTR;
+            return _context.CM_SESSION_MSTR.Select<CM_SESSION_MSTR, SessionViewModel>(s => s);
         }
 
 

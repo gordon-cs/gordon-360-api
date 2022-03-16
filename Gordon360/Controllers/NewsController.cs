@@ -4,6 +4,7 @@ using Gordon360.Models.ViewModels;
 using Gordon360.Utils;
 using Gordon360.Services;
 using Gordon360.Static.Names;
+using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -115,12 +116,10 @@ namespace Gordon360.Controllers
         [Route("personal-unapproved")]
         public ActionResult<IEnumerable<StudentNewsViewModel>> GetNewsPersonalUnapproved()
         {
-            // Get authenticated username/id
-            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
+            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
             // Call appropriate service
-            var result = _newsService.GetNewsPersonalUnapproved(authenticatedUserIdString, authenticatedUserUsername);
+            var result = _newsService.GetNewsPersonalUnapproved(authenticatedUserUsername);
             if (result == null)
             {
                 return NotFound();
@@ -137,11 +136,10 @@ namespace Gordon360.Controllers
         public ActionResult<StudentNews> Post([FromBody] StudentNews newsItem)
         {
             // Get authenticated username/id
-            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
+            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
             // Call appropriate service
-            var result = _newsService.SubmitNews(newsItem, authenticatedUserUsername, authenticatedUserIdString);
+            var result = _newsService.SubmitNews(newsItem, authenticatedUserUsername);
             if (result == null)
             {
                 return NotFound();

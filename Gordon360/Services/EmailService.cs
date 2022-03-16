@@ -37,23 +37,23 @@ namespace Gordon360.Services
         /// <summary>
         /// Get a list of emails for group admin in the activity during the current session.
         /// </summary>
-        /// <param name="activity_code"></param>
+        /// <param name="activityCode"></param>
         /// <returns>A collection of group admin emails</returns>
-        public async Task<IEnumerable<EmailViewModel>> GetEmailsForGroupAdmin(string activity_code)
+        public async Task<IEnumerable<EmailViewModel>> GetEmailsForGroupAdmin(string activityCode)
         {
             var currentSession = await Helpers.GetCurrentSession();
-            return await GetEmailsForGroupAdmin(activity_code, currentSession.SessionCode);
+            return await GetEmailsForGroupAdmin(activityCode, currentSession.SessionCode);
         }
 
         /// <summary>
         /// Get a list of emails for group admin in the activity during a specified session.
         /// </summary>
-        /// <param name="activity_code"></param>
-        /// <param name="session_code"></param>
+        /// <param name="activityCode"></param>
+        /// <param name="sessionCode"></param>
         /// <returns>A collection of the group admin emails</returns>
-        public async Task<IEnumerable<EmailViewModel>> GetEmailsForGroupAdmin(string activity_code, string session_code)
+        public async Task<IEnumerable<EmailViewModel>> GetEmailsForGroupAdmin(string activityCode, string sessionCode)
         {
-            var result = await _context.Procedures.GRP_ADMIN_EMAILS_PER_ACT_CDEAsync(activity_code, session_code);
+            var result = await _context.Procedures.GRP_ADMIN_EMAILS_PER_ACT_CDEAsync(activityCode, sessionCode);
 
             if (result == null)
             {
@@ -66,34 +66,34 @@ namespace Gordon360.Services
         /// <summary>
         /// Get a list of emails for leaders in the activity during the current session.
         /// </summary>
-        /// <param name="activity_code"></param>
+        /// <param name="activityCode"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivityLeaders(string activity_code)
+        public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivityLeaders(string activityCode)
         {
             var currentSession = await Helpers.GetCurrentSession();
-            return await GetEmailsForActivityLeaders(activity_code, currentSession.SessionCode);
+            return await GetEmailsForActivityLeaders(activityCode, currentSession.SessionCode);
         }
 
         /// <summary>
         /// Get a list of emails for advisors in the activity during the current session.
         /// </summary>
-        /// <param name="activity_code"></param>
+        /// <param name="activityCode"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAdvisors(string activity_code)
+        public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAdvisors(string activityCode)
         {
             var currentSession = await Helpers.GetCurrentSession();
-            return await GetEmailsForActivityAdvisors(activity_code, currentSession.SessionCode);
+            return await GetEmailsForActivityAdvisors(activityCode, currentSession.SessionCode);
         }
 
         /// <summary>
         /// Get a list of the emails for all members in the activity during a specific session
         /// </summary>
-        /// <param name="activity_code">The activity code</param>
-        /// <param name="session_code">The session code</param>
+        /// <param name="activityCode">The activity code</param>
+        /// <param name="sessionCode">The session code</param>
         /// <returns>List of the emails for the members of this activity</returns>
-        public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivity(string activity_code, string session_code)
+        public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivity(string activityCode, string sessionCode)
         {
-            var result = await _context.Procedures.EMAILS_PER_ACT_CDEAsync(activity_code, session_code);
+            var result = await _context.Procedures.EMAILS_PER_ACT_CDEAsync(activityCode, sessionCode);
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
@@ -106,12 +106,12 @@ namespace Gordon360.Services
         /// <summary>
         /// Get a list of emails for leaders in the activity during a specified session
         /// </summary>
-        /// <param name="activity_code">The activity code</param>
-        /// <param name="session_code">The session code</param>
+        /// <param name="activityCode">The activity code</param>
+        /// <param name="sessionCode">The session code</param>
         /// <returns>List of emails for the leaders of this activity</returns>
-        public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivityLeaders(string activity_code, string session_code)
+        public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivityLeaders(string activityCode, string sessionCode)
         {
-            var result = await _context.Procedures.LEADER_EMAILS_PER_ACT_CDEAsync(activity_code, session_code);
+            var result = await _context.Procedures.LEADER_EMAILS_PER_ACT_CDEAsync(activityCode, sessionCode);
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
@@ -123,12 +123,12 @@ namespace Gordon360.Services
         /// <summary>
         /// Get a list of emails for leaders in the activity during a specified session
         /// </summary>
-        /// <param name="activity_code">The activity code</param>
-        /// <param name="session_code">The session code</param>
+        /// <param name="activityCode">The activity code</param>
+        /// <param name="sessionCode">The session code</param>
         /// <returns>List of emails for the leaders of this activity</returns>
-        public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAdvisors(string activity_code, string session_code)
+        public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAdvisors(string activityCode, string sessionCode)
         {
-            var result = await _context.Procedures.ADVISOR_EMAILS_PER_ACT_CDEAsync(activity_code, session_code);
+            var result = await _context.Procedures.ADVISOR_EMAILS_PER_ACT_CDEAsync(activityCode, sessionCode);
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };

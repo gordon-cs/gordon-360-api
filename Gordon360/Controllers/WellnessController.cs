@@ -1,6 +1,8 @@
-﻿using Gordon360.Models.CCT;
+﻿using Gordon360.Database.CCT;
+using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
+using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -11,9 +13,9 @@ namespace Gordon360.Controllers
     {
         private readonly IWellnessService _wellnessService;
 
-        public WellnessController(IWellnessService wellnessService)
+        public WellnessController(CCTContext context)
         {
-            _wellnessService = wellnessService;
+            _wellnessService = new WellnessService(context);
         }
 
         /// <summary>
@@ -35,9 +37,9 @@ namespace Gordon360.Controllers
         [Route("")]
         public ActionResult<WellnessViewModel> Get()
         {
-            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
-            var result = _wellnessService.GetStatus(authenticatedUserIdString);
+            var result = _wellnessService.GetStatus(authenticatedUserUsername);
 
             if (result == null)
             {
@@ -75,9 +77,9 @@ namespace Gordon360.Controllers
         [Route("")]
         public ActionResult<Health_Status> Post([FromBody] WellnessStatusColor status)
         {
-            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
-            var result = _wellnessService.PostStatus(status, authenticatedUserIdString);
+            var result = _wellnessService.PostStatus(status, authenticatedUserUsername);
 
             if (result == null)
             {

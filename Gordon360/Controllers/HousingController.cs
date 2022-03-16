@@ -5,6 +5,7 @@ using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Methods;
 using Gordon360.Static.Names;
+using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Security.Claims;
@@ -36,10 +37,9 @@ namespace Gordon360.Controllers
         [Route("admin")]
         public ActionResult<bool> CheckIfHousingAdmin()
         {
-            //get token data from context, username is the username of current logged in person
-            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
+            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
-            string userID = _accountService.GetAccountByUsername(authenticatedUserUsername).GordonID;
+            string? userID = _accountService.GetAccountByUsername(authenticatedUserUsername)?.GordonID;
 
             bool result = _housingService.CheckIfHousingAdmin(userID);
             if (result)
@@ -123,8 +123,7 @@ namespace Gordon360.Controllers
         [Route("apartment")]
         public async Task<ActionResult<int?>> GetApplicationID()
         {
-            //get token data from context, username is the username of current logged in person
-            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
+            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
             string sessionID = (await Helpers.GetCurrentSession()).SessionCode;
 
@@ -197,8 +196,7 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)]
         public async Task<ActionResult<int>> EditApplication(int applicationID, [FromBody] ApartmentApplicationViewModel applicationDetails)
         {
-            //get token data from context, username is the username of current logged in person
-            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
+            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
             string sessionID = (await Helpers.GetCurrentSession()).SessionCode;
 
@@ -227,7 +225,7 @@ namespace Gordon360.Controllers
         public ActionResult<bool> ChangeEditor(int applicationID, [FromBody] ApartmentApplicationViewModel applicationDetails)
         {
             //get token data from context, username is the username of current logged in person
-            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
+            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
             string newEditorUsername = applicationDetails?.EditorProfile?.AD_Username ?? applicationDetails?.EditorUsername;
 
@@ -259,7 +257,7 @@ namespace Gordon360.Controllers
         public ActionResult<ApartmentApplicationViewModel> GetApartmentApplication(int applicationID)
         {
             //get token data from context, username is the username of current logged in person
-            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
+            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
             string userID = _accountService.GetAccountByUsername(authenticatedUserUsername).GordonID;
 

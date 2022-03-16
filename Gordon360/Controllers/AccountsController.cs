@@ -4,6 +4,7 @@ using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Data;
 using Gordon360.Static.Names;
+using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System;
@@ -72,8 +73,8 @@ namespace Gordon360.Controllers
         [Route("search/{searchString}")]
         public ActionResult<IEnumerable<BasicInfoViewModel>> Search(string searchString)
         {
-            var authenticatedUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserId);
+            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserUsername);
 
             var accounts = Data.AllBasicInfoWithoutAlumni;
 
@@ -250,8 +251,8 @@ namespace Gordon360.Controllers
         [Route("search/{searchString}/{secondaryString}")]
         public ActionResult<IEnumerable<BasicInfoViewModel>> SearchWithSpace(string searchString, string secondaryString)
         {
-            var authenticatedUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserId);
+            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserUsername);
 
             int precedence = 0;
 
@@ -386,7 +387,7 @@ namespace Gordon360.Controllers
         /// <returns> All accounts meeting some or all of the parameter</returns>
         [HttpGet]
         [Route("advanced-people-search/{includeAlumniSearchParam}/{firstNameSearchParam}/{lastNameSearchParam}/{majorSearchParam}/{minorSearchParam}/{hallSearchParam}/{classTypeSearchParam}/{hometownSearchParam}/{stateSearchParam}/{countrySearchParam}/{departmentSearchParam}/{buildingSearchParam}")]
-        public IHttpActionResult AdvancedPeopleSearch(bool includeAlumniSearchParam, string firstNameSearchParam,
+        public ActionResult<IEnumerable<JObject>> AdvancedPeopleSearch(bool includeAlumniSearchParam, string firstNameSearchParam,
             string lastNameSearchParam, string majorSearchParam, string minorSearchParam, string hallSearchParam,
             string classTypeSearchParam, string hometownSearchParam, string stateSearchParam,
             string countrySearchParam, string departmentSearchParam, string buildingSearchParam)
@@ -502,8 +503,8 @@ namespace Gordon360.Controllers
                 buildingSearchParam = buildingSearchParam.Replace("_", ".");
             }
 
-            var authenticatedUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserId);
+            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserUsername);
 
             // Create accounts viewmodel to search
             IEnumerable<JObject> accounts = new List<JObject>();

@@ -13,7 +13,7 @@ namespace Gordon360.Services
     /// </summary>
     public class ScheduleService : IScheduleService
     {
-        private CCTContext _context;
+        private readonly CCTContext _context;
 
         public ScheduleService(CCTContext context)
         {
@@ -23,20 +23,20 @@ namespace Gordon360.Services
         /// <summary>
         /// Fetch the schedule item whose id and session code is specified by the parameter
         /// </summary>
-        /// <param name="id">The id of the student</param>
+        /// <param name="username">The AD Username of the student</param>
         /// <returns>StudentScheduleViewModel if found, null if not found</returns>
-        public async Task<IEnumerable<ScheduleViewModel>> GetScheduleStudent(string id)
+        public async Task<IEnumerable<ScheduleViewModel>> GetScheduleStudent(string username)
         {
-            var query = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
+            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
 
-            if (query == null)
+            if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Schedule was not found." };
             }
 
 
             var currentSession = await Helpers.GetCurrentSession();
-            var result = await _context.Procedures.STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDEAsync(int.Parse(id), currentSession.SessionCode);
+            var result = await _context.Procedures.STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDEAsync(int.Parse(account.gordon_id), currentSession.SessionCode);
 
             return (IEnumerable<ScheduleViewModel>)result;
         }
@@ -45,19 +45,19 @@ namespace Gordon360.Services
         /// <summary>
         /// Fetch the schedule item whose id and session code is specified by the parameter
         /// </summary>
-        /// <param name="id">The id of the instructor</param>
+        /// <param name="username">The AD Username of the instructor</param>
         /// <returns>StudentScheduleViewModel if found, null if not found</returns>
-        public async Task<IEnumerable<ScheduleViewModel>> GetScheduleFaculty(string id)
+        public async Task<IEnumerable<ScheduleViewModel>> GetScheduleFaculty(string username)
         {
-            var query = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
+            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
             //var currentSessionCode = Helpers.GetCurrentSession().SessionCode;
-            if (query == null)
+            if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Schedule was not found." };
             }
 
             var currentSession = await Helpers.GetCurrentSession();
-            var result = await _context.Procedures.INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDEAsync(int.Parse(id), currentSession.SessionCode);
+            var result = await _context.Procedures.INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDEAsync(int.Parse(account.gordon_id), currentSession.SessionCode);
 
             return (IEnumerable<ScheduleViewModel>)result;
         }

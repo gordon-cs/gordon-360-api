@@ -59,9 +59,9 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("current")]
         [AllowAnonymous]
-        public ActionResult<SessionViewModel> GetCurrentSession()
+        public async Task<ActionResult<SessionViewModel>> GetCurrentSession()
         {
-            var currentSession = Helpers.GetCurrentSession();
+            var currentSession = await Helpers.GetCurrentSession();
             if (currentSession == null)
             {
                 return NotFound();

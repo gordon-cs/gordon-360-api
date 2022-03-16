@@ -23,19 +23,19 @@ namespace Gordon360.Services
         /// <summary>
         /// Fetch the myschedule item whose id is specified by the parameter
         /// </summary>
-        /// <param name="event_id">The myschedule id</param>
-        /// <param name="gordon_id">The gordon id</param>
+        /// <param name="eventID">The myschedule id</param>
+        /// <param name="username">AD Username</param>
         /// <returns>Myschedule if found, null if not found</returns>
-        public MYSCHEDULE GetForID(string event_id, string gordon_id)
+        public MYSCHEDULE GetForID(string eventID, string username)
         {
             // Account Verification
-            var account = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == gordon_id);
+            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
             if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            var result = _context.MYSCHEDULE.FirstOrDefault(x => x.GORDON_ID == gordon_id && x.EVENT_ID == event_id);
+            var result = _context.MYSCHEDULE.FirstOrDefault(x => x.GORDON_ID == account.gordon_id && x.EVENT_ID == eventID);
             if (result == null)
             {
                 return null;
@@ -46,22 +46,22 @@ namespace Gordon360.Services
 
 
         /// <summary>
-        /// Fetch all myschedule items whose id is specified by the parameter
+        /// Fetch all myschedule items belonging to the given user
         /// </summary>
-        /// <param name="gordon_id">The gordon id</param>
+        /// <param name="username">The AD Username</param>
         /// <returns>Array of Myschedule if found, null if not found</returns>
-        public IEnumerable<MYSCHEDULE> GetAllForID(string gordon_id)
+        public IEnumerable<MYSCHEDULE> GetAllForUser(string username)
         {
 
             // Account Verification
-            var account = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == gordon_id);
+            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
 
             if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            var result = _context.MYSCHEDULE.Where(x => x.GORDON_ID == gordon_id);
+            var result = _context.MYSCHEDULE.Where(x => x.GORDON_ID == account.gordon_id);
             if (result == null)
             {
                 return null;
@@ -126,25 +126,25 @@ namespace Gordon360.Services
         /// <summary>
         /// Delete the myschedule whose id is specified by the parameter.
         /// </summary>
-        /// <param name="event_id">The myschedule id</param>
-        /// <param name="gordon_id">The gordon id</param>
+        /// <param name="eventID">The myschedule id</param>
+        /// <param name="username">The gordon id</param>
         /// <returns>The myschedule that was just deleted</returns>
-        public MYSCHEDULE Delete(string event_id, string gordon_id)
+        public MYSCHEDULE Delete(string eventID, string username)
         {
             // Account Verification
-            var account = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == gordon_id);
+            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
             if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            var result = _context.MYSCHEDULE.FirstOrDefault(x => x.GORDON_ID == gordon_id && x.EVENT_ID == event_id);
+            var result = _context.MYSCHEDULE.FirstOrDefault(x => x.GORDON_ID == account.gordon_id && x.EVENT_ID == eventID);
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The MySchedule was not found." };
             }
 
-            _context.MYSCHEDULE.Remove(new MYSCHEDULE { EVENT_ID = event_id, GORDON_ID = gordon_id });
+            _context.MYSCHEDULE.Remove(new MYSCHEDULE { EVENT_ID = eventID, GORDON_ID = account.gordon_id });
             _context.SaveChanges();
 
             return result;

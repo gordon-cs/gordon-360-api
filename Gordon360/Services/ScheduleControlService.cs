@@ -22,54 +22,54 @@ namespace Gordon360.Services
         /// <summary>
         /// privacy setting of schedule.
         /// </summary>
-        /// <param name="id">id</param>
+        /// <param name="username">AD Username</param>
         /// <param name="value">Y or N</param>
-        public async Task UpdateSchedulePrivacy(string id, string value)
+        public async Task UpdateSchedulePrivacy(string username, string value)
         {
-            var original = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
+            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
 
-            if (original == null)
+            if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            await _context.Procedures.UPDATE_SCHEDULE_PRIVACYAsync(int.Parse(id), value);
+            await _context.Procedures.UPDATE_SCHEDULE_PRIVACYAsync(int.Parse(account.gordon_id), value);
 
         }
 
         /// <summary>
         /// description of schedule.
         /// </summary>
-        /// <param name="id">id</param>
+        /// <param name="username">AD Username</param>
         /// <param name="value">New description</param>
-        public async Task UpdateDescription(string id, string value)
+        public async Task UpdateDescription(string username, string value)
         {
-            var original = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
+            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
 
-            if (original == null)
+            if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            await _context.Procedures.UPDATE_DESCRIPTIONAsync(int.Parse(id), value);
+            await _context.Procedures.UPDATE_DESCRIPTIONAsync(int.Parse(account.gordon_id), value);
         }
 
 
         /// <summary>
         /// Update timestamp of modification in schedule.
         /// </summary>
-        /// <param name="id">id</param>
+        /// <param name="username">AD Username</param>
         /// <param name="value">Modified Time</param>
-        public async Task UpdateModifiedTimeStamp(string id, DateTime value)
+        public async Task UpdateModifiedTimeStamp(string username, DateTime value)
         {
-            var original = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
+            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
 
-            if (original == null)
+            if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            await _context.Procedures.UPDATE_TIMESTAMPAsync(int.Parse(id), value);
+            await _context.Procedures.UPDATE_TIMESTAMPAsync(int.Parse(account.gordon_id), value);
         }
     }
 }

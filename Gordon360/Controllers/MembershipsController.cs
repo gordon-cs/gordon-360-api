@@ -4,6 +4,7 @@ using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
+using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -240,8 +241,8 @@ namespace Gordon360.Controllers
                 return NotFound();
             }
             // privacy control of membership view model
-            var authenticatedUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserId);
+            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserUsername);
 
             if (viewerType == Position.SUPERADMIN || viewerType == Position.POLICE)              //super admin and gordon police reads all
                 return Ok(result);
@@ -255,7 +256,7 @@ namespace Gordon360.Controllers
                     bool groupAdmin = false;
                     foreach (var admin in admins)               // group admin of a group can read membership of this group
                     {
-                        if (admin.IDNumber.Equals(authenticatedUserId))
+                        if (admin.AD_Username.Equals(authenticatedUserUsername))
                             groupAdmin = true;
                     }
                     if (groupAdmin)

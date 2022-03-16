@@ -1,6 +1,7 @@
 ﻿using Gordon360.Database.CCT;
 using Gordon360.Models.CCT;
 using Gordon360.Services;
+using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System;
@@ -31,9 +32,9 @@ namespace Gordon360.Controllers
         [Route("")]
         public ActionResult<IEnumerable<MYSCHEDULE>> Get()
         {
-            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var authenticatedUserIdString = AuthUtils.GetAuthenticatedUserUsername(User);
 
-            object result = _myScheduleService.GetAllForID(authenticatedUserIdString);
+            object result = _myScheduleService.GetAllForUser(authenticatedUserIdString);
             if (result == null)
             {
                 return NotFound();
@@ -58,7 +59,7 @@ namespace Gordon360.Controllers
         [Route("event/{event_id}")]
         public ActionResult<MYSCHEDULE> GetByEventId(string event_Id)
         {
-            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var authenticatedUserIdString = AuthUtils.GetAuthenticatedUserUsername(User);
 
             object result = _myScheduleService.GetForID(event_Id, authenticatedUserIdString);
             if (result == null)
@@ -81,10 +82,7 @@ namespace Gordon360.Controllers
         [Route("{username}")]
         public ActionResult<IEnumerable<MYSCHEDULE>> Get(string username)
         {
-            //probably needs privacy stuff like ProfilesController and service
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-
-            var result = _myScheduleService.GetAllForID(id);
+            var result = _myScheduleService.GetAllForUser(username);
             if (result == null)
             {
                 return NotFound();
@@ -104,10 +102,9 @@ namespace Gordon360.Controllers
             const int MAX = 50;
             DateTime localDate = DateTime.Now;
 
-            // Check if maximum
-            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
-            object existingEvents = _myScheduleService.GetAllForID(authenticatedUserIdString);
+            object existingEvents = _myScheduleService.GetAllForUser(authenticatedUserUsername);
 
             JArray jEvents = JArray.FromObject(existingEvents);
 
@@ -125,28 +122,28 @@ namespace Gordon360.Controllers
             }
 
 
-            _scheduleControlService.UpdateModifiedTimeStamp(authenticatedUserIdString, localDate);
+            _scheduleControlService.UpdateModifiedTimeStamp(authenticatedUserUsername, localDate);
 
             return Created("myschedule", mySchedule);
         }
 
         /// <summary>Delete an existing myschedule item</summary>
-        /// <param name="event_id">The identifier for the myschedule to be deleted</param>
+        /// <param name="eventID">The identifier for the myschedule to be deleted</param>
         /// <remarks>Calls the server to make a call and remove the given myschedule from the database</remarks>
         [HttpDelete]
         [Route("{event_id}")]
-        public ActionResult<MYSCHEDULE> Delete(string event_id)
+        public ActionResult<MYSCHEDULE> Delete(string eventID)
         {
             DateTime localDate = DateTime.Now;
-            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var result = _myScheduleService.Delete(event_id, authenticatedUserIdString);
+            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var result = _myScheduleService.Delete(eventID, authenticatedUserUsername);
 
             if (result == null)
             {
                 return NotFound();
             }
 
-            _scheduleControlService.UpdateModifiedTimeStamp(authenticatedUserIdString, localDate);
+            _scheduleControlService.UpdateModifiedTimeStamp(authenticatedUserUsername, localDate);
 
             return Ok(result);
         }
@@ -168,9 +165,9 @@ namespace Gordon360.Controllers
                 return NotFound();
             }
 
-            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
-            _scheduleControlService.UpdateModifiedTimeStamp(authenticatedUserIdString, localDate);
+            _scheduleControlService.UpdateModifiedTimeStamp(authenticatedUserUsername, localDate);
 
             return Ok(result);
         }

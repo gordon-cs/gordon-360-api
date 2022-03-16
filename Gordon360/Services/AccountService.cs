@@ -30,16 +30,15 @@ namespace Gordon360.Services
         /// <param name="id">The person's gordon id</param>
         /// <returns>AccountViewModel if found, null if not found</returns>
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
-        public AccountViewModel Get(string id)
+        public AccountViewModel? GetAccountByID(string id)
         {
-            var query = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
-            if (query == null)
+            var account = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
+            if (account == null)
             {
                 // Custom Exception is thrown that will be cauth in the controller Exception filter.
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
             }
-            AccountViewModel result = query;
-            return result;
+            return account;
         }
 
         /// <summary>
@@ -57,31 +56,29 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="email">The email address associated with the account.</param>
         /// <returns>the student account information</returns>
-        public AccountViewModel GetAccountByEmail(string email)
+        public AccountViewModel? GetAccountByEmail(string email)
         {
-            var query = _context.ACCOUNT.FirstOrDefault(x => x.email == email);
-            if (query == null)
+            var account = _context.ACCOUNT.FirstOrDefault(x => x.email == email);
+            if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
             }
-            AccountViewModel result = query; // Implicit conversion happening here, see ViewModels.
-            return result;
+            return account;
         }
 
         /// <summary>
         /// Fetches the account record with the specified username.
         /// </summary>
-        /// <param name="username">The username associated with the account.</param>
+        /// <param name="username">The AD username associated with the account.</param>
         /// <returns>the student account information</returns>
-        public AccountViewModel GetAccountByUsername(string username)
+        public AccountViewModel? GetAccountByUsername(string username)
         {
-            var query = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
-            if (query == null)
+            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
+            if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
             }
-            AccountViewModel result = query; // Implicit conversion happening here, see ViewModels.
-            return result;
+            return account;
         }
     }
 }

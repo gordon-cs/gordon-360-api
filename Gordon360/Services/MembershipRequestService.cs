@@ -30,8 +30,8 @@ namespace Gordon360.Services
         public REQUEST Add(REQUEST membershipRequest)
         {
             // Validates the memberships request by throwing appropriate exceptions. The exceptions are caugth in the CustomExceptionFilter 
-            validateMembershipRequest(membershipRequest);
-            isPersonAlreadyInActivity(membershipRequest);
+            ValidateMembershipRequest(membershipRequest);
+            IsPersonAlreadyInActivity(membershipRequest);
 
             membershipRequest.STATUS = Request_Status.PENDING;
             var addedMembershipRequest = _context.REQUEST.Add(membershipRequest);
@@ -44,11 +44,11 @@ namespace Gordon360.Services
         /// <summary>
         /// Approves the request with the specified ID.
         /// </summary>
-        /// <param name="id">The ID of the request to be approved</param>
+        /// <param name="requestID">The ID of the request to be approved</param>
         /// <returns>The approved membership</returns>
-        public MEMBERSHIP ApproveRequest(int id)
+        public MEMBERSHIP ApproveRequest(int requestID)
         {
-            var query = _context.REQUEST.Find(id);
+            var query = _context.REQUEST.Find(requestID);
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Request was not found." };
@@ -111,11 +111,11 @@ namespace Gordon360.Services
         /// <summary>
         /// Delete the membershipRequest object whose id is given in the parameters 
         /// </summary>
-        /// <param name="id">The membership request id</param>
+        /// <param name="requestID">The membership request id</param>
         /// <returns>A copy of the deleted membership request</returns>
-        public REQUEST Delete(int id)
+        public REQUEST Delete(int requestID)
         {
-            var result = _context.REQUEST.Find(id);
+            var result = _context.REQUEST.Find(requestID);
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Request was not found." };
@@ -128,11 +128,11 @@ namespace Gordon360.Services
         /// <summary>
         /// Denies the membership request object whose id is given in the parameters
         /// </summary>
-        /// <param name="id">The membership request id</param>
+        /// <param name="requestID">The membership request id</param>
         /// <returns></returns>
-        public REQUEST DenyRequest(int id)
+        public REQUEST DenyRequest(int requestID)
         {
-            var query = _context.REQUEST.Find(id);
+            var query = _context.REQUEST.Find(requestID);
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Request was not found." };
@@ -146,18 +146,20 @@ namespace Gordon360.Services
         /// <summary>
         /// Get the membership request object whose Id is specified in the parameters.
         /// </summary>
-        /// <param name="id">The membership request id</param>
+        /// <param name="requestID">The membership request id</param>
         /// <returns>If found, returns MembershipRequestViewModel. If not found, returns null.</returns>
-        public async Task<MembershipRequestViewModel> Get(int id)
+        public async Task<MembershipRequestViewModel> Get(int requestID)
         {
-            var requests = await _context.Procedures.REQUEST_PER_REQUEST_IDAsync(id);
+            var requests = await _context.Procedures.REQUEST_PER_REQUEST_IDAsync(requestID);
 
-            if (requests == null)
+            if (requests == null || requests.Count != 1)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Request was not found." };
             }
 
-            return requests.Select(result => new MembershipRequestViewModel
+            var result = requests[0];
+
+            return new MembershipRequestViewModel
             {
                 ActivityCode = result.ActivityCode.Trim(),
                 ActivityDescription = result.ActivityDescription.Trim(),
@@ -172,7 +174,7 @@ namespace Gordon360.Services
                 SessionCode = result.SessionCode.Trim(),
                 SessionDescription = result.SessionDescription.Trim(),
                 RequestApproved = result.RequestApproved.Trim(),
-            }).FirstOrDefault();
+            };
         }
 
         /// <summary>
@@ -205,11 +207,11 @@ namespace Gordon360.Services
         /// <summary>
         /// Fetches all the membership requests associated with this activity
         /// </summary>
-        /// <param name="id">The activity id</param>
+        /// <param name="activityCode">The activity id</param>
         /// <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
-        public async Task<IEnumerable<MembershipRequestViewModel>> GetMembershipRequestsForActivity(string id)
+        public async Task<IEnumerable<MembershipRequestViewModel>> GetMembershipRequestsForActivity(string activityCode)
         {
-            var allRequests = await _context.Procedures.REQUESTS_PER_ACT_CDEAsync(id);
+            var allRequests = await _context.Procedures.REQUESTS_PER_ACT_CDEAsync(activityCode);
 
             return allRequests.Select(r => new MembershipRequestViewModel
             {
@@ -232,11 +234,11 @@ namespace Gordon360.Services
         /// <summary>
         /// Fetches all the membership requests associated with this student
         /// </summary>
-        /// <param name="id">The student id</param>
+        /// <param name="gordonID">The student id</param>
         /// <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
-        public async Task<IEnumerable<MembershipRequestViewModel>> GetMembershipRequestsForStudent(string id)
+        public async Task<IEnumerable<MembershipRequestViewModel>> GetMembershipRequestsForStudent(string gordonID)
         {
-            var allRequests = await _context.Procedures.REQUESTS_PER_STUDENT_IDAsync(int.Parse(id));
+            var allRequests = await _context.Procedures.REQUESTS_PER_STUDENT_IDAsync(int.Parse(gordonID));
 
             return allRequests.Select(r => new MembershipRequestViewModel
             {
@@ -259,19 +261,19 @@ namespace Gordon360.Services
         /// <summary>
         /// Update an existing membership request object
         /// </summary>
-        /// <param name="id">The membership request id</param>
+        /// <param name="requestID">The membership request id</param>
         /// <param name="membershipRequest">The newly modified membership request</param>
         /// <returns></returns>
-        public REQUEST Update(int id, REQUEST membershipRequest)
+        public REQUEST Update(int requestID, REQUEST membershipRequest)
         {
-            var original = _context.REQUEST.Find(id);
+            var original = _context.REQUEST.Find(requestID);
             if (original == null)
             {
                 return null;
             }
 
             // The validate function throws ResourceNotFoundExceptino where needed. The exceptions are caught in my CustomExceptionFilter
-            validateMembershipRequest(membershipRequest);
+            ValidateMembershipRequest(membershipRequest);
 
             // Only a few fields should be able to be changed through an update.
             original.SESS_CDE = membershipRequest.SESS_CDE;
@@ -286,7 +288,7 @@ namespace Gordon360.Services
 
         // Helper method to help validate a membership request that comes in.
         // Return true if it is valid. Throws an exception if not. Exception is cauth in an Exception filter.
-        private bool validateMembershipRequest(REQUEST membershipRequest)
+        private bool ValidateMembershipRequest(REQUEST membershipRequest)
         {
             var personExists = _context.ACCOUNT.Where(x => x.gordon_id.Trim() == membershipRequest.ID_NUM.ToString()).Any();
             if (!personExists)
@@ -320,7 +322,7 @@ namespace Gordon360.Services
             return true;
         }
 
-        private bool isPersonAlreadyInActivity(REQUEST membershipRequest)
+        private bool IsPersonAlreadyInActivity(REQUEST membershipRequest)
         {
             var personAlreadyInActivity = _context.MEMBERSHIP.Where(x => x.SESS_CDE == membershipRequest.SESS_CDE &&
                 x.ACT_CDE == membershipRequest.ACT_CDE && x.ID_NUM == membershipRequest.ID_NUM).Any();

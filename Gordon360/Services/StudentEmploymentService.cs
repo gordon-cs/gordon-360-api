@@ -18,19 +18,19 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// get victory promise scores
+        /// get Student Employment records of given user
         /// </summary>
-        /// <param name="id">id</param>
+        /// <param name="username">AD Username of user to get employment</param>
         /// <returns>VictoryPromiseViewModel if found, null if not found</returns>
-        public async Task<IEnumerable<StudentEmploymentViewModel>> GetEmployment(string id)
+        public async Task<IEnumerable<StudentEmploymentViewModel>> GetEmployment(string username)
         {
-            var query = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
-            if (query == null)
+            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
+            if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            var result = await _context.Procedures.STUDENT_JOBS_PER_ID_NUMAsync(int.Parse(id));
+            var result = await _context.Procedures.STUDENT_JOBS_PER_ID_NUMAsync(int.Parse(account.gordon_id));
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };

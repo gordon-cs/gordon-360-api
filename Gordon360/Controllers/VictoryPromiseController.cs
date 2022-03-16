@@ -1,6 +1,7 @@
 ﻿using Gordon360.Database.CCT;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
+using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -29,9 +30,9 @@ namespace Gordon360.Controllers
         [Route("")]
         public ActionResult<IEnumerable<VictoryPromiseViewModel>> Get()
         {
-            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var username = AuthUtils.GetAuthenticatedUserUsername(User);
 
-            var result = _victoryPromiseService.GetVPScores(authenticatedUserIdString);
+            var result = _victoryPromiseService.GetVPScores(username);
 
             if (result == null)
             {

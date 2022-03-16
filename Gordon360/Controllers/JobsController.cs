@@ -5,6 +5,7 @@ using Gordon360.Exceptions;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
+using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -85,7 +86,7 @@ namespace Gordon360.Controllers
         public ActionResult saveShiftForUser([FromBody] ShiftViewModel shiftDetails)
         {
             int userID = GetCurrentUserID();
-            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
+            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
             if (shiftDetails.SHIFT_START_DATETIME == null || shiftDetails.SHIFT_END_DATETIME == null || shiftDetails.SHIFT_START_DATETIME == shiftDetails.SHIFT_END_DATETIME)
             {
@@ -114,7 +115,7 @@ namespace Gordon360.Controllers
             IEnumerable<OverlappingShiftIdViewModel> overlapCheckResult = null;
 
             int userID = GetCurrentUserID();
-            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
+            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
             overlapCheckResult = _jobsService.editShiftOverlapCheck(userID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.ID);
             if (overlapCheckResult.Any())
@@ -366,7 +367,7 @@ namespace Gordon360.Controllers
             //IEnumerable<OverlappingShiftIdViewModel> overlapCheckResult = null;
 
             //int userID = GetCurrentUserID();
-            //var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
+            //var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
             //try
             //{
