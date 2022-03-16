@@ -12,11 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddMicrosoftIdentityWebApiAuthentication(builder.Configuration, "AzureAd");
 
-builder.Services.AddControllers().AddJsonOptions(options =>
-{
-    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
-    options.JsonSerializerOptions.PropertyNamingPolicy = null;
-});
+builder.Services.AddControllers().AddNewtonsoftJson(options => options.UseMemberCasing());
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -34,6 +30,8 @@ builder.Services.AddDbContext<CCTContext>(options =>
 ).AddDbContext<StudentTimesheetsContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Train-StudentTimesheets"))
 );
+
+builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 

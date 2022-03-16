@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Gordon360.Models.ViewModels
 {
@@ -43,8 +42,8 @@ namespace Gordon360.Models.ViewModels
             {
                 Event_Name = "";
                 Event_Title = "";
-                Description =  "";
-                Organization =  "";
+                Description = "";
+                Organization = "";
                 StartDate = "";
                 EndDate = "";
                 Location = "";
@@ -52,6 +51,4 @@ namespace Gordon360.Models.ViewModels
 
         }
     }
-
-
 }

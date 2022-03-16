@@ -1,10 +1,13 @@
 ﻿using Gordon360.Database.CCT;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
+using Gordon360.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Generic;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Gordon360.Controllers
 {
@@ -13,19 +16,19 @@ namespace Gordon360.Controllers
     {
         private readonly IEventService _eventService;
 
-        public EventsController(CCTContext context)
+        public EventsController(CCTContext context, IMemoryCache cache)
         {
-            _eventService = new EventService(context);
+            _eventService = new EventService(context, cache);
         }
 
         [HttpGet]
-        [Route("chapel/{term}")]
-        public ActionResult<IEnumerable<AttendedEventViewModel>> GetEventsByTerm(string term)
+        [Route("attended/{term}")]
+        public async Task<ActionResult<IEnumerable<AttendedEventViewModel>>> GetEventsByTerm(string term)
         {
             //get token data from context, username is the username of current logged in person
-            var authenticatedUserUsername = User.FindFirst(ClaimTypes.Name).Value;
+            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
-            var result = _eventService.GetEventsForStudentByTerm(authenticatedUserUsername, term);
+            var result = await _eventService.GetEventsForStudentByTerm(authenticatedUserUsername, term);
 
             if (result == null)
             {
@@ -40,7 +43,7 @@ namespace Gordon360.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("25Live/All")]
+        [Route("")]
         public ActionResult<IEnumerable<EventViewModel>> GetAllEvents()
         {
             var result = _eventService.GetAllEvents();
@@ -55,7 +58,7 @@ namespace Gordon360.Controllers
         }
 
         [HttpGet]
-        [Route("25Live/CLAW")]
+        [Route("claw")]
         public ActionResult<IEnumerable<EventViewModel>> GetAllChapelEvents()
         {
             var result = _eventService.GetCLAWEvents();
@@ -71,7 +74,7 @@ namespace Gordon360.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        [Route("25Live/Public")]
+        [Route("public")]
         public ActionResult<IEnumerable<EventViewModel>> GetAllPublicEvents()
         {
             var result = _eventService.GetPublicEvents();
