@@ -1,6 +1,7 @@
 ﻿using Gordon360.Database.CCT;
 using Gordon360.Database.MyGordon;
 using Gordon360.Exceptions;
+using Gordon360.Models.CCT;
 using Gordon360.Models.MyGordon;
 using Gordon360.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
@@ -49,18 +50,48 @@ namespace Gordon360.Services
         public async Task<IEnumerable<StudentNewsViewModel>> GetNewsNotExpiredAsync()
         {
             var news = await _contextCCT.Procedures.NEWS_NOT_EXPIREDAsync();
-            return (IEnumerable<StudentNewsViewModel>)news;
+            return news.Select(n => new StudentNewsViewModel
+            {
+                SNID = n.SNID,
+                ADUN = n.ADUN,
+                categoryID = n.categoryID,
+                Subject = n.Subject,
+                Body = n.Body,
+                Image = n.Image,
+                Accepted = true,
+                Sent = n.Sent,
+                thisPastMailing = n.thisPastMailing,
+                Entered = n.Entered,
+                categoryName = n.categoryName,
+                SortOrder = n.SortOrder,
+                ManualExpirationDate = n.ManualExpirationDate,
+            });
         }
 
         public async Task<IEnumerable<StudentNewsViewModel>> GetNewsNewAsync()
         {
             var news = await _contextCCT.Procedures.NEWS_NEWAsync();
-            return (IEnumerable<StudentNewsViewModel>)news;
+            return news.Select(n => new StudentNewsViewModel
+            {
+                SNID = n.SNID,
+                ADUN = n.ADUN,
+                categoryID = n.categoryID,
+                Subject = n.Subject,
+                Body = n.Body,
+                Image = n.Image,
+                Accepted = true,
+                Sent = n.Sent,
+                thisPastMailing = n.thisPastMailing,
+                Entered = n.Entered,
+                categoryName = n.categoryName,
+                SortOrder = n.SortOrder,
+                ManualExpirationDate = n.ManualExpirationDate,
+            });
         }
 
         public IEnumerable<StudentNewsCategoryViewModel> GetNewsCategories()
         {
-            return (IEnumerable<StudentNewsCategoryViewModel>)_context.StudentNewsCategory.OrderBy(c => c.SortOrder);
+            return _context.StudentNewsCategory.OrderBy(c => c.SortOrder).Select<StudentNewsCategory, StudentNewsCategoryViewModel>(c => c);
         }
 
         /// <summary>
@@ -71,14 +102,29 @@ namespace Gordon360.Services
         public async Task<IEnumerable<StudentNewsViewModel>> GetNewsPersonalUnapprovedAsync(string username)
         {
             // Verify account
-            var account = _contextCCT.ACCOUNT.FirstOrDefaultAsync(x => x.AD_Username == username);
+            var account = await _contextCCT.ACCOUNT.FirstOrDefaultAsync(x => x.AD_Username == username);
             if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
             var news = await _contextCCT.Procedures.NEWS_PERSONAL_UNAPPROVEDAsync(username);
-            return (IEnumerable<StudentNewsViewModel>)news;
+            return news.Select(n => new StudentNewsViewModel
+            {
+                SNID = n.SNID,
+                ADUN = n.ADUN,
+                categoryID = n.categoryID,
+                Subject = n.Subject,
+                Body = n.Body,
+                Image = n.Image,
+                Accepted = true,
+                Sent = n.Sent,
+                thisPastMailing = n.thisPastMailing,
+                Entered = n.Entered,
+                categoryName = n.categoryName,
+                SortOrder = n.SortOrder,
+                ManualExpirationDate = n.ManualExpirationDate,
+            });
         }
 
         /// <summary>

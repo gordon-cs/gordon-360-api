@@ -651,13 +651,13 @@
         <member name="M:Gordon360.Controllers.NewsController.GetCategories">
             Call the service that gets the list of categories
         </member>
-        <member name="M:Gordon360.Controllers.NewsController.GetNewsPersonalUnapproved">
+        <member name="M:Gordon360.Controllers.NewsController.GetNewsPersonalUnapprovedAsync">
             Call the service that gets all unapproved student news entries (by a particular user)
             not yet expired, filtering out the expired news
             @TODO: Remove redundant username/id from this and service
             @TODO: fix documentation comments
         </member>
-        <member name="M:Gordon360.Controllers.NewsController.Post(Gordon360.Models.MyGordon.StudentNews)">
+        <member name="M:Gordon360.Controllers.NewsController.Post(System.String,System.Int32,System.String,System.String)">
             Create a new news item to be added to the database
             @TODO: Remove redundant username/id from this and service
             @TODO: fix documentation comments

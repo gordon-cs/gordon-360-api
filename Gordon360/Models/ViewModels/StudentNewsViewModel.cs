@@ -19,18 +19,17 @@ namespace Gordon360.Models.ViewModels
         public string Subject { get; set; }
         public string Body { get; set; }
         public string Image { get; set; }
-        // defaults below to unapproved (if null), hence not a nullable bool
         public bool Accepted { get; set; }
-        public Nullable<bool> Sent { get; set; }
-        public Nullable<bool> thisPastMailing { get; set; }
-        public Nullable<DateTime> Entered { get; set; }
+        public bool? Sent { get; set; }
+        public bool? thisPastMailing { get; set; }
+        public DateTime? Entered { get; set; }
         public string categoryName { get; set; }
-        public Nullable<int> SortOrder { get; set; }
-        public Nullable<DateTime> ManualExpirationDate { get; set; }
+        public int? SortOrder { get; set; }
+        public DateTime? ManualExpirationDate { get; set; }
 
         public static implicit operator StudentNewsViewModel(StudentNews n)
         {
-            return new StudentNewsViewModel
+            StudentNewsViewModel vm = new StudentNewsViewModel
             {
                 SNID = n.SNID,
                 ADUN = n.ADUN,
@@ -47,6 +46,8 @@ namespace Gordon360.Models.ViewModels
                 SortOrder = n.category.SortOrder,
                 ManualExpirationDate = n.ManualExpirationDate,
             };
+
+            return vm;
         }
     }
 }

@@ -116,12 +116,12 @@ namespace Gordon360.Controllers
          */
         [HttpGet]
         [Route("personal-unapproved")]
-        public ActionResult<IEnumerable<StudentNewsViewModel>> GetNewsPersonalUnapproved()
+        public async Task<ActionResult<IEnumerable<StudentNewsViewModel>>> GetNewsPersonalUnapprovedAsync()
         {
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
             // Call appropriate service
-            var result = _newsService.GetNewsPersonalUnapprovedAsync(authenticatedUserUsername);
+            var result = await _newsService.GetNewsPersonalUnapprovedAsync(authenticatedUserUsername);
             if (result == null)
             {
                 return NotFound();
@@ -135,10 +135,18 @@ namespace Gordon360.Controllers
          */
         [HttpPost]
         [Route("")]
-        public ActionResult<StudentNews> Post([FromBody] StudentNews newsItem)
+        public ActionResult<StudentNews> Post(string subject, int categoryID, string body, string? image)
         {
             // Get authenticated username/id
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var newsItem = new StudentNews
+            {
+                ADUN = authenticatedUserUsername,
+                Subject = subject,
+                categoryID = categoryID,
+                Body = body,
+                Image = image
+            };
 
             // Call appropriate service
             var result = _newsService.SubmitNews(newsItem, authenticatedUserUsername);
