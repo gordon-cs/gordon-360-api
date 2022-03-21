@@ -10,6 +10,8 @@ using Gordon360.Static.Names;
 using System.Data.SqlClient;
 using Gordon360.Services.ComplexQueries;
 using Gordon360.Static.Data;
+using System.Net.Mail;
+using System.Net;
 
 namespace Gordon360.Services
 {
@@ -429,6 +431,33 @@ namespace Gordon360.Services
             else if (alum != null)
             {
                 alum.show_pic = (value == "Y" ? 1 : 0);
+            }
+        }
+        public void SendUpdateRequest(int userID, string email_content)
+        {
+            using (var smtp = new SmtpClient())
+            {
+                string to_email = "TO EMAIL";
+                string from_email = "FROM EMAIL";
+                string subject = String.Format("UPDATE REQUEST: Alumni {0}", userID);
+                var credential = new NetworkCredential
+                {
+                    UserName = from_email,
+                    Password = "PASSWORD"
+                };
+                smtp.Credentials = credential;
+                smtp.Host = "smtp.office365.com";
+                smtp.Port = 587;
+                smtp.EnableSsl = true;
+                var message = new MailMessage();
+                message.From = new MailAddress(from_email);
+                message.Bcc.Add(new MailAddress(from_email));
+                message.To.Add(new MailAddress(to_email));
+                message.Subject = subject;
+                message.Body = email_content;
+                message.IsBodyHtml = true;
+
+                smtp.Send(message);
             }
         }
 

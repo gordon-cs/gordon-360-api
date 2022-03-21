@@ -43,6 +43,17 @@ namespace Gordon360.Controllers.Api
         {
             _profileService = profileService;
         }
+        
+        private int GetCurrentUserID()
+        {
+            int userID = -1;
+            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
+            string username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            string id = _accountService.GetAccountByUsername(username).GordonID;
+            userID = Convert.ToInt32(id);
+
+            return userID;
+        }
 
         /// <summary>Get profile info of currently logged in user</summary>
         /// <returns></returns>
@@ -971,6 +982,28 @@ namespace Gordon360.Controllers.Api
             var id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
             _profileService.UpdateImagePrivacy(id, value);
 
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("updateRequest")]
+        public IHttpActionResult SendUpdateRequest([FromBody] EmailContentViewModel email)
+        {
+            int userID = GetCurrentUserID();
+            if (!ModelState.IsValid)
+            {
+                string errors = "";
+                foreach (var modelstate in ModelState.Values)
+                {
+                    foreach (var error in modelstate.Errors)
+                    {
+                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
+                    }
+
+                }
+                throw new BadInputException() { ExceptionMessage = errors };
+            }
+            _profileService.SendUpdateRequest(userID, email.Content);
             return Ok();
         }
     }

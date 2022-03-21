@@ -70,6 +70,8 @@ namespace Gordon360.Models.ViewModels
         public string Mail_Location { get; set; }
         public int? ChapelRequired { get; set; }
         public int? ChapelAttended { get; set; }
+        public string Content { get; set; }
+
 
 
         public static implicit operator StudentProfileViewModel(Student stu)
