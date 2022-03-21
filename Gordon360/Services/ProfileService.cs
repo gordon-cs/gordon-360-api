@@ -437,6 +437,7 @@ namespace Gordon360.Services
         {
             using (var smtp = new SmtpClient())
             {
+                //string to_email = "devrequest@gordon.edu";
                 string to_email = "TO EMAIL";
                 string from_email = "FROM EMAIL";
                 string subject = String.Format("UPDATE REQUEST: Alumni {0}", userID);

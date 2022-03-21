@@ -855,6 +855,8 @@ Differences from GoSite:
 
 `api/profiles/{type}` Update a social media link of a type (Facebook, Twitter, LinkedIn, Instagram, Handshake) of current logged in user.
 
+`api/profiles/updateRequest` Sends a request to update personal information for the current logged in user.
+
 ##### PUT
 
 `api/profiles/mobile_phone_number/{value}` Update mobile phone number for the current logged in user.
