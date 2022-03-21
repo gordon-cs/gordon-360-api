@@ -1,12 +1,21 @@
 {
   "profiles": {
-    "Gordon360": {
+    "WSL": {
+      "commandName": "WSL2",
+      "launchUrl": "https://localhost:51626",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "https://localhost:51626;http://localhost:51626"
+      },
+      "distributionName": ""
+    },
+    "Debug": {
       "commandName": "Project",
-      "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:53564;http://localhost:53565"
+      "sqlDebugging": true,
+      "applicationUrl": "https://localhost:51627;http://localhost:51626"
     }
   }
 }
