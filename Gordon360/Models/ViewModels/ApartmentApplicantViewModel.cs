@@ -24,7 +24,8 @@ namespace Gordon360.Models.ViewModels
                 if (BirthDate.HasValue)
                 {
                     DateTime nextSemester = new DateTime(DateTime.Today.Year, 9, 1); //The next semester is fall of the current year, since apartment applications are only in the spring
-                    return nextSemester.Year - BirthDate.Value.Year; // This age is meant to be approximate, so no need for leap-year compensation or an exact 'nextSemester' date
+                    var age = nextSemester.Year - BirthDate.Value.Year; // This age is meant to be approximate, so no need for leap-year compensation or an exact 'nextSemester' date
+                    return (BirthDate.Value.Date > nextSemester.AddYears(-age)) ? age - 1 : age; // If birth date is after the start of next semester, they are one year younger.
                 }
                 else { return null; }
             }
