@@ -78,6 +78,7 @@ namespace Gordon360.Services
         public Slider_Images DeleteBannerSlide(int slideID)
         {
             var slide = _unitOfWork.SliderRepository.GetById(slideID);
+            _imageUtils.DeleteImage(slide.Path);
             _unitOfWork.SliderRepository.Delete(slide);
             _unitOfWork.Save();
             return slide;
