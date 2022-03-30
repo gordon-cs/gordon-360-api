@@ -72,9 +72,9 @@ namespace Gordon360.Utils
         {
             if (imageData == null) { return; }
 
-            if (!System.IO.Directory.Exists(Path.GetDirectoryName(imagePath)))
+            if (!Directory.Exists(Path.GetDirectoryName(imagePath)))
             {
-                System.IO.Directory.CreateDirectory(Path.GetDirectoryName(imagePath));
+                Directory.CreateDirectory(Path.GetDirectoryName(imagePath));
             }
 
             byte[] imageDataArray = System.Convert.FromBase64String(imageData);

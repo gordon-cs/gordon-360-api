@@ -784,6 +784,12 @@ namespace Gordon360.AuthorizationFilters
                             return true;
                         return false;
                     }
+                case Resource.SLIDER:
+                    {
+                        if (user_position == Position.SUPERADMIN)
+                            return true;
+                        return false;
+                    }
                 default: return false;
             }
         }

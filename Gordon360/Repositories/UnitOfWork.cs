@@ -33,7 +33,7 @@ namespace Gordon360.Repositories
         private IRepository<REQUEST> _MembershipRequestRepository;
         private IRepository<ACT_INFO> _ActivityInfoRepository;
         private IRepository<ADMIN> _AdministratorRepository;
-        private IRepository<C360_SLIDER> _SliderRepository;
+        private IRepository<Slider_Images> _SliderRepository;
         private IRepository<CUSTOM_PROFILE> _ProfileCustomRepository;
         private IRepository<ChapelEvent> _ChapelEventRepository;
         private IRepository<DiningInfo> _DiningInfoRepository;
@@ -153,9 +153,9 @@ namespace Gordon360.Repositories
             get { return _AdministratorRepository ?? (_AdministratorRepository = new GenericRepository<ADMIN>(_context)); }
         }
 
-        public IRepository<C360_SLIDER> SliderRepository
+        public IRepository<Slider_Images> SliderRepository
         {
-            get { return _SliderRepository ?? (_SliderRepository = new GenericRepository<C360_SLIDER>(_context)); }
+            get { return _SliderRepository ?? (_SliderRepository = new GenericRepository<Slider_Images>(_context)); }
         }
         public IRepository<ChapelEvent> ChapelEventRepository
         {
