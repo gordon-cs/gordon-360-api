@@ -39,17 +39,16 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// Fetches the dashboard slider content from the database.
+        /// Retrieve all banner slides from the database
         /// </summary>
-        /// <returns>If found, returns a set of SliderViewModel's, based on each slide entry in the db. 
-        /// If not returns an empty IEnumerable.</returns>
+        /// <returns>An IEnumerable of the slides in the database</returns>
         public IEnumerable<Slider_Images> GetBannerSlides() => _unitOfWork.SliderRepository.GetAll();
 
         /// <summary>
-        /// Fetches the dashboard slider content from the database.
+        /// Inserts a banner slide in the database and uploads the image to the local slider folder
         /// </summary>
-        /// <returns>If found, returns a set of SliderViewModel's, based on each slide entry in the db. 
-        /// If not returns an empty IEnumerable.</returns>
+        /// <param name="slide">The slide to add</param>
+        /// <returns>The inserted slide</returns>
         public Slider_Images AddBannerSlide(BannerSlidePostViewModel slide)
         {
             string fileName = slide.Title + ".jpg";
@@ -71,10 +70,9 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// Fetches the dashboard slider content from the database.
+        /// Deletes a banner slide from the database and deletes the local image file
         /// </summary>
-        /// <returns>If found, returns a set of SliderViewModel's, based on each slide entry in the db. 
-        /// If not returns an empty IEnumerable.</returns>
+        /// <returns>The deleted slide</returns>
         public Slider_Images DeleteBannerSlide(int slideID)
         {
             var slide = _unitOfWork.SliderRepository.GetById(slideID);
