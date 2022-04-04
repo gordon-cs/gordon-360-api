@@ -60,6 +60,7 @@
         <AssociationConnector Association="CCTModel.FK_Applicants_HousingAppID" ManuallyRouted="false" />
         <AssociationConnector Association="CCTModel.FK_HallChoices_HousingAppID" ManuallyRouted="false" />
         <AssociationConnector Association="CCTModel.FK_booking_rides" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="CCTModel.Slider_Images" Width="1.5" PointX="0.75" PointY="21.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

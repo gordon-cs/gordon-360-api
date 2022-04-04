@@ -7,6 +7,7 @@ using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Static.Methods;
 using Gordon360.AuthorizationFilters;
 using Gordon360.Static.Names;
+using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Controllers.Api
 {
@@ -38,7 +39,55 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.READ_PUBLIC, resource = Resource.SLIDER)]
         public IHttpActionResult GetSliderContent()
         {
-            var result = _contentManagementService.GetSliderContent();
+            var result = _contentManagementService.DEPRECATED_GetSliderContent();
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+        /// <summary>Get all the banner slides for the dashboard banner</summary>
+        /// <returns>A list of all the slides for the banner</returns>
+        [HttpGet]
+        [Route("banner")]
+        [StateYourBusiness(operation = Operation.READ_PUBLIC, resource = Resource.SLIDER)]
+        public IHttpActionResult GetBannerSlides()
+        {
+            var result = _contentManagementService.GetBannerSlides();
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+        /// <summary>Post a new slide for the dashboard banner</summary>
+        /// <returns>The posted banner</returns>
+        [HttpPost]
+        [Route("banner")]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.SLIDER)]
+        public IHttpActionResult PostBannerSlide(BannerSlidePostViewModel slide)
+        {
+            var result = _contentManagementService.AddBannerSlide(slide);
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Created($"api/cms/banner/{result.ID}", result);
+        }
+
+        /// <summary>Remove a slide from the dashboard banner</summary>
+        /// <returns>ID of the slide to remove</returns>
+        [HttpDelete]
+        [Route("banner/{slideID}")]
+        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.SLIDER)]
+        public IHttpActionResult DeleteBannerSlide(int slideID)
+        {
+            var result = _contentManagementService.DeleteBannerSlide(slideID);
             if (result == null)
             {
                 return NotFound();

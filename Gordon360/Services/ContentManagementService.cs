@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
+using Gordon360.Utils;
 
 namespace Gordon360.Services
 {
@@ -15,6 +18,9 @@ namespace Gordon360.Services
     public class ContentManagementService : IContentManagementService
     {
         private IUnitOfWork _unitOfWork;
+        private readonly ImageUtils _imageUtils = new ImageUtils();
+
+        private readonly string SlideUploadPath = HttpContext.Current.Server.MapPath("~/browseable/slider");
 
         public ContentManagementService(UnitOfWork unitOfWork)
         {
@@ -26,12 +32,64 @@ namespace Gordon360.Services
         /// </summary>
         /// <returns>If found, returns a set of SliderViewModel's, based on each slide entry in the db. 
         /// If not returns an empty IEnumerable.</returns>
-        public IEnumerable<SliderViewModel> GetSliderContent()
+        public IEnumerable<SliderViewModel> DEPRECATED_GetSliderContent()
         {
-           var query =  _unitOfWork.SliderRepository.GetAll();
-           var result = query.Select<C360_SLIDER, SliderViewModel>(x => x);
+            var query = _unitOfWork.SliderRepository.GetAll();
+            var result = query.Select<Slider_Images, SliderViewModel>(x => x);
 
-           return result;
+            return result;
+        }
+
+        /// <summary>
+        /// Retrieve all banner slides from the database
+        /// </summary>
+        /// <returns>An IEnumerable of the slides in the database</returns>
+        public IEnumerable<Slider_Images> GetBannerSlides() => _unitOfWork.SliderRepository.GetAll();
+
+        /// <summary>
+        /// Inserts a banner slide in the database and uploads the image to the local slider folder
+        /// </summary>
+        /// <param name="slide">The slide to add</param>
+        /// <returns>The inserted slide</returns>
+        public Slider_Images AddBannerSlide(BannerSlidePostViewModel slide)
+        {
+            Match match = Regex.Match(slide.ImageData, @"^data:image/(?<filetype>jpeg|jpg|png);base64,");
+            if (!match.Success)
+            {
+                throw new BadInputException();
+            }
+
+            string filetype = match.Groups["filetype"].Value;
+            var imageFormat = filetype == "png" ? ImageFormat.Png : ImageFormat.Jpeg;
+            string imagePath = $"{SlideUploadPath}/{slide.Title}.{filetype}";
+            string rawImageData = slide.ImageData.Substring(match.Length);
+            _imageUtils.UploadImage(imagePath, rawImageData, imageFormat);
+
+            var entry = new Slider_Images
+            {
+                Path = imagePath,
+                Title = slide.Title,
+                LinkURL = slide.LinkURL,
+                SortOrder = slide.SortOrder,
+                Width = 1500,
+                Height = 600
+            };
+            _unitOfWork.SliderRepository.Add(entry);
+            _unitOfWork.Save();
+            return entry;
+        }
+
+        /// <summary>
+        /// Deletes a banner slide from the database and deletes the local image file
+        /// </summary>
+        /// <returns>The deleted slide</returns>
+        public Slider_Images DeleteBannerSlide(int slideID)
+        {
+            var slide = _unitOfWork.SliderRepository.GetById(slideID);
+            _imageUtils.DeleteImage(slide.Path);
+            _unitOfWork.SliderRepository.Delete(slide);
+            _unitOfWork.Save();
+            return slide;
         }
     }
 }
