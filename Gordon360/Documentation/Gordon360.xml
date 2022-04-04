@@ -1729,24 +1729,22 @@
         </member>
         <member name="M:Gordon360.Services.ContentManagementService.GetBannerSlides">
             <summary>
-            Fetches the dashboard slider content from the database.
+            Retrieve all banner slides from the database
             </summary>
-            <returns>If found, returns a set of SliderViewModel's, based on each slide entry in the db. 
-            If not returns an empty IEnumerable.</returns>
+            <returns>An IEnumerable of the slides in the database</returns>
         </member>
         <member name="M:Gordon360.Services.ContentManagementService.AddBannerSlide(Gordon360.Models.ViewModels.BannerSlidePostViewModel)">
             <summary>
-            Fetches the dashboard slider content from the database.
+            Inserts a banner slide in the database and uploads the image to the local slider folder
             </summary>
-            <returns>If found, returns a set of SliderViewModel's, based on each slide entry in the db. 
-            If not returns an empty IEnumerable.</returns>
+            <param name="slide">The slide to add</param>
+            <returns>The inserted slide</returns>
         </member>
         <member name="M:Gordon360.Services.ContentManagementService.DeleteBannerSlide(System.Int32)">
             <summary>
-            Fetches the dashboard slider content from the database.
+            Deletes a banner slide from the database and deletes the local image file
             </summary>
-            <returns>If found, returns a set of SliderViewModel's, based on each slide entry in the db. 
-            If not returns an empty IEnumerable.</returns>
+            <returns>The deleted slide</returns>
         </member>
         <member name="T:Gordon360.Services.EmailService">
             <summary>
@@ -2572,7 +2570,7 @@
             <param name="imagePath">The path to the image</param>
             <returns>The base64 data of the image</returns>
         </member>
-        <member name="M:Gordon360.Utils.ImageUtils.UploadImage(System.String,System.String)">
+        <member name="M:Gordon360.Utils.ImageUtils.UploadImage(System.String,System.String,System.Drawing.Imaging.ImageFormat)">
             <summary>
             Uploads a news image
             </summary>
@@ -2582,6 +2580,7 @@
             </remarks>
             <param name="imagePath">The path to which the image belongs</param>
             <param name="imageData">The base64 image data to be stored</param>
+            <param name="format">The format to save the image as. Defaults to Jpeg</param>
         </member>
         <member name="T:Gordon360.Static.Data.Data">
             <summary>

@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 
 namespace Gordon360.Utils
 {
@@ -68,7 +70,8 @@ namespace Gordon360.Utils
         /// </remarks>
         /// <param name="imagePath">The path to which the image belongs</param>
         /// <param name="imageData">The base64 image data to be stored</param>
-        public void UploadImage(string imagePath, string imageData)
+        /// <param name="format">The format to save the image as. Defaults to Jpeg</param>
+        public void UploadImage(string imagePath, string imageData, ImageFormat format = null)
         {
             if (imageData == null) { return; }
 
@@ -85,12 +88,12 @@ namespace Gordon360.Utils
                 //the appropriate file:
                 using (MemoryStream imageStream = new MemoryStream(imageDataArray))
                 {
-                    System.Drawing.Image image = System.Drawing.Image.FromStream(imageStream);
+                    Image image = Image.FromStream(imageStream);
 
                     System.Diagnostics.Debug.WriteLine(imagePath);
                     System.Diagnostics.Debug.WriteLine(image);
 
-                    image.Save(imagePath, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    image.Save(imagePath, format ?? ImageFormat.Jpeg);
                     return;//Saving image was successful
                 }
             }

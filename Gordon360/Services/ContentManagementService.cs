@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Models;
@@ -18,7 +20,7 @@ namespace Gordon360.Services
         private IUnitOfWork _unitOfWork;
         private readonly ImageUtils _imageUtils = new ImageUtils();
 
-        private readonly string SlideUploadPath = HttpContext.Current.Server.MapPath("~/browseable/slider/");
+        private readonly string SlideUploadPath = HttpContext.Current.Server.MapPath("~/browseable/slider");
 
         public ContentManagementService(UnitOfWork unitOfWork)
         {
@@ -51,9 +53,17 @@ namespace Gordon360.Services
         /// <returns>The inserted slide</returns>
         public Slider_Images AddBannerSlide(BannerSlidePostViewModel slide)
         {
-            string fileName = slide.Title + ".jpg";
-            string imagePath = SlideUploadPath + fileName;
-            _imageUtils.UploadImage(imagePath, slide.ImageData);
+            Match match = Regex.Match(slide.ImageData, @"^data:image/(?<filetype>jpeg|jpg|png);base64,");
+            if (!match.Success)
+            {
+                throw new BadInputException();
+            }
+
+            string filetype = match.Groups["filetype"].Value;
+            var imageFormat = filetype == "png" ? ImageFormat.Png : ImageFormat.Jpeg;
+            string imagePath = $"{SlideUploadPath}/{slide.Title}.{filetype}";
+            string rawImageData = slide.ImageData.Substring(match.Length);
+            _imageUtils.UploadImage(imagePath, rawImageData, imageFormat);
 
             var entry = new Slider_Images
             {
