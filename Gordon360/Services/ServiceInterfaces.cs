@@ -268,7 +268,7 @@ namespace Gordon360.Services
     {
         IEnumerable<SliderViewModel> DEPRECATED_GetSliderContent();
         IEnumerable<Slider_Images> GetBannerSlides();
-        Slider_Images AddBannerSlide(BannerSlidePostViewModel slide);
+        Slider_Images AddBannerSlide(BannerSlidePostViewModel slide, string serverURL);
         Slider_Images DeleteBannerSlide(int slideID);
     }
 
