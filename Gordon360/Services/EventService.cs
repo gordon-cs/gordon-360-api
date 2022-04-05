@@ -33,7 +33,7 @@ namespace Gordon360.Services
          * state parameter fetches only confirmed events
          */
         private static readonly string AllEventsURL = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=14+57&state=2&end_after=" + GetFirstEventDate() + "&scope=extended";
-        private XDocument Events => _cache.GetOrCreate(CacheKeys.Events, (entry) =>
+        private IEnumerable<EventViewModel> Events => _cache.GetOrCreate(CacheKeys.Events, (entry) =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
             var task = Task.Run(FetchEventsAsync);
@@ -54,14 +54,7 @@ namespace Gordon360.Services
         /// <returns>All events for the current academic year.</returns>
         public IEnumerable<EventViewModel> GetAllEvents()
         {
-            return Events
-                    .Descendants(EventViewModel.r25 + "event")
-                    .SelectMany(
-                        // Select occurrences of each events
-                        elem => elem.Element(EventViewModel.r25 + "profile")?.Descendants(EventViewModel.r25 + "reservation"),
-                        // Map the event e with it's occurrence details o to a new EventViewModel
-                        (e, o) => new EventViewModel(e, o)
-                    );
+            return Events;
         }
 
         /// <summary>
@@ -70,7 +63,7 @@ namespace Gordon360.Services
         /// <returns>All Public Events</returns>
         public IEnumerable<EventViewModel> GetPublicEvents()
         {
-            return GetAllEvents().Where(e => e.IsPublic);
+            return Events.Where(e => e.IsPublic);
         }
 
         /// <summary>
@@ -79,7 +72,7 @@ namespace Gordon360.Services
         /// <returns>All CLAW Events</returns>
         public IEnumerable<EventViewModel> GetCLAWEvents()
         {
-            return GetAllEvents().Where(e => e.HasCLAWCredit);
+            return Events.Where(e => e.HasCLAWCredit);
         }
 
         /// <summary>
@@ -104,12 +97,10 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The student was not found" };
             }
 
-            var allEvents = GetAllEvents();
-
             return result
                 .Where(x => x.CHTermCD.Trim().Equals(term))
                 .Join(
-                    allEvents,
+                    Events,
                     c => c.LiveID,
                     e => e.Event_ID,
                     (c, e) => new AttendedEventViewModel(e, c)
@@ -117,7 +108,7 @@ namespace Gordon360.Services
         }
 
 
-        private static async Task<XDocument> FetchEventsAsync()
+        private static async Task<IEnumerable<EventViewModel>> FetchEventsAsync()
         {
             using var client = new HttpClient();
             client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
@@ -126,7 +117,15 @@ namespace Gordon360.Services
             if (response != null && response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                return XDocument.Parse(content);
+                var eventsXML = XDocument.Parse(content);
+                return eventsXML
+                    .Descendants(EventViewModel.r25 + "event")
+                    .SelectMany(
+                        // Select occurrences of each events
+                        elem => elem.Element(EventViewModel.r25 + "profile")?.Descendants(EventViewModel.r25 + "reservation"),
+                        // Map the event e with it's occurrence details o to a new EventViewModel
+                        (e, o) => new EventViewModel(e, o)
+                    );
             }
             else
             {
