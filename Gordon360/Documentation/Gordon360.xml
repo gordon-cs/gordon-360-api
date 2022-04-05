@@ -1733,7 +1733,7 @@
             </summary>
             <returns>An IEnumerable of the slides in the database</returns>
         </member>
-        <member name="M:Gordon360.Services.ContentManagementService.AddBannerSlide(Gordon360.Models.ViewModels.BannerSlidePostViewModel)">
+        <member name="M:Gordon360.Services.ContentManagementService.AddBannerSlide(Gordon360.Models.ViewModels.BannerSlidePostViewModel,System.String)">
             <summary>
             Inserts a banner slide in the database and uploads the image to the local slider folder
             </summary>

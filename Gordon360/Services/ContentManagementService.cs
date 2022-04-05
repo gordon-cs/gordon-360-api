@@ -20,7 +20,7 @@ namespace Gordon360.Services
         private IUnitOfWork _unitOfWork;
         private readonly ImageUtils _imageUtils = new ImageUtils();
 
-        private readonly string SlideUploadPath = HttpContext.Current.Server.MapPath("~/browseable/slider");
+        private readonly string SlideUploadPath = "browseable/slider";
 
         public ContentManagementService(UnitOfWork unitOfWork)
         {
@@ -50,24 +50,29 @@ namespace Gordon360.Services
         /// Inserts a banner slide in the database and uploads the image to the local slider folder
         /// </summary>
         /// <param name="slide">The slide to add</param>
+        /// <param name="serverURL">The url of the server that the image is being posted to.
+        /// This is needed to save the image path into the database. The URL is different depending on where the API is running.
+        /// The URL is trivial to access from the controller, but not available from within the service, so it has to be passed in.
+        /// </param>
         /// <returns>The inserted slide</returns>
-        public Slider_Images AddBannerSlide(BannerSlidePostViewModel slide)
+        public Slider_Images AddBannerSlide(BannerSlidePostViewModel slide, string serverURL)
         {
             Match match = Regex.Match(slide.ImageData, @"^data:image/(?<filetype>jpeg|jpg|png);base64,");
             if (!match.Success)
             {
                 throw new BadInputException();
             }
-
             string filetype = match.Groups["filetype"].Value;
             var imageFormat = filetype == "png" ? ImageFormat.Png : ImageFormat.Jpeg;
-            string imagePath = $"{SlideUploadPath}/{slide.Title}.{filetype}";
+            string fileName = $"{slide.Title}.{filetype}";
+
+            string localImagePath = $"{HttpContext.Current.Server.MapPath($"~/{SlideUploadPath}")}/{fileName}";
             string rawImageData = slide.ImageData.Substring(match.Length);
-            _imageUtils.UploadImage(imagePath, rawImageData, imageFormat);
+            _imageUtils.UploadImage(localImagePath, rawImageData, imageFormat);
 
             var entry = new Slider_Images
             {
-                Path = imagePath,
+                Path = $"{serverURL}{SlideUploadPath}/{fileName}",
                 Title = slide.Title,
                 LinkURL = slide.LinkURL,
                 SortOrder = slide.SortOrder,

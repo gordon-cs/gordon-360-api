@@ -71,7 +71,8 @@ namespace Gordon360.Controllers.Api
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.SLIDER)]
         public IHttpActionResult PostBannerSlide(BannerSlidePostViewModel slide)
         {
-            var result = _contentManagementService.AddBannerSlide(slide);
+            var serverURL = Url.Content("~/");
+            var result = _contentManagementService.AddBannerSlide(slide, serverURL);
             if (result == null)
             {
                 return NotFound();
