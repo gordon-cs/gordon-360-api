@@ -93,7 +93,6 @@ namespace Gordon360.Services
         /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
         public async Task<IEnumerable<MembershipViewModel>> GetAllAsync()
         {
-
             var allMemberships = await _context.Procedures.ALL_MEMBERSHIPSAsync();
 
             return allMemberships.OrderByDescending(m => m.StartDate).Select(m => new MembershipViewModel
@@ -122,9 +121,14 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="activityCode">The activity code.</param>
         /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        public async Task<IEnumerable<MembershipViewModel>> GetMembershipsForActivityAsync(string activityCode)
+        public async Task<IEnumerable<MembershipViewModel>> GetMembershipsForActivityAsync(string activityCode, string? sessionCode = null)
         {
-            var memberships = await _context.Procedures.MEMBERSHIPS_PER_ACT_CDEAsync(activityCode);
+            IEnumerable<MEMBERSHIPS_PER_ACT_CDEResult> memberships = await _context.Procedures.MEMBERSHIPS_PER_ACT_CDEAsync(activityCode);
+
+            if (sessionCode != null)
+            {
+                memberships = memberships.Where(m => m.SessionCode.Trim() == sessionCode);
+            }
 
             return memberships.OrderByDescending(x => x.StartDate).Select(m => new MembershipViewModel
             {
@@ -135,6 +139,7 @@ namespace Gordon360.Services
                 SessionCode = m.SessionCode.Trim(),
                 SessionDescription = m.SessionDescription.Trim(),
                 IDNumber = m.IDNumber,
+                AD_Username = m.AD_Username,
                 FirstName = m.FirstName.Trim(),
                 LastName = m.LastName.Trim(),
                 Mail_Location = m.Mail_Location,
@@ -401,6 +406,41 @@ namespace Gordon360.Services
         public bool IsGroupAdmin(int gordonID)
         {
             return _context.MEMBERSHIP.Any(membership => membership.ID_NUM == gordonID && membership.GRP_ADMIN == true);
+        }
+
+        public IEnumerable<EmailViewModel> MembershipEmails(string activityCode, string sessionCode, ParticipationType? participationCode = null)
+        {
+            var memberships = _context.MEMBERSHIP.Where(m => m.ACT_CDE == activityCode && m.SESS_CDE == sessionCode);
+
+            if (participationCode != null)
+            {
+                if (participationCode == ParticipationType.GroupAdmin)
+                {
+                    memberships = memberships.Where(m => m.GRP_ADMIN == true);
+                }
+                else
+                {
+                    memberships = memberships.Where(m => m.PART_CDE == participationCode.Value);
+                }
+            }
+
+            return memberships.Join(_context.ACCOUNT, m => m.ID_NUM.ToString(), a => a.gordon_id, (m, a) => new EmailViewModel { Email = a.email, FirstName = a.firstname, LastName = a.lastname });
+        }
+
+        public class ParticipationType
+        {
+            private ParticipationType(string value) { Value = value; }
+
+            public string Value { get; private set; }
+
+            public static ParticipationType Leader { get { return new ParticipationType("LEAD"); } }
+            public static ParticipationType Guest { get { return new ParticipationType("GUEST"); } }
+            public static ParticipationType Member { get { return new ParticipationType("MEMBR"); } }
+            public static ParticipationType Advisor { get { return new ParticipationType("ADV"); } }
+            
+            // NOTE: Group admin is not strictly a participation type, it's a separate role that Advisors and Leaders can have, with a separate flag in the database
+            // BUT, it's convenient to treat it as a participation type in several places throughout the API
+            public static ParticipationType GroupAdmin { get { return new ParticipationType("GRP_ADMIN"); } }
         }
     }
 }

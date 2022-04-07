@@ -4,6 +4,7 @@ using Gordon360.Models.CCT;
 using Gordon360.Services;
 using Gordon360.Static.Methods;
 using Gordon360.Static.Names;
+using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Linq;
@@ -48,33 +49,29 @@ namespace Gordon360.AuthorizationFilters
             context = actionContext;
             // Step 1: Who is to be authorized
             var authenticatedUser = actionContext.HttpContext.User;
-            // var authenticatedUserUsername = actionContext.HttpContext.User.Identity.Name;
 
-            if (authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role") != null)
+            user_position = ""; //authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role").Value;
+            user_name = AuthUtils.GetAuthenticatedUserUsername(authenticatedUser);
+            user_id = new AccountService(CCTContext).GetAccountByUsername(user_name).GordonID;
+
+            // Keeping these for now commented out as more permissions testing needs to be done in future
+            //System.Diagnostics.Debug.WriteLine("User name: " + user_name);
+            //System.Diagnostics.Debug.WriteLine("User Position: " + user_position);
+
+            if (user_position == Position.SUPERADMIN)
             {
-                user_position = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "college_role").Value;
-                user_id = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "id").Value;
-                user_name = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+                var adminService = new AdministratorService(CCTContext);
+                var admin = adminService.Get(user_id);
 
-                // Keeping these for now commented out as more permissions testing needs to be done in future
-                //System.Diagnostics.Debug.WriteLine("User name: " + user_name);
-                //System.Diagnostics.Debug.WriteLine("User Position: " + user_position);
-
-                if (user_position == Position.SUPERADMIN)
+                // If user is super admin, skip verification steps and return.
+                if (admin.SUPER_ADMIN)
                 {
-                    var adminService = new AdministratorService(CCTContext);
-                    var admin = adminService.Get(user_id);
-
-                    // If user is super admin, skip verification steps and return.
-                    if (admin.SUPER_ADMIN)
-                    {
-                        await next();
-                        return;
-                    }
+                    await next();
+                    return;
                 }
             }
 
-            // Can the user perform the operation on the resource?
+
             isAuthorized = await CanPerformOperationAsync(resource, operation);
             if (!isAuthorized)
             {
@@ -86,20 +83,18 @@ namespace Gordon360.AuthorizationFilters
 
 
         private async Task<bool> CanPerformOperationAsync(string resource, string operation)
-        {
-            switch (operation)
+            => operation switch
             {
-                case Operation.READ_ONE: return await CanReadOneAsync(resource);
-                case Operation.READ_ALL: return CanReadAll(resource);
-                case Operation.READ_PARTIAL: return await CanReadPartialAsync(resource);
-                case Operation.ADD: return await CanAddAsync(resource);
-                case Operation.DENY_ALLOW: return await CanDenyAllowAsync(resource);
-                case Operation.UPDATE: return await CanUpdateAsync(resource);
-                case Operation.DELETE: return await CanDeleteAsync(resource);
-                case Operation.READ_PUBLIC: return CanReadPublic(resource);
-                default: return false;
-            }
-        }
+                Operation.READ_ONE => await CanReadOneAsync(resource),
+                Operation.READ_ALL => CanReadAll(resource),
+                Operation.READ_PARTIAL => await CanReadPartialAsync(resource),
+                Operation.ADD => await CanAddAsync(resource),
+                Operation.DENY_ALLOW => await CanDenyAllowAsync(resource),
+                Operation.UPDATE => await CanUpdateAsync(resource),
+                Operation.DELETE => await CanDeleteAsync(resource),
+                Operation.READ_PUBLIC => CanReadPublic(resource),
+                _ => false,
+            };
 
         /*
          * Operations
@@ -236,9 +231,9 @@ namespace Gordon360.AuthorizationFilters
                     {
                         // Only people that are part of the activity should be able to see members
                         var membershipService = new MembershipService(CCTContext);
-                        var activityCode = (string)context.ActionArguments["id"];
+                        var activityCode = (string)context.ActionArguments["activityCode"];
                         var activityMembers = await membershipService.GetMembershipsForActivityAsync(activityCode);
-                        var is_personAMember = activityMembers.Where(x => x.IDNumber.ToString() == user_id && x.Participation != "GUEST").Count() > 0;
+                        var is_personAMember = activityMembers.Any(x => x.IDNumber.ToString() == user_id && x.Participation != "GUEST");
                         if (is_personAMember)
                             return true;
                         return false;
@@ -274,35 +269,33 @@ namespace Gordon360.AuthorizationFilters
                     {
                         return true;
                     }
-                // Only activity leaders/advisors should be to get emails for his/her members.
                 case Resource.EMAILS_BY_ACTIVITY:
                     {
-                        var activityCode = (string)context.ActionArguments["id"];
+                        // Anyone can view group-admin and advisor emails
+                        var participationType = context.ActionArguments.ContainsKey("participationType") ? context.ActionArguments["participationType"] : null;
+                        if (participationType != null && participationType.In("group-admin", "advisor", "leader"))
+                            return true;
+
+                        // Only leaders, advisors, and group admins
+                        var activityCode = (string?)context.ActionArguments["activityCode"];
                         var membershipService = new MembershipService(CCTContext);
+
                         var leaders = await membershipService.GetLeaderMembershipsForActivityAsync(activityCode);
-                        var is_activity_leader = leaders.Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        var is_activity_leader = leaders.Any(x => x.IDNumber.ToString() == user_id);
                         if (is_activity_leader)
                             return true;
 
                         var advisors = await membershipService.GetAdvisorMembershipsForActivityAsync(activityCode);
-                        var is_activityAdvisor = advisors.Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        var is_activityAdvisor = advisors.Any(x => x.IDNumber.ToString() == user_id);
                         if (is_activityAdvisor)
                             return true;
 
                         var groupAdmin = await membershipService.GetGroupAdminMembershipsForActivityAsync(activityCode);
-                        var is_groupAdmin = groupAdmin.Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
+                        var is_groupAdmin = groupAdmin.Any(x => x.IDNumber.ToString() == user_id);
                         if (is_groupAdmin)
                             return true;
+
                         return false;
-                    }
-                // Anyone who is already logged in can contact the leaders or group admin ("primary contact")
-                case Resource.EMAILS_BY_LEADERS:
-                    {
-                        return true;
-                    }
-                case Resource.EMAILS_BY_GROUP_ADMIN:
-                    {
-                        return true;
                     }
                 case Resource.ADVISOR_BY_ACTIVITY:
                     {

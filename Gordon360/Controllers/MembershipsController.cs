@@ -7,6 +7,7 @@ using Gordon360.Static.Names;
 using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -41,24 +42,23 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("")]
         [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.MEMBERSHIP)]
-        public ActionResult<IEnumerable<MembershipViewModel>> Get()
+        public async Task<ActionResult<IEnumerable<MembershipViewModel>>> GetAsync()
         {
-            var result = _membershipService.GetAllAsync();
+            var result = await _membershipService.GetAllAsync();
             return Ok(result);
         }
 
         /// <summary>
         /// Get all the memberships associated with a given activity
         /// </summary>
-        /// <param name="id">The activity ID</param>
+        /// <param name="activityCode">The activity ID</param>
         /// <returns>IHttpActionResult</returns>
         [HttpGet]
-        [Route("activity/{id}")]
+        [Route("activity/{activityCode}")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_BY_ACTIVITY)]
-        public ActionResult<IEnumerable<MembershipViewModel>> GetMembershipsForActivity(string id)
+        public async Task<ActionResult<IEnumerable<MembershipViewModel>>> GetMembershipsForActivityAsync(string activityCode, string? sessionCode)
         {
-            var result = _membershipService.GetMembershipsForActivityAsync(id);
-
+            var result = await _membershipService.GetMembershipsForActivityAsync(activityCode, sessionCode);
             if (result == null)
             {
                 return NotFound();
@@ -69,14 +69,14 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Gets the group admin memberships associated with a given activity.
         /// </summary>
-        /// <param name="id">The activity ID.</param>
+        /// <param name="activityCode">The activity ID.</param>
         /// <returns>A list of all leader-type memberships for the specified activity.</returns>
         [HttpGet]
-        [Route("activity/{id}/group-admin")]
+        [Route("activity/{activityCode}/group-admin")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.GROUP_ADMIN_BY_ACTIVITY)]
-        public ActionResult<IEnumerable<MembershipViewModel>> GetGroupAdminForActivity(string id)
+        public async Task<ActionResult<IEnumerable<MembershipViewModel>>> GetGroupAdminForActivityAsync(string activityCode)
         {
-            var result = _membershipService.GetGroupAdminMembershipsForActivityAsync(id);
+            var result = await _membershipService.GetGroupAdminMembershipsForActivityAsync(activityCode);
 
             if (result == null)
             {
@@ -88,14 +88,14 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Gets the leader-type memberships associated with a given activity.
         /// </summary>
-        /// <param name="id">The activity ID.</param>
+        /// <param name="activityCode">The activity ID.</param>
         /// <returns>A list of all leader-type memberships for the specified activity.</returns>
         [HttpGet]
-        [Route("activity/{id}/leaders")]
+        [Route("activity/{activityCode}/leaders")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.LEADER_BY_ACTIVITY)]
-        public ActionResult<IEnumerable<MembershipViewModel>> GetLeadersForActivity(string id)
+        public async Task<ActionResult<IEnumerable<MembershipViewModel>>> GetLeadersForActivityAsync(string activityCode)
         {
-            var result = _membershipService.GetLeaderMembershipsForActivityAsync(id);
+            var result = await _membershipService.GetLeaderMembershipsForActivityAsync(activityCode);
 
             if (result == null)
             {
@@ -107,14 +107,14 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Gets the advisor-type memberships associated with a given activity.
         /// </summary>
-        /// <param name="id">The activity ID.</param>
+        /// <param name="activityCode">The activity ID.</param>
         /// <returns>A list of all advisor-type memberships for the specified activity.</returns>
         [HttpGet]
-        [Route("activity/{id}/advisors")]
+        [Route("activity/{activityCode}/advisors")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.ADVISOR_BY_ACTIVITY)]
-        public ActionResult<IEnumerable<MembershipViewModel>> GetAdvisorsForActivity(string id)
+        public async Task<ActionResult<IEnumerable<MembershipViewModel>>> GetAdvisorsForActivityAsync(string activityCode)
         {
-            var result = _membershipService.GetAdvisorMembershipsForActivityAsync(id);
+            var result = await _membershipService.GetAdvisorMembershipsForActivityAsync(activityCode);
 
             if (result == null)
             {
@@ -126,14 +126,14 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Gets the number of followers of an activity
         /// </summary>
-        /// <param name="id">The activity ID.</param>
+        /// <param name="activityCode">The activity ID.</param>
         /// <returns>The number of followers of the activity</returns>
         [HttpGet]
-        [Route("activity/{id}/followers")]
+        [Route("activity/{activityCode}/followers")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
-        public ActionResult<int> GetActivityFollowersCount(string id)
+        public async Task<ActionResult<int>> GetActivityFollowersCountAsync(string activityCode)
         {
-            var result = _membershipService.GetActivityFollowersCountAsync(id);
+            var result = await _membershipService.GetActivityFollowersCountAsync(activityCode);
 
             return Ok(result);
         }
@@ -141,14 +141,14 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Gets the number of members (besides followers) of an activity
         /// </summary>
-        /// <param name="id">The activity ID.</param>
+        /// <param name="activityCode">The activity ID.</param>
         /// <returns>The number of members of the activity</returns>
         [HttpGet]
-        [Route("activity/{id}/members")]
+        [Route("activity/{activityCode}/members")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
-        public ActionResult<int> GetActivityMembersCount(string id)
+        public async Task<ActionResult<int>> GetActivityMembersCountAsync(string activityCode)
         {
-            var result = _membershipService.GetActivityMembersCountAsync(id);
+            var result = await _membershipService.GetActivityMembersCountAsync(activityCode);
 
             return Ok(result);
         }
@@ -156,15 +156,15 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Gets the number of followers of an activity
         /// </summary>
-        /// <param name="id">The activity ID.</param>
-        /// <param name="sess_cde">The session code</param>
+        /// <param name="activityCode">The activity ID.</param>
+        /// <param name="sessionCode">The session code</param>
         /// <returns>The number of followers of the activity</returns>
         [HttpGet]
-        [Route("activity/{id}/followers/{sess_cde}")]
+        [Route("activity/{activityCode}/followers/{sessionCode}")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
-        public ActionResult<int> GetActivityFollowersCountForSession(string id, string sess_cde)
+        public async Task<ActionResult<int>> GetActivityFollowersCountForSessionAsync(string activityCode, string sessionCode)
         {
-            var result = _membershipService.GetActivityFollowersCountForSessionAsync(id, sess_cde);
+            var result = await _membershipService.GetActivityFollowersCountForSessionAsync(activityCode, sessionCode);
 
             return Ok(result);
         }
@@ -172,15 +172,15 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Gets the number of members (excluding followers) of an activity
         /// </summary>
-        /// <param name="id">The activity ID.</param>
-        /// <param name="sess_cde">The session code</param>
+        /// <param name="activityCode">The activity ID.</param>
+        /// <param name="sessionCode">The session code</param>
         /// <returns>The number of members of the activity</returns>
         [HttpGet]
-        [Route("activity/{id}/members/{sess_cde}")]
+        [Route("activity/{activityCode}/members/{sessionCode}")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
-        public ActionResult<int> GetActivityMembersCountForSession(string id, string sess_cde)
+        public async Task<ActionResult<int>> GetActivityMembersCountForSessionAsync(string activityCode, string sessionCode)
         {
-            var result = _membershipService.GetActivityMembersCountForSessionAsync(id, sess_cde);
+            var result = await _membershipService.GetActivityMembersCountForSessionAsync(activityCode, sessionCode);
 
             return Ok(result);
         }
@@ -206,35 +206,17 @@ namespace Gordon360.Controllers
 
         }
 
-        /// <summary>Fetch memberships that a specific student has been a part of</summary>
-        /// <param name="id">The Student id</param>
-        /// <returns>The membership information that the student is a part of</returns>
-        [Route("student/{id}")]
-        [HttpGet]
-        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_BY_STUDENT)]
-        public ActionResult<IEnumerable<MembershipViewModel>> GetMembershipsForStudent(string id)
-        {
-            var result = _membershipService.GetMembershipsForStudentAsync(id);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(result);
-        }
         /// <summary>
         /// Fetch memberships that a specific student has been a part of
         /// @TODO: Move security checks to state your business? Or consider changing implementation here
         /// </summary>
         /// <param name="username">The Student Username</param>
         /// <returns>The membership information that the student is a part of</returns>
-        [Route("student/username/{username}")]
+        [Route("student/{username}")]
         [HttpGet]
         public async Task<ActionResult<List<MembershipViewModel>>> GetMembershipsForStudentByUsenameAsync(string username)
         {
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-            var result = await _membershipService.GetMembershipsForStudentAsync(id);
+            var result = await _membershipService.GetMembershipsForStudentAsync(username);
 
             if (result == null)
             {
@@ -252,20 +234,14 @@ namespace Gordon360.Controllers
                 foreach (var item in result)
                 {
                     var act = _activityService.Get(item.ActivityCode);
-                    var admins = await _membershipService.GetGroupAdminMembershipsForActivityAsync(item.ActivityCode);
-                    bool groupAdmin = false;
-                    foreach (var admin in admins)               // group admin of a group can read membership of this group
-                    {
-                        if (admin.AD_Username.Equals(authenticatedUserUsername))
-                            groupAdmin = true;
-                    }
-                    if (groupAdmin)
+                    if (!(act.Privacy != true || item.Privacy != true))
                     {
                         list.Add(item);
                     }
-                    else if (act.Privacy != true)               // check group privacy
+                    else
                     {
-                        if (item.Privacy != true)               // check personal membership privacy
+                        var admins = await _membershipService.GetGroupAdminMembershipsForActivityAsync(item.ActivityCode);
+                        if (admins.Any(a => a.AD_Username == authenticatedUserUsername))
                         {
                             list.Add(item);
                         }

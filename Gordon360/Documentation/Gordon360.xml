@@ -483,7 +483,7 @@
             <returns></returns>
             <remarks>Posts a new error_log to the server to be added into the database. Useful if you want to input the datetime in the front end for greater accuracy</remarks>
         </member>
-        <member name="M:Gordon360.Controllers.MembershipsController.Get">
+        <member name="M:Gordon360.Controllers.MembershipsController.GetAsync">
             <summary>
             Get all memberships
             </summary>
@@ -494,62 +494,62 @@
             Server makes call to the database and returns all current memberships
             </remarks>
         </member>
-        <member name="M:Gordon360.Controllers.MembershipsController.GetMembershipsForActivity(System.String)">
+        <member name="M:Gordon360.Controllers.MembershipsController.GetMembershipsForActivityAsync(System.String,System.String)">
             <summary>
             Get all the memberships associated with a given activity
             </summary>
-            <param name="id">The activity ID</param>
+            <param name="activityCode">The activity ID</param>
             <returns>IHttpActionResult</returns>
         </member>
-        <member name="M:Gordon360.Controllers.MembershipsController.GetGroupAdminForActivity(System.String)">
+        <member name="M:Gordon360.Controllers.MembershipsController.GetGroupAdminForActivityAsync(System.String)">
             <summary>
             Gets the group admin memberships associated with a given activity.
             </summary>
-            <param name="id">The activity ID.</param>
+            <param name="activityCode">The activity ID.</param>
             <returns>A list of all leader-type memberships for the specified activity.</returns>
         </member>
-        <member name="M:Gordon360.Controllers.MembershipsController.GetLeadersForActivity(System.String)">
+        <member name="M:Gordon360.Controllers.MembershipsController.GetLeadersForActivityAsync(System.String)">
             <summary>
             Gets the leader-type memberships associated with a given activity.
             </summary>
-            <param name="id">The activity ID.</param>
+            <param name="activityCode">The activity ID.</param>
             <returns>A list of all leader-type memberships for the specified activity.</returns>
         </member>
-        <member name="M:Gordon360.Controllers.MembershipsController.GetAdvisorsForActivity(System.String)">
+        <member name="M:Gordon360.Controllers.MembershipsController.GetAdvisorsForActivityAsync(System.String)">
             <summary>
             Gets the advisor-type memberships associated with a given activity.
             </summary>
-            <param name="id">The activity ID.</param>
+            <param name="activityCode">The activity ID.</param>
             <returns>A list of all advisor-type memberships for the specified activity.</returns>
         </member>
-        <member name="M:Gordon360.Controllers.MembershipsController.GetActivityFollowersCount(System.String)">
+        <member name="M:Gordon360.Controllers.MembershipsController.GetActivityFollowersCountAsync(System.String)">
             <summary>
             Gets the number of followers of an activity
             </summary>
-            <param name="id">The activity ID.</param>
+            <param name="activityCode">The activity ID.</param>
             <returns>The number of followers of the activity</returns>
         </member>
-        <member name="M:Gordon360.Controllers.MembershipsController.GetActivityMembersCount(System.String)">
+        <member name="M:Gordon360.Controllers.MembershipsController.GetActivityMembersCountAsync(System.String)">
             <summary>
             Gets the number of members (besides followers) of an activity
             </summary>
-            <param name="id">The activity ID.</param>
+            <param name="activityCode">The activity ID.</param>
             <returns>The number of members of the activity</returns>
         </member>
-        <member name="M:Gordon360.Controllers.MembershipsController.GetActivityFollowersCountForSession(System.String,System.String)">
+        <member name="M:Gordon360.Controllers.MembershipsController.GetActivityFollowersCountForSessionAsync(System.String,System.String)">
             <summary>
             Gets the number of followers of an activity
             </summary>
-            <param name="id">The activity ID.</param>
-            <param name="sess_cde">The session code</param>
+            <param name="activityCode">The activity ID.</param>
+            <param name="sessionCode">The session code</param>
             <returns>The number of followers of the activity</returns>
         </member>
-        <member name="M:Gordon360.Controllers.MembershipsController.GetActivityMembersCountForSession(System.String,System.String)">
+        <member name="M:Gordon360.Controllers.MembershipsController.GetActivityMembersCountForSessionAsync(System.String,System.String)">
             <summary>
             Gets the number of members (excluding followers) of an activity
             </summary>
-            <param name="id">The activity ID.</param>
-            <param name="sess_cde">The session code</param>
+            <param name="activityCode">The activity ID.</param>
+            <param name="sessionCode">The session code</param>
             <returns>The number of members of the activity</returns>
         </member>
         <member name="M:Gordon360.Controllers.MembershipsController.Post(Gordon360.Models.CCT.MEMBERSHIP)">
@@ -557,11 +557,6 @@
             <param name="membership">The membership item containing all required and relevant information</param>
             <returns></returns>
             <remarks>Posts a new membership to the server to be added into the database</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.MembershipsController.GetMembershipsForStudent(System.String)">
-            <summary>Fetch memberships that a specific student has been a part of</summary>
-            <param name="id">The Student id</param>
-            <returns>The membership information that the student is a part of</returns>
         </member>
         <member name="M:Gordon360.Controllers.MembershipsController.GetMembershipsForStudentByUsenameAsync(System.String)">
             <summary>
@@ -704,7 +699,7 @@
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.GetImgAsync(System.String)">
             <summary>Get the profile image of the given user</summary>
-            <returns></returns>
+            <returns>The profile image(s) that the authenticated user is allowed to see, if any</returns>
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.ResetImage">
             <summary>
@@ -734,27 +729,40 @@
             <param name="value">Y or N</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RequestsController.Get">
+        <member name="M:Gordon360.Controllers.ProfilesController.GetProfileImageOrDefault(System.String)">
+            <summary>
+            Gets the profile image at the given path or, if that file does not exist, the 360 default profile image
+            </summary>
+            <remarks>
+            Note that the 360 default profile image is different from a user's default image.
+            A given user's default image is simply their approved ID photo.
+            The 360 default profile image, on the other hand, is a stock image of Scottie Lion.
+            Hence, the 360 default profile image is only used when no other image exists (or should be displayed) for a user.
+            </remarks>
+            <param name="imagePath">Path to the profile image to load</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RequestsController.GetAsync">
             <summary>
             Gets all Membership Request Objects
             </summary>
             <returns>List of all requests for membership</returns>
         </member>
-        <member name="M:Gordon360.Controllers.RequestsController.Get(System.Int32)">
+        <member name="M:Gordon360.Controllers.RequestsController.GetAsync(System.Int32)">
             <summary>
              Gets a specific Membership Request Object
             </summary>
             <param name="id">The ID of the membership request</param>
             <returns>A memberships request with the specified id</returns>
         </member>
-        <member name="M:Gordon360.Controllers.RequestsController.GetMembershipsRequestsForActivity(System.String)">
+        <member name="M:Gordon360.Controllers.RequestsController.GetMembershipsRequestsForActivityAsync(System.String)">
             <summary>
             Gets the memberships requests for the specified activity
             </summary>
             <param name="id">The activity code</param>
             <returns>All membership requests associated with the activity</returns>
         </member>
-        <member name="M:Gordon360.Controllers.RequestsController.GetMembershipsRequestsForStudent">
+        <member name="M:Gordon360.Controllers.RequestsController.GetMembershipsRequestsForStudentAsync">
             <summary>
             Gets the memberships requests for the person making the request
             </summary>
@@ -877,6 +885,12 @@
              Gets all schedule objects for a user
             </summary>
             <returns>A IEnumerable of schedule objects</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.ScheduleController.GetCanReadStudentSchedules">
+            <summary>
+            Get whether the currently logged-in user can read student schedules
+            </summary>
+            <returns>Whether they can read student schedules</returns>
         </member>
         <member name="M:Gordon360.Controllers.SessionsController.Get">
             <summary>Get a list of all sessions</summary>
@@ -1192,65 +1206,14 @@
             Service class to facilitate getting emails for members of an activity.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivityAsync(System.String)">
+        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivityAsync(System.String,System.String,Gordon360.Services.MembershipService.ParticipationType)">
             <summary>
             Get a list of the emails for all members in the activity during the current session.
             </summary>
-            <param name="activity_code"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Services.EmailService.GetEmailsForGroupAdminAsync(System.String)">
-            <summary>
-            Get a list of emails for group admin in the activity during the current session.
-            </summary>
-            <param name="activityCode"></param>
-            <returns>A collection of group admin emails</returns>
-        </member>
-        <member name="M:Gordon360.Services.EmailService.GetEmailsForGroupAdminAsync(System.String,System.String)">
-            <summary>
-            Get a list of emails for group admin in the activity during a specified session.
-            </summary>
-            <param name="activityCode"></param>
-            <param name="sessionCode"></param>
-            <returns>A collection of the group admin emails</returns>
-        </member>
-        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivityLeadersAsync(System.String)">
-            <summary>
-            Get a list of emails for leaders in the activity during the current session.
-            </summary>
-            <param name="activityCode"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivityAdvisorsAsync(System.String)">
-            <summary>
-            Get a list of emails for advisors in the activity during the current session.
-            </summary>
-            <param name="activityCode"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivityAsync(System.String,System.String)">
-            <summary>
-            Get a list of the emails for all members in the activity during a specific session
-            </summary>
-            <param name="activityCode">The activity code</param>
-            <param name="sessionCode">The session code</param>
-            <returns>List of the emails for the members of this activity</returns>
-        </member>
-        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivityLeadersAsync(System.String,System.String)">
-            <summary>
-            Get a list of emails for leaders in the activity during a specified session
-            </summary>
-            <param name="activityCode">The activity code</param>
-            <param name="sessionCode">The session code</param>
-            <returns>List of emails for the leaders of this activity</returns>
-        </member>
-        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivityAdvisorsAsync(System.String,System.String)">
-            <summary>
-            Get a list of emails for leaders in the activity during a specified session
-            </summary>
-            <param name="activityCode">The activity code</param>
-            <param name="sessionCode">The session code</param>
-            <returns>List of emails for the leaders of this activity</returns>
+            <param name="activityCode">The code of the activity to get emails for.</param>
+            <param name="sessionCode">Optionally, the session to get emails for. Defaults to the current session</param>
+            <param name="participationType">The participation type to get emails of. If unspecified, gets emails of all participation types.</param>
+            <returns>A list of emails (along with first and last name) associated with that activity</returns>
         </member>
         <member name="M:Gordon360.Services.EmailService.SendEmails(System.String[],System.String,System.String,System.String,System.String)">
             <summary>
@@ -1513,7 +1476,7 @@
             <summary>
             Fetches all the membership requests associated with this student
             </summary>
-            <param name="gordonID">The student id</param>
+            <param name="username">The AD Username of the user</param>
             <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipRequestService.Update(System.Int32,Gordon360.Models.CCT.REQUEST)">
@@ -1557,7 +1520,7 @@
             </summary>
             <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
         </member>
-        <member name="M:Gordon360.Services.MembershipService.GetMembershipsForActivityAsync(System.String)">
+        <member name="M:Gordon360.Services.MembershipService.GetMembershipsForActivityAsync(System.String,System.String)">
             <summary>
             Fetches the memberships associated with the activity whose code is specified by the parameter.
             </summary>
@@ -1947,6 +1910,13 @@
             <param name="username">The AD Username of the instructor</param>
             <returns>StudentScheduleViewModel if found, null if not found</returns>
         </member>
+        <member name="M:Gordon360.Services.ScheduleService.CanReadStudentSchedules(System.String)">
+            <summary>
+            Determine whether the specified user can read student schedules, based on the logic in the stored procedure
+            </summary>
+            <param name="username">The username to determine it for</param>
+            <returns>Whether the specified user can read student schedules</returns>
+        </member>
         <member name="T:Gordon360.Services.SessionService">
             <summary>
             Service class to facilitate data transactions between the Controller and the database model.
@@ -2029,6 +1999,40 @@
             </summary>
             <param name="User">The ClaimsPrincipal representing the user's authentication claims</param>
             <returns>Username of the authenticated user, or null if none is found</returns>
+        </member>
+        <member name="M:Gordon360.Utilities.ImageUtils.DeleteImage(System.String)">
+            <summary>
+            Deletes an image from the filesystem, if there is one.
+            </summary>
+            <param name="imagePath">The path to which the image belonged.</param>
+        </member>
+        <member name="M:Gordon360.Utilities.ImageUtils.RetrieveImageFromPath(System.String)">
+            <summary>
+            Takes an image path and returns the data of the image at that path.
+            If given path is null it returns an empty string.
+            </summary>
+            <param name="imagePath">The path to the image</param>
+            <returns>The base64 data of the image</returns>
+        </member>
+        <member name="M:Gordon360.Utilities.ImageUtils.UploadImage(System.String,System.String,System.Drawing.Imaging.ImageFormat)">
+            <summary>
+            Uploads a news image
+            </summary>
+            <remarks>
+            Takes base64 image data and writes it to an image file. Note that if the target path
+            already has a file, the method will overwrite it (which gives no errors)
+            </remarks>
+            <param name="imagePath">The path to which the image belongs</param>
+            <param name="imageData">The base64 image data to be stored</param>
+            <param name="format">The format to save the image as. Defaults to Jpeg</param>
+        </member>
+        <member name="M:Gordon360.Utilities.ImageUtils.GetBase64ImageDataFromPath(System.String)">
+            <summary>
+            Takes a filepath for an image, navigates to it, collects the raw data
+            of the file and converts it to base64 format. 
+            </summary>
+            <param name="imagePath">The path to the image</param>
+            <returns>The base64 content of the image</returns>
         </member>
     </members>
 </doc>

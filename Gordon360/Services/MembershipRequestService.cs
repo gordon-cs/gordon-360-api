@@ -234,11 +234,12 @@ namespace Gordon360.Services
         /// <summary>
         /// Fetches all the membership requests associated with this student
         /// </summary>
-        /// <param name="gordonID">The student id</param>
+        /// <param name="username">The AD Username of the user</param>
         /// <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
-        public async Task<IEnumerable<MembershipRequestViewModel>> GetMembershipRequestsForStudentAsync(string gordonID)
+        public async Task<IEnumerable<MembershipRequestViewModel>> GetMembershipRequestsForStudentAsync(string username)
         {
-            var allRequests = await _context.Procedures.REQUESTS_PER_STUDENT_IDAsync(int.Parse(gordonID));
+            var account = new AccountService(_context).GetAccountByUsername(username);
+            var allRequests = await _context.Procedures.REQUESTS_PER_STUDENT_IDAsync(int.Parse(account.GordonID));
 
             return allRequests.Select(r => new MembershipRequestViewModel
             {

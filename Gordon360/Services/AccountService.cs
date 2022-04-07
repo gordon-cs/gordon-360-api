@@ -30,7 +30,7 @@ namespace Gordon360.Services
         /// <param name="id">The person's gordon id</param>
         /// <returns>AccountViewModel if found, null if not found</returns>
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
-        public AccountViewModel? GetAccountByID(string id)
+        public AccountViewModel GetAccountByID(string id)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
             if (account == null)
@@ -38,6 +38,7 @@ namespace Gordon360.Services
                 // Custom Exception is thrown that will be cauth in the controller Exception filter.
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
             }
+
             return account;
         }
 
@@ -56,13 +57,14 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="email">The email address associated with the account.</param>
         /// <returns>the student account information</returns>
-        public AccountViewModel? GetAccountByEmail(string email)
+        public AccountViewModel GetAccountByEmail(string email)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.email == email);
             if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
             }
+
             return account;
         }
 
@@ -71,13 +73,14 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">The AD username associated with the account.</param>
         /// <returns>the student account information</returns>
-        public AccountViewModel? GetAccountByUsername(string username)
+        public AccountViewModel GetAccountByUsername(string username)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
             if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
             }
+
             return account;
         }
     }

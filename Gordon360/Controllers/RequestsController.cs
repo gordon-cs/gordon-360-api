@@ -1,11 +1,14 @@
 ﻿using Gordon360.AuthorizationFilters;
+using Gordon360.Database.CCT;
 using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
+using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Gordon360.Controllers
 {
@@ -14,9 +17,9 @@ namespace Gordon360.Controllers
     {
         public IMembershipRequestService _membershipRequestService;
 
-        public RequestsController(IMembershipRequestService membershipRequestService)
+        public RequestsController(CCTContext context)
         {
-            _membershipRequestService = membershipRequestService;
+            _membershipRequestService = new MembershipRequestService(context);
         }
 
         /// <summary>
@@ -26,9 +29,9 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("")]
         [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.MEMBERSHIP_REQUEST)]
-        public ActionResult<IEnumerable<MembershipViewModel>> Get()
+        public async Task<ActionResult<IEnumerable<MembershipViewModel>>> GetAsync()
         {
-            var all = _membershipRequestService.GetAllAsync();
+            var all = await _membershipRequestService.GetAllAsync();
             return Ok(all);
         }
 
@@ -40,9 +43,9 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("{id}")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP_REQUEST)]
-        public ActionResult<MembershipViewModel> Get(int id)
+        public async Task<ActionResult<MembershipViewModel>> GetAsync(int id)
         {
-            var result = _membershipRequestService.GetAsync(id);
+            var result = await _membershipRequestService.GetAsync(id);
 
             if (result == null)
             {
@@ -61,9 +64,9 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("activity/{id}")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_REQUEST_BY_ACTIVITY)]
-        public ActionResult<IEnumerable<MembershipViewModel>> GetMembershipsRequestsForActivity(string id)
+        public async Task<ActionResult<IEnumerable<MembershipViewModel>>> GetMembershipsRequestsForActivityAsync(string id)
         {
-            var result = _membershipRequestService.GetMembershipRequestsForActivityAsync(id);
+            var result = await _membershipRequestService.GetMembershipRequestsForActivityAsync(id);
 
             if (result == null)
             {
@@ -80,10 +83,10 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("student")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_REQUEST_BY_STUDENT)]
-        public ActionResult<IEnumerable<MembershipViewModel>> GetMembershipsRequestsForStudent()
+        public async Task<ActionResult<IEnumerable<MembershipViewModel>>> GetMembershipsRequestsForStudentAsync()
         {
-            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var result = _membershipRequestService.GetMembershipRequestsForStudentAsync(authenticatedUserIdString);
+            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var result = await _membershipRequestService.GetMembershipRequestsForStudentAsync(authenticatedUserUsername);
 
             if (result == null)
             {

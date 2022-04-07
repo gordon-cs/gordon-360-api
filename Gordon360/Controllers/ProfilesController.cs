@@ -19,6 +19,7 @@ using Gordon360.Models.ViewModels;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Gordon360.Controllers
@@ -389,241 +390,83 @@ namespace Gordon360.Controllers
         public async Task<ActionResult<JObject>> GetMyImgAsync()
         {
             var username = AuthUtils.GetAuthenticatedUserUsername(User);
-
             var photoModel = await _profileService.GetPhotoPathAsync(username);
-
-            string pref_img = "";
-            string default_img = "";
-
-            var fileName = "";
-            string filePath = _config["DEFAULT_PREF_IMAGE_PATH"];
-
-            var unapprovedFileName = username + "_" + _accountService.GetAccountByUsername(username).account_id + ".jpg";
-            var unapprovedFilePath = _config["DEFAULT_ID_SUBMISSION_PATH"];
-
-            byte[] imageBytes;
             JObject result = new JObject();
 
             if (photoModel == null) //There is no preferred or ID image
             {
-                if (System.IO.File.Exists(unapprovedFilePath + unapprovedFileName))
-                {
-                    imageBytes = await System.IO.File.ReadAllBytesAsync(unapprovedFilePath + unapprovedFileName);
-
-                    string unapproved_img = Convert.ToBase64String(imageBytes);
-                    result.Add("def", unapproved_img);
-                    return Ok(result);
-                }
-                else
-                {
-                    imageBytes = await System.IO.File.ReadAllBytesAsync(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
-                    default_img = Convert.ToBase64String(imageBytes);
-                    result.Add("def", default_img);
-                    return Ok(result);
-                }
+                var unapprovedFileName = username + "_" + _accountService.GetAccountByUsername(username).account_id + ".jpg";
+                var unapprovedFilePath = _config["DEFAULT_ID_SUBMISSION_PATH"];
+                string unapproved_img = await GetProfileImageOrDefault(unapprovedFilePath + unapprovedFileName);
+                result.Add("def", unapproved_img);
+                return Ok(result);
             }
 
+            string prefImgPath = _config["PREFERRED_IMAGE_PATH"] + photoModel.Pref_Img_Name;
 
-            fileName = photoModel.Pref_Img_Name;
-
-            if (string.IsNullOrEmpty(fileName) || !System.IO.File.Exists(filePath + fileName)) //check file existence for prefferred image.
+            if (string.IsNullOrEmpty(photoModel.Pref_Img_Name) || !System.IO.File.Exists(prefImgPath)) //check file existence for prefferred image.
             {
-                filePath = _config["DEFAULT_IMAGE_PATH"];
-                fileName = photoModel.Img_Name;
-                try
-                {
-                    imageBytes = await System.IO.File.ReadAllBytesAsync(filePath + fileName);
-                }
-                catch (FileNotFoundException e)
-                {
-                    imageBytes = System.IO.File.ReadAllBytes(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
-                }
-                default_img = Convert.ToBase64String(imageBytes);
-                result.Add("def", default_img);
+                var defaultImgPath = _config["DEFAULT_IMAGE_PATH"] + photoModel.Img_Name;
+                result.Add("def", await GetProfileImageOrDefault(defaultImgPath));
                 return Ok(result);
             }
             else
             {
-                try
-                {
-                    imageBytes = await System.IO.File.ReadAllBytesAsync(filePath + fileName);
-                }
-                catch (FileNotFoundException e)
-                {
-                    System.Diagnostics.Debug.WriteLine(e.Message);
-                    imageBytes = await System.IO.File.ReadAllBytesAsync(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
-                }
-                pref_img = Convert.ToBase64String(imageBytes);
-                result.Add("pref", pref_img);
-                return Ok(result);  //return image as a base64 string
+                result.Add("pref", await GetProfileImageOrDefault(prefImgPath));
+                return Ok(result);
             }
         }
 
         /// <summary>Get the profile image of the given user</summary>
-        /// <returns></returns>
+        /// <returns>The profile image(s) that the authenticated user is allowed to see, if any</returns>
         [HttpGet]
         [Route("image/{username}")]
         public async Task<ActionResult<JObject>> GetImgAsync(string username)
         {
             var authUsername = AuthUtils.GetAuthenticatedUserUsername(User);
             var viewerType = _roleCheckingService.GetCollegeRole(authUsername);
-            var id = _accountService.GetAccountByUsername(authUsername).GordonID;
-            var photoInfo = await _profileService.GetPhotoPathAsync(id);
+            var photoInfo = await _profileService.GetPhotoPathAsync(username);
 
-            var filePath = "";
-            var fileName = "";
-            byte[] pref_image;
-            string pref_img = "";
-            byte[] default_image;
-            string default_img = "";
             JObject result = new JObject();
 
             //return default image if no photo info found for this user.
             if (photoInfo == null)
             {
-                default_image = await System.IO.File.ReadAllBytesAsync(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
-                default_img = Convert.ToBase64String(default_image);
-                result.Add("def", default_img);
+                result.Add("def", await ImageUtils.DownloadImageFromURL(_config["DEFAULT_PROFILE_IMAGE_PATH"]));
                 return Ok(result);
             }
 
-            //security control depends on viewer type. return both photos for super admin and gordon police.
+            var preferredImagePath = string.IsNullOrEmpty(photoInfo.Pref_Img_Name) ? null : _config["PREFERRED_IMAGE_PATH"] + photoInfo.Pref_Img_Name;
+            var defaultImagePath = _config["DEFAULT_IMAGE_PATH"] + photoInfo.Img_Name;
+            //security control depends on viewer type.
             switch (viewerType)
             {
                 case Position.SUPERADMIN:
-                    filePath = _config["DEFAULT_PREF_IMAGE_PATH"];
-                    fileName = photoInfo.Pref_Img_Name;
-                    if (!string.IsNullOrEmpty(fileName) && System.IO.File.Exists(filePath + fileName))
-                    {
-                        try
-                        {
-                            pref_image = await System.IO.File.ReadAllBytesAsync(filePath + fileName);
-                        }
-                        catch (FileNotFoundException e)
-                        {
-                            System.Diagnostics.Debug.WriteLine(e.Message);
-                            pref_image = await System.IO.File.ReadAllBytesAsync(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
-                        }
-                        pref_img = Convert.ToBase64String(pref_image);
-                    }
-                    filePath = _config["DEFAULT_IMAGE_PATH"];
-                    fileName = photoInfo.Img_Name;
-                    try
-                    {
-                        default_image = await System.IO.File.ReadAllBytesAsync(filePath + fileName);
-                    }
-                    catch (FileNotFoundException e)
-                    {
-                        System.Diagnostics.Debug.WriteLine(e.Message);
-                        default_image = await System.IO.File.ReadAllBytesAsync(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
-                    }
-                    default_img = Convert.ToBase64String(default_image);
-                    result.Add("def", default_img);
-                    result.Add("pref", pref_img);
-                    return Ok(result);
+                case Position.FACSTAFF:
                 case Position.POLICE:
-                    filePath = _config["DEFAULT_PREF_IMAGE_PATH"];
-                    fileName = photoInfo.Pref_Img_Name;
-                    if (!string.IsNullOrEmpty(fileName) && System.IO.File.Exists(filePath + fileName))
+                    if (preferredImagePath is not null && System.IO.File.Exists(preferredImagePath))
                     {
-                        try
-                        {
-                            pref_image = await System.IO.File.ReadAllBytesAsync(filePath + fileName);
-                        }
-                        catch (FileNotFoundException e)
-                        {
-                            System.Diagnostics.Debug.WriteLine(e.Message);
-                            pref_image = await System.IO.File.ReadAllBytesAsync(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
-                        }
-                        pref_img = Convert.ToBase64String(pref_image);
+                        result.Add("pref", await GetProfileImageOrDefault(preferredImagePath));
                     }
-                    filePath = _config["DEFAULT_IMAGE_PATH"];
-                    fileName = photoInfo.Img_Name;
-                    try
-                    {
-                        default_image = await System.IO.File.ReadAllBytesAsync(filePath + fileName);
-                    }
-                    catch (FileNotFoundException e)
-                    {
-                        System.Diagnostics.Debug.WriteLine(e.Message);
-                        default_image = await System.IO.File.ReadAllBytesAsync(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
-                    }
-                    default_img = Convert.ToBase64String(default_image);
-                    result.Add("def", default_img);
-                    result.Add("pref", pref_img);
+                    result.Add("def", await GetProfileImageOrDefault(defaultImagePath));
                     return Ok(result);
+
                 case Position.STUDENT:
-                    if (_accountService.GetAccountByUsername(username).show_pic == 1)                  //check privacy setting of this user.
+                    if (_accountService.GetAccountByUsername(username).show_pic == 1)
                     {
-                        filePath = _config["DEFAULT_PREF_IMAGE_PATH"];
-                        fileName = photoInfo.Pref_Img_Name;
-                        if (string.IsNullOrEmpty(fileName) || !System.IO.File.Exists(filePath + fileName))
+                        if (preferredImagePath is not null && System.IO.File.Exists(preferredImagePath))
                         {
-                            filePath = _config["DEFAULT_IMAGE_PATH"];
-                            fileName = photoInfo.Img_Name;
-                            try
-                            {
-                                default_image = await System.IO.File.ReadAllBytesAsync(filePath + fileName);
-                            }
-                            catch (FileNotFoundException e)
-                            {
-                                System.Diagnostics.Debug.WriteLine(e.Message);
-                                default_image = await System.IO.File.ReadAllBytesAsync(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
-                            }
-                            default_img = Convert.ToBase64String(default_image);
-                            result.Add("def", default_img);
-                            return Ok(result);
+                            result.Add("pref", await GetProfileImageOrDefault(preferredImagePath));
                         }
-                        try
+                        else
                         {
-                            pref_image = await System.IO.File.ReadAllBytesAsync(filePath + fileName);
+                            result.Add("def", await GetProfileImageOrDefault(defaultImagePath));
                         }
-                        catch (FileNotFoundException e)
-                        {
-                            System.Diagnostics.Debug.WriteLine(e.Message);
-                            pref_image = await System.IO.File.ReadAllBytesAsync(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
-                        }
-                        pref_img = Convert.ToBase64String(pref_image);
-                        result.Add("pref", pref_img);
                     }
                     else
                     {
-                        default_image = await System.IO.File.ReadAllBytesAsync(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
-                        default_img = Convert.ToBase64String(default_image);
-                        result.Add("def", default_img);
-                        return Ok(result);
+                        result.Add("def", await ImageUtils.DownloadImageFromURL(_config["DEFAULT_PROFILE_IMAGE_PATH"]));
                     }
-                    return Ok(result);
-                case Position.FACSTAFF:
-                    filePath = _config["DEFAULT_PREF_IMAGE_PATH"];
-                    fileName = photoInfo.Pref_Img_Name;
-                    if (!string.IsNullOrEmpty(fileName) && System.IO.File.Exists(filePath + fileName))
-                    {
-                        try
-                        {
-                            pref_image = await System.IO.File.ReadAllBytesAsync(filePath + fileName);
-                        }
-                        catch (FileNotFoundException e)
-                        {
-                            System.Diagnostics.Debug.WriteLine(e.Message);
-                            pref_image = await System.IO.File.ReadAllBytesAsync(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
-                        }
-                        pref_img = Convert.ToBase64String(pref_image);
-                    }
-                    filePath = _config["DEFAULT_IMAGE_PATH"];
-                    fileName = photoInfo.Img_Name;
-                    try
-                    {
-                        default_image = await System.IO.File.ReadAllBytesAsync(filePath + fileName);
-                    }
-                    catch (FileNotFoundException e)
-                    {
-                        System.Diagnostics.Debug.WriteLine(e.Message);
-                        default_image = await System.IO.File.ReadAllBytesAsync(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
-                    }
-                    default_img = Convert.ToBase64String(default_image);
-                    result.Add("def", default_img);
-                    result.Add("pref", pref_img);
                     return Ok(result);
                 default:
                     return Ok();
@@ -639,7 +482,7 @@ namespace Gordon360.Controllers
         //public async Task<ActionResult> PostImageAsync()
         //{
         //    var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
-        //    string root = _config["DEFAULT_PREF_IMAGE_PATH"];
+        //    string root = _config["PREFERRED_IMAGE_PATH"];
         //    var fileName = _accountService.GetAccountByUsername(authenticatedUserUsername).Barcode + ".jpg";
         //    var pathInfo = _profileService.GetPhotoPath(authenticatedUserUsername);
         //    var provider = new CustomMultipartFormDataStreamProvider(root);
@@ -753,7 +596,7 @@ namespace Gordon360.Controllers
         public ActionResult ResetImage()
         {
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
-            string root = _config["DEFAULT_PREF_IMAGE_PATH"];
+            string root = _config["PREFERRED_IMAGE_PATH"];
             var fileName = _accountService.GetAccountByUsername(authenticatedUserUsername).Barcode + ".jpg";
             try
             {
@@ -852,6 +695,32 @@ namespace Gordon360.Controllers
             _profileService.UpdateImagePrivacyAsync(authenticatedUserUsername, value);
 
             return Ok();
+        }
+
+        /// <summary>
+        /// Gets the profile image at the given path or, if that file does not exist, the 360 default profile image
+        /// </summary>
+        /// <remarks>
+        /// Note that the 360 default profile image is different from a user's default image.
+        /// A given user's default image is simply their approved ID photo.
+        /// The 360 default profile image, on the other hand, is a stock image of Scottie Lion.
+        /// Hence, the 360 default profile image is only used when no other image exists (or should be displayed) for a user.
+        /// </remarks>
+        /// <param name="imagePath">Path to the profile image to load</param>
+        /// <returns></returns>
+        private async Task<string> GetProfileImageOrDefault(string imagePath)
+        {
+            try
+            {
+                // User's profile images (both preferred and default) are stored in the GO site's filesystem.
+                // Hence, we access them via the network file share, the same way we would access a local file
+                return ImageUtils.RetrieveImageFromPath(imagePath);
+            }
+            catch (FileNotFoundException)
+            {
+                // The 360 default profile image path is a URL, so we have to download it over an HTTP connection
+                return await ImageUtils.DownloadImageFromURL(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
+            }
         }
     }
 }

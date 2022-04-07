@@ -5,6 +5,8 @@ using Gordon360.Services;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using static Gordon360.Services.MembershipService;
 
 namespace Gordon360.Controllers
 {
@@ -18,11 +20,22 @@ namespace Gordon360.Controllers
             _emailService = new EmailService(context);
         }
 
-        [Route("activity/{id}")]
+        [HttpGet]
+        [Route("activity/{activityCode}")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_ACTIVITY)]
-        public ActionResult<IEnumerable<EmailViewModel>> GetEmailsForActivity(string id)
+        public async Task<ActionResult<IEnumerable<EmailViewModel>>> GetEmailsForActivityAsync(string activityCode, string? sessionCode, string? participationType)
         {
-            var result = _emailService.GetEmailsForActivityAsync(id);
+            var participation = participationType switch
+            {
+                "advisor" => ParticipationType.Advisor,
+                "leader" => ParticipationType.Leader,
+                "group-admin" => ParticipationType.GroupAdmin,
+                "member" => ParticipationType.Member,
+                "guest" => ParticipationType.Guest,
+                _ => null
+            };
+
+            var result = await _emailService.GetEmailsForActivityAsync(activityCode, sessionCode, participation);
 
             if (result == null)
             {
@@ -30,85 +43,6 @@ namespace Gordon360.Controllers
             }
             return Ok(result);
 
-        }
-
-        [Route("activity/{id}/session/{session}")]
-        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_ACTIVITY)]
-        public ActionResult<IEnumerable<EmailViewModel>> GetEmailsForActivity(string id, string session)
-        {
-            var result = _emailService.GetEmailsForActivityAsync(id, session);
-
-            if (result == null)
-            {
-                NotFound();
-            }
-            return Ok(result);
-
-        }
-
-        [Route("activity/{id}/leaders")]
-        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_LEADERS)]
-        public ActionResult<IEnumerable<EmailViewModel>> GetEmailsForleader(string id)
-        {
-            var result = _emailService.GetEmailsForActivityLeadersAsync(id);
-
-            if (result == null)
-            {
-                NotFound();
-            }
-            return Ok(result);
-        }
-
-        [Route("activity/{id}/group-admin/session/{session}")]
-        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_GROUP_ADMIN)]
-        public ActionResult<IEnumerable<EmailViewModel>> GetEmailsForGroupAdmin(string id, string session)
-        {
-            var result = _emailService.GetEmailsForGroupAdminAsync(id, session);
-
-            if (result == null)
-            {
-                NotFound();
-            }
-            return Ok(result);
-        }
-
-        [Route("activity/{id}/leaders/session/{session}")]
-        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_LEADERS)]
-        public ActionResult<IEnumerable<EmailViewModel>> GetEmailsForleader(string id, string session)
-        {
-            var result = _emailService.GetEmailsForActivityLeadersAsync(id, session);
-
-            if (result == null)
-            {
-                NotFound();
-            }
-            return Ok(result);
-        }
-
-        [Route("activity/{id}/advisors")]
-        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_LEADERS)]
-        public ActionResult<IEnumerable<EmailViewModel>> GetEmailsForAdvisor(string id)
-        {
-            var result = _emailService.GetEmailsForActivityAdvisorsAsync(id);
-
-            if (result == null)
-            {
-                NotFound();
-            }
-            return Ok(result);
-        }
-
-        [Route("activity/{id}/advisors/session/{session}")]
-        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_LEADERS)]
-        public ActionResult<IEnumerable<EmailViewModel>> GetEmailsForAdvisor(string id, string session)
-        {
-            var result = _emailService.GetEmailsForActivityAdvisorsAsync(id, session);
-
-            if (result == null)
-            {
-                NotFound();
-            }
-            return Ok(result);
         }
 
         [HttpPut]
@@ -136,15 +70,10 @@ namespace Gordon360.Controllers
         [HttpPut]
         [Route("activity/{id}/session/{session}")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_ACTIVITY)]
-        public ActionResult SendEmailToActivity(string id, string session, [FromBody] EmailContentViewModel email)
+        public async Task<ActionResult> SendEmailToActivityAsync(string id, string session, [FromBody] EmailContentViewModel email)
         {
-            _emailService.SendEmailToActivityAsync(id, session, email.FromAddress, email.Subject, email.Content, email.Password);
+            await _emailService.SendEmailToActivityAsync(id, session, email.FromAddress, email.Subject, email.Content, email.Password);
 
-            //if (result == null)
-            //{
-            //    NotFound();
-            //}
-            //return Ok(result);
             return Ok();
 
         }

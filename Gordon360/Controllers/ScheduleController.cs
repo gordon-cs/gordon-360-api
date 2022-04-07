@@ -6,6 +6,7 @@ using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Gordon360.Controllers
 {
@@ -138,12 +139,11 @@ namespace Gordon360.Controllers
         /// <returns>Whether they can read student schedules</returns>
         [HttpGet]
         [Route("canreadstudent")]
-        public IHttpActionResult GetCanReadStudentSchedules()
+        public async Task<ActionResult<bool>> GetCanReadStudentSchedules()
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var username = AuthUtils.GetAuthenticatedUserUsername(User);
 
-            return Ok(_scheduleService.CanReadStudentSchedules(username));
+            return Ok(await _scheduleService.CanReadStudentSchedules(username));
         }
     }
 }

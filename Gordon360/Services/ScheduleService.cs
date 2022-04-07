@@ -67,11 +67,10 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">The username to determine it for</param>
         /// <returns>Whether the specified user can read student schedules</returns>
-        public bool CanReadStudentSchedules(string username)
+        public async Task<bool> CanReadStudentSchedules(string username)
         {
-            var usernameParam = new SqlParameter("@username", username);
-
-            return RawSqlQuery<int>.query("CAN_READ_STUDENT_SCHEDULES @username", usernameParam).FirstOrDefault() == 1;
+            var adminPermissionsCount = await _context.Procedures.CAN_READ_STUDENT_SCHEDULESAsync(username);
+            return adminPermissionsCount > 0;
         }
     }
 }

@@ -168,7 +168,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">AD username</param>
         /// <returns>PhotoPathViewModel if found, null if not found</returns>
-        public async Task<PhotoPathViewModel> GetPhotoPathAsync(string username)
+        public async Task<PhotoPathViewModel?> GetPhotoPathAsync(string username)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
             if (account == null)
@@ -177,9 +177,7 @@ namespace Gordon360.Services
             }
 
             var photoInfoList = await _context.Procedures.PHOTO_INFO_PER_USER_NAMEAsync(int.Parse(account.gordon_id));
-            var photoInfo = photoInfoList.FirstOrDefault();
-
-            return new PhotoPathViewModel { Img_Name = photoInfo.Img_Name, Img_Path = photoInfo.Img_Path, Pref_Img_Name = photoInfo.Pref_Img_Name, Pref_Img_Path = photoInfo.Pref_Img_Path };
+            return photoInfoList.Select(p => new PhotoPathViewModel { Img_Name = p.Img_Name, Img_Path = p.Img_Path, Pref_Img_Name = p.Pref_Img_Name, Pref_Img_Path = p.Pref_Img_Path }).FirstOrDefault();
         }
 
         /// <summary>

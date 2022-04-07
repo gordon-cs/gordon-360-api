@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using static Gordon360.Controllers.WellnessController;
+using static Gordon360.Services.MembershipService;
 
 // <summary>
 // Namespace with all the Service Interfaces that are to be implemented. I don't think making this interface is required, the services can work fine on their own.
@@ -55,10 +56,10 @@ namespace Gordon360.Services
 
     public interface IAccountService
     {
-        AccountViewModel? GetAccountByID(string id);
+        AccountViewModel GetAccountByID(string id);
         IEnumerable<AccountViewModel> GetAll();
-        AccountViewModel? GetAccountByEmail(string email);
-        AccountViewModel? GetAccountByUsername(string username);
+        AccountViewModel GetAccountByEmail(string email);
+        AccountViewModel GetAccountByUsername(string username);
     }
 
     public interface IWellnessService
@@ -127,17 +128,7 @@ namespace Gordon360.Services
 
     public interface IEmailService
     {
-        // Get emails for the current session.
-        Task<IEnumerable<EmailViewModel>> GetEmailsForGroupAdminAsync(string activityCode);
-        Task<IEnumerable<EmailViewModel>> GetEmailsForActivityLeadersAsync(string id);
-        Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAdvisorsAsync(string id);
-        Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAsync(string activityCode);
-        // Get emails for some other session
-        Task<IEnumerable<EmailViewModel>> GetEmailsForGroupAdminAsync(string activityCode, string sessionCode);
-        Task<IEnumerable<EmailViewModel>> GetEmailsForActivityLeadersAsync(string activityCode, string sessionCode);
-        Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAdvisorsAsync(string activityCode, string sessionCode);
-        Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAsync(string activityCode, string sessionCode);
-        // Send emails
+        Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAsync(string activityCode, string? sessionCode, ParticipationType? participationType);
         void SendEmails(string[] to_emails, string to_email, string subject, string email_content, string password);
         Task SendEmailToActivityAsync(string activityCode, string sessionCode, string from_email, string subject, string email_content, string password);
     }
@@ -166,7 +157,7 @@ namespace Gordon360.Services
         Task<IEnumerable<MembershipViewModel>> GetLeaderMembershipsForActivityAsync(string activityCode);
         Task<IEnumerable<MembershipViewModel>> GetAdvisorMembershipsForActivityAsync(string activityCode);
         Task<IEnumerable<MembershipViewModel>> GetGroupAdminMembershipsForActivityAsync(string activityCode);
-        Task<IEnumerable<MembershipViewModel>> GetMembershipsForActivityAsync(string activityCode);
+        Task<IEnumerable<MembershipViewModel>> GetMembershipsForActivityAsync(string activityCode, string? sessionCode);
         Task<IEnumerable<MembershipViewModel>> GetMembershipsForStudentAsync(string username);
         Task<int> GetActivityFollowersCountForSessionAsync(string activityCode, string sessionCode);
         Task<int> GetActivityMembersCountForSessionAsync(string activityCode, string sessionCode);
@@ -209,7 +200,7 @@ namespace Gordon360.Services
         Task<MembershipRequestViewModel> GetAsync(int requestID);
         Task<IEnumerable<MembershipRequestViewModel>> GetAllAsync();
         Task<IEnumerable<MembershipRequestViewModel>> GetMembershipRequestsForActivityAsync(string activityCode);
-        Task<IEnumerable<MembershipRequestViewModel>> GetMembershipRequestsForStudentAsync(string gordonID);
+        Task<IEnumerable<MembershipRequestViewModel>> GetMembershipRequestsForStudentAsync(string usernamne);
         REQUEST Add(REQUEST membershipRequest);
         REQUEST Update(int requestID, REQUEST membershipRequest);
         // The ODD one out. When we approve a request, we would like to get back the new membership.
@@ -221,7 +212,7 @@ namespace Gordon360.Services
     {
         Task<IEnumerable<ScheduleViewModel>> GetScheduleStudentAsync(string username);
         Task<IEnumerable<ScheduleViewModel>> GetScheduleFacultyAsync(string username);
-        bool CanReadStudentSchedules(string username);
+        Task<bool> CanReadStudentSchedules(string username);
     }
 
     public interface IScheduleControlService

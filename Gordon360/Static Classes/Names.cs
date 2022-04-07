@@ -84,18 +84,6 @@ namespace Gordon360.Static.Names
         public const string DENIED = "Denied";
     }
 
-
-    public static class Defaults
-    {
-        public const string DEFAULT_ACTIVITY_IMAGE_PATH = "https://360api.gordon.edu/browseable/uploads/Default/activityImage.png";
-        public const string DEFAULT_PROFILE_IMAGE_PATH = "https://360api.gordon.edu/browseable/profile/Default/profile.png";
-        public const string DEFAULT_PREF_IMAGE_PATH = "\\\\go\\pref_photos\\";
-        public const string DEFAULT_IMAGE_PATH = "\\\\go\\photos\\";
-        public const string DEFAULT_ID_SUBMISSION_PATH = "\\\\go\\ID_Photo_Submissions\\";
-        public const string DATABASE_IMAGE_PATH = "f:\\inetpub\\pref_photos\\";
-
-    }
-
     public static class SQLQuery
     {
         public static string ALL_PUBLIC_STUDENT_REQUEST = "SELECT ISNULL(Mail_Location, '') as Mail_Location, ISNULL(BuildingDescription, '') as Hall, ISNULL(FirstName, '') as FirstName, ISNULL(LastName, '') as LastName, ISNULL(NickName, '') as NickName, ISNULL(MaidenName, '') as MaidenName, ISNULL(Class, '') as Class, ISNULL(Major1Description, '') as Major1Description, ISNULL(Major2Description, '') as Major2Description, ISNULL(Major3Description, '') as Major3Description, ISNULL(Minor1Description, '') as Minor1Description, ISNULL(Minor2Description, '') as Minor2Description, ISNULL(Minor3Description, '') as Minor3Description, ISNULL(HomeCity, '') as HomeCity, ISNULL(HomeState, '') as HomeState, ISNULL(Country, '') as Country, ISNULL(KeepPrivate, '') as KeepPrivate, ISNULL(Email, '') as Email, AD_Username FROM STUDENT S WHERE AD_Username is not null FOR JSON PATH, ROOT('Students')";
