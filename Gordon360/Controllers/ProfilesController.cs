@@ -18,8 +18,6 @@ using Gordon360.Static.Names;
 using Gordon360.Models.ViewModels;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Gordon360.Controllers
@@ -48,11 +46,6 @@ namespace Gordon360.Controllers
         {
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
-            if (authenticatedUserUsername == null)
-            {
-                throw new ResourceNotFoundException { ExceptionMessage = "No logged-in user was found" };
-            }
-
             // search username in cached data
             var student = _profileService.GetStudentProfileByUsername(authenticatedUserUsername);
             var faculty = _profileService.GetFacultyStaffProfileByUsername(authenticatedUserUsername);
@@ -60,101 +53,53 @@ namespace Gordon360.Controllers
             //get profile links
             var customInfo = _profileService.GetCustomUserInfo(authenticatedUserUsername);
 
-            // merge the person's info if this person is in multiple tables and return result 
-            if (student != null)
-            {
-                if (faculty != null)
-                {
-                    if (alumni != null)
-                    {
-                        JObject stualufac = JObject.FromObject(student);                                 //convert into JSON object in order to use JSON.NET library 
-                        stualufac.Merge(JObject.FromObject(alumni), new JsonMergeSettings                // user Merge function to merge two json object
-                        {
-                            MergeArrayHandling = MergeArrayHandling.Union
-                        });
-                        stualufac.Merge(JObject.FromObject(faculty), new JsonMergeSettings
-                        {
-                            MergeArrayHandling = MergeArrayHandling.Union
-                        });
-                        stualufac.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
-                        {
-                            MergeArrayHandling = MergeArrayHandling.Union
-                        });
-                        stualufac.Add("PersonType", "stualufac");                                         // assign a type to the json object 
-                        return Ok(stualufac.ToObject<ProfileViewModel>());
-                    }
-                    JObject stufac = JObject.FromObject(student);
-                    stufac.Merge(JObject.FromObject(faculty), new JsonMergeSettings
-                    {
-                        MergeArrayHandling = MergeArrayHandling.Union
-                    });
-                    stufac.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
-                    {
-                        MergeArrayHandling = MergeArrayHandling.Union
-                    });
-                    stufac.Add("PersonType", "stufac");
-                    return Ok(stufac.ToObject<ProfileViewModel>());
-                }
-                else if (alumni != null)
-                {
-                    JObject stualu = JObject.FromObject(student);
-                    stualu.Merge(JObject.FromObject(alumni), new JsonMergeSettings
-                    {
-                        MergeArrayHandling = MergeArrayHandling.Union
-                    });
-                    stualu.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
-                    {
-                        MergeArrayHandling = MergeArrayHandling.Union
-                    });
-                    stualu.Add("PersonType", "stualu");
-                    return Ok(stualu.ToObject<ProfileViewModel>());
-                }
-                JObject stu = JObject.FromObject(student);
-                stu.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
-                {
-                    MergeArrayHandling = MergeArrayHandling.Union
-                });
-                stu.Add("PersonType", "stu");
-                return Ok(stu.ToObject<ProfileViewModel>());
-            }
-            else if (faculty != null)
-            {
-                if (alumni != null)
-                {
-                    JObject alufac = JObject.FromObject(alumni);
-                    alufac.Merge(JObject.FromObject(faculty), new JsonMergeSettings
-                    {
-                        MergeArrayHandling = MergeArrayHandling.Union
-                    });
-                    alufac.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
-                    {
-                        MergeArrayHandling = MergeArrayHandling.Union
-                    });
-                    alufac.Add("PersonType", "alufac");
-                    return Ok(alufac.ToObject<ProfileViewModel>());
-                }
-                JObject fac = JObject.FromObject(faculty);
-                fac.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
-                {
-                    MergeArrayHandling = MergeArrayHandling.Union
-                });
-                fac.Add("PersonType", "fac");
-                return Ok(fac.ToObject<ProfileViewModel>());
-            }
-            else if (alumni != null)
-            {
-                JObject alu = JObject.FromObject(alumni);
-                alu.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
-                {
-                    MergeArrayHandling = MergeArrayHandling.Union
-                });
-                alu.Add("PersonType", "alu");
-                return Ok(alu.ToObject<ProfileViewModel>());
-            }
-            else
+            if (student is null && alumni is null && faculty is null)
             {
                 return NotFound();
             }
+
+            // merge the person's info if this person is in multiple tables
+            var profile = new JObject();
+            var personType = "";
+
+            if (student != null)
+            {
+                profile.Merge(JObject.FromObject(student), new JsonMergeSettings
+                {
+                    MergeArrayHandling = MergeArrayHandling.Union
+                });
+                personType += "stu";
+            }
+
+            if (alumni != null)
+            {
+                profile.Merge(JObject.FromObject(alumni), new JsonMergeSettings
+                {
+                    MergeArrayHandling = MergeArrayHandling.Union
+                });
+                personType += "alu";
+            }
+
+            if (faculty != null)
+            {
+                profile.Merge(JObject.FromObject(faculty), new JsonMergeSettings
+                {
+                    MergeArrayHandling = MergeArrayHandling.Union
+                });
+                personType += "fac";
+            }
+
+            if (customInfo != null)
+            {
+                profile.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
+                {
+                    MergeArrayHandling = MergeArrayHandling.Union
+                });
+            }
+
+            profile.Add("PersonType", personType);
+
+            return Ok(profile.ToObject<ProfileViewModel>());
         }
 
         /// <summary>Get public profile info for a user</summary>
@@ -174,10 +119,10 @@ namespace Gordon360.Controllers
                 
             var _customInfo = _profileService.GetCustomUserInfo(username);
 
-            object student = null;
-            object faculty = null;
-            object alumni = null;
-            object customInfo = null;
+            object? student = null;
+            object? faculty = null;
+            object? alumni = null;
+            object? customInfo = null;
 
             //security control depends on viewer type. apply different views to different viewers.
             switch (viewerType)
@@ -195,7 +140,7 @@ namespace Gordon360.Controllers
                     customInfo = _customInfo;
                     break;
                 case Position.STUDENT:
-                    student = _student == null ? null : (PublicStudentProfileViewModel)_student;         //implicit conversion
+                    student = _student == null ? null : (PublicStudentProfileViewModel)_student;
                     faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
                     alumni = null;  //student can't see alumini
                     customInfo = _customInfo;
@@ -208,102 +153,52 @@ namespace Gordon360.Controllers
                     break;
             }
 
-
-            // merge the person's info if this person is in multiple tables and return result 
-            if (student != null)
-            {
-                if (faculty != null)
-                {
-                    if (alumni != null)
-                    {
-                        JObject stualufac = JObject.FromObject(student);                                 //convert into JSON object in order to use JSON.NET library 
-                        stualufac.Merge(JObject.FromObject(alumni), new JsonMergeSettings                // user Merge function to merge two json object
-                        {
-                            MergeArrayHandling = MergeArrayHandling.Union
-                        });
-                        stualufac.Merge(JObject.FromObject(faculty), new JsonMergeSettings
-                        {
-                            MergeArrayHandling = MergeArrayHandling.Union
-                        });
-                        stualufac.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
-                        {
-                            MergeArrayHandling = MergeArrayHandling.Union
-                        });
-                        stualufac.Add("PersonType", "stualufac");                                         // assign a type to the json object 
-                        return Ok(stualufac.ToObject<ProfileViewModel>());
-                    }
-                    JObject stufac = JObject.FromObject(student);
-                    stufac.Merge(JObject.FromObject(faculty), new JsonMergeSettings
-                    {
-                        MergeArrayHandling = MergeArrayHandling.Union
-                    });
-                    stufac.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
-                    {
-                        MergeArrayHandling = MergeArrayHandling.Union
-                    });
-                    stufac.Add("PersonType", "stufac");
-                    return Ok(stufac.ToObject<ProfileViewModel>());
-                }
-                else if (alumni != null)
-                {
-                    JObject stualu = JObject.FromObject(student);
-                    stualu.Merge(JObject.FromObject(alumni), new JsonMergeSettings
-                    {
-                        MergeArrayHandling = MergeArrayHandling.Union
-                    });
-                    stualu.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
-                    {
-                        MergeArrayHandling = MergeArrayHandling.Union
-                    });
-                    stualu.Add("PersonType", "stualu");
-                    return Ok(stualu.ToObject<ProfileViewModel>());
-                }
-                JObject stu = JObject.FromObject(student);
-                stu.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
-                {
-                    MergeArrayHandling = MergeArrayHandling.Union
-                });
-                stu.Add("PersonType", "stu");
-                return Ok(stu.ToObject<ProfileViewModel>());
-            }
-            else if (faculty != null)
-            {
-                if (alumni != null)
-                {
-                    JObject alufac = JObject.FromObject(alumni);
-                    alufac.Merge(JObject.FromObject(faculty), new JsonMergeSettings
-                    {
-                        MergeArrayHandling = MergeArrayHandling.Union
-                    });
-                    alufac.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
-                    {
-                        MergeArrayHandling = MergeArrayHandling.Union
-                    });
-                    alufac.Add("PersonType", "alufac");
-                    return Ok(alufac.ToObject<ProfileViewModel>());
-                }
-                JObject fac = JObject.FromObject(faculty);
-                fac.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
-                {
-                    MergeArrayHandling = MergeArrayHandling.Union
-                });
-                fac.Add("PersonType", "fac");
-                return Ok(fac.ToObject<ProfileViewModel>());
-            }
-            else if (alumni != null)
-            {
-                JObject alu = JObject.FromObject(alumni);
-                alu.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
-                {
-                    MergeArrayHandling = MergeArrayHandling.Union
-                });
-                alu.Add("PersonType", "alu");
-                return Ok(alu.ToObject<ProfileViewModel>());
-            }
-            else
+            if (student is null && alumni is null && faculty is null)
             {
                 return NotFound();
             }
+
+            // merge the person's info if this person is in multiple tables
+            var profile = new JObject();
+            var personType = "";
+            if (student != null)
+            {
+                profile.Merge(JObject.FromObject(student), new JsonMergeSettings
+                {
+                    MergeArrayHandling = MergeArrayHandling.Union
+                });
+                personType += "stu";
+            }
+
+            if (alumni != null)
+            {
+                profile.Merge(JObject.FromObject(alumni), new JsonMergeSettings
+                {
+                    MergeArrayHandling = MergeArrayHandling.Union
+                });
+                personType += "alu";
+            }
+
+            if (faculty != null)
+            {
+                profile.Merge(JObject.FromObject(faculty), new JsonMergeSettings
+                {
+                    MergeArrayHandling = MergeArrayHandling.Union
+                });
+                personType += "fac";
+            }
+
+            if (customInfo != null)
+            {
+                profile.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
+                {
+                    MergeArrayHandling = MergeArrayHandling.Union
+                });
+            }
+
+            profile.Add("PersonType", personType);
+
+            return Ok(profile.ToObject<ProfileViewModel>());
         }
 
         ///<summary>Get the advisor(s) of a particular student</summary>
