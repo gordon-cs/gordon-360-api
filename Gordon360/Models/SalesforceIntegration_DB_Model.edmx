@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="SalesforceIntegrationModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'SalesforceIntegration.skyvia.AlumniContactUpdateRequest' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="AlumniContactUpdateRequest">
+          <Key>
+            <PropertyRef Name="JenzabarID" />
+            <PropertyRef Name="FieldName" />
+            <PropertyRef Name="UpdatedValue" />
+          </Key>
+          <Property Name="JenzabarID" Type="int" Nullable="false" />
+          <Property Name="FieldName" Type="varchar" MaxLength="25" Nullable="false" />
+          <Property Name="UpdatedValue" Type="varchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="SalesforceIntegrationModelStoreContainer">
+          <EntitySet Name="AlumniContactUpdateRequest" EntityType="Self.AlumniContactUpdateRequest" store:Type="Tables" store:Schema="skyvia">
+            <DefiningQuery>SELECT 
+    [AlumniContactUpdateRequest].[JenzabarID] AS [JenzabarID], 
+    [AlumniContactUpdateRequest].[FieldName] AS [FieldName], 
+    [AlumniContactUpdateRequest].[UpdatedValue] AS [UpdatedValue]
+    FROM [skyvia].[AlumniContactUpdateRequest] AS [AlumniContactUpdateRequest]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SalesforceIntegrationModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="AlumniContactUpdateRequest">
+          <Key>
+            <PropertyRef Name="JenzabarID" />
+            <PropertyRef Name="FieldName" />
+            <PropertyRef Name="UpdatedValue" />
+          </Key>
+          <Property Name="JenzabarID" Type="Int32" Nullable="false" />
+          <Property Name="FieldName" Type="String" MaxLength="25" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="UpdatedValue" Type="String" MaxLength="128" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="SalesforceIntegrationEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AlumniContactUpdateRequests" EntityType="Self.AlumniContactUpdateRequest" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="SalesforceIntegrationModelStoreContainer" CdmEntityContainer="SalesforceIntegrationEntities">
+          <EntitySetMapping Name="AlumniContactUpdateRequests">
+            <EntityTypeMapping TypeName="SalesforceIntegrationModel.AlumniContactUpdateRequest">
+              <MappingFragment StoreEntitySet="AlumniContactUpdateRequest">
+                <ScalarProperty Name="JenzabarID" ColumnName="JenzabarID" />
+                <ScalarProperty Name="FieldName" ColumnName="FieldName" />
+                <ScalarProperty Name="UpdatedValue" ColumnName="UpdatedValue" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

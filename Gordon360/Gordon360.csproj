@@ -258,6 +258,9 @@
     <Compile Include="Models\Alumni.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\AlumniContactUpdateRequest.cs">
+      <DependentUpon>SalesforceIntegration_DB_Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Buildings.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
     </Compile>
@@ -521,6 +524,21 @@
     </Compile>
     <Compile Include="Models\Rooms.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SalesforceIntegration_DB_Model.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SalesforceIntegration_DB_Model.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SalesforceIntegration_DB_Model.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SalesforceIntegration_DB_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SalesforceIntegration_DB_Model.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SalesforceIntegration_DB_Model.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\Save_Bookings.cs">
       <DependentUpon>CCT_DB_Models.tt</DependentUpon>
@@ -820,6 +838,16 @@
       <DependentUpon>MyGordon_DB_Models.edmx</DependentUpon>
       <LastGenOutput>MyGordon_DB_Models.cs</LastGenOutput>
     </Content>
+    <Content Include="Models\SalesforceIntegration_DB_Model.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>SalesforceIntegration_DB_Model.edmx</DependentUpon>
+      <LastGenOutput>SalesforceIntegration_DB_Model.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\SalesforceIntegration_DB_Model.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>SalesforceIntegration_DB_Model.edmx</DependentUpon>
+      <LastGenOutput>SalesforceIntegration_DB_Model.cs</LastGenOutput>
+    </Content>
     <Content Include="Models\StaffTimesheets_DB_Models.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>StaffTimesheets_DB_Models.edmx</DependentUpon>
@@ -854,6 +882,13 @@
     </EntityDeploy>
     <Content Include="Models\CCT_DB_Models.edmx.diagram">
       <DependentUpon>CCT_DB_Models.edmx</DependentUpon>
+    </Content>
+    <EntityDeploy Include="Models\SalesforceIntegration_DB_Model.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>SalesforceIntegration_DB_Model.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\SalesforceIntegration_DB_Model.edmx.diagram">
+      <DependentUpon>SalesforceIntegration_DB_Model.edmx</DependentUpon>
     </Content>
     <None Include="secrets.config">
       <SubType>Designer</SubType>

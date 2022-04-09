@@ -282,11 +282,6 @@ namespace Gordon360.ApiControllers
             }
             _emailService.SendEmailToActivity(id, session, email.FromAddress, email.Subject, email.Content, email.Password);
 
-            //if (result == null)
-            //{
-            //    NotFound();
-            //}
-            //return Ok(result);
             return Ok();
 
         }

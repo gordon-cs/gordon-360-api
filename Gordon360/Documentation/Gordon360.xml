@@ -1576,11 +1576,8 @@
             <returns>True if the admin is valid. Throws ResourceNotFoundException if not. Exception is cauth in an Exception Filter</returns>
         </member>
         <member name="T:Gordon360.Services.UpdateService">
-            TODO: Replace dummy variables with their actual variable names, change SQL feature names with the correct names
-            NOTE: Not sure if "query" in RawSqlQuery.cs is the correct query to use. We may have to create our own method
-            TODO: Change the following variable types to their appropriate types
             <summary>
-            Service Class that facilitates data transactions between the UpdateController and the student_info database model.
+            Service Class that facilitates data transactions between the UpdateController and the email sender.
             </summary>
         </member>
         <member name="T:Gordon360.Services.JobsService">

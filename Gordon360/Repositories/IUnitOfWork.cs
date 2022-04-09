@@ -35,7 +35,7 @@ namespace Gordon360.Repositories
         IRepository<Health_Status> WellnessRepository { get; }
 
         // Note -- Only use this repository to call SQL Stored Procedures
-        IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> ActivityPerSessionRepository { get;  }
+        IRepository<ACTIVE_CLUBS_PER_SESS_ID_Result> ActivityPerSessionRepository { get; }
         IRepository<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> StudentScheduleRepository { get; }
         IRepository<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE_Result> FacultyScheduleRepository { get; }
         IRepository<VICTORY_PROMISE_BY_STUDENT_ID_Result> VictoryPromiseByStudentIDRepository { get; }
@@ -44,6 +44,8 @@ namespace Gordon360.Repositories
         IRepository<StudentNews> StudentNewsRepository { get; }
         IRepository<StudentNewsCategory> StudentNewsCategoryRepository { get; }
         IRepository<Clifton_Strengths> CliftonStrengthsRepository { get; }
+
+        IRepository<AlumniContactUpdateRequest> AlumniContactUpdateRequestRepository { get; }
 
         bool Save();
 
