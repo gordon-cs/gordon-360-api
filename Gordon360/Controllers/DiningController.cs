@@ -1,6 +1,7 @@
 ﻿using Gordon360.Database.CCT;
 using Gordon360.Services;
 using Gordon360.Static.Methods;
+using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
@@ -12,10 +13,12 @@ namespace Gordon360.Controllers
     public class DiningController : GordonControllerBase
     {
         public readonly IDiningService _diningService;
+        private readonly IAccountService _accountService;
         private const string FACSTAFF_MEALPLAN_ID = "7295";
         public DiningController(IConfiguration config, CCTContext context)
         {
             _diningService = new DiningService(context, config);
+            _accountService = new AccountService(context);
         }
 
         /// <summary>
@@ -27,7 +30,8 @@ namespace Gordon360.Controllers
         public async Task<ActionResult<string>> GetAsync()
         {
             var currentSession = await Helpers.GetCurrentSessionAsync();
-            var authenticatedUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var authenticatedUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var authenticatedUserId = int.Parse(_accountService.GetAccountByUsername(authenticatedUsername)?.GordonID);
             var diningInfo = _diningService.GetDiningPlanInfo(authenticatedUserId, currentSession.SessionCode);
 
             if (diningInfo == null)
