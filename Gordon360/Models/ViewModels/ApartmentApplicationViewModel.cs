@@ -32,7 +32,6 @@ namespace Gordon360.Models.ViewModels
             DateSubmitted = application.DateSubmitted,
             DateModified = application.DateModified,
             EditorUsername = application.EditorUsername,
-            EditorProfile = (StudentProfileViewModel)Data.StudentData.FirstOrDefault(x => x.AD_Username.ToLower() == application.EditorUsername.ToLower()),
         };
 
     }

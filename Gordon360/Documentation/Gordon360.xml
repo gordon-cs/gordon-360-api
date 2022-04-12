@@ -1402,10 +1402,10 @@
         <member name="M:Gordon360.Services.HousingService.GetApartmentApplication(System.Int32,System.Boolean)">
             <param name="applicationID">application ID number of the apartment application</param>
             <param name="isAdmin">boolean indicating whether the current user is an admin, permits access to restricted information such as birth date</param>
-            <returns>Object of type ApartmentApplicationViewModel</returns>
+            <returns>Apartment Application formatted for display in the UI</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.GetAllApartmentApplication">
-            <returns>Array of ApartmentApplicationViewModel Objects</returns>
+            <returns>Array of ApartmentApplicationViewModels</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.ChangeApplicationDateSubmitted(System.Int32)">
             <summary>

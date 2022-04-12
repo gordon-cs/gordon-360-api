@@ -171,7 +171,7 @@ namespace Gordon360.Controllers
         {
             string sessionID = (await Helpers.GetCurrentSessionAsync()).SessionCode;
 
-            string editorUsername = applicationDetails?.EditorProfile?.AD_Username ?? applicationDetails?.EditorUsername;
+            string editorUsername = applicationDetails.EditorProfile?.AD_Username ?? applicationDetails.EditorUsername;
 
             var apartmentApplicants = applicationDetails.Applicants;
             foreach (ApartmentApplicantViewModel applicant in apartmentApplicants)
@@ -200,7 +200,7 @@ namespace Gordon360.Controllers
 
             string sessionID = (await Helpers.GetCurrentSessionAsync()).SessionCode;
 
-            string newEditorUsername = applicationDetails?.EditorProfile?.AD_Username ?? applicationDetails?.EditorUsername;
+            string newEditorUsername = applicationDetails.EditorProfile?.AD_Username ?? applicationDetails.EditorUsername;
 
             var newApartmentApplicants = applicationDetails.Applicants;
             foreach (ApartmentApplicantViewModel applicant in newApartmentApplicants)
@@ -227,7 +227,7 @@ namespace Gordon360.Controllers
             //get token data from context, username is the username of current logged in person
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
-            string newEditorUsername = applicationDetails?.EditorProfile?.AD_Username ?? applicationDetails?.EditorUsername;
+            string newEditorUsername = applicationDetails.EditorProfile?.AD_Username ?? applicationDetails.EditorUsername;
 
             bool result = _housingService.ChangeApplicationEditor(authenticatedUserUsername, applicationID, newEditorUsername);
 

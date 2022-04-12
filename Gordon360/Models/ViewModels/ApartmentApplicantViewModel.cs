@@ -39,7 +39,6 @@ namespace Gordon360.Models.ViewModels
         {
             ApplicationID = applicantDBModel.HousingAppID,
             Username = applicantDBModel.Username, // search username in cached data
-            Profile = (StudentProfileViewModel)Data.StudentData.FirstOrDefault(x => x.AD_Username.ToLower() == applicantDBModel.Username.ToLower()),
             BirthDate = null, // Initialize to null. The actual value is determined and set in HousingService if and only if the user is housing admin
             OffCampusProgram = applicantDBModel.AprtProgram,
             Probation = false, // Initialize to false. The actual value is determined and set in HousingService if and only if the user is housing admin

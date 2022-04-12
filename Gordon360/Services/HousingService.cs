@@ -446,7 +446,7 @@ namespace Gordon360.Services
 
         /// <param name="applicationID">application ID number of the apartment application</param>
         /// <param name="isAdmin">boolean indicating whether the current user is an admin, permits access to restricted information such as birth date</param>
-        /// <returns>Object of type ApartmentApplicationViewModel</returns>
+        /// <returns>Apartment Application formatted for display in the UI</returns>
         public ApartmentApplicationViewModel GetApartmentApplication(int applicationID, bool isAdmin = false)
         {
             var applicationDBModel = _context.Housing_Applications.Find(applicationID);
@@ -458,58 +458,72 @@ namespace Gordon360.Services
             // Assign the values from the database to the custom view model for the frontend
             ApartmentApplicationViewModel application = applicationDBModel; //implicit conversion
 
-            if (application.EditorProfile == null)
+            var editorProfile = (StudentProfileViewModel?)_context.Student.FirstOrDefault(x => x.AD_Username.ToLower() == application.EditorUsername.ToLower());
+            if (editorProfile == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The student information about the editor of this application could not be found." };
             }
+            application.EditorProfile = editorProfile;
 
             // Get the applicants for this application
             application.Applicants = _context.Housing_Applicants
                 .Where(a => a.HousingAppID == applicationID)
                 .OrderBy(a => a.Username)
-                .Select<Housing_Applicants, ApartmentApplicantViewModel>(a => a) //Implicitly convert DB Model to ViewModel
+                .Select<Housing_Applicants, ApartmentApplicantViewModel>(a => a)
                 .AsEnumerable()
-                .Select(applicant => // Exclude applicants without profile, and format for admin if applicable
+                .Select(a =>
                 {
-                    if (applicant.Profile == null)
-                        return null;
-
-                    // Only add the birthdate, probabtion, and points if the user is authorized to view that information
-                    if (isAdmin)
+                    var profile = _context.Student.FirstOrDefault(x => x.AD_Username.ToLower() == a.Username.ToLower());
+                    if (profile is not null)
                     {
-                        applicant.BirthDate = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username.ToLower() == applicant.Username.ToLower()).Birth_Date;
-
-                        // The probation data is already in the database, we just need to write a stored procedure to get it
-                        // applicantModel.Probation = ... // TBD
-
-                        // Calculate application points
-                        int points = 0;
-
-                        if (!string.IsNullOrEmpty(applicant.Class))
-                        {
-                            points += int.Parse(applicant.Class);
-                        }
-
-                        if (applicant.Age >= 23)
-                        {
-                            points += 1;
-                        }
-
-                        if (!string.IsNullOrEmpty(applicant.OffCampusProgram))
-                        {
-                            points += 1;
-                        }
-
-                        if (applicant.Probation)
-                        {
-                            points -= 3;
-                        }
-
-                        applicant.Points = Math.Max(0, points); ; // Set the resulting points to zero if the sum gave a value less than zero
+                        a.Profile = (StudentProfileViewModel)profile!;
                     }
+                    return a;
+                })
+                .Where(a => a.Profile != null) // Exclude applicants without profile
+                .ToList();
+
+
+            if (isAdmin)
+            {
+                // Only add the birthdate, probabtion, and points if the user is authorized to view that information
+                application.Applicants = application.Applicants
+                .Select(applicant =>
+                {
+                    applicant.BirthDate = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username.ToLower() == applicant.Username.ToLower())?.Birth_Date;
+
+                    // The probation data is already in the database, we just need to write a stored procedure to get it
+                    // applicantModel.Probation = ... // TBD
+
+                    // Calculate application points
+                    int points = 0;
+
+                    if (!string.IsNullOrEmpty(applicant.Class))
+                    {
+                        points += int.Parse(applicant.Class);
+                    }
+
+                    if (applicant.Age >= 23)
+                    {
+                        points += 1;
+                    }
+
+                    if (!string.IsNullOrEmpty(applicant.OffCampusProgram))
+                    {
+                        points += 1;
+                    }
+
+                    if (applicant.Probation)
+                    {
+                        points -= 3;
+                    }
+
+                    applicant.Points = Math.Max(0, points); ; // Set the resulting points to zero if the sum gave a value less than zero
+
 
                     return applicant;
                 }).ToList();
+            }
 
 
             // Get the apartment choices for this application
@@ -523,10 +537,10 @@ namespace Gordon360.Services
             return application;
         }
 
-        /// <returns>Array of ApartmentApplicationViewModel Objects</returns>
+        /// <returns>Array of ApartmentApplicationViewModels</returns>
         public ApartmentApplicationViewModel[] GetAllApartmentApplication()
         {
-            return _context.Housing_Applications.Select(a => GetApartmentApplication(a.HousingAppID, true)).ToArray();
+            return _context.Housing_Applications.AsEnumerable().Select(a => GetApartmentApplication(a.HousingAppID, true)).ToArray();
         }
 
         /// <summary>
@@ -537,6 +551,12 @@ namespace Gordon360.Services
         public bool ChangeApplicationDateSubmitted(int applicationID)
         {
             var application = _context.Housing_Applications.Find(applicationID);
+
+            if (application == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be found" };
+            }
+
             application.DateSubmitted = DateTime.Now;
             _context.SaveChanges();
             return true;
