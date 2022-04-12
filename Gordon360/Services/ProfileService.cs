@@ -206,9 +206,9 @@ namespace Gordon360.Services
 
             await _context.Procedures.UPDATE_PHOTO_PATHAsync(int.Parse(account.gordon_id), path, name);
             // Update value in cached data
-            var student = Data.StudentData.FirstOrDefault(x => x.ID == account.gordon_id);
-            var facStaff = Data.FacultyStaffData.FirstOrDefault(x => x.ID == account.gordon_id);
-            var alum = Data.AlumniData.FirstOrDefault(x => x.ID == account.gordon_id);
+            var student = _context.Student.FirstOrDefault(x => x.ID == account.gordon_id);
+            var facStaff = _context.FacStaff.FirstOrDefault(x => x.ID == account.gordon_id);
+            var alum = _context.Alumni.FirstOrDefault(x => x.ID == account.gordon_id);
             if (student != null)
             {
                 student.preferred_photo = (path == null ? 0 : 1);
@@ -283,7 +283,7 @@ namespace Gordon360.Services
             }
             await _context.Procedures.UPDATE_PHONE_PRIVACYAsync(int.Parse(account.gordon_id), value);
             // Update value in cached data
-            var student = Data.StudentData.FirstOrDefault(x => x.ID == account.gordon_id);
+            var student = _context.Student.FirstOrDefault(x => x.ID == account.gordon_id);
             if (student != null)
             {
                 student.IsMobilePhonePrivate = (value == "Y" ? 1 : 0);
@@ -333,9 +333,9 @@ namespace Gordon360.Services
 
             await _context.Procedures.UPDATE_SHOW_PICAsync(account.account_id, value);
             // Update value in cached data
-            var student = Data.StudentData.FirstOrDefault(x => x.ID == account.gordon_id);
-            var facStaff = Data.FacultyStaffData.FirstOrDefault(x => x.ID == account.gordon_id);
-            var alum = Data.AlumniData.FirstOrDefault(x => x.ID == account.gordon_id);
+            var student = _context.Student.FirstOrDefault(x => x.ID == account.gordon_id);
+            var facStaff = _context.FacStaff.FirstOrDefault(x => x.ID == account.gordon_id);
+            var alum = _context.Alumni.FirstOrDefault(x => x.ID == account.gordon_id);
             if (student != null)
             {
                 student.show_pic = (value == "Y" ? 1 : 0);
