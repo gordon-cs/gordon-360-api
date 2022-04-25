@@ -40,7 +40,8 @@ namespace Gordon360.Models.ViewModels
         int? show_pic,
         string BuildingDescription,
         string Country,
-        string Mail_Location)
+        string Mail_Location,
+        string Mail_Description)
     {
         public static implicit operator FacultyStaffProfileViewModel?(FacStaff? fac)
         {

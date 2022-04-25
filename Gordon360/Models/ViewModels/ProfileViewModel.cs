@@ -77,6 +77,7 @@
         string? Type,
         string? office_hours,
         string Dept,
+        string Mail_Description,
 
         // FacStaff and Alumni Only
         string JobTitle,
