@@ -52,6 +52,7 @@ namespace Gordon360.Controllers
         /// Get all the memberships associated with a given activity
         /// </summary>
         /// <param name="activityCode">The activity ID</param>
+        /// <param name="sessionCode">Optional code of session to get for</param>
         /// <returns>IHttpActionResult</returns>
         [HttpGet]
         [Route("activity/{activityCode}")]

@@ -120,6 +120,7 @@ namespace Gordon360.Services
         /// Fetches the memberships associated with the activity whose code is specified by the parameter.
         /// </summary>
         /// <param name="activityCode">The activity code.</param>
+        /// <param name="sessionCode">Optional code of session to get memberships for</param>
         /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
         public async Task<IEnumerable<MembershipViewModel>> GetMembershipsForActivityAsync(string activityCode, string? sessionCode = null)
         {

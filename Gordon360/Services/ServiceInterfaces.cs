@@ -28,7 +28,7 @@ namespace Gordon360.Services
         CliftonStrengthsViewModel GetCliftonStrengths(int id);
         IEnumerable<EmergencyContactViewModel> GetEmergencyContact(string username);
         ProfileCustomViewModel? GetCustomUserInfo(string username);
-        Task<PhotoPathViewModel> GetPhotoPathAsync(string username);
+        Task<PhotoPathViewModel?> GetPhotoPathAsync(string username);
         void UpdateProfileLinkAsync(string username, string type, CUSTOM_PROFILE path);
         StudentProfileViewModel UpdateMobilePhoneNumber(StudentProfileViewModel profile);
         void UpdateMobilePrivacyAsync(string username, string value);
