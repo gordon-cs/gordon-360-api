@@ -916,7 +916,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.StudentEmploymentController.Get">
+        <member name="M:Gordon360.Controllers.StudentEmploymentController.GetAsync">
             <summary>
              Gets student employment information about the user
             </summary>

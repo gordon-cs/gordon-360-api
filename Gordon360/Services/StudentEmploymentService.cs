@@ -10,11 +10,13 @@ namespace Gordon360.Services
 {
     public class StudentEmploymentService : IStudentEmploymentService
     {
-        private CCTContext _context;
+        private readonly CCTContext _context;
+        private readonly IAccountService _accountService;
 
         public StudentEmploymentService(CCTContext context)
         {
             _context = context;
+            _accountService = new AccountService(context);
         }
 
         /// <summary>
@@ -24,13 +26,9 @@ namespace Gordon360.Services
         /// <returns>VictoryPromiseViewModel if found, null if not found</returns>
         public async Task<IEnumerable<StudentEmploymentViewModel>> GetEmploymentAsync(string username)
         {
-            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
-            if (account == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
-            }
+            var account = _accountService.GetAccountByUsername(username);
 
-            var result = await _context.Procedures.STUDENT_JOBS_PER_ID_NUMAsync(int.Parse(account.gordon_id));
+            var result = await _context.Procedures.STUDENT_JOBS_PER_ID_NUMAsync(int.Parse(account.GordonID));
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
