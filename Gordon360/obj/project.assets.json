@@ -3252,11 +3252,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\source\\repos\\gordon-360-api\\Gordon360\\Gordon360.csproj",
+      "projectUniqueName": "C:\\source\\repos\\gordon-cs\\gordon-360-api\\Gordon360\\Gordon360.csproj",
       "projectName": "Gordon360",
-      "projectPath": "C:\\source\\repos\\gordon-360-api\\Gordon360\\Gordon360.csproj",
+      "projectPath": "C:\\source\\repos\\gordon-cs\\gordon-360-api\\Gordon360\\Gordon360.csproj",
       "packagesPath": "C:\\Users\\evanppriv\\.nuget\\packages\\",
-      "outputPath": "C:\\source\\repos\\gordon-360-api\\Gordon360\\obj\\",
+      "outputPath": "C:\\source\\repos\\gordon-cs\\gordon-360-api\\Gordon360\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\evanppriv\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -3332,7 +3332,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.201\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.202\\RuntimeIdentifierGraph.json"
       }
     }
   }

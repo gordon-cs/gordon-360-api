@@ -2,17 +2,29 @@
 using Gordon360.Database.MyGordon;
 using Gordon360.Database.StudentTimesheets;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Web;
+using System.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddMicrosoftIdentityWebApiAuthentication(builder.Configuration, "AzureAd");
 
-builder.Services.AddControllers().AddNewtonsoftJson(options => options.UseMemberCasing());
+builder.Services.AddControllers(options =>
+{
+    // When a route returns a response with no content, encode the response as 200 OK instead of 204 No Content
+    // This allows us to return null and, more importantly, an empty list.
+    // That way empty lists can be treated the same way as contentful lists on the front end.
+    var noContentFormatter = options.OutputFormatters.OfType<HttpNoContentOutputFormatter>().FirstOrDefault();
+    if (noContentFormatter != null)
+    {
+        noContentFormatter.TreatNullValueAsNoContent = false;
+    }
+}).AddNewtonsoftJson(options => options.UseMemberCasing());
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

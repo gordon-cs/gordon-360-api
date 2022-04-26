@@ -221,7 +221,7 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("clifton/{username}")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
-        public ActionResult<IEnumerable<CliftonStrengthsViewModel>> GetCliftonStrengths(string username)
+        public ActionResult<string[]> GetCliftonStrengths(string username)
         {
             var id = _accountService.GetAccountByUsername(username).GordonID;
             var strengths = _profileService.GetCliftonStrengths(int.Parse(id));

@@ -7,13 +7,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Gordon360.Services
 {
     public class ProfileService : IProfileService
     {
-        private CCTContext _context;
-        private IAccountService _accountService;
+        private readonly CCTContext _context;
+        private readonly IAccountService _accountService;
 
         public ProfileService(CCTContext context)
         {
@@ -103,15 +104,10 @@ namespace Gordon360.Services
         /// <returns></returns>
         public async Task<IEnumerable<AdvisorViewModel>> GetAdvisorsAsync(string username)
         {
-            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
-            if (account == null)
-            {
-                //Return an empty list if the id account does not have advisor
-                return resultList;
-            }
+            var account = _accountService.GetAccountByUsername(username);
 
             // Stored procedure returns row containing advisor1 ID, advisor2 ID, advisor3 ID 
-            var advisorIDsEnumerable = await _context.Procedures.ADVISOR_SEPARATEAsync(int.Parse(account.gordon_id));
+            var advisorIDsEnumerable = await _context.Procedures.ADVISOR_SEPARATEAsync(int.Parse(account.GordonID));
             var advisorIDs = advisorIDsEnumerable.FirstOrDefault();
 
             if (advisorIDs == null)
@@ -136,30 +132,12 @@ namespace Gordon360.Services
         /// <summary> Gets the clifton strengths of a particular user </summary>
         /// <param name="id"> The id of the user for which to retrieve info </param>
         /// <returns> Clifton strengths of the given user. </returns>
-        public CliftonStrengthsViewModel GetCliftonStrengths(int id)
+        public string[] GetCliftonStrengths(int id)
         {
-            var strengths = _context.Clifton_Strengths.Where(c => c.ID_NUM == id).FirstOrDefault();
-            if (strengths == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "No emergency contacts found." };
-            }
-
-            return result;
-        }
-
-        /// <summary> Gets the emergency contact information of a particular user </summary>
-        /// <param name="username"> The username of the user for which to retrieve info </param>
-        /// <returns> Emergency contact information of the given user. </returns>
-        public IEnumerable<EmergencyContactViewModel> GetEmergencyContact(string username)
-        {
-            var result = _context.EmergencyContact.Where(x => x.AD_Username == username).Select(x => (EmergencyContactViewModel)x);
-
-            if (result == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "No emergency contacts found." };
-            }
-
-            return result;
+            return _context.Clifton_Strengths
+                .Where(c => c.ID_NUM == id)
+                .Select(s => new string[] {s.THEME_1, s.THEME_2, s.THEME_3, s.THEME_4, s.THEME_5})
+                .FirstOrDefault() ?? Array.Empty<string>();
         }
 
 
@@ -170,13 +148,9 @@ namespace Gordon360.Services
         /// <returns>PhotoPathViewModel if found, null if not found</returns>
         public async Task<PhotoPathViewModel?> GetPhotoPathAsync(string username)
         {
-            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
-            if (account == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
-            }
+            var account = _accountService.GetAccountByUsername(username);
 
-            var photoInfoList = await _context.Procedures.PHOTO_INFO_PER_USER_NAMEAsync(int.Parse(account.gordon_id));
+            var photoInfoList = await _context.Procedures.PHOTO_INFO_PER_USER_NAMEAsync(int.Parse(account.GordonID));
             return photoInfoList.Select(p => new PhotoPathViewModel { Img_Name = p.Img_Name, Img_Path = p.Img_Path, Pref_Img_Name = p.Pref_Img_Name, Pref_Img_Path = p.Pref_Img_Path }).FirstOrDefault();
         }
 
@@ -198,17 +172,13 @@ namespace Gordon360.Services
         /// <param name="name"></param>
         public async void UpdateProfileImageAsync(string username, string path, string name)
         {
-            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
-            if (account == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
-            }
+            var account = _accountService.GetAccountByUsername(username);
 
-            await _context.Procedures.UPDATE_PHOTO_PATHAsync(int.Parse(account.gordon_id), path, name);
+            await _context.Procedures.UPDATE_PHOTO_PATHAsync(int.Parse(account.GordonID), path, name);
             // Update value in cached data
-            var student = _context.Student.FirstOrDefault(x => x.ID == account.gordon_id);
-            var facStaff = _context.FacStaff.FirstOrDefault(x => x.ID == account.gordon_id);
-            var alum = _context.Alumni.FirstOrDefault(x => x.ID == account.gordon_id);
+            var student = _context.Student.FirstOrDefault(x => x.ID == account.GordonID);
+            var facStaff = _context.FacStaff.FirstOrDefault(x => x.ID == account.GordonID);
+            var alum = _context.Alumni.FirstOrDefault(x => x.ID == account.GordonID);
             if (student != null)
             {
                 student.preferred_photo = (path == null ? 0 : 1);
@@ -275,15 +245,10 @@ namespace Gordon360.Services
         /// <param name="value">Y or N</param>
         public async void UpdateMobilePrivacyAsync(string username, string value)
         {
-            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
-
-            if (account == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
-            }
-            await _context.Procedures.UPDATE_PHONE_PRIVACYAsync(int.Parse(account.gordon_id), value);
+            var account = _accountService.GetAccountByUsername(username);
+            await _context.Procedures.UPDATE_PHONE_PRIVACYAsync(int.Parse(account.GordonID), value);
             // Update value in cached data
-            var student = _context.Student.FirstOrDefault(x => x.ID == account.gordon_id);
+            var student = _context.Student.FirstOrDefault(x => x.ID == account.GordonID);
             if (student != null)
             {
                 student.IsMobilePhonePrivate = (value == "Y" ? 1 : 0);
@@ -324,18 +289,13 @@ namespace Gordon360.Services
         /// <param name="value">Y or N</param>
         public async void UpdateImagePrivacyAsync(string username, string value)
         {
-            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
-
-            if (account == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
-            }
+            var account = _accountService.GetAccountByUsername(username);
 
             await _context.Procedures.UPDATE_SHOW_PICAsync(account.account_id, value);
             // Update value in cached data
-            var student = _context.Student.FirstOrDefault(x => x.ID == account.gordon_id);
-            var facStaff = _context.FacStaff.FirstOrDefault(x => x.ID == account.gordon_id);
-            var alum = _context.Alumni.FirstOrDefault(x => x.ID == account.gordon_id);
+            var student = _context.Student.FirstOrDefault(x => x.ID == account.GordonID);
+            var facStaff = _context.FacStaff.FirstOrDefault(x => x.ID == account.GordonID);
+            var alum = _context.Alumni.FirstOrDefault(x => x.ID == account.GordonID);
             if (student != null)
             {
                 student.show_pic = (value == "Y" ? 1 : 0);
