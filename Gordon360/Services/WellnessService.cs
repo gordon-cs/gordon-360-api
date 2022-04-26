@@ -103,12 +103,15 @@ namespace Gordon360.Services
         public WellnessQuestionViewModel GetQuestion()
         {
 
-            var result = _context.Health_Question.Select(q => new WellnessQuestionViewModel
-            {
-                question = q.Question,
-                noPrompt = q.NoPrompt,
-                yesPrompt = q.YesPrompt
-            }).FirstOrDefault();
+            var result = _context.Health_Question
+                .OrderByDescending(q => q.Timestamp)
+                .Select(q => new WellnessQuestionViewModel
+                {
+                    question = q.Question,
+                    noPrompt = q.NoPrompt,
+                    yesPrompt = q.YesPrompt
+                })
+                .FirstOrDefault();
 
             if (result == null)
             {
