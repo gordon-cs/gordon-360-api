@@ -36,7 +36,7 @@ namespace Gordon360.Services
                 .Select<student_timesheets, StudentTimesheetsViewModel>(t => t);
         }
 
-        public async void SaveShiftForUserAsync(int studentID, int jobID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string shiftNotes, string lastChangedBy)
+        public async Task SaveShiftForUserAsync(int studentID, int jobID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string shiftNotes, string lastChangedBy)
         {
             await _context.Procedures.student_timesheets_insert_shiftAsync(studentID, jobID, shiftStart, shiftEnd, hoursWorked, shiftNotes, lastChangedBy);
         }
@@ -62,7 +62,7 @@ namespace Gordon360.Services
             _context.SaveChanges();
         }
 
-        public async void SubmitShiftForUserAsync(int studentID, int jobID, DateTime shiftEnd, int submittedTo, string lastChangedBy)
+        public async Task SubmitShiftForUserAsync(int studentID, int jobID, DateTime shiftEnd, int submittedTo, string lastChangedBy)
         {
             await _context.Procedures.student_timesheets_submit_job_shiftAsync(studentID, jobID, shiftEnd, submittedTo, lastChangedBy);
         }
@@ -78,13 +78,13 @@ namespace Gordon360.Services
             return (await _context.Procedures.student_timesheets_select_emls_for_ajax_selectboxAsync(shiftStart, shiftEnd, studentID)).Select(j => new ActiveJobViewModel { EMLID = j.EmlID, POSTITLE = j.postitle });
         }
 
-        public IEnumerable<OverlappingShiftIdViewModel> EditShiftOverlapCheck(int studentID, DateTime shiftStart, DateTime shiftEnd, int rowID)
+        public async Task<IEnumerable<OverlappingShiftIdViewModel>> EditShiftOverlapCheckAsync(int studentID, DateTime shiftStart, DateTime shiftEnd, int rowID)
         {
             IEnumerable<OverlappingShiftIdViewModel> result = null;
 
             try
             {
-                result = (IEnumerable<OverlappingShiftIdViewModel>)_context.Procedures.student_timesheets_edit_shift_already_worked_these_hoursAsync(studentID, shiftStart, shiftEnd, rowID);
+                result = (IEnumerable<OverlappingShiftIdViewModel>)await _context.Procedures.student_timesheets_edit_shift_already_worked_these_hoursAsync(studentID, shiftStart, shiftEnd, rowID);
             }
             catch (Exception e)
             {
@@ -93,13 +93,13 @@ namespace Gordon360.Services
             return result;
         }
 
-        public IEnumerable<OverlappingShiftIdViewModel> CheckForOverlappingShift(int studentID, DateTime shiftStart, DateTime shiftEnd)
+        public async Task<IEnumerable<OverlappingShiftIdViewModel>> CheckForOverlappingShiftAsync(int studentID, DateTime shiftStart, DateTime shiftEnd)
         {
             IEnumerable<OverlappingShiftIdViewModel> result = null;
 
             try
             {
-                result = (IEnumerable<OverlappingShiftIdViewModel>)_context.Procedures.student_timesheets_already_worked_these_hoursAsync(studentID, shiftStart, shiftEnd);
+                result = (IEnumerable<OverlappingShiftIdViewModel>)await _context.Procedures.student_timesheets_already_worked_these_hoursAsync(studentID, shiftStart, shiftEnd);
             }
             catch (Exception e)
             {
@@ -110,39 +110,20 @@ namespace Gordon360.Services
         }
 
 
-        public ClockInViewModel ClockIn(bool state, string id)
+        public async Task<ClockInViewModel> ClockInAsync(bool state, string id)
         {
-            var query = _CCTContext.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
-            if (query == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
-            }
-
-            var result = _CCTContext.Procedures.INSERT_TIMESHEETS_CLOCK_IN_OUTAsync(int.Parse(id), state);
+            var result = await _CCTContext.Procedures.INSERT_TIMESHEETS_CLOCK_IN_OUTAsync(int.Parse(id), state);
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
             }
 
-            var currentState = state;
-
-            ClockInViewModel y = new ClockInViewModel()
-            {
-                currentState = currentState
-            };
-
-            return y;
+            return new ClockInViewModel { currentState = state };
         }
 
-        public IEnumerable<ClockInViewModel> ClockOut(string id)
+        public async Task<IEnumerable<ClockInViewModel>> ClockOutAsync(string id)
         {
-            var query = _CCTContext.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
-            if (query == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
-            }
-
-            var result = _CCTContext.Procedures.GET_TIMESHEETS_CLOCK_IN_OUTAsync(int.Parse(id));
+            var result = await _CCTContext.Procedures.GET_TIMESHEETS_CLOCK_IN_OUTAsync(int.Parse(id));
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
@@ -152,16 +133,9 @@ namespace Gordon360.Services
 
         }
 
-        public ClockInViewModel DeleteClockIn(string id)
+        public async Task<ClockInViewModel> DeleteClockInAsync(string id)
         {
-            var query = _CCTContext.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
-            if (query == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
-            }
-
-            var result = _CCTContext.Procedures.DELETE_CLOCK_INAsync(id);
-
+            var result = await _CCTContext.Procedures.DELETE_CLOCK_INAsync(id);
 
             if (result == null)
             {

@@ -176,17 +176,17 @@ namespace Gordon360.Services
     public interface IJobsService
     {
         IEnumerable<StudentTimesheetsViewModel> getSavedShiftsForUser(int ID_NUM);
-        void SaveShiftForUserAsync(int studentID, int jobID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string shiftNotes, string lastChangedBy);
+        Task SaveShiftForUserAsync(int studentID, int jobID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string shiftNotes, string lastChangedBy);
         StudentTimesheetsViewModel EditShift(int rowID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string username);
         void DeleteShiftForUser(int rowID, int studentID);
-        void SubmitShiftForUserAsync(int studentID, int jobID, DateTime shiftEnd, int submittedTo, string lastChangedBy);
+        Task SubmitShiftForUserAsync(int studentID, int jobID, DateTime shiftEnd, int submittedTo, string lastChangedBy);
         Task<IEnumerable<SupervisorViewModel>> GetsupervisorNameForJobAsync(int supervisorID);
         Task<IEnumerable<ActiveJobViewModel>> GetActiveJobsAsync(DateTime shiftStart, DateTime shiftEnd, int studentID);
-        IEnumerable<OverlappingShiftIdViewModel> EditShiftOverlapCheck(int studentID, DateTime shiftStart, DateTime shiftEnd, int rowID);
-        IEnumerable<OverlappingShiftIdViewModel> CheckForOverlappingShift(int studentID, DateTime shiftStart, DateTime shiftEnd);
-        IEnumerable<ClockInViewModel> ClockOut(string id);
-        ClockInViewModel ClockIn(bool state, string id);
-        ClockInViewModel DeleteClockIn(string id);
+        Task<IEnumerable<OverlappingShiftIdViewModel>> EditShiftOverlapCheckAsync(int studentID, DateTime shiftStart, DateTime shiftEnd, int rowID);
+        Task<IEnumerable<OverlappingShiftIdViewModel>> CheckForOverlappingShiftAsync(int studentID, DateTime shiftStart, DateTime shiftEnd);
+        Task<IEnumerable<ClockInViewModel>> ClockOutAsync(string id);
+        Task<ClockInViewModel> ClockInAsync(bool state, string id);
+        Task<ClockInViewModel> DeleteClockInAsync(string id);
     }
 
     public interface IParticipationService

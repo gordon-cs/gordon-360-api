@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Gordon360.Controllers
 {
@@ -18,20 +18,21 @@ namespace Gordon360.Controllers
     public class JobsController : GordonControllerBase
     {
         private readonly IJobsService _jobsService;
+        private readonly IAccountService _accountService;
         private readonly IErrorLogService _errorLogService;
 
         public JobsController(StudentTimesheetsContext context, CCTContext cctContext)
         {
             _jobsService = new JobsService(context, cctContext);
             _errorLogService = new ErrorLogService(cctContext);
+            _accountService = new AccountService(cctContext);
         }
 
         private int GetCurrentUserID()
         {
-            int userID = -1;
-            var authenticatedUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-
-            return userID;
+            var username = AuthUtils.GetAuthenticatedUserUsername(User);
+            var account = _accountService.GetAccountByUsername(username);
+            return int.Parse(account.GordonID);
         }
 
         /// <summary>
@@ -42,9 +43,9 @@ namespace Gordon360.Controllers
         /// <returns>The user's active jobs</returns>
         [HttpGet]
         [Route("")]
-        public ActionResult<IEnumerable<ActiveJobViewModel>> GetJobs(DateTime shiftStart, DateTime shiftEnd)
+        public async Task<ActionResult<IEnumerable<ActiveJobViewModel>>> GetJobsAsync(DateTime shiftStart, DateTime shiftEnd)
         {
-            var result = _jobsService.GetActiveJobsAsync(shiftStart, shiftEnd, GetCurrentUserID());
+            var result = await _jobsService.GetActiveJobsAsync(shiftStart, shiftEnd, GetCurrentUserID());
             return Ok(result);
         }
 
@@ -55,10 +56,10 @@ namespace Gordon360.Controllers
         /// <returns>The user's active jobs</returns>
         [HttpPost]
         [Route("getJobs")]
-        public ActionResult<IEnumerable<ActiveJobViewModel>> DEPRECATED_getJobsForUser([FromBody] ActiveJobSelectionParametersModel details)
+        public async Task<ActionResult<IEnumerable<ActiveJobViewModel>>> DEPRECATED_getJobsForUserAsync([FromBody] ActiveJobSelectionParametersModel details)
         {
             int userID = GetCurrentUserID();
-            var result = _jobsService.GetActiveJobsAsync(details.SHIFT_START_DATETIME, details.SHIFT_END_DATETIME, userID);
+            var result = await _jobsService.GetActiveJobsAsync(details.SHIFT_START_DATETIME, details.SHIFT_END_DATETIME, userID);
             return Ok(result);
         }
 
@@ -83,7 +84,7 @@ namespace Gordon360.Controllers
         [HttpPost]
         [Route("saveShift")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.SHIFT)]
-        public ActionResult saveShiftForUser([FromBody] ShiftViewModel shiftDetails)
+        public async Task<ActionResult> SaveShiftForUserAsync([FromBody] ShiftViewModel shiftDetails)
         {
             int userID = GetCurrentUserID();
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
@@ -94,12 +95,12 @@ namespace Gordon360.Controllers
                 throw new Exception("Invalid shift times. shiftStart and shiftEnd must be non-null and not the same.");
             };
 
-            IEnumerable<OverlappingShiftIdViewModel> overlapCheckResult = _jobsService.CheckForOverlappingShift(userID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME);
+            IEnumerable<OverlappingShiftIdViewModel> overlapCheckResult = await _jobsService.CheckForOverlappingShiftAsync(userID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME);
             if (overlapCheckResult.Any())
             {
                 throw new ResourceCreationException() { ExceptionMessage = "Error: shift overlap detected" };
             }
-            _jobsService.SaveShiftForUserAsync(userID, shiftDetails.EML, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, shiftDetails.SHIFT_NOTES, authenticatedUserUsername);
+            await _jobsService.SaveShiftForUserAsync(userID, shiftDetails.EML, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, shiftDetails.SHIFT_NOTES, authenticatedUserUsername);
 
             return Ok();
         }
@@ -110,14 +111,14 @@ namespace Gordon360.Controllers
         /// </summary>
         [HttpPut]
         [Route("editShift/")]
-        public ActionResult<StudentTimesheetsViewModel> editShiftForUser([FromBody] ShiftViewModel shiftDetails)
+        public async Task<ActionResult<StudentTimesheetsViewModel>> editShiftForUser([FromBody] ShiftViewModel shiftDetails)
         {
             IEnumerable<OverlappingShiftIdViewModel> overlapCheckResult = null;
 
             int userID = GetCurrentUserID();
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
-            overlapCheckResult = _jobsService.EditShiftOverlapCheck(userID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.ID);
+            overlapCheckResult = await _jobsService.EditShiftOverlapCheckAsync(userID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.ID);
             if (overlapCheckResult.Any())
             {
                 throw new ResourceCreationException() { ExceptionMessage = "Error: shift overlap detected" };
@@ -156,7 +157,7 @@ namespace Gordon360.Controllers
         [HttpPost]
         [Route("submitShifts")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.SHIFT)]
-        public ActionResult submitShiftsForUser([FromBody] IEnumerable<ShiftToSubmitViewModel> shifts)
+        public async Task<ActionResult> SubmitShiftsForUser([FromBody] IEnumerable<ShiftToSubmitViewModel> shifts)
         {
             int userID = GetCurrentUserID();
 
@@ -164,7 +165,7 @@ namespace Gordon360.Controllers
             //{
             foreach (ShiftToSubmitViewModel shift in shifts)
             {
-                _jobsService.SubmitShiftForUserAsync(userID, shift.EML, shift.SHIFT_END_DATETIME, shift.SUBMITTED_TO, shift.LAST_CHANGED_BY);
+                await _jobsService.SubmitShiftForUserAsync(userID, shift.EML, shift.SHIFT_END_DATETIME, shift.SUBMITTED_TO, shift.LAST_CHANGED_BY);
             }
             //}
             //catch (Exception e)
@@ -182,9 +183,9 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("supervisorName/{supervisorID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.SHIFT)]
-        public ActionResult<IEnumerable<SupervisorViewModel>> getSupervisorName(int supervisorID)
+        public async Task<ActionResult<IEnumerable<SupervisorViewModel>>> GetSupervisorNameAsync(int supervisorID)
         {
-            var result = _jobsService.GetsupervisorNameForJobAsync(supervisorID);
+            var result = await _jobsService.GetsupervisorNameForJobAsync(supervisorID);
             return Ok(result);
         }
 
@@ -196,11 +197,10 @@ namespace Gordon360.Controllers
         /// <returns>returns confirmation that the answer was recorded </returns>
         [HttpPost]
         [Route("clockIn")]
-        public ActionResult<ClockInViewModel> ClockIn([FromBody] bool state)
+        public async Task<ActionResult<ClockInViewModel>> ClockInAsync([FromBody] bool state)
         {
-            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-            var result = _jobsService.ClockIn(state, authenticatedUserIdString);
+            var userID = GetCurrentUserID().ToString();
+            var result = await _jobsService.ClockInAsync(state, userID);
 
             if (result == null)
             {
@@ -217,11 +217,10 @@ namespace Gordon360.Controllers
         /// <returns>ClockInViewModel</returns>
         [HttpGet]
         [Route("clockOut")]
-        public ActionResult<IEnumerable<ClockInViewModel>> ClockOut()
+        public async Task<ActionResult<ClockInViewModel>> ClockOutAsync()
         {
-            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-            var result = _jobsService.ClockOut(authenticatedUserIdString);
+            var userID = GetCurrentUserID().ToString();
+            var result = await _jobsService.ClockOutAsync(userID);
 
             if (result == null)
             {
@@ -237,11 +236,10 @@ namespace Gordon360.Controllers
         /// <returns>returns confirmation that clock in status was deleted</returns>
         [HttpPut]
         [Route("deleteClockIn")]
-        public ActionResult<ClockInViewModel> DeleteClockIn()
+        public async Task<ActionResult<ClockInViewModel>> DeleteClockInAsync()
         {
-            var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-            var result = _jobsService.DeleteClockIn(authenticatedUserIdString);
+            var userID = GetCurrentUserID().ToString();
+            var result = await _jobsService.DeleteClockInAsync(userID);
 
             if (result == null)
             {

@@ -341,7 +341,7 @@
             <summary>Get apartment application info for all applications if the current user is a housing admin</summary>
             <returns>Object of type ApartmentApplicationViewModel</returns>
         </member>
-        <member name="M:Gordon360.Controllers.JobsController.GetJobs(System.DateTime,System.DateTime)">
+        <member name="M:Gordon360.Controllers.JobsController.GetJobsAsync(System.DateTime,System.DateTime)">
             <summary>
             Get a user's active jobs
             </summary>
@@ -349,7 +349,7 @@
             <param name="shiftEnd">The datetime that the shift ended</param>
             <returns>The user's active jobs</returns>
         </member>
-        <member name="M:Gordon360.Controllers.JobsController.DEPRECATED_getJobsForUser(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
+        <member name="M:Gordon360.Controllers.JobsController.DEPRECATED_getJobsForUserAsync(Gordon360.Models.ViewModels.ActiveJobSelectionParametersModel)">
             <summary>
             Get a user's active jobs
             </summary>
@@ -362,7 +362,7 @@
             </summary>
             <returns>The user's saved shifts</returns>
         </member>
-        <member name="M:Gordon360.Controllers.JobsController.saveShiftForUser(Gordon360.Models.ViewModels.ShiftViewModel)">
+        <member name="M:Gordon360.Controllers.JobsController.SaveShiftForUserAsync(Gordon360.Models.ViewModels.ShiftViewModel)">
             <summary>
             Get a user's active jobs
             </summary>
@@ -381,19 +381,19 @@
             </summary>
             <returns>The result of deleting the shift</returns>
         </member>
-        <member name="M:Gordon360.Controllers.JobsController.submitShiftsForUser(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.ShiftToSubmitViewModel})">
+        <member name="M:Gordon360.Controllers.JobsController.SubmitShiftsForUser(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.ShiftToSubmitViewModel})">
             <summary>
             Submit shifts
             </summary>
             <returns>The result of submitting the shifts</returns>
         </member>
-        <member name="M:Gordon360.Controllers.JobsController.getSupervisorName(System.Int32)">
+        <member name="M:Gordon360.Controllers.JobsController.GetSupervisorNameAsync(System.Int32)">
             <summary>
             Gets the name of a supervisor based on their ID number
             </summary>
             <returns>The name of the supervisor</returns>
         </member>
-        <member name="M:Gordon360.Controllers.JobsController.ClockIn(System.Boolean)">
+        <member name="M:Gordon360.Controllers.JobsController.ClockInAsync(System.Boolean)">
             <summary>
              sends the current clock in status to the back end
              true if user is clocked in and false if clocked out
@@ -401,14 +401,14 @@
             <param name="state">detail to be saved in the back end, true if user just clocked in</param>
             <returns>returns confirmation that the answer was recorded </returns>
         </member>
-        <member name="M:Gordon360.Controllers.JobsController.ClockOut">
+        <member name="M:Gordon360.Controllers.JobsController.ClockOutAsync">
             <summary>
              gets the the clock in status from the back end
              true if user is clocked in and false if clocked out
             </summary>
             <returns>ClockInViewModel</returns>
         </member>
-        <member name="M:Gordon360.Controllers.JobsController.DeleteClockIn">
+        <member name="M:Gordon360.Controllers.JobsController.DeleteClockInAsync">
             <summary>
             deletes the last clocked in status of a user
             </summary>
