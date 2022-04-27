@@ -78,6 +78,7 @@ namespace Gordon360.Models
         public virtual DbSet<PART_DEF> PART_DEF { get; set; }
         public virtual DbSet<RoomAssign> RoomAssign { get; set; }
         public virtual DbSet<Student> Student { get; set; }
+        public virtual DbSet<Slider_Images> Slider_Images { get; set; }
     
         public virtual ObjectResult<ACTIVE_CLUBS_PER_SESS_ID_Result> ACTIVE_CLUBS_PER_SESS_ID(string sESS_CDE)
         {

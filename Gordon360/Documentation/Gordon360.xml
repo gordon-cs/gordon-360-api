@@ -180,6 +180,18 @@
             <returns>A list of all the slides for the slider</returns>
             <remarks>Queries the database for all entries in slider table</remarks>
         </member>
+        <member name="M:Gordon360.Controllers.Api.ContentManagementController.GetBannerSlides">
+            <summary>Get all the banner slides for the dashboard banner</summary>
+            <returns>A list of all the slides for the banner</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ContentManagementController.PostBannerSlide(Gordon360.Models.ViewModels.BannerSlidePostViewModel)">
+            <summary>Post a new slide for the dashboard banner</summary>
+            <returns>The posted banner</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.ContentManagementController.DeleteBannerSlide(System.Int32)">
+            <summary>Remove a slide from the dashboard banner</summary>
+            <returns>ID of the slide to remove</returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.MembershipRequestController.Get">
             <summary>
             Gets all Membership Request Objects
@@ -1708,12 +1720,31 @@
             Service class that facilitates data (specifically, site content) passing between the ContentManagementController and the database model.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.ContentManagementService.GetSliderContent">
+        <member name="M:Gordon360.Services.ContentManagementService.DEPRECATED_GetSliderContent">
             <summary>
             Fetches the dashboard slider content from the database.
             </summary>
             <returns>If found, returns a set of SliderViewModel's, based on each slide entry in the db. 
             If not returns an empty IEnumerable.</returns>
+        </member>
+        <member name="M:Gordon360.Services.ContentManagementService.GetBannerSlides">
+            <summary>
+            Retrieve all banner slides from the database
+            </summary>
+            <returns>An IEnumerable of the slides in the database</returns>
+        </member>
+        <member name="M:Gordon360.Services.ContentManagementService.AddBannerSlide(Gordon360.Models.ViewModels.BannerSlidePostViewModel,System.String)">
+            <summary>
+            Inserts a banner slide in the database and uploads the image to the local slider folder
+            </summary>
+            <param name="slide">The slide to add</param>
+            <returns>The inserted slide</returns>
+        </member>
+        <member name="M:Gordon360.Services.ContentManagementService.DeleteBannerSlide(System.Int32)">
+            <summary>
+            Deletes a banner slide from the database and deletes the local image file
+            </summary>
+            <returns>The deleted slide</returns>
         </member>
         <member name="T:Gordon360.Services.EmailService">
             <summary>
@@ -2539,7 +2570,7 @@
             <param name="imagePath">The path to the image</param>
             <returns>The base64 data of the image</returns>
         </member>
-        <member name="M:Gordon360.Utils.ImageUtils.UploadImage(System.String,System.String)">
+        <member name="M:Gordon360.Utils.ImageUtils.UploadImage(System.String,System.String,System.Drawing.Imaging.ImageFormat)">
             <summary>
             Uploads a news image
             </summary>
@@ -2549,6 +2580,7 @@
             </remarks>
             <param name="imagePath">The path to which the image belongs</param>
             <param name="imageData">The base64 image data to be stored</param>
+            <param name="format">The format to save the image as. Defaults to Jpeg</param>
         </member>
         <member name="T:Gordon360.Static.Data.Data">
             <summary>

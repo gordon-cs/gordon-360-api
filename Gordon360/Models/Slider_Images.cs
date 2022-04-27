@@ -12,10 +12,14 @@ namespace Gordon360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Dining_Student_Meal_Choice
+    public partial class Slider_Images
     {
-        public int ID_NUM { get; set; }
-        public string MEAL_CHOICE_ID { get; set; }
-        public string SESS_CDE { get; set; }
+        public int ID { get; set; }
+        public string Path { get; set; }
+        public string Title { get; set; }
+        public string LinkURL { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
+        public int SortOrder { get; set; }
     }
 }
