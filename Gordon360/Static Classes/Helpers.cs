@@ -239,9 +239,9 @@ namespace Gordon360.Static.Methods
         public static IEnumerable<string> GetStates()
         {
             var context = Context;
-            return context.Student.Select(s => s.HomeState)
-                                  .Union(context.FacStaff.Select(fs => fs.HomeState))
-                                  .Union(context.Alumni.Select(a => a.HomeState))
+            return context.Student.Select(s => s.HomeState).AsEnumerable()
+                                  .Union(context.FacStaff.Select(fs => fs.HomeState).AsEnumerable())
+                                  .Union(context.Alumni.Select(a => a.HomeState).AsEnumerable())
                                   .Distinct()
                                   .Where(s => s != null)
                                   .OrderBy(s => s);
@@ -251,9 +251,9 @@ namespace Gordon360.Static.Methods
         public static IEnumerable<string> GetCountries()
         {
             var context = Context;
-            return context.Student.Select(s => s.HomeCountry)
-                                  .Union(context.FacStaff.Select(fs => fs.HomeCountry))
-                                  .Union(context.Alumni.Select(a => a.HomeCountry))
+            return context.Student.Select(s => s.Country).AsEnumerable()
+                                  .Union(context.FacStaff.Select(fs => fs.Country).AsEnumerable())
+                                  .Union(context.Alumni.Select(a => a.Country).AsEnumerable())
                                   .Distinct()
                                   .Where(s => s != null)
                                   .OrderBy(s => s);
