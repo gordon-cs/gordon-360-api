@@ -25,7 +25,7 @@ namespace Gordon360.Models.ViewModels
         // This view model contains pieces of info pulled from a JSon array which is pulled from 25Live, using a pre-defined function
         public EventViewModel(XElement eventDetails, XElement occurrenceDetails)
         {
-            Event_ID = eventDetails.Element(r25 + "event_id")?.Value;
+            Event_ID = $"{eventDetails.Element(r25 + "event_id")?.Value}_{occurrenceDetails.Element(r25 + "reservation_id")?.Value}";
             Event_Name = eventDetails.Element(r25 + "event_name")?.Value;
             Event_Title = eventDetails.Element(r25 + "event_title")?.Value;
             Event_Type_Name = eventDetails.Element(r25 + "event_type_name")?.Value;
