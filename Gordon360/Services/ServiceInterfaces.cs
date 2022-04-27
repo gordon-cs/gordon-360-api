@@ -29,11 +29,11 @@ namespace Gordon360.Services
         IEnumerable<EmergencyContactViewModel> GetEmergencyContact(string username);
         ProfileCustomViewModel? GetCustomUserInfo(string username);
         Task<PhotoPathViewModel?> GetPhotoPathAsync(string username);
-        void UpdateProfileLinkAsync(string username, string type, CUSTOM_PROFILE path);
+        Task UpdateProfileLinkAsync(string username, string type, CUSTOM_PROFILE path);
         StudentProfileViewModel UpdateMobilePhoneNumber(StudentProfileViewModel profile);
-        void UpdateMobilePrivacyAsync(string username, string value);
-        void UpdateImagePrivacyAsync(string username, string value);
-        void UpdateProfileImageAsync(string username, string path, string name);
+        Task UpdateMobilePrivacyAsync(string username, string value);
+        Task UpdateImagePrivacyAsync(string username, string value);
+        Task UpdateProfileImageAsync(string username, string path, string name);
     }
 
     public interface IEventService

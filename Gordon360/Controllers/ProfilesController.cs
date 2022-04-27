@@ -518,11 +518,11 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("{type}")]
-        public ActionResult UpdateLink(string type, CUSTOM_PROFILE path)
+        public async Task<ActionResult> UpdateLinkAsync(string type, CUSTOM_PROFILE path)
         {
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
-            _profileService.UpdateProfileLinkAsync(authenticatedUserUsername, type, path);
+            await _profileService.UpdateProfileLinkAsync(authenticatedUserUsername, type, path);
 
             return Ok();
         }
@@ -569,10 +569,10 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("mobile_privacy/{value}")]
-        public ActionResult UpdateMobilePrivacy(string value)
+        public async Task<ActionResult> UpdateMobilePrivacyAsync(string value)
         {
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
-            _profileService.UpdateMobilePrivacyAsync(authenticatedUserUsername, value);
+            await _profileService.UpdateMobilePrivacyAsync(authenticatedUserUsername, value);
 
             return Ok();
         }
@@ -584,10 +584,10 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("image_privacy/{value}")]
-        public ActionResult UpdateImagePrivacy(string value)
+        public async Task<ActionResult> UpdateImagePrivacyAsync(string value)
         {
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
-            _profileService.UpdateImagePrivacyAsync(authenticatedUserUsername, value);
+            await _profileService.UpdateImagePrivacyAsync(authenticatedUserUsername, value);
 
             return Ok();
         }

@@ -161,7 +161,7 @@ namespace Gordon360.Services
         /// <returns>ProfileViewModel if found, null if not found</returns>
         public ProfileCustomViewModel? GetCustomUserInfo(string username)
         {
-            return _context.CUSTOM_PROFILE.FirstOrDefault(x => x.username == username);
+            return _context.CUSTOM_PROFILE.Find(username);
         }
 
         /// <summary>
@@ -170,7 +170,7 @@ namespace Gordon360.Services
         /// <param name="username">AD Username</param>
         /// <param name="path"></param>
         /// <param name="name"></param>
-        public async void UpdateProfileImageAsync(string username, string path, string name)
+        public async Task UpdateProfileImageAsync(string username, string path, string name)
         {
             var account = _accountService.GetAccountByUsername(username);
 
@@ -199,14 +199,14 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">The username</param>
         /// <param name="type"></param>
-        /// <param name="path"></param>
-        public async void UpdateProfileLinkAsync(string username, string type, CUSTOM_PROFILE path)
+        /// <param name="links"></param>
+        public async Task UpdateProfileLinkAsync(string username, string type, CUSTOM_PROFILE links)
         {
-            var original = _context.CUSTOM_PROFILE.FirstOrDefault(p => p.username == username);
+            var original = await _context.CUSTOM_PROFILE.FindAsync(username);
 
             if (original == null)
             {
-                await _context.Procedures.CREATE_SOCIAL_LINKSAsync(username, path.facebook, path.twitter, path.instagram, path.linkedin, path.handshake);
+                await _context.CUSTOM_PROFILE.AddAsync(new CUSTOM_PROFILE { username = username, facebook = links.facebook, twitter = links.twitter, instagram = links.instagram, linkedin = links.linkedin, handshake = links.handshake });
             }
             else
             {
@@ -214,23 +214,23 @@ namespace Gordon360.Services
                 switch (type)
                 {
                     case "facebook":
-                        original.facebook = path.facebook;
+                        original.facebook = links.facebook;
                         break;
 
                     case "twitter":
-                        original.twitter = path.twitter;
+                        original.twitter = links.twitter;
                         break;
 
                     case "instagram":
-                        original.instagram = path.instagram;
+                        original.instagram = links.instagram;
                         break;
 
                     case "linkedin":
-                        original.linkedin = path.linkedin;
+                        original.linkedin = links.linkedin;
                         break;
 
                     case "handshake":
-                        original.handshake = path.handshake;
+                        original.handshake = links.handshake;
                         break;
                 }
             }
@@ -243,7 +243,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">AD Username</param>
         /// <param name="value">Y or N</param>
-        public async void UpdateMobilePrivacyAsync(string username, string value)
+        public async Task UpdateMobilePrivacyAsync(string username, string value)
         {
             var account = _accountService.GetAccountByUsername(username);
             await _context.Procedures.UPDATE_PHONE_PRIVACYAsync(int.Parse(account.GordonID), value);
@@ -287,7 +287,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">AD Username</param>
         /// <param name="value">Y or N</param>
-        public async void UpdateImagePrivacyAsync(string username, string value)
+        public async Task UpdateImagePrivacyAsync(string username, string value)
         {
             var account = _accountService.GetAccountByUsername(username);
 

@@ -708,7 +708,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.UpdateLink(System.String,Gordon360.Models.CCT.CUSTOM_PROFILE)">
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdateLinkAsync(System.String,Gordon360.Models.CCT.CUSTOM_PROFILE)">
             <summary>
             Update the profile social media links
             </summary>
@@ -716,14 +716,14 @@
             <param name="path">The path of the links</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.UpdateMobilePrivacy(System.String)">
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdateMobilePrivacyAsync(System.String)">
             <summary>
             Update privacy of mobile phone number
             </summary>
             <param name="value">Y or N</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.UpdateImagePrivacy(System.String)">
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdateImagePrivacyAsync(System.String)">
             <summary>
             Update privacy of profile image
             </summary>
@@ -1799,7 +1799,7 @@
             </summary>
             <param name="username">The username</param>
             <param name="type"></param>
-            <param name="path"></param>
+            <param name="links"></param>
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateMobilePrivacyAsync(System.String,System.String)">
             <summary>
