@@ -4,7 +4,7 @@
         <name>Gordon360</name>
     </assembly>
     <members>
-        <member name="M:Gordon360.Controllers.AccountsController.Search(System.String)">
+        <member name="M:Gordon360.Controllers.AccountsController.SearchAsync(System.String)">
             <summary>
             Return a list of accounts matching some or all of the search parameter
             </summary>
@@ -32,7 +32,7 @@
             <param name="searchString"> The input to search for </param>
             <returns> All accounts meeting some or all of the parameter</returns>
         </member>
-        <member name="M:Gordon360.Controllers.AccountsController.SearchWithSpace(System.String,System.String)">
+        <member name="M:Gordon360.Controllers.AccountsController.SearchWithSpaceAsync(System.String,System.String)">
             <summary>
             Return a list of accounts matching some or all of the search parameter
             We are searching through a concatonated string, containing several pieces of info about each user.
@@ -1004,6 +1004,18 @@
             </summary>
             <param name="username">The AD username associated with the account.</param>
             <returns>the student account information</returns>
+        </member>
+        <member name="M:Gordon360.Services.AccountService.GetAllBasicInfoAsync">
+            <summary>
+            Get basic info for all accounts
+            </summary>
+            <returns>BasicInfoViewModel of all accounts</returns>
+        </member>
+        <member name="M:Gordon360.Services.AccountService.GetAllBasicInfoExceptAlumniAsync">
+            <summary>
+            Get basic info for all accounts except alumni
+            </summary>
+            <returns>BasicInfoViewModel of all accounts except alumni</returns>
         </member>
         <member name="T:Gordon360.Services.ActivityService">
             <summary>

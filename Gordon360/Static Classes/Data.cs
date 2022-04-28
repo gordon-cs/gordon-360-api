@@ -11,26 +11,12 @@ namespace Gordon360.Static.Data
     /// </summary>
     public static class Data
     {
-        // XDocument containing the XML data (parsed) from a 25Live URL
-        public static XDocument AllEvents { get; set; }
 
-        // Basic Info on Every Account
-        public static IEnumerable<BasicInfoViewModel> AllBasicInfo { get; set; }
-        // Basic info excluding alumni info
-        public static IEnumerable<BasicInfoViewModel> AllBasicInfoWithoutAlumni { get; set; }
 
         // All public account info
-        public static JObject PublicStudentData { get; set; }
-        public static IEnumerable<PublicFacultyStaffProfileViewModel> PublicFacultyStaffData { get; set; }
-        public static IEnumerable<PublicAlumniProfileViewModel> PublicAlumniData { get; set; }
         public static IEnumerable<JObject> AllPublicStudentAccounts { get; set; }
         public static IEnumerable<JObject> AllPublicFacStaffAccounts { get; set; }
         public static IEnumerable<JObject> AllPublicAlumniAccounts { get; set; }
-
-        // All account info
-        public static IEnumerable<Student> StudentData { get; set; }
-        public static IEnumerable<FacStaff> FacultyStaffData { get; set; }
-        public static IEnumerable<Alumni> AlumniData { get; set; }
 
     }
 }

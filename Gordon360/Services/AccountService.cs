@@ -5,6 +5,7 @@ using Gordon360.Models.ViewModels;
 using Gordon360.Static.Names;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Gordon360.Services
 {
@@ -14,15 +15,12 @@ namespace Gordon360.Services
     /// </summary>
     public class AccountService : IAccountService
     {
-        // See UnitOfWork class
-        private CCTContext _context;
+        private readonly CCTContext _context;
 
         public AccountService(CCTContext context)
         {
             _context = context;
         }
-
-
 
         /// <summary>
         /// Fetches a single account record whose id matches the id provided as an argument
@@ -82,6 +80,43 @@ namespace Gordon360.Services
             }
 
             return account;
+        }
+
+        /// <summary>
+        /// Get basic info for all accounts
+        /// </summary>
+        /// <returns>BasicInfoViewModel of all accounts</returns>
+        public async Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoAsync()
+        {
+
+            var basicInfo = await _context.Procedures.ALL_BASIC_INFOAsync();
+            return basicInfo.Select(
+                b => new BasicInfoViewModel
+                {
+                    ConcatonatedInfo = b.ConcatonatedInfo,
+                    FirstName = b.FirstName,
+                    LastName = b.LastName,
+                    Nickname = b.Nickname,
+                    UserName = b.UserName
+                });
+        }
+
+        /// <summary>
+        /// Get basic info for all accounts except alumni
+        /// </summary>
+        /// <returns>BasicInfoViewModel of all accounts except alumni</returns>
+        public async Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoExceptAlumniAsync()
+        {
+            var basicInfo = await _context.Procedures.ALL_BASIC_INFO_NOT_ALUMNIAsync();
+            return basicInfo.Select(
+                b => new BasicInfoViewModel
+                {
+                    ConcatonatedInfo = b.ConcatonatedInfo,
+                    FirstName = b.firstname,
+                    LastName = b.lastname,
+                    Nickname = b.Nickname,
+                    UserName = b.Username
+                });
         }
     }
 }

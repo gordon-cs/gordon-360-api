@@ -7,11 +7,10 @@ using Gordon360.Static.Names;
 using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Gordon360.Controllers
 {
@@ -71,42 +70,40 @@ namespace Gordon360.Controllers
         /// <returns> All accounts meeting some or all of the parameter</returns>
         [HttpGet]
         [Route("search/{searchString}")]
-        public ActionResult<IEnumerable<BasicInfoViewModel>> Search(string searchString)
+        public async Task<ActionResult<IEnumerable<BasicInfoViewModel>>> SearchAsync(string searchString)
         {
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
             var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserUsername);
 
-            var accounts = Data.AllBasicInfoWithoutAlumni;
+            IEnumerable<BasicInfoViewModel> accounts = await _accountService.GetAllBasicInfoExceptAlumniAsync();
 
             int precedence = 0;
 
             var allMatches = new SortedDictionary<string, BasicInfoViewModel>();
 
-            Action<string, BasicInfoViewModel> appendMatch = (key, match) =>
+            void appendMatch(string key, BasicInfoViewModel match)
             {
-                while (allMatches.ContainsKey(key))
-                {
-                    key += "1";
-                };
+                while (allMatches.ContainsKey(key)) key += "1"; 
                 allMatches.Add(key, match);
-            };
 
+                accounts = accounts.Where(a => !a.Equals(match));
+            }
 
             if (!string.IsNullOrEmpty(searchString))
             {
-
                 // First name exact match (Highest priority)
                 foreach (var match in accounts.Where(s => s.FirstNameMatches(searchString)))
                 {
                     string key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
 
                     appendMatch(key, match);
+
+                    accounts = accounts.Where(a => !a.Equals(match));
                 }
                 precedence++;
 
                 // Nickname exact match
                 foreach (var match in accounts
-                                        .Where(s => !allMatches.ContainsValue(s))
                                         .Where(s => s.NicknameMatches(searchString)))
                 {
                     string key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
@@ -117,7 +114,6 @@ namespace Gordon360.Controllers
 
                 // Last name exact match
                 foreach (var match in accounts
-                                        .Where(s => !allMatches.ContainsValue(s))
                                         .Where(s => s.LastNameMatches(searchString)))
                 {
                     string key = GenerateKey(match.LastName, match.FirstName, match.UserName, precedence);
@@ -139,7 +135,6 @@ namespace Gordon360.Controllers
 
                 // First name starts with
                 foreach (var match in accounts
-                                        .Where(s => !allMatches.ContainsValue(s))
                                         .Where(s => s.FirstNameStartsWith(searchString)))
                 {
                     string key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
@@ -150,7 +145,6 @@ namespace Gordon360.Controllers
 
                 // Username (first name) starts with
                 foreach (var match in accounts
-                                        .Where(s => !allMatches.ContainsValue(s))
                                         .Where(s => s.UsernameFirstNameStartsWith(searchString)))
                 {
                     string key = GenerateKey(match.GetFirstNameFromUsername(), match.GetLastNameFromUsername(), match.UserName, precedence);
@@ -161,7 +155,6 @@ namespace Gordon360.Controllers
 
                 // Nickname starts with
                 foreach (var match in accounts
-                                        .Where(s => !allMatches.ContainsValue(s))
                                         .Where(s => s.NicknameStartsWith(searchString)))
                 {
                     string key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
@@ -172,7 +165,6 @@ namespace Gordon360.Controllers
 
                 // Last name starts with
                 foreach (var match in accounts
-                                        .Where(s => !allMatches.ContainsValue(s))
                                         .Where(s => s.LastNameStartsWith(searchString)))
                 {
                     string key = GenerateKey(match.LastName, match.FirstName, match.UserName, precedence);
@@ -194,7 +186,6 @@ namespace Gordon360.Controllers
 
                 // Username (last name) starts with
                 foreach (var match in accounts
-                                        .Where(s => !allMatches.ContainsValue(s))
                                         .Where(s => s.UsernameLastNameStartsWith(searchString)))
                 {
                     string key = GenerateKey(match.GetLastNameFromUsername(), match.GetFirstNameFromUsername(), match.UserName, precedence);
@@ -249,7 +240,7 @@ namespace Gordon360.Controllers
         /// <returns> All accounts meeting some or all of the parameter</returns>
         [HttpGet]
         [Route("search/{searchString}/{secondaryString}")]
-        public ActionResult<IEnumerable<BasicInfoViewModel>> SearchWithSpace(string searchString, string secondaryString)
+        public async Task<ActionResult<IEnumerable<BasicInfoViewModel>>> SearchWithSpaceAsync(string searchString, string secondaryString)
         {
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
             var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserUsername);
@@ -258,14 +249,16 @@ namespace Gordon360.Controllers
 
             var allMatches = new SortedDictionary<string, BasicInfoViewModel>();
 
-            Action<string, BasicInfoViewModel> appendMatch = (key, match) =>
+            // Create accounts viewmodel to search
+            IEnumerable<BasicInfoViewModel> accounts = await _accountService.GetAllBasicInfoExceptAlumniAsync();
+
+            void appendMatch(string key, BasicInfoViewModel match)
             {
                 while (allMatches.ContainsKey(key)) key += "1";
                 allMatches.Add(key, match);
-            };
 
             // Create accounts viewmodel to search
-            var accounts = Data.AllBasicInfoWithoutAlumni;
+            }
 
             if (!string.IsNullOrEmpty(searchString) && !string.IsNullOrEmpty(secondaryString))
             {
@@ -280,7 +273,6 @@ namespace Gordon360.Controllers
 
                 // First name and last name start with
                 foreach (var match in accounts
-                                        .Where(s => !allMatches.ContainsValue(s))
                                         .Where(s => s.FirstNameStartsWith(searchString) && s.LastNameStartsWith(secondaryString)))
                 {
                     string key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
@@ -291,7 +283,6 @@ namespace Gordon360.Controllers
 
                 // Username (first and last) starts with
                 foreach (var match in accounts
-                                        .Where(s => !allMatches.ContainsValue(s))
                                         .Where(s => s.UsernameFirstNameStartsWith(searchString) && s.UsernameLastNameStartsWith(secondaryString)))
                 {
                     string key = GenerateKey(match.GetFirstNameFromUsername(), match.GetLastNameFromUsername(), match.UserName, precedence);
@@ -313,7 +304,6 @@ namespace Gordon360.Controllers
 
                 // Nickname and last name start with
                 foreach (var match in accounts
-                                        .Where(s => !allMatches.ContainsValue(s))
                                         .Where(s => s.NicknameStartsWith(searchString) && s.LastNameStartsWith(secondaryString)))
                 {
                     string key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
