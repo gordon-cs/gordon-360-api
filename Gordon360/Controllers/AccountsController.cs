@@ -41,6 +41,20 @@ namespace Gordon360.Controllers
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("username/{username}")]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
+        public ActionResult<AccountViewModel> GetByAccountUsername(string username)
+        {
+            var result = _accountService.GetAccountByUsername(username);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
 
         /// <summary>
         /// Return a list of accounts matching some or all of the search parameter
@@ -339,21 +353,6 @@ namespace Gordon360.Controllers
             return Ok(accounts);
         }
 
-        [HttpGet]
-        [Route("username/{username}")]
-        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
-        public ActionResult<AccountViewModel> GetByAccountUsername(string username)
-        {
-            var result = _accountService.GetAccountByUsername(username);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(result);
-        }
-
         /// <summary>
         /// Return a list of accounts matching some or all of the search parameters
         /// We are searching through all the info of a user, then narrowing it down to get only what we want
@@ -373,24 +372,24 @@ namespace Gordon360.Controllers
         /// <returns> All accounts meeting some or all of the parameter</returns>
         [HttpGet]
         [Route("advanced-people-search")]
-        public ActionResult<IEnumerable<JObject>> AdvancedPeopleSearch(
+        public async Task<ActionResult<IEnumerable<AdvancedSearchViewModel>>> AdvancedPeopleSearchAsync(
             [FromQuery] string[] accountTypes,
-            string? firstname,
-            string? lastname,
-            string? major,
-            string? minor,
-            string? hall,
-            string? classType,
-            string? homeCity,
-            string? state,
-            string? country,
-            string? department,
-            string? building)
+            string? firstname = "",
+            string? lastname = "",
+            string? major = "",
+            string? minor = "",
+            string? hall = "",
+            string? classType = "",
+            string? homeCity = "",
+            string? state = "",
+            string? country = "",
+            string? department = "",
+            string? building = "")
         {
             // Accept common town abbreviations in advanced people search
             // East = E, West = W, South = S, North = N
             if (
-                homeCity is not null 
+                !string.IsNullOrEmpty(homeCity)
                 && (
                   homeCity.StartsWith("e ") ||
                   homeCity.StartsWith("w ") ||
@@ -411,68 +410,67 @@ namespace Gordon360.Controllers
             var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserUsername);
 
             // Create accounts viewmodel to search
-            IEnumerable<JObject> accounts = new List<JObject>();
+            IEnumerable<AdvancedSearchViewModel> accounts = new List<AdvancedSearchViewModel>();
             if (accountTypes.Contains("student") && viewerType != Position.ALUMNI)
             {
-                accounts = accounts.Union(Data.AllPublicStudentAccounts);
+                accounts = accounts.Union(_accountService.GetAllPublicStudentAccounts());
             }
 
             if (accountTypes.Contains("facstaff"))
             {
-                if (homeCity == "")
+                if (string.IsNullOrEmpty(homeCity))
                 {
-                    accounts = accounts.Union(Data.AllPublicFacStaffAccounts);
+                    accounts = accounts.Union(_accountService.GetAllPublicFacultyStaffAccounts());
                 }
                 else
                 {
-                    accounts = accounts.Union(Data.AllPublicFacStaffAccounts.Where(a => a["KeepPrivate"].ToString() == "0"));
+                    accounts = accounts.Union(_accountService.GetAllPublicFacultyStaffAccounts().Where(a => a.KeepPrivate == "0"));
                 }
             }
 
             if (accountTypes.Contains("alumni") && viewerType != Position.STUDENT)
             {
-                if (homeCity == "")
+                if (string.IsNullOrEmpty(homeCity))
                 {
-                    accounts = accounts.Union(Data.AllPublicAlumniAccounts);
+                    accounts = accounts.Union( _accountService.GetAllPublicAlumniAccounts());
                 }
                 else
                 {
-                    accounts = accounts.Union(Data.AllPublicAlumniAccounts.Where(a => a["ShareAddress"].ToString().ToLower() != "n"));
+                    accounts = accounts.Union(_accountService.GetAllPublicAlumniAccounts().Where(a => a.ShareAddress.ToLower() != "n"));
                 }
             }
 
-            IEnumerable<JObject> searchResults;
-            searchResults =
+            var searchResults =
                 accounts
                 .Where(a =>
                        (
-                               a["FirstName"].ToString().ToLower().StartsWith(firstname)
-                            || a["NickName"].ToString().ToLower().StartsWith(firstname)
+                               a.FirstName.ToLower().StartsWith(firstname)
+                            || a.NickName.ToLower().StartsWith(firstname)
                        )
                     && (
-                               a["LastName"].ToString().ToLower().StartsWith(lastname)
-                            || a["MaidenName"].ToString().ToLower().StartsWith(lastname)
+                               a.LastName.ToLower().StartsWith(lastname)
+                            || a.MaidenName.ToLower().StartsWith(lastname)
                        )
                     && (
-                               a["Major1Description"].ToString().StartsWith(major)
-                            || a["Major2Description"].ToString().StartsWith(major)
-                            || a["Major3Description"].ToString().StartsWith(major)
+                               a.Major1Description.StartsWith(major)
+                            || a.Major2Description.StartsWith(major)
+                            || a.Major3Description.StartsWith(major)
                        )
                     && (
-                               a["Minor1Description"].ToString().StartsWith(minor)
-                            || a["Minor2Description"].ToString().StartsWith(minor)
-                            || a["Minor3Description"].ToString().StartsWith(minor)
+                               a.Minor1Description.StartsWith(minor)
+                            || a.Minor2Description.StartsWith(minor)
+                            || a.Minor3Description.StartsWith(minor)
                        )
-                    && a["Hall"].ToString().StartsWith(hall)
-                    && a["Class"].ToString().StartsWith(classType)
-                    && a["HomeCity"].ToString().ToLower().StartsWith(homeCity)
-                    && a["HomeState"].ToString().StartsWith(state)
-                    && a["Country"].ToString().StartsWith(country)
-                    && a["OnCampusDepartment"].ToString().StartsWith(department)
-                    && a["BuildingDescription"].ToString().StartsWith(building)
+                    && a.Hall.StartsWith(hall)
+                    && a.Class.StartsWith(classType)
+                    && a.HomeCity.ToLower().StartsWith(homeCity)
+                    && a.HomeState.StartsWith(state)
+                    && a.Country.StartsWith(country)
+                    && a.OnCampusDepartment.StartsWith(department)
+                    && a.BuildingDescription.StartsWith(building)
                 )
-                .OrderBy(a => a["LastName"])
-                .ThenBy(a => a["FirstName"]);
+                .OrderBy(a => a.LastName)
+                .ThenBy(a => a.FirstName);
 
             // Return all of the profile views
             return Ok(searchResults);

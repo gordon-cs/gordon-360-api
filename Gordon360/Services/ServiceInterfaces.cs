@@ -62,6 +62,9 @@ namespace Gordon360.Services
         AccountViewModel GetAccountByUsername(string username);
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoAsync();
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoExceptAlumniAsync();
+        IEnumerable<AdvancedSearchViewModel> GetAllPublicStudentAccounts();
+        IEnumerable<AdvancedSearchViewModel> GetAllPublicFacultyStaffAccounts();
+        IEnumerable<AdvancedSearchViewModel> GetAllPublicAlumniAccounts();
     }
 
     public interface IWellnessService

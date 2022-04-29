@@ -1,6 +1,7 @@
 ﻿using Gordon360.AuthorizationFilters;
 using Gordon360.Database.CCT;
 using Gordon360.Exceptions;
+using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
 using Gordon360.Static.Names;
 using System.Collections.Generic;
@@ -117,6 +118,21 @@ namespace Gordon360.Services
                     Nickname = b.Nickname,
                     UserName = b.Username
                 });
+        }
+
+        public IEnumerable<AdvancedSearchViewModel> GetAllPublicStudentAccounts()
+        {
+            return _context.Student.Select<Student, AdvancedSearchViewModel>(s => s);
+        }
+
+        public IEnumerable<AdvancedSearchViewModel> GetAllPublicFacultyStaffAccounts()
+        {
+            return _context.FacStaff.Select<FacStaff, AdvancedSearchViewModel>(fs => fs);
+        }
+
+        public IEnumerable<AdvancedSearchViewModel> GetAllPublicAlumniAccounts()
+        {
+            return _context.Alumni.Select<Alumni, AdvancedSearchViewModel>(a => a);
         }
     }
 }
