@@ -83,6 +83,103 @@ namespace Gordon360.Services
             return account;
         }
 
+        public IEnumerable<AdvancedSearchViewModel> AdvancedSearch(
+            List<string> accountTypes,
+            string firstname,
+            string lastname,
+            string major,
+            string minor,
+            string hall,
+            string classType,
+            string homeCity,
+            string state,
+            string country,
+            string department,
+            string building)
+        {
+            // Accept common town abbreviations in advanced people search
+            // East = E, West = W, South = S, North = N
+            if (
+                !string.IsNullOrEmpty(homeCity)
+                && (
+                  homeCity.StartsWith("e ") ||
+                  homeCity.StartsWith("w ") ||
+                  homeCity.StartsWith("s ") ||
+                  homeCity.StartsWith("n ")
+                )
+              )
+            {
+                homeCity =
+                    homeCity
+                        .Replace("e ", "east ")
+                        .Replace("w ", "west ")
+                        .Replace("s ", "south ")
+                        .Replace("n ", "north ");
+            }
+
+            // Create accounts viewmodel to search
+            IEnumerable<AdvancedSearchViewModel> accounts = new List<AdvancedSearchViewModel>();
+            if (accountTypes.Contains("student"))
+            {
+                accounts = accounts.Union(GetAllPublicStudentAccounts());
+            }
+
+            if (accountTypes.Contains("facstaff"))
+            {
+                if (string.IsNullOrEmpty(homeCity))
+                {
+                    accounts = accounts.Union(GetAllPublicFacultyStaffAccounts());
+                }
+                else
+                {
+                    accounts = accounts.Union(GetAllPublicFacultyStaffAccounts().Where(a => a.KeepPrivate == "0"));
+                }
+            }
+
+            if (accountTypes.Contains("alumni"))
+            {
+                if (string.IsNullOrEmpty(homeCity))
+                {
+                    accounts = accounts.Union(GetAllPublicAlumniAccounts());
+                }
+                else
+                {
+                    accounts = accounts.Union(GetAllPublicAlumniAccounts().Where(a => a.ShareAddress.ToLower() != "n"));
+                }
+            }
+
+            return accounts
+                .Where(a =>
+                       (
+                               a.FirstName.ToLower().StartsWith(firstname)
+                            || a.NickName.ToLower().StartsWith(firstname)
+                       )
+                    && (
+                               a.LastName.ToLower().StartsWith(lastname)
+                            || a.MaidenName.ToLower().StartsWith(lastname)
+                       )
+                    && (
+                               a.Major1Description.StartsWith(major)
+                            || a.Major2Description.StartsWith(major)
+                            || a.Major3Description.StartsWith(major)
+                       )
+                    && (
+                               a.Minor1Description.StartsWith(minor)
+                            || a.Minor2Description.StartsWith(minor)
+                            || a.Minor3Description.StartsWith(minor)
+                       )
+                    && a.Hall.StartsWith(hall)
+                    && a.Class.StartsWith(classType)
+                    && a.HomeCity.ToLower().StartsWith(homeCity)
+                    && a.HomeState.StartsWith(state)
+                    && a.Country.StartsWith(country)
+                    && a.OnCampusDepartment.StartsWith(department)
+                    && a.BuildingDescription.StartsWith(building)
+                )
+                .OrderBy(a => a.LastName)
+                .ThenBy(a => a.FirstName);
+        }
+
         /// <summary>
         /// Get basic info for all accounts
         /// </summary>
@@ -120,17 +217,17 @@ namespace Gordon360.Services
                 });
         }
 
-        public IEnumerable<AdvancedSearchViewModel> GetAllPublicStudentAccounts()
+        private IEnumerable<AdvancedSearchViewModel> GetAllPublicStudentAccounts()
         {
             return _context.Student.Select<Student, AdvancedSearchViewModel>(s => s);
         }
 
-        public IEnumerable<AdvancedSearchViewModel> GetAllPublicFacultyStaffAccounts()
+        private IEnumerable<AdvancedSearchViewModel> GetAllPublicFacultyStaffAccounts()
         {
             return _context.FacStaff.Select<FacStaff, AdvancedSearchViewModel>(fs => fs);
         }
 
-        public IEnumerable<AdvancedSearchViewModel> GetAllPublicAlumniAccounts()
+        private IEnumerable<AdvancedSearchViewModel> GetAllPublicAlumniAccounts()
         {
             return _context.Alumni.Select<Alumni, AdvancedSearchViewModel>(a => a);
         }

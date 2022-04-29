@@ -373,7 +373,7 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("advanced-people-search")]
         public async Task<ActionResult<IEnumerable<AdvancedSearchViewModel>>> AdvancedPeopleSearchAsync(
-            [FromQuery] string[] accountTypes,
+            [FromQuery] List<string> accountTypes,
             string? firstname = "",
             string? lastname = "",
             string? major = "",
@@ -386,91 +386,37 @@ namespace Gordon360.Controllers
             string? department = "",
             string? building = "")
         {
-            // Accept common town abbreviations in advanced people search
-            // East = E, West = W, South = S, North = N
-            if (
-                !string.IsNullOrEmpty(homeCity)
-                && (
-                  homeCity.StartsWith("e ") ||
-                  homeCity.StartsWith("w ") ||
-                  homeCity.StartsWith("s ") ||
-                  homeCity.StartsWith("n ")
-                )
-              )
-            {
-                homeCity =
-                    homeCity
-                        .Replace("e ", "east ")
-                        .Replace("w ", "west ")
-                        .Replace("s ", "south ")
-                        .Replace("n ", "north ");
-            }
+
 
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
             var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserUsername);
 
             // Create accounts viewmodel to search
-            IEnumerable<AdvancedSearchViewModel> accounts = new List<AdvancedSearchViewModel>();
-            if (accountTypes.Contains("student") && viewerType != Position.ALUMNI)
+            if (accountTypes.Contains("student") && viewerType == Position.ALUMNI)
             {
-                accounts = accounts.Union(_accountService.GetAllPublicStudentAccounts());
+                // Alumni cannot search students
+                accountTypes.Remove("student");
             }
 
-            if (accountTypes.Contains("facstaff"))
+            if (accountTypes.Contains("alumni") && viewerType == Position.STUDENT)
             {
-                if (string.IsNullOrEmpty(homeCity))
-                {
-                    accounts = accounts.Union(_accountService.GetAllPublicFacultyStaffAccounts());
-                }
-                else
-                {
-                    accounts = accounts.Union(_accountService.GetAllPublicFacultyStaffAccounts().Where(a => a.KeepPrivate == "0"));
-                }
+                // Students cannot search alumni
+                accountTypes.Remove("alumni");
             }
 
-            if (accountTypes.Contains("alumni") && viewerType != Position.STUDENT)
-            {
-                if (string.IsNullOrEmpty(homeCity))
-                {
-                    accounts = accounts.Union( _accountService.GetAllPublicAlumniAccounts());
-                }
-                else
-                {
-                    accounts = accounts.Union(_accountService.GetAllPublicAlumniAccounts().Where(a => a.ShareAddress.ToLower() != "n"));
-                }
-            }
+            var searchResults = _accountService.AdvancedSearch(accountTypes,
+                                                               firstname,
+                                                               lastname,
+                                                               major,
+                                                               minor,
+                                                               hall,
+                                                               classType,
+                                                               homeCity,
+                                                               state,
+                                                               country,
+                                                               department,
+                                                               building);
 
-            var searchResults =
-                accounts
-                .Where(a =>
-                       (
-                               a.FirstName.ToLower().StartsWith(firstname)
-                            || a.NickName.ToLower().StartsWith(firstname)
-                       )
-                    && (
-                               a.LastName.ToLower().StartsWith(lastname)
-                            || a.MaidenName.ToLower().StartsWith(lastname)
-                       )
-                    && (
-                               a.Major1Description.StartsWith(major)
-                            || a.Major2Description.StartsWith(major)
-                            || a.Major3Description.StartsWith(major)
-                       )
-                    && (
-                               a.Minor1Description.StartsWith(minor)
-                            || a.Minor2Description.StartsWith(minor)
-                            || a.Minor3Description.StartsWith(minor)
-                       )
-                    && a.Hall.StartsWith(hall)
-                    && a.Class.StartsWith(classType)
-                    && a.HomeCity.ToLower().StartsWith(homeCity)
-                    && a.HomeState.StartsWith(state)
-                    && a.Country.StartsWith(country)
-                    && a.OnCampusDepartment.StartsWith(department)
-                    && a.BuildingDescription.StartsWith(building)
-                )
-                .OrderBy(a => a.LastName)
-                .ThenBy(a => a.FirstName);
 
             // Return all of the profile views
             return Ok(searchResults);
