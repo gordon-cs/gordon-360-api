@@ -1,6 +1,5 @@
 ﻿using Gordon360.Database.CCT;
 using Gordon360.Exceptions;
-using Gordon360.Services;
 using Gordon360.Models.ViewModels;
 using Gordon360.Static.Methods;
 using System.Collections.Generic;
@@ -40,7 +39,7 @@ namespace Gordon360.Services
             }
 
             var membershipService = new MembershipService(_context);
-            
+
             var result = membershipService.MembershipEmails(activityCode, sessionCode, participationType);
 
             if (result == null)

@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Security.Claims;
 
 namespace Gordon360.Controllers
 {

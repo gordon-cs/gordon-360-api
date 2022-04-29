@@ -1,6 +1,4 @@
-﻿using Gordon360.Database.CCT;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 
 namespace Gordon360.Utilities
 {

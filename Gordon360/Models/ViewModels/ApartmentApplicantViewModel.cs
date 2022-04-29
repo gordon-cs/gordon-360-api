@@ -1,7 +1,5 @@
 ﻿using Gordon360.Models.CCT;
-using Gordon360.Static.Data;
 using System;
-using System.Linq;
 
 namespace Gordon360.Models.ViewModels
 {

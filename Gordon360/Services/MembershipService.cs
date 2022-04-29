@@ -438,7 +438,7 @@ namespace Gordon360.Services
             public static ParticipationType Guest { get { return new ParticipationType("GUEST"); } }
             public static ParticipationType Member { get { return new ParticipationType("MEMBR"); } }
             public static ParticipationType Advisor { get { return new ParticipationType("ADV"); } }
-            
+
             // NOTE: Group admin is not strictly a participation type, it's a separate role that Advisors and Leaders can have, with a separate flag in the database
             // BUT, it's convenient to treat it as a participation type in several places throughout the API
             public static ParticipationType GroupAdmin { get { return new ParticipationType("GRP_ADMIN"); } }

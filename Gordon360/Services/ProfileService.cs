@@ -1,13 +1,10 @@
 ﻿using Gordon360.Database.CCT;
-using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
-using Gordon360.Static.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace Gordon360.Services
 {
@@ -136,7 +133,7 @@ namespace Gordon360.Services
         {
             return _context.Clifton_Strengths
                 .Where(c => c.ID_NUM == id)
-                .Select(s => new string[] {s.THEME_1, s.THEME_2, s.THEME_3, s.THEME_4, s.THEME_5})
+                .Select(s => new string[] { s.THEME_1, s.THEME_2, s.THEME_3, s.THEME_4, s.THEME_5 })
                 .FirstOrDefault() ?? Array.Empty<string>();
         }
 

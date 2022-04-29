@@ -1,5 +1,4 @@
 ﻿using Gordon360.Models.CCT;
-using Gordon360.Static.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -5,7 +5,6 @@ using Gordon360.Static.Names;
 using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Gordon360.Controllers

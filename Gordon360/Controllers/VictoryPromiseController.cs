@@ -4,7 +4,6 @@ using Gordon360.Services;
 using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Security.Claims;
 
 namespace Gordon360.Controllers
 {

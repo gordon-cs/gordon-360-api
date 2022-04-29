@@ -1,9 +1,9 @@
-﻿using System.IO;
+﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System;
 
 namespace Gordon360.Utilities
 {
@@ -107,14 +107,14 @@ namespace Gordon360.Utilities
 
         public static async Task<string> GetImageFromPathOrDefaultFromURL(string imagePath, string defaultURL)
         {
-                try
-                {
-                    return RetrieveImageFromPath(imagePath);
-                }
-                catch (FileNotFoundException)
-                {
-                    return await DownloadImageFromURL(defaultURL);
-                }
+            try
+            {
+                return RetrieveImageFromPath(imagePath);
+            }
+            catch (FileNotFoundException)
+            {
+                return await DownloadImageFromURL(defaultURL);
+            }
         }
 
         /// <summary>

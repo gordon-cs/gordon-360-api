@@ -3,7 +3,6 @@ using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Gordon360.Controllers

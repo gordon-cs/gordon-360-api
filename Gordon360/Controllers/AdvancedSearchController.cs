@@ -1,5 +1,4 @@
 ﻿using Gordon360.Database.CCT;
-using Gordon360.Static.Methods;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
