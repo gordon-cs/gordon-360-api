@@ -83,7 +83,7 @@ namespace Gordon360.Controllers
 
             void appendMatch(string key, BasicInfoViewModel match)
             {
-                while (allMatches.ContainsKey(key)) key += "1"; 
+                while (allMatches.ContainsKey(key)) key += "1";
                 allMatches.Add(key, match);
 
                 accounts = accounts.Where(a => !a.Equals(match));
@@ -324,7 +324,6 @@ namespace Gordon360.Controllers
 
                 // First name and maiden name start with (Lowest Priority)
                 foreach (var match in accounts
-                                        .Where(s => !allMatches.ContainsValue(s))
                                         .Where(s => s.FirstNameStartsWith(searchString) && s.MaidenNameStartsWith(secondaryString)))
                 {
                     string key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
@@ -356,141 +355,56 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
-        /// Deprecated route uses new route below with two leading parameters for
-        /// including students and facStaff.
-        /// 
         /// Return a list of accounts matching some or all of the search parameters
         /// We are searching through all the info of a user, then narrowing it down to get only what we want
         /// </summary>
-        /// <param name="includeAlumniSearchParam"> For non-students: Include Alumni in search results or not </param>
-        /// <param name="firstNameSearchParam"> The first name to search for </param>
-        /// <param name="lastNameSearchParam"> The last name to search for </param>
-        /// <param name="majorSearchParam"></param>
-        /// <param name="minorSearchParam"></param>
-        /// <param name="hallSearchParam"></param>
-        /// <param name="classTypeSearchParam"></param>
-        /// <param name="hometownSearchParam"></param>
-        /// <param name="stateSearchParam"></param>
-        /// <param name="countrySearchParam"></param>
-        /// <param name="departmentSearchParam"></param>   
-        /// <param name="buildingSearchParam"></param>     
+        /// <param name="accountTypes"> Which account types to search. Accepted values: "student", "alumni", "facstaff"  </param>
+        /// <param name="firstname"> The first name to search for </param>
+        /// <param name="lastname"> The last name to search for </param>
+        /// <param name="major"></param>
+        /// <param name="minor"></param>
+        /// <param name="hall"></param>
+        /// <param name="classType"></param>
+        /// <param name="homeCity"></param>
+        /// <param name="state"></param>
+        /// <param name="country"></param>
+        /// <param name="department"></param>   
+        /// <param name="building"></param>     
         /// <returns> All accounts meeting some or all of the parameter</returns>
         [HttpGet]
-        [Route("advanced-people-search/{includeAlumniSearchParam}/{firstNameSearchParam}/{lastNameSearchParam}/{majorSearchParam}/{minorSearchParam}/{hallSearchParam}/{classTypeSearchParam}/{hometownSearchParam}/{stateSearchParam}/{countrySearchParam}/{departmentSearchParam}/{buildingSearchParam}")]
-        public ActionResult<IEnumerable<JObject>> AdvancedPeopleSearch(bool includeAlumniSearchParam, string firstNameSearchParam,
-            string lastNameSearchParam, string majorSearchParam, string minorSearchParam, string hallSearchParam,
-            string classTypeSearchParam, string hometownSearchParam, string stateSearchParam,
-            string countrySearchParam, string departmentSearchParam, string buildingSearchParam)
+        [Route("advanced-people-search")]
+        public ActionResult<IEnumerable<JObject>> AdvancedPeopleSearch(
+            [FromQuery] string[] accountTypes,
+            string? firstname,
+            string? lastname,
+            string? major,
+            string? minor,
+            string? hall,
+            string? classType,
+            string? homeCity,
+            string? state,
+            string? country,
+            string? department,
+            string? building)
         {
-            return AdvancedPeopleSearch(true, true, includeAlumniSearchParam, firstNameSearchParam, lastNameSearchParam,
-                majorSearchParam, minorSearchParam, hallSearchParam, classTypeSearchParam, hometownSearchParam,
-                stateSearchParam, countrySearchParam, departmentSearchParam, buildingSearchParam);
-        }
-
-        /// <summary>
-        /// Return a list of accounts matching some or all of the search parameters
-        /// We are searching through all the info of a user, then narrowing it down to get only what we want
-        /// </summary>
-        /// <param name="includeStudentSearchParam"> Include Student in search results or not </param>
-        /// <param name="includeFacStaffSearchParam"> Include Faculty and Staff in search results or not </param>
-        /// <param name="includeAlumniSearchParam"> For non-students: Include Alumni in search results or not </param>
-        /// <param name="firstNameSearchParam"> The first name to search for </param>
-        /// <param name="lastNameSearchParam"> The last name to search for </param>
-        /// <param name="majorSearchParam"></param>
-        /// <param name="minorSearchParam"></param>
-        /// <param name="hallSearchParam"></param>
-        /// <param name="classTypeSearchParam"></param>
-        /// <param name="hometownSearchParam"></param>
-        /// <param name="stateSearchParam"></param>
-        /// <param name="countrySearchParam"></param>
-        /// <param name="departmentSearchParam"></param>   
-        /// <param name="buildingSearchParam"></param>     
-        /// <returns> All accounts meeting some or all of the parameter</returns>
-        [HttpGet]
-        [Route("advanced-people-search/{includeStudentSearchParam}/{includeFacStaffSearchParam}/{includeAlumniSearchParam}/{firstNameSearchParam}/{lastNameSearchParam}/{majorSearchParam}/{minorSearchParam}/{hallSearchParam}/{classTypeSearchParam}/{hometownSearchParam}/{stateSearchParam}/{countrySearchParam}/{departmentSearchParam}/{buildingSearchParam}")]
-        public ActionResult<IEnumerable<JObject>> AdvancedPeopleSearch(bool includeStudentSearchParam, bool includeFacStaffSearchParam,
-            bool includeAlumniSearchParam, string firstNameSearchParam, string lastNameSearchParam, string majorSearchParam,
-            string minorSearchParam, string hallSearchParam, string classTypeSearchParam, string hometownSearchParam,
-            string stateSearchParam, string countrySearchParam, string departmentSearchParam, string buildingSearchParam)
-        {
-            // If any search params were not entered, set them to empty strings
-            if (firstNameSearchParam == "C\u266F")
-            {
-                firstNameSearchParam = "";
-            }
-            if (lastNameSearchParam == "C\u266F")
-            {
-                lastNameSearchParam = "";
-            }
-            if (hometownSearchParam == "C\u266F")
-            {
-                hometownSearchParam = "";
-            }
             // Accept common town abbreviations in advanced people search
             // East = E, West = W, South = S, North = N
-            else if (
-              hometownSearchParam.StartsWith("e ") ||
-              hometownSearchParam.StartsWith("w ") ||
-              hometownSearchParam.StartsWith("s ") ||
-              hometownSearchParam.StartsWith("n ")
+            if (
+                homeCity is not null 
+                && (
+                  homeCity.StartsWith("e ") ||
+                  homeCity.StartsWith("w ") ||
+                  homeCity.StartsWith("s ") ||
+                  homeCity.StartsWith("n ")
+                )
               )
             {
-                hometownSearchParam = hometownSearchParam.Replace("e ", "east ");
-                hometownSearchParam = hometownSearchParam.Replace("w ", "west ");
-                hometownSearchParam = hometownSearchParam.Replace("s ", "south ");
-                hometownSearchParam = hometownSearchParam.Replace("n ", "north ");
-            }
-            if (majorSearchParam == "C\u266F")
-            {
-                majorSearchParam = "";
-            }
-            else if (
-              majorSearchParam.Contains("_") ||
-              majorSearchParam.Contains("dash") ||
-              majorSearchParam.Contains("colon") ||
-              majorSearchParam.Contains("slash")
-              )
-            {
-                majorSearchParam = majorSearchParam.Replace("_", "&");
-                majorSearchParam = majorSearchParam.Replace("dash", "-");
-                majorSearchParam = majorSearchParam.Replace("colon", ":");
-                majorSearchParam = majorSearchParam.Replace("slash", "/");
-            }
-            if (minorSearchParam == "C\u266F")
-            {
-                minorSearchParam = "";
-            }
-            if (hallSearchParam == "C\u266F")
-            {
-                hallSearchParam = "";
-            }
-            if (classTypeSearchParam == "C\u266F")
-            {
-                classTypeSearchParam = "";
-            }
-            if (stateSearchParam == "C\u266F")
-            {
-                stateSearchParam = "";
-            }
-            if (countrySearchParam == "C\u266F")
-            {
-                countrySearchParam = "";
-            }
-            if (departmentSearchParam == "C\u266F")
-            {
-                departmentSearchParam = "";
-            }
-            else if (departmentSearchParam.Contains("_"))
-            {
-                departmentSearchParam = departmentSearchParam.Replace("_", "&");
-            }
-            if (buildingSearchParam == "C\u266F")
-            {
-                buildingSearchParam = "";
-            }
-            else if (buildingSearchParam.Contains("_"))
-            {
-                buildingSearchParam = buildingSearchParam.Replace("_", ".");
+                homeCity =
+                    homeCity
+                        .Replace("e ", "east ")
+                        .Replace("w ", "west ")
+                        .Replace("s ", "south ")
+                        .Replace("n ", "north ");
             }
 
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
@@ -498,32 +412,67 @@ namespace Gordon360.Controllers
 
             // Create accounts viewmodel to search
             IEnumerable<JObject> accounts = new List<JObject>();
-            if (includeStudentSearchParam && viewerType != Position.ALUMNI) accounts = accounts.Union(Data.AllPublicStudentAccounts);
-            if (includeFacStaffSearchParam)
+            if (accountTypes.Contains("student") && viewerType != Position.ALUMNI)
             {
-                if (hometownSearchParam == "")
+                accounts = accounts.Union(Data.AllPublicStudentAccounts);
+            }
+
+            if (accountTypes.Contains("facstaff"))
+            {
+                if (homeCity == "")
                 {
                     accounts = accounts.Union(Data.AllPublicFacStaffAccounts);
                 }
                 else
                 {
-                    accounts = accounts.Union(Data.AllPublicFacStaffAccounts.Where(a => (a["KeepPrivate"].ToString() == "0")));
+                    accounts = accounts.Union(Data.AllPublicFacStaffAccounts.Where(a => a["KeepPrivate"].ToString() == "0"));
                 }
             }
-            if (includeAlumniSearchParam && viewerType != Position.STUDENT)
+
+            if (accountTypes.Contains("alumni") && viewerType != Position.STUDENT)
             {
-                if (hometownSearchParam == "")
+                if (homeCity == "")
                 {
                     accounts = accounts.Union(Data.AllPublicAlumniAccounts);
                 }
                 else
                 {
-                    accounts = accounts.Union(Data.AllPublicAlumniAccounts.Where(a => (a["ShareAddress"].ToString().ToLower() != "n")));
+                    accounts = accounts.Union(Data.AllPublicAlumniAccounts.Where(a => a["ShareAddress"].ToString().ToLower() != "n"));
                 }
             }
 
             IEnumerable<JObject> searchResults;
-            searchResults = accounts.Where(a => (a["FirstName"].ToString().ToLower().StartsWith(firstNameSearchParam) || (a["NickName"].ToString().ToLower().StartsWith(firstNameSearchParam))) && (a["LastName"].ToString().ToLower().StartsWith(lastNameSearchParam) || (a["MaidenName"].ToString().ToLower().StartsWith(lastNameSearchParam))) && ((a["Major1Description"].ToString().StartsWith(majorSearchParam)) || (a["Major2Description"].ToString().StartsWith(majorSearchParam)) || (a["Major3Description"].ToString().StartsWith(majorSearchParam))) && ((a["Minor1Description"].ToString().StartsWith(minorSearchParam)) || (a["Minor2Description"].ToString().StartsWith(minorSearchParam)) || (a["Minor3Description"].ToString().StartsWith(minorSearchParam))) && (a["Hall"].ToString().StartsWith(hallSearchParam)) && (a["Class"].ToString().StartsWith(classTypeSearchParam)) && (a["HomeCity"].ToString().ToLower().StartsWith(hometownSearchParam)) && (a["HomeState"].ToString().StartsWith(stateSearchParam)) && (a["Country"].ToString().StartsWith(countrySearchParam)) && (a["OnCampusDepartment"].ToString().StartsWith(departmentSearchParam)) && (a["BuildingDescription"].ToString().StartsWith(buildingSearchParam))).OrderBy(a => a["LastName"]).ThenBy(a => a["FirstName"]);
+            searchResults =
+                accounts
+                .Where(a =>
+                       (
+                               a["FirstName"].ToString().ToLower().StartsWith(firstname)
+                            || a["NickName"].ToString().ToLower().StartsWith(firstname)
+                       )
+                    && (
+                               a["LastName"].ToString().ToLower().StartsWith(lastname)
+                            || a["MaidenName"].ToString().ToLower().StartsWith(lastname)
+                       )
+                    && (
+                               a["Major1Description"].ToString().StartsWith(major)
+                            || a["Major2Description"].ToString().StartsWith(major)
+                            || a["Major3Description"].ToString().StartsWith(major)
+                       )
+                    && (
+                               a["Minor1Description"].ToString().StartsWith(minor)
+                            || a["Minor2Description"].ToString().StartsWith(minor)
+                            || a["Minor3Description"].ToString().StartsWith(minor)
+                       )
+                    && a["Hall"].ToString().StartsWith(hall)
+                    && a["Class"].ToString().StartsWith(classType)
+                    && a["HomeCity"].ToString().ToLower().StartsWith(homeCity)
+                    && a["HomeState"].ToString().StartsWith(state)
+                    && a["Country"].ToString().StartsWith(country)
+                    && a["OnCampusDepartment"].ToString().StartsWith(department)
+                    && a["BuildingDescription"].ToString().StartsWith(building)
+                )
+                .OrderBy(a => a["LastName"])
+                .ThenBy(a => a["FirstName"]);
 
             // Return all of the profile views
             return Ok(searchResults);
