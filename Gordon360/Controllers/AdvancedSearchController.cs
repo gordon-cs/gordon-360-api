@@ -1,14 +1,19 @@
-﻿using Gordon360.Static.Methods;
+﻿using Gordon360.Database.CCT;
+using Gordon360.Static.Methods;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Gordon360.Controllers
 {
     [Route("api/[controller]")]
     public class AdvancedSearchController : GordonControllerBase
     {
-        public AdvancedSearchController()
+        private readonly CCTContext _context;
+
+        public AdvancedSearchController(CCTContext context)
         {
+            _context = context;
         }
 
         /// <summary>
@@ -19,8 +24,9 @@ namespace Gordon360.Controllers
         [Route("majors")]
         public ActionResult<IEnumerable<string>> GetMajors()
         {
-            IEnumerable<string> majors = Helpers.GetMajors();
-            // Return all of the majors
+            var majors = _context.Majors.OrderBy(m => m.MajorDescription)
+                                 .Select(m => m.MajorDescription)
+                                 .Distinct();
             return Ok(majors);
         }
 
@@ -32,8 +38,9 @@ namespace Gordon360.Controllers
         [Route("minors")]
         public ActionResult<IEnumerable<string>> GetMinors()
         {
-            IEnumerable<string> minors = Helpers.GetMinors();
-            // Return all of the minors
+            var minors = _context.Student.Select(s => s.Minor1Description)
+                                  .Distinct()
+                                  .Where(s => s != null);
             return Ok(minors);
         }
 
@@ -45,8 +52,10 @@ namespace Gordon360.Controllers
         [Route("halls")]
         public ActionResult<IEnumerable<string>> GetHalls()
         {
-            IEnumerable<string> halls = Helpers.GetHalls();
-            // Return all of the halls
+            var halls = _context.Student.Select(s => s.BuildingDescription)
+                                  .Distinct()
+                                  .Where(b => b != null)
+                                  .OrderBy(b => b);
             return Ok(halls);
         }
 
@@ -58,8 +67,16 @@ namespace Gordon360.Controllers
         [Route("states")]
         public ActionResult<IEnumerable<string>> GetStates()
         {
-            IEnumerable<string> states = Helpers.GetStates();
-            // Return all of the states
+            var studentStates = _context.Student.Select(s => s.HomeState).AsEnumerable();
+            var facStaffStates = _context.FacStaff.Select(fs => fs.HomeState).AsEnumerable();
+            var alumniStates = _context.Alumni.Select(a => a.HomeState).AsEnumerable();
+
+            var states = studentStates
+                                  .Union(facStaffStates)
+                                  .Union(alumniStates)
+                                  .Distinct()
+                                  .Where(s => s != null)
+                                  .OrderBy(s => s);
             return Ok(states);
         }
 
@@ -72,8 +89,16 @@ namespace Gordon360.Controllers
         [Route("countries")]
         public ActionResult<IEnumerable<string>> GetCountries()
         {
-            IEnumerable<string> countries = Helpers.GetCountries();
-            // Return all of the countries
+            var studentCountries = _context.Student.Select(s => s.Country).AsEnumerable();
+            var facstaffCountries = _context.FacStaff.Select(fs => fs.Country).AsEnumerable();
+            var alumniCountries = _context.Alumni.Select(a => a.Country).AsEnumerable();
+
+            var countries = studentCountries
+                                  .Union(facstaffCountries)
+                                  .Union(alumniCountries)
+                                  .Distinct()
+                                  .Where(s => s != null)
+                                  .OrderBy(s => s);
             return Ok(countries);
         }
 
@@ -85,8 +110,10 @@ namespace Gordon360.Controllers
         [Route("departments")]
         public ActionResult<IEnumerable<string>> GetDepartments()
         {
-            IEnumerable<string> departments = Helpers.GetDepartments();
-            // Return all of the departments
+            var departments = _context.FacStaff.Select(fs => fs.OnCampusDepartment)
+                                   .Distinct()
+                                   .Where(d => d != null)
+                                   .OrderBy(d => d);
             return Ok(departments);
         }
 
@@ -99,8 +126,10 @@ namespace Gordon360.Controllers
         [Route("buildings")]
         public ActionResult<IEnumerable<string>> GetBuildings()
         {
-            IEnumerable<string> buildings = Helpers.GetBuildings();
-            // Return all of the buildings
+            var buildings = _context.FacStaff.Select(fs => fs.BuildingDescription)
+                                   .Distinct()
+                                   .Where(d => d != null)
+                                   .OrderBy(d => d);
             return Ok(buildings);
         }
 
