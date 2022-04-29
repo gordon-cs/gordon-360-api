@@ -1,6 +1,4 @@
-﻿using Gordon360.Static.Methods;
-
-namespace Gordon360.Static.Names
+﻿namespace Gordon360.Static.Names
 {
     public static class Resource
     {
@@ -82,39 +80,5 @@ namespace Gordon360.Static.Names
         public const string PENDING = "Pending";
         public const string APPROVED = "Approved";
         public const string DENIED = "Denied";
-    }
-
-    public static class SQLQuery
-    {
-        public static string ALL_PUBLIC_STUDENT_REQUEST = "SELECT ISNULL(Mail_Location, '') as Mail_Location, ISNULL(BuildingDescription, '') as Hall, ISNULL(FirstName, '') as FirstName, ISNULL(LastName, '') as LastName, ISNULL(NickName, '') as NickName, ISNULL(MaidenName, '') as MaidenName, ISNULL(Class, '') as Class, ISNULL(Major1Description, '') as Major1Description, ISNULL(Major2Description, '') as Major2Description, ISNULL(Major3Description, '') as Major3Description, ISNULL(Minor1Description, '') as Minor1Description, ISNULL(Minor2Description, '') as Minor2Description, ISNULL(Minor3Description, '') as Minor3Description, ISNULL(HomeCity, '') as HomeCity, ISNULL(HomeState, '') as HomeState, ISNULL(Country, '') as Country, ISNULL(KeepPrivate, '') as KeepPrivate, ISNULL(Email, '') as Email, AD_Username FROM STUDENT S WHERE AD_Username is not null FOR JSON PATH, ROOT('Students')";
-        public static string ALL_PUBLIC_FACULTY_STAFF_REQUEST = "SELECT FirstName, LastName, NickName, MaidenName, OnCampusDepartment, BuildingDescription, HomeCity, HomeState, Country, KeepPrivate, JobTitle, Email, Type, AD_Username, Mail_Location FROM FacStaff WHERE AD_Username is not null";
-        //ALL_PUBLIC_ALUMNI_REQUEST returns search result to the advanced people search 
-        //with encrypted id as the ad_username if their ad_username is null
-        //ALL_PUBLIC_ALUMNI_REQUEST and ALL_ALUMNI_REQUEST queries work together
-        public static string ALL_PUBLIC_ALUMNI_REQUEST = "SELECT FirstName, LastName, NickName, MaidenName, Major1Description, Major2Description, HomeCity, HomeState, Country, Email, ShareName, PreferredClassYear, ShareAddress, ISNULL(AD_Username, CONVERT(NVARCHAR(32),HashBytes('SHA2_256', ID),2)) as AD_Username FROM Alumni WHERE ShareName is null OR ShareName = 'Y';";
-
-        public static string ALL_STUDENT_REQUEST = "SELECT * from Student WHERE AD_Username is not null";
-        public static string ALL_FACULTY_STAFF_REQUEST = "SELECT * from FacStaff WHERE AD_Username is not null";
-        //ALL_ALUMNI_REQUEST returns the set of all the alumni in the records
-        //Other methods query this set to find a specific alum based on AD_Username (or the encrypted id)
-        public static string ALL_ALUMNI_REQUEST = "SELECT ID, WebUpdate, Title, FirstName, MiddleName, LastName, Suffix, MaidenName, NickName, HomeStreet1, HomeStreet2, HomeCity, HomeState, HomePostalCode, HomeCountry, HomePhone, HomeFax, HomeEmail, JobTitle, MaritalStatus, SpouseName, College, ClassYear, PreferredClassYear, Major1, Major2, ShareName, ShareAddress, Gender, GradDate, Email, grad_student, Barcode, ISNULL(AD_Username, CONVERT(NVARCHAR(32),HashBytes('SHA2_256', ID),2)) as AD_Username, show_pic, preferred_photo, Country, Major2Description, Major1Description from Alumni";// WHERE AD_Username is not null";
-        // Retrieves basic static data of all active Students and Fac/Staff with accounts
-        // For use with Quick People Search
-        public static string ALL_BASIC_INFO_NOT_ALUM = "ALL_BASIC_INFO_NOT_ALUMNI";
-
-        // GoStalk
-        //public static string ALL_MAJORS = "SELECT DISTINCT MajorDescription FROM Majors ORDER BY MajorDescription ASC";
-        //public static string ALL_MINORS = "SELECT DISTINCT Minor1Description FROM Student WHERE Minor1Description is not null";
-        //public static string ALL_STUDENT_HALLS = "SELECT DISTINCT BuildingDescription FROM Student WHERE BuildingDescription is not null ORDER BY BuildingDescription ASC";
-        //public static string ALL_ACCOUNTS_COUNTRIES = "SELECT DISTINCT Country FROM Student WHERE COUNTRY is not null UNION SELECT Country FROM FacStaff WHERE COUNTRY is not null UNION SELECT Country FROM Alumni WHERE COUNTRY is not null ORDER BY Country ASC";
-        //public static string ALL_ACCOUNTS_STATES = "SELECT HomeState FROM Student WHERE HomeState is not null UNION SELECT HomeState FROM FacStaff WHERE HomeState is not null UNION SELECT HomeState FROM Alumni WHERE HomeState is not null ORDER BY HomeState ASC";
-
-
-        //public static string ALL_FACSTAFF_BUILDINGS = "SELECT DISTINCT BuildingDescription FROM FacStaff WHERE OnCampusBuilding is not null ORDER BY BuildingDescription ASC";
-        //public static string ALL_FACSTAFF_DEPARTMENTS = "SELECT DISTINCT OnCampusDepartment FROM FacStaff WHERE OnCampusDepartment is not null ORDER BY OnCampusDepartment ASC";
-
-        // Timesheets
-        public static string ALL_STUDENT_TIMESHEETS_INFO = "SELECT * FROM student_timesheets for json path";
-
     }
 }
