@@ -14,6 +14,10 @@ namespace Gordon360.AuthorizationServer
     public class TokenIssuer : OAuthAuthorizationServerProvider
     {
 
+        private static string LDAPServer => System.Web.Configuration.WebConfigurationManager.AppSettings["ldapServer"];
+        private static string ServiceUsername => System.Web.Configuration.WebConfigurationManager.AppSettings["serviceUsername"];
+        private static string ServicePassword => System.Web.Configuration.WebConfigurationManager.AppSettings["servicePassword"];
+
         public override async Task ValidateClientAuthentication(
             OAuthValidateClientAuthenticationContext context)
         {
@@ -21,165 +25,104 @@ namespace Gordon360.AuthorizationServer
             // but we're not using client authentication, so validate and move on...
             await Task.FromResult(context.Validated());
         }
-        
-// Someone should figure out where the await should go. Until then, I'm suppressing the warning because
-// it has been working just fine so far.
+
+        // Someone should figure out where the await should go. Until then, I'm suppressing the warning because
+        // it has been working just fine so far.
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public override async Task GrantResourceOwnerCredentials(
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
             OAuthGrantResourceOwnerCredentialsContext context)
         {
-
-            // Get the user credentials
-            var username = context.UserName;
-            var password = context.Password;
-            if (string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(username))
+            if (string.IsNullOrWhiteSpace(context.Password) || string.IsNullOrWhiteSpace(context.UserName))
             {
                 context.SetError("Unsuccessful Login", "The username or password is not correct.");
                 return;
             }
-            // Get service account credentials
-            var serviceUsername = System.Web.Configuration.WebConfigurationManager.AppSettings["serviceUsername"];
-            var servicePassword = System.Web.Configuration.WebConfigurationManager.AppSettings["servicePassword"];
-            // Syntax like : my.server.com:8080 
-            var ldapServer = System.Web.Configuration.WebConfigurationManager.AppSettings["ldapServer"];
 
-
-            /*******************************
-             * Ldap Authentication
-             *******************************/
             try
             {
-                PrincipalContext ADServiceConnection = new PrincipalContext(
-                    ContextType.Domain,
-                    ldapServer,
-                    "OU=Gordon College,DC=gordon,DC=edu",
-                    ContextOptions.Negotiate | ContextOptions.ServerBind | ContextOptions.SecureSocketLayer,
-                    serviceUsername,
-                    servicePassword);
-
-                UserPrincipal userQuery = new UserPrincipal(ADServiceConnection);
-                userQuery.SamAccountName = username;
-
-                PrincipalSearcher search = new PrincipalSearcher(userQuery);
-                UserPrincipal userEntry = (UserPrincipal)search.FindOne();
-                search.Dispose();
-
-
-                if (userEntry != null)
-                {
-                    PrincipalContext ADUserConnection = new PrincipalContext(
+                using (PrincipalContext ADServiceConnection = new PrincipalContext(
                         ContextType.Domain,
-                        ldapServer,
-                        "OU=Gordon College,DC=gordon,DC=edu"
-                        );
-
-
-                    var areValidCredentials = ADUserConnection.ValidateCredentials(
-                        username,
-                        password,
+                        LDAPServer,
+                        $"DC=gordon,DC=edu",
+                        ContextOptions.Negotiate | ContextOptions.ServerBind | ContextOptions.SecureSocketLayer,
+                        ServiceUsername,
+                        ServicePassword))
+                {
+                    var areValidCredentials = ADServiceConnection.ValidateCredentials(
+                        context.UserName,
+                        context.Password,
                         ContextOptions.SimpleBind | ContextOptions.SecureSocketLayer
                         );
 
-                    if (areValidCredentials)
+                    if (!areValidCredentials)
                     {
-                        var personID = userEntry.EmployeeId;
-                        // Some accounts don't have id's 
-                        if (personID == null)
-                        {
-                            context.SetError("Unsuccessful Login", "The username or password is not correct.");
-                            return;
-                        }
+                        context.SetError("Unsuccessful Login", "The username or password is not correct");
+                        return;
+                    }
 
-                        IUnitOfWork unitOfWork = new UnitOfWork();
-                        var adminService = new AdministratorService(unitOfWork);
-                        var accountService = new AccountService(unitOfWork);
+                    var userEntry = UserPrincipal.FindByIdentity(ADServiceConnection, IdentityType.SamAccountName, context.UserName);
 
-                        var distinguishedName = userEntry.DistinguishedName;
-                        var readOnly = accountService.Get(personID).ReadOnly;
+                    var personID = userEntry.EmployeeId;
+                    // Some accounts don't have id's 
+                    if (personID == null)
+                    {
+                        context.SetError("Unsuccessful Login", "The username or password is not correct.");
+                        return;
+                    }
 
+                    IUnitOfWork unitOfWork = new UnitOfWork();
+                    var adminService = new AdministratorService(unitOfWork);
+                    var accountService = new AccountService(unitOfWork);
 
-                        var collegeRole = string.Empty;
+                    var distinguishedName = userEntry.DistinguishedName;
+                    var account = unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == personID);
+                    var isAdmin = unitOfWork.AdministratorRepository.FirstOrDefault(x => x.ID_NUM.ToString() == personID);
 
-                        if(readOnly == 1)
-                        {
-                            collegeRole = Position.READONLY;
-                        }
-                        else if(distinguishedName.Contains("OU=Students") || username.ToLower() == "360.studenttest")
-                        {
-                            collegeRole = Position.STUDENT;
-                        }
-                        else
-                        {
-                            collegeRole = Position.FACSTAFF;
-                        }
-                        try
-                        {
-                            // This get operation is by gordon_id
-                            // Throws an exception if not found.
-                            var unit = new UnitOfWork();
+                    var collegeRole = string.Empty;
 
-                            bool isPolice = unit.AccountRepository.FirstOrDefault(x => x.gordon_id == personID).is_police == 1;
-
-                            if (isPolice)
-                            {
-                                collegeRole = Position.POLICE;
-                            }
-                        }
-                        catch (ResourceNotFoundException e)
-                        {
-                            // This is ok because we know this exception means the user is not an admin
-                            System.Diagnostics.Debug.WriteLine(e.Message);
-                        }
-                        try
-                        {
-                            // This get operation is by gordon_id
-                            // Throws an exception if not found.
-                            var isAdmin = adminService.Get(personID);
-                            if (isAdmin != null)
-                            {
-                                collegeRole = Position.SUPERADMIN;
-                            }
-                        }
-                        catch(ResourceNotFoundException e)
-                        {
-                            // This is ok because we know this exception means the user is not an admin
-                            System.Diagnostics.Debug.WriteLine(e.Message);
-                        }
-                        
-
-
-
-                        var identity = new ClaimsIdentity(context.Options.AuthenticationType);
-                        identity.AddClaim(new Claim("name", userEntry.Name));
-                        identity.AddClaim(new Claim("id", personID));
-                        identity.AddClaim(new Claim("college_role", collegeRole));
-                        identity.AddClaim(new Claim("user_name", username));
-                        ADServiceConnection.Dispose();
-                        context.Validated(identity);
+                    if (account?.ReadOnly == 1)
+                    {
+                        collegeRole = Position.READONLY;
+                    }
+                    else if (account?.is_police == 1)
+                    {
+                        collegeRole = Position.POLICE;
+                    }
+                    else if (isAdmin != null)
+                    {
+                        collegeRole = Position.SUPERADMIN;
+                    }
+                    else if (distinguishedName.EndsWith("OU=Students,OU=Gordon College,DC=gordon,DC=edu") || context.UserName.ToLower() == "360.studenttest")
+                    {
+                        collegeRole = Position.STUDENT;
+                    }
+                    else if (distinguishedName.EndsWith("OU=Fac Users,OU=Faculty,OU=Gordon College,DC=gordon,DC=edu") || distinguishedName.EndsWith("OU=Staff Users,OU=Staff,OU=Gordon College,DC=gordon,DC=edu") || context.UserName.ToLower() == "360.stafftest" || context.UserName.ToLower() == "360.facultytest")
+                    {
+                        collegeRole = Position.FACSTAFF;
+                    }
+                    else if (distinguishedName.EndsWith("OU=Alumni,DC=gordon,DC=edu"))
+                    {
+                        collegeRole = Position.ALUMNI;
                     }
                     else
                     {
-                        ADServiceConnection.Dispose();
-                        context.SetError("Unsuccessful Login", "The username or password is not correct");
+                        collegeRole = Position.DEFAULT;
                     }
-                    
-                    
-                }
-                else
-                {
-                    Debug.WriteLine("\n\nNOT FOUND\n\n");
-                    context.SetError("Unsuccessful Login", "The username or password is not correct");
+
+                    var identity = new ClaimsIdentity(context.Options.AuthenticationType);
+                    identity.AddClaim(new Claim("name", userEntry.Name));
+                    identity.AddClaim(new Claim("id", personID));
+                    identity.AddClaim(new Claim("college_role", collegeRole));
+                    identity.AddClaim(new Claim("user_name", context.UserName));
+                    context.Validated(identity);
                 }
             }
             catch (Exception e)
             {
                 Debug.WriteLine("Exception caught: " + e.ToString());
                 context.SetError("connection_error", "There was a problem connecting to the authorization server.");
-
             }
         }
-
-
     }
 }
