@@ -1738,6 +1738,10 @@
             Inserts a banner slide in the database and uploads the image to the local slider folder
             </summary>
             <param name="slide">The slide to add</param>
+            <param name="serverURL">The url of the server that the image is being posted to.
+            This is needed to save the image path into the database. The URL is different depending on where the API is running.
+            The URL is trivial to access from the controller, but not available from within the service, so it has to be passed in.
+            </param>
             <returns>The inserted slide</returns>
         </member>
         <member name="M:Gordon360.Services.ContentManagementService.DeleteBannerSlide(System.Int32)">

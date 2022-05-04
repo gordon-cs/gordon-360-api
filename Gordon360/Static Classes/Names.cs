@@ -70,6 +70,7 @@ namespace Gordon360.Static.Names
         public const string SUPERADMIN = "god";      // TODO: change in database to something more reverent
         public const string POLICE = "gordon police";
         public const string READONLY = "readonly";
+        public const string DEFAULT = "default";
     }
 
     public static class Activity_Roles
