@@ -3,6 +3,7 @@ using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
 using Gordon360.Static.Methods;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -29,25 +30,25 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="membership">The membership to be added</param>
         /// <returns>The newly added Membership object</returns>
-        public MEMBERSHIP Add(MEMBERSHIP membership)
+        public async Task<MEMBERSHIP> AddAsync(MEMBERSHIP membership)
         {
             // validate returns a boolean value.
-            ValidateMembershipAsync(membership);
+            await ValidateMembershipAsync(membership);
             IsPersonAlreadyInActivity(membership);
 
             // Get session begin date of the membership
-            var sessionCode = _context.CM_SESSION_MSTR.Where(x => x.SESS_CDE.Equals(membership.SESS_CDE)).FirstOrDefault();
+            var sessionCode = await _context.CM_SESSION_MSTR.Where(x => x.SESS_CDE.Equals(membership.SESS_CDE)).FirstOrDefaultAsync();
             membership.BEGIN_DTE = (DateTime)sessionCode.SESS_BEGN_DTE;
 
             // The Add() method returns the added membership.
-            var payload = _context.MEMBERSHIP.Add(membership);
+            var payload = await _context.MEMBERSHIP.AddAsync(membership);
 
             // There is a unique constraint in the Database on columns (ID_NUM, PART_LVL, SESS_CDE and ACT_CDE)
             if (payload == null)
             {
                 throw new ResourceCreationException() { ExceptionMessage = "There was an error creating the membership. Verify that a similar membership doesn't already exist." };
             }
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return membership;
 
@@ -280,15 +281,15 @@ namespace Gordon360.Services
         /// <param name="membershipID">The membership id.</param>
         /// <param name="membership">The updated membership.</param>
         /// <returns>The newly modified membership.</returns>
-        public MEMBERSHIP Update(int membershipID, MEMBERSHIP membership)
+        public async Task<MEMBERSHIP> UpdateAsync(int membershipID, MEMBERSHIP membership)
         {
-            var original = _context.MEMBERSHIP.Find(membershipID);
+            var original = await _context.MEMBERSHIP.FindAsync(membershipID);
             if (original == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
             }
 
-            ValidateMembershipAsync(membership);
+            await ValidateMembershipAsync(membership);
 
             // One can only update certain fields within a membrship
             //original.BEGIN_DTE = membership.BEGIN_DTE;
@@ -297,7 +298,7 @@ namespace Gordon360.Services
             original.PART_CDE = membership.PART_CDE;
             original.SESS_CDE = membership.SESS_CDE;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return original;
 
@@ -308,15 +309,15 @@ namespace Gordon360.Services
         /// <param name="membershipID">The membership id.</param>
         /// <param name="membership">The corresponding membership object</param>
         /// <returns>The newly modified membership.</returns>
-        public MEMBERSHIP ToggleGroupAdmin(int membershipID, MEMBERSHIP membership)
+        public async Task<MEMBERSHIP> ToggleGroupAdminAsync(int membershipID, MEMBERSHIP membership)
         {
-            var original = _context.MEMBERSHIP.Find(membershipID);
+            var original = await _context.MEMBERSHIP.FindAsync(membershipID);
             if (original == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
             }
 
-            ValidateMembershipAsync(membership);
+            await ValidateMembershipAsync(membership);
 
             var isGuest = original.PART_CDE == "GUEST";
 
@@ -325,7 +326,7 @@ namespace Gordon360.Services
 
             original.GRP_ADMIN = !original.GRP_ADMIN;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return original;
         }

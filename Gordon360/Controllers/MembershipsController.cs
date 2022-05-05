@@ -193,9 +193,9 @@ namespace Gordon360.Controllers
         [HttpPost]
         [Route("", Name = "Memberships")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.MEMBERSHIP)]
-        public ActionResult<MEMBERSHIP> Post([FromBody] MEMBERSHIP membership)
+        public async Task<ActionResult<MEMBERSHIP>> PostAsync([FromBody] MEMBERSHIP membership)
         {
-            var result = _membershipService.Add(membership);
+            var result = await _membershipService.AddAsync(membership);
 
             if (result == null)
             {
@@ -259,9 +259,9 @@ namespace Gordon360.Controllers
         [HttpPut]
         [Route("{id}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP)]
-        public ActionResult<MEMBERSHIP> Put(int id, [FromBody] MEMBERSHIP membership)
+        public async Task<ActionResult<MEMBERSHIP>> PutAsync(int id, [FromBody] MEMBERSHIP membership)
         {
-            var result = _membershipService.Update(id, membership);
+            var result = await _membershipService.UpdateAsync(id, membership);
 
             if (result == null)
             {
@@ -276,11 +276,11 @@ namespace Gordon360.Controllers
         [HttpPut]
         [Route("{id}/group-admin")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP)]
-        public ActionResult<MEMBERSHIP> ToggleGroupAdmin([FromBody] MEMBERSHIP membership)
+        public async Task<ActionResult<MEMBERSHIP>> ToggleGroupAdminAsync([FromBody] MEMBERSHIP membership)
         {
             var id = membership.MEMBERSHIP_ID;
 
-            var result = _membershipService.ToggleGroupAdmin(id, membership);
+            var result = await _membershipService.ToggleGroupAdminAsync(id, membership);
 
             if (result == null)
             {

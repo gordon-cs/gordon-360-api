@@ -175,9 +175,9 @@ namespace Gordon360.Services
         MEMBERSHIP GetSpecificMembership(int membershipID);
         Task<int> GetActivityFollowersCountAsync(string idactivityCode);
         Task<int> GetActivityMembersCountAsync(string activityCode);
-        MEMBERSHIP Add(MEMBERSHIP membership);
-        MEMBERSHIP Update(int membershipID, MEMBERSHIP membership);
-        MEMBERSHIP ToggleGroupAdmin(int membershipID, MEMBERSHIP membership);
+        Task<MEMBERSHIP> AddAsync(MEMBERSHIP membership);
+        Task<MEMBERSHIP> UpdateAsync(int membershipID, MEMBERSHIP membership);
+        Task<MEMBERSHIP> ToggleGroupAdminAsync(int membershipID, MEMBERSHIP membership);
         void TogglePrivacy(int membershipID, bool isPrivate);
         MEMBERSHIP Delete(int membershipID);
         bool IsGroupAdmin(int gordonID);

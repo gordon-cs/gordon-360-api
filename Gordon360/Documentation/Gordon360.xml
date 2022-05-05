@@ -568,7 +568,7 @@
             <param name="sessionCode">The session code</param>
             <returns>The number of members of the activity</returns>
         </member>
-        <member name="M:Gordon360.Controllers.MembershipsController.Post(Gordon360.Models.CCT.MEMBERSHIP)">
+        <member name="M:Gordon360.Controllers.MembershipsController.PostAsync(Gordon360.Models.CCT.MEMBERSHIP)">
             <summary>Create a new membership item to be added to database</summary>
             <param name="membership">The membership item containing all required and relevant information</param>
             <returns></returns>
@@ -582,13 +582,13 @@
             <param name="username">The Student Username</param>
             <returns>The membership information that the student is a part of</returns>
         </member>
-        <member name="M:Gordon360.Controllers.MembershipsController.Put(System.Int32,Gordon360.Models.CCT.MEMBERSHIP)">
+        <member name="M:Gordon360.Controllers.MembershipsController.PutAsync(System.Int32,Gordon360.Models.CCT.MEMBERSHIP)">
             <summary>Update an existing membership item</summary>
             <param name="id">The membership id of whichever one is to be changed</param>
             <param name="membership">The content within the membership that is to be changed and what it will change to</param>
             <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         </member>
-        <member name="M:Gordon360.Controllers.MembershipsController.ToggleGroupAdmin(Gordon360.Models.CCT.MEMBERSHIP)">
+        <member name="M:Gordon360.Controllers.MembershipsController.ToggleGroupAdminAsync(Gordon360.Models.CCT.MEMBERSHIP)">
             <summary>Update an existing membership item to be a group admin or not</summary>
              /// <param name="membership">The content within the membership that is to be changed</param>
             <remarks>Calls the server to make a call and update the database with the changed information</remarks>
@@ -1635,7 +1635,7 @@
             Service Class that facilitates data transactions between the MembershipsController and the Membership database model.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.MembershipService.Add(Gordon360.Models.CCT.MEMBERSHIP)">
+        <member name="M:Gordon360.Services.MembershipService.AddAsync(Gordon360.Models.CCT.MEMBERSHIP)">
             <summary>
             Adds a new Membership record to storage. Since we can't establish foreign key constraints and relationships on the database side,
             we do it here by using the validateMembership() method.
@@ -1729,7 +1729,7 @@
             <param name="sessionCode">The session code</param>
             <returns>int.</returns>
         </member>
-        <member name="M:Gordon360.Services.MembershipService.Update(System.Int32,Gordon360.Models.CCT.MEMBERSHIP)">
+        <member name="M:Gordon360.Services.MembershipService.UpdateAsync(System.Int32,Gordon360.Models.CCT.MEMBERSHIP)">
             <summary>
             Updates the membership whose id is given as the first parameter to the contents of the second parameter.
             </summary>
@@ -1737,7 +1737,7 @@
             <param name="membership">The updated membership.</param>
             <returns>The newly modified membership.</returns>
         </member>
-        <member name="M:Gordon360.Services.MembershipService.ToggleGroupAdmin(System.Int32,Gordon360.Models.CCT.MEMBERSHIP)">
+        <member name="M:Gordon360.Services.MembershipService.ToggleGroupAdminAsync(System.Int32,Gordon360.Models.CCT.MEMBERSHIP)">
             <summary>
             Switches the group-admin property of the person whose membership id is given
             </summary>
