@@ -3,12 +3,14 @@ using Gordon360.Database.MyGordon;
 using Gordon360.Exceptions;
 using Gordon360.Models.MyGordon;
 using Gordon360.Models.ViewModels;
+using Gordon360.Utilities;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Gordon360.Utils;
 
 namespace Gordon360.Services
 {
@@ -16,14 +18,15 @@ namespace Gordon360.Services
     {
         private readonly MyGordonContext _context;
         private readonly CCTContext _contextCCT;
-        private IImageUtils _imageUtils = new ImageUtils();
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        private readonly string NewsUploadsPath = HttpContext.Current.Server.MapPath("~/browseable/uploads/news/");
+        private string NewsUploadsPath => Path.Combine(_webHostEnvironment.ContentRootPath, "browseable/uploads/news");
 
-        public NewsService(MyGordonContext context, CCTContext contextCCT)
+        public NewsService(MyGordonContext context, CCTContext contextCCT, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             _contextCCT = contextCCT;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         /// <summary>
@@ -152,16 +155,14 @@ namespace Gordon360.Services
                 Entered = DateTime.Now
             };
 
-            var result = _context.StudentNews.Add(itemToSubmit);
-            if (result == null)
+            _context.StudentNews.Add(itemToSubmit);
+            if (itemToSubmit.Image != null)
             {
-                string fileName = snid + ".jpg";
+                string fileName = itemToSubmit.SNID + ".jpg";
                 string imagePath = NewsUploadsPath + fileName;
-                _imageUtils.UploadImage(imagePath, newsItem.Image);
+                ImageUtils.UploadImage(imagePath, itemToSubmit.Image);
 
-                StudentNews entry = Get(snid);
-                entry.Image = imagePath;
-                _unitOfWork.Save();
+                itemToSubmit.Image = imagePath;
             }
 
             _context.SaveChanges();
@@ -189,7 +190,7 @@ namespace Gordon360.Services
             {
                 string fileName = newsItem.SNID + ".jpg";
                 string imagePath = NewsUploadsPath + fileName;
-                _imageUtils.DeleteImage(imagePath);
+                ImageUtils.DeleteImage(imagePath);
             }
             _context.StudentNews.Remove(newsItem);
             _context.SaveChanges();
@@ -228,7 +229,7 @@ namespace Gordon360.Services
             {
                 string fileName = newsItem.SNID + ".jpg";
                 string imagePath = NewsUploadsPath + fileName;
-                _imageUtils.UploadImage(imagePath, newData.Image);
+                ImageUtils.UploadImage(imagePath, newData.Image);
                 newsItem.Image = imagePath;
             }
 
@@ -239,7 +240,7 @@ namespace Gordon360.Services
             {
                 string fileName = newsItem.SNID + ".jpg";
                 string imagePath = NewsUploadsPath + fileName;
-                _imageUtils.DeleteImage(imagePath);
+                ImageUtils.DeleteImage(imagePath);
                 newsItem.Image = newData.Image;//null
             }
             _context.SaveChanges();
@@ -252,7 +253,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="newsItem">The news item to verify</param>
         /// <returns>true if unapproved, otherwise throws some kind of meaningful exception</returns>
-        private bool VerifyUnapproved(StudentNews newsItem)
+        private static bool VerifyUnapproved(StudentNews newsItem)
         {
             // Note: This check has been duplicated from StateYourBusiness because we do not SuperAdmins
             //    to be able to delete expired news, this should be fixed eventually by removing some of
@@ -274,7 +275,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="newsItem">The news item to verify</param>
         /// <returns>true if unexpired, otherwise throws some kind of meaningful exception</returns>
-        private bool VerifyUnexpired(StudentNews newsItem)
+        private static bool VerifyUnexpired(StudentNews newsItem)
         {
             // DateTime of date entered is nullable, so we need to check that here before comparing
             // If the entered date is null we shouldn't allow deletion to be safe
@@ -300,7 +301,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="newsItem">The news item to validate</param>
         /// <returns>True if valid. Throws ResourceNotFoundException if not. Exception is caught in an Exception Filter</returns>
-        private bool ValidateNewsItem(StudentNews newsItem)
+        private static bool ValidateNewsItem(StudentNews newsItem)
         {
             // any input sanitization should go here
 

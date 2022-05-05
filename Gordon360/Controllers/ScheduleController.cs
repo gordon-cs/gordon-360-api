@@ -66,7 +66,7 @@ namespace Gordon360.Controllers
         /// <returns>A IEnumerable of schedule objects</returns>
         [HttpGet]
         [Route("{username}")]
-        public ActionResult<JArray> Get(string username)
+        public async Task<ActionResult<JArray>> GetAsync(string username)
         {
             //probably needs privacy stuff like ProfilesController and service
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
@@ -93,21 +93,21 @@ namespace Gordon360.Controllers
                 switch (viewerRole)
                 {
                     case Position.SUPERADMIN:
-                        scheduleResult = _scheduleService.GetScheduleStudentAsync(id);
+                        scheduleResult = await _scheduleService.GetScheduleStudentAsync(id);
                         break;
                     case Position.POLICE:
-                        scheduleResult = _scheduleService.GetScheduleStudentAsync(id);
+                        scheduleResult = await _scheduleService.GetScheduleStudentAsync(id);
                         break;
                     case Position.STUDENT:
                         if (schedulePrivacy == 0)
                         {
-                            scheduleResult = _scheduleService.GetScheduleStudentAsync(id);
+                            scheduleResult = await _scheduleService.GetScheduleStudentAsync(id);
                         }
                         break;
                     case Position.FACSTAFF:
-                        if (_scheduleService.CanReadStudentSchedules(viewerName))
+                        if (await _scheduleService.CanReadStudentSchedules(authenticatedUserUsername))
                         {
-                            scheduleResult = _scheduleService.GetScheduleStudentAsync(id);
+                            scheduleResult = await _scheduleService.GetScheduleStudentAsync(id);
                         }
                         break;
                 }
@@ -115,7 +115,7 @@ namespace Gordon360.Controllers
             // Getting faculty / staff schedule
             else if (role == "facstaff")
             {
-                scheduleResult = _scheduleService.GetScheduleFacultyAsync(id);
+                scheduleResult = await _scheduleService.GetScheduleFacultyAsync(id);
             }
             else
             {

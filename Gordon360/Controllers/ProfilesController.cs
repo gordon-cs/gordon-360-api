@@ -235,7 +235,7 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("emergency-contact/{username}")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.EMERGENCY_CONTACT)]
-        public IHttpActionResult GetEmergencyContact(string username)
+        public ActionResult<EmergencyContactViewModel> GetEmergencyContact(string username)
         {
             try
             {
@@ -245,7 +245,6 @@ namespace Gordon360.Controllers
             catch (System.Exception e)
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
-                Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error getting the emergency contact.");
                 return NotFound();
             }
             
@@ -257,7 +256,7 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("mailbox-combination")]
-        public IHttpActionResult GetMailInfo()
+        public ActionResult<MailboxViewModel> GetMailInfo()
         {
             var username = AuthUtils.GetAuthenticatedUserUsername(User);
 
@@ -276,7 +275,7 @@ namespace Gordon360.Controllers
             var result = _profileService.GetBirthdate(username);
             return Ok(result);
         }
-        /* @TODO: fix images
+
         /// <summary>Get the profile image of currently logged in user</summary>
         /// <returns></returns>
         [HttpGet]
@@ -533,32 +532,12 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("mobile_phone_number/{value}")]
-        public IHttpActionResult UpdateMobilePhoneNumber(string value)
+        public async Task<ActionResult<StudentProfileViewModel>> UpdateMobilePhoneNumber(string value)
         {
-            // Verify Input
-            
-            if (!ModelState.IsValid)
-            {
-                string errors = "";
-                foreach (var modelstate in ModelState.Values)
-                {
-                    foreach (var error in modelstate.Errors)
-                    {
-                        errors += "|" + error.ErrorMessage + "|" + error.Exception;
-                    }
-
-                }
-                throw new BadInputException() { ExceptionMessage = errors };
-            }
-
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
-            StudentProfileViewModel profile = _profileService.GetStudentProfileByUsername(username);
-            profile.MobilePhone = value;
-            StudentProfileViewModel result = _profileService.UpdateMobilePhoneNumber(profile);
+            var username = AuthUtils.GetAuthenticatedUserUsername(User);
+            var result = await _profileService.UpdateMobilePhoneNumberAsync(username, value);
             
             return Ok(result);
-
         }
 
         /// <summary>

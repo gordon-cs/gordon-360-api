@@ -30,7 +30,7 @@ namespace Gordon360.Static.Methods
         }
 
         // Return the first day in the current session
-        public static String GetFirstDay()
+        public static async Task<string> GetFirstDayAsync()
         {
             var currentSession = await GetCurrentSessionAsync();
             DateTime firstDayRaw = currentSession.SessionBeginDate.Value;

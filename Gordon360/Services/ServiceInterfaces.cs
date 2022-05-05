@@ -30,7 +30,7 @@ namespace Gordon360.Services
         ProfileCustomViewModel? GetCustomUserInfo(string username);
         Task<PhotoPathViewModel?> GetPhotoPathAsync(string username);
         Task UpdateProfileLinkAsync(string username, string type, CUSTOM_PROFILE path);
-        StudentProfileViewModel UpdateMobilePhoneNumber(StudentProfileViewModel profile);
+        Task<StudentProfileViewModel> UpdateMobilePhoneNumberAsync(string username, string newMobilePhoneNumber);
         Task UpdateMobilePrivacyAsync(string username, string value);
         Task UpdateImagePrivacyAsync(string username, string value);
         Task UpdateProfileImageAsync(string username, string path, string name);
@@ -42,10 +42,6 @@ namespace Gordon360.Services
         IEnumerable<EventViewModel> GetAllEvents();
         IEnumerable<EventViewModel> GetPublicEvents();
         IEnumerable<EventViewModel> GetCLAWEvents();
-        IEnumerable<DEPRECATED_AttendedEventViewModel> DEPRECATED_GetEventsForStudentByTerm(string id, string term);
-        IEnumerable<DEPRECATED_EventViewModel> DEPRECATED_GetAllEvents();
-        IEnumerable<DEPRECATED_EventViewModel> DEPRECATED_GetPublicEvents();
-        IEnumerable<DEPRECATED_EventViewModel> DEPRECATED_GetCLAWEvents();
     }
 
     public interface IDiningService
@@ -261,7 +257,7 @@ namespace Gordon360.Services
     {
         IEnumerable<SliderViewModel> DEPRECATED_GetSliderContent();
         IEnumerable<Slider_Images> GetBannerSlides();
-        Slider_Images AddBannerSlide(BannerSlidePostViewModel slide, string serverURL);
+        Slider_Images AddBannerSlide(BannerSlidePostViewModel slide, string serverURL, string contentRootPath);
         Slider_Images DeleteBannerSlide(int slideID);
     }
 
@@ -296,12 +292,12 @@ namespace Gordon360.Services
 
     public interface IAcademicCheckInService
     {
-        AcademicCheckInViewModel PutCellPhone(string id, AcademicCheckInViewModel data);
-        EmergencyContactViewModel PutEmergencyContact(EmergencyContactViewModel data, string id, string username);
-        IEnumerable<AcademicCheckInViewModel> GetHolds(string id);
-        void SetStatus(string id);
-        AcademicCheckInViewModel PutDemographic(string id, AcademicCheckInViewModel data);
-        Boolean GetStatus(string id);
+        Task<AcademicCheckInViewModel> PutCellPhoneAsync(string id, AcademicCheckInViewModel data);
+        Task<EmergencyContactViewModel> PutEmergencyContactAsync(EmergencyContactViewModel data, string id, string username);
+        Task<IEnumerable<AcademicCheckInViewModel>> GetHoldsAsync(string id);
+        Task SetStatusAsync(string id);
+        Task<AcademicCheckInViewModel> PutDemographicAsync(string id, AcademicCheckInViewModel data);
+        Task<bool> GetStatusAsync(string id);
     }
 
 }

@@ -1,10 +1,13 @@
 ﻿using Gordon360.AuthorizationFilters;
 using Gordon360.Database.CCT;
+using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace Gordon360.Controllers
 {
@@ -12,10 +15,12 @@ namespace Gordon360.Controllers
     public class ContentManagementController : GordonControllerBase
     {
         private readonly IContentManagementService _contentManagementService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ContentManagementController(CCTContext context)
+        public ContentManagementController(CCTContext context, IWebHostEnvironment webHostEnvironment)
         {
             _contentManagementService = new ContentManagementService(context);
+            _webHostEnvironment = webHostEnvironment;
         }
 
         /// <summary>Get all the slider content for the dashboard slider</summary>
@@ -42,7 +47,7 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("banner")]
         [StateYourBusiness(operation = Operation.READ_PUBLIC, resource = Resource.SLIDER)]
-        public IHttpActionResult GetBannerSlides()
+        public ActionResult<IEnumerable<Slider_Images>> GetBannerSlides()
         {
             var result = _contentManagementService.GetBannerSlides();
             if (result == null)
@@ -57,11 +62,11 @@ namespace Gordon360.Controllers
         /// <returns>The posted banner</returns>
         [HttpPost]
         [Route("banner")]
-        [StateYourBusiness(operation = Operation.ADD, resource = Resource.SLIDER)]
-        public IHttpActionResult PostBannerSlide(BannerSlidePostViewModel slide)
+        //[StateYourBusiness(operation = Operation.ADD, resource = Resource.SLIDER)]
+        public ActionResult<Slider_Images> PostBannerSlide(BannerSlidePostViewModel slide)
         {
-            var serverURL = Url.Content("~/");
-            var result = _contentManagementService.AddBannerSlide(slide, serverURL);
+            var serverURL = $"{Request.Scheme}://{Request.Host}{Request.PathBase}";
+            var result = _contentManagementService.AddBannerSlide(slide, serverURL, _webHostEnvironment.ContentRootPath);
             if (result == null)
             {
                 return NotFound();
@@ -74,8 +79,8 @@ namespace Gordon360.Controllers
         /// <returns>ID of the slide to remove</returns>
         [HttpDelete]
         [Route("banner/{slideID}")]
-        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.SLIDER)]
-        public IHttpActionResult DeleteBannerSlide(int slideID)
+        //[StateYourBusiness(operation = Operation.DELETE, resource = Resource.SLIDER)]
+        public ActionResult<Slider_Images> DeleteBannerSlide(int slideID)
         {
             var result = _contentManagementService.DeleteBannerSlide(slideID);
             if (result == null)

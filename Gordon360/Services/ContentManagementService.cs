@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Gordon360.Database.CCT;
+using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
-using Gordon360.Repositories;
-using Gordon360.Utils;
+using Gordon360.Utilities;
+using Microsoft.AspNetCore.Http;
 
 namespace Gordon360.Services
 {
@@ -16,7 +18,6 @@ namespace Gordon360.Services
     public class ContentManagementService : IContentManagementService
     {
         private CCTContext _context;
-        private readonly ImageUtils _imageUtils = new ImageUtils();
 
         private readonly string SlideUploadPath = "browseable/slider";
 
@@ -40,7 +41,7 @@ namespace Gordon360.Services
         /// Retrieve all banner slides from the database
         /// </summary>
         /// <returns>An IEnumerable of the slides in the database</returns>
-        public IEnumerable<Slider_Images> GetBannerSlides() => _unitOfWork.SliderRepository.GetAll();
+        public IEnumerable<Slider_Images> GetBannerSlides() => _context.Slider_Images.AsEnumerable();
 
         /// <summary>
         /// Inserts a banner slide in the database and uploads the image to the local slider folder
@@ -50,8 +51,9 @@ namespace Gordon360.Services
         /// This is needed to save the image path into the database. The URL is different depending on where the API is running.
         /// The URL is trivial to access from the controller, but not available from within the service, so it has to be passed in.
         /// </param>
+        /// <param name="contentRootPath">The path to the root of the web server's content, from which we can access the physical filepath where slides are uploaded.</param>
         /// <returns>The inserted slide</returns>
-        public Slider_Images AddBannerSlide(BannerSlidePostViewModel slide, string serverURL)
+        public Slider_Images AddBannerSlide(BannerSlidePostViewModel slide, string serverURL, string contentRootPath)
         {
             Match match = Regex.Match(slide.ImageData, @"^data:image/(?<filetype>jpeg|jpg|png);base64,");
             if (!match.Success)
@@ -62,21 +64,21 @@ namespace Gordon360.Services
             var imageFormat = filetype == "png" ? ImageFormat.Png : ImageFormat.Jpeg;
             string fileName = $"{slide.Title}.{filetype}";
 
-            string localImagePath = $"{HttpContext.Current.Server.MapPath($"~/{SlideUploadPath}")}/{fileName}";
-            string rawImageData = slide.ImageData.Substring(match.Length);
-            _imageUtils.UploadImage(localImagePath, rawImageData, imageFormat);
+            string localImagePath = Path.Combine(contentRootPath, SlideUploadPath, fileName);
+            string rawImageData = slide.ImageData[match.Length..];
+            ImageUtils.UploadImage(localImagePath, rawImageData, imageFormat);
 
             var entry = new Slider_Images
             {
-                Path = $"{serverURL}{SlideUploadPath}/{fileName}",
+                Path = $"{serverURL}/{SlideUploadPath}/{fileName}",
                 Title = slide.Title,
                 LinkURL = slide.LinkURL,
                 SortOrder = slide.SortOrder,
                 Width = 1500,
                 Height = 600
             };
-            _unitOfWork.SliderRepository.Add(entry);
-            _unitOfWork.Save();
+            _context.Slider_Images.Add(entry);
+            _context.SaveChanges();
             return entry;
         }
 
@@ -86,10 +88,10 @@ namespace Gordon360.Services
         /// <returns>The deleted slide</returns>
         public Slider_Images DeleteBannerSlide(int slideID)
         {
-            var slide = _unitOfWork.SliderRepository.GetById(slideID);
-            _imageUtils.DeleteImage(slide.Path);
-            _unitOfWork.SliderRepository.Delete(slide);
-            _unitOfWork.Save();
+            var slide = _context.Slider_Images.Find(slideID);
+            ImageUtils.DeleteImage(slide.Path);
+            _context.Slider_Images.Remove(slide);
+            _context.SaveChanges();
             return slide;
         }
     }

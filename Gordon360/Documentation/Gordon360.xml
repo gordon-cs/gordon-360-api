@@ -4,6 +4,33 @@
         <name>Gordon360</name>
     </assembly>
     <members>
+        <member name="M:Gordon360.Controllers.Api.AcademicCheckInController.PutEmergencyContactAsync(Gordon360.Models.ViewModels.EmergencyContactViewModel)">
+            <summary>Set emergency contacts for student</summary>
+            <param name="data"> The contact data to be stored </param>
+            <returns> The data stored </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.AcademicCheckInController.PutCellPhoneAsync(Gordon360.Models.ViewModels.AcademicCheckInViewModel)">
+            <summary> Sets the students cell phone number</summary>
+            <param name="data"> The phone number object to be added to the database </param>
+            <returns> The data stored </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.AcademicCheckInController.PutDemographicAsync(Gordon360.Models.ViewModels.AcademicCheckInViewModel)">
+            <summary>Sets the students race and ethinicity</summary>
+            <param name="data"> The object containing the race numbers of the users </param>
+            <returns> The data stored </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.AcademicCheckInController.GetHoldsAsync">
+            <summary> Gets and returns the user's holds </summary>
+            <returns> The user's stored holds </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.AcademicCheckInController.SetStatusAsync">
+            <summary> Sets the user as having completed Academic Checkin </summary>
+            <returns> The HTTP status indicating whether the request was completed or not</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.AcademicCheckInController.GetStatusAsync">
+            <summary> Gets whether the user has checked in or not. True if they have checked in, false if they have not checked in </summary>
+            <returns> The HTTP status indicating whether the request was completed and returns the check in status of the student </returns>
+        </member>
         <member name="M:Gordon360.Controllers.AccountsController.SearchAsync(System.String)">
             <summary>
             Return a list of accounts matching some or all of the search parameter
@@ -224,6 +251,18 @@
             <summary>Get all the slider content for the dashboard slider</summary>
             <returns>A list of all the slides for the slider</returns>
             <remarks>Queries the database for all entries in slider table</remarks>
+        </member>
+        <member name="M:Gordon360.Controllers.ContentManagementController.GetBannerSlides">
+            <summary>Get all the banner slides for the dashboard banner</summary>
+            <returns>A list of all the slides for the banner</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.ContentManagementController.PostBannerSlide(Gordon360.Models.ViewModels.BannerSlidePostViewModel)">
+            <summary>Post a new slide for the dashboard banner</summary>
+            <returns>The posted banner</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.ContentManagementController.DeleteBannerSlide(System.Int32)">
+            <summary>Remove a slide from the dashboard banner</summary>
+            <returns>ID of the slide to remove</returns>
         </member>
         <member name="M:Gordon360.Controllers.DiningController.GetAsync">
             <summary>
@@ -611,6 +650,13 @@
             <param name="newsID">The id of the news item to retrieve</param>
             <returns>The news item</returns>
         </member>
+        <member name="M:Gordon360.Controllers.NewsController.GetImage(System.Int32)">
+            <summary>Gets the base64 image data for an image corresponding 
+            to a student news item. Only used by GO; when we move student news approval
+            to 360, this will be removed.</summary>
+            <param name="newsID">The id of the news item to retrieve image from</param>
+            <returns>base64 string representing image</returns>
+        </member>
         <member name="M:Gordon360.Controllers.NewsController.GetNotExpiredAsync">
             Call the service that gets all approved student news entries not yet expired, filtering
             out the expired by comparing 2 weeks past date entered to current date
@@ -670,6 +716,19 @@
             <param name="username"> The username for which to retrieve info </param>
             <returns> Clifton strengths of the given user. </returns>
         </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.GetEmergencyContact(System.String)">
+            <summary> Gets the emergency contact information of a particular user </summary>
+            <param name="username"> The username for which to retrieve info </param>
+            <returns> Emergency contact information of the given user. </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.GetMailInfo">
+            <summary>Gets the mailbox information of currently logged in user</summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.GetBirthdate">
+            <summary>Gets the date of birth of the current logged-in user</summary>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.ProfilesController.GetMyImgAsync">
             <summary>Get the profile image of currently logged in user</summary>
             <returns></returns>
@@ -690,6 +749,13 @@
             </summary>
             <param name="type">The type of social media</param>
             <param name="path">The path of the links</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdateMobilePhoneNumber(System.String)">
+            <summary>
+            Update mobile phone number
+            </summary>
+            <param name="value">phoneNumber</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.UpdateMobilePrivacyAsync(System.String)">
@@ -857,7 +923,7 @@
             </summary>
             <returns>A IEnumerable of schedule objects</returns>
         </member>
-        <member name="M:Gordon360.Controllers.ScheduleController.Get(System.String)">
+        <member name="M:Gordon360.Controllers.ScheduleController.GetAsync(System.String)">
             <summary>
              Gets all schedule objects for a user
             </summary>
@@ -886,9 +952,21 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.SessionsController.GetFirstDayinSemesterAsync">
+            <summary>
+            Gets the first day in the current session
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.SessionsController.GetLastDayinSemester">
+            <summary>
+            Gets the last day in the current session
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.SessionsController.GetDaysLeftInSemesterAsync">
             <summary>
-            Gets the days left in the current semester
+            Gets the days left in the current session
             </summary>
             <returns></returns>
         </member>
@@ -948,6 +1026,57 @@
             <summary>
             a job&apos;s unique id number
             </summary>
+        </member>
+        <member name="T:Gordon360.Services.AcademicCheckInService">
+            <summary>
+            Service Class that facilitates data transactions between the AcademicCheckInController and the CheckIn database model.
+            </summary>
+            
+        </member>
+        <member name="M:Gordon360.Services.AcademicCheckInService.PutEmergencyContactAsync(Gordon360.Models.ViewModels.EmergencyContactViewModel,System.String,System.String)">
+            <summary> Stores the emergency contact information of a particular user </summary>
+            <param name="data"> The object that stores the contact info </param>
+            <param name="id"> The students id number</param>
+            <returns> The stored data </returns>
+        </member>
+        <member name="M:Gordon360.Services.AcademicCheckInService.CreateNotesValue(System.String,System.String)">
+            <summary>
+            Create the notes value for the database to be passed in with the rest of the data.
+            The reason for this is that the notes column in the database is only made up of what phone numbers a contact has that are international
+            </summary>
+            <param name="MobilePhone"> The mobile phone of the contact</param>
+            <param name="HomePhone"> The home phone of the contact </param>
+            <returns> The formatted notes parameter to be passed to the database </returns>
+        </member>
+        <member name="M:Gordon360.Services.AcademicCheckInService.PutCellPhoneAsync(System.String,Gordon360.Models.ViewModels.AcademicCheckInViewModel)">
+            <summary> Stores the cellphone preferences for the current user </summary>
+            <param name="data"> The phone number object for the user </param>
+            <param name="id"> The id of the student to be updated </param>
+            <returns> The stored data </returns>
+        </member>
+        <member name="M:Gordon360.Services.AcademicCheckInService.PutDemographicAsync(System.String,Gordon360.Models.ViewModels.AcademicCheckInViewModel)">
+            <summary> Stores the demographic data (race and ethnicity) of the current user </summary>
+            <param name="data"> The race and ethnicity data for the user </param>
+            <param name="id"> The id of the user to be updated </param>
+            <returns> The stored data </returns>
+        </member>
+        <member name="M:Gordon360.Services.AcademicCheckInService.GetHoldsAsync(System.String)">
+            <summary> Gets the holds of the user with the given ID </summary>
+            <param name="id"> The id of the user whose holds are to be found </param>
+            <returns> The stored data </returns>
+        </member>
+        <member name="M:Gordon360.Services.AcademicCheckInService.SetStatusAsync(System.String)">
+            <summary> Sets the user as having been checked in </summary>
+            <param name="id"> The id of the user who is to be marked as checked in </param>
+        </member>
+        <member name="M:Gordon360.Services.AcademicCheckInService.GetStatusAsync(System.String)">
+            <summary> Gets the whether the user has completed Academic Checkin </summary>
+            <param name="id"> The id of the user for which the data is to be found for </param>
+        </member>
+        <member name="M:Gordon360.Services.AcademicCheckInService.FormatNumber(System.String)">
+            <summary> Formats a phone number for insertion into the database </summary>
+            <param name="phoneNum"> The phone number to be formatted </param>
+            <returns> The formatted number </returns>
         </member>
         <member name="T:Gordon360.Services.AccountService">
             <summary>
@@ -1169,6 +1298,30 @@
             <returns>If found, returns a set of SliderViewModel's, based on each slide entry in the db. 
             If not returns an empty IEnumerable.</returns>
         </member>
+        <member name="M:Gordon360.Services.ContentManagementService.GetBannerSlides">
+            <summary>
+            Retrieve all banner slides from the database
+            </summary>
+            <returns>An IEnumerable of the slides in the database</returns>
+        </member>
+        <member name="M:Gordon360.Services.ContentManagementService.AddBannerSlide(Gordon360.Models.ViewModels.BannerSlidePostViewModel,System.String,System.String)">
+            <summary>
+            Inserts a banner slide in the database and uploads the image to the local slider folder
+            </summary>
+            <param name="slide">The slide to add</param>
+            <param name="serverURL">The url of the server that the image is being posted to.
+            This is needed to save the image path into the database. The URL is different depending on where the API is running.
+            The URL is trivial to access from the controller, but not available from within the service, so it has to be passed in.
+            </param>
+            <param name="contentRootPath">The path to the root of the web server's content, from which we can access the physical filepath where slides are uploaded.</param>
+            <returns>The inserted slide</returns>
+        </member>
+        <member name="M:Gordon360.Services.ContentManagementService.DeleteBannerSlide(System.Int32)">
+            <summary>
+            Deletes a banner slide from the database and deletes the local image file
+            </summary>
+            <returns>The deleted slide</returns>
+        </member>
         <member name="T:Gordon360.Services.DiningService">
             <summary>
             Service that allows for meal control
@@ -1261,6 +1414,7 @@
         <member name="M:Gordon360.Services.EventService.GetAllEvents">
             <summary>
             Access the memory stream created by the cached task and parse it into events
+            Splits events with multiple repeated occurrences into individual records for each occurrence
             </summary>
             <returns>All events for the current academic year.</returns>
         </member>
@@ -1747,6 +1901,20 @@
             <param name="username">username</param>
             <returns>AlumniProfileViewModel if found, null if not found</returns>
         </member>
+        <member name="M:Gordon360.Services.ProfileService.GetMailboxCombination(System.String)">
+            <summary>
+            get mailbox combination
+            </summary>
+            <param name="username">The current user's username</param>
+            <returns>MailboxViewModel with the combination</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetBirthdate(System.String)">
+            <summary>
+            get a user's birthday
+            </summary>
+            <param name="username">The username of the person to get the birthdate of</param>
+            <returns>Date the user's date of birth</returns>
+        </member>
         <member name="M:Gordon360.Services.ProfileService.GetAdvisorsAsync(System.String)">
             <summary>
             get advisors for particular student
@@ -1758,6 +1926,11 @@
             <summary> Gets the clifton strengths of a particular user </summary>
             <param name="id"> The id of the user for which to retrieve info </param>
             <returns> Clifton strengths of the given user. </returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetEmergencyContact(System.String)">
+            <summary> Gets the emergency contact information of a particular user </summary>
+            <param name="username"> The username of the user for which to retrieve info </param>
+            <returns> Emergency contact information of the given user. </returns>
         </member>
         <member name="M:Gordon360.Services.ProfileService.GetPhotoPathAsync(System.String)">
             <summary>
@@ -1795,6 +1968,13 @@
             </summary>
             <param name="username">AD Username</param>
             <param name="value">Y or N</param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.UpdateMobilePhoneNumberAsync(System.String,System.String)">
+            <summary>
+            mobile phone number setting
+            </summary>
+            <param name="username"> The username for the user whose phone is to be updated </param>
+            <param name="newMobilePhoneNumber">The new number to update the user's phone number to</param>
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateImagePrivacyAsync(System.String,System.String)">
             <summary>
@@ -1966,11 +2146,6 @@
             </summary>
             <param name="currentTime">The time of the check in</param>
             <returns>When the check in should expire (the next 5AM).</returns>
-        </member>
-        <member name="T:Gordon360.Static.Data.Data">
-            <summary>
-            Service class for data that is shared between all services.
-            </summary>
         </member>
         <member name="T:Gordon360.Static.Methods.Helpers">
             <summary>

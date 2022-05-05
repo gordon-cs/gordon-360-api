@@ -3,10 +3,10 @@ using Gordon360.Database.CCT;
 using Gordon360.Database.MyGordon;
 using Gordon360.Models.MyGordon;
 using Gordon360.Models.ViewModels;
-using Gordon360.Utils;
 using Gordon360.Services;
 using Gordon360.Static.Names;
 using Gordon360.Utilities;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,11 +18,10 @@ namespace Gordon360.Controllers
     public class NewsController : GordonControllerBase
     {
         private readonly INewsService _newsService;
-        private readonly IImageUtils _imageUtils = new ImageUtils();
 
-        public NewsController(CCTContext context, MyGordonContext myGordonContext)
+        public NewsController(CCTContext context, MyGordonContext myGordonContext, IWebHostEnvironment webHostEnvironment)
         {
-            _newsService = new NewsService(myGordonContext, context);
+            _newsService = new NewsService(myGordonContext, context, webHostEnvironment);
         }
 
         /// <summary>Gets a news item by id from the database</summary>
@@ -41,7 +40,7 @@ namespace Gordon360.Controllers
                 return NotFound();
             }
 
-            result.Image = _imageUtils.RetrieveImageFromPath(result.Image);
+            result.Image = ImageUtils.RetrieveImageFromPath(result.Image);
 
             return Ok(result);
         }
@@ -53,7 +52,7 @@ namespace Gordon360.Controllers
         /// <returns>base64 string representing image</returns>
         [HttpGet]
         [Route("{newsID}/image")]
-        public IHttpActionResult GetImage(int newsID)
+        public ActionResult<string> GetImage(int newsID)
         {
             var result = (StudentNewsViewModel)_newsService.Get(newsID);
             if (result == null)
@@ -61,7 +60,7 @@ namespace Gordon360.Controllers
                 return NotFound();
             }
 
-            return Ok(_imageUtils.RetrieveImageFromPath(result.Image));
+            return Ok(ImageUtils.RetrieveImageFromPath(result.Image));
         }
 
         /** Call the service that gets all approved student news entries not yet expired, filtering

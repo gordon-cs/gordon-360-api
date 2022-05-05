@@ -5,7 +5,9 @@ using Gordon360.Services;
 using Gordon360.Static.Methods;
 using Gordon360.Static.Names;
 using Gordon360.Utilities;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,6 +38,7 @@ namespace Gordon360.AuthorizationFilters
         private ActionExecutingContext context;
         private static CCTContext CCTContext => new CCTContext();
         private static MyGordonContext MyGordonContext => new MyGordonContext();
+        private IWebHostEnvironment _webHostEnvironment;
 
         // User position at the college and their id.
         private string user_position { get; set; }
@@ -47,6 +50,7 @@ namespace Gordon360.AuthorizationFilters
         public override async Task OnActionExecutionAsync(ActionExecutingContext actionContext, ActionExecutionDelegate next)
         {
             context = actionContext;
+            _webHostEnvironment = context.HttpContext.RequestServices.GetService<IWebHostEnvironment>();
             // Step 1: Who is to be authorized
             var authenticatedUser = actionContext.HttpContext.User;
 
@@ -651,7 +655,7 @@ namespace Gordon360.AuthorizationFilters
 
                 case Resource.NEWS:
                     var newsID = context.ActionArguments["newsID"];
-                    var newsService = new NewsService(MyGordonContext, CCTContext);
+                    var newsService = new NewsService(MyGordonContext, CCTContext, _webHostEnvironment);
                     var newsItem = newsService.Get((int)newsID);
                     // only unapproved posts may be updated
                     var approved = newsItem.Accepted;
@@ -759,7 +763,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.NEWS:
                     {
                         var newsID = context.ActionArguments["newsID"];
-                        var newsService = new NewsService(MyGordonContext, CCTContext);
+                        var newsService = new NewsService(MyGordonContext, CCTContext, _webHostEnvironment);
                         var newsItem = newsService.Get((int)newsID);
                         // only expired news items may be deleted
                         var newsDate = newsItem.Entered;

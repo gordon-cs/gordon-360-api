@@ -1,31 +1,32 @@
-using Gordon360.Exceptions.CustomExceptions;
-using Gordon360.Exceptions.ExceptionFilters;
+using Gordon360.Database.CCT;
+using Gordon360.Exceptions;
 using Gordon360.Models;
 using Gordon360.Models.ViewModels;
-using Gordon360.Repositories;
 using Gordon360.Services;
+using Gordon360.Utilities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
-using System.Web.Http;
+using System.Threading.Tasks;
 
 namespace Gordon360.Controllers.Api
 {
-    [RoutePrefix("api/checkIn")]
+    [Route("api/checkIn")]
     [Authorize]
     [CustomExceptionFilter]
-    public class AcademicCheckInController : ApiController 
+    public class AcademicCheckInController : ControllerBase 
     {
-        private IAcademicCheckInService _checkInService;
-        private IAccountService _accountService;
+        private readonly IAcademicCheckInService _checkInService;
+        private readonly IAccountService _accountService;
 
-        public AcademicCheckInController()
+        public AcademicCheckInController(CCTContext context)
         {
-            IUnitOfWork _unitOfWork = new UnitOfWork();
-            _checkInService = new AcademicCheckInService(_unitOfWork);
-            _accountService = new AccountService(_unitOfWork);
+            _checkInService = new AcademicCheckInService(context);
+            _accountService = new AccountService(context);
         }
 
         /// <summary>Set emergency contacts for student</summary>
@@ -33,20 +34,18 @@ namespace Gordon360.Controllers.Api
         /// <returns> The data stored </returns>
         [HttpPost]
         [Route("emergencycontact")]
-        public IHttpActionResult PutEmergencyContact([FromBody] EmergencyContactViewModel data)
+        public async Task<ActionResult<EmergencyContactViewModel>> PutEmergencyContactAsync([FromBody] EmergencyContactViewModel data)
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var username = AuthUtils.GetAuthenticatedUserUsername(User);
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
             try {
-                var result = _checkInService.PutEmergencyContact(data, id, username);
+                var result = await _checkInService.PutEmergencyContactAsync(data, id, username);
                 return Created("Emergency Contact", result);
             }
             catch (System.Exception e)
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
-                Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error setting the check in data.");
                 return NotFound();
             }
         
@@ -59,20 +58,18 @@ namespace Gordon360.Controllers.Api
         /// <returns> The data stored </returns>
         [HttpPut]
         [Route("cellphone")]
-        public IHttpActionResult PutCellPhone([FromBody] AcademicCheckInViewModel data)
+        public async Task<ActionResult<AcademicCheckInViewModel>> PutCellPhoneAsync([FromBody] AcademicCheckInViewModel data)
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var username = AuthUtils.GetAuthenticatedUserUsername(User);
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
             try {
-                var result = _checkInService.PutCellPhone(id, data);
+                var result = await _checkInService.PutCellPhoneAsync(id, data);
                 return Ok(result);
             }
             catch (System.Exception e)
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
-                Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error setting the check in data.");
                 return NotFound();
             }
         
@@ -83,21 +80,19 @@ namespace Gordon360.Controllers.Api
         /// <returns> The data stored </returns>
         [HttpPut]
         [Route("demographic")]
-        public IHttpActionResult PutDemographic([FromBody] AcademicCheckInViewModel data)
+        public async Task<ActionResult<AcademicCheckInViewModel>> PutDemographicAsync([FromBody] AcademicCheckInViewModel data)
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var username = AuthUtils.GetAuthenticatedUserUsername(User);
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
             try
             {
-                var result = _checkInService.PutDemographic(id, data);
+                var result = await _checkInService.PutDemographicAsync(id, data);
                 return Ok(result);
             }
             catch (System.Exception e)
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
-                Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error setting the check in data.");
                 return NotFound();
             }
 
@@ -107,21 +102,19 @@ namespace Gordon360.Controllers.Api
         /// <returns> The user's stored holds </returns>
         [HttpGet]
         [Route("holds")]
-        public IHttpActionResult GetHolds()
+        public async Task<ActionResult<AcademicCheckInViewModel>> GetHoldsAsync()
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var username = AuthUtils.GetAuthenticatedUserUsername(User);
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
             try
             {
-                var result = (_checkInService.GetHolds(id)).First();
+                var result = (await _checkInService.GetHoldsAsync(id)).First();
                 return Ok(result);
             }
             catch (System.Exception e)
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
-                Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error finding the check in data");
                 return NotFound();
             }
 
@@ -131,21 +124,19 @@ namespace Gordon360.Controllers.Api
         /// <returns> The HTTP status indicating whether the request was completed or not</returns>
         [HttpPut]
         [Route("status")]
-        public IHttpActionResult SetStatus()
+        public async Task<ActionResult> SetStatusAsync()
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var username = AuthUtils.GetAuthenticatedUserUsername(User);
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
             try
             {
-                _checkInService.SetStatus(id);
+                await _checkInService.SetStatusAsync(id);
                 return Ok();
             }
             catch (System.Exception e)
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
-                Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error finding the check in data");
                 return NotFound();
             }
         }
@@ -154,21 +145,19 @@ namespace Gordon360.Controllers.Api
         /// <returns> The HTTP status indicating whether the request was completed and returns the check in status of the student </returns>
         [HttpGet]
         [Route("status")]
-        public IHttpActionResult GetStatus()
+        public async Task<ActionResult<AcademicCheckInViewModel>> GetStatusAsync()
         {
-            var authenticatedUser = this.ActionContext.RequestContext.Principal as ClaimsPrincipal;
-            var username = authenticatedUser.Claims.FirstOrDefault(x => x.Type == "user_name").Value;
+            var username = AuthUtils.GetAuthenticatedUserUsername(User);
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
             try
             {
-                var result = _checkInService.GetStatus(id);
+                var result = await _checkInService.GetStatusAsync(id);
                 return Ok(result);
             }
             catch (System.Exception e)
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
-                Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error finding the check in data");
                 return NotFound();
             }
         }

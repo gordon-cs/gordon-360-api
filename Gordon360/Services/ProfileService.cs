@@ -1,4 +1,5 @@
 ﻿using Gordon360.Database.CCT;
+using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
 using System;
@@ -57,11 +58,11 @@ namespace Gordon360.Services
         public MailboxViewModel GetMailboxCombination(string username)
         {
             var mailboxNumber = 
-                Data.StudentData
+                _context.Student
                 .FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower())
                 .Mail_Location;
 
-            MailboxViewModel combo = _unitOfWork.MailboxRepository.FirstOrDefault(m => m.BoxNo == mailboxNumber);
+            var combo = _context.Mailboxes.FirstOrDefault(m => m.BoxNo == mailboxNumber);
 
             if (combo == null)
             {
@@ -78,7 +79,7 @@ namespace Gordon360.Services
         /// <returns>Date the user's date of birth</returns>
         public DateTime GetBirthdate(string username)
         {
-            var birthdate = _unitOfWork.AccountRepository.FirstOrDefault(a => a.AD_Username == username)?.Birth_Date;
+            var birthdate = _context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.Birth_Date;
 
             if (birthdate == null)
             {
@@ -137,6 +138,20 @@ namespace Gordon360.Services
                 .FirstOrDefault() ?? Array.Empty<string>();
         }
 
+        /// <summary> Gets the emergency contact information of a particular user </summary>
+        /// <param name="username"> The username of the user for which to retrieve info </param>
+        /// <returns> Emergency contact information of the given user. </returns>
+        public IEnumerable<EmergencyContactViewModel> GetEmergencyContact(string username)
+        {
+            var result = _context.EmergencyContact.Where(x => x.AD_Username == username).Select(x => (EmergencyContactViewModel)x);
+
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "No emergency contacts found." };
+            }
+
+            return result;
+        }
 
         /// <summary>
         /// Get photo path for profile
@@ -257,20 +272,21 @@ namespace Gordon360.Services
         /// <summary>
         /// mobile phone number setting
         /// </summary>
-        /// <param name="profile"> The profile for the user whose phone is to be updated </param>
-        public StudentProfileViewModel UpdateMobilePhoneNumber(StudentProfileViewModel profile)
+        /// <param name="username"> The username for the user whose phone is to be updated </param>
+        /// <param name="newMobilePhoneNumber">The new number to update the user's phone number to</param>
+        public async Task<StudentProfileViewModel> UpdateMobilePhoneNumberAsync(string username, string newMobilePhoneNumber)
         {
-            var idParam = new SqlParameter("@UserID", profile.ID);
-            var newPhoneNumberParam = new SqlParameter("@PhoneUnformatted", profile.MobilePhone);
-            var result = RawSqlQuery<StudentProfileViewModel>.query("UPDATE_CELL_PHONE @UserID, @PhoneUnformatted", idParam, newPhoneNumberParam);
+            var profile = GetStudentProfileByUsername(username);
 
-            if (result == null)
+            if (profile == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
             }
 
+            var result = await _context.Procedures.UPDATE_CELL_PHONEAsync(profile.ID, profile.MobilePhone);
+
             // Update value in cached data
-            var student = Data.StudentData.FirstOrDefault(x => x.ID == profile.ID);
+            var student = _context.Student.FirstOrDefault(x => x.ID == profile.ID);
             if (student != null)
             {
                 student.MobilePhone = profile.MobilePhone;

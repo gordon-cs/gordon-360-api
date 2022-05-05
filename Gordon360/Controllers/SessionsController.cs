@@ -76,10 +76,10 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("firstDay")]
-        //Public Route
-        public IHttpActionResult GetFirstDayinSemester()
+        [AllowAnonymous]
+        public async Task<ActionResult<string>> GetFirstDayinSemesterAsync()
         {
-            var firstDay = Helpers.GetFirstDay();
+            var firstDay = await Helpers.GetFirstDayAsync();
             if (firstDay == null)
             {
                 return NotFound();
@@ -94,10 +94,10 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("lastDay")]
-        //Public Route
-        public IHttpActionResult GetLastDayinSemester()
+        [AllowAnonymous]
+        public async Task<ActionResult<string>> GetLastDayinSemester()
         {
-            var lastDay = Helpers.GetLastDay();
+            var lastDay = await Helpers.GetLastDayAsync();
             if (lastDay == null)
             {
                 return NotFound();

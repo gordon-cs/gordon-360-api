@@ -71,16 +71,14 @@ namespace Gordon360.Utilities
             {
                 //Load the image data into a memory stream and save it to
                 //the appropriate file:
-                using (MemoryStream imageStream = new MemoryStream(imageDataArray))
-                {
-                    Image image = Image.FromStream(imageStream);
+                using MemoryStream imageStream = new MemoryStream(imageDataArray);
+                Image image = Image.FromStream(imageStream);
 
-                    System.Diagnostics.Debug.WriteLine(imagePath);
-                    System.Diagnostics.Debug.WriteLine(image);
+                System.Diagnostics.Debug.WriteLine(imagePath);
+                System.Diagnostics.Debug.WriteLine(image);
 
-                    image.Save(imagePath, format ?? ImageFormat.Jpeg);
-                    return;//Saving image was successful
-                }
+                image.Save(imagePath, format ?? ImageFormat.Jpeg);
+                return;//Saving image was successful
             }
 
             catch (System.Exception e)
@@ -125,14 +123,12 @@ namespace Gordon360.Utilities
         /// <returns>The base64 content of the image</returns>
         private static string GetBase64ImageDataFromPath(string imagePath)
         {
-            using (System.Drawing.Image image = System.Drawing.Image.FromFile(imagePath))
-            using (MemoryStream data = new MemoryStream())
-            {
-                image.Save(data, image.RawFormat);
-                byte[] imageBytes = data.ToArray();
-                string base64Data = System.Convert.ToBase64String(imageBytes);
-                return base64Data;
-            }
+            using Image image = Image.FromFile(imagePath);
+            using MemoryStream data = new MemoryStream();
+            image.Save(data, image.RawFormat);
+            byte[] imageBytes = data.ToArray();
+            string base64Data = Convert.ToBase64String(imageBytes);
+            return base64Data;
         }
     }
 }
