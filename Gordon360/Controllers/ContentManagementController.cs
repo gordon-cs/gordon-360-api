@@ -62,7 +62,7 @@ namespace Gordon360.Controllers
         /// <returns>The posted banner</returns>
         [HttpPost]
         [Route("banner")]
-        //[StateYourBusiness(operation = Operation.ADD, resource = Resource.SLIDER)]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.SLIDER)]
         public ActionResult<Slider_Images> PostBannerSlide(BannerSlidePostViewModel slide)
         {
             var serverURL = $"{Request.Scheme}://{Request.Host}{Request.PathBase}";
@@ -79,7 +79,7 @@ namespace Gordon360.Controllers
         /// <returns>ID of the slide to remove</returns>
         [HttpDelete]
         [Route("banner/{slideID}")]
-        //[StateYourBusiness(operation = Operation.DELETE, resource = Resource.SLIDER)]
+        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.SLIDER)]
         public ActionResult<Slider_Images> DeleteBannerSlide(int slideID)
         {
             var result = _contentManagementService.DeleteBannerSlide(slideID);
