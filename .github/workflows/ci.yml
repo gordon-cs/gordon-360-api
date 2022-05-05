@@ -9,17 +9,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Setup msbuild
-        uses: microsoft/setup-msbuild@v1
+      - name: Setup .NET Core SDK 6
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '6.0.x'
 
-      - name: Setup NuGet
-        uses: NuGet/setup-nuget@v1.0.5
+      - name: Install dependencies
+        run: dotnet restore
 
-      - name: Restore NuGet packages
-        run: nuget restore Gordon360.sln
-
-      - name: Build API
-        run: msbuild .\Gordon360\Gordon360.csproj /p:DeployOnBuild=True /p:PublishProfile=${{ github.workspace }}\gha-publish-profiles\CI.pubxml
+      - name: Build
+        run: dotnet publish -r win-x64
 
       # Uncomment to enable test builds. Works in concert with the `Deploy 360Test` Scheduled Task on 360API.gordon.edu VM
       # - name: Upload Test Build Artifact
