@@ -17,11 +17,6 @@ namespace Gordon360.Controllers
         {
             _adminService = new AdministratorService(context);
         }
-        public AdminsController(IAdministratorService adminService)
-        {
-            _adminService = adminService;
-        }
-
 
         /// <summary>
         /// Get all admins
