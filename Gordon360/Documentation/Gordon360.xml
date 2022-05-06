@@ -276,26 +276,6 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.CheckIfHousingAdmin">
-            <summary>
-            Check if the currently logged in user is authorized to view the housing admin page
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Controllers.HousingController.AddHousingAdmin(System.String)">
-            <summary>
-            Add a user to the admin whitelist
-            </summary>
-            <param name="id"> The id of the user to add </param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Controllers.HousingController.RemoveHousingAdmin(System.String)">
-            <summary>
-            Remove a user from the admin whitelist
-            </summary>
-            <param name="id"> The id of the user to remove </param>
-            <returns></returns>
-        </member>
         <member name="M:Gordon360.Controllers.HousingController.DeleteApplication(System.Int32)">
             <summary>
             Delete an application (and consequently all rows that reference it)
@@ -1451,20 +1431,6 @@
             </summary>
             <param name="gordonID"> The id of the person using the page </param>
             <returns> Whether or not the user is on the staff whitelist </returns>
-        </member>
-        <member name="M:Gordon360.Services.HousingService.AddHousingAdmin(System.String)">
-            <summary>
-            Inserts the given id into the whitelist table
-            </summary>
-            <param name="gordonID"> The id to insert </param>
-            <returns> Whether or not this was successful </returns>
-        </member>
-        <member name="M:Gordon360.Services.HousingService.RemoveHousingAdmin(System.String)">
-            <summary>
-            Deletes the given id from the whitelist table
-            </summary>
-            <param name="gordonID"> The id to remove </param>
-            <returns> Whether or not this was successful </returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.DeleteApplication(System.Int32)">
             <summary>

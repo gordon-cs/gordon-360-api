@@ -25,43 +25,7 @@ namespace Gordon360.Services
         /// <returns> Whether or not the user is on the staff whitelist </returns>
         public bool CheckIfHousingAdmin(string gordonID)
         {
-            return _context.Housing_Admins.Find(gordonID) == null;
-        }
-
-        /// <summary>
-        /// Inserts the given id into the whitelist table
-        /// </summary>
-        /// <param name="gordonID"> The id to insert </param>
-        /// <returns> Whether or not this was successful </returns>
-        public bool AddHousingAdmin(string gordonID)
-        {
-            try
-            {
-                var result = _context.Housing_Admins.Add(new Housing_Admins { AdminID = gordonID });
-                return result == null;
-            }
-            catch
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The id could not be added." };
-            }
-        }
-
-        /// <summary>
-        /// Deletes the given id from the whitelist table
-        /// </summary>
-        /// <param name="gordonID"> The id to remove </param>
-        /// <returns> Whether or not this was successful </returns>
-        public bool RemoveHousingAdmin(string gordonID)
-        {
-            try
-            {
-                var result = _context.Housing_Admins.Remove(new Housing_Admins { AdminID = gordonID });
-                return result == null;
-            }
-            catch
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The id could not be removed." };
-            }
+            return false;
         }
 
         /// <summary>

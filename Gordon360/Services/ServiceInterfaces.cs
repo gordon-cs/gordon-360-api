@@ -275,9 +275,7 @@ namespace Gordon360.Services
 
     public interface IHousingService
     {
-        bool CheckIfHousingAdmin(string userID);
-        bool AddHousingAdmin(string id);
-        bool RemoveHousingAdmin(string id);
+        bool CheckIfHousingAdmin(string gordonID);
         bool DeleteApplication(int applicationID);
         string[] GetAllApartmentHalls();
         string GetEditorUsername(int applicationID);

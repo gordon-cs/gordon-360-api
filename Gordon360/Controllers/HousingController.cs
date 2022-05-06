@@ -30,58 +30,6 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
-        /// Check if the currently logged in user is authorized to view the housing admin page
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("admin")]
-        public ActionResult<bool> CheckIfHousingAdmin()
-        {
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
-
-            string? userID = _accountService.GetAccountByUsername(authenticatedUserUsername)?.GordonID;
-
-            bool result = _housingService.CheckIfHousingAdmin(userID);
-            if (result)
-            {
-                return Ok(result);
-            }
-            else
-            {
-                return NotFound();
-            }
-
-        }
-
-        /// <summary>
-        /// Add a user to the admin whitelist
-        /// </summary>
-        /// <param name="id"> The id of the user to add </param>
-        /// <returns></returns>
-        [HttpPost]
-        [Route("admin/{id}")]
-        [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_ADMIN)]
-        public ActionResult<bool> AddHousingAdmin(string id)
-        {
-            bool result = _housingService.AddHousingAdmin(id);
-            return Ok(result);
-        }
-
-        /// <summary>
-        /// Remove a user from the admin whitelist
-        /// </summary>
-        /// <param name="id"> The id of the user to remove </param>
-        /// <returns></returns>
-        [HttpDelete]
-        [Route("admin/{id}")]
-        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_ADMIN)]
-        public ActionResult<bool> RemoveHousingAdmin(string id)
-        {
-            bool result = _housingService.RemoveHousingAdmin(id);
-            return Ok(result);
-        }
-
-        /// <summary>
         /// Delete an application (and consequently all rows that reference it)
         /// </summary>
         /// <param name="applicationID"> The id of the application to remove </param>
