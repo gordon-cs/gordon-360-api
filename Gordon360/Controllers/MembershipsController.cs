@@ -234,7 +234,7 @@ namespace Gordon360.Controllers
                 foreach (var item in result)
                 {
                     var act = _activityService.Get(item.ActivityCode);
-                    if (!(act.Privacy != true || item.Privacy != true))
+                    if (!(act.Privacy == true || item.Privacy == true))
                     {
                         list.Add(item);
                     }
