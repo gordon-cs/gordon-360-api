@@ -1,5 +1,38 @@
 ﻿namespace Gordon360.Static.Names
 {
+    public class AuthGroup
+    {
+        static AuthGroup()
+        {
+            Alumni = new AuthGroup("360-Alumni-SG");
+            FacStaff = new AuthGroup("360-FacStaff-SG");
+            Faculty = new AuthGroup("360-Faculty-SG");
+            HousingAdmin = new AuthGroup("360-HousingAdmin-SG");
+            NewsAdmin = new AuthGroup("360-NewsAdmin-SG");
+            Police = new AuthGroup("360-Police-SG");
+            SiteAdmin = new AuthGroup("360-SiteAdmin-SG");
+            Staff = new AuthGroup("360-Staff-SG");
+            Student = new AuthGroup("360-Student-SG");
+        }
+
+        private AuthGroup(string name)
+        {
+            Name = name;
+        }
+
+        public static AuthGroup Alumni { get; }
+        public static AuthGroup FacStaff { get; }
+        public static AuthGroup Faculty { get; }
+        public static AuthGroup HousingAdmin { get; }
+        public static AuthGroup NewsAdmin { get; }
+        public static AuthGroup Police { get; }
+        public static AuthGroup SiteAdmin { get; }
+        public static AuthGroup Staff { get; }
+        public static AuthGroup Student { get; }
+
+        public string Name { get; }
+    }
+
     public static class Resource
     {
         public const string EMERGENCY_CONTACT = "A new emergency contact resource";

@@ -1,4 +1,8 @@
-﻿using System.Security.Claims;
+﻿using Gordon360.Static.Names;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 
 namespace Gordon360.Utilities
 {
@@ -14,11 +18,17 @@ namespace Gordon360.Utilities
             return User.FindFirstValue(ClaimTypes.Upn).Split("@")[0];
         }
 
-        //public static int? GetUserID(ClaimsPrincipal User)
-        //{
-        //    string? username = GetUsername(User);
-        //    if (username == null) return null;
-        //    return new CCTContext().ACCOUNT.Where(a => a.AD_Username == username).Select(a => int.Parse(a.gordon_id)).FirstOrDefault();
-        //}
+        public static IEnumerable<string> GetAuthenticatedUserGroups(ClaimsPrincipal User)
+        {
+            var groups = User.Claims.Where(x => x.Type == "groups").Select(g => g.Value);
+            return groups;
+        }
+
+        public static bool UserIsInGroup(ClaimsPrincipal User, AuthGroup group)
+        {
+            var groups = GetAuthenticatedUserGroups(User);
+            return groups.Contains(group.Name);
+        }
     }
 }
+
