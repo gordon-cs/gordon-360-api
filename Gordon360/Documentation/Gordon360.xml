@@ -992,7 +992,6 @@
         <member name="M:Gordon360.Controllers.WellnessController.Post(Gordon360.Controllers.WellnessController.WellnessStatusColor)">
             <summary>
              Stores the user's wellness status
-             @TODO: Return view model rather than Health_Status model directly
             </summary>
             <param name="status">The current status of the user to post, of type WellnessStatusColor</param>
             <returns>The status that was stored in the database</returns>

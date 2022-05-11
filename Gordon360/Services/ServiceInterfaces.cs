@@ -76,7 +76,7 @@ namespace Gordon360.Services
     {
         WellnessViewModel GetStatus(string username);
         WellnessQuestionViewModel GetQuestion();
-        Health_Status PostStatus(WellnessStatusColor status, string username);
+        WellnessViewModel PostStatus(WellnessStatusColor status, string username);
     }
 
     public interface IDirectMessageService

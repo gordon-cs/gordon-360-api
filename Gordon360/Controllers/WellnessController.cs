@@ -68,13 +68,12 @@ namespace Gordon360.Controllers
 
         /// <summary>
         ///  Stores the user's wellness status
-        ///  @TODO: Return view model rather than Health_Status model directly
         /// </summary>
         /// <param name="status">The current status of the user to post, of type WellnessStatusColor</param>
         /// <returns>The status that was stored in the database</returns>
         [HttpPost]
         [Route("")]
-        public ActionResult<Health_Status> Post([FromBody] WellnessStatusColor status)
+        public ActionResult<WellnessViewModel> Post([FromBody] WellnessStatusColor status)
         {
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 

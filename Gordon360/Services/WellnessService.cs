@@ -21,8 +21,8 @@ namespace Gordon360.Services
         /// <summary>
         /// Get the status of the user by id
         /// </summary>
-        /// <param name="username">AD Username of the user to get the status of</param>
-        /// <returns> The status of the user, a WellnessViewModel </returns>
+        /// <param name = "username" > AD Username of the user to get the status of</param>
+        /// <returns> The status of the user, a WellnessViewModel</returns>
 
         public WellnessViewModel GetStatus(string username)
         {
@@ -47,13 +47,7 @@ namespace Gordon360.Services
             }
             else
             {
-                return new WellnessViewModel
-                {
-                    Status = ((WellnessStatusColor)result.HealthStatusID).ToString(),
-                    Created = result.Created,
-                    IsValid = result.Expires == null || DateTime.Now < result.Expires,
-                    StatusDescription = result.Notes?.StartsWith("STATUS: ") ?? false ? result.Notes.Substring(8, result.Notes.IndexOf(";") - 8) : null
-                };
+                return result;
             }
         }
 
@@ -64,7 +58,7 @@ namespace Gordon360.Services
         /// <param name="status"> Status that is being posted, one of the WellnessStatusColors </param>
         /// <returns>Status that was successfully recorded</returns>
 
-        public Health_Status PostStatus(WellnessStatusColor status, string username)
+        public WellnessViewModel PostStatus(WellnessStatusColor status, string username)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
             if (account == null)
@@ -81,7 +75,7 @@ namespace Gordon360.Services
                 Created = now,
                 Expires = ExpirationDate(now),
                 CreatedBy = "360.WellnessCheck",
-                Notes = status == WellnessStatusColor.YELLOW ? $"STATUS: Symptomatic;" : null,
+                Notes = status == WellnessStatusColor.YELLOW ? "STATUS: Symptomatic;" : null,
                 Emailed = null
             };
 
