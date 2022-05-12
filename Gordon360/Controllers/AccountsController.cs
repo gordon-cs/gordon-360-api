@@ -7,7 +7,6 @@ using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Gordon360.Controllers
@@ -84,271 +83,57 @@ namespace Gordon360.Controllers
         [Route("search/{searchString}")]
         public async Task<ActionResult<IEnumerable<BasicInfoViewModel>>> SearchAsync(string searchString)
         {
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
-            var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserUsername);
+            var accounts = await _accountService.GetAllBasicInfoExceptAlumniAsync();
 
-            IEnumerable<BasicInfoViewModel> accounts = await _accountService.GetAllBasicInfoExceptAlumniAsync();
+            var matches = new SortedDictionary<string, BasicInfoViewModel>();
 
-            int precedence = 0;
-
-            var allMatches = new SortedDictionary<string, BasicInfoViewModel>();
-
-            void appendMatch(string key, BasicInfoViewModel match)
+            foreach (var account in accounts)
             {
-                while (allMatches.ContainsKey(key)) key += "1";
-                allMatches.Add(key, match);
+                var match = MatchSearch(searchString, account);
 
-                accounts = accounts.Where(a => !a.Equals(match));
+                if (match is not null)
+                {
+                    var (matchedValue, precedence) = match.Value;
+                    var key = GenerateKey(matchedValue, precedence);
+                    while (matches.ContainsKey(key)) key += "1";
+                    matches.Add(key, account);
+                }
             }
 
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                // First name exact match (Highest priority)
-                foreach (var match in accounts.Where(s => s.FirstNameMatches(searchString)))
-                {
-                    string key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
-
-                    appendMatch(key, match);
-
-                    accounts = accounts.Where(a => !a.Equals(match));
-                }
-                precedence++;
-
-                // Nickname exact match
-                foreach (var match in accounts
-                                        .Where(s => s.NicknameMatches(searchString)))
-                {
-                    string key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
-
-                    appendMatch(key, match);
-                }
-                precedence++;
-
-                // Last name exact match
-                foreach (var match in accounts
-                                        .Where(s => s.LastNameMatches(searchString)))
-                {
-                    string key = GenerateKey(match.LastName, match.FirstName, match.UserName, precedence);
-
-                    appendMatch(key, match);
-                }
-                precedence++;
-
-                // Maiden name exact match
-                foreach (var match in accounts
-                                        .Where(s => !allMatches.ContainsValue(s))
-                                        .Where(s => s.MaidenNameMatches(searchString)))
-                {
-                    string key = GenerateKey(match.LastName, match.FirstName, match.UserName, precedence);
-
-                    appendMatch(key, match);
-                }
-                precedence++;
-
-                // First name starts with
-                foreach (var match in accounts
-                                        .Where(s => s.FirstNameStartsWith(searchString)))
-                {
-                    string key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
-
-                    appendMatch(key, match);
-                }
-                precedence++;
-
-                // Username (first name) starts with
-                foreach (var match in accounts
-                                        .Where(s => s.UsernameFirstNameStartsWith(searchString)))
-                {
-                    string key = GenerateKey(match.GetFirstNameFromUsername(), match.GetLastNameFromUsername(), match.UserName, precedence);
-
-                    appendMatch(key, match);
-                }
-                precedence++;
-
-                // Nickname starts with
-                foreach (var match in accounts
-                                        .Where(s => s.NicknameStartsWith(searchString)))
-                {
-                    string key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
-
-                    appendMatch(key, match);
-                }
-                precedence++;
-
-                // Last name starts with
-                foreach (var match in accounts
-                                        .Where(s => s.LastNameStartsWith(searchString)))
-                {
-                    string key = GenerateKey(match.LastName, match.FirstName, match.UserName, precedence);
-
-                    appendMatch(key, match);
-                }
-                precedence++;
-
-                // Maiden name starts with
-                foreach (var match in accounts
-                                        .Where(s => !allMatches.ContainsValue(s))
-                                        .Where(s => s.MaidenNameStartsWith(searchString)))
-                {
-                    string key = GenerateKey(match.LastName, match.FirstName, match.UserName, precedence);
-
-                    appendMatch(key, match);
-                }
-                precedence++;
-
-                // Username (last name) starts with
-                foreach (var match in accounts
-                                        .Where(s => s.UsernameLastNameStartsWith(searchString)))
-                {
-                    string key = GenerateKey(match.GetLastNameFromUsername(), match.GetFirstNameFromUsername(), match.UserName, precedence);
-
-                    appendMatch(key, match);
-                }
-                precedence++;
-
-                // First name, last name, nickname, maidenname or username contains (Lowest priority)
-                foreach (var match in accounts
-                                        .Where(s => !allMatches.ContainsValue(s))
-                                        .Where(s => s.FirstNameContains(searchString) || s.NicknameContains(searchString) || s.LastNameContains(searchString) || s.MaidenNameContains(searchString) || s.UsernameContains(searchString)))
-                {
-                    string key;
-                    if (match.FirstNameContains(searchString))
-                    {
-                        key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
-                    }
-                    else if (match.NicknameContains(searchString))
-                    {
-                        key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
-                    }
-                    else if (match.LastNameContains(searchString))
-                    {
-                        key = GenerateKey(match.LastName, match.FirstName, match.UserName, precedence);
-                    }
-                    else if (match.MaidenNameContains(searchString))
-                    {
-                        key = GenerateKey(match.LastName, match.FirstName, match.UserName, precedence);
-                    }
-                    else {
-                        key = GenerateKey(match.UserName, "", match.UserName, precedence);
-                    }
-
-                    appendMatch(key, match);
-                }
-
-                allMatches.OrderBy(m => m.Key);
-                accounts = allMatches.Values;
-            }
-
-            // Return all of the 
-            return Ok(accounts);
+            return Ok(matches.Values);
         }
 
         /// <summary>
         /// Return a list of accounts matching some or all of the search parameter
         /// We are searching through a concatonated string, containing several pieces of info about each user.
         /// </summary>
-        /// <param name="searchString"> The input to search for </param>
-        /// <param name="secondaryString"> The second piece of the search terms </param>
-        /// <returns> All accounts meeting some or all of the parameter</returns>
+        /// <param name="firstnameSearch"> The firstname portion of the search</param>
+        /// <param name="lastnameSearch"> The lastname portion of the search</param>
+        /// <returns> All accounts matching some or all of both the firstname and lastname parameters</returns>
         [HttpGet]
-        [Route("search/{searchString}/{secondaryString}")]
-        public async Task<ActionResult<IEnumerable<BasicInfoViewModel>>> SearchWithSpaceAsync(string searchString, string secondaryString)
+        [Route("search/{firstnameSearch}/{lastnameSearch}")]
+        public async Task<ActionResult<IEnumerable<BasicInfoViewModel>>> SearchWithSpaceAsync(string firstnameSearch, string lastnameSearch)
         {
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
-            var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserUsername);
+            var accounts = await _accountService.GetAllBasicInfoExceptAlumniAsync();
 
-            int precedence = 0;
+            var matches = new SortedDictionary<string, BasicInfoViewModel>();
 
-            var allMatches = new SortedDictionary<string, BasicInfoViewModel>();
-
-            // Create accounts viewmodel to search
-            IEnumerable<BasicInfoViewModel> accounts = await _accountService.GetAllBasicInfoExceptAlumniAsync();
-
-            void appendMatch(string key, BasicInfoViewModel match)
+            foreach (var account in accounts)
             {
-                while (allMatches.ContainsKey(key)) key += "1";
-                allMatches.Add(key, match);
+                var firstnameMatch = MatchSearchInFirstName(firstnameSearch, account);
+                var lastnameMatch = MatchSearchInLastName(lastnameSearch, account);
 
-            // Create accounts viewmodel to search
+                if (firstnameMatch is not null && lastnameMatch is not null)
+                {
+                    var (firstnameMatchedValue, firstnamePrecedence) = firstnameMatch.Value;
+                    var (lastnameMatchedValue, lastnamePrecedence) = lastnameMatch.Value;
+                    var key = GenerateKey(firstnameMatchedValue, lastnameMatchedValue, firstnamePrecedence + lastnamePrecedence);
+                    while (matches.ContainsKey(key)) key += "1";
+                    matches.Add(key, account);
+                }
             }
 
-            if (!string.IsNullOrEmpty(searchString) && !string.IsNullOrEmpty(secondaryString))
-            {
-                // Exact match in both first and last name (Highest priority)
-                foreach (var match in accounts.Where(s => s.FirstNameMatches(searchString) && s.LastNameMatches(secondaryString)))
-                {
-                    string key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
-
-                    appendMatch(key, match);
-                }
-                precedence++;
-
-                // First name and last name start with
-                foreach (var match in accounts
-                                        .Where(s => s.FirstNameStartsWith(searchString) && s.LastNameStartsWith(secondaryString)))
-                {
-                    string key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
-
-                    appendMatch(key, match);
-                }
-                precedence++;
-
-                // Username (first and last) starts with
-                foreach (var match in accounts
-                                        .Where(s => s.UsernameFirstNameStartsWith(searchString) && s.UsernameLastNameStartsWith(secondaryString)))
-                {
-                    string key = GenerateKey(match.GetFirstNameFromUsername(), match.GetLastNameFromUsername(), match.UserName, precedence);
-
-                    appendMatch(key, match);
-                }
-                precedence++;
-
-                // Exact match in both nickname and last name
-                foreach (var match in accounts
-                                        .Where(s => !allMatches.ContainsValue(s))
-                                        .Where(s => s.NicknameMatches(searchString) && s.LastNameMatches(secondaryString)))
-                {
-                    string key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
-
-                    appendMatch(key, match);
-                }
-                precedence++;
-
-                // Nickname and last name start with
-                foreach (var match in accounts
-                                        .Where(s => s.NicknameStartsWith(searchString) && s.LastNameStartsWith(secondaryString)))
-                {
-                    string key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
-
-                    appendMatch(key, match);
-                }
-
-                // Exact match in both first name and maiden name
-                foreach (var match in accounts
-                                        .Where(s => !allMatches.ContainsValue(s))
-                                        .Where(s => s.FirstNameMatches(searchString) && s.MaidenNameMatches(secondaryString)))
-                {
-                    string key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
-
-                    appendMatch(key, match);
-                }
-                precedence++;
-
-                // First name and maiden name start with (Lowest Priority)
-                foreach (var match in accounts
-                                        .Where(s => s.FirstNameStartsWith(searchString) && s.MaidenNameStartsWith(secondaryString)))
-                {
-                    string key = GenerateKey(match.FirstName, match.LastName, match.UserName, precedence);
-
-                    appendMatch(key, match);
-                }
-
-                allMatches.OrderBy(s => s.Key);
-                accounts = allMatches.Values;
-            }
-
-            // Return all of the 
-            return Ok(accounts);
+            return Ok(matches.Values);
         }
 
         /// <summary>
@@ -422,22 +207,89 @@ namespace Gordon360.Controllers
 
         /// <Summary>
         ///   This function generates a key for each account
+        ///   The key is of the form "z...keyBase" where z is repeated precedence times.
         /// </Summary>
+        /// <remarks>
+        ///   The leading precedence number of z's are used to put keep the highest precedence matches first.
+        ///   The keyBase is used to sort within the precedence level.
+        /// </remarks>
         ///
-        /// <param name="keyPart1">This is what you would want to sort by first, used for first part of key</param>
-        /// <param name="keyPart2">This is what you want to sort by second, used for second part of key</param>
+        /// <param name="keyBase">The base value to use for the key - i.e. the user's highest precedence info that matches the search string</param>
         /// <param name="precedence">Set where in the dictionary this key group will be ordered</param>
-        /// <param name="userName">The User's Username</param>
-        public string GenerateKey(string keyPart1, string keyPart2, string userName, int precedence)
+        private static string GenerateKey(string keyBase, int precedence)
         {
-            string key = keyPart1 + "1" + keyPart2;
+            return string.Concat(Enumerable.Repeat("z", precedence)) + keyBase;
+        }
 
-            if (Regex.Match(userName, "[0-9]+").Success)
-                key += Regex.Match(userName, "[0-9]+").Value;
 
-            key = string.Concat(Enumerable.Repeat("z", precedence)) + key;
+        /// <Summary>
+        ///   This function generates a key for each account
+        ///   The key is of the form "z...firstname1lastname" where z is repeated precedence times.
+        /// </Summary>
+        /// <remarks>
+        ///   The leading precedence number of z's are used to put keep the highest precedence matches first.
+        ///   The keyBase is used to sort within the precedence level.
+        /// </remarks>
+        ///
+        /// <param name="firstnameKey">The firstname value to use for the key - i.e. the user's highest precedence firstname info that matches the search string</param>
+        /// <param name="lastnameKey">The lastname value to use for the key - i.e. the user's highest precedence lastname info that matches the search string</param>
+        /// <param name="precedence">Set where in the dictionary this key group will be ordered</param>
+        private static string GenerateKey(string firstnameKey, string lastnameKey, int precedence)
+        {
+            return string.Concat(Enumerable.Repeat("z", precedence)) + $"{firstnameKey}1${lastnameKey}";
+        }
 
-            return key;
+        private static (string matchedValue, int precedence)? MatchSearch(string search, BasicInfoViewModel account)
+        {
+            return account switch
+            {
+                _ when account.FirstNameMatches(search) => (account.FirstName, 0),
+                _ when account.NicknameMatches(search) => (account.Nickname, 1),
+                _ when account.LastNameMatches(search) => (account.LastName, 2),
+                _ when account.MaidenNameMatches(search) => (account.MaidenName, 3),
+                _ when account.FirstNameStartsWith(search) => (account.FirstName, 4),
+                _ when account.NicknameStartsWith(search) => (account.Nickname, 5),
+                _ when account.LastNameStartsWith(search) => (account.LastName, 6),
+                _ when account.MaidenNameStartsWith(search) => (account.MaidenName, 7),
+                _ when account.UsernameFirstNameStartsWith(search) => (account.GetFirstNameFromUsername(), 8),
+                _ when account.UsernameLastNameStartsWith(search) => (account.GetLastNameFromUsername(), 9),
+                _ when account.FirstNameContains(search) => (account.FirstName, 10),
+                _ when account.NicknameContains(search) => (account.Nickname, 11),
+                _ when account.LastNameContains(search) => (account.LastName, 12),
+                _ when account.MaidenNameContains(search) => (account.MaidenName, 13),
+                _ when account.UsernameContains(search) => (account.UserName, 14),
+                _ => null
+            };
+        }
+
+        private static (string matchedValue, int precedence)? MatchSearchInFirstName(string search, BasicInfoViewModel account)
+        {
+            return account switch
+            {
+                _ when account.FirstNameMatches(search) => (account.FirstName, 0),
+                _ when account.NicknameMatches(search) => (account.Nickname, 1),
+                _ when account.FirstNameStartsWith(search) => (account.FirstName, 4),
+                _ when account.NicknameStartsWith(search) => (account.Nickname, 5),
+                _ when account.UsernameFirstNameStartsWith(search) => (account.GetFirstNameFromUsername(), 8),
+                _ when account.FirstNameContains(search) => (account.FirstName, 10),
+                _ when account.NicknameContains(search) => (account.Nickname, 11),
+                _ => null
+            };
+        }
+
+        private static (string matchedValue, int precedence)? MatchSearchInLastName(string search, BasicInfoViewModel account)
+        {
+            return account switch
+            {
+                _ when account.LastNameMatches(search) => (account.LastName, 2),
+                _ when account.MaidenNameMatches(search) => (account.MaidenName, 3),
+                _ when account.LastNameStartsWith(search) => (account.LastName, 6),
+                _ when account.MaidenNameStartsWith(search) => (account.MaidenName, 7),
+                _ when account.UsernameLastNameStartsWith(search) => (account.GetLastNameFromUsername(), 9),
+                _ when account.LastNameContains(search) => (account.LastName, 12),
+                _ when account.MaidenNameContains(search) => (account.MaidenName, 13),
+                _ => null
+            };
         }
     }
 }
