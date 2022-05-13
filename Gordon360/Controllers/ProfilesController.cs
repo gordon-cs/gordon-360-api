@@ -9,12 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using Newtonsoft.Json.Linq;
-using Gordon360.Static.Names;
-using Gordon360.Models.ViewModels;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -41,64 +35,23 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("")]
-        public ActionResult<ProfileViewModel> Get()
+        public ActionResult<ProfileViewModel?> Get()
         {
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
 
-            // search username in cached data
             var student = _profileService.GetStudentProfileByUsername(authenticatedUserUsername);
             var faculty = _profileService.GetFacultyStaffProfileByUsername(authenticatedUserUsername);
             var alumni = _profileService.GetAlumniProfileByUsername(authenticatedUserUsername);
-            //get profile links
             var customInfo = _profileService.GetCustomUserInfo(authenticatedUserUsername);
 
             if (student is null && alumni is null && faculty is null)
             {
-                return NotFound();
+                return Ok(null);
             }
 
-            // merge the person's info if this person is in multiple tables
-            var profile = new JObject();
-            var personType = "";
+            var profile = _profileService.ComposeProfile(student, alumni, faculty, customInfo);
 
-            if (student != null)
-            {
-                profile.Merge(JObject.FromObject(student), new JsonMergeSettings
-                {
-                    MergeArrayHandling = MergeArrayHandling.Union
-                });
-                personType += "stu";
-            }
-
-            if (alumni != null)
-            {
-                profile.Merge(JObject.FromObject(alumni), new JsonMergeSettings
-                {
-                    MergeArrayHandling = MergeArrayHandling.Union
-                });
-                personType += "alu";
-            }
-
-            if (faculty != null)
-            {
-                profile.Merge(JObject.FromObject(faculty), new JsonMergeSettings
-                {
-                    MergeArrayHandling = MergeArrayHandling.Union
-                });
-                personType += "fac";
-            }
-
-            if (customInfo != null)
-            {
-                profile.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
-                {
-                    MergeArrayHandling = MergeArrayHandling.Union
-                });
-            }
-
-            profile.Add("PersonType", personType);
-
-            return Ok(profile.ToObject<ProfileViewModel>());
+            return Ok(profile);
         }
 
         /// <summary>Get public profile info for a user</summary>
@@ -106,16 +59,14 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("{username}")]
-        public ActionResult<ProfileViewModel> GetUserProfile(string username)
+        public ActionResult<ProfileViewModel?> GetUserProfile(string username)
         {
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
             var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserUsername);
 
-            //search this person in cached data.
             var _student = _profileService.GetStudentProfileByUsername(username);
             var _faculty = _profileService.GetFacultyStaffProfileByUsername(username);
             var _alumni = _profileService.GetAlumniProfileByUsername(username);
-                
             var _customInfo = _profileService.GetCustomUserInfo(username);
 
             object? student = null;
@@ -154,50 +105,12 @@ namespace Gordon360.Controllers
 
             if (student is null && alumni is null && faculty is null)
             {
-                return NotFound();
+                return Ok(null);
             }
 
-            // merge the person's info if this person is in multiple tables
-            var profile = new JObject();
-            var personType = "";
-            if (student != null)
-            {
-                profile.Merge(JObject.FromObject(student), new JsonMergeSettings
-                {
-                    MergeArrayHandling = MergeArrayHandling.Union
-                });
-                personType += "stu";
-            }
+            var profile = _profileService.ComposeProfile(student, alumni, faculty, customInfo);
 
-            if (alumni != null)
-            {
-                profile.Merge(JObject.FromObject(alumni), new JsonMergeSettings
-                {
-                    MergeArrayHandling = MergeArrayHandling.Union
-                });
-                personType += "alu";
-            }
-
-            if (faculty != null)
-            {
-                profile.Merge(JObject.FromObject(faculty), new JsonMergeSettings
-                {
-                    MergeArrayHandling = MergeArrayHandling.Union
-                });
-                personType += "fac";
-            }
-
-            if (customInfo != null)
-            {
-                profile.Merge(JObject.FromObject(customInfo), new JsonMergeSettings
-                {
-                    MergeArrayHandling = MergeArrayHandling.Union
-                });
-            }
-
-            profile.Add("PersonType", personType);
-
-            return Ok(profile.ToObject<ProfileViewModel>());
+            return Ok(profile);
         }
 
         ///<summary>Get the advisor(s) of a particular student</summary>
@@ -242,15 +155,12 @@ namespace Gordon360.Controllers
                 var emrg = _profileService.GetEmergencyContact(username);
                 return Ok(emrg);
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
                 return NotFound();
             }
-            
-            
         }
-        
 
         /// <summary>Gets the mailbox information of currently logged in user</summary>
         /// <returns></returns>
@@ -507,7 +417,6 @@ namespace Gordon360.Controllers
             return Ok();
         }
 
-
         /// <summary>
         /// Update the profile social media links
         /// </summary>
@@ -536,7 +445,7 @@ namespace Gordon360.Controllers
         {
             var username = AuthUtils.GetAuthenticatedUserUsername(User);
             var result = await _profileService.UpdateMobilePhoneNumberAsync(username, value);
-            
+
             return Ok(result);
         }
 

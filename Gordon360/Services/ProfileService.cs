@@ -2,6 +2,7 @@
 using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,7 +58,7 @@ namespace Gordon360.Services
         /// <returns>MailboxViewModel with the combination</returns>
         public MailboxViewModel GetMailboxCombination(string username)
         {
-            var mailboxNumber = 
+            var mailboxNumber =
                 _context.Student
                 .FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower())
                 .Mail_Location;
@@ -89,7 +90,8 @@ namespace Gordon360.Services
             try
             {
                 return (DateTime)(birthdate);
-            } catch
+            }
+            catch
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The user's birthdate was invalid." };
             }
@@ -325,5 +327,46 @@ namespace Gordon360.Services
             _context.SaveChanges();
         }
 
+        public ProfileViewModel? ComposeProfile(object? student, object? alumni, object? faculty, object? customInfo)
+        {
+            var profile = new JObject();
+            var personType = "";
+
+            if (student != null)
+            {
+                MergeProfile(profile, JObject.FromObject(student));
+                personType += "stu";
+            }
+
+            if (alumni != null)
+            {
+                MergeProfile(profile, JObject.FromObject(alumni));
+                personType += "alu";
+            }
+
+            if (faculty != null)
+            {
+                MergeProfile(profile, JObject.FromObject(faculty));
+                personType += "fac";
+            }
+
+            if (customInfo != null)
+            {
+                MergeProfile(profile, JObject.FromObject(customInfo));
+            }
+
+            profile.Add("PersonType", personType);
+
+            return profile.ToObject<ProfileViewModel>();
+        }
+
+        private static JObject MergeProfile(JObject profile, JObject profileInfo)
+        {
+            profile.Merge(profileInfo, new JsonMergeSettings
+            {
+                MergeArrayHandling = MergeArrayHandling.Union
+            });
+            return profile;
+        }
     }
 }
