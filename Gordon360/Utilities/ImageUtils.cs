@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Gordon360.Exceptions;
+using Microsoft.AspNetCore.Http;
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Gordon360.Utilities
@@ -113,6 +116,41 @@ namespace Gordon360.Utilities
             {
                 return await DownloadImageFromURL(defaultURL);
             }
+        }
+
+        public static (string formatExtension, ImageFormat format) GetImageFormat(IFormFile image)
+        {
+            Match match = Regex.Match(image.ContentType, @"^image/(?<filetype>jpeg|jpg|png)$");
+            if (!match.Success)
+            {
+                throw new BadInputException();
+            }
+            string formatExtension = match.Groups["filetype"].Value;
+            var format = formatExtension switch
+            {
+                "png" => ImageFormat.Png,
+                "jpeg" or "jpg" => ImageFormat.Jpeg,
+                _ => throw new BadInputException()
+            };
+            return (formatExtension, format);
+        }
+
+        public static (string formatExtension, ImageFormat format, string imageData) GetImageFormat(string base64Image)
+        {
+            Match match = Regex.Match(base64Image, @"^data:image/(?<filetype>jpeg|jpg|png);base64,");
+            if (!match.Success)
+            {
+                throw new BadInputException();
+            }
+            string formatExtension = match.Groups["filetype"].Value;
+            var format = formatExtension switch
+            {
+                "png" => ImageFormat.Png,
+                "jpeg" or "jpg" => ImageFormat.Jpeg,
+                _ => throw new BadInputException()
+            };
+            string rawImageData = base64Image[match.Length..];
+            return (formatExtension, format, rawImageData);
         }
 
         /// <summary>

@@ -5,6 +5,7 @@ using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
 using Gordon360.Utilities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
@@ -198,9 +199,14 @@ namespace Gordon360.Controllers
 
             if (photoModel == null) //There is no preferred or ID image
             {
-                var unapprovedFileName = username + "_" + _accountService.GetAccountByUsername(username).account_id + ".jpg";
+                var unapprovedFileName = username + "_" + _accountService.GetAccountByUsername(username).account_id;
                 var unapprovedFilePath = _config["DEFAULT_ID_SUBMISSION_PATH"];
-                string unapproved_img = await GetProfileImageOrDefault(unapprovedFilePath + unapprovedFileName);
+                string extension = "";
+                foreach (var file in Directory.GetFiles(unapprovedFilePath, unapprovedFileName + ".*"))
+                {
+                    extension = Path.GetExtension(file);
+                }
+                string unapproved_img = await GetProfileImageOrDefault(unapprovedFilePath + unapprovedFileName + extension);
                 result.Add("def", unapproved_img);
                 return Ok(result);
             }
@@ -276,119 +282,74 @@ namespace Gordon360.Controllers
             }
         }
 
-        ///// <summary>
-        ///// Set an image for profile
-        ///// </summary>
-        ///// <returns></returns>
-        //[HttpPost]
-        //[Route("image")]
-        //public async Task<ActionResult> PostImageAsync()
-        //{
-        //    var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
-        //    string root = _config["PREFERRED_IMAGE_PATH"];
-        //    var fileName = _accountService.GetAccountByUsername(authenticatedUserUsername).Barcode + ".jpg";
-        //    var pathInfo = _profileService.GetPhotoPath(authenticatedUserUsername);
-        //    var provider = new CustomMultipartFormDataStreamProvider(root);
+        /// <summary>
+        /// Set an image for profile
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("image")]
+        public async Task<ActionResult> PostImageAsync([FromForm] IFormFile image)
+        {
+            var username = AuthUtils.GetAuthenticatedUserUsername(User);
+            var account = _accountService.GetAccountByUsername(username);
+            var pathInfo = await _profileService.GetPhotoPathAsync(username);
 
-        //    if (!Request.Content.IsMimeMultipartContent())
-        //    {
-        //        throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
-        //    }
+            if (pathInfo == null) // can't upload image if there is no record for this user in the database
+                return NotFound("No photo record was found for this user.");
 
-        //    try
-        //    {
-        //        if (pathInfo == null) // can't upload image if there is no record for this user in the database
-        //            return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error uploading the image. Please contact the maintainers");
+            var (extension, _) = ImageUtils.GetImageFormat(image);
+            var fileName = $"{account.Barcode}.{extension}";
 
-        //        System.IO.DirectoryInfo di = new DirectoryInfo(root);
-        //        foreach (FileInfo file in di.GetFiles(fileName))
-        //        {
-        //            file.Delete();                   //delete old image file if it exists.
-        //        }
+            // If the new photo won't overwrite the old one, delete the old photo.
+            var oldPath = Path.Combine(pathInfo.Pref_Img_Path, pathInfo.Pref_Img_Name);
+            if (pathInfo.Pref_Img_Name != fileName && System.IO.File.Exists(oldPath))
+            {
+                System.IO.File.Delete(oldPath);
+            }
 
-        //        // Read the form data.
-        //        await Request.Content.ReadAsMultipartAsync(provider);
+            var filePath = Path.Combine(_config["PREFERRED_IMAGE_PATH"], fileName);
 
-        //        foreach (MultipartFileData file in provider.FileData)
-        //        {
-        //            var fileContent = provider.Contents.SingleOrDefault();
-        //            var oldFileName = fileContent.Headers.ContentDisposition.FileName.Replace("\"", string.Empty);
+            using var stream = System.IO.File.Create(filePath);
+            await image.CopyToAsync(stream);
 
-        //            di = new DirectoryInfo(root);
-        //            System.IO.File.Move(di.FullName + oldFileName, di.FullName + fileName); //rename
+            await _profileService.UpdateProfileImageAsync(username, _config["DATABASE_IMAGE_PATH"], fileName);
 
-        //            _profileService.UpdateProfileImage(id, Defaults.DATABASE_IMAGE_PATH, fileName); //update database
-        //        }
-        //        return Request.CreateResponse(HttpStatusCode.OK);
-        //    }
-        //    catch (System.Exception e)
-        //    {
-        //        System.Diagnostics.Debug.WriteLine(e.Message);
-        //        return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "There was an error uploading the image. Please contact the maintainers");
-        //    }
-        //}
+            return Ok();
+        }
 
-        ///// <summary>
-        ///// Set an IDimage for a user
-        ///// </summary>
-        ///// <returns></returns>
-        //[HttpPost]
-        //[Route("IDimage")]
-        //public async Task<ActionResult> PostIDImageAsync()
-        //{
-        //    var authenticatedUserUsername = AuthUtils.GetUsername(User);
-        //    string root = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_ID_SUBMISSION_PATH"];
-        //    var fileName = username + "_" + _accountService.GetAccountByUsername(authenticatedUserUsername).account_id + ".jpg";
-        //    var provider = new CustomMultipartFormDataStreamProvider(root);
-        //    JObject result = new JObject();
+        /// <summary>
+        /// Set an IDimage for a user
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("IDimage")]
+        public async Task<ActionResult> PostIDImageAsync([FromForm] IFormFile image)
+        {
+            if (image.Length < 3000)
+            {
+                return BadRequest("The ID image was lost in transit. Resubmission should attempt automatically.");
+            }
 
-        //    if (!Request.Content.IsMimeMultipartContent())
-        //    {
-        //        throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
-        //    }
+            var username = AuthUtils.GetAuthenticatedUserUsername(User);
+            var root = _config["DEFAULT_ID_SUBMISSION_PATH"];
+            var account = _accountService.GetAccountByUsername(username);
 
+            //delete old image file if it exists.
+            DirectoryInfo di = new DirectoryInfo(root);
+            foreach (FileInfo file in di.GetFiles($"{username}_{account.account_id}.*"))
+            {
+                file.Delete();
+            }
 
-        //    try
-        //    {
-        //        System.IO.DirectoryInfo di = new DirectoryInfo(root);
+            var (extension, _) = ImageUtils.GetImageFormat(image);
+            var fileName = $"{username}_{account.account_id}.{extension}";
+            var filePath = Path.Combine(root, fileName);
 
-        //        //delete old image file if it exists.
-        //        foreach (FileInfo file in di.GetFiles(fileName))
-        //        {
-        //            file.Delete();
-        //        }
+            using var stream = System.IO.File.Create(filePath);
+            await image.CopyToAsync(stream);
 
-        //        // Read the form data.
-        //        await Request.Content.ReadAsMultipartAsync(provider);
-
-        //        foreach (MultipartFileData fileData in provider.FileData)
-        //        {
-        //            Debug.WriteLine(fileData.LocalFileName);
-        //            di = new DirectoryInfo(root); //di is declared at beginning of try.
-
-        //            FileInfo f1 = new FileInfo(fileData.LocalFileName);
-        //            long size1 = f1.Length;
-
-
-        //            System.IO.File.Move(fileData.LocalFileName, Path.Combine(di.FullName, fileName)); //upload
-
-        //            FileInfo f2 = new FileInfo(Path.Combine(di.FullName, fileName));
-        //            long size2 = f2.Length;
-
-
-
-        //            if (size1 < 3000 || size2 < 3000)
-        //            {
-        //                return BadRequest("The ID image was lost in transit. Resubmission should attempt automatically.");
-        //            }
-        //        }
-        //        return Ok();
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return InternalServerError(e);
-        //    }
-        //}
+            return Ok();
+        }
 
         /// <summary>
         /// Reset the profile Image
@@ -396,24 +357,17 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("image/reset")]
-        public ActionResult ResetImage()
+        public async Task<ActionResult> ResetImage()
         {
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
-            string root = _config["PREFERRED_IMAGE_PATH"];
-            var fileName = _accountService.GetAccountByUsername(authenticatedUserUsername).Barcode + ".jpg";
-            try
+            var photoInfo = await _profileService.GetPhotoPathAsync(authenticatedUserUsername);
+
+            if (!string.IsNullOrEmpty(photoInfo?.Pref_Img_Name))
             {
-                DirectoryInfo di = new DirectoryInfo(root);
-                foreach (FileInfo file in di.GetFiles(fileName))
-                {
-                    file.Delete();                  //delete old image file if it exists.
-                }
+                System.IO.File.Delete(Path.Combine(_config["PREFERRED_IMAGE_PATH"], photoInfo.Pref_Img_Name));
             }
-            catch (Exception e)
-            {
-                System.Diagnostics.Debug.WriteLine(e.Message);
-            }
-            _profileService.UpdateProfileImageAsync(authenticatedUserUsername, null, null);  //update database
+
+            await _profileService.UpdateProfileImageAsync(authenticatedUserUsername, null, null);
             return Ok();
         }
 

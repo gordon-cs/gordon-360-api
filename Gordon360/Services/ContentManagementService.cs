@@ -1,14 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using Gordon360.Database.CCT;
-using Gordon360.Exceptions;
+﻿using Gordon360.Database.CCT;
 using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
 using Gordon360.Utilities;
-using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace Gordon360.Services
 {
@@ -55,18 +51,10 @@ namespace Gordon360.Services
         /// <returns>The inserted slide</returns>
         public Slider_Images AddBannerSlide(BannerSlidePostViewModel slide, string serverURL, string contentRootPath)
         {
-            Match match = Regex.Match(slide.ImageData, @"^data:image/(?<filetype>jpeg|jpg|png);base64,");
-            if (!match.Success)
-            {
-                throw new BadInputException();
-            }
-            string filetype = match.Groups["filetype"].Value;
-            var imageFormat = filetype == "png" ? ImageFormat.Png : ImageFormat.Jpeg;
-            string fileName = $"{slide.Title}.{filetype}";
-
+            var (extension, format, data) = ImageUtils.GetImageFormat(slide.ImageData);
+            string fileName = $"{slide.Title}.{extension}";
             string localImagePath = Path.Combine(contentRootPath, SlideUploadPath, fileName);
-            string rawImageData = slide.ImageData[match.Length..];
-            ImageUtils.UploadImage(localImagePath, rawImageData, imageFormat);
+            ImageUtils.UploadImage(localImagePath, data, format);
 
             var entry = new Slider_Images
             {

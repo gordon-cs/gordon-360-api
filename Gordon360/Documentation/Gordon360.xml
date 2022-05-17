@@ -734,6 +734,18 @@
             <summary>Get the profile image of the given user</summary>
             <returns>The profile image(s) that the authenticated user is allowed to see, if any</returns>
         </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.PostImageAsync(Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            Set an image for profile
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.PostIDImageAsync(Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            Set an IDimage for a user
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.ProfilesController.ResetImage">
             <summary>
             Reset the profile Image

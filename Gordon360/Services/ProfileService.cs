@@ -184,7 +184,7 @@ namespace Gordon360.Services
         /// <param name="username">AD Username</param>
         /// <param name="path"></param>
         /// <param name="name"></param>
-        public async Task UpdateProfileImageAsync(string username, string path, string name)
+        public async Task UpdateProfileImageAsync(string username, string? path, string? name)
         {
             var account = _accountService.GetAccountByUsername(username);
 
