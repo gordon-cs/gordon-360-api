@@ -25,6 +25,12 @@
         int? preferred_photo,
         string Country,
         string Barcode,
+        string Facebook,
+        string Twitter,
+        string Instagram,
+        string LinkedIn,
+        string Handshake,
+
 
         // Student Only
         string OnOffCampus,
