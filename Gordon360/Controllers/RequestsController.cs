@@ -84,7 +84,7 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_REQUEST_BY_STUDENT)]
         public async Task<ActionResult<IEnumerable<MembershipViewModel>>> GetMembershipsRequestsForStudentAsync()
         {
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
             var result = await _membershipRequestService.GetMembershipRequestsForStudentAsync(authenticatedUserUsername);
 
             if (result == null)

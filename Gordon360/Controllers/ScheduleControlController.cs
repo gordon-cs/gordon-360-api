@@ -31,7 +31,7 @@ namespace Gordon360.Controllers
         [Route("")]
         public ActionResult<JObject> Get()
         {
-            var username = AuthUtils.GetAuthenticatedUserUsername(User);
+            var username = AuthUtils.GetUsername(User);
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
             //object scheduleControlResult = _unitOfWork.ScheduleControlRepository.GetById(authenticatedUserId);
@@ -82,7 +82,7 @@ namespace Gordon360.Controllers
         [Route("privacy/{value}")]
         public ActionResult UpdateSchedulePrivacy(string value)
         {
-            var username = AuthUtils.GetAuthenticatedUserUsername(User);
+            var username = AuthUtils.GetUsername(User);
             _scheduleControlService.UpdateSchedulePrivacyAsync(username, value);
 
             return Ok();
@@ -99,7 +99,7 @@ namespace Gordon360.Controllers
         {
             DateTime localDate = DateTime.Now;
 
-            var username = AuthUtils.GetAuthenticatedUserUsername(User);
+            var username = AuthUtils.GetUsername(User);
             _scheduleControlService.UpdateDescriptionAsync(username, value);
             _scheduleControlService.UpdateModifiedTimeStampAsync(username, localDate);
 

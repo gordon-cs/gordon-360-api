@@ -36,7 +36,7 @@ namespace Gordon360.Controllers.Api
         [Route("emergencycontact")]
         public async Task<ActionResult<EmergencyContactViewModel>> PutEmergencyContactAsync([FromBody] EmergencyContactViewModel data)
         {
-            var username = AuthUtils.GetAuthenticatedUserUsername(User);
+            var username = AuthUtils.GetUsername(User);
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
             try {
@@ -60,7 +60,7 @@ namespace Gordon360.Controllers.Api
         [Route("cellphone")]
         public async Task<ActionResult<AcademicCheckInViewModel>> PutCellPhoneAsync([FromBody] AcademicCheckInViewModel data)
         {
-            var username = AuthUtils.GetAuthenticatedUserUsername(User);
+            var username = AuthUtils.GetUsername(User);
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
             try {
@@ -82,7 +82,7 @@ namespace Gordon360.Controllers.Api
         [Route("demographic")]
         public async Task<ActionResult<AcademicCheckInViewModel>> PutDemographicAsync([FromBody] AcademicCheckInViewModel data)
         {
-            var username = AuthUtils.GetAuthenticatedUserUsername(User);
+            var username = AuthUtils.GetUsername(User);
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
             try
@@ -104,7 +104,7 @@ namespace Gordon360.Controllers.Api
         [Route("holds")]
         public async Task<ActionResult<AcademicCheckInViewModel>> GetHoldsAsync()
         {
-            var username = AuthUtils.GetAuthenticatedUserUsername(User);
+            var username = AuthUtils.GetUsername(User);
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
             try
@@ -126,7 +126,7 @@ namespace Gordon360.Controllers.Api
         [Route("status")]
         public async Task<ActionResult> SetStatusAsync()
         {
-            var username = AuthUtils.GetAuthenticatedUserUsername(User);
+            var username = AuthUtils.GetUsername(User);
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
             try
@@ -147,7 +147,7 @@ namespace Gordon360.Controllers.Api
         [Route("status")]
         public async Task<ActionResult<AcademicCheckInViewModel>> GetStatusAsync()
         {
-            var username = AuthUtils.GetAuthenticatedUserUsername(User);
+            var username = AuthUtils.GetUsername(User);
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
             try

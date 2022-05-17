@@ -37,7 +37,7 @@ namespace Gordon360.Controllers
         [Route("")]
         public ActionResult<ProfileViewModel?> Get()
         {
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
             var student = _profileService.GetStudentProfileByUsername(authenticatedUserUsername);
             var faculty = _profileService.GetFacultyStaffProfileByUsername(authenticatedUserUsername);
@@ -61,7 +61,7 @@ namespace Gordon360.Controllers
         [Route("{username}")]
         public ActionResult<ProfileViewModel?> GetUserProfile(string username)
         {
-            var viewerGroups = AuthUtils.GetAuthenticatedUserGroups(User);
+            var viewerGroups = AuthUtils.GetGroups(User);
 
             var _student = _profileService.GetStudentProfileByUsername(username);
             var _faculty = _profileService.GetFacultyStaffProfileByUsername(username);
@@ -156,7 +156,7 @@ namespace Gordon360.Controllers
         [Route("mailbox-combination")]
         public ActionResult<MailboxViewModel> GetMailInfo()
         {
-            var username = AuthUtils.GetAuthenticatedUserUsername(User);
+            var username = AuthUtils.GetUsername(User);
 
             var result = _profileService.GetMailboxCombination(username);
             return Ok(result);
@@ -168,7 +168,7 @@ namespace Gordon360.Controllers
         [Route("birthdate")]
         public ActionResult<DateTime> GetBirthdate()
         {
-            var username = AuthUtils.GetAuthenticatedUserUsername(User);
+            var username = AuthUtils.GetUsername(User);
 
             var result = _profileService.GetBirthdate(username);
             return Ok(result);
@@ -180,7 +180,7 @@ namespace Gordon360.Controllers
         [Route("image")]
         public async Task<ActionResult<JObject>> GetMyImgAsync()
         {
-            var username = AuthUtils.GetAuthenticatedUserUsername(User);
+            var username = AuthUtils.GetUsername(User);
             var photoModel = await _profileService.GetPhotoPathAsync(username);
             JObject result = new JObject();
 
@@ -232,7 +232,7 @@ namespace Gordon360.Controllers
             var preferredImagePath = string.IsNullOrEmpty(photoInfo.Pref_Img_Name) ? null : _config["PREFERRED_IMAGE_PATH"] + photoInfo.Pref_Img_Name;
             var defaultImagePath = _config["DEFAULT_IMAGE_PATH"] + photoInfo.Img_Name;
 
-            var viewerGroups = AuthUtils.GetAuthenticatedUserGroups(User);
+            var viewerGroups = AuthUtils.GetGroups(User);
             if (viewerGroups.Contains(AuthGroup.FacStaff.Name))
             {
                 if (preferredImagePath is not null && System.IO.File.Exists(preferredImagePath))
@@ -277,7 +277,7 @@ namespace Gordon360.Controllers
         [Route("image")]
         public async Task<ActionResult> PostImageAsync([FromForm] IFormFile image)
         {
-            var username = AuthUtils.GetAuthenticatedUserUsername(User);
+            var username = AuthUtils.GetUsername(User);
             var account = _accountService.GetAccountByUsername(username);
             var pathInfo = await _profileService.GetPhotoPathAsync(username);
 
@@ -317,7 +317,7 @@ namespace Gordon360.Controllers
                 return BadRequest("The ID image was lost in transit. Resubmission should attempt automatically.");
             }
 
-            var username = AuthUtils.GetAuthenticatedUserUsername(User);
+            var username = AuthUtils.GetUsername(User);
             var root = _config["DEFAULT_ID_SUBMISSION_PATH"];
             var account = _accountService.GetAccountByUsername(username);
 
@@ -346,7 +346,7 @@ namespace Gordon360.Controllers
         [Route("image/reset")]
         public async Task<ActionResult> ResetImage()
         {
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
             var photoInfo = await _profileService.GetPhotoPathAsync(authenticatedUserUsername);
 
             if (!string.IsNullOrEmpty(photoInfo?.Pref_Img_Name))
@@ -368,7 +368,7 @@ namespace Gordon360.Controllers
         [Route("{type}")]
         public async Task<ActionResult> UpdateLinkAsync(string type, CUSTOM_PROFILE path)
         {
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
             await _profileService.UpdateProfileLinkAsync(authenticatedUserUsername, type, path);
 
@@ -384,7 +384,7 @@ namespace Gordon360.Controllers
         [Route("mobile_phone_number/{value}")]
         public async Task<ActionResult<StudentProfileViewModel>> UpdateMobilePhoneNumber(string value)
         {
-            var username = AuthUtils.GetAuthenticatedUserUsername(User);
+            var username = AuthUtils.GetUsername(User);
             var result = await _profileService.UpdateMobilePhoneNumberAsync(username, value);
 
             return Ok(result);
@@ -399,7 +399,7 @@ namespace Gordon360.Controllers
         [Route("mobile_privacy/{value}")]
         public async Task<ActionResult> UpdateMobilePrivacyAsync(string value)
         {
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
             await _profileService.UpdateMobilePrivacyAsync(authenticatedUserUsername, value);
 
             return Ok();
@@ -414,7 +414,7 @@ namespace Gordon360.Controllers
         [Route("image_privacy/{value}")]
         public async Task<ActionResult> UpdateImagePrivacyAsync(string value)
         {
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
             await _profileService.UpdateImagePrivacyAsync(authenticatedUserUsername, value);
 
             return Ok();

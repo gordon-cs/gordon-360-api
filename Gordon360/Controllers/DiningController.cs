@@ -29,7 +29,7 @@ namespace Gordon360.Controllers
         public async Task<ActionResult<string>> GetAsync()
         {
             var currentSession = await Helpers.GetCurrentSessionAsync();
-            var authenticatedUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var authenticatedUsername = AuthUtils.GetUsername(User);
             var authenticatedUserId = int.Parse(_accountService.GetAccountByUsername(authenticatedUsername)?.GordonID);
             var diningInfo = _diningService.GetDiningPlanInfo(authenticatedUserId, currentSession.SessionCode);
 

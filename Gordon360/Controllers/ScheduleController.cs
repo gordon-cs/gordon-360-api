@@ -34,8 +34,8 @@ namespace Gordon360.Controllers
         [Route("")]
         public ActionResult<ScheduleViewModel> Get()
         {
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
-            var groups = AuthUtils.GetAuthenticatedUserGroups(User);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+            var groups = AuthUtils.GetGroups(User);
 
             if (groups.Contains(AuthGroup.Student.Name))
             {
@@ -71,7 +71,7 @@ namespace Gordon360.Controllers
         public async Task<ActionResult<JArray>> GetAsync(string username)
         {
             //probably needs privacy stuff like ProfilesController and service
-            var viewerGroups = AuthUtils.GetAuthenticatedUserGroups(User);
+            var viewerGroups = AuthUtils.GetGroups(User);
 
             var groups = AuthUtils.GetGroups(username);
             var id = _accountService.GetAccountByUsername(username).GordonID;
@@ -123,7 +123,7 @@ namespace Gordon360.Controllers
         [Route("canreadstudent")]
         public async Task<ActionResult<bool>> GetCanReadStudentSchedules()
         {
-            var groups = AuthUtils.GetAuthenticatedUserGroups(User);
+            var groups = AuthUtils.GetGroups(User);
             return groups.Contains(AuthGroup.Advisors.Name);
         }
     }

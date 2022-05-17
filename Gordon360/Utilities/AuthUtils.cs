@@ -16,21 +16,19 @@ namespace Gordon360.Utilities
         /// </summary>
         /// <param name="User">The ClaimsPrincipal representing the user's authentication claims</param>
         /// <returns>Username of the authenticated user</returns>
-        public static string GetAuthenticatedUserUsername(ClaimsPrincipal User)
+        public static string GetUsername(ClaimsPrincipal User)
         {
             return User.FindFirstValue(ClaimTypes.Upn).Split("@")[0];
         }
 
-        public static IEnumerable<string> GetAuthenticatedUserGroups(ClaimsPrincipal User)
+        public static IEnumerable<string> GetGroups(ClaimsPrincipal User)
         {
-            var groups = User.Claims.Where(x => x.Type == "groups").Select(g => g.Value);
-            return groups;
+            return User.Claims.Where(x => x.Type == "groups").Select(g => g.Value);
         }
 
         public static bool UserIsInGroup(ClaimsPrincipal User, AuthGroup group)
         {
-            var groups = GetAuthenticatedUserGroups(User);
-            return groups.Contains(group.Name);
+            return GetGroups(User).Contains(group.Name);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Program only runs on Windows")]

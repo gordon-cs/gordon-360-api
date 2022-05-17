@@ -26,7 +26,7 @@ namespace Gordon360.Controllers
         [Route("")]
         public async Task<ActionResult<StudentEmploymentViewModel>> GetAsync()
         {
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
             var result = await _studentEmploymentService.GetEmploymentAsync(authenticatedUserUsername);
             if (result == null)

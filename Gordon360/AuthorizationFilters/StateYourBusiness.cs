@@ -54,8 +54,8 @@ namespace Gordon360.AuthorizationFilters
             // Step 1: Who is to be authorized
             var authenticatedUser = actionContext.HttpContext.User;
 
-            user_name = AuthUtils.GetAuthenticatedUserUsername(authenticatedUser);
-            user_groups = AuthUtils.GetAuthenticatedUserGroups(authenticatedUser);
+            user_name = AuthUtils.GetUsername(authenticatedUser);
+            user_groups = AuthUtils.GetGroups(authenticatedUser);
             user_id = new AccountService(CCTContext).GetAccountByUsername(user_name).GordonID;
 
             if (user_groups.Contains(AuthGroup.SiteAdmin.Name))

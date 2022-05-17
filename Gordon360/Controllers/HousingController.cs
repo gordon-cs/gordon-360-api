@@ -71,7 +71,7 @@ namespace Gordon360.Controllers
         [Route("apartment")]
         public async Task<ActionResult<int?>> GetApplicationIDAsync()
         {
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
             string sessionID = (await Helpers.GetCurrentSessionAsync()).SessionCode;
 
@@ -144,7 +144,7 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)]
         public async Task<ActionResult<int>> EditApplicationAsync(int applicationID, [FromBody] ApartmentApplicationViewModel applicationDetails)
         {
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
             string sessionID = (await Helpers.GetCurrentSessionAsync()).SessionCode;
 
@@ -173,7 +173,7 @@ namespace Gordon360.Controllers
         public ActionResult<bool> ChangeEditor(int applicationID, [FromBody] ApartmentApplicationViewModel applicationDetails)
         {
             //get token data from context, username is the username of current logged in person
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
             string newEditorUsername = applicationDetails.EditorProfile?.AD_Username ?? applicationDetails.EditorUsername;
 
@@ -205,7 +205,7 @@ namespace Gordon360.Controllers
         public ActionResult<ApartmentApplicationViewModel> GetApartmentApplication(int applicationID)
         {
             //get token data from context, username is the username of current logged in person
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
             string userID = _accountService.GetAccountByUsername(authenticatedUserUsername).GordonID;
 

@@ -31,7 +31,7 @@ namespace Gordon360.Controllers
         [Route("")]
         public ActionResult<IEnumerable<MYSCHEDULE>> Get()
         {
-            var authenticatedUserIdString = AuthUtils.GetAuthenticatedUserUsername(User);
+            var authenticatedUserIdString = AuthUtils.GetUsername(User);
 
             object result = _myScheduleService.GetAllForUser(authenticatedUserIdString);
             if (result == null)
@@ -58,7 +58,7 @@ namespace Gordon360.Controllers
         [Route("event/{event_id}")]
         public ActionResult<MYSCHEDULE> GetByEventId(string event_Id)
         {
-            var authenticatedUserIdString = AuthUtils.GetAuthenticatedUserUsername(User);
+            var authenticatedUserIdString = AuthUtils.GetUsername(User);
 
             object result = _myScheduleService.GetForID(event_Id, authenticatedUserIdString);
             if (result == null)
@@ -101,7 +101,7 @@ namespace Gordon360.Controllers
             const int MAX = 50;
             DateTime localDate = DateTime.Now;
 
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
             object existingEvents = _myScheduleService.GetAllForUser(authenticatedUserUsername);
 
@@ -134,7 +134,7 @@ namespace Gordon360.Controllers
         public ActionResult<MYSCHEDULE> Delete(string eventID)
         {
             DateTime localDate = DateTime.Now;
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
             var result = _myScheduleService.Delete(eventID, authenticatedUserUsername);
 
             if (result == null)
@@ -164,7 +164,7 @@ namespace Gordon360.Controllers
                 return NotFound();
             }
 
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
             _scheduleControlService.UpdateModifiedTimeStampAsync(authenticatedUserUsername, localDate);
 

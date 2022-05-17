@@ -25,7 +25,7 @@ namespace Gordon360.Controllers
         public async Task<ActionResult<IEnumerable<AttendedEventViewModel>>> GetEventsByTermAsync(string term)
         {
             //get token data from context, username is the username of current logged in person
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
             var result = await _eventService.GetEventsForStudentByTermAsync(authenticatedUserUsername, term);
 

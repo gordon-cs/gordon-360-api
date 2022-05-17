@@ -2145,7 +2145,7 @@
             </summary>
             <returns>SessionViewModel of the current session. If no session is found for our current date, returns null.</returns>
         </member>
-        <member name="M:Gordon360.Utilities.AuthUtils.GetAuthenticatedUserUsername(System.Security.Claims.ClaimsPrincipal)">
+        <member name="M:Gordon360.Utilities.AuthUtils.GetUsername(System.Security.Claims.ClaimsPrincipal)">
             <summary>
             Get the username of the authenticated user
             </summary>

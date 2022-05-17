@@ -36,7 +36,7 @@ namespace Gordon360.Controllers
         [Route("")]
         public ActionResult<WellnessViewModel> Get()
         {
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
             var result = _wellnessService.GetStatus(authenticatedUserUsername);
 
@@ -75,7 +75,7 @@ namespace Gordon360.Controllers
         [Route("")]
         public ActionResult<WellnessViewModel> Post([FromBody] WellnessStatusColor status)
         {
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
             var result = _wellnessService.PostStatus(status, authenticatedUserUsername);
 

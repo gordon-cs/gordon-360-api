@@ -219,8 +219,8 @@ namespace Gordon360.Controllers
                 return NotFound();
             }
             // privacy control of membership view model
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
-            var viewerGroups = AuthUtils.GetAuthenticatedUserGroups(User);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+            var viewerGroups = AuthUtils.GetGroups(User);
 
             if (viewerGroups.Contains(AuthGroup.SiteAdmin.Name) || viewerGroups.Contains(AuthGroup.Police.Name))              //super admin and gordon police reads all
                 return Ok(result);

@@ -29,7 +29,7 @@ namespace Gordon360.Controllers
         [Route("")]
         public ActionResult<IEnumerable<VictoryPromiseViewModel>> Get()
         {
-            var username = AuthUtils.GetAuthenticatedUserUsername(User);
+            var username = AuthUtils.GetUsername(User);
 
             var result = _victoryPromiseService.GetVPScoresAsync(username);
 

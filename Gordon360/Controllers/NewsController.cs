@@ -117,7 +117,7 @@ namespace Gordon360.Controllers
         [Route("personal-unapproved")]
         public async Task<ActionResult<IEnumerable<StudentNewsViewModel>>> GetNewsPersonalUnapprovedAsync()
         {
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
             // Call appropriate service
             var result = await _newsService.GetNewsPersonalUnapprovedAsync(authenticatedUserUsername);
@@ -137,7 +137,7 @@ namespace Gordon360.Controllers
         public ActionResult<StudentNews> Post(string subject, int categoryID, string body, string? image)
         {
             // Get authenticated username/id
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
             var newsItem = new StudentNews
             {
                 ADUN = authenticatedUserUsername,

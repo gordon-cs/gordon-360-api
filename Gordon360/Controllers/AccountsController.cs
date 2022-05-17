@@ -169,7 +169,7 @@ namespace Gordon360.Controllers
         {
 
 
-            var viewerGroups = AuthUtils.GetAuthenticatedUserGroups(User);
+            var viewerGroups = AuthUtils.GetGroups(User);
 
             // Only students and FacStaff can search students
             if (accountTypes.Contains("student") && !(viewerGroups.Contains(AuthGroup.Student.Name) || viewerGroups.Contains(AuthGroup.FacStaff.Name)))

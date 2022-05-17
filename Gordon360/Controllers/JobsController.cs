@@ -30,7 +30,7 @@ namespace Gordon360.Controllers
 
         private int GetCurrentUserID()
         {
-            var username = AuthUtils.GetAuthenticatedUserUsername(User);
+            var username = AuthUtils.GetUsername(User);
             var account = _accountService.GetAccountByUsername(username);
             return int.Parse(account.GordonID);
         }
@@ -87,7 +87,7 @@ namespace Gordon360.Controllers
         public async Task<ActionResult> SaveShiftForUserAsync([FromBody] ShiftViewModel shiftDetails)
         {
             int userID = GetCurrentUserID();
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
             if (shiftDetails.SHIFT_START_DATETIME == null || shiftDetails.SHIFT_END_DATETIME == null || shiftDetails.SHIFT_START_DATETIME == shiftDetails.SHIFT_END_DATETIME)
             {
@@ -116,7 +116,7 @@ namespace Gordon360.Controllers
             IEnumerable<OverlappingShiftIdViewModel> overlapCheckResult = null;
 
             int userID = GetCurrentUserID();
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
             overlapCheckResult = await _jobsService.EditShiftOverlapCheckAsync(userID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.ID);
             if (overlapCheckResult.Any())
