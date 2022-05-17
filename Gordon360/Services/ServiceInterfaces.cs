@@ -13,10 +13,6 @@ using static Gordon360.Services.MembershipService;
 // </summary>
 namespace Gordon360.Services
 {
-    public interface IRoleCheckingService
-    {
-        string GetCollegeRole(string username);
-    }
     public interface IProfileService
     {
         StudentProfileViewModel? GetStudentProfileByUsername(string username);
@@ -223,7 +219,6 @@ namespace Gordon360.Services
     {
         Task<IEnumerable<ScheduleViewModel>> GetScheduleStudentAsync(string username);
         Task<IEnumerable<ScheduleViewModel>> GetScheduleFacultyAsync(string username);
-        Task<bool> CanReadStudentSchedules(string username);
     }
 
     public interface IScheduleControlService
@@ -232,7 +227,6 @@ namespace Gordon360.Services
         Task UpdateDescriptionAsync(string username, string value);
         Task UpdateModifiedTimeStampAsync(string username, DateTime value);
     }
-
 
     public interface IMyScheduleService
     {

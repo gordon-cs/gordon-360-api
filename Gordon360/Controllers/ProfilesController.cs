@@ -12,6 +12,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Gordon360.Controllers
@@ -21,14 +22,12 @@ namespace Gordon360.Controllers
     {
         private readonly IProfileService _profileService;
         private readonly IAccountService _accountService;
-        private readonly IRoleCheckingService _roleCheckingService;
         private readonly IConfiguration _config;
 
         public ProfilesController(CCTContext context, IConfiguration config)
         {
             _profileService = new ProfileService(context);
             _accountService = new AccountService(context);
-            _roleCheckingService = new RoleCheckingService(context);
             _config = config;
         }
 
@@ -62,8 +61,7 @@ namespace Gordon360.Controllers
         [Route("{username}")]
         public ActionResult<ProfileViewModel?> GetUserProfile(string username)
         {
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
-            var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserUsername);
+            var viewerGroups = AuthUtils.GetAuthenticatedUserGroups(User);
 
             var _student = _profileService.GetStudentProfileByUsername(username);
             var _faculty = _profileService.GetFacultyStaffProfileByUsername(username);
@@ -73,35 +71,24 @@ namespace Gordon360.Controllers
             object? student = null;
             object? faculty = null;
             object? alumni = null;
-            object? customInfo = null;
 
-            //security control depends on viewer type. apply different views to different viewers.
-            switch (viewerType)
+            if (viewerGroups.Contains(AuthGroup.SiteAdmin.Name) || viewerGroups.Contains(AuthGroup.Police.Name))
             {
-                case Position.SUPERADMIN:
-                    student = _student;
-                    faculty = _faculty;
-                    alumni = _alumni;
-                    customInfo = _customInfo;
-                    break;
-                case Position.POLICE:
-                    student = _student;
-                    faculty = _faculty;
-                    alumni = _alumni;
-                    customInfo = _customInfo;
-                    break;
-                case Position.STUDENT:
-                    student = _student == null ? null : (PublicStudentProfileViewModel)_student;
-                    faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
-                    alumni = null;  //student can't see alumini
-                    customInfo = _customInfo;
-                    break;
-                case Position.FACSTAFF:
-                    student = _student;
-                    faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
-                    alumni = _alumni == null ? null : (PublicAlumniProfileViewModel)_alumni;
-                    customInfo = _customInfo;
-                    break;
+                student = _student;
+                faculty = _faculty;
+                alumni = _alumni;
+            }
+            else if (viewerGroups.Contains(AuthGroup.FacStaff.Name))
+            {
+                student = _student;
+                faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
+                alumni = _alumni == null ? null : (PublicAlumniProfileViewModel)_alumni;
+            }
+            else if (viewerGroups.Contains(AuthGroup.Student.Name))
+            {
+                student = _student == null ? null : (PublicStudentProfileViewModel)_student;
+                faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
+                alumni = null;  //student can't see alumini
             }
 
             if (student is null && alumni is null && faculty is null)
@@ -109,7 +96,7 @@ namespace Gordon360.Controllers
                 return Ok(null);
             }
 
-            var profile = _profileService.ComposeProfile(student, alumni, faculty, customInfo);
+            var profile = _profileService.ComposeProfile(student, alumni, faculty, _customInfo);
 
             return Ok(profile);
         }
@@ -232,10 +219,7 @@ namespace Gordon360.Controllers
         [Route("image/{username}")]
         public async Task<ActionResult<JObject>> GetImgAsync(string username)
         {
-            var authUsername = AuthUtils.GetAuthenticatedUserUsername(User);
-            var viewerType = _roleCheckingService.GetCollegeRole(authUsername);
             var photoInfo = await _profileService.GetPhotoPathAsync(username);
-
             JObject result = new JObject();
 
             //return default image if no photo info found for this user.
@@ -247,38 +231,41 @@ namespace Gordon360.Controllers
 
             var preferredImagePath = string.IsNullOrEmpty(photoInfo.Pref_Img_Name) ? null : _config["PREFERRED_IMAGE_PATH"] + photoInfo.Pref_Img_Name;
             var defaultImagePath = _config["DEFAULT_IMAGE_PATH"] + photoInfo.Img_Name;
-            //security control depends on viewer type.
-            switch (viewerType)
+
+            var viewerGroups = AuthUtils.GetAuthenticatedUserGroups(User);
+            if (viewerGroups.Contains(AuthGroup.FacStaff.Name))
             {
-                case Position.SUPERADMIN:
-                case Position.FACSTAFF:
-                case Position.POLICE:
+                if (preferredImagePath is not null && System.IO.File.Exists(preferredImagePath))
+                {
+                    result.Add("pref", await GetProfileImageOrDefault(preferredImagePath));
+                }
+                result.Add("def", await GetProfileImageOrDefault(defaultImagePath));
+                return Ok(result);
+
+            }
+            else
+            if (viewerGroups.Contains(AuthGroup.Student.Name))
+            {
+                if (_accountService.GetAccountByUsername(username).show_pic == 1)
+                {
                     if (preferredImagePath is not null && System.IO.File.Exists(preferredImagePath))
                     {
                         result.Add("pref", await GetProfileImageOrDefault(preferredImagePath));
                     }
-                    result.Add("def", await GetProfileImageOrDefault(defaultImagePath));
-                    return Ok(result);
-
-                case Position.STUDENT:
-                    if (_accountService.GetAccountByUsername(username).show_pic == 1)
-                    {
-                        if (preferredImagePath is not null && System.IO.File.Exists(preferredImagePath))
-                        {
-                            result.Add("pref", await GetProfileImageOrDefault(preferredImagePath));
-                        }
-                        else
-                        {
-                            result.Add("def", await GetProfileImageOrDefault(defaultImagePath));
-                        }
-                    }
                     else
                     {
-                        result.Add("def", await ImageUtils.DownloadImageFromURL(_config["DEFAULT_PROFILE_IMAGE_PATH"]));
+                        result.Add("def", await GetProfileImageOrDefault(defaultImagePath));
                     }
-                    return Ok(result);
-                default:
-                    return Ok();
+                }
+                else
+                {
+                    result.Add("def", await ImageUtils.DownloadImageFromURL(_config["DEFAULT_PROFILE_IMAGE_PATH"]));
+                }
+                return Ok(result);
+            }
+            else
+            {
+                return Ok();
             }
         }
 

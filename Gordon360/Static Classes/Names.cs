@@ -4,6 +4,7 @@
     {
         static AuthGroup()
         {
+            Advisors = new AuthGroup("360-Advisors-SG");
             Alumni = new AuthGroup("360-Alumni-SG");
             FacStaff = new AuthGroup("360-FacStaff-SG");
             Faculty = new AuthGroup("360-Faculty-SG");
@@ -20,6 +21,7 @@
             Name = name;
         }
 
+        public static AuthGroup Advisors { get; }
         public static AuthGroup Alumni { get; }
         public static AuthGroup FacStaff { get; }
         public static AuthGroup Faculty { get; }

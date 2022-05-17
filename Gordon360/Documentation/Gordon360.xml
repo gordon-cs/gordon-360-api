@@ -2074,13 +2074,6 @@
             <param name="username">The AD Username of the instructor</param>
             <returns>StudentScheduleViewModel if found, null if not found</returns>
         </member>
-        <member name="M:Gordon360.Services.ScheduleService.CanReadStudentSchedules(System.String)">
-            <summary>
-            Determine whether the specified user can read student schedules, based on the logic in the stored procedure
-            </summary>
-            <param name="username">The username to determine it for</param>
-            <returns>Whether the specified user can read student schedules</returns>
-        </member>
         <member name="T:Gordon360.Services.SessionService">
             <summary>
             Service class to facilitate data transactions between the Controller and the database model.

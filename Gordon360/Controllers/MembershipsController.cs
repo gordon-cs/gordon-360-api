@@ -16,16 +16,12 @@ namespace Gordon360.Controllers
     public class MembershipsController : GordonControllerBase
     {
         private readonly IMembershipService _membershipService;
-        private readonly IAccountService _accountService;
         private readonly IActivityService _activityService;
-        private readonly IRoleCheckingService _roleCheckingService;
 
         public MembershipsController(CCTContext context)
         {
             _membershipService = new MembershipService(context);
-            _accountService = new AccountService(context);
             _activityService = new ActivityService(context);
-            _roleCheckingService = new RoleCheckingService(context);
         }
 
         /// <summary>
@@ -224,9 +220,9 @@ namespace Gordon360.Controllers
             }
             // privacy control of membership view model
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
-            var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserUsername);
+            var viewerGroups = AuthUtils.GetAuthenticatedUserGroups(User);
 
-            if (viewerType == Position.SUPERADMIN || viewerType == Position.POLICE)              //super admin and gordon police reads all
+            if (viewerGroups.Contains(AuthGroup.SiteAdmin.Name) || viewerGroups.Contains(AuthGroup.Police.Name))              //super admin and gordon police reads all
                 return Ok(result);
             else
             {

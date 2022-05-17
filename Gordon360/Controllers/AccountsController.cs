@@ -14,13 +14,11 @@ namespace Gordon360.Controllers
     [Route("api/[controller]")]
     public class AccountsController : GordonControllerBase
     {
-        private readonly IRoleCheckingService _roleCheckingService;
         private readonly IAccountService _accountService;
 
         public AccountsController(CCTContext context)
         {
             _accountService = new AccountService(context);
-            _roleCheckingService = new RoleCheckingService(context);
         }
 
         [HttpGet]
@@ -171,19 +169,17 @@ namespace Gordon360.Controllers
         {
 
 
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
-            var viewerType = _roleCheckingService.GetCollegeRole(authenticatedUserUsername);
+            var viewerGroups = AuthUtils.GetAuthenticatedUserGroups(User);
 
-            // Create accounts viewmodel to search
-            if (accountTypes.Contains("student") && viewerType == Position.ALUMNI)
+            // Only students and FacStaff can search students
+            if (accountTypes.Contains("student") && !(viewerGroups.Contains(AuthGroup.Student.Name) || viewerGroups.Contains(AuthGroup.FacStaff.Name)))
             {
-                // Alumni cannot search students
                 accountTypes.Remove("student");
             }
 
-            if (accountTypes.Contains("alumni") && viewerType == Position.STUDENT)
+            // Students cannot search alumni
+            if (accountTypes.Contains("alumni") && viewerGroups.Contains(AuthGroup.Student.Name))
             {
-                // Students cannot search alumni
                 accountTypes.Remove("alumni");
             }
 

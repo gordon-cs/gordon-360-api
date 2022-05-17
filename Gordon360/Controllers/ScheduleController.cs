@@ -5,6 +5,8 @@ using Gordon360.Static.Names;
 using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Gordon360.Controllers
@@ -15,7 +17,6 @@ namespace Gordon360.Controllers
         private readonly CCTContext _context;
 
         private readonly IAccountService _accountService;
-        private readonly IRoleCheckingService _roleCheckingService;
         private readonly IScheduleService _scheduleService;
 
         public ScheduleController(CCTContext context)
@@ -23,7 +24,6 @@ namespace Gordon360.Controllers
             _context = context;
             _scheduleService = new ScheduleService(context);
             _accountService = new AccountService(context);
-            _roleCheckingService = new RoleCheckingService(context);
         }
 
         /// <summary>
@@ -35,9 +35,9 @@ namespace Gordon360.Controllers
         public ActionResult<ScheduleViewModel> Get()
         {
             var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
-            var role = _roleCheckingService.GetCollegeRole(authenticatedUserUsername);
+            var groups = AuthUtils.GetAuthenticatedUserGroups(User);
 
-            if (role == "student")
+            if (groups.Contains(AuthGroup.Student.Name))
             {
                 var result = _scheduleService.GetScheduleStudentAsync(authenticatedUserUsername);
                 if (result == null)
@@ -47,7 +47,7 @@ namespace Gordon360.Controllers
                 return Ok(result);
             }
 
-            else if (role == "facstaff")
+            else if (groups.Contains(AuthGroup.FacStaff.Name))
             {
                 var result = _scheduleService.GetScheduleFacultyAsync(authenticatedUserUsername);
                 if (result == null)
@@ -56,8 +56,10 @@ namespace Gordon360.Controllers
                 }
                 return Ok(result);
             }
-            return NotFound();
-
+            else
+            {
+                return NotFound();
+            }
         }
 
         /// <summary>
@@ -69,51 +71,32 @@ namespace Gordon360.Controllers
         public async Task<ActionResult<JArray>> GetAsync(string username)
         {
             //probably needs privacy stuff like ProfilesController and service
-            var authenticatedUserUsername = AuthUtils.GetAuthenticatedUserUsername(User);
-            var viewerRole = _roleCheckingService.GetCollegeRole(authenticatedUserUsername);
+            var viewerGroups = AuthUtils.GetAuthenticatedUserGroups(User);
 
-            var role = _roleCheckingService.GetCollegeRole(username);
+            var groups = AuthUtils.GetGroups(username);
             var id = _accountService.GetAccountByUsername(username).GordonID;
-            object scheduleResult = null;
             var scheduleControl = _context.Schedule_Control.Find(id);
-            int schedulePrivacy = 1;
 
-            // Getting student schedule
-            if (role == "student")
+            IEnumerable<ScheduleViewModel>? scheduleResult = null;
+            if (groups.Contains(AuthGroup.Student.Name))
             {
-                try
+                int schedulePrivacy = scheduleControl?.IsSchedulePrivate ?? 1;
+
+                if (viewerGroups.Contains(AuthGroup.Police.Name) || viewerGroups.Contains(AuthGroup.SiteAdmin.Name))
                 {
-                    schedulePrivacy = scheduleControl.IsSchedulePrivate;
+                    scheduleResult = await _scheduleService.GetScheduleStudentAsync(id);
                 }
-                catch
+                else if (viewerGroups.Contains(AuthGroup.Student.Name) && schedulePrivacy == 0)
                 {
-                    // schedulePrivacy = 1;
+
+                    scheduleResult = await _scheduleService.GetScheduleStudentAsync(id);
                 }
-                // Viewer permissions
-                switch (viewerRole)
+                else if (viewerGroups.Contains(AuthGroup.Advisors.Name))
                 {
-                    case Position.SUPERADMIN:
-                        scheduleResult = await _scheduleService.GetScheduleStudentAsync(id);
-                        break;
-                    case Position.POLICE:
-                        scheduleResult = await _scheduleService.GetScheduleStudentAsync(id);
-                        break;
-                    case Position.STUDENT:
-                        if (schedulePrivacy == 0)
-                        {
-                            scheduleResult = await _scheduleService.GetScheduleStudentAsync(id);
-                        }
-                        break;
-                    case Position.FACSTAFF:
-                        if (await _scheduleService.CanReadStudentSchedules(authenticatedUserUsername))
-                        {
-                            scheduleResult = await _scheduleService.GetScheduleStudentAsync(id);
-                        }
-                        break;
+                    scheduleResult = await _scheduleService.GetScheduleStudentAsync(id);
                 }
             }
-            // Getting faculty / staff schedule
-            else if (role == "facstaff")
+            else if (groups.Contains(AuthGroup.FacStaff.Name))
             {
                 scheduleResult = await _scheduleService.GetScheduleFacultyAsync(id);
             }
@@ -140,9 +123,8 @@ namespace Gordon360.Controllers
         [Route("canreadstudent")]
         public async Task<ActionResult<bool>> GetCanReadStudentSchedules()
         {
-            var username = AuthUtils.GetAuthenticatedUserUsername(User);
-
-            return Ok(await _scheduleService.CanReadStudentSchedules(username));
+            var groups = AuthUtils.GetAuthenticatedUserGroups(User);
+            return groups.Contains(AuthGroup.Advisors.Name);
         }
     }
 }
