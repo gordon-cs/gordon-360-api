@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Gordon360.Models.StudentTimesheets;
 
-namespace Gordon360.Database.StudentTimesheets
+namespace Gordon360.Models.StudentTimesheets.Context
 {
     public partial class StudentTimesheetsContext : DbContext
     {
@@ -20,15 +20,6 @@ namespace Gordon360.Database.StudentTimesheets
         }
 
         public virtual DbSet<student_timesheets> student_timesheets { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=admintrainsql.gordon.edu;Initial Catalog=StudentTimesheets;Integrated Security=True");
-            }
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

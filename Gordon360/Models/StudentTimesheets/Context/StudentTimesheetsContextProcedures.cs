@@ -8,7 +8,7 @@ using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Gordon360.Database.StudentTimesheets
+namespace Gordon360.Models.StudentTimesheets.Context
 {
     public partial class StudentTimesheetsContext
     {
@@ -35,35 +35,32 @@ namespace Gordon360.Database.StudentTimesheets
         protected void OnModelCreatingGeneratedProcedures(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<student_timesheets_already_worked_these_hoursResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<student_timesheets_delete_shiftResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<student_timesheets_edit_shift_already_worked_these_hoursResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<student_timesheets_insert_shiftResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<student_timesheets_select_active_status_shiftsResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<student_timesheets_select_emls_for_ajax_selectboxResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<student_timesheets_select_end_datetimesResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<student_timesheets_select_fixed_status_shiftsResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<student_timesheets_select_if_student_has_paid_shiftsResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<student_timesheets_select_supervisor_nameResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<student_timesheets_submit_job_shiftResult>().HasNoKey().ToView(null);
         }
     }
 
-    public interface IStudentTimesheetsContextProceduresContract
+    public interface IStudentTimesheetsContextProcedures
     {
-        Task<List<student_timesheets_already_worked_these_hoursResult>> student_timesheets_already_worked_these_hoursAsync(int? ID_NUM, DateTime? shift_start_datetime, DateTime? shift_end_datetime, CancellationToken cancellationToken = default);
-        Task<int> student_timesheets_delete_shiftAsync(int? row_num, int? ID_NUM, CancellationToken cancellationToken = default);
-        Task<List<student_timesheets_edit_shift_already_worked_these_hoursResult>> student_timesheets_edit_shift_already_worked_these_hoursAsync(int? ID_NUM, DateTime? shift_start_datetime, DateTime? shift_end_datetime, int? shift_being_edited, CancellationToken cancellationToken = default);
-        Task<int> student_timesheets_insert_shiftAsync(int? ID_NUM, int? eml, DateTime? shift_start_datetime, DateTime? shift_end_datetime, string hours_worked, string shift_notes, string last_changed_by, CancellationToken cancellationToken = default);
-        Task<List<student_timesheets_select_active_status_shiftsResult>> student_timesheets_select_active_status_shiftsAsync(int? ID_NUM, CancellationToken cancellationToken = default);
-        Task<List<student_timesheets_select_emls_for_ajax_selectboxResult>> student_timesheets_select_emls_for_ajax_selectboxAsync(DateTime? start_datetime, DateTime? end_datetime, int? ID_NUM, CancellationToken cancellationToken = default);
-        Task<List<student_timesheets_select_end_datetimesResult>> student_timesheets_select_end_datetimesAsync(int? eml, int? ID_NUM, CancellationToken cancellationToken = default);
-        Task<List<student_timesheets_select_fixed_status_shiftsResult>> student_timesheets_select_fixed_status_shiftsAsync(int? ID_NUM, CancellationToken cancellationToken = default);
-        Task<List<student_timesheets_select_if_student_has_paid_shiftsResult>> student_timesheets_select_if_student_has_paid_shiftsAsync(int? ID_NUM, CancellationToken cancellationToken = default);
-        Task<List<student_timesheets_select_supervisor_nameResult>> student_timesheets_select_supervisor_nameAsync(int? supervisor, CancellationToken cancellationToken = default);
-        Task<int> student_timesheets_submit_job_shiftAsync(int? ID_NUM, int? eml, DateTime? shift_end_datetime, int? submitted_to, string last_changed_by, CancellationToken cancellationToken = default);
+        Task<List<student_timesheets_already_worked_these_hoursResult>> student_timesheets_already_worked_these_hoursAsync(int? ID_NUM, DateTime? shift_start_datetime, DateTime? shift_end_datetime, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<int> student_timesheets_delete_shiftAsync(int? row_num, int? ID_NUM, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<student_timesheets_edit_shift_already_worked_these_hoursResult>> student_timesheets_edit_shift_already_worked_these_hoursAsync(int? ID_NUM, DateTime? shift_start_datetime, DateTime? shift_end_datetime, int? shift_being_edited, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<int> student_timesheets_insert_shiftAsync(int? ID_NUM, int? eml, DateTime? shift_start_datetime, DateTime? shift_end_datetime, string hours_worked, string shift_notes, string last_changed_by, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<student_timesheets_select_active_status_shiftsResult>> student_timesheets_select_active_status_shiftsAsync(int? ID_NUM, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<student_timesheets_select_emls_for_ajax_selectboxResult>> student_timesheets_select_emls_for_ajax_selectboxAsync(DateTime? start_datetime, DateTime? end_datetime, int? ID_NUM, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<student_timesheets_select_end_datetimesResult>> student_timesheets_select_end_datetimesAsync(int? eml, int? ID_NUM, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<student_timesheets_select_fixed_status_shiftsResult>> student_timesheets_select_fixed_status_shiftsAsync(int? ID_NUM, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<student_timesheets_select_if_student_has_paid_shiftsResult>> student_timesheets_select_if_student_has_paid_shiftsAsync(int? ID_NUM, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<student_timesheets_select_supervisor_nameResult>> student_timesheets_select_supervisor_nameAsync(int? supervisor, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<int> student_timesheets_submit_job_shiftAsync(int? ID_NUM, int? eml, DateTime? shift_end_datetime, int? submitted_to, string last_changed_by, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
     }
 
-    public partial class StudentTimesheetsContextProcedures
+    public partial class StudentTimesheetsContextProcedures : IStudentTimesheetsContextProcedures
     {
         private readonly StudentTimesheetsContext _context;
 
