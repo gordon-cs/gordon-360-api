@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Gordon360.Database.CCT
+namespace Gordon360.Models.CCT.Context
 {
     public static class DbContextExtensions
     {

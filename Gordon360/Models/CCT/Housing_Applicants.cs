@@ -25,8 +25,8 @@ namespace Gordon360.Models.CCT
         [Unicode(false)]
         public string SESS_CDE { get; set; }
 
-        [ForeignKey(nameof(HousingAppID))]
-        [InverseProperty(nameof(Housing_Applications.Housing_Applicants))]
+        [ForeignKey("HousingAppID")]
+        [InverseProperty("Housing_Applicants")]
         public virtual Housing_Applications HousingApp { get; set; }
     }
 }

@@ -18,7 +18,7 @@ namespace Gordon360.Models.CCT
         [Unicode(false)]
         public string HallName { get; set; }
 
-        [ForeignKey(nameof(HousingAppID))]
+        [ForeignKey("HousingAppID")]
         public virtual Housing_Applications HousingApp { get; set; }
     }
 }

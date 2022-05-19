@@ -7,5 +7,6 @@ namespace Gordon360.Models.CCT
 {
     public partial class FINALIZATION_GETDEMOGRAPHICResult
     {
+        public int Value { get; set; }
     }
 }

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
-    [Index(nameof(ACT_CDE), nameof(SESS_CDE), nameof(PART_CDE), nameof(ID_NUM), Name = "IX_JNZB_ACTIVITIES", IsUnique = true)]
+    [Index("ACT_CDE", "SESS_CDE", "PART_CDE", "ID_NUM", Name = "IX_JNZB_ACTIVITIES", IsUnique = true)]
     public partial class JNZB_ACTIVITIES
     {
         [Key]

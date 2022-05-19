@@ -24,8 +24,8 @@ namespace Gordon360.Models.CCT
         [Unicode(false)]
         public string Notes { get; set; }
 
-        [ForeignKey(nameof(HealthStatusID))]
-        [InverseProperty(nameof(Health_Status_CTRL.Health_Status))]
+        [ForeignKey("HealthStatusID")]
+        [InverseProperty("Health_Status")]
         public virtual Health_Status_CTRL HealthStatus { get; set; }
     }
 }

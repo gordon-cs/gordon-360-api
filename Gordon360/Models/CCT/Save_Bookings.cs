@@ -20,8 +20,8 @@ namespace Gordon360.Models.CCT
         public string rideID { get; set; }
         public byte isDriver { get; set; }
 
-        [ForeignKey(nameof(rideID))]
-        [InverseProperty(nameof(Save_Rides.Save_Bookings))]
+        [ForeignKey("rideID")]
+        [InverseProperty("Save_Bookings")]
         public virtual Save_Rides ride { get; set; }
     }
 }
