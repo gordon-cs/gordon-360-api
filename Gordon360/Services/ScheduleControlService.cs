@@ -1,5 +1,5 @@
 ﻿
-using Gordon360.Database.CCT;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Exceptions;
 using System;
 using System.Linq;

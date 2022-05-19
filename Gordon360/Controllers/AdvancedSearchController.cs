@@ -1,4 +1,4 @@
-﻿using Gordon360.Database.CCT;
+﻿using Gordon360.Models.CCT.Context;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;

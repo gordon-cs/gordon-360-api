@@ -56,6 +56,10 @@
               "target": "Package",
               "version": "[6.0.3, )"
             },
+            "Microsoft.Graph": {
+              "target": "Package",
+              "version": "[4.27.0, )"
+            },
             "Microsoft.Identity.Web": {
               "target": "Package",
               "version": "[1.23.1, )"
@@ -67,6 +71,10 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.3.0, )"
+            },
+            "System.DirectoryServices.AccountManagement": {
+              "target": "Package",
+              "version": "[6.0.0, )"
             }
           },
           "imports": [
@@ -87,7 +95,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.202\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.300\\RuntimeIdentifierGraph.json"
         }
       }
     }

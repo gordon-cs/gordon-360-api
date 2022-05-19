@@ -1,16 +1,11 @@
-using Gordon360.Database.CCT;
 using Gordon360.Exceptions;
-using Gordon360.Models;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Gordon360.Controllers.Api
@@ -18,7 +13,7 @@ namespace Gordon360.Controllers.Api
     [Route("api/checkIn")]
     [Authorize]
     [CustomExceptionFilter]
-    public class AcademicCheckInController : ControllerBase 
+    public class AcademicCheckInController : ControllerBase
     {
         private readonly IAcademicCheckInService _checkInService;
         private readonly IAccountService _accountService;
@@ -39,7 +34,8 @@ namespace Gordon360.Controllers.Api
             var username = AuthUtils.GetUsername(User);
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
-            try {
+            try
+            {
                 var result = await _checkInService.PutEmergencyContactAsync(data, id, username);
                 return Created("Emergency Contact", result);
             }
@@ -48,7 +44,7 @@ namespace Gordon360.Controllers.Api
                 System.Diagnostics.Debug.WriteLine(e.Message);
                 return NotFound();
             }
-        
+
         }
 
 
@@ -63,7 +59,8 @@ namespace Gordon360.Controllers.Api
             var username = AuthUtils.GetUsername(User);
             var id = _accountService.GetAccountByUsername(username).GordonID;
 
-            try {
+            try
+            {
                 var result = await _checkInService.PutCellPhoneAsync(id, data);
                 return Ok(result);
             }
@@ -72,7 +69,7 @@ namespace Gordon360.Controllers.Api
                 System.Diagnostics.Debug.WriteLine(e.Message);
                 return NotFound();
             }
-        
+
         }
 
         /// <summary>Sets the students race and ethinicity</summary>

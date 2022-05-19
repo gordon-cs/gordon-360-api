@@ -1,6 +1,6 @@
-﻿using Gordon360.Database.CCT;
-using Gordon360.Database.MyGordon;
-using Gordon360.Database.StudentTimesheets;
+﻿using Gordon360.Models.CCT.Context;
+using Gordon360.Models.MyGordon.Context;
+using Gordon360.Models.StudentTimesheets.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;

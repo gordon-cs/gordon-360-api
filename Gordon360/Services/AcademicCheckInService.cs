@@ -1,10 +1,7 @@
-using Gordon360.Database.CCT;
 using Gordon360.Exceptions;
-using Gordon360.Models;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
-using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -98,7 +95,7 @@ namespace Gordon360.Services
         /// <returns> The stored data </returns>
         public async Task<AcademicCheckInViewModel> PutDemographicAsync(string id, AcademicCheckInViewModel data)
         {
-            var result = await  _context.Procedures.FINALIZATION_UPDATEDEMOGRAPHICAsync(id, data.Race, data.Ethnicity); 
+            var result = await _context.Procedures.FINALIZATION_UPDATEDEMOGRAPHICAsync(id, data.Race, data.Ethnicity);
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };

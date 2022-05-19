@@ -1,5 +1,5 @@
-﻿using Gordon360.Database.CCT;
-using Gordon360.Database.MyGordon;
+﻿using Gordon360.Models.CCT.Context;
+using Gordon360.Models.MyGordon.Context;
 using Gordon360.Models.CCT;
 using Gordon360.Services;
 using Gordon360.Static.Methods;

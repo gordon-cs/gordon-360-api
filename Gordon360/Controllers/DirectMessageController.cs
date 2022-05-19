@@ -11,7 +11,7 @@
 //using System.Text;
 //using Microsoft.AspNetCore.Mvc;
 //using Microsoft.AspNetCore.Authorization;
-//using Gordon360.Database.CCT;
+//using Gordon360.Models.CCT.Context;
 
 //namespace Gordon360.Controllers
 //{
