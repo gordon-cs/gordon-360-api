@@ -42,8 +42,8 @@ namespace Gordon360.Models.MyGordon
         [Unicode(false)]
         public string Image { get; set; }
 
-        [ForeignKey(nameof(categoryID))]
-        [InverseProperty(nameof(StudentNewsCategory.StudentNews))]
+        [ForeignKey("categoryID")]
+        [InverseProperty("StudentNews")]
         public virtual StudentNewsCategory category { get; set; }
     }
 }
