@@ -10,10 +10,6 @@ namespace Gordon360.Models.CCT.Context
 {
     public partial class CCTContext : DbContext
     {
-        public CCTContext()
-        {
-        }
-
         public CCTContext(DbContextOptions<CCTContext> options)
             : base(options)
         {

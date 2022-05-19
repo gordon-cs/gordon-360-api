@@ -11,11 +11,15 @@ namespace Gordon360.Controllers
     [Route("api/[controller]")]
     public class DiningController : GordonControllerBase
     {
-        public readonly IDiningService _diningService;
+        private readonly IDiningService _diningService;
         private readonly IAccountService _accountService;
+        private readonly CCTContext _context;
+
         private const string FACSTAFF_MEALPLAN_ID = "7295";
+
         public DiningController(IConfiguration config, CCTContext context)
         {
+            _context = context;
             _diningService = new DiningService(context, config);
             _accountService = new AccountService(context);
         }
@@ -28,10 +32,10 @@ namespace Gordon360.Controllers
         [Route("")]
         public async Task<ActionResult<string>> GetAsync()
         {
-            var currentSession = await Helpers.GetCurrentSessionAsync();
+            var sessionCode = Helpers.GetCurrentSession(_context);
             var authenticatedUsername = AuthUtils.GetUsername(User);
             var authenticatedUserId = int.Parse(_accountService.GetAccountByUsername(authenticatedUsername)?.GordonID);
-            var diningInfo = _diningService.GetDiningPlanInfo(authenticatedUserId, currentSession.SessionCode);
+            var diningInfo = _diningService.GetDiningPlanInfo(authenticatedUserId, sessionCode);
 
             if (diningInfo == null)
             {

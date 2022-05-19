@@ -149,6 +149,10 @@ namespace Gordon360.Services
     public interface ISessionService
     {
         SessionViewModel Get(string sessionCode);
+        public SessionViewModel GetCurrentSession();
+        public string GetFirstDay();
+        public string GetLastDay();
+        public double[] GetDaysLeft();
         IEnumerable<SessionViewModel> GetAll();
     }
 

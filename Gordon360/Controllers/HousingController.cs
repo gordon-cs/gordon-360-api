@@ -1,6 +1,6 @@
 using Gordon360.AuthorizationFilters;
-using Gordon360.Models.CCT.Context;
 using Gordon360.Models.CCT;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Methods;
@@ -9,7 +9,6 @@ using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace Gordon360.Controllers
 {
@@ -20,9 +19,11 @@ namespace Gordon360.Controllers
         private readonly IAccountService _accountService;
         private readonly IAdministratorService _administratorService;
         private readonly IProfileService _profileService;
+        private readonly CCTContext _context;
 
         public HousingController(CCTContext context)
         {
+            _context = context;
             _housingService = new HousingService(context);
             _accountService = new AccountService(context);
             _administratorService = new AdministratorService(context);
@@ -69,11 +70,11 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("apartment")]
-        public async Task<ActionResult<int?>> GetApplicationIDAsync()
+        public ActionResult<int?> GetApplicationID()
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
-            string sessionID = (await Helpers.GetCurrentSessionAsync()).SessionCode;
+            string sessionID = Helpers.GetCurrentSession(_context);
 
             int? result = _housingService.GetApplicationID(authenticatedUserUsername, sessionID);
             if (result != null)
@@ -93,9 +94,9 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("apartment/{username}")]
-        public async Task<ActionResult<int?>> GetUserApplicationIDAsync(string username)
+        public ActionResult<int?> GetUserApplicationID(string username)
         {
-            string sessionID = (await Helpers.GetCurrentSessionAsync()).SessionCode;
+            string sessionID = Helpers.GetCurrentSession(_context);
 
             int? result = _housingService.GetApplicationID(username, sessionID);
             if (result != null)
@@ -115,9 +116,9 @@ namespace Gordon360.Controllers
         [HttpPost]
         [Route("apartment/applications")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING)]
-        public async Task<ActionResult<int>> SaveApplicationAsync([FromBody] ApartmentApplicationViewModel applicationDetails)
+        public ActionResult<int> SaveApplication([FromBody] ApartmentApplicationViewModel applicationDetails)
         {
-            string sessionID = (await Helpers.GetCurrentSessionAsync()).SessionCode;
+            string sessionID = Helpers.GetCurrentSession(_context);
 
             string editorUsername = applicationDetails.EditorProfile?.AD_Username ?? applicationDetails.EditorUsername;
 
@@ -142,11 +143,11 @@ namespace Gordon360.Controllers
         [HttpPut]
         [Route("apartment/applications/{applicationID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)]
-        public async Task<ActionResult<int>> EditApplicationAsync(int applicationID, [FromBody] ApartmentApplicationViewModel applicationDetails)
+        public ActionResult<int> EditApplication(int applicationID, [FromBody] ApartmentApplicationViewModel applicationDetails)
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
-            string sessionID = (await Helpers.GetCurrentSessionAsync()).SessionCode;
+            string sessionID = Helpers.GetCurrentSession(_context);
 
             string newEditorUsername = applicationDetails.EditorProfile?.AD_Username ?? applicationDetails.EditorUsername;
 

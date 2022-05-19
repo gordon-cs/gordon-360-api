@@ -177,12 +177,6 @@ namespace Gordon360.Controllers
                 accountTypes.Remove("student");
             }
 
-            // Students cannot search alumni
-            if (accountTypes.Contains("alumni") && viewerGroups.Contains(AuthGroup.Student.Name))
-            {
-                accountTypes.Remove("alumni");
-            }
-
             var searchResults = _accountService.AdvancedSearch(accountTypes,
                                                                firstname,
                                                                lastname,

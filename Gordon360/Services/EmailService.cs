@@ -1,5 +1,5 @@
-﻿using Gordon360.Models.CCT.Context;
-using Gordon360.Exceptions;
+﻿using Gordon360.Exceptions;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Static.Methods;
 using System.Collections.Generic;
@@ -34,8 +34,7 @@ namespace Gordon360.Services
         {
             if (sessionCode == null)
             {
-                var currentSession = await Helpers.GetCurrentSessionAsync();
-                sessionCode = currentSession.SessionCode;
+                sessionCode = Helpers.GetCurrentSession(_context);
             }
 
             var membershipService = new MembershipService(_context);

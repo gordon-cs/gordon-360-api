@@ -1,6 +1,6 @@
-﻿using Gordon360.Models.CCT.Context;
+﻿using Gordon360.Models.CCT;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Models.MyGordon.Context;
-using Gordon360.Models.CCT;
 using Gordon360.Services;
 using Gordon360.Static.Methods;
 using Gordon360.Static.Names;
@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -38,9 +37,9 @@ namespace Gordon360.AuthorizationFilters
         public string operation { get; set; }
 
         private ActionExecutingContext context;
-        private static CCTContext CCTContext => new CCTContext();
-        private static MyGordonContext MyGordonContext => new MyGordonContext();
         private IWebHostEnvironment _webHostEnvironment;
+        private CCTContext _CCTContext;
+        private MyGordonContext _MyGordonContext;
 
         // User position at the college and their id.
         private IEnumerable<string> user_groups { get; set; }
@@ -53,22 +52,17 @@ namespace Gordon360.AuthorizationFilters
             _webHostEnvironment = context.HttpContext.RequestServices.GetService<IWebHostEnvironment>();
             // Step 1: Who is to be authorized
             var authenticatedUser = actionContext.HttpContext.User;
+            _CCTContext = context.HttpContext.RequestServices.GetService<CCTContext>();
+            _MyGordonContext = context.HttpContext.RequestServices.GetService<MyGordonContext>();
 
             user_name = AuthUtils.GetUsername(authenticatedUser);
             user_groups = AuthUtils.GetGroups(authenticatedUser);
-            user_id = new AccountService(CCTContext).GetAccountByUsername(user_name).GordonID;
+            user_id = new AccountService(_CCTContext).GetAccountByUsername(user_name).GordonID;
 
             if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
             {
-                var adminService = new AdministratorService(CCTContext);
-                var admin = adminService.Get(user_id);
-
-                // If user is super admin, skip verification steps and return.
-                if (admin.SUPER_ADMIN)
-                {
-                    await next();
-                    return;
-                }
+                await next();
+                return;
             }
 
             bool isAuthorized = await CanPerformOperationAsync(resource, operation);
@@ -113,11 +107,11 @@ namespace Gordon360.AuthorizationFilters
                     {
                         var mrID = (int)context.ActionArguments["id"];
                         // Get the view model from the repository
-                        var mrService = new MembershipRequestService(CCTContext);
+                        var mrService = new MembershipRequestService(_CCTContext);
                         var mrToConsider = await mrService.GetAsync(mrID);
                         // Populate the membershipRequest manually. Omit fields I don't need.
                         var activityCode = mrToConsider.ActivityCode;
-                        var membershipService = new MembershipService(CCTContext);
+                        var membershipService = new MembershipService(_CCTContext);
                         var is_activityLeader = (await membershipService.GetLeaderMembershipsForActivityAsync(activityCode)).Any(x => x.IDNumber.ToString() == user_id);
                         if (is_activityLeader) // If user is the leader of the activity that the request is sent to.
                             return true;
@@ -156,7 +150,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.MEMBERSHIP_REQUEST:
                     {
                         // membershipRequest = mr
-                        var mrService = new MembershipRequestService(CCTContext);
+                        var mrService = new MembershipRequestService(_CCTContext);
                         var mrID = (int)context.ActionArguments["id"];
                         var mrToConsider = await mrService.GetAsync(mrID);
                         var is_mrOwner = mrToConsider.IDNumber.ToString() == user_id; // User_id is an instance variable.
@@ -165,7 +159,7 @@ namespace Gordon360.AuthorizationFilters
                             return true;
 
                         var activityCode = mrToConsider.ActivityCode;
-                        var membershipService = new MembershipService(CCTContext);
+                        var membershipService = new MembershipService(_CCTContext);
                         var isGroupAdmin = (await membershipService.GetGroupAdminMembershipsForActivityAsync(activityCode)).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
                         if (isGroupAdmin) // If user is a group admin of the activity that the request is sent to
                             return true;
@@ -186,7 +180,7 @@ namespace Gordon360.AuthorizationFilters
                         // NOTE: In the future, probably only email addresses should be stored 
                         // in memberships, since we would rather not give students access to
                         // other students' account information
-                        var membershipService = new MembershipService(CCTContext);
+                        var membershipService = new MembershipService(_CCTContext);
                         var isGroupAdmin = membershipService.IsGroupAdmin(Int32.Parse(user_id));
                         if (isGroupAdmin) // If user is a group admin of the activity that the request is sent to
                             return true;
@@ -201,8 +195,8 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.HOUSING:
                     {
                         // The members of the apartment application can only read their application
-                        HousingService housingService = new HousingService(CCTContext);
-                        string sess_cde = (await Helpers.GetCurrentSessionAsync()).SessionCode;
+                        var sess_cde = Helpers.GetCurrentSession(_CCTContext);
+                        HousingService housingService = new HousingService(_CCTContext);
                         int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
                         int requestedApplicationID = (int)context.ActionArguments["applicationID"];
                         if (applicationID.HasValue && applicationID.Value == requestedApplicationID)
@@ -229,7 +223,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.MEMBERSHIP_BY_ACTIVITY:
                     {
                         // Only people that are part of the activity should be able to see members
-                        var membershipService = new MembershipService(CCTContext);
+                        var membershipService = new MembershipService(_CCTContext);
                         var activityCode = (string)context.ActionArguments["activityCode"];
                         var activityMembers = await membershipService.GetMembershipsForActivityAsync(activityCode);
                         var is_personAMember = activityMembers.Any(x => x.IDNumber.ToString() == user_id && x.Participation != "GUEST");
@@ -255,7 +249,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.MEMBERSHIP_REQUEST_BY_ACTIVITY:
                     {
                         // An activity leader should be able to see the membership requests that belong to the activity he is leading.
-                        var membershipService = new MembershipService(CCTContext);
+                        var membershipService = new MembershipService(_CCTContext);
                         var activityCode = (string)context.ActionArguments["id"];
                         var groupAdmins = await membershipService.GetGroupAdminMembershipsForActivityAsync(activityCode);
                         var isGroupAdmin = groupAdmins.Any(x => x.IDNumber.ToString() == user_id);
@@ -277,7 +271,7 @@ namespace Gordon360.AuthorizationFilters
 
                         // Only leaders, advisors, and group admins
                         var activityCode = (string?)context.ActionArguments["activityCode"];
-                        var membershipService = new MembershipService(CCTContext);
+                        var membershipService = new MembershipService(_CCTContext);
 
                         var leaders = await membershipService.GetLeaderMembershipsForActivityAsync(activityCode);
                         var is_activity_leader = leaders.Any(x => x.IDNumber.ToString() == user_id);
@@ -418,7 +412,7 @@ namespace Gordon360.AuthorizationFilters
                             return true;
 
                         var activityCode = membershipToConsider.ACT_CDE;
-                        var membershipService = new MembershipService(CCTContext);
+                        var membershipService = new MembershipService(_CCTContext);
 
                         var isGroupAdmin = (await membershipService.GetGroupAdminMembershipsForActivityAsync(activityCode)).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
                         if (isGroupAdmin) // If user is the advisor of the activity that the request is sent to.
@@ -453,10 +447,10 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.HOUSING:
                     {
                         // The user must be a student and not a member of an existing application
-                        var housingService = new HousingService(CCTContext);
                         if (user_groups.Contains(AuthGroup.Student.Name))
                         {
-                            var sess_cde = (await Helpers.GetCurrentSessionAsync()).SessionCode;
+                            var sess_cde = Helpers.GetCurrentSession(_CCTContext);
+                            var housingService = new HousingService(_CCTContext);
                             int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
                             if (!applicationID.HasValue)
                             {
@@ -494,7 +488,7 @@ namespace Gordon360.AuthorizationFilters
                         var activityCode = membershipToConsider.ACT_CDE;
 
 
-                        var membershipService = new MembershipService(CCTContext);
+                        var membershipService = new MembershipService(_CCTContext);
                         //var is_membershipLeader = membershipService.GetLeaderMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
                         //if (is_membershipLeader)
                         //    return true; // Activity Leaders can update memberships of people in their activity.
@@ -531,7 +525,7 @@ namespace Gordon360.AuthorizationFilters
                         // User is admin
                         if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
                             return true;
-                        var membershipService = new MembershipService(CCTContext);
+                        var membershipService = new MembershipService(_CCTContext);
                         var membershipID = (int)context.ActionArguments["id"];
 
                         var membershipToConsider = membershipService.GetSpecificMembership(membershipID);
@@ -553,14 +547,14 @@ namespace Gordon360.AuthorizationFilters
                     {
                         // The housing admins can update the application information (i.e. probation, offcampus program, etc.)
                         // If the user is a student, then the user must be on an application and be an editor to update the application
-                        HousingService housingService = new HousingService(CCTContext);
+                        HousingService housingService = new HousingService(_CCTContext);
                         if (user_groups.Contains(AuthGroup.HousingAdmin.Name))
                         {
                             return true;
                         }
                         else if (user_groups.Contains(AuthGroup.Student.Name))
                         {
-                            string sess_cde = (await Helpers.GetCurrentSessionAsync()).SessionCode;
+                            var sess_cde = Helpers.GetCurrentSession(_CCTContext);
                             int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
                             int requestedApplicationID = (int)context.ActionArguments["applicationID"];
                             if (applicationID.HasValue && applicationID == requestedApplicationID)
@@ -580,7 +574,7 @@ namespace Gordon360.AuthorizationFilters
                         if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
                             return true;
 
-                        var membershipService = new MembershipService(CCTContext);
+                        var membershipService = new MembershipService(_CCTContext);
                         var membershipToConsider = (MEMBERSHIP)context.ActionArguments["membership"];
                         var activityCode = membershipToConsider.ACT_CDE;
 
@@ -607,7 +601,7 @@ namespace Gordon360.AuthorizationFilters
                         if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
                             return true;
                         var activityCode = (string)context.ActionArguments["id"];
-                        var membershipService = new MembershipService(CCTContext);
+                        var membershipService = new MembershipService(_CCTContext);
 
                         var isGroupAdmin = (await membershipService.GetGroupAdminMembershipsForActivityAsync(activityCode)).Any(x => x.IDNumber.ToString() == user_id);
                         if (isGroupAdmin)
@@ -624,11 +618,11 @@ namespace Gordon360.AuthorizationFilters
                         var activityCode = (string)context.ActionArguments["id"];
                         var sessionCode = (string)context.ActionArguments["sess_cde"];
 
-                        var membershipService = new MembershipService(CCTContext);
+                        var membershipService = new MembershipService(_CCTContext);
                         var isGroupAdmin = (await membershipService.GetGroupAdminMembershipsForActivityAsync(activityCode)).Any(x => x.IDNumber.ToString() == user_id);
                         if (isGroupAdmin)
                         {
-                            var activityService = new ActivityService(CCTContext);
+                            var activityService = new ActivityService(_CCTContext);
                             // If an activity is currently open, then a group admin has the ability to close it
                             if (activityService.IsOpen(activityCode, sessionCode))
                             {
@@ -649,7 +643,7 @@ namespace Gordon360.AuthorizationFilters
 
                 case Resource.NEWS:
                     var newsID = context.ActionArguments["newsID"];
-                    var newsService = new NewsService(MyGordonContext, CCTContext, _webHostEnvironment);
+                    var newsService = new NewsService(_MyGordonContext, _CCTContext, _webHostEnvironment);
                     var newsItem = newsService.Get((int)newsID);
                     // only unapproved posts may be updated
                     var approved = newsItem.Accepted;
@@ -679,7 +673,7 @@ namespace Gordon360.AuthorizationFilters
                         // User is admin
                         if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
                             return true;
-                        var membershipService = new MembershipService(CCTContext);
+                        var membershipService = new MembershipService(_CCTContext);
                         var membershipID = (int)context.ActionArguments["id"];
                         var membershipToConsider = membershipService.GetSpecificMembership(membershipID);
                         var is_membershipOwner = membershipToConsider.ID_NUM.ToString() == user_id;
@@ -700,7 +694,7 @@ namespace Gordon360.AuthorizationFilters
                         if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
                             return true;
                         // membershipRequest = mr
-                        var mrService = new MembershipRequestService(CCTContext);
+                        var mrService = new MembershipRequestService(_CCTContext);
                         var mrID = (int)context.ActionArguments["id"];
                         var mrToConsider = await mrService.GetAsync(mrID);
                         var is_mrOwner = mrToConsider.IDNumber.ToString() == user_id;
@@ -708,7 +702,7 @@ namespace Gordon360.AuthorizationFilters
                             return true;
 
                         var activityCode = mrToConsider.ActivityCode;
-                        var membershipService = new MembershipService(CCTContext);
+                        var membershipService = new MembershipService(_CCTContext);
 
                         var isGroupAdmin = (await membershipService.GetGroupAdminMembershipsForActivityAsync(activityCode)).Any(x => x.IDNumber.ToString() == user_id);
                         if (isGroupAdmin)
@@ -723,14 +717,14 @@ namespace Gordon360.AuthorizationFilters
                     {
                         // The housing admins can update the application information (i.e. probation, offcampus program, etc.)
                         // If the user is a student, then the user must be on an application and be an editor to update the application
-                        HousingService housingService = new HousingService(CCTContext);
+                        HousingService housingService = new HousingService(_CCTContext);
                         if (user_groups.Contains(AuthGroup.HousingAdmin.Name))
                         {
                             return true;
                         }
                         else if (user_groups.Contains(AuthGroup.Student.Name))
                         {
-                            string sess_cde = (await Helpers.GetCurrentSessionAsync()).SessionCode;
+                            var sess_cde = Helpers.GetCurrentSession(_CCTContext);
                             int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
                             int requestedApplicationID = (int)context.ActionArguments["applicationID"];
                             if (applicationID.HasValue && applicationID.Value == requestedApplicationID)
@@ -757,7 +751,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.NEWS:
                     {
                         var newsID = context.ActionArguments["newsID"];
-                        var newsService = new NewsService(MyGordonContext, CCTContext, _webHostEnvironment);
+                        var newsService = new NewsService(_MyGordonContext, _CCTContext, _webHostEnvironment);
                         var newsItem = newsService.Get((int)newsID);
                         // only expired news items may be deleted
                         var newsDate = newsItem.Entered;

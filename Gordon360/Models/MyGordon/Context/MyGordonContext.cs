@@ -10,10 +10,6 @@ namespace Gordon360.Models.MyGordon.Context
 {
     public partial class MyGordonContext : DbContext
     {
-        public MyGordonContext()
-        {
-        }
-
         public MyGordonContext(DbContextOptions<MyGordonContext> options)
             : base(options)
         {

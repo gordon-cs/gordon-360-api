@@ -306,26 +306,26 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.GetApplicationIDAsync">
+        <member name="M:Gordon360.Controllers.HousingController.GetApplicationID">
             <summary>
             Get apartment application ID number of currently logged in user if that user is on an existing application
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.GetUserApplicationIDAsync(System.String)">
+        <member name="M:Gordon360.Controllers.HousingController.GetUserApplicationID(System.String)">
             <summary>
             Get apartment application ID number for a user if that user is on an existing application
             </summary>
             <param name="username">username of the profile info</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.SaveApplicationAsync(Gordon360.Models.ViewModels.ApartmentApplicationViewModel)">
+        <member name="M:Gordon360.Controllers.HousingController.SaveApplication(Gordon360.Models.ViewModels.ApartmentApplicationViewModel)">
             <summary>
             save application
             </summary>
             <returns>Returns the application ID number if all the queries succeeded</returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.EditApplicationAsync(System.Int32,Gordon360.Models.ViewModels.ApartmentApplicationViewModel)">
+        <member name="M:Gordon360.Controllers.HousingController.EditApplication(System.Int32,Gordon360.Models.ViewModels.ApartmentApplicationViewModel)">
             <summary>
             update existing application (Differentiated by HttpPut instead of HttpPost)
             </summary>
@@ -955,13 +955,13 @@
             <returns>The information about one specific session</returns>
             <remarks>Queries the database regarding a specific session with the given identifier</remarks>
         </member>
-        <member name="M:Gordon360.Controllers.SessionsController.GetCurrentSessionAsync">
+        <member name="M:Gordon360.Controllers.SessionsController.GetCurrentSession">
             <summary>
             Gets the current active session
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.SessionsController.GetFirstDayinSemesterAsync">
+        <member name="M:Gordon360.Controllers.SessionsController.GetFirstDayinSemester">
             <summary>
             Gets the first day in the current session
             </summary>
@@ -973,7 +973,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.SessionsController.GetDaysLeftInSemesterAsync">
+        <member name="M:Gordon360.Controllers.SessionsController.GetDaysLeftInSemester">
             <summary>
             Gets the days left in the current session
             </summary>
@@ -2139,11 +2139,11 @@
             Service class for methods that are shared between all services.
             </summary>
         </member>
-        <member name="M:Gordon360.Static.Methods.Helpers.GetCurrentSessionAsync">
+        <member name="M:Gordon360.Static.Methods.Helpers.GetCurrentSession(Gordon360.Models.CCT.Context.CCTContext)">
             <summary>
-            Service method that gets the current session we are in.
+            Helper method that gets the current session we are in.
             </summary>
-            <returns>SessionViewModel of the current session. If no session is found for our current date, returns null.</returns>
+            <returns>The session code of the current session</returns>
         </member>
         <member name="M:Gordon360.Utilities.AuthUtils.GetUsername(System.Security.Claims.ClaimsPrincipal)">
             <summary>

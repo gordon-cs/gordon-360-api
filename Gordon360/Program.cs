@@ -36,11 +36,11 @@ builder.Services.AddCors(p => p.AddPolicy(name: "localhost", builder =>
 }));
 
 builder.Services.AddDbContext<CCTContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Train-CCT"))
+    options.UseSqlServer(builder.Configuration.GetConnectionString("CCT"))
 ).AddDbContext<MyGordonContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Train-MyGordon"))
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MyGordon"))
 ).AddDbContext<StudentTimesheetsContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Train-StudentTimesheets"))
+    options.UseSqlServer(builder.Configuration.GetConnectionString("StudentTimesheets"))
 );
 
 builder.Services.AddMemoryCache();

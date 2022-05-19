@@ -10,10 +10,6 @@ namespace Gordon360.Models.StudentTimesheets.Context
 {
     public partial class StudentTimesheetsContext : DbContext
     {
-        public StudentTimesheetsContext()
-        {
-        }
-
         public StudentTimesheetsContext(DbContextOptions<StudentTimesheetsContext> options)
             : base(options)
         {

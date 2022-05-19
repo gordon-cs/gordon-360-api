@@ -16,9 +16,11 @@ namespace Gordon360.Controllers
     public class ActivitiesController : GordonControllerBase
     {
         private readonly IActivityService _activityService;
+        private readonly CCTContext _context;
 
         public ActivitiesController(CCTContext context)
         {
+            _context = context;
             _activityService = new ActivityService(context);
         }
 
@@ -111,7 +113,7 @@ namespace Gordon360.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<string>>> GetOpenActivitiesAsync()
         {
-            var sessionCode = (await Helpers.GetCurrentSessionAsync()).SessionCode;
+            var sessionCode = Helpers.GetCurrentSession(_context);
 
             var activity_codes = _activityService.GetOpenActivities(sessionCode);
 
@@ -136,7 +138,7 @@ namespace Gordon360.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<string>>> GetOpenActivitiesAsync(int id)
         {
-            var sessionCode = (await Helpers.GetCurrentSessionAsync()).SessionCode;
+            var sessionCode = Helpers.GetCurrentSession(_context);
 
             var activity_codes = _activityService.GetOpenActivities(sessionCode, id);
 
@@ -159,7 +161,7 @@ namespace Gordon360.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<string>>> GetClosedActivitiesAsync()
         {
-            var sessionCode = (await Helpers.GetCurrentSessionAsync()).SessionCode;
+            var sessionCode = Helpers.GetCurrentSession(_context);
 
             var activity_codes = _activityService.GetClosedActivities(sessionCode);
 
@@ -184,7 +186,7 @@ namespace Gordon360.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<string>>> GetClosedActivitiesAsync(int id)
         {
-            var sessionCode = (await Helpers.GetCurrentSessionAsync()).SessionCode;
+            var sessionCode = Helpers.GetCurrentSession(_context);
 
             var activity_codes = _activityService.GetClosedActivities(sessionCode, id);
 

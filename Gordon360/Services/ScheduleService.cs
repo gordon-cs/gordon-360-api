@@ -1,5 +1,5 @@
-﻿using Gordon360.Models.CCT.Context;
-using Gordon360.Exceptions;
+﻿using Gordon360.Exceptions;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Static.Methods;
 using System.Collections.Generic;
@@ -35,8 +35,8 @@ namespace Gordon360.Services
             }
 
 
-            var currentSession = await Helpers.GetCurrentSessionAsync();
-            var result = await _context.Procedures.STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDEAsync(int.Parse(account.gordon_id), currentSession.SessionCode);
+            var sessionCode = Helpers.GetCurrentSession(_context);
+            var result = await _context.Procedures.STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDEAsync(int.Parse(account.gordon_id), sessionCode);
 
             return (IEnumerable<ScheduleViewModel>)result;
         }
@@ -56,8 +56,8 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Schedule was not found." };
             }
 
-            var currentSession = await Helpers.GetCurrentSessionAsync();
-            var result = await _context.Procedures.INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDEAsync(int.Parse(account.gordon_id), currentSession.SessionCode);
+            var sessionCode = Helpers.GetCurrentSession(_context);
+            var result = await _context.Procedures.INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDEAsync(int.Parse(account.gordon_id), sessionCode);
 
             return (IEnumerable<ScheduleViewModel>)result;
         }

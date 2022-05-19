@@ -1,21 +1,24 @@
 {
   "profiles": {
-    "WSL": {
-      "commandName": "WSL2",
-      "launchUrl": "https://localhost:51626",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "https://localhost:51626;http://localhost:51626"
-      },
-      "distributionName": ""
-    },
-    "Debug": {
+    "Development": {
       "commandName": "Project",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "sqlDebugging": true,
       "applicationUrl": "https://localhost:51627;http://localhost:51626"
+    },
+    "Production": {
+      "commandName": "IIS",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Production"
+      }
+    },
+    "Train": {
+      "commandName": "IIS",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Train"
+      }
     }
   }
 }

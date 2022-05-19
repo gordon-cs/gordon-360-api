@@ -1,11 +1,9 @@
 ﻿using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
-using Gordon360.Static.Methods;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Gordon360.Controllers
 {
@@ -59,9 +57,9 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("current")]
         [AllowAnonymous]
-        public async Task<ActionResult<SessionViewModel>> GetCurrentSessionAsync()
+        public ActionResult<SessionViewModel> GetCurrentSession()
         {
-            var currentSession = await Helpers.GetCurrentSessionAsync();
+            var currentSession = _sessionService.GetCurrentSession();
             if (currentSession == null)
             {
                 return NotFound();
@@ -77,9 +75,9 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("firstDay")]
         [AllowAnonymous]
-        public async Task<ActionResult<string>> GetFirstDayinSemesterAsync()
+        public ActionResult<string> GetFirstDayinSemester()
         {
-            var firstDay = await Helpers.GetFirstDayAsync();
+            var firstDay = _sessionService.GetFirstDay();
             if (firstDay == null)
             {
                 return NotFound();
@@ -95,9 +93,9 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("lastDay")]
         [AllowAnonymous]
-        public async Task<ActionResult<string>> GetLastDayinSemester()
+        public ActionResult<string> GetLastDayinSemester()
         {
-            var lastDay = await Helpers.GetLastDayAsync();
+            var lastDay = _sessionService.GetLastDay();
             if (lastDay == null)
             {
                 return NotFound();
@@ -113,9 +111,9 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("daysLeft")]
         [AllowAnonymous]
-        public async Task<ActionResult<double[]>> GetDaysLeftInSemesterAsync()
+        public ActionResult<double[]> GetDaysLeftInSemester()
         {
-            var days = await Helpers.GetDaysLeftAsync();
+            var days = _sessionService.GetDaysLeft();
             if (days[1] == 0 && days[2] == 0 || days == null)
             {
                 return NotFound();
