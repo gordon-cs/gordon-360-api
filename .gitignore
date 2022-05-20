@@ -268,20 +268,5 @@ paket-files/
 .idea/
 *.sln.iml
 
-## Secret Files
-secrets.config
-test_credentials.py
-credentials.py
-
 # Environment Specific app settings
 appsettings.*.json
-
-## Python
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
-
-## Virtual Env
-venv/
-ENV/
