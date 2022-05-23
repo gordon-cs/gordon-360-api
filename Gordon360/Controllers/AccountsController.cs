@@ -167,8 +167,6 @@ namespace Gordon360.Controllers
             string? department = "",
             string? building = "")
         {
-
-
             var viewerGroups = AuthUtils.GetGroups(User);
 
             // Only students and FacStaff can search students
@@ -178,13 +176,13 @@ namespace Gordon360.Controllers
             }
 
             var searchResults = _accountService.AdvancedSearch(accountTypes,
-                                                               firstname,
-                                                               lastname,
+                                                               firstname?.ToLower(),
+                                                               lastname?.ToLower(),
                                                                major,
                                                                minor,
                                                                hall,
                                                                classType,
-                                                               homeCity,
+                                                               homeCity?.ToLower(),
                                                                state,
                                                                country,
                                                                department,
