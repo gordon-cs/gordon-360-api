@@ -4,7 +4,7 @@ on:
   workflow_run:
     workflows: [CI]
     types: [completed]
-    branches: [master, develop, '**'] # Wildcard '**' is used to deploy test builds for all branches, for testing deployment workflow.
+    branches: [master, develop, 'api-upgrade'] # Wildcard '**' is used to deploy test builds for all branches, for testing deployment workflow.
 
 jobs:
   deploy:
