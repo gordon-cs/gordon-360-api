@@ -4,7 +4,7 @@ on:
   workflow_run:
     workflows: [CI]
     types: [completed]
-    branches: [master, develop, 'api-upgrade'] # Wildcard '**' is used to deploy test builds for all branches, for testing deployment workflow.
+    branches: [master, develop, api-upgrade] # Wildcard '**' is used to deploy test builds for all branches, for testing deployment workflow.
 
 jobs:
   deploy:
@@ -32,7 +32,7 @@ jobs:
       - name: Install dependencies
         run: dotnet restore
 
-      - name: Build
+      - name: Publish
         run: dotnet publish -r win-x64 --no-self-contained -o ${{ github.workspace }}\Gordon360\bin\app.publish\ci -p:EnvironmentName=${{ env.DEPLOYMENT_ENVIRONMENT }}
 
       - name: Upload Build Artifact
