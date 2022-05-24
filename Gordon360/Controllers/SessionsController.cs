@@ -69,42 +69,6 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
-        /// Gets the first day in the current session
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("firstDay")]
-        [AllowAnonymous]
-        public ActionResult<string> GetFirstDayinSemester()
-        {
-            var firstDay = _sessionService.GetFirstDay();
-            if (firstDay == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(firstDay);
-        }
-
-        /// <summary>
-        /// Gets the last day in the current session
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("lastDay")]
-        [AllowAnonymous]
-        public ActionResult<string> GetLastDayinSemester()
-        {
-            var lastDay = _sessionService.GetLastDay();
-            if (lastDay == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(lastDay);
-        }
-
-        /// <summary>
         /// Gets the days left in the current session
         /// </summary>
         /// <returns></returns>

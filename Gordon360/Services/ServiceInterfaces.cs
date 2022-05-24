@@ -150,8 +150,6 @@ namespace Gordon360.Services
     {
         SessionViewModel Get(string sessionCode);
         public SessionViewModel GetCurrentSession();
-        public string GetFirstDay();
-        public string GetLastDay();
         public double[] GetDaysLeft();
         IEnumerable<SessionViewModel> GetAll();
     }
