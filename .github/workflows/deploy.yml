@@ -4,7 +4,7 @@ on:
   workflow_run:
     workflows: [CI]
     types: [completed]
-    branches: [master, develop, api-upgrade] # Wildcard '**' is used to deploy test builds for all branches, for testing deployment workflow.
+    branches: [api-upgrade] # Wildcard '**' is used to deploy test builds for all branches, for testing deployment workflow.
 
 jobs:
   deploy:
@@ -17,9 +17,9 @@ jobs:
         run: |
           Switch -exact -casesensitive ($Env:GITHUB_REF_NAME)
           {
-             "master" { echo "DEPLOYMENT_ENVIROMENT=Production" }
-             "develop" { echo "DEPLOYMENT_ENVIROMENT=Train" }
-             default { echo "DEPLOMENT_ENVIRONMENT=Test" }
+             "master" { echo "DEPLOYMENT_ENVIROMENT=Production" >> $GITHUB_ENV }
+             "develop" { echo "DEPLOYMENT_ENVIROMENT=Train" >> $GITHUB_ENV }
+             default { echo "DEPLOMENT_ENVIRONMENT=Test" >> $GITHUB_ENV }
           }
 
       - uses: actions/checkout@v2
@@ -33,7 +33,7 @@ jobs:
         run: dotnet restore
 
       - name: Publish
-        run: dotnet publish -r win-x64 --no-self-contained -o ${{ github.workspace }}\Gordon360\bin\app.publish\ci -p:EnvironmentName=${{ env.DEPLOYMENT_ENVIRONMENT }}
+        run: dotnet publish ${{ github.workspace}}\Gordon360.sln -r win-x64 --no-self-contained -o ${{ github.workspace }}\Gordon360\bin\app.publish\ci -p:EnvironmentName=${{ env.DEPLOYMENT_ENVIRONMENT }}
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v2.2.2
