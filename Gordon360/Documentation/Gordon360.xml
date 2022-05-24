@@ -961,18 +961,6 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.SessionsController.GetFirstDayinSemester">
-            <summary>
-            Gets the first day in the current session
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Controllers.SessionsController.GetLastDayinSemester">
-            <summary>
-            Gets the last day in the current session
-            </summary>
-            <returns></returns>
-        </member>
         <member name="M:Gordon360.Controllers.SessionsController.GetDaysLeftInSemester">
             <summary>
             Gets the days left in the current session

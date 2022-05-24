@@ -4,6 +4,7 @@ using Gordon360.Services;
 using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Gordon360.Controllers
 {
@@ -16,10 +17,6 @@ namespace Gordon360.Controllers
         {
             _victoryPromiseService = new VictoryPromiseService(context);
         }
-        public VictoryPromiseController(IVictoryPromiseService victoryPromiseService)
-        {
-            _victoryPromiseService = victoryPromiseService;
-        }
 
         /// <summary>
         ///  Gets current victory promise scores
@@ -27,11 +24,11 @@ namespace Gordon360.Controllers
         /// <returns>A VP Json</returns>
         [HttpGet]
         [Route("")]
-        public ActionResult<IEnumerable<VictoryPromiseViewModel>> Get()
+        public async Task<ActionResult<IEnumerable<VictoryPromiseViewModel>>> Get()
         {
             var username = AuthUtils.GetUsername(User);
 
-            var result = _victoryPromiseService.GetVPScoresAsync(username);
+            var result = await _victoryPromiseService.GetVPScoresAsync(username);
 
             if (result == null)
             {

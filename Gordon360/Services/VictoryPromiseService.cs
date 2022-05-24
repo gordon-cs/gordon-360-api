@@ -1,5 +1,5 @@
-﻿using Gordon360.Models.CCT.Context;
-using Gordon360.Exceptions;
+﻿using Gordon360.Exceptions;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +35,13 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
             }
 
-            return (IEnumerable<VictoryPromiseViewModel>)result;
+            return result.Select(vp => new VictoryPromiseViewModel
+            {
+                TOTAL_VP_CC_SCORE = vp.TOTAL_VP_CC_SCORE,
+                TOTAL_VP_IM_SCORE = vp.TOTAL_VP_IM_SCORE,
+                TOTAL_VP_LS_SCORE = vp.TOTAL_VP_LS_SCORE,
+                TOTAL_VP_LW_SCORE = vp.TOTAL_VP_LW_SCORE
+            });
         }
     }
 }
