@@ -9,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Identity.Web;
 using System.IO;
-using System.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,14 +17,8 @@ builder.Services.AddMicrosoftIdentityWebApiAuthentication(builder.Configuration,
 
 builder.Services.AddControllers(options =>
 {
-    // When a route returns a response with no content, encode the response as 200 OK instead of 204 No Content
-    // This allows us to return null and, more importantly, an empty list.
-    // That way empty lists can be treated the same way as contentful lists on the front end.
-    var noContentFormatter = options.OutputFormatters.OfType<HttpNoContentOutputFormatter>().FirstOrDefault();
-    if (noContentFormatter != null)
-    {
-        noContentFormatter.TreatNullValueAsNoContent = false;
-    }
+    options.OutputFormatters.RemoveType<StringOutputFormatter>(); // Return strings as application/json instead of text/plain
+    options.OutputFormatters.RemoveType<HttpNoContentOutputFormatter>(); // Return null as 200 Ok null instead of 204 No Content
 }).AddNewtonsoftJson(options => options.UseMemberCasing());
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
