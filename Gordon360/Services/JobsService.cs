@@ -1,7 +1,7 @@
-﻿using Gordon360.Models.CCT.Context;
-using Gordon360.Models.StudentTimesheets.Context;
-using Gordon360.Exceptions;
+﻿using Gordon360.Exceptions;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Models.StudentTimesheets;
+using Gordon360.Models.StudentTimesheets.Context;
 using Gordon360.Models.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -95,7 +95,7 @@ namespace Gordon360.Services
 
         public async Task<IEnumerable<OverlappingShiftIdViewModel>> CheckForOverlappingShiftAsync(int studentID, DateTime shiftStart, DateTime shiftEnd)
         {
-            IEnumerable<OverlappingShiftIdViewModel> result = null;
+            var result = Enumerable.Empty<OverlappingShiftIdViewModel>();
 
             try
             {
