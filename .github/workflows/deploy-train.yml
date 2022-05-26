@@ -16,15 +16,6 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
-      - name: Define deployment environment
-        run: |
-          Switch -exact -casesensitive ($Env:GITHUB_REF_NAME)
-          {
-             "master" { echo "DEPLOYMENT_ENVIROMENT=Production" >> $GITHUB_ENV }
-             "develop" { echo "DEPLOYMENT_ENVIROMENT=Train" >> $GITHUB_ENV }
-             default { echo "DEPLOMENT_ENVIRONMENT=Test" >> $GITHUB_ENV }
-          }
-
       - uses: actions/checkout@v2
 
       - name: Setup .NET Core SDK 6
@@ -36,11 +27,11 @@ jobs:
         run: dotnet restore
 
       - name: Publish
-        run: dotnet publish ${{ github.workspace}}\Gordon360.sln -r win-x64 --no-self-contained -o ${{ github.workspace }}\Gordon360\bin\app.publish\ci -p:EnvironmentName=${{ env.DEPLOYMENT_ENVIRONMENT }}
+        run: dotnet publish ${{ github.workspace}}\Gordon360.sln -r win-x64 --no-self-contained -o ${{ github.workspace }}\Gordon360\bin\app.publish\ci -p:EnvironmentName=${{ secrets.DEPLOYMENT_ENVIRONMENT }}
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v2.2.2
         with:
-          name: build-${{ env.DEPLOYMENT_ENVIRONMENT }}
+          name: build-${{ secrets.DEPLOYMENT_ENVIRONMENT }}
           path: ${{ github.workspace }}\Gordon360\bin\app.publish\ci
           if-no-files-found: error
