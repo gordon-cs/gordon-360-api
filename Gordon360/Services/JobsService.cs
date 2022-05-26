@@ -6,7 +6,6 @@ using Gordon360.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -69,44 +68,26 @@ namespace Gordon360.Services
 
         public async Task<IEnumerable<SupervisorViewModel>> GetsupervisorNameForJobAsync(int supervisorID)
         {
-            return (await _context.Procedures.student_timesheets_select_supervisor_nameAsync(supervisorID))
-                .Select(s => new SupervisorViewModel { FIRST_NAME = s.first_name, LAST_NAME = s.last_name, PREFERRED_NAME = s.preferred_name });
+            var result = await _context.Procedures.student_timesheets_select_supervisor_nameAsync(supervisorID);
+            return result.Select(s => new SupervisorViewModel { FIRST_NAME = s.first_name, LAST_NAME = s.last_name, PREFERRED_NAME = s.preferred_name });
         }
 
         public async Task<IEnumerable<ActiveJobViewModel>> GetActiveJobsAsync(DateTime shiftStart, DateTime shiftEnd, int studentID)
         {
-            return (await _context.Procedures.student_timesheets_select_emls_for_ajax_selectboxAsync(shiftStart, shiftEnd, studentID)).Select(j => new ActiveJobViewModel { EMLID = j.EmlID, POSTITLE = j.postitle });
+            var result = await _context.Procedures.student_timesheets_select_emls_for_ajax_selectboxAsync(shiftStart, shiftEnd, studentID);
+            return result.Select(j => new ActiveJobViewModel { EMLID = j.EmlID, POSTITLE = j.postitle });
         }
 
         public async Task<IEnumerable<OverlappingShiftIdViewModel>> EditShiftOverlapCheckAsync(int studentID, DateTime shiftStart, DateTime shiftEnd, int rowID)
         {
-            IEnumerable<OverlappingShiftIdViewModel> result = null;
-
-            try
-            {
-                result = (IEnumerable<OverlappingShiftIdViewModel>)await _context.Procedures.student_timesheets_edit_shift_already_worked_these_hoursAsync(studentID, shiftStart, shiftEnd, rowID);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-            }
-            return result;
+            var result = await _context.Procedures.student_timesheets_edit_shift_already_worked_these_hoursAsync(studentID, shiftStart, shiftEnd, rowID);
+            return result.Select(x => new OverlappingShiftIdViewModel { ID = x.ID });
         }
 
         public async Task<IEnumerable<OverlappingShiftIdViewModel>> CheckForOverlappingShiftAsync(int studentID, DateTime shiftStart, DateTime shiftEnd)
         {
-            var result = Enumerable.Empty<OverlappingShiftIdViewModel>();
-
-            try
-            {
-                result = (IEnumerable<OverlappingShiftIdViewModel>)await _context.Procedures.student_timesheets_already_worked_these_hoursAsync(studentID, shiftStart, shiftEnd);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-            }
-
-            return result;
+            var result = await _context.Procedures.student_timesheets_already_worked_these_hoursAsync(studentID, shiftStart, shiftEnd);
+            return result.Select(x => new OverlappingShiftIdViewModel { ID = x.ID });
         }
 
 
