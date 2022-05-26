@@ -123,15 +123,8 @@ namespace Gordon360.Controllers
         {
             int userID = GetCurrentUserID();
 
-            //try
-            //{
             _jobsService.DeleteShiftForUser(rowID, userID);
-            //}
-            //catch (Exception e)
-            //{
-            //    System.Diagnostics.Debug.WriteLine(e.Message);
-            //    return InternalServerError();
-            //}
+
             return Ok();
         }
 
@@ -146,18 +139,11 @@ namespace Gordon360.Controllers
         {
             int userID = GetCurrentUserID();
 
-            //try
-            //{
             foreach (ShiftToSubmitViewModel shift in shifts)
             {
                 await _jobsService.SubmitShiftForUserAsync(userID, shift.EML, shift.SHIFT_END_DATETIME, shift.SUBMITTED_TO, shift.LAST_CHANGED_BY);
             }
-            //}
-            //catch (Exception e)
-            //{
-            //    System.Diagnostics.Debug.WriteLine(e.Message);
-            //    return InternalServerError();
-            //}
+
             return Ok();
         }
 
