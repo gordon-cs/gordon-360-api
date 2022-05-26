@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Models.ViewModels
 {
-    
+
 
 
     public class MealPlanComponent
@@ -43,7 +40,7 @@ namespace Gordon360.Models.ViewModels
                 this.ChoiceDescription = "None";
             }
             else
-            { 
+            {
                 this.ChoiceDescription = diningTableList[0].ChoiceDescription;
 
                 foreach (DiningTableViewModel m in diningTableEnumerable)
@@ -72,11 +69,11 @@ namespace Gordon360.Models.ViewModels
                 }
             }
 
-            
 
-            
 
-            
+
+
+
         }
     }
 }

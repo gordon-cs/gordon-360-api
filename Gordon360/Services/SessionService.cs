@@ -1,12 +1,10 @@
-﻿using System;
+﻿using Gordon360.Exceptions;
+using Gordon360.Models.CCT;
+using Gordon360.Models.CCT.Context;
+using Gordon360.Models.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Gordon360.Models;
-using Gordon360.Models.ViewModels;
-using Gordon360.Repositories;
-using System.Data;
-using Gordon360.Exceptions.CustomExceptions;
-using System.Data.SqlClient;
 
 namespace Gordon360.Services
 {
@@ -15,29 +13,48 @@ namespace Gordon360.Services
     /// </summary>
     public class SessionService : ISessionService
     {
-        private IUnitOfWork _unitOfWork;
+        private CCTContext _context;
 
-        public SessionService(IUnitOfWork unitOfWork)
+        public SessionService(CCTContext context)
         {
-            _unitOfWork = unitOfWork;
+            _context = context;
         }
 
         /// <summary>
         /// Get the session record whose sesssion code matches the parameter.
         /// </summary>
-        /// <param name="id">The session code.</param>
+        /// <param name="sessionCode">The session code.</param>
         /// <returns>A SessionViewModel if found, null if not found.</returns>
-        public SessionViewModel Get(string id)
+        public SessionViewModel Get(string sessionCode)
         {
-            var query = _unitOfWork.SessionRepository.GetById(id);
+            var query = _context.CM_SESSION_MSTR.Where(s => s.SESS_CDE == sessionCode).FirstOrDefault();
             if (query == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Session was not found." };
             }
-            SessionViewModel result = query;
-            return result;
+            return query;
         }
 
+        public SessionViewModel GetCurrentSession()
+        {
+            return _context.CM_SESSION_MSTR.Where(s => DateTime.Now > s.SESS_BEGN_DTE).OrderByDescending(s => s.SESS_BEGN_DTE).First();
+        }
+
+        // Return the days left in the semester, and the total days in the current session
+        public double[] GetDaysLeft()
+        {
+            var currentSession = GetCurrentSession();
+            DateTime sessionEnd = currentSession.SessionEndDate.Value;
+            DateTime sessionBegin = currentSession.SessionBeginDate.Value;
+            DateTime startTime = DateTime.Today;
+
+            return new double[2] {
+            // Days left in semester
+            (sessionEnd - startTime).TotalDays,
+            // Total days in the semester
+            (sessionEnd - sessionBegin).TotalDays
+            };
+        }
 
         /// <summary>
         /// Fetches all the session records from the database.
@@ -45,11 +62,9 @@ namespace Gordon360.Services
         /// <returns>A SessionViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
         public IEnumerable<SessionViewModel> GetAll()
         {
-            var query = _unitOfWork.SessionRepository.GetAll();
-            var result = query.Select<CM_SESSION_MSTR, SessionViewModel>(x => x);
-            return result;
+            return _context.CM_SESSION_MSTR.Select<CM_SESSION_MSTR, SessionViewModel>(s => s);
         }
 
-        
+
     }
 }

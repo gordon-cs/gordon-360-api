@@ -1,15 +1,13 @@
-﻿using System;
+﻿using Gordon360.Exceptions;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
-using Gordon360.Repositories;
-using System.Collections.Generic;
-using Gordon360.Models;
-using System.Linq;
-using System.Data.SqlClient;
-using Gordon360.Services.ComplexQueries;
-using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Static.Methods;
-using System.Net.Mail;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
+using System.Net.Mail;
+using System.Threading.Tasks;
+using static Gordon360.Services.MembershipService;
 
 namespace Gordon360.Services
 {
@@ -18,165 +16,31 @@ namespace Gordon360.Services
     /// </summary>
     public class EmailService : IEmailService
     {
-        private IUnitOfWork _unitOfWork;
+        private readonly CCTContext _context;
 
-        public EmailService(IUnitOfWork unitOfWork)
+        public EmailService(CCTContext context)
         {
-            _unitOfWork = unitOfWork;
+            _context = context;
         }
 
         /// <summary>
         /// Get a list of the emails for all members in the activity during the current session.
         /// </summary>
-        /// <param name="activity_code"></param>
-        /// <returns></returns>
-        public IEnumerable<EmailViewModel> GetEmailsForActivity(string activity_code)
+        /// <param name="activityCode">The code of the activity to get emails for.</param>
+        /// <param name="sessionCode">Optionally, the session to get emails for. Defaults to the current session</param>
+        /// <param name="participationType">The participation type to get emails of. If unspecified, gets emails of all participation types.</param>
+        /// <returns>A list of emails (along with first and last name) associated with that activity</returns>
+        public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAsync(string activityCode, string? sessionCode = null, ParticipationType? participationType = null)
         {
-            var currentSessionCode = Helpers.GetCurrentSession().SessionCode;
-            var idParam = new SqlParameter("@ACT_CDE", activity_code);
-            var sessParam = new SqlParameter("@SESS_CDE", currentSessionCode);
-            var result = RawSqlQuery<EmailViewModel>.query("EMAILS_PER_ACT_CDE @ACT_CDE, @SESS_CDE", idParam, sessParam);
-            if (result == null)
+            if (sessionCode == null)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
+                sessionCode = Helpers.GetCurrentSession(_context);
             }
 
-            return result;
-        }
+            var membershipService = new MembershipService(_context);
 
+            var result = membershipService.MembershipEmails(activityCode, sessionCode, participationType);
 
-        /// <summary>
-        /// Get a list of emails for group admin in the activity during the current session.
-        /// </summary>
-        /// <param name="activity_code"></param>
-        /// <returns>A collection of group admin emails</returns>
-        public IEnumerable<EmailViewModel> GetEmailsForGroupAdmin(string activity_code)
-        {
-            var currentSessionCode = Helpers.GetCurrentSession().SessionCode;
-            var idParam = new SqlParameter("@ACT_CDE", activity_code);
-            var sessParam = new SqlParameter("@SESS_CDE", currentSessionCode);
-            var result = RawSqlQuery<EmailViewModel>.query("GRP_ADMIN_EMAILS_PER_ACT_CDE @ACT_CDE, @SESS_CDE", idParam, sessParam);
-
-            if (result == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Get a list of emails for group admin in the activity during a specified session.
-        /// </summary>
-        /// <param name="activity_code"></param>
-        /// <param name="session_code"></param>
-        /// <returns>A collection of the group admin emails</returns>
-        public IEnumerable<EmailViewModel> GetEmailsForGroupAdmin(string activity_code, string session_code)
-        {
-            var idParam = new SqlParameter("@ACT_CDE", activity_code);
-            var sessParam = new SqlParameter("@SESS_CDE", session_code);
-            var result = RawSqlQuery<EmailViewModel>.query("GRP_ADMIN_EMAILS_PER_ACT_CDE @ACT_CDE, @SESS_CDE", idParam, sessParam);
-
-            if (result == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Get a list of emails for leaders in the activity during the current session.
-        /// </summary>
-        /// <param name="activity_code"></param>
-        /// <returns></returns>
-        public IEnumerable<EmailViewModel> GetEmailsForActivityLeaders(string activity_code)
-        {
-            var currentSessionCode = Helpers.GetCurrentSession().SessionCode;
-            var idParam = new SqlParameter("@ACT_CDE", activity_code);
-            var sessParam = new SqlParameter("@SESS_CDE", currentSessionCode);
-            var result = RawSqlQuery<EmailViewModel>.query("LEADER_EMAILS_PER_ACT_CDE @ACT_CDE, @SESS_CDE", idParam, sessParam);
-
-            if (result == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Get a list of emails for advisors in the activity during the current session.
-        /// </summary>
-        /// <param name="activity_code"></param>
-        /// <returns></returns>
-        public IEnumerable<EmailViewModel> GetEmailsForActivityAdvisors(string activity_code)
-        {
-            var currentSessionCode = Helpers.GetCurrentSession().SessionCode;
-            var idParam = new SqlParameter("@ACT_CDE", activity_code);
-            var sessParam = new SqlParameter("@SESS_CDE", currentSessionCode);
-            var result = RawSqlQuery<EmailViewModel>.query("ADVISOR_EMAILS_PER_ACT_CDE @ACT_CDE, @SESS_CDE", idParam, sessParam);
-
-            if (result == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Get a list of the emails for all members in the activity during a specific session
-        /// </summary>
-        /// <param name="activity_code">The activity code</param>
-        /// <param name="session_code">The session code</param>
-        /// <returns>List of the emails for the members of this activity</returns>
-        public IEnumerable<EmailViewModel> GetEmailsForActivity(string activity_code, string session_code)
-        {
-            
-            var idParam = new SqlParameter("@ACT_CDE", activity_code);
-            var sessParam = new SqlParameter("@SESS_CDE", session_code);
-            var result = RawSqlQuery<EmailViewModel>.query("EMAILS_PER_ACT_CDE @ACT_CDE, @SESS_CDE", idParam, sessParam);
-            if (result == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
-            }
-            
-            return result;           
-        }
-
-       
-
-        /// <summary>
-        /// Get a list of emails for leaders in the activity during a specified session
-        /// </summary>
-        /// <param name="activity_code">The activity code</param>
-        /// <param name="session_code">The session code</param>
-        /// <returns>List of emails for the leaders of this activity</returns>
-        public IEnumerable<EmailViewModel> GetEmailsForActivityLeaders(string activity_code, string session_code)
-        {
-            var idParam = new SqlParameter("@ACT_CDE", activity_code);
-            var sessParam = new SqlParameter("@SESS_CDE", session_code);
-            var result = RawSqlQuery<EmailViewModel>.query("LEADER_EMAILS_PER_ACT_CDE @ACT_CDE, @SESS_CDE", idParam, sessParam);
-            if (result == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Get a list of emails for leaders in the activity during a specified session
-        /// </summary>
-        /// <param name="activity_code">The activity code</param>
-        /// <param name="session_code">The session code</param>
-        /// <returns>List of emails for the leaders of this activity</returns>
-        public IEnumerable<EmailViewModel> GetEmailsForActivityAdvisors(string activity_code, string session_code)
-        {
-            var idParam = new SqlParameter("@ACT_CDE", activity_code);
-            var sessParam = new SqlParameter("@SESS_CDE", session_code);
-            var result = RawSqlQuery<EmailViewModel>.query("ADVISOR_EMAILS_PER_ACT_CDE @ACT_CDE, @SESS_CDE", idParam, sessParam);
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
@@ -194,7 +58,7 @@ namespace Gordon360.Services
         /// <param name="email_content">The content of the email to be sent</param>
         /// <param name="password">Password of the email sender</param>
         /// <returns></returns>
-        public void SendEmails(string [] to_emails, string from_email, string subject, string email_content, string password)
+        public void SendEmails(string[] to_emails, string from_email, string subject, string email_content, string password)
         {
             using (var smtp = new SmtpClient())
             {
@@ -232,33 +96,38 @@ namespace Gordon360.Services
         /// <param name="email_content">The content of the email to be sent</param>
         /// <param name="password">Password of the email sender</param>
         /// <returns></returns>
-        public void SendEmailToActivity(string activityCode, string sessionCode, string from_email, string subject, string email_content, string password)
+        public async Task SendEmailToActivityAsync(string activityCode, string sessionCode, string from_email, string subject, string email_content, string password)
         {
-            using (var smtp = new SmtpClient())
+            var credential = new NetworkCredential
             {
-                var credential = new NetworkCredential
-                {
-                    UserName = from_email,
-                    Password = password
-                };
-                smtp.Credentials = credential;
-                smtp.Host = "smtp.office365.com";
-                smtp.Port = 587;
-                smtp.EnableSsl = true;
-                var message = new MailMessage();
-                message.From = new MailAddress(from_email);
-                message.To.Add(new MailAddress(from_email));
-                var to_emails = GetEmailsForActivity(activityCode, sessionCode).Select(x => x.Email).ToArray();
-                foreach (string to_email in to_emails)
-                {
-                    message.Bcc.Add(new MailAddress(to_email));
-                }
-                message.Subject = subject;
-                message.Body = email_content;
-                message.IsBodyHtml = true;
+                UserName = from_email,
+                Password = password
+            };
 
-                smtp.Send(message);
+            using var smtp = new SmtpClient
+            {
+                Credentials = credential,
+                Host = "smtp.office365.com",
+                Port = 587,
+                EnableSsl = true
+            };
+
+            var message = new MailMessage
+            {
+                From = new MailAddress(from_email),
+                Subject = subject,
+                Body = email_content,
+                IsBodyHtml = true
+            };
+            message.To.Add(new MailAddress(from_email));
+
+            var to_emails = (await GetEmailsForActivityAsync(activityCode, sessionCode)).Select(x => x.Email);
+            foreach (string to_email in to_emails)
+            {
+                message.Bcc.Add(new MailAddress(to_email));
             }
+
+            smtp.Send(message);
         }
     }
 }
