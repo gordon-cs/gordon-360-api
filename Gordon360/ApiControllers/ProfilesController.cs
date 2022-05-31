@@ -989,7 +989,7 @@ namespace Gordon360.Controllers.Api
         [Route("updateRequest")]
         public IHttpActionResult SendUpdateRequest([FromBody] EmailContentViewModel email)
         {
-            int userID = GetCurrentUserID();
+            int ID_NUM = GetCurrentUserID();
             if (!ModelState.IsValid)
             {
                 string errors = "";
@@ -1003,7 +1003,7 @@ namespace Gordon360.Controllers.Api
                 }
                 throw new BadInputException() { ExceptionMessage = errors };
             }
-            _profileService.SendUpdateRequest(userID, email.Content);
+            _profileService.SendUpdateRequest(ID_NUM, email.Content);
             return Ok();
         }
     }

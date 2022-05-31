@@ -1575,11 +1575,6 @@
             <param name="admin">The admin to validate</param>
             <returns>True if the admin is valid. Throws ResourceNotFoundException if not. Exception is cauth in an Exception Filter</returns>
         </member>
-        <member name="T:Gordon360.Services.UpdateService">
-            <summary>
-            Service Class that facilitates data transactions between the UpdateController and the email sender.
-            </summary>
-        </member>
         <member name="T:Gordon360.Services.JobsService">
             <summary>
             Service Class that facilitates data transactions between the JobsController and the student_timesheets + paid_shifts database model.

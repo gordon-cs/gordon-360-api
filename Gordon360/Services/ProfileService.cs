@@ -433,21 +433,32 @@ namespace Gordon360.Services
                 alum.show_pic = (value == "Y" ? 1 : 0);
             }
         }
-        public void SendUpdateRequest(int userID, string email_content)
+        public void SendUpdateRequest(int id, string email_content)
         {
             using (var smtp = new SmtpClient())
             {
                 //string to_email = "devrequest@gordon.edu";
-                string to_email = "TO EMAIL";
-                string from_email = "FROM EMAIL";
-                string subject = String.Format("UPDATE REQUEST: Alumni {0}", userID);
+
+                /*
+                 * TO EMAIL TO BE CHANGED TO DEVREQUEST (commented above) change to_email variable for testing
+                 */
+                string to_email = "TO_EMAIL";
+                string from_email = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id.ToString())?.email;
+
+                string subject = String.Format("ALUMNI INFORMATION UPDATE REQUEST FOR ID: {0}", id);
+
+                /*
+                 * CREDENTIALS TO BE REMOVED IN PRODUCTION (ONLY USED IN TRAIN/LOCAL)
+                 * HOST TO BE CHANGED TO "smtp.gordon.edu" IN PRODUCTION
+                 */
                 var credential = new NetworkCredential
                 {
                     UserName = from_email,
-                    Password = "PASSWORD"
+                    Password = "ACCOUNT_PASSWORD"
                 };
                 smtp.Credentials = credential;
                 smtp.Host = "smtp.office365.com";
+                //smtp.Host = "smtp.gordon.edu";
                 smtp.Port = 587;
                 smtp.EnableSsl = true;
                 var message = new MailMessage();
@@ -455,8 +466,14 @@ namespace Gordon360.Services
                 message.Bcc.Add(new MailAddress(from_email));
                 message.To.Add(new MailAddress(to_email));
                 message.Subject = subject;
+                email_content = email_content
+                    .Replace("\",\"", System.Environment.NewLine)
+                    .Replace(",\"", System.Environment.NewLine)
+                    .Replace("}", " ")
+                    .Replace("{", "")
+                    .Replace(":", " : ")
+                    .Replace("\"", "");
                 message.Body = email_content;
-                message.IsBodyHtml = true;
 
                 smtp.Send(message);
             }
