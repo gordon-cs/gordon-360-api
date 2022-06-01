@@ -25,9 +25,10 @@ builder.Services.AddControllers(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddCors(p => p.AddPolicy(name: "localhost", builder =>
+string corsPolicy = "360UI";
+builder.Services.AddCors(p => p.AddPolicy(name: corsPolicy, corsBuilder =>
 {
-    builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader();
+    corsBuilder.WithOrigins(builder.Configuration.GetValue<string>("AllowedOrigin")).AllowAnyMethod().AllowAnyHeader();
 }));
 
 builder.Services.AddDbContext<CCTContext>(options =>
@@ -58,7 +59,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseCors("localhost");
+app.UseCors(corsPolicy);
 
 app.MapControllers();
 
