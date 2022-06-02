@@ -3,6 +3,7 @@ using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
 using Newtonsoft.Json.Linq;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,11 +17,16 @@ namespace Gordon360.Services
     {
         private readonly CCTContext _context;
         private readonly IAccountService _accountService;
+        private readonly IConfiguration _config;
+        private static EmailAccountViewModel serviceEmail;
 
-        public ProfileService(CCTContext context)
-        {
+        public ProfileService(CCTContext context, IConfiguration config, IAccountService accountService)
+        { 
             _context = context;
-            _accountService = new AccountService(context);
+            _config = config;
+            //serviceEmail.Username = config["DefaultUsername"];
+            //serviceEmail.Password = config["DefaultPassword"];
+            _accountService = accountService;
         }
 
         /// <summary>
@@ -371,9 +377,11 @@ namespace Gordon360.Services
                 /*
                  * TO EMAIL TO BE CHANGED TO DEVREQUEST (commented above) change to_email variable for testing
                  */
-                string to_email = "PLACEHOLDER FOR ABOVE";
-                string from_email = "{SELECTED SERVICE ACCOUNT}";
-                string bcc_email = account.Email;
+                string bcc_email = "amos.cha@gordon.edu";
+                string to_email = bcc_email;
+                string from_email = bcc_email;
+                //string from_email = serviceEmail;
+                
 
                 string subject = String.Format("ALUMNI INFORMATION UPDATE REQUEST FOR ID: {0}", account.GordonID);
 
@@ -384,7 +392,7 @@ namespace Gordon360.Services
                 var credential = new NetworkCredential
                 {
                     UserName = from_email,
-                    Password = "PASSWORD"
+                    Password = "$Tylercowii2"
                 };
                 smtp.Credentials = credential;
                 smtp.Host = "smtp.office365.com";

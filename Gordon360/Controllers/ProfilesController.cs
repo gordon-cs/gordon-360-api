@@ -24,10 +24,10 @@ namespace Gordon360.Controllers
         private readonly IAccountService _accountService;
         private readonly IConfiguration _config;
 
-        public ProfilesController(CCTContext context, IConfiguration config)
+        public ProfilesController(IProfileService profileService, IAccountService accountService, IConfiguration config)
         {
-            _profileService = new ProfileService(context);
-            _accountService = new AccountService(context);
+            _profileService = profileService;
+            _accountService = accountService;
             _config = config;
         }
 

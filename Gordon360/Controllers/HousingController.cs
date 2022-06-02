@@ -21,13 +21,13 @@ namespace Gordon360.Controllers
         private readonly IProfileService _profileService;
         private readonly CCTContext _context;
 
-        public HousingController(CCTContext context)
+        public HousingController(CCTContext context, IProfileService profileService)
         {
             _context = context;
             _housingService = new HousingService(context);
             _accountService = new AccountService(context);
             _administratorService = new AdministratorService(context);
-            _profileService = new ProfileService(context);
+            _profileService = profileService;
         }
 
         /// <summary>
