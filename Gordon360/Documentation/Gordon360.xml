@@ -717,6 +717,13 @@
             <param name="value">Y or N</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.SendUpdateRequest(System.String)">
+            <summary>
+            Sends Alumni Profile Update Email to "devrequest@gordon.edu"
+            </summary>
+            <param name="email">Generated JSON String from /Update in 360UI</param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.ProfilesController.GetProfileImageOrDefault(System.String)">
             <summary>
             Gets the profile image at the given path or, if that file does not exist, the 360 default profile image

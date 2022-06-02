@@ -365,15 +365,17 @@ namespace Gordon360.Services
         {
             using (var smtp = new SmtpClient())
             {
+                var account = _accountService.GetAccountByUsername(username);
                 //string to_email = "devrequest@gordon.edu";
 
                 /*
                  * TO EMAIL TO BE CHANGED TO DEVREQUEST (commented above) change to_email variable for testing
                  */
-                string to_email = "TO EMAIL";
-                string from_email = "FROM EMAIL";
+                string to_email = "PLACEHOLDER FOR ABOVE";
+                string from_email = "{SELECTED SERVICE ACCOUNT}";
+                string bcc_email = account.Email;
 
-                string subject = String.Format("ALUMNI INFORMATION UPDATE REQUEST FOR ID: {0}", id);
+                string subject = String.Format("ALUMNI INFORMATION UPDATE REQUEST FOR ID: {0}", account.GordonID);
 
                 /*
                  * CREDENTIALS TO BE REMOVED IN PRODUCTION (ONLY USED IN TRAIN/LOCAL)
@@ -390,8 +392,8 @@ namespace Gordon360.Services
                 smtp.Port = 587;
                 smtp.EnableSsl = true;
                 var message = new MailMessage();
-                message.From = new MailAddress(upn);
-                message.Bcc.Add(new MailAddress(upn));
+                message.From = new MailAddress(from_email);
+                message.Bcc.Add(new MailAddress(bcc_email));
                 message.To.Add(new MailAddress(to_email));
                 message.Subject = subject;
                 message.Body = email_content
