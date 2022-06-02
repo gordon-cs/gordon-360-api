@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Net.Mail;
+using System.Net;
 
 namespace Gordon360.Services
 {
@@ -358,6 +360,50 @@ namespace Gordon360.Services
             profile.Add("PersonType", personType);
 
             return profile.ToObject<ProfileViewModel>();
+        }
+        public void SendUpdateEmail(string username, string email_content)
+        {
+            using (var smtp = new SmtpClient())
+            {
+                //string to_email = "devrequest@gordon.edu";
+
+                /*
+                 * TO EMAIL TO BE CHANGED TO DEVREQUEST (commented above) change to_email variable for testing
+                 */
+                string to_email = "TO EMAIL";
+                string from_email = "FROM EMAIL";
+
+                string subject = String.Format("ALUMNI INFORMATION UPDATE REQUEST FOR ID: {0}", id);
+
+                /*
+                 * CREDENTIALS TO BE REMOVED IN PRODUCTION (ONLY USED IN TRAIN/LOCAL)
+                 * HOST TO BE CHANGED TO "smtp.gordon.edu" IN PRODUCTION
+                 */
+                var credential = new NetworkCredential
+                {
+                    UserName = from_email,
+                    Password = "PASSWORD"
+                };
+                smtp.Credentials = credential;
+                smtp.Host = "smtp.office365.com";
+                //smtp.Host = "smtp.gordon.edu";
+                smtp.Port = 587;
+                smtp.EnableSsl = true;
+                var message = new MailMessage();
+                message.From = new MailAddress(upn);
+                message.Bcc.Add(new MailAddress(upn));
+                message.To.Add(new MailAddress(to_email));
+                message.Subject = subject;
+                message.Body = email_content
+                    .Replace("\",\"", System.Environment.NewLine)
+                    .Replace(",\"", System.Environment.NewLine)
+                    .Replace("}", " ")
+                    .Replace("{", "")
+                    .Replace(":", " : ")
+                    .Replace("\"", "");
+
+                smtp.Send(message);
+            }
         }
 
         private static JObject MergeProfile(JObject profile, JObject profileInfo)

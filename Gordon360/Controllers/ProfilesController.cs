@@ -421,6 +421,20 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
+        /// Sends Alumni Profile Update Email to "devrequest@gordon.edu"
+        /// </summary>
+        /// <param name="email">Generated JSON String from /Update in 360UI</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("updateRequest")]
+        public async Task<ActionResult> SendUpdateRequest([FromBody] string email_content)
+        {
+            string username = AuthUtils.GetUsername(User);
+            _profileService.SendUpdateEmail(username, email_content);
+            return Ok();
+        }
+
+        /// <summary>
         /// Gets the profile image at the given path or, if that file does not exist, the 360 default profile image
         /// </summary>
         /// <remarks>
@@ -445,5 +459,8 @@ namespace Gordon360.Controllers
                 return await ImageUtils.DownloadImageFromURL(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
             }
         }
+
+
+
     }
 }
