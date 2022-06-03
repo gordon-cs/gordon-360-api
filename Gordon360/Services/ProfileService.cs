@@ -24,8 +24,9 @@ namespace Gordon360.Services
         { 
             _context = context;
             _config = config;
-            //serviceEmail.Username = config["DefaultUsername"];
-            //serviceEmail.Password = config["DefaultPassword"];
+            serviceEmail = new EmailAccountViewModel();
+            serviceEmail.Username = _config["Emails:Default:Username"];
+            serviceEmail.Password = _config["Emails:Default:Password"];
             _accountService = accountService;
         }
 
@@ -373,16 +374,12 @@ namespace Gordon360.Services
             {
                 var account = _accountService.GetAccountByUsername(username);
                 //string to_email = "devrequest@gordon.edu";
-
                 /*
                  * TO EMAIL TO BE CHANGED TO DEVREQUEST (commented above) change to_email variable for testing
                  */
-                string bcc_email = "amos.cha@gordon.edu";
-                string to_email = bcc_email;
-                string from_email = bcc_email;
-                //string from_email = serviceEmail;
-                
-
+                string bcc_email =  _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == account.GordonID)?.email ?? ""; 
+                string to_email = "devrequest_placeholder@gordon.edu";
+                string from_email = serviceEmail.Username;
                 string subject = String.Format("ALUMNI INFORMATION UPDATE REQUEST FOR ID: {0}", account.GordonID);
 
                 /*
@@ -392,7 +389,7 @@ namespace Gordon360.Services
                 var credential = new NetworkCredential
                 {
                     UserName = from_email,
-                    Password = "$Tylercowii2"
+                    Password = serviceEmail.Password
                 };
                 smtp.Credentials = credential;
                 smtp.Host = "smtp.office365.com";
