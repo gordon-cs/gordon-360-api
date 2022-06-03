@@ -35,9 +35,9 @@ namespace Gordon360.Services
         {
             _context = context;
             _config = config;
-            issuerID = _config["bonAppetitIssuerID"];
-            applicationId = _config["bonAppetitApplicationID"];
-            secret = _config["bonAppetitSecret"];
+            issuerID = _config["BonAppetit:IssuerID"];
+            applicationId = _config["BonAppetit:ApplicationID"];
+            secret = _config["BonAppetit:Secret"];
         }
 
         private static string getTimestamp()
