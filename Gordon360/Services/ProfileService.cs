@@ -24,10 +24,13 @@ namespace Gordon360.Services
         { 
             _context = context;
             _config = config;
-            serviceEmail = new EmailAccountViewModel();
-            serviceEmail.Username = _config["Emails:Default:Username"];
-            serviceEmail.Password = _config["Emails:Default:Password"];
             _accountService = accountService;
+            serviceEmail = new EmailAccountViewModel()
+            {
+                Username = _config["Emails:Default:Username"],
+                Password = _config["Emails:Default:Password"]
+            };
+            
         }
 
         /// <summary>
@@ -373,14 +376,16 @@ namespace Gordon360.Services
             using (var smtp = new SmtpClient())
             {
                 var account = _accountService.GetAccountByUsername(username);
-                //string to_email = "devrequest@gordon.edu";
+                
                 /*
                  * TO EMAIL TO BE CHANGED TO DEVREQUEST (commented above) change to_email variable for testing
                  */
-                string bcc_email =  _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == account.GordonID)?.email ?? ""; 
-                string to_email = "devrequest_placeholder@gordon.edu";
+                string bcc_email =  _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == account.GordonID)?.email ?? "";
+                string to_email = _config["Emails:Reciever:Username"];
+                // uncomment line below when testing
+                to_email = bcc_email;
                 string from_email = serviceEmail.Username;
-                string subject = String.Format("ALUMNI INFORMATION UPDATE REQUEST FOR ID: {0}", account.GordonID);
+                string subject = String.Format("Alumni Information Update Request for ID: {0}", account.GordonID);
 
                 /*
                  * CREDENTIALS TO BE REMOVED IN PRODUCTION (ONLY USED IN TRAIN/LOCAL)

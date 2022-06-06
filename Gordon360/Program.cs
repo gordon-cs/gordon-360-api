@@ -44,8 +44,6 @@ builder.Services.AddDbContext<CCTContext>(options =>
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 
-
-
 builder.Services.AddMemoryCache();
 
 var app = builder.Build();
