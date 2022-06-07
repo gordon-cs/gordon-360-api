@@ -717,7 +717,7 @@
             <param name="value">Y or N</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.SendUpdateRequest(System.String)">
+        <member name="M:Gordon360.Controllers.ProfilesController.SendUpdateRequest(Gordon360.Models.ViewModels.ProfileFieldViewModel[])">
             <summary>
             Sends Alumni Profile Update Email to "devrequest@gordon.edu"
             </summary>

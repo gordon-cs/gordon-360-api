@@ -371,11 +371,12 @@ namespace Gordon360.Services
 
             return profile.ToObject<ProfileViewModel>();
         }
-        public void SendUpdateEmail(string username, string email_content)
+        public void SendUpdateEmail(string username, ProfileFieldViewModel[] updatedFields)
         {
             using (var smtp = new SmtpClient())
             {
                 var account = _accountService.GetAccountByUsername(username);
+                string gordonID = account.GordonID;
                 
                 /*
                  * TO EMAIL TO BE CHANGED TO DEVREQUEST (commented above) change to_email variable for testing
@@ -385,7 +386,8 @@ namespace Gordon360.Services
                 // uncomment line below when testing
                 to_email = bcc_email;
                 string from_email = serviceEmail.Username;
-                string subject = String.Format("Alumni Information Update Request for ID: {0}", account.GordonID);
+                string subject = String.Format("Alumni Information Update Request for ID: {0}", gordonID);
+                
 
                 /*
                  * CREDENTIALS TO BE REMOVED IN PRODUCTION (ONLY USED IN TRAIN/LOCAL)
@@ -406,14 +408,11 @@ namespace Gordon360.Services
                 message.Bcc.Add(new MailAddress(bcc_email));
                 message.To.Add(new MailAddress(to_email));
                 message.Subject = subject;
-                message.Body = email_content
-                    .Replace("\",\"", System.Environment.NewLine)
-                    .Replace(",\"", System.Environment.NewLine)
-                    .Replace("}", " ")
-                    .Replace("{", "")
-                    .Replace(":", " : ")
-                    .Replace("\"", "");
-
+                message.Body = $"UserID: {gordonID} has requested the following updates: \n";
+                for (int i = 0; i < updatedFields.Length; i++)
+                {
+                    message.Body += $"{updatedFields[i].field} : {updatedFields[i].value} \n";
+                }
                 smtp.Send(message);
             }
         }

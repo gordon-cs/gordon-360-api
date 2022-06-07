@@ -31,7 +31,7 @@ namespace Gordon360.Services
         Task UpdateImagePrivacyAsync(string username, string value);
         Task UpdateProfileImageAsync(string username, string path, string name);
         ProfileViewModel? ComposeProfile(object? student, object? alumni, object? faculty, object? customInfo);
-        void SendUpdateEmail(string username, string email_content);
+        void SendUpdateEmail(string username, ProfileFieldViewModel[] updatedFields);
     }
 
     public interface IEventService
