@@ -6,5 +6,6 @@ namespace Gordon360.Models.ViewModels
     {
         public string field { get; set; }
         public string value { get; set; }
+        public string label { get; set; }
     }
 }

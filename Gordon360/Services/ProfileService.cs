@@ -409,9 +409,10 @@ namespace Gordon360.Services
                 message.To.Add(new MailAddress(to_email));
                 message.Subject = subject;
                 message.Body = $"UserID: {gordonID} has requested the following updates: \n";
-                for (int i = 0; i < updatedFields.Length; i++)
+                foreach ( ProfileFieldViewModel updatedField in updatedFields)
                 {
-                    message.Body += $"{updatedFields[i].field} : {updatedFields[i].value} \n";
+                    //System.Diagnostics.Debug.WriteLine($"{updatedField.label} : {updatedField.value}");
+                    message.Body += $"{updatedField.label} : {updatedField.value} \n";
                 }
                 smtp.Send(message);
             }
