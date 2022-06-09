@@ -426,5 +426,14 @@ namespace Gordon360.Services
             });
             return profile;
         }
+
+        public IEnumerable<StatesViewModel> GetAllStates()
+        {
+            System.Diagnostics.Debug.WriteLine((IEnumerable<StatesViewModel>)_context.States);
+            return (IEnumerable<StatesViewModel>)_context.States;
+        }
+
+
+
     }
 }

@@ -435,6 +435,23 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
+        /// Pulls all states available from Jenzabar States Table
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("getAllStates")]
+        public ActionResult<IEnumerable<StatesViewModel>> GetAllStates()
+        {
+            var result = _profileService.GetAllStates();
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+
+        /// <summary>
         /// Gets the profile image at the given path or, if that file does not exist, the 360 default profile image
         /// </summary>
         /// <remarks>
