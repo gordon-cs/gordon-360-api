@@ -270,3 +270,4 @@ paket-files/
 
 # Environment Specific app settings
 appsettings.*.json
+secrets.config
