@@ -429,8 +429,14 @@ namespace Gordon360.Services
 
         public IEnumerable<StatesViewModel> GetAllStates()
         {
-            System.Diagnostics.Debug.WriteLine((IEnumerable<StatesViewModel>)_context.States);
-            return (IEnumerable<StatesViewModel>)_context.States;
+            //System.Diagnostics.Debug.WriteLine((IEnumerable<StatesViewModel>)_context.States);
+            var states = _context.States;
+            return states.Select(
+                s => new StatesViewModel
+                {
+                    Name = s.Name,
+                    Abbreviation = s.Abbreviation,
+                });
         }
 
 
