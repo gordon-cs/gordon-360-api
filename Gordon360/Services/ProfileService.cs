@@ -392,7 +392,6 @@ namespace Gordon360.Services
                 };
                 _context.Information_Change_Request.Add(itemToSubmit);
             }
-            
             _context.SaveChanges();
         }
 
@@ -413,7 +412,6 @@ namespace Gordon360.Services
                 string from_email = serviceEmail.Username;
                 string subject = String.Format("Alumni Information Update Request for ID: {0}", gordonID);
                 
-
                 /*
                  * CREDENTIALS TO BE REMOVED IN PRODUCTION (ONLY USED IN TRAIN/LOCAL)
                  * HOST TO BE CHANGED TO "smtp.gordon.edu" IN PRODUCTION

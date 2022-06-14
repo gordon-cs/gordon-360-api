@@ -420,30 +420,18 @@ namespace Gordon360.Controllers
             return Ok();
         }
         /// <summary>
-        /// Posts single field into CCT.dbo.Information_Change_Request
-        /// </summary>
-        /// <param name="updatedField">Object with Field's Name and Field's Value, unused Field's Label</param>
-        /// <returns></returns>
-        [HttpPost]
-        [Route("informationChange")]
-        public async Task<ActionResult> InformationChange(ProfileFieldViewModel[] updatedField)
-        {
-            var authenticatedUserUsername = AuthUtils.GetUsername(User);
-            await _profileService.InformationChange(authenticatedUserUsername, updatedField);
-            return Ok();
-        }
-
-        /// <summary>
+        /// Posts fields into CCT.dbo.Information_Change_Request 
         /// Sends Alumni Profile Update Email to "devrequest@gordon.edu"
         /// </summary>
-        /// <param name="email">Generated JSON String from /Update in 360UI</param>
+        /// <param name="updatedFields">Object with Field's Name and Field's Value, unused Field's Label</param>
         /// <returns></returns>
         [HttpPost]
         [Route("updateRequest")]
-        public async Task<ActionResult> SendUpdateRequest([FromBody] ProfileFieldViewModel[] updatedFields)
+        public async Task<ActionResult> SendUpdateRequest(ProfileFieldViewModel[] updatedFields)
         {
-            string username = AuthUtils.GetUsername(User);
-            _profileService.SendUpdateEmail(username, updatedFields);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+            await _profileService.InformationChange(authenticatedUserUsername, updatedFields);
+            _profileService.SendUpdateEmail(authenticatedUserUsername, updatedFields);
             return Ok();
         }
 
