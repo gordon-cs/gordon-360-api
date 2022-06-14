@@ -419,6 +419,19 @@ namespace Gordon360.Controllers
 
             return Ok();
         }
+        /// <summary>
+        /// Posts single field into CCT.dbo.Information_Change_Request
+        /// </summary>
+        /// <param name="updatedField">Object with Field's Name and Field's Value, unused Field's Label</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("informationChange")]
+        public async Task<ActionResult> InformationChange(ProfileFieldViewModel[] updatedField)
+        {
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+            await _profileService.InformationChange(authenticatedUserUsername, updatedField);
+            return Ok();
+        }
 
         /// <summary>
         /// Sends Alumni Profile Update Email to "devrequest@gordon.edu"

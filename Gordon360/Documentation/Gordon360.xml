@@ -717,6 +717,13 @@
             <param name="value">Y or N</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.InformationChange(Gordon360.Models.ViewModels.ProfileFieldViewModel[])">
+            <summary>
+            Posts single field into CCT.dbo.Information_Change_Request
+            </summary>
+            <param name="updatedField">Object with Field's Name and Field's Value, unused Field's Label</param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.ProfilesController.SendUpdateRequest(Gordon360.Models.ViewModels.ProfileFieldViewModel[])">
             <summary>
             Sends Alumni Profile Update Email to "devrequest@gordon.edu"

@@ -371,6 +371,31 @@ namespace Gordon360.Services
 
             return profile.ToObject<ProfileViewModel>();
         }
+        public async Task InformationChange(string username, ProfileFieldViewModel[] updatedFields)
+        {
+            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
+            if (account == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
+
+            var lastBatchNumber = 0;
+  
+            foreach (var element in updatedFields)
+            {
+                var itemToSubmit = new Information_Change_Request
+                {
+                    BatchNo = lastBatchNumber,
+                    ID_Num = account.gordon_id,
+                    FieldName = element.field,
+                    FieldValue = element.value
+                };
+                _context.Information_Change_Request.Add(itemToSubmit);
+            }
+            
+            _context.SaveChanges();
+        }
+
         public void SendUpdateEmail(string username, ProfileFieldViewModel[] updatedFields)
         {
             using (var smtp = new SmtpClient())
