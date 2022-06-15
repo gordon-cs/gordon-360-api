@@ -430,8 +430,7 @@ namespace Gordon360.Controllers
         public async Task<ActionResult> SendUpdateRequest(ProfileFieldViewModel[] updatedFields)
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
-            await _profileService.InformationChange(authenticatedUserUsername, updatedFields);
-            _profileService.SendUpdateEmail(authenticatedUserUsername, updatedFields);
+            await _profileService.InformationChangeRequest(authenticatedUserUsername, updatedFields);
             return Ok();
         }
 

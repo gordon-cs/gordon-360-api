@@ -445,6 +445,8 @@ namespace Gordon360.Models.CCT.Context
                 entity.ToView("360_SLIDER");
             });
 
+            modelBuilder.HasSequence("Information_Change_Request_Seq");
+
             OnModelCreatingGeneratedProcedures(modelBuilder);
             OnModelCreatingPartial(modelBuilder);
         }

@@ -10,6 +10,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Net.Mail;
 using System.Net;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Services
 {
@@ -378,40 +380,38 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
-
-            var lastBatchNumber = 0;
+            SqlParameter result = new SqlParameter("@result", System.Data.SqlDbType.Int) { Direction = System.Data.ParameterDirection.Output };
+            await _context.Database.ExecuteSqlRawAsync($"SELECT @result = (NEXT VALUE FOR [Information_Change_Request_Seq])", result);
+            var requestNumber = (int)result.Value;
+            string messageBody = "";
   
             foreach (var element in updatedFields)
             {
                 var itemToSubmit = new Information_Change_Request
                 {
-                    BatchNo = lastBatchNumber,
+                    RequestNumber = requestNumber,
                     ID_Num = account.gordon_id,
                     FieldName = element.field,
                     FieldValue = element.value
                 };
                 _context.Information_Change_Request.Add(itemToSubmit);
+                messageBody += $"{element.label} : {element.value} \n";
             }
             _context.SaveChanges();
-        }
 
-        public void SendUpdateEmail(string username, ProfileFieldViewModel[] updatedFields)
-        {
             using (var smtp = new SmtpClient())
             {
-                var account = _accountService.GetAccountByUsername(username);
-                string gordonID = account.GordonID;
-                
-                /*
-                 * TO EMAIL TO BE CHANGED TO DEVREQUEST (commented above) change to_email variable for testing
-                 */
-                string bcc_email =  _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == account.GordonID)?.email ?? "";
+                string gordonID = account.gordon_id;
+                string bcc_email = account.email ?? "";
                 string to_email = _config["Emails:Reciever:Username"];
-                // uncomment line below when testing
+         
+                // WARNING WARNING WARNING 
+                // COMMENTING LINE BELOW WILL SEND EMAIL TO DevRequests
                 to_email = bcc_email;
+
                 string from_email = serviceEmail.Username;
                 string subject = String.Format("Alumni Information Update Request for ID: {0}", gordonID);
-                
+
                 /*
                  * CREDENTIALS TO BE REMOVED IN PRODUCTION (ONLY USED IN TRAIN/LOCAL)
                  * HOST TO BE CHANGED TO "smtp.gordon.edu" IN PRODUCTION
@@ -431,12 +431,7 @@ namespace Gordon360.Services
                 message.Bcc.Add(new MailAddress(bcc_email));
                 message.To.Add(new MailAddress(to_email));
                 message.Subject = subject;
-                message.Body = $"UserID: {gordonID} has requested the following updates: \n";
-                foreach ( ProfileFieldViewModel updatedField in updatedFields)
-                {
-                    //System.Diagnostics.Debug.WriteLine($"{updatedField.label} : {updatedField.value}");
-                    message.Body += $"{updatedField.label} : {updatedField.value} \n";
-                }
+                message.Body = messageBody;
                 smtp.Send(message);
             }
         }

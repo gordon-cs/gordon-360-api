@@ -12,7 +12,7 @@ namespace Gordon360.Models.CCT
     {
         [Key]
         public long ID { get; set; }
-        public long BatchNo { get; set; }
+        public long RequestNumber { get; set; }
         [Required]
         [StringLength(16)]
         [Unicode(false)]
