@@ -34,6 +34,7 @@ namespace Gordon360.Services
         Task InformationChangeRequest(string username, ProfileFieldViewModel[] updatedField);
         //TEMPORARILY BEING PUT IN PROFILE GROUP, WILL NEED NEW INTERFACE
         IEnumerable<StatesViewModel> GetAllStates();
+        IEnumerable<CountryViewModel> GetAllCountries();
 
     }
 

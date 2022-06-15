@@ -731,6 +731,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.GetAllCountries">
+            <summary>
+            Pulls all Countries available from Jenzabar Countries Table
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.ProfilesController.GetProfileImageOrDefault(System.String)">
             <summary>
             Gets the profile image at the given path or, if that file does not exist, the 360 default profile image

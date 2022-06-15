@@ -373,7 +373,7 @@ namespace Gordon360.Services
 
             return profile.ToObject<ProfileViewModel>();
         }
-        public async Task InformationChange(string username, ProfileFieldViewModel[] updatedFields)
+        public async Task InformationChangeRequest(string username, ProfileFieldViewModel[] updatedFields)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
             if (account == null)
@@ -454,6 +454,18 @@ namespace Gordon360.Services
                 {
                     Name = s.Name,
                     Abbreviation = s.Abbreviation,
+                });
+        }
+
+        public IEnumerable<CountryViewModel> GetAllCountries()
+        {
+            //System.Diagnostics.Debug.WriteLine((IEnumerable<StatesViewModel>)_context.States);
+            var country = _context.Countries;
+            return country.Select(
+                c => new CountryViewModel
+                {
+                    CTY =c.CTY,
+                    COUNTRY = c.COUNTRY,
                 });
         }
 

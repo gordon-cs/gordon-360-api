@@ -148,10 +148,6 @@ namespace Gordon360.Models.CCT.Context
             modelBuilder.Entity<Countries>(entity =>
             {
                 entity.ToView("Countries");
-
-                entity.Property(e => e.COUNTRY).IsFixedLength();
-
-                entity.Property(e => e.CTY).IsFixedLength();
             });
 
             modelBuilder.Entity<DiningInfo>(entity =>

@@ -452,6 +452,23 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
+        /// Pulls all Countries available from Jenzabar Countries Table
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("getAllCountries")]
+        public ActionResult<IEnumerable<CountryViewModel>> GetAllCountries()
+        {
+            var result = _profileService.GetAllCountries();
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+
+        /// <summary>
         /// Gets the profile image at the given path or, if that file does not exist, the 360 default profile image
         /// </summary>
         /// <remarks>
