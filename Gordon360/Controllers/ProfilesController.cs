@@ -426,7 +426,7 @@ namespace Gordon360.Controllers
         /// <param name="updatedFields">Object with Field's Name and Field's Value, unused Field's Label</param>
         /// <returns></returns>
         [HttpPost]
-        [Route("requestUpdate")]
+        [Route("update")]
         public async Task<ActionResult> RequestUpdate(ProfileFieldViewModel[] updatedFields)
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
@@ -439,7 +439,7 @@ namespace Gordon360.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("getAllStates")]
+        [Route("states")]
         public ActionResult<List<States>> GetAllStates()
         {
             var result = _profileService.GetAllStates();
@@ -456,7 +456,7 @@ namespace Gordon360.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("getAllCountries")]
+        [Route("countries")]
         public ActionResult<List<Countries>> GetAllCountries()
         {
             var result = _profileService.GetAllCountries();
