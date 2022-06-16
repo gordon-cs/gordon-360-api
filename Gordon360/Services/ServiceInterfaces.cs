@@ -33,8 +33,8 @@ namespace Gordon360.Services
         ProfileViewModel? ComposeProfile(object? student, object? alumni, object? faculty, object? customInfo);
         Task InformationChangeRequest(string username, ProfileFieldViewModel[] updatedField);
         //TEMPORARILY BEING PUT IN PROFILE GROUP, WILL NEED NEW INTERFACE
-        IEnumerable<StatesViewModel> GetAllStates();
-        IEnumerable<CountryViewModel> GetAllCountries();
+        List<States> GetAllStates();
+        List<Countries> GetAllCountries();
 
     }
 

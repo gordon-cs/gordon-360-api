@@ -20,18 +20,13 @@ namespace Gordon360.Services
         private readonly CCTContext _context;
         private readonly IAccountService _accountService;
         private readonly IConfiguration _config;
-        private static EmailAccountViewModel serviceEmail;
 
         public ProfileService(CCTContext context, IConfiguration config, IAccountService accountService)
         { 
             _context = context;
             _config = config;
             _accountService = accountService;
-            serviceEmail = new EmailAccountViewModel()
-            {
-                Username = _config["Emails:Default:Username"],
-                Password = _config["Emails:Default:Password"]
-            };
+
             
         }
 
@@ -375,11 +370,7 @@ namespace Gordon360.Services
         }
         public async Task InformationChangeRequest(string username, ProfileFieldViewModel[] updatedFields)
         {
-            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
-            if (account == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
-            }
+            var account = _accountService.GetAccountByUsername(username);
             SqlParameter result = new SqlParameter("@result", System.Data.SqlDbType.Int) { Direction = System.Data.ParameterDirection.Output };
             await _context.Database.ExecuteSqlRawAsync($"SELECT @result = (NEXT VALUE FOR [Information_Change_Request_Seq])", result);
             var requestNumber = (int)result.Value;
@@ -390,7 +381,7 @@ namespace Gordon360.Services
                 var itemToSubmit = new Information_Change_Request
                 {
                     RequestNumber = requestNumber,
-                    ID_Num = account.gordon_id,
+                    ID_Num = account.GordonID,
                     FieldName = element.field,
                     FieldValue = element.value
                 };
@@ -401,15 +392,15 @@ namespace Gordon360.Services
 
             using (var smtp = new SmtpClient())
             {
-                string gordonID = account.gordon_id;
-                string bcc_email = account.email ?? "";
+                string gordonID = account.GordonID;
+                string bcc_email = account.Email ?? "";
                 string to_email = _config["Emails:Reciever:Username"];
          
                 // WARNING WARNING WARNING 
                 // COMMENTING LINE BELOW WILL SEND EMAIL TO DevRequests
                 to_email = bcc_email;
 
-                string from_email = serviceEmail.Username;
+                string from_email = _config["Emails:Default:Username"];
                 string subject = String.Format("Alumni Information Update Request for ID: {0}", gordonID);
 
                 /*
@@ -419,7 +410,7 @@ namespace Gordon360.Services
                 var credential = new NetworkCredential
                 {
                     UserName = from_email,
-                    Password = serviceEmail.Password
+                    Password = _config["Emails:Default:Password"]
                 };
                 smtp.Credentials = credential;
                 smtp.Host = "smtp.office365.com";
@@ -445,28 +436,15 @@ namespace Gordon360.Services
             return profile;
         }
 
-        public IEnumerable<StatesViewModel> GetAllStates()
+        public List<States> GetAllStates()
         {
-            //System.Diagnostics.Debug.WriteLine((IEnumerable<StatesViewModel>)_context.States);
-            var states = _context.States;
-            return states.Select(
-                s => new StatesViewModel
-                {
-                    Name = s.Name,
-                    Abbreviation = s.Abbreviation,
-                });
+            
+            return _context.States.ToList();
         }
 
-        public IEnumerable<CountryViewModel> GetAllCountries()
+        public List<Countries> GetAllCountries()
         {
-            //System.Diagnostics.Debug.WriteLine((IEnumerable<StatesViewModel>)_context.States);
-            var country = _context.Countries;
-            return country.Select(
-                c => new CountryViewModel
-                {
-                    CTY =c.CTY,
-                    COUNTRY = c.COUNTRY,
-                });
+            return _context.Countries.ToList();
         }
 
 

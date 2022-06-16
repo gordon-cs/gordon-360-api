@@ -717,7 +717,7 @@
             <param name="value">Y or N</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.SendUpdateRequest(Gordon360.Models.ViewModels.ProfileFieldViewModel[])">
+        <member name="M:Gordon360.Controllers.ProfilesController.RequestUpdate(Gordon360.Models.ViewModels.ProfileFieldViewModel[])">
             <summary>
             Posts fields into CCT.dbo.Information_Change_Request 
             Sends Alumni Profile Update Email to "devrequest@gordon.edu"

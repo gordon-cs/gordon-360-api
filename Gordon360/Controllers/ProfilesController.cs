@@ -426,8 +426,8 @@ namespace Gordon360.Controllers
         /// <param name="updatedFields">Object with Field's Name and Field's Value, unused Field's Label</param>
         /// <returns></returns>
         [HttpPost]
-        [Route("updateRequest")]
-        public async Task<ActionResult> SendUpdateRequest(ProfileFieldViewModel[] updatedFields)
+        [Route("requestUpdate")]
+        public async Task<ActionResult> RequestUpdate(ProfileFieldViewModel[] updatedFields)
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
             await _profileService.InformationChangeRequest(authenticatedUserUsername, updatedFields);
@@ -440,7 +440,7 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("getAllStates")]
-        public ActionResult<IEnumerable<StatesViewModel>> GetAllStates()
+        public ActionResult<List<States>> GetAllStates()
         {
             var result = _profileService.GetAllStates();
 
@@ -457,7 +457,7 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("getAllCountries")]
-        public ActionResult<IEnumerable<CountryViewModel>> GetAllCountries()
+        public ActionResult<List<Countries>> GetAllCountries()
         {
             var result = _profileService.GetAllCountries();
 
@@ -493,8 +493,5 @@ namespace Gordon360.Controllers
                 return await ImageUtils.DownloadImageFromURL(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
             }
         }
-
-
-
     }
 }

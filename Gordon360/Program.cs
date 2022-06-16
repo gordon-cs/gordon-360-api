@@ -40,7 +40,6 @@ builder.Services.AddDbContext<CCTContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("StudentTimesheets"))
 );
 
-// Dependency Injections
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 
