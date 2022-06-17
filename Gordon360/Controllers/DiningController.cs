@@ -1,7 +1,7 @@
-﻿using Gordon360.Models.CCT.Context;
+﻿using Gordon360.Authorization;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Services;
 using Gordon360.Static.Methods;
-using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;

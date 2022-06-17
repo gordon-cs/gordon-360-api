@@ -1,9 +1,8 @@
-using Gordon360.AuthorizationFilters;
+using Gordon360.Authorization;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
-using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -170,7 +169,7 @@ namespace Gordon360.Controllers
             var viewerGroups = AuthUtils.GetGroups(User);
 
             // Only students and FacStaff can search students
-            if (accountTypes.Contains("student") && !(viewerGroups.Contains(AuthGroup.Student.Name) || viewerGroups.Contains(AuthGroup.FacStaff.Name)))
+            if (accountTypes.Contains("student") && !(viewerGroups.Contains(AuthGroup.Student) || viewerGroups.Contains(AuthGroup.FacStaff)))
             {
                 accountTypes.Remove("student");
             }

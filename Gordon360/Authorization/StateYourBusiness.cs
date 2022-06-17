@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Gordon360.AuthorizationFilters
+namespace Gordon360.Authorization
 {
     /* Authorization Filter.
      * It is actually an action filter masquerading as an authorization filter. This is because I need access to the 
@@ -42,7 +42,7 @@ namespace Gordon360.AuthorizationFilters
         private MyGordonContext _MyGordonContext;
 
         // User position at the college and their id.
-        private IEnumerable<string> user_groups { get; set; }
+        private IEnumerable<AuthGroup> user_groups { get; set; }
         private string user_id { get; set; }
         private string user_name { get; set; }
 
@@ -59,7 +59,7 @@ namespace Gordon360.AuthorizationFilters
             user_groups = AuthUtils.GetGroups(authenticatedUser);
             user_id = new AccountService(_CCTContext).GetAccountByUsername(user_name).GordonID;
 
-            if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
+            if (user_groups.Contains(AuthGroup.SiteAdmin))
             {
                 await next();
                 return;
@@ -97,7 +97,7 @@ namespace Gordon360.AuthorizationFilters
         private async Task<bool> CanDenyAllowAsync(string resource)
         {
             // User is admin
-            if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
+            if (user_groups.Contains(AuthGroup.SiteAdmin))
                 return true;
 
             switch (resource)
@@ -129,7 +129,7 @@ namespace Gordon360.AuthorizationFilters
         private async Task<bool> CanReadOneAsync(string resource)
         {
             // User is admin
-            if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
+            if (user_groups.Contains(AuthGroup.SiteAdmin))
                 return true;
 
             switch (resource)
@@ -137,7 +137,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.PROFILE:
                     return true;
                 case Resource.EMERGENCY_CONTACT:
-                    if (user_groups.Contains(AuthGroup.Police.Name))
+                    if (user_groups.Contains(AuthGroup.Police))
                         return true;
                     else
                     {
@@ -186,8 +186,8 @@ namespace Gordon360.AuthorizationFilters
                             return true;
 
                         // faculty and police can access student account information
-                        if (user_groups.Contains(AuthGroup.FacStaff.Name)
-                            || user_groups.Contains(AuthGroup.Police.Name))
+                        if (user_groups.Contains(AuthGroup.FacStaff)
+                            || user_groups.Contains(AuthGroup.Police))
                             return true;
 
                         return false;
@@ -215,7 +215,7 @@ namespace Gordon360.AuthorizationFilters
         private async Task<bool> CanReadPartialAsync(string resource)
         {
             // User is admin
-            if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
+            if (user_groups.Contains(AuthGroup.SiteAdmin))
                 return true;
 
             switch (resource)
@@ -315,45 +315,45 @@ namespace Gordon360.AuthorizationFilters
             {
                 case Resource.MEMBERSHIP:
                     // User is admin
-                    if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
+                    if (user_groups.Contains(AuthGroup.SiteAdmin))
                         return true;
                     else
                         return false;
                 case Resource.ChapelEvent:
                     // User is admin
-                    if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
+                    if (user_groups.Contains(AuthGroup.SiteAdmin))
                         return true;
                     else
                         return false;
                 case Resource.EVENTS_BY_STUDENT_ID:
                     // User is admin
-                    if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
+                    if (user_groups.Contains(AuthGroup.SiteAdmin))
                         return true;
                     else
                         return false;
 
                 case Resource.MEMBERSHIP_REQUEST:
                     // User is admin
-                    if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
+                    if (user_groups.Contains(AuthGroup.SiteAdmin))
                         return true;
                     else
                         return false;
                 case Resource.STUDENT:
                     // User is admin
-                    if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
+                    if (user_groups.Contains(AuthGroup.SiteAdmin))
                         return true;
                     else
                         return false; // See reasons for this in CanReadOne(). No one (except for super admin) should be able to access student records through
                                       // our API.
                 case Resource.ADVISOR:
                     // User is admin
-                    if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
+                    if (user_groups.Contains(AuthGroup.SiteAdmin))
                         return true;
                     else
                         return false;
                 case Resource.GROUP_ADMIN:
                     // User is site-wide admin
-                    if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
+                    if (user_groups.Contains(AuthGroup.SiteAdmin))
                         return true;
                     else
                         return false;
@@ -365,7 +365,7 @@ namespace Gordon360.AuthorizationFilters
                     {
                         // Only the housing admin and super admin can read all of the received applications.
                         // Super admin has unrestricted access by default, so no need to check.
-                        if (user_groups.Contains(AuthGroup.HousingAdmin.Name))
+                        if (user_groups.Contains(AuthGroup.HousingAdmin))
                         {
                             return true;
                         }
@@ -395,7 +395,7 @@ namespace Gordon360.AuthorizationFilters
             {
                 case Resource.SHIFT:
                     {
-                        if (user_groups.Contains(AuthGroup.Student.Name))
+                        if (user_groups.Contains(AuthGroup.Student))
                             return true;
                         return false;
                     }
@@ -403,7 +403,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.MEMBERSHIP:
                     {
                         // User is admin
-                        if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
+                        if (user_groups.Contains(AuthGroup.SiteAdmin))
                             return true;
                         var membershipToConsider = (MEMBERSHIP)context.ActionArguments["membership"];
                         // A membership can always be added if it is of type "GUEST"
@@ -423,7 +423,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.MEMBERSHIP_REQUEST:
                     {
                         // User is admin
-                        if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
+                        if (user_groups.Contains(AuthGroup.SiteAdmin))
                             return true;
                         var membershipRequestToConsider = (REQUEST)context.ActionArguments["membershipRequest"];
                         // A membership request belonging to the currently logged in student
@@ -437,7 +437,7 @@ namespace Gordon360.AuthorizationFilters
                     return false; // No one should be able to add students through this API
                 case Resource.ADVISOR:
                     // User is admin
-                    if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
+                    if (user_groups.Contains(AuthGroup.SiteAdmin))
                         return true;
                     else
                         return false; // Only super admin can add Advisors through this API
@@ -447,7 +447,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.HOUSING:
                     {
                         // The user must be a student and not a member of an existing application
-                        if (user_groups.Contains(AuthGroup.Student.Name))
+                        if (user_groups.Contains(AuthGroup.Student))
                         {
                             var sess_cde = Helpers.GetCurrentSession(_CCTContext);
                             var housingService = new HousingService(_CCTContext);
@@ -475,14 +475,14 @@ namespace Gordon360.AuthorizationFilters
             {
                 case Resource.SHIFT:
                     {
-                        if (user_groups.Contains(AuthGroup.Student.Name))
+                        if (user_groups.Contains(AuthGroup.Student))
                             return true;
                         return false;
                     }
                 case Resource.MEMBERSHIP:
                     {
                         // User is admin
-                        if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
+                        if (user_groups.Contains(AuthGroup.SiteAdmin))
                             return true;
                         var membershipToConsider = (MEMBERSHIP)context.ActionArguments["membership"];
                         var activityCode = membershipToConsider.ACT_CDE;
@@ -523,7 +523,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.MEMBERSHIP_PRIVACY:
                     {
                         // User is admin
-                        if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
+                        if (user_groups.Contains(AuthGroup.SiteAdmin))
                             return true;
                         var membershipService = new MembershipService(_CCTContext);
                         var membershipID = (int)context.ActionArguments["id"];
@@ -548,11 +548,11 @@ namespace Gordon360.AuthorizationFilters
                         // The housing admins can update the application information (i.e. probation, offcampus program, etc.)
                         // If the user is a student, then the user must be on an application and be an editor to update the application
                         HousingService housingService = new HousingService(_CCTContext);
-                        if (user_groups.Contains(AuthGroup.HousingAdmin.Name))
+                        if (user_groups.Contains(AuthGroup.HousingAdmin))
                         {
                             return true;
                         }
-                        else if (user_groups.Contains(AuthGroup.Student.Name))
+                        else if (user_groups.Contains(AuthGroup.Student))
                         {
                             var sess_cde = Helpers.GetCurrentSession(_CCTContext);
                             int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
@@ -571,7 +571,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.ADVISOR:
                     {
                         // User is admin
-                        if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
+                        if (user_groups.Contains(AuthGroup.SiteAdmin))
                             return true;
 
                         var membershipService = new MembershipService(_CCTContext);
@@ -587,7 +587,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.PROFILE:
                     {
                         // User is admin
-                        if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
+                        if (user_groups.Contains(AuthGroup.SiteAdmin))
                             return true;
 
                         var username = (string)context.ActionArguments["username"];
@@ -598,7 +598,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.ACTIVITY_INFO:
                     {
                         // User is admin
-                        if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
+                        if (user_groups.Contains(AuthGroup.SiteAdmin))
                             return true;
                         var activityCode = (string)context.ActionArguments["id"];
                         var membershipService = new MembershipService(_CCTContext);
@@ -613,7 +613,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.ACTIVITY_STATUS:
                     {
                         // User is admin
-                        if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
+                        if (user_groups.Contains(AuthGroup.SiteAdmin))
                             return true;
                         var activityCode = (string)context.ActionArguments["id"];
                         var sessionCode = (string)context.ActionArguments["sess_cde"];
@@ -650,7 +650,7 @@ namespace Gordon360.AuthorizationFilters
                     if (approved == null || approved == true)
                         return false;
                     // can update if user is admin
-                    if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
+                    if (user_groups.Contains(AuthGroup.SiteAdmin))
                         return true;
                     // can update if user is news item author
                     string newsAuthor = newsItem.ADUN;
@@ -665,13 +665,13 @@ namespace Gordon360.AuthorizationFilters
             switch (resource)
             {
                 case Resource.SHIFT:
-                    if (user_groups.Contains(AuthGroup.Student.Name))
+                    if (user_groups.Contains(AuthGroup.Student))
                         return true;
                     return false;
                 case Resource.MEMBERSHIP:
                     {
                         // User is admin
-                        if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
+                        if (user_groups.Contains(AuthGroup.SiteAdmin))
                             return true;
                         var membershipService = new MembershipService(_CCTContext);
                         var membershipID = (int)context.ActionArguments["id"];
@@ -691,7 +691,7 @@ namespace Gordon360.AuthorizationFilters
                 case Resource.MEMBERSHIP_REQUEST:
                     {
                         // User is admin
-                        if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
+                        if (user_groups.Contains(AuthGroup.SiteAdmin))
                             return true;
                         // membershipRequest = mr
                         var mrService = new MembershipRequestService(_CCTContext);
@@ -718,11 +718,11 @@ namespace Gordon360.AuthorizationFilters
                         // The housing admins can update the application information (i.e. probation, offcampus program, etc.)
                         // If the user is a student, then the user must be on an application and be an editor to update the application
                         HousingService housingService = new HousingService(_CCTContext);
-                        if (user_groups.Contains(AuthGroup.HousingAdmin.Name))
+                        if (user_groups.Contains(AuthGroup.HousingAdmin))
                         {
                             return true;
                         }
-                        else if (user_groups.Contains(AuthGroup.Student.Name))
+                        else if (user_groups.Contains(AuthGroup.Student))
                         {
                             var sess_cde = Helpers.GetCurrentSession(_CCTContext);
                             int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
@@ -760,7 +760,7 @@ namespace Gordon360.AuthorizationFilters
                             return false;
                         }
                         // user is admin
-                        if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
+                        if (user_groups.Contains(AuthGroup.SiteAdmin))
                             return true;
                         // user is news item author
                         string newsAuthor = newsItem.ADUN;
@@ -770,7 +770,7 @@ namespace Gordon360.AuthorizationFilters
                     }
                 case Resource.SLIDER:
                     {
-                        if (user_groups.Contains(AuthGroup.SiteAdmin.Name))
+                        if (user_groups.Contains(AuthGroup.SiteAdmin))
                             return true;
                         return false;
                     }

@@ -1,8 +1,7 @@
-﻿using Gordon360.Models.CCT.Context;
+﻿using Gordon360.Authorization;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
-using Gordon360.Static.Names;
-using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
@@ -37,7 +36,7 @@ namespace Gordon360.Controllers
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
             var groups = AuthUtils.GetGroups(User);
 
-            if (groups.Contains(AuthGroup.Student.Name))
+            if (groups.Contains(AuthGroup.Student))
             {
                 var result = _scheduleService.GetScheduleStudentAsync(authenticatedUserUsername);
                 if (result == null)
@@ -47,7 +46,7 @@ namespace Gordon360.Controllers
                 return Ok(result);
             }
 
-            else if (groups.Contains(AuthGroup.FacStaff.Name))
+            else if (groups.Contains(AuthGroup.FacStaff))
             {
                 var result = _scheduleService.GetScheduleFacultyAsync(authenticatedUserUsername);
                 if (result == null)
@@ -78,25 +77,25 @@ namespace Gordon360.Controllers
             var scheduleControl = _context.Schedule_Control.Find(id);
 
             IEnumerable<ScheduleViewModel>? scheduleResult = null;
-            if (groups.Contains(AuthGroup.Student.Name))
+            if (groups.Contains(AuthGroup.Student))
             {
                 int schedulePrivacy = scheduleControl?.IsSchedulePrivate ?? 1;
 
-                if (viewerGroups.Contains(AuthGroup.Police.Name) || viewerGroups.Contains(AuthGroup.SiteAdmin.Name))
+                if (viewerGroups.Contains(AuthGroup.Police) || viewerGroups.Contains(AuthGroup.SiteAdmin))
                 {
                     scheduleResult = await _scheduleService.GetScheduleStudentAsync(id);
                 }
-                else if (viewerGroups.Contains(AuthGroup.Student.Name) && schedulePrivacy == 0)
+                else if (viewerGroups.Contains(AuthGroup.Student) && schedulePrivacy == 0)
                 {
 
                     scheduleResult = await _scheduleService.GetScheduleStudentAsync(id);
                 }
-                else if (viewerGroups.Contains(AuthGroup.Advisors.Name))
+                else if (viewerGroups.Contains(AuthGroup.Advisors))
                 {
                     scheduleResult = await _scheduleService.GetScheduleStudentAsync(id);
                 }
             }
-            else if (groups.Contains(AuthGroup.FacStaff.Name))
+            else if (groups.Contains(AuthGroup.FacStaff))
             {
                 scheduleResult = await _scheduleService.GetScheduleFacultyAsync(id);
             }
@@ -124,7 +123,7 @@ namespace Gordon360.Controllers
         public async Task<ActionResult<bool>> GetCanReadStudentSchedules()
         {
             var groups = AuthUtils.GetGroups(User);
-            return groups.Contains(AuthGroup.Advisors.Name);
+            return groups.Contains(AuthGroup.Advisors);
         }
     }
 }
