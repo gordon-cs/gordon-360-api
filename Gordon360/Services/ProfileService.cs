@@ -368,13 +368,14 @@ namespace Gordon360.Services
 
             return profile.ToObject<ProfileViewModel>();
         }
+
+
         public async Task InformationChangeRequest(string username, ProfileFieldViewModel[] updatedFields)
         {
             var account = _accountService.GetAccountByUsername(username);
-            SqlParameter result = new SqlParameter("@result", System.Data.SqlDbType.Int) { Direction = System.Data.ParameterDirection.Output };
-            await _context.Database.ExecuteSqlRawAsync($"SELECT @result = (NEXT VALUE FOR [Information_Change_Request_Seq])", result);
-            var requestNumber = (int)result.Value;
+            var requestNumber = await _context.GetNextValueForSequence(CCTSequenceEnum.Sequence.InformationChangeRequest);
             string messageBody = "";
+            
   
             foreach (var element in updatedFields)
             {
