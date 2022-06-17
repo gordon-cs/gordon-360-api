@@ -1,11 +1,11 @@
 ﻿using Gordon360.Models.CCT.Context;
 using Gordon360.Models.CCT;
 using Gordon360.Services;
-using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using Gordon360.Authorization;
 
 namespace Gordon360.Controllers
 {

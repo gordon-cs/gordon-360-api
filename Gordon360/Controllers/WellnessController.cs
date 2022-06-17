@@ -2,8 +2,8 @@
 using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
-using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
+using Gordon360.Authorization;
 
 namespace Gordon360.Controllers
 {

@@ -1,6 +1,6 @@
-﻿using Gordon360.AuthorizationFilters;
-using Gordon360.Models.CCT.Context;
+﻿using Gordon360.Authorization;
 using Gordon360.Models.CCT;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
@@ -72,19 +72,19 @@ namespace Gordon360.Controllers
             object? faculty = null;
             object? alumni = null;
 
-            if (viewerGroups.Contains(AuthGroup.SiteAdmin.Name) || viewerGroups.Contains(AuthGroup.Police.Name))
+            if (viewerGroups.Contains(AuthGroup.SiteAdmin) || viewerGroups.Contains(AuthGroup.Police))
             {
                 student = _student;
                 faculty = _faculty;
                 alumni = _alumni;
             }
-            else if (viewerGroups.Contains(AuthGroup.FacStaff.Name))
+            else if (viewerGroups.Contains(AuthGroup.FacStaff))
             {
                 student = _student;
                 faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
                 alumni = _alumni == null ? null : (PublicAlumniProfileViewModel)_alumni;
             }
-            else if (viewerGroups.Contains(AuthGroup.Student.Name))
+            else if (viewerGroups.Contains(AuthGroup.Student))
             {
                 student = _student == null ? null : (PublicStudentProfileViewModel)_student;
                 faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
@@ -233,7 +233,7 @@ namespace Gordon360.Controllers
             var defaultImagePath = _config["DEFAULT_IMAGE_PATH"] + photoInfo.Img_Name;
 
             var viewerGroups = AuthUtils.GetGroups(User);
-            if (viewerGroups.Contains(AuthGroup.FacStaff.Name))
+            if (viewerGroups.Contains(AuthGroup.FacStaff))
             {
                 if (preferredImagePath is not null && System.IO.File.Exists(preferredImagePath))
                 {
@@ -244,7 +244,7 @@ namespace Gordon360.Controllers
 
             }
             else
-            if (viewerGroups.Contains(AuthGroup.Student.Name))
+            if (viewerGroups.Contains(AuthGroup.Student))
             {
                 if (_accountService.GetAccountByUsername(username).show_pic == 1)
                 {

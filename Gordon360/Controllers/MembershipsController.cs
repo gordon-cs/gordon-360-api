@@ -1,10 +1,9 @@
-﻿using Gordon360.AuthorizationFilters;
-using Gordon360.Models.CCT.Context;
+﻿using Gordon360.Authorization;
 using Gordon360.Models.CCT;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
-using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -222,7 +221,7 @@ namespace Gordon360.Controllers
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
             var viewerGroups = AuthUtils.GetGroups(User);
 
-            if (viewerGroups.Contains(AuthGroup.SiteAdmin.Name) || viewerGroups.Contains(AuthGroup.Police.Name))              //super admin and gordon police reads all
+            if (viewerGroups.Contains(AuthGroup.SiteAdmin) || viewerGroups.Contains(AuthGroup.Police))              //super admin and gordon police reads all
                 return Ok(result);
             else
             {

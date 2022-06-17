@@ -4,6 +4,13 @@
         <name>Gordon360</name>
     </assembly>
     <members>
+        <member name="M:Gordon360.Authorization.AuthUtils.GetUsername(System.Security.Claims.ClaimsPrincipal)">
+            <summary>
+            Get the username of the authenticated user
+            </summary>
+            <param name="User">The ClaimsPrincipal representing the user's authentication claims</param>
+            <returns>Username of the authenticated user</returns>
+        </member>
         <member name="M:Gordon360.Controllers.Api.AcademicCheckInController.PutEmergencyContactAsync(Gordon360.Models.ViewModels.EmergencyContactViewModel)">
             <summary>Set emergency contacts for student</summary>
             <param name="data"> The contact data to be stored </param>
@@ -2068,13 +2075,6 @@
             Helper method that gets the current session we are in.
             </summary>
             <returns>The session code of the current session</returns>
-        </member>
-        <member name="M:Gordon360.Utilities.AuthUtils.GetUsername(System.Security.Claims.ClaimsPrincipal)">
-            <summary>
-            Get the username of the authenticated user
-            </summary>
-            <param name="User">The ClaimsPrincipal representing the user's authentication claims</param>
-            <returns>Username of the authenticated user</returns>
         </member>
         <member name="M:Gordon360.Utilities.ImageUtils.DeleteImage(System.String)">
             <summary>

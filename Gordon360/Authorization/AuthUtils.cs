@@ -1,11 +1,9 @@
-﻿using Gordon360.Static.Names;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Security.Claims;
 
-namespace Gordon360.Utilities
+namespace Gordon360.Authorization
 {
     public class AuthUtils
     {
@@ -21,29 +19,33 @@ namespace Gordon360.Utilities
             return User.FindFirstValue(ClaimTypes.Upn).Split("@")[0];
         }
 
-        public static IEnumerable<string> GetGroups(ClaimsPrincipal User)
+        public static IEnumerable<AuthGroup> GetGroups(ClaimsPrincipal User)
         {
-            return User.Claims.Where(x => x.Type == "groups").Select(g => g.Value);
+            return User.Claims
+                .Where(x => x.Type == "groups")
+                .Select(g => AuthGroupEnum.FromString(g.Value))
+                .OfType<AuthGroup>();
         }
 
         public static bool UserIsInGroup(ClaimsPrincipal User, AuthGroup group)
         {
-            return GetGroups(User).Contains(group.Name);
+            return GetGroups(User).Contains(group);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Program only runs on Windows")]
-        public static IEnumerable<string> GetGroups(string userName)
+        public static IEnumerable<AuthGroup> GetGroups(string userName)
         {
             UserPrincipal user = UserPrincipal.FindByIdentity(Context, userName);
 
             if (user == null)
             {
-                return Enumerable.Empty<string>();
+                return Enumerable.Empty<AuthGroup>();
             }
 
             return user.GetAuthorizationGroups()
-                .Where(g => g is GroupPrincipal)
-                .Select(g => g.SamAccountName);
+                               .Where(g => g is GroupPrincipal)
+                               .Select(g => AuthGroupEnum.FromString(g.SamAccountName))
+                               .OfType<AuthGroup>();
         }
     }
 }
