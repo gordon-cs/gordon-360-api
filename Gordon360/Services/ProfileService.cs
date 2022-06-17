@@ -373,8 +373,9 @@ namespace Gordon360.Services
         public async Task InformationChangeRequest(string username, ProfileFieldViewModel[] updatedFields)
         {
             var account = _accountService.GetAccountByUsername(username);
+            string gordonID = account.GordonID;
             var requestNumber = await _context.GetNextValueForSequence(Sequence.InformationChangeRequest);
-            string messageBody = $"UserID: {account.GordonID} has requested the following updates: \n";
+            string messageBody = $"UserID: {gordonID} has requested the following updates: \n";
             
             foreach (var element in updatedFields)
             {
@@ -388,21 +389,19 @@ namespace Gordon360.Services
                 _context.Information_Change_Request.Add(itemToSubmit);
                 messageBody += $"{element.label} : {element.value} \n\n";
             }
+
             _context.SaveChanges();
 
             using (var smtp = new SmtpClient())
             {
-                string gordonID = account.GordonID;
                 string bcc_email = account.Email ?? "";
                 string to_email = _config["Emails:Reciever:Username"];
-         
                 // WARNING WARNING WARNING 
-                // COMMENTING LINE BELOW WILL SEND EMAIL TO DevRequests
+                // REMOVING LINE BELOW WILL SEND EMAIL TO DevRequests
                 to_email = bcc_email;
-
+                //
                 string from_email = _config["Emails:Default:Username"];
-                string subject = String.Format("Alumni Information Update Request for ID: {0}", gordonID);
-
+                string subject = $"Alumni Information Update Request for ID: {gordonID}";
                 /*
                  * CREDENTIALS TO BE REMOVED IN PRODUCTION (ONLY USED IN TRAIN/LOCAL)
                  * HOST TO BE CHANGED TO "smtp.gordon.edu" IN PRODUCTION
