@@ -240,7 +240,7 @@ namespace Gordon360.Controllers
                     result.Add("pref", await GetProfileImageOrDefault(preferredImagePath));
                 }
                 result.Add("def", await GetProfileImageOrDefault(defaultImagePath));
-                return base.Ok(result);
+                return Ok(result);
 
             }
             else
@@ -261,11 +261,11 @@ namespace Gordon360.Controllers
                 {
                     result.Add("def", await ImageUtils.DownloadImageFromURL(_config["DEFAULT_PROFILE_IMAGE_PATH"]));
                 }
-                return base.Ok(result);
+                return Ok(result);
             }
             else
             {
-                return base.Ok();
+                return Ok();
             }
         }
 

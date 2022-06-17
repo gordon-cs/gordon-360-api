@@ -222,7 +222,7 @@ namespace Gordon360.Controllers
             var viewerGroups = AuthUtils.GetGroups(User);
 
             if (viewerGroups.Contains(AuthGroup.SiteAdmin) || viewerGroups.Contains(AuthGroup.Police))              //super admin and gordon police reads all
-                return base.Ok(result);
+                return Ok(result);
             else
             {
                 List<MembershipViewModel> list = new List<MembershipViewModel>();
@@ -242,7 +242,7 @@ namespace Gordon360.Controllers
                         }
                     }
                 }
-                return base.Ok(list);
+                return Ok(list);
             }
         }
 
