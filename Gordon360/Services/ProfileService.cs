@@ -374,7 +374,7 @@ namespace Gordon360.Services
         {
             var account = _accountService.GetAccountByUsername(username);
             var requestNumber = await _context.GetNextValueForSequence(Sequence.InformationChangeRequest);
-            string messageBody = "";
+            string messageBody = $"UserID: {account.GordonID} has requested the following updates: \n";
             
             foreach (var element in updatedFields)
             {
@@ -386,7 +386,7 @@ namespace Gordon360.Services
                     FieldValue = element.value
                 };
                 _context.Information_Change_Request.Add(itemToSubmit);
-                messageBody += $"{element.label} : {element.value} \n";
+                messageBody += $"{element.label} : {element.value} \n\n";
             }
             _context.SaveChanges();
 
