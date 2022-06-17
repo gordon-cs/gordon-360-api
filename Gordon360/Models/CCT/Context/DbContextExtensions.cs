@@ -36,10 +36,8 @@ namespace Gordon360.Models.CCT.Context
         public static async Task<int> GetNextValueForSequence(this DbContext _context, Sequence sequence)
         {
             SqlParameter result = new SqlParameter("@result", System.Data.SqlDbType.Int) { Direction = System.Data.ParameterDirection.Output };
-
             await _context.Database.ExecuteSqlRawAsync($"SELECT @result = (NEXT VALUE FOR [{CCTSequenceEnum.GetDescription(sequence)}])", result);
-            var requestNumber = (int)result.Value;
-            return requestNumber;
+            return (int)result.Value;
         }
     }
 

@@ -25,7 +25,5 @@ namespace Gordon360.Models.CCT.Context
             Sequence.InformationChangeRequest => "Information_Change_Request_Seq",
             _ => null
         };
-
-
     }
 }

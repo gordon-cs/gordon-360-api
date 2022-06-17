@@ -376,7 +376,6 @@ namespace Gordon360.Services
             var requestNumber = await _context.GetNextValueForSequence(Sequence.InformationChangeRequest);
             string messageBody = "";
             
-  
             foreach (var element in updatedFields)
             {
                 var itemToSubmit = new Information_Change_Request
