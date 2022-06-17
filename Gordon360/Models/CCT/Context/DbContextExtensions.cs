@@ -33,11 +33,11 @@ namespace Gordon360.Models.CCT.Context
             }
         }
 
-        public static async Task<int> GetNextValueForSequence(this DbContext _context, CCTSequenceEnum.Sequence sequence)
+        public static async Task<int> GetNextValueForSequence(this DbContext _context, Sequence sequence)
         {
             SqlParameter result = new SqlParameter("@result", System.Data.SqlDbType.Int) { Direction = System.Data.ParameterDirection.Output };
-            var sequenceIdentifier = (DescriptionAttribute[])sequence.GetType().GetField(sequence.ToString()).GetCustomAttributes(typeof(DescriptionAttribute), false);
-            await _context.Database.ExecuteSqlRawAsync($"SELECT @result = (NEXT VALUE FOR [{sequenceIdentifier[0].Description}])", result);
+
+            await _context.Database.ExecuteSqlRawAsync($"SELECT @result = (NEXT VALUE FOR [{CCTSequenceEnum.GetDescription(sequence)}])", result);
             var requestNumber = (int)result.Value;
             return requestNumber;
         }

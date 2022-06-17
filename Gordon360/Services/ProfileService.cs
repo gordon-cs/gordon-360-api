@@ -373,7 +373,7 @@ namespace Gordon360.Services
         public async Task InformationChangeRequest(string username, ProfileFieldViewModel[] updatedFields)
         {
             var account = _accountService.GetAccountByUsername(username);
-            var requestNumber = await _context.GetNextValueForSequence(CCTSequenceEnum.Sequence.InformationChangeRequest);
+            var requestNumber = await _context.GetNextValueForSequence(Sequence.InformationChangeRequest);
             string messageBody = "";
             
   

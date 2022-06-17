@@ -11,11 +11,21 @@ using System.Threading.Tasks;
 
 namespace Gordon360.Models.CCT.Context
 {
-    public class CCTSequenceEnum
+
+    public enum Sequence
     {
-        public enum Sequence
+        InformationChangeRequest,
+    }
+
+
+    public static class CCTSequenceEnum
+    {
+        public static string GetDescription(Sequence sequence) => sequence switch
         {
-            [Description("Information_Change_Request_Seq")] InformationChangeRequest,
-        }
+            Sequence.InformationChangeRequest => "Information_Change_Request_Seq",
+            _ => null
+        };
+
+
     }
 }
