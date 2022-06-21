@@ -4,8 +4,8 @@ namespace Gordon360.Models.ViewModels
 {
     public class ProfileFieldViewModel
     {
-        public string field { get; set; }
-        public string value { get; set; }
-        public string label { get; set; }
+        public string Field { get; set; }
+        public string Value { get; set; }
+        public string Label { get; set; }
     }
 }

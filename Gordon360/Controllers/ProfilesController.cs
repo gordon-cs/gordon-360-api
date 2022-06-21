@@ -434,39 +434,7 @@ namespace Gordon360.Controllers
             return Ok();
         }
 
-        /// <summary>
-        /// Pulls all states available from Jenzabar States Table
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("states")]
-        public ActionResult<List<States>> GetAllStates()
-        {
-            var result = _profileService.GetAllStates();
 
-            if (result == null)
-            {
-                return NotFound();
-            }
-            return Ok(result);
-        }
-
-        /// <summary>
-        /// Pulls all Countries available from Jenzabar Countries Table
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("countries")]
-        public ActionResult<List<Countries>> GetAllCountries()
-        {
-            var result = _profileService.GetAllCountries();
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-            return Ok(result);
-        }
 
         /// <summary>
         /// Gets the profile image at the given path or, if that file does not exist, the 360 default profile image

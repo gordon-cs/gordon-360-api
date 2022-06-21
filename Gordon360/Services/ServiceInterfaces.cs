@@ -32,10 +32,12 @@ namespace Gordon360.Services
         Task UpdateProfileImageAsync(string username, string path, string name);
         ProfileViewModel? ComposeProfile(object? student, object? alumni, object? faculty, object? customInfo);
         Task InformationChangeRequest(string username, ProfileFieldViewModel[] updatedField);
-        //TEMPORARILY BEING PUT IN PROFILE GROUP, WILL NEED NEW INTERFACE
+    }
+
+    public interface IAddressesService
+    {
         List<States> GetAllStates();
         List<Countries> GetAllCountries();
-
     }
 
     public interface IEventService

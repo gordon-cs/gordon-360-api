@@ -189,6 +189,18 @@
             <param name = "p">the boolean value</param>
             <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         </member>
+        <member name="M:Gordon360.Controllers.AddressesController.GetAllStates">
+            <summary>
+            Pulls all states available from Jenzabar States Table
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.AddressesController.GetAllCountries">
+            <summary>
+            Pulls all Countries available from Jenzabar Countries Table
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.AdminsController.GetAll">
             <summary>
             Get all admins
@@ -723,18 +735,6 @@
             Sends Alumni Profile Update Email to "devrequest@gordon.edu"
             </summary>
             <param name="updatedFields">Object with Field's Name and Field's Value, unused Field's Label</param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.GetAllStates">
-            <summary>
-            Pulls all states available from Jenzabar States Table
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.GetAllCountries">
-            <summary>
-            Pulls all Countries available from Jenzabar Countries Table
-            </summary>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.GetProfileImageOrDefault(System.String)">

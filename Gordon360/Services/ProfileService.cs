@@ -26,8 +26,6 @@ namespace Gordon360.Services
             _context = context;
             _config = config;
             _accountService = accountService;
-
-            
         }
 
         /// <summary>
@@ -376,55 +374,50 @@ namespace Gordon360.Services
             string gordonID = account.GordonID;
             var requestNumber = await _context.GetNextValueForSequence(Sequence.InformationChangeRequest);
             string messageBody = $"UserID: {gordonID} has requested the following updates: \n";
-            
+            string bcc_email = account.Email ?? "";
+            string to_email = _config["Emails:AlumniProfileUpdateRequestApprover:Username"];
+            // REMOVING LINE BELOW WILL SEND EMAIL TO DevRequests
+            to_email = bcc_email;
+            string from_email = _config["Emails:AlumniProfileUpdateRequestSender:Username"];
+            string subject = $"Alumni Information Update Request for ID: {gordonID}";
+
             foreach (var element in updatedFields)
             {
                 var itemToSubmit = new Information_Change_Request
                 {
                     RequestNumber = requestNumber,
                     ID_Num = account.GordonID,
-                    FieldName = element.field,
-                    FieldValue = element.value
+                    FieldName = element.Field,
+                    FieldValue = element.Value
                 };
                 _context.Information_Change_Request.Add(itemToSubmit);
-                messageBody += $"{element.label} : {element.value} \n\n";
+                messageBody += $"{element.Label} : {element.Value} \n\n";
             }
 
             _context.SaveChanges();
 
-            using (var smtp = new SmtpClient())
+            var requestEmail = new SmtpClient()
             {
-                string bcc_email = account.Email ?? "";
-                string to_email = _config["Emails:Reciever:Username"];
-                // WARNING WARNING WARNING 
-                // REMOVING LINE BELOW WILL SEND EMAIL TO DevRequests
-                to_email = bcc_email;
-                //
-                string from_email = _config["Emails:Default:Username"];
-                string subject = $"Alumni Information Update Request for ID: {gordonID}";
-                /*
-                 * CREDENTIALS TO BE REMOVED IN PRODUCTION (ONLY USED IN TRAIN/LOCAL)
-                 * HOST TO BE CHANGED TO "smtp.gordon.edu" IN PRODUCTION
-                 */
-                var credential = new NetworkCredential
+                Credentials = new NetworkCredential
                 {
                     UserName = from_email,
-                    Password = _config["Emails:Default:Password"]
-                };
-                smtp.Credentials = credential;
-                smtp.Host = "smtp.office365.com";
-                //smtp.Host = "smtp.gordon.edu";
-                smtp.Port = 587;
-                smtp.EnableSsl = true;
-                var message = new MailMessage();
-                message.From = new MailAddress(from_email);
-                message.Bcc.Add(new MailAddress(bcc_email));
-                message.To.Add(new MailAddress(to_email));
-                message.Subject = subject;
-                message.Body = messageBody;
-                smtp.Send(message);
-            }
+                    Password = _config["Emails:AlumniProfileUpdateRequestSender:Password"]
+                },
+                Host = _config["Smtp:Default"],
+                EnableSsl = true,
+                Port = 587,
+            };
+
+            var message = new MailMessage(from_email, to_email)
+            {
+                Subject = subject,
+                Body = messageBody,
+            };
+            message.Bcc.Add(new MailAddress(bcc_email));
+
+            requestEmail.Send(message);
         }
+        
 
         private static JObject MergeProfile(JObject profile, JObject profileInfo)
         {
