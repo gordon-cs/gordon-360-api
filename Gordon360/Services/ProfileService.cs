@@ -395,27 +395,28 @@ namespace Gordon360.Services
             }
 
             _context.SaveChanges();
-
-            var requestEmail = new SmtpClient()
+            using (var requestEmail = new SmtpClient()
             {
                 Credentials = new NetworkCredential
                 {
                     UserName = from_email,
                     Password = _config["Emails:AlumniProfileUpdateRequestSender:Password"]
                 },
-                Host = _config["Smtp:Default"],
+                Host = _config["SmtpHosts:Default"],
                 EnableSsl = true,
                 Port = 587,
-            };
-
-            var message = new MailMessage(from_email, to_email)
+            })
             {
-                Subject = subject,
-                Body = messageBody,
-            };
-            message.Bcc.Add(new MailAddress(bcc_email));
 
-            requestEmail.Send(message);
+                var message = new MailMessage(from_email, to_email)
+                {
+                    Subject = subject,
+                    Body = messageBody,
+                };
+                message.Bcc.Add(new MailAddress(bcc_email));
+
+                requestEmail.Send(message);
+            }
         }
         
 
