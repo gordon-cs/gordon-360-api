@@ -1,17 +1,15 @@
-﻿using Gordon360.Models.CCT.Context;
-using Gordon360.Exceptions;
+﻿using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
-using Newtonsoft.Json.Linq;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Net.Mail;
 using System.Net;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
+using System.Net.Mail;
+using System.Threading.Tasks;
 
 namespace Gordon360.Services
 {
@@ -22,7 +20,7 @@ namespace Gordon360.Services
         private readonly IConfiguration _config;
 
         public ProfileService(CCTContext context, IConfiguration config, IAccountService accountService)
-        { 
+        {
             _context = context;
             _config = config;
             _accountService = accountService;
@@ -367,20 +365,15 @@ namespace Gordon360.Services
             return profile.ToObject<ProfileViewModel>();
         }
 
-
         public async Task InformationChangeRequest(string username, ProfileFieldViewModel[] updatedFields)
         {
             var account = _accountService.GetAccountByUsername(username);
-            string gordonID = account.GordonID;
-            var requestNumber = await _context.GetNextValueForSequence(Sequence.InformationChangeRequest);
-            string messageBody = $"UserID: {gordonID} has requested the following updates: \n";
-            string bcc_email = account.Email ?? "";
-            string to_email = _config["Emails:AlumniProfileUpdateRequestApprover:Username"];
-            // REMOVING LINE BELOW WILL SEND EMAIL TO DevRequests
-            to_email = bcc_email;
-            string from_email = _config["Emails:AlumniProfileUpdateRequestSender:Username"];
-            string subject = $"Alumni Information Update Request for ID: {gordonID}";
 
+            string from_email = _config["Emails:Sender:Username"];
+            string to_email = _config["Emails:AlumniProfileUpdateRequestApprover"];
+            string messageBody = $"{username} ({account.GordonID}) has requested the following updates: \n";
+
+            var requestNumber = await _context.GetNextValueForSequence(Sequence.InformationChangeRequest);
             foreach (var element in updatedFields)
             {
                 var itemToSubmit = new Information_Change_Request
@@ -393,32 +386,32 @@ namespace Gordon360.Services
                 _context.Information_Change_Request.Add(itemToSubmit);
                 messageBody += $"{element.Label} : {element.Value} \n\n";
             }
-
             _context.SaveChanges();
-            using (var requestEmail = new SmtpClient()
+
+            using var smtpClient = new SmtpClient()
             {
                 Credentials = new NetworkCredential
                 {
                     UserName = from_email,
-                    Password = _config["Emails:AlumniProfileUpdateRequestSender:Password"]
+                    Password = _config["Emails:Sender:Password"]
                 },
-                Host = _config["SmtpHosts:Default"],
+                Host = _config["SmtpHost"],
                 EnableSsl = true,
                 Port = 587,
-            })
+            };
+
+            var message = new MailMessage(from_email, to_email)
             {
-
-                var message = new MailMessage(from_email, to_email)
-                {
-                    Subject = subject,
-                    Body = messageBody,
-                };
-                message.Bcc.Add(new MailAddress(bcc_email));
-
-                requestEmail.Send(message);
+                Subject = $"Information Update Request for {username}",
+                Body = messageBody,
+            };
+            if (account.Email != null)
+            {
+                message.Bcc.Add(new MailAddress(account.Email));
             }
+
+            smtpClient.Send(message);
         }
-        
 
         private static JObject MergeProfile(JObject profile, JObject profileInfo)
         {
@@ -428,19 +421,5 @@ namespace Gordon360.Services
             });
             return profile;
         }
-
-        public List<States> GetAllStates()
-        {
-            
-            return _context.States.ToList();
-        }
-
-        public List<Countries> GetAllCountries()
-        {
-            return _context.Countries.ToList();
-        }
-
-
-
     }
 }
