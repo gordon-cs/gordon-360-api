@@ -1,11 +1,14 @@
-﻿using Gordon360.Models.CCT.Context;
-using Gordon360.Exceptions;
+﻿using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Threading.Tasks;
 
 namespace Gordon360.Services
@@ -14,11 +17,13 @@ namespace Gordon360.Services
     {
         private readonly CCTContext _context;
         private readonly IAccountService _accountService;
+        private readonly IConfiguration _config;
 
-        public ProfileService(CCTContext context)
+        public ProfileService(CCTContext context, IConfiguration config, IAccountService accountService)
         {
             _context = context;
-            _accountService = new AccountService(context);
+            _config = config;
+            _accountService = accountService;
         }
 
         /// <summary>
@@ -358,6 +363,54 @@ namespace Gordon360.Services
             profile.Add("PersonType", personType);
 
             return profile.ToObject<ProfileViewModel>();
+        }
+
+        public async Task InformationChangeRequest(string username, ProfileFieldViewModel[] updatedFields)
+        {
+            var account = _accountService.GetAccountByUsername(username);
+
+            string from_email = _config["Emails:Sender:Username"];
+            string to_email = _config["Emails:AlumniProfileUpdateRequestApprover"];
+            string messageBody = $"{account.FirstName} {account.LastName} ({account.GordonID}) has requested the following updates: \n\n";
+
+            var requestNumber = await _context.GetNextValueForSequence(Sequence.InformationChangeRequest);
+            foreach (var element in updatedFields)
+            {
+                var itemToSubmit = new Information_Change_Request
+                {
+                    RequestNumber = requestNumber,
+                    ID_Num = account.GordonID,
+                    FieldName = element.Field,
+                    FieldValue = element.Value
+                };
+                _context.Information_Change_Request.Add(itemToSubmit);
+                messageBody += $"{element.Label} : {element.Value} \n\n";
+            }
+            _context.SaveChanges();
+
+            using var smtpClient = new SmtpClient()
+            {
+                Credentials = new NetworkCredential
+                {
+                    UserName = from_email,
+                    Password = _config["Emails:Sender:Password"]
+                },
+                Host = _config["SmtpHost"],
+                EnableSsl = true,
+                Port = 587,
+            };
+
+            var message = new MailMessage(from_email, to_email)
+            {
+                Subject = $"Information Update Request for {username}",
+                Body = messageBody,
+            };
+            if (account.Email != null)
+            {
+                message.Bcc.Add(new MailAddress(account.Email));
+            }
+
+            smtpClient.Send(message);
         }
 
         private static JObject MergeProfile(JObject profile, JObject profileInfo)

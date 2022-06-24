@@ -10,6 +10,10 @@ namespace Gordon360.Models.CCT.Context
 {
     public partial class CCTContext : DbContext
     {
+        public CCTContext()
+        {
+        }
+
         public CCTContext(DbContextOptions<CCTContext> options)
             : base(options)
         {
@@ -45,6 +49,7 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<Housing_Applications> Housing_Applications { get; set; }
         public virtual DbSet<Housing_HallChoices> Housing_HallChoices { get; set; }
         public virtual DbSet<Housing_Halls> Housing_Halls { get; set; }
+        public virtual DbSet<Information_Change_Request> Information_Change_Request { get; set; }
         public virtual DbSet<Internships_as_Involvements> Internships_as_Involvements { get; set; }
         public virtual DbSet<JENZ_ACT_CLUB_DEF> JENZ_ACT_CLUB_DEF { get; set; }
         public virtual DbSet<JNZB_ACTIVITIES> JNZB_ACTIVITIES { get; set; }
@@ -63,6 +68,7 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<Save_Rides> Save_Rides { get; set; }
         public virtual DbSet<Schedule_Control> Schedule_Control { get; set; }
         public virtual DbSet<Slider_Images> Slider_Images { get; set; }
+        public virtual DbSet<States> States { get; set; }
         public virtual DbSet<Student> Student { get; set; }
         public virtual DbSet<StudentNewsExpiration> StudentNewsExpiration { get; set; }
         public virtual DbSet<Timesheets_Clock_In_Out> Timesheets_Clock_In_Out { get; set; }
@@ -142,10 +148,6 @@ namespace Gordon360.Models.CCT.Context
             modelBuilder.Entity<Countries>(entity =>
             {
                 entity.ToView("Countries");
-
-                entity.Property(e => e.COUNTRY).IsFixedLength();
-
-                entity.Property(e => e.CTY).IsFixedLength();
             });
 
             modelBuilder.Entity<DiningInfo>(entity =>
@@ -267,6 +269,11 @@ namespace Gordon360.Models.CCT.Context
                     .WithMany()
                     .HasForeignKey(d => d.HousingAppID)
                     .HasConstraintName("FK_HallChoices_HousingAppID");
+            });
+
+            modelBuilder.Entity<Information_Change_Request>(entity =>
+            {
+                entity.Property(e => e.TimeStamp).HasDefaultValueSql("(getdate())");
             });
 
             modelBuilder.Entity<Internships_as_Involvements>(entity =>
@@ -407,6 +414,11 @@ namespace Gordon360.Models.CCT.Context
                 entity.Property(e => e.IsSchedulePrivate).HasDefaultValueSql("((1))");
             });
 
+            modelBuilder.Entity<States>(entity =>
+            {
+                entity.ToView("States");
+            });
+
             modelBuilder.Entity<Student>(entity =>
             {
                 entity.ToView("Student");
@@ -428,6 +440,8 @@ namespace Gordon360.Models.CCT.Context
             {
                 entity.ToView("360_SLIDER");
             });
+
+            modelBuilder.HasSequence("Information_Change_Request_Seq");
 
             OnModelCreatingGeneratedProcedures(modelBuilder);
             OnModelCreatingPartial(modelBuilder);

@@ -70,6 +70,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[Information_Change_Request]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[JNZB_ACTIVITIES]",
          "ObjectType": 0
       },
@@ -227,6 +231,10 @@
       },
       {
          "Name": "[dbo].[RoomAssign]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[States]",
          "ObjectType": 3
       },
       {

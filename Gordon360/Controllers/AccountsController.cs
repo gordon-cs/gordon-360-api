@@ -15,9 +15,9 @@ namespace Gordon360.Controllers
     {
         private readonly IAccountService _accountService;
 
-        public AccountsController(CCTContext context)
+        public AccountsController(IAccountService accountService)
         {
-            _accountService = new AccountService(context);
+            _accountService = accountService;
         }
 
         [HttpGet]

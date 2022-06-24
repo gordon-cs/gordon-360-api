@@ -24,10 +24,10 @@ namespace Gordon360.Controllers
         private readonly IAccountService _accountService;
         private readonly IConfiguration _config;
 
-        public ProfilesController(CCTContext context, IConfiguration config)
+        public ProfilesController(IProfileService profileService, IAccountService accountService, IConfiguration config)
         {
-            _profileService = new ProfileService(context);
-            _accountService = new AccountService(context);
+            _profileService = profileService;
+            _accountService = accountService;
             _config = config;
         }
 
@@ -419,6 +419,22 @@ namespace Gordon360.Controllers
 
             return Ok();
         }
+        /// <summary>
+        /// Posts fields into CCT.dbo.Information_Change_Request 
+        /// Sends Alumni Profile Update Email to "devrequest@gordon.edu"
+        /// </summary>
+        /// <param name="updatedFields">Object with Field's Name and Field's Value, unused Field's Label</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("update")]
+        public async Task<ActionResult> RequestUpdate(ProfileFieldViewModel[] updatedFields)
+        {
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+            await _profileService.InformationChangeRequest(authenticatedUserUsername, updatedFields);
+            return Ok();
+        }
+
+
 
         /// <summary>
         /// Gets the profile image at the given path or, if that file does not exist, the 360 default profile image

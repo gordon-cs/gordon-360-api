@@ -1,6 +1,7 @@
 ﻿using Gordon360.Models.CCT.Context;
 using Gordon360.Models.MyGordon.Context;
 using Gordon360.Models.StudentTimesheets.Context;
+using Gordon360.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +39,10 @@ builder.Services.AddDbContext<CCTContext>(options =>
 ).AddDbContext<StudentTimesheetsContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("StudentTimesheets"))
 );
+
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IProfileService, ProfileService>();
+builder.Services.AddScoped<IAddressesService, AddressesService>();
 
 builder.Services.AddMemoryCache();
 
