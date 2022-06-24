@@ -1,17 +1,8 @@
-﻿using Gordon360.Models.CCT.Context;
-using Gordon360.Exceptions;
-using Gordon360.Models.CCT;
-using Gordon360.Models.ViewModels;
-using Newtonsoft.Json.Linq;
+﻿using Gordon360.Models.CCT;
+using Gordon360.Models.CCT.Context;
 using Microsoft.Extensions.Configuration;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Net.Mail;
-using System.Net;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Services
 {
@@ -24,15 +15,15 @@ namespace Gordon360.Services
             _context = context;
         }
 
-        public List<States> GetAllStates()
+        public IEnumerable<States> GetAllStates()
         {
 
-            return _context.States.ToList();
+            return _context.States.AsEnumerable();
         }
 
-        public List<Countries> GetAllCountries()
+        public IEnumerable<Countries> GetAllCountries()
         {
-            return _context.Countries.ToList();
+            return _context.Countries.AsEnumerable();
         }
     }
 }

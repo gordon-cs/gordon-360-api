@@ -36,8 +36,8 @@ namespace Gordon360.Services
 
     public interface IAddressesService
     {
-        List<States> GetAllStates();
-        List<Countries> GetAllCountries();
+        IEnumerable<States> GetAllStates();
+        IEnumerable<Countries> GetAllCountries();
     }
 
     public interface IEventService
