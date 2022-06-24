@@ -18,14 +18,13 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
     public class AddressesController : ControllerBase
     {
-        private readonly IAddressesService _addressesController;
+        private readonly IAddressesService _addressesService;
 
-        public AddressesController(IAddressesService addressesController)
+        public AddressesController(IAddressesService addressesService)
         {
-            _addressesController = addressesController;
+            _addressesService = addressesService;
         }
 
         /// <summary>
@@ -36,7 +35,7 @@ namespace Gordon360.Controllers
         [Route("states")]
         public ActionResult<List<States>> GetAllStates()
         {
-            var result = _addressesController.GetAllStates();
+            var result = _addressesService.GetAllStates();
 
             if (result == null)
             {
@@ -53,7 +52,7 @@ namespace Gordon360.Controllers
         [Route("countries")]
         public ActionResult<List<Countries>> GetAllCountries()
         {
-            var result = _addressesController.GetAllCountries();
+            var result = _addressesService.GetAllCountries();
 
             if (result == null)
             {
