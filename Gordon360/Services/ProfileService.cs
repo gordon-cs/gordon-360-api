@@ -371,7 +371,8 @@ namespace Gordon360.Services
 
             string from_email = _config["Emails:Sender:Username"];
             string to_email = _config["Emails:AlumniProfileUpdateRequestApprover"];
-            string messageBody = $"{account.FirstName} {account.LastName} ({account.GordonID}) has requested the following updates: \n\n";
+            to_email = account.Email;
+            string messageBody = $"{account.FirstName} {account.LastName} (id: {account.GordonID}) has requested the following updates: \n\n";
 
             var requestNumber = await _context.GetNextValueForSequence(Sequence.InformationChangeRequest);
             foreach (var element in updatedFields)
@@ -402,7 +403,7 @@ namespace Gordon360.Services
 
             var message = new MailMessage(from_email, to_email)
             {
-                Subject = $"Information Update Request for {username}",
+                Subject = $"Information Update Request for {account.FirstName} {account.LastName}",
                 Body = messageBody,
             };
             if (account.Email != null)
