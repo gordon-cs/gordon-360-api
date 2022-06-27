@@ -371,7 +371,6 @@ namespace Gordon360.Services
 
             string from_email = _config["Emails:Sender:Username"];
             string to_email = _config["Emails:AlumniProfileUpdateRequestApprover"];
-            to_email = account.Email;
             string messageBody = $"{account.FirstName} {account.LastName} (id: {account.GordonID}) has requested the following updates: \n\n";
 
             var requestNumber = await _context.GetNextValueForSequence(Sequence.InformationChangeRequest);
