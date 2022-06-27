@@ -402,7 +402,7 @@ namespace Gordon360.Services
 
             var message = new MailMessage(from_email, to_email)
             {
-                Subject = $"Information Update Request for {username}",
+                Subject = $"Information Update Request for {account.FirstName} {account.LastName}",
                 Body = messageBody,
             };
             if (account.Email != null)
