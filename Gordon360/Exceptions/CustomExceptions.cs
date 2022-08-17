@@ -1,8 +1,9 @@
 ﻿using System;
+
 // <summary>
-// Namespace where we will define custom exceptions to be thrown later on.
+// Namespace where we define custom exceptions to be thrown by Controllers
 // </summary>
-namespace Gordon360.Exceptions.CustomExceptions
+namespace Gordon360.Exceptions
 {
     public class ResourceNotFoundException : Exception
     {
@@ -13,10 +14,6 @@ namespace Gordon360.Exceptions.CustomExceptions
         public string ExceptionMessage { get; set; }
     }
     public class BadInputException : Exception
-    {
-        public string ExceptionMessage { get; set; }
-    }
-    public class UnauthorizedAccessException : Exception
     {
         public string ExceptionMessage { get; set; }
     }

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Globalization;
+﻿using Gordon360.Models.CCT;
+using System;
 namespace Gordon360.Models.ViewModels
 {
     public class MembershipViewModel
     {
-        
+
         public int MembershipID { get; set; }
         public string ActivityCode { get; set; }
         public string ActivityDescription { get; set; }
@@ -28,7 +28,7 @@ namespace Gordon360.Models.ViewModels
         public bool? Privacy { get; set; }
         public int AccountPrivate { get; set; }
 
-        
+
         public static implicit operator MembershipViewModel(MEMBERSHIP m)
         {
             MembershipViewModel vm = new MembershipViewModel
@@ -39,7 +39,7 @@ namespace Gordon360.Models.ViewModels
                 IDNumber = m.ID_NUM,
                 Participation = m.PART_CDE.Trim(),
                 GroupAdmin = m.GRP_ADMIN ?? false,
-                StartDate = m.BEGIN_DTE, 
+                StartDate = m.BEGIN_DTE,
                 EndDate = m.END_DTE,
                 Description = m.COMMENT_TXT ?? "", // For Null comments
                 Privacy = m.PRIVACY ?? false,

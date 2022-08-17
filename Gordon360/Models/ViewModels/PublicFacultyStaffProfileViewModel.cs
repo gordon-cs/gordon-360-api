@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace Gordon360.Models.ViewModels
 {
@@ -80,7 +77,7 @@ namespace Gordon360.Models.ViewModels
                 Mail_Location = fac.Mail_Location ?? "",
                 Mail_Description = fac.Mail_Description ?? ""
             };
-            if (vm.KeepPrivate.Contains("1"))
+            if (vm.KeepPrivate.Contains('1'))
             {
                 vm.HomeCity = "Private as requested.";
                 vm.HomeState = "";

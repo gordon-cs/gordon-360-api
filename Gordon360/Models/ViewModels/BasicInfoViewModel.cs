@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using Gordon360.Models.CCT;
 
 namespace Gordon360.Models.ViewModels
 {

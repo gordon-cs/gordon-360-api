@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Gordon360.Static.Names;
+﻿using Gordon360.Models.CCT;
 namespace Gordon360.Models.ViewModels
 {
     public class ProfileCustomViewModel
@@ -13,9 +9,14 @@ namespace Gordon360.Models.ViewModels
         public string LinkedIn { get; set; }
         public string Handshake { get; set; }
 
-        public static implicit operator ProfileCustomViewModel(CUSTOM_PROFILE pro)
+        public static implicit operator ProfileCustomViewModel?(CUSTOM_PROFILE? pro)
         {
-            ProfileCustomViewModel vm = new ProfileCustomViewModel
+            if (pro == null)
+            {
+                return null;
+            }
+
+            return new ProfileCustomViewModel
             {
                 Facebook = pro.facebook ?? "",
                 Twitter = pro.twitter ?? "",
@@ -23,7 +24,6 @@ namespace Gordon360.Models.ViewModels
                 LinkedIn = pro.linkedin ?? "",
                 Handshake = pro.handshake ?? ""
             };
-            return vm;
         }
     }
 }

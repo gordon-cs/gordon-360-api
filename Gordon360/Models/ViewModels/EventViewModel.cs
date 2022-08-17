@@ -1,5 +1,5 @@
-﻿using System.Xml.Linq;
-using System.Linq;
+﻿using System.Linq;
+using System.Xml.Linq;
 
 
 namespace Gordon360.Models.ViewModels
@@ -39,5 +39,4 @@ namespace Gordon360.Models.ViewModels
         }
 
     }
-
 }

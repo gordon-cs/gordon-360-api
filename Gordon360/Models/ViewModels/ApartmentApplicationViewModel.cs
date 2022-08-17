@@ -1,5 +1,6 @@
-﻿using Gordon360.Static.Data;
+﻿using Gordon360.Models.CCT;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Gordon360.Models.ViewModels
@@ -8,8 +9,8 @@ namespace Gordon360.Models.ViewModels
     public class ApartmentApplicationViewModel
     {
         public int? ApplicationID { get; set; } // '?' means Nullable
-        public DateTime? DateSubmitted { get; set; } 
-        public DateTime? DateModified { get; set; } 
+        public DateTime? DateSubmitted { get; set; }
+        public DateTime? DateModified { get; set; }
         public PublicStudentProfileViewModel EditorProfile { get; set; }
         private string _editorUsername;
         public string EditorUsername
@@ -19,23 +20,18 @@ namespace Gordon360.Models.ViewModels
         }
         public string EditorEmail { get { return EditorProfile?.Email; } }
         public string Gender { get { return EditorProfile?.Gender ?? Applicants?.First()?.Profile?.Gender; } }
-        public ApartmentApplicantViewModel[] Applicants { get; set; }
-        public ApartmentChoiceViewModel[] ApartmentChoices { get; set; }
+        public List<ApartmentApplicantViewModel> Applicants { get; set; }
+        public List<ApartmentChoiceViewModel> ApartmentChoices { get; set; }
         public int TotalPoints { get { return Applicants?.Sum(applicant => applicant.Points) ?? 0; } }
         public double AvgPoints { get { return Applicants?.Average(applicant => applicant.Points) ?? 0; } }
 
-        public static implicit operator ApartmentApplicationViewModel(GET_AA_APPLICATIONS_BY_ID_Result applicationDBModel)
+        public static implicit operator ApartmentApplicationViewModel(Housing_Applications application) => new ApartmentApplicationViewModel
         {
-            ApartmentApplicationViewModel vm = new ApartmentApplicationViewModel
-            {
-                ApplicationID = applicationDBModel.HousingAppID,
-                DateSubmitted = applicationDBModel.DateSubmitted,
-                DateModified = applicationDBModel.DateModified,
-                EditorUsername = applicationDBModel.EditorUsername,
-                EditorProfile = (StudentProfileViewModel)Data.StudentData.FirstOrDefault(x => x.AD_Username.ToLower() == applicationDBModel.EditorUsername.ToLower()),
-            };
+            ApplicationID = application.HousingAppID,
+            DateSubmitted = application.DateSubmitted,
+            DateModified = application.DateModified,
+            EditorUsername = application.EditorUsername,
+        };
 
-            return vm;
-        }
     }
 }

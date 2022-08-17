@@ -1,18 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Gordon360.Models;
 
 namespace Gordon360.Models.ViewModels
 {
     public class MessageViewModel
     {
-        
+
         public String message_id { get; set; }
-        
+
         public String text { get; set; }
-        
+
         public DateTime createdAt { get; set; }
 
         public String user_id { get; set; }
