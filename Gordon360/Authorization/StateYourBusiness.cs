@@ -622,7 +622,7 @@ namespace Gordon360.Authorization
                         var isGroupAdmin = (await membershipService.GetGroupAdminMembershipsForActivityAsync(activityCode)).Any(x => x.IDNumber.ToString() == user_id);
                         if (isGroupAdmin)
                         {
-                            var activityService = new ActivityService(_CCTContext);
+                            var activityService = context.HttpContext.RequestServices.GetRequiredService<IActivityService>();
                             // If an activity is currently open, then a group admin has the ability to close it
                             if (activityService.IsOpen(activityCode, sessionCode))
                             {

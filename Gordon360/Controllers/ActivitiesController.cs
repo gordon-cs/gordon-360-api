@@ -18,10 +18,10 @@ namespace Gordon360.Controllers
         private readonly IActivityService _activityService;
         private readonly CCTContext _context;
 
-        public ActivitiesController(CCTContext context)
+        public ActivitiesController(CCTContext context, IActivityService activityService)
         {
             _context = context;
-            _activityService = new ActivityService(context);
+            _activityService = activityService;
         }
 
         [HttpGet]

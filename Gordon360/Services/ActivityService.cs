@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace Gordon360.Services
 {
@@ -17,10 +18,12 @@ namespace Gordon360.Services
     public class ActivityService : IActivityService
     {
         private readonly CCTContext _context;
+        private readonly IConfiguration _config;
 
-        public ActivityService(CCTContext context)
+        public ActivityService(CCTContext context, IConfiguration config)
         {
             _context = context;
+            _config = config;
         }
         /// <summary>
         /// Fetches a single activity record whose id matches the id provided as an argument
@@ -232,8 +235,6 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity Info was not found." };
             }
 
-            ValidateActivityInfo(activity);
-
             // One can only update certain fields within a membrship
             original.ACT_BLURB = involvement.Description;
             original.ACT_URL = involvement.Url;
@@ -242,7 +243,6 @@ namespace Gordon360.Services
             _context.SaveChanges();
 
             return original;
-
         }
 
         /// <summary>
@@ -321,21 +321,8 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity Info was not found." };
             }
 
-            /* @TODO: fix images
-            original.ACT_IMG_PATH = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_ACTIVITY_IMAGE_PATH"];
-            */
+            original.ACT_IMG_PATH = _config["DEFAULT_ACTIVITY_IMAGE_PATH"];
             _context.SaveChanges();
-        }
-        // Helper method to validate an activity info post. Throws an exception that gets caught later if something is not valid.
-        // Returns true if all is well. The return value is not really used though. This could be of type void.
-        private bool ValidateActivityInfo(ACT_INFO activity)
-        {
-            var activityExists = _context.ACT_INFO.Where(x => x.ACT_CDE == activity.ACT_CDE).Count() > 0;
-            if (!activityExists)
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
-
-            return true;
-
         }
 
         /// <summary>
