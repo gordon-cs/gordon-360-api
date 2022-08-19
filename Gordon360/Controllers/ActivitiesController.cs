@@ -202,15 +202,15 @@ namespace Gordon360.Controllers
 
         /// <summary>
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="activity"></param>
+        /// <param name="activity_code">The code of the activity to update</param>
+        /// <param name="involvement">The updated involvement details</param>
         /// <returns></returns>
         [HttpPut]
-        [Route("{id}")]
+        [Route("{activity_code}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
-        public ActionResult<ACT_INFO> Put(string id, ACT_INFO activity)
+        public ActionResult<ACT_INFO> Put(string activity_code, InvolvementUpdateViewModel involvement)
         {
-            var result = _activityService.Update(id, activity);
+            var result = _activityService.Update(activity_code, involvement);
 
             if (result == null)
             {

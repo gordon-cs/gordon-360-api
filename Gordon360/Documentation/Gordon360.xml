@@ -169,11 +169,11 @@
             <param name="id">The id of the user who is group admin</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ActivitiesController.Put(System.String,Gordon360.Models.CCT.ACT_INFO)">
+        <member name="M:Gordon360.Controllers.ActivitiesController.Put(System.String,Gordon360.Models.ViewModels.InvolvementUpdateViewModel)">
             <summary>
             </summary>
-            <param name="id"></param>
-            <param name="activity"></param>
+            <param name="activity_code">The code of the activity to update</param>
+            <param name="involvement">The updated involvement details</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.ActivitiesController.PostImageAsync(System.String)">
@@ -1156,11 +1156,11 @@
             <param name="sess_cde">The session we want to get the closed activities for</param>
             <returns>The collection of activity codes for open activities</returns>
         </member>
-        <member name="M:Gordon360.Services.ActivityService.Update(System.String,Gordon360.Models.CCT.ACT_INFO)">
+        <member name="M:Gordon360.Services.ActivityService.Update(System.String,Gordon360.Models.ViewModels.InvolvementUpdateViewModel)">
             <summary>
             Updates the Activity Info 
             </summary>
-            <param name="activity">The activity info resource with the updated information</param>
+            <param name="involvement">The activity info resource with the updated information</param>
             <param name="activityCode">The id of the activity info to be updated</param>
             <returns>The updated activity info resource</returns>
         </member>

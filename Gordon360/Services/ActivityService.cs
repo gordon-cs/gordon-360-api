@@ -220,10 +220,10 @@ namespace Gordon360.Services
         /// <summary>
         /// Updates the Activity Info 
         /// </summary>
-        /// <param name="activity">The activity info resource with the updated information</param>
+        /// <param name="involvement">The activity info resource with the updated information</param>
         /// <param name="activityCode">The id of the activity info to be updated</param>
         /// <returns>The updated activity info resource</returns>
-        public ACT_INFO Update(string activityCode, ACT_INFO activity)
+        public ACT_INFO Update(string activityCode, InvolvementUpdateViewModel involvement)
         {
             var original = _context.ACT_INFO.Find(activityCode);
 
@@ -235,9 +235,9 @@ namespace Gordon360.Services
             ValidateActivityInfo(activity);
 
             // One can only update certain fields within a membrship
-            original.ACT_BLURB = activity.ACT_BLURB;
-            original.ACT_URL = activity.ACT_URL;
-            original.ACT_JOIN_INFO = activity.ACT_JOIN_INFO;
+            original.ACT_BLURB = involvement.Description;
+            original.ACT_URL = involvement.Url;
+            original.ACT_JOIN_INFO = involvement.JoinInfo;
 
             _context.SaveChanges();
 

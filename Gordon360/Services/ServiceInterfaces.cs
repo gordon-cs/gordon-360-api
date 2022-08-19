@@ -109,7 +109,7 @@ namespace Gordon360.Services
         IEnumerable<string> GetOpenActivities(string sess_cde, int gordonID);
         IEnumerable<string> GetClosedActivities(string sess_cde);
         IEnumerable<string> GetClosedActivities(string sess_cde, int gordonID);
-        ACT_INFO Update(string activityCode, ACT_INFO activity);
+        ACT_INFO Update(string activityCode, InvolvementUpdateViewModel activity);
         void CloseOutActivityForSession(string activityCode, string sess_cde);
         void OpenActivityForSession(string activityCode, string sess_cde);
         void UpdateActivityImage(string activityCode, string path);
