@@ -1,6 +1,7 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.MyGordon;
 using Gordon360.Models.ViewModels;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -112,7 +113,7 @@ namespace Gordon360.Services
         ACT_INFO Update(string activityCode, InvolvementUpdateViewModel activity);
         void CloseOutActivityForSession(string activityCode, string sess_cde);
         void OpenActivityForSession(string activityCode, string sess_cde);
-        void UpdateActivityImage(string activityCode, string path);
+        Task<ACT_INFO> UpdateActivityImageAsync(ACT_INFO involvement, IFormFile image);
         void ResetActivityImage(string activityCode);
         void TogglePrivacy(string activityCode, bool isPrivate);
     }

@@ -91,6 +91,26 @@ namespace Gordon360.Utilities
             }
         }
 
+        /// <summary>
+        /// Uploads image from HTTP FormFile
+        /// </summary>
+        /// <remarks>
+        /// Takes image data and writes it to an image file. Note that if the target path
+        /// already has a file, the method will overwrite it (which gives no errors)
+        /// </remarks>
+        /// <param name="imagePath">The path to which the image belongs</param>
+        /// <param name="imageData">The image data to be stored</param>
+        public async static void UploadImageAsync(string imagePath, IFormFile imageData)
+        {
+            if (Path.GetDirectoryName(imagePath) is string path && !Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            using var stream = File.Create(imagePath);
+            await imageData.CopyToAsync(stream);
+        }
+
         public static async Task<string> DownloadImageFromURL(string url)
         {
             using var httpClient = new HttpClient();

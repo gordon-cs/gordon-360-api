@@ -176,11 +176,12 @@
             <param name="involvement">The updated involvement details</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ActivitiesController.PostImageAsync(System.String)">
+        <member name="M:Gordon360.Controllers.ActivitiesController.PostImageAsync(System.String,Microsoft.AspNetCore.Http.IFormFile)">
             <summary>
             Set an image for the activity
             </summary>
-            <param name="id">The activity Code</param>
+            <param name="involvement_code">The activity code</param>
+            <param name="image">The image file</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.ActivitiesController.ResetImage(System.String)">
@@ -1178,12 +1179,13 @@
             <param name="activityCode">The activity code for the activity that will be closed</param>
             <param name="sess_cde">The session code for the session where the activity is being closed</param>
         </member>
-        <member name="M:Gordon360.Services.ActivityService.UpdateActivityImage(System.String,System.String)">
+        <member name="M:Gordon360.Services.ActivityService.UpdateActivityImageAsync(Gordon360.Models.CCT.ACT_INFO,Microsoft.AspNetCore.Http.IFormFile)">
             <summary>
-            Sets the path for the activity image.
+            Updates the image for the spcefied involvement
             </summary>
-            <param name="activityCode">The activity code</param>
-            <param name="path"></param>
+            <param name="involvement">The involvement to update the image of</param>
+            <param name="image">The new image</param>
+            <returns>The involvement with the updated image path</returns>
         </member>
         <member name="M:Gordon360.Services.ActivityService.ResetActivityImage(System.String)">
             <summary>
@@ -2121,6 +2123,17 @@
             <param name="imagePath">The path to which the image belongs</param>
             <param name="imageData">The base64 image data to be stored</param>
             <param name="format">The format to save the image as. Defaults to Jpeg</param>
+        </member>
+        <member name="M:Gordon360.Utilities.ImageUtils.UploadImageAsync(System.String,Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            Uploads image from HTTP FormFile
+            </summary>
+            <remarks>
+            Takes image data and writes it to an image file. Note that if the target path
+            already has a file, the method will overwrite it (which gives no errors)
+            </remarks>
+            <param name="imagePath">The path to which the image belongs</param>
+            <param name="imageData">The image data to be stored</param>
         </member>
         <member name="M:Gordon360.Utilities.ImageUtils.GetBase64ImageDataFromPath(System.String)">
             <summary>

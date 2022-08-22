@@ -296,8 +296,7 @@ namespace Gordon360.Controllers
 
             var filePath = Path.Combine(_config["PREFERRED_IMAGE_PATH"], fileName);
 
-            using var stream = System.IO.File.Create(filePath);
-            await image.CopyToAsync(stream);
+            ImageUtils.UploadImageAsync(filePath, image);
 
             await _profileService.UpdateProfileImageAsync(username, _config["DATABASE_IMAGE_PATH"], fileName);
 

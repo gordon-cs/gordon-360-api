@@ -6,6 +6,7 @@ using Gordon360.Services;
 using Gordon360.Static.Methods;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -243,89 +244,23 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Set an image for the activity
         /// </summary>
-        /// <param name="id">The activity Code</param>
+        /// <param name="involvement_code">The activity code</param>
+        /// <param name="image">The image file</param>
         /// <returns></returns>
         [HttpPost]
-        [Route("{id}/image")]
+        [Route("{involvement_code}/image")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
-        public async Task<ActionResult> PostImageAsync(string id)
+        public async Task<ActionResult<ActivityInfoViewModel>> PostImageAsync(string involvement_code, [FromForm] IFormFile image)
         {
-            // Commenting out until we can build and test rewriting this image code
-            // https://www.fatalerrors.org/a/comparison-of-multi-file-upload-between-net-and-net-core-web-api-formdata.html
-            // https://stackoverflow.com/questions/43674504/multipart-form-data-file-upload-in-asp-net-core-web-api
-            // https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-5.0
-            return Ok();
-            /*
-            var uploadsFolder = "/browseable/uploads/" + id + "/";
-            if (!Request.Content.IsMimeMultipartContent())
+            var involvement = await _context.ACT_INFO.FindAsync(involvement_code);
+            if (involvement is null)
             {
-                throw new System.Web.Http.HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+                return NotFound("Involvement not found");
             }
 
-            var existingFile = "";
-            var webRoot = _env.WebRootPath;
-            var uploadsFolderPath = System.IO.Path.Combine(webRoot, "~" + uploadsFolder);
-            if (!System.IO.Directory.Exists(uploadsFolderPath)) {
-
-            }
-            if (!System.IO.Directory.Exists(uploadsFolderPath))
-            {
-                System.IO.Directory.CreateDirectory(uploadsFolderPath);
-            }
-            else
-            {
-                try
-                {
-                    System.IO.DirectoryInfo di = new DirectoryInfo(uploadsFolderPath);
-                    
-                    foreach (FileInfo file in di.GetFiles())
-                    {
-                        existingFile = file.Name;
-                        file.Delete();
-                    }
-                }
-                catch (System.Exception e) {
-                    System.Diagnostics.Debug.WriteLine(e.Message);
-                }
-            }
-
-            var provider = new CustomMultipartFormDataStreamProvider(uploadsFolderPath);
-
-            try
-            {
-                // Read the form data.
-                await Request.Content.ReadAsMultipartAsync(provider);
-
-                // This illustrates how to get the file names.
-                foreach (MultipartFileData file in provider.FileData)
-                {
-                    var fileName = file.Headers.ContentDisposition.FileName.Replace("\"", "");
-
-                    // If the file has the same name as the previous one, add a 1 at the end to make it different (so that the browser does not cache it)
-                    if (fileName.Equals(existingFile))
-                    {
-                        var oldFileName = fileName;
-
-                        // Add "1" before the extension
-                        fileName = fileName.Substring(0, fileName.LastIndexOf('.')) + "1" + fileName.Substring(fileName.LastIndexOf('.'));
-
-                        // Rename existing File
-                        System.IO.DirectoryInfo di = new DirectoryInfo(HttpContext.Current.Server.MapPath("~" + uploadsFolder));
-                        System.IO.File.Move(di.FullName + oldFileName, di.FullName + fileName);
-                    }
-
-                    var uploadPath = uploadsFolder + fileName;
-                    var baseUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority);
-                    var imagePath = baseUrl + uploadPath;
-                    _activityService.UpdateActivityImage(id, imagePath);
-                }
-                return Ok();
-            }
-            catch (System.Exception e)
-            {
-                throw new ResourceCreationException() { ExceptionMessage = "There was an error uploading the image. Please contact the maintainers" };
-            }
-            */
+            ActivityInfoViewModel updatedInvolvement = await _activityService.UpdateActivityImageAsync(involvement, image);
+            
+            return Ok(updatedInvolvement);
         }
 
         /// <summary>

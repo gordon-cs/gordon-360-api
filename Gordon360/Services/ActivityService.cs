@@ -7,6 +7,11 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using System.IO;
+using System;
+using Gordon360.Utilities;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 
 namespace Gordon360.Services
 {
@@ -19,11 +24,13 @@ namespace Gordon360.Services
     {
         private readonly CCTContext _context;
         private readonly IConfiguration _config;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ActivityService(CCTContext context, IConfiguration config)
+        public ActivityService(CCTContext context, IConfiguration config, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             _config = config;
+            _webHostEnvironment = webHostEnvironment;
         }
         /// <summary>
         /// Fetches a single activity record whose id matches the id provided as an argument
@@ -291,23 +298,34 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// Sets the path for the activity image.
+        /// Updates the image for the spcefied involvement
         /// </summary>
-        /// <param name="activityCode">The activity code</param>
-        /// <param name="path"></param>
-        public void UpdateActivityImage(string activityCode, string path)
+        /// <param name="involvement">The involvement to update the image of</param>
+        /// <param name="image">The new image</param>
+        /// <returns>The involvement with the updated image path</returns>
+        public async Task<ACT_INFO> UpdateActivityImageAsync(ACT_INFO involvement, IFormFile image)
         {
-            var original = _context.ACT_INFO.Find(activityCode);
+            // Put current DateTime in filename so the browser knows it's a new file and refreshes cache
+            var filename = $"canvasImage_{DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}.png";
+            var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", involvement.ACT_CDE.Trim(), filename);
 
-            if (original == null)
+            //delete old image file if it exists.
+            if (Path.GetDirectoryName(imagePath) is string directory && Directory.Exists(directory))
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity Info was not found." };
+                foreach (FileInfo file in new DirectoryInfo(directory).GetFiles())
+                {
+                    file.Delete();
+                }
             }
 
-            original.ACT_IMG_PATH = path;
+            ImageUtils.UploadImageAsync(imagePath, image);
 
-            _context.SaveChanges();
+            involvement.ACT_IMG_PATH = imagePath;
+            await _context.SaveChangesAsync();
+
+            return involvement;
         }
+
         /// <summary>
         /// Reset the path for the activity image
         /// </summary>
