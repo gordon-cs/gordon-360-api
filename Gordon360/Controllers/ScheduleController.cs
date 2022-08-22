@@ -83,21 +83,21 @@ namespace Gordon360.Controllers
 
                 if (viewerGroups.Contains(AuthGroup.Police) || viewerGroups.Contains(AuthGroup.SiteAdmin))
                 {
-                    scheduleResult = await _scheduleService.GetScheduleStudentAsync(id);
+                    scheduleResult = await _scheduleService.GetScheduleStudentAsync(username);
                 }
                 else if (viewerGroups.Contains(AuthGroup.Student) && schedulePrivacy == 0)
                 {
 
-                    scheduleResult = await _scheduleService.GetScheduleStudentAsync(id);
+                    scheduleResult = await _scheduleService.GetScheduleStudentAsync(username);
                 }
                 else if (viewerGroups.Contains(AuthGroup.Advisors))
                 {
-                    scheduleResult = await _scheduleService.GetScheduleStudentAsync(id);
+                    scheduleResult = await _scheduleService.GetScheduleStudentAsync(username);
                 }
             }
             else if (groups.Contains(AuthGroup.FacStaff))
             {
-                scheduleResult = await _scheduleService.GetScheduleFacultyAsync(id);
+                scheduleResult = await _scheduleService.GetScheduleFacultyAsync(username);
             }
             else
             {
