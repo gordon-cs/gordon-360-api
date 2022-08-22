@@ -208,7 +208,7 @@ namespace Gordon360.Controllers
         [HttpPut]
         [Route("{activity_code}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
-        public ActionResult<ACT_INFO> Put(string activity_code, InvolvementUpdateViewModel involvement)
+        public ActionResult<ActivityInfoViewModel> Put(string activity_code, InvolvementUpdateViewModel involvement)
         {
             var result = _activityService.Update(activity_code, involvement);
 
@@ -217,7 +217,7 @@ namespace Gordon360.Controllers
                 return NotFound();
             }
 
-            return Ok(result);
+            return Ok((ActivityInfoViewModel)result);
         }
 
         [HttpPut]
