@@ -143,6 +143,8 @@ namespace Gordon360.Models.CCT.Context
             {
                 entity.HasKey(e => new { e.ID_NUM, e.ACCESS_CODE })
                     .HasName("PK_CliftonStrengths");
+
+                entity.Property(e => e.Private).HasComment("Whether the user wants their strengths to be private (not shown to other users)");
             });
 
             modelBuilder.Entity<Countries>(entity =>
