@@ -18,9 +18,9 @@ namespace Gordon360.Models.ViewModels
         public string THURSDAY_CDE { get; set; }
         public string FRIDAY_CDE { get; set; }
 
-        public Nullable<System.TimeSpan> BEGIN_TIME { get; set; }
+        public TimeSpan? BEGIN_TIME { get; set; }
 
-        public Nullable<System.TimeSpan> END_TIME { get; set; }
+        public TimeSpan? END_TIME { get; set; }
 
 
     }
