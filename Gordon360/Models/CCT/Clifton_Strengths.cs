@@ -37,5 +37,9 @@ namespace Gordon360.Models.CCT
         [StringLength(100)]
         [Unicode(false)]
         public string THEME_5 { get; set; }
+        /// <summary>
+        /// Whether the user wants their strengths to be private (not shown to other users)
+        /// </summary>
+        public bool Private { get; set; }
     }
 }

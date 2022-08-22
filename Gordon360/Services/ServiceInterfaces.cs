@@ -22,7 +22,8 @@ namespace Gordon360.Services
         MailboxViewModel GetMailboxCombination(string username);
         DateTime GetBirthdate(string username);
         Task<IEnumerable<AdvisorViewModel>> GetAdvisorsAsync(string username);
-        string[] GetCliftonStrengths(int id);
+        CliftonStrengthsViewModel? GetCliftonStrengths(int id);
+        Task<bool> ToggleCliftonStrengthsPrivacyAsync(int id);
         IEnumerable<EmergencyContactViewModel> GetEmergencyContact(string username);
         ProfileCustomViewModel? GetCustomUserInfo(string username);
         Task<PhotoPathViewModel?> GetPhotoPathAsync(string username);
