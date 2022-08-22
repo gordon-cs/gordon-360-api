@@ -6,6 +6,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using System.IO;
+using System;
+using Gordon360.Utilities;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 
 namespace Gordon360.Services
 {
@@ -17,10 +23,14 @@ namespace Gordon360.Services
     public class ActivityService : IActivityService
     {
         private readonly CCTContext _context;
+        private readonly IConfiguration _config;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ActivityService(CCTContext context)
+        public ActivityService(CCTContext context, IConfiguration config, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            _config = config;
+            _webHostEnvironment = webHostEnvironment;
         }
         /// <summary>
         /// Fetches a single activity record whose id matches the id provided as an argument
@@ -220,10 +230,10 @@ namespace Gordon360.Services
         /// <summary>
         /// Updates the Activity Info 
         /// </summary>
-        /// <param name="activity">The activity info resource with the updated information</param>
+        /// <param name="involvement">The activity info resource with the updated information</param>
         /// <param name="activityCode">The id of the activity info to be updated</param>
         /// <returns>The updated activity info resource</returns>
-        public ACT_INFO Update(string activityCode, ACT_INFO activity)
+        public ACT_INFO Update(string activityCode, InvolvementUpdateViewModel involvement)
         {
             var original = _context.ACT_INFO.Find(activityCode);
 
@@ -232,17 +242,14 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity Info was not found." };
             }
 
-            ValidateActivityInfo(activity);
-
             // One can only update certain fields within a membrship
-            original.ACT_BLURB = activity.ACT_BLURB;
-            original.ACT_URL = activity.ACT_URL;
-            original.ACT_JOIN_INFO = activity.ACT_JOIN_INFO;
+            original.ACT_BLURB = involvement.Description;
+            original.ACT_URL = involvement.Url;
+            original.ACT_JOIN_INFO = involvement.JoinInfo;
 
             _context.SaveChanges();
 
             return original;
-
         }
 
         /// <summary>
@@ -291,23 +298,34 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// Sets the path for the activity image.
+        /// Updates the image for the spcefied involvement
         /// </summary>
-        /// <param name="activityCode">The activity code</param>
-        /// <param name="path"></param>
-        public void UpdateActivityImage(string activityCode, string path)
+        /// <param name="involvement">The involvement to update the image of</param>
+        /// <param name="image">The new image</param>
+        /// <returns>The involvement with the updated image path</returns>
+        public async Task<ACT_INFO> UpdateActivityImageAsync(ACT_INFO involvement, IFormFile image)
         {
-            var original = _context.ACT_INFO.Find(activityCode);
+            // Put current DateTime in filename so the browser knows it's a new file and refreshes cache
+            var filename = $"canvasImage_{DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}.png";
+            var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", involvement.ACT_CDE.Trim(), filename);
 
-            if (original == null)
+            //delete old image file if it exists.
+            if (Path.GetDirectoryName(imagePath) is string directory && Directory.Exists(directory))
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity Info was not found." };
+                foreach (FileInfo file in new DirectoryInfo(directory).GetFiles())
+                {
+                    file.Delete();
+                }
             }
 
-            original.ACT_IMG_PATH = path;
+            ImageUtils.UploadImageAsync(imagePath, image);
 
-            _context.SaveChanges();
+            involvement.ACT_IMG_PATH = imagePath;
+            await _context.SaveChangesAsync();
+
+            return involvement;
         }
+
         /// <summary>
         /// Reset the path for the activity image
         /// </summary>
@@ -321,21 +339,8 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity Info was not found." };
             }
 
-            /* @TODO: fix images
-            original.ACT_IMG_PATH = System.Web.Configuration.WebConfigurationManager.AppSettings["DEFAULT_ACTIVITY_IMAGE_PATH"];
-            */
+            original.ACT_IMG_PATH = _config["DEFAULT_ACTIVITY_IMAGE_PATH"];
             _context.SaveChanges();
-        }
-        // Helper method to validate an activity info post. Throws an exception that gets caught later if something is not valid.
-        // Returns true if all is well. The return value is not really used though. This could be of type void.
-        private bool ValidateActivityInfo(ACT_INFO activity)
-        {
-            var activityExists = _context.ACT_INFO.Where(x => x.ACT_CDE == activity.ACT_CDE).Count() > 0;
-            if (!activityExists)
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
-
-            return true;
-
         }
 
         /// <summary>

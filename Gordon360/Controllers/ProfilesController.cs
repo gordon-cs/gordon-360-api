@@ -287,17 +287,19 @@ namespace Gordon360.Controllers
             var (extension, _) = ImageUtils.GetImageFormat(image);
             var fileName = $"{account.Barcode}.{extension}";
 
-            // If the new photo won't overwrite the old one, delete the old photo.
-            var oldPath = Path.Combine(pathInfo.Pref_Img_Path, pathInfo.Pref_Img_Name);
-            if (pathInfo.Pref_Img_Name != fileName && System.IO.File.Exists(oldPath))
+            // If there is an old photo that won't get overwritten, delete the old photo
+            if (pathInfo.Pref_Img_Name is string oldName
+                && oldName != fileName
+                && pathInfo.Pref_Img_Path is string oldPath
+                && Path.Combine(oldPath, oldName) is string oldFile
+                && System.IO.File.Exists(oldFile))
             {
-                System.IO.File.Delete(oldPath);
+                System.IO.File.Delete(oldFile);
             }
 
             var filePath = Path.Combine(_config["PREFERRED_IMAGE_PATH"], fileName);
 
-            using var stream = System.IO.File.Create(filePath);
-            await image.CopyToAsync(stream);
+            ImageUtils.UploadImageAsync(filePath, image);
 
             await _profileService.UpdateProfileImageAsync(username, _config["DATABASE_IMAGE_PATH"], fileName);
 
