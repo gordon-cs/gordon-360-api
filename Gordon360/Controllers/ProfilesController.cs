@@ -121,13 +121,51 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("clifton/{username}")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
-        public ActionResult<string[]> GetCliftonStrengths(string username)
+        public ActionResult<string[]> GetCliftonStrengths_DEPRECATED(string username)
         {
             var id = _accountService.GetAccountByUsername(username).GordonID;
             var strengths = _profileService.GetCliftonStrengths(int.Parse(id));
 
-            return Ok(strengths);
+            if (strengths is null)
+            {
+                return NotFound("No strengths were found for this user");
+            }
 
+            return Ok(strengths.Themes);
+        }
+
+
+        /// <summary> Gets the clifton strengths of a particular user </summary>
+        /// <param name="username"> The username for which to retrieve info </param>
+        /// <returns> Clifton strengths of the given user. </returns>
+        [HttpGet]
+        [Route("{username}/clifton")]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
+        public ActionResult<CliftonStrengthsViewModel> GetCliftonStrengths(string username)
+        {
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+            var strengths = _profileService.GetCliftonStrengths(int.Parse(id));
+
+            if (strengths is null)
+            {
+                return NotFound("No strengths were found for this user");
+            }
+
+            return Ok(strengths);
+        }
+
+        /// <summary>Toggle privacy of the current user's Clifton Strengths</summary>
+        /// <returns>New privacy value</returns>
+        [HttpGet]
+        [Route("clifton/privacy")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE)]
+        public async Task<ActionResult<bool>> ToggleCliftonStrengthsPrivacyAsync()
+        {
+            var username = AuthUtils.GetUsername(User);
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+            var privacy = await _profileService.ToggleCliftonStrengthsPrivacyAsync(int.Parse(id));
+
+            return Ok(privacy);
         }
 
         /// <summary> Gets the emergency contact information of a particular user </summary>

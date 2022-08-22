@@ -663,10 +663,19 @@
              provides first name, last name, and username.
              </returns>
         </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.GetCliftonStrengths_DEPRECATED(System.String)">
+            <summary> Gets the clifton strengths of a particular user </summary>
+            <param name="username"> The username for which to retrieve info </param>
+            <returns> Clifton strengths of the given user. </returns>
+        </member>
         <member name="M:Gordon360.Controllers.ProfilesController.GetCliftonStrengths(System.String)">
             <summary> Gets the clifton strengths of a particular user </summary>
             <param name="username"> The username for which to retrieve info </param>
             <returns> Clifton strengths of the given user. </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.ToggleCliftonStrengthsPrivacyAsync">
+            <summary>Toggle privacy of the current user's Clifton Strengths</summary>
+            <returns>New privacy value</returns>
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.GetEmergencyContact(System.String)">
             <summary> Gets the emergency contact information of a particular user </summary>
@@ -975,6 +984,11 @@
             </summary>
             <param name="status">The current status of the user to post, of type WellnessStatusColor</param>
             <returns>The status that was stored in the database</returns>
+        </member>
+        <member name="P:Gordon360.Models.CCT.Clifton_Strengths.Private">
+            <summary>
+            Whether the user wants their strengths to be private (not shown to other users)
+            </summary>
         </member>
         <member name="P:Gordon360.Models.StudentTimesheets.student_timesheets.ID_NUM">
             <summary>
@@ -1871,6 +1885,14 @@
             <summary> Gets the clifton strengths of a particular user </summary>
             <param name="id"> The id of the user for which to retrieve info </param>
             <returns> Clifton strengths of the given user. </returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.ToggleCliftonStrengthsPrivacyAsync(System.Int32)">
+            <summary>
+            Toggles the privacy of the Clifton Strengths data associated with the given id
+            </summary>
+            <param name="id">ID of the user whose Clifton Strengths privacy is toggled</param>
+            <returns>The new privacy value</returns>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">Thrown when the given ID doesn't match any Clifton Strengths rows</exception>
         </member>
         <member name="M:Gordon360.Services.ProfileService.GetEmergencyContact(System.String)">
             <summary> Gets the emergency contact information of a particular user </summary>
