@@ -73,7 +73,7 @@ namespace Gordon360.Services
         /// <param name="cardHolderID"></param>
         /// <param name="planID"></param>
         /// <returns></returns>
-        public string GetBalance(int cardHolderID, string planID)
+        public static string GetBalance(int cardHolderID, string planID)
         {
             string balance = "";
             try
@@ -148,17 +148,13 @@ namespace Gordon360.Services
                     PlanDescriptions = d.PlanDescriptions,
                     PlanId = d.PlanId,
                     PlanType = d.PlanType,
-                    InitialBalance = d.InitialBalance ?? 0
+                    InitialBalance = d.InitialBalance ?? 0,
+                    CurrentBalance = GetBalance(cardHolderID, d.PlanId)
                 });
 
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The plan was not found." };
-            }
-
-            foreach (var row in result)
-            {
-                row.CurrentBalance = GetBalance(cardHolderID, row.PlanId);
             }
 
             return new DiningViewModel(result);

@@ -43,7 +43,7 @@ namespace Gordon360.Controllers
             }
             if (diningInfo.ChoiceDescription == "None")
             {
-                var diningBalance = _diningService.GetBalance(authenticatedUserId, FACSTAFF_MEALPLAN_ID);
+                var diningBalance = DiningService.GetBalance(authenticatedUserId, FACSTAFF_MEALPLAN_ID);
                 if (diningBalance == null)
                 {
                     return NotFound();
