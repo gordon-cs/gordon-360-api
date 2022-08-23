@@ -73,11 +73,11 @@ namespace Gordon360.Services
         /// <param name="cardHolderID"></param>
         /// <param name="planID"></param>
         /// <returns></returns>
-        public string GetBalance(int cardHolderID, string planID)
+        public static string GetBalance(int cardHolderID, string planID)
         {
-            string balance = "";
             try
             {
+
                 ServicePointManager.Expect100Continue = false;
 
                 WebRequest request = WebRequest.Create("https://bbapi.campuscardcenter.com/cs/api/mealplanDrCr");
@@ -87,13 +87,7 @@ namespace Gordon360.Services
                 string timestamp = getTimestamp();
 
                 // Create POST data and convert it to a byte array.  
-                string postData = "issuerId=" + issuerID + "&"
-                   + "cardholderId=" + cardHolderID + "&"
-                   + "planId=" + planID + "&"
-                   + "applicationId=" + applicationId + "&"
-                   + "valueCmd=bal" + "&" + "value=0" + "&"
-                   + "timestamp=" + timestamp + "&"
-                   + "hash=" + getHash(cardHolderID, planID, timestamp);
+                string postData = $"issuerId={issuerID}&cardholderId={cardHolderID}&planId={planID}&applicationId={applicationId}&valueCmd=bal&value=0&timestamp={timestamp}&hash={getHash(cardHolderID, planID, timestamp)}";
                 byte[] byteArray = Encoding.UTF8.GetBytes(postData);
 
                 request.ContentType = "application/x-www-form-urlencoded";
@@ -114,7 +108,7 @@ namespace Gordon360.Services
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
                 JObject json = JObject.Parse(responseFromServer);
-                balance = json["balance"].ToString();
+                string balance = json["balance"].ToString();
 
                 // Display the content.  
                 Console.WriteLine(responseFromServer);
@@ -124,13 +118,12 @@ namespace Gordon360.Services
                 reader.Close();
                 dataStream.Close();
                 response.Close();
+                return balance;
             }
             catch
             {
-                balance = "0";
+                return "0";
             }
-
-            return balance;
         }
 
         /// <summary>
@@ -148,17 +141,13 @@ namespace Gordon360.Services
                     PlanDescriptions = d.PlanDescriptions,
                     PlanId = d.PlanId,
                     PlanType = d.PlanType,
-                    InitialBalance = d.InitialBalance ?? 0
+                    InitialBalance = d.InitialBalance ?? 0,
+                    CurrentBalance = GetBalance(cardHolderID, d.PlanId)
                 });
 
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The plan was not found." };
-            }
-
-            foreach (var row in result)
-            {
-                row.CurrentBalance = GetBalance(cardHolderID, row.PlanId);
             }
 
             return new DiningViewModel(result);
