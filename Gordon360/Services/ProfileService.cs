@@ -137,12 +137,30 @@ namespace Gordon360.Services
         /// <summary> Gets the clifton strengths of a particular user </summary>
         /// <param name="id"> The id of the user for which to retrieve info </param>
         /// <returns> Clifton strengths of the given user. </returns>
-        public string[] GetCliftonStrengths(int id)
+        public CliftonStrengthsViewModel? GetCliftonStrengths(int id)
         {
             return _context.Clifton_Strengths
-                .Where(c => c.ID_NUM == id)
-                .Select(s => new string[] { s.THEME_1, s.THEME_2, s.THEME_3, s.THEME_4, s.THEME_5 })
-                .FirstOrDefault() ?? Array.Empty<string>();
+                .FirstOrDefault(c => c.ID_NUM == id);
+        }
+
+        /// <summary>
+        /// Toggles the privacy of the Clifton Strengths data associated with the given id
+        /// </summary>
+        /// <param name="id">ID of the user whose Clifton Strengths privacy is toggled</param>
+        /// <returns>The new privacy value</returns>
+        /// <exception cref="ResourceNotFoundException">Thrown when the given ID doesn't match any Clifton Strengths rows</exception>
+        public async Task<bool> ToggleCliftonStrengthsPrivacyAsync(int id)
+        {
+            var strengths = _context.Clifton_Strengths.FirstOrDefault(cs => cs.ID_NUM == id);
+            if (strengths is null)
+            {
+                throw new ResourceNotFoundException { ExceptionMessage = "No Strengths found" };
+            }
+
+            strengths.Private = !strengths.Private;
+            await _context.SaveChangesAsync();
+
+            return strengths.Private;
         }
 
         /// <summary> Gets the emergency contact information of a particular user </summary>

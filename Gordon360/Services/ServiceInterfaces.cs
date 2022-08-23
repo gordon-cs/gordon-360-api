@@ -1,6 +1,7 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.MyGordon;
 using Gordon360.Models.ViewModels;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -21,7 +22,8 @@ namespace Gordon360.Services
         MailboxViewModel GetMailboxCombination(string username);
         DateTime GetBirthdate(string username);
         Task<IEnumerable<AdvisorViewModel>> GetAdvisorsAsync(string username);
-        string[] GetCliftonStrengths(int id);
+        CliftonStrengthsViewModel? GetCliftonStrengths(int id);
+        Task<bool> ToggleCliftonStrengthsPrivacyAsync(int id);
         IEnumerable<EmergencyContactViewModel> GetEmergencyContact(string username);
         ProfileCustomViewModel? GetCustomUserInfo(string username);
         Task<PhotoPathViewModel?> GetPhotoPathAsync(string username);
@@ -109,10 +111,10 @@ namespace Gordon360.Services
         IEnumerable<string> GetOpenActivities(string sess_cde, int gordonID);
         IEnumerable<string> GetClosedActivities(string sess_cde);
         IEnumerable<string> GetClosedActivities(string sess_cde, int gordonID);
-        ACT_INFO Update(string activityCode, ACT_INFO activity);
+        ACT_INFO Update(string activityCode, InvolvementUpdateViewModel activity);
         void CloseOutActivityForSession(string activityCode, string sess_cde);
         void OpenActivityForSession(string activityCode, string sess_cde);
-        void UpdateActivityImage(string activityCode, string path);
+        Task<ACT_INFO> UpdateActivityImageAsync(ACT_INFO involvement, IFormFile image);
         void ResetActivityImage(string activityCode);
         void TogglePrivacy(string activityCode, bool isPrivate);
     }

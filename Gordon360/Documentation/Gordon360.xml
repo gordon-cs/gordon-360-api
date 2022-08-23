@@ -169,18 +169,19 @@
             <param name="id">The id of the user who is group admin</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ActivitiesController.Put(System.String,Gordon360.Models.CCT.ACT_INFO)">
+        <member name="M:Gordon360.Controllers.ActivitiesController.Put(System.String,Gordon360.Models.ViewModels.InvolvementUpdateViewModel)">
             <summary>
             </summary>
-            <param name="id"></param>
-            <param name="activity"></param>
+            <param name="activity_code">The code of the activity to update</param>
+            <param name="involvement">The updated involvement details</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ActivitiesController.PostImageAsync(System.String)">
+        <member name="M:Gordon360.Controllers.ActivitiesController.PostImageAsync(System.String,Microsoft.AspNetCore.Http.IFormFile)">
             <summary>
             Set an image for the activity
             </summary>
-            <param name="id">The activity Code</param>
+            <param name="involvement_code">The activity code</param>
+            <param name="image">The image file</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.ActivitiesController.ResetImage(System.String)">
@@ -663,10 +664,19 @@
              provides first name, last name, and username.
              </returns>
         </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.GetCliftonStrengths_DEPRECATED(System.String)">
+            <summary> Gets the clifton strengths of a particular user </summary>
+            <param name="username"> The username for which to retrieve info </param>
+            <returns> Clifton strengths of the given user. </returns>
+        </member>
         <member name="M:Gordon360.Controllers.ProfilesController.GetCliftonStrengths(System.String)">
             <summary> Gets the clifton strengths of a particular user </summary>
             <param name="username"> The username for which to retrieve info </param>
             <returns> Clifton strengths of the given user. </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.ToggleCliftonStrengthsPrivacyAsync">
+            <summary>Toggle privacy of the current user's Clifton Strengths</summary>
+            <returns>New privacy value</returns>
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.GetEmergencyContact(System.String)">
             <summary> Gets the emergency contact information of a particular user </summary>
@@ -976,6 +986,11 @@
             <param name="status">The current status of the user to post, of type WellnessStatusColor</param>
             <returns>The status that was stored in the database</returns>
         </member>
+        <member name="P:Gordon360.Models.CCT.Clifton_Strengths.Private">
+            <summary>
+            Whether the user wants their strengths to be private (not shown to other users)
+            </summary>
+        </member>
         <member name="P:Gordon360.Models.StudentTimesheets.student_timesheets.ID_NUM">
             <summary>
             Gordon ID Number
@@ -1156,11 +1171,11 @@
             <param name="sess_cde">The session we want to get the closed activities for</param>
             <returns>The collection of activity codes for open activities</returns>
         </member>
-        <member name="M:Gordon360.Services.ActivityService.Update(System.String,Gordon360.Models.CCT.ACT_INFO)">
+        <member name="M:Gordon360.Services.ActivityService.Update(System.String,Gordon360.Models.ViewModels.InvolvementUpdateViewModel)">
             <summary>
             Updates the Activity Info 
             </summary>
-            <param name="activity">The activity info resource with the updated information</param>
+            <param name="involvement">The activity info resource with the updated information</param>
             <param name="activityCode">The id of the activity info to be updated</param>
             <returns>The updated activity info resource</returns>
         </member>
@@ -1178,12 +1193,13 @@
             <param name="activityCode">The activity code for the activity that will be closed</param>
             <param name="sess_cde">The session code for the session where the activity is being closed</param>
         </member>
-        <member name="M:Gordon360.Services.ActivityService.UpdateActivityImage(System.String,System.String)">
+        <member name="M:Gordon360.Services.ActivityService.UpdateActivityImageAsync(Gordon360.Models.CCT.ACT_INFO,Microsoft.AspNetCore.Http.IFormFile)">
             <summary>
-            Sets the path for the activity image.
+            Updates the image for the spcefied involvement
             </summary>
-            <param name="activityCode">The activity code</param>
-            <param name="path"></param>
+            <param name="involvement">The involvement to update the image of</param>
+            <param name="image">The new image</param>
+            <returns>The involvement with the updated image path</returns>
         </member>
         <member name="M:Gordon360.Services.ActivityService.ResetActivityImage(System.String)">
             <summary>
@@ -1872,6 +1888,14 @@
             <param name="id"> The id of the user for which to retrieve info </param>
             <returns> Clifton strengths of the given user. </returns>
         </member>
+        <member name="M:Gordon360.Services.ProfileService.ToggleCliftonStrengthsPrivacyAsync(System.Int32)">
+            <summary>
+            Toggles the privacy of the Clifton Strengths data associated with the given id
+            </summary>
+            <param name="id">ID of the user whose Clifton Strengths privacy is toggled</param>
+            <returns>The new privacy value</returns>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">Thrown when the given ID doesn't match any Clifton Strengths rows</exception>
+        </member>
         <member name="M:Gordon360.Services.ProfileService.GetEmergencyContact(System.String)">
             <summary> Gets the emergency contact information of a particular user </summary>
             <param name="username"> The username of the user for which to retrieve info </param>
@@ -2121,6 +2145,17 @@
             <param name="imagePath">The path to which the image belongs</param>
             <param name="imageData">The base64 image data to be stored</param>
             <param name="format">The format to save the image as. Defaults to Jpeg</param>
+        </member>
+        <member name="M:Gordon360.Utilities.ImageUtils.UploadImageAsync(System.String,Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            Uploads image from HTTP FormFile
+            </summary>
+            <remarks>
+            Takes image data and writes it to an image file. Note that if the target path
+            already has a file, the method will overwrite it (which gives no errors)
+            </remarks>
+            <param name="imagePath">The path to which the image belongs</param>
+            <param name="imageData">The image data to be stored</param>
         </member>
         <member name="M:Gordon360.Utilities.ImageUtils.GetBase64ImageDataFromPath(System.String)">
             <summary>

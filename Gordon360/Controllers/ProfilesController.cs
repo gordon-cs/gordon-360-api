@@ -121,13 +121,51 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("clifton/{username}")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
-        public ActionResult<string[]> GetCliftonStrengths(string username)
+        public ActionResult<string[]> GetCliftonStrengths_DEPRECATED(string username)
         {
             var id = _accountService.GetAccountByUsername(username).GordonID;
             var strengths = _profileService.GetCliftonStrengths(int.Parse(id));
 
-            return Ok(strengths);
+            if (strengths is null)
+            {
+                return NotFound("No strengths were found for this user");
+            }
 
+            return Ok(strengths.Themes);
+        }
+
+
+        /// <summary> Gets the clifton strengths of a particular user </summary>
+        /// <param name="username"> The username for which to retrieve info </param>
+        /// <returns> Clifton strengths of the given user. </returns>
+        [HttpGet]
+        [Route("{username}/clifton")]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
+        public ActionResult<CliftonStrengthsViewModel> GetCliftonStrengths(string username)
+        {
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+            var strengths = _profileService.GetCliftonStrengths(int.Parse(id));
+
+            if (strengths is null)
+            {
+                return NotFound("No strengths were found for this user");
+            }
+
+            return Ok(strengths);
+        }
+
+        /// <summary>Toggle privacy of the current user's Clifton Strengths</summary>
+        /// <returns>New privacy value</returns>
+        [HttpGet]
+        [Route("clifton/privacy")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE)]
+        public async Task<ActionResult<bool>> ToggleCliftonStrengthsPrivacyAsync()
+        {
+            var username = AuthUtils.GetUsername(User);
+            var id = _accountService.GetAccountByUsername(username).GordonID;
+            var privacy = await _profileService.ToggleCliftonStrengthsPrivacyAsync(int.Parse(id));
+
+            return Ok(privacy);
         }
 
         /// <summary> Gets the emergency contact information of a particular user </summary>
@@ -287,17 +325,19 @@ namespace Gordon360.Controllers
             var (extension, _) = ImageUtils.GetImageFormat(image);
             var fileName = $"{account.Barcode}.{extension}";
 
-            // If the new photo won't overwrite the old one, delete the old photo.
-            var oldPath = Path.Combine(pathInfo.Pref_Img_Path, pathInfo.Pref_Img_Name);
-            if (pathInfo.Pref_Img_Name != fileName && System.IO.File.Exists(oldPath))
+            // If there is an old photo that won't get overwritten, delete the old photo
+            if (pathInfo.Pref_Img_Name is string oldName
+                && oldName != fileName
+                && pathInfo.Pref_Img_Path is string oldPath
+                && Path.Combine(oldPath, oldName) is string oldFile
+                && System.IO.File.Exists(oldFile))
             {
-                System.IO.File.Delete(oldPath);
+                System.IO.File.Delete(oldFile);
             }
 
             var filePath = Path.Combine(_config["PREFERRED_IMAGE_PATH"], fileName);
 
-            using var stream = System.IO.File.Create(filePath);
-            await image.CopyToAsync(stream);
+            ImageUtils.UploadImageAsync(filePath, image);
 
             await _profileService.UpdateProfileImageAsync(username, _config["DATABASE_IMAGE_PATH"], fileName);
 

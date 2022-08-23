@@ -38,7 +38,21 @@ namespace Gordon360.Services
             var sessionCode = Helpers.GetCurrentSession(_context);
             var result = await _context.Procedures.STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDEAsync(int.Parse(account.gordon_id), sessionCode);
 
-            return (IEnumerable<ScheduleViewModel>)result;
+            return result.Select(x => new ScheduleViewModel
+            {
+                ID_NUM = x.ID_NUM,
+                CRS_CDE = x.CRS_CDE,
+                CRS_TITLE = x.CRS_TITLE,
+                BLDG_CDE = x.BLDG_CDE,
+                ROOM_CDE = x.ROOM_CDE,
+                MONDAY_CDE = x.MONDAY_CDE,
+                TUESDAY_CDE = x.TUESDAY_CDE,
+                WEDNESDAY_CDE = x.WEDNESDAY_CDE,
+                THURSDAY_CDE = x.THURSDAY_CDE,
+                FRIDAY_CDE = x.FRIDAY_CDE,
+                BEGIN_TIME = x.BEGIN_TIME,
+                END_TIME = x.END_TIME
+            });
         }
 
 

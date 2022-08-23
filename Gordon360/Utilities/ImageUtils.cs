@@ -22,7 +22,7 @@ namespace Gordon360.Utilities
             {
                 File.Delete(imagePath);
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 //If there wasn't an image there, the only reason
                 //was that no image was associated with the news item,
@@ -39,14 +39,14 @@ namespace Gordon360.Utilities
         /// <returns>The base64 data of the image</returns>
         public static string RetrieveImageFromPath(string imagePath)
         {
-            string imageData = null;
+            string? imageData = null;
 
             if (imagePath != null)
             {
                 imageData = GetBase64ImageDataFromPath(imagePath);
             }
 
-            return imageData;
+            return imageData ?? "";
         }
 
         /// <summary>
@@ -59,16 +59,16 @@ namespace Gordon360.Utilities
         /// <param name="imagePath">The path to which the image belongs</param>
         /// <param name="imageData">The base64 image data to be stored</param>
         /// <param name="format">The format to save the image as. Defaults to Jpeg</param>
-        public static void UploadImage(string imagePath, string imageData, ImageFormat format = null)
+        public static void UploadImage(string imagePath, string imageData, ImageFormat? format = null)
         {
             if (imageData == null) { return; }
 
-            if (!Directory.Exists(Path.GetDirectoryName(imagePath)))
+            if (Path.GetDirectoryName(imagePath) is string path && !Directory.Exists(path))
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(imagePath));
+                Directory.CreateDirectory(path);
             }
 
-            byte[] imageDataArray = System.Convert.FromBase64String(imageData);
+            byte[] imageDataArray = Convert.FromBase64String(imageData);
 
             try
             {
@@ -84,11 +84,31 @@ namespace Gordon360.Utilities
                 return;//Saving image was successful
             }
 
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
                 System.Diagnostics.Debug.WriteLine("Something went wrong trying to save an image to " + imagePath);
             }
+        }
+
+        /// <summary>
+        /// Uploads image from HTTP FormFile
+        /// </summary>
+        /// <remarks>
+        /// Takes image data and writes it to an image file. Note that if the target path
+        /// already has a file, the method will overwrite it (which gives no errors)
+        /// </remarks>
+        /// <param name="imagePath">The path to which the image belongs</param>
+        /// <param name="imageData">The image data to be stored</param>
+        public async static void UploadImageAsync(string imagePath, IFormFile imageData)
+        {
+            if (Path.GetDirectoryName(imagePath) is string path && !Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            using var stream = File.Create(imagePath);
+            await imageData.CopyToAsync(stream);
         }
 
         public static async Task<string> DownloadImageFromURL(string url)

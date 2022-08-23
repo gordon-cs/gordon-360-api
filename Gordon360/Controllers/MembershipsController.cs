@@ -17,10 +17,10 @@ namespace Gordon360.Controllers
         private readonly IMembershipService _membershipService;
         private readonly IActivityService _activityService;
 
-        public MembershipsController(CCTContext context)
+        public MembershipsController(CCTContext context, IActivityService activityService)
         {
             _membershipService = new MembershipService(context);
-            _activityService = new ActivityService(context);
+            _activityService = activityService;
         }
 
         /// <summary>
