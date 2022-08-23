@@ -126,12 +126,7 @@ namespace Gordon360.Controllers
             var id = _accountService.GetAccountByUsername(username).GordonID;
             var strengths = _profileService.GetCliftonStrengths(int.Parse(id));
 
-            if (strengths is null)
-            {
-                return NotFound("No strengths were found for this user");
-            }
-
-            return Ok(strengths.Themes);
+            return Ok(strengths?.Themes ?? Array.Empty<string>());
         }
 
 
@@ -141,15 +136,10 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("{username}/clifton")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
-        public ActionResult<CliftonStrengthsViewModel> GetCliftonStrengths(string username)
+        public ActionResult<CliftonStrengthsViewModel?> GetCliftonStrengths(string username)
         {
             var id = _accountService.GetAccountByUsername(username).GordonID;
             var strengths = _profileService.GetCliftonStrengths(int.Parse(id));
-
-            if (strengths is null)
-            {
-                return NotFound("No strengths were found for this user");
-            }
 
             return Ok(strengths);
         }
