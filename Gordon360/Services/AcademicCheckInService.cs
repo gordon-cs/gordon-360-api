@@ -115,7 +115,20 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
             }
 
-            return (IEnumerable<AcademicCheckInViewModel>)result;
+            return result.Select(x => new AcademicCheckInViewModel
+            {
+                FinancialHold = x.FinancialHold ?? false,
+                HighSchoolHold = x.HighSchoolHold ?? false,
+                MedicalHold = x.MedicalHold ?? false,
+                MajorHold = x.MajorHold ?? false,
+                RegistrarHold = x.RegistrarHold ?? false,
+                LaVidaHold = x.LaVidaHold ?? false,
+                MustRegisterForClasses = x.MustRegisterForClasses ?? false,
+                NewStudent = x.NewStudent,
+                FinancialHoldText = x.FinancialHoldText,
+                MeetingDate = x.MeetingDate,
+                MeetingLocations = x.MeetingLocations
+            });
         }
 
         /// <summary> Sets the user as having been checked in </summary>
