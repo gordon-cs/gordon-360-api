@@ -89,16 +89,14 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
             }
 
-            var result = (IEnumerable<ChapelEventViewModel>)await _context.Procedures.EVENTS_BY_STUDENT_IDAsync(username);
+            var result = _context.ChapelEvent.Where(c => c.CHBarcode == account.Barcode && c.CHTermCD == term);
 
-            // Confirm that result is not empty
-            if (result == null)
+            if (result is not IEnumerable<ChapelEventViewModel> chapelEvents)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The student was not found" };
+                return Enumerable.Empty<AttendedEventViewModel>();
             }
 
-            return result
-                .Where(x => x.CHTermCD.Trim().Equals(term))
+            return chapelEvents
                 .Join(
                     Events,
                     c => c.LiveID,
