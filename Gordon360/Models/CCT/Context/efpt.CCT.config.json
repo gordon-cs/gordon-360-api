@@ -374,10 +374,6 @@
          "ObjectType": 1
       },
       {
-         "Name": "[dbo].[EVENTS_BY_STUDENT_ID]",
-         "ObjectType": 1
-      },
-      {
          "Name": "[dbo].[FINALIZATION_GET_FINALIZATION_STATUS]",
          "ObjectType": 1
       },

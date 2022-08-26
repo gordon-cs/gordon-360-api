@@ -45,7 +45,6 @@ namespace Gordon360.Models.CCT.Context
         Task<int> DINING_INFO_BY_STUDENT_IDAsync(int? STUDENT_ID, string SESS_CDE, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<DISTINCT_ACT_TYPEResult>> DISTINCT_ACT_TYPEAsync(string SESS_CDE, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<EMAILS_PER_ACT_CDEResult>> EMAILS_PER_ACT_CDEAsync(string ACT_CDE, string SESS_CDE, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<List<EVENTS_BY_STUDENT_IDResult>> EVENTS_BY_STUDENT_IDAsync(string STU_USERNAME, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<FINALIZATION_GET_FINALIZATION_STATUSResult>> FINALIZATION_GET_FINALIZATION_STATUSAsync(int? UserID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<FINALIZATION_GETDEMOGRAPHICResult>> FINALIZATION_GETDEMOGRAPHICAsync(string UserID, string FeatureID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<FINALIZATION_GETHOLDSBYIDResult>> FINALIZATION_GETHOLDSBYIDAsync(int? ID_NUM, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
