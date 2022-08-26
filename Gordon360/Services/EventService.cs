@@ -24,6 +24,7 @@ namespace Gordon360.Services
     {
         private readonly CCTContext _context;
         private readonly IMemoryCache _cache;
+        private readonly IAccountService _accountService;
 
         /**
          * URL to retrieve events from the 25Live API. 
@@ -41,10 +42,11 @@ namespace Gordon360.Services
             return task.GetAwaiter().GetResult();
         });
 
-        public EventService(CCTContext context, IMemoryCache cache)
+        public EventService(CCTContext context, IMemoryCache cache, IAccountService accountService)
         {
             _context = context;
             _cache = cache;
+            _accountService = accountService;
         }
 
         /// <summary>
@@ -81,13 +83,9 @@ namespace Gordon360.Services
         /// <param name="username"> The student's AD Username</param>
         /// <param name="term"> The current term</param>
         /// <returns></returns>
-        public async Task<IEnumerable<AttendedEventViewModel>> GetEventsForStudentByTermAsync(string username, string term)
+        public IEnumerable<AttendedEventViewModel> GetEventsForStudentByTerm(string username, string term)
         {
-            var studentExists = _context.ACCOUNT.Where(x => x.AD_Username.Trim() == username.Trim()).Any();
-            if (!studentExists)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
-            }
+            var account = _accountService.GetAccountByUsername(username);
 
             var result = _context.ChapelEvent.Where(c => c.CHBarcode == account.Barcode && c.CHTermCD == term);
 
