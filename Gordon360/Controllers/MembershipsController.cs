@@ -221,7 +221,7 @@ namespace Gordon360.Controllers
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
             var viewerGroups = AuthUtils.GetGroups(User);
 
-            if (viewerGroups.Contains(AuthGroup.SiteAdmin) || viewerGroups.Contains(AuthGroup.Police))              //super admin and gordon police reads all
+            if (username == authenticatedUserUsername || viewerGroups.Contains(AuthGroup.SiteAdmin) || viewerGroups.Contains(AuthGroup.Police))              //super admin and gordon police reads all
                 return Ok(result);
             else
             {
