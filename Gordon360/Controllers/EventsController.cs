@@ -15,19 +15,19 @@ namespace Gordon360.Controllers
     {
         private readonly IEventService _eventService;
 
-        public EventsController(CCTContext context, IMemoryCache cache)
+        public EventsController(IEventService eventService)
         {
-            _eventService = new EventService(context, cache);
+            _eventService = eventService;
         }
 
         [HttpGet]
         [Route("attended/{term}")]
-        public async Task<ActionResult<IEnumerable<AttendedEventViewModel>>> GetEventsByTermAsync(string term)
+        public ActionResult<IEnumerable<AttendedEventViewModel>> GetEventsByTerm(string term)
         {
             //get token data from context, username is the username of current logged in person
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
-            var result = await _eventService.GetEventsForStudentByTermAsync(authenticatedUserUsername, term);
+            var result = _eventService.GetEventsForStudentByTerm(authenticatedUserUsername, term);
 
             if (result == null)
             {

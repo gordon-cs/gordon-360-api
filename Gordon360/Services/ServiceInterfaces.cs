@@ -44,7 +44,7 @@ namespace Gordon360.Services
 
     public interface IEventService
     {
-        Task<IEnumerable<AttendedEventViewModel>> GetEventsForStudentByTermAsync(string username, string term);
+        IEnumerable<AttendedEventViewModel> GetEventsForStudentByTerm(string username, string term);
         IEnumerable<EventViewModel> GetAllEvents();
         IEnumerable<EventViewModel> GetPublicEvents();
         IEnumerable<EventViewModel> GetCLAWEvents();

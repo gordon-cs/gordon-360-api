@@ -47,7 +47,6 @@ namespace Gordon360.Models.CCT.Context
             modelBuilder.Entity<CURRENT_SESSIONResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<DISTINCT_ACT_TYPEResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<EMAILS_PER_ACT_CDEResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<EVENTS_BY_STUDENT_IDResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<FINALIZATION_GET_FINALIZATION_STATUSResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<FINALIZATION_GETDEMOGRAPHICResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<FINALIZATION_GETHOLDSBYIDResult>().HasNoKey().ToView(null);
@@ -1231,33 +1230,6 @@ namespace Gordon360.Models.CCT.Context
                 parameterreturnValue,
             };
             var _ = await _context.SqlQueryAsync<EMAILS_PER_ACT_CDEResult>("EXEC @returnValue = [dbo].[EMAILS_PER_ACT_CDE] @ACT_CDE, @SESS_CDE", sqlParameters, cancellationToken);
-
-            returnValue?.SetValue(parameterreturnValue.Value);
-
-            return _;
-        }
-
-        public virtual async Task<List<EVENTS_BY_STUDENT_IDResult>> EVENTS_BY_STUDENT_IDAsync(string STU_USERNAME, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
-        {
-            var parameterreturnValue = new SqlParameter
-            {
-                ParameterName = "returnValue",
-                Direction = System.Data.ParameterDirection.Output,
-                SqlDbType = System.Data.SqlDbType.Int,
-            };
-
-            var sqlParameters = new []
-            {
-                new SqlParameter
-                {
-                    ParameterName = "STU_USERNAME",
-                    Size = 30,
-                    Value = STU_USERNAME ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.Char,
-                },
-                parameterreturnValue,
-            };
-            var _ = await _context.SqlQueryAsync<EVENTS_BY_STUDENT_IDResult>("EXEC @returnValue = [dbo].[EVENTS_BY_STUDENT_ID] @STU_USERNAME", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 

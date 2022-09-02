@@ -1405,7 +1405,7 @@
             </summary>
             <returns>All CLAW Events</returns>
         </member>
-        <member name="M:Gordon360.Services.EventService.GetEventsForStudentByTermAsync(System.String,System.String)">
+        <member name="M:Gordon360.Services.EventService.GetEventsForStudentByTerm(System.String,System.String)">
             <summary>
             Returns all attended events for a student in a specific term
             </summary>
