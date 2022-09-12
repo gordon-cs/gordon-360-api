@@ -8,8 +8,5 @@ namespace Gordon360.Models.ViewModels
         public string Email { get; set; }
         public string AccessCode { get; set; }
         public string UploadResult { get; set; }
-
     }
-
-
 }

@@ -29,7 +29,7 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.CLIFTON_STRENGTHS)]
         public ActionResult<IEnumerable<CliftonStrengthsUploadResultViewModel>> Post([FromBody] CliftonStrengthsViewModel[] csArr)
         {
-            IEnumerable<CliftonStrengthsUploadResultViewModel> uploadResults = csArr.Select<CliftonStrengthsViewModel, CliftonStrengthsUploadResultViewModel>(cs =>
+            IEnumerable<CliftonStrengthsUploadResultViewModel> uploadResults = csArr.Select(cs =>
             {
                 AccountViewModel account;
                 try
@@ -44,19 +44,7 @@ namespace Gordon360.Controllers
                         UploadResult = "Not Found"
                     };
                 }
-                int gordonID;
-                if (account != null)
-                {
-                    gordonID = int.Parse(account.GordonID);
-                }
-                else
-                {
-                    return new CliftonStrengthsUploadResultViewModel() {
-                        Email = cs.Email,
-                        AccessCode = cs.AccessCode,
-                        UploadResult = "Not Found"
-                    };
-                }
+                int gordonID = int.Parse(account.GordonID);
                 string rowState;
 
                 Clifton_Strengths? existing = _context.Clifton_Strengths.FirstOrDefault(x => x.ID_NUM == gordonID);
