@@ -47,7 +47,7 @@ namespace Gordon360.Controllers
                 int gordonID;
                 if (account != null)
                 {
-                    Int32.TryParse(account.GordonID, out gordonID);
+                    var gordonID = int.Parse(account.GordonID);
                 }
                 else
                 {
