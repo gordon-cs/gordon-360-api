@@ -15,8 +15,8 @@ namespace Gordon360.Controllers
     [Route("api/[controller]")]
     public class CliftonStrengthsController : GordonControllerBase
     {
-        private CCTContext _context;
-        private IAccountService _accountsService;
+        private readonly CCTContext _context;
+        private readonly IAccountService _accountsService;
 
         public CliftonStrengthsController(CCTContext context, IAccountService accountService)
         {
