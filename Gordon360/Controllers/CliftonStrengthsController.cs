@@ -27,7 +27,7 @@ namespace Gordon360.Controllers
         [HttpPost]
         [Route("")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_BY_ACTIVITY)]
-        public ActionResult<IEnumerable<CliftonStrengthsUploadViewModel>> Post([FromBody] CliftonStrengthsUploadViewModel[] csArr)
+        public ActionResult<IEnumerable<AddCliftonStrengthsViewModel>> Post([FromBody] CliftonStrengthsUploadViewModel[] csArr)
         {
             AddCliftonStrengthsViewModel[] toReturn = csArr.Select<CliftonStrengthsUploadViewModel, AddCliftonStrengthsViewModel>(cs =>
             {
