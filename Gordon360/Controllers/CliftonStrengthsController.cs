@@ -26,35 +26,35 @@ namespace Gordon360.Controllers
 
         [HttpPost]
         [Route("")]
-        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_BY_ACTIVITY)]
-        public ActionResult<IEnumerable<AddCliftonStrengthsViewModel>> Post([FromBody] CliftonStrengthsUploadViewModel[] csArr)
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.CLIFTON_STRENGTHS)]
+        public ActionResult<IEnumerable<CliftonStrengthsUploadResultViewModel>> Post([FromBody] CliftonStrengthsViewModel[] csArr)
         {
-            AddCliftonStrengthsViewModel[] toReturn = csArr.Select<CliftonStrengthsUploadViewModel, AddCliftonStrengthsViewModel>(cs =>
+            IEnumerable<CliftonStrengthsUploadResultViewModel> uploadResults = csArr.Select<CliftonStrengthsViewModel, CliftonStrengthsUploadResultViewModel>(cs =>
             {
-                AccountViewModel? account;
+                AccountViewModel account;
                 try
                 {
                     account = _accountsService.GetAccountByEmail(cs.Email);
                 }
                 catch (ResourceNotFoundException e)
                 {
-                    return new AddCliftonStrengthsViewModel() {
+                    return new CliftonStrengthsUploadResultViewModel() {
                         Email = cs.Email,
                         AccessCode = cs.AccessCode,
-                        RowState = "Not Found"
+                        UploadResult = "Not Found"
                     };
                 }
                 int gordonID;
                 if (account != null)
                 {
-                    var gordonID = int.Parse(account.GordonID);
+                    gordonID = int.Parse(account.GordonID);
                 }
                 else
                 {
-                    return new AddCliftonStrengthsViewModel() {
+                    return new CliftonStrengthsUploadResultViewModel() {
                         Email = cs.Email,
                         AccessCode = cs.AccessCode,
-                        RowState = "Not Found"
+                        UploadResult = "Not Found"
                     };
                 }
                 string rowState;
@@ -65,11 +65,11 @@ namespace Gordon360.Controllers
                 {
                     if (existing != null)
                     {
-                        existing.THEME_1 = cs.Theme1;
-                        existing.THEME_2 = cs.Theme2;
-                        existing.THEME_3 = cs.Theme3;
-                        existing.THEME_4 = cs.Theme4;
-                        existing.THEME_5 = cs.Theme5;
+                        existing.THEME_1 = cs.Themes[0];
+                        existing.THEME_2 = cs.Themes[1];
+                        existing.THEME_3 = cs.Themes[2];
+                        existing.THEME_4 = cs.Themes[3];
+                        existing.THEME_5 = cs.Themes[4];
                         existing.DTE_COMPLETED = cs.DateCompleted;
                         rowState = _context.Clifton_Strengths.Update(existing).State.ToString();
                     }
@@ -79,35 +79,30 @@ namespace Gordon360.Controllers
                         {
                             ACCESS_CODE = cs.AccessCode,
                             ID_NUM = gordonID,
-                            THEME_1 = cs.Theme1,
-                            THEME_2 = cs.Theme2,
-                            THEME_3 = cs.Theme3,
-                            THEME_4 = cs.Theme4,
-                            THEME_5 = cs.Theme5,
-                            DTE_COMPLETED = cs.DateCompleted,
+                            THEME_1 = cs.Themes[0],
+                            THEME_2 = cs.Themes[1],
+                            THEME_3 = cs.Themes[2],
+                            THEME_4 = cs.Themes[3],
+                            THEME_5 = cs.Themes[4],
+                        DTE_COMPLETED = cs.DateCompleted,
                             EMAIL = cs.Email,
                             Private = false
                         }).State.ToString();
                     }
                     _context.SaveChanges();
                 }
-                catch (Exception e)
+                catch
                 {
-                    return new AddCliftonStrengthsViewModel()
-                    {
-                        Email = cs.Email,
-                        AccessCode = cs.AccessCode,
-                        RowState = "Failed"
-                    };
+                    rowState = "Failed";
                 }
 
-                return new AddCliftonStrengthsViewModel() {
+                return new CliftonStrengthsUploadResultViewModel() {
                     Email = cs.Email,
                     AccessCode = cs.AccessCode,
-                    RowState = rowState
+                    UploadResult = rowState
                 };
-            }).ToArray<AddCliftonStrengthsViewModel>();
-            return Ok(toReturn);
+            });
+            return Ok(uploadResults);
         }
     }
 }

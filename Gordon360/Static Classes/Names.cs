@@ -25,6 +25,7 @@
         public const string NEWS = "A student news resource";
         public const string CHECKIN = "Info relating to a student's Academic Check-In";
         public const string SHIFT = "A shift that a student has worked";
+        public const string CLIFTON_STRENGTHS = "A student's uploaded clifton strengthsfinder results";
 
         // Partial resources, to be targetted by Operation.READ_PARTIAL
         public const string MEMBERSHIP_REQUEST_BY_ACTIVITY = "Membership Request Resources associated with an activity";

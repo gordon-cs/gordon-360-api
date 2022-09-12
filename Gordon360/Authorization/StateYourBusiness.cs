@@ -399,6 +399,10 @@ namespace Gordon360.Authorization
                             return true;
                         return false;
                     }
+                case Resource.CLIFTON_STRENGTHS:
+                    {
+                        return user_groups.Contains(AuthGroup.SiteAdmin);
+                    }
 
                 case Resource.MEMBERSHIP:
                     {
