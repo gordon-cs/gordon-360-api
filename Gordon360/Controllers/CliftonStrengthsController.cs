@@ -1,4 +1,3 @@
-﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
