@@ -48,9 +48,54 @@ namespace Gordon360.Services
             {
                 throw new ResourceCreationException() { ExceptionMessage = "There was an error creating the membership. Verify that a similar membership doesn't already exist." };
             }
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
             return membership;
+
+        }
+
+        /// <summary>
+        /// Adds a new Membership record to storage. Since we can't establish foreign key constraints and relationships on the database side,
+        /// we do it here by using the validateMembership() method.
+        /// </summary>
+        /// <param name="memberships">The memberships to be added</param>
+        /// <returns>The newly added Membership object</returns>
+        public async Task<IEnumerable<MembershipAddResultViewModel>> AddBulkAsync(IEnumerable<MEMBERSHIP> memberships)
+        {
+
+            IEnumerable<MembershipAddResultViewModel> membershipResults = new List<MembershipAddResultViewModel>();
+
+            foreach (MEMBERSHIP membership in memberships)
+            {
+                MembershipAddResultViewModel membershipResult = new MembershipAddResultViewModel() { membership = membership };
+                try
+                {
+                    await ValidateMembershipAsync(membershipResult.membership);
+                    IsPersonAlreadyInActivity(membershipResult.membership);
+                }
+                catch (ResourceNotFoundException rnf)
+                {
+                    membershipResult.textResult = rnf.Message;
+                    membershipResults.Append(membershipResult);
+                }
+                catch (ResourceCreationException rc)
+                {
+                    membershipResult.textResult = rc.Message;
+                    membershipResults.Append(membershipResult);
+                }
+
+                var sessionCode = await _context.CM_SESSION_MSTR.Where(x => x.SESS_CDE.Equals(membershipResult.membership.SESS_CDE)).FirstOrDefaultAsync();
+                membershipResult.membership.BEGIN_DTE = (DateTime)sessionCode.SESS_BEGN_DTE;
+
+                // The Add() method returns the added membership.
+                var payload = await _context.MEMBERSHIP.AddAsync(membershipResult.membership);
+                await _context.SaveChangesAsync();
+
+                membershipResult.textResult = payload.State.ToString();
+                membershipResults.Append(membershipResult);
+            }
+            Console.WriteLine(membershipResults.Count());
+            return membershipResults;
 
         }
 

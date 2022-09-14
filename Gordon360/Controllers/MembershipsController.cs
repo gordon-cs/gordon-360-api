@@ -201,6 +201,19 @@ namespace Gordon360.Controllers
 
         }
 
+        /// <summary>Create a new membership item to be added to database</summary>
+        /// <param name="memberships">The membership item containing all required and relevant information</param>
+        /// <returns>The array of membership add results</returns>
+        /// <remarks>Posts a new membership to the server to be added into the database</remarks>
+        // POST api/<controller>
+        [HttpPost]
+        [Route("bulk", Name = "Memberships Bulk")]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.MEMBERSHIP)]
+        public async Task<ActionResult<MembershipAddResultViewModel[]>> PostBulkAsync([FromBody] MEMBERSHIP[] memberships)
+        {
+            return Ok(await _membershipService.AddBulkAsync(memberships));
+        }
+
         /// <summary>
         /// Fetch memberships that a specific student has been a part of
         /// @TODO: Move security checks to state your business? Or consider changing implementation here

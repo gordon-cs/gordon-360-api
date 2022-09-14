@@ -183,6 +183,7 @@ namespace Gordon360.Services
         Task<int> GetActivityFollowersCountAsync(string idactivityCode);
         Task<int> GetActivityMembersCountAsync(string activityCode);
         Task<MEMBERSHIP> AddAsync(MEMBERSHIP membership);
+        Task<IEnumerable<MembershipAddResultViewModel>> AddBulkAsync(IEnumerable<MEMBERSHIP> memberships);
         Task<MEMBERSHIP> UpdateAsync(int membershipID, MEMBERSHIP membership);
         Task<MEMBERSHIP> ToggleGroupAdminAsync(int membershipID, MEMBERSHIP membership);
         void TogglePrivacy(int membershipID, bool isPrivate);

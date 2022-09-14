@@ -33,11 +33,11 @@ builder.Services.AddCors(p => p.AddPolicy(name: corsPolicy, corsBuilder =>
 }));
 
 builder.Services.AddDbContext<CCTContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("CCT"))
+    options.UseSqlServer(builder.Configuration.GetConnectionString("CCT")), ServiceLifetime.Transient, ServiceLifetime.Transient
 ).AddDbContext<MyGordonContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MyGordon"))
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MyGordon")), ServiceLifetime.Transient, ServiceLifetime.Transient
 ).AddDbContext<StudentTimesheetsContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("StudentTimesheets"))
+    options.UseSqlServer(builder.Configuration.GetConnectionString("StudentTimesheets")), ServiceLifetime.Transient, ServiceLifetime.Transient
 );
 
 builder.Services.AddScoped<IAccountService, AccountService>();

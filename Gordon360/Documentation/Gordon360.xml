@@ -527,6 +527,12 @@
             <returns></returns>
             <remarks>Posts a new membership to the server to be added into the database</remarks>
         </member>
+        <member name="M:Gordon360.Controllers.MembershipsController.PostBulkAsync(Gordon360.Models.CCT.MEMBERSHIP[])">
+            <summary>Create a new membership item to be added to database</summary>
+            <param name="memberships">The membership item containing all required and relevant information</param>
+            <returns>The array of membership add results</returns>
+            <remarks>Posts a new membership to the server to be added into the database</remarks>
+        </member>
         <member name="M:Gordon360.Controllers.MembershipsController.GetMembershipsForStudentByUsenameAsync(System.String)">
             <summary>
             Fetch memberships that a specific student has been a part of
@@ -1602,6 +1608,14 @@
             we do it here by using the validateMembership() method.
             </summary>
             <param name="membership">The membership to be added</param>
+            <returns>The newly added Membership object</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.AddBulkAsync(System.Collections.Generic.IEnumerable{Gordon360.Models.CCT.MEMBERSHIP})">
+            <summary>
+            Adds a new Membership record to storage. Since we can't establish foreign key constraints and relationships on the database side,
+            we do it here by using the validateMembership() method.
+            </summary>
+            <param name="memberships">The memberships to be added</param>
             <returns>The newly added Membership object</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.Delete(System.Int32)">
