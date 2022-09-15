@@ -96,14 +96,45 @@ namespace Gordon360.Models.ViewModels
             return MaidenName?.ToLower().Contains(searchString) ?? false;
         }
 
+        /// <summary>
+        /// Matches basic info fields against <c>search</c>, returning a match key representing the value and precedence of the first match, or <c>null</c>.
+        /// </summary>
+        /// 
+        /// <remarks>
+        /// The match key is leading 'z's equal to the precedence of the match, followed by the matched field.
+        /// This key, when used to sort aplhabetically, will sort matched accounts by the precedence of the matched field and alphabetically within precedence level.
+        /// The precedence of a match is determined by the following, in order:
+        /// <list type="number">
+        /// <item><description>How the search matches the field</description>
+        ///     <list type="number">
+        ///         <item><description>Equals</description></item>
+        ///         <item><description>Starts With</description></item>
+        ///         <item><description>Contains</description></item>
+        ///     </list>
+        /// </item>
+        /// <item><description>Which field the search matches</description>
+        ///     <list type="number">
+        ///         <item><description>FirstName</description></item>
+        ///         <item><description>NickName</description></item>
+        ///         <item><description>LastName</description></item>
+        ///         <item><description>MaidenName</description></item>
+        ///         <item><description>UserName</description></item>
+        ///     </list>
+        /// </item>
+        /// </list>
+        /// 
+        /// </remarks>
+        /// 
+        /// <param name="search">The search input to match against</param>
+        /// <returns>The match key if <c>search</c> matched a field, or <c>null</c></returns>
         public string? MatchSearch(string search)
         {
             (string, int)? match = this switch
             {
-                _ when FirstNameMatches(search) => (FirstName, 0),
-                _ when NicknameMatches(search) => (Nickname, 1),
-                _ when LastNameMatches(search) => (LastName, 2),
-                _ when MaidenNameMatches(search) => (MaidenName, 3),
+                _ when FirstNameEquals(search) => (FirstName, 0),
+                _ when NicknameEquals(search) => (Nickname, 1),
+                _ when LastNameEquals(search) => (LastName, 2),
+                _ when MaidenNameEquals(search) => (MaidenName, 3),
                 _ when FirstNameStartsWith(search) => (FirstName, 4),
                 _ when NicknameStartsWith(search) => (Nickname, 5),
                 _ when LastNameStartsWith(search) => (LastName, 6),
@@ -123,12 +154,44 @@ namespace Gordon360.Models.ViewModels
             return string.Concat(Enumerable.Repeat("z", matchPrecedence)) + matchedValue;
         }
 
+        /// <summary>
+        /// Matches basic info fields against the first and last names of a search, returning a match key representing the value and precedence of the first match, or <c>null</c>.
+        /// </summary>
+        /// 
+        /// <remarks>
+        /// The match key is leading 'z's equal to the precedence of both matches, followed by the matched fields (first then last), separated by a '1' to sort short first names above longer first names.
+        /// This key, when used to sort aplhabetically, will sort matched accounts by the precedence of the matched field and alphabetically within precedence level.
+        /// The precedence of a match is determined by the following, in order:
+        /// <list type="number">
+        /// <item><description>How the search matches the field</description>
+        ///     <list type="number">
+        ///         <item><description>Equals</description></item>
+        ///         <item><description>Starts With</description></item>
+        ///         <item><description>Contains</description></item>
+        ///     </list>
+        /// </item>
+        /// <item><description>Which field the search matches</description>
+        ///     <list type="number">
+        ///         <item><description>FirstName</description></item>
+        ///         <item><description>NickName</description></item>
+        ///         <item><description>LastName</description></item>
+        ///         <item><description>MaidenName</description></item>
+        ///         <item><description>UserName</description></item>
+        ///     </list>
+        /// </item>
+        /// </list>
+        /// 
+        /// </remarks>
+        /// 
+        /// <param name="firstnameSearch">The first name of the search input to match against</param>
+        /// <param name="lastnameSearch">The last name of the search input to match against</param>
+        /// <returns>The match key if first and last name both matched a field, or <c>null</c></returns>
         public string? MatchSearch(string firstnameSearch, string lastnameSearch)
         {
             (string, int)? firstname = this switch
             {
-                _ when FirstNameMatches(firstnameSearch) => (FirstName, 0),
-                _ when NicknameMatches(firstnameSearch) => (Nickname, 1),
+                _ when FirstNameEquals(firstnameSearch) => (FirstName, 0),
+                _ when NicknameEquals(firstnameSearch) => (Nickname, 1),
                 _ when FirstNameStartsWith(firstnameSearch) => (FirstName, 4),
                 _ when NicknameStartsWith(firstnameSearch) => (Nickname, 5),
                 _ when UsernameFirstNameStartsWith(firstnameSearch) => (GetFirstNameFromUsername(), 8),
@@ -141,8 +204,8 @@ namespace Gordon360.Models.ViewModels
 
             (string, int)? lastname = this switch
             {
-                _ when LastNameMatches(lastnameSearch) => (LastName, 2),
-                _ when MaidenNameMatches(lastnameSearch) => (MaidenName, 3),
+                _ when LastNameEquals(lastnameSearch) => (LastName, 2),
+                _ when MaidenNameEquals(lastnameSearch) => (MaidenName, 3),
                 _ when LastNameStartsWith(lastnameSearch) => (LastName, 6),
                 _ when MaidenNameStartsWith(lastnameSearch) => (MaidenName, 7),
                 _ when UsernameLastNameStartsWith(lastnameSearch) => (GetLastNameFromUsername(), 9),
@@ -158,31 +221,5 @@ namespace Gordon360.Models.ViewModels
 
             return string.Concat(Enumerable.Repeat("z", totalPrecedence)) + keyBase;
         }
-
-        /// <Summary>
-        ///   This function generates a key for each account
-        ///   The key is of the form "z...keyBase" where z is repeated precedence times.
-        /// </Summary>
-        /// <remarks>
-        ///   The leading precedence number of z's are used to put keep the highest precedence matches first.
-        ///   The keyBase is used to sort within the precedence level.
-        /// </remarks>
-        ///
-        /// <param name="keyBase">The base value to use for the key - i.e. the user's highest precedence info that matches the search string</param>
-        /// <param name="precedence">Set where in the dictionary this key group will be ordered</param>
-
-
-        /// <Summary>
-        ///   This function generates a key for each account
-        ///   The key is of the form "z...firstname1lastname" where z is repeated precedence times.
-        /// </Summary>
-        /// <remarks>
-        ///   The leading precedence number of z's are used to put keep the highest precedence matches first.
-        ///   The keyBase is used to sort within the precedence level.
-        /// </remarks>
-        ///
-        /// <param name="firstnameKey">The firstname value to use for the key - i.e. the user's highest precedence firstname info that matches the search string</param>
-        /// <param name="lastnameKey">The lastname value to use for the key - i.e. the user's highest precedence lastname info that matches the search string</param>
-        /// <param name="precedence">Set where in the dictionary this key group will be ordered</param>
     }
 }
