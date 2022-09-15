@@ -87,12 +87,9 @@ namespace Gordon360.Controllers
 
             Parallel.ForEach(accounts, account =>
             {
-                var match = MatchSearch(searchString, account);
-
-                if (match is not null)
+                if (account.MatchSearch(searchString) is (string match, int precedence))
                 {
-                    var (matchedValue, precedence) = match.Value;
-                    var key = GenerateKey(matchedValue, precedence);
+                    var key = GenerateKey(match, precedence);
                     while (!matches.TryAdd(key, account)) key += "1";
                 }
             });
@@ -114,17 +111,15 @@ namespace Gordon360.Controllers
             var accounts = await _accountService.GetAllBasicInfoExceptAlumniAsync();
 
             var matches = new ConcurrentDictionary<string, BasicInfoViewModel>();
-
             Parallel.ForEach(accounts, account =>
             {
-                var firstnameMatch = MatchSearchInFirstName(firstnameSearch, account);
-                var lastnameMatch = MatchSearchInLastName(lastnameSearch, account);
-
-                if (firstnameMatch is not null && lastnameMatch is not null)
+                if (account.MatchSearch(firstnameSearch, lastnameSearch) is
+                    (string firstnameMatch,
+                     int    firstnamePrecedence,
+                        string lastnameMatch,
+                     int    lastnamePrecedence))
                 {
-                    var (firstnameMatchedValue, firstnamePrecedence) = firstnameMatch.Value;
-                    var (lastnameMatchedValue, lastnamePrecedence) = lastnameMatch.Value;
-                    var key = GenerateKey(firstnameMatchedValue, lastnameMatchedValue, firstnamePrecedence + lastnamePrecedence);
+                    string key = GenerateKey(firstnameMatch, lastnameMatch, firstnamePrecedence + lastnamePrecedence);
                     while (!matches.TryAdd(key, account)) key += "1";
                 }
             });
@@ -223,59 +218,6 @@ namespace Gordon360.Controllers
         private static string GenerateKey(string firstnameKey, string lastnameKey, int precedence)
         {
             return string.Concat(Enumerable.Repeat("z", precedence)) + $"{firstnameKey}1${lastnameKey}";
-        }
-
-        private static (string matchedValue, int precedence)? MatchSearch(string search, BasicInfoViewModel account)
-        {
-            return account switch
-            {
-                _ when account.FirstNameMatches(search) => (account.FirstName, 0),
-                _ when account.NicknameMatches(search) => (account.Nickname, 1),
-                _ when account.LastNameMatches(search) => (account.LastName, 2),
-                _ when account.MaidenNameMatches(search) => (account.MaidenName, 3),
-                _ when account.FirstNameStartsWith(search) => (account.FirstName, 4),
-                _ when account.NicknameStartsWith(search) => (account.Nickname, 5),
-                _ when account.LastNameStartsWith(search) => (account.LastName, 6),
-                _ when account.MaidenNameStartsWith(search) => (account.MaidenName, 7),
-                _ when account.UsernameFirstNameStartsWith(search) => (account.GetFirstNameFromUsername(), 8),
-                _ when account.UsernameLastNameStartsWith(search) => (account.GetLastNameFromUsername(), 9),
-                _ when account.FirstNameContains(search) => (account.FirstName, 10),
-                _ when account.NicknameContains(search) => (account.Nickname, 11),
-                _ when account.LastNameContains(search) => (account.LastName, 12),
-                _ when account.MaidenNameContains(search) => (account.MaidenName, 13),
-                _ when account.UsernameContains(search) => (account.UserName, 14),
-                _ => null
-            };
-        }
-
-        private static (string matchedValue, int precedence)? MatchSearchInFirstName(string search, BasicInfoViewModel account)
-        {
-            return account switch
-            {
-                _ when account.FirstNameMatches(search) => (account.FirstName, 0),
-                _ when account.NicknameMatches(search) => (account.Nickname, 1),
-                _ when account.FirstNameStartsWith(search) => (account.FirstName, 4),
-                _ when account.NicknameStartsWith(search) => (account.Nickname, 5),
-                _ when account.UsernameFirstNameStartsWith(search) => (account.GetFirstNameFromUsername(), 8),
-                _ when account.FirstNameContains(search) => (account.FirstName, 10),
-                _ when account.NicknameContains(search) => (account.Nickname, 11),
-                _ => null
-            };
-        }
-
-        private static (string matchedValue, int precedence)? MatchSearchInLastName(string search, BasicInfoViewModel account)
-        {
-            return account switch
-            {
-                _ when account.LastNameMatches(search) => (account.LastName, 2),
-                _ when account.MaidenNameMatches(search) => (account.MaidenName, 3),
-                _ when account.LastNameStartsWith(search) => (account.LastName, 6),
-                _ when account.MaidenNameStartsWith(search) => (account.MaidenName, 7),
-                _ when account.UsernameLastNameStartsWith(search) => (account.GetLastNameFromUsername(), 9),
-                _ when account.LastNameContains(search) => (account.LastName, 12),
-                _ when account.MaidenNameContains(search) => (account.MaidenName, 13),
-                _ => null
-            };
         }
     }
 }

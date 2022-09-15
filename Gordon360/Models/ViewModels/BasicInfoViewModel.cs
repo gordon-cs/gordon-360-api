@@ -26,89 +26,145 @@ namespace Gordon360.Models.ViewModels
             return vm;
         }
 
-        public bool FirstNameMatches(string matchString)
+        private bool FirstNameMatches(string matchString)
         {
             return FirstName?.ToLower() == matchString;
         }
 
-        public bool FirstNameStartsWith(string searchString)
+        private bool FirstNameStartsWith(string searchString)
         {
             return FirstName?.ToLower()?.StartsWith(searchString) ?? false;
         }
 
-        public bool FirstNameContains(string searchString)
+        private bool FirstNameContains(string searchString)
         {
             return FirstName?.ToLower()?.Contains(searchString) ?? false;
         }
 
-        public bool LastNameMatches(string matchString)
+        private bool LastNameMatches(string matchString)
         {
             return LastName?.ToLower() == matchString;
         }
 
-        public bool LastNameStartsWith(string searchString)
+        private bool LastNameStartsWith(string searchString)
         {
             return LastName?.ToLower()?.StartsWith(searchString) ?? false;
         }
 
-        public bool LastNameContains(string searchString)
+        private bool LastNameContains(string searchString)
         {
             return LastName?.ToLower()?.Contains(searchString) ?? false;
         }
 
-        public bool UsernameFirstNameStartsWith(string searchString)
+        private bool UsernameFirstNameStartsWith(string searchString)
         {
             return GetFirstNameFromUsername()?.StartsWith(searchString) ?? false;
         }
 
-        public bool UsernameLastNameStartsWith(string searchString)
+        private bool UsernameLastNameStartsWith(string searchString)
         {
             return GetLastNameFromUsername()?.StartsWith(searchString) ?? false;
         }
 
-        public bool UsernameContains(string searchString)
+        private bool UsernameContains(string searchString)
         {
             return UserName?.ToLower()?.Contains(searchString) ?? false;
         }
 
-        public string GetFirstNameFromUsername()
+        private string GetFirstNameFromUsername()
         {
-            return UserName?.Split('.')?[0];
+            return UserName?.Split('.')?[0] ?? "";
         }
 
-        public string GetLastNameFromUsername()
+        private string GetLastNameFromUsername()
         {
-            return UserName.Contains('.') ? UserName?.Split('.')?[1] : null;
+            return UserName.Contains('.') ? UserName?.Split('.')?[1] ?? "" : "";
         }
 
-        public bool NicknameMatches(string matchString)
+        private bool NicknameMatches(string matchString)
         {
             return Nickname?.ToLower() == matchString;
         }
 
-        public bool NicknameStartsWith(string searchString)
+        private bool NicknameStartsWith(string searchString)
         {
             return Nickname?.ToLower().StartsWith(searchString) ?? false;
         }
 
-        public bool NicknameContains(string searchString)
+        private bool NicknameContains(string searchString)
         {
             return Nickname?.ToLower().Contains(searchString) ?? false;
         }
 
-        public bool MaidenNameMatches(string matchString)
+        private bool MaidenNameMatches(string matchString)
         {
             return MaidenName?.ToLower() == matchString;
         }
 
-        public bool MaidenNameStartsWith(string searchString)
+        private bool MaidenNameStartsWith(string searchString)
         {
             return MaidenName?.ToLower().StartsWith(searchString) ?? false;
         }
 
-        public bool MaidenNameContains(string searchString)
+        private bool MaidenNameContains(string searchString)
         {
             return MaidenName?.ToLower().Contains(searchString) ?? false;
+        }
+
+        public (string matchedValue, int precedence)? MatchSearch(string search)
+        {
+            return this switch
+            {
+                _ when FirstNameMatches(search) => (FirstName, 0),
+                _ when NicknameMatches(search) => (Nickname, 1),
+                _ when LastNameMatches(search) => (LastName, 2),
+                _ when MaidenNameMatches(search) => (MaidenName, 3),
+                _ when FirstNameStartsWith(search) => (FirstName, 4),
+                _ when NicknameStartsWith(search) => (Nickname, 5),
+                _ when LastNameStartsWith(search) => (LastName, 6),
+                _ when MaidenNameStartsWith(search) => (MaidenName, 7),
+                _ when UsernameFirstNameStartsWith(search) => (GetFirstNameFromUsername(), 8),
+                _ when UsernameLastNameStartsWith(search) => (GetLastNameFromUsername(), 9),
+                _ when FirstNameContains(search) => (FirstName, 10),
+                _ when NicknameContains(search) => (Nickname, 11),
+                _ when LastNameContains(search) => (LastName, 12),
+                _ when MaidenNameContains(search) => (MaidenName, 13),
+                _ when UsernameContains(search) => (UserName, 14),
+                _ => null
+            };
+        }
+
+        public (string firstnameMatch, int firstnamePrecedence, string lastnameMatch, int lastnamePrecedence)? MatchSearch(string firstnameSearch, string lastnameSearch)
+        {
+            (string, int)? firstname = this switch
+            {
+                _ when FirstNameMatches(firstnameSearch) => (FirstName, 0),
+                _ when NicknameMatches(firstnameSearch) => (Nickname, 1),
+                _ when FirstNameStartsWith(firstnameSearch) => (FirstName, 4),
+                _ when NicknameStartsWith(firstnameSearch) => (Nickname, 5),
+                _ when UsernameFirstNameStartsWith(firstnameSearch) => (GetFirstNameFromUsername(), 8),
+                _ when FirstNameContains(firstnameSearch) => (FirstName, 10),
+                _ when NicknameContains(firstnameSearch) => (Nickname, 11),
+                _ => null
+            };
+
+            if (firstname is not (string firstnameMatch, int firstnamePrecedence)) return null;
+
+            (string, int)? lastname = this switch
+            {
+                _ when LastNameMatches(lastnameSearch) => (LastName, 2),
+                _ when MaidenNameMatches(lastnameSearch) => (MaidenName, 3),
+                _ when LastNameStartsWith(lastnameSearch) => (LastName, 6),
+                _ when MaidenNameStartsWith(lastnameSearch) => (MaidenName, 7),
+                _ when UsernameLastNameStartsWith(lastnameSearch) => (GetLastNameFromUsername(), 9),
+                _ when LastNameContains(lastnameSearch) => (LastName, 12),
+                _ when MaidenNameContains(lastnameSearch) => (MaidenName, 13),
+                _ => null
+            };
+
+            if (lastname is not (string lastnameMatch, int lastnamePrecedence)) return null;
+
+            return (firstnameMatch, firstnamePrecedence, lastnameMatch, lastnamePrecedence);
         }
     }
 }
