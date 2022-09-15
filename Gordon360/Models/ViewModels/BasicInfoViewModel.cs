@@ -8,7 +8,6 @@ namespace Gordon360.Models.ViewModels
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string UserName { get; set; }
-        public string ConcatonatedInfo { get; set; }
         public string Nickname { get; set; }
         public string MaidenName { get; set; }
 
