@@ -4,6 +4,7 @@ using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -82,9 +83,9 @@ namespace Gordon360.Controllers
         {
             var accounts = await _accountService.GetAllBasicInfoExceptAlumniAsync();
 
-            var matches = new SortedDictionary<string, BasicInfoViewModel>();
+            var matches = new ConcurrentDictionary<string, BasicInfoViewModel>();
 
-            foreach (var account in accounts)
+            Parallel.ForEach(accounts, account =>
             {
                 var match = MatchSearch(searchString, account);
 
@@ -92,12 +93,11 @@ namespace Gordon360.Controllers
                 {
                     var (matchedValue, precedence) = match.Value;
                     var key = GenerateKey(matchedValue, precedence);
-                    while (matches.ContainsKey(key)) key += "1";
-                    matches.Add(key, account);
+                    while (!matches.TryAdd(key, account)) key += "1";
                 }
-            }
+            });
 
-            return Ok(matches.Values);
+            return Ok(matches.OrderBy(pair => pair.Key).Select(pair => pair.Value));
         }
 
         /// <summary>
@@ -113,9 +113,9 @@ namespace Gordon360.Controllers
         {
             var accounts = await _accountService.GetAllBasicInfoExceptAlumniAsync();
 
-            var matches = new SortedDictionary<string, BasicInfoViewModel>();
+            var matches = new ConcurrentDictionary<string, BasicInfoViewModel>();
 
-            foreach (var account in accounts)
+            Parallel.ForEach(accounts, account =>
             {
                 var firstnameMatch = MatchSearchInFirstName(firstnameSearch, account);
                 var lastnameMatch = MatchSearchInLastName(lastnameSearch, account);
@@ -125,12 +125,11 @@ namespace Gordon360.Controllers
                     var (firstnameMatchedValue, firstnamePrecedence) = firstnameMatch.Value;
                     var (lastnameMatchedValue, lastnamePrecedence) = lastnameMatch.Value;
                     var key = GenerateKey(firstnameMatchedValue, lastnameMatchedValue, firstnamePrecedence + lastnamePrecedence);
-                    while (matches.ContainsKey(key)) key += "1";
-                    matches.Add(key, account);
+                    while (!matches.TryAdd(key, account)) key += "1";
                 }
-            }
+            });
 
-            return Ok(matches.Values);
+            return Ok(matches.OrderBy(pair => pair.Key).Select(pair => pair.Value));
         }
 
         /// <summary>
