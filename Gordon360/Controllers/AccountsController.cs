@@ -83,17 +83,13 @@ namespace Gordon360.Controllers
         {
             var accounts = await _accountService.GetAllBasicInfoExceptAlumniAsync();
 
-            var matches = new ConcurrentDictionary<string, BasicInfoViewModel>();
+            var searchResults = accounts.AsParallel()
+                .Select(account => (matchKey: account.MatchSearch(searchString), account))
+                .Where(pair => pair.matchKey is not null)
+                .OrderBy(pair => pair.matchKey)
+                .Select(pair => pair.account);
 
-            Parallel.ForEach(accounts, account =>
-            {
-                if (account.MatchSearch(searchString) is string sortKey)
-                {
-                    while (!matches.TryAdd(sortKey, account)) sortKey += "1";
-                }
-            });
-
-            return Ok(matches.OrderBy(pair => pair.Key).Select(pair => pair.Value));
+            return Ok(searchResults);
         }
 
         /// <summary>
@@ -109,16 +105,13 @@ namespace Gordon360.Controllers
         {
             var accounts = await _accountService.GetAllBasicInfoExceptAlumniAsync();
 
-            var matches = new ConcurrentDictionary<string, BasicInfoViewModel>();
-            Parallel.ForEach(accounts, account =>
-            {
-                if (account.MatchSearch(firstnameSearch, lastnameSearch) is string sortKey)
-                {
-                    while (!matches.TryAdd(sortKey, account)) sortKey += "1";
-                }
-            });
+            var searchResults = accounts.AsParallel()
+                .Select(account => (matchKey: account.MatchSearch(firstnameSearch, lastnameSearch), account))
+                .Where(pair => pair.matchKey is not null)
+                .OrderBy(pair => pair.matchKey)
+                .Select(pair => pair.account);
 
-            return Ok(matches.OrderBy(pair => pair.Key).Select(pair => pair.Value));
+            return Ok(searchResults);
         }
 
         /// <summary>
