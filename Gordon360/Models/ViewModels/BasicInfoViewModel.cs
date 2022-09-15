@@ -1,4 +1,5 @@
 ﻿using Gordon360.Models.CCT;
+using System.Linq;
 
 namespace Gordon360.Models.ViewModels
 {
@@ -111,9 +112,9 @@ namespace Gordon360.Models.ViewModels
             return MaidenName?.ToLower().Contains(searchString) ?? false;
         }
 
-        public (string matchedValue, int precedence)? MatchSearch(string search)
+        public string? MatchSearch(string search)
         {
-            return this switch
+            (string, int)? match = this switch
             {
                 _ when FirstNameMatches(search) => (FirstName, 0),
                 _ when NicknameMatches(search) => (Nickname, 1),
@@ -132,9 +133,13 @@ namespace Gordon360.Models.ViewModels
                 _ when UsernameContains(search) => (UserName, 14),
                 _ => null
             };
+
+            if (match is not (string matchedValue, int matchPrecedence)) return null;
+
+            return string.Concat(Enumerable.Repeat("z", matchPrecedence)) + matchedValue;
         }
 
-        public (string firstnameMatch, int firstnamePrecedence, string lastnameMatch, int lastnamePrecedence)? MatchSearch(string firstnameSearch, string lastnameSearch)
+        public string? MatchSearch(string firstnameSearch, string lastnameSearch)
         {
             (string, int)? firstname = this switch
             {
@@ -164,7 +169,36 @@ namespace Gordon360.Models.ViewModels
 
             if (lastname is not (string lastnameMatch, int lastnamePrecedence)) return null;
 
-            return (firstnameMatch, firstnamePrecedence, lastnameMatch, lastnamePrecedence);
+            var totalPrecedence = firstnamePrecedence + lastnamePrecedence;
+            var keyBase = $"{firstnameMatch}1${lastnameMatch}";
+
+            return string.Concat(Enumerable.Repeat("z", totalPrecedence)) + keyBase;
         }
+
+        /// <Summary>
+        ///   This function generates a key for each account
+        ///   The key is of the form "z...keyBase" where z is repeated precedence times.
+        /// </Summary>
+        /// <remarks>
+        ///   The leading precedence number of z's are used to put keep the highest precedence matches first.
+        ///   The keyBase is used to sort within the precedence level.
+        /// </remarks>
+        ///
+        /// <param name="keyBase">The base value to use for the key - i.e. the user's highest precedence info that matches the search string</param>
+        /// <param name="precedence">Set where in the dictionary this key group will be ordered</param>
+
+
+        /// <Summary>
+        ///   This function generates a key for each account
+        ///   The key is of the form "z...firstname1lastname" where z is repeated precedence times.
+        /// </Summary>
+        /// <remarks>
+        ///   The leading precedence number of z's are used to put keep the highest precedence matches first.
+        ///   The keyBase is used to sort within the precedence level.
+        /// </remarks>
+        ///
+        /// <param name="firstnameKey">The firstname value to use for the key - i.e. the user's highest precedence firstname info that matches the search string</param>
+        /// <param name="lastnameKey">The lastname value to use for the key - i.e. the user's highest precedence lastname info that matches the search string</param>
+        /// <param name="precedence">Set where in the dictionary this key group will be ordered</param>
     }
 }

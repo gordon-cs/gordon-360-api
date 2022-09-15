@@ -87,10 +87,9 @@ namespace Gordon360.Controllers
 
             Parallel.ForEach(accounts, account =>
             {
-                if (account.MatchSearch(searchString) is (string match, int precedence))
+                if (account.MatchSearch(searchString) is string sortKey)
                 {
-                    var key = GenerateKey(match, precedence);
-                    while (!matches.TryAdd(key, account)) key += "1";
+                    while (!matches.TryAdd(sortKey, account)) sortKey += "1";
                 }
             });
 
@@ -113,14 +112,9 @@ namespace Gordon360.Controllers
             var matches = new ConcurrentDictionary<string, BasicInfoViewModel>();
             Parallel.ForEach(accounts, account =>
             {
-                if (account.MatchSearch(firstnameSearch, lastnameSearch) is
-                    (string firstnameMatch,
-                     int    firstnamePrecedence,
-                     string lastnameMatch,
-                     int    lastnamePrecedence))
+                if (account.MatchSearch(firstnameSearch, lastnameSearch) is string sortKey)
                 {
-                    string key = GenerateKey(firstnameMatch, lastnameMatch, firstnamePrecedence + lastnamePrecedence);
-                    while (!matches.TryAdd(key, account)) key += "1";
+                    while (!matches.TryAdd(sortKey, account)) sortKey += "1";
                 }
             });
 
@@ -168,57 +162,22 @@ namespace Gordon360.Controllers
                 accountTypes.Remove("student");
             }
 
-            var searchResults = _accountService.AdvancedSearch(
-                accountTypes,
-                firstname?.ToLower() ?? "",
-                lastname?.ToLower() ?? "",
-                major ?? "",
-                minor ?? "",
-                hall ?? "",
-                classType ?? "",
-                homeCity?.ToLower() ?? "",
-                state ?? "",
-                country ?? "",
-                department ?? "",
-                building ?? "");
+            var searchResults = _accountService.AdvancedSearch(accountTypes,
+                                                               firstname?.ToLower() ?? "",
+                                                               lastname?.ToLower() ?? "",
+                                                               major ?? "",
+                                                               minor ?? "",
+                                                               hall ?? "",
+                                                               classType ?? "",
+                                                               homeCity?.ToLower() ?? "",
+                                                               state ?? "",
+                                                               country ?? "",
+                                                               department ?? "",
+                                                               building ?? "");
 
 
             // Return all of the profile views
             return Ok(searchResults);
-        }
-
-        /// <Summary>
-        ///   This function generates a key for each account
-        ///   The key is of the form "z...keyBase" where z is repeated precedence times.
-        /// </Summary>
-        /// <remarks>
-        ///   The leading precedence number of z's are used to put keep the highest precedence matches first.
-        ///   The keyBase is used to sort within the precedence level.
-        /// </remarks>
-        ///
-        /// <param name="keyBase">The base value to use for the key - i.e. the user's highest precedence info that matches the search string</param>
-        /// <param name="precedence">Set where in the dictionary this key group will be ordered</param>
-        private static string GenerateKey(string keyBase, int precedence)
-        {
-            return string.Concat(Enumerable.Repeat("z", precedence)) + keyBase;
-        }
-
-
-        /// <Summary>
-        ///   This function generates a key for each account
-        ///   The key is of the form "z...firstname1lastname" where z is repeated precedence times.
-        /// </Summary>
-        /// <remarks>
-        ///   The leading precedence number of z's are used to put keep the highest precedence matches first.
-        ///   The keyBase is used to sort within the precedence level.
-        /// </remarks>
-        ///
-        /// <param name="firstnameKey">The firstname value to use for the key - i.e. the user's highest precedence firstname info that matches the search string</param>
-        /// <param name="lastnameKey">The lastname value to use for the key - i.e. the user's highest precedence lastname info that matches the search string</param>
-        /// <param name="precedence">Set where in the dictionary this key group will be ordered</param>
-        private static string GenerateKey(string firstnameKey, string lastnameKey, int precedence)
-        {
-            return string.Concat(Enumerable.Repeat("z", precedence)) + $"{firstnameKey}1${lastnameKey}";
         }
     }
 }
