@@ -11,22 +11,7 @@ namespace Gordon360.Models.ViewModels
         public string Nickname { get; set; }
         public string MaidenName { get; set; }
 
-        public static implicit operator BasicInfoViewModel(ACCOUNT a)
-        {
-            BasicInfoViewModel vm = new BasicInfoViewModel
-            {
-                FirstName = a.firstname,
-                LastName = a.lastname,
-                UserName = a.AD_Username ?? "",
-                ConcatonatedInfo = "",
-                Nickname = "",
-                MaidenName = ""
-            };
-
-            return vm;
-        }
-
-        private bool FirstNameMatches(string matchString)
+        private bool FirstNameEquals(string matchString)
         {
             return FirstName?.ToLower() == matchString;
         }
@@ -41,7 +26,7 @@ namespace Gordon360.Models.ViewModels
             return FirstName?.ToLower()?.Contains(searchString) ?? false;
         }
 
-        private bool LastNameMatches(string matchString)
+        private bool LastNameEquals(string matchString)
         {
             return LastName?.ToLower() == matchString;
         }
@@ -81,7 +66,7 @@ namespace Gordon360.Models.ViewModels
             return UserName.Contains('.') ? UserName?.Split('.')?[1] ?? "" : "";
         }
 
-        private bool NicknameMatches(string matchString)
+        private bool NicknameEquals(string matchString)
         {
             return Nickname?.ToLower() == matchString;
         }
@@ -96,7 +81,7 @@ namespace Gordon360.Models.ViewModels
             return Nickname?.ToLower().Contains(searchString) ?? false;
         }
 
-        private bool MaidenNameMatches(string matchString)
+        private bool MaidenNameEquals(string matchString)
         {
             return MaidenName?.ToLower() == matchString;
         }
