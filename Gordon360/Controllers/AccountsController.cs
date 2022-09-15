@@ -116,7 +116,7 @@ namespace Gordon360.Controllers
                 if (account.MatchSearch(firstnameSearch, lastnameSearch) is
                     (string firstnameMatch,
                      int    firstnamePrecedence,
-                        string lastnameMatch,
+                     string lastnameMatch,
                      int    lastnamePrecedence))
                 {
                     string key = GenerateKey(firstnameMatch, lastnameMatch, firstnamePrecedence + lastnamePrecedence);
@@ -148,17 +148,17 @@ namespace Gordon360.Controllers
         [Route("advanced-people-search")]
         public async Task<ActionResult<IEnumerable<AdvancedSearchViewModel>>> AdvancedPeopleSearchAsync(
             [FromQuery] List<string> accountTypes,
-            string? firstname = "",
-            string? lastname = "",
-            string? major = "",
-            string? minor = "",
-            string? hall = "",
-            string? classType = "",
-            string? homeCity = "",
-            string? state = "",
-            string? country = "",
-            string? department = "",
-            string? building = "")
+            string? firstname,
+            string? lastname,
+            string? major,
+            string? minor,
+            string? hall,
+            string? classType,
+            string? homeCity,
+            string? state,
+            string? country,
+            string? department,
+            string? building)
         {
             var viewerGroups = AuthUtils.GetGroups(User);
 
@@ -168,18 +168,19 @@ namespace Gordon360.Controllers
                 accountTypes.Remove("student");
             }
 
-            var searchResults = _accountService.AdvancedSearch(accountTypes,
-                                                               firstname?.ToLower(),
-                                                               lastname?.ToLower(),
-                                                               major,
-                                                               minor,
-                                                               hall,
-                                                               classType,
-                                                               homeCity?.ToLower(),
-                                                               state,
-                                                               country,
-                                                               department,
-                                                               building);
+            var searchResults = _accountService.AdvancedSearch(
+                accountTypes,
+                firstname?.ToLower() ?? "",
+                lastname?.ToLower() ?? "",
+                major ?? "",
+                minor ?? "",
+                hall ?? "",
+                classType ?? "",
+                homeCity?.ToLower() ?? "",
+                state ?? "",
+                country ?? "",
+                department ?? "",
+                building ?? "");
 
 
             // Return all of the profile views
