@@ -55,8 +55,8 @@ namespace Gordon360.Services
         /// Fetches the account record with the specified email.
         /// </summary>
         /// <param name="email">The email address associated with the account.</param>
-        /// <returns>the student account information</returns>
-        public AccountViewModel GetAccountByEmail(string email)
+        /// <returns>the student id number</returns>
+        public int GetGordonIDFromEmail(string email)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.email == email);
             if (account == null)
@@ -64,7 +64,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
             }
 
-            return account;
+            return account.gordon_id;
         }
 
         /// <summary>

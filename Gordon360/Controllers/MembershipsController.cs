@@ -15,12 +15,14 @@ namespace Gordon360.Controllers
     public class MembershipsController : GordonControllerBase
     {
         private readonly IMembershipService _membershipService;
+        private readonly IAccountService _accountService;
         private readonly IActivityService _activityService;
 
-        public MembershipsController(CCTContext context, IActivityService activityService)
+        public MembershipsController(CCTContext context, IActivityService activityService, IAccountService accountService)
         {
             _membershipService = new MembershipService(context);
             _activityService = activityService;
+            _accountService = accountService;
         }
 
         /// <summary>
@@ -188,9 +190,10 @@ namespace Gordon360.Controllers
         [HttpPost]
         [Route("", Name = "Memberships")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.MEMBERSHIP)]
-        public async Task<ActionResult<MEMBERSHIP>> PostAsync([FromBody] MEMBERSHIP membership)
+        public async Task<ActionResult<MembershipUploadViewModel>> PostAsync([FromBody] MembershipUploadViewModel membership)
         {
-            var result = await _membershipService.AddAsync(membership);
+            membership.GordonID = _accountService.GetGordonIDFromEmail(membership.email);
+            var result = await _membershipService.AddAsync((MEMBERSHIP)membership);
 
             if (result == null)
             {
