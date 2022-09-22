@@ -8,6 +8,7 @@
    "ModelNamespace": null,
    "OutputContextPath": "Models\/CCT\/Context",
    "OutputPath": "Models\/CCT",
+   "PreserveCasingWithRegex": true,
    "ProjectRootNamespace": "Gordon360",
    "Schemas": null,
    "SelectedHandlebarsLanguage": 0,
@@ -135,6 +136,86 @@
       },
       {
          "Name": "[dbo].[Users]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[League]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[LeagueStatus]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[LeagueType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[Match]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[MatchStatus]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[PrivType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[RoleType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[Series]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[SeriesType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[Sport]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[Sportmanship]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[Statistic]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[Surface]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[Team]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[TeamStatus]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[User]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[UserLeague]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[UserStatus]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[UserStatusHistory]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[UserTeam]",
          "ObjectType": 0
       },
       {
@@ -727,5 +808,6 @@
    "UseNodaTime": false,
    "UseNullableReferences": false,
    "UseSchemaFolders": false,
-   "UseSpatial": false
+   "UseSpatial": false,
+   "UseT4": false
 }

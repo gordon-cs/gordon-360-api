@@ -8,18 +8,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
-    [Table("Config", Schema = "dbo")]
-    public partial class Config
+    [Table("Sportmanship", Schema = "RecIM")]
+    public partial class Sportmanship
     {
         [Key]
         public int ID { get; set; }
-        [Required]
-        [StringLength(50)]
-        [Unicode(false)]
-        public string Key { get; set; }
-        [Required]
-        [StringLength(50)]
-        [Unicode(false)]
-        public string Value { get; set; }
+        public int TeamID { get; set; }
+        public int Rating { get; set; }
+        [Column(TypeName = "datetime")]
+        public DateTime Time { get; set; }
+
+        [ForeignKey("TeamID")]
+        [InverseProperty("Sportmanship")]
+        public virtual Team Team { get; set; }
     }
 }

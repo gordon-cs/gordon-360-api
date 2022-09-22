@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
+    [Table("Slider_Images", Schema = "dbo")]
     public partial class Slider_Images
     {
         [Key]
