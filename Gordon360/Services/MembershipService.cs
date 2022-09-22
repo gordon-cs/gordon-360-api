@@ -18,10 +18,12 @@ namespace Gordon360.Services
     public class MembershipService : IMembershipService
     {
         private readonly CCTContext _context;
+        private IAccountService _accountService;
 
-        public MembershipService(CCTContext context)
+        public MembershipService(CCTContext context, IAccountService accountService)
         {
             _context = context;
+            _accountService = accountService;
         }
 
         /// <summary>
@@ -30,27 +32,26 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="membership">The membership to be added</param>
         /// <returns>The newly added Membership object</returns>
-        public async Task<MEMBERSHIP> AddAsync(MEMBERSHIP membership)
+        public async Task<MembershipView> AddAsync(MembershipUploadViewModel membership)
         {
             // validate returns a boolean value.
             await ValidateMembershipAsync(membership);
             IsPersonAlreadyInActivity(membership);
 
-            // Get session begin date of the membership
-            var sessionCode = await _context.CM_SESSION_MSTR.Where(x => x.SESS_CDE.Equals(membership.SESS_CDE)).FirstOrDefaultAsync();
-            membership.BEGIN_DTE = (DateTime)sessionCode.SESS_BEGN_DTE;
 
             // The Add() method returns the added membership.
-            var payload = await _context.MEMBERSHIP.AddAsync(membership);
+            var payload = await _context.MEMBERSHIP.AddAsync(MembershipUploadToMEMBERSHIP(membership));
 
             // There is a unique constraint in the Database on columns (ID_NUM, PART_LVL, SESS_CDE and ACT_CDE)
-            if (payload == null)
+            if (payload?.Entity == null)
             {
                 throw new ResourceCreationException() { ExceptionMessage = "There was an error creating the membership. Verify that a similar membership doesn't already exist." };
+            } else
+            {
+                await _context.SaveChangesAsync();
+                return MEMBERSHIPToMembershipView(payload.Entity);
             }
-            await _context.SaveChangesAsync();
 
-            return membership;
 
         }
 
@@ -59,7 +60,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="membershipID">The membership id</param>
         /// <returns>The membership that was just deleted</returns>
-        public MEMBERSHIP Delete(int membershipID)
+        public MembershipView Delete(int membershipID)
         {
             var result = _context.MEMBERSHIP.Find(membershipID);
             if (result == null)
@@ -69,7 +70,7 @@ namespace Gordon360.Services
             _context.MEMBERSHIP.Remove(result);
             _context.SaveChanges();
 
-            return result;
+            return MEMBERSHIPToMembershipView(result);
         }
 
         /// <summary>	
@@ -77,9 +78,9 @@ namespace Gordon360.Services
         /// </summary>	
         /// <param name="membershipID">The membership id</param>	
         /// <returns>MembershipViewModel if found, null if not found</returns>	
-        public MEMBERSHIP GetSpecificMembership(int membershipID)
+        public MembershipView GetSpecificMembership(int membershipID)
         {
-            MEMBERSHIP result = _context.MEMBERSHIP.Find(membershipID);
+            MembershipView result = _context.MembershipView.FirstOrDefault(m => m.MembershipID == membershipID);
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
@@ -89,70 +90,18 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// Fetches all membership records from storage.
-        /// </summary>
-        /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        public async Task<IEnumerable<MembershipViewModel>> GetAllAsync()
-        {
-            var allMemberships = await _context.Procedures.ALL_MEMBERSHIPSAsync();
-
-            return allMemberships.OrderByDescending(m => m.StartDate).Select(m => new MembershipViewModel
-            {
-                MembershipID = m.MembershipID,
-                ActivityCode = m.ActivityCode.Trim(),
-                ActivityDescription = m.ActivityDescription.Trim(),
-                ActivityImagePath = m.ActivityImagePath,
-                SessionCode = m.SessionCode.Trim(),
-                SessionDescription = m.SessionDescription.Trim(),
-                IDNumber = m.IDNumber,
-                FirstName = m.FirstName.Trim(),
-                LastName = m.LastName.Trim(),
-                Participation = m.Participation.Trim(),
-                ParticipationDescription = m.ParticipationDescription.Trim(),
-                StartDate = m.StartDate,
-                EndDate = m.EndDate,
-                Description = m.Description,
-                GroupAdmin = m.GroupAdmin,
-                Privacy = m.Privacy
-            });
-        }
-
-        /// <summary>
         /// Fetches the memberships associated with the activity whose code is specified by the parameter.
         /// </summary>
         /// <param name="activityCode">The activity code.</param>
         /// <param name="sessionCode">Optional code of session to get memberships for</param>
         /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        public async Task<IEnumerable<MembershipViewModel>> GetMembershipsForActivityAsync(string activityCode, string? sessionCode = null)
+        public IEnumerable<MembershipView> GetMembershipsForActivity(string activityCode, string? sessionCode = null)
         {
-            IEnumerable<MEMBERSHIPS_PER_ACT_CDEResult> memberships = await _context.Procedures.MEMBERSHIPS_PER_ACT_CDEAsync(activityCode);
+            //IEnumerable<MEMBERSHIPS_PER_ACT_CDEResult> memberships = await _context.Procedures.MEMBERSHIPS_PER_ACT_CDEAsync(activityCode);
 
-            if (sessionCode != null)
-            {
-                memberships = memberships.Where(m => m.SessionCode.Trim() == sessionCode);
-            }
-
-            return memberships.OrderByDescending(x => x.StartDate).Select(m => new MembershipViewModel
-            {
-                MembershipID = m.MembershipID,
-                ActivityCode = m.ActivityCode.Trim(),
-                ActivityDescription = m.ActivityDescription.Trim(),
-                ActivityImagePath = m.ActivityImagePath,
-                SessionCode = m.SessionCode.Trim(),
-                SessionDescription = m.SessionDescription.Trim(),
-                IDNumber = m.IDNumber,
-                AD_Username = m.AD_Username,
-                FirstName = m.FirstName.Trim(),
-                LastName = m.LastName.Trim(),
-                Mail_Location = m.Mail_Location,
-                Participation = m.Participation.Trim(),
-                ParticipationDescription = m.ParticipationDescription.Trim(),
-                StartDate = m.StartDate,
-                EndDate = m.EndDate,
-                Description = m.Description,
-                GroupAdmin = m.GroupAdmin,
-                AccountPrivate = m.AccountPrivate
-            });
+            return _context.MembershipView
+                .Where(m => m.SessionCode.Trim() == sessionCode && m.ActivityCode == activityCode)
+                .OrderByDescending(m => m.StartDate);
         }
 
         /// <summary>
@@ -160,10 +109,9 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="activityCode">The activity code.</param>
         /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        public async Task<IEnumerable<MembershipViewModel>> GetGroupAdminMembershipsForActivityAsync(string activityCode)
+        public IEnumerable<MembershipView> GetGroupAdminMembershipsForActivity(string activityCode)
         {
-            var memberships = await GetMembershipsForActivityAsync(activityCode);
-            return memberships.Where(m => m.GroupAdmin == true);
+            return _context.MembershipView.Where(m => m.ActivityCode == activityCode && m.GroupAdmin == true);
         }
 
         /// <summary>
@@ -171,11 +119,10 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="activityCode">The activity code.</param>
         /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        public async Task<IEnumerable<MembershipViewModel>> GetLeaderMembershipsForActivityAsync(string activityCode)
+        public IEnumerable<MembershipView> GetLeaderMembershipsForActivity(string activityCode)
         {
             var leaderRole = Helpers.GetLeaderRoleCodes();
-            var memberships = await GetMembershipsForActivityAsync(activityCode);
-            return memberships.Where(x => x.Participation == leaderRole);
+            return _context.MembershipView.Where(m => m.ActivityCode == activityCode && m.Participation == leaderRole);
         }
 
         /// <summary>
@@ -183,12 +130,11 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="activityCode">The activity code.</param>
         /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        public async Task<IEnumerable<MembershipViewModel>> GetAdvisorMembershipsForActivityAsync(string activityCode)
+        public IEnumerable<MembershipView> GetAdvisorMembershipsForActivity(string activityCode)
         {
 
             var advisorRole = Helpers.GetAdvisorRoleCodes();
-            var memberships = await GetMembershipsForActivityAsync(activityCode);
-            return memberships.Where(x => x.Participation == advisorRole);
+            return _context.MembershipView.Where(m => m.ActivityCode == activityCode && m.Participation == advisorRole);
         }
 
         /// <summary>
@@ -196,7 +142,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">The student's AD Username.</param>
         /// <returns>A MembershipViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
-        public async Task<IEnumerable<MembershipViewModel>> GetMembershipsForStudentAsync(string username)
+        public IEnumerable<MembershipView> GetMembershipsForStudent(string username)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username.Trim() == username);
             if (account == null)
@@ -204,29 +150,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
             }
 
-            var memberships = await _context.Procedures.MEMBERSHIPS_PER_STUDENT_IDAsync(int.Parse(account.gordon_id));
-
-            return memberships.OrderByDescending(x => x.StartDate).Select(m => new MembershipViewModel
-            {
-                MembershipID = m.MembershipID,
-                ActivityCode = m.ActivityCode.Trim(),
-                ActivityDescription = m.ActivityDescription.Trim(),
-                ActivityImagePath = m.ActivityImagePath,
-                SessionCode = m.SessionCode.Trim(),
-                SessionDescription = m.SessionDescription.Trim(),
-                IDNumber = m.IDNumber,
-                FirstName = m.FirstName.Trim(),
-                LastName = m.LastName.Trim(),
-                Participation = m.Participation.Trim(),
-                ParticipationDescription = m.ParticipationDescription.Trim(),
-                StartDate = m.StartDate,
-                EndDate = m.EndDate,
-                Description = m.Description,
-                ActivityType = m.ActivityType.Trim(),
-                ActivityTypeDescription = m.ActivityTypeDescription.Trim(),
-                GroupAdmin = m.GroupAdmin,
-                Privacy = m.Privacy,
-            });
+            return _context.MembershipView.Where(m => m.Username == account.AD_Username).OrderByDescending(x => x.StartDate);
         }
 
         /// <summary>
@@ -234,10 +158,9 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="activityCode">The activity code.</param>
         /// <returns>int.</returns>
-        public async Task<int> GetActivityFollowersCountAsync(string activityCode)
+        public int GetActivityFollowersCount(string activityCode)
         {
-            var memberships = await GetMembershipsForActivityAsync(activityCode);
-            return memberships.Where(x => x.Participation == "GUEST").Count();
+            return _context.MembershipView.Where(m => m.ActivityCode == activityCode && m.Participation == "GUEST").Count();
         }
 
         /// <summary>
@@ -245,10 +168,9 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="activityCode">The activity code.</param>
         /// <returns>int.</returns>
-        public async Task<int> GetActivityMembersCountAsync(string activityCode)
+        public int GetActivityMembersCount(string activityCode)
         {
-            var memberships = await GetMembershipsForActivityAsync(activityCode);
-            return memberships.Where(x => x.Participation != "GUEST").Count();
+            return _context.MembershipView.Where(m => m.ActivityCode == activityCode && m.Participation != "GUEST").Count();
         }
 
         /// <summary>
@@ -257,10 +179,9 @@ namespace Gordon360.Services
         /// <param name="activityCode">The activity code.</param>
         /// <param name="sessionCode">The session code</param>
         /// <returns>int.</returns>
-        public async Task<int> GetActivityFollowersCountForSessionAsync(string activityCode, string sessionCode)
+        public int GetActivityFollowersCountForSession(string activityCode, string sessionCode)
         {
-            var memberships = await GetMembershipsForActivityAsync(activityCode);
-            return memberships.Where(x => x.Participation == "GUEST" && x.SessionCode == sessionCode).Count();
+            return _context.MembershipView.Where(m => m.ActivityCode == activityCode && m.Participation == "GUEST" && m.SessionCode == sessionCode).Count();
         }
 
         /// <summary>
@@ -268,22 +189,20 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="activityCode">The activity code.</param>
         /// <param name="sessionCode">The session code</param>
-        /// <returns>int.</returns>
-        public async Task<int> GetActivityMembersCountForSessionAsync(string activityCode, string sessionCode)
+        /// <returns>int</returns>
+        public int GetActivityMembersCountForSession(string activityCode, string sessionCode)
         {
-            var memberships = await GetMembershipsForActivityAsync(activityCode);
-            return memberships.Where(x => x.Participation != "GUEST" && x.SessionCode == sessionCode).Count();
+            return _context.MembershipView.Where(m => m.ActivityCode == activityCode && m.Participation != "GUEST" && m.SessionCode == sessionCode).Count();
         }
 
         /// <summary>
         /// Updates the membership whose id is given as the first parameter to the contents of the second parameter.
         /// </summary>
-        /// <param name="membershipID">The membership id.</param>
         /// <param name="membership">The updated membership.</param>
         /// <returns>The newly modified membership.</returns>
-        public async Task<MEMBERSHIP> UpdateAsync(int membershipID, MEMBERSHIP membership)
+        public async Task<MembershipView> UpdateAsync(MembershipUploadViewModel membership)
         {
-            var original = await _context.MEMBERSHIP.FindAsync(membershipID);
+            var original = _context.MEMBERSHIP.FirstOrDefault(m => m.MEMBERSHIP_ID == membership.MembershipID);
             if (original == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
@@ -293,25 +212,23 @@ namespace Gordon360.Services
 
             // One can only update certain fields within a membrship
             //original.BEGIN_DTE = membership.BEGIN_DTE;
-            original.COMMENT_TXT = membership.COMMENT_TXT;
+            original.COMMENT_TXT = membership.CommentText;
             //original.END_DTE = membership.END_DTE;
-            original.PART_CDE = membership.PART_CDE;
-            original.SESS_CDE = membership.SESS_CDE;
+            original.PART_CDE = membership.PartCode;
 
             await _context.SaveChangesAsync();
 
-            return original;
+            return MEMBERSHIPToMembershipView(original);
 
         }
         /// <summary>
         /// Switches the group-admin property of the person whose membership id is given
         /// </summary>
-        /// <param name="membershipID">The membership id.</param>
         /// <param name="membership">The corresponding membership object</param>
         /// <returns>The newly modified membership.</returns>
-        public async Task<MEMBERSHIP> ToggleGroupAdminAsync(int membershipID, MEMBERSHIP membership)
+        public async Task<MembershipView> ToggleGroupAdminAsync(MembershipUploadViewModel membership)
         {
-            var original = await _context.MEMBERSHIP.FindAsync(membershipID);
+            var original = await _context.MEMBERSHIP.FirstOrDefaultAsync(m => m.MEMBERSHIP_ID == membership.MembershipID);
             if (original == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
@@ -319,35 +236,34 @@ namespace Gordon360.Services
 
             await ValidateMembershipAsync(membership);
 
-            var isGuest = original.PART_CDE == "GUEST";
-
-            if (isGuest)
+            if (original.PART_CDE == "GUEST")
                 throw new ArgumentException("A guest cannot be assigned as an admin.", "Participation Level");
 
             original.GRP_ADMIN = !original.GRP_ADMIN;
 
             await _context.SaveChangesAsync();
 
-            return original;
+            return MEMBERSHIPToMembershipView(original);
         }
 
         /// <summary>
         /// Switches the privacy property of the person whose membership id is given
         /// </summary>
-        /// <param name="membershipID">The membership id.</param>
-        /// <param name="isPrivate">membership private or not</param>
+        /// <param name="membership">The membership object passed.</param>
         /// <returns>The newly modified membership.</returns>
-        public void TogglePrivacy(int membershipID, bool isPrivate)
+        public async Task<MembershipView> TogglePrivacyAsync(MembershipUploadViewModel membership)
         {
-            var original = _context.MEMBERSHIP.Find(membershipID);
+            var original = _context.MEMBERSHIP.FirstOrDefault(m => m.MEMBERSHIP_ID == membership.MembershipID);
             if (original == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
             }
 
-            original.PRIVACY = isPrivate;
+            original.PRIVACY = !original.PRIVACY;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+
+            return MEMBERSHIPToMembershipView(original);
         }
 
 
@@ -356,30 +272,30 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="membership">The membership to validate</param>
         /// <returns>True if the membership is valid. Throws ResourceNotFoundException if not. Exception is caught in an Exception Filter</returns>
-        private async Task<bool> ValidateMembershipAsync(MEMBERSHIP membership)
+        private async Task<bool> ValidateMembershipAsync(MembershipUploadViewModel membership)
         {
-            var personExists = _context.ACCOUNT.Where(x => x.gordon_id.Trim() == membership.ID_NUM.ToString()).Any();
+            var personExists = _context.ACCOUNT.Where(x => x.AD_Username == membership.Username.ToString()).Any();
             if (!personExists)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Person was not found." };
             }
-            var participationExists = _context.PART_DEF.Where(x => x.PART_CDE.Trim() == membership.PART_CDE).Any();
+            var participationExists = _context.PART_DEF.Where(x => x.PART_CDE.Trim() == membership.PartCode).Any();
             if (!participationExists)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Participation was not found." };
             }
-            var sessionExists = _context.CM_SESSION_MSTR.Where(x => x.SESS_CDE.Trim() == membership.SESS_CDE).Any();
+            var sessionExists = _context.CM_SESSION_MSTR.Where(x => x.SESS_CDE.Trim() == membership.SessCode).Any();
             if (!sessionExists)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Session was not found." };
             }
-            var activityExists = _context.ACT_INFO.Where(x => x.ACT_CDE.Trim() == membership.ACT_CDE).Any();
+            var activityExists = _context.ACT_INFO.Where(x => x.ACT_CDE.Trim() == membership.ACTCode).Any();
             if (!activityExists)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
             }
 
-            if (!(await _context.Procedures.ACTIVE_CLUBS_PER_SESS_IDAsync(membership.SESS_CDE)).Any(a => a.ACT_CDE.Trim() == membership.ACT_CDE))
+            if (!_context.JNZB_ACTIVITIES.Any(a => a.SESS_CDE == membership.SessCode && a.ACT_CDE.Trim() == membership.ACTCode))
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity is not available for this session." };
             }
@@ -387,10 +303,10 @@ namespace Gordon360.Services
             return true;
         }
 
-        private bool IsPersonAlreadyInActivity(MEMBERSHIP membershipRequest)
+        private bool IsPersonAlreadyInActivity(MembershipUploadViewModel membershipRequest)
         {
-            var personAlreadyInActivity = _context.MEMBERSHIP.Any(x => x.SESS_CDE == membershipRequest.SESS_CDE &&
-                x.ACT_CDE == membershipRequest.ACT_CDE && x.ID_NUM == membershipRequest.ID_NUM);
+            var personAlreadyInActivity = _context.MembershipView.Any(x => x.SessionCode == membershipRequest.SessCode &&
+                x.ActivityCode == membershipRequest.ACTCode && x.Username == membershipRequest.Username);
 
             if (personAlreadyInActivity)
             {
@@ -403,30 +319,39 @@ namespace Gordon360.Services
         /// <summary>	
         /// Determines whether or not the given user is a Group Admin of some activity	
         /// </summary>
-        /// <param name="gordonID">Gordon ID of the user to check</param>	
+        /// <param name="username">Username of the user to check</param>	
         /// <returns>true if student is a Group Admin, else false</returns>	
-        public bool IsGroupAdmin(int gordonID)
+        public bool IsGroupAdmin(string username)
         {
-            return _context.MEMBERSHIP.Any(membership => membership.ID_NUM == gordonID && membership.GRP_ADMIN == true);
+            return _context.MembershipView.Any(membership => membership.Username == username && membership.GroupAdmin == true);
         }
 
         public IEnumerable<EmailViewModel> MembershipEmails(string activityCode, string sessionCode, ParticipationType? participationCode = null)
         {
-            var memberships = _context.MEMBERSHIP.Where(m => m.ACT_CDE == activityCode && m.SESS_CDE == sessionCode);
+            var memberships = _context.MembershipView.Where(m => m.ActivityCode == activityCode && m.SessionCode == sessionCode);
 
             if (participationCode != null)
             {
                 if (participationCode == ParticipationType.GroupAdmin)
                 {
-                    memberships = memberships.Where(m => m.GRP_ADMIN == true);
+                    memberships = memberships.Where(m => m.GroupAdmin == true);
                 }
                 else
                 {
-                    memberships = memberships.Where(m => m.PART_CDE == participationCode.Value);
+                    memberships = memberships.Where(m => m.Participation == participationCode.Value);
                 }
             }
 
-            return memberships.Join(_context.ACCOUNT, m => m.ID_NUM.ToString(), a => a.gordon_id, (m, a) => new EmailViewModel { Email = a.email, FirstName = a.firstname, LastName = a.lastname });
+            return memberships.Join(
+                _context.ACCOUNT,
+                m => m.Username.ToString(),
+                a => a.AD_Username,
+                (m, a) => new EmailViewModel {
+                    Email = a.email,
+                    FirstName = a.firstname,
+                    LastName = a.lastname
+                }
+            );
         }
 
         public class ParticipationType
@@ -443,6 +368,37 @@ namespace Gordon360.Services
             // NOTE: Group admin is not strictly a participation type, it's a separate role that Advisors and Leaders can have, with a separate flag in the database
             // BUT, it's convenient to treat it as a participation type in several places throughout the API
             public static ParticipationType GroupAdmin { get { return new ParticipationType("GRP_ADMIN"); } }
+        }
+
+        private MEMBERSHIP MembershipUploadToMEMBERSHIP(MembershipUploadViewModel membership)
+        {
+            var sessionCode = _context.CM_SESSION_MSTR
+                .Where(x => x.SESS_CDE.Equals(membership.SessCode))
+                .FirstOrDefault();
+
+            return new MEMBERSHIP() {
+                MEMBERSHIP_ID = membership.MembershipID,
+                ACT_CDE = membership.ACTCode,
+                SESS_CDE = membership.SessCode,
+                ID_NUM = int.Parse(_accountService.GetAccountByUsername(membership.Username).GordonID),
+                BEGIN_DTE = (DateTime?)sessionCode?.SESS_BEGN_DTE ?? DateTime.Now,
+                PART_CDE = membership.PartCode,
+                COMMENT_TXT = membership.CommentText,
+                GRP_ADMIN = membership.GroupAdmin,
+                PRIVACY = membership.Privacy
+            };
+        }
+
+        private MembershipView MEMBERSHIPToMembershipView(MEMBERSHIP membership)
+        {
+            var foundMembership = _context.MembershipView.FirstOrDefault(m => m.MembershipID == membership.MEMBERSHIP_ID);
+
+            if (foundMembership == null)
+            {
+                throw new ResourceCreationException();
+            }
+
+            return foundMembership;
         }
     }
 }

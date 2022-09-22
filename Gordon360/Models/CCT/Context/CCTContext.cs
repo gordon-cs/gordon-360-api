@@ -57,6 +57,7 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<MYSCHEDULE> MYSCHEDULE { get; set; }
         public virtual DbSet<Mailboxes> Mailboxes { get; set; }
         public virtual DbSet<Majors> Majors { get; set; }
+        public virtual DbSet<MembershipView> MembershipView { get; set; }
         public virtual DbSet<Message_Rooms> Message_Rooms { get; set; }
         public virtual DbSet<Messages> Messages { get; set; }
         public virtual DbSet<PART_DEF> PART_DEF { get; set; }
@@ -232,8 +233,6 @@ namespace Gordon360.Models.CCT.Context
                 entity.ToView("FacStaff");
 
                 entity.Property(e => e.BuildingDescription).IsFixedLength();
-
-                entity.Property(e => e.Country).IsFixedLength();
             });
 
             modelBuilder.Entity<Graduation>(entity =>
@@ -350,6 +349,21 @@ namespace Gordon360.Models.CCT.Context
             modelBuilder.Entity<Majors>(entity =>
             {
                 entity.ToView("Majors");
+            });
+
+            modelBuilder.Entity<MembershipView>(entity =>
+            {
+                entity.ToView("MembershipView");
+
+                entity.Property(e => e.ActivityCode).IsFixedLength();
+
+                entity.Property(e => e.ActivityDescription).IsFixedLength();
+
+                entity.Property(e => e.Participation).IsFixedLength();
+
+                entity.Property(e => e.ParticipationDescription).IsFixedLength();
+
+                entity.Property(e => e.SessionCode).IsFixedLength();
             });
 
             modelBuilder.Entity<Message_Rooms>(entity =>

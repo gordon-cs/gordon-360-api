@@ -12,7 +12,7 @@ namespace Gordon360.Models.ViewModels
         public string ActivityImagePath { get; set; }
         public string SessionCode { get; set; }
         public string SessionDescription { get; set; }
-        public int IDNumber { get; set; }
+        public int? IDNumber { get; set; }
         public string AD_Username { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -27,25 +27,5 @@ namespace Gordon360.Models.ViewModels
         public string ActivityTypeDescription { get; set; }
         public bool? Privacy { get; set; }
         public int AccountPrivate { get; set; }
-
-
-        public static implicit operator MembershipViewModel(MEMBERSHIP m)
-        {
-            MembershipViewModel vm = new MembershipViewModel
-            {
-                MembershipID = m.MEMBERSHIP_ID,
-                ActivityCode = m.ACT_CDE.Trim(),
-                SessionCode = m.SESS_CDE.Trim(),
-                IDNumber = m.ID_NUM,
-                Participation = m.PART_CDE.Trim(),
-                GroupAdmin = m.GRP_ADMIN ?? false,
-                StartDate = m.BEGIN_DTE,
-                EndDate = m.END_DTE,
-                Description = m.COMMENT_TXT ?? "", // For Null comments
-                Privacy = m.PRIVACY ?? false,
-            };
-
-            return vm;
-        }
     }
 }

@@ -17,10 +17,12 @@ namespace Gordon360.Services
     public class EmailService : IEmailService
     {
         private readonly CCTContext _context;
+        private IMembershipService _membershipService;
 
-        public EmailService(CCTContext context)
+        public EmailService(CCTContext context, IMembershipService membershipService)
         {
             _context = context;
+            _membershipService = membershipService;
         }
 
         /// <summary>
@@ -37,9 +39,8 @@ namespace Gordon360.Services
                 sessionCode = Helpers.GetCurrentSession(_context);
             }
 
-            var membershipService = new MembershipService(_context);
 
-            var result = membershipService.MembershipEmails(activityCode, sessionCode, participationType);
+            var result = _membershipService.MembershipEmails(activityCode, sessionCode, participationType);
 
             if (result == null)
             {

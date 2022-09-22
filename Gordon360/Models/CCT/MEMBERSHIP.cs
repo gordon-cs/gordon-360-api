@@ -43,22 +43,5 @@ namespace Gordon360.Models.CCT
         public DateTime? JOB_TIME { get; set; }
         public bool? GRP_ADMIN { get; set; }
         public bool? PRIVACY { get; set; }
-
-        public static implicit operator MEMBERSHIP(MembershipUploadViewModel m) => new MEMBERSHIP()
-        {
-            MEMBERSHIP_ID = m.MembershipID,
-            ACT_CDE = m.ACTCode,
-            SESS_CDE = m.SessCode,
-            ID_NUM = m.GordonID ?? 0,
-            PART_CDE = m.PartCode,
-            BEGIN_DTE = m.BeginDate,
-            END_DTE = m.EndDate,
-            COMMENT_TXT = m.CommentText,
-            USER_NAME = "cct.service",
-            JOB_NAME = "360 Add Member",
-            JOB_TIME = DateTime.Now,
-            GRP_ADMIN = false,
-            PRIVACY = false
-        };
     }
 }

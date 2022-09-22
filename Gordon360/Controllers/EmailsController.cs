@@ -15,9 +15,9 @@ namespace Gordon360.Controllers
     {
         private readonly EmailService _emailService;
 
-        public EmailsController(CCTContext context)
+        public EmailsController(CCTContext context, IMembershipService membershipService)
         {
-            _emailService = new EmailService(context);
+            _emailService = new EmailService(context, membershipService);
         }
 
         [HttpGet]
