@@ -62,17 +62,17 @@ namespace Gordon360.Services
         int GetGordonIDFromEmail(string email);
         AccountViewModel GetAccountByUsername(string username);
         IEnumerable<AdvancedSearchViewModel> AdvancedSearch(List<string> accountTypes,
-                                                            string? firstname,
-                                                            string? lastname,
-                                                            string? major,
-                                                            string? minor,
-                                                            string? hall,
-                                                            string? classType,
-                                                            string? homeCity,
-                                                            string? state,
-                                                            string? country,
-                                                            string? department,
-                                                            string? building);
+                                                            string firstname,
+                                                            string lastname,
+                                                            string major,
+                                                            string minor,
+                                                            string hall,
+                                                            string classType,
+                                                            string homeCity,
+                                                            string state,
+                                                            string country,
+                                                            string department,
+                                                            string building);
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoAsync();
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoExceptAlumniAsync();
     }

@@ -191,7 +191,6 @@ namespace Gordon360.Services
             return basicInfo.Select(
                 b => new BasicInfoViewModel
                 {
-                    ConcatonatedInfo = b.ConcatonatedInfo,
                     FirstName = b.FirstName,
                     LastName = b.LastName,
                     Nickname = b.Nickname,
@@ -209,7 +208,6 @@ namespace Gordon360.Services
             return basicInfo.Select(
                 b => new BasicInfoViewModel
                 {
-                    ConcatonatedInfo = b.ConcatonatedInfo,
                     FirstName = b.firstname,
                     LastName = b.lastname,
                     Nickname = b.Nickname,
