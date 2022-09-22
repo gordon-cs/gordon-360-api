@@ -22,13 +22,15 @@ namespace Gordon360.Models.CCT
         [StringLength(64)]
         [Unicode(false)]
         public string Name { get; set; }
-        public bool HasLogo { get; set; }
         [StringLength(128)]
         [Unicode(false)]
         public string Description { get; set; }
         [StringLength(512)]
         [Unicode(false)]
         public string Rules { get; set; }
+        [StringLength(128)]
+        [Unicode(false)]
+        public string Logo { get; set; }
 
         [InverseProperty("Sport")]
         public virtual ICollection<League> League { get; set; }

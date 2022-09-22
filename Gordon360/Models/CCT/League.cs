@@ -24,7 +24,6 @@ namespace Gordon360.Models.CCT
         [StringLength(64)]
         [Unicode(false)]
         public string Name { get; set; }
-        public bool HasLogo { get; set; }
         [Column(TypeName = "date")]
         public DateTime RegistrationStart { get; set; }
         [Column(TypeName = "date")]
@@ -35,6 +34,9 @@ namespace Gordon360.Models.CCT
         public int? MinCapacity { get; set; }
         public int? MaxCapacity { get; set; }
         public bool SoloRegistration { get; set; }
+        [StringLength(128)]
+        [Unicode(false)]
+        public string Logo { get; set; }
 
         [ForeignKey("SportID")]
         [InverseProperty("League")]

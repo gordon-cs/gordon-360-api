@@ -25,14 +25,14 @@ namespace Gordon360.Models.CCT
         [StringLength(64)]
         [Unicode(false)]
         public string Name { get; set; }
-        [StringLength(128)]
-        [Unicode(false)]
-        public string Logo { get; set; }
         public int Status { get; set; }
         public int LeagueID { get; set; }
         [Required]
         public bool? Private { get; set; }
         public bool Recruiting { get; set; }
+        [StringLength(128)]
+        [Unicode(false)]
+        public string Logo { get; set; }
 
         [ForeignKey("LeagueID")]
         [InverseProperty("Team")]
