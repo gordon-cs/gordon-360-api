@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Gordon360.Models.CCT
 {
     [Keyless]
+    [Table("Housing_HallChoices", Schema = "dbo")]
     public partial class Housing_HallChoices
     {
         public int HousingAppID { get; set; }

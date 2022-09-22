@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
+    [Table("Schedule_Control", Schema = "dbo")]
     public partial class Schedule_Control
     {
         public int IsSchedulePrivate { get; set; }
