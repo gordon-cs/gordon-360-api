@@ -238,17 +238,17 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>Update an existing membership item</summary>
-        /// <param name="id">The membership id of whichever one is to be changed</param>
+        /// <param name="membershipID">The membership id of whichever one is to be changed</param>
         /// <param name="membership">The content within the membership that is to be changed and what it will change to</param>
         /// <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         /// <returns>The membership information that the student is a part of</returns>
         // PUT api/<controller>/5
         [HttpPut]
-        [Route("{id}")]
+        [Route("{membershipID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP)]
-        public async Task<ActionResult<MembershipView>> PutAsync([FromBody] MembershipUploadViewModel membership)
+        public async Task<ActionResult<MembershipView>> PutAsync(int membershipID, [FromBody] MembershipUploadViewModel membership)
         {
-            var result = await _membershipService.UpdateAsync(membership);
+            var result = await _membershipService.UpdateAsync(membershipID, membership);
 
             if (result == null)
             {
@@ -258,14 +258,14 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>Update an existing membership item to be a group admin or not</summary>
-        ///  /// <param name="membership">The content within the membership that is to be changed</param>
+        ///  /// <param name="membershipID">The content within the membership that is to be changed</param>
         /// <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         [HttpPut]
-        [Route("{id}/group-admin")]
+        [Route("{membershipID}/group-admin/{isGroupAdmin}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP)]
-        public async Task<ActionResult<MembershipView>> ToggleGroupAdminAsync([FromBody] MembershipUploadViewModel membership)
+        public async Task<ActionResult<MembershipView>> SetGroupAdminAsync(int membershipID, bool isGroupAdmin)
         {
-            var result = await _membershipService.ToggleGroupAdminAsync(membership);
+            var result = await _membershipService.SetGroupAdminAsync(membershipID, isGroupAdmin);
 
             if (result == null)
             {
@@ -278,11 +278,12 @@ namespace Gordon360.Controllers
         /// <param name="membership">The membership to toggle privacy on</param>
         /// <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         [HttpPut]
-        [Route("{id}/privacy/{p}")]
+        [Route("{membershipID}/privacy/{isPrivate}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP_PRIVACY)]
-        public async Task<ActionResult<MembershipView>> TogglePrivacyAsync(MembershipUploadViewModel membership)
+        public async Task<ActionResult<MembershipView>> SetPrivacyAsync(int membershipID, bool isPrivate)
         {
-            var updatedMembership = await _membershipService.TogglePrivacyAsync(membership);
+
+            var updatedMembership = await _membershipService.SetPrivacyAsync(membershipID, isPrivate);
             return Ok(updatedMembership);
         }
 

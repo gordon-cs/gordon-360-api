@@ -163,13 +163,6 @@ namespace Gordon360.Services
         IEnumerable<SessionViewModel> GetAll();
     }
 
-    public interface IJenzibarActivityService
-    {
-        JNZB_ACTIVITIES Get(int id);
-        IEnumerable<JNZB_ACTIVITIES> GetAll();
-    }
-
-
     public interface IMembershipService
     {
         IEnumerable<MembershipView> GetLeaderMembershipsForActivity(string activityCode);
@@ -183,9 +176,9 @@ namespace Gordon360.Services
         int GetActivityFollowersCount(string idactivityCode);
         int GetActivityMembersCount(string activityCode);
         Task<MembershipView> AddAsync(MembershipUploadViewModel membership);
-        Task<MembershipView> UpdateAsync(MembershipUploadViewModel membership);
-        Task<MembershipView> ToggleGroupAdminAsync(MembershipUploadViewModel membership);
-        Task<MembershipView> TogglePrivacyAsync(MembershipUploadViewModel membership);
+        Task<MembershipView> UpdateAsync(int membershipID, MembershipUploadViewModel membership);
+        Task<MembershipView> SetGroupAdminAsync(int membershipID, bool isGroupAdmin);
+        Task<MembershipView> SetPrivacyAsync(int membershipID, bool isPrivate);
         MembershipView Delete(int membershipID);
         bool IsGroupAdmin(string username);
         public IEnumerable<EmailViewModel> MembershipEmails(string activityCode, string sessionCode, ParticipationType? participationCode = null);

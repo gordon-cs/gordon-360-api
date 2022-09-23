@@ -67,10 +67,13 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
             }
+
+            MembershipView toReturn = MEMBERSHIPToMembershipView(result);
+
             _context.MEMBERSHIP.Remove(result);
             _context.SaveChanges();
 
-            return MEMBERSHIPToMembershipView(result);
+            return toReturn;
         }
 
         /// <summary>	
@@ -200,21 +203,21 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="membership">The updated membership.</param>
         /// <returns>The newly modified membership.</returns>
-        public async Task<MembershipView> UpdateAsync(MembershipUploadViewModel membership)
+        public async Task<MembershipView> UpdateAsync(int membershipID, MembershipUploadViewModel membership)
         {
-            var original = _context.MEMBERSHIP.FirstOrDefault(m => m.MEMBERSHIP_ID == membership.MembershipID);
+            var original = _context.MEMBERSHIP.FirstOrDefault(m => m.MEMBERSHIP_ID == membershipID);
             if (original == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
             }
 
-            await ValidateMembershipAsync(membership);
-
             // One can only update certain fields within a membrship
-            //original.BEGIN_DTE = membership.BEGIN_DTE;
             original.COMMENT_TXT = membership.CommentText;
-            //original.END_DTE = membership.END_DTE;
             original.PART_CDE = membership.PartCode;
+            if (membership.PartCode == ParticipationType.Guest.Value)
+            {
+                await SetGroupAdminAsync(membershipID, false);
+            }
 
             await _context.SaveChangesAsync();
 
@@ -226,20 +229,18 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="membership">The corresponding membership object</param>
         /// <returns>The newly modified membership.</returns>
-        public async Task<MembershipView> ToggleGroupAdminAsync(MembershipUploadViewModel membership)
+        public async Task<MembershipView> SetGroupAdminAsync(int membershipID, bool isGroupAdmin)
         {
-            var original = await _context.MEMBERSHIP.FirstOrDefaultAsync(m => m.MEMBERSHIP_ID == membership.MembershipID);
+            var original = await _context.MEMBERSHIP.FirstOrDefaultAsync(m => m.MEMBERSHIP_ID == membershipID);
             if (original == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
             }
 
-            await ValidateMembershipAsync(membership);
-
-            if (original.PART_CDE == "GUEST")
+            if (original.PART_CDE == "GUEST" && isGroupAdmin)
                 throw new ArgumentException("A guest cannot be assigned as an admin.", "Participation Level");
 
-            original.GRP_ADMIN = !original.GRP_ADMIN;
+            original.GRP_ADMIN = isGroupAdmin;
 
             await _context.SaveChangesAsync();
 
@@ -251,15 +252,15 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="membership">The membership object passed.</param>
         /// <returns>The newly modified membership.</returns>
-        public async Task<MembershipView> TogglePrivacyAsync(MembershipUploadViewModel membership)
+        public async Task<MembershipView> SetPrivacyAsync(int membershipID, bool isPrivate)
         {
-            var original = _context.MEMBERSHIP.FirstOrDefault(m => m.MEMBERSHIP_ID == membership.MembershipID);
+            var original = _context.MEMBERSHIP.FirstOrDefault(m => m.MEMBERSHIP_ID == membershipID);
             if (original == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
             }
 
-            original.PRIVACY = !original.PRIVACY;
+            original.PRIVACY = isPrivate;
 
             await _context.SaveChangesAsync();
 
@@ -274,7 +275,7 @@ namespace Gordon360.Services
         /// <returns>True if the membership is valid. Throws ResourceNotFoundException if not. Exception is caught in an Exception Filter</returns>
         private async Task<bool> ValidateMembershipAsync(MembershipUploadViewModel membership)
         {
-            var personExists = _context.ACCOUNT.Where(x => x.AD_Username == membership.Username.ToString()).Any();
+            var personExists = _context.ACCOUNT.Where(x => x.AD_Username == membership.Username).Any();
             if (!personExists)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Person was not found." };
@@ -295,7 +296,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
             }
 
-            if (!_context.JNZB_ACTIVITIES.Any(a => a.SESS_CDE == membership.SessCode && a.ACT_CDE.Trim() == membership.ACTCode))
+            if (!_context.InvolvementOffering.Any(i => i.SESS_CDE == membership.SessCode && i.ACT_CDE.Trim() == membership.ACTCode))
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity is not available for this session." };
             }
@@ -342,16 +343,16 @@ namespace Gordon360.Services
                 }
             }
 
-            return memberships.Join(
-                _context.ACCOUNT,
-                m => m.Username.ToString(),
-                a => a.AD_Username,
-                (m, a) => new EmailViewModel {
-                    Email = a.email,
-                    FirstName = a.firstname,
-                    LastName = a.lastname
-                }
-            );
+            return memberships.AsEnumerable().Select(m =>
+            {
+                var account = _accountService.GetAccountByUsername(m.Username);
+                return new EmailViewModel
+                {
+                    Email = account.Email,
+                    FirstName = account.FirstName,
+                    LastName = account.LastName
+                };
+            });
         }
 
         public class ParticipationType
@@ -377,7 +378,6 @@ namespace Gordon360.Services
                 .FirstOrDefault();
 
             return new MEMBERSHIP() {
-                MEMBERSHIP_ID = membership.MembershipID,
                 ACT_CDE = membership.ACTCode,
                 SESS_CDE = membership.SessCode,
                 ID_NUM = int.Parse(_accountService.GetAccountByUsername(membership.Username).GordonID),

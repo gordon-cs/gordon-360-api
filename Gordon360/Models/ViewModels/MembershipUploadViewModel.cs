@@ -4,7 +4,6 @@ namespace Gordon360.Models.CCT
 {
     public partial class MembershipUploadViewModel
     {
-        public int MembershipID { get; set; }
         public string ACTCode { get; set; }
         public string SessCode { get; set; }
         public string Username { get; set; }

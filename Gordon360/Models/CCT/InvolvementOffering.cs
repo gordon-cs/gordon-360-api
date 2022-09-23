@@ -9,20 +9,24 @@ using Microsoft.EntityFrameworkCore;
 namespace Gordon360.Models.CCT
 {
     [Keyless]
-    public partial class Mailboxes
+    public partial class InvolvementOffering
     {
-        public int BoxId { get; set; }
         [Required]
-        [StringLength(32)]
+        [StringLength(8)]
         [Unicode(false)]
-        public string BoxNo { get; set; }
-        [StringLength(16)]
+        public string ACT_CDE { get; set; }
+        [StringLength(45)]
         [Unicode(false)]
-        public string Combination { get; set; }
+        public string ACT_DESC { get; set; }
+        [StringLength(3)]
+        [Unicode(false)]
+        public string ACT_TYPE { get; set; }
+        [StringLength(60)]
+        [Unicode(false)]
+        public string ACT_TYPE_DESC { get; set; }
         [Required]
-        [StringLength(32)]
+        [StringLength(8)]
         [Unicode(false)]
-        public string Type { get; set; }
-        public int? HolderAccountId { get; set; }
+        public string SESS_CDE { get; set; }
     }
 }

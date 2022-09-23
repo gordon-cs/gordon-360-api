@@ -211,6 +211,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "[dbo].[InvolvementOffering]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[dbo].[JENZ_ACT_CLUB_DEF]",
          "ObjectType": 3
       },

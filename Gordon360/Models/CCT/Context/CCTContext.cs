@@ -51,6 +51,7 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<Housing_Halls> Housing_Halls { get; set; }
         public virtual DbSet<Information_Change_Request> Information_Change_Request { get; set; }
         public virtual DbSet<Internships_as_Involvements> Internships_as_Involvements { get; set; }
+        public virtual DbSet<InvolvementOffering> InvolvementOffering { get; set; }
         public virtual DbSet<JENZ_ACT_CLUB_DEF> JENZ_ACT_CLUB_DEF { get; set; }
         public virtual DbSet<JNZB_ACTIVITIES> JNZB_ACTIVITIES { get; set; }
         public virtual DbSet<MEMBERSHIP> MEMBERSHIP { get; set; }
@@ -286,6 +287,21 @@ namespace Gordon360.Models.CCT.Context
                 entity.Property(e => e.TRM_CDE).IsFixedLength();
 
                 entity.Property(e => e.YR_CDE).IsFixedLength();
+            });
+
+            modelBuilder.Entity<InvolvementOffering>(entity =>
+            {
+                entity.ToView("InvolvementOffering");
+
+                entity.Property(e => e.ACT_CDE).IsFixedLength();
+
+                entity.Property(e => e.ACT_DESC).IsFixedLength();
+
+                entity.Property(e => e.ACT_TYPE).IsFixedLength();
+
+                entity.Property(e => e.ACT_TYPE_DESC).IsFixedLength();
+
+                entity.Property(e => e.SESS_CDE).IsFixedLength();
             });
 
             modelBuilder.Entity<JENZ_ACT_CLUB_DEF>(entity =>
