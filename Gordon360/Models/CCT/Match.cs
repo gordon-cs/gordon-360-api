@@ -11,25 +11,20 @@ namespace Gordon360.Models.CCT
     [Table("Match", Schema = "RecIM")]
     public partial class Match
     {
+        public Match()
+        {
+            MatchTeam = new HashSet<MatchTeam>();
+        }
+
         [Key]
         public int ID { get; set; }
         public int SeriesID { get; set; }
-        public int HomeID { get; set; }
-        public int? AwayID { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime Time { get; set; }
         public int SurfaceID { get; set; }
         public int? StatusID { get; set; }
-        public int? HomeScore { get; set; }
-        public int? AwayScore { get; set; }
         public int? MatchChatID { get; set; }
 
-        [ForeignKey("AwayID")]
-        [InverseProperty("MatchAway")]
-        public virtual Team Away { get; set; }
-        [ForeignKey("HomeID")]
-        [InverseProperty("MatchHome")]
-        public virtual Team Home { get; set; }
         [ForeignKey("SeriesID")]
         [InverseProperty("Match")]
         public virtual Series Series { get; set; }
@@ -39,5 +34,7 @@ namespace Gordon360.Models.CCT
         [ForeignKey("SurfaceID")]
         [InverseProperty("Match")]
         public virtual Surface Surface { get; set; }
+        [InverseProperty("Match")]
+        public virtual ICollection<MatchTeam> MatchTeam { get; set; }
     }
 }

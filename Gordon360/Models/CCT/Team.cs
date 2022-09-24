@@ -13,8 +13,7 @@ namespace Gordon360.Models.CCT
     {
         public Team()
         {
-            MatchAway = new HashSet<Match>();
-            MatchHome = new HashSet<Match>();
+            MatchTeam = new HashSet<MatchTeam>();
             Sportmanship = new HashSet<Sportmanship>();
             UserTeam = new HashSet<UserTeam>();
         }
@@ -40,10 +39,8 @@ namespace Gordon360.Models.CCT
         [ForeignKey("Status")]
         [InverseProperty("Team")]
         public virtual TeamStatus StatusNavigation { get; set; }
-        [InverseProperty("Away")]
-        public virtual ICollection<Match> MatchAway { get; set; }
-        [InverseProperty("Home")]
-        public virtual ICollection<Match> MatchHome { get; set; }
+        [InverseProperty("Team")]
+        public virtual ICollection<MatchTeam> MatchTeam { get; set; }
         [InverseProperty("Team")]
         public virtual ICollection<Sportmanship> Sportmanship { get; set; }
         [InverseProperty("Team")]
