@@ -8,18 +8,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
-    [Table("Config", Schema = "dbo")]
-    public partial class Config
+    [Table("Surface", Schema = "RecIM")]
+    public partial class Surface
     {
+        public Surface()
+        {
+            Match = new HashSet<Match>();
+        }
+
         [Key]
         public int ID { get; set; }
         [Required]
-        [StringLength(50)]
+        [StringLength(64)]
         [Unicode(false)]
-        public string Key { get; set; }
-        [Required]
-        [StringLength(50)]
+        public string Name { get; set; }
+        [StringLength(256)]
         [Unicode(false)]
-        public string Value { get; set; }
+        public string Description { get; set; }
+
+        [InverseProperty("Surface")]
+        public virtual ICollection<Match> Match { get; set; }
     }
 }

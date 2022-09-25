@@ -8,18 +8,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
-    [Table("Config", Schema = "dbo")]
-    public partial class Config
+    [Table("MatchTeamStatus", Schema = "RecIM")]
+    public partial class MatchTeamStatus
     {
+        public MatchTeamStatus()
+        {
+            MatchTeam = new HashSet<MatchTeam>();
+        }
+
         [Key]
         public int ID { get; set; }
         [Required]
-        [StringLength(50)]
+        [StringLength(64)]
         [Unicode(false)]
-        public string Key { get; set; }
-        [Required]
-        [StringLength(50)]
-        [Unicode(false)]
-        public string Value { get; set; }
+        public string Description { get; set; }
+
+        [InverseProperty("Status")]
+        public virtual ICollection<MatchTeam> MatchTeam { get; set; }
     }
 }

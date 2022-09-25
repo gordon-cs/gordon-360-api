@@ -8,18 +8,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
-    [Table("Config", Schema = "dbo")]
-    public partial class Config
+    [Table("PrivType", Schema = "RecIM")]
+    public partial class PrivType
     {
+        public PrivType()
+        {
+            UserLeague = new HashSet<UserLeague>();
+        }
+
         [Key]
         public int ID { get; set; }
         [Required]
-        [StringLength(50)]
+        [StringLength(256)]
         [Unicode(false)]
-        public string Key { get; set; }
-        [Required]
-        [StringLength(50)]
-        [Unicode(false)]
-        public string Value { get; set; }
+        public string Description { get; set; }
+
+        [InverseProperty("PrivType")]
+        public virtual ICollection<UserLeague> UserLeague { get; set; }
     }
 }
