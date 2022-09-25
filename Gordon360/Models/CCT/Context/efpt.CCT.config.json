@@ -159,6 +159,7 @@
          "ObjectType": 0
       },
       {
+
          "Name": "[RecIM].[MatchTeam]",
          "ObjectType": 0
       },
@@ -167,6 +168,7 @@
          "ObjectType": 0
       },
       {
+
          "Name": "[RecIM].[PrivType]",
          "ObjectType": 0
       },
