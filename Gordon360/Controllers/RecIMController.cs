@@ -1,18 +1,7 @@
-﻿using Gordon360.Authorization;
-using Gordon360.Models.CCT;
-using Gordon360.Models.CCT.Context;
-using Gordon360.Models.ViewModels;
+﻿using Gordon360.Models.CCT;
 using Gordon360.Services;
-using Gordon360.Static.Names;
-using Gordon360.Utilities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 
@@ -33,7 +22,7 @@ namespace Gordon360.Controllers
         /// All Existing Leagues 
         /// </returns>
         [HttpGet]
-        [Route("league")]
+        [Route("league/all")]
         public ActionResult<IEnumerable<League>> GetAllLeagues()
         {
             var result = _recimService.GetLeagues();
@@ -51,7 +40,7 @@ namespace Gordon360.Controllers
         /// <param name="newLeague">League object with appropriate values</param>
         /// <returns></returns>
         [HttpPost]
-        [Route("league/add")]
+        [Route("league")]
         public async Task<ActionResult> CreateLeague(League newLeague)
         {
             await _recimService.PostLeague(newLeague);
