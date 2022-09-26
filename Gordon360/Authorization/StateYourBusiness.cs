@@ -125,10 +125,10 @@ namespace Gordon360.Authorization
                         var mrToConsider = await mrService.GetAsync(mrID);
                         // Populate the membershipRequest manually. Omit fields I don't need.
                         var activityCode = mrToConsider.ActivityCode;
-                        var is_activityLeader = (_membershipService.GetLeaderMembershipsForActivity(activityCode)).Any(x => x.Username == user_name);
+                        var is_activityLeader = _membershipService.GetLeaderMembershipsForActivity(activityCode).Any(x => x.Username == user_name);
                         if (is_activityLeader) // If user is the leader of the activity that the request is sent to.
                             return true;
-                        var is_activityAdvisor = (_membershipService.GetAdvisorMembershipsForActivity(activityCode)).Any(x => x.Username == user_name);
+                        var is_activityAdvisor = _membershipService.GetAdvisorMembershipsForActivity(activityCode).Any(x => x.Username == user_name);
                         if (is_activityAdvisor) // If user is the advisor of the activity that the request is sent to.
                             return true;
 
@@ -172,7 +172,7 @@ namespace Gordon360.Authorization
                             return true;
 
                         var activityCode = mrToConsider.ActivityCode;
-                        var isGroupAdmin = (_membershipService.GetGroupAdminMembershipsForActivity(activityCode)).Where(x => x.Username == user_name).Count() > 0;
+                        var isGroupAdmin = (_membershipService.GetGroupAdminMembershipsForActivity(activityCode)).Any(x => x.Username == user_name);
                         if (isGroupAdmin) // If user is a group admin of the activity that the request is sent to
                             return true;
 
@@ -419,13 +419,13 @@ namespace Gordon360.Authorization
                             return true;
                         var membershipToConsider = (MEMBERSHIP)context.ActionArguments["membership"];
                         // A membership can always be added if it is of type "GUEST"
-                        var isFollower = (membershipToConsider.PART_CDE == Activity_Roles.GUEST) && (user_id == membershipToConsider.ID_NUM.ToString());
+                        var isFollower = membershipToConsider.PART_CDE == Activity_Roles.GUEST && user_id == membershipToConsider.ID_NUM.ToString();
                         if (isFollower)
                             return true;
 
                         var activityCode = membershipToConsider.ACT_CDE;
 
-                        var isGroupAdmin = (_membershipService.GetGroupAdminMembershipsForActivity(activityCode)).Where(x => x.Username == user_name).Count() > 0;
+                        var isGroupAdmin = _membershipService.GetGroupAdminMembershipsForActivity(activityCode).Any(x => x.Username == user_name);
                         if (isGroupAdmin) // If user is the advisor of the activity that the request is sent to.
                             return true;
                         return false;
@@ -438,7 +438,7 @@ namespace Gordon360.Authorization
                             return true;
                         var membershipRequestToConsider = (REQUEST)context.ActionArguments["membershipRequest"];
                         // A membership request belonging to the currently logged in student
-                        var is_Owner = (membershipRequestToConsider.ID_NUM.ToString() == user_id);
+                        var is_Owner = membershipRequestToConsider.ID_NUM.ToString() == user_id;
                         if (is_Owner)
                             return true;
                         // No one should be able to add requests on behalf of another person.
@@ -499,14 +499,7 @@ namespace Gordon360.Authorization
                         var activityCode = membershipToConsider.ACT_CDE;
 
 
-                        //var is_membershipLeader = membershipService.GetLeaderMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
-                        //if (is_membershipLeader)
-                        //    return true; // Activity Leaders can update memberships of people in their activity.
-
-                        //var is_membershipAdvisor = membershipService.GetAdvisorMembershipsForActivity(activityCode).Where(x => x.IDNumber.ToString() == user_id).Count() > 0;
-                        //if (is_membershipAdvisor)
-                        //    return true; // Activity Advisors can update memberships of people in their activity.
-                        var isGroupAdmin = (_membershipService.GetGroupAdminMembershipsForActivity(activityCode)).Where(x => x.Username == user_name).Count() > 0;
+                        var isGroupAdmin = _membershipService.GetGroupAdminMembershipsForActivity(activityCode).Any(x => x.Username == user_name);
                         if (isGroupAdmin)
                             return true; // Activity Advisors can update memberships of people in their activity.
 
@@ -586,7 +579,7 @@ namespace Gordon360.Authorization
                         var membershipToConsider = (MEMBERSHIP)context.ActionArguments["membership"];
                         var activityCode = membershipToConsider.ACT_CDE;
 
-                        var is_advisor = (_membershipService.GetAdvisorMembershipsForActivity(activityCode)).Any(x => x.Username == user_name);
+                        var is_advisor = _membershipService.GetAdvisorMembershipsForActivity(activityCode).Any(x => x.Username == user_name);
                         if (is_advisor)
                             return true; // Activity Advisors can update memberships of people in their activity.
 
@@ -610,7 +603,7 @@ namespace Gordon360.Authorization
                             return true;
                         var activityCode = (string)context.ActionArguments["id"];
 
-                        var isGroupAdmin = (_membershipService.GetGroupAdminMembershipsForActivity(activityCode)).Any(x => x.Username == user_name);
+                        var isGroupAdmin = _membershipService.GetGroupAdminMembershipsForActivity(activityCode).Any(x => x.Username == user_name);
                         if (isGroupAdmin)
                             return true;
                         return false;
@@ -625,7 +618,7 @@ namespace Gordon360.Authorization
                         var activityCode = (string)context.ActionArguments["id"];
                         var sessionCode = (string)context.ActionArguments["sess_cde"];
 
-                        var isGroupAdmin = (_membershipService.GetGroupAdminMembershipsForActivity(activityCode)).Any(x => x.Username == user_name);
+                        var isGroupAdmin = _membershipService.GetGroupAdminMembershipsForActivity(activityCode).Any(x => x.Username == user_name);
                         if (isGroupAdmin)
                         {
                             var activityService = context.HttpContext.RequestServices.GetRequiredService<IActivityService>();
@@ -687,7 +680,7 @@ namespace Gordon360.Authorization
 
                         var activityCode = membershipToConsider.ActivityCode;
 
-                        var isGroupAdmin = (_membershipService.GetGroupAdminMembershipsForActivity(activityCode)).Any(x => x.Username == user_name);
+                        var isGroupAdmin = _membershipService.GetGroupAdminMembershipsForActivity(activityCode).Any(x => x.Username == user_name);
                         if (isGroupAdmin)
                             return true;
 
@@ -708,7 +701,7 @@ namespace Gordon360.Authorization
 
                         var activityCode = mrToConsider.ActivityCode;
 
-                        var isGroupAdmin = (_membershipService.GetGroupAdminMembershipsForActivity(activityCode)).Any(x => x.Username == user_name);
+                        var isGroupAdmin = _membershipService.GetGroupAdminMembershipsForActivity(activityCode).Any(x => x.Username == user_name);
                         if (isGroupAdmin)
                             return true;
 
