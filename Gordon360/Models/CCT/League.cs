@@ -30,20 +30,23 @@ namespace Gordon360.Models.CCT
         public DateTime RegistrationEnd { get; set; }
         public int TypeID { get; set; }
         public int SportID { get; set; }
-        public int? Status { get; set; }
+        public int? StatusID { get; set; }
         public int? MinCapacity { get; set; }
         public int? MaxCapacity { get; set; }
         public bool SoloRegistration { get; set; }
         [StringLength(128)]
         [Unicode(false)]
         public string Logo { get; set; }
+        public bool Completed { get; set; }
+
 
         [ForeignKey("SportID")]
         [InverseProperty("League")]
         public virtual Sport Sport { get; set; }
-        [ForeignKey("Status")]
+        [ForeignKey("StatusID")]
         [InverseProperty("League")]
-        public virtual LeagueStatus StatusNavigation { get; set; }
+        public virtual LeagueStatus Status { get; set; }
+
         [ForeignKey("TypeID")]
         [InverseProperty("League")]
         public virtual LeagueType Type { get; set; }

@@ -62,6 +62,8 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<Majors> Majors { get; set; }
         public virtual DbSet<Match> Match { get; set; }
         public virtual DbSet<MatchStatus> MatchStatus { get; set; }
+        public virtual DbSet<MatchTeam> MatchTeam { get; set; }
+        public virtual DbSet<MatchTeamStatus> MatchTeamStatus { get; set; }
         public virtual DbSet<Message_Rooms> Message_Rooms { get; set; }
         public virtual DbSet<Messages> Messages { get; set; }
         public virtual DbSet<PART_DEF> PART_DEF { get; set; }
@@ -341,7 +343,8 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<League>(entity =>
             {
-                entity.Property(e => e.Status).HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.StatusID).HasDefaultValueSql("((1))");
 
                 entity.Property(e => e.TypeID).HasDefaultValueSql("((1))");
 
@@ -351,9 +354,11 @@ namespace Gordon360.Models.CCT.Context
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_League_Sport");
 
-                entity.HasOne(d => d.StatusNavigation)
+
+                entity.HasOne(d => d.Status)
                     .WithMany(p => p.League)
-                    .HasForeignKey(d => d.Status)
+                    .HasForeignKey(d => d.StatusID)
+
                     .HasConstraintName("FK_League_LeagueStatus");
 
                 entity.HasOne(d => d.Type)
@@ -396,22 +401,8 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<Match>(entity =>
             {
-                entity.Property(e => e.AwayScore).HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.HomeScore).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.StatusID).HasDefaultValueSql("((1))");
-
-                entity.HasOne(d => d.Away)
-                    .WithMany(p => p.MatchAway)
-                    .HasForeignKey(d => d.AwayID)
-                    .HasConstraintName("FK_Match_AwayTeam");
-
-                entity.HasOne(d => d.Home)
-                    .WithMany(p => p.MatchHome)
-                    .HasForeignKey(d => d.HomeID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Match_HomeTeam");
 
                 entity.HasOne(d => d.Series)
                     .WithMany(p => p.Match)
@@ -429,6 +420,30 @@ namespace Gordon360.Models.CCT.Context
                     .HasForeignKey(d => d.SurfaceID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Match_Surface");
+            });
+
+            modelBuilder.Entity<MatchTeam>(entity =>
+            {
+                entity.Property(e => e.StatusID).HasDefaultValueSql("((1))");
+
+                entity.HasOne(d => d.Match)
+                    .WithMany(p => p.MatchTeam)
+                    .HasForeignKey(d => d.MatchID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_MatchTeam_Match");
+
+                entity.HasOne(d => d.Status)
+                    .WithMany(p => p.MatchTeam)
+                    .HasForeignKey(d => d.StatusID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_MatchTeam_MatchTeamStatus");
+
+                entity.HasOne(d => d.Team)
+                    .WithMany(p => p.MatchTeam)
+                    .HasForeignKey(d => d.TeamID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_MatchTeam_Team");
+
             });
 
             modelBuilder.Entity<Message_Rooms>(entity =>

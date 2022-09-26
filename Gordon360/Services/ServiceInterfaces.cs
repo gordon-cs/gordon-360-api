@@ -36,6 +36,27 @@ namespace Gordon360.Services
         Task InformationChangeRequest(string username, ProfileFieldViewModel[] updatedField);
     }
 
+    public interface IRecIMService
+    {
+        // League 
+        Task PostLeague(League newLeague);
+        Task PostSmashLeague();
+        IEnumerable<League> GetLeagues();
+        Task PostSport(string name, string description, string ruless, string? logo);
+        IEnumerable<Sport> GetSports();
+        Task PostLeagueType(string name);
+        IEnumerable<LeagueType> GetLeagueTypes();
+        Task PostLeagueStatus(string name);
+        IEnumerable<LeagueStatus> GetLeagueStatuses();
+        // Series
+        // Match
+        // Team
+        // User 
+        // Join 
+
+
+    }
+
     public interface IAddressesService
     {
         IEnumerable<States> GetAllStates();
