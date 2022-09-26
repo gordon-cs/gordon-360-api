@@ -59,7 +59,6 @@ namespace Gordon360.Services
     {
         AccountViewModel GetAccountByID(string id);
         IEnumerable<AccountViewModel> GetAll();
-        string GetGordonIDFromEmail(string email);
         AccountViewModel GetAccountByEmail(string email);
         AccountViewModel GetAccountByUsername(string username);
         IEnumerable<AdvancedSearchViewModel> AdvancedSearch(List<string> accountTypes,

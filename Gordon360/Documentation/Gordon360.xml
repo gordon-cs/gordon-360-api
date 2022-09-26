@@ -1077,13 +1077,6 @@
             </summary>
             <returns>AccountViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
         </member>
-        <member name="M:Gordon360.Services.AccountService.GetGordonIDFromEmail(System.String)">
-            <summary>
-            Fetches the account record with the specified email.
-            </summary>
-            <param name="email">The email address associated with the account.</param>
-            <returns>the account id number</returns>
-        </member>
         <member name="M:Gordon360.Services.AccountService.GetAccountByEmail(System.String)">
             <summary>
             Fetches the account record with the specified email.
