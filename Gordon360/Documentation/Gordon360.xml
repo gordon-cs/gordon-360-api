@@ -726,7 +726,7 @@
         </member>
         <member name="M:Gordon360.Controllers.RecIMControllers.LeagueController.GetLeagueByID(System.Int32)">
             <summary>Gets a League object by ID number</summary>
-             <param name="id">League ID Number</param>
+             <param name="leagueID">League ID Number</param>
              <returns>
              League object
              </returns>
@@ -736,6 +736,13 @@
              <param name="leagueID"> League ID Number</param>
              <returns>
              list of all Series object associated with a league
+             </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIMControllers.LeagueController.GetSeriesByID(System.Int32)">
+            <summary>Gets Series by ID</summary>
+             <param name="seriesID"> series ID Number</param>
+             <returns>
+             associated Series Object
              </returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIMControllers.LeagueController.CreateLeague(Gordon360.Models.CCT.League)">

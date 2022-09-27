@@ -24,27 +24,11 @@ namespace Gordon360.Services.RecIMServices
             var leagues = _context.League.AsEnumerable();
             return leagues;
         }
-        public League GetLeagueByID(int ID)
+        public League GetLeagueByID(int leagueID)
         {
             return null;
         }
-        public HashSet<Series> GetAllSeries(int leagueID)
-        {
-            return null;
-        }
-        public Series GetSeriesByID(int leagueID, int ID)
-        {
-            return null;
-        }
-        public HashSet<Match> GetAllCurrentMatches(DateTime current)
-        {
-            return null;
-        }
-        public HashSet<Match> GetAllLeagueMatches(int leagueID)
-        {
-            return null;
-        }
-        public HashSet<Match> GetSeriesMatches(int leagueID, int seriesID)
+        public HashSet<Series> GetAllLeagueSeries(int leagueID)
         {
             return null;
         }
@@ -52,7 +36,7 @@ namespace Gordon360.Services.RecIMServices
         {
             return null;
         }
-        public IEnumerable<User> GetAllLeagueUsers()
+        public IEnumerable<User> GetAllLeagueUsers(int leagueID)
         {
             return null;
         }
@@ -61,6 +45,11 @@ namespace Gordon360.Services.RecIMServices
             _context.League.Add(newLeague);
             _context.SaveChanges();
         }
+        public async Task PostSeries(int leagueID, Series newSeries)
+        {
+            
+        }
+
+
     }
-}
 

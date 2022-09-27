@@ -36,15 +36,15 @@ namespace Gordon360.Controllers.RecIMControllers
         }
 
         ///<summary>Gets a League object by ID number</summary>
-        /// <param name="id">League ID Number</param>
+        /// <param name="leagueID">League ID Number</param>
         /// <returns>
         /// League object
         /// </returns>
         [HttpGet]
-        [Route("league/{ID}")]
-        public ActionResult<League> GetLeagueByID(int ID)
+        [Route("league/{leagueID}")]
+        public ActionResult<League> GetLeagueByID(int leagueID)
         {
-            var result = _leagueService.GetLeagueByID(ID);
+            var result = _leagueService.GetLeagueByID(leagueID);
 
             if (result == null)
             {
@@ -60,9 +60,9 @@ namespace Gordon360.Controllers.RecIMControllers
         /// </returns>
         [HttpGet]
         [Route("league/{ID}/series")]
-        public ActionResult<HashSet<Series>> GetAllSeries(int leagueID)
+        public ActionResult<HashSet<Series>> GetAllLeagueSeries(int leagueID)
         {
-            var result = _leagueService.GetAllSeries(leagueID);
+            var result = _leagueService.GetAllLeagueSeries(leagueID);
 
             if (result == null)
             {
@@ -70,76 +70,6 @@ namespace Gordon360.Controllers.RecIMControllers
             }
             return Ok(result);
         }
-
-        [HttpGet]
-        [Route("league/{leagueID}/series/{ID}")]
-        public ActionResult<Series> GetSeriesByID(int leagueID, int ID)
-        {
-            var result = _leagueService.GetSeriesByID(leagueID, ID);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-            return Ok(result);
-        }
-
-
-
-        [HttpGet]
-        [Route("match/current")]
-        public ActionResult<HashSet<Match>> GetAllCurrentMatches()
-        {
-            var result = _leagueService.GetAllCurrentMatches(DateTime.Now);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-            return Ok(result);
-        }
-
-
-        [HttpGet]
-        [Route("league/{leagueID}/matches")]
-        public ActionResult<HashSet<Match>> GetAllLeagueMatches(int leagueID)
-        {
-            var result = _leagueService.GetAllLeagueMatches(leagueID);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-            return Ok(result);
-        }
-
-
-        [HttpGet]
-        [Route("league/{leagueID}/series/{seriesID}/matches")]
-        public ActionResult<HashSet<Match>> GetSeriesMatches(int leagueID, int seriesID)
-        {
-            var result = _leagueService.GetSeriesMatches(leagueID, seriesID);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-            return Ok(result);
-        }
-
-        [HttpGet]
-        [Route("league/{leagueID}/teams")]
-        public ActionResult<HashSet<Team>> GetLeagueTeams(int leagueID)
-        {
-            var result = _leagueService.GetLeagueTeams(leagueID);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-            return Ok(result);
-        }
-
 
 
         /// <summary>
