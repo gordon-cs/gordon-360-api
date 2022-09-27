@@ -47,6 +47,7 @@ namespace Gordon360.Models.CCT.Context
             modelBuilder.Entity<CURRENT_SESSIONResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<DISTINCT_ACT_TYPEResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<EMAILS_PER_ACT_CDEResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<EVENTS_BY_STUDENT_IDResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<FINALIZATION_GET_FINALIZATION_STATUSResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<FINALIZATION_GETDEMOGRAPHICResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<FINALIZATION_GETHOLDSBYIDResult>().HasNoKey().ToView(null);
@@ -71,6 +72,7 @@ namespace Gordon360.Models.CCT.Context
             modelBuilder.Entity<GET_ALL_ROOMS_BY_IDResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<GET_ALL_USERS_BY_ROOM_IDResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<GET_BIRTH_DATE_BY_IDResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<GET_CURRENT_CHAPELSKIPSResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<GET_HEALTH_CHECK_QUESTIONResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<GET_LATEST_ROOMResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<GET_ROOM_BY_IDResult>().HasNoKey().ToView(null);
@@ -1236,6 +1238,33 @@ namespace Gordon360.Models.CCT.Context
             return _;
         }
 
+        public virtual async Task<List<EVENTS_BY_STUDENT_IDResult>> EVENTS_BY_STUDENT_IDAsync(string STU_USERNAME, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        {
+            var parameterreturnValue = new SqlParameter
+            {
+                ParameterName = "returnValue",
+                Direction = System.Data.ParameterDirection.Output,
+                SqlDbType = System.Data.SqlDbType.Int,
+            };
+
+            var sqlParameters = new []
+            {
+                new SqlParameter
+                {
+                    ParameterName = "STU_USERNAME",
+                    Size = 30,
+                    Value = STU_USERNAME ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Char,
+                },
+                parameterreturnValue,
+            };
+            var _ = await _context.SqlQueryAsync<EVENTS_BY_STUDENT_IDResult>("EXEC @returnValue = [dbo].[EVENTS_BY_STUDENT_ID] @STU_USERNAME", sqlParameters, cancellationToken);
+
+            returnValue?.SetValue(parameterreturnValue.Value);
+
+            return _;
+        }
+
         public virtual async Task<List<FINALIZATION_GET_FINALIZATION_STATUSResult>> FINALIZATION_GET_FINALIZATION_STATUSAsync(int? UserID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
@@ -1886,6 +1915,33 @@ namespace Gordon360.Models.CCT.Context
                 parameterreturnValue,
             };
             var _ = await _context.SqlQueryAsync<GET_BIRTH_DATE_BY_IDResult>("EXEC @returnValue = [dbo].[GET_BIRTH_DATE_BY_ID] @ID", sqlParameters, cancellationToken);
+
+            returnValue?.SetValue(parameterreturnValue.Value);
+
+            return _;
+        }
+
+        public virtual async Task<List<GET_CURRENT_CHAPELSKIPSResult>> GET_CURRENT_CHAPELSKIPSAsync(string username, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        {
+            var parameterreturnValue = new SqlParameter
+            {
+                ParameterName = "returnValue",
+                Direction = System.Data.ParameterDirection.Output,
+                SqlDbType = System.Data.SqlDbType.Int,
+            };
+
+            var sqlParameters = new []
+            {
+                new SqlParameter
+                {
+                    ParameterName = "username",
+                    Size = 64,
+                    Value = username ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.VarChar,
+                },
+                parameterreturnValue,
+            };
+            var _ = await _context.SqlQueryAsync<GET_CURRENT_CHAPELSKIPSResult>("EXEC @returnValue = [dbo].[GET_CURRENT_CHAPELSKIPS] @username", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 

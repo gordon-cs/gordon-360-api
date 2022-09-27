@@ -14,6 +14,7 @@ namespace Gordon360.Models.CCT
         public Match()
         {
             MatchTeam = new HashSet<MatchTeam>();
+            MatchUser = new HashSet<MatchUser>();
         }
 
         [Key]
@@ -36,5 +37,7 @@ namespace Gordon360.Models.CCT
         public virtual Surface Surface { get; set; }
         [InverseProperty("Match")]
         public virtual ICollection<MatchTeam> MatchTeam { get; set; }
+        [InverseProperty("Match")]
+        public virtual ICollection<MatchUser> MatchUser { get; set; }
     }
 }
