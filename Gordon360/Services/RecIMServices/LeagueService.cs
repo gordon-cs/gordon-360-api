@@ -47,9 +47,9 @@ namespace Gordon360.Services.RecIMServices
         }
         public async Task PostSeries(int leagueID, Series newSeries)
         {
-            
+
         }
-
-
     }
+
+ }
 
