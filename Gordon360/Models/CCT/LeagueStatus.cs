@@ -24,6 +24,7 @@ namespace Gordon360.Models.CCT
         public string Description { get; set; }
 
         [InverseProperty("Status")]
+
         public virtual ICollection<League> League { get; set; }
     }
 }
