@@ -32,6 +32,7 @@ namespace Gordon360.Models.CCT
         [StringLength(128)]
         [Unicode(false)]
         public string Logo { get; set; }
+        public int Wins { get; set; }
 
         [ForeignKey("LeagueID")]
         [InverseProperty("Team")]

@@ -731,7 +731,21 @@
              League object
              </returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIMControllers.LeagueController.GetAllLeagueSeries(System.Int32)">
+        <member name="M:Gordon360.Controllers.RecIMControllers.LeagueController.GetLeagueSeries(System.Int32)">
+            <summary>Gets a list of all Series associated with a League</summary>
+             <param name="leagueID"> League ID Number</param>
+             <returns>
+             list of all Series object associated with a league
+             </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIMControllers.LeagueController.GetAllLeaguTeams(System.Int32)">
+            <summary>Gets a list of all Series associated with a League</summary>
+             <param name="leagueID"> League ID Number</param>
+             <returns>
+             list of all Series object associated with a league
+             </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIMControllers.LeagueController.GetAllLeagueUsers(System.Int32)">
             <summary>Gets a list of all Series associated with a League</summary>
              <param name="leagueID"> League ID Number</param>
              <returns>

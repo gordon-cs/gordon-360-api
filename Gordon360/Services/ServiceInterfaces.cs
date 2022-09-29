@@ -40,10 +40,13 @@ namespace Gordon360.Services
     {
         IEnumerable<League> GetAllLeagues();
         League GetLeagueByID(int leagueID);
-        HashSet<Series> GetAllLeagueSeries(int leagueID);
-        IEnumerable<User> GetAllLeagueUsers(int leagueID);
+        LeagueType GetLeagueType(int leagueID);
+        LeagueStatus GetLeagueStatus(int leagueID);
+        Sport GetLeagueSport(int leagueID);
+        List<Series> GetLeagueSeries(int leagueID);
+        List<Team> GetLeagueTeams(int leagueID);
+        List<User> GetLeagueUsers(int leagueID);
         Task PostLeague(League newLeague);
-        Task PostSeries(int leagueID, Series newSeries);
     }
 
     public interface IAddressesService

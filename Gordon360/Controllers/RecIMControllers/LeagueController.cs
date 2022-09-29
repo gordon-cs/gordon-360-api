@@ -1,6 +1,9 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -60,9 +63,45 @@ namespace Gordon360.Controllers.RecIMControllers
         /// </returns>
         [HttpGet]
         [Route("league/{ID}/series")]
-        public ActionResult<HashSet<Series>> GetAllLeagueSeries(int leagueID)
+        public ActionResult<List<Series>> GetLeagueSeries(int leagueID)
         {
-            var result = _leagueService.GetAllLeagueSeries(leagueID);
+            var result = _leagueService.GetLeagueSeries(leagueID);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+
+        ///<summary>Gets a list of all Teams associated with a League</summary>
+        /// <param name="leagueID"> League ID Number</param>
+        /// <returns>
+        /// list of all Series object associated with a league
+        /// </returns>
+        [HttpGet]
+        [Route("league/{ID}/team")]
+        public ActionResult<List<Team>> GetAllLeaguTeams(int leagueID)
+        {
+            var result = _leagueService.GetLeagueTeams(leagueID);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+
+        ///<summary>Gets a list of all Users associated with a League</summary>
+        /// <param name="leagueID"> League ID Number</param>
+        /// <returns>
+        /// list of all Series object associated with a league
+        /// </returns>
+        [HttpGet]
+        [Route("league/{ID}/user")]
+        public ActionResult<List<User>> GetAllLeagueUsers(int leagueID)
+        {
+            var result = _leagueService.GetLeagueUsers(leagueID);
 
             if (result == null)
             {
@@ -95,6 +134,7 @@ namespace Gordon360.Controllers.RecIMControllers
             var smashLeague = new League
             {
                 Name = "Super Smash Bros. Ultimate 1v1",
+                //Name = null,
                 RegistrationStart = DateTime.Now,
                 RegistrationEnd = DateTime.Now,
                 TypeID = 1,
@@ -106,7 +146,10 @@ namespace Gordon360.Controllers.RecIMControllers
                 Logo = null,
                 Completed = false
             };
+       
             await _leagueService.PostLeague(smashLeague);
+            
+           
             return Ok();
         }
 
