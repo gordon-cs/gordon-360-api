@@ -159,7 +159,6 @@
          "ObjectType": 0
       },
       {
-
          "Name": "[RecIM].[MatchTeam]",
          "ObjectType": 0
       },
@@ -168,12 +167,10 @@
          "ObjectType": 0
       },
       {
-
          "Name": "[RecIM].[MatchUser]",
          "ObjectType": 0
       },
       {
-
          "Name": "[RecIM].[PrivType]",
          "ObjectType": 0
       },
@@ -486,10 +483,6 @@
          "ObjectType": 1
       },
       {
-         "Name": "[dbo].[EVENTS_BY_STUDENT_ID]",
-         "ObjectType": 1
-      },
-      {
          "Name": "[dbo].[FINALIZATION_GET_FINALIZATION_STATUS]",
          "ObjectType": 1
       },
@@ -583,10 +576,6 @@
       },
       {
          "Name": "[dbo].[GET_BIRTH_DATE_BY_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_CURRENT_CHAPELSKIPS]",
          "ObjectType": 1
       },
       {

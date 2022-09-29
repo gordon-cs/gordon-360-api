@@ -45,7 +45,6 @@ namespace Gordon360.Models.CCT.Context
         Task<int> DINING_INFO_BY_STUDENT_IDAsync(int? STUDENT_ID, string SESS_CDE, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<DISTINCT_ACT_TYPEResult>> DISTINCT_ACT_TYPEAsync(string SESS_CDE, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<EMAILS_PER_ACT_CDEResult>> EMAILS_PER_ACT_CDEAsync(string ACT_CDE, string SESS_CDE, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<List<EVENTS_BY_STUDENT_IDResult>> EVENTS_BY_STUDENT_IDAsync(string STU_USERNAME, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<FINALIZATION_GET_FINALIZATION_STATUSResult>> FINALIZATION_GET_FINALIZATION_STATUSAsync(int? UserID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<FINALIZATION_GETDEMOGRAPHICResult>> FINALIZATION_GETDEMOGRAPHICAsync(string UserID, string FeatureID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<FINALIZATION_GETHOLDSBYIDResult>> FINALIZATION_GETHOLDSBYIDAsync(int? ID_NUM, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
@@ -70,7 +69,6 @@ namespace Gordon360.Models.CCT.Context
         Task<List<GET_ALL_ROOMS_BY_IDResult>> GET_ALL_ROOMS_BY_IDAsync(string user_id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GET_ALL_USERS_BY_ROOM_IDResult>> GET_ALL_USERS_BY_ROOM_IDAsync(int? room_id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GET_BIRTH_DATE_BY_IDResult>> GET_BIRTH_DATE_BY_IDAsync(string ID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<List<GET_CURRENT_CHAPELSKIPSResult>> GET_CURRENT_CHAPELSKIPSAsync(string username, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GET_HEALTH_CHECK_QUESTIONResult>> GET_HEALTH_CHECK_QUESTIONAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GET_LATEST_ROOMResult>> GET_LATEST_ROOMAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GET_ROOM_BY_IDResult>> GET_ROOM_BY_IDAsync(int? room_id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);

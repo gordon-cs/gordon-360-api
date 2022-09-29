@@ -135,8 +135,6 @@ namespace Gordon360.Models.CCT.Context
             {
                 entity.ToView("Alumni", "dbo");
 
-                entity.Property(e => e.Country).IsFixedLength();
-
                 entity.Property(e => e.grad_student).IsFixedLength();
             });
 
@@ -363,7 +361,6 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<League>(entity =>
             {
-
                 entity.Property(e => e.StatusID).HasDefaultValueSql("((1))");
 
                 entity.Property(e => e.TypeID).HasDefaultValueSql("((1))");
@@ -374,11 +371,9 @@ namespace Gordon360.Models.CCT.Context
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_League_Sport");
 
-
                 entity.HasOne(d => d.Status)
                     .WithMany(p => p.League)
                     .HasForeignKey(d => d.StatusID)
-
                     .HasConstraintName("FK_League_LeagueStatus");
 
                 entity.HasOne(d => d.Type)
@@ -421,7 +416,6 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<Match>(entity =>
             {
-
                 entity.Property(e => e.StatusID).HasDefaultValueSql("((1))");
 
                 entity.HasOne(d => d.Series)
@@ -463,7 +457,6 @@ namespace Gordon360.Models.CCT.Context
                     .HasForeignKey(d => d.TeamID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_MatchTeam_Team");
-
             });
 
             modelBuilder.Entity<MatchUser>(entity =>
@@ -620,8 +613,6 @@ namespace Gordon360.Models.CCT.Context
                 entity.ToView("Student", "dbo");
 
                 entity.Property(e => e.BuildingDescription).IsFixedLength();
-
-                entity.Property(e => e.Country).IsFixedLength();
             });
 
             modelBuilder.Entity<StudentNewsExpiration>(entity =>

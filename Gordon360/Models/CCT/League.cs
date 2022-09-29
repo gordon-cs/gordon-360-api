@@ -39,14 +39,12 @@ namespace Gordon360.Models.CCT
         public string Logo { get; set; }
         public bool Completed { get; set; }
 
-
         [ForeignKey("SportID")]
         [InverseProperty("League")]
         public virtual Sport Sport { get; set; }
         [ForeignKey("StatusID")]
         [InverseProperty("League")]
         public virtual LeagueStatus Status { get; set; }
-
         [ForeignKey("TypeID")]
         [InverseProperty("League")]
         public virtual LeagueType Type { get; set; }
