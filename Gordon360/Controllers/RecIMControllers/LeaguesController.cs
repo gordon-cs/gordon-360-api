@@ -54,7 +54,7 @@ namespace Gordon360.Controllers.RecIMControllers
         ///<summary>Gets a list of all Series associated with a League</summary>
         /// <param name="leagueID"> League ID Number</param>
         /// <returns>
-        /// list of all Series object associated with a league
+        /// list of all Series objects associated with a league
         /// </returns>
         [HttpGet]
         [Route("/{leagueID}/series")]
@@ -67,7 +67,7 @@ namespace Gordon360.Controllers.RecIMControllers
         ///<summary>Gets a list of all Teams associated with a League</summary>
         /// <param name="leagueID"> League ID Number</param>
         /// <returns>
-        /// list of all Series object associated with a league
+        /// list of all team objects associated with a league
         /// </returns>
         [HttpGet]
         [Route("/{leagueID}/team")]
@@ -80,13 +80,64 @@ namespace Gordon360.Controllers.RecIMControllers
         ///<summary>Gets a list of all Users associated with a League</summary>
         /// <param name="leagueID"> League ID Number</param>
         /// <returns>
-        /// list of all Series object associated with a league
+        /// list of all user objects associated with a league
         /// </returns>
         [HttpGet]
         [Route("/{leagueID}/user")]
         public ActionResult<List<User>> GetAllLeagueUsers(int leagueID)
         {
             var result = _leagueService.GetLeagueUsers(leagueID);
+            return Ok(result);
+        }
+
+        ///<summary>Gets League Type</summary>
+        /// <param name="leagueID"> League ID Number</param>
+        /// <returns>
+        /// League Type Object
+        /// </returns>
+        [HttpGet]
+        [Route("/{leagueID}/type")]
+        public ActionResult<List<User>> GetLeagueType(int leagueID)
+        {
+            var result = _leagueService.GetLeagueType(leagueID);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+
+        ///<summary>Gets League Status</summary>
+        /// <param name="leagueID"> League ID Number</param>
+        /// <returns>
+        /// League Status Object
+        /// </returns>
+        [HttpGet]
+        [Route("/{leagueID}/status")]
+        public ActionResult<List<User>> GetLeagueStatus(int leagueID)
+        {
+            var result = _leagueService.GetLeagueStatus(leagueID);
+            if ( result == null )
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+
+        ///<summary>Gets League Sport</summary>
+        /// <param name="leagueID"> League ID Number</param>
+        /// <returns>
+        /// Sport Object
+        /// </returns>
+        [HttpGet]
+        [Route("/{leagueID}/sport")]
+        public ActionResult<List<User>> GetLeagueSport(int leagueID)
+        {
+            var result = _leagueService.GetLeagueSport(leagueID);
+            if (result == null)
+            {
+                return NotFound();
+            }
             return Ok(result);
         }
 
