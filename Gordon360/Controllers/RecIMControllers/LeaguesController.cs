@@ -75,7 +75,7 @@ namespace Gordon360.Controllers.RecIMControllers
         /// list of all Series object associated with a league
         /// </returns>
         [HttpGet]
-        [Route("/{ID}/team")]
+        [Route("/{leagueID}/team")]
         public ActionResult<List<Team>> GetAllLeaguTeams(int leagueID)
         {
             var result = _leagueService.GetLeagueTeams(leagueID);
@@ -93,7 +93,7 @@ namespace Gordon360.Controllers.RecIMControllers
         /// list of all Series object associated with a league
         /// </returns>
         [HttpGet]
-        [Route("/{ID}/user")]
+        [Route("/{leagueID}/user")]
         public ActionResult<List<User>> GetAllLeagueUsers(int leagueID)
         {
             var result = _leagueService.GetLeagueUsers(leagueID);

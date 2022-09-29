@@ -718,48 +718,48 @@
             <param name="imagePath">Path to the profile image to load</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIMControllers.LeagueController.GetAllLeagues">
+        <member name="M:Gordon360.Controllers.RecIMControllers.LeaguesController.GetAllLeagues">
             <summary>Gets a list of all Leagues</summary>
              <returns>
              All Existing Leagues 
              </returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIMControllers.LeagueController.GetLeagueByID(System.Int32)">
+        <member name="M:Gordon360.Controllers.RecIMControllers.LeaguesController.GetLeagueByID(System.Int32)">
             <summary>Gets a League object by ID number</summary>
              <param name="leagueID">League ID Number</param>
              <returns>
              League object
              </returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIMControllers.LeagueController.GetLeagueSeries(System.Int32)">
+        <member name="M:Gordon360.Controllers.RecIMControllers.LeaguesController.GetLeagueSeries(System.Int32)">
             <summary>Gets a list of all Series associated with a League</summary>
              <param name="leagueID"> League ID Number</param>
              <returns>
              list of all Series object associated with a league
              </returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIMControllers.LeagueController.GetAllLeaguTeams(System.Int32)">
-            <summary>Gets a list of all Series associated with a League</summary>
+        <member name="M:Gordon360.Controllers.RecIMControllers.LeaguesController.GetAllLeaguTeams(System.Int32)">
+            <summary>Gets a list of all Teams associated with a League</summary>
              <param name="leagueID"> League ID Number</param>
              <returns>
              list of all Series object associated with a league
              </returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIMControllers.LeagueController.GetAllLeagueUsers(System.Int32)">
-            <summary>Gets a list of all Series associated with a League</summary>
+        <member name="M:Gordon360.Controllers.RecIMControllers.LeaguesController.GetAllLeagueUsers(System.Int32)">
+            <summary>Gets a list of all Users associated with a League</summary>
              <param name="leagueID"> League ID Number</param>
              <returns>
              list of all Series object associated with a league
              </returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIMControllers.LeagueController.CreateLeague(Gordon360.Models.CCT.League)">
+        <member name="M:Gordon360.Controllers.RecIMControllers.LeaguesController.CreateLeague(Gordon360.Models.CCT.League)">
             <summary>
             Posts league into CCT.RecIM.Leagues
             </summary>
             <param name="newLeague">League object with appropriate values</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIMControllers.LeagueController.CreateSmashLeague">
+        <member name="M:Gordon360.Controllers.RecIMControllers.LeaguesController.CreateSmashLeague">
             <summary>Creates a new League (currently hard coded)</summary>
              <param></param>
              <returns></returns>
