@@ -14,19 +14,19 @@ namespace Gordon360.Models.CCT
         [Required]
         [StringLength(8)]
         [Unicode(false)]
-        public string ACT_CDE { get; set; }
+        public string ActivityCode { get; set; }
         [StringLength(45)]
         [Unicode(false)]
-        public string ACT_DESC { get; set; }
+        public string ActivityDescription { get; set; }
         [StringLength(3)]
         [Unicode(false)]
-        public string ACT_TYPE { get; set; }
+        public string ActivityType { get; set; }
         [StringLength(60)]
         [Unicode(false)]
-        public string ACT_TYPE_DESC { get; set; }
+        public string ActivityTypeDescription { get; set; }
         [Required]
         [StringLength(8)]
         [Unicode(false)]
-        public string SESS_CDE { get; set; }
+        public string SessionCode { get; set; }
     }
 }

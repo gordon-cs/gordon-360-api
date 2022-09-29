@@ -171,8 +171,7 @@ namespace Gordon360.Authorization
                         if (is_mrOwner) // If user owns the request
                             return true;
 
-                        var activityCode = mrToConsider.ActivityCode;
-                        var isGroupAdmin = (_membershipService.GetGroupAdminMembershipsForActivity(activityCode)).Any(x => x.Username == user_name);
+                        var isGroupAdmin = (_membershipService.GetGroupAdminMembershipsForActivity(mrToConsider.ActivityCode, mrToConsider.SessionCode)).Any(x => x.Username == user_name);
                         if (isGroupAdmin) // If user is a group admin of the activity that the request is sent to
                             return true;
 
@@ -258,7 +257,7 @@ namespace Gordon360.Authorization
 
                 case Resource.MEMBERSHIP_REQUEST_BY_ACTIVITY:
                     {
-                        // An activity leader should be able to see the membership requests that belong to the activity he is leading.
+                        // An activity leader should be able to see the membership requests that belong to the activity s/he is leading.
                         var activityCode = (string)context.ActionArguments["id"];
                         var groupAdmins = _membershipService.GetGroupAdminMembershipsForActivity(activityCode);
                         var isGroupAdmin = groupAdmins.Any(x => x.Username == user_name);
@@ -424,8 +423,9 @@ namespace Gordon360.Authorization
                             return true;
 
                         var activityCode = membershipToConsider.ACT_CDE;
+                        var sessionCode = membershipToConsider.SESS_CDE;
 
-                        var isGroupAdmin = _membershipService.GetGroupAdminMembershipsForActivity(activityCode).Any(x => x.Username == user_name);
+                        var isGroupAdmin = _membershipService.GetGroupAdminMembershipsForActivity(activityCode, sessionCode).Any(x => x.Username == user_name);
                         if (isGroupAdmin) // If user is the advisor of the activity that the request is sent to.
                             return true;
                         return false;
@@ -497,9 +497,10 @@ namespace Gordon360.Authorization
                             return true;
                         var membershipToConsider = (MEMBERSHIP)context.ActionArguments["membership"];
                         var activityCode = membershipToConsider.ACT_CDE;
+                        var sessionCode = membershipToConsider.SESS_CDE;
 
 
-                        var isGroupAdmin = _membershipService.GetGroupAdminMembershipsForActivity(activityCode).Any(x => x.Username == user_name);
+                        var isGroupAdmin = _membershipService.GetGroupAdminMembershipsForActivity(activityCode, sessionCode).Any(x => x.Username == user_name);
                         if (isGroupAdmin)
                             return true; // Activity Advisors can update memberships of people in their activity.
 
@@ -536,10 +537,7 @@ namespace Gordon360.Authorization
                             return true;
 
                         var activityCode = membershipToConsider.ActivityCode;
-
-                        var isGroupAdmin = (_membershipService.GetGroupAdminMembershipsForActivity(activityCode)).Any(x => x.Username == user_name);
-                        if (isGroupAdmin)
-                            return true;
+                        var sessionCode = membershipToConsider.SessionCode;
 
                         return false;
                     }

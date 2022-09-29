@@ -97,13 +97,28 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="activityCode">The activity code.</param>
         /// <param name="sessionCode">Optional code of session to get memberships for</param>
+        /// <param name="groupAdmin">Optional filter for group admins</param>
+        /// <param name="participationTypes">Optional filter for involvement participation type (MEMBR, ADV, LEAD, GUEST)</param>
         /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        public IEnumerable<MembershipView> GetMembershipsForActivity(string activityCode, string? sessionCode = null)
-        {
+        public IEnumerable<MembershipView> GetMembershipsForActivity(
+            string activityCode,
+            string? sessionCode = null,
+            bool? groupAdmin = null,
+            string[]? participationTypes = null
+
+        ) {
             //IEnumerable<MEMBERSHIPS_PER_ACT_CDEResult> memberships = await _context.Procedures.MEMBERSHIPS_PER_ACT_CDEAsync(activityCode);
 
+            if (sessionCode == null)
+                sessionCode = this.GetCurrentSessionCode();
+
             return _context.MembershipView
-                .Where(m => m.SessionCode.Trim() == sessionCode && m.ActivityCode == activityCode)
+                .Where(m => 
+                    m.SessionCode.Trim() == sessionCode
+                    && m.ActivityCode == activityCode
+                    && (groupAdmin == null || m.GroupAdmin == groupAdmin)
+                    && (participationTypes == null || participationTypes.Contains(m.Participation))
+                 )
                 .OrderByDescending(m => m.StartDate);
         }
 
@@ -111,10 +126,15 @@ namespace Gordon360.Services
         /// Fetches the group admin (who have edit privileges of the page) of the activity whose activity code is specified by the parameter.
         /// </summary>
         /// <param name="activityCode">The activity code.</param>
+        /// <param name="sessionCode">The session code.</param>
         /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        public IEnumerable<MembershipView> GetGroupAdminMembershipsForActivity(string activityCode)
+        public IEnumerable<MembershipView> GetGroupAdminMembershipsForActivity(string activityCode, string? sessionCode = null)
         {
-            return _context.MembershipView.Where(m => m.ActivityCode == activityCode && m.GroupAdmin == true);
+            if (sessionCode == null)
+            {
+                sessionCode = this.GetCurrentSessionCode();
+            }
+            return _context.MembershipView.Where(m => m.ActivityCode == activityCode && m.SessionCode == sessionCode && m.GroupAdmin == true);
         }
 
         /// <summary>
@@ -145,9 +165,9 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">The student's AD Username.</param>
         /// <returns>A MembershipViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
-        public IEnumerable<MembershipView> GetMembershipsForStudent(string username)
+        public IEnumerable<MembershipView> GetMembershipsByUser(string username)
         {
-            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username.Trim() == username);
+            var account = _context.ACCOUNT.FirstOrDefault(a => a.AD_Username.Trim() == username);
             if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
@@ -182,7 +202,7 @@ namespace Gordon360.Services
         /// <param name="activityCode">The activity code.</param>
         /// <param name="sessionCode">The session code</param>
         /// <returns>int.</returns>
-        public int GetActivityFollowersCountForSession(string activityCode, string sessionCode)
+        public int GetActivitySubscribersCountForSession(string activityCode, string sessionCode)
         {
             return _context.MembershipView.Where(m => m.ActivityCode == activityCode && m.Participation == "GUEST" && m.SessionCode == sessionCode).Count();
         }
@@ -296,7 +316,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
             }
 
-            if (!_context.InvolvementOffering.Any(i => i.SESS_CDE == membership.SessCode && i.ACT_CDE.Trim() == membership.ACTCode))
+            if (!_context.InvolvementOffering.Any(i => i.SessionCode == membership.SessCode && i.ActivityCode.Trim() == membership.ACTCode))
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity is not available for this session." };
             }
@@ -371,6 +391,11 @@ namespace Gordon360.Services
             public static ParticipationType GroupAdmin { get { return new ParticipationType("GRP_ADMIN"); } }
         }
 
+        /// <summary>	
+        /// Converts a MembershipUploadViewModel object to a MEMBERSHIP
+        /// </summary>
+        /// <param name="membership">The MembershipUploadViewModel to convert</param>	
+        /// <returns>A new MEMBERSHIP object filled with the info from the view model</returns>	
         private MEMBERSHIP MembershipUploadToMEMBERSHIP(MembershipUploadViewModel membership)
         {
             var sessionCode = _context.CM_SESSION_MSTR
@@ -389,16 +414,30 @@ namespace Gordon360.Services
             };
         }
 
+        /// <summary>	
+        /// Finds the matching MembershipView object from an existing MEMBERSHIP object
+        /// </summary>
+        /// <param name="membership">The MEMBERSHIP to match on MembershipID</param>	
+        /// <returns>The found MembershipView object corresponding to the MEMBERSHIP by ID</returns>	
         private MembershipView MEMBERSHIPToMembershipView(MEMBERSHIP membership)
         {
             var foundMembership = _context.MembershipView.FirstOrDefault(m => m.MembershipID == membership.MEMBERSHIP_ID);
 
             if (foundMembership == null)
             {
-                throw new ResourceCreationException();
+                throw new ResourceNotFoundException();
             }
 
             return foundMembership;
+        }
+
+        /// <summary>	
+        /// Gets the current session ID code for involvements
+        /// </summary>
+        /// <returns>The current session ID code for involvements</returns>	
+        private string? GetCurrentSessionCode()
+        {
+            return _context.CM_SESSION_MSTR.FirstOrDefault(s => s.SESS_BEGN_DTE <= DateTime.Now && s.SESS_END_DTE >= DateTime.Now)?.SESS_CDE.Trim();
         }
     }
 }

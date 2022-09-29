@@ -166,10 +166,15 @@ namespace Gordon360.Services
     {
         IEnumerable<MembershipView> GetLeaderMembershipsForActivity(string activityCode);
         IEnumerable<MembershipView> GetAdvisorMembershipsForActivity(string activityCode);
-        IEnumerable<MembershipView> GetGroupAdminMembershipsForActivity(string activityCode);
-        IEnumerable<MembershipView> GetMembershipsForActivity(string activityCode, string? sessionCode);
-        IEnumerable<MembershipView> GetMembershipsForStudent(string username);
-        int GetActivityFollowersCountForSession(string activityCode, string sessionCode);
+        IEnumerable<MembershipView> GetGroupAdminMembershipsForActivity(string activityCode, string? sessionCode = null);
+        public IEnumerable<MembershipView> GetMembershipsForActivity(
+            string activityCode,
+            string? sessionCode = null,
+            bool? groupAdmin = null,
+            string[]? participationTypes = null
+        );
+        IEnumerable<MembershipView> GetMembershipsByUser(string username);
+        int GetActivitySubscribersCountForSession(string activityCode, string sessionCode);
         int GetActivityMembersCountForSession(string activityCode, string sessionCode);
         MembershipView GetSpecificMembership(int membershipID);
         int GetActivityFollowersCount(string idactivityCode);

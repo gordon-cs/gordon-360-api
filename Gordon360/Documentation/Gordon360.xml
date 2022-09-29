@@ -410,7 +410,7 @@
             <param name="sessionCode">Optional code of session to get for</param>
             <returns>IHttpActionResult</returns>
         </member>
-        <member name="M:Gordon360.Controllers.MembershipsController.GetGroupAdminForActivity(System.String)">
+        <member name="M:Gordon360.Controllers.MembershipsController.GetGroupAdminForActivity(System.String,System.String)">
             <summary>
             Gets the group admin memberships associated with a given activity.
             </summary>
@@ -445,7 +445,7 @@
             <param name="activityCode">The activity ID.</param>
             <returns>The number of members of the activity</returns>
         </member>
-        <member name="M:Gordon360.Controllers.MembershipsController.GetActivityFollowersCountForSession(System.String,System.String)">
+        <member name="M:Gordon360.Controllers.MembershipsController.GetActivitySubscribersCountForSession(System.String,System.String)">
             <summary>
             Gets the number of followers of an activity
             </summary>
@@ -467,7 +467,7 @@
             <returns></returns>
             <remarks>Posts a new membership to the server to be added into the database</remarks>
         </member>
-        <member name="M:Gordon360.Controllers.MembershipsController.GetMembershipsForStudentByUsername(System.String)">
+        <member name="M:Gordon360.Controllers.MembershipsController.GetMembershipsByUser(System.String)">
             <summary>
             Fetch memberships that a specific student has been a part of
             @TODO: Move security checks to state your business? Or consider changing implementation here
@@ -1633,11 +1633,12 @@
             <param name="sessionCode">Optional code of session to get memberships for</param>
             <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
         </member>
-        <member name="M:Gordon360.Services.MembershipService.GetGroupAdminMembershipsForActivity(System.String)">
+        <member name="M:Gordon360.Services.MembershipService.GetGroupAdminMembershipsForActivity(System.String,System.String)">
             <summary>
             Fetches the group admin (who have edit privileges of the page) of the activity whose activity code is specified by the parameter.
             </summary>
             <param name="activityCode">The activity code.</param>
+            <param name="sessionCode">The session code.</param>
             <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.GetLeaderMembershipsForActivity(System.String)">
@@ -1654,7 +1655,7 @@
             <param name="activityCode">The activity code.</param>
             <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
         </member>
-        <member name="M:Gordon360.Services.MembershipService.GetMembershipsForStudent(System.String)">
+        <member name="M:Gordon360.Services.MembershipService.GetMembershipsByUser(System.String)">
             <summary>
             Fetches all the membership information linked to the student whose id appears as a parameter.
             </summary>
@@ -1675,7 +1676,7 @@
             <param name="activityCode">The activity code.</param>
             <returns>int.</returns>
         </member>
-        <member name="M:Gordon360.Services.MembershipService.GetActivityFollowersCountForSession(System.String,System.String)">
+        <member name="M:Gordon360.Services.MembershipService.GetActivitySubscribersCountForSession(System.String,System.String)">
             <summary>
             Fetches the number of followers associated with the activity and session whose codes are specified by the parameter.
             </summary>
@@ -1725,6 +1726,26 @@
             </summary>
             <param name="username">Username of the user to check</param>	
             <returns>true if student is a Group Admin, else false</returns>	
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.MembershipUploadToMEMBERSHIP(Gordon360.Models.CCT.MembershipUploadViewModel)">
+            <summary>	
+            Converts a MembershipUploadViewModel object to a MEMBERSHIP
+            </summary>
+            <param name="membership">The MembershipUploadViewModel to convert</param>	
+            <returns>A new MEMBERSHIP object filled with the info from the view model</returns>	
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.MEMBERSHIPToMembershipView(Gordon360.Models.CCT.MEMBERSHIP)">
+            <summary>	
+            Finds the matching MembershipView object from an existing MEMBERSHIP object
+            </summary>
+            <param name="membership">The MEMBERSHIP to match on MembershipID</param>	
+            <returns>The found MembershipView object corresponding to the MEMBERSHIP by ID</returns>	
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.GetCurrentSessionCode">
+            <summary>	
+            Gets the current session ID code for involvements
+            </summary>
+            <returns>The current session ID code for involvements</returns>	
         </member>
         <member name="T:Gordon360.Services.MyScheduleService">
             <summary>

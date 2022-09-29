@@ -10,6 +10,6 @@ namespace Gordon360.Models.CCT
         public string PartCode { get; set; }
         public string CommentText { get; set; }
         public bool GroupAdmin { get; set; }
-        public bool? Privacy { get; set; }
+        public bool Privacy { get; set; }
     }
 }

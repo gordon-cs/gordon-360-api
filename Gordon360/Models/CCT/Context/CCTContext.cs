@@ -293,15 +293,15 @@ namespace Gordon360.Models.CCT.Context
             {
                 entity.ToView("InvolvementOffering");
 
-                entity.Property(e => e.ACT_CDE).IsFixedLength();
+                entity.Property(e => e.ActivityCode).IsFixedLength();
 
-                entity.Property(e => e.ACT_DESC).IsFixedLength();
+                entity.Property(e => e.ActivityDescription).IsFixedLength();
 
-                entity.Property(e => e.ACT_TYPE).IsFixedLength();
+                entity.Property(e => e.ActivityType).IsFixedLength();
 
-                entity.Property(e => e.ACT_TYPE_DESC).IsFixedLength();
+                entity.Property(e => e.ActivityTypeDescription).IsFixedLength();
 
-                entity.Property(e => e.SESS_CDE).IsFixedLength();
+                entity.Property(e => e.SessionCode).IsFixedLength();
             });
 
             modelBuilder.Entity<JENZ_ACT_CLUB_DEF>(entity =>
