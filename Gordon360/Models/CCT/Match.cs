@@ -11,6 +11,7 @@ namespace Gordon360.Models.CCT
     [Table("Match", Schema = "RecIM")]
     public partial class Match
     {
+
         public Match()
         {
             MatchTeam = new HashSet<MatchTeam>();
@@ -39,5 +40,6 @@ namespace Gordon360.Models.CCT
         public virtual ICollection<MatchTeam> MatchTeam { get; set; }
         [InverseProperty("Match")]
         public virtual ICollection<MatchUser> MatchUser { get; set; }
+
     }
 }
