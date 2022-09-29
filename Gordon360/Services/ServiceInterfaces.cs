@@ -43,9 +43,9 @@ namespace Gordon360.Services
         LeagueType GetLeagueType(int leagueID);
         LeagueStatus GetLeagueStatus(int leagueID);
         Sport GetLeagueSport(int leagueID);
-        List<Series> GetLeagueSeries(int leagueID);
-        List<Team> GetLeagueTeams(int leagueID);
-        List<User> GetLeagueUsers(int leagueID);
+        ICollection<Series> GetLeagueSeries(int leagueID);
+        ICollection<Team> GetLeagueTeams(int leagueID);
+        ICollection<User> GetLeagueUsers(int leagueID);
         Task PostLeague(League newLeague);
     }
 
