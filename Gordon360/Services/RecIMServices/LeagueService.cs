@@ -29,8 +29,7 @@ namespace Gordon360.Services.RecIMServices
         public League GetLeagueByID(int leagueID)
         {
             var result = _context.League
-                            .Where(l => l.ID == leagueID)
-                            .FirstOrDefault();
+                            .FirstOrDefault(l => l.ID == leagueID);
             return result;
         }
         public LeagueType GetLeagueType(int leagueID)
@@ -78,7 +77,7 @@ namespace Gordon360.Services.RecIMServices
 
             return result;
         }
-        public List<Series> GetLeagueSeries(int leagueID)
+        public ICollection<Series> GetLeagueSeries(int leagueID)
         {
             var result = _context.Series
                             .Where(q => q.LeagueID == leagueID)
@@ -86,7 +85,7 @@ namespace Gordon360.Services.RecIMServices
                             .ToList();
             return result;
         }
-        public List<Team> GetLeagueTeams(int leagueID)
+        public ICollection<Team> GetLeagueTeams(int leagueID)
         {
             var result = _context.Team
                             .Where(t => t.LeagueID == leagueID)
@@ -94,7 +93,7 @@ namespace Gordon360.Services.RecIMServices
                             .ToList();
             return result;
         }
-        public List<User> GetLeagueUsers(int leagueID)
+        public ICollection<User> GetLeagueUsers(int leagueID)
         {
             var result = (
                 from u in _context.User
