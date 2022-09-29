@@ -61,11 +61,6 @@ namespace Gordon360.Controllers.RecIMControllers
         public ActionResult<List<Series>> GetLeagueSeries(int leagueID)
         {
             var result = _leagueService.GetLeagueSeries(leagueID);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
             return Ok(result);
         }
 
@@ -79,11 +74,6 @@ namespace Gordon360.Controllers.RecIMControllers
         public ActionResult<List<Team>> GetAllLeaguTeams(int leagueID)
         {
             var result = _leagueService.GetLeagueTeams(leagueID);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
             return Ok(result);
         }
 
@@ -97,11 +87,6 @@ namespace Gordon360.Controllers.RecIMControllers
         public ActionResult<List<User>> GetAllLeagueUsers(int leagueID)
         {
             var result = _leagueService.GetLeagueUsers(leagueID);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
             return Ok(result);
         }
 
