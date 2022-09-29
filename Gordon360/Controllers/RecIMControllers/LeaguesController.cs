@@ -11,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace Gordon360.Controllers.RecIMControllers
 {
-    [Route("api/recim")]
-    public class LeagueController : GordonControllerBase
+    [Route("api/recim/[controller]")]
+    public class LeaguesController : GordonControllerBase
     {
         private readonly ILeagueService _leagueService;
 
-        public LeagueController(ILeagueService leagueService)
+        public LeaguesController(ILeagueService leagueService)
         {
             _leagueService = leagueService;
         }
@@ -26,15 +26,10 @@ namespace Gordon360.Controllers.RecIMControllers
         /// All Existing Leagues 
         /// </returns>
         [HttpGet]
-        [Route("league")]
+        [Route("")]
         public ActionResult<IEnumerable<League>> GetAllLeagues()
         {
             var result = _leagueService.GetAllLeagues();
-
-            if (result == null)
-            {
-                return NotFound();
-            }
             return Ok(result);
         }
 
@@ -44,7 +39,7 @@ namespace Gordon360.Controllers.RecIMControllers
         /// League object
         /// </returns>
         [HttpGet]
-        [Route("league/{leagueID}")]
+        [Route("/{leagueID}")]
         public ActionResult<League> GetLeagueByID(int leagueID)
         {
             var result = _leagueService.GetLeagueByID(leagueID);
@@ -62,7 +57,7 @@ namespace Gordon360.Controllers.RecIMControllers
         /// list of all Series object associated with a league
         /// </returns>
         [HttpGet]
-        [Route("league/{ID}/series")]
+        [Route("/{leagueID}/series")]
         public ActionResult<List<Series>> GetLeagueSeries(int leagueID)
         {
             var result = _leagueService.GetLeagueSeries(leagueID);
@@ -80,7 +75,7 @@ namespace Gordon360.Controllers.RecIMControllers
         /// list of all Series object associated with a league
         /// </returns>
         [HttpGet]
-        [Route("league/{ID}/team")]
+        [Route("/{ID}/team")]
         public ActionResult<List<Team>> GetAllLeaguTeams(int leagueID)
         {
             var result = _leagueService.GetLeagueTeams(leagueID);
@@ -98,7 +93,7 @@ namespace Gordon360.Controllers.RecIMControllers
         /// list of all Series object associated with a league
         /// </returns>
         [HttpGet]
-        [Route("league/{ID}/user")]
+        [Route("/{ID}/user")]
         public ActionResult<List<User>> GetAllLeagueUsers(int leagueID)
         {
             var result = _leagueService.GetLeagueUsers(leagueID);
@@ -117,7 +112,7 @@ namespace Gordon360.Controllers.RecIMControllers
         /// <param name="newLeague">League object with appropriate values</param>
         /// <returns></returns>
         [HttpPost]
-        [Route("league")]
+        [Route("")]
         public async Task<ActionResult> CreateLeague(League newLeague)
         {
             await _leagueService.PostLeague(newLeague);
@@ -128,7 +123,7 @@ namespace Gordon360.Controllers.RecIMControllers
         /// <param></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("league/add_smash")]
+        [Route("/add_smash")]
         public async Task<ActionResult> CreateSmashLeague()
         {
             var smashLeague = new League
