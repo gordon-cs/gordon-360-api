@@ -106,6 +106,43 @@ namespace Gordon360.Services.RecIMServices
 
             return result;
         }
+
+        public async Task UpdateLeague(League updatedLeague)
+        {
+            int leagueID = updatedLeague.ID;
+            var league = _context.League
+                            .FirstOrDefault(l => l.ID == updatedLeague.ID);
+            league.Name = updatedLeague.Name == null ? league.Name : updatedLeague.Name;
+            league.Logo = updatedLeague.Logo == null ? league.Logo : updatedLeague.Logo;
+            league.RegistrationStart = updatedLeague.RegistrationStart == default 
+                                            ? league.RegistrationStart 
+                                            : updatedLeague.RegistrationStart;
+            league.RegistrationEnd = updatedLeague.RegistrationEnd == default
+                                  ? league.RegistrationEnd
+                                  : updatedLeague.RegistrationEnd;
+            league.TypeID = updatedLeague.TypeID == default 
+                                ? league.TypeID 
+                                : updatedLeague.TypeID;
+            league.SportID = updatedLeague.SportID == default
+                                ? league.SportID 
+                                : updatedLeague.SportID;
+            league.StatusID = updatedLeague.StatusID == null
+                                ? league.StatusID 
+                                : updatedLeague.StatusID;
+            league.MinCapacity = updatedLeague.MinCapacity == null
+                                   ? league.MinCapacity
+                                   : updatedLeague.MinCapacity;
+            league.MaxCapacity = updatedLeague.MaxCapacity == null
+                                   ? league.MaxCapacity
+                                   : updatedLeague.MaxCapacity;
+            league.MaxCapacity = updatedLeague.MaxCapacity == null
+                                   ? league.MaxCapacity
+                                   : updatedLeague.MaxCapacity;
+            league.SoloRegistration = updatedLeague.SoloRegistration;
+            league.Completed = updatedLeague.Completed;
+
+            _context.SaveChanges();
+        }
         public async Task PostLeague(League newLeague)
         {
             _context.League.Add(newLeague);
