@@ -22,6 +22,7 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<ACCOUNT> ACCOUNT { get; set; }
         public virtual DbSet<ACT_INFO> ACT_INFO { get; set; }
         public virtual DbSet<ADMIN> ADMIN { get; set; }
+        public virtual DbSet<AccountPhotoURL> AccountPhotoURL { get; set; }
         public virtual DbSet<Alumni> Alumni { get; set; }
         public virtual DbSet<Birthdays> Birthdays { get; set; }
         public virtual DbSet<Buildings> Buildings { get; set; }
@@ -82,6 +83,7 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<Schedule_Control> Schedule_Control { get; set; }
         public virtual DbSet<Series> Series { get; set; }
         public virtual DbSet<SeriesStatus> SeriesStatus { get; set; }
+        public virtual DbSet<SeriesTeam> SeriesTeam { get; set; }
         public virtual DbSet<SeriesType> SeriesType { get; set; }
         public virtual DbSet<Slider_Images> Slider_Images { get; set; }
         public virtual DbSet<Sport> Sport { get; set; }
@@ -129,6 +131,11 @@ namespace Gordon360.Models.CCT.Context
             {
                 entity.HasKey(e => e.ADMIN_ID)
                     .HasName("PK_Admin");
+            });
+
+            modelBuilder.Entity<AccountPhotoURL>(entity =>
+            {
+                entity.ToView("AccountPhotoURL", "dbo");
             });
 
             modelBuilder.Entity<Alumni>(entity =>
@@ -581,6 +588,21 @@ namespace Gordon360.Models.CCT.Context
                     .HasForeignKey(d => d.TypeID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Series_SeriesType");
+            });
+
+            modelBuilder.Entity<SeriesTeam>(entity =>
+            {
+                entity.HasOne(d => d.Series)
+                    .WithMany(p => p.SeriesTeam)
+                    .HasForeignKey(d => d.SeriesID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_SeriesTeam_Series");
+
+                entity.HasOne(d => d.Team)
+                    .WithMany(p => p.SeriesTeam)
+                    .HasForeignKey(d => d.TeamID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_SeriesTeam_Team");
             });
 
             modelBuilder.Entity<Sportmanship>(entity =>

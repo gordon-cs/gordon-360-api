@@ -39,6 +39,7 @@ namespace Gordon360.Services
     public interface ILeagueService
     {
         IEnumerable<League> GetAllLeagues();
+        IEnumerable<League> GetLeaguesByTime(DateTime time);
         League GetLeagueByID(int leagueID);
         LeagueType GetLeagueType(int leagueID);
         LeagueStatus GetLeagueStatus(int leagueID);
@@ -46,7 +47,23 @@ namespace Gordon360.Services
         ICollection<Series> GetLeagueSeries(int leagueID);
         ICollection<Team> GetLeagueTeams(int leagueID);
         ICollection<User> GetLeagueUsers(int leagueID);
+        Task UpdateLeague(League updatedLeague);
         Task PostLeague(League newLeague);
+    }
+
+    public interface ISeriesService
+    {
+
+    }
+
+    public interface ITeamService
+    {
+
+    }
+
+    public interface IUserService
+    {
+
     }
 
     public interface IAddressesService

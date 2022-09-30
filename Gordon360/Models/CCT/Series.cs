@@ -14,6 +14,7 @@ namespace Gordon360.Models.CCT
         public Series()
         {
             Match = new HashSet<Match>();
+            SeriesTeam = new HashSet<SeriesTeam>();
         }
 
         [Key]
@@ -44,5 +45,7 @@ namespace Gordon360.Models.CCT
         public virtual SeriesType Type { get; set; }
         [InverseProperty("Series")]
         public virtual ICollection<Match> Match { get; set; }
+        [InverseProperty("Series")]
+        public virtual ICollection<SeriesTeam> SeriesTeam { get; set; }
     }
 }

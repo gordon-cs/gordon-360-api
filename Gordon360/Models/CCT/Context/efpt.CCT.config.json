@@ -187,6 +187,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[RecIM].[SeriesTeam]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[RecIM].[SeriesType]",
          "ObjectType": 0
       },
@@ -240,6 +244,10 @@
       },
       {
          "Name": "[dbo].[ACCOUNT]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[AccountPhotoURL]",
          "ObjectType": 3
       },
       {

@@ -23,8 +23,14 @@ namespace Gordon360.Services.RecIMServices
 
         public IEnumerable<League> GetAllLeagues()
         {
-            var leagues = _context.League.AsEnumerable();
+            var leagues = _context.League
+                            .AsEnumerable();
             return leagues;
+        }
+
+        public IEnumerable<League> GetLeaguesByTime(DateTime time)
+        {
+            throw new NotImplementedException();
         }
         public League GetLeagueByID(int leagueID)
         {
