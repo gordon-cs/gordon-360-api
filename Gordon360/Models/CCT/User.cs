@@ -13,6 +13,7 @@ namespace Gordon360.Models.CCT
     {
         public User()
         {
+            MatchUser = new HashSet<MatchUser>();
             UserLeague = new HashSet<UserLeague>();
             UserStatusHistory = new HashSet<UserStatusHistory>();
             UserTeam = new HashSet<UserTeam>();
@@ -21,6 +22,8 @@ namespace Gordon360.Models.CCT
         [Key]
         public int ID { get; set; }
 
+        [InverseProperty("User")]
+        public virtual ICollection<MatchUser> MatchUser { get; set; }
         [InverseProperty("User")]
         public virtual ICollection<UserLeague> UserLeague { get; set; }
         [InverseProperty("User")]

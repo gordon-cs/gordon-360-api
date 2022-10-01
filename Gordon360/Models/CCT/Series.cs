@@ -31,10 +31,14 @@ namespace Gordon360.Models.CCT
         public string Description { get; set; }
         public int LeagueID { get; set; }
         public int TypeID { get; set; }
+        public int StatusID { get; set; }
 
         [ForeignKey("LeagueID")]
         [InverseProperty("Series")]
         public virtual League League { get; set; }
+        [ForeignKey("StatusID")]
+        [InverseProperty("Series")]
+        public virtual SeriesStatus Status { get; set; }
         [ForeignKey("TypeID")]
         [InverseProperty("Series")]
         public virtual SeriesType Type { get; set; }

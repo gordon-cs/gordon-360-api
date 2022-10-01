@@ -159,7 +159,6 @@
          "ObjectType": 0
       },
       {
-
          "Name": "[RecIM].[MatchTeam]",
          "ObjectType": 0
       },
@@ -168,7 +167,10 @@
          "ObjectType": 0
       },
       {
-
+         "Name": "[RecIM].[MatchUser]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[RecIM].[PrivType]",
          "ObjectType": 0
       },
@@ -178,6 +180,10 @@
       },
       {
          "Name": "[RecIM].[Series]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[SeriesStatus]",
          "ObjectType": 0
       },
       {
@@ -301,6 +307,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "[dbo].[InvolvementOffering]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[dbo].[JENZ_ACT_CLUB_DEF]",
          "ObjectType": 3
       },
@@ -310,6 +320,14 @@
       },
       {
          "Name": "[dbo].[Majors]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[MembershipView]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[Minors]",
          "ObjectType": 3
       },
       {

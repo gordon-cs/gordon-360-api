@@ -718,20 +718,69 @@
             <param name="imagePath">Path to the profile image to load</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIMController.GetAllLeagues">
+        <member name="M:Gordon360.Controllers.RecIMControllers.LeaguesController.GetAllLeagues">
             <summary>Gets a list of all Leagues</summary>
              <returns>
              All Existing Leagues 
              </returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIMController.CreateLeague(Gordon360.Models.CCT.League)">
+        <member name="M:Gordon360.Controllers.RecIMControllers.LeaguesController.GetLeagueByID(System.Int32)">
+            <summary>Gets a League object by ID number</summary>
+             <param name="leagueID">League ID Number</param>
+             <returns>
+             League object
+             </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIMControllers.LeaguesController.GetLeagueSeries(System.Int32)">
+            <summary>Gets a list of all Series associated with a League</summary>
+             <param name="leagueID"> League ID Number</param>
+             <returns>
+             list of all Series objects associated with a league
+             </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIMControllers.LeaguesController.GetAllLeaguTeams(System.Int32)">
+            <summary>Gets a list of all Teams associated with a League</summary>
+             <param name="leagueID"> League ID Number</param>
+             <returns>
+             list of all team objects associated with a league
+             </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIMControllers.LeaguesController.GetAllLeagueUsers(System.Int32)">
+            <summary>Gets a list of all Users associated with a League</summary>
+             <param name="leagueID"> League ID Number</param>
+             <returns>
+             list of all user objects associated with a league
+             </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIMControllers.LeaguesController.GetLeagueType(System.Int32)">
+            <summary>Gets League Type</summary>
+             <param name="leagueID"> League ID Number</param>
+             <returns>
+             League Type Object
+             </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIMControllers.LeaguesController.GetLeagueStatus(System.Int32)">
+            <summary>Gets League Status</summary>
+             <param name="leagueID"> League ID Number</param>
+             <returns>
+             League Status Object
+             </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIMControllers.LeaguesController.GetLeagueSport(System.Int32)">
+            <summary>Gets League Sport</summary>
+             <param name="leagueID"> League ID Number</param>
+             <returns>
+             Sport Object
+             </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIMControllers.LeaguesController.CreateLeague(Gordon360.Models.CCT.League)">
             <summary>
             Posts league into CCT.RecIM.Leagues
             </summary>
             <param name="newLeague">League object with appropriate values</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIMController.CreateSmashLeague">
+        <member name="M:Gordon360.Controllers.RecIMControllers.LeaguesController.CreateSmashLeague">
             <summary>Creates a new League (currently hard coded)</summary>
              <param></param>
              <returns></returns>
@@ -1987,12 +2036,6 @@
             </summary>
             <param name="username">AD Username</param>
             <param name="value">Y or N</param>
-        </member>
-        <member name="M:Gordon360.Services.RecIMService.PostSmashLeague">
-            <summary>
-            creates a hardcoded league
-            </summary>
-            <param></param>
         </member>
         <member name="M:Gordon360.Services.SaveService.GetUpcoming(System.String)">
             <summary>
