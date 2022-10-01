@@ -38,32 +38,56 @@ namespace Gordon360.Services
 
     public interface ILeagueService
     {
-        IEnumerable<League> GetAllLeagues();
-        IEnumerable<League> GetLeaguesByTime(DateTime time);
+        IEnumerable<League> GetLeagues();
         League GetLeagueByID(int leagueID);
-        LeagueType GetLeagueType(int leagueID);
-        LeagueStatus GetLeagueStatus(int leagueID);
-        Sport GetLeagueSport(int leagueID);
-        ICollection<Series> GetLeagueSeries(int leagueID);
-        ICollection<Team> GetLeagueTeams(int leagueID);
-        ICollection<User> GetLeagueUsers(int leagueID);
+        IEnumerable<League> GetLeaguesByTime(DateTime time);
         Task UpdateLeague(League updatedLeague);
         Task PostLeague(League newLeague);
+    
     }
 
     public interface ISeriesService
     {
+        IEnumerable<Series> GetSeries();
+        Series GetSeriesByID(int seriesID);
+        IEnumerable<Match> GetMatches(int seriesID);
+        Task PostSeries(Series newSeries);
+        Task UpdateSeries(Series updatedSeries);
 
+        
     }
 
     public interface ITeamService
     {
-
+        IEnumerable<Team> GetTeamByID(int teamID);
+        Task PostTeam(Team team);
+        Task AddUserToTeam(int teamID, int userID);
+        Task UpdateUserRole(int teamID, int userID, RoleType userRole);
+        Task UpdateTeam(Team updatedTeam);
     }
 
     public interface IUserService
     {
+        IEnumerable<User> GetUsers();
+        Task PostUser(int userID);
+        User GetUser(int userID);
+        UserTeam GetUserTeamHistory(int userID);
+    }
 
+    public interface ISportService
+    {
+        IEnumerable<Sport> GetSports();
+        Sport GetSportByID(int sportID);    
+        Task PostSport(Sport newSport);    
+        Task UpdateSport(Sport updatedSport);
+    }
+
+    public interface IMatchService
+    {
+        Match GetMatchByID(int matchID);
+        Task PostMatch(Match newMatch);
+        Task UpdateMatch(Match updatedMatch);
+        Task UpdateTeamScore(int matchID, int teamID, int teamScore);
     }
 
     public interface IAddressesService

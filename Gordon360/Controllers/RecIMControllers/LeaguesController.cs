@@ -29,8 +29,19 @@ namespace Gordon360.Controllers.RecIMControllers
         [Route("")]
         public ActionResult<IEnumerable<League>> GetAllLeagues()
         {
-            var result = _leagueService.GetAllLeagues();
+            var result = _leagueService.GetLeagues();
             return Ok(result);
+        }
+
+        ///<summary>Gets a list of all Leagues after given time</summary>
+        /// <returns>
+        /// All Existing Leagues 
+        /// </returns>
+        [HttpGet]
+        [Route("{time}")]
+        public ActionResult<IEnumerable<League>> GetAllLeagues(DateTime time)
+        {
+            return Ok();
         }
 
         ///<summary>Gets a League object by ID number</summary>
@@ -51,96 +62,6 @@ namespace Gordon360.Controllers.RecIMControllers
             return Ok(result);
         }
 
-        ///<summary>Gets a list of all Series associated with a League</summary>
-        /// <param name="leagueID"> League ID Number</param>
-        /// <returns>
-        /// list of all Series objects associated with a league
-        /// </returns>
-        [HttpGet]
-        [Route("{leagueID}/series")]
-        public ActionResult<ICollection<Series>> GetLeagueSeries(int leagueID)
-        {
-            var result = _leagueService.GetLeagueSeries(leagueID);
-            return Ok(result);
-        }
-
-        ///<summary>Gets a list of all Teams associated with a League</summary>
-        /// <param name="leagueID"> League ID Number</param>
-        /// <returns>
-        /// list of all team objects associated with a league
-        /// </returns>
-        [HttpGet]
-        [Route("{leagueID}/team")]
-        public ActionResult<ICollection<Team>> GetAllLeaguTeams(int leagueID)
-        {
-            var result = _leagueService.GetLeagueTeams(leagueID);
-            return Ok(result);
-        }
-
-        ///<summary>Gets a list of all Users associated with a League</summary>
-        /// <param name="leagueID"> League ID Number</param>
-        /// <returns>
-        /// list of all user objects associated with a league
-        /// </returns>
-        [HttpGet]
-        [Route("{leagueID}/user")]
-        public ActionResult<ICollection<User>> GetAllLeagueUsers(int leagueID)
-        {
-            var result = _leagueService.GetLeagueUsers(leagueID);
-            return Ok(result);
-        }
-
-        ///<summary>Gets League Type</summary>
-        /// <param name="leagueID"> League ID Number</param>
-        /// <returns>
-        /// League Type Object
-        /// </returns>
-        [HttpGet]
-        [Route("{leagueID}/type")]
-        public ActionResult<ICollection<User>> GetLeagueType(int leagueID)
-        {
-            var result = _leagueService.GetLeagueType(leagueID);
-            if (result == null)
-            {
-                return NotFound();
-            }
-            return Ok(result);
-        }
-
-        ///<summary>Gets League Status</summary>
-        /// <param name="leagueID"> League ID Number</param>
-        /// <returns>
-        /// League Status Object
-        /// </returns>
-        [HttpGet]
-        [Route("{leagueID}/status")]
-        public ActionResult<ICollection<User>> GetLeagueStatus(int leagueID)
-        {
-            var result = _leagueService.GetLeagueStatus(leagueID);
-            if ( result == null )
-            {
-                return NotFound();
-            }
-            return Ok(result);
-        }
-
-        ///<summary>Gets League Sport</summary>
-        /// <param name="leagueID"> League ID Number</param>
-        /// <returns>
-        /// Sport Object
-        /// </returns>
-        [HttpGet]
-        [Route("{leagueID}/sport")]
-        public ActionResult<ICollection<User>> GetLeagueSport(int leagueID)
-        {
-            var result = _leagueService.GetLeagueSport(leagueID);
-            if (result == null)
-            {
-                return NotFound();
-            }
-            return Ok(result);
-        }
-
 
         /// <summary>
         /// Posts league into CCT.RecIM.Leagues
@@ -152,6 +73,18 @@ namespace Gordon360.Controllers.RecIMControllers
         public async Task<ActionResult> CreateLeague(League newLeague)
         {
             await _leagueService.PostLeague(newLeague);
+            return Ok();
+        }
+        /// <summary>
+        /// Updates league based on input
+        /// </summary>
+        /// <param name="updatedLeague"> Updated League Object </param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("")]
+        public async Task<ActionResult> UpdateLeague(League updatedLeague)
+        {
+            await _leagueService.UpdateLeague(updatedLeague);
             return Ok();
         }
 
