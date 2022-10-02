@@ -40,7 +40,7 @@ namespace Gordon360.Services
     {
         IEnumerable<League> GetLeagues();
         League GetLeagueByID(int leagueID);
-        IEnumerable<League> GetLeaguesByTime(DateTime time);
+        IEnumerable<League> GetLeaguesByTime(DateTime? time);
         Task UpdateLeague(League updatedLeague);
         Task PostLeague(League newLeague);
     
@@ -53,8 +53,6 @@ namespace Gordon360.Services
         IEnumerable<Match> GetMatches(int seriesID);
         Task PostSeries(Series newSeries);
         Task UpdateSeries(Series updatedSeries);
-
-        
     }
 
     public interface ITeamService
