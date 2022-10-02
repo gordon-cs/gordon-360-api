@@ -24,17 +24,35 @@ namespace Gordon360.Services.RecIMServices
         public IEnumerable<League> GetLeagues()
         {
             var leagues = _context.League
+                            .Include(l => l.Team)
+                            .Include(l => l.Series)
                             .AsEnumerable();
             return leagues;
         }
-        public IEnumerable<League> GetLeaguesByTime(DateTime time)
+        public IEnumerable<League> GetLeaguesByTime(DateTime? time)
         {
-            throw new NotImplementedException();
+            var leagues = _context.League
+                            .Where(l => time == null 
+                                        ? !l.Completed 
+                                        : l.RegistrationEnd > time)
+                            .Include(l => l.Team)
+                            .Include(l => l.Series)
+                            .AsEnumerable();
+            return leagues;
         }
         public League GetLeagueByID(int leagueID)
         {
             var result = _context.League
-                            .FirstOrDefault(l => l.ID == leagueID);
+                            .Where(l => l.ID == leagueID)
+                            .Include(l => l.Team)
+                            .Include(l => l.Series)
+                                .ThenInclude(s => s.Match)
+                            .Include(l => l.UserLeague
+                                .Join(_context.User,
+                                    ul => ul.UserID, 
+                                    u => u.ID, 
+                                    (ul,u) => u))
+                            .FirstOrDefault();
             return result;
         }
         public async Task UpdateLeague(League updatedLeague)

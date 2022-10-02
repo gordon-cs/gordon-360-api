@@ -41,6 +41,7 @@ namespace Gordon360.Controllers.RecIMControllers
         [Route("{time}")]
         public ActionResult<IEnumerable<League>> GetAllLeagues(DateTime time)
         {
+            var result = _leagueService.GetLeaguesByTime(time);
             return Ok();
         }
 
