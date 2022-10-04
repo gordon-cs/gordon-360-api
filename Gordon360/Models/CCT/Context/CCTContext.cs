@@ -75,7 +75,6 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<User_Connection_Ids> User_Connection_Ids { get; set; }
         public virtual DbSet<User_Rooms> User_Rooms { get; set; }
         public virtual DbSet<Users> Users { get; set; }
-        public virtual DbSet<_360_SLIDER> _360_SLIDER { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -430,11 +429,6 @@ namespace Gordon360.Models.CCT.Context
                     .HasName("PK_StudentNewsExpiration_SNID");
 
                 entity.Property(e => e.SNID).ValueGeneratedNever();
-            });
-
-            modelBuilder.Entity<_360_SLIDER>(entity =>
-            {
-                entity.ToView("360_SLIDER");
             });
 
             modelBuilder.HasSequence("Information_Change_Request_Seq");
