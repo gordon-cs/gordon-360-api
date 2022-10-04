@@ -222,7 +222,7 @@ namespace Gordon360.Services
 
         private IEnumerable<AdvancedSearchViewModel> GetAllPublicFacultyStaffAccounts()
         {
-            return _context.FacStaff.Select<FacStaff, AdvancedSearchViewModel>(fs => fs);
+            return _context.FacStaff.Where(f => f.ActiveAccount == true).Select<FacStaff, AdvancedSearchViewModel>(fs => fs);
         }
 
         private IEnumerable<AdvancedSearchViewModel> GetAllPublicAlumniAccounts()
