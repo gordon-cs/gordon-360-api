@@ -117,36 +117,23 @@ namespace Gordon360.Services
                         .Replace("n ", "north ");
             }
 
-            // Create accounts viewmodel to search
-            IEnumerable<AdvancedSearchViewModel> accounts = new List<AdvancedSearchViewModel>();
-            if (accountTypes.Contains("student"))
+            var students = accountTypes.Contains("student")
+                ? _context.Student.Select<Student, AdvancedSearchViewModel>(s => s)
+                : Enumerable.Empty<AdvancedSearchViewModel>();
+            var facstaff = accountTypes.Contains("facstaff")
+                ? _context.FacStaff.Select<FacStaff, AdvancedSearchViewModel>(s => s)
+                : Enumerable.Empty<AdvancedSearchViewModel>();
+            var alumni = accountTypes.Contains("alumni")
+                ? _context.Alumni.Select<Alumni, AdvancedSearchViewModel>(s => s)
+                : Enumerable.Empty<AdvancedSearchViewModel>();
+
+            if (!string.IsNullOrEmpty(homeCity))
             {
-                accounts = accounts.Union(GetAllPublicStudentAccounts());
+                facstaff = facstaff.Where(a => a.KeepPrivate == "0");
+                alumni = alumni.Where(a => a.ShareAddress != "N");
             }
 
-            if (accountTypes.Contains("facstaff"))
-            {
-                if (string.IsNullOrEmpty(homeCity))
-                {
-                    accounts = accounts.Union(GetAllPublicFacultyStaffAccounts());
-                }
-                else
-                {
-                    accounts = accounts.Union(GetAllPublicFacultyStaffAccounts().Where(a => a.KeepPrivate == "0"));
-                }
-            }
-
-            if (accountTypes.Contains("alumni"))
-            {
-                if (string.IsNullOrEmpty(homeCity))
-                {
-                    accounts = accounts.Union(GetAllPublicAlumniAccounts());
-                }
-                else
-                {
-                    accounts = accounts.Union(GetAllPublicAlumniAccounts().Where(a => a.ShareAddress.ToLower() != "n"));
-                }
-            }
+            var accounts = students.UnionBy(facstaff, a => a.AD_Username).UnionBy(alumni, a => a.AD_Username);
 
             return accounts
                 .Where(a =>

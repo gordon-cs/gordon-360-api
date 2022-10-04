@@ -131,18 +131,19 @@ namespace Gordon360.Controllers
                 accountTypes.Remove("student");
             }
 
-            var searchResults = _accountService.AdvancedSearch(accountTypes,
-                                                               firstname?.ToLower() ?? "",
-                                                               lastname?.ToLower() ?? "",
-                                                               major ?? "",
-                                                               minor ?? "",
-                                                               hall ?? "",
-                                                               classType ?? "",
-                                                               homeCity?.ToLower() ?? "",
-                                                               state ?? "",
-                                                               country ?? "",
-                                                               department ?? "",
-                                                               building ?? "");
+            var searchResults = _accountService.AdvancedSearch(
+                accountTypes,
+                firstname?.ToLower() ?? "",
+                lastname?.ToLower() ?? "",
+                major ?? "",
+                minor ?? "",
+                hall ?? "",
+                classType ?? "",
+                homeCity?.ToLower() ?? "",
+                state ?? "",
+                country ?? "",
+                department ?? "",
+                building ?? "");
 
 
             // Return all of the profile views
