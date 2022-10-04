@@ -108,8 +108,6 @@ namespace Gordon360.Models.CCT.Context
             {
                 entity.ToView("Alumni");
 
-                entity.Property(e => e.Country).IsFixedLength();
-
                 entity.Property(e => e.grad_student).IsFixedLength();
             });
 
@@ -232,8 +230,6 @@ namespace Gordon360.Models.CCT.Context
                 entity.ToView("FacStaff");
 
                 entity.Property(e => e.BuildingDescription).IsFixedLength();
-
-                entity.Property(e => e.Country).IsFixedLength();
             });
 
             modelBuilder.Entity<Graduation>(entity =>
@@ -426,8 +422,6 @@ namespace Gordon360.Models.CCT.Context
                 entity.ToView("Student");
 
                 entity.Property(e => e.BuildingDescription).IsFixedLength();
-
-                entity.Property(e => e.Country).IsFixedLength();
             });
 
             modelBuilder.Entity<StudentNewsExpiration>(entity =>
