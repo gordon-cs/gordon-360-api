@@ -159,14 +159,14 @@ namespace Gordon360.Services
                             || a.MaidenName.ToLower().StartsWith(lastname)
                        )
                     && (
-                               a.Major1Description.StartsWith(major)
-                            || a.Major2Description.StartsWith(major)
-                            || a.Major3Description.StartsWith(major)
+                               a.Major1Description == major
+                            || a.Major2Description == major
+                            || a.Major3Description == major
                        )
                     && (
-                               a.Minor1Description.StartsWith(minor)
-                            || a.Minor2Description.StartsWith(minor)
-                            || a.Minor3Description.StartsWith(minor)
+                               a.Minor1Description == minor
+                            || a.Minor2Description == minor
+                            || a.Minor3Description == minor
                        )
                     && a.Hall.StartsWith(hall)
                     && a.Class.StartsWith(classType)
