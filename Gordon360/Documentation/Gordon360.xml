@@ -646,6 +646,12 @@
             <summary>Get the profile image of currently logged in user</summary>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.PostPhotoAsync(Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            Set an image for profile
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.ProfilesController.GetImgAsync(System.String)">
             <summary>Get the profile image of the given user</summary>
             <returns>The profile image(s) that the authenticated user is allowed to see, if any</returns>
@@ -1969,6 +1975,13 @@
             </summary>
             <param name="username">AD Username</param>
             <param name="value">Y or N</param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetPhotos(System.String)">
+            <summary>
+            Get a person's profile images
+            </summary>
+            <param name="username">AD Username</param>
+            <returns>A photo url object with the urls of the user's images or null</returns>
         </member>
         <member name="M:Gordon360.Services.SaveService.GetUpcoming(System.String)">
             <summary>

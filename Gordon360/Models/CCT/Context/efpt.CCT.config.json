@@ -8,6 +8,7 @@
    "ModelNamespace": null,
    "OutputContextPath": "Models\/CCT\/Context",
    "OutputPath": "Models\/CCT",
+   "PreserveCasingWithRegex": true,
    "ProjectRootNamespace": "Gordon360",
    "Schemas": null,
    "SelectedHandlebarsLanguage": 0,
@@ -143,6 +144,10 @@
       },
       {
          "Name": "[dbo].[ACCOUNT]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[AccountPhotoURL]",
          "ObjectType": 3
       },
       {
@@ -727,5 +732,6 @@
    "UseNodaTime": false,
    "UseNullableReferences": false,
    "UseSchemaFolders": false,
-   "UseSpatial": false
+   "UseSpatial": false,
+   "UseT4": false
 }

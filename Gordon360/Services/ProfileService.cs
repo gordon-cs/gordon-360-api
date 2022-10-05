@@ -439,5 +439,20 @@ namespace Gordon360.Services
             });
             return profile;
         }
+
+        /// <summary>
+        /// Get a person's profile images
+        /// </summary>
+        /// <param name="username">AD Username</param>
+        /// <returns>A photo url object with the urls of the user's images or null</returns>
+        public AccountPhotoURL? GetPhotos(string username)
+        {
+            var account = _context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username);
+
+            if (account == null)
+                throw new ResourceNotFoundException();
+
+            return _context.AccountPhotoURL.FirstOrDefault(p => p.Gordonid == account.gordon_id);
+        }
     }
 }

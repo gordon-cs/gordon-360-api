@@ -22,6 +22,7 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<ACCOUNT> ACCOUNT { get; set; }
         public virtual DbSet<ACT_INFO> ACT_INFO { get; set; }
         public virtual DbSet<ADMIN> ADMIN { get; set; }
+        public virtual DbSet<AccountPhotoURL> AccountPhotoURL { get; set; }
         public virtual DbSet<Alumni> Alumni { get; set; }
         public virtual DbSet<Birthdays> Birthdays { get; set; }
         public virtual DbSet<Buildings> Buildings { get; set; }
@@ -104,11 +105,14 @@ namespace Gordon360.Models.CCT.Context
                     .HasName("PK_Admin");
             });
 
+            modelBuilder.Entity<AccountPhotoURL>(entity =>
+            {
+                entity.ToView("AccountPhotoURL");
+            });
+
             modelBuilder.Entity<Alumni>(entity =>
             {
                 entity.ToView("Alumni");
-
-                entity.Property(e => e.Country).IsFixedLength();
 
                 entity.Property(e => e.grad_student).IsFixedLength();
             });
@@ -232,8 +236,6 @@ namespace Gordon360.Models.CCT.Context
                 entity.ToView("FacStaff");
 
                 entity.Property(e => e.BuildingDescription).IsFixedLength();
-
-                entity.Property(e => e.Country).IsFixedLength();
             });
 
             modelBuilder.Entity<Graduation>(entity =>
@@ -426,8 +428,6 @@ namespace Gordon360.Models.CCT.Context
                 entity.ToView("Student");
 
                 entity.Property(e => e.BuildingDescription).IsFixedLength();
-
-                entity.Property(e => e.Country).IsFixedLength();
             });
 
             modelBuilder.Entity<StudentNewsExpiration>(entity =>

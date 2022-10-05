@@ -5,6 +5,7 @@ using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
 using Gordon360.Utilities;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +15,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace Gordon360.Controllers
 {
@@ -23,12 +25,14 @@ namespace Gordon360.Controllers
         private readonly IProfileService _profileService;
         private readonly IAccountService _accountService;
         private readonly IConfiguration _config;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ProfilesController(IProfileService profileService, IAccountService accountService, IConfiguration config)
+        public ProfilesController(IProfileService profileService, IAccountService accountService, IConfiguration config, IWebHostEnvironment webHostEnvironment)
         {
             _profileService = profileService;
             _accountService = accountService;
             _config = config;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         /// <summary>Get profile info of currently logged in user</summary>
@@ -239,6 +243,72 @@ namespace Gordon360.Controllers
                 result.Add("pref", await GetProfileImageOrDefault(prefImgPath));
                 return Ok(result);
             }
+        }
+
+        [HttpGet]
+        [Route("photo")]
+        public ActionResult<String?> GetMyProfilePhoto()
+        {
+            var username = AuthUtils.GetUsername(User);
+            AccountPhotoURL? photoRecord = _profileService.GetPhotos(username);
+
+            return Ok(photoRecord);
+        }
+
+        [HttpGet]
+        [Route("photo/{username}")]
+        public ActionResult<String?> GetProfilePhoto(string username)
+        {
+            AccountPhotoURL? photoRecord = _profileService.GetPhotos(username);
+
+            return Ok(photoRecord);
+        }
+
+        /// <summary>
+        /// Set an image for profile
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("photo")]
+        public async Task<ActionResult> PostPhotoAsync([FromForm] IFormFile image)
+        {
+            var username = AuthUtils.GetUsername(User);
+            var account = _accountService.GetAccountByUsername(username);
+            var pathInfo = await _profileService.GetPhotoPathAsync(username);
+
+            if (pathInfo == null) // can't upload image if there is no record for this user in the database
+                return NotFound("No photo record was found for this user.");
+
+            var (extension, _) = ImageUtils.GetImageFormat(image);
+            var fileName = $"{account.Barcode}.{extension}";
+
+            // If there is an old photo that won't get overwritten, delete the old photo
+            if (pathInfo.Pref_Img_Name is string oldName
+                && oldName != fileName
+                && pathInfo.Pref_Img_Path is string oldPath
+                && Path.Combine(oldPath, oldName) is string oldFile
+                && System.IO.File.Exists(oldFile))
+            {
+                System.IO.File.Delete(oldFile);
+            }
+
+            var filePath = Path.Combine(_config["PREFERRED_IMAGE_PATH"], fileName);
+
+            ImageUtils.UploadImageAsync(filePath, image);
+
+            if (_webHostEnvironment.EnvironmentName == "Production" || Environment.MachineName == "GC08926")
+            {
+                if (!Directory.Exists("O:\\"))
+                {
+                    Process.Start("net.exe", @"Use O: '" + _config["Images:Production:Path"] + "' /user:" + _config["Images:Production:ServiceAccount:Username"] + " " + _config["Images:Production:ServiceAccount:Password"] + "");
+                }
+                filePath = Path.Combine("O:\\", fileName);
+                ImageUtils.UploadImageAsync(filePath, image);
+            }
+
+            await _profileService.UpdateProfileImageAsync(username, _config["DATABASE_IMAGE_PATH"], fileName);
+
+            return Ok();
         }
 
         /// <summary>Get the profile image of the given user</summary>
