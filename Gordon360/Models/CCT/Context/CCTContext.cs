@@ -64,6 +64,7 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<PART_DEF> PART_DEF { get; set; }
         public virtual DbSet<Police> Police { get; set; }
         public virtual DbSet<REQUEST> REQUEST { get; set; }
+        public virtual DbSet<RequestView> RequestView { get; set; }
         public virtual DbSet<RoomAssign> RoomAssign { get; set; }
         public virtual DbSet<Rooms> Rooms { get; set; }
         public virtual DbSet<Save_Bookings> Save_Bookings { get; set; }
@@ -77,7 +78,6 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<User_Connection_Ids> User_Connection_Ids { get; set; }
         public virtual DbSet<User_Rooms> User_Rooms { get; set; }
         public virtual DbSet<Users> Users { get; set; }
-        public virtual DbSet<_360_SLIDER> _360_SLIDER { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -109,8 +109,6 @@ namespace Gordon360.Models.CCT.Context
             modelBuilder.Entity<Alumni>(entity =>
             {
                 entity.ToView("Alumni");
-
-                entity.Property(e => e.Country).IsFixedLength();
 
                 entity.Property(e => e.grad_student).IsFixedLength();
             });
@@ -152,6 +150,8 @@ namespace Gordon360.Models.CCT.Context
             modelBuilder.Entity<Countries>(entity =>
             {
                 entity.ToView("Countries");
+
+                entity.Property(e => e.CTY).IsFixedLength();
             });
 
             modelBuilder.Entity<DiningInfo>(entity =>
@@ -414,6 +414,21 @@ namespace Gordon360.Models.CCT.Context
                 entity.Property(e => e.SESS_CDE).IsFixedLength();
             });
 
+            modelBuilder.Entity<RequestView>(entity =>
+            {
+                entity.ToView("RequestView");
+
+                entity.Property(e => e.ActivityCode).IsFixedLength();
+
+                entity.Property(e => e.ActivityDescription).IsFixedLength();
+
+                entity.Property(e => e.Participation).IsFixedLength();
+
+                entity.Property(e => e.ParticipationDescription).IsFixedLength();
+
+                entity.Property(e => e.SessionCode).IsFixedLength();
+            });
+
             modelBuilder.Entity<RoomAssign>(entity =>
             {
                 entity.ToView("RoomAssign");
@@ -456,8 +471,6 @@ namespace Gordon360.Models.CCT.Context
                 entity.ToView("Student");
 
                 entity.Property(e => e.BuildingDescription).IsFixedLength();
-
-                entity.Property(e => e.Country).IsFixedLength();
             });
 
             modelBuilder.Entity<StudentNewsExpiration>(entity =>
@@ -466,11 +479,6 @@ namespace Gordon360.Models.CCT.Context
                     .HasName("PK_StudentNewsExpiration_SNID");
 
                 entity.Property(e => e.SNID).ValueGeneratedNever();
-            });
-
-            modelBuilder.Entity<_360_SLIDER>(entity =>
-            {
-                entity.ToView("360_SLIDER");
             });
 
             modelBuilder.HasSequence("Information_Change_Request_Seq");

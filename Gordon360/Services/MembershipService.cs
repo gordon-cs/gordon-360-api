@@ -38,14 +38,14 @@ namespace Gordon360.Services
             await ValidateMembershipAsync(membership);
             IsPersonAlreadyInActivity(membership);
 
-
+            MEMBERSHIP m = MembershipUploadToMEMBERSHIP(membership);
             // The Add() method returns the added membership.
-            var payload = await _context.MEMBERSHIP.AddAsync(MembershipUploadToMEMBERSHIP(membership));
+            var payload = await _context.MEMBERSHIP.AddAsync(m);
 
             // There is a unique constraint in the Database on columns (ID_NUM, PART_LVL, SESS_CDE and ACT_CDE)
             if (payload?.Entity == null)
             {
-                throw new ResourceCreationException() { ExceptionMessage = "There was an error creating the membership. Verify that a similar membership doesn't already exist." };
+                throw new ResourceCreationException() { ExceptionMessage = "There was an error creating the membership." };
             } else
             {
                 await _context.SaveChangesAsync();
@@ -293,7 +293,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="membership">The membership to validate</param>
         /// <returns>True if the membership is valid. Throws ResourceNotFoundException if not. Exception is caught in an Exception Filter</returns>
-        private async Task<bool> ValidateMembershipAsync(MembershipUploadViewModel membership)
+        public async Task<bool> ValidateMembershipAsync(MembershipUploadViewModel membership)
         {
             var personExists = _context.ACCOUNT.Where(x => x.AD_Username == membership.Username).Any();
             if (!personExists)
@@ -324,7 +324,7 @@ namespace Gordon360.Services
             return true;
         }
 
-        private bool IsPersonAlreadyInActivity(MembershipUploadViewModel membershipRequest)
+        public bool IsPersonAlreadyInActivity(MembershipUploadViewModel membershipRequest)
         {
             var personAlreadyInActivity = _context.MembershipView.Any(x => x.SessionCode == membershipRequest.SessCode &&
                 x.ActivityCode == membershipRequest.ACTCode && x.Username == membershipRequest.Username);
@@ -396,7 +396,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="membership">The MembershipUploadViewModel to convert</param>	
         /// <returns>A new MEMBERSHIP object filled with the info from the view model</returns>	
-        private MEMBERSHIP MembershipUploadToMEMBERSHIP(MembershipUploadViewModel membership)
+        public MEMBERSHIP MembershipUploadToMEMBERSHIP(MembershipUploadViewModel membership)
         {
             var sessionCode = _context.CM_SESSION_MSTR
                 .Where(x => x.SESS_CDE.Equals(membership.SessCode))
@@ -410,7 +410,8 @@ namespace Gordon360.Services
                 PART_CDE = membership.PartCode,
                 COMMENT_TXT = membership.CommentText,
                 GRP_ADMIN = membership.GroupAdmin,
-                PRIVACY = membership.Privacy
+                PRIVACY = membership.Privacy,
+                USER_NAME = Environment.UserName
             };
         }
 
@@ -419,7 +420,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="membership">The MEMBERSHIP to match on MembershipID</param>	
         /// <returns>The found MembershipView object corresponding to the MEMBERSHIP by ID</returns>	
-        private MembershipView MEMBERSHIPToMembershipView(MEMBERSHIP membership)
+        public MembershipView MEMBERSHIPToMembershipView(MEMBERSHIP membership)
         {
             var foundMembership = _context.MembershipView.FirstOrDefault(m => m.MembershipID == membership.MEMBERSHIP_ID);
 

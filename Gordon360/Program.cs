@@ -46,6 +46,7 @@ builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IAddressesService, AddressesService>();
 builder.Services.AddScoped<IMembershipService, MembershipService>();
+builder.Services.AddScoped<IMembershipRequestService, MembershipRequestService>();
 
 builder.Services.AddMemoryCache();
 

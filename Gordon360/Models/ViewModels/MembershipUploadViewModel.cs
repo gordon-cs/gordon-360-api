@@ -11,5 +11,18 @@ namespace Gordon360.Models.CCT
         public string CommentText { get; set; }
         public bool GroupAdmin { get; set; }
         public bool Privacy { get; set; }
+        public static MembershipUploadViewModel FromREQUEST(REQUEST request)
+        {
+            return new MembershipUploadViewModel
+            {
+                ACTCode = request.ACT_CDE,
+                SessCode = request.SESS_CDE,
+                PartCode = request.PART_CDE,
+                CommentText = request.COMMENT_TXT,
+                GroupAdmin = false,
+                Privacy = false
+            };
+        }
     }
+
 }

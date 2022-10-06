@@ -186,6 +186,9 @@ namespace Gordon360.Services
         MembershipView Delete(int membershipID);
         bool IsGroupAdmin(string username);
         public IEnumerable<EmailViewModel> MembershipEmails(string activityCode, string sessionCode, ParticipationType? participationCode = null);
+        public MembershipView MEMBERSHIPToMembershipView(MEMBERSHIP membership);
+        Task<bool> ValidateMembershipAsync(MembershipUploadViewModel membership);
+        public bool IsPersonAlreadyInActivity(MembershipUploadViewModel membershipRequest);
     }
 
     public interface IJobsService
@@ -212,16 +215,16 @@ namespace Gordon360.Services
 
     public interface IMembershipRequestService
     {
-        Task<MembershipRequestViewModel> GetAsync(int requestID);
-        Task<IEnumerable<MembershipRequestViewModel>> GetAllAsync();
-        Task<IEnumerable<MembershipRequestViewModel>> GetMembershipRequestsForActivityAsync(string activityCode);
-        Task<IEnumerable<MembershipRequestViewModel>> GetMembershipRequestsForStudentAsync(string usernamne);
-        REQUEST Add(REQUEST membershipRequest);
-        REQUEST Update(int requestID, REQUEST membershipRequest);
+        RequestView Get(int requestID);
+        IEnumerable<RequestView> GetAll();
+        IEnumerable<RequestView> GetMembershipRequestsByActivity(string activityCode);
+        IEnumerable<RequestView> GetMembershipRequestsByUsername(string usernamne);
+        Task<RequestView> AddAsync(RequestUploadViewModel membershipRequest);
+        Task<RequestView> UpdateAsync(int requestID, RequestUploadViewModel membershipRequest);
         // The ODD one out. When we approve a request, we would like to get back the new membership.
-        MEMBERSHIP ApproveRequest(int requestID);
-        REQUEST DenyRequest(int requestID);
-        REQUEST Delete(int requestID);
+        Task<MembershipView> ApproveAsync(int requestID);
+        Task<RequestView> DenyAsync(int requestID);
+        Task<RequestView> DeleteAsync(int requestID);
     }
     public interface IScheduleService
     {

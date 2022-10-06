@@ -154,7 +154,7 @@ namespace Gordon360.Controllers
         /// <param name="sessionCode">The session code</param>
         /// <returns>The number of members of the activity</returns>
         [HttpGet]
-        [Route("activity/{activityCode}/sessions/{sessionCode}/member-count")]
+        [Route("activities/{activityCode}/sessions/{sessionCode}/member-count")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
         public ActionResult<int> GetActivityMembersCountForSession(string activityCode, string sessionCode)
         {

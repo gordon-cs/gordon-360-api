@@ -82,5 +82,10 @@
         public const string PENDING = "Pending";
         public const string APPROVED = "Approved";
         public const string DENIED = "Denied";
+        private static string[] options = new string[] { PENDING, APPROVED, DENIED };
+        public static string[] GetOptions()
+        {
+            return options;
+        }
     }
 }

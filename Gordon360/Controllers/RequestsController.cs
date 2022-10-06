@@ -15,9 +15,9 @@ namespace Gordon360.Controllers
     {
         public IMembershipRequestService _membershipRequestService;
 
-        public RequestsController(CCTContext context)
+        public RequestsController(CCTContext context, IMembershipRequestService membershipRequestService)
         {
-            _membershipRequestService = new MembershipRequestService(context);
+            _membershipRequestService = membershipRequestService;
         }
 
         /// <summary>
@@ -27,10 +27,9 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("")]
         [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.MEMBERSHIP_REQUEST)]
-        public async Task<ActionResult<IEnumerable<MembershipViewModel>>> GetAsync()
+        public ActionResult<IEnumerable<MembershipRequestViewModel>> Get()
         {
-            var all = await _membershipRequestService.GetAllAsync();
-            return Ok(all);
+            return Ok(_membershipRequestService.GetAll());
         }
 
         /// <summary>
@@ -41,9 +40,9 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("{id}")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP_REQUEST)]
-        public async Task<ActionResult<MembershipViewModel>> GetAsync(int id)
+        public ActionResult<MembershipRequestViewModel> Get(int id)
         {
-            var result = await _membershipRequestService.GetAsync(id);
+            var result = _membershipRequestService.Get(id);
 
             if (result == null)
             {
@@ -60,11 +59,11 @@ namespace Gordon360.Controllers
         /// <param name="id">The activity code</param>
         /// <returns>All membership requests associated with the activity</returns>
         [HttpGet]
-        [Route("activity/{id}")]
+        [Route("activity/{activityCode}")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_REQUEST_BY_ACTIVITY)]
-        public async Task<ActionResult<IEnumerable<MembershipViewModel>>> GetMembershipsRequestsForActivityAsync(string id)
+        public ActionResult<IEnumerable<MembershipView>> GetMembershipRequestsByActivity(string activityCode)
         {
-            var result = await _membershipRequestService.GetMembershipRequestsForActivityAsync(id);
+            var result = _membershipRequestService.GetMembershipRequestsByActivity(activityCode);
 
             if (result == null)
             {
@@ -79,12 +78,12 @@ namespace Gordon360.Controllers
         /// </summary>
         /// <returns>All membership requests associated with the student</returns>
         [HttpGet]
-        [Route("student")]
+        [Route("current-user")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_REQUEST_BY_STUDENT)]
-        public async Task<ActionResult<IEnumerable<MembershipViewModel>>> GetMembershipsRequestsForStudentAsync()
+        public ActionResult<IEnumerable<MembershipView>> GetMembershipsRequestsForCurrentUser()
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
-            var result = await _membershipRequestService.GetMembershipRequestsForStudentAsync(authenticatedUserUsername);
+            var result = _membershipRequestService.GetMembershipRequestsByUsername(authenticatedUserUsername);
 
             if (result == null)
             {
@@ -102,9 +101,9 @@ namespace Gordon360.Controllers
         [HttpPost]
         [Route("", Name = "membershipRequest")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.MEMBERSHIP_REQUEST)]
-        public ActionResult<REQUEST> Post([FromBody] REQUEST membershipRequest)
+        public async Task<ActionResult<RequestView>> PostAsync([FromBody] RequestUploadViewModel membershipRequest)
         {
-            var result = _membershipRequestService.Add(membershipRequest);
+            var result = await _membershipRequestService.AddAsync(membershipRequest);
 
             if (result == null)
             {
@@ -123,9 +122,9 @@ namespace Gordon360.Controllers
         [HttpPut]
         [Route("{id}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP_REQUEST)]
-        public ActionResult<REQUEST> Put(int id, REQUEST membershipRequest)
+        public async Task<ActionResult<RequestView>> PutAsync(int id, RequestUploadViewModel membershipRequest)
         {
-            var result = _membershipRequestService.Update(id, membershipRequest);
+            var result = await _membershipRequestService.UpdateAsync(id, membershipRequest);
 
             if (result == null)
             {
@@ -133,6 +132,7 @@ namespace Gordon360.Controllers
             }
             return Ok(membershipRequest);
         }
+
 
         /// <summary>
         /// Sets a membership request to Approved
@@ -142,9 +142,9 @@ namespace Gordon360.Controllers
         [HttpPost]
         [Route("{id}/approve")]
         [StateYourBusiness(operation = Operation.DENY_ALLOW, resource = Resource.MEMBERSHIP_REQUEST)]
-        public ActionResult<MEMBERSHIP> ApproveRequest(int id)
+        public async Task<ActionResult<MembershipView>> ApproveAsync(int id)
         {
-            var result = _membershipRequestService.ApproveRequest(id);
+            var result = await _membershipRequestService.ApproveAsync(id);
 
             if (result == null)
             {
@@ -162,9 +162,9 @@ namespace Gordon360.Controllers
         [HttpPost]
         [Route("{id}/deny")]
         [StateYourBusiness(operation = Operation.DENY_ALLOW, resource = Resource.MEMBERSHIP_REQUEST)]
-        public ActionResult<REQUEST> DenyRequest(int id)
+        public async Task<ActionResult<RequestView>> DenyAsync(int id)
         {
-            var result = _membershipRequestService.DenyRequest(id);
+            var result = await _membershipRequestService.DenyAsync(id);
 
             if (result == null)
             {
@@ -173,6 +173,7 @@ namespace Gordon360.Controllers
 
             return Ok(result);
         }
+
         /// <summary>
         /// Deletes a membership request
         /// </summary>
@@ -181,9 +182,9 @@ namespace Gordon360.Controllers
         [HttpDelete]
         [Route("{id}")]
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.MEMBERSHIP_REQUEST)]
-        public ActionResult<REQUEST> Delete(int id)
+        public async Task<ActionResult<RequestView>> Delete(int id)
         {
-            var result = _membershipRequestService.Delete(id);
+            var result = await _membershipRequestService.DeleteAsync(id);
 
             if (result == null)
             {
