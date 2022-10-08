@@ -1,4 +1,5 @@
 ﻿using Gordon360.Models.CCT;
+using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -25,10 +26,6 @@ namespace Gordon360.Controllers
         {
             var result = _addressesService.GetAllStates();
 
-            if (result == null)
-            {
-                return NotFound();
-            }
             return Ok(result);
         }
 
@@ -38,14 +35,10 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("countries")]
-        public ActionResult<IEnumerable<Countries>> GetAllCountries()
+        public ActionResult<IEnumerable<CountryViewModel>> GetAllCountries()
         {
             var result = _addressesService.GetAllCountries();
 
-            if (result == null)
-            {
-                return NotFound();
-            }
             return Ok(result);
         }
     }

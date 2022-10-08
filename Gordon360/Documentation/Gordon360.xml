@@ -211,16 +211,20 @@
             </summary>
             <returns> All minors</returns>
         </member>
-        <member name="M:Gordon360.Controllers.AdvancedSearchController.GetStates">
+        <member name="M:Gordon360.Controllers.AdvancedSearchController.DEPRECATED_GetStates">
             <summary>
             Return a list states.
             </summary>
+            
+            <remarks>DEPRECATED: Use AddressController instead</remarks>
             <returns> All states</returns>
         </member>
-        <member name="M:Gordon360.Controllers.AdvancedSearchController.GetCountries">
+        <member name="M:Gordon360.Controllers.AdvancedSearchController.DEPREACTED_GetCountries">
             <summary>
             Return a list countries.
             </summary>
+            
+            <remarks>DEPRECATED: Use AddressController instead</remarks>
             <returns> All countries</returns>
         </member>
         <member name="M:Gordon360.Controllers.AdvancedSearchController.GetDepartments">
