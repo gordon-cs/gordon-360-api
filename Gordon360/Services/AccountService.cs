@@ -191,7 +191,7 @@ namespace Gordon360.Services
             IEnumerable<FacStaff> facstaff = Enumerable.Empty<FacStaff>();
             if (accountTypes.Contains("facstaff"))
             {
-                facstaff = _context.FacStaff;
+                facstaff = _context.FacStaff.Where(fs => fs.ActiveAccount == true);
             }
 
             IEnumerable<Alumni> alumni = Enumerable.Empty<Alumni>();
