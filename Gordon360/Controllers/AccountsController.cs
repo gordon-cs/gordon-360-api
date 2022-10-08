@@ -123,16 +123,12 @@ namespace Gordon360.Controllers
             string? department,
             string? building)
         {
-            var viewerGroups = AuthUtils.GetGroups(User);
+            IEnumerable<AuthGroup> viewerGroups = AuthUtils.GetGroups(User);
 
-            // Only students and FacStaff can search students
-            if (accountTypes.Contains("student") && !(viewerGroups.Contains(AuthGroup.Student) || viewerGroups.Contains(AuthGroup.FacStaff)))
-            {
-                accountTypes.Remove("student");
-            }
+            var accounts = _accountService.GetAccountsToSearch(accountTypes, viewerGroups, homeCity ?? "");
 
             var searchResults = _accountService.AdvancedSearch(
-                accountTypes,
+                accounts,
                 firstname?.ToLower() ?? "",
                 lastname?.ToLower() ?? "",
                 major ?? "",

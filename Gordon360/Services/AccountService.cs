@@ -83,8 +83,24 @@ namespace Gordon360.Services
             return account;
         }
 
+        /// <summary>
+        /// Given a list of accounts, and search params, return all the accounts that match those search params.
+        /// </summary>
+        /// <param name="accounts">The accounts that should be searched, converted to an AdvancedSearchViewModel</param>
+        /// <param name="firstname">The firstname search param</param>
+        /// <param name="lastname">The lastname search param</param>
+        /// <param name="major">The major search param</param>
+        /// <param name="minor">The minor search param</param>
+        /// <param name="hall">The hall search param</param>
+        /// <param name="classType">The class type search param, e.g. 'Sophomore', 'Senior', 'Undergraduate Conferred'</param>
+        /// <param name="homeCity">The home city search param</param>
+        /// <param name="state">The state search param</param>
+        /// <param name="country">The country search param</param>
+        /// <param name="department">The department search param</param>
+        /// <param name="building">The building search param</param>
+        /// <returns>The accounts from the provided list that match the given search params</returns>
         public IEnumerable<AdvancedSearchViewModel> AdvancedSearch(
-            List<string> accountTypes,
+            IEnumerable<AdvancedSearchViewModel> accounts,
             string firstname,
             string lastname,
             string major,
@@ -117,24 +133,6 @@ namespace Gordon360.Services
                         .Replace("n ", "north ");
             }
 
-            var students = accountTypes.Contains("student")
-                ? _context.Student.Select<Student, AdvancedSearchViewModel>(s => s)
-                : Enumerable.Empty<AdvancedSearchViewModel>();
-            var facstaff = accountTypes.Contains("facstaff")
-                ? _context.FacStaff.Select<FacStaff, AdvancedSearchViewModel>(s => s)
-                : Enumerable.Empty<AdvancedSearchViewModel>();
-            var alumni = accountTypes.Contains("alumni")
-                ? _context.Alumni.Select<Alumni, AdvancedSearchViewModel>(s => s)
-                : Enumerable.Empty<AdvancedSearchViewModel>();
-
-            if (!string.IsNullOrEmpty(homeCity))
-            {
-                facstaff = facstaff.Where(a => a.KeepPrivate == "0");
-                alumni = alumni.Where(a => a.ShareAddress != "N");
-            }
-
-            var accounts = students.UnionBy(facstaff, a => a.AD_Username).UnionBy(alumni, a => a.AD_Username);
-
             return accounts
                 .Where(a =>
                        (
@@ -165,6 +163,53 @@ namespace Gordon360.Services
                 )
                 .OrderBy(a => a.LastName)
                 .ThenBy(a => a.FirstName);
+        }
+
+        /// <summary>
+        /// Get the list of accounts a user can search, based on the types of accounts they want to search, their authorization, and whether they're searching sensitive info.
+        /// </summary>
+        /// <param name="accountTypes">A list of account types that will be searched: 'student', 'alumni', and/or 'facstaff'</param>
+        /// <param name="authGroups">The authorization groups of the searching user, to decide what accounts they are permitted to search</param>
+        /// <param name="homeCity">The home city search param, since it is considered sensitive info</param>
+        /// <returns>The list of accounts that may be searched, converted to AdvancedSearchViewModels.</returns>
+        public IEnumerable<AdvancedSearchViewModel> GetAccountsToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string homeCity)
+        {
+            IEnumerable<Student> students = Enumerable.Empty<Student>();
+            if (accountTypes.Contains("student")
+                // Only students and FacStaff are authorized to search for students
+                && (authGroups.Contains(AuthGroup.FacStaff) || authGroups.Contains(AuthGroup.Student)))
+            {
+                students = _context.Student;
+            }
+
+            // Only Faculy and Staff can see Private students
+            if (!authGroups.Contains(AuthGroup.FacStaff))
+            {
+                students = students.Where(s => s.KeepPrivate != "P");
+            }
+
+            IEnumerable<FacStaff> facstaff = Enumerable.Empty<FacStaff>();
+            if (accountTypes.Contains("facstaff"))
+            {
+                facstaff = _context.FacStaff;
+            }
+
+            IEnumerable<Alumni> alumni = Enumerable.Empty<Alumni>();
+            if (accountTypes.Contains("alumni"))
+            {
+                alumni = _context.Alumni;
+            }
+
+            // Do not indirectly reveal the address of facstaff and alumni who have requested to keep it private.
+            if (!string.IsNullOrEmpty(homeCity))
+            {
+                facstaff = facstaff.Where(a => a.KeepPrivate == "0");
+                alumni = alumni.Where(a => a.ShareAddress != "N");
+            }
+
+            return students.Select<Student, AdvancedSearchViewModel>(s => s)
+                .UnionBy(facstaff.Select<FacStaff, AdvancedSearchViewModel>(fs => fs), a => a.AD_Username)
+                .UnionBy(alumni.Select<Alumni, AdvancedSearchViewModel>(a => a), a => a.AD_Username);
         }
 
         /// <summary>
@@ -200,21 +245,6 @@ namespace Gordon360.Services
                     Nickname = b.Nickname,
                     UserName = b.Username
                 });
-        }
-
-        private IEnumerable<AdvancedSearchViewModel> GetAllPublicStudentAccounts()
-        {
-            return _context.Student.Select<Student, AdvancedSearchViewModel>(s => s);
-        }
-
-        private IEnumerable<AdvancedSearchViewModel> GetAllPublicFacultyStaffAccounts()
-        {
-            return _context.FacStaff.Where(f => f.ActiveAccount == true).Select<FacStaff, AdvancedSearchViewModel>(fs => fs);
-        }
-
-        private IEnumerable<AdvancedSearchViewModel> GetAllPublicAlumniAccounts()
-        {
-            return _context.Alumni.Select<Alumni, AdvancedSearchViewModel>(a => a);
         }
     }
 }
