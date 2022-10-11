@@ -15,9 +15,9 @@ namespace Gordon360.Controllers.RecIMControllers
     [Route("api/recim/[controller]")]
     public class ActivitiesController : GordonControllerBase
     {
-        private readonly ILeagueService _activityService;
+        private readonly IRecIMActivityService _activityService;
 
-        public ActivitiesController(ILeagueService activityService)
+        public ActivitiesController(IRecIMActivityService activityService)
         {
             _activityService = activityService;
         }

@@ -36,7 +36,7 @@ namespace Gordon360.Services
         Task InformationChangeRequest(string username, ProfileFieldViewModel[] updatedField);
     }
 
-    public interface ILeagueService
+    public interface IRecIMActivityService
     {
         IEnumerable<Activity> GetActivities();
         Activity GetActivityByID(int ActivityID);
