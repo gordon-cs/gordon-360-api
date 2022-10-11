@@ -129,13 +129,13 @@ namespace Gordon360.Controllers
 
             var searchResults = _accountService.AdvancedSearch(
                 accounts,
-                firstname?.ToLower() ?? "",
-                lastname?.ToLower() ?? "",
+                firstname ?? "",
+                lastname ?? "",
                 major ?? "",
                 minor ?? "",
                 hall ?? "",
                 classType ?? "",
-                homeCity?.ToLower() ?? "",
+                homeCity ?? "",
                 state ?? "",
                 country ?? "",
                 department ?? "",

@@ -7,6 +7,7 @@ using Gordon360.Static.Names;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Gordon360.Extensions.System;
 
 namespace Gordon360.Services
 {
@@ -118,10 +119,10 @@ namespace Gordon360.Services
             if (
                 !string.IsNullOrEmpty(homeCity)
                 && (
-                  homeCity.StartsWith("e ") ||
-                  homeCity.StartsWith("w ") ||
-                  homeCity.StartsWith("s ") ||
-                  homeCity.StartsWith("n ")
+                  homeCity.StartsWithIgnoreCase("e ") ||
+                  homeCity.StartsWithIgnoreCase("w ") ||
+                  homeCity.StartsWithIgnoreCase("s ") ||
+                  homeCity.StartsWithIgnoreCase("n ")
                 )
               )
             {
@@ -136,30 +137,30 @@ namespace Gordon360.Services
             return accounts
                 .Where(a =>
                        (
-                               a.FirstName.ToLower().StartsWith(firstname)
-                            || a.NickName.ToLower().StartsWith(firstname)
+                               a.FirstName.StartsWithIgnoreCase(firstname)
+                            || a.NickName.StartsWithIgnoreCase(firstname)
                        )
                     && (
-                               a.LastName.ToLower().StartsWith(lastname)
-                            || a.MaidenName.ToLower().StartsWith(lastname)
+                               a.LastName.StartsWithIgnoreCase(lastname)
+                            || a.MaidenName.StartsWithIgnoreCase(lastname)
                        )
                     && (
-                               a.Major1Description == major
-                            || a.Major2Description == major
-                            || a.Major3Description == major
+                               a.Major1Description.EqualsIgnoreCase(major)
+                            || a.Major2Description.EqualsIgnoreCase(major)
+                            || a.Major3Description.EqualsIgnoreCase(major)
                        )
                     && (
-                               a.Minor1Description == minor
-                            || a.Minor2Description == minor
-                            || a.Minor3Description == minor
+                               a.Minor1Description.EqualsIgnoreCase(minor)
+                            || a.Minor2Description.EqualsIgnoreCase(minor)
+                            || a.Minor3Description.EqualsIgnoreCase(minor)
                        )
-                    && a.Hall.StartsWith(hall)
-                    && a.Class.StartsWith(classType)
-                    && a.HomeCity.ToLower().StartsWith(homeCity)
-                    && a.HomeState.StartsWith(state)
-                    && a.Country.StartsWith(country)
-                    && a.OnCampusDepartment.StartsWith(department)
-                    && a.BuildingDescription.StartsWith(building)
+                    && a.Hall.StartsWithIgnoreCase(hall)
+                    && a.Class.StartsWithIgnoreCase(classType)
+                    && a.HomeCity.StartsWithIgnoreCase(homeCity)
+                    && a.HomeState.StartsWithIgnoreCase(state)
+                    && a.Country.StartsWithIgnoreCase(country)
+                    && a.OnCampusDepartment.StartsWithIgnoreCase(department)
+                    && a.BuildingDescription.StartsWithIgnoreCase(building)
                 )
                 .OrderBy(a => a.LastName)
                 .ThenBy(a => a.FirstName);
