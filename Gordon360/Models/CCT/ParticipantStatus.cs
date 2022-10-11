@@ -8,12 +8,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
-    [Table("UserStatus", Schema = "RecIM")]
-    public partial class UserStatus
+    [Table("ParticipantStatus", Schema = "RecIM")]
+    public partial class ParticipantStatus
     {
-        public UserStatus()
+        public ParticipantStatus()
         {
-            UserStatusHistory = new HashSet<UserStatusHistory>();
+            ParticipantStatusHistory = new HashSet<ParticipantStatusHistory>();
         }
 
         [Key]
@@ -24,6 +24,6 @@ namespace Gordon360.Models.CCT
         public string Description { get; set; }
 
         [InverseProperty("Status")]
-        public virtual ICollection<UserStatusHistory> UserStatusHistory { get; set; }
+        public virtual ICollection<ParticipantStatusHistory> ParticipantStatusHistory { get; set; }
     }
 }

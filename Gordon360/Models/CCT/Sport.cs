@@ -13,7 +13,7 @@ namespace Gordon360.Models.CCT
     {
         public Sport()
         {
-            League = new HashSet<League>();
+            Activity = new HashSet<Activity>();
         }
 
         [Key]
@@ -33,6 +33,6 @@ namespace Gordon360.Models.CCT
         public string Logo { get; set; }
 
         [InverseProperty("Sport")]
-        public virtual ICollection<League> League { get; set; }
+        public virtual ICollection<Activity> Activity { get; set; }
     }
 }

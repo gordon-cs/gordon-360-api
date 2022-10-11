@@ -1,5 +1,6 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Services;
+using Gordon360.Services.RecIMServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -12,49 +13,49 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers.RecIMControllers
 {
     [Route("api/recim/[controller]")]
-    public class LeaguesController : GordonControllerBase
+    public class ActivitiesController : GordonControllerBase
     {
-        private readonly ILeagueService _leagueService;
+        private readonly ILeagueService _activityService;
 
-        public LeaguesController(ILeagueService leagueService)
+        public ActivitiesController(ILeagueService activityService)
         {
-            _leagueService = leagueService;
+            _activityService = activityService;
         }
 
-        ///<summary>Gets a list of all Leagues</summary>
+        ///<summary>Gets a list of all Activities</summary>
         /// <returns>
-        /// All Existing Leagues 
+        /// All Existing Activities 
         /// </returns>
         [HttpGet]
         [Route("")]
-        public ActionResult<IEnumerable<League>> GetAllLeagues()
+        public ActionResult<IEnumerable<Activity>> GetAllLeagues()
         {
-            var result = _leagueService.GetLeagues();
+            var result = _activityService.GetActivities();
             return Ok(result);
         }
 
-        ///<summary>Gets a list of all Leagues after given time</summary>
+        ///<summary>Gets a list of all Activities after given time</summary>
         /// <returns>
-        /// All Existing Leagues 
+        /// All Existing Activities 
         /// </returns>
         [HttpGet]
         [Route("{time}")]
-        public ActionResult<IEnumerable<League>> GetAllLeagues(DateTime time)
+        public ActionResult<IEnumerable<Activity>> GetAllLeagues(DateTime time)
         {
-            var result = _leagueService.GetLeaguesByTime(time);
+            var result = _activityService.GetActivitiesByTime(time);
             return Ok();
         }
 
-        ///<summary>Gets a League object by ID number</summary>
-        /// <param name="leagueID">League ID Number</param>
+        ///<summary>Gets a Activity object by ID number</summary>
+        /// <param name="activityID">League ID Number</param>
         /// <returns>
-        /// League object
+        /// Activity object
         /// </returns>
         [HttpGet]
-        [Route("{leagueID}")]
-        public ActionResult<League> GetLeagueByID(int leagueID)
+        [Route("{activityID}")]
+        public ActionResult<Activity> GetLeagueByID(int activityID)
         {
-            var result = _leagueService.GetLeagueByID(leagueID);
+            var result = _activityService.GetActivityByID(activityID);
 
             if (result == null)
             {
@@ -65,27 +66,27 @@ namespace Gordon360.Controllers.RecIMControllers
 
 
         /// <summary>
-        /// Posts league into CCT.RecIM.Leagues
+        /// Posts Activity into CCT.RecIM.Activity
         /// </summary>
-        /// <param name="newLeague">League object with appropriate values</param>
+        /// <param name="newActivity">League object with appropriate values</param>
         /// <returns></returns>
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult> CreateLeague(League newLeague)
+        public async Task<ActionResult> CreateLeague(Activity newActivity)
         {
-            await _leagueService.PostLeague(newLeague);
+            await _activityService.PostActivity(newActivity);
             return Ok();
         }
         /// <summary>
-        /// Updates league based on input
+        /// Updates Activity based on input
         /// </summary>
-        /// <param name="updatedLeague"> Updated League Object </param>
+        /// <param name="updatedActivity"> Updated Activity Object </param>
         /// <returns></returns>
         [HttpPut]
         [Route("")]
-        public async Task<ActionResult> UpdateLeague(League updatedLeague)
+        public async Task<ActionResult> UpdateLeague(Activity updatedActivity)
         {
-            await _leagueService.UpdateLeague(updatedLeague);
+            await _activityService.UpdateActivity(updatedActivity);
             return Ok();
         }
 
@@ -93,10 +94,10 @@ namespace Gordon360.Controllers.RecIMControllers
         /// <param></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("/add_smash")]
+        [Route("add_smash")]
         public async Task<ActionResult> CreateSmashLeague()
         {
-            var smashLeague = new League
+            var smashLeague = new Activity
             {
                 Name = "Super Smash Bros. Ultimate 1v1",
                 //Name = null,
@@ -112,7 +113,7 @@ namespace Gordon360.Controllers.RecIMControllers
                 Completed = false
             };
        
-            await _leagueService.PostLeague(smashLeague);
+            await _activityService.PostActivity(smashLeague);
             
            
             return Ok();

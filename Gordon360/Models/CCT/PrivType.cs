@@ -13,7 +13,7 @@ namespace Gordon360.Models.CCT
     {
         public PrivType()
         {
-            UserLeague = new HashSet<UserLeague>();
+            ParticipantActivity = new HashSet<ParticipantActivity>();
         }
 
         [Key]
@@ -24,6 +24,6 @@ namespace Gordon360.Models.CCT
         public string Description { get; set; }
 
         [InverseProperty("PrivType")]
-        public virtual ICollection<UserLeague> UserLeague { get; set; }
+        public virtual ICollection<ParticipantActivity> ParticipantActivity { get; set; }
     }
 }

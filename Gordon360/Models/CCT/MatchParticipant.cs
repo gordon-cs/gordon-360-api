@@ -8,19 +8,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
-    [Table("MatchUser", Schema = "RecIM")]
-    public partial class MatchUser
+    [Table("MatchParticipant", Schema = "RecIM")]
+    public partial class MatchParticipant
     {
         [Key]
         public int ID { get; set; }
         public int MatchID { get; set; }
-        public int UserID { get; set; }
+        public int ParticipantID { get; set; }
 
         [ForeignKey("MatchID")]
-        [InverseProperty("MatchUser")]
+        [InverseProperty("MatchParticipant")]
         public virtual Match Match { get; set; }
-        [ForeignKey("UserID")]
-        [InverseProperty("MatchUser")]
-        public virtual User User { get; set; }
+        [ForeignKey("ParticipantID")]
+        [InverseProperty("MatchParticipant")]
+        public virtual Participant Participant { get; set; }
     }
 }

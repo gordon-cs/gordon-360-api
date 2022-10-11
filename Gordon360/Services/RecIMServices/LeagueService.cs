@@ -21,17 +21,17 @@ namespace Gordon360.Services.RecIMServices
         }
 
 
-        public IEnumerable<League> GetLeagues()
+        public IEnumerable<Activity> GetActivities()
         {
-            var leagues = _context.League
+            var leagues = _context.Activity
                             .Include(l => l.Team)
                             .Include(l => l.Series)
                             .AsEnumerable();
             return leagues;
         }
-        public IEnumerable<League> GetLeaguesByTime(DateTime? time)
+        public IEnumerable<Activity> GetActivitiesByTime(DateTime? time)
         {
-            var leagues = _context.League
+            var leagues = _context.Activity
                             .Where(l => time == null 
                                         ? !l.Completed 
                                         : l.RegistrationEnd > time)
@@ -40,60 +40,60 @@ namespace Gordon360.Services.RecIMServices
                             .AsEnumerable();
             return leagues;
         }
-        public League GetLeagueByID(int leagueID)
+        public Activity GetActivityByID(int activityID)
         {
-            var result = _context.League
-                            .Where(l => l.ID == leagueID)
+            var result = _context.Activity
+                            .Where(l => l.ID == activityID)
                             .Include(l => l.Team)
                             .Include(l => l.Series)
                                 .ThenInclude(s => s.Match)
-                            .Include(l => l.UserLeague
-                                .Join(_context.User,
-                                    ul => ul.UserID, 
+                            .Include(l => l.ParticipantActivity
+                                .Join(_context.Participant,
+                                    ul => ul.ParticipantID, 
                                     u => u.ID, 
                                     (ul,u) => u))
                             .FirstOrDefault();
             return result;
         }
-        public async Task UpdateLeague(League updatedLeague)
+        public async Task UpdateActivity(Activity updatedActivity)
         {
-            int leagueID = updatedLeague.ID;
-            var league = _context.League
-                            .FirstOrDefault(l => l.ID == updatedLeague.ID);
-            league.Name = updatedLeague.Name == null ? league.Name : updatedLeague.Name;
-            league.Logo = updatedLeague.Logo == null ? league.Logo : updatedLeague.Logo;
-            league.RegistrationStart = updatedLeague.RegistrationStart == default 
-                                            ? league.RegistrationStart 
-                                            : updatedLeague.RegistrationStart;
-            league.RegistrationEnd = updatedLeague.RegistrationEnd == default
-                                  ? league.RegistrationEnd
-                                  : updatedLeague.RegistrationEnd;
-            league.TypeID = updatedLeague.TypeID == default 
-                                ? league.TypeID 
-                                : updatedLeague.TypeID;
-            league.SportID = updatedLeague.SportID == default
-                                ? league.SportID 
-                                : updatedLeague.SportID;
-            league.StatusID = updatedLeague.StatusID == null
-                                ? league.StatusID 
-                                : updatedLeague.StatusID;
-            league.MinCapacity = updatedLeague.MinCapacity == null
-                                   ? league.MinCapacity
-                                   : updatedLeague.MinCapacity;
-            league.MaxCapacity = updatedLeague.MaxCapacity == null
-                                   ? league.MaxCapacity
-                                   : updatedLeague.MaxCapacity;
-            league.MaxCapacity = updatedLeague.MaxCapacity == null
-                                   ? league.MaxCapacity
-                                   : updatedLeague.MaxCapacity;
-            league.SoloRegistration = updatedLeague.SoloRegistration;
-            league.Completed = updatedLeague.Completed;
+            int activityID = updatedActivity.ID;
+            var activity = _context.Activity
+                            .FirstOrDefault(l => l.ID == updatedActivity.ID);
+            activity.Name = updatedActivity.Name == null ? activity.Name : updatedActivity.Name;
+            activity.Logo = updatedActivity.Logo == null ? activity.Logo : updatedActivity.Logo;
+            activity.RegistrationStart = updatedActivity.RegistrationStart == default 
+                                            ? activity.RegistrationStart 
+                                            : updatedActivity.RegistrationStart;
+            activity.RegistrationEnd = updatedActivity.RegistrationEnd == default
+                                  ? activity.RegistrationEnd
+                                  : updatedActivity.RegistrationEnd;
+            activity.TypeID = updatedActivity.TypeID == default 
+                                ? activity.TypeID 
+                                : updatedActivity.TypeID;
+            activity.SportID = updatedActivity.SportID == default
+                                ? activity.SportID 
+                                : updatedActivity.SportID;
+            activity.StatusID = updatedActivity.StatusID == null
+                                ? activity.StatusID 
+                                : updatedActivity.StatusID;
+            activity.MinCapacity = updatedActivity.MinCapacity == null
+                                   ? activity.MinCapacity
+                                   : updatedActivity.MinCapacity;
+            activity.MaxCapacity = updatedActivity.MaxCapacity == null
+                                   ? activity.MaxCapacity
+                                   : updatedActivity.MaxCapacity;
+            activity.MaxCapacity = updatedActivity.MaxCapacity == null
+                                   ? activity.MaxCapacity
+                                   : updatedActivity.MaxCapacity;
+            activity.SoloRegistration = updatedActivity.SoloRegistration;
+            activity.Completed = updatedActivity.Completed;
 
             _context.SaveChanges();
         }
-        public async Task PostLeague(League newLeague)
+        public async Task PostActivity(Activity newActivity)
         {
-            _context.League.Add(newLeague);
+            _context.Activity.Add(newActivity);
             _context.SaveChanges();
         }
        

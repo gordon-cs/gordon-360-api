@@ -23,6 +23,9 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<ACT_INFO> ACT_INFO { get; set; }
         public virtual DbSet<ADMIN> ADMIN { get; set; }
         public virtual DbSet<AccountPhotoURL> AccountPhotoURL { get; set; }
+        public virtual DbSet<Activity> Activity { get; set; }
+        public virtual DbSet<ActivityStatus> ActivityStatus { get; set; }
+        public virtual DbSet<ActivityType> ActivityType { get; set; }
         public virtual DbSet<Alumni> Alumni { get; set; }
         public virtual DbSet<Birthdays> Birthdays { get; set; }
         public virtual DbSet<Buildings> Buildings { get; set; }
@@ -45,7 +48,6 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<Health_Question> Health_Question { get; set; }
         public virtual DbSet<Health_Status> Health_Status { get; set; }
         public virtual DbSet<Health_Status_CTRL> Health_Status_CTRL { get; set; }
-        public virtual DbSet<Housing_Admins> Housing_Admins { get; set; }
         public virtual DbSet<Housing_Applicants> Housing_Applicants { get; set; }
         public virtual DbSet<Housing_Applications> Housing_Applications { get; set; }
         public virtual DbSet<Housing_HallChoices> Housing_HallChoices { get; set; }
@@ -55,23 +57,26 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<InvolvementOffering> InvolvementOffering { get; set; }
         public virtual DbSet<JENZ_ACT_CLUB_DEF> JENZ_ACT_CLUB_DEF { get; set; }
         public virtual DbSet<JNZB_ACTIVITIES> JNZB_ACTIVITIES { get; set; }
-        public virtual DbSet<League> League { get; set; }
-        public virtual DbSet<LeagueStatus> LeagueStatus { get; set; }
-        public virtual DbSet<LeagueType> LeagueType { get; set; }
         public virtual DbSet<MEMBERSHIP> MEMBERSHIP { get; set; }
         public virtual DbSet<MYSCHEDULE> MYSCHEDULE { get; set; }
         public virtual DbSet<Mailboxes> Mailboxes { get; set; }
         public virtual DbSet<Majors> Majors { get; set; }
         public virtual DbSet<Match> Match { get; set; }
+        public virtual DbSet<MatchParticipant> MatchParticipant { get; set; }
         public virtual DbSet<MatchStatus> MatchStatus { get; set; }
         public virtual DbSet<MatchTeam> MatchTeam { get; set; }
         public virtual DbSet<MatchTeamStatus> MatchTeamStatus { get; set; }
-        public virtual DbSet<MatchUser> MatchUser { get; set; }
         public virtual DbSet<MembershipView> MembershipView { get; set; }
         public virtual DbSet<Message_Rooms> Message_Rooms { get; set; }
         public virtual DbSet<Messages> Messages { get; set; }
         public virtual DbSet<Minors> Minors { get; set; }
         public virtual DbSet<PART_DEF> PART_DEF { get; set; }
+        public virtual DbSet<Participant> Participant { get; set; }
+        public virtual DbSet<ParticipantActivity> ParticipantActivity { get; set; }
+        public virtual DbSet<ParticipantNotification> ParticipantNotification { get; set; }
+        public virtual DbSet<ParticipantStatus> ParticipantStatus { get; set; }
+        public virtual DbSet<ParticipantStatusHistory> ParticipantStatusHistory { get; set; }
+        public virtual DbSet<ParticipantTeam> ParticipantTeam { get; set; }
         public virtual DbSet<Police> Police { get; set; }
         public virtual DbSet<PrivType> PrivType { get; set; }
         public virtual DbSet<REQUEST> REQUEST { get; set; }
@@ -96,15 +101,9 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<Team> Team { get; set; }
         public virtual DbSet<TeamStatus> TeamStatus { get; set; }
         public virtual DbSet<Timesheets_Clock_In_Out> Timesheets_Clock_In_Out { get; set; }
-        public virtual DbSet<User> User { get; set; }
-        public virtual DbSet<UserLeague> UserLeague { get; set; }
-        public virtual DbSet<UserStatus> UserStatus { get; set; }
-        public virtual DbSet<UserStatusHistory> UserStatusHistory { get; set; }
-        public virtual DbSet<UserTeam> UserTeam { get; set; }
         public virtual DbSet<User_Connection_Ids> User_Connection_Ids { get; set; }
         public virtual DbSet<User_Rooms> User_Rooms { get; set; }
         public virtual DbSet<Users> Users { get; set; }
-        public virtual DbSet<_360_SLIDER> _360_SLIDER { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -136,6 +135,30 @@ namespace Gordon360.Models.CCT.Context
             modelBuilder.Entity<AccountPhotoURL>(entity =>
             {
                 entity.ToView("AccountPhotoURL", "dbo");
+            });
+
+            modelBuilder.Entity<Activity>(entity =>
+            {
+                entity.Property(e => e.StatusID).HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.TypeID).HasDefaultValueSql("((1))");
+
+                entity.HasOne(d => d.Sport)
+                    .WithMany(p => p.Activity)
+                    .HasForeignKey(d => d.SportID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Activity_Sport");
+
+                entity.HasOne(d => d.Status)
+                    .WithMany(p => p.Activity)
+                    .HasForeignKey(d => d.StatusID)
+                    .HasConstraintName("FK_Activity_ActivityStatus");
+
+                entity.HasOne(d => d.Type)
+                    .WithMany(p => p.Activity)
+                    .HasForeignKey(d => d.TypeID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Activity_ActivityType");
             });
 
             modelBuilder.Entity<Alumni>(entity =>
@@ -182,6 +205,8 @@ namespace Gordon360.Models.CCT.Context
             modelBuilder.Entity<Countries>(entity =>
             {
                 entity.ToView("Countries", "dbo");
+
+                entity.Property(e => e.CTY).IsFixedLength();
             });
 
             modelBuilder.Entity<DiningInfo>(entity =>
@@ -366,30 +391,6 @@ namespace Gordon360.Models.CCT.Context
                 entity.Property(e => e.USER_NAME).IsFixedLength();
             });
 
-            modelBuilder.Entity<League>(entity =>
-            {
-                entity.Property(e => e.StatusID).HasDefaultValueSql("((1))");
-
-                entity.Property(e => e.TypeID).HasDefaultValueSql("((1))");
-
-                entity.HasOne(d => d.Sport)
-                    .WithMany(p => p.League)
-                    .HasForeignKey(d => d.SportID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_League_Sport");
-
-                entity.HasOne(d => d.Status)
-                    .WithMany(p => p.League)
-                    .HasForeignKey(d => d.StatusID)
-                    .HasConstraintName("FK_League_LeagueStatus");
-
-                entity.HasOne(d => d.Type)
-                    .WithMany(p => p.League)
-                    .HasForeignKey(d => d.TypeID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_League_LeagueType");
-            });
-
             modelBuilder.Entity<MEMBERSHIP>(entity =>
             {
                 entity.HasKey(e => e.MEMBERSHIP_ID)
@@ -443,6 +444,21 @@ namespace Gordon360.Models.CCT.Context
                     .HasConstraintName("FK_Match_Surface");
             });
 
+            modelBuilder.Entity<MatchParticipant>(entity =>
+            {
+                entity.HasOne(d => d.Match)
+                    .WithMany(p => p.MatchParticipant)
+                    .HasForeignKey(d => d.MatchID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_MatchParticipant_Match");
+
+                entity.HasOne(d => d.Participant)
+                    .WithMany(p => p.MatchParticipant)
+                    .HasForeignKey(d => d.ParticipantID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_MatchParticipant_Participant");
+            });
+
             modelBuilder.Entity<MatchTeam>(entity =>
             {
                 entity.Property(e => e.StatusID).HasDefaultValueSql("((1))");
@@ -466,34 +482,13 @@ namespace Gordon360.Models.CCT.Context
                     .HasConstraintName("FK_MatchTeam_Team");
             });
 
-            modelBuilder.Entity<MatchUser>(entity =>
-            {
-                entity.HasOne(d => d.Match)
-                    .WithMany(p => p.MatchUser)
-                    .HasForeignKey(d => d.MatchID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_MatchUser_Match");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.MatchUser)
-                    .HasForeignKey(d => d.UserID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_MatchUser_User");
-            });
-
             modelBuilder.Entity<MembershipView>(entity =>
             {
                 entity.ToView("MembershipView", "dbo");
 
-                entity.Property(e => e.ActivityCode).IsFixedLength();
-
                 entity.Property(e => e.ActivityDescription).IsFixedLength();
 
-                entity.Property(e => e.Participation).IsFixedLength();
-
                 entity.Property(e => e.ParticipationDescription).IsFixedLength();
-
-                entity.Property(e => e.SessionCode).IsFixedLength();
             });
 
             modelBuilder.Entity<Message_Rooms>(entity =>
@@ -514,6 +509,85 @@ namespace Gordon360.Models.CCT.Context
                 entity.Property(e => e.PART_CDE).IsFixedLength();
 
                 entity.Property(e => e.PART_DESC).IsFixedLength();
+            });
+
+            modelBuilder.Entity<Participant>(entity =>
+            {
+                entity.Property(e => e.ID).ValueGeneratedNever();
+            });
+
+            modelBuilder.Entity<ParticipantActivity>(entity =>
+            {
+                entity.Property(e => e.PrivTypeID).HasDefaultValueSql("((1))");
+
+                entity.HasOne(d => d.Activity)
+                    .WithMany(p => p.ParticipantActivity)
+                    .HasForeignKey(d => d.ActivityID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ParticipantActivity_Activity");
+
+                entity.HasOne(d => d.Participant)
+                    .WithMany(p => p.ParticipantActivity)
+                    .HasForeignKey(d => d.ParticipantID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ParticipantActivity_Participant");
+
+                entity.HasOne(d => d.PrivType)
+                    .WithMany(p => p.ParticipantActivity)
+                    .HasForeignKey(d => d.PrivTypeID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ParticipantActivity_PrivType");
+            });
+
+            modelBuilder.Entity<ParticipantNotification>(entity =>
+            {
+                entity.Property(e => e.DispatchDate).HasDefaultValueSql("(getdate())");
+
+                entity.HasOne(d => d.Participant)
+                    .WithMany(p => p.ParticipantNotification)
+                    .HasForeignKey(d => d.ParticipantID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ParticipantNotification_Participant");
+            });
+
+            modelBuilder.Entity<ParticipantStatusHistory>(entity =>
+            {
+                entity.Property(e => e.StatusID).HasDefaultValueSql("((1))");
+
+                entity.HasOne(d => d.Participant)
+                    .WithMany(p => p.ParticipantStatusHistory)
+                    .HasForeignKey(d => d.ParticipantID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ParticipantStatusHistory_Participant");
+
+                entity.HasOne(d => d.Status)
+                    .WithMany(p => p.ParticipantStatusHistory)
+                    .HasForeignKey(d => d.StatusID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ParticipantStatusHistory_ParticipantStatus");
+            });
+
+            modelBuilder.Entity<ParticipantTeam>(entity =>
+            {
+                entity.Property(e => e.RoleType).HasDefaultValueSql("((1))");
+
+                entity.HasOne(d => d.Participant)
+                    .WithMany(p => p.ParticipantTeam)
+                    .HasForeignKey(d => d.ParticipantID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ParticipantTeam_Participant");
+
+                entity.HasOne(d => d.RoleTypeNavigation)
+                    .WithMany(p => p.ParticipantTeam)
+                    .HasForeignKey(d => d.RoleType)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ParticipantTeam_RoleType");
+
+                entity.HasOne(d => d.Team)
+                    .WithMany(p => p.ParticipantTeam)
+                    .HasForeignKey(d => d.TeamID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ParticipantTeam_Team");
             });
 
             modelBuilder.Entity<Police>(entity =>
@@ -571,11 +645,11 @@ namespace Gordon360.Models.CCT.Context
 
                 entity.Property(e => e.TypeID).HasDefaultValueSql("((1))");
 
-                entity.HasOne(d => d.League)
+                entity.HasOne(d => d.Activity)
                     .WithMany(p => p.Series)
-                    .HasForeignKey(d => d.LeagueID)
+                    .HasForeignKey(d => d.ActivityID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Series_League");
+                    .HasConstraintName("FK_Series_Activity");
 
                 entity.HasOne(d => d.Status)
                     .WithMany(p => p.Series)
@@ -623,11 +697,11 @@ namespace Gordon360.Models.CCT.Context
             {
                 entity.Property(e => e.TimesRated).HasDefaultValueSql("((0))");
 
-                entity.HasOne(d => d.UserTeam)
+                entity.HasOne(d => d.ParticipantTeam)
                     .WithMany(p => p.Statistic)
-                    .HasForeignKey(d => d.UserTeamID)
+                    .HasForeignKey(d => d.ParticipantTeamID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Statistic_UserTeam");
+                    .HasConstraintName("FK_Statistic_ParticipantTeam");
             });
 
             modelBuilder.Entity<Student>(entity =>
@@ -658,90 +732,17 @@ namespace Gordon360.Models.CCT.Context
 
                 entity.Property(e => e.Status).HasDefaultValueSql("((1))");
 
-                entity.HasOne(d => d.League)
+                entity.HasOne(d => d.Activity)
                     .WithMany(p => p.Team)
-                    .HasForeignKey(d => d.LeagueID)
+                    .HasForeignKey(d => d.ActivityID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Team_League");
+                    .HasConstraintName("FK_Team_Activity");
 
                 entity.HasOne(d => d.StatusNavigation)
                     .WithMany(p => p.Team)
                     .HasForeignKey(d => d.Status)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Team_TeamStatus");
-            });
-
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.Property(e => e.ID).ValueGeneratedNever();
-            });
-
-            modelBuilder.Entity<UserLeague>(entity =>
-            {
-                entity.Property(e => e.PrivTypeID).HasDefaultValueSql("((1))");
-
-                entity.HasOne(d => d.League)
-                    .WithMany(p => p.UserLeague)
-                    .HasForeignKey(d => d.LeagueID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_UserLeague_League");
-
-                entity.HasOne(d => d.PrivType)
-                    .WithMany(p => p.UserLeague)
-                    .HasForeignKey(d => d.PrivTypeID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_UserLeague_PrivType");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.UserLeague)
-                    .HasForeignKey(d => d.UserID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_UserLeague_User");
-            });
-
-            modelBuilder.Entity<UserStatusHistory>(entity =>
-            {
-                entity.Property(e => e.StatusID).HasDefaultValueSql("((1))");
-
-                entity.HasOne(d => d.Status)
-                    .WithMany(p => p.UserStatusHistory)
-                    .HasForeignKey(d => d.StatusID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_UserStatusHistory_UserStatus");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.UserStatusHistory)
-                    .HasForeignKey(d => d.UserID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_UserStatusHistory_User");
-            });
-
-            modelBuilder.Entity<UserTeam>(entity =>
-            {
-                entity.Property(e => e.RoleType).HasDefaultValueSql("((1))");
-
-                entity.HasOne(d => d.RoleTypeNavigation)
-                    .WithMany(p => p.UserTeam)
-                    .HasForeignKey(d => d.RoleType)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_UserTeam_RoleType");
-
-                entity.HasOne(d => d.Team)
-                    .WithMany(p => p.UserTeam)
-                    .HasForeignKey(d => d.TeamID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_UserTeam_Team");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.UserTeam)
-                    .HasForeignKey(d => d.UserID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_UserTeam_User");
-            });
-
-            modelBuilder.Entity<_360_SLIDER>(entity =>
-            {
-                entity.ToView("360_SLIDER", "dbo");
             });
 
             modelBuilder.HasSequence("Information_Change_Request_Seq", "dbo");

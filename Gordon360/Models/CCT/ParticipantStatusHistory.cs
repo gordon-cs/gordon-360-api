@@ -8,23 +8,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
-    [Table("UserStatusHistory", Schema = "RecIM")]
-    public partial class UserStatusHistory
+    [Table("ParticipantStatusHistory", Schema = "RecIM")]
+    public partial class ParticipantStatusHistory
     {
         [Key]
         public int ID { get; set; }
-        public int UserID { get; set; }
+        public int ParticipantID { get; set; }
         public int StatusID { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime StartDate { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime? EndDate { get; set; }
 
+        [ForeignKey("ParticipantID")]
+        [InverseProperty("ParticipantStatusHistory")]
+        public virtual Participant Participant { get; set; }
         [ForeignKey("StatusID")]
-        [InverseProperty("UserStatusHistory")]
-        public virtual UserStatus Status { get; set; }
-        [ForeignKey("UserID")]
-        [InverseProperty("UserStatusHistory")]
-        public virtual User User { get; set; }
+        [InverseProperty("ParticipantStatusHistory")]
+        public virtual ParticipantStatus Status { get; set; }
     }
 }

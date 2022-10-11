@@ -38,11 +38,11 @@ namespace Gordon360.Services
 
     public interface ILeagueService
     {
-        IEnumerable<League> GetLeagues();
-        League GetLeagueByID(int leagueID);
-        IEnumerable<League> GetLeaguesByTime(DateTime? time);
-        Task UpdateLeague(League updatedLeague);
-        Task PostLeague(League newLeague);
+        IEnumerable<Activity> GetActivities();
+        Activity GetActivityByID(int ActivityID);
+        IEnumerable<Activity> GetActivitiesByTime(DateTime? time);
+        Task UpdateActivity(Activity updatedActivity);
+        Task PostActivity(Activity newActivity);
     
     }
 
@@ -59,17 +59,17 @@ namespace Gordon360.Services
     {
         IEnumerable<Team> GetTeamByID(int teamID);
         Task PostTeam(Team team);
-        Task AddUserToTeam(int teamID, int userID);
-        Task UpdateUserRole(int teamID, int userID, RoleType userRole);
+        Task AddUserToTeam(int teamID, int participantID);
+        Task UpdateUserRole(int teamID, int participantID, RoleType participantRole);
         Task UpdateTeam(Team updatedTeam);
     }
 
-    public interface IUserService
+    public interface IParticipantService
     {
-        IEnumerable<User> GetUsers();
-        Task PostUser(int userID);
-        User GetUser(int userID);
-        UserTeam GetUserTeamHistory(int userID);
+        IEnumerable<Participant> getParticipants();
+        Task PostUser(int participantID);
+        Participant GetUser(int participantID);
+        ParticipantTeam GetUserTeamHistory(int participantID);
     }
 
     public interface ISportService

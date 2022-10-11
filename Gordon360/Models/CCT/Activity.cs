@@ -8,14 +8,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
-    [Table("League", Schema = "RecIM")]
-    public partial class League
+    [Table("Activity", Schema = "RecIM")]
+    public partial class Activity
     {
-        public League()
+        public Activity()
         {
+            ParticipantActivity = new HashSet<ParticipantActivity>();
             Series = new HashSet<Series>();
             Team = new HashSet<Team>();
-            UserLeague = new HashSet<UserLeague>();
         }
 
         [Key]
@@ -40,19 +40,19 @@ namespace Gordon360.Models.CCT
         public bool Completed { get; set; }
 
         [ForeignKey("SportID")]
-        [InverseProperty("League")]
+        [InverseProperty("Activity")]
         public virtual Sport Sport { get; set; }
         [ForeignKey("StatusID")]
-        [InverseProperty("League")]
-        public virtual LeagueStatus Status { get; set; }
+        [InverseProperty("Activity")]
+        public virtual ActivityStatus Status { get; set; }
         [ForeignKey("TypeID")]
-        [InverseProperty("League")]
-        public virtual LeagueType Type { get; set; }
-        [InverseProperty("League")]
+        [InverseProperty("Activity")]
+        public virtual ActivityType Type { get; set; }
+        [InverseProperty("Activity")]
+        public virtual ICollection<ParticipantActivity> ParticipantActivity { get; set; }
+        [InverseProperty("Activity")]
         public virtual ICollection<Series> Series { get; set; }
-        [InverseProperty("League")]
+        [InverseProperty("Activity")]
         public virtual ICollection<Team> Team { get; set; }
-        [InverseProperty("League")]
-        public virtual ICollection<UserLeague> UserLeague { get; set; }
     }
 }

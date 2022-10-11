@@ -8,10 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
-    [Table("UserTeam", Schema = "RecIM")]
-    public partial class UserTeam
+    [Table("ParticipantTeam", Schema = "RecIM")]
+    public partial class ParticipantTeam
     {
-        public UserTeam()
+        public ParticipantTeam()
         {
             Statistic = new HashSet<Statistic>();
         }
@@ -19,21 +19,21 @@ namespace Gordon360.Models.CCT
         [Key]
         public int ID { get; set; }
         public int TeamID { get; set; }
-        public int UserID { get; set; }
+        public int ParticipantID { get; set; }
         [Column(TypeName = "date")]
         public DateTime? SignDate { get; set; }
         public int RoleType { get; set; }
 
+        [ForeignKey("ParticipantID")]
+        [InverseProperty("ParticipantTeam")]
+        public virtual Participant Participant { get; set; }
         [ForeignKey("RoleType")]
-        [InverseProperty("UserTeam")]
+        [InverseProperty("ParticipantTeam")]
         public virtual RoleType RoleTypeNavigation { get; set; }
         [ForeignKey("TeamID")]
-        [InverseProperty("UserTeam")]
+        [InverseProperty("ParticipantTeam")]
         public virtual Team Team { get; set; }
-        [ForeignKey("UserID")]
-        [InverseProperty("UserTeam")]
-        public virtual User User { get; set; }
-        [InverseProperty("UserTeam")]
+        [InverseProperty("ParticipantTeam")]
         public virtual ICollection<Statistic> Statistic { get; set; }
     }
 }

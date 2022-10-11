@@ -100,7 +100,7 @@ namespace Gordon360.Models.CCT
         [StringLength(50)]
         [Unicode(false)]
         public string Email { get; set; }
-        public int? ActiveAccount { get; set; }
+        public bool? ActiveAccount { get; set; }
         [StringLength(7)]
         [Unicode(false)]
         public string Type { get; set; }

@@ -8,23 +8,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
-    [Table("UserLeague", Schema = "RecIM")]
-    public partial class UserLeague
+    [Table("ParticipantActivity", Schema = "RecIM")]
+    public partial class ParticipantActivity
     {
         [Key]
         public int ID { get; set; }
-        public int LeagueID { get; set; }
-        public int UserID { get; set; }
+        public int ActivityID { get; set; }
+        public int ParticipantID { get; set; }
         public int PrivTypeID { get; set; }
 
-        [ForeignKey("LeagueID")]
-        [InverseProperty("UserLeague")]
-        public virtual League League { get; set; }
+        [ForeignKey("ActivityID")]
+        [InverseProperty("ParticipantActivity")]
+        public virtual Activity Activity { get; set; }
+        [ForeignKey("ParticipantID")]
+        [InverseProperty("ParticipantActivity")]
+        public virtual Participant Participant { get; set; }
         [ForeignKey("PrivTypeID")]
-        [InverseProperty("UserLeague")]
+        [InverseProperty("ParticipantActivity")]
         public virtual PrivType PrivType { get; set; }
-        [ForeignKey("UserID")]
-        [InverseProperty("UserLeague")]
-        public virtual User User { get; set; }
     }
 }

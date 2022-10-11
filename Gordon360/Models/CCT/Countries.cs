@@ -12,7 +12,7 @@ namespace Gordon360.Models.CCT
     public partial class Countries
     {
         [Required]
-        [StringLength(31)]
+        [StringLength(2)]
         [Unicode(false)]
         public string CTY { get; set; }
         [Required]

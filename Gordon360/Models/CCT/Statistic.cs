@@ -13,14 +13,14 @@ namespace Gordon360.Models.CCT
     {
         [Key]
         public int ID { get; set; }
-        public int UserTeamID { get; set; }
+        public int ParticipantTeamID { get; set; }
         public int Win { get; set; }
         public int Loss { get; set; }
         public double Sportmanship { get; set; }
         public int? TimesRated { get; set; }
 
-        [ForeignKey("UserTeamID")]
+        [ForeignKey("ParticipantTeamID")]
         [InverseProperty("Statistic")]
-        public virtual UserTeam UserTeam { get; set; }
+        public virtual ParticipantTeam ParticipantTeam { get; set; }
     }
 }
