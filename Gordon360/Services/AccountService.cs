@@ -102,17 +102,17 @@ namespace Gordon360.Services
         /// <returns>The accounts from the provided list that match the given search params</returns>
         public IEnumerable<AdvancedSearchViewModel> AdvancedSearch(
             IEnumerable<AdvancedSearchViewModel> accounts,
-            string firstname,
-            string lastname,
-            string major,
-            string minor,
-            string hall,
-            string classType,
-            string homeCity,
-            string state,
-            string country,
-            string department,
-            string building)
+            string? firstname,
+            string? lastname,
+            string? major,
+            string? minor,
+            string? hall,
+            string? classType,
+            string? homeCity,
+            string? state,
+            string? country,
+            string? department,
+            string? building)
         {
             // Accept common town abbreviations in advanced people search
             // East = E, West = W, South = S, North = N
@@ -134,36 +134,47 @@ namespace Gordon360.Services
                         .Replace("n ", "north ");
             }
 
-            return accounts
-                .Where(a =>
-                       (
-                               a.FirstName.StartsWithIgnoreCase(firstname)
-                            || a.NickName.StartsWithIgnoreCase(firstname)
-                       )
-                    && (
-                               a.LastName.StartsWithIgnoreCase(lastname)
-                            || a.MaidenName.StartsWithIgnoreCase(lastname)
-                       )
-                    && (
-                               a.Major1Description.EqualsIgnoreCase(major)
-                            || a.Major2Description.EqualsIgnoreCase(major)
-                            || a.Major3Description.EqualsIgnoreCase(major)
-                       )
-                    && (
-                               a.Minor1Description.EqualsIgnoreCase(minor)
-                            || a.Minor2Description.EqualsIgnoreCase(minor)
-                            || a.Minor3Description.EqualsIgnoreCase(minor)
-                       )
-                    && a.Hall.StartsWithIgnoreCase(hall)
-                    && a.Class.StartsWithIgnoreCase(classType)
-                    && a.HomeCity.StartsWithIgnoreCase(homeCity)
-                    && a.HomeState.StartsWithIgnoreCase(state)
-                    && a.Country.StartsWithIgnoreCase(country)
-                    && a.OnCampusDepartment.StartsWithIgnoreCase(department)
-                    && a.BuildingDescription.StartsWithIgnoreCase(building)
-                )
-                .OrderBy(a => a.LastName)
-                .ThenBy(a => a.FirstName);
+            if (firstname is not null)
+            {
+                accounts = accounts.Where(a => 
+                    a.FirstName.StartsWithIgnoreCase(firstname) 
+                    || a.NickName.StartsWithIgnoreCase(firstname));
+            }
+
+            if (lastname is not null)
+            {
+                accounts = accounts.Where(a =>
+                    a.LastName.StartsWithIgnoreCase(lastname)
+                    || a.MaidenName.StartsWithIgnoreCase(lastname)
+                );
+            }
+
+            if (major is not null)
+            {
+                accounts = accounts.Where(a =>
+                    a.Major1Description.EqualsIgnoreCase(major)
+                    || a.Major2Description.EqualsIgnoreCase(major)
+                    || a.Major3Description.EqualsIgnoreCase(major)
+                );
+            }
+
+            if (minor is not null) {
+                accounts = accounts.Where(a =>
+                       a.Minor1Description.EqualsIgnoreCase(minor)
+                    || a.Minor2Description.EqualsIgnoreCase(minor)
+                    || a.Minor3Description.EqualsIgnoreCase(minor)
+                );
+            }
+
+            if (hall is not null) accounts = accounts.Where(a => a.Hall.StartsWithIgnoreCase(hall));
+            if (classType is not null) accounts = accounts.Where(a => a.Class.StartsWithIgnoreCase(classType));
+            if (homeCity is not null) accounts = accounts.Where(a => a.HomeCity.StartsWithIgnoreCase(homeCity));
+            if (state is not null) accounts = accounts.Where(a => a.HomeState.StartsWithIgnoreCase(state));
+            if (country is not null) accounts = accounts.Where(a => a.Country.StartsWithIgnoreCase(country));
+            if (department is not null) accounts = accounts.Where(a => a.OnCampusDepartment.StartsWithIgnoreCase(department));
+            if (building is not null) accounts = accounts.Where(a => a.BuildingDescription.StartsWithIgnoreCase(building));
+
+            return accounts.OrderBy(a => a.LastName).ThenBy(a => a.FirstName);
         }
 
         /// <summary>
@@ -173,7 +184,7 @@ namespace Gordon360.Services
         /// <param name="authGroups">The authorization groups of the searching user, to decide what accounts they are permitted to search</param>
         /// <param name="homeCity">The home city search param, since it is considered sensitive info</param>
         /// <returns>The list of accounts that may be searched, converted to AdvancedSearchViewModels.</returns>
-        public IEnumerable<AdvancedSearchViewModel> GetAccountsToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string homeCity)
+        public IEnumerable<AdvancedSearchViewModel> GetAccountsToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string? homeCity)
         {
             IEnumerable<Student> students = Enumerable.Empty<Student>();
             if (accountTypes.Contains("student")

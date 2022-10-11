@@ -125,22 +125,21 @@ namespace Gordon360.Controllers
         {
             IEnumerable<AuthGroup> viewerGroups = AuthUtils.GetGroups(User);
 
-            var accounts = _accountService.GetAccountsToSearch(accountTypes, viewerGroups, homeCity ?? "");
+            var accounts = _accountService.GetAccountsToSearch(accountTypes, viewerGroups, homeCity);
 
             var searchResults = _accountService.AdvancedSearch(
                 accounts,
-                firstname ?? "",
-                lastname ?? "",
-                major ?? "",
-                minor ?? "",
-                hall ?? "",
-                classType ?? "",
-                homeCity ?? "",
-                state ?? "",
-                country ?? "",
-                department ?? "",
-                building ?? "");
-
+                firstname,
+                lastname,
+                major,
+                minor,
+                hall,
+                classType,
+                homeCity,
+                state,
+                country,
+                department,
+                building);
 
             // Return all of the profile views
             return Ok(searchResults);

@@ -62,20 +62,20 @@ namespace Gordon360.Services
         IEnumerable<AccountViewModel> GetAll();
         AccountViewModel GetAccountByEmail(string email);
         AccountViewModel GetAccountByUsername(string username);
-        IEnumerable<AdvancedSearchViewModel> GetAccountsToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string homeCity);
+        IEnumerable<AdvancedSearchViewModel> GetAccountsToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string? homeCity);
         IEnumerable<AdvancedSearchViewModel> AdvancedSearch(
             IEnumerable<AdvancedSearchViewModel> accounts,
-            string firstname,
-            string lastname,
-            string major,
-            string minor,
-            string hall,
-            string classType,
-            string homeCity,
-            string state,
-            string country,
-            string department,
-            string building);
+            string? firstname,
+            string? lastname,
+            string? major,
+            string? minor,
+            string? hall,
+            string? classType,
+            string? homeCity,
+            string? state,
+            string? country,
+            string? department,
+            string? building);
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoAsync();
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoExceptAlumniAsync();
     }
