@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace Gordon360.Services.RecIMServices
 {
-    public class LeagueService : ILeagueService
+    public class RecIMActivityService : IRecIMActivityService
     {
         private readonly CCTContext _context;
 
-        public LeagueService(CCTContext context)
+        public RecIMActivityService(CCTContext context)
         {
             _context = context;
         }

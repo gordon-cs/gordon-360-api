@@ -46,7 +46,7 @@ builder.Services.AddScoped<IActivityService, ActivityService>();
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IAddressesService, AddressesService>();
-builder.Services.AddScoped<ILeagueService, LeagueService>();
+builder.Services.AddScoped<IRecIMActivityService, RecIMActivityService>();
 
 
 
