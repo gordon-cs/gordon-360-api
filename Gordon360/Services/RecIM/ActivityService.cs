@@ -57,9 +57,7 @@ namespace Gordon360.Services.RecIM
         }
         public async Task UpdateActivity(Activity updatedActivity)
         {
-            int activityID = updatedActivity.ID;
-            var activity = _context.Activity
-                            .FirstOrDefault(l => l.ID == updatedActivity.ID);
+            var activity = await _context.Activity.FindAsync(updatedActivity.ID);
             activity.Name = updatedActivity.Name == null ? activity.Name : updatedActivity.Name;
             activity.Logo = updatedActivity.Logo == null ? activity.Logo : updatedActivity.Logo;
             activity.RegistrationStart = updatedActivity.RegistrationStart == default 
