@@ -9,13 +9,13 @@ using System.Linq;
 using System.Threading.Tasks;
 
 
-namespace Gordon360.Services.RecIMServices
+namespace Gordon360.Services.RecIM
 {
-    public class RecIMActivityService : IRecIMActivityService
+    public class ActivityService : IActivityService
     {
         private readonly CCTContext _context;
 
-        public RecIMActivityService(CCTContext context)
+        public ActivityService(CCTContext context)
         {
             _context = context;
         }

@@ -718,40 +718,40 @@
             <param name="imagePath">Path to the profile image to load</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIMControllers.ActivitiesController.GetAllLeagues">
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetAllLeagues">
             <summary>Gets a list of all Activities</summary>
              <returns>
              All Existing Activities 
              </returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIMControllers.ActivitiesController.GetAllLeagues(System.DateTime)">
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetAllLeagues(System.DateTime)">
             <summary>Gets a list of all Activities after given time</summary>
              <returns>
              All Existing Activities 
              </returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIMControllers.ActivitiesController.GetLeagueByID(System.Int32)">
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetLeagueByID(System.Int32)">
             <summary>Gets a Activity object by ID number</summary>
              <param name="activityID">League ID Number</param>
              <returns>
              Activity object
              </returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIMControllers.ActivitiesController.CreateLeague(Gordon360.Models.CCT.Activity)">
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.CreateLeague(Gordon360.Models.CCT.Activity)">
             <summary>
             Posts Activity into CCT.RecIM.Activity
             </summary>
             <param name="newActivity">League object with appropriate values</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIMControllers.ActivitiesController.UpdateLeague(Gordon360.Models.CCT.Activity)">
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.UpdateLeague(Gordon360.Models.CCT.Activity)">
             <summary>
             Updates Activity based on input
             </summary>
             <param name="updatedActivity"> Updated Activity Object </param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIMControllers.ActivitiesController.CreateSmashLeague">
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.CreateSmashLeague">
             <summary>Creates a new League (currently hard coded)</summary>
              <param></param>
              <returns></returns>

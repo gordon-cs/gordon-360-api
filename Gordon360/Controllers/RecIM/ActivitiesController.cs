@@ -1,6 +1,6 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Services;
-using Gordon360.Services.RecIMServices;
+using Gordon360.Services.RecIM;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -8,16 +8,16 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using IActivityService = Gordon360.Services.RecIM.IActivityService;
 
-
-namespace Gordon360.Controllers.RecIMControllers
+namespace Gordon360.Controllers.RecIM
 {
     [Route("api/recim/[controller]")]
     public class ActivitiesController : GordonControllerBase
     {
-        private readonly IRecIMActivityService _activityService;
+        private readonly IActivityService _activityService;
 
-        public ActivitiesController(IRecIMActivityService activityService)
+        public ActivitiesController(IActivityService activityService)
         {
             _activityService = activityService;
         }
