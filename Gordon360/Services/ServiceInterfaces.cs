@@ -304,7 +304,7 @@ namespace Gordon360.Services
         Task<bool> GetStatusAsync(string id);
     }
 
-=    namespace RecIM
+    namespace RecIM
     {
         public interface IActivityService
         {
