@@ -30,12 +30,14 @@ namespace Gordon360.Services.RecIM
         }
         public IEnumerable<Activity> GetActivitiesByTime(DateTime? time)
         {
-            var activities = GetActivities().Where(a => !a.Completed);
-            if (time is not null)
+            if (time is null)
             {
-                activities = activities.Where(a => a.RegistrationEnd > time);
+                return GetActivities().Where(a => !a.Completed); 
+            } else
+            {
+                return GetActivities().Where(a => a.RegistrationEnd > time 
+                                               && a.RegistrationStart < time);
             }
-            return activities;
         }
         public Activity? GetActivityByID(int activityID)
         {

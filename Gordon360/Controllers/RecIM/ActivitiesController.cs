@@ -45,7 +45,7 @@ namespace Gordon360.Controllers.RecIM
         /// All Existing Activities 
         /// </returns>
         [HttpGet]
-        [Route("date={time}")]
+        [Route("?date={time}")]
         public ActionResult<IEnumerable<Activity>> GetAllActivities(DateTime time)
         {
             // Currently the parameter is a "DateTime" But it will be changed
