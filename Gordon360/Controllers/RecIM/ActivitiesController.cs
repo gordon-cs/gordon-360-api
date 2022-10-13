@@ -26,7 +26,7 @@ namespace Gordon360.Controllers.RecIM
         /// </returns>
         [HttpGet]
         [Route("")]
-        public ActionResult<IEnumerable<Activity>> GetAllLeagues()
+        public ActionResult<IEnumerable<Activity>> GetAllActivities()
         {
             var result = _activityService.GetActivities();
             return Ok(result);
@@ -38,10 +38,10 @@ namespace Gordon360.Controllers.RecIM
         /// </returns>
         [HttpGet]
         [Route("{time}")]
-        public ActionResult<IEnumerable<Activity>> GetAllLeagues(DateTime time)
+        public ActionResult<IEnumerable<Activity>> GetAllActivities(DateTime time)
         {
             var result = _activityService.GetActivitiesByTime(time);
-            return Ok();
+            return Ok(result);
         }
 
         ///<summary>Gets a Activity object by ID number</summary>
@@ -54,11 +54,6 @@ namespace Gordon360.Controllers.RecIM
         public ActionResult<Activity> GetLeagueByID(int activityID)
         {
             var result = _activityService.GetActivityByID(activityID);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
             return Ok(result);
         }
 
@@ -70,7 +65,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult> CreateLeague(Activity newActivity)
+        public async Task<ActionResult> CreateActivity(Activity newActivity)
         {
             await _activityService.PostActivity(newActivity);
             return Ok();
@@ -82,7 +77,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPut]
         [Route("")]
-        public async Task<ActionResult> UpdateLeague(Activity updatedActivity)
+        public async Task<ActionResult> UpdateActivity(Activity updatedActivity)
         {
             await _activityService.UpdateActivity(updatedActivity);
             return Ok();

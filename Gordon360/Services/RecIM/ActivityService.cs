@@ -40,7 +40,7 @@ namespace Gordon360.Services.RecIM
                             .AsEnumerable();
             return leagues;
         }
-        public Activity GetActivityByID(int activityID)
+        public Activity? GetActivityByID(int activityID)
         {
             var result = _context.Activity
                             .Where(l => l.ID == activityID)
@@ -60,8 +60,8 @@ namespace Gordon360.Services.RecIM
             int activityID = updatedActivity.ID;
             var activity = _context.Activity
                             .FirstOrDefault(l => l.ID == updatedActivity.ID);
-            activity.Name = updatedActivity.Name == null ? activity.Name : updatedActivity.Name;
-            activity.Logo = updatedActivity.Logo == null ? activity.Logo : updatedActivity.Logo;
+            activity.Name = updatedActivity.Name ?? activity.Name;
+            activity.Logo = updatedActivity.Logo ?? activity.Logo;
             activity.RegistrationStart = updatedActivity.RegistrationStart == default 
                                             ? activity.RegistrationStart 
                                             : updatedActivity.RegistrationStart;
@@ -74,27 +74,19 @@ namespace Gordon360.Services.RecIM
             activity.SportID = updatedActivity.SportID == default
                                 ? activity.SportID 
                                 : updatedActivity.SportID;
-            activity.StatusID = updatedActivity.StatusID == null
-                                ? activity.StatusID 
-                                : updatedActivity.StatusID;
-            activity.MinCapacity = updatedActivity.MinCapacity == null
-                                   ? activity.MinCapacity
-                                   : updatedActivity.MinCapacity;
-            activity.MaxCapacity = updatedActivity.MaxCapacity == null
-                                   ? activity.MaxCapacity
-                                   : updatedActivity.MaxCapacity;
-            activity.MaxCapacity = updatedActivity.MaxCapacity == null
-                                   ? activity.MaxCapacity
-                                   : updatedActivity.MaxCapacity;
+            activity.StatusID = updatedActivity.StatusID ?? activity.StatusID; 
+            activity.MinCapacity = updatedActivity.MinCapacity ?? activity.MinCapacity;
+            activity.MaxCapacity = updatedActivity.MaxCapacity ?? activity.MaxCapacity;
+            activity.MaxCapacity = updatedActivity.MaxCapacity ?? activity.MaxCapacity;
             activity.SoloRegistration = updatedActivity.SoloRegistration;
             activity.Completed = updatedActivity.Completed;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
         public async Task PostActivity(Activity newActivity)
         {
-            _context.Activity.Add(newActivity);
-            _context.SaveChanges();
+            await _context.Activity.AddAsync(newActivity);
+            await _context.SaveChangesAsync();
         }
        
     }

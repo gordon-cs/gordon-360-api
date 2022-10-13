@@ -304,13 +304,12 @@ namespace Gordon360.Services
         Task<bool> GetStatusAsync(string id);
     }
 
-    // Nested namespace for all services regarding RecIM Feature
-    namespace RecIM
+=    namespace RecIM
     {
         public interface IActivityService
         {
             IEnumerable<Activity> GetActivities();
-            Activity GetActivityByID(int ActivityID);
+            Activity? GetActivityByID(int ActivityID);
             IEnumerable<Activity> GetActivitiesByTime(DateTime? time);
             Task UpdateActivity(Activity updatedActivity);
             Task PostActivity(Activity newActivity);
