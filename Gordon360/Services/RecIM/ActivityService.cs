@@ -23,22 +23,19 @@ namespace Gordon360.Services.RecIM
 
         public IEnumerable<Activity> GetActivities()
         {
-            var leagues = _context.Activity
+            var activities = _context.Activity
                             .Include(l => l.Team)
-                            .Include(l => l.Series)
-                            .AsEnumerable();
-            return leagues;
+                            .Include(l => l.Series);
+            return activities;
         }
         public IEnumerable<Activity> GetActivitiesByTime(DateTime? time)
         {
-            var leagues = _context.Activity
-                            .Where(l => time == null
-                                        ? !l.Completed
-                                        : l.RegistrationEnd > time)
-                            .Include(l => l.Team)
-                            .Include(l => l.Series)
-                            .AsEnumerable();
-            return leagues;
+            var activities = GetActivities().Where(a => !a.Completed);
+            if (time is not null)
+            {
+                activities = activities.Where(a => a.RegistrationEnd > time);
+            }
+            return activities;
         }
         public Activity? GetActivityByID(int activityID)
         {

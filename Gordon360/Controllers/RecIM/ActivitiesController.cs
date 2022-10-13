@@ -21,15 +21,23 @@ namespace Gordon360.Controllers.RecIM
         }
 
         ///<summary>Gets a list of all Activities</summary>
+        ///<param name="active"> Optional active parameter </param>
         /// <returns>
         /// All Existing Activities 
         /// </returns>
         [HttpGet]
         [Route("")]
-        public ActionResult<IEnumerable<Activity>> GetAllActivities()
+        public ActionResult<IEnumerable<Activity>> GetActivities(Boolean active = false)
         {
-            var result = _activityService.GetActivities();
-            return Ok(result);
+            if (active)
+            {
+                var result = _activityService.GetActivitiesByTime(null);
+                return Ok(result);
+            } else
+            {
+                var result = _activityService.GetActivities();
+                return Ok(result);
+            }
         }
 
         ///<summary>Gets a list of all Activities after given time</summary>
@@ -37,9 +45,12 @@ namespace Gordon360.Controllers.RecIM
         /// All Existing Activities 
         /// </returns>
         [HttpGet]
-        [Route("{time}")]
+        [Route("date={time}")]
         public ActionResult<IEnumerable<Activity>> GetAllActivities(DateTime time)
         {
+            // Currently the parameter is a "DateTime" But it will be changed
+            // to a string, then parsed into a datetime object to be passed
+            // into service.
             var result = _activityService.GetActivitiesByTime(time);
             return Ok(result);
         }
