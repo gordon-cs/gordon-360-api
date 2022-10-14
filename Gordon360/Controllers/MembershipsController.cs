@@ -84,21 +84,6 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
-        /// Gets the number of members (besides followers) of an activity
-        /// </summary>
-        /// <param name="activityCode">The activity ID.</param>
-        /// <returns>The number of members of the activity</returns>
-        [HttpGet]
-        [Route("activities/{activityCode}/sessions/{sessionCode}/member-count")]
-        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
-        public ActionResult<int> GetActivityMembersCount(string activityCode, string? sessionCode)
-        {
-            var result = _membershipService.GetActivityMembersCount(activityCode, sessionCode);
-
-            return Ok(result);
-        }
-
-        /// <summary>
         /// Gets the number of followers of an activity
         /// </summary>
         /// <param name="activityCode">The activity ID.</param>
