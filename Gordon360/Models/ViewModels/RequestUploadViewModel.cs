@@ -5,10 +5,10 @@ namespace Gordon360.Models.CCT
 {
     public partial class RequestUploadViewModel
     {
-        public string ACTCode { get; set; }
-        public string SessCode { get; set; }
+        public string Activity { get; set; }
+        public string Session { get; set; }
         public string Username { get; set; }
-        public string PartCode { get; set; }
+        public string Participation { get; set; }
         public DateTime DateSent { get; set; }
         public string CommentText { get; set; }
         public string Status { get; set; }
@@ -17,9 +17,9 @@ namespace Gordon360.Models.CCT
         {
             return new REQUEST
             {
-                ACT_CDE = request.ACTCode,
-                SESS_CDE = request.SessCode,
-                PART_CDE = request.PartCode,
+                ACT_CDE = request.Activity,
+                SESS_CDE = request.Session,
+                PART_CDE = request.Participation,
                 DATE_SENT = request.DateSent,
                 COMMENT_TXT = request.CommentText,
                 STATUS = request.Status

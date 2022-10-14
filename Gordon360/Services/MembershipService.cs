@@ -39,7 +39,7 @@ namespace Gordon360.Services
             IsPersonAlreadyInActivity(membershipUpload);
 
             var sessionBeginDate = _context.CM_SESSION_MSTR
-                .Where(x => x.SESS_CDE.Equals(membershipUpload.SessCode))
+                .Where(x => x.SESS_CDE.Equals(membershipUpload.Session))
                 .FirstOrDefault()?.SESS_BEGN_DTE ?? DateTime.Now;
 
             int gordonId = int.Parse(_accountService.GetAccountByUsername(membershipUpload.Username).GordonID);
@@ -232,8 +232,8 @@ namespace Gordon360.Services
 
             // One can only update certain fields within a membrship
             original.COMMENT_TXT = membership.CommentText;
-            original.PART_CDE = membership.PartCode;
-            if (membership.PartCode == ParticipationType.Guest.Value)
+            original.PART_CDE = membership.Participation;
+            if (membership.Participation == ParticipationType.Guest.Value)
             {
                 await SetGroupAdminAsync(membershipID, false);
             }
@@ -301,23 +301,23 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Person was not found." };
             }
-            var participationExists = _context.PART_DEF.Any(x => x.PART_CDE.Trim() == membership.PartCode);
+            var participationExists = _context.PART_DEF.Any(x => x.PART_CDE.Trim() == membership.Participation);
             if (!participationExists)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Participation was not found." };
             }
-            var sessionExists = _context.CM_SESSION_MSTR.Any(x => x.SESS_CDE.Trim() == membership.SessCode);
+            var sessionExists = _context.CM_SESSION_MSTR.Any(x => x.SESS_CDE.Trim() == membership.Session);
             if (!sessionExists)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Session was not found." };
             }
-            var activityExists = _context.ACT_INFO.Any(x => x.ACT_CDE.Trim() == membership.ACTCode);
+            var activityExists = _context.ACT_INFO.Any(x => x.ACT_CDE.Trim() == membership.Activity);
             if (!activityExists)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
             }
 
-            if (!_context.InvolvementOffering.Any(i => i.SessionCode == membership.SessCode && i.ActivityCode.Trim() == membership.ACTCode))
+            if (!_context.InvolvementOffering.Any(i => i.SessionCode == membership.Session && i.ActivityCode.Trim() == membership.Activity))
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity is not available for this session." };
             }
@@ -327,8 +327,8 @@ namespace Gordon360.Services
 
         public bool IsPersonAlreadyInActivity(MembershipUploadViewModel membershipRequest)
         {
-            var personAlreadyInActivity = _context.MembershipView.Any(x => x.SessionCode == membershipRequest.SessCode &&
-                x.ActivityCode == membershipRequest.ACTCode && x.Username == membershipRequest.Username);
+            var personAlreadyInActivity = _context.MembershipView.Any(x => x.SessionCode == membershipRequest.Session &&
+                x.ActivityCode == membershipRequest.Activity && x.Username == membershipRequest.Username);
 
             if (personAlreadyInActivity)
             {

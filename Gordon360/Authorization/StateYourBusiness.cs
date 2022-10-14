@@ -364,13 +364,13 @@ namespace Gordon360.Authorization
                         {
 
                             // A membership can always be added if it is of type "GUEST"
-                            var isFollower = membershipToConsider.PartCode == Activity_Roles.GUEST
+                            var isFollower = membershipToConsider.Participation == Activity_Roles.GUEST
                                 && membershipToConsider.Username == user_name;
                             if (isFollower)
                                 return true;
 
-                            var activityCode = membershipToConsider.ACTCode;
-                            var sessionCode = membershipToConsider.SessCode;
+                            var activityCode = membershipToConsider.Activity;
+                            var sessionCode = membershipToConsider.Session;
                             var isGroupAdmin = _membershipService
                                 .GetGroupAdminMembershipsForActivity(activityCode, sessionCode)
                                 .Any(x => x.Username == user_name);

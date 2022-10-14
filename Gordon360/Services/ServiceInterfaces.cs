@@ -220,7 +220,6 @@ namespace Gordon360.Services
         IEnumerable<RequestView> GetMembershipRequestsByUsername(string usernamne);
         Task<RequestView> AddAsync(RequestUploadViewModel membershipRequest);
         Task<RequestView> UpdateAsync(int requestID, RequestUploadViewModel membershipRequest);
-        // The ODD one out. When we approve a request, we would like to get back the new membership.
         Task<RequestView> ApproveAsync(int requestID);
         Task<RequestView> DenyAsync(int requestID);
         Task<RequestView> SetPendingAsync(int requestID);

@@ -36,7 +36,7 @@ namespace Gordon360.Services
 
             MembershipUploadViewModel m = (MembershipUploadViewModel) membershipRequestUpload;
             // Validates the memberships request by throwing appropriate exceptions. The exceptions are caugth in the CustomExceptionFilter 
-            await _membershipService.ValidateMembershipAsync(m);
+            _membershipService.ValidateMembership(m);
             _membershipService.IsPersonAlreadyInActivity(m);
 
             var request = (REQUEST) membershipRequestUpload;
@@ -224,13 +224,13 @@ namespace Gordon360.Services
             }
 
             // The validate function throws ResourceNotFoundException where needed. The exceptions are caught in my CustomExceptionFilter
-            await _membershipService.ValidateMembershipAsync((MembershipUploadViewModel) membershipRequest);
+            _membershipService.ValidateMembership((MembershipUploadViewModel) membershipRequest);
 
             // Only a few fields should be able to be changed through an update.
-            original.SESS_CDE = membershipRequest.SessCode;
+            original.SESS_CDE = membershipRequest.Session;
             original.COMMENT_TXT = membershipRequest.CommentText;
             original.DATE_SENT = membershipRequest.DateSent;
-            original.PART_CDE = membershipRequest.PartCode;
+            original.PART_CDE = membershipRequest.Participation;
 
             await _context.SaveChangesAsync();
 

@@ -170,7 +170,8 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>Update an existing membership item to be a group admin or not</summary>
-        ///  /// <param name="membershipID">The content within the membership that is to be changed</param>
+        /// <param name="membershipID">The content within the membership that is to be changed</param>
+        /// <param name="isGroupAdmin">The new value of GroupAdmin</param>
         /// <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         [HttpPut]
         [Route("{membershipID}/group-admin")]
