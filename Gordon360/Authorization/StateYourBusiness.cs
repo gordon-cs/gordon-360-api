@@ -39,12 +39,12 @@ namespace Gordon360.Authorization
         public string operation { get; set; }
 
         private ActionExecutingContext context;
-        private IWebHostEnvironment _webHostEnvironment;
         private CCTContext _CCTContext;
         private MyGordonContext _MyGordonContext;
         private IAccountService _accountService;
         private IMembershipService _membershipService;
         private IMembershipRequestService _membershipRequestService;
+        private INewsService _newsService;
 
         // User position at the college and their id.
         private IEnumerable<AuthGroup> user_groups { get; set; }
@@ -54,7 +54,6 @@ namespace Gordon360.Authorization
         public async override Task OnActionExecutionAsync(ActionExecutingContext actionContext, ActionExecutionDelegate next)
         {
             context = actionContext;
-            _webHostEnvironment = context.HttpContext.RequestServices.GetService<IWebHostEnvironment>();
             // Step 1: Who is to be authorized
             var authenticatedUser = actionContext.HttpContext.User;
 
@@ -63,6 +62,7 @@ namespace Gordon360.Authorization
             _accountService = context.HttpContext.RequestServices.GetRequiredService<IAccountService>();
             _membershipService = context.HttpContext.RequestServices.GetRequiredService<IMembershipService>();
             _membershipRequestService = context.HttpContext.RequestServices.GetRequiredService<IMembershipRequestService>();
+            _newsService = context.HttpContext.RequestServices.GetRequiredService<INewsService>();
 
             user_name = AuthUtils.GetUsername(authenticatedUser);
             user_groups = AuthUtils.GetGroups(authenticatedUser);
@@ -606,8 +606,7 @@ namespace Gordon360.Authorization
 
                 case Resource.NEWS:
                     var newsID = context.ActionArguments["newsID"];
-                    var newsService = new NewsService(_MyGordonContext, _CCTContext, _webHostEnvironment);
-                    var newsItem = newsService.Get((int)newsID);
+                    var newsItem = _newsService.Get((int)newsID);
                     // only unapproved posts may be updated
                     var approved = newsItem.Accepted;
                     if (approved == null || approved == true)
@@ -712,8 +711,7 @@ namespace Gordon360.Authorization
                 case Resource.NEWS:
                     {
                         var newsID = context.ActionArguments["newsID"];
-                        var newsService = new NewsService(_MyGordonContext, _CCTContext, _webHostEnvironment);
-                        var newsItem = newsService.Get((int)newsID);
+                        var newsItem = _newsService.Get((int)newsID);
                         // only expired news items may be deleted
                         var newsDate = newsItem.Entered;
                         if (!newsDate.HasValue || (System.DateTime.Now - newsDate.Value).Days >= 14)
