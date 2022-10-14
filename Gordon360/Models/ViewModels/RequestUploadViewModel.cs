@@ -13,30 +13,16 @@ namespace Gordon360.Models.CCT
         public string CommentText { get; set; }
         public string Status { get; set; }
 
-        public REQUEST ToREQUEST()
+        public static implicit operator REQUEST(RequestUploadViewModel request)
         {
             return new REQUEST
             {
-                ACT_CDE = this.ACTCode,
-                SESS_CDE = this.SessCode,
-                PART_CDE = this.PartCode,
-                DATE_SENT = this.DateSent,
-                COMMENT_TXT = this.CommentText,
-                STATUS = this.Status
-            };
-        }
-
-        public MembershipUploadViewModel ToMembershipUpload()
-        {
-            return new MembershipUploadViewModel
-            {
-                ACTCode = this.ACTCode,
-                SessCode = this.SessCode,
-                Username = this.Username,
-                PartCode = this.PartCode,
-                CommentText = this.CommentText,
-                GroupAdmin = false,
-                Privacy = false
+                ACT_CDE = request.ACTCode,
+                SESS_CDE = request.SessCode,
+                PART_CDE = request.PartCode,
+                DATE_SENT = request.DateSent,
+                COMMENT_TXT = request.CommentText,
+                STATUS = request.Status
             };
         }
     }

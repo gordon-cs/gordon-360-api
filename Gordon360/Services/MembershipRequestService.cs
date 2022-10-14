@@ -34,16 +34,16 @@ namespace Gordon360.Services
         public async Task<RequestView> AddAsync(RequestUploadViewModel membershipRequestUpload)
         {
 
-            MembershipUploadViewModel m = membershipRequestUpload.ToMembershipUpload();
+            MembershipUploadViewModel m = (MembershipUploadViewModel) membershipRequestUpload;
             // Validates the memberships request by throwing appropriate exceptions. The exceptions are caugth in the CustomExceptionFilter 
             await _membershipService.ValidateMembershipAsync(m);
             _membershipService.IsPersonAlreadyInActivity(m);
 
-            var request = membershipRequestUpload.ToREQUEST();
+            var request = (REQUEST) membershipRequestUpload;
             request.ID_NUM = int.Parse(_accountService.GetAccountByUsername(membershipRequestUpload.Username).GordonID);
 
             var addedMembershipRequest = _context.REQUEST.Add(request);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return Get(addedMembershipRequest.Entity.REQUEST_ID);
 
@@ -54,41 +54,32 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="requestID">The ID of the request to be approved</param>
         /// <returns>The approved membership</returns>
-        public async Task<MembershipView> ApproveAsync(int requestID)
+        public async Task<RequestView> ApproveAsync(int requestID)
         {
             var request = await _context.REQUEST.FindAsync(requestID);
             if (request == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Request was not found." };
             }
-            request.STATUS = Request_Status.APPROVED;
 
-            MembershipUploadViewModel newMembership = MembershipUploadViewModel.FromREQUEST(request);
+            if (request.STATUS == Request_Status.APPROVED)
+            {
+                throw new BadInputException() { ExceptionMessage = "The request has already been approved."};
+            }
+
+            MembershipUploadViewModel newMembership = (MembershipUploadViewModel) request;
             newMembership.Username = _accountService.GetAccountByID(request.ID_NUM.ToString()).ADUserName;
 
-            return await _membershipService.AddAsync(newMembership);
+            var createdMembership = await _membershipService.AddAsync(newMembership);
 
-        }
+            if (createdMembership == null)
+                throw new ResourceCreationException();
 
-        /// <summary>
-        /// Delete the membershipRequest object whose id is given in the parameters 
-        /// </summary>
-        /// <param name="requestID">The membership request id</param>
-        /// <returns>A copy of the deleted membership request</returns>
-        public async Task<RequestView> DeleteAsync(int requestID)
-        {
-            var request = await _context.REQUEST.FindAsync(requestID);
-            if (request == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Request was not found." };
-            }
-
-            RequestView rv = _context.RequestView.FirstOrDefault(r => r.RequestID == request.REQUEST_ID);
-
-            _context.REQUEST.Remove(request);
+            request.STATUS = Request_Status.APPROVED;
             await _context.SaveChangesAsync();
 
-            return rv;
+            return Get(request.REQUEST_ID);
+
         }
 
         /// <summary>
@@ -105,10 +96,71 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Request was not found." };
             }
 
+            if (request.STATUS == Request_Status.DENIED)
+            {
+                throw new BadInputException() { ExceptionMessage = "The request has already been denied." };
+            }
+
+            if (request.STATUS == Request_Status.APPROVED)
+            {
+                throw new BadInputException() { ExceptionMessage = "The request has already been approved" };
+            }
+
             request.STATUS = Request_Status.DENIED;
             await _context.SaveChangesAsync();
 
-            return _context.RequestView.FirstOrDefault(r => r.RequestID == request.REQUEST_ID);
+            return Get(request.REQUEST_ID);
+        }
+
+        /// <summary>
+        /// Denies the membership request object whose id is given in the parameters
+        /// </summary>
+        /// <param name="requestID">The membership request id</param>
+        /// <returns></returns>
+        public async Task<RequestView> SetPendingAsync(int requestID)
+        {
+            var request = await _context.REQUEST.FindAsync(requestID);
+
+            if (request == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Request was not found." };
+            }
+
+            if (request.STATUS == Request_Status.PENDING)
+            {
+                throw new BadInputException() { ExceptionMessage = "The request is already pending." };
+            }
+
+            if (request.STATUS == Request_Status.APPROVED)
+            {
+                throw new BadInputException() { ExceptionMessage = "The request has already been approved" };
+            }
+
+            request.STATUS = Request_Status.PENDING;
+            await _context.SaveChangesAsync();
+
+            return Get(request.REQUEST_ID);
+        }
+
+        /// <summary>
+        /// Delete the membershipRequest object whose id is given in the parameters 
+        /// </summary>
+        /// <param name="requestID">The membership request id</param>
+        /// <returns>A copy of the deleted membership request</returns>
+        public async Task<RequestView> DeleteAsync(int requestID)
+        {
+            var request = await _context.REQUEST.FindAsync(requestID);
+            if (request == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Request was not found." };
+            }
+
+            RequestView rv = Get(request.REQUEST_ID);
+
+            _context.REQUEST.Remove(request);
+            await _context.SaveChangesAsync();
+
+            return rv;
         }
 
         /// <summary>
@@ -118,7 +170,7 @@ namespace Gordon360.Services
         /// <returns>If found, returns MembershipRequestViewModel. If not found, returns null.</returns>
         public RequestView Get(int requestID)
         {
-            var request = _context.RequestView.FirstOrDefault(r => r.RequestID == requestID);
+            var request = Get(requestID);
 
             if (request == null)
             {
@@ -172,7 +224,7 @@ namespace Gordon360.Services
             }
 
             // The validate function throws ResourceNotFoundException where needed. The exceptions are caught in my CustomExceptionFilter
-            await _membershipService.ValidateMembershipAsync(membershipRequest.ToMembershipUpload());
+            await _membershipService.ValidateMembershipAsync((MembershipUploadViewModel) membershipRequest);
 
             // Only a few fields should be able to be changed through an update.
             original.SESS_CDE = membershipRequest.SessCode;

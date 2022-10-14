@@ -410,7 +410,7 @@
             <param name="sessionCode">Optional code of session to get for</param>
             <returns>IHttpActionResult</returns>
         </member>
-        <member name="M:Gordon360.Controllers.MembershipsController.GetGroupAdminForActivity(System.String,System.String)">
+        <member name="M:Gordon360.Controllers.MembershipsController.GetGroupAdminsForActivity(System.String,System.String)">
             <summary>
             Gets the group admin memberships associated with a given activity.
             </summary>
@@ -1608,7 +1608,7 @@
             Adds a new Membership record to storage. Since we can't establish foreign key constraints and relationships on the database side,
             we do it here by using the validateMembership() method.
             </summary>
-            <param name="membership">The membership to be added</param>
+            <param name="membershipUpload">The membership to be added</param>
             <returns>The newly added Membership object</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.Delete(System.Int32)">
@@ -1729,14 +1729,7 @@
             <param name="username">Username of the user to check</param>	
             <returns>true if student is a Group Admin, else false</returns>	
         </member>
-        <member name="M:Gordon360.Services.MembershipService.MembershipUploadToMEMBERSHIP(Gordon360.Models.CCT.MembershipUploadViewModel)">
-            <summary>	
-            Converts a MembershipUploadViewModel object to a MEMBERSHIP
-            </summary>
-            <param name="membership">The MembershipUploadViewModel to convert</param>	
-            <returns>A new MEMBERSHIP object filled with the info from the view model</returns>	
-        </member>
-        <member name="M:Gordon360.Services.MembershipService.MEMBERSHIPToMembershipView(Gordon360.Models.CCT.MEMBERSHIP)">
+        <member name="M:Gordon360.Services.MembershipService.GetMembershipViewById(System.Int32)">
             <summary>	
             Finds the matching MembershipView object from an existing MEMBERSHIP object
             </summary>

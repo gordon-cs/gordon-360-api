@@ -15,9 +15,9 @@ namespace Gordon360.Controllers
     {
         private readonly EmailService _emailService;
 
-        public EmailsController(CCTContext context, IMembershipService membershipService)
+        public EmailsController(CCTContext context)
         {
-            _emailService = new EmailService(context, membershipService);
+            _emailService = new EmailService(context);
         }
 
         [HttpGet]
@@ -53,19 +53,6 @@ namespace Gordon360.Controllers
             _emailService.SendEmails(to_emails, email.FromAddress, email.Subject, email.Content, email.Password);
             return Ok();
         }
-
-        /*
-        [HttpPut]
-        [Route("activity/{id}/leaders/session/{session}")]
-        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_LEADERS)]
-        public IHttpActionResult SendEmailsToleaders(string id, string session, [FromBody] EmailContentViewModel email)
-        {
-            var emails = _emailService.GetEmailsForActivityLeaders(id, session);
-            var toAddress = emails.Select(x => x.Email).ToArray();
-            _emailService.SendEmails(toAddress, email.FromAddress, email.Subject, email.Content, email.Password);
-            return Ok();
-        }
-        */
 
         [HttpPut]
         [Route("activity/{id}/session/{session}")]

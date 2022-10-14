@@ -17,12 +17,10 @@ namespace Gordon360.Services
     public class EmailService : IEmailService
     {
         private readonly CCTContext _context;
-        private IMembershipService _membershipService;
 
-        public EmailService(CCTContext context, IMembershipService membershipService)
+        public EmailService(CCTContext context)
         {
             _context = context;
-            _membershipService = membershipService;
         }
 
         /// <summary>

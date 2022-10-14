@@ -15,7 +15,7 @@ namespace Gordon360.Controllers
     {
         public IMembershipRequestService _membershipRequestService;
 
-        public RequestsController(CCTContext context, IMembershipRequestService membershipRequestService)
+        public RequestsController(IMembershipRequestService membershipRequestService)
         {
             _membershipRequestService = membershipRequestService;
         }
@@ -61,7 +61,7 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("activity/{activityCode}")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_REQUEST_BY_ACTIVITY)]
-        public ActionResult<IEnumerable<MembershipView>> GetMembershipRequestsByActivity(string activityCode)
+        public ActionResult<IEnumerable<RequestView>> GetMembershipRequestsByActivity(string activityCode)
         {
             var result = _membershipRequestService.GetMembershipRequestsByActivity(activityCode);
 
@@ -78,9 +78,8 @@ namespace Gordon360.Controllers
         /// </summary>
         /// <returns>All membership requests associated with the student</returns>
         [HttpGet]
-        [Route("current-user")]
-        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_REQUEST_BY_STUDENT)]
-        public ActionResult<IEnumerable<MembershipView>> GetMembershipsRequestsForCurrentUser()
+        [Route("/users/current")]
+        public ActionResult<IEnumerable<RequestView>> GetMembershipsRequestsForCurrentUser()
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
             var result = _membershipRequestService.GetMembershipRequestsByUsername(authenticatedUserUsername);
@@ -116,15 +115,15 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Updates a membership request
         /// </summary>
-        /// <param name="id">The membership request id</param>
+        /// <param name="membershipRequestID">The membership request id</param>
         /// <param name="membershipRequest">The updated membership request object</param>
         /// <returns>The updated request if successful. HTTP error message if not.</returns>
         [HttpPut]
-        [Route("{id}")]
+        [Route("{membershipRequestID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP_REQUEST)]
-        public async Task<ActionResult<RequestView>> PutAsync(int id, RequestUploadViewModel membershipRequest)
+        public async Task<ActionResult<RequestView>> PutAsync(int membershipRequestID, RequestUploadViewModel membershipRequest)
         {
-            var result = await _membershipRequestService.UpdateAsync(id, membershipRequest);
+            var result = await _membershipRequestService.UpdateAsync(membershipRequestID, membershipRequest);
 
             if (result == null)
             {
@@ -137,54 +136,50 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Sets a membership request to Approved
         /// </summary>
-        /// <param name="id">The id of the membership request in question.</param>
-        /// <returns>If successful: THe updated membership request wrapped in an OK Http status code.</returns>
+        /// <param name="membershipRequestID">The id of the membership request in question.</param>
+        /// <param name="status">The status that the membership requst will be changed to.</param>
+        /// <returns>If successful: The updated membership request wrapped in an OK HTTP status code.</returns>
         [HttpPost]
-        [Route("{id}/approve")]
-        [StateYourBusiness(operation = Operation.DENY_ALLOW, resource = Resource.MEMBERSHIP_REQUEST)]
-        public async Task<ActionResult<MembershipView>> ApproveAsync(int id)
+        [Route("{membershipRequestID}/status")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP_REQUEST)]
+        public async Task<ActionResult<RequestView>> UpdateStatusAsync(int membershipRequestID, [FromBody] string status)
         {
-            var result = await _membershipRequestService.ApproveAsync(id);
+            RequestView? updated = null;
 
-            if (result == null)
+            switch (status)
+            {
+                case Request_Status.APPROVED:
+                    updated = await _membershipRequestService.ApproveAsync(membershipRequestID);
+                    break;
+                case Request_Status.DENIED:
+                    updated = await _membershipRequestService.DenyAsync(membershipRequestID);
+                    break;
+                case Request_Status.PENDING:
+                    updated = await _membershipRequestService.SetPendingAsync(membershipRequestID);
+                    break;
+                default:
+                    return BadRequest($"Status must be one of '{Request_Status.APPROVED}', '{Request_Status.DENIED}', or '{Request_Status.PENDING}'");
+            }
+
+            if (updated == null)
             {
                 return NotFound();
             }
 
-            return Ok(result);
-        }
-
-        /// <summary>
-        /// Sets the membership request to Denied
-        /// </summary>
-        /// <param name="id">The id of the membership request in question.</param>
-        /// <returns>If successful: The updated membership request wrapped in an OK Http status code.</returns>
-        [HttpPost]
-        [Route("{id}/deny")]
-        [StateYourBusiness(operation = Operation.DENY_ALLOW, resource = Resource.MEMBERSHIP_REQUEST)]
-        public async Task<ActionResult<RequestView>> DenyAsync(int id)
-        {
-            var result = await _membershipRequestService.DenyAsync(id);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(result);
+            return Ok(updated);
         }
 
         /// <summary>
         /// Deletes a membership request
         /// </summary>
-        /// <param name="id">The id of the membership request to delete</param>
+        /// <param name="membershipRequestID">The id of the membership request to delete</param>
         /// <returns>The deleted object</returns>
         [HttpDelete]
-        [Route("{id}")]
+        [Route("{membershipRequestID}")]
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.MEMBERSHIP_REQUEST)]
-        public async Task<ActionResult<RequestView>> Delete(int id)
+        public async Task<ActionResult<RequestView>> Delete(int membershipRequestID)
         {
-            var result = await _membershipRequestService.DeleteAsync(id);
+            var result = await _membershipRequestService.DeleteAsync(membershipRequestID);
 
             if (result == null)
             {

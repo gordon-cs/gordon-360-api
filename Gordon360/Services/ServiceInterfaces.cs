@@ -174,11 +174,10 @@ namespace Gordon360.Services
             string[]? participationTypes = null
         );
         IEnumerable<MembershipView> GetMembershipsByUser(string username);
-        int GetActivitySubscribersCountForSession(string activityCode, string sessionCode);
-        int GetActivityMembersCountForSession(string activityCode, string sessionCode);
+        int GetActivitySubscribersCountForSession(string activityCode, string? sessionCode);
+        int GetActivityMembersCountForSession(string activityCode, string? sessionCode);
         MembershipView GetSpecificMembership(int membershipID);
-        int GetActivityFollowersCount(string idactivityCode);
-        int GetActivityMembersCount(string activityCode);
+        int GetActivityMembersCount(string activityCode, string? sessionCode);
         Task<MembershipView> AddAsync(MembershipUploadViewModel membership);
         Task<MembershipView> UpdateAsync(int membershipID, MembershipUploadViewModel membership);
         Task<MembershipView> SetGroupAdminAsync(int membershipID, bool isGroupAdmin);
@@ -186,8 +185,8 @@ namespace Gordon360.Services
         MembershipView Delete(int membershipID);
         bool IsGroupAdmin(string username);
         public IEnumerable<EmailViewModel> MembershipEmails(string activityCode, string sessionCode, ParticipationType? participationCode = null);
-        public MembershipView MEMBERSHIPToMembershipView(MEMBERSHIP membership);
-        Task<bool> ValidateMembershipAsync(MembershipUploadViewModel membership);
+        public MembershipView GetMembershipViewById(int membershipId);
+        bool ValidateMembership(MembershipUploadViewModel membership);
         public bool IsPersonAlreadyInActivity(MembershipUploadViewModel membershipRequest);
     }
 
@@ -222,8 +221,9 @@ namespace Gordon360.Services
         Task<RequestView> AddAsync(RequestUploadViewModel membershipRequest);
         Task<RequestView> UpdateAsync(int requestID, RequestUploadViewModel membershipRequest);
         // The ODD one out. When we approve a request, we would like to get back the new membership.
-        Task<MembershipView> ApproveAsync(int requestID);
+        Task<RequestView> ApproveAsync(int requestID);
         Task<RequestView> DenyAsync(int requestID);
+        Task<RequestView> SetPendingAsync(int requestID);
         Task<RequestView> DeleteAsync(int requestID);
     }
     public interface IScheduleService
