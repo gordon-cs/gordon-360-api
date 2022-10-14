@@ -3,6 +3,7 @@ using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
 using Gordon360.Static.Names;
+using Gordon360.Static.Methods;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -193,10 +194,22 @@ namespace Gordon360.Services
         /// Fetches all the membership requests associated with this activity
         /// </summary>
         /// <param name="activityCode">The activity id</param>
+        /// <param name="sessionCode">The activity id</param>
         /// <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
-        public IEnumerable<RequestView> GetMembershipRequestsByActivity(string activityCode)
+        public IEnumerable<RequestView> GetMembershipRequests(string activityCode, string? sessionCode = null, string? requestStatus = null)
         {
-            return _context.RequestView.Where(r => r.ActivityCode == activityCode);
+            if (!_context.ACT_INFO.Any(a => a.ACT_CDE == activityCode))
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The activity could not be found." };
+            }
+
+            sessionCode ??= Helpers.GetCurrentSession(_context);
+            var requests = _context.RequestView.Where(r => r.ActivityCode == activityCode && r.SessionCode == sessionCode);
+            if (requestStatus != null)
+            {
+                requests = requests.Where(r => r.Status == requestStatus);
+            }
+            return requests;
         }
 
         /// <summary>

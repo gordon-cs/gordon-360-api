@@ -56,19 +56,16 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Gets the memberships requests for the specified activity
         /// </summary>
-        /// <param name="id">The activity code</param>
+        /// <param name="activityCode">The activity code</param>
+        /// <param name="sessionCode">The session code</param>
+        /// <param name="requestStatus">The status of the requests to search</param>
         /// <returns>All membership requests associated with the activity</returns>
         [HttpGet]
-        [Route("activity/{activityCode}")]
+        [Route("activity/{activityCode}/session/{sessionCode}")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_REQUEST_BY_ACTIVITY)]
-        public ActionResult<IEnumerable<RequestView>> GetMembershipRequestsByActivity(string activityCode)
+        public ActionResult<IEnumerable<RequestView>> GetMembershipRequestsByActivity(string activityCode, string sessionCode, string? requestStatus = null)
         {
-            var result = _membershipRequestService.GetMembershipRequestsByActivity(activityCode);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
+            IEnumerable<RequestView> result = _membershipRequestService.GetMembershipRequests(activityCode, sessionCode, requestStatus);
 
             return Ok(result);
         }

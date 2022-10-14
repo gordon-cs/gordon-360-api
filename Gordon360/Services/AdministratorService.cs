@@ -30,6 +30,18 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// Fetches a specific admin from the database
+        /// </summary>
+        /// <returns>Returns a list of administrators. If no administrators were found, an empty list is returned.</returns>
+        public AdminViewModel? GetByUsername(string username)
+        {
+            var admin = _context.ADMIN.FirstOrDefault(a => a.USER_NAME == username);
+            if (admin != null)
+                return (AdminViewModel)admin;
+            return null;
+        }
+
+        /// <summary>
         /// Adds a new Administrator record to storage. Since we can't establish foreign key constraints and relationships on the database side,
         /// we do it here by using the validateAdmin() method.
         /// </summary>

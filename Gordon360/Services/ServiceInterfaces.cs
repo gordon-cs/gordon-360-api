@@ -135,6 +135,7 @@ namespace Gordon360.Services
     public interface IAdministratorService
     {
         IEnumerable<AdminViewModel> GetAll();
+        AdminViewModel? GetByUsername(string username);
         AdminViewModel Add(AdminViewModel admin);
         AdminViewModel Delete(int id);
     }
@@ -214,7 +215,7 @@ namespace Gordon360.Services
     {
         RequestView Get(int requestID);
         IEnumerable<RequestView> GetAll();
-        IEnumerable<RequestView> GetMembershipRequestsByActivity(string activityCode);
+        IEnumerable<RequestView> GetMembershipRequests(string activityCode, string? sessionCode, string? requestStatus);
         IEnumerable<RequestView> GetMembershipRequestsByUsername(string usernamne);
         Task<RequestView> AddAsync(RequestUploadViewModel membershipRequest);
         Task<RequestView> UpdateAsync(int requestID, RequestUploadViewModel membershipRequest);
@@ -278,7 +279,7 @@ namespace Gordon360.Services
 
     public interface IHousingService
     {
-        bool CheckIfHousingAdmin(string gordonID);
+        bool CheckIfHousingAdmin(string username);
         bool DeleteApplication(int applicationID);
         string[] GetAllApartmentHalls();
         string GetEditorUsername(int applicationID);

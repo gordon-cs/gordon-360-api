@@ -207,18 +207,17 @@ namespace Gordon360.Controllers
             //get token data from context, username is the username of current logged in person
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
-            string userID = _accountService.GetAccountByUsername(authenticatedUserUsername).GordonID;
+            string username = _accountService.GetAccountByUsername(authenticatedUserUsername).ADUserName;
 
             bool isAdmin = false;
 
             try
             {
-                ADMIN adminModel = _administratorService.Get(userID);
-                isAdmin = adminModel != null;
+                isAdmin = _administratorService.GetByUsername(username) != null;
             }
             catch
             {
-                isAdmin = _housingService.CheckIfHousingAdmin(userID);
+                isAdmin = _housingService.CheckIfHousingAdmin(username);
             }
 
             ApartmentApplicationViewModel result = _housingService.GetApartmentApplication(applicationID, isAdmin);
