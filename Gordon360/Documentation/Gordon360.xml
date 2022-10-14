@@ -171,18 +171,7 @@
             Server makes call to the database and returns all admins
             </remarks>
         </member>
-        <member name="M:Gordon360.Controllers.AdminsController.GetByGordonId(System.String)">
-            <summary>
-            Get a specific admin
-            </summary>
-            <returns>
-            The specific admin
-            </returns>
-            <remarks>
-            Server makes call to the database and returns the specific admin
-            </remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.AdminsController.Post(Gordon360.Models.CCT.ADMIN)">
+        <member name="M:Gordon360.Controllers.AdminsController.Post(Gordon360.Models.ViewModels.AdminViewModel)">
             <summary>Create a new admin to be added to database</summary>
             <param name="admin">The admin item containing all required and relevant information</param>
             <returns></returns>
@@ -431,14 +420,7 @@
             <param name="activityCode">The activity ID.</param>
             <returns>A list of all advisor-type memberships for the specified activity.</returns>
         </member>
-        <member name="M:Gordon360.Controllers.MembershipsController.GetActivityFollowersCount(System.String)">
-            <summary>
-            Gets the number of followers of an activity
-            </summary>
-            <param name="activityCode">The activity ID.</param>
-            <returns>The number of followers of the activity</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.MembershipsController.GetActivityMembersCount(System.String)">
+        <member name="M:Gordon360.Controllers.MembershipsController.GetActivityMembersCount(System.String,System.String)">
             <summary>
             Gets the number of members (besides followers) of an activity
             </summary>
@@ -467,14 +449,6 @@
             <returns></returns>
             <remarks>Posts a new membership to the server to be added into the database</remarks>
         </member>
-        <member name="M:Gordon360.Controllers.MembershipsController.GetMembershipsByUser(System.String)">
-            <summary>
-            Fetch memberships that a specific student has been a part of
-            @TODO: Move security checks to state your business? Or consider changing implementation here
-            </summary>
-            <param name="username">The Student Username</param>
-            <returns>The membership information that the student is a part of</returns>
-        </member>
         <member name="M:Gordon360.Controllers.MembershipsController.PutAsync(System.Int32,Gordon360.Models.CCT.MembershipUploadViewModel)">
             <summary>Update an existing membership item</summary>
             <param name="membershipID">The membership id of whichever one is to be changed</param>
@@ -484,17 +458,19 @@
         </member>
         <member name="M:Gordon360.Controllers.MembershipsController.SetGroupAdminAsync(System.Int32,System.Boolean)">
             <summary>Update an existing membership item to be a group admin or not</summary>
-             /// <param name="membershipID">The content within the membership that is to be changed</param>
+            <param name="membershipID">The content within the membership that is to be changed</param>
+            <param name="isGroupAdmin">The new value of GroupAdmin</param>
             <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         </member>
         <member name="M:Gordon360.Controllers.MembershipsController.SetPrivacyAsync(System.Int32,System.Boolean)">
             <summary>Update an existing membership item to be private or not</summary>
-            <param name="membership">The membership to toggle privacy on</param>
+            <param name="membershipID">The membership to set the privacy of</param>
+            <param name="isPrivate">The new value of Privacy for the membership</param>
             <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         </member>
         <member name="M:Gordon360.Controllers.MembershipsController.Delete(System.Int32)">
             <summary>Delete an existing membership</summary>
-            <param name="id">The identifier for the membership to be deleted</param>
+            <param name="membershipID">The identifier for the membership to be deleted</param>
             <remarks>Calls the server to make a call and remove the given membership from the database</remarks>
         </member>
         <member name="M:Gordon360.Controllers.MembershipsController.IsGroupAdmin(System.String)">
@@ -707,6 +683,14 @@
             <param name="imagePath">Path to the profile image to load</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.GetMembershipsByUser(System.String)">
+            <summary>
+            Fetch memberships that a specific student has been a part of
+            @TODO: Move security checks to state your business? Or consider changing implementation here
+            </summary>
+            <param name="username">The Student Username</param>
+            <returns>The membership information that the student is a part of</returns>
+        </member>
         <member name="M:Gordon360.Controllers.RequestsController.Get">
             <summary>
             Gets all Membership Request Objects
@@ -720,11 +704,13 @@
             <param name="id">The ID of the membership request</param>
             <returns>A memberships request with the specified id</returns>
         </member>
-        <member name="M:Gordon360.Controllers.RequestsController.GetMembershipRequestsByActivity(System.String)">
+        <member name="M:Gordon360.Controllers.RequestsController.GetMembershipRequestsByActivity(System.String,System.String,System.String)">
             <summary>
             Gets the memberships requests for the specified activity
             </summary>
-            <param name="id">The activity code</param>
+            <param name="activityCode">The activity code</param>
+            <param name="sessionCode">The session code</param>
+            <param name="requestStatus">The status of the requests to search</param>
             <returns>All membership requests associated with the activity</returns>
         </member>
         <member name="M:Gordon360.Controllers.RequestsController.GetMembershipsRequestsForCurrentUser">
@@ -744,29 +730,23 @@
             <summary>
             Updates a membership request
             </summary>
-            <param name="id">The membership request id</param>
+            <param name="membershipRequestID">The membership request id</param>
             <param name="membershipRequest">The updated membership request object</param>
             <returns>The updated request if successful. HTTP error message if not.</returns>
         </member>
-        <member name="M:Gordon360.Controllers.RequestsController.ApproveAsync(System.Int32)">
+        <member name="M:Gordon360.Controllers.RequestsController.UpdateStatusAsync(System.Int32,System.String)">
             <summary>
             Sets a membership request to Approved
             </summary>
-            <param name="id">The id of the membership request in question.</param>
-            <returns>If successful: THe updated membership request wrapped in an OK Http status code.</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.RequestsController.DenyAsync(System.Int32)">
-            <summary>
-            Sets the membership request to Denied
-            </summary>
-            <param name="id">The id of the membership request in question.</param>
-            <returns>If successful: The updated membership request wrapped in an OK Http status code.</returns>
+            <param name="membershipRequestID">The id of the membership request in question.</param>
+            <param name="status">The status that the membership requst will be changed to.</param>
+            <returns>If successful: The updated membership request wrapped in an OK HTTP status code.</returns>
         </member>
         <member name="M:Gordon360.Controllers.RequestsController.Delete(System.Int32)">
             <summary>
             Deletes a membership request
             </summary>
-            <param name="id">The id of the membership request to delete</param>
+            <param name="membershipRequestID">The id of the membership request to delete</param>
             <returns>The deleted object</returns>
         </member>
         <member name="M:Gordon360.Controllers.SaveController.GetUpcomingRides">
@@ -1226,32 +1206,24 @@
             Service class to facilitate interacting with the Admin table.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.AdministratorService.Get(System.Int32)">
-            <summary>
-            Fetches the admin resource whose id is specified as an argument.
-            </summary>
-            <param name="id">The admin ID.l</param>
-            <returns>The Specified administrator. If none was found, a null value is returned.</returns>
-        </member>
-        <member name="M:Gordon360.Services.AdministratorService.Get(System.String)">
-            <summary>
-            Fetches the admin resource whose username matches the specified argument
-            </summary>
-            <param name="gordon_id">The administrator's gordon id</param>
-            <returns>The Specified administrator. If none was found, a null value is returned.</returns>
-        </member>
         <member name="M:Gordon360.Services.AdministratorService.GetAll">
             <summary>
             Fetches all the administrators from the database
             </summary>
             <returns>Returns a list of administrators. If no administrators were found, an empty list is returned.</returns>
         </member>
-        <member name="M:Gordon360.Services.AdministratorService.Add(Gordon360.Models.CCT.ADMIN)">
+        <member name="M:Gordon360.Services.AdministratorService.GetByUsername(System.String)">
+            <summary>
+            Fetches a specific admin from the database
+            </summary>
+            <returns>Returns a list of administrators. If no administrators were found, an empty list is returned.</returns>
+        </member>
+        <member name="M:Gordon360.Services.AdministratorService.Add(Gordon360.Models.ViewModels.AdminViewModel)">
             <summary>
             Adds a new Administrator record to storage. Since we can't establish foreign key constraints and relationships on the database side,
             we do it here by using the validateAdmin() method.
             </summary>
-            <param name="admin">The admin to be added</param>
+            <param name="adminView">The admin to be added</param>
             <returns>The newly added Admin object</returns>
         </member>
         <member name="M:Gordon360.Services.AdministratorService.Delete(System.Int32)">
@@ -1261,7 +1233,7 @@
             <param name="id">The admin id</param>
             <returns>The admin that was just deleted</returns>
         </member>
-        <member name="M:Gordon360.Services.AdministratorService.validateAdmin(Gordon360.Models.CCT.ADMIN)">
+        <member name="M:Gordon360.Services.AdministratorService.validateAdmin(Gordon360.Models.ViewModels.AdminViewModel)">
             <summary>
             Helper method to Validate an admin
             </summary>
@@ -1431,7 +1403,7 @@
             Calls a stored procedure that returns a row in the staff whitelist which has the given user id,
             if it is in the whitelist
             </summary>
-            <param name="gordonID"> The id of the person using the page </param>
+            <param name="username"> The id of the person using the page </param>
             <returns> Whether or not the user is on the staff whitelist </returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.DeleteApplication(System.Int32)">
@@ -1549,19 +1521,26 @@
             <param name="requestID">The ID of the request to be approved</param>
             <returns>The approved membership</returns>
         </member>
-        <member name="M:Gordon360.Services.MembershipRequestService.DeleteAsync(System.Int32)">
-            <summary>
-            Delete the membershipRequest object whose id is given in the parameters 
-            </summary>
-            <param name="requestID">The membership request id</param>
-            <returns>A copy of the deleted membership request</returns>
-        </member>
         <member name="M:Gordon360.Services.MembershipRequestService.DenyAsync(System.Int32)">
             <summary>
             Denies the membership request object whose id is given in the parameters
             </summary>
             <param name="requestID">The membership request id</param>
             <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipRequestService.SetPendingAsync(System.Int32)">
+            <summary>
+            Denies the membership request object whose id is given in the parameters
+            </summary>
+            <param name="requestID">The membership request id</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipRequestService.DeleteAsync(System.Int32)">
+            <summary>
+            Delete the membershipRequest object whose id is given in the parameters 
+            </summary>
+            <param name="requestID">The membership request id</param>
+            <returns>A copy of the deleted membership request</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipRequestService.Get(System.Int32)">
             <summary>
@@ -1576,11 +1555,12 @@
             </summary>
             <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
         </member>
-        <member name="M:Gordon360.Services.MembershipRequestService.GetMembershipRequestsByActivity(System.String)">
+        <member name="M:Gordon360.Services.MembershipRequestService.GetMembershipRequests(System.String,System.String,System.String)">
             <summary>
             Fetches all the membership requests associated with this activity
             </summary>
             <param name="activityCode">The activity id</param>
+            <param name="sessionCode">The activity id</param>
             <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipRequestService.GetMembershipRequestsByUsername(System.String)">
@@ -1664,18 +1644,12 @@
             <param name="username">The student's AD Username.</param>
             <returns>A MembershipViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
         </member>
-        <member name="M:Gordon360.Services.MembershipService.GetActivityFollowersCount(System.String)">
-            <summary>
-            Fetches the number of followers associated with the activity whose code is specified by the parameter.
-            </summary>
-            <param name="activityCode">The activity code.</param>
-            <returns>int.</returns>
-        </member>
-        <member name="M:Gordon360.Services.MembershipService.GetActivityMembersCount(System.String)">
+        <member name="M:Gordon360.Services.MembershipService.GetActivityMembersCount(System.String,System.String)">
             <summary>
             Fetches the number of memberships associated with the activity whose code is specified by the parameter.
             </summary>
             <param name="activityCode">The activity code.</param>
+            <param name="sessionCode">The session code.</param>
             <returns>int.</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.GetActivitySubscribersCountForSession(System.String,System.String)">
@@ -1698,6 +1672,7 @@
             <summary>
             Updates the membership whose id is given as the first parameter to the contents of the second parameter.
             </summary>
+            <param name="membershipID">The id of the membership to update.</param>
             <param name="membership">The updated membership.</param>
             <returns>The newly modified membership.</returns>
         </member>
@@ -1705,17 +1680,19 @@
             <summary>
             Switches the group-admin property of the person whose membership id is given
             </summary>
-            <param name="membership">The corresponding membership object</param>
+            <param name="membershipID">The corresponding membership object</param>
+            <param name="isGroupAdmin">The new value of group admin</param>
             <returns>The newly modified membership.</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.SetPrivacyAsync(System.Int32,System.Boolean)">
             <summary>
             Switches the privacy property of the person whose membership id is given
             </summary>
-            <param name="membership">The membership object passed.</param>
+            <param name="membershipID">The membership object passed.</param>
+            <param name="isPrivate">The new value of privacy.</param>
             <returns>The newly modified membership.</returns>
         </member>
-        <member name="M:Gordon360.Services.MembershipService.ValidateMembershipAsync(Gordon360.Models.CCT.MembershipUploadViewModel)">
+        <member name="M:Gordon360.Services.MembershipService.ValidateMembership(Gordon360.Models.CCT.MembershipUploadViewModel)">
             <summary>
             Helper method to Validate a membership
             </summary>
@@ -1735,12 +1712,6 @@
             </summary>
             <param name="membership">The MEMBERSHIP to match on MembershipID</param>	
             <returns>The found MembershipView object corresponding to the MEMBERSHIP by ID</returns>	
-        </member>
-        <member name="M:Gordon360.Services.MembershipService.GetCurrentSessionCode">
-            <summary>	
-            Gets the current session ID code for involvements
-            </summary>
-            <returns>The current session ID code for involvements</returns>	
         </member>
         <member name="T:Gordon360.Services.MyScheduleService">
             <summary>

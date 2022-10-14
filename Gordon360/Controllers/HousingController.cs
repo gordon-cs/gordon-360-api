@@ -25,7 +25,7 @@ namespace Gordon360.Controllers
             _context = context;
             _housingService = new HousingService(context);
             _accountService = new AccountService(context);
-            _administratorService = new AdministratorService(context);
+            _administratorService = new AdministratorService(context, _accountService);
             _profileService = profileService;
         }
 
