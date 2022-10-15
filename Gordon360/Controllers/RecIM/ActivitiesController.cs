@@ -45,12 +45,9 @@ namespace Gordon360.Controllers.RecIM
         /// All Existing Activities 
         /// </returns>
         [HttpGet]
-        [Route("?date={time}")]
-        public ActionResult<IEnumerable<Activity>> GetAllActivities(DateTime time)
+        [Route("")]
+        public ActionResult<IEnumerable<Activity>> GetAllActivities([FromQuery] DateTime time)
         {
-            // Currently the parameter is a "DateTime" But it will be changed
-            // to a string, then parsed into a datetime object to be passed
-            // into service.
             var result = _activityService.GetActivitiesByTime(time);
             return Ok(result);
         }
@@ -78,8 +75,8 @@ namespace Gordon360.Controllers.RecIM
         [Route("")]
         public async Task<ActionResult> CreateActivity(Activity newActivity)
         {
-            await _activityService.PostActivity(newActivity);
-            return Ok();
+            var activityID = await _activityService.PostActivity(newActivity);
+            return Ok(activityID);
         }
         /// <summary>
         /// Updates Activity based on input
@@ -91,7 +88,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult> UpdateActivity(Activity updatedActivity)
         {
             await _activityService.UpdateActivity(updatedActivity);
-            return Ok();
+            return Ok(updatedActivity.ID);
         }
 
         ///<summary>Creates a new League (currently hard coded)</summary>

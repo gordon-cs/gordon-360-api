@@ -35,8 +35,7 @@ namespace Gordon360.Services.RecIM
                 return GetActivities().Where(a => !a.Completed); 
             } else
             {
-                return GetActivities().Where(a => a.RegistrationEnd > time 
-                                               && a.RegistrationStart < time);
+                return GetActivities().Where(a => a.RegistrationEnd > time);
             }
         }
         public Activity? GetActivityByID(int activityID)
@@ -80,10 +79,11 @@ namespace Gordon360.Services.RecIM
 
             await _context.SaveChangesAsync();
         }
-        public async Task PostActivity(Activity newActivity)
+        public async Task<int> PostActivity(Activity newActivity)
         {
             await _context.Activity.AddAsync(newActivity);
             await _context.SaveChangesAsync();
+            return newActivity.ID;
         }
 
     }

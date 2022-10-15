@@ -312,7 +312,7 @@ namespace Gordon360.Services
             Activity? GetActivityByID(int ActivityID);
             IEnumerable<Activity> GetActivitiesByTime(DateTime? time);
             Task UpdateActivity(Activity updatedActivity);
-            Task PostActivity(Activity newActivity);
+            Task<int> PostActivity(Activity newActivity);
 
         }
         public interface ISeriesService
