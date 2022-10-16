@@ -8,12 +8,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
-    [Table("Housing_Admins", Schema = "dbo")]
-    public partial class Housing_Admins
+    [Keyless]
+    public partial class AccountPhotoURL
     {
-        [Key]
         [StringLength(10)]
         [Unicode(false)]
-        public string AdminID { get; set; }
+        public string Gordonid { get; set; }
+        [StringLength(86)]
+        [Unicode(false)]
+        public string PhotoURL { get; set; }
+        [StringLength(86)]
+        [Unicode(false)]
+        public string PrefPhotoURL { get; set; }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using Gordon360.Models.CCT.Context;
 using Gordon360.Models.MyGordon.Context;
 using Gordon360.Models.StudentTimesheets.Context;
+using RecIM = Gordon360.Services.RecIM;
 using Gordon360.Services;
-using Gordon360.Services.RecIMServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
@@ -46,7 +46,7 @@ builder.Services.AddScoped<IActivityService, ActivityService>();
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IAddressesService, AddressesService>();
-builder.Services.AddScoped<ILeagueService, LeagueService>();
+builder.Services.AddScoped<RecIM.IActivityService, RecIM.ActivityService>();
 
 
 

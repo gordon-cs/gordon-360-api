@@ -8,12 +8,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
-    [Table("LeagueType", Schema = "RecIM")]
-    public partial class LeagueType
+    [Table("ActivityStatus", Schema = "RecIM")]
+    public partial class ActivityStatus
     {
-        public LeagueType()
+        public ActivityStatus()
         {
-            League = new HashSet<League>();
+            Activity = new HashSet<Activity>();
         }
 
         [Key]
@@ -23,7 +23,7 @@ namespace Gordon360.Models.CCT
         [Unicode(false)]
         public string Description { get; set; }
 
-        [InverseProperty("Type")]
-        public virtual ICollection<League> League { get; set; }
+        [InverseProperty("Status")]
+        public virtual ICollection<Activity> Activity { get; set; }
     }
 }

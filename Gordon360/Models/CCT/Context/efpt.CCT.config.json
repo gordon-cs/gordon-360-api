@@ -51,10 +51,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Housing_Admins]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[Housing_Applicants]",
          "ObjectType": 0
       },
@@ -139,19 +135,23 @@
          "ObjectType": 0
       },
       {
-         "Name": "[RecIM].[League]",
+         "Name": "[RecIM].[Activity]",
          "ObjectType": 0
       },
       {
-         "Name": "[RecIM].[LeagueStatus]",
+         "Name": "[RecIM].[ActivityStatus]",
          "ObjectType": 0
       },
       {
-         "Name": "[RecIM].[LeagueType]",
+         "Name": "[RecIM].[ActivityType]",
          "ObjectType": 0
       },
       {
          "Name": "[RecIM].[Match]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[MatchParticipant]",
          "ObjectType": 0
       },
       {
@@ -167,7 +167,27 @@
          "ObjectType": 0
       },
       {
-         "Name": "[RecIM].[MatchUser]",
+         "Name": "[RecIM].[Participant]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[ParticipantActivity]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[ParticipantNotification]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[ParticipantStatus]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[ParticipantStatusHistory]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[ParticipantTeam]",
          "ObjectType": 0
       },
       {
@@ -184,6 +204,10 @@
       },
       {
          "Name": "[RecIM].[SeriesStatus]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[SeriesTeam]",
          "ObjectType": 0
       },
       {
@@ -215,31 +239,11 @@
          "ObjectType": 0
       },
       {
-         "Name": "[RecIM].[User]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[UserLeague]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[UserStatus]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[UserStatusHistory]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[UserTeam]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[360_SLIDER]",
+         "Name": "[dbo].[ACCOUNT]",
          "ObjectType": 3
       },
       {
-         "Name": "[dbo].[ACCOUNT]",
+         "Name": "[dbo].[AccountPhotoURL]",
          "ObjectType": 3
       },
       {
@@ -379,14 +383,6 @@
          "ObjectType": 1
       },
       {
-         "Name": "[dbo].[ALL_SUPERVISORS]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[CAN_READ_STUDENT_SCHEDULES]",
-         "ObjectType": 1
-      },
-      {
          "Name": "[dbo].[CANCEL_RIDE]",
          "ObjectType": 1
       },
@@ -420,10 +416,6 @@
       },
       {
          "Name": "[dbo].[CURRENT_SESSION]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[DELETE_AA_ADMIN]",
          "ObjectType": 1
       },
       {
@@ -504,10 +496,6 @@
       },
       {
          "Name": "[dbo].[FINALIZATION_UPDATEDEMOGRAPHIC]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_AA_ADMIN]",
          "ObjectType": 1
       },
       {
@@ -600,10 +588,6 @@
       },
       {
          "Name": "[dbo].[GRP_ADMIN_EMAILS_PER_ACT_CDE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[INSERT_AA_ADMIN]",
          "ObjectType": 1
       },
       {
@@ -712,18 +696,6 @@
       },
       {
          "Name": "[dbo].[STUDENT_JOBS_PER_ID_NUM]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[SUPERVISOR_PER_SUP_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[SUPERVISORS_PER_ACT_CDE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[SUPERVISORS_PER_ID_NUM]",
          "ObjectType": 1
       },
       {

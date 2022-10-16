@@ -12,6 +12,7 @@ using static Gordon360.Services.MembershipService;
 // Namespace with all the Service Interfaces that are to be implemented. I don't think making this interface is required, the services can work fine on their own.
 // However, building the interfaces first does give a general sense of structure to their implementations. A certain cohesiveness :p.
 // </summary>
+
 namespace Gordon360.Services
 {
     public interface IProfileService
@@ -34,19 +35,6 @@ namespace Gordon360.Services
         Task UpdateProfileImageAsync(string username, string path, string name);
         ProfileViewModel? ComposeProfile(object? student, object? alumni, object? faculty, object? customInfo);
         Task InformationChangeRequest(string username, ProfileFieldViewModel[] updatedField);
-    }
-
-    public interface ILeagueService
-    {
-        IEnumerable<League> GetAllLeagues();
-        League GetLeagueByID(int leagueID);
-        LeagueType GetLeagueType(int leagueID);
-        LeagueStatus GetLeagueStatus(int leagueID);
-        Sport GetLeagueSport(int leagueID);
-        ICollection<Series> GetLeagueSeries(int leagueID);
-        ICollection<Team> GetLeagueTeams(int leagueID);
-        ICollection<User> GetLeagueUsers(int leagueID);
-        Task PostLeague(League newLeague);
     }
 
     public interface IAddressesService
@@ -314,6 +302,60 @@ namespace Gordon360.Services
         Task SetStatusAsync(string id);
         Task<AcademicCheckInViewModel> PutDemographicAsync(string id, AcademicCheckInViewModel data);
         Task<bool> GetStatusAsync(string id);
+    }
+
+    namespace RecIM
+    {
+        public interface IActivityService
+        {
+            IEnumerable<Activity> GetActivities();
+            Activity? GetActivityByID(int ActivityID);
+            IEnumerable<Activity> GetActivitiesByTime(DateTime? time);
+            Task UpdateActivity(Activity updatedActivity);
+            Task<int> PostActivity(Activity newActivity);
+
+        }
+        public interface ISeriesService
+        {
+            IEnumerable<Series> GetSeries();
+            Series GetSeriesByID(int seriesID);
+            IEnumerable<Match> GetMatches(int seriesID);
+            Task PostSeries(Series newSeries);
+            Task UpdateSeries(Series updatedSeries);
+        }
+
+        public interface ITeamService
+        {
+            IEnumerable<Team> GetTeamByID(int teamID);
+            Task PostTeam(Team team);
+            Task AddUserToTeam(int teamID, int participantID);
+            Task UpdateParticipantRole(int teamID, int participantID, RoleType participantRole);
+            Task UpdateTeam(Team updatedTeam);
+        }
+
+        public interface IParticipantService
+        {
+            IEnumerable<Participant> getParticipants();
+            Task PostParticipant(int participantID);
+            Participant GetParticipant(int participantID);
+            ParticipantTeam GetParticipantTeamHistory(int participantID);
+        }
+
+        public interface ISportService
+        {
+            IEnumerable<Sport> GetSports();
+            Sport GetSportByID(int sportID);
+            Task PostSport(Sport newSport);
+            Task UpdateSport(Sport updatedSport);
+        }
+
+        public interface IMatchService
+        {
+            Match GetMatchByID(int matchID);
+            Task PostMatch(Match newMatch);
+            Task UpdateMatch(Match updatedMatch);
+            Task UpdateTeamScore(int matchID, int teamID, int teamScore);
+        }
     }
 
 }

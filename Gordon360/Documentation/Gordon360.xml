@@ -718,69 +718,41 @@
             <param name="imagePath">Path to the profile image to load</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIMControllers.LeaguesController.GetAllLeagues">
-            <summary>Gets a list of all Leagues</summary>
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetActivities(System.Boolean)">
+            <summary>Gets a list of all Activities</summary>
+            <param name="active"> Optional active parameter </param>
              <returns>
-             All Existing Leagues 
+             All Existing Activities 
              </returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIMControllers.LeaguesController.GetLeagueByID(System.Int32)">
-            <summary>Gets a League object by ID number</summary>
-             <param name="leagueID">League ID Number</param>
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetAllActivities(System.DateTime)">
+            <summary>Gets a list of all Activities after given time</summary>
              <returns>
-             League object
+             All Existing Activities 
              </returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIMControllers.LeaguesController.GetLeagueSeries(System.Int32)">
-            <summary>Gets a list of all Series associated with a League</summary>
-             <param name="leagueID"> League ID Number</param>
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetLeagueByID(System.Int32)">
+            <summary>Gets a Activity object by ID number</summary>
+             <param name="activityID">League ID Number</param>
              <returns>
-             list of all Series objects associated with a league
+             Activity object
              </returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIMControllers.LeaguesController.GetAllLeaguTeams(System.Int32)">
-            <summary>Gets a list of all Teams associated with a League</summary>
-             <param name="leagueID"> League ID Number</param>
-             <returns>
-             list of all team objects associated with a league
-             </returns>
-        </member>
-        <member name="M:Gordon360.Controllers.RecIMControllers.LeaguesController.GetAllLeagueUsers(System.Int32)">
-            <summary>Gets a list of all Users associated with a League</summary>
-             <param name="leagueID"> League ID Number</param>
-             <returns>
-             list of all user objects associated with a league
-             </returns>
-        </member>
-        <member name="M:Gordon360.Controllers.RecIMControllers.LeaguesController.GetLeagueType(System.Int32)">
-            <summary>Gets League Type</summary>
-             <param name="leagueID"> League ID Number</param>
-             <returns>
-             League Type Object
-             </returns>
-        </member>
-        <member name="M:Gordon360.Controllers.RecIMControllers.LeaguesController.GetLeagueStatus(System.Int32)">
-            <summary>Gets League Status</summary>
-             <param name="leagueID"> League ID Number</param>
-             <returns>
-             League Status Object
-             </returns>
-        </member>
-        <member name="M:Gordon360.Controllers.RecIMControllers.LeaguesController.GetLeagueSport(System.Int32)">
-            <summary>Gets League Sport</summary>
-             <param name="leagueID"> League ID Number</param>
-             <returns>
-             Sport Object
-             </returns>
-        </member>
-        <member name="M:Gordon360.Controllers.RecIMControllers.LeaguesController.CreateLeague(Gordon360.Models.CCT.League)">
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.CreateActivity(Gordon360.Models.CCT.Activity)">
             <summary>
-            Posts league into CCT.RecIM.Leagues
+            Posts Activity into CCT.RecIM.Activity
             </summary>
-            <param name="newLeague">League object with appropriate values</param>
+            <param name="newActivity">League object with appropriate values</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIMControllers.LeaguesController.CreateSmashLeague">
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.UpdateActivity(Gordon360.Models.CCT.Activity)">
+            <summary>
+            Updates Activity based on input
+            </summary>
+            <param name="updatedActivity"> Updated Activity Object </param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.CreateSmashLeague">
             <summary>Creates a new League (currently hard coded)</summary>
              <param></param>
              <returns></returns>

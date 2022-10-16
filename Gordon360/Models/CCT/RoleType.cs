@@ -13,7 +13,7 @@ namespace Gordon360.Models.CCT
     {
         public RoleType()
         {
-            UserTeam = new HashSet<UserTeam>();
+            ParticipantTeam = new HashSet<ParticipantTeam>();
         }
 
         [Key]
@@ -24,6 +24,6 @@ namespace Gordon360.Models.CCT
         public string Description { get; set; }
 
         [InverseProperty("RoleTypeNavigation")]
-        public virtual ICollection<UserTeam> UserTeam { get; set; }
+        public virtual ICollection<ParticipantTeam> ParticipantTeam { get; set; }
     }
 }
