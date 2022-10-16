@@ -23,25 +23,6 @@ namespace Gordon360.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        /// <summary>Get all the slider content for the dashboard slider</summary>
-        /// <returns>A list of all the slides for the slider</returns>
-        /// <remarks>Queries the database for all entries in slider table</remarks>
-        // GET: api/cms/slider
-        [HttpGet]
-        [Route("slider")]
-        [AllowAnonymous]
-        [StateYourBusiness(operation = Operation.READ_PUBLIC, resource = Resource.SLIDER)]
-        public ActionResult<SliderViewModel> GetSliderContent()
-        {
-            var result = _contentManagementService.DEPRECATED_GetSliderContent();
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(result);
-        }
-
         /// <summary>Get all the banner slides for the dashboard banner</summary>
         /// <returns>A list of all the slides for the banner</returns>
         [HttpGet]
