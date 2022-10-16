@@ -708,7 +708,7 @@ What is it? Resource that represents residence hall information that would conce
 
 ### Jobs
 
-What is it? Resource that represents the shifts regarding a user.
+What is it? Resource to interact with a student's timesheets for on-campus jobs.
 
 ##### GET
 
