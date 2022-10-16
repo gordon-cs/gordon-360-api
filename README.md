@@ -715,7 +715,7 @@ What is it? Resource to interact with a student's timesheets for on-campus jobs.
 `api/jobs` Get the active jobs of the current logged in user.
 `api/jobs/getSavedShift` Get the saved shifts of the current logged in user.
 `api/jobs/supervisorName/{supervisorID}` Get the name of a supervisor based on their ID number `supervisorID` as a parameter.
-`api/jobs/clockOut` Get the clock in the status from the backend of the current logged in user, true if user is clocked in, and false if clocked out.
+`api/jobs/clockOut` Get the time-clock status of the current logged in user, true if user is clocked in, and false if clocked out.
 
 ##### POST
 
