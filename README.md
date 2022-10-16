@@ -721,7 +721,7 @@ What is it? Resource to interact with a student's timesheets for on-campus jobs.
 
 `api/jobs/saveShift` Create a new shift for the current logged in user.
 `api/jobs/submitShifts` Submit all shifts for the current logged in user.
-`api/jobs/clockIn` Send the current clock in status to the backend for the current logged in user, true if user is clocked in, and false if clocked out.
+`api/jobs/clockIn` Update the time-clock status of the current logged in user, true if user is clocked in, and false if clocked out.
 
 ##### PUT
 
