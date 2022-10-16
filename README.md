@@ -35,6 +35,7 @@ Dive in.
   - [Emails](#emails)
   - [Events](#events)
   - [Housing](#housing)
+  - [Jobs](#jobs)
   - [Memberships](#memberships)
   - [Membership Requests](#membership-requests)
   - [Participation Definitions](#participation-definitions)
@@ -704,6 +705,32 @@ What is it? Resource that represents residence hall information that would conce
 ##### DELETE
 
 `apartment/applications/{applicationID}` Deletes an application (and consequently all rows that reference it)
+
+### Jobs
+
+What is it? Reousrce that represents the shifts regarding a user.
+
+##### GET
+
+`api/jobs` Get the active jobs of the current logged in user.
+`api/jobs/getSavedShift` Get the saved shifts of the current logged in user.
+`api/jobs/supervisorName/{supervisorID}` Get the name of a supervisor based on their ID number `supervisorID` as a parameter.
+`api/jobs/clockOut` Get the clock in the status from the backend of the current logged in user, true if user is clocked in, and false if clocked out.
+
+##### POST
+
+`api/jobs/saveShift` Create a new shift for the current logged in user.
+`api/jobs/submitShifts` Submit all shifts for the current logged in user.
+`api/jobs/clockIn` Send the current clock in status to the backend for the current logged in user, true if user is clocked in, and false if clocked out.
+
+##### PUT
+
+`api/jobs/editShift` Edit a shift for the current logged in user.
+`api/jobs/deleteClockIn` Delete the last clocked in status of a user.
+
+##### DELETE
+
+`api/jobs/deleteShift/{rowID}` Delete a shift with row id `rowID`.
 
 ### Memberships
 
