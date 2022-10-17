@@ -169,9 +169,9 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="requestID">The membership request id</param>
         /// <returns>The matching RequestView</returns>
-        public RequestView Get(int requestID)
+        public RequestView? Get(int requestID)
         {
-            var request = Get(requestID);
+            var request = _context.RequestView.FirstOrDefault(rv => rv.RequestID == requestID);
 
             if (request == null)
             {

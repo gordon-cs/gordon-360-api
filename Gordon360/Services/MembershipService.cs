@@ -283,7 +283,7 @@ namespace Gordon360.Services
         public bool ValidateMembership(MembershipUploadViewModel membership)
         {
             var personExists = _accountService.GetAccountByUsername(membership.Username);
-            if (personExists != null)
+            if (personExists == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Person was not found." };
             }

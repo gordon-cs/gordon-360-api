@@ -40,7 +40,7 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("{id}")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP_REQUEST)]
-        public ActionResult<MembershipRequestViewModel> Get(int id)
+        public ActionResult<MembershipRequestViewModel?> Get(int id)
         {
             var result = _membershipRequestService.Get(id);
 
