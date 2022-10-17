@@ -178,18 +178,6 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// Fetches the number of memberships associated with the activity whose code is specified by the parameter.
-        /// </summary>
-        /// <param name="activityCode">The activity code</param>
-        /// <param name="sessionCode">The session code</param>
-        /// <returns>The count of current members for the activity</returns>
-        public int GetActivityMembersCount(string activityCode, string? sessionCode = null)
-        {
-            sessionCode ??= Helpers.GetCurrentSession(_context);
-            return _context.MembershipView.Where(m => m.ActivityCode == activityCode && m.Participation != ParticipationType.Guest.Value && m.SessionCode == sessionCode).Count();
-        }
-
-        /// <summary>
         /// Fetches the number of followers associated with the activity and session whose codes are specified by the parameter.
         /// </summary>
         /// <param name="activityCode">The activity code</param>

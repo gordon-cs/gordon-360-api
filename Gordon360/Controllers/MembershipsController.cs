@@ -195,19 +195,5 @@ namespace Gordon360.Controllers
 
             return Ok(result);
         }
-
-        /// <summary>	
-        /// Determines whether or not the given student is a Group Admin of some activity	
-        /// </summary>
-        /// <param name="username">The account username to check</param>
-        /// <returns>The updated membership as a MembershipView object</returns>
-        [HttpGet]
-        [Route("isGroupAdmin/{id}")]
-        public ActionResult<bool> IsGroupAdmin(string username)
-        {
-            var result = _membershipService.IsGroupAdmin(username);
-
-            return Ok(result);
-        }
     }
 }
