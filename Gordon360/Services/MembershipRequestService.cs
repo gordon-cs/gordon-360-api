@@ -39,6 +39,10 @@ namespace Gordon360.Services
             // Validates the memberships request by throwing appropriate exceptions. The exceptions are caugth in the CustomExceptionFilter 
             _membershipService.ValidateMembership(m);
             _membershipService.IsPersonAlreadyInActivity(m);
+            if (RequestAlreadyExists(membershipRequestUpload))
+            {
+                throw new ResourceCreationException() { ExceptionMessage = "A request already exists with this activity, session, and user." };
+            }
 
             var request = (REQUEST) membershipRequestUpload;
             request.ID_NUM = int.Parse(_accountService.GetAccountByUsername(membershipRequestUpload.Username).GordonID);
@@ -48,6 +52,15 @@ namespace Gordon360.Services
 
             return Get(addedMembershipRequest.Entity.REQUEST_ID);
 
+        }
+
+        private bool RequestAlreadyExists(RequestUploadViewModel requestUpload)
+        {
+            return _context.REQUEST.Any(r => 
+                r.STATUS == Request_Status.PENDING
+                && r.ACT_CDE == requestUpload.Activity
+                && r.SESS_CDE == requestUpload.Session
+            );
         }
 
         /// <summary>

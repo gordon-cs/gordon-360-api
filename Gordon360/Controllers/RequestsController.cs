@@ -75,7 +75,7 @@ namespace Gordon360.Controllers
         /// </summary>
         /// <returns>All membership requests associated with the current user</returns>
         [HttpGet]
-        [Route("/users/current")]
+        [Route("users/current")]
         public ActionResult<IEnumerable<RequestView>> GetMembershipsRequestsForCurrentUser()
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
