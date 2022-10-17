@@ -247,7 +247,7 @@ namespace Gordon360.Services
 
             await _context.SaveChangesAsync();
 
-            return _context.RequestView.FirstOrDefault(r => r.RequestID == original.REQUEST_ID); ;
+            return _context.RequestView.FirstOrDefault(r => r.RequestID == original.REQUEST_ID);
         }
     }
 }
