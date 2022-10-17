@@ -176,7 +176,6 @@ namespace Gordon360.Services
         int GetActivitySubscribersCountForSession(string activityCode, string? sessionCode);
         int GetActivityMembersCountForSession(string activityCode, string? sessionCode);
         MembershipView GetSpecificMembership(int membershipID);
-        int GetActivityMembersCount(string activityCode, string? sessionCode);
         Task<MembershipView> AddAsync(MembershipUploadViewModel membership);
         Task<MembershipView> UpdateAsync(int membershipID, MembershipUploadViewModel membership);
         Task<MembershipView> SetGroupAdminAsync(int membershipID, bool isGroupAdmin);
