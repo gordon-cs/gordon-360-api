@@ -31,10 +31,9 @@ namespace Gordon360.Services
         /// we do it here by using the validateMembership() method.
         /// </summary>
         /// <param name="membershipUpload">The membership to be added</param>
-        /// <returns>The newly added Membership object</returns>
+        /// <returns>The newly added membership object as a MembershipView</returns>
         public async Task<MembershipView> AddAsync(MembershipUploadViewModel membershipUpload)
         {
-            // validate returns a boolean value.
             ValidateMembership(membershipUpload);
             IsPersonAlreadyInActivity(membershipUpload);
 
@@ -45,10 +44,8 @@ namespace Gordon360.Services
             int gordonId = int.Parse(_accountService.GetAccountByUsername(membershipUpload.Username).GordonID);
 
             MEMBERSHIP m = membershipUpload.ToMembership(gordonId, sessionBeginDate);
-            // The Add() method returns the added membership.
             var payload = await _context.MEMBERSHIP.AddAsync(m);
 
-            // There is a unique constraint in the Database on columns (ID_NUM, PART_LVL, SESS_CDE and ACT_CDE)
             if (payload?.Entity == null)
             {
                 throw new ResourceCreationException() { ExceptionMessage = "There was an error creating the membership." };
@@ -65,7 +62,7 @@ namespace Gordon360.Services
         /// Delete the membership whose id is specified by the parameter.
         /// </summary>
         /// <param name="membershipID">The membership id</param>
-        /// <returns>The membership that was just deleted</returns>
+        /// <returns>The membership that was just deleted as a MembershipView</returns>
         public MembershipView Delete(int membershipID)
         {
             var result = _context.MEMBERSHIP.Find(membershipID);
@@ -86,7 +83,7 @@ namespace Gordon360.Services
         /// Fetch the membership whose id is specified by the parameter	
         /// </summary>	
         /// <param name="membershipID">The membership id</param>	
-        /// <returns>MembershipViewModel if found, null if not found</returns>	
+        /// <returns>The found membership as a MembershipView</returns>	
         public MembershipView GetSpecificMembership(int membershipID)
         {
             MembershipView result = _context.MembershipView.FirstOrDefault(m => m.MembershipID == membershipID);
@@ -101,11 +98,11 @@ namespace Gordon360.Services
         /// <summary>
         /// Fetches the memberships associated with the activity whose code is specified by the parameter.
         /// </summary>
-        /// <param name="activityCode">The activity code.</param>
+        /// <param name="activityCode">The activity code</param>
         /// <param name="sessionCode">Optional code of session to get memberships for</param>
         /// <param name="groupAdmin">Optional filter for group admins</param>
         /// <param name="participationTypes">Optional filter for involvement participation type (MEMBR, ADV, LEAD, GUEST)</param>
-        /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+        /// <returns>An IEnumerable of the matching MembershipView objects</returns>
         public IEnumerable<MembershipView> GetMembershipsForActivity(
             string activityCode,
             string? sessionCode = null,
@@ -136,9 +133,9 @@ namespace Gordon360.Services
         /// <summary>
         /// Fetches the group admin (who have edit privileges of the page) of the activity whose activity code is specified by the parameter.
         /// </summary>
-        /// <param name="activityCode">The activity code.</param>
-        /// <param name="sessionCode">The session code.</param>
-        /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+        /// <param name="activityCode">The activity code</param>
+        /// <param name="sessionCode">The session code</param>
+        /// <returns>An IEnumerable of the matching MembershipView objects</returns>
         public IEnumerable<MembershipView> GetGroupAdminMembershipsForActivity(string activityCode, string? sessionCode = null)
         {
             sessionCode ??= Helpers.GetCurrentSession(_context);
@@ -148,8 +145,8 @@ namespace Gordon360.Services
         /// <summary>
         /// Fetches the leaders of the activity whose activity code is specified by the parameter.
         /// </summary>
-        /// <param name="activityCode">The activity code.</param>
-        /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+        /// <param name="activityCode">The activity code</param>
+        /// <returns>An IEnumerable of the matching MembershipView objects</returns>
         public IEnumerable<MembershipView> GetLeaderMembershipsForActivity(string activityCode)
         {
             var leaderRole = Helpers.GetLeaderRoleCodes();
@@ -159,8 +156,8 @@ namespace Gordon360.Services
         /// <summary>
         /// Fetches the advisors of the activity whose activity code is specified by the parameter.
         /// </summary>
-        /// <param name="activityCode">The activity code.</param>
-        /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+        /// <param name="activityCode">The activity code</param>
+        /// <returns>An IEnumerable of the matching MembershipView objects</returns>
         public IEnumerable<MembershipView> GetAdvisorMembershipsForActivity(string activityCode)
         {
 
@@ -171,8 +168,8 @@ namespace Gordon360.Services
         /// <summary>
         /// Fetches all the membership information linked to the student whose id appears as a parameter.
         /// </summary>
-        /// <param name="username">The student's AD Username.</param>
-        /// <returns>A MembershipViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
+        /// <param name="username">The student's AD Username</param>
+        /// <returns>An IEnumerable of the matching MembershipView objects</returns>
         public IEnumerable<MembershipView> GetMembershipsByUser(string username)
         {
             var account = _accountService.GetAccountByUsername(username);
@@ -183,9 +180,9 @@ namespace Gordon360.Services
         /// <summary>
         /// Fetches the number of memberships associated with the activity whose code is specified by the parameter.
         /// </summary>
-        /// <param name="activityCode">The activity code.</param>
-        /// <param name="sessionCode">The session code.</param>
-        /// <returns>int.</returns>
+        /// <param name="activityCode">The activity code</param>
+        /// <param name="sessionCode">The session code</param>
+        /// <returns>The count of current members for the activity</returns>
         public int GetActivityMembersCount(string activityCode, string? sessionCode = null)
         {
             sessionCode ??= Helpers.GetCurrentSession(_context);
@@ -195,9 +192,9 @@ namespace Gordon360.Services
         /// <summary>
         /// Fetches the number of followers associated with the activity and session whose codes are specified by the parameter.
         /// </summary>
-        /// <param name="activityCode">The activity code.</param>
+        /// <param name="activityCode">The activity code</param>
         /// <param name="sessionCode">The session code</param>
-        /// <returns>int.</returns>
+        /// <returns>The count of current guests (aka subscribers) for the activity</returns>
         public int GetActivitySubscribersCountForSession(string activityCode, string? sessionCode = null)
         {
             sessionCode ??= Helpers.GetCurrentSession(_context);
@@ -209,7 +206,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="activityCode">The activity code.</param>
         /// <param name="sessionCode">The session code</param>
-        /// <returns>int</returns>
+        /// <returns>The count of current members for the activity</returns>
         public int GetActivityMembersCountForSession(string activityCode, string? sessionCode = null)
         {
             sessionCode ??= Helpers.GetCurrentSession(_context);
@@ -219,9 +216,9 @@ namespace Gordon360.Services
         /// <summary>
         /// Updates the membership whose id is given as the first parameter to the contents of the second parameter.
         /// </summary>
-        /// <param name="membershipID">The id of the membership to update.</param>
-        /// <param name="membership">The updated membership.</param>
-        /// <returns>The newly modified membership.</returns>
+        /// <param name="membershipID">The id of the membership to update</param>
+        /// <param name="membership">The updated membership</param>
+        /// <returns>The newly modified membership as a MembershipView object</returns>
         public async Task<MembershipView> UpdateAsync(int membershipID, MembershipUploadViewModel membership)
         {
             var original = await _context.MEMBERSHIP.FirstOrDefaultAsync(m => m.MEMBERSHIP_ID == membershipID);
@@ -233,6 +230,7 @@ namespace Gordon360.Services
             // One can only update certain fields within a membrship
             original.COMMENT_TXT = membership.CommentText;
             original.PART_CDE = membership.Participation;
+
             if (membership.Participation == ParticipationType.Guest.Value)
             {
                 await SetGroupAdminAsync(membershipID, false);
@@ -248,7 +246,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="membershipID">The corresponding membership object</param>
         /// <param name="isGroupAdmin">The new value of group admin</param>
-        /// <returns>The newly modified membership.</returns>
+        /// <returns>The newly modified membership as a MembershipView object</returns>
         public async Task<MembershipView> SetGroupAdminAsync(int membershipID, bool isGroupAdmin)
         {
             var original = await _context.MEMBERSHIP.FirstOrDefaultAsync(m => m.MEMBERSHIP_ID == membershipID);
@@ -270,9 +268,9 @@ namespace Gordon360.Services
         /// <summary>
         /// Switches the privacy property of the person whose membership id is given
         /// </summary>
-        /// <param name="membershipID">The membership object passed.</param>
-        /// <param name="isPrivate">The new value of privacy.</param>
-        /// <returns>The newly modified membership.</returns>
+        /// <param name="membershipID">The membership object passed</param>
+        /// <param name="isPrivate">The new value of privacy</param>
+        /// <returns>The newly modified membership as a MembershipView object</returns>
         public async Task<MembershipView> SetPrivacyAsync(int membershipID, bool isPrivate)
         {
             var original = await _context.MEMBERSHIP.FirstOrDefaultAsync(m => m.MEMBERSHIP_ID == membershipID);
@@ -293,7 +291,7 @@ namespace Gordon360.Services
         /// Helper method to Validate a membership
         /// </summary>
         /// <param name="membership">The membership to validate</param>
-        /// <returns>True if the membership is valid. Throws ResourceNotFoundException if not. Exception is caught in an Exception Filter</returns>
+        /// <returns>True if the membership is valid. Throws an Exception if not. Exception is caught in an Exception Filter</returns>
         public bool ValidateMembership(MembershipUploadViewModel membership)
         {
             var personExists = _accountService.GetAccountByUsername(membership.Username);
@@ -319,7 +317,7 @@ namespace Gordon360.Services
 
             if (!_context.InvolvementOffering.Any(i => i.SessionCode == membership.Session && i.ActivityCode.Trim() == membership.Activity))
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity is not available for this session." };
+                throw new BadInputException() { ExceptionMessage = "The Activity is not available for this session." };
             }
 
             return true;
@@ -395,7 +393,7 @@ namespace Gordon360.Services
         /// <summary>	
         /// Finds the matching MembershipView object from an existing MEMBERSHIP object
         /// </summary>
-        /// <param name="membership">The MEMBERSHIP to match on MembershipID</param>	
+        /// <param name="membershipId">The MEMBERSHIP to match on MembershipID</param>	
         /// <returns>The found MembershipView object corresponding to the MEMBERSHIP by ID</returns>	
         public MembershipView GetMembershipViewById(int membershipId)
         {

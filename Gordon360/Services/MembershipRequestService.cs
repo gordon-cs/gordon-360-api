@@ -31,7 +31,7 @@ namespace Gordon360.Services
         /// Generate a new request to join an activity at a participation level higher than 'Guest'
         /// </summary>
         /// <param name="membershipRequestUpload">The membership request object</param>
-        /// <returns>The membership request object once it is added</returns>
+        /// <returns>The new request object as a RequestView</returns>
         public async Task<RequestView> AddAsync(RequestUploadViewModel membershipRequestUpload)
         {
 
@@ -54,7 +54,7 @@ namespace Gordon360.Services
         /// Approves the request with the specified ID.
         /// </summary>
         /// <param name="requestID">The ID of the request to be approved</param>
-        /// <returns>The approved membership</returns>
+        /// <returns>The approved request as a RequestView</returns>
         public async Task<RequestView> ApproveAsync(int requestID)
         {
             var request = await _context.REQUEST.FindAsync(requestID);
@@ -87,7 +87,7 @@ namespace Gordon360.Services
         /// Denies the membership request object whose id is given in the parameters
         /// </summary>
         /// <param name="requestID">The membership request id</param>
-        /// <returns></returns>
+        /// <returns>A RequestView object of the denied request</returns>
         public async Task<RequestView> DenyAsync(int requestID)
         {
             var request = await _context.REQUEST.FindAsync(requestID);
@@ -117,7 +117,7 @@ namespace Gordon360.Services
         /// Denies the membership request object whose id is given in the parameters
         /// </summary>
         /// <param name="requestID">The membership request id</param>
-        /// <returns></returns>
+        /// <returns>A RequestView object of the now pending request</returns>
         public async Task<RequestView> SetPendingAsync(int requestID)
         {
             var request = await _context.REQUEST.FindAsync(requestID);
@@ -147,7 +147,7 @@ namespace Gordon360.Services
         /// Delete the membershipRequest object whose id is given in the parameters 
         /// </summary>
         /// <param name="requestID">The membership request id</param>
-        /// <returns>A copy of the deleted membership request</returns>
+        /// <returns>A copy of the deleted request as a RequestView</returns>
         public async Task<RequestView> DeleteAsync(int requestID)
         {
             var request = await _context.REQUEST.FindAsync(requestID);
@@ -168,7 +168,7 @@ namespace Gordon360.Services
         /// Get the membership request object whose Id is specified in the parameters.
         /// </summary>
         /// <param name="requestID">The membership request id</param>
-        /// <returns>If found, returns MembershipRequestViewModel. If not found, returns null.</returns>
+        /// <returns>The matching RequestView</returns>
         public RequestView Get(int requestID)
         {
             var request = Get(requestID);
@@ -184,7 +184,7 @@ namespace Gordon360.Services
         /// <summary>
         /// Fetches all the membership request objects from the database.
         /// </summary>
-        /// <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
+        /// <returns>RequestView IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
         public IEnumerable<RequestView> GetAll()
         {
             return _context.RequestView;
@@ -194,8 +194,9 @@ namespace Gordon360.Services
         /// Fetches all the membership requests associated with this activity
         /// </summary>
         /// <param name="activityCode">The activity id</param>
-        /// <param name="sessionCode">The activity id</param>
-        /// <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
+        /// <param name="sessionCode">The session code to filter by</param>
+        /// <param name="requestStatus">The request status to filter by</param>
+        /// <returns>A RequestView IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
         public IEnumerable<RequestView> GetMembershipRequests(string activityCode, string? sessionCode = null, string? requestStatus = null)
         {
             if (!_context.ACT_INFO.Any(a => a.ACT_CDE == activityCode))
@@ -216,7 +217,7 @@ namespace Gordon360.Services
         /// Fetches all the membership requests associated with this student
         /// </summary>
         /// <param name="username">The AD Username of the user</param>
-        /// <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
+        /// <returns>A RequestView IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
         public IEnumerable<RequestView> GetMembershipRequestsByUsername(string username)
         {
             return _context.RequestView.Where(r => r.Username == username);
@@ -227,7 +228,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="requestID">The membership request id</param>
         /// <param name="membershipRequest">The newly modified membership request</param>
-        /// <returns></returns>
+        /// <returns>A RequestView object of the updated request</returns>
         public async Task<RequestView?> UpdateAsync(int requestID, RequestUploadViewModel membershipRequest)
         {
             var original = await _context.REQUEST.FindAsync(requestID);
@@ -247,7 +248,7 @@ namespace Gordon360.Services
 
             await _context.SaveChangesAsync();
 
-            return _context.RequestView.FirstOrDefault(r => r.RequestID == original.REQUEST_ID);
+            return Get(original.REQUEST_ID);
         }
     }
 }

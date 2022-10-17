@@ -36,7 +36,7 @@ namespace Gordon360.Controllers
         ///  Gets a specific Membership Request Object
         /// </summary>
         /// <param name="id">The ID of the membership request</param>
-        /// <returns>A memberships request with the specified id</returns>
+        /// <returns>A RequestView that matches the specified id</returns>
         [HttpGet]
         [Route("{id}")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP_REQUEST)]
@@ -58,7 +58,7 @@ namespace Gordon360.Controllers
         /// </summary>
         /// <param name="activityCode">The activity code</param>
         /// <param name="sessionCode">The session code</param>
-        /// <param name="requestStatus">The status of the requests to search</param>
+        /// <param name="requestStatus">The optional status of the requests to search</param>
         /// <returns>All membership requests associated with the activity</returns>
         [HttpGet]
         [Route("activity/{activityCode}/session/{sessionCode}")]
@@ -73,7 +73,7 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Gets the memberships requests for the person making the request
         /// </summary>
-        /// <returns>All membership requests associated with the student</returns>
+        /// <returns>All membership requests associated with the current user</returns>
         [HttpGet]
         [Route("/users/current")]
         public ActionResult<IEnumerable<RequestView>> GetMembershipsRequestsForCurrentUser()
@@ -135,7 +135,7 @@ namespace Gordon360.Controllers
         /// </summary>
         /// <param name="membershipRequestID">The id of the membership request in question.</param>
         /// <param name="status">The status that the membership requst will be changed to.</param>
-        /// <returns>If successful: The updated membership request wrapped in an OK HTTP status code.</returns>
+        /// <returns>The updated request</returns>
         [HttpPost]
         [Route("{membershipRequestID}/status")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP_REQUEST)]
@@ -170,7 +170,7 @@ namespace Gordon360.Controllers
         /// Deletes a membership request
         /// </summary>
         /// <param name="membershipRequestID">The id of the membership request to delete</param>
-        /// <returns>The deleted object</returns>
+        /// <returns>The deleted request as a RequestView</returns>
         [HttpDelete]
         [Route("{membershipRequestID}")]
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.MEMBERSHIP_REQUEST)]

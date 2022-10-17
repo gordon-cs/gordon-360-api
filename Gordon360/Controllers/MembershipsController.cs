@@ -30,7 +30,7 @@ namespace Gordon360.Controllers
         /// </summary>
         /// <param name="activityCode">The activity ID</param>
         /// <param name="sessionCode">Optional code of session to get for</param>
-        /// <returns>IHttpActionResult</returns>
+        /// <returns>An IEnumerable of the matching MembershipViews</returns>
         [HttpGet]
         [Route("activities/{activityCode}/sessions/{sessionCode}")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_BY_ACTIVITY)]
@@ -45,7 +45,7 @@ namespace Gordon360.Controllers
         /// Gets the group admin memberships associated with a given activity.
         /// </summary>
         /// <param name="activityCode">The activity ID.</param>
-        /// <returns>A list of all leader-type memberships for the specified activity.</returns>
+        /// <returns>An IEnumerable of all leader-type memberships for the specified activity.</returns>
         [HttpGet]
         [Route("activities/{activityCode}/sessions/{sessionCode}/admins")]
         public ActionResult<IEnumerable<MembershipView>> GetGroupAdminsForActivity(string activityCode, string sessionCode)
@@ -59,7 +59,7 @@ namespace Gordon360.Controllers
         /// Gets the leader-type memberships associated with a given activity.
         /// </summary>
         /// <param name="activityCode">The activity ID.</param>
-        /// <returns>A list of all leader-type memberships for the specified activity.</returns>
+        /// <returns>An IEnumerable of all leader-type memberships for the specified activity.</returns>
         [HttpGet]
         [Route("activity/{activityCode}/leaders")]
         public ActionResult<IEnumerable<MembershipView>> GetLeadersForActivity(string activityCode)
@@ -73,7 +73,7 @@ namespace Gordon360.Controllers
         /// Gets the advisor-type memberships associated with a given activity.
         /// </summary>
         /// <param name="activityCode">The activity ID.</param>
-        /// <returns>A list of all advisor-type memberships for the specified activity.</returns>
+        /// <returns>An IEnumerable of all advisor-type memberships for the specified activity.</returns>
         [HttpGet]
         [Route("activity/{activityCode}/advisors")]
         public ActionResult<IEnumerable<MembershipView>> GetAdvisorsForActivityAsync(string activityCode)
@@ -116,10 +116,9 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>Create a new membership item to be added to database</summary>
-        /// <param name="membership">The membership item containing all required and relevant information</param>
-        /// <returns></returns>
+        /// <param name="membershipUpload">The membership item containing all required and relevant information</param>
+        /// <returns>The newly created membership as a MembershipView object</returns>
         /// <remarks>Posts a new membership to the server to be added into the database</remarks>
-        // POST api/<controller>
         [HttpPost]
         [Route("", Name = "Memberships")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.MEMBERSHIP)]
@@ -142,8 +141,7 @@ namespace Gordon360.Controllers
         /// <param name="membershipID">The membership id of whichever one is to be changed</param>
         /// <param name="membership">The content within the membership that is to be changed and what it will change to</param>
         /// <remarks>Calls the server to make a call and update the database with the changed information</remarks>
-        /// <returns>The membership information that the student is a part of</returns>
-        // PUT api/<controller>/5
+        /// <returns>The updated membership as a MembershipView object</returns>
         [HttpPut]
         [Route("{membershipID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP)]
@@ -158,6 +156,7 @@ namespace Gordon360.Controllers
         /// <param name="membershipID">The content within the membership that is to be changed</param>
         /// <param name="isGroupAdmin">The new value of GroupAdmin</param>
         /// <remarks>Calls the server to make a call and update the database with the changed information</remarks>
+        /// <returns>The updated membership as a MembershipView object</returns>
         [HttpPut]
         [Route("{membershipID}/group-admin")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP)]
@@ -172,6 +171,7 @@ namespace Gordon360.Controllers
         /// <param name="membershipID">The membership to set the privacy of</param>
         /// <param name="isPrivate">The new value of Privacy for the membership</param>
         /// <remarks>Calls the server to make a call and update the database with the changed information</remarks>
+        /// <returns>The updated membership as a MembershipView object</returns>
         [HttpPut]
         [Route("{membershipID}/privacy")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP_PRIVACY)]
@@ -185,6 +185,7 @@ namespace Gordon360.Controllers
         /// <summary>Delete an existing membership</summary>
         /// <param name="membershipID">The identifier for the membership to be deleted</param>
         /// <remarks>Calls the server to make a call and remove the given membership from the database</remarks>
+        /// <returns>The deleted membership as a MembershipView object</returns>
         [HttpDelete]
         [Route("{membershipID}")]
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.MEMBERSHIP)]
@@ -199,6 +200,7 @@ namespace Gordon360.Controllers
         /// Determines whether or not the given student is a Group Admin of some activity	
         /// </summary>
         /// <param name="username">The account username to check</param>
+        /// <returns>The updated membership as a MembershipView object</returns>
         [HttpGet]
         [Route("isGroupAdmin/{id}")]
         public ActionResult<bool> IsGroupAdmin(string username)
