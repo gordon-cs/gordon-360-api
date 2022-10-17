@@ -13,11 +13,11 @@ namespace Gordon360.Controllers
     [Route("api/[controller]")]
     public class EmailsController : GordonControllerBase
     {
-        private readonly EmailService _emailService;
+        private readonly IEmailService _emailService;
 
-        public EmailsController(CCTContext context, IMembershipService membershipService)
+        public EmailsController(CCTContext context, IEmailService emailService)
         {
-            _emailService = new EmailService(context, membershipService);
+            _emailService = emailService;
         }
 
         [HttpGet]

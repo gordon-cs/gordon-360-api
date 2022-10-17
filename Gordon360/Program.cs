@@ -47,6 +47,8 @@ builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IAddressesService, AddressesService>();
 builder.Services.AddScoped<IMembershipService, MembershipService>();
 builder.Services.AddScoped<IMembershipRequestService, MembershipRequestService>();
+builder.Services.AddScoped<IAdministratorService, AdministratorService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddMemoryCache();
 

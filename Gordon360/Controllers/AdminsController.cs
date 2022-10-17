@@ -14,9 +14,9 @@ namespace Gordon360.Controllers
     {
         private readonly IAdministratorService _adminService;
 
-        public AdminsController(CCTContext context, IAccountService accountService)
+        public AdminsController(IAdministratorService adminService)
         {
-            _adminService = new AdministratorService(context, accountService);
+            _adminService = adminService;
         }
 
         /// <summary>

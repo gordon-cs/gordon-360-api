@@ -397,28 +397,28 @@
             </summary>
             <param name="activityCode">The activity ID</param>
             <param name="sessionCode">Optional code of session to get for</param>
-            <returns>IHttpActionResult</returns>
+            <returns>An IEnumerable of the matching MembershipViews</returns>
         </member>
         <member name="M:Gordon360.Controllers.MembershipsController.GetGroupAdminsForActivity(System.String,System.String)">
             <summary>
             Gets the group admin memberships associated with a given activity.
             </summary>
             <param name="activityCode">The activity ID.</param>
-            <returns>A list of all leader-type memberships for the specified activity.</returns>
+            <returns>An IEnumerable of all leader-type memberships for the specified activity.</returns>
         </member>
         <member name="M:Gordon360.Controllers.MembershipsController.GetLeadersForActivity(System.String)">
             <summary>
             Gets the leader-type memberships associated with a given activity.
             </summary>
             <param name="activityCode">The activity ID.</param>
-            <returns>A list of all leader-type memberships for the specified activity.</returns>
+            <returns>An IEnumerable of all leader-type memberships for the specified activity.</returns>
         </member>
         <member name="M:Gordon360.Controllers.MembershipsController.GetAdvisorsForActivityAsync(System.String)">
             <summary>
             Gets the advisor-type memberships associated with a given activity.
             </summary>
             <param name="activityCode">The activity ID.</param>
-            <returns>A list of all advisor-type memberships for the specified activity.</returns>
+            <returns>An IEnumerable of all advisor-type memberships for the specified activity.</returns>
         </member>
         <member name="M:Gordon360.Controllers.MembershipsController.GetActivitySubscribersCountForSession(System.String,System.String)">
             <summary>
@@ -438,8 +438,8 @@
         </member>
         <member name="M:Gordon360.Controllers.MembershipsController.PostAsync(Gordon360.Models.CCT.MembershipUploadViewModel)">
             <summary>Create a new membership item to be added to database</summary>
-            <param name="membership">The membership item containing all required and relevant information</param>
-            <returns></returns>
+            <param name="membershipUpload">The membership item containing all required and relevant information</param>
+            <returns>The newly created membership as a MembershipView object</returns>
             <remarks>Posts a new membership to the server to be added into the database</remarks>
         </member>
         <member name="M:Gordon360.Controllers.MembershipsController.PutAsync(System.Int32,Gordon360.Models.CCT.MembershipUploadViewModel)">
@@ -447,30 +447,27 @@
             <param name="membershipID">The membership id of whichever one is to be changed</param>
             <param name="membership">The content within the membership that is to be changed and what it will change to</param>
             <remarks>Calls the server to make a call and update the database with the changed information</remarks>
-            <returns>The membership information that the student is a part of</returns>
+            <returns>The updated membership as a MembershipView object</returns>
         </member>
         <member name="M:Gordon360.Controllers.MembershipsController.SetGroupAdminAsync(System.Int32,System.Boolean)">
             <summary>Update an existing membership item to be a group admin or not</summary>
             <param name="membershipID">The content within the membership that is to be changed</param>
             <param name="isGroupAdmin">The new value of GroupAdmin</param>
             <remarks>Calls the server to make a call and update the database with the changed information</remarks>
+            <returns>The updated membership as a MembershipView object</returns>
         </member>
         <member name="M:Gordon360.Controllers.MembershipsController.SetPrivacyAsync(System.Int32,System.Boolean)">
             <summary>Update an existing membership item to be private or not</summary>
             <param name="membershipID">The membership to set the privacy of</param>
             <param name="isPrivate">The new value of Privacy for the membership</param>
             <remarks>Calls the server to make a call and update the database with the changed information</remarks>
+            <returns>The updated membership as a MembershipView object</returns>
         </member>
         <member name="M:Gordon360.Controllers.MembershipsController.Delete(System.Int32)">
             <summary>Delete an existing membership</summary>
             <param name="membershipID">The identifier for the membership to be deleted</param>
             <remarks>Calls the server to make a call and remove the given membership from the database</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.MembershipsController.IsGroupAdmin(System.String)">
-            <summary>	
-            Determines whether or not the given student is a Group Admin of some activity	
-            </summary>
-            <param name="username">The account username to check</param>
+            <returns>The deleted membership as a MembershipView object</returns>
         </member>
         <member name="M:Gordon360.Controllers.MyScheduleController.Get">
             <summary>
@@ -695,7 +692,7 @@
              Gets a specific Membership Request Object
             </summary>
             <param name="id">The ID of the membership request</param>
-            <returns>A memberships request with the specified id</returns>
+            <returns>A RequestView that matches the specified id</returns>
         </member>
         <member name="M:Gordon360.Controllers.RequestsController.GetMembershipRequestsByActivity(System.String,System.String,System.String)">
             <summary>
@@ -703,14 +700,14 @@
             </summary>
             <param name="activityCode">The activity code</param>
             <param name="sessionCode">The session code</param>
-            <param name="requestStatus">The status of the requests to search</param>
+            <param name="requestStatus">The optional status of the requests to search</param>
             <returns>All membership requests associated with the activity</returns>
         </member>
         <member name="M:Gordon360.Controllers.RequestsController.GetMembershipsRequestsForCurrentUser">
             <summary>
             Gets the memberships requests for the person making the request
             </summary>
-            <returns>All membership requests associated with the student</returns>
+            <returns>All membership requests associated with the current user</returns>
         </member>
         <member name="M:Gordon360.Controllers.RequestsController.PostAsync(Gordon360.Models.CCT.RequestUploadViewModel)">
             <summary>
@@ -733,14 +730,14 @@
             </summary>
             <param name="membershipRequestID">The id of the membership request in question.</param>
             <param name="status">The status that the membership requst will be changed to.</param>
-            <returns>If successful: The updated membership request wrapped in an OK HTTP status code.</returns>
+            <returns>The updated request</returns>
         </member>
         <member name="M:Gordon360.Controllers.RequestsController.Delete(System.Int32)">
             <summary>
             Deletes a membership request
             </summary>
             <param name="membershipRequestID">The id of the membership request to delete</param>
-            <returns>The deleted object</returns>
+            <returns>The deleted request as a RequestView</returns>
         </member>
         <member name="M:Gordon360.Controllers.SaveController.GetUpcomingRides">
             <summary>
@@ -1505,63 +1502,64 @@
             Generate a new request to join an activity at a participation level higher than 'Guest'
             </summary>
             <param name="membershipRequestUpload">The membership request object</param>
-            <returns>The membership request object once it is added</returns>
+            <returns>The new request object as a RequestView</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipRequestService.ApproveAsync(System.Int32)">
             <summary>
             Approves the request with the specified ID.
             </summary>
             <param name="requestID">The ID of the request to be approved</param>
-            <returns>The approved membership</returns>
+            <returns>The approved request as a RequestView</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipRequestService.DenyAsync(System.Int32)">
             <summary>
             Denies the membership request object whose id is given in the parameters
             </summary>
             <param name="requestID">The membership request id</param>
-            <returns></returns>
+            <returns>A RequestView object of the denied request</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipRequestService.SetPendingAsync(System.Int32)">
             <summary>
             Denies the membership request object whose id is given in the parameters
             </summary>
             <param name="requestID">The membership request id</param>
-            <returns></returns>
+            <returns>A RequestView object of the now pending request</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipRequestService.DeleteAsync(System.Int32)">
             <summary>
             Delete the membershipRequest object whose id is given in the parameters 
             </summary>
             <param name="requestID">The membership request id</param>
-            <returns>A copy of the deleted membership request</returns>
+            <returns>A copy of the deleted request as a RequestView</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipRequestService.Get(System.Int32)">
             <summary>
             Get the membership request object whose Id is specified in the parameters.
             </summary>
             <param name="requestID">The membership request id</param>
-            <returns>If found, returns MembershipRequestViewModel. If not found, returns null.</returns>
+            <returns>The matching RequestView</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipRequestService.GetAll">
             <summary>
             Fetches all the membership request objects from the database.
             </summary>
-            <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
+            <returns>RequestView IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipRequestService.GetMembershipRequests(System.String,System.String,System.String)">
             <summary>
             Fetches all the membership requests associated with this activity
             </summary>
             <param name="activityCode">The activity id</param>
-            <param name="sessionCode">The activity id</param>
-            <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
+            <param name="sessionCode">The session code to filter by</param>
+            <param name="requestStatus">The request status to filter by</param>
+            <returns>A RequestView IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipRequestService.GetMembershipRequestsByUsername(System.String)">
             <summary>
             Fetches all the membership requests associated with this student
             </summary>
             <param name="username">The AD Username of the user</param>
-            <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
+            <returns>A RequestView IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipRequestService.UpdateAsync(System.Int32,Gordon360.Models.CCT.RequestUploadViewModel)">
             <summary>
@@ -1569,7 +1567,7 @@
             </summary>
             <param name="requestID">The membership request id</param>
             <param name="membershipRequest">The newly modified membership request</param>
-            <returns></returns>
+            <returns>A RequestView object of the updated request</returns>
         </member>
         <member name="T:Gordon360.Services.MembershipService">
             <summary>
@@ -1582,76 +1580,68 @@
             we do it here by using the validateMembership() method.
             </summary>
             <param name="membershipUpload">The membership to be added</param>
-            <returns>The newly added Membership object</returns>
+            <returns>The newly added membership object as a MembershipView</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.Delete(System.Int32)">
             <summary>
             Delete the membership whose id is specified by the parameter.
             </summary>
             <param name="membershipID">The membership id</param>
-            <returns>The membership that was just deleted</returns>
+            <returns>The membership that was just deleted as a MembershipView</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.GetSpecificMembership(System.Int32)">
             <summary>	
             Fetch the membership whose id is specified by the parameter	
             </summary>	
             <param name="membershipID">The membership id</param>	
-            <returns>MembershipViewModel if found, null if not found</returns>	
+            <returns>The found membership as a MembershipView</returns>	
         </member>
         <member name="M:Gordon360.Services.MembershipService.GetMembershipsForActivity(System.String,System.String,System.Nullable{System.Boolean},System.String[])">
             <summary>
             Fetches the memberships associated with the activity whose code is specified by the parameter.
             </summary>
-            <param name="activityCode">The activity code.</param>
+            <param name="activityCode">The activity code</param>
             <param name="sessionCode">Optional code of session to get memberships for</param>
             <param name="groupAdmin">Optional filter for group admins</param>
             <param name="participationTypes">Optional filter for involvement participation type (MEMBR, ADV, LEAD, GUEST)</param>
-            <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+            <returns>An IEnumerable of the matching MembershipView objects</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.GetGroupAdminMembershipsForActivity(System.String,System.String)">
             <summary>
             Fetches the group admin (who have edit privileges of the page) of the activity whose activity code is specified by the parameter.
             </summary>
-            <param name="activityCode">The activity code.</param>
-            <param name="sessionCode">The session code.</param>
-            <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+            <param name="activityCode">The activity code</param>
+            <param name="sessionCode">The session code</param>
+            <returns>An IEnumerable of the matching MembershipView objects</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.GetLeaderMembershipsForActivity(System.String)">
             <summary>
             Fetches the leaders of the activity whose activity code is specified by the parameter.
             </summary>
-            <param name="activityCode">The activity code.</param>
-            <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+            <param name="activityCode">The activity code</param>
+            <returns>An IEnumerable of the matching MembershipView objects</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.GetAdvisorMembershipsForActivity(System.String)">
             <summary>
             Fetches the advisors of the activity whose activity code is specified by the parameter.
             </summary>
-            <param name="activityCode">The activity code.</param>
-            <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+            <param name="activityCode">The activity code</param>
+            <returns>An IEnumerable of the matching MembershipView objects</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.GetMembershipsByUser(System.String)">
             <summary>
             Fetches all the membership information linked to the student whose id appears as a parameter.
             </summary>
-            <param name="username">The student's AD Username.</param>
-            <returns>A MembershipViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
-        </member>
-        <member name="M:Gordon360.Services.MembershipService.GetActivityMembersCount(System.String,System.String)">
-            <summary>
-            Fetches the number of memberships associated with the activity whose code is specified by the parameter.
-            </summary>
-            <param name="activityCode">The activity code.</param>
-            <param name="sessionCode">The session code.</param>
-            <returns>int.</returns>
+            <param name="username">The student's AD Username</param>
+            <returns>An IEnumerable of the matching MembershipView objects</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.GetActivitySubscribersCountForSession(System.String,System.String)">
             <summary>
             Fetches the number of followers associated with the activity and session whose codes are specified by the parameter.
             </summary>
-            <param name="activityCode">The activity code.</param>
+            <param name="activityCode">The activity code</param>
             <param name="sessionCode">The session code</param>
-            <returns>int.</returns>
+            <returns>The count of current guests (aka subscribers) for the activity</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.GetActivityMembersCountForSession(System.String,System.String)">
             <summary>
@@ -1659,15 +1649,15 @@
             </summary>
             <param name="activityCode">The activity code.</param>
             <param name="sessionCode">The session code</param>
-            <returns>int</returns>
+            <returns>The count of current members for the activity</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.UpdateAsync(System.Int32,Gordon360.Models.CCT.MembershipUploadViewModel)">
             <summary>
             Updates the membership whose id is given as the first parameter to the contents of the second parameter.
             </summary>
-            <param name="membershipID">The id of the membership to update.</param>
-            <param name="membership">The updated membership.</param>
-            <returns>The newly modified membership.</returns>
+            <param name="membershipID">The id of the membership to update</param>
+            <param name="membership">The updated membership</param>
+            <returns>The newly modified membership as a MembershipView object</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.SetGroupAdminAsync(System.Int32,System.Boolean)">
             <summary>
@@ -1675,22 +1665,22 @@
             </summary>
             <param name="membershipID">The corresponding membership object</param>
             <param name="isGroupAdmin">The new value of group admin</param>
-            <returns>The newly modified membership.</returns>
+            <returns>The newly modified membership as a MembershipView object</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.SetPrivacyAsync(System.Int32,System.Boolean)">
             <summary>
             Switches the privacy property of the person whose membership id is given
             </summary>
-            <param name="membershipID">The membership object passed.</param>
-            <param name="isPrivate">The new value of privacy.</param>
-            <returns>The newly modified membership.</returns>
+            <param name="membershipID">The membership object passed</param>
+            <param name="isPrivate">The new value of privacy</param>
+            <returns>The newly modified membership as a MembershipView object</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.ValidateMembership(Gordon360.Models.CCT.MembershipUploadViewModel)">
             <summary>
             Helper method to Validate a membership
             </summary>
             <param name="membership">The membership to validate</param>
-            <returns>True if the membership is valid. Throws ResourceNotFoundException if not. Exception is caught in an Exception Filter</returns>
+            <returns>True if the membership is valid. Throws an Exception if not. Exception is caught in an Exception Filter</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.IsGroupAdmin(System.String)">
             <summary>	
@@ -1703,7 +1693,7 @@
             <summary>	
             Finds the matching MembershipView object from an existing MEMBERSHIP object
             </summary>
-            <param name="membership">The MEMBERSHIP to match on MembershipID</param>	
+            <param name="membershipId">The MEMBERSHIP to match on MembershipID</param>	
             <returns>The found MembershipView object corresponding to the MEMBERSHIP by ID</returns>	
         </member>
         <member name="T:Gordon360.Services.MyScheduleService">
