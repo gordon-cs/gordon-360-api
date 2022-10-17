@@ -32,7 +32,7 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("")]
         [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.ADMIN)]
-        public ActionResult<IEnumerable<AdminViewModel>> GetAll()
+        public ActionResult<IEnumerable<AdminViewModel?>> GetAll()
         {
             var result = _adminService.GetAll();
             return Ok(result);

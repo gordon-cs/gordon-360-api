@@ -134,7 +134,7 @@ namespace Gordon360.Services
 
     public interface IAdministratorService
     {
-        IEnumerable<AdminViewModel> GetAll();
+        IEnumerable<AdminViewModel?> GetAll();
         AdminViewModel? GetByUsername(string username);
         AdminViewModel Add(AdminViewModel admin);
         AdminViewModel Delete(int id);

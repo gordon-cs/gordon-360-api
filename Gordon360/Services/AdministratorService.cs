@@ -24,9 +24,9 @@ namespace Gordon360.Services
         /// Fetches all the administrators from the database
         /// </summary>
         /// <returns>Returns a list of administrators. If no administrators were found, an empty list is returned.</returns>
-        public IEnumerable<AdminViewModel> GetAll()
+        public IEnumerable<AdminViewModel?> GetAll()
         {
-            return _context.ADMIN.Select<ADMIN,AdminViewModel>(a => a);
+            return _context.ADMIN.Select<ADMIN,AdminViewModel?>(a => a);
         }
 
         /// <summary>
@@ -36,9 +36,7 @@ namespace Gordon360.Services
         public AdminViewModel? GetByUsername(string username)
         {
             var admin = _context.ADMIN.FirstOrDefault(a => a.USER_NAME == username);
-            if (admin != null)
-                return admin;
-            return null;
+            return admin;
         }
 
         /// <summary>

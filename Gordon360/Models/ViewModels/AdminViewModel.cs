@@ -8,8 +8,10 @@ namespace Gordon360.Models.ViewModels
         public string Email { get; set; }
         public bool IsSuperAdmin { get; set; }
 
-        public static implicit operator AdminViewModel(ADMIN adm)
+        public static implicit operator AdminViewModel?(ADMIN? adm)
         {
+            if (adm == null) return null;
+
             return new AdminViewModel()
             {
                 Username = adm.USER_NAME,
