@@ -118,7 +118,7 @@ namespace Gordon360.Controllers
         [HttpPut]
         [Route("{membershipRequestID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP_REQUEST)]
-        public async Task<ActionResult<RequestView>> PutAsync(int membershipRequestID, RequestUploadViewModel membershipRequest)
+        public async Task<ActionResult<RequestView?>> PutAsync(int membershipRequestID, RequestUploadViewModel membershipRequest)
         {
             var result = await _membershipRequestService.UpdateAsync(membershipRequestID, membershipRequest);
 

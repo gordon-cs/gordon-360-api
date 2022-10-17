@@ -218,7 +218,7 @@ namespace Gordon360.Services
         IEnumerable<RequestView> GetMembershipRequests(string activityCode, string? sessionCode, string? requestStatus);
         IEnumerable<RequestView> GetMembershipRequestsByUsername(string usernamne);
         Task<RequestView> AddAsync(RequestUploadViewModel membershipRequest);
-        Task<RequestView> UpdateAsync(int requestID, RequestUploadViewModel membershipRequest);
+        Task<RequestView?> UpdateAsync(int requestID, RequestUploadViewModel membershipRequest);
         Task<RequestView> ApproveAsync(int requestID);
         Task<RequestView> DenyAsync(int requestID);
         Task<RequestView> SetPendingAsync(int requestID);

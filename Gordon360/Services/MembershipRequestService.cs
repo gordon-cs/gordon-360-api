@@ -228,7 +228,7 @@ namespace Gordon360.Services
         /// <param name="requestID">The membership request id</param>
         /// <param name="membershipRequest">The newly modified membership request</param>
         /// <returns></returns>
-        public async Task<RequestView> UpdateAsync(int requestID, RequestUploadViewModel membershipRequest)
+        public async Task<RequestView?> UpdateAsync(int requestID, RequestUploadViewModel membershipRequest)
         {
             var original = await _context.REQUEST.FindAsync(requestID);
             if (original == null)
