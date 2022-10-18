@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers.RecIM
 {
     [Route("api/recim/[controller]")]
-    [AllowAnonymous]
     public class ActivitiesController : GordonControllerBase
     {
         private readonly IActivityService _activityService;
@@ -28,7 +27,6 @@ namespace Gordon360.Controllers.RecIM
         /// <returns>
         /// All Existing Activities 
         /// </returns>
-        [AllowAnonymous]
         [HttpGet]
         [Route("")]
         public ActionResult<IEnumerable<Activity>> GetActivities([FromQuery] DateTime? time, bool active)
