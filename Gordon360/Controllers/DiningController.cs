@@ -35,7 +35,7 @@ namespace Gordon360.Controllers
             var sessionCode = Helpers.GetCurrentSession(_context);
             var authenticatedUsername = AuthUtils.GetUsername(User);
             var authenticatedUserId = int.Parse(_accountService.GetAccountByUsername(authenticatedUsername).GordonID);
-            var diningInfo = _diningService.GetDiningPlanInfo(authenticatedUserId, sessionCode);
+            var diningInfo = await _diningService.GetDiningPlanInfo(authenticatedUserId, sessionCode);
 
             if (diningInfo == null)
             {
@@ -43,7 +43,7 @@ namespace Gordon360.Controllers
             }
             if (diningInfo.ChoiceDescription == "None")
             {
-                var diningBalance = DiningService.GetBalance(authenticatedUserId, FACSTAFF_MEALPLAN_ID);
+                var diningBalance = await DiningService.GetBalanceAsync(authenticatedUserId, FACSTAFF_MEALPLAN_ID);
                 if (diningBalance == null)
                 {
                     return NotFound();

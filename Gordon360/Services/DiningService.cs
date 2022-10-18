@@ -10,6 +10,9 @@ using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Net.Http;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 // <summary>
 // We use this service to pull meal data from blackboard and parse it
@@ -23,6 +26,7 @@ namespace Gordon360.Services
     {
         private readonly CCTContext _context;
         private static BonAppetitSettings settings;
+        private static HttpClient HttpClient => new();
 
         public DiningService(CCTContext context, IConfiguration config)
         {
@@ -55,7 +59,7 @@ namespace Gordon360.Services
         /// <param name="cardHolderID"></param>
         /// <param name="planID"></param>
         /// <returns></returns>
-        public static string GetBalance(int cardHolderID, string planID)
+        public static async Task<string> GetBalanceAsync(int cardHolderID, string planID)
         {
             try
             {
@@ -68,39 +72,32 @@ namespace Gordon360.Services
 
                 string timestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
 
-                // Create POST data and convert it to a byte array.  
-                string postData = $"issuerId={settings.IssuerID}&cardholderId={cardHolderID}&planId={planID}&applicationId={settings.ApplicationID}&valueCmd=bal&value=0&timestamp={timestamp}&hash={getHash(cardHolderID, planID, timestamp)}";
-                byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+                var data = new Dictionary<string, string>
+                {
+                    { "issuerId", settings.IssuerID },
+                    { "cardholderId", cardHolderID.ToString() },
+                    {"planId", planID.ToString() },
+                    {"applicationId", settings.ApplicationID },
+                    { "valueCmd", "bal" },
+                    {"value", "0" },
+                    {"timestamp", timestamp},
+                    {"hash", GetHash(cardHolderID, planID, timestamp) }
+                };
 
-                request.ContentType = "application/x-www-form-urlencoded";
-                request.ContentLength = byteArray.Length;
+                FormUrlEncodedContent encodedData = new(data);
 
-                Stream dataStream = request.GetRequestStream();
-                dataStream.Write(byteArray, 0, byteArray.Length);
-                dataStream.Close();
+                var response = await HttpClient.PostAsync("https://bbapi.campuscardcenter.com/cs/api/mealplanDrCr", encodedData);
+                var content = await response.Content.ReadAsStringAsync();
+                JObject jsonContent = JObject.Parse(content);
 
-                // Get the response.  
-                WebResponse response = request.GetResponse();
-                Console.WriteLine(((HttpWebResponse)response).StatusDescription);
-
-                // Get the stream containing content returned by the server.  
-                dataStream = response.GetResponseStream();
-
-                // Read the content. 
-                StreamReader reader = new StreamReader(dataStream);
-                string responseFromServer = reader.ReadToEnd();
-                JObject json = JObject.Parse(responseFromServer);
-                string balance = json["balance"].ToString();
-
-                // Display the content.  
-                Console.WriteLine(responseFromServer);
-                Console.WriteLine("Balance: " + balance);
-
-                // Clean up the streams.  
-                reader.Close();
-                dataStream.Close();
-                response.Close();
+                if (jsonContent["balance"]?.ToString() is string balance)
+                {
                 return balance;
+            }
+                else
+                {
+                    return "0";
+                }
             }
             catch
             {
@@ -114,17 +111,22 @@ namespace Gordon360.Services
         /// <param name="cardHolderID">Student's Gordon ID</param>
         /// <param name="sessionCode">Current Session Code</param>
         /// <returns></returns>
-        public DiningViewModel GetDiningPlanInfo(int cardHolderID, string sessionCode)
+        public async Task<DiningViewModel> GetDiningPlanInfo(int cardHolderID, string sessionCode)
         {
-            var result = _context.DiningInfo.Where(d => d.StudentId == cardHolderID && d.SessionCode == sessionCode)
-                .Select(d => new DiningTableViewModel
+            var result = _context.DiningInfo.Where(d => d.StudentId == cardHolderID && d.SessionCode == sessionCode);
+
+            var planComponents = new List<DiningTableViewModel>();
+            foreach (var diningPlan in result)
                 {
-                    ChoiceDescription = d.ChoiceDescription,
-                    PlanDescriptions = d.PlanDescriptions,
-                    PlanId = d.PlanId,
-                    PlanType = d.PlanType,
-                    InitialBalance = d.InitialBalance ?? 0,
-                    CurrentBalance = GetBalance(cardHolderID, d.PlanId)
+                var currentBalance = await GetBalanceAsync(cardHolderID, diningPlan.PlanId);
+                planComponents.Add(new DiningTableViewModel
+                {
+                    ChoiceDescription = diningPlan.ChoiceDescription,
+                    PlanDescriptions = diningPlan.PlanDescriptions,
+                    PlanId = diningPlan.PlanId,
+                    PlanType = diningPlan.PlanType,
+                    InitialBalance = diningPlan.InitialBalance ?? 0,
+                    CurrentBalance = currentBalance,
                 });
 
             if (result == null)
@@ -132,7 +134,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The plan was not found." };
             }
 
-            return new DiningViewModel(result);
+            return new DiningViewModel(planComponents);
         }
 
         public class BonAppetitSettings
