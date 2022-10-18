@@ -31,7 +31,7 @@ namespace Gordon360.Services
         public DiningService(CCTContext context, IConfiguration config)
         {
             _context = context;
-             settings = config.GetSection(BonAppetitSettings.BonAppetit).Get<BonAppetitSettings>() ?? throw new BadInputException{ ExceptionMessage = "Failed to load Dining API Settings"};
+            settings = config.GetSection(BonAppetitSettings.BonAppetit).Get<BonAppetitSettings>() ?? throw new BadInputException { ExceptionMessage = "Failed to load Dining API Settings" };
         }
 
         private static string GetHash(int cardHolderID, string planID, string timestamp)
@@ -47,10 +47,6 @@ namespace Gordon360.Services
             using var sha1 = SHA1.Create();
             byte[] hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(hashstring));
             return Convert.ToHexString(hash);
-            }
-            Console.WriteLine(timestamp);
-            Console.WriteLine(sb.ToString());
-            return sb.ToString();
         }
 
         /// <summary>
@@ -63,13 +59,6 @@ namespace Gordon360.Services
         {
             try
             {
-
-                ServicePointManager.Expect100Continue = false;
-
-                WebRequest request = WebRequest.Create("https://bbapi.campuscardcenter.com/cs/api/mealplanDrCr");
-
-                request.Method = "POST";
-
                 string timestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
 
                 var data = new Dictionary<string, string>
@@ -92,8 +81,8 @@ namespace Gordon360.Services
 
                 if (jsonContent["balance"]?.ToString() is string balance)
                 {
-                return balance;
-            }
+                    return balance;
+                }
                 else
                 {
                     return "0";
@@ -117,7 +106,7 @@ namespace Gordon360.Services
 
             var planComponents = new List<DiningTableViewModel>();
             foreach (var diningPlan in result)
-                {
+            {
                 var currentBalance = await GetBalanceAsync(cardHolderID, diningPlan.PlanId);
                 planComponents.Add(new DiningTableViewModel
                 {
@@ -128,10 +117,6 @@ namespace Gordon360.Services
                     InitialBalance = diningPlan.InitialBalance ?? 0,
                     CurrentBalance = currentBalance,
                 });
-
-            if (result == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The plan was not found." };
             }
 
             return new DiningViewModel(planComponents);
@@ -141,9 +126,9 @@ namespace Gordon360.Services
         {
             public const string BonAppetit = "BonAppetit";
 
-            public string IssuerID {get; set;} = String.Empty;
-            public string ApplicationID {get; set;} = String.Empty;
-            public string Secret {get; set;} = String.Empty;
+            public string IssuerID { get; set; } = string.Empty;
+            public string ApplicationID { get; set; } = string.Empty;
+            public string Secret { get; set; } = string.Empty;
         }
     }
 }
