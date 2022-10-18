@@ -2,17 +2,15 @@
 using Gordon360.Exceptions;
 using Gordon360.Models.ViewModels;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Data;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Net.Http;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Text.Json;
 
 // <summary>
 // We use this service to pull meal data from blackboard and parse it
@@ -24,6 +22,7 @@ namespace Gordon360.Services
     /// </summary>
     public class DiningService : IDiningService
     {
+        private const string DiningAPIUrl = "https://bbapi.campuscardcenter.com/cs/api/mealplanDrCr";
         private readonly CCTContext _context;
         private static BonAppetitSettings settings;
         private static HttpClient HttpClient => new();
@@ -57,36 +56,28 @@ namespace Gordon360.Services
         /// <returns></returns>
         public static async Task<string> GetBalanceAsync(int cardHolderID, string planID)
         {
+            string timestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
+
+            var requestParams = new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>("issuerId", settings.IssuerID),
+                new KeyValuePair<string, string>("cardholderId", cardHolderID.ToString()),
+                new KeyValuePair<string, string>("planId", planID.ToString()),
+                new KeyValuePair<string, string>("applicationId", settings.ApplicationID),
+                new KeyValuePair<string, string>("valueCmd", "bal"),
+                new KeyValuePair<string, string>("value", "0"),
+                new KeyValuePair<string, string>("timestamp", timestamp),
+                new KeyValuePair<string, string>("hash", GetHash(cardHolderID, planID, timestamp)),
+            };
+
             try
             {
-                string timestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
-
-                var data = new Dictionary<string, string>
-                {
-                    { "issuerId", settings.IssuerID },
-                    { "cardholderId", cardHolderID.ToString() },
-                    {"planId", planID.ToString() },
-                    {"applicationId", settings.ApplicationID },
-                    { "valueCmd", "bal" },
-                    {"value", "0" },
-                    {"timestamp", timestamp},
-                    {"hash", GetHash(cardHolderID, planID, timestamp) }
-                };
-
-                FormUrlEncodedContent encodedData = new(data);
-
-                var response = await HttpClient.PostAsync("https://bbapi.campuscardcenter.com/cs/api/mealplanDrCr", encodedData);
+                var response = await HttpClient.PostAsync(DiningAPIUrl, new FormUrlEncodedContent(requestParams));
+                response.EnsureSuccessStatusCode();
                 var content = await response.Content.ReadAsStringAsync();
-                JObject jsonContent = JObject.Parse(content);
-
-                if (jsonContent["balance"]?.ToString() is string balance)
-                {
-                    return balance;
-                }
-                else
-                {
-                    return "0";
-                }
+                var json = JsonDocument.Parse(content);
+                var balance = json.RootElement.GetProperty("balance").GetString();
+                return balance ?? "0";
             }
             catch
             {
@@ -105,16 +96,16 @@ namespace Gordon360.Services
             var result = _context.DiningInfo.Where(d => d.StudentId == cardHolderID && d.SessionCode == sessionCode);
 
             var planComponents = new List<DiningTableViewModel>();
-            foreach (var diningPlan in result)
+            foreach (var diningInfo in result)
             {
-                var currentBalance = await GetBalanceAsync(cardHolderID, diningPlan.PlanId);
+                var currentBalance = await GetBalanceAsync(cardHolderID, diningInfo.PlanId);
                 planComponents.Add(new DiningTableViewModel
                 {
-                    ChoiceDescription = diningPlan.ChoiceDescription,
-                    PlanDescriptions = diningPlan.PlanDescriptions,
-                    PlanId = diningPlan.PlanId,
-                    PlanType = diningPlan.PlanType,
-                    InitialBalance = diningPlan.InitialBalance ?? 0,
+                    ChoiceDescription = diningInfo.ChoiceDescription,
+                    PlanDescriptions = diningInfo.PlanDescriptions,
+                    PlanId = diningInfo.PlanId,
+                    PlanType = diningInfo.PlanType,
+                    InitialBalance = diningInfo.InitialBalance ?? 0,
                     CurrentBalance = currentBalance,
                 });
             }
