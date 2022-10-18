@@ -69,11 +69,11 @@ namespace Gordon360.Services
         /// <summary>
         /// Delete the admin whose id is specified by the parameter.
         /// </summary>
-        /// <param name="id">The admin id</param>
+        /// <param name="username">The username of the admin to demote</param>
         /// <returns>The admin that was just deleted</returns>
-        public AdminViewModel Delete(int id)
+        public AdminViewModel Delete(string username)
         {
-            var result = _context.ADMIN.Find(id);
+            var result = _context.ADMIN.FirstOrDefault(a => a.USER_NAME == username);
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Admin was not found." };

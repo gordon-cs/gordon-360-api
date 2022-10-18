@@ -59,15 +59,15 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>Delete an existing admin</summary>
-        /// <param name="id">The identifier for the admin to be deleted</param>
+        /// <param name="username">The username of the user to demote</param>
         /// <remarks>Calls the server to make a call and remove the given admin from the database</remarks>
         // DELETE api/<controller>/5
         [HttpDelete]
-        [Route("{id}")]
+        [Route("{username}")]
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.ADMIN)]
-        public ActionResult<AdminViewModel> Delete(int id)
+        public ActionResult<AdminViewModel> Delete(string username)
         {
-            var result = _adminService.Delete(id);
+            var result = _adminService.Delete(username);
 
             if (result == null)
             {

@@ -45,6 +45,7 @@ namespace Gordon360.Controllers
         /// Gets the group admin memberships associated with a given activity.
         /// </summary>
         /// <param name="activityCode">The activity ID.</param>
+        /// <param name="sessionCode">The session code of the activity.</param>
         /// <returns>An IEnumerable of all leader-type memberships for the specified activity.</returns>
         [HttpGet]
         [Route("activities/{activityCode}/sessions/{sessionCode}/admins")]

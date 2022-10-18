@@ -137,7 +137,7 @@ namespace Gordon360.Services
         IEnumerable<AdminViewModel?> GetAll();
         AdminViewModel? GetByUsername(string username);
         AdminViewModel Add(AdminViewModel admin);
-        AdminViewModel Delete(int id);
+        AdminViewModel Delete(string username);
     }
 
     public interface IEmailService

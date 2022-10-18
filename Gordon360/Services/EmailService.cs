@@ -34,11 +34,7 @@ namespace Gordon360.Services
         /// <returns>A list of emails (along with first and last name) associated with that activity</returns>
         public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAsync(string activityCode, string? sessionCode = null, ParticipationType? participationType = null)
         {
-            if (sessionCode == null)
-            {
-                sessionCode = Helpers.GetCurrentSession(_context);
-            }
-
+            sessionCode ??= Helpers.GetCurrentSession(_context);
 
             var result = _membershipService.MembershipEmails(activityCode, sessionCode, participationType);
 
