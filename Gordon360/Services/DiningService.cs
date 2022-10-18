@@ -30,14 +30,6 @@ namespace Gordon360.Services
              settings = config.GetSection(BonAppetitSettings.BonAppetit).Get<BonAppetitSettings>() ?? throw new BadInputException{ ExceptionMessage = "Failed to load Dining API Settings"};
         }
 
-        private static string getTimestamp()
-        {
-            DateTime baseDate = new DateTime(1970, 1, 1, 0, 0, 0);
-            TimeSpan diff = DateTime.UtcNow - baseDate;
-            Int64 millis = Convert.ToInt64(diff.TotalMilliseconds);
-            return millis.ToString();
-        }
-
         private static string getHash(int cardHolderID, string planID, string timestamp)
         {
             string hashstring = (settings.Secret+ settings.IssuerID + cardHolderID.ToString() + planID +
@@ -74,7 +66,7 @@ namespace Gordon360.Services
 
                 request.Method = "POST";
 
-                string timestamp = getTimestamp();
+                string timestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
 
                 // Create POST data and convert it to a byte array.  
                 string postData = $"issuerId={settings.IssuerID}&cardholderId={cardHolderID}&planId={planID}&applicationId={settings.ApplicationID}&valueCmd=bal&value=0&timestamp={timestamp}&hash={getHash(cardHolderID, planID, timestamp)}";
