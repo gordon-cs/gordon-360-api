@@ -52,7 +52,7 @@ namespace Gordon360.Services
 
     public interface IDiningService
     {
-        Task<DiningViewModel> GetDiningPlanInfo(int id, string sessionCode);
+        Task<MealPlanViewModel> GetDiningPlanInfo(int id, string sessionCode);
     }
 
     public interface IAccountService

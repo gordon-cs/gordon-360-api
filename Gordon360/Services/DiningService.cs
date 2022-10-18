@@ -11,6 +11,8 @@ using System.Net.Http;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Text.Json;
+using Gordon360.Models.CCT;
+using Microsoft.EntityFrameworkCore;
 
 // <summary>
 // We use this service to pull meal data from blackboard and parse it
@@ -91,26 +93,25 @@ namespace Gordon360.Services
         /// <param name="cardHolderID">Student's Gordon ID</param>
         /// <param name="sessionCode">Current Session Code</param>
         /// <returns></returns>
-        public async Task<DiningViewModel> GetDiningPlanInfo(int cardHolderID, string sessionCode)
+        public async Task<MealPlanViewModel> GetDiningPlanInfo(int cardHolderID, string sessionCode)
         {
-            var result = _context.DiningInfo.Where(d => d.StudentId == cardHolderID && d.SessionCode == sessionCode);
+            IEnumerable<DiningInfo> result = _context.DiningInfo
+                .Where(d => d.StudentId == cardHolderID && d.SessionCode == sessionCode);
 
-            var planComponents = new List<DiningInfoViewModel>();
-            foreach (var diningInfo in result)
-            {
-                var currentBalance = await GetBalanceAsync(cardHolderID, diningInfo.PlanId);
-                planComponents.Add(new DiningInfoViewModel
-                (
-                    ChoiceDescription: diningInfo.ChoiceDescription,
-                    PlanDescriptions: diningInfo.PlanDescriptions,
-                    PlanId: diningInfo.PlanId,
-                    PlanType: diningInfo.PlanType,
-                    InitialBalance: diningInfo.InitialBalance ?? 0,
-                    CurrentBalance: currentBalance
-                ));
-            }
+            var mealPlanComponents = await 
+                Task.WhenAll(
+                    result.Select(
+                        async d => new MealPlanComponent(
+                            ChoiceDescription: d.ChoiceDescription,
+                            PlanDescriptions: d.PlanDescriptions,
+                            PlanType: d.PlanType,
+                            InitialBalance: d.InitialBalance ?? 0,
+                            CurrentBalance: await GetBalanceAsync(cardHolderID, d.PlanId)
+                        )
+                    )
+                );
 
-            return new DiningViewModel(planComponents);
+            return new MealPlanViewModel(mealPlanComponents);
         }
 
         public class BonAppetitSettings
