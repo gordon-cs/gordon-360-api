@@ -16,6 +16,7 @@ namespace Gordon360.Models.CCT
         public int ActivityID { get; set; }
         public int ParticipantID { get; set; }
         public int PrivTypeID { get; set; }
+        public bool isFreeAgent { get; set; }
 
         [ForeignKey("ActivityID")]
         [InverseProperty("ParticipantActivity")]

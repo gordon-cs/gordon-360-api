@@ -16,7 +16,6 @@ namespace Gordon360.Models.CCT
             MatchTeam = new HashSet<MatchTeam>();
             ParticipantTeam = new HashSet<ParticipantTeam>();
             SeriesTeam = new HashSet<SeriesTeam>();
-            Sportmanship = new HashSet<Sportmanship>();
         }
 
         [Key]
@@ -27,8 +26,7 @@ namespace Gordon360.Models.CCT
         public string Name { get; set; }
         public int Status { get; set; }
         public int ActivityID { get; set; }
-        [Required]
-        public bool? Private { get; set; }
+        public bool Private { get; set; }
         public bool Recruiting { get; set; }
         [StringLength(128)]
         [Unicode(false)]
@@ -46,7 +44,5 @@ namespace Gordon360.Models.CCT
         public virtual ICollection<ParticipantTeam> ParticipantTeam { get; set; }
         [InverseProperty("Team")]
         public virtual ICollection<SeriesTeam> SeriesTeam { get; set; }
-        [InverseProperty("Team")]
-        public virtual ICollection<Sportmanship> Sportmanship { get; set; }
     }
 }

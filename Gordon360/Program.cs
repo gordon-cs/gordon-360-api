@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Identity.Web;
 using System.IO;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,9 +49,14 @@ builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IAddressesService, AddressesService>();
 builder.Services.AddScoped<RecIM.IActivityService, RecIM.ActivityService>();
 
-
-
 builder.Services.AddMemoryCache();
+builder.Services.AddMvc().AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling
+        = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
+//builder.Services.AddControllers().AddJsonOptions(x =>
+//x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
 
 var app = builder.Build();
 

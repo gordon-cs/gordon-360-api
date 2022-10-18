@@ -1,5 +1,6 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Services.RecIM;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers.RecIM
 {
     [Route("api/recim/[controller]")]
+    [AllowAnonymous]
     public class ActivitiesController : GordonControllerBase
     {
         private readonly IActivityService _activityService;
@@ -20,34 +22,23 @@ namespace Gordon360.Controllers.RecIM
             _activityService = activityService;
         }
 
-        ///<summary>Gets a list of all Activities</summary>
+        ///<summary>Gets a list of all Activities by parameter </summary>
         ///<param name="active"> Optional active parameter </param>
+        ///<param name="time"> Optional time parameter </param>
         /// <returns>
         /// All Existing Activities 
         /// </returns>
+        [AllowAnonymous]
         [HttpGet]
         [Route("")]
-        public ActionResult<IEnumerable<Activity>> GetActivities(Boolean active = false)
-        {
-            if (active)
+        public ActionResult<IEnumerable<Activity>> GetActivities([FromQuery] DateTime? time, bool active)
+        {   
+            if (time is null && active)
             {
-                var result = _activityService.GetActivitiesByTime(null);
-                return Ok(result);
-            } else
-            {
-                var result = _activityService.GetActivities();
-                return Ok(result);
+                var activeResults = _activityService.GetActivities();
+                return Ok(activeResults);
+                
             }
-        }
-
-        ///<summary>Gets a list of all Activities after given time</summary>
-        /// <returns>
-        /// All Existing Activities 
-        /// </returns>
-        [HttpGet]
-        [Route("")]
-        public ActionResult<IEnumerable<Activity>> GetAllActivities([FromQuery] DateTime time)
-        {
             var result = _activityService.GetActivitiesByTime(time);
             return Ok(result);
         }
@@ -75,6 +66,7 @@ namespace Gordon360.Controllers.RecIM
         [Route("")]
         public async Task<ActionResult> CreateActivity(Activity newActivity)
         {
+            
             var activityID = await _activityService.PostActivity(newActivity);
             return Ok(activityID);
         }

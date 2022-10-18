@@ -17,6 +17,7 @@ namespace Gordon360.Services.RecIM
 
         public ActivityService(CCTContext context)
         {
+
             _context = context;
         }
 
