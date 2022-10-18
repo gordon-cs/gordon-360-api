@@ -30,19 +30,19 @@ namespace Gordon360.Services
              settings = config.GetSection(BonAppetitSettings.BonAppetit).Get<BonAppetitSettings>() ?? throw new BadInputException{ ExceptionMessage = "Failed to load Dining API Settings"};
         }
 
-        private static string getHash(int cardHolderID, string planID, string timestamp)
+        private static string GetHash(int cardHolderID, string planID, string timestamp)
         {
-            string hashstring = (settings.Secret+ settings.IssuerID + cardHolderID.ToString() + planID +
-            settings.ApplicationID + timestamp);
+            string hashstring = (
+                settings.Secret
+                + settings.IssuerID
+                + cardHolderID.ToString()
+                + planID
+                + settings.ApplicationID
+                + timestamp);
 
-            SHA1 sha1 = SHA1.Create();
-            var hash = sha1.ComputeHash(Encoding.ASCII.GetBytes(hashstring));
-            var sb = new StringBuilder(hash.Length * 2);
-
-            foreach (byte b in hash)
-            {
-                // can be "x2" if you want lowercase
-                sb.Append(b.ToString("x2"));
+            using var sha1 = SHA1.Create();
+            byte[] hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(hashstring));
+            return Convert.ToHexString(hash);
             }
             Console.WriteLine(timestamp);
             Console.WriteLine(sb.ToString());
