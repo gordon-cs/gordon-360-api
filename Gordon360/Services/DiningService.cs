@@ -95,19 +95,19 @@ namespace Gordon360.Services
         {
             var result = _context.DiningInfo.Where(d => d.StudentId == cardHolderID && d.SessionCode == sessionCode);
 
-            var planComponents = new List<DiningTableViewModel>();
+            var planComponents = new List<DiningInfoViewModel>();
             foreach (var diningInfo in result)
             {
                 var currentBalance = await GetBalanceAsync(cardHolderID, diningInfo.PlanId);
-                planComponents.Add(new DiningTableViewModel
-                {
-                    ChoiceDescription = diningInfo.ChoiceDescription,
-                    PlanDescriptions = diningInfo.PlanDescriptions,
-                    PlanId = diningInfo.PlanId,
-                    PlanType = diningInfo.PlanType,
-                    InitialBalance = diningInfo.InitialBalance ?? 0,
-                    CurrentBalance = currentBalance,
-                });
+                planComponents.Add(new DiningInfoViewModel
+                (
+                    ChoiceDescription: diningInfo.ChoiceDescription,
+                    PlanDescriptions: diningInfo.PlanDescriptions,
+                    PlanId: diningInfo.PlanId,
+                    PlanType: diningInfo.PlanType,
+                    InitialBalance: diningInfo.InitialBalance ?? 0,
+                    CurrentBalance: currentBalance
+                ));
             }
 
             return new DiningViewModel(planComponents);
