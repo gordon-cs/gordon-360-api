@@ -212,7 +212,7 @@ namespace Gordon360.Services
 
     public interface IMembershipRequestService
     {
-        RequestView? Get(int requestID);
+        RequestView Get(int requestID);
         IEnumerable<RequestView> GetAll();
         IEnumerable<RequestView> GetMembershipRequests(string activityCode, string? sessionCode, string? requestStatus);
         IEnumerable<RequestView> GetMembershipRequestsByUsername(string usernamne);

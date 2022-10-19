@@ -27,7 +27,7 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("")]
         [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.MEMBERSHIP_REQUEST)]
-        public ActionResult<IEnumerable<MembershipRequestViewModel>> Get()
+        public ActionResult<IEnumerable<RequestView>> Get()
         {
             return Ok(_membershipRequestService.GetAll());
         }
@@ -40,7 +40,7 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("{id}")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP_REQUEST)]
-        public ActionResult<MembershipRequestViewModel?> Get(int id)
+        public ActionResult<RequestView> Get(int id)
         {
             var result = _membershipRequestService.Get(id);
 
