@@ -715,13 +715,13 @@ namespace Gordon360.Models.CCT.Context
                     .WithMany(p => p.Team)
                     .HasForeignKey(d => d.ActivityID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Team__ActivityID__066DDD9B");
+                    .HasConstraintName("FK__Team__ActivityID");
 
                 entity.HasOne(d => d.StatusNavigation)
                     .WithMany(p => p.Team)
                     .HasForeignKey(d => d.Status)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Team__Status__0579B962");
+                    .HasConstraintName("FK__Team__Status");
             });
 
             modelBuilder.HasSequence("Information_Change_Request_Seq", "dbo");
