@@ -310,7 +310,7 @@ namespace Gordon360.Services
         public interface IActivityService
         {
             IEnumerable<Models.ViewModels.RecIM.ActivityViewModel> GetActivities();
-            Activity? GetActivityByID(int ActivityID);
+            Models.ViewModels.RecIM.ActivityViewModel? GetActivityByID(int ActivityID);
             IEnumerable<Models.ViewModels.RecIM.ActivityViewModel> GetActivitiesByTime(DateTime? time);
             Task UpdateActivity(Activity updatedActivity);
             Task<int> PostActivity(Activity newActivity);

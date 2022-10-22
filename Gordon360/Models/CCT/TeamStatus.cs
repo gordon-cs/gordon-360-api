@@ -23,7 +23,7 @@ namespace Gordon360.Models.CCT
         [Unicode(false)]
         public string Description { get; set; }
 
-        [InverseProperty("StatusNavigation")]
+        [InverseProperty("Status")]
         public virtual ICollection<Team> Team { get; set; }
     }
 }

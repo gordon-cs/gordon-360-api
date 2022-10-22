@@ -717,9 +717,9 @@ namespace Gordon360.Models.CCT.Context
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Team__ActivityID");
 
-                entity.HasOne(d => d.StatusNavigation)
+                entity.HasOne(d => d.Status)
                     .WithMany(p => p.Team)
-                    .HasForeignKey(d => d.Status)
+                    .HasForeignKey(d => d.StatusID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Team__Status");
             });

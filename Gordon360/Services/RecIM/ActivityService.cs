@@ -32,21 +32,27 @@ namespace Gordon360.Services.RecIM
                                 Name = a.Name,
                                 RegistrationStart = a.RegistrationStart,
                                 RegistrationEnd = a.RegistrationEnd,
-                                Sport = _context.Sport.FirstOrDefault(s => s.ID == a.SportID),
-                                Status = _context.ActivityStatus.FirstOrDefault(s => s.ID == a.StatusID).Description,
+                                Sport = _context.Sport
+                                        .FirstOrDefault(s => s.ID == a.SportID),
+                                Status = _context.ActivityStatus
+                                        .FirstOrDefault(s => s.ID == a.StatusID)
+                                        .Description,
                                 MinCapacity = a.MinCapacity,
                                 MaxCapacity = a.MaxCapacity,
                                 SoloRegistration = a.SoloRegistration,
                                 Logo = a.Logo,
                                 Completed = a.Completed,
-                                Series = a.Series.Select(s => new SeriesViewModel
-                                {
-                                    ID = s.ID,
-                                    Name = s.Name,
-                                    StartDate = s.StartDate,
-                                    EndDate = s.EndDate,
-                                    Type = _context.SeriesType.FirstOrDefault(st => st.ID == s.TypeID).Description
-                                }).ToList()
+                                Series = a.Series
+                                        .Select(s => new SeriesViewModel
+                                        {
+                                            ID = s.ID,
+                                            Name = s.Name,
+                                            StartDate = s.StartDate,
+                                            EndDate = s.EndDate,
+                                            Type = _context.SeriesType
+                                                    .FirstOrDefault(st => st.ID == s.TypeID)
+                                                    .Description
+                                        }).ToList()
                             });
             return activities;
         }
@@ -63,20 +69,87 @@ namespace Gordon360.Services.RecIM
                 return GetActivities().Where(a => a.RegistrationEnd > time);
             }
         }
-        public Models.CCT.Activity? GetActivityByID(int activityID)
+        public ActivityViewModel? GetActivityByID(int activityID)
         {
-            var result = _context.Activity
-                            .Where(l => l.ID == activityID)
-                            .Include(l => l.Team)
-                            .Include(l => l.Series)
-                                .ThenInclude(s => s.Match)
-                            .Include(l => l.ParticipantActivity
-                                .Join(_context.Participant,
-                                    ul => ul.ParticipantID,
-                                    u => u.ID,
-                                    (ul, u) => u))
+            var activity = _context.Activity.Where(a => a.ID == activityID)
+                            .Select(a => new ActivityViewModel
+                            {
+                                ID = a.ID,
+                                Name = a.Name,
+                                RegistrationStart = a.RegistrationStart,
+                                RegistrationEnd = a.RegistrationEnd,
+                                Sport = _context.Sport
+                                        .FirstOrDefault(s => s.ID == a.SportID),
+                                Status = _context.ActivityStatus
+                                        .FirstOrDefault(s => s.ID == a.StatusID)
+                                        .Description,
+                                MinCapacity = a.MinCapacity,
+                                MaxCapacity = a.MaxCapacity,
+                                SoloRegistration = a.SoloRegistration,
+                                Logo = a.Logo,
+                                Completed = a.Completed,
+                                Series = a.Series.Select(s => new SeriesViewModel
+                                {
+                                    ID = s.ID,
+                                    Name = s.Name,
+                                    StartDate = s.StartDate,
+                                    EndDate = s.EndDate,
+                                    Type = _context.SeriesType
+                                            .FirstOrDefault(st => st.ID == s.TypeID)
+                                            .Description,
+                                    Status = _context.SeriesStatus
+                                            .FirstOrDefault(ss => ss.ID == s.StatusID)
+                                            .Description,
+                                    Match = s.Match.Select(m => new MatchViewModel
+                                    {
+                                        ID = m.ID,
+                                        Time = m.Time,
+                                        Status = _context.MatchStatus
+                                                    .FirstOrDefault(ms => ms.ID == m.StatusID)
+                                                    .Description,
+                                        Team = m.MatchTeam.Select(mt => new TeamViewModel
+                                        {
+                                            ID = mt.TeamID,
+                                            Name = _context.Team
+                                                    .FirstOrDefault(t => t.ID == mt.TeamID)
+                                                    .Name,
+                                            TeamRecord = _context.SeriesTeam
+                                                            .Where(st => st.SeriesID == s.ID && st.TeamID == mt.TeamID)
+                                                            .Select(st => new TeamRecordViewModel
+                                                            {
+                                                                Win = st.Wins,
+                                                                Loss = _context.SeriesTeam
+                                                                        .Where(l => l.TeamID == st.TeamID && l.SeriesID == s.ID)
+                                                                        .Count() - st.Wins
+                                                            })
+                                        })
+                                    }),
+                                    TeamStanding = s.SeriesTeam.Select(st => new TeamRecordViewModel
+                                    {
+                                        ID = st.ID,
+                                        Name = _context.Team
+                                                .FirstOrDefault(t => t.ID == st.TeamID)
+                                                .Name,
+                                        Win = st.Wins,
+                                        Loss = _context.SeriesTeam
+                                                .Where(l => l.TeamID == st.TeamID && l.SeriesID == s.ID)
+                                                .Count() - st.Wins
+                                    }).OrderByDescending(st => st.Win)
+                                }),
+                                Team = a.Team.Select(t => new TeamViewModel
+                                {
+                                    ID = t.ID,
+                                    Name = t.Name,
+                                    Status = _context.TeamStatus
+                                                .FirstOrDefault(ts => ts.ID == t.StatusID)
+                                                .Description,
+                                                
+                                    Logo = t.Logo
+                                })
+                            
+                            })
                             .FirstOrDefault();
-            return result;
+            return activity;
         }
         public async Task UpdateActivity(Activity updatedActivity)
         {
