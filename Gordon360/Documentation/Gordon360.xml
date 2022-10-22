@@ -726,7 +726,7 @@
              All Existing Activities 
              </returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetLeagueByID(System.Int32)">
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetActivityByID(System.Int32)">
             <summary>Gets a Activity object by ID number</summary>
              <param name="activityID">League ID Number</param>
              <returns>

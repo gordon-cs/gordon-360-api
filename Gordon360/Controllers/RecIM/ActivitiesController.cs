@@ -1,4 +1,5 @@
 ﻿using Gordon360.Models.CCT;
+using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -29,7 +30,7 @@ namespace Gordon360.Controllers.RecIM
         /// </returns>
         [HttpGet]
         [Route("")]
-        public ActionResult<IEnumerable<Activity>> GetActivities([FromQuery] DateTime? time, bool active)
+        public ActionResult<IEnumerable<ActivityViewModel>> GetActivities([FromQuery] DateTime? time, bool active)
         {   
             if (time is null && active)
             {
@@ -48,7 +49,7 @@ namespace Gordon360.Controllers.RecIM
         /// </returns>
         [HttpGet]
         [Route("{activityID}")]
-        public ActionResult<Activity> GetLeagueByID(int activityID)
+        public ActionResult<Activity> GetActivityByID(int activityID)
         {
             var result = _activityService.GetActivityByID(activityID);
             return Ok(result);

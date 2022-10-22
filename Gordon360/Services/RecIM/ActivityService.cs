@@ -1,4 +1,5 @@
 ﻿using Gordon360.Models.CCT;
+using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Models.CCT.Context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,24 +23,47 @@ namespace Gordon360.Services.RecIM
         }
 
 
-        public IEnumerable<Activity> GetActivities()
+        public IEnumerable<ActivityViewModel> GetActivities()
         {
             var activities = _context.Activity
-                            .Include(l => l.Team)
-                            .Include(l => l.Series);
+                            .Select(a => new ActivityViewModel
+                            {
+                                ID = a.ID,
+                                Name = a.Name,
+                                RegistrationStart = a.RegistrationStart,
+                                RegistrationEnd = a.RegistrationEnd,
+                                Sport = _context.Sport.FirstOrDefault(s => s.ID == a.SportID),
+                                Status = _context.ActivityStatus.FirstOrDefault(s => s.ID == a.StatusID).Description,
+                                MinCapacity = a.MinCapacity,
+                                MaxCapacity = a.MaxCapacity,
+                                SoloRegistration = a.SoloRegistration,
+                                Logo = a.Logo,
+                                Completed = a.Completed,
+                                Series = a.Series.Select(s => new SeriesViewModel
+                                {
+                                    ID = s.ID,
+                                    Name = s.Name,
+                                    StartDate = s.StartDate,
+                                    EndDate = s.EndDate,
+                                    Type = _context.SeriesType.FirstOrDefault(st => st.ID == s.TypeID).Description
+                                }).ToList()
+                            });
             return activities;
         }
-        public IEnumerable<Activity> GetActivitiesByTime(DateTime? time)
+        public IEnumerable<ActivityViewModel> GetActivitiesByTime(DateTime? time)
         {
+            var vm = new ActivityViewModel();
             if (time is null)
             {
-                return GetActivities().Where(a => !a.Completed); 
-            } else
+
+                return GetActivities().Where(a => !a.Completed);
+            }
+            else
             {
                 return GetActivities().Where(a => a.RegistrationEnd > time);
             }
         }
-        public Activity? GetActivityByID(int activityID)
+        public Models.CCT.Activity? GetActivityByID(int activityID)
         {
             var result = _context.Activity
                             .Where(l => l.ID == activityID)

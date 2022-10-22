@@ -7,7 +7,6 @@ namespace Gordon360.Models.ViewModels.RecIM
 {
     public class ParticipantViewModel
     {
-        public int ID { get; set; }
         public string ADUserName { get; set; }
         public string Email { get; set; }
 
@@ -15,7 +14,6 @@ namespace Gordon360.Models.ViewModels.RecIM
         {
             ParticipantViewModel vm = new ParticipantViewModel
             {
-                ID = Convert.ToInt32(a.gordon_id.Trim()),
                 ADUserName = a.AD_Username.Trim() ?? "",
                 Email = a.email ?? "", 
             };

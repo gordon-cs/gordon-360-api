@@ -4,6 +4,7 @@ using Gordon360.Models.ViewModels;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using static Gordon360.Controllers.WellnessController;
 using static Gordon360.Services.MembershipService;
@@ -308,9 +309,9 @@ namespace Gordon360.Services
     {
         public interface IActivityService
         {
-            IEnumerable<Activity> GetActivities();
+            IEnumerable<Models.ViewModels.RecIM.ActivityViewModel> GetActivities();
             Activity? GetActivityByID(int ActivityID);
-            IEnumerable<Activity> GetActivitiesByTime(DateTime? time);
+            IEnumerable<Models.ViewModels.RecIM.ActivityViewModel> GetActivitiesByTime(DateTime? time);
             Task UpdateActivity(Activity updatedActivity);
             Task<int> PostActivity(Activity newActivity);
 
