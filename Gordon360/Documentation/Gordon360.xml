@@ -733,18 +733,18 @@
              Activity object
              </returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.CreateActivity(Gordon360.Models.CCT.Activity)">
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.CreateActivity(Gordon360.Models.ViewModels.RecIM.CreateActivityViewModel)">
             <summary>
             Posts Activity into CCT.RecIM.Activity
             </summary>
-            <param name="newActivity">League object with appropriate values</param>
-            <returns></returns>
+            <param name="a">CreateActivityViewModel object with appropriate values</param>
+            <returns>Posted Activity ID</returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.UpdateActivity(Gordon360.Models.CCT.Activity)">
             <summary>
             Updates Activity based on input
             </summary>
-            <param name="updatedActivity"> Updated Activity Object </param>
+            <param name="a"> Updated Activity Object </param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.CreateSmashLeague">

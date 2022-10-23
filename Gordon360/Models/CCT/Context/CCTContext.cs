@@ -140,8 +140,6 @@ namespace Gordon360.Models.CCT.Context
             {
                 entity.Property(e => e.StatusID).HasDefaultValueSql("((1))");
 
-                entity.Property(e => e.TypeID).HasDefaultValueSql("((1))");
-
                 entity.HasOne(d => d.Sport)
                     .WithMany(p => p.Activity)
                     .HasForeignKey(d => d.SportID)
@@ -152,12 +150,6 @@ namespace Gordon360.Models.CCT.Context
                     .WithMany(p => p.Activity)
                     .HasForeignKey(d => d.StatusID)
                     .HasConstraintName("FK_Activity_ActivityStatus");
-
-                entity.HasOne(d => d.Type)
-                    .WithMany(p => p.Activity)
-                    .HasForeignKey(d => d.TypeID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Activity_ActivityType");
             });
 
             modelBuilder.Entity<Alumni>(entity =>

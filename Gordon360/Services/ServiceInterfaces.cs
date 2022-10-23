@@ -1,6 +1,7 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.MyGordon;
 using Gordon360.Models.ViewModels;
+using Gordon360.Models.ViewModels.RecIM;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -313,7 +314,7 @@ namespace Gordon360.Services
             Models.ViewModels.RecIM.ActivityViewModel? GetActivityByID(int ActivityID);
             IEnumerable<Models.ViewModels.RecIM.ActivityViewModel> GetActivitiesByTime(DateTime? time);
             Task UpdateActivity(Activity updatedActivity);
-            Task<int> PostActivity(Activity newActivity);
+            Task<int> PostActivity(CreateActivityViewModel a);
 
         }
         public interface ISeriesService

@@ -162,9 +162,6 @@ namespace Gordon360.Services.RecIM
             activity.RegistrationEnd = updatedActivity.RegistrationEnd == default
                                   ? activity.RegistrationEnd
                                   : updatedActivity.RegistrationEnd;
-            activity.TypeID = updatedActivity.TypeID == default
-                                ? activity.TypeID
-                                : updatedActivity.TypeID;
             activity.SportID = updatedActivity.SportID == default
                                 ? activity.SportID
                                 : updatedActivity.SportID;
@@ -177,11 +174,24 @@ namespace Gordon360.Services.RecIM
 
             await _context.SaveChangesAsync();
         }
-        public async Task<int> PostActivity(Activity newActivity)
+        public async Task<int> PostActivity(CreateActivityViewModel a)
         {
-            await _context.Activity.AddAsync(newActivity);
+            var activity = new Activity
+            {
+                Name = a.Name,
+                Logo = a.Logo,
+                RegistrationStart = a.RegistrationStart,
+                RegistrationEnd = a.RegistrationEnd,
+                SportID = a.SportID,
+                StatusID = 1, //default set to pending status
+                MinCapacity = a.MinCapacity ?? 0,
+                MaxCapacity = a.MaxCapacity,
+                SoloRegistration = a.SoloRegistration,
+                Completed = false //default not completed
+            };
+            await _context.Activity.AddAsync(activity);
             await _context.SaveChangesAsync();
-            return newActivity.ID;
+            return activity.ID;
         }
 
     }

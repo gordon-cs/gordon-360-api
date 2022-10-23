@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers.RecIM
 {
     [Route("api/recim/[controller]")]
-    [AllowAnonymous]
     public class ActivitiesController : GordonControllerBase
     {
         private readonly IActivityService _activityService;
@@ -60,27 +59,27 @@ namespace Gordon360.Controllers.RecIM
         /// <summary>
         /// Posts Activity into CCT.RecIM.Activity
         /// </summary>
-        /// <param name="newActivity">League object with appropriate values</param>
-        /// <returns></returns>
+        /// <param name="a">CreateActivityViewModel object with appropriate values</param>
+        /// <returns>Posted Activity ID</returns>
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult> CreateActivity(Activity newActivity)
+        public async Task<ActionResult> CreateActivity(CreateActivityViewModel a)
         {
             
-            var activityID = await _activityService.PostActivity(newActivity);
+            var activityID = await _activityService.PostActivity(a);
             return Ok(activityID);
         }
         /// <summary>
         /// Updates Activity based on input
         /// </summary>
-        /// <param name="updatedActivity"> Updated Activity Object </param>
+        /// <param name="a"> Updated Activity Object </param>
         /// <returns></returns>
         [HttpPut]
         [Route("")]
-        public async Task<ActionResult> UpdateActivity(Activity updatedActivity)
+        public async Task<ActionResult> UpdateActivity(Activity a)
         {
-            await _activityService.UpdateActivity(updatedActivity);
-            return Ok(updatedActivity.ID);
+            await _activityService.UpdateActivity(a);
+            return Ok(a.ID);
         }
 
         ///<summary>Creates a new League (currently hard coded)</summary>
@@ -90,25 +89,18 @@ namespace Gordon360.Controllers.RecIM
         [Route("add_smash")]
         public async Task<ActionResult> CreateSmashLeague()
         {
-            var smashLeague = new Activity
+            var smashLeague = new CreateActivityViewModel
             {
                 Name = "Super Smash Bros. Ultimate 1v1",
-                //Name = null,
                 RegistrationStart = DateTime.Now,
                 RegistrationEnd = DateTime.Now,
-                TypeID = 1,
-                StatusID = 1,
                 SportID = 1,
-                MinCapacity = 1,
-                MaxCapacity = null,
+                MinCapacity = 2,
+                MaxCapacity = 16,
                 SoloRegistration = true,
                 Logo = null,
-                Completed = false
             };
-       
             await _activityService.PostActivity(smashLeague);
-            
-           
             return Ok();
         }
 
