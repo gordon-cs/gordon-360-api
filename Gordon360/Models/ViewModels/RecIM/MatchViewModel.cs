@@ -10,8 +10,8 @@ namespace Gordon360.Models.ViewModels.RecIM
         public DateTime Time { get; set; }
         public string Surface { get; set; }
         public string Status { get; set; }
-        public virtual SeriesViewModel Series { get; set; }
-        public virtual IEnumerable<MatchParticipant> MatchParticipant { get; set; }
-        public virtual IEnumerable<TeamViewModel> Team { get; set; }
+        public SeriesViewModel Series { get; set; }
+        public IEnumerable<MatchParticipant> Attendance { get; set; }
+        public IEnumerable<TeamViewModel> Team { get; set; }
     }
 }

@@ -18,8 +18,8 @@ namespace Gordon360.Models.ViewModels.RecIM
         public string Logo { get; set; }
         public bool Completed { get; set; }
 
-        public virtual IEnumerable<SeriesViewModel> Series { get; set; }
-        public virtual IEnumerable<TeamViewModel> Team { get; set; }
+        public IEnumerable<SeriesViewModel> Series { get; set; }
+        public IEnumerable<TeamViewModel> Team { get; set; }
 
     }
 }

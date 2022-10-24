@@ -14,7 +14,7 @@ namespace Gordon360.Models.ViewModels.RecIM
         public int ActivityID { get; set; }
         public string Type { get; set; }
         public string Status { get; set; }
-        public virtual IEnumerable<MatchViewModel> Match { get; set; }
-        public virtual IEnumerable<TeamRecordViewModel> TeamStanding { get; set; }
+        public IEnumerable<MatchViewModel> Match { get; set; }
+        public IEnumerable<TeamRecordViewModel> TeamStanding { get; set; }
     }
 }

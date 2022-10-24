@@ -17,8 +17,7 @@ namespace Gordon360.Models.CCT
         public int MatchID { get; set; }
         public int StatusID { get; set; }
         public int Score { get; set; }
-        [Column(TypeName = "decimal(3, 2)")]
-        public decimal? Sportsmanship { get; set; }
+        public int? Sportsmanship { get; set; }
 
         [ForeignKey("MatchID")]
         [InverseProperty("MatchTeam")]

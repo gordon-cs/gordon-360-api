@@ -452,6 +452,8 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<MatchTeam>(entity =>
             {
+                entity.Property(e => e.Sportsmanship).HasDefaultValueSql("((0))");
+
                 entity.Property(e => e.StatusID).HasDefaultValueSql("((1))");
 
                 entity.HasOne(d => d.Match)
