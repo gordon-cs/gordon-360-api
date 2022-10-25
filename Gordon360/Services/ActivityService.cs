@@ -12,6 +12,8 @@ using System;
 using Gordon360.Utilities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Hosting.Server.Features;
 
 namespace Gordon360.Services
 {
@@ -25,12 +27,14 @@ namespace Gordon360.Services
         private readonly CCTContext _context;
         private readonly IConfiguration _config;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IServer _server;
 
-        public ActivityService(CCTContext context, IConfiguration config, IWebHostEnvironment webHostEnvironment)
+        public ActivityService(CCTContext context, IConfiguration config, IWebHostEnvironment webHostEnvironment, IServer server)
         {
             _context = context;
             _config = config;
             _webHostEnvironment = webHostEnvironment;
+            _server = server;
         }
         /// <summary>
         /// Fetches a single activity record whose id matches the id provided as an argument
@@ -308,6 +312,7 @@ namespace Gordon360.Services
             // Put current DateTime in filename so the browser knows it's a new file and refreshes cache
             var filename = $"canvasImage_{DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}.png";
             var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", involvement.ACT_CDE.Trim(), filename);
+            var url = $"{ _server.Features.Get<IServerAddressesFeature>()?.Addresses.FirstOrDefault(a => a.Contains("https"))}/browseable/uploads/{involvement.ACT_CDE.Trim()}/{filename}";
 
             //delete old image file if it exists.
             if (Path.GetDirectoryName(imagePath) is string directory && Directory.Exists(directory))
@@ -320,7 +325,7 @@ namespace Gordon360.Services
 
             ImageUtils.UploadImageAsync(imagePath, image);
 
-            involvement.ACT_IMG_PATH = imagePath;
+            involvement.ACT_IMG_PATH = url;
             await _context.SaveChangesAsync();
 
             return involvement;
