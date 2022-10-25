@@ -139,7 +139,7 @@
             <summary>
             Reset the activity Image
             </summary>
-            <param name="id">The activity code</param>
+            <param name="involvement_code">The activity code</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.ActivitiesController.TogglePrivacy(System.String,System.Boolean)">

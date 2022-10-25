@@ -267,14 +267,14 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Reset the activity Image
         /// </summary>
-        /// <param name="id">The activity code</param>
+        /// <param name="involvement_code">The activity code</param>
         /// <returns></returns>
         [HttpPost]
-        [Route("{id}/image/reset")]
+        [Route("{involvement_code}/image/reset")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
-        public ActionResult ResetImage(string id)
+        public ActionResult ResetImage(string involvement_code)
         {
-            _activityService.ResetActivityImage(id);
+            _activityService.ResetActivityImage(involvement_code);
 
             return Ok();
         }
