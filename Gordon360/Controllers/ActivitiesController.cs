@@ -203,15 +203,15 @@ namespace Gordon360.Controllers
 
         /// <summary>
         /// </summary>
-        /// <param name="activity_code">The code of the activity to update</param>
+        /// <param name="involvement_code">The code of the activity to update</param>
         /// <param name="involvement">The updated involvement details</param>
         /// <returns></returns>
         [HttpPut]
-        [Route("{activity_code}")]
+        [Route("{involvement_code}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
-        public ActionResult<ActivityInfoViewModel> Put(string activity_code, InvolvementUpdateViewModel involvement)
+        public ActionResult<ActivityInfoViewModel> Put(string involvement_code, InvolvementUpdateViewModel involvement)
         {
-            var result = _activityService.Update(activity_code, involvement);
+            var result = _activityService.Update(involvement_code, involvement);
 
             if (result == null)
             {
@@ -249,6 +249,7 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("{involvement_code}/image")]
+        [AllowAnonymous]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
         public async Task<ActionResult<ActivityInfoViewModel>> PostImageAsync(string involvement_code, [FromForm] IFormFile image)
         {

@@ -604,7 +604,7 @@ namespace Gordon360.Authorization
                         // User is admin
                         if (user_groups.Contains(AuthGroup.SiteAdmin))
                             return true;
-                        var activityCode = (string)context.ActionArguments["id"];
+                        var activityCode = (string)context.ActionArguments["involvement_code"];
                         var membershipService = new MembershipService(_CCTContext);
 
                         var isGroupAdmin = (await membershipService.GetGroupAdminMembershipsForActivityAsync(activityCode)).Any(x => x.IDNumber.ToString() == user_id);
