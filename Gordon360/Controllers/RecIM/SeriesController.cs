@@ -26,14 +26,15 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpGet]
         [Route("")]
-        public ActionResult<IEnumerable<ActivityViewModel>> GetSeries([FromQuery] bool active)
+        public ActionResult<IEnumerable<SeriesViewModel>> GetSeries([FromQuery] bool active)
         {
-            return null;
+            var result = _seriesService.GetSeries(active);
+            return Ok(result);
         }
 
         [HttpGet]
         [Route("{seriesID}")]
-        public ActionResult<ActivityViewModel> GetSeriesByID(int seriesID)
+        public ActionResult<SeriesViewModel> GetSeriesByID(int seriesID)
         {
             return null;
         }

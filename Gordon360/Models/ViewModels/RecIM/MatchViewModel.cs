@@ -11,7 +11,7 @@ namespace Gordon360.Models.ViewModels.RecIM
         public string Surface { get; set; }
         public string Status { get; set; }
         public SeriesViewModel Series { get; set; }
-        public IEnumerable<MatchParticipant> Attendance { get; set; }
+        public IEnumerable<ParticipantViewModel> Attendance { get; set; }
         public IEnumerable<TeamViewModel> Team { get; set; }
     }
 }

@@ -58,10 +58,8 @@ namespace Gordon360.Services.RecIM
         }
         public IEnumerable<ActivityViewModel> GetActivitiesByTime(DateTime? time)
         {
-            var vm = new ActivityViewModel();
             if (time is null)
             {
-
                 return GetActivities().Where(a => !a.Completed);
             }
             else
@@ -112,15 +110,17 @@ namespace Gordon360.Services.RecIM
                                             ID = mt.TeamID,
                                             Name = _context.Team
                                                     .FirstOrDefault(t => t.ID == mt.TeamID)
-                                                    .Name,
+                                                    .Name,               
                                             TeamRecord = _context.SeriesTeam
                                                             .Where(st => st.SeriesID == s.ID && st.TeamID == mt.TeamID)
                                                             .Select(st => new TeamRecordViewModel
                                                             {
                                                                 Win = st.Wins,
-                                                                Loss = _context.SeriesTeam
-                                                                        .Where(l => l.TeamID == st.TeamID && l.SeriesID == s.ID)
-                                                                        .Count() - st.Wins
+                                                                //Loss = _context.SeriesTeam
+                                                                //        .Where(l => l.TeamID == st.TeamID 
+                                                                //                && l.SeriesID == s.ID
+                                                                //                )
+                                                                //        .Count() - st.Wins
                                                             })
                                         })
                                     }),

@@ -352,7 +352,8 @@ namespace Gordon360.Services
         {
             MatchViewModel GetMatchByID(int matchID);
             Task PostMatch(CreateMatchViewModel match);
-            Task UpdateTeamScore(MatchTeamViewModel match);
+            Task UpdateTeamStats(MatchTeamViewModel match);
+            Task AddParticipant(int matchID, string ADUserName);
         }
     }
 
