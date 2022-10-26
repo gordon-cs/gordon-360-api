@@ -2004,6 +2004,11 @@
             <param name="username">AD Username</param>
             <param name="value">Y or N</param>
         </member>
+        <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleSingleElimination(System.Int32)">
+            difference between single and double elimination is that single elim only
+            needs log(n) matches with double elim needing to schedule twice that but 
+            handle the logic of losers bracket
+        </member>
         <member name="M:Gordon360.Services.SaveService.GetUpcoming(System.String)">
             <summary>
             Fetch all upcoming ride items

@@ -74,7 +74,7 @@ namespace Gordon360.Services.RecIM
             }
             if (typeCode == "de")
             {
-                await ScheduleDoubleElimination(seriesID)
+                await ScheduleDoubleElimination(seriesID);
             }
             if (typeCode == "l")
             {
