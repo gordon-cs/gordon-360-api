@@ -321,7 +321,7 @@ namespace Gordon360.Services
         {
             IEnumerable<SeriesViewModel> GetSeries(bool active);
             SeriesViewModel GetSeriesByID(int seriesID);
-            Task PostSeries(SeriesViewModel newSeries);
+            Task<int> PostSeries(CreateSeriesViewModel newSeries, int? referenceSeriesID);
             Task ScheduleMatches(int seriesID);
         }
 

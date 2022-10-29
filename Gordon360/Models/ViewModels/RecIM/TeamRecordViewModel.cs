@@ -8,5 +8,6 @@ namespace Gordon360.Models.ViewModels.RecIM
         public string Name { get; set; }
         public int Win { get; set; }  
         public int Loss { get; set; }
+        public int Tie { get; set; }
     }
 }

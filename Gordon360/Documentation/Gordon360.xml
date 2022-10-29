@@ -752,6 +752,28 @@
              <param></param>
              <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetSeries(System.Boolean)">
+            <summary>
+            Queries all Series with an optional active tag
+            </summary>
+            <param name="active"></param>
+            <returns>Enumerable Set of Series</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetSeriesByID(System.Int32)">
+            <summary>
+            Gets specific Series
+            </summary>
+            <param name="seriesID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.CreateSeries(Gordon360.Models.ViewModels.RecIM.CreateSeriesViewModel,System.Nullable{System.Int32})">
+            <summary>
+            Creates Series and associated SeriesTeam Models
+            </summary>
+            <param name="s">CreateSeriesViewModel</param>
+            <param name="referenceSeriesID">ID of Series, used to select specific Teams </param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.RequestsController.GetAsync">
             <summary>
             Gets all Membership Request Objects
@@ -2006,7 +2028,7 @@
         </member>
         <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleSingleElimination(System.Int32)">
             difference between single and double elimination is that single elim only
-            needs log(n) matches with double elim needing to schedule twice that but 
+            needs log(n) rounds with double elim needing to schedule twice that but 
             handle the logic of losers bracket
         </member>
         <member name="M:Gordon360.Services.SaveService.GetUpcoming(System.String)">

@@ -15,11 +15,12 @@ namespace Gordon360.Services.RecIM
     public class ActivityService : IActivityService
     {
         private readonly CCTContext _context;
+        private readonly ISeriesService _seriesService;
 
-        public ActivityService(CCTContext context)
-        {
-
+        public ActivityService(CCTContext context, ISeriesService seriesService)
+        { 
             _context = context;
+            _seriesService = seriesService;
         }
 
 
@@ -86,6 +87,18 @@ namespace Gordon360.Services.RecIM
                                 SoloRegistration = a.SoloRegistration,
                                 Logo = a.Logo,
                                 Completed = a.Completed,
+                                /*
+                                 * CURRENTLY UP FOR DEBATE:
+                                 * 1st methodology uses seriesService,
+                                 * 2nd methodology is faster due to FK relations but
+                                 * has repeated code from seriesService
+                                 * 
+                                 * currently will be running on speed as a priority until
+                                 * decision has been made.
+                                 */
+
+                                //Series = _seriesService.GetSeries(false)
+                                //        .Where(s => s.ActivityID == a.ID),
                                 Series = a.Series.Select(s => new SeriesViewModel
                                 {
                                     ID = s.ID,
@@ -110,17 +123,13 @@ namespace Gordon360.Services.RecIM
                                             ID = mt.TeamID,
                                             Name = _context.Team
                                                     .FirstOrDefault(t => t.ID == mt.TeamID)
-                                                    .Name,               
+                                                    .Name,
                                             TeamRecord = _context.SeriesTeam
                                                             .Where(st => st.SeriesID == s.ID && st.TeamID == mt.TeamID)
                                                             .Select(st => new TeamRecordViewModel
                                                             {
-                                                                Win = st.Wins,
-                                                                //Loss = _context.SeriesTeam
-                                                                //        .Where(l => l.TeamID == st.TeamID 
-                                                                //                && l.SeriesID == s.ID
-                                                                //                )
-                                                                //        .Count() - st.Wins
+                                                                Win = st.Win,
+                                                                Loss = st.Loss ?? 0,
                                                             })
                                         })
                                     }),
@@ -130,12 +139,11 @@ namespace Gordon360.Services.RecIM
                                         Name = _context.Team
                                                 .FirstOrDefault(t => t.ID == st.TeamID)
                                                 .Name,
-                                        Win = st.Wins,
-                                        Loss = _context.SeriesTeam
-                                                .Where(l => l.TeamID == st.TeamID && l.SeriesID == s.ID)
-                                                .Count() - st.Wins
+                                        Win = st.Win,
+                                        Loss = st.Loss ?? 0
                                     }).OrderByDescending(st => st.Win)
                                 }),
+
                                 Team = a.Team.Select(t => new TeamViewModel
                                 {
                                     ID = t.ID,

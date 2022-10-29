@@ -659,6 +659,8 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<SeriesTeam>(entity =>
             {
+                entity.Property(e => e.Loss).HasDefaultValueSql("((0))");
+
                 entity.HasOne(d => d.Series)
                     .WithMany(p => p.SeriesTeam)
                     .HasForeignKey(d => d.SeriesID)
