@@ -52,29 +52,45 @@ namespace Gordon360.Services.RecIM
                                    .FirstOrDefault(t => t.ID == mt.TeamID)
                                    .Name,
                                 Participant = mt.Team.ParticipantTeam
-                                    .Join(_context.ACCOUNT,
-                                            pt => pt.ParticipantID,
-                                            a => a.account_id,
-                                            (pt,a) => new ParticipantViewModel
+                                    .Select(pt => new ParticipantViewModel
                                             {
-                                                ADUserName = a.AD_Username,
-                                                Email = a.email,
+                                                ADUserName = _context.ACCOUNT
+                                                    .FirstOrDefault(a => a.account_id == pt.ParticipantID)
+                                                    .AD_Username,
+                                                Email = _context.ACCOUNT
+                                                    .FirstOrDefault(a => a.account_id == pt.ParticipantID)
+                                                    .email,
                                                 Role = _context.RoleType
                                                 .FirstOrDefault(rt => rt.ID ==pt.RoleType)
                                                 .Description
                                             }),
+                                // CODE BELOW DOES BASICALLY THE SAME AS THE ABOVE, BUT WILL NOT WORK WITHOUT REAL
+                                // GORDON ID's AS THE JOIN IS ON REAL DATA AND CANNOT WORK WITH NULL PROPERTIES
+                                // AVAILABLE CODE FOR THE FURTURE (POSSIBLY) THE BIG PLUS IS THAT IT IS JUST CLEANER
+                                //Participant = mt.Team.ParticipantTeam
+                                //    .Join(_context.ACCOUNT,
+                                //            pt => pt.ParticipantID,
+                                //            a => a.account_id,
+                                //            (pt, a) => new ParticipantViewModel
+                                //            {
+                                //                ADUserName = a.AD_Username,
+                                //                Email = a.email,
+                                //                Role = _context.RoleType
+                                //                .FirstOrDefault(rt => rt.ID == pt.RoleType)
+                                //                .Description
+                                //            }),
                                 MatchHistory = _context.Match.Where(m0 => m0.StatusID == 6)//6 is completed
                                     .Join(_context.MatchTeam.Where(q => q.TeamID == mt.TeamID).Join(
                                             _context.MatchTeam,
                                             mt0 => mt0.MatchID,
                                             mt1 => mt1.MatchID,
-                                            (mt0,mt1) => new
+                                            (mt0, mt1) => new
                                             {
                                                 MatchID = mt0.MatchID,
                                                 OwnScore = mt0.Score,
                                                 OpposingID = mt1.TeamID,
                                                 OpposingScore = mt1.Score,
-                                                Status = mt0.Score > mt1.Score 
+                                                Status = mt0.Score > mt1.Score
                                                         ? "Win"
                                                         : mt0.Score < mt1.Score
                                                             ? "Lose"
@@ -82,7 +98,7 @@ namespace Gordon360.Services.RecIM
                                             }),
                                         match => match.ID,
                                         matchTeamJoin => matchTeamJoin.MatchID,
-                                        (match,matchTeamJoin) => new TeamMatchHistoryViewModel
+                                        (match, matchTeamJoin) => new TeamMatchHistoryViewModel
                                         {
                                             opponent = _context.Team.Where(t => t.ID == matchTeamJoin.OpposingID)
                                                 .Select(o => new TeamViewModel
@@ -105,7 +121,7 @@ namespace Gordon360.Services.RecIM
                                                Win = st.Win,
                                                Loss = st.Loss ?? 0,
                                            })
-                            }),
+                            })
                         }).FirstOrDefault();
             return match; 
         }

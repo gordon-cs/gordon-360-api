@@ -53,7 +53,7 @@ namespace Gordon360.Services.RecIM
                                     Tie = _context.SeriesTeam
                                             .Where(total => total.TeamID == st.TeamID && total.SeriesID == s.ID)
                                             .Count() - st.Win - (st.Loss ?? 0)
-                                }).OrderByDescending(st => st.Win)
+                                }).OrderByDescending(st => st.Win).AsEnumerable()
                             });
             if (active) {
                 series = series.Where(s => s.StartDate < DateTime.Now
@@ -89,9 +89,9 @@ namespace Gordon360.Services.RecIM
                                 .Name,
                         Win = st.Win,
                         Loss = st.Loss ?? 0,
-                        Tie = _context.SeriesTeam
-                                .Where(total => total.TeamID == st.TeamID && total.SeriesID == s.ID)
-                                .Count() - st.Win - (st.Loss ?? 0)
+                        //Tie = _context.SeriesTeam
+                        //        .Where(total => total.TeamID == st.TeamID && total.SeriesID == s.ID)
+                        //        .Count() - st.Win - (st.Loss ?? 0)
                     }).OrderByDescending(st => st.Win).AsEnumerable()
                 });
             return series;
