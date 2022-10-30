@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers.RecIM
 {
     [Route("api/recim/[controller]")]
-    [AllowAnonymous]
     public class MatchesController : GordonControllerBase
     {
         private readonly IMatchService _matchService;
