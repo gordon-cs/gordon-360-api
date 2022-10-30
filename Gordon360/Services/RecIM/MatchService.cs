@@ -171,7 +171,7 @@ namespace Gordon360.Services.RecIM
         }
         public async Task UpdateTeamStats(UpdateMatchTeamViewModel vm)
         {
-            var teamstats = _context.MatchTeam.FirstOrDefault(mt => mt.ID == vm.ID);
+            var teamstats = _context.MatchTeam.FirstOrDefault(mt => mt.MatchID == vm.MatchID && mt.TeamID == vm.TeamID);
             teamstats.Score = vm.Score ?? teamstats.Score;
             teamstats.Sportsmanship = vm.Sportsmanship ?? teamstats.Sportsmanship;
 
