@@ -39,33 +39,7 @@ namespace Gordon360.Services.RecIM
                                             .FirstOrDefault(ss => ss.ID == s.StatusID)
                                             .Description,
                                 ActivityID = s.ActivityID,
-                                Match = s.Match.Select(m => new MatchViewModel
-                                {
-                                    ID = m.ID,
-                                    Time = m.Time,
-                                    Status = _context.MatchStatus
-                                                .FirstOrDefault(ms => ms.ID == m.StatusID)
-                                                .Description,
-                                    Team = m.MatchTeam.Select(mt => new TeamViewModel
-                                    {
-                                        ID = mt.TeamID,
-                                        Name = _context.Team
-                                                .FirstOrDefault(t => t.ID == mt.TeamID)
-                                                .Name,
-                                        TeamRecord = _context.SeriesTeam
-                                                        .Where(st => st.SeriesID == s.ID && st.TeamID == mt.TeamID)
-                                                        .Select(st => new TeamRecordViewModel
-                                                        {
-                                                            Win = st.Win,
-                                                            Loss = st.Loss ?? 0,
-                                                            //Tie = _context.SeriesTeam
-                                                            //        .Where(l => l.TeamID == st.TeamID
-                                                            //                && l.SeriesID == s.ID
-                                                            //                )
-                                                            //        .Count() - st.Win - (st.Loss ?? 0)
-                                                        })
-                                    })
-                                }),
+                                Match = _matchService.GetMatchBySeriesID(s.ID),
                                 TeamStanding = _context.SeriesTeam
                                 .Where(st => st.SeriesID == s.ID)
                                 .Select(st => new TeamRecordViewModel
@@ -79,12 +53,47 @@ namespace Gordon360.Services.RecIM
                                     Tie = _context.SeriesTeam
                                             .Where(total => total.TeamID == st.TeamID && total.SeriesID == s.ID)
                                             .Count() - st.Win - (st.Loss ?? 0)
-                                }).OrderByDescending(st => st.Win).AsEnumerable()
+                                }).OrderByDescending(st => st.Win)
                             });
             if (active) {
                 series = series.Where(s => s.StartDate < DateTime.Now
                                         && s.EndDate > DateTime.Now);
             }
+            return series;
+        }
+        public IEnumerable<SeriesViewModel> GetSeriesByActivityID(int activityID)
+        {
+            var series = _context.Series
+                .Where(s => s.ActivityID == activityID)
+                .Select(s => new SeriesViewModel
+                {
+                    ID = s.ID,
+                    Name = s.Name,
+                    StartDate = s.StartDate,
+                    EndDate = s.EndDate,
+                    Type = _context.SeriesType
+                                .FirstOrDefault(st => st.ID == s.TypeID)
+                                .Description,
+                    Status = _context.SeriesStatus
+                                .FirstOrDefault(ss => ss.ID == s.StatusID)
+                                .Description,
+                    ActivityID = s.ActivityID,
+                    Match = _matchService.GetMatchBySeriesID(s.ID),
+                    TeamStanding = _context.SeriesTeam
+                    .Where(st => st.SeriesID == s.ID)
+                    .Select(st => new TeamRecordViewModel
+                    {
+                        ID = st.ID,
+                        Name = _context.Team
+                                .FirstOrDefault(t => t.ID == st.TeamID)
+                                .Name,
+                        Win = st.Win,
+                        Loss = st.Loss ?? 0,
+                        Tie = _context.SeriesTeam
+                                .Where(total => total.TeamID == st.TeamID && total.SeriesID == s.ID)
+                                .Count() - st.Win - (st.Loss ?? 0)
+                    }).OrderByDescending(st => st.Win).AsEnumerable()
+                });
             return series;
         }
         public SeriesViewModel GetSeriesByID(int seriesID)
@@ -190,18 +199,13 @@ namespace Gordon360.Services.RecIM
         {
             var teams = _context.SeriesTeam
                 .Where(st => st.ID == seriesID)
-                .Select(st => new
-                {
-                    ID = st.ID
-                });
+                .Select(st => st.ID);
             var series = _context.Series
                 .FirstOrDefault(s => s.ID == seriesID);
             var match = new CreateMatchViewModel
             {
                 Time = series.StartDate,
-                SportID = _context.Activity
-                        .FirstOrDefault(a => a.ID == series.ActivityID)
-                        .SportID,
+                SeriesID = seriesID,
                 //to be replaced by proper match surface scheduler
                 SurfaceID = 1,
                 TeamIDs = teams

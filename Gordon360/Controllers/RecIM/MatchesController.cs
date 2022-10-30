@@ -23,40 +23,57 @@ namespace Gordon360.Controllers.RecIM
             _matchService = matchService;
         }
 
-
+        /// <summary>
+        /// Not implemented (yet) might be removed
+        /// </summary>
+        /// <param name="day"></param>
+        /// <param name="active"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         [HttpGet]
         [Route("")]
         public ActionResult<IEnumerable<MatchViewModel>> GetMatches([FromQuery] DateTime? day, bool active)
         {
-            return null;
+            throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Fetches Match by MatchID
+        /// </summary>
+        /// <param name="matchID"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{matchID}")]
         public ActionResult<MatchViewModel> GetMatchByID(int matchID)
         {
-            return null;
+            var match = _matchService.GetMatchByID(matchID);
+            return Ok(match);
         }
 
+        /// <summary>
+        /// Updates Match Scores, Sportsmanship Ratings, and Team Status
+        /// </summary>
+        /// <param name="m"></param>
+        /// <returns></returns>
         [HttpPut]
-        [Route("score")]
-        public Task<ActionResult> UpdateTeamScore(MatchTeamViewModel m)
+        [Route("")]
+        public async Task<ActionResult> UpdateStats(UpdateMatchTeamViewModel m)
         {
-            return null;
+            await _matchService.UpdateTeamStats(m);
+            return Ok();
         }
 
-        [HttpPut]
-        [Route("sportmanship")]
-        public Task<ActionResult> UpdateTeamSportmanship(MatchTeamViewModel m)
-        {
-            return null;
-        }
-
+        /// <summary>
+        /// Creates Match
+        /// </summary>
+        /// <param name="m"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("")]
         public async Task<ActionResult> CreateMatch(CreateMatchViewModel m)
         {
-            return null;
+            await _matchService.PostMatch(m);
+            return Ok();
         }
 
     }

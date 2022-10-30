@@ -752,6 +752,36 @@
              <param></param>
              <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetMatches(System.Nullable{System.DateTime},System.Boolean)">
+            <summary>
+            Not implemented (yet) might be removed
+            </summary>
+            <param name="day"></param>
+            <param name="active"></param>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetMatchByID(System.Int32)">
+            <summary>
+            Fetches Match by MatchID
+            </summary>
+            <param name="matchID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.UpdateStats(Gordon360.Models.ViewModels.RecIM.UpdateMatchTeamViewModel)">
+            <summary>
+            Updates Match Scores, Sportsmanship Ratings, and Team Status
+            </summary>
+            <param name="m"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.CreateMatch(Gordon360.Models.ViewModels.RecIM.CreateMatchViewModel)">
+            <summary>
+            Creates Match
+            </summary>
+            <param name="m"></param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetSeries(System.Boolean)">
             <summary>
             Queries all Series with an optional active tag

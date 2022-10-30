@@ -6,10 +6,11 @@ namespace Gordon360.Models.ViewModels.RecIM
 {
     public class TeamMatchHistoryViewModel
     {
+        public TeamViewModel opponent { get; set; }
         public int OwnScore { get; set; }
         public int OpposingScore { get; set; }
         public string Status { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime Time { get; set; }
         
     }
 }
