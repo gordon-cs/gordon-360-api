@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers.RecIM
 {
     [Route("api/recim/[controller]")]
+    [AllowAnonymous]
     public class ActivitiesController : GordonControllerBase
     {
         private readonly IActivityService _activityService;
@@ -76,7 +77,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPut]
         [Route("")]
-        public async Task<ActionResult> UpdateActivity(Activity a)
+        public async Task<ActionResult> UpdateActivity(UpdateActivityViewModel a)
         {
             await _activityService.UpdateActivity(a);
             return Ok(a.ID);

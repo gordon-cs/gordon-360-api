@@ -9,6 +9,7 @@ namespace Gordon360.Models.ViewModels.RecIM
     {
         public string ADUserName { get; set; }
         public string Email { get; set; }
+        public string Role { get; set; }
 
         public static implicit operator ParticipantViewModel(ACCOUNT a)
         {

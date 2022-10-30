@@ -103,26 +103,20 @@ namespace Gordon360.Services.RecIM
                             .FirstOrDefault();
             return activity;
         }
-        public async Task UpdateActivity(Activity updatedActivity)
+        public async Task UpdateActivity(UpdateActivityViewModel updatedActivity)
         {
             var activity = await _context.Activity.FindAsync(updatedActivity.ID);
-            activity.Name = updatedActivity.Name == null ? activity.Name : updatedActivity.Name;
-            activity.Logo = updatedActivity.Logo == null ? activity.Logo : updatedActivity.Logo;
-            activity.RegistrationStart = updatedActivity.RegistrationStart == default
-                                            ? activity.RegistrationStart
-                                            : updatedActivity.RegistrationStart;
-            activity.RegistrationEnd = updatedActivity.RegistrationEnd == default
-                                  ? activity.RegistrationEnd
-                                  : updatedActivity.RegistrationEnd;
-            activity.SportID = updatedActivity.SportID == default
-                                ? activity.SportID
-                                : updatedActivity.SportID;
+            activity.Name = updatedActivity.Name ?? activity.Name;
+            activity.Logo = updatedActivity.Logo ?? activity.Logo;
+            activity.RegistrationStart = updatedActivity.RegistrationStart ?? activity.RegistrationStart;
+            activity.RegistrationEnd = updatedActivity.RegistrationEnd ?? activity.RegistrationEnd;
+            activity.SportID = updatedActivity.SportID ?? activity.SportID;
             activity.StatusID = updatedActivity.StatusID ?? activity.StatusID;
             activity.MinCapacity = updatedActivity.MinCapacity ?? activity.MinCapacity;
             activity.MaxCapacity = updatedActivity.MaxCapacity ?? activity.MaxCapacity;
             activity.MaxCapacity = updatedActivity.MaxCapacity ?? activity.MaxCapacity;
-            activity.SoloRegistration = updatedActivity.SoloRegistration;
-            activity.Completed = updatedActivity.Completed;
+            activity.SoloRegistration = updatedActivity.SoloRegistration ?? activity.SoloRegistration;
+            activity.Completed = updatedActivity.Completed ?? activity.Completed;
 
             await _context.SaveChangesAsync();
         }

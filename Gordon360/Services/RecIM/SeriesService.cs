@@ -124,6 +124,10 @@ namespace Gordon360.Services.RecIM
             await CreateSeriesTeamMapping(teams, series.ID);
             return series.ID;
         }
+        public async Task UpdateSeries()
+        {
+            throw new NotImplementedException();
+        }
 
         private async Task CreateSeriesTeamMapping(IEnumerable<int> teams, int seriesID)
         {
@@ -212,8 +216,6 @@ namespace Gordon360.Services.RecIM
             };
             await _matchService.PostMatch(match); 
         }
-
-        
     }
 
 }

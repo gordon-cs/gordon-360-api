@@ -51,6 +51,18 @@ namespace Gordon360.Services.RecIM
                                 Name = _context.Team
                                    .FirstOrDefault(t => t.ID == mt.TeamID)
                                    .Name,
+                                Participant = mt.Team.ParticipantTeam
+                                    .Join(_context.ACCOUNT,
+                                            pt => pt.ParticipantID,
+                                            a => a.account_id,
+                                            (pt,a) => new ParticipantViewModel
+                                            {
+                                                ADUserName = a.AD_Username,
+                                                Email = a.email,
+                                                Role = _context.RoleType
+                                                .FirstOrDefault(rt => rt.ID ==pt.RoleType)
+                                                .Description
+                                            }),
                                 MatchHistory = _context.Match.Where(m0 => m0.StatusID == 6)//6 is completed
                                     .Join(_context.MatchTeam.Where(q => q.TeamID == mt.TeamID).Join(
                                             _context.MatchTeam,
@@ -181,6 +193,7 @@ namespace Gordon360.Services.RecIM
                     .FirstOrDefault(mts => mts.Description == vm.Status)
                     .ID;
             }
+            await _context.SaveChangesAsync();
         }
     }
 

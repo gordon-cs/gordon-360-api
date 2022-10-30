@@ -740,7 +740,7 @@
             <param name="a">CreateActivityViewModel object with appropriate values</param>
             <returns>Posted Activity ID</returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.UpdateActivity(Gordon360.Models.CCT.Activity)">
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.UpdateActivity(Gordon360.Models.ViewModels.RecIM.UpdateActivityViewModel)">
             <summary>
             Updates Activity based on input
             </summary>

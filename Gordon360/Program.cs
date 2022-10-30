@@ -52,11 +52,6 @@ builder.Services.AddScoped<RecIM.ISeriesService, RecIM.SeriesService>();
 builder.Services.AddScoped<RecIM.IMatchService, RecIM.MatchService>();
 
 builder.Services.AddMemoryCache();
-builder.Services.AddMvc().AddNewtonsoftJson(options =>
-    options.SerializerSettings.ReferenceLoopHandling
-        = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-);
-
 
 var app = builder.Build();
 

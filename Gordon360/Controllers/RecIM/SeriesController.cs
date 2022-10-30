@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers.RecIM
 {
     [Route("api/recim/[controller]")]
+    [AllowAnonymous]
     public class SeriesController : GordonControllerBase
     {
         private readonly ISeriesService _seriesService;
@@ -46,6 +47,14 @@ namespace Gordon360.Controllers.RecIM
         {
             var result = _seriesService.GetSeriesByID(seriesID);
             return Ok(result);
+        }
+
+        [HttpPut]
+        [Route("")]
+        public async Task<ActionResult> UpdateSeries()
+        {
+            await _seriesService.UpdateSeries();
+            return Ok();
         }
 
         /// <summary>

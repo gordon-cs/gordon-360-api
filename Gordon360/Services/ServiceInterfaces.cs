@@ -3,6 +3,7 @@ using Gordon360.Models.MyGordon;
 using Gordon360.Models.ViewModels;
 using Gordon360.Models.ViewModels.RecIM;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -313,7 +314,7 @@ namespace Gordon360.Services
             IEnumerable<Models.ViewModels.RecIM.ActivityViewModel> GetActivities();
             Models.ViewModels.RecIM.ActivityViewModel? GetActivityByID(int ActivityID);
             IEnumerable<Models.ViewModels.RecIM.ActivityViewModel> GetActivitiesByTime(DateTime? time);
-            Task UpdateActivity(Activity updatedActivity);
+            Task UpdateActivity(UpdateActivityViewModel updatedActivity);
             Task<int> PostActivity(CreateActivityViewModel a);
 
         }
@@ -323,6 +324,7 @@ namespace Gordon360.Services
             IEnumerable<SeriesViewModel> GetSeriesByActivityID(int activityID);
             SeriesViewModel GetSeriesByID(int seriesID);
             Task<int> PostSeries(CreateSeriesViewModel newSeries, int? referenceSeriesID);
+            Task UpdateSeries();
             Task ScheduleMatches(int seriesID);
         }
 
