@@ -51,9 +51,9 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpPut]
         [Route("")]
-        public async Task<ActionResult> UpdateSeries()
+        public async Task<ActionResult> UpdateSeries(UpdateSeriesViewModel s)
         {
-            await _seriesService.UpdateSeries();
+            await _seriesService.UpdateSeries(s);
             return Ok();
         }
 

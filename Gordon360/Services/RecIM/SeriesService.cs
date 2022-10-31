@@ -53,7 +53,7 @@ namespace Gordon360.Services.RecIM
                                     Tie = _context.SeriesTeam
                                             .Where(total => total.TeamID == st.TeamID && total.SeriesID == s.ID)
                                             .Count() - st.Win - (st.Loss ?? 0)
-                                }).OrderByDescending(st => st.Win)
+                                }).OrderByDescending(st => st.Win).AsEnumerable()
                             });
             if (active) {
                 series = series.Where(s => s.StartDate < DateTime.Now
@@ -89,9 +89,9 @@ namespace Gordon360.Services.RecIM
                                 .Name,
                         Win = st.Win,
                         Loss = st.Loss ?? 0,
-                        Tie = _context.SeriesTeam
-                                .Where(total => total.TeamID == st.TeamID && total.SeriesID == s.ID)
-                                .Count() - st.Win - (st.Loss ?? 0)
+                        //Tie = _context.SeriesTeam
+                        //        .Where(total => total.TeamID == st.TeamID && total.SeriesID == s.ID)
+                        //        .Count() - st.Win - (st.Loss ?? 0)
                     }).OrderByDescending(st => st.Win).AsEnumerable()
                 });
             return series;
@@ -124,9 +124,16 @@ namespace Gordon360.Services.RecIM
             await CreateSeriesTeamMapping(teams, series.ID);
             return series.ID;
         }
-        public async Task UpdateSeries()
+        public async Task UpdateSeries(UpdateSeriesViewModel update)
         {
-            throw new NotImplementedException();
+            var s = await _context.Series.FindAsync(update.ID);
+            s.Name = update.Name ?? s.Name;
+            s.StartDate = update.StartDate ?? s.StartDate;
+            s.EndDate = update.EndDate ?? s.EndDate;
+            s.Description = update.Description ?? s.Description;
+            s.StatusID = update.StatusID ?? s.StatusID;
+
+            await _context.SaveChangesAsync();
         }
 
         private async Task CreateSeriesTeamMapping(IEnumerable<int> teams, int seriesID)
