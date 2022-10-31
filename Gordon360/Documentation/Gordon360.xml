@@ -211,16 +211,20 @@
             </summary>
             <returns> All minors</returns>
         </member>
-        <member name="M:Gordon360.Controllers.AdvancedSearchController.GetStates">
+        <member name="M:Gordon360.Controllers.AdvancedSearchController.DEPRECATED_GetStates">
             <summary>
             Return a list states.
             </summary>
+            
+            <remarks>DEPRECATED: Use AddressController instead</remarks>
             <returns> All states</returns>
         </member>
-        <member name="M:Gordon360.Controllers.AdvancedSearchController.GetCountries">
+        <member name="M:Gordon360.Controllers.AdvancedSearchController.DEPREACTED_GetCountries">
             <summary>
             Return a list countries.
             </summary>
+            
+            <remarks>DEPRECATED: Use AddressController instead</remarks>
             <returns> All countries</returns>
         </member>
         <member name="M:Gordon360.Controllers.AdvancedSearchController.GetDepartments">
@@ -234,11 +238,6 @@
             Return a list buildings.
             </summary>
             <returns> All buildings</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.ContentManagementController.GetSliderContent">
-            <summary>Get all the slider content for the dashboard slider</summary>
-            <returns>A list of all the slides for the slider</returns>
-            <remarks>Queries the database for all entries in slider table</remarks>
         </member>
         <member name="M:Gordon360.Controllers.ContentManagementController.GetBannerSlides">
             <summary>Get all the banner slides for the dashboard banner</summary>
@@ -804,6 +803,11 @@
             <param name="referenceSeriesID">ID of Series, used to select specific Teams </param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.GetTeamByID(System.Int32)">
+            <summary>Get a Team object by ID number</summary>
+             <param name="teamID"> Team ID Number</param>
+             <returns>Team object</returns>
+        </member>
         <member name="M:Gordon360.Controllers.RequestsController.GetAsync">
             <summary>
             Gets all Membership Request Objects
@@ -1188,6 +1192,33 @@
             <param name="username">The AD username associated with the account.</param>
             <returns>the student account information</returns>
         </member>
+        <member name="M:Gordon360.Services.AccountService.AdvancedSearch(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.AdvancedSearchViewModel},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Given a list of accounts, and search params, return all the accounts that match those search params.
+            </summary>
+            <param name="accounts">The accounts that should be searched, converted to an AdvancedSearchViewModel</param>
+            <param name="firstname">The firstname search param</param>
+            <param name="lastname">The lastname search param</param>
+            <param name="major">The major search param</param>
+            <param name="minor">The minor search param</param>
+            <param name="hall">The hall search param</param>
+            <param name="classType">The class type search param, e.g. 'Sophomore', 'Senior', 'Undergraduate Conferred'</param>
+            <param name="homeCity">The home city search param</param>
+            <param name="state">The state search param</param>
+            <param name="country">The country search param</param>
+            <param name="department">The department search param</param>
+            <param name="building">The building search param</param>
+            <returns>The accounts from the provided list that match the given search params</returns>
+        </member>
+        <member name="M:Gordon360.Services.AccountService.GetAccountsToSearch(System.Collections.Generic.List{System.String},System.Collections.Generic.IEnumerable{Gordon360.Authorization.AuthGroup},System.String)">
+            <summary>
+            Get the list of accounts a user can search, based on the types of accounts they want to search, their authorization, and whether they're searching sensitive info.
+            </summary>
+            <param name="accountTypes">A list of account types that will be searched: 'student', 'alumni', and/or 'facstaff'</param>
+            <param name="authGroups">The authorization groups of the searching user, to decide what accounts they are permitted to search</param>
+            <param name="homeCity">The home city search param, since it is considered sensitive info</param>
+            <returns>The list of accounts that may be searched, converted to AdvancedSearchViewModels.</returns>
+        </member>
         <member name="M:Gordon360.Services.AccountService.GetAllBasicInfoAsync">
             <summary>
             Get basic info for all accounts
@@ -1369,13 +1400,6 @@
             <summary>
             Service class that facilitates data (specifically, site content) passing between the ContentManagementController and the database model.
             </summary>
-        </member>
-        <member name="M:Gordon360.Services.ContentManagementService.DEPRECATED_GetSliderContent">
-            <summary>
-            Fetches the dashboard slider content from the database.
-            </summary>
-            <returns>If found, returns a set of SliderViewModel's, based on each slide entry in the db. 
-            If not returns an empty IEnumerable.</returns>
         </member>
         <member name="M:Gordon360.Services.ContentManagementService.GetBannerSlides">
             <summary>
