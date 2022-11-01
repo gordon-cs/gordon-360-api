@@ -28,13 +28,15 @@ namespace Gordon360.Services
         private readonly IConfiguration _config;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IServer _server;
+        private readonly ServerUtils _serverUtils;
 
-        public ActivityService(CCTContext context, IConfiguration config, IWebHostEnvironment webHostEnvironment, IServer server)
+        public ActivityService(CCTContext context, IConfiguration config, IWebHostEnvironment webHostEnvironment, IServer server, ServerUtils serverUtils)
         {
             _context = context;
             _config = config;
             _webHostEnvironment = webHostEnvironment;
             _server = server;
+            _serverUtils = serverUtils;
         }
         /// <summary>
         /// Fetches a single activity record whose id matches the id provided as an argument
@@ -312,8 +314,7 @@ namespace Gordon360.Services
             // Put current DateTime in filename so the browser knows it's a new file and refreshes cache
             var filename = $"canvasImage_{DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}.png";
             var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", involvement.ACT_CDE.Trim(), filename);
-            var baseUrl = _server.Features.Get<IServerAddressesFeature>()?.Addresses.FirstOrDefault(a => a.Contains("https"));
-            var url = $"{baseUrl}/browseable/uploads/{involvement.ACT_CDE.Trim()}/{filename}";
+            var url = $"{_serverUtils.GetAddress()}/browseable/uploads/{involvement.ACT_CDE.Trim()}/{filename}";
 
             //delete old image file if it exists.
             if (Path.GetDirectoryName(imagePath) is string directory && Directory.Exists(directory))
@@ -369,5 +370,20 @@ namespace Gordon360.Services
         }
 
 
+    }
+
+    public class ServerUtils
+    {
+        private readonly IServer _server;
+
+        public ServerUtils(IServer server)
+        {
+            _server = server;
+        }
+
+        public string GetAddress() {
+            var baseUrl = _server.Features.Get<IServerAddressesFeature>()?.Addresses.FirstOrDefault(a => a.Contains("https"));
+            return baseUrl;
+        }
     }
 }
