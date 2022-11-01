@@ -312,7 +312,8 @@ namespace Gordon360.Services
             // Put current DateTime in filename so the browser knows it's a new file and refreshes cache
             var filename = $"canvasImage_{DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}.png";
             var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", involvement.ACT_CDE.Trim(), filename);
-            var url = $"{ _server.Features.Get<IServerAddressesFeature>()?.Addresses.FirstOrDefault(a => a.Contains("https"))}/browseable/uploads/{involvement.ACT_CDE.Trim()}/{filename}";
+            var baseUrl = _server.Features.Get<IServerAddressesFeature>()?.Addresses.FirstOrDefault(a => a.Contains("https"));
+            var url = $"{baseUrl}/browseable/uploads/{involvement.ACT_CDE.Trim()}/{filename}";
 
             //delete old image file if it exists.
             if (Path.GetDirectoryName(imagePath) is string directory && Directory.Exists(directory))

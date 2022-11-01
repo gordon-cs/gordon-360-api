@@ -29,7 +29,7 @@ builder.Services.AddSwaggerGen();
 string corsPolicy = "360UI";
 builder.Services.AddCors(p => p.AddPolicy(name: corsPolicy, corsBuilder =>
 {
-    corsBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+    corsBuilder.WithOrigins(builder.Configuration.GetValue<string>("AllowedOrigin")).AllowAnyMethod().AllowAnyHeader();
 }));
 
 builder.Services.AddDbContext<CCTContext>(options =>

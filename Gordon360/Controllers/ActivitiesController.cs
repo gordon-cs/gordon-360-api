@@ -249,7 +249,6 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("{involvement_code}/image")]
-        [AllowAnonymous]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
         public async Task<ActionResult<ActivityInfoViewModel>> PostImageAsync(string involvement_code, [FromForm] IFormFile image)
         {
