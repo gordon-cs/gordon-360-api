@@ -50,6 +50,8 @@ builder.Services.AddScoped<IAddressesService, AddressesService>();
 builder.Services.AddScoped<RecIM.IActivityService, RecIM.ActivityService>();
 builder.Services.AddScoped<RecIM.ISeriesService, RecIM.SeriesService>();
 builder.Services.AddScoped<RecIM.IMatchService, RecIM.MatchService>();
+builder.Services.AddScoped<RecIM.ITeamService, RecIM.TeamService>();
+
 
 builder.Services.AddMemoryCache();
 

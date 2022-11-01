@@ -12,10 +12,10 @@ namespace Gordon360.Models.ViewModels.RecIM
         //private may be removed if deemed unecessary by customer
         public bool Private { get; set; }
         public string Logo { get; set; }
-        public virtual IEnumerable<MatchViewModel>? Match { get; set; }
-        public virtual IEnumerable<ParticipantViewModel>? Participant { get; set; }
-        public virtual IEnumerable<TeamMatchHistoryViewModel>? MatchHistory { get; set; }
-        public virtual IEnumerable<TeamRecordViewModel>? TeamRecord { get; set; }
+        public virtual IEnumerable<MatchViewModel> Match { get; set; }
+        public virtual IEnumerable<ParticipantViewModel> Participant { get; set; }
+        public virtual IEnumerable<TeamMatchHistoryViewModel> MatchHistory { get; set; }
+        public virtual IEnumerable<TeamRecordViewModel> TeamRecord { get; set; }
 
     }
 }
