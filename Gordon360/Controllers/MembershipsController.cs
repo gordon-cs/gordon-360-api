@@ -190,7 +190,7 @@ namespace Gordon360.Controllers
         [HttpDelete]
         [Route("{membershipID}")]
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.MEMBERSHIP)]
-        public ActionResult<MEMBERSHIP> Delete(int membershipID)
+        public ActionResult<MembershipView> Delete(int membershipID)
         {
             var result = _membershipService.Delete(membershipID);
 
