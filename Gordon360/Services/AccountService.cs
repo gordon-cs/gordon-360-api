@@ -7,6 +7,7 @@ using Gordon360.Static.Names;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Gordon360.Extensions.System;
 
 namespace Gordon360.Services
 {
@@ -83,29 +84,45 @@ namespace Gordon360.Services
             return account;
         }
 
+        /// <summary>
+        /// Given a list of accounts, and search params, return all the accounts that match those search params.
+        /// </summary>
+        /// <param name="accounts">The accounts that should be searched, converted to an AdvancedSearchViewModel</param>
+        /// <param name="firstname">The firstname search param</param>
+        /// <param name="lastname">The lastname search param</param>
+        /// <param name="major">The major search param</param>
+        /// <param name="minor">The minor search param</param>
+        /// <param name="hall">The hall search param</param>
+        /// <param name="classType">The class type search param, e.g. 'Sophomore', 'Senior', 'Undergraduate Conferred'</param>
+        /// <param name="homeCity">The home city search param</param>
+        /// <param name="state">The state search param</param>
+        /// <param name="country">The country search param</param>
+        /// <param name="department">The department search param</param>
+        /// <param name="building">The building search param</param>
+        /// <returns>The accounts from the provided list that match the given search params</returns>
         public IEnumerable<AdvancedSearchViewModel> AdvancedSearch(
-            List<string> accountTypes,
-            string firstname,
-            string lastname,
-            string major,
-            string minor,
-            string hall,
-            string classType,
-            string homeCity,
-            string state,
-            string country,
-            string department,
-            string building)
+            IEnumerable<AdvancedSearchViewModel> accounts,
+            string? firstname,
+            string? lastname,
+            string? major,
+            string? minor,
+            string? hall,
+            string? classType,
+            string? homeCity,
+            string? state,
+            string? country,
+            string? department,
+            string? building)
         {
             // Accept common town abbreviations in advanced people search
             // East = E, West = W, South = S, North = N
             if (
                 !string.IsNullOrEmpty(homeCity)
                 && (
-                  homeCity.StartsWith("e ") ||
-                  homeCity.StartsWith("w ") ||
-                  homeCity.StartsWith("s ") ||
-                  homeCity.StartsWith("n ")
+                  homeCity.StartsWithIgnoreCase("e ") ||
+                  homeCity.StartsWithIgnoreCase("w ") ||
+                  homeCity.StartsWithIgnoreCase("s ") ||
+                  homeCity.StartsWithIgnoreCase("n ")
                 )
               )
             {
@@ -117,67 +134,94 @@ namespace Gordon360.Services
                         .Replace("n ", "north ");
             }
 
-            // Create accounts viewmodel to search
-            IEnumerable<AdvancedSearchViewModel> accounts = new List<AdvancedSearchViewModel>();
-            if (accountTypes.Contains("student"))
+            if (firstname is not null)
             {
-                accounts = accounts.Union(GetAllPublicStudentAccounts());
+                accounts = accounts.Where(a => 
+                    a.FirstName.StartsWithIgnoreCase(firstname) 
+                    || a.NickName.StartsWithIgnoreCase(firstname));
             }
 
+            if (lastname is not null)
+            {
+                accounts = accounts.Where(a =>
+                    a.LastName.StartsWithIgnoreCase(lastname)
+                    || a.MaidenName.StartsWithIgnoreCase(lastname)
+                );
+            }
+
+            if (major is not null)
+            {
+                accounts = accounts.Where(a =>
+                    a.Major1Description.EqualsIgnoreCase(major)
+                    || a.Major2Description.EqualsIgnoreCase(major)
+                    || a.Major3Description.EqualsIgnoreCase(major)
+                );
+            }
+
+            if (minor is not null) {
+                accounts = accounts.Where(a =>
+                       a.Minor1Description.EqualsIgnoreCase(minor)
+                    || a.Minor2Description.EqualsIgnoreCase(minor)
+                    || a.Minor3Description.EqualsIgnoreCase(minor)
+                );
+            }
+
+            if (hall is not null) accounts = accounts.Where(a => a.Hall.StartsWithIgnoreCase(hall));
+            if (classType is not null) accounts = accounts.Where(a => a.Class.StartsWithIgnoreCase(classType));
+            if (homeCity is not null) accounts = accounts.Where(a => a.HomeCity.StartsWithIgnoreCase(homeCity));
+            if (state is not null) accounts = accounts.Where(a => a.HomeState.StartsWithIgnoreCase(state));
+            if (country is not null) accounts = accounts.Where(a => a.Country.StartsWithIgnoreCase(country));
+            if (department is not null) accounts = accounts.Where(a => a.OnCampusDepartment.StartsWithIgnoreCase(department));
+            if (building is not null) accounts = accounts.Where(a => a.BuildingDescription.StartsWithIgnoreCase(building));
+
+            return accounts.OrderBy(a => a.LastName).ThenBy(a => a.FirstName);
+        }
+
+        /// <summary>
+        /// Get the list of accounts a user can search, based on the types of accounts they want to search, their authorization, and whether they're searching sensitive info.
+        /// </summary>
+        /// <param name="accountTypes">A list of account types that will be searched: 'student', 'alumni', and/or 'facstaff'</param>
+        /// <param name="authGroups">The authorization groups of the searching user, to decide what accounts they are permitted to search</param>
+        /// <param name="homeCity">The home city search param, since it is considered sensitive info</param>
+        /// <returns>The list of accounts that may be searched, converted to AdvancedSearchViewModels.</returns>
+        public IEnumerable<AdvancedSearchViewModel> GetAccountsToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string? homeCity)
+        {
+            IEnumerable<Student> students = Enumerable.Empty<Student>();
+            if (accountTypes.Contains("student")
+                // Only students and FacStaff are authorized to search for students
+                && (authGroups.Contains(AuthGroup.FacStaff) || authGroups.Contains(AuthGroup.Student)))
+            {
+                students = _context.Student;
+            }
+
+            // Only Faculy and Staff can see Private students
+            if (!authGroups.Contains(AuthGroup.FacStaff))
+            {
+                students = students.Where(s => s.KeepPrivate != "P");
+            }
+
+            IEnumerable<FacStaff> facstaff = Enumerable.Empty<FacStaff>();
             if (accountTypes.Contains("facstaff"))
             {
-                if (string.IsNullOrEmpty(homeCity))
-                {
-                    accounts = accounts.Union(GetAllPublicFacultyStaffAccounts());
-                }
-                else
-                {
-                    accounts = accounts.Union(GetAllPublicFacultyStaffAccounts().Where(a => a.KeepPrivate == "0"));
-                }
+                facstaff = _context.FacStaff.Where(fs => fs.ActiveAccount == true);
             }
 
+            IEnumerable<Alumni> alumni = Enumerable.Empty<Alumni>();
             if (accountTypes.Contains("alumni"))
             {
-                if (string.IsNullOrEmpty(homeCity))
-                {
-                    accounts = accounts.Union(GetAllPublicAlumniAccounts());
-                }
-                else
-                {
-                    accounts = accounts.Union(GetAllPublicAlumniAccounts().Where(a => a.ShareAddress.ToLower() != "n"));
-                }
+                alumni = _context.Alumni;
             }
 
-            return accounts
-                .Where(a =>
-                       (
-                               a.FirstName.ToLower().StartsWith(firstname)
-                            || a.NickName.ToLower().StartsWith(firstname)
-                       )
-                    && (
-                               a.LastName.ToLower().StartsWith(lastname)
-                            || a.MaidenName.ToLower().StartsWith(lastname)
-                       )
-                    && (
-                               a.Major1Description.StartsWith(major)
-                            || a.Major2Description.StartsWith(major)
-                            || a.Major3Description.StartsWith(major)
-                       )
-                    && (
-                               a.Minor1Description.StartsWith(minor)
-                            || a.Minor2Description.StartsWith(minor)
-                            || a.Minor3Description.StartsWith(minor)
-                       )
-                    && a.Hall.StartsWith(hall)
-                    && a.Class.StartsWith(classType)
-                    && a.HomeCity.ToLower().StartsWith(homeCity)
-                    && a.HomeState.StartsWith(state)
-                    && a.Country.StartsWith(country)
-                    && a.OnCampusDepartment.StartsWith(department)
-                    && a.BuildingDescription.StartsWith(building)
-                )
-                .OrderBy(a => a.LastName)
-                .ThenBy(a => a.FirstName);
+            // Do not indirectly reveal the address of facstaff and alumni who have requested to keep it private.
+            if (!string.IsNullOrEmpty(homeCity))
+            {
+                facstaff = facstaff.Where(a => a.KeepPrivate == "0");
+                alumni = alumni.Where(a => a.ShareAddress != "N");
+            }
+
+            return students.Select<Student, AdvancedSearchViewModel>(s => s)
+                .UnionBy(facstaff.Select<FacStaff, AdvancedSearchViewModel>(fs => fs), a => a.AD_Username)
+                .UnionBy(alumni.Select<Alumni, AdvancedSearchViewModel>(a => a), a => a.AD_Username);
         }
 
         /// <summary>
@@ -213,21 +257,6 @@ namespace Gordon360.Services
                     Nickname = b.Nickname,
                     UserName = b.Username
                 });
-        }
-
-        private IEnumerable<AdvancedSearchViewModel> GetAllPublicStudentAccounts()
-        {
-            return _context.Student.Select<Student, AdvancedSearchViewModel>(s => s);
-        }
-
-        private IEnumerable<AdvancedSearchViewModel> GetAllPublicFacultyStaffAccounts()
-        {
-            return _context.FacStaff.Select<FacStaff, AdvancedSearchViewModel>(fs => fs);
-        }
-
-        private IEnumerable<AdvancedSearchViewModel> GetAllPublicAlumniAccounts()
-        {
-            return _context.Alumni.Select<Alumni, AdvancedSearchViewModel>(a => a);
         }
     }
 }
