@@ -28,7 +28,6 @@ namespace Gordon360.Models.CCT
         public DateTime RegistrationStart { get; set; }
         [Column(TypeName = "date")]
         public DateTime RegistrationEnd { get; set; }
-        public int TypeID { get; set; }
         public int SportID { get; set; }
         public int? StatusID { get; set; }
         public int? MinCapacity { get; set; }
@@ -45,9 +44,6 @@ namespace Gordon360.Models.CCT
         [ForeignKey("StatusID")]
         [InverseProperty("Activity")]
         public virtual ActivityStatus Status { get; set; }
-        [ForeignKey("TypeID")]
-        [InverseProperty("Activity")]
-        public virtual ActivityType Type { get; set; }
         [InverseProperty("Activity")]
         public virtual ICollection<ParticipantActivity> ParticipantActivity { get; set; }
         [InverseProperty("Activity")]

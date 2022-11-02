@@ -22,6 +22,9 @@ namespace Gordon360.Models.CCT
         [StringLength(256)]
         [Unicode(false)]
         public string Description { get; set; }
+        [StringLength(4)]
+        [Unicode(false)]
+        public string TypeCode { get; set; }
 
         [InverseProperty("Type")]
         public virtual ICollection<Series> Series { get; set; }

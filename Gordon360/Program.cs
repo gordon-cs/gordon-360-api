@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Identity.Web;
 using System.IO;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,8 +48,8 @@ builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IAddressesService, AddressesService>();
 builder.Services.AddScoped<RecIM.IActivityService, RecIM.ActivityService>();
-
-
+builder.Services.AddScoped<RecIM.ISeriesService, RecIM.SeriesService>();
+builder.Services.AddScoped<RecIM.IMatchService, RecIM.MatchService>();
 
 builder.Services.AddMemoryCache();
 

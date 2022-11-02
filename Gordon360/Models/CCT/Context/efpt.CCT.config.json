@@ -219,10 +219,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[RecIM].[Sportmanship]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[RecIM].[Statistic]",
          "ObjectType": 0
       },

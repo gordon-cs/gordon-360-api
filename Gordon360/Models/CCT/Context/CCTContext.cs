@@ -92,7 +92,6 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<SeriesType> SeriesType { get; set; }
         public virtual DbSet<Slider_Images> Slider_Images { get; set; }
         public virtual DbSet<Sport> Sport { get; set; }
-        public virtual DbSet<Sportmanship> Sportmanship { get; set; }
         public virtual DbSet<States> States { get; set; }
         public virtual DbSet<Statistic> Statistic { get; set; }
         public virtual DbSet<Student> Student { get; set; }
@@ -141,8 +140,6 @@ namespace Gordon360.Models.CCT.Context
             {
                 entity.Property(e => e.StatusID).HasDefaultValueSql("((1))");
 
-                entity.Property(e => e.TypeID).HasDefaultValueSql("((1))");
-
                 entity.HasOne(d => d.Sport)
                     .WithMany(p => p.Activity)
                     .HasForeignKey(d => d.SportID)
@@ -153,12 +150,6 @@ namespace Gordon360.Models.CCT.Context
                     .WithMany(p => p.Activity)
                     .HasForeignKey(d => d.StatusID)
                     .HasConstraintName("FK_Activity_ActivityStatus");
-
-                entity.HasOne(d => d.Type)
-                    .WithMany(p => p.Activity)
-                    .HasForeignKey(d => d.TypeID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Activity_ActivityType");
             });
 
             modelBuilder.Entity<Alumni>(entity =>
@@ -461,6 +452,8 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<MatchTeam>(entity =>
             {
+                entity.Property(e => e.Sportsmanship).HasDefaultValueSql("((0))");
+
                 entity.Property(e => e.StatusID).HasDefaultValueSql("((1))");
 
                 entity.HasOne(d => d.Match)
@@ -666,6 +659,8 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<SeriesTeam>(entity =>
             {
+                entity.Property(e => e.Loss).HasDefaultValueSql("((0))");
+
                 entity.HasOne(d => d.Series)
                     .WithMany(p => p.SeriesTeam)
                     .HasForeignKey(d => d.SeriesID)
@@ -677,15 +672,6 @@ namespace Gordon360.Models.CCT.Context
                     .HasForeignKey(d => d.TeamID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SeriesTeam_Team");
-            });
-
-            modelBuilder.Entity<Sportmanship>(entity =>
-            {
-                entity.HasOne(d => d.Team)
-                    .WithMany(p => p.Sportmanship)
-                    .HasForeignKey(d => d.TeamID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Sportmanship_Team");
             });
 
             modelBuilder.Entity<States>(entity =>
@@ -719,30 +705,19 @@ namespace Gordon360.Models.CCT.Context
                 entity.Property(e => e.SNID).ValueGeneratedNever();
             });
 
-            modelBuilder.Entity<Surface>(entity =>
-            {
-                entity.Property(e => e.ID).ValueGeneratedNever();
-            });
-
             modelBuilder.Entity<Team>(entity =>
             {
-                entity.Property(e => e.ID).ValueGeneratedNever();
-
-                entity.Property(e => e.Private).HasDefaultValueSql("((1))");
-
-                entity.Property(e => e.Status).HasDefaultValueSql("((1))");
-
                 entity.HasOne(d => d.Activity)
                     .WithMany(p => p.Team)
                     .HasForeignKey(d => d.ActivityID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Team_Activity");
+                    .HasConstraintName("FK__Team__ActivityID");
 
-                entity.HasOne(d => d.StatusNavigation)
+                entity.HasOne(d => d.Status)
                     .WithMany(p => p.Team)
-                    .HasForeignKey(d => d.Status)
+                    .HasForeignKey(d => d.StatusID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Team_TeamStatus");
+                    .HasConstraintName("FK__Team__Status");
             });
 
             modelBuilder.HasSequence("Information_Change_Request_Seq", "dbo");

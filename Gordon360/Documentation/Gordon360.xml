@@ -718,44 +718,91 @@
             <param name="imagePath">Path to the profile image to load</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetActivities(System.Boolean)">
-            <summary>Gets a list of all Activities</summary>
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetActivities(System.Nullable{System.DateTime},System.Boolean)">
+            <summary>Gets a list of all Activities by parameter </summary>
             <param name="active"> Optional active parameter </param>
+            <param name="time"> Optional time parameter </param>
              <returns>
              All Existing Activities 
              </returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetAllActivities(System.DateTime)">
-            <summary>Gets a list of all Activities after given time</summary>
-             <returns>
-             All Existing Activities 
-             </returns>
-        </member>
-        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetLeagueByID(System.Int32)">
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetActivityByID(System.Int32)">
             <summary>Gets a Activity object by ID number</summary>
              <param name="activityID">League ID Number</param>
              <returns>
              Activity object
              </returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.CreateActivity(Gordon360.Models.CCT.Activity)">
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.CreateActivity(Gordon360.Models.ViewModels.RecIM.CreateActivityViewModel)">
             <summary>
             Posts Activity into CCT.RecIM.Activity
             </summary>
-            <param name="newActivity">League object with appropriate values</param>
-            <returns></returns>
+            <param name="a">CreateActivityViewModel object with appropriate values</param>
+            <returns>Posted Activity ID</returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.UpdateActivity(Gordon360.Models.CCT.Activity)">
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.UpdateActivity(Gordon360.Models.ViewModels.RecIM.UpdateActivityViewModel)">
             <summary>
             Updates Activity based on input
             </summary>
-            <param name="updatedActivity"> Updated Activity Object </param>
+            <param name="a"> Updated Activity Object </param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.CreateSmashLeague">
             <summary>Creates a new League (currently hard coded)</summary>
              <param></param>
              <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetMatches(System.Nullable{System.DateTime},System.Boolean)">
+            <summary>
+            Not implemented (yet) might be removed
+            </summary>
+            <param name="day"></param>
+            <param name="active"></param>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetMatchByID(System.Int32)">
+            <summary>
+            Fetches Match by MatchID
+            </summary>
+            <param name="matchID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.UpdateStats(Gordon360.Models.ViewModels.RecIM.UpdateMatchTeamViewModel)">
+            <summary>
+            Updates Match Scores, Sportsmanship Ratings, and Team Status
+            </summary>
+            <param name="m"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.CreateMatch(Gordon360.Models.ViewModels.RecIM.CreateMatchViewModel)">
+            <summary>
+            Creates Match
+            </summary>
+            <param name="m"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetSeries(System.Boolean)">
+            <summary>
+            Queries all Series with an optional active tag
+            </summary>
+            <param name="active"></param>
+            <returns>Enumerable Set of Series</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetSeriesByID(System.Int32)">
+            <summary>
+            Gets specific Series
+            </summary>
+            <param name="seriesID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.CreateSeries(Gordon360.Models.ViewModels.RecIM.CreateSeriesViewModel,System.Nullable{System.Int32})">
+            <summary>
+            Creates Series and associated SeriesTeam Models
+            </summary>
+            <param name="s">CreateSeriesViewModel</param>
+            <param name="referenceSeriesID">ID of Series, used to select specific Teams </param>
+            <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.RequestsController.GetAsync">
             <summary>
@@ -2008,6 +2055,11 @@
             </summary>
             <param name="username">AD Username</param>
             <param name="value">Y or N</param>
+        </member>
+        <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleSingleElimination(System.Int32)">
+            difference between single and double elimination is that single elim only
+            needs log(n) rounds with double elim needing to schedule twice that but 
+            handle the logic of losers bracket
         </member>
         <member name="M:Gordon360.Services.SaveService.GetUpcoming(System.String)">
             <summary>

@@ -24,7 +24,6 @@ namespace Gordon360.Models.CCT
         public DateTime Time { get; set; }
         public int SurfaceID { get; set; }
         public int? StatusID { get; set; }
-        public int? MatchChatID { get; set; }
 
         [ForeignKey("SeriesID")]
         [InverseProperty("Match")]

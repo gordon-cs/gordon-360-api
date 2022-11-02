@@ -1,4 +1,5 @@
 ﻿using Gordon360.Models.CCT;
+using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Models.CCT.Context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,76 +15,129 @@ namespace Gordon360.Services.RecIM
     public class ActivityService : IActivityService
     {
         private readonly CCTContext _context;
+        private readonly ISeriesService _seriesService;
 
-        public ActivityService(CCTContext context)
-        {
+        public ActivityService(CCTContext context, ISeriesService seriesService)
+        { 
             _context = context;
+            _seriesService = seriesService;
         }
 
 
-        public IEnumerable<Activity> GetActivities()
+        public IEnumerable<ActivityViewModel> GetActivities()
         {
             var activities = _context.Activity
-                            .Include(l => l.Team)
-                            .Include(l => l.Series);
+                            .Select(a => new ActivityViewModel
+                            {
+                                ID = a.ID,
+                                Name = a.Name,
+                                RegistrationStart = a.RegistrationStart,
+                                RegistrationEnd = a.RegistrationEnd,
+                                Sport = _context.Sport
+                                        .FirstOrDefault(s => s.ID == a.SportID),
+                                Status = _context.ActivityStatus
+                                        .FirstOrDefault(s => s.ID == a.StatusID)
+                                        .Description,
+                                MinCapacity = a.MinCapacity,
+                                MaxCapacity = a.MaxCapacity,
+                                SoloRegistration = a.SoloRegistration,
+                                Logo = a.Logo,
+                                Completed = a.Completed,
+                                Series = a.Series
+                                        .Select(s => new SeriesViewModel
+                                        {
+                                            ID = s.ID,
+                                            Name = s.Name,
+                                            StartDate = s.StartDate,
+                                            EndDate = s.EndDate,
+                                            Type = _context.SeriesType
+                                                    .FirstOrDefault(st => st.ID == s.TypeID)
+                                                    .Description
+                                        }).ToList()
+                            });
             return activities;
         }
-        public IEnumerable<Activity> GetActivitiesByTime(DateTime? time)
+        public IEnumerable<ActivityViewModel> GetActivitiesByTime(DateTime? time)
         {
             if (time is null)
             {
-                return GetActivities().Where(a => !a.Completed); 
-            } else
+                return GetActivities().Where(a => !a.Completed);
+            }
+            else
             {
                 return GetActivities().Where(a => a.RegistrationEnd > time);
             }
         }
-        public Activity? GetActivityByID(int activityID)
+        public ActivityViewModel? GetActivityByID(int activityID)
         {
-            var result = _context.Activity
-                            .Where(l => l.ID == activityID)
-                            .Include(l => l.Team)
-                            .Include(l => l.Series)
-                                .ThenInclude(s => s.Match)
-                            .Include(l => l.ParticipantActivity
-                                .Join(_context.Participant,
-                                    ul => ul.ParticipantID,
-                                    u => u.ID,
-                                    (ul, u) => u))
+            var activity = _context.Activity.Where(a => a.ID == activityID)
+                            .Select(a => new ActivityViewModel
+                            {
+                                ID = a.ID,
+                                Name = a.Name,
+                                RegistrationStart = a.RegistrationStart,
+                                RegistrationEnd = a.RegistrationEnd,
+                                Sport = _context.Sport
+                                        .FirstOrDefault(s => s.ID == a.SportID),
+                                Status = _context.ActivityStatus
+                                        .FirstOrDefault(s => s.ID == a.StatusID)
+                                        .Description,
+                                MinCapacity = a.MinCapacity,
+                                MaxCapacity = a.MaxCapacity,
+                                SoloRegistration = a.SoloRegistration,
+                                Logo = a.Logo,
+                                Completed = a.Completed,
+                                Series = _seriesService.GetSeriesByActivityID(a.ID),
+                                Team = a.Team.Select(t => new TeamViewModel
+                                {
+                                    ID = t.ID,
+                                    Name = t.Name,
+                                    Status = _context.TeamStatus
+                                                .FirstOrDefault(ts => ts.ID == t.StatusID)
+                                                .Description,
+                                                
+                                    Logo = t.Logo
+                                })
+                            
+                            })
                             .FirstOrDefault();
-            return result;
+            return activity;
         }
-        public async Task UpdateActivity(Activity updatedActivity)
+        public async Task UpdateActivity(UpdateActivityViewModel updatedActivity)
         {
             var activity = await _context.Activity.FindAsync(updatedActivity.ID);
-            activity.Name = updatedActivity.Name == null ? activity.Name : updatedActivity.Name;
-            activity.Logo = updatedActivity.Logo == null ? activity.Logo : updatedActivity.Logo;
-            activity.RegistrationStart = updatedActivity.RegistrationStart == default
-                                            ? activity.RegistrationStart
-                                            : updatedActivity.RegistrationStart;
-            activity.RegistrationEnd = updatedActivity.RegistrationEnd == default
-                                  ? activity.RegistrationEnd
-                                  : updatedActivity.RegistrationEnd;
-            activity.TypeID = updatedActivity.TypeID == default
-                                ? activity.TypeID
-                                : updatedActivity.TypeID;
-            activity.SportID = updatedActivity.SportID == default
-                                ? activity.SportID
-                                : updatedActivity.SportID;
+            activity.Name = updatedActivity.Name ?? activity.Name;
+            activity.Logo = updatedActivity.Logo ?? activity.Logo;
+            activity.RegistrationStart = updatedActivity.RegistrationStart ?? activity.RegistrationStart;
+            activity.RegistrationEnd = updatedActivity.RegistrationEnd ?? activity.RegistrationEnd;
+            activity.SportID = updatedActivity.SportID ?? activity.SportID;
             activity.StatusID = updatedActivity.StatusID ?? activity.StatusID;
             activity.MinCapacity = updatedActivity.MinCapacity ?? activity.MinCapacity;
             activity.MaxCapacity = updatedActivity.MaxCapacity ?? activity.MaxCapacity;
             activity.MaxCapacity = updatedActivity.MaxCapacity ?? activity.MaxCapacity;
-            activity.SoloRegistration = updatedActivity.SoloRegistration;
-            activity.Completed = updatedActivity.Completed;
+            activity.SoloRegistration = updatedActivity.SoloRegistration ?? activity.SoloRegistration;
+            activity.Completed = updatedActivity.Completed ?? activity.Completed;
 
             await _context.SaveChangesAsync();
         }
-        public async Task<int> PostActivity(Activity newActivity)
+        public async Task<int> PostActivity(CreateActivityViewModel a)
         {
-            await _context.Activity.AddAsync(newActivity);
+            var activity = new Activity
+            {
+                Name = a.Name,
+                Logo = a.Logo,
+                RegistrationStart = a.RegistrationStart,
+                RegistrationEnd = a.RegistrationEnd,
+                SportID = a.SportID,
+                StatusID = 1, //default set to pending status
+                MinCapacity = a.MinCapacity ?? 0,
+                MaxCapacity = a.MaxCapacity,
+                SoloRegistration = a.SoloRegistration,
+                Completed = false //default not completed
+            };
+            await _context.Activity.AddAsync(activity);
             await _context.SaveChangesAsync();
-            return newActivity.ID;
+            return activity.ID;
         }
 
     }
