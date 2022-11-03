@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Gordon360.Models.ViewModels.RecIM
 {
-    public class NewMatchViewModel
+    public class MatchUploadViewModel
     {
         public DateTime StartTime { get; set; }
         public int SeriesID { get; set; }

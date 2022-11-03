@@ -60,27 +60,27 @@ namespace Gordon360.Controllers.RecIM
         /// <summary>
         /// Posts Activity into CCT.RecIM.Activity
         /// </summary>
-        /// <param name="a">CreateActivityViewModel object with appropriate values</param>
+        /// <param name="newActivity">CreateActivityViewModel object with appropriate values</param>
         /// <returns>Posted Activity ID</returns>
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult> CreateActivity(ActivityUploadViewModel a)
+        public async Task<ActionResult> CreateActivity(ActivityUploadViewModel newActivity)
         {
             
-            var activityID = await _activityService.PostActivity(a);
+            var activityID = await _activityService.PostActivity(newActivity);
             return Ok(activityID);
         }
         /// <summary>
         /// Updates Activity based on input
         /// </summary>
-        /// <param name="a"> Updated Activity Object </param>
+        /// <param name="updatedActivity"> Updated Activity Object </param>
         /// <returns></returns>
         [HttpPut]
         [Route("")]
-        public async Task<ActionResult> UpdateActivity(ActivityUploadViewModel a)
+        public async Task<ActionResult> UpdateActivity(ActivityPatchViewModel updatedActivity)
         {
-            await _activityService.UpdateActivity(a);
-            return Ok(a.ID);
+            await _activityService.UpdateActivity(updatedActivity);
+            return Ok(updatedActivity.ID);
         }
     }
 }

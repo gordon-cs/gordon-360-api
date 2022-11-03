@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Gordon360.Models.ViewModels.RecIM
 {
-    public class NewSeriesViewModel
+    public class SeriesUploadViewModel
     {
         public string Name { get; set; }
         public DateTime StartDate { get; set; }

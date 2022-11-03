@@ -737,14 +737,14 @@
             <summary>
             Posts Activity into CCT.RecIM.Activity
             </summary>
-            <param name="a">CreateActivityViewModel object with appropriate values</param>
+            <param name="newActivity">CreateActivityViewModel object with appropriate values</param>
             <returns>Posted Activity ID</returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.UpdateActivity(Gordon360.Models.ViewModels.RecIM.ActivityUploadViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.UpdateActivity(Gordon360.Models.ViewModels.RecIM.ActivityPatchViewModel)">
             <summary>
             Updates Activity based on input
             </summary>
-            <param name="a"> Updated Activity Object </param>
+            <param name="updatedActivity"> Updated Activity Object </param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetMatches(System.Nullable{System.DateTime},System.Boolean)">
@@ -763,14 +763,14 @@
             <param name="matchID"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.MatchesController.UpdateStats(Gordon360.Models.ViewModels.RecIM.UpdateMatchTeamViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.UpdateStats(Gordon360.Models.ViewModels.RecIM.MatchTeamPatchViewModel)">
             <summary>
             Updates Match Scores, Sportsmanship Ratings, and Team Status
             </summary>
             <param name="updatedMatch"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.MatchesController.CreateMatch(Gordon360.Models.ViewModels.RecIM.NewMatchViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.CreateMatch(Gordon360.Models.ViewModels.RecIM.MatchUploadViewModel)">
             <summary>
             Creates Match
             </summary>
@@ -791,14 +791,14 @@
             <param name="seriesID"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.SeriesController.UpdateSeries(Gordon360.Models.ViewModels.RecIM.UpdateSeriesViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.UpdateSeries(Gordon360.Models.ViewModels.RecIM.SeriesPatchViewModel)">
             <summary>
             
             </summary>
             <param name="updatedSeries"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.SeriesController.CreateSeries(Gordon360.Models.ViewModels.RecIM.NewSeriesViewModel,System.Nullable{System.Int32})">
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.CreateSeries(Gordon360.Models.ViewModels.RecIM.SeriesUploadViewModel,System.Nullable{System.Int32})">
             <summary>
             Creates Series and associated SeriesTeam Models
             </summary>

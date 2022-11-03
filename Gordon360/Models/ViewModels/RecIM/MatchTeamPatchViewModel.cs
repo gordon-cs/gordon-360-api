@@ -3,7 +3,7 @@ using System;
 
 namespace Gordon360.Models.ViewModels.RecIM
 {
-    public class UpdateMatchTeamViewModel
+    public class MatchTeamPatchViewModel
     {
         public int TeamID { get; set; }
         public int MatchID { get; set; }

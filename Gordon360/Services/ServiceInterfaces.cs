@@ -314,8 +314,8 @@ namespace Gordon360.Services
             IEnumerable<Models.ViewModels.RecIM.ActivityViewModel> GetActivities();
             Models.ViewModels.RecIM.ActivityViewModel? GetActivityByID(int ActivityID);
             IEnumerable<Models.ViewModels.RecIM.ActivityViewModel> GetActivitiesByTime(DateTime? time);
-            Task UpdateActivity(ActivityUploadViewModel updatedActivity);
-            Task<int> PostActivity(ActivityUploadViewModel a);
+            Task UpdateActivity(ActivityPatchViewModel updatedActivity);
+            Task<int> PostActivity(ActivityUploadViewModel newActivity);
 
         }
         public interface ISeriesService
@@ -323,8 +323,8 @@ namespace Gordon360.Services
             IEnumerable<SeriesViewModel> GetSeries(bool active);
             IEnumerable<SeriesViewModel> GetSeriesByActivityID(int activityID);
             SeriesViewModel GetSeriesByID(int seriesID);
-            Task<int> PostSeries(NewSeriesViewModel newSeries, int? referenceSeriesID);
-            Task UpdateSeries(UpdateSeriesViewModel series);
+            Task<int> PostSeries(SeriesUploadViewModel newSeries, int? referenceSeriesID);
+            Task UpdateSeries(SeriesPatchViewModel series);
             Task ScheduleMatches(int seriesID);
         }
 
@@ -356,9 +356,10 @@ namespace Gordon360.Services
         {
             MatchViewModel GetMatchByID(int matchID);
             IEnumerable<MatchViewModel> GetMatchBySeriesID(int seriesID);
-            Task PostMatch(NewMatchViewModel match);
-            Task UpdateTeamStats(UpdateMatchTeamViewModel match);
-            Task AddParticipantAttendance(int participantID, int matchID);        
+            Task PostMatch(MatchUploadViewModel match);
+            Task UpdateTeamStats(MatchTeamPatchViewModel match);
+            Task AddParticipantAttendance(int participantID, int matchID);
+            IEnumerable<TeamMatchHistoryViewModel> GetMatchHistoryByTeamID(int teamID);
         }
     }
 

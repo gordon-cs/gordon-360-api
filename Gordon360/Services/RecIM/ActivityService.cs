@@ -103,7 +103,7 @@ namespace Gordon360.Services.RecIM
                             .FirstOrDefault();
             return activity;
         }
-        public async Task UpdateActivity(ActivityUploadViewModel updatedActivity)
+        public async Task UpdateActivity(ActivityPatchViewModel updatedActivity)
         {
             var activity = await _context.Activity.FindAsync(updatedActivity.ID);
             activity.Name = updatedActivity.Name ?? activity.Name;
@@ -126,13 +126,13 @@ namespace Gordon360.Services.RecIM
             {
                 Name = a.Name,
                 Logo = a.Logo,
-                RegistrationStart = a.RegistrationStart ?? new DateTime(),
-                RegistrationEnd = a.RegistrationEnd ?? new DateTime(),
-                SportID = a.SportID ?? 0,
+                RegistrationStart = a.RegistrationStart,
+                RegistrationEnd = a.RegistrationEnd,
+                SportID = a.SportID,
                 StatusID = 1, //default set to pending status
                 MinCapacity = a.MinCapacity ?? 0,
                 MaxCapacity = a.MaxCapacity,
-                SoloRegistration = a.SoloRegistration ?? false,
+                SoloRegistration = a.SoloRegistration,
                 Completed = false //default not completed
             };
             await _context.Activity.AddAsync(activity);
