@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace Gordon360.Models.ViewModels.RecIM
 {
-    public class CreateMatchViewModel
+    public class NewMatchViewModel
     {
-        public DateTime Time { get; set; }
+        public DateTime StartTime { get; set; }
         public int SeriesID { get; set; }
         public int? SurfaceID { get; set; }
         public IEnumerable<int> TeamIDs { get; set; }

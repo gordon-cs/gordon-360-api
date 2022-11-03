@@ -48,26 +48,30 @@ namespace Gordon360.Controllers.RecIM
             var result = _seriesService.GetSeriesByID(seriesID);
             return Ok(result);
         }
-
-        [HttpPut]
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="updatedSeries"></param>
+        /// <returns></returns>
+        [HttpPatch]
         [Route("")]
-        public async Task<ActionResult> UpdateSeries(UpdateSeriesViewModel s)
+        public async Task<ActionResult> UpdateSeries(UpdateSeriesViewModel updatedSeries)
         {
-            await _seriesService.UpdateSeries(s);
+            await _seriesService.UpdateSeries(updatedSeries);
             return Ok();
         }
 
         /// <summary>
         /// Creates Series and associated SeriesTeam Models
         /// </summary>
-        /// <param name="s">CreateSeriesViewModel</param>
+        /// <param name="newSeries">CreateSeriesViewModel</param>
         /// <param name="referenceSeriesID">ID of Series, used to select specific Teams </param>
         /// <returns></returns>
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult> CreateSeries(CreateSeriesViewModel s, [FromQuery]int? referenceSeriesID)
+        public async Task<ActionResult> CreateSeries(NewSeriesViewModel newSeries, [FromQuery]int? referenceSeriesID)
         {
-            int seriesID = await _seriesService.PostSeries(s, referenceSeriesID);
+            int seriesID = await _seriesService.PostSeries(newSeries, referenceSeriesID);
             return Ok(seriesID);
         }
 

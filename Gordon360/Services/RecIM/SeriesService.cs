@@ -100,7 +100,7 @@ namespace Gordon360.Services.RecIM
         {
             return GetSeries().FirstOrDefault(s => s.ID == seriesID);
         }
-        public async Task<int> PostSeries(CreateSeriesViewModel newSeries, int? referenceSeriesID)
+        public async Task<int> PostSeries(NewSeriesViewModel newSeries, int? referenceSeriesID)
         {
             var series = new Series
             {
@@ -119,8 +119,12 @@ namespace Gordon360.Services.RecIM
                                 .Where(st => st.SeriesID == seriesID)
                                 .OrderByDescending(st => st.Win)
                                 .Select(st => st.TeamID);
-            
-            
+
+            if (newSeries.NumberOfTeamsAdmitted is not null)
+            {
+                teams = teams.Take(newSeries.NumberOfTeamsAdmitted ?? 0);//will never be null but 0 is to silence error
+            }
+           
             await CreateSeriesTeamMapping(teams, series.ID);
             return series.ID;
         }
@@ -213,7 +217,7 @@ namespace Gordon360.Services.RecIM
                 .Select(st => st.ID);
             var series = _context.Series
                 .FirstOrDefault(s => s.ID == seriesID);
-            var match = new CreateMatchViewModel
+            var match = new NewMatchViewModel
             {
                 Time = series.StartDate,
                 SeriesID = seriesID,

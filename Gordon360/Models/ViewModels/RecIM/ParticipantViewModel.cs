@@ -7,7 +7,7 @@ namespace Gordon360.Models.ViewModels.RecIM
 {
     public class ParticipantViewModel
     {
-        public string ADUserName { get; set; }
+        public string Username { get; set; }
         public string Email { get; set; }
         public string Role { get; set; }
 
@@ -15,7 +15,7 @@ namespace Gordon360.Models.ViewModels.RecIM
         {
             ParticipantViewModel vm = new ParticipantViewModel
             {
-                ADUserName = a.AD_Username.Trim() ?? "",
+                Username = a.AD_Username.Trim() ?? "",
                 Email = a.email ?? "", 
             };
 

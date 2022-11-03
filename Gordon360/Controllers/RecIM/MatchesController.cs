@@ -53,26 +53,26 @@ namespace Gordon360.Controllers.RecIM
         /// <summary>
         /// Updates Match Scores, Sportsmanship Ratings, and Team Status
         /// </summary>
-        /// <param name="m"></param>
+        /// <param name="updatedMatch"></param>
         /// <returns></returns>
-        [HttpPut]
+        [HttpPatch]
         [Route("")]
-        public async Task<ActionResult> UpdateStats(UpdateMatchTeamViewModel m)
+        public async Task<ActionResult> UpdateStats(UpdateMatchTeamViewModel updatedMatch)
         {
-            await _matchService.UpdateTeamStats(m);
+            await _matchService.UpdateTeamStats(updatedMatch);
             return Ok();
         }
 
         /// <summary>
         /// Creates Match
         /// </summary>
-        /// <param name="m"></param>
+        /// <param name="newMatch"></param>
         /// <returns></returns>
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult> CreateMatch(CreateMatchViewModel m)
+        public async Task<ActionResult> CreateMatch(NewMatchViewModel newMatch)
         {
-            await _matchService.PostMatch(m);
+            await _matchService.PostMatch(newMatch);
             return Ok();
         }
 

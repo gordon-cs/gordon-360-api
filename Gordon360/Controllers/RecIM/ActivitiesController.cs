@@ -64,7 +64,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns>Posted Activity ID</returns>
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult> CreateActivity(CreateActivityViewModel a)
+        public async Task<ActionResult> CreateActivity(ActivityUploadViewModel a)
         {
             
             var activityID = await _activityService.PostActivity(a);
@@ -77,33 +77,10 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPut]
         [Route("")]
-        public async Task<ActionResult> UpdateActivity(UpdateActivityViewModel a)
+        public async Task<ActionResult> UpdateActivity(ActivityUploadViewModel a)
         {
             await _activityService.UpdateActivity(a);
             return Ok(a.ID);
         }
-
-        ///<summary>Creates a new League (currently hard coded)</summary>
-        /// <param></param>
-        /// <returns></returns>
-        [HttpPost]
-        [Route("add_smash")]
-        public async Task<ActionResult> CreateSmashLeague()
-        {
-            var smashLeague = new CreateActivityViewModel
-            {
-                Name = "Super Smash Bros. Ultimate 1v1",
-                RegistrationStart = DateTime.Now,
-                RegistrationEnd = DateTime.Now,
-                SportID = 1,
-                MinCapacity = 2,
-                MaxCapacity = 16,
-                SoloRegistration = true,
-                Logo = null,
-            };
-            await _activityService.PostActivity(smashLeague);
-            return Ok();
-        }
-
     }
 }
