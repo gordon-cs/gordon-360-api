@@ -16,11 +16,11 @@ namespace Gordon360.Controllers.RecIM
     [AllowAnonymous]
     public class ParticipantsController : GordonControllerBase
     {
-        private readonly ISeriesService _seriesService;
+        private readonly IParticipantService _participantService;
 
-        public ParticipantsController(ISeriesService seriesService)
+        public ParticipantsController(IParticipantService participantService)
         {
-            _seriesService = seriesService;
+            _participantService = participantService;
         }
 
     }
