@@ -12,8 +12,6 @@ using System;
 using Gordon360.Utilities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Hosting.Server.Features;
 
 namespace Gordon360.Services
 {
@@ -27,15 +25,13 @@ namespace Gordon360.Services
         private readonly CCTContext _context;
         private readonly IConfiguration _config;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly IServer _server;
         private readonly ServerUtils _serverUtils;
 
-        public ActivityService(CCTContext context, IConfiguration config, IWebHostEnvironment webHostEnvironment, IServer server, ServerUtils serverUtils)
+        public ActivityService(CCTContext context, IConfiguration config, IWebHostEnvironment webHostEnvironment, ServerUtils serverUtils)
         {
             _context = context;
             _config = config;
             _webHostEnvironment = webHostEnvironment;
-            _server = server;
             _serverUtils = serverUtils;
         }
         /// <summary>
@@ -370,20 +366,5 @@ namespace Gordon360.Services
         }
 
 
-    }
-
-    public class ServerUtils
-    {
-        private readonly IServer _server;
-
-        public ServerUtils(IServer server)
-        {
-            _server = server;
-        }
-
-        public string GetAddress() {
-            var baseUrl = _server.Features.Get<IServerAddressesFeature>()?.Addresses.FirstOrDefault(a => a.Contains("https"));
-            return baseUrl;
-        }
     }
 }
