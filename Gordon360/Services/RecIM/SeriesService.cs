@@ -181,29 +181,39 @@ namespace Gordon360.Services.RecIM
                 await ScheduleLadder(seriesID);
             }
         }
-        private Task ScheduleRoundRobin(int seriesID)
+        private async Task ScheduleRoundRobin(int seriesID)
         {
             var teams = _context.SeriesTeam
                 .Where(st => st.ID == seriesID)
-                .AsEnumerable();
-
-            //matrix can be used for all permutations, if check for self match
-          
-            throw new NotImplementedException();
+                .ToArray();
+            var series = _context.Series.FirstOrDefault(s => s.ID == seriesID); 
+            for (int i = 0; i < teams.Length-1; i++)
+            {
+                for (int j = i + 1; j < teams.Length; j++)
+                {
+                    await _matchService.PostMatch(new MatchUploadViewModel
+                    {
+                        StartTime = series.StartDate,//temporary default
+                        SeriesID = seriesID,
+                        SurfaceID = 0,
+                        TeamIDs = new List<int>() { teams[i].TeamID, teams[j].TeamID }.AsEnumerable()
+                    });
+                }
+            }
         }
         /**
          * difference between single and double elimination is that single elim only
          * needs log(n) rounds with double elim needing to schedule twice that but 
          * handle the logic of losers bracket
          */
-        private Task ScheduleSingleElimination(int seriesID)
+        private async Task ScheduleSingleElimination(int seriesID)
         {
             var teams = _context.SeriesTeam
                 .Where(st => st.ID == seriesID)
                 .AsEnumerable();
             throw new NotImplementedException();
         }
-        private Task ScheduleDoubleElimination(int seriesID)
+        private async Task ScheduleDoubleElimination(int seriesID)
         {
             var teams = _context.SeriesTeam
                 .Where(st => st.ID == seriesID)

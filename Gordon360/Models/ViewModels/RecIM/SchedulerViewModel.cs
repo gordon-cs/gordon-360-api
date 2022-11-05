@@ -8,10 +8,10 @@ namespace Gordon360.Models.ViewModels.RecIM
     {
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public int SportID { get; set; }
-        public int? SurfaceID { get; set; }
-        public IEnumerable<Object> TeamIDs { get; set; }
+        public DateTime SeriesStartDate { get; set; }
+        public DateTime SeriesEndDate { get; set; }
+        public int EstimatedActivityTime { get; set; }
+        public IEnumerable<int>? AvailableSurfaceIDs { get; set; }
+        public IEnumerable<int>? TeamIDs { get; set; }
     }
 }
