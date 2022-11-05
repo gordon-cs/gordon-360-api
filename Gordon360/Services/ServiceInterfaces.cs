@@ -340,8 +340,11 @@ namespace Gordon360.Services
         public interface IParticipantService
         {
             IEnumerable<ParticipantViewModel> GetParticipants();
+            IEnumerable<ParticipantStatusViewModel> GetParticipantStatusHistory(string username);
+            ParticipantViewModel GetParticipantByUsername(string username);
+            IEnumerable<TeamViewModel> GetParticipantTeams(string username);
+
             Task PostParticipant(int participantID);
-            ParticipantViewModel GetParticipantByID(int participantID);
             Task UpdateParticipant(ParticipantPatchViewModel updatedParticipant);
             Task UpdateParticipantStatus(ParticipantStatusPatchViewModel participantStatus);
         }

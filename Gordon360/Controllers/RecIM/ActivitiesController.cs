@@ -75,7 +75,7 @@ namespace Gordon360.Controllers.RecIM
         /// </summary>
         /// <param name="updatedActivity"> Updated Activity Object </param>
         /// <returns></returns>
-        [HttpPut]
+        [HttpPatch]
         [Route("")]
         public async Task<ActionResult> UpdateActivity(ActivityPatchViewModel updatedActivity)
         {

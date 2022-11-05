@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Text.RegularExpressions;
+using System.Data.SqlClient;
 
 namespace Gordon360.Services.RecIM
 {
@@ -22,17 +22,19 @@ namespace Gordon360.Services.RecIM
             _context = context;
         }
 
-        public ParticipantViewModel GetParticipantByID(int participantID)
+        public ParticipantViewModel GetParticipantByUsername(string username)
         {
-            var participant = _context.ACCOUNT
-                                .Join(_context.Participant
-                                    .Where(p => p.ID == participantID),
-                                a => Int32.Parse(a.gordon_id),
-                                p => p.ID,
-                                (a, p) => new ParticipantViewModel
+            int participantID = Int32.Parse(_context.ACCOUNT
+                                    .FirstOrDefault(a => a.AD_Username == username)
+                                    .gordon_id);
+            var participant = _context.Participant
+                                .Where(p => p.ID == participantID)
+                                .Select(p => new ParticipantViewModel
                                 {
-                                    Username = a.AD_Username,
-                                    Email = a.email,
+                                    Username = username,
+                                    Email = _context.ACCOUNT
+                                                .FirstOrDefault(a => a.AD_Username == username)
+                                                .email,
                                     Status = _context.ParticipantStatusHistory
                                                 .Where(psh => psh.ParticipantID == p.ID)
                                                 .OrderByDescending(psh => psh.ID)
@@ -47,8 +49,11 @@ namespace Gordon360.Services.RecIM
 
             return participant;
         }
-        public IEnumerable<ParticipantStatusViewModel> GetParticipantStatusHistory(int participantID)
+        public IEnumerable<ParticipantStatusViewModel> GetParticipantStatusHistory(string username)
         {
+            int participantID = Int32.Parse(_context.ACCOUNT
+                                    .FirstOrDefault(a => a.AD_Username == username)
+                                    .gordon_id);
             var status = _context.ParticipantStatusHistory
                             .Where(psh => psh.ParticipantID == participantID)
                             .OrderByDescending(psh => psh.ID)
@@ -57,18 +62,19 @@ namespace Gordon360.Services.RecIM
                                     ps => ps.ID,
                                     (psh, ps) => new ParticipantStatusViewModel
                                     {
-                                        Username = _context.ACCOUNT
-                                                    .FirstOrDefault(a => Int32.Parse(a.gordon_id) == participantID)
-                                                    .AD_Username,
+                                        Username = username,
                                         StatusDescription = ps.Description,
                                         StartDate = psh.StartDate,
                                         EndDate = psh.EndDate
                                     }).AsEnumerable();
             return status;
         }
-        public IEnumerable<TeamViewModel> GetParticipantTeams(int participantID)
+        public IEnumerable<TeamViewModel> GetParticipantTeams(string username)
         {
             //to be handled by teamservice
+            int participantID = Int32.Parse(_context.ACCOUNT
+                                    .FirstOrDefault(a => a.AD_Username == username)
+                                    .gordon_id);
             var teams = _context.ParticipantTeam
                             .Where(pt => pt.ParticipantID == participantID)
                                 .Join(_context.Team,
@@ -88,22 +94,33 @@ namespace Gordon360.Services.RecIM
 
         public IEnumerable<ParticipantViewModel> GetParticipants()
         {
-            var participants = _context.ACCOUNT
-                                .Join(_context.Participant,
-                                a => Int32.Parse(a.gordon_id),
-                                p => p.ID,
-                                (a, p) =>  (ParticipantViewModel)a);
-            
-            return participants;
+            //temporary, slow and will be adjusted after we implement views in the DB
+            var p = _context.Participant.AsEnumerable();
+            var res = new List<ParticipantViewModel>();
+            foreach (var user in p)
+            {
+                var stringID = $"{user.ID}";
+                var account = (ParticipantViewModel)_context.ACCOUNT
+                    .FirstOrDefault(a => a.gordon_id == stringID);
+                res.Add(account);
+            }        
+            return res;
         }
 
         public async Task PostParticipant(int participantID)
         {
-            await _context.AddAsync(new Participant
+            await _context.Participant.AddAsync(new Participant
             {
                 ID = participantID
             });
-            _context.SaveChangesAsync();
+            await _context.ParticipantStatusHistory.AddAsync(new ParticipantStatusHistory
+            {
+                ParticipantID = participantID,
+                StatusID = 4, //default to cleared
+                StartDate = DateTime.Now,
+                //No defined end date for creation
+            });
+            await _context.SaveChangesAsync();
         }
         public async Task UpdateParticipant(ParticipantPatchViewModel updatedParticipant)
         {
