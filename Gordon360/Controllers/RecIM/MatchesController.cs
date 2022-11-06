@@ -62,7 +62,19 @@ namespace Gordon360.Controllers.RecIM
             await _matchService.UpdateTeamStats(updatedMatch);
             return Ok();
         }
-
+        /// <summary>
+        /// Add Team to Match
+        /// </summary>
+        /// <param name="teamID"></param>
+        /// <param name="matchID"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("{matchID}")]
+        public async Task<ActionResult> AddTeamToMatch(int teamID, int matchID)
+        {
+            await _matchService.AddTeamToMatch(teamID, matchID);
+            return Ok();
+        }
         /// <summary>
         /// Creates Match
         /// </summary>

@@ -326,6 +326,7 @@ namespace Gordon360.Services
             Task<int> PostSeries(SeriesUploadViewModel newSeries, int? referenceSeriesID);
             Task UpdateSeries(SeriesPatchViewModel series);
             Task ScheduleMatches(int seriesID);
+            Task<int> ScheduleEliminationRound(IEnumerable<SeriesTeam> teams, IEnumerable<Match>? matches);
         }
 
         public interface ITeamService
@@ -339,6 +340,7 @@ namespace Gordon360.Services
 
         public interface IParticipantService
         {
+            ACCOUNT GetAccountByParticipantID(int ID);
             IEnumerable<ParticipantViewModel> GetParticipants();
             IEnumerable<ParticipantStatusViewModel> GetParticipantStatusHistory(string username);
             ParticipantViewModel GetParticipantByUsername(string username);
@@ -363,6 +365,7 @@ namespace Gordon360.Services
             IEnumerable<MatchViewModel> GetMatchBySeriesID(int seriesID);
             Task PostMatch(MatchUploadViewModel match);
             Task UpdateTeamStats(MatchTeamPatchViewModel match);
+            Task AddTeamToMatch(int teamID, int matchID);
             Task AddParticipantAttendance(int participantID, int matchID);
             IEnumerable<TeamMatchHistoryViewModel> GetMatchHistoryByTeamID(int teamID);
         }

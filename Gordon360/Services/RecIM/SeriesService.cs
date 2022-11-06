@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-
 namespace Gordon360.Services.RecIM
 {
     public class SeriesService : ISeriesService
@@ -139,6 +138,14 @@ namespace Gordon360.Services.RecIM
 
             await _context.SaveChangesAsync();
         }
+        public async Task UpdateSeriesTeamStats(SeriesTeamPatchViewModel update)
+        {
+            var st = await _context.SeriesTeam.FindAsync(update.ID);
+            st.Win = update.Win ?? st.Win;
+            st.Loss = update.Loss ?? st.Loss;
+
+            await _context.SaveChangesAsync();
+        }
 
         private async Task CreateSeriesTeamMapping(IEnumerable<int> teams, int seriesID)
         {
@@ -201,25 +208,6 @@ namespace Gordon360.Services.RecIM
                 }
             }
         }
-        /**
-         * difference between single and double elimination is that single elim only
-         * needs log(n) rounds with double elim needing to schedule twice that but 
-         * handle the logic of losers bracket
-         */
-        private async Task ScheduleSingleElimination(int seriesID)
-        {
-            var teams = _context.SeriesTeam
-                .Where(st => st.ID == seriesID)
-                .AsEnumerable();
-            throw new NotImplementedException();
-        }
-        private async Task ScheduleDoubleElimination(int seriesID)
-        {
-            var teams = _context.SeriesTeam
-                .Where(st => st.ID == seriesID)
-                .AsEnumerable();
-            throw new NotImplementedException();
-        }
         private async Task ScheduleLadder(int seriesID)
         {
             var teams = _context.SeriesTeam
@@ -235,7 +223,108 @@ namespace Gordon360.Services.RecIM
                 SurfaceID = 1,
                 TeamIDs = teams
             };
-            await _matchService.PostMatch(match); 
+            await _matchService.PostMatch(match);
+        }
+        private async Task ScheduleDoubleElimination(int seriesID)
+        {
+            var series = _context.Series.FirstOrDefault(s => s.ID == seriesID);
+            //Teams are defaulted to be ordered by Wins if there was a reference series
+            var teams = _context.SeriesTeam
+               .Where(st => st.ID == seriesID);
+
+            //schedule first round
+            int teamsInWinners = await ScheduleEliminationRound(teams, null);
+
+            throw new NotImplementedException();
+
+        }
+        private async Task ScheduleSingleElimination(int seriesID)
+        {
+            var series = _context.Series.FirstOrDefault(s => s.ID == seriesID);
+            //Teams are defaulted to be ordered by Wins if there was a reference series
+            var teams = _context.SeriesTeam
+               .Where(st => st.ID == seriesID);
+
+            //schedule first round
+            int teamsInNextRound = await ScheduleEliminationRound(teams, null);
+
+            //create matches for remaining rounds (possible implementation of including round number optional field)
+            while (teamsInNextRound > 1)
+            {
+                for (int i = 0; i < teamsInNextRound/2; i++)
+                {
+                    await _matchService.PostMatch(new MatchUploadViewModel
+                    {
+                        StartTime = series.StartDate, //temporary before autoscheduling
+                        SeriesID = series.ID,
+                        SurfaceID = 1, //temporary before 25live integration
+                        TeamIDs = new List<int>().AsEnumerable() //no teams
+                    });
+                }
+                teamsInNextRound /= 2;
+            }
+        }
+        public async Task<int> ScheduleEliminationRound(IEnumerable<SeriesTeam> originalTeams, IEnumerable<Match>? matches)
+        {
+            int numTeams = originalTeams.Count();
+            int remainingTeamCount = originalTeams.Count();
+            int numBuys = 0; //num matches for next round
+            var series = _context.Series.FirstOrDefault(s => s.ID == originalTeams.First().SeriesID);
+
+            var teams = originalTeams.Reverse();
+            if (remainingTeamCount % 2 != 0) 
+            {
+                await UpdateSeriesTeamStats(new SeriesTeamPatchViewModel
+                {
+                    ID = teams.Last().ID,
+                    Win = 1 //Buy round
+                });
+                teams = teams.Take(--remainingTeamCount);
+                numBuys++;
+            }
+          
+            while (!(((numTeams + numBuys) != 0) && (((numTeams + numBuys) & ((numTeams + numBuys) - 1)) == 0))) //while not power of 2
+            {
+                await UpdateSeriesTeamStats(new SeriesTeamPatchViewModel
+                {
+                    ID = teams.Last().ID,
+                    Win = 1 //Buy round
+                });
+                teams = teams.Take(--remainingTeamCount);
+                numBuys++;
+            }
+
+            var teamPairings = EliminationRoundPairs(teams);
+            if (matches is null)
+            {
+                foreach(var teamPair in teamPairings)
+                {
+                    await _matchService.PostMatch(new MatchUploadViewModel
+                    {
+                        StartTime = series.StartDate, //temporary before autoscheduling
+                        SeriesID = series.ID,
+                        SurfaceID = 1, //temporary before 25live integration
+                        TeamIDs = teamPair
+                    });
+                }
+            }
+            return teamPairings.Count() + numBuys;
+        }
+        private IEnumerable<IEnumerable<int>> EliminationRoundPairs(IEnumerable<SeriesTeam> teams)
+        {
+            var res = new List<IEnumerable<int>>();
+            var teamsArr = teams.ToArray();
+
+            for (int i = 0; i < teamsArr.Length/2; i++)
+            {
+                int j = (teamsArr.Length / 2 - 1) - i;
+                res.Add(new List<int>
+                {
+                    teamsArr[i].TeamID,
+                    teamsArr[j].TeamID
+                }.AsEnumerable());
+            }
+            return res.AsEnumerable();
         }
     }
 

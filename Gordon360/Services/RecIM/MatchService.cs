@@ -10,16 +10,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using Match = Gordon360.Models.CCT.Match;
+using Azure.Identity;
 
 namespace Gordon360.Services.RecIM
 {
     public class MatchService : IMatchService
     {
         private readonly CCTContext _context;
+        private readonly IParticipantService _participantService;
 
-        public MatchService(CCTContext context)
+
+        public MatchService(CCTContext context, IParticipantService participantService)
         {
             _context = context;
+            _participantService = participantService;
         }
         public MatchViewModel GetMatchByID(int matchID)
         {
@@ -39,9 +43,7 @@ namespace Gordon360.Services.RecIM
                                         .Where(mp => mp.MatchID == matchID)
                                         .Select(mp => new ParticipantViewModel
                                         {
-                                            Username = _context.ACCOUNT
-                                                        .FirstOrDefault(a => a.account_id == mp.ParticipantID)
-                                                        .AD_Username
+                                            Username = _participantService.GetAccountByParticipantID(mp.ParticipantID).AD_Username
                                         }).AsEnumerable(),
                             // Team will eventually be handled by TeamService 
                             Team = m.MatchTeam.Select(mt => new TeamViewModel
@@ -53,31 +55,12 @@ namespace Gordon360.Services.RecIM
                                 Participant = mt.Team.ParticipantTeam
                                     .Select(pt => new ParticipantViewModel
                                             {
-                                                Username = _context.ACCOUNT
-                                                    .FirstOrDefault(a => a.account_id == pt.ParticipantID)
-                                                    .AD_Username,
-                                                Email = _context.ACCOUNT
-                                                    .FirstOrDefault(a => a.account_id == pt.ParticipantID)
-                                                    .email,
+                                                Username = _participantService.GetAccountByParticipantID(pt.ParticipantID).AD_Username,
+                                                Email = _participantService.GetAccountByParticipantID(pt.ParticipantID).email,
                                                 Role = _context.RoleType
                                                 .FirstOrDefault(rt => rt.ID ==pt.RoleType)
                                                 .Description
                                             }),
-                                // CODE BELOW DOES BASICALLY THE SAME AS THE ABOVE, BUT WILL NOT WORK WITHOUT REAL
-                                // GORDON ID's AS THE JOIN IS ON REAL DATA AND CANNOT WORK WITH NULL PROPERTIES
-                                // AVAILABLE CODE FOR THE FURTURE (POSSIBLY) THE BIG PLUS IS THAT IT IS JUST CLEANER
-                                //Participant = mt.Team.ParticipantTeam
-                                //    .Join(_context.ACCOUNT,
-                                //            pt => pt.ParticipantID,
-                                //            a => a.account_id,
-                                //            (pt, a) => new ParticipantViewModel
-                                //            {
-                                //                ADUserName = a.AD_Username,
-                                //                Email = a.email,
-                                //                Role = _context.RoleType
-                                //                .FirstOrDefault(rt => rt.ID == pt.RoleType)
-                                //                .Description
-                                //            }),
                                 MatchHistory = _context.Match
                                     .Where(mh => mh.StatusID == 6)
                                         .Join(_context.MatchTeam
@@ -218,12 +201,12 @@ namespace Gordon360.Services.RecIM
 
             foreach(var teamID in m.TeamIDs)
             {
-                await CreateMatchTeamMapping(teamID, match.ID);
+                await AddTeamToMatch(teamID, match.ID);
             }
             await _context.SaveChangesAsync();
         }
 
-        private async Task CreateMatchTeamMapping(int teamID, int matchID)
+        public async Task AddTeamToMatch(int teamID, int matchID)
         {
             var matchTeam = new MatchTeam
             {
