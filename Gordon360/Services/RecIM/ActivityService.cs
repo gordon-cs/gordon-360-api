@@ -105,7 +105,7 @@ namespace Gordon360.Services.RecIM
                             .FirstOrDefault();
             return activity;
         }
-        public async Task UpdateActivity(UpdateActivityViewModel updatedActivity)
+        public async Task UpdateActivity(ActivityPatchViewModel updatedActivity)
         {
             var activity = await _context.Activity.FindAsync(updatedActivity.ID);
             activity.Name = updatedActivity.Name ?? activity.Name;
@@ -122,7 +122,7 @@ namespace Gordon360.Services.RecIM
 
             await _context.SaveChangesAsync();
         }
-        public async Task<int> PostActivity(CreateActivityViewModel a)
+        public async Task<int> PostActivity(ActivityUploadViewModel a)
         {
             var activity = new Activity
             {

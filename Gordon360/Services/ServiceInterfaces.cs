@@ -314,8 +314,8 @@ namespace Gordon360.Services
             IEnumerable<Models.ViewModels.RecIM.ActivityViewModel> GetActivities();
             Models.ViewModels.RecIM.ActivityViewModel? GetActivityByID(int ActivityID);
             IEnumerable<Models.ViewModels.RecIM.ActivityViewModel> GetActivitiesByTime(DateTime? time);
-            Task UpdateActivity(UpdateActivityViewModel updatedActivity);
-            Task<int> PostActivity(CreateActivityViewModel a);
+            Task UpdateActivity(ActivityPatchViewModel updatedActivity);
+            Task<int> PostActivity(ActivityUploadViewModel newActivity);
 
         }
         public interface ISeriesService
@@ -323,8 +323,8 @@ namespace Gordon360.Services
             IEnumerable<SeriesViewModel> GetSeries(bool active);
             IEnumerable<SeriesViewModel> GetSeriesByActivityID(int activityID);
             SeriesViewModel GetSeriesByID(int seriesID);
-            Task<int> PostSeries(CreateSeriesViewModel newSeries, int? referenceSeriesID);
-            Task UpdateSeries(UpdateSeriesViewModel series);
+            Task<int> PostSeries(SeriesUploadViewModel newSeries, int? referenceSeriesID);
+            Task UpdateSeries(SeriesPatchViewModel series);
             Task ScheduleMatches(int seriesID);
         }
 
@@ -339,9 +339,15 @@ namespace Gordon360.Services
 
         public interface IParticipantService
         {
-            IEnumerable<ParticipantViewModel> getParticipants();
+            ACCOUNT GetAccountByParticipantID(int ID);
+            IEnumerable<ParticipantViewModel> GetParticipants();
+            IEnumerable<ParticipantStatusViewModel> GetParticipantStatusHistory(string username);
+            ParticipantViewModel GetParticipantByUsername(string username);
+            IEnumerable<TeamViewModel> GetParticipantTeams(string username);
+
             Task PostParticipant(int participantID);
-            ParticipantViewModel GetParticipant(int participantID);
+            Task UpdateParticipant(ParticipantPatchViewModel updatedParticipant);
+            Task UpdateParticipantStatus(ParticipantStatusPatchViewModel participantStatus);
         }
 
         public interface ISportService
@@ -356,9 +362,10 @@ namespace Gordon360.Services
         {
             MatchViewModel GetMatchByID(int matchID);
             IEnumerable<MatchViewModel> GetMatchBySeriesID(int seriesID);
-            Task PostMatch(CreateMatchViewModel match);
-            Task UpdateTeamStats(UpdateMatchTeamViewModel match);
-            Task AddParticipantAttendance(int participantID, int matchID);        
+            Task PostMatch(MatchUploadViewModel match);
+            Task UpdateTeamStats(MatchTeamPatchViewModel match);
+            Task AddParticipantAttendance(int participantID, int matchID);
+            IEnumerable<TeamMatchHistoryViewModel> GetMatchHistoryByTeamID(int teamID);
         }
     }
 

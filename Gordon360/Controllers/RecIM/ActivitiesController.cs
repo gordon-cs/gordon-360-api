@@ -60,50 +60,27 @@ namespace Gordon360.Controllers.RecIM
         /// <summary>
         /// Posts Activity into CCT.RecIM.Activity
         /// </summary>
-        /// <param name="a">CreateActivityViewModel object with appropriate values</param>
+        /// <param name="newActivity">CreateActivityViewModel object with appropriate values</param>
         /// <returns>Posted Activity ID</returns>
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult> CreateActivity(CreateActivityViewModel a)
+        public async Task<ActionResult> CreateActivity(ActivityUploadViewModel newActivity)
         {
             
-            var activityID = await _activityService.PostActivity(a);
+            var activityID = await _activityService.PostActivity(newActivity);
             return Ok(activityID);
         }
         /// <summary>
         /// Updates Activity based on input
         /// </summary>
-        /// <param name="a"> Updated Activity Object </param>
+        /// <param name="updatedActivity"> Updated Activity Object </param>
         /// <returns></returns>
-        [HttpPut]
+        [HttpPatch]
         [Route("")]
-        public async Task<ActionResult> UpdateActivity(UpdateActivityViewModel a)
+        public async Task<ActionResult> UpdateActivity(ActivityPatchViewModel updatedActivity)
         {
-            await _activityService.UpdateActivity(a);
-            return Ok(a.ID);
+            await _activityService.UpdateActivity(updatedActivity);
+            return Ok(updatedActivity.ID);
         }
-
-        ///<summary>Creates a new League (currently hard coded)</summary>
-        /// <param></param>
-        /// <returns></returns>
-        [HttpPost]
-        [Route("add_smash")]
-        public async Task<ActionResult> CreateSmashLeague()
-        {
-            var smashLeague = new CreateActivityViewModel
-            {
-                Name = "Super Smash Bros. Ultimate 1v1",
-                RegistrationStart = DateTime.Now,
-                RegistrationEnd = DateTime.Now,
-                SportID = 1,
-                MinCapacity = 2,
-                MaxCapacity = 16,
-                SoloRegistration = true,
-                Logo = null,
-            };
-            await _activityService.PostActivity(smashLeague);
-            return Ok();
-        }
-
     }
 }

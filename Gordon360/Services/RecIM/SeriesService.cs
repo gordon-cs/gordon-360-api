@@ -100,7 +100,7 @@ namespace Gordon360.Services.RecIM
         {
             return GetSeries().FirstOrDefault(s => s.ID == seriesID);
         }
-        public async Task<int> PostSeries(CreateSeriesViewModel newSeries, int? referenceSeriesID)
+        public async Task<int> PostSeries(SeriesUploadViewModel newSeries, int? referenceSeriesID)
         {
             var series = new Series
             {
@@ -119,12 +119,16 @@ namespace Gordon360.Services.RecIM
                                 .Where(st => st.SeriesID == seriesID)
                                 .OrderByDescending(st => st.Win)
                                 .Select(st => st.TeamID);
-            
-            
+
+            if (newSeries.NumberOfTeamsAdmitted is not null)
+            {
+                teams = teams.Take(newSeries.NumberOfTeamsAdmitted ?? 0);//will never be null but 0 is to silence error
+            }
+           
             await CreateSeriesTeamMapping(teams, series.ID);
             return series.ID;
         }
-        public async Task UpdateSeries(UpdateSeriesViewModel update)
+        public async Task UpdateSeries(SeriesPatchViewModel update)
         {
             var s = await _context.Series.FindAsync(update.ID);
             s.Name = update.Name ?? s.Name;
@@ -213,9 +217,9 @@ namespace Gordon360.Services.RecIM
                 .Select(st => st.ID);
             var series = _context.Series
                 .FirstOrDefault(s => s.ID == seriesID);
-            var match = new CreateMatchViewModel
+            var match = new MatchUploadViewModel
             {
-                Time = series.StartDate,
+                StartTime = series.StartDate,
                 SeriesID = seriesID,
                 //to be replaced by proper match surface scheduler
                 SurfaceID = 1,
