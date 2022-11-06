@@ -352,10 +352,10 @@ namespace Gordon360.Services
 
         public interface ISportService
         {
-            IEnumerable<Sport> GetSports();
-            Sport GetSportByID(int sportID);
-            Task PostSport(Sport newSport);
-            Task UpdateSport(Sport updatedSport);
+            IEnumerable<SportViewModel> GetSports();
+            SportViewModel GetSportByID(int sportID);
+            Task<int> PostSport(SportUploadViewModel newSport);
+            Task UpdateSport(SportViewModel updatedSport);
         }
 
         public interface IMatchService
