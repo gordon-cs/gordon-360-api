@@ -23,11 +23,6 @@ namespace Gordon360.Services.RecIM
             _matchService = matchService;
         }
 
-        public Task AddUserToTeam(int teamID, int participantID)
-        {
-            throw new NotImplementedException();
-        }
-
         public TeamViewModel GetTeamByID(int teamID)
         {
 
@@ -108,7 +103,7 @@ namespace Gordon360.Services.RecIM
             return team;
         }
 
-        public async Task<int> PostTeam(TeamUploadViewModel t, string adUsername)
+        public async Task<int> PostTeamAsync(TeamUploadViewModel t, string adUsername)
         {
             var participantID = _context.ACCOUNT
                                 .FirstOrDefault(a => a.AD_Username == adUsername)
@@ -125,13 +120,13 @@ namespace Gordon360.Services.RecIM
             await _context.Team.AddAsync(team);
             await _context.SaveChangesAsync();
 
-            await AddUserToTeam(team.ID, participantID);
-            await UpdateParticipantRole(team.ID, participantID, 5);
+            await AddUserToTeamAsync(team.ID, adUsername);
+            await UpdateParticipantRoleAsync(team.ID, participantID, 5);
 
             return team.ID;
         }
 
-        public async Task UpdateParticipantRole(int teamID, int participantID, int participantRoleID)
+        public async Task UpdateParticipantRoleAsync(int teamID, int participantID, int participantRoleID)
         {
             var participantTeam = _context.ParticipantTeam.FirstOrDefault(pt => pt.ParticipantID == participantID && pt.TeamID == teamID);
             participantTeam.RoleType = participantRoleID;
@@ -139,7 +134,7 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateTeam(TeamPatchViewModel update)
+        public async Task UpdateTeamAsync(TeamPatchViewModel update)
         {
             var t = await _context.Team.FindAsync(update.ID);
             t.Name = update.Name ?? t.Name;
@@ -149,7 +144,7 @@ namespace Gordon360.Services.RecIM
 
             await _context.SaveChangesAsync();
         }
-        public async Task AddUsersToTeam(int teamID, string adUsername)
+        public async Task AddUserToTeamAsync(int teamID, string adUsername)
         {
             var participantID = _context.ACCOUNT
                                 .FirstOrDefault(a => a.AD_Username == adUsername)
@@ -169,9 +164,9 @@ namespace Gordon360.Services.RecIM
 
         public bool IsTeamCaptain(string adUsername, int teamID)
         {
-            var participantID = _context.ACCOUNT
+            var participantID = Int32.Parse(_context.ACCOUNT
                                 .FirstOrDefault(a => a.AD_Username == adUsername)
-                                .account_id;
+                                .gordon_id);
             return _context.ParticipantTeam.FirstOrDefault(t => t.TeamID == teamID && t.ParticipantID == participantID).RoleType == 5;
         }
     }

@@ -48,7 +48,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult> CreateTeam(TeamUploadViewModel newTeam)
         {
             var adUsername = AuthUtils.GetUsername(User);
-            var teamID = await _teamService.PostTeam(newTeam, adUsername);
+            var teamID = await _teamService.PostTeamAsync(newTeam, adUsername);
             return Ok(teamID);
         }
 
@@ -67,7 +67,7 @@ namespace Gordon360.Controllers.RecIM
             // only team captain is allowed to add user to team
             if (_teamService.IsTeamCaptain(adUsername, teamID))
             {
-                await _teamService.AddUserToTeam(participantID, teamID);
+                await _teamService.AddUserToTeamAsync(participantID, teamID);
                 return Ok();
             }
 
@@ -90,7 +90,7 @@ namespace Gordon360.Controllers.RecIM
             // only team captain is allowed to add user to team
             if (_teamService.IsTeamCaptain(adUsername, teamID))
             {
-                await _teamService.UpdateParticipantRole(teamID, participantID, participantRoleID);
+                await _teamService.UpdateParticipantRoleAsync(teamID, participantID, participantRoleID);
                 return Ok();
             }
 
@@ -111,7 +111,7 @@ namespace Gordon360.Controllers.RecIM
             // only team captain is allowed to add user to team
             if (_teamService.IsTeamCaptain(adUsername, team.ID))
             {
-                await _teamService.UpdateTeam(team);
+                await _teamService.UpdateTeamAsync(team);
                 return Ok();
             }
 

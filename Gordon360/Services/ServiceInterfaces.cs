@@ -1,5 +1,4 @@
-﻿using Gordon360.Authorization;
-using Gordon360.Models.CCT;
+﻿using Gordon360.Models.CCT;
 using Gordon360.Models.MyGordon;
 using Gordon360.Models.ViewModels;
 using Gordon360.Models.ViewModels.RecIM;
@@ -44,7 +43,7 @@ namespace Gordon360.Services
     public interface IAddressesService
     {
         IEnumerable<States> GetAllStates();
-        IEnumerable<CountryViewModel> GetAllCountries();
+        IEnumerable<Countries> GetAllCountries();
     }
 
     public interface IEventService
@@ -66,20 +65,18 @@ namespace Gordon360.Services
         IEnumerable<AccountViewModel> GetAll();
         AccountViewModel GetAccountByEmail(string email);
         AccountViewModel GetAccountByUsername(string username);
-        IEnumerable<AdvancedSearchViewModel> GetAccountsToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string? homeCity);
-        IEnumerable<AdvancedSearchViewModel> AdvancedSearch(
-            IEnumerable<AdvancedSearchViewModel> accounts,
-            string? firstname,
-            string? lastname,
-            string? major,
-            string? minor,
-            string? hall,
-            string? classType,
-            string? homeCity,
-            string? state,
-            string? country,
-            string? department,
-            string? building);
+        IEnumerable<AdvancedSearchViewModel> AdvancedSearch(List<string> accountTypes,
+                                                            string firstname,
+                                                            string lastname,
+                                                            string major,
+                                                            string minor,
+                                                            string hall,
+                                                            string classType,
+                                                            string homeCity,
+                                                            string state,
+                                                            string country,
+                                                            string department,
+                                                            string building);
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoAsync();
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoExceptAlumniAsync();
     }
@@ -267,6 +264,7 @@ namespace Gordon360.Services
 
     public interface IContentManagementService
     {
+        IEnumerable<SliderViewModel> DEPRECATED_GetSliderContent();
         IEnumerable<Slider_Images> GetBannerSlides();
         Slider_Images AddBannerSlide(BannerSlidePostViewModel slide, string serverURL, string contentRootPath);
         Slider_Images DeleteBannerSlide(int slideID);
@@ -333,10 +331,10 @@ namespace Gordon360.Services
         public interface ITeamService
         {
             TeamViewModel GetTeamByID(int teamID);
-            Task<int> PostTeam(TeamUploadViewModel newTeam, string adUsername);
-            Task AddUserToTeam(int teamID, int participantID);
-            Task UpdateParticipantRole(int teamID, int participantID, int participantRoleID);
-            Task UpdateTeam(TeamPatchViewModel updatedTeam);
+            Task<int> PostTeamAsync(TeamUploadViewModel newTeam, string adUsername);
+            Task AddUserToTeamAsync(int teamID, string adUsername);
+            Task UpdateParticipantRoleAsync(int teamID, int participantID, int participantRoleID);
+            Task UpdateTeamAsync(TeamPatchViewModel updatedTeam);
             bool IsTeamCaptain(string adUsername, int teamID);
         }
 
