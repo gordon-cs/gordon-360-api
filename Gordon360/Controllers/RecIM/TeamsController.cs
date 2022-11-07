@@ -35,6 +35,11 @@ namespace Gordon360.Controllers.RecIM
         public ActionResult<TeamViewModel> GetTeamByID(int teamID)
         {
             var team = _teamService.GetTeamByID(teamID);
+
+            if (team == null)
+            {
+                return NotFound();
+            }
             return Ok(team);
         }
 
@@ -49,6 +54,7 @@ namespace Gordon360.Controllers.RecIM
         {
             var username = AuthUtils.GetUsername(User);
             var teamID = await _teamService.PostTeamAsync(newTeam, username);
+
             return Ok(teamID);
         }
 
