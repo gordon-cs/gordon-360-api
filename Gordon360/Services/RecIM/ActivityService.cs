@@ -33,6 +33,7 @@ namespace Gordon360.Services.RecIM
                                 Name = a.Name,
                                 RegistrationStart = a.RegistrationStart,
                                 RegistrationEnd = a.RegistrationEnd,
+                                RegistrationOpen = DateTime.Now > a.RegistrationStart && DateTime.Now < a.RegistrationEnd,
                                 Sport = _context.Sport
                                         .FirstOrDefault(s => s.ID == a.SportID),
                                 Status = _context.ActivityStatus
@@ -77,6 +78,7 @@ namespace Gordon360.Services.RecIM
                                 Name = a.Name,
                                 RegistrationStart = a.RegistrationStart,
                                 RegistrationEnd = a.RegistrationEnd,
+                                RegistrationOpen = DateTime.Now > a.RegistrationStart && DateTime.Now < a.RegistrationEnd,
                                 Sport = _context.Sport
                                         .FirstOrDefault(s => s.ID == a.SportID),
                                 Status = _context.ActivityStatus

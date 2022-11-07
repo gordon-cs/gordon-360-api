@@ -10,6 +10,7 @@ namespace Gordon360.Models.ViewModels.RecIM
         public string Name { get; set; }
         public DateTime RegistrationStart { get; set; }
         public DateTime RegistrationEnd { get; set; }
+        public bool RegistrationOpen { get; set; }
         public Sport Sport { get; set; }
         public string Status { get; set; }
         public int? MinCapacity { get; set; }
