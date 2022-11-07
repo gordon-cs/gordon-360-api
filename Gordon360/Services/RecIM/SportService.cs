@@ -32,29 +32,29 @@ namespace Gordon360.Services.RecIM
             return _context.Sport.Select(s => (SportViewModel)s).AsEnumerable();
         }
 
-        public async Task<int> PostSport(SportUploadViewModel newSport)
+        public async Task<int> PostSportAsync(SportUploadViewModel newSport)
         {
             var sport = new Sport
             {
                 Name = newSport.Name,
                 Description = newSport.Description,
                 Rules = newSport.Rules,
-                Logo = newSport.Logo ?? "defaultSportPicture.jpg" //will be a good idea to make default pictures
+                Logo = newSport.Logo
             };
             await _context.Sport.AddAsync(sport);
             await _context.SaveChangesAsync();
             return sport.ID;
         }
 
-        public async Task UpdateSport(SportViewModel updatedSport)
+        public async Task<int> UpdateSport(int sportID, SportPatchViewModel updatedSport)
         {
-            var sport = _context.Sport.FirstOrDefault(s => s.ID == updatedSport.ID);
+            var sport = _context.Sport.FirstOrDefault(s => s.ID == sportID);
             sport.Name = updatedSport.Name ?? sport.Name;
             sport.Description = updatedSport.Description ?? sport.Description;
             sport.Rules = updatedSport.Rules ?? sport.Rules;
             sport.Logo = updatedSport.Logo ?? sport.Logo;
             await _context.SaveChangesAsync();
-
+            return sport.ID;
         }
     }
 }

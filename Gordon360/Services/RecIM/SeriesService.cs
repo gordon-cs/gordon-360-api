@@ -99,7 +99,7 @@ namespace Gordon360.Services.RecIM
         {
             return GetSeries().FirstOrDefault(s => s.ID == seriesID);
         }
-        public async Task<int> PostSeries(SeriesUploadViewModel newSeries, int? referenceSeriesID)
+        public async Task<int> PostSeriesAsync(SeriesUploadViewModel newSeries, int? referenceSeriesID)
         {
             var series = new Series
             {
@@ -127,9 +127,9 @@ namespace Gordon360.Services.RecIM
             await CreateSeriesTeamMapping(teams, series.ID);
             return series.ID;
         }
-        public async Task UpdateSeries(SeriesPatchViewModel update)
+        public async Task<int> UpdateSeriesAsync(int seriesID, SeriesPatchViewModel update)
         {
-            var s = await _context.Series.FindAsync(update.ID);
+            var s = await _context.Series.FindAsync(seriesID);
             s.Name = update.Name ?? s.Name;
             s.StartDate = update.StartDate ?? s.StartDate;
             s.EndDate = update.EndDate ?? s.EndDate;
@@ -137,6 +137,7 @@ namespace Gordon360.Services.RecIM
             s.StatusID = update.StatusID ?? s.StatusID;
 
             await _context.SaveChangesAsync();
+            return s.ID;
         }
         public async Task UpdateSeriesTeamStats(SeriesTeamPatchViewModel update)
         {
@@ -198,7 +199,7 @@ namespace Gordon360.Services.RecIM
             {
                 for (int j = i + 1; j < teams.Length; j++)
                 {
-                    await _matchService.PostMatch(new MatchUploadViewModel
+                    await _matchService.PostMatchAsync(new MatchUploadViewModel
                     {
                         StartTime = series.StartDate,//temporary default
                         SeriesID = seriesID,
@@ -223,7 +224,7 @@ namespace Gordon360.Services.RecIM
                 SurfaceID = 1,
                 TeamIDs = teams
             };
-            await _matchService.PostMatch(match);
+            await _matchService.PostMatchAsync(match);
         }
         private async Task ScheduleDoubleElimination(int seriesID)
         {
@@ -253,7 +254,7 @@ namespace Gordon360.Services.RecIM
             {
                 for (int i = 0; i < teamsInNextRound/2; i++)
                 {
-                    await _matchService.PostMatch(new MatchUploadViewModel
+                    await _matchService.PostMatchAsync(new MatchUploadViewModel
                     {
                         StartTime = series.StartDate, //temporary before autoscheduling
                         SeriesID = series.ID,
@@ -299,7 +300,7 @@ namespace Gordon360.Services.RecIM
             {
                 foreach(var teamPair in teamPairings)
                 {
-                    await _matchService.PostMatch(new MatchUploadViewModel
+                    await _matchService.PostMatchAsync(new MatchUploadViewModel
                     {
                         StartTime = series.StartDate, //temporary before autoscheduling
                         SeriesID = series.ID,

@@ -67,7 +67,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult> CreateActivity(ActivityUploadViewModel newActivity)
         {
             
-            var activityID = await _activityService.PostActivity(newActivity);
+            var activityID = await _activityService.PostActivityAsync(newActivity);
             return Ok(activityID);
         }
         /// <summary>
@@ -76,11 +76,11 @@ namespace Gordon360.Controllers.RecIM
         /// <param name="updatedActivity"> Updated Activity Object </param>
         /// <returns></returns>
         [HttpPatch]
-        [Route("")]
-        public async Task<ActionResult> UpdateActivity(ActivityPatchViewModel updatedActivity)
+        [Route("{activityID}")]
+        public async Task<ActionResult> UpdateActivity(int activityID, ActivityPatchViewModel updatedActivity)
         {
-            await _activityService.UpdateActivity(updatedActivity);
-            return Ok(updatedActivity.ID);
+            var id = await _activityService.UpdateActivityAsync(activityID, updatedActivity);
+            return Ok(id);
         }
     }
 }

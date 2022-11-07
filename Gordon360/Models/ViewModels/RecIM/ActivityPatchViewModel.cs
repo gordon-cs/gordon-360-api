@@ -6,7 +6,6 @@ namespace Gordon360.Models.ViewModels.RecIM
 {
     public class ActivityPatchViewModel
     {
-        public int ID { get; set; }
         public string? Name { get; set; }
         public DateTime? RegistrationStart { get; set; }
         public DateTime? RegistrationEnd { get; set; }

@@ -59,7 +59,7 @@ namespace Gordon360.Controllers.RecIM
         [Route("")]
         public async Task<ActionResult> UpdateStats(MatchTeamPatchViewModel updatedMatch)
         {
-            await _matchService.UpdateTeamStats(updatedMatch);
+            await _matchService.UpdateTeamStatsAsync(updatedMatch);
             return Ok();
         }
         /// <summary>
@@ -72,7 +72,7 @@ namespace Gordon360.Controllers.RecIM
         [Route("{matchID}")]
         public async Task<ActionResult> AddTeamToMatch(int teamID, int matchID)
         {
-            await _matchService.AddTeamToMatch(teamID, matchID);
+            await _matchService.AddTeamToMatchAsync(teamID, matchID);
             return Ok();
         }
         /// <summary>
@@ -84,7 +84,7 @@ namespace Gordon360.Controllers.RecIM
         [Route("")]
         public async Task<ActionResult> CreateMatch(MatchUploadViewModel newMatch)
         {
-            await _matchService.PostMatch(newMatch);
+            await _matchService.PostMatchAsync(newMatch);
             return Ok();
         }
 

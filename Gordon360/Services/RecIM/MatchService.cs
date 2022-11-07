@@ -187,7 +187,7 @@ namespace Gordon360.Services.RecIM
                         });
             return match;
         }
-        public async Task PostMatch(MatchUploadViewModel m)
+        public async Task<int> PostMatchAsync(MatchUploadViewModel m)
         {
             var match = new Match
             {
@@ -201,12 +201,13 @@ namespace Gordon360.Services.RecIM
 
             foreach(var teamID in m.TeamIDs)
             {
-                await AddTeamToMatch(teamID, match.ID);
+                await AddTeamToMatchAsync(teamID, match.ID);
             }
             await _context.SaveChangesAsync();
+            return match.ID;
         }
 
-        public async Task AddTeamToMatch(int teamID, int matchID)
+        public async Task AddTeamToMatchAsync(int teamID, int matchID)
         {
             var matchTeam = new MatchTeam
             {
@@ -218,7 +219,7 @@ namespace Gordon360.Services.RecIM
             };
             await _context.MatchTeam.AddAsync(matchTeam);
         }
-        public async Task AddParticipantAttendance(int participantID, int matchID)
+        public async Task AddParticipantAttendanceAsync(int participantID, int matchID)
         {
             var matchParticipant = new MatchParticipant
             {
@@ -228,7 +229,7 @@ namespace Gordon360.Services.RecIM
             await _context.MatchParticipant.AddAsync(matchParticipant);
             await _context.SaveChangesAsync();
         }
-        public async Task UpdateTeamStats(MatchTeamPatchViewModel vm)
+        public async Task UpdateTeamStatsAsync(MatchTeamPatchViewModel vm)
         {
             var teamstats = _context.MatchTeam.FirstOrDefault(mt => mt.MatchID == vm.MatchID && mt.TeamID == vm.TeamID);
             teamstats.Score = vm.Score ?? teamstats.Score;

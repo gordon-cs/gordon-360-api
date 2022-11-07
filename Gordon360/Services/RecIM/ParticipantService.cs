@@ -113,7 +113,7 @@ namespace Gordon360.Services.RecIM
             return res;
         }
 
-        public async Task PostParticipant(int participantID)
+        public async Task<int> PostParticipantAsync(int participantID)
         {
             await _context.Participant.AddAsync(new Participant
             {
@@ -127,10 +127,11 @@ namespace Gordon360.Services.RecIM
                 //No defined end date for creation
             });
             await _context.SaveChangesAsync();
+            return participantID;
         }
-        public async Task UpdateParticipant(ParticipantPatchViewModel updatedParticipant)
+        public async Task<string> UpdateParticipantAsync(string username,ParticipantPatchViewModel updatedParticipant)
         {
-            int participantID = GetParticipantID(updatedParticipant.Username);
+            int participantID = GetParticipantID(username);
             if (updatedParticipant.ActivityID is not null)
             {
                 var participantActivity = _context.ParticipantActivity
@@ -154,12 +155,13 @@ namespace Gordon360.Services.RecIM
                             .FirstOrDefault(pt => pt.Description == updatedParticipant.TeamRole);
             }
             await _context.SaveChangesAsync();
+            return username;
         }
-        public async Task UpdateParticipantStatus(ParticipantStatusPatchViewModel participantStatus)
+        public async Task<string> UpdateParticipantStatusAsync(string username, ParticipantStatusPatchViewModel participantStatus)
         {
             var status = new ParticipantStatusHistory
             {
-                ParticipantID = GetParticipantID(participantStatus.Username),
+                ParticipantID = GetParticipantID(username),
                 StatusID = _context.ParticipantStatus
                                 .FirstOrDefault(ps => ps.Description == participantStatus.StatusDescription)
                                 .ID,
@@ -175,6 +177,7 @@ namespace Gordon360.Services.RecIM
             prevStatus.EndDate = DateTime.Now;
 
             await _context.SaveChangesAsync();
+            return username;
         }
     }
 

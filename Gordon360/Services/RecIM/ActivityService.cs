@@ -105,9 +105,9 @@ namespace Gordon360.Services.RecIM
                             .FirstOrDefault();
             return activity;
         }
-        public async Task UpdateActivity(ActivityPatchViewModel updatedActivity)
+        public async Task<int> UpdateActivityAsync(int activityID, ActivityPatchViewModel updatedActivity)
         {
-            var activity = await _context.Activity.FindAsync(updatedActivity.ID);
+            var activity = await _context.Activity.FindAsync(activityID);
             activity.Name = updatedActivity.Name ?? activity.Name;
             activity.Logo = updatedActivity.Logo ?? activity.Logo;
             activity.RegistrationStart = updatedActivity.RegistrationStart ?? activity.RegistrationStart;
@@ -121,8 +121,9 @@ namespace Gordon360.Services.RecIM
             activity.Completed = updatedActivity.Completed ?? activity.Completed;
 
             await _context.SaveChangesAsync();
+            return activity.ID;
         }
-        public async Task<int> PostActivity(ActivityUploadViewModel a)
+        public async Task<int> PostActivityAsync(ActivityUploadViewModel a)
         {
             var activity = new Activity
             {

@@ -22,7 +22,10 @@ namespace Gordon360.Controllers.RecIM
         {
             _sportService = sportService;
         }
-
+        /// <summary>
+        /// Fetches all Sports in the RecIM database
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("")]
         public ActionResult<IEnumerable<SportViewModel>> GetSports()
@@ -30,7 +33,11 @@ namespace Gordon360.Controllers.RecIM
             var res = _sportService.GetSports();
             return Ok(res);
         }
-
+        /// <summary>
+        /// Gets specific sport by ID
+        /// </summary>
+        /// <param name="sportID"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{sportID}")]
         public ActionResult<SportViewModel> GetSportByID(int sportID)
@@ -38,20 +45,29 @@ namespace Gordon360.Controllers.RecIM
             var res = _sportService.GetSportByID(sportID);
             return Ok(res);
         }
-      
+        /// <summary>
+        /// Update Sport in the database by ID
+        /// </summary>
+        /// <param name="sportID"></param>
+        /// <param name="updatedSport"></param>
+        /// <returns></returns>
         [HttpPatch]
         [Route("{sportID}")]
-        public async Task<ActionResult> UpdateSport(int sportID, SportViewModel updatedSport)
+        public async Task<ActionResult> UpdateSport(int sportID, SportPatchViewModel updatedSport)
         {
-            await _sportService.UpdateSport(updatedSport);
-            return Ok(sportID);
+            var updatedSportID = await _sportService.UpdateSport(sportID,updatedSport);
+            return Ok(updatedSportID);
         }
-
+        /// <summary>
+        /// Creates new Sport for RecIM
+        /// </summary>
+        /// <param name="newSport"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("")]
         public async Task<ActionResult> CreateSport(SportUploadViewModel newSport)
         {
-            int sportID = await _sportService.PostSport(newSport);
+            int sportID = await _sportService.PostSportAsync(newSport);
             return Ok(sportID);
         }
 

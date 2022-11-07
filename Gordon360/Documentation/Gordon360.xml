@@ -740,7 +740,7 @@
             <param name="newActivity">CreateActivityViewModel object with appropriate values</param>
             <returns>Posted Activity ID</returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.UpdateActivity(Gordon360.Models.ViewModels.RecIM.ActivityPatchViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.UpdateActivity(System.Int32,Gordon360.Models.ViewModels.RecIM.ActivityPatchViewModel)">
             <summary>
             Updates Activity based on input
             </summary>
@@ -799,10 +799,11 @@
             <param name="seriesID"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.SeriesController.UpdateSeries(Gordon360.Models.ViewModels.RecIM.SeriesPatchViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.UpdateSeries(System.Int32,Gordon360.Models.ViewModels.RecIM.SeriesPatchViewModel)">
             <summary>
-            
+            Updates Series Information
             </summary>
+            <param name="seriesID"></param>
             <param name="updatedSeries"></param>
             <returns></returns>
         </member>
@@ -812,6 +813,34 @@
             </summary>
             <param name="newSeries">CreateSeriesViewModel</param>
             <param name="referenceSeriesID">ID of Series, used to select specific Teams </param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SportsController.GetSports">
+            <summary>
+            Fetches all Sports in the RecIM database
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SportsController.GetSportByID(System.Int32)">
+            <summary>
+            Gets specific sport by ID
+            </summary>
+            <param name="sportID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SportsController.UpdateSport(System.Int32,Gordon360.Models.ViewModels.RecIM.SportPatchViewModel)">
+            <summary>
+            Update Sport in the database by ID
+            </summary>
+            <param name="sportID"></param>
+            <param name="updatedSport"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SportsController.CreateSport(Gordon360.Models.ViewModels.RecIM.SportUploadViewModel)">
+            <summary>
+            Creates new Sport for RecIM
+            </summary>
+            <param name="newSport"></param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.RequestsController.GetAsync">
