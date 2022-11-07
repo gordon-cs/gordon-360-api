@@ -235,7 +235,7 @@
             </summary>
             <returns> All buildings</returns>
         </member>
-		<member name="M:Gordon360.Controllers.ContentManagementController.GetSliderContent">
+	<member name="M:Gordon360.Controllers.ContentManagementController.GetSliderContent">
             <summary>Get all the slider content for the dashboard slider</summary>
             <returns>A list of all the slides for the slider</returns>
             <remarks>Queries the database for all entries in slider table</remarks>
