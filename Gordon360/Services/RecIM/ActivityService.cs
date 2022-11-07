@@ -33,6 +33,7 @@ namespace Gordon360.Services.RecIM
                                 Name = a.Name,
                                 RegistrationStart = a.RegistrationStart,
                                 RegistrationEnd = a.RegistrationEnd,
+                                RegistrationOpen = DateTime.Now > a.RegistrationStart && DateTime.Now < a.RegistrationEnd,
                                 Sport = _context.Sport
                                         .FirstOrDefault(s => s.ID == a.SportID),
                                 Status = _context.ActivityStatus
@@ -77,6 +78,7 @@ namespace Gordon360.Services.RecIM
                                 Name = a.Name,
                                 RegistrationStart = a.RegistrationStart,
                                 RegistrationEnd = a.RegistrationEnd,
+                                RegistrationOpen = DateTime.Now > a.RegistrationStart && DateTime.Now < a.RegistrationEnd,
                                 Sport = _context.Sport
                                         .FirstOrDefault(s => s.ID == a.SportID),
                                 Status = _context.ActivityStatus
@@ -103,7 +105,7 @@ namespace Gordon360.Services.RecIM
                             .FirstOrDefault();
             return activity;
         }
-        public async Task UpdateActivity(UpdateActivityViewModel updatedActivity)
+        public async Task UpdateActivity(ActivityPatchViewModel updatedActivity)
         {
             var activity = await _context.Activity.FindAsync(updatedActivity.ID);
             activity.Name = updatedActivity.Name ?? activity.Name;
@@ -120,7 +122,7 @@ namespace Gordon360.Services.RecIM
 
             await _context.SaveChangesAsync();
         }
-        public async Task<int> PostActivity(CreateActivityViewModel a)
+        public async Task<int> PostActivity(ActivityUploadViewModel a)
         {
             var activity = new Activity
             {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Gordon360.Models.ViewModels.RecIM
 {
-    public class UpdateSeriesViewModel
+    public class SeriesPatchViewModel
     {
         public int ID { get; set; }
         public string? Name { get; set; }

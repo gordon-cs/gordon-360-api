@@ -3,7 +3,7 @@ using System;
 
 namespace Gordon360.Models.ViewModels.RecIM
 {
-    public class CreateActivityViewModel
+    public class ActivityUploadViewModel
     {
         public string Name { get; set; }
         public DateTime RegistrationStart { get; set; }

@@ -7,15 +7,16 @@ namespace Gordon360.Models.ViewModels.RecIM
 {
     public class ParticipantViewModel
     {
-        public string ADUserName { get; set; }
+        public string Username { get; set; }
         public string Email { get; set; }
-        public string Role { get; set; }
+        public string? Role { get; set; }
+        public string? Status { get; set; }
 
         public static implicit operator ParticipantViewModel(ACCOUNT a)
         {
             ParticipantViewModel vm = new ParticipantViewModel
             {
-                ADUserName = a.AD_Username.Trim() ?? "",
+                Username = a.AD_Username.Trim() ?? "",
                 Email = a.email ?? "", 
             };
 
