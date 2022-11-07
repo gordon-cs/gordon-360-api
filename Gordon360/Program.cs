@@ -52,7 +52,6 @@ builder.Services.AddScoped<RecIM.ISeriesService, RecIM.SeriesService>();
 builder.Services.AddScoped<RecIM.IMatchService, RecIM.MatchService>();
 builder.Services.AddScoped<RecIM.ITeamService, RecIM.TeamService>();
 
-
 builder.Services.AddMemoryCache();
 
 var app = builder.Build();
