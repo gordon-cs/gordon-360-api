@@ -47,27 +47,27 @@ namespace Gordon360.Controllers.RecIM
         [Route("{teamID}")]
         public async Task<ActionResult> CreateTeam(TeamUploadViewModel newTeam)
         {
-            var adUsername = AuthUtils.GetUsername(User);
-            var teamID = await _teamService.PostTeamAsync(newTeam, adUsername);
+            var username = AuthUtils.GetUsername(User);
+            var teamID = await _teamService.PostTeamAsync(newTeam, username);
             return Ok(teamID);
         }
 
         /// <summary>
         /// Add a participant to a team
         /// </summary>
-        /// <param name="participantID"></param>
+        /// <param name="participantUsername"></param>
         /// <param name="teamID"></param>
         /// <returns></returns>
         [HttpPost]
         [Route("{teamID}/users")]
-        public async Task<ActionResult> AddUserToTeam(int participantID, int teamID)
+        public async Task<ActionResult> AddUserToTeam(string participantUsername, int teamID)
         {
-            var adUsername = AuthUtils.GetUsername(User);
+            var username = AuthUtils.GetUsername(User);
 
             // only team captain is allowed to add user to team
-            if (_teamService.IsTeamCaptain(adUsername, teamID))
+            if (_teamService.IsTeamCaptain(teamID, username))
             {
-                await _teamService.AddUserToTeamAsync(participantID, teamID);
+                await _teamService.AddUserToTeamAsync(teamID, participantUsername);
                 return Ok();
             }
 
@@ -85,10 +85,10 @@ namespace Gordon360.Controllers.RecIM
         [Route("{teamID}/users/{userID}")]
         public async Task<ActionResult> UpdateParticipantRole(int teamID, int participantID, int participantRoleID)
         {
-            var adUsername = AuthUtils.GetUsername(User);
+            var username = AuthUtils.GetUsername(User);
 
             // only team captain is allowed to add user to team
-            if (_teamService.IsTeamCaptain(adUsername, teamID))
+            if (_teamService.IsTeamCaptain(teamID, username))
             {
                 await _teamService.UpdateParticipantRoleAsync(teamID, participantID, participantRoleID);
                 return Ok();
@@ -106,10 +106,10 @@ namespace Gordon360.Controllers.RecIM
         [Route("{teamID}")]
         public async Task<ActionResult> UpdateTeamInfo(TeamPatchViewModel team)
         {
-            var adUsername = AuthUtils.GetUsername(User);
+            var username = AuthUtils.GetUsername(User);
 
             // only team captain is allowed to add user to team
-            if (_teamService.IsTeamCaptain(adUsername, team.ID))
+            if (_teamService.IsTeamCaptain(team.ID, username))
             {
                 await _teamService.UpdateTeamAsync(team);
                 return Ok();

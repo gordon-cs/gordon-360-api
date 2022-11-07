@@ -103,10 +103,10 @@ namespace Gordon360.Services.RecIM
             return team;
         }
 
-        public async Task<int> PostTeamAsync(TeamUploadViewModel t, string adUsername)
+        public async Task<int> PostTeamAsync(TeamUploadViewModel t, string username)
         {
             var participantID = _context.ACCOUNT
-                                .FirstOrDefault(a => a.AD_Username == adUsername)
+                                .FirstOrDefault(a => a.AD_Username == username)
                                 .account_id;
 
             var team = new Team
@@ -120,7 +120,7 @@ namespace Gordon360.Services.RecIM
             await _context.Team.AddAsync(team);
             await _context.SaveChangesAsync();
 
-            await AddUserToTeamAsync(team.ID, adUsername);
+            await AddUserToTeamAsync(team.ID, username);
             await UpdateParticipantRoleAsync(team.ID, participantID, 5);
 
             return team.ID;
@@ -144,10 +144,10 @@ namespace Gordon360.Services.RecIM
 
             await _context.SaveChangesAsync();
         }
-        public async Task AddUserToTeamAsync(int teamID, string adUsername)
+        public async Task AddUserToTeamAsync(int teamID, string username)
         {
             var participantID = _context.ACCOUNT
-                                .FirstOrDefault(a => a.AD_Username == adUsername)
+                                .FirstOrDefault(a => a.AD_Username == username)
                                 .account_id;
 
             var participantTeam = new ParticipantTeam
@@ -162,10 +162,10 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
         }
 
-        public bool IsTeamCaptain(string adUsername, int teamID)
+        public bool IsTeamCaptain(int teamID, string username)
         {
             var participantID = Int32.Parse(_context.ACCOUNT
-                                .FirstOrDefault(a => a.AD_Username == adUsername)
+                                .FirstOrDefault(a => a.AD_Username == username)
                                 .gordon_id);
             return _context.ParticipantTeam.FirstOrDefault(t => t.TeamID == teamID && t.ParticipantID == participantID).RoleType == 5;
         }
