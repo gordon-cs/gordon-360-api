@@ -2,7 +2,7 @@
 
 namespace Gordon360.Models.ViewModels.RecIM
 {
-    public class CreateTeamViewModel
+    public class TeamUploadViewModel
     {
         public string Name { get; set; }
         public int StatusID { get; set; }
