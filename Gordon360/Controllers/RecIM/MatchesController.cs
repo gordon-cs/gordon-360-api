@@ -84,8 +84,8 @@ namespace Gordon360.Controllers.RecIM
         [Route("")]
         public async Task<ActionResult> CreateMatch(MatchUploadViewModel newMatch)
         {
-            await _matchService.PostMatchAsync(newMatch);
-            return Ok();
+            var matchID = await _matchService.PostMatchAsync(newMatch);
+            return Ok(matchID);
         }
 
     }

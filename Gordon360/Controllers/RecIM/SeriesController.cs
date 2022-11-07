@@ -58,8 +58,8 @@ namespace Gordon360.Controllers.RecIM
         [Route("{seriesID}")]
         public async Task<ActionResult> UpdateSeries(int seriesID, SeriesPatchViewModel updatedSeries)
         {
-            await _seriesService.UpdateSeriesAsync(seriesID,updatedSeries);
-            return Ok();
+            var updatedSeriesID = await _seriesService.UpdateSeriesAsync(seriesID,updatedSeries);
+            return Ok(updatedSeriesID);
         }
 
         /// <summary>
