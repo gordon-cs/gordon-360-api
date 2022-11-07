@@ -61,12 +61,10 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Return a list states.
         /// </summary>
-        /// 
-        /// <remarks>DEPRECATED: Use AddressController instead</remarks>
         /// <returns> All states</returns>
         [HttpGet]
         [Route("states")]
-        public ActionResult<IEnumerable<string>> DEPRECATED_GetStates()
+        public ActionResult<IEnumerable<string>> GetStates()
         {
             var studentStates = _context.Student.Select(s => s.HomeState).AsEnumerable();
             var facStaffStates = _context.FacStaff.Select(fs => fs.HomeState).AsEnumerable();
@@ -85,12 +83,10 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Return a list countries.
         /// </summary>
-        /// 
-        /// <remarks>DEPRECATED: Use AddressController instead</remarks>
         /// <returns> All countries</returns>
         [HttpGet]
         [Route("countries")]
-        public ActionResult<IEnumerable<string>> DEPREACTED_GetCountries()
+        public ActionResult<IEnumerable<string>> GetCountries()
         {
             var studentCountries = _context.Student.Select(s => s.Country).AsEnumerable();
             var facstaffCountries = _context.FacStaff.Select(fs => fs.Country).AsEnumerable();
