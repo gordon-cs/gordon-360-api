@@ -11,7 +11,7 @@ namespace Gordon360.Models.ViewModels.RecIM
         public DateTime RegistrationStart { get; set; }
         public DateTime RegistrationEnd { get; set; }
         public bool RegistrationOpen { get; set; }
-        public Sport Sport { get; set; }
+        public SportViewModel Sport { get; set; }
         public string Status { get; set; }
         public int? MinCapacity { get; set; }
         public int? MaxCapacity { get; set; }
