@@ -42,7 +42,7 @@ namespace Gordon360.Services.RecIM
                     Participant = t.ParticipantTeam
                         .Select(pt => new ParticipantViewModel
                         {
-                            ADUserName = _context.ACCOUNT
+                            Username = _context.ACCOUNT
                                 .FirstOrDefault(a => a.account_id == pt.ParticipantID)
                                 .AD_Username,
                             Email = _context.ACCOUNT
@@ -58,7 +58,7 @@ namespace Gordon360.Services.RecIM
                                     where mt.TeamID == teamID && mt.TeamID != opmt.TeamID
                                     select new TeamMatchHistoryViewModel
                                     {
-                                        opponent = _context.Team
+                                        Opponent = _context.Team
                                              .Where(opt => opt.ID == opmt.TeamID)
                                              .Select(opt => new TeamViewModel
                                              {
