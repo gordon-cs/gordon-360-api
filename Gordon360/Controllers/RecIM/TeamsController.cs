@@ -63,12 +63,13 @@ namespace Gordon360.Controllers.RecIM
         /// </summary>
         /// <param name="participantUsername"></param>
         /// <param name="teamID"></param>
+        /// <param name="roleType"></param>
         /// <returns></returns>
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult> AddUserToTeam(string participantUsername, int teamID)
+        public async Task<ActionResult> AddUserToTeam(string participantUsername, int teamID, int roleType = 3)
         {
-            await _teamService.AddUserToTeamAsync(teamID, participantUsername);
+            await _teamService.AddUserToTeamAsync(teamID, participantUsername, roleType);
             return Ok();
         }
 
