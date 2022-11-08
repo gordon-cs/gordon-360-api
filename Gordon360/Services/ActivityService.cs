@@ -311,7 +311,11 @@ namespace Gordon360.Services
             var filename = $"canvasImage_{DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}.png";
             var involvement_code = involvement.ACT_CDE.Trim();
             var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", involvement_code, filename);
-            var url = $"{_serverUtils.GetAddress()}/browseable/uploads/{involvement_code}/{filename}";
+
+            var serverAddress = _serverUtils.GetAddress();
+            if (serverAddress is not string) throw new Exception("Could not upload Involvement Image: Server Address is null");
+
+            var url = $"{serverAddress}/browseable/uploads/{involvement_code}/{filename}";
 
             //delete old image file if it exists.
             if (Path.GetDirectoryName(imagePath) is string directory && Directory.Exists(directory))
