@@ -146,7 +146,7 @@ namespace Gordon360.Services.RecIM
 
             return teamID;
         }
-        public async Task AddUserToTeamAsync(int teamID, string username)
+        public async Task AddUserToTeamAsync(int teamID, string username, int roleTypeID = 3)
         {
             var participantID = _context.ACCOUNT
                                 .FirstOrDefault(a => a.AD_Username == username)
@@ -157,7 +157,7 @@ namespace Gordon360.Services.RecIM
                 TeamID = teamID,
                 ParticipantID = participantID,
                 SignDate = DateTime.Now,
-                RoleType = 3, //default: 3 -> member
+                RoleType = roleTypeID, //default: 3 -> member
             };
             await _context.ParticipantTeam.AddAsync(participantTeam);
 

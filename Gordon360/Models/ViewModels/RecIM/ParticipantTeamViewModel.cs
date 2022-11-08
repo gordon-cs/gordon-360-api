@@ -8,7 +8,7 @@ namespace Gordon360.Models.ViewModels.RecIM
         public int ID { get; set; }
         public int TeamID { get; set; }
         public int ParticipantID { get; set; }
-        public DateTime SignDate { get; set; }
+        public DateTime? SignDate { get; set; }
         public int RoleTypeID { get; set; }
 
         public static implicit operator ParticipantTeamViewModel(ParticipantTeam pt)
@@ -18,7 +18,7 @@ namespace Gordon360.Models.ViewModels.RecIM
                 ID = pt.ID,
                 TeamID = pt.TeamID,
                 ParticipantID = pt.ParticipantID,
-                SignDate = (DateTime)pt.SignDate,
+                SignDate = pt.SignDate,
                 RoleTypeID = pt.RoleType,
             };
 
