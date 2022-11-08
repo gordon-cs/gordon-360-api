@@ -13,10 +13,11 @@ namespace Gordon360.Utilities
             _server = server;
         }
 
-        public string GetAddress()
+        public string? GetAddress()
         {
-            var baseUrl = _server.Features.Get<IServerAddressesFeature>()?.Addresses.FirstOrDefault(a => a.Contains("https"));
-            return baseUrl;
+            var addresses = _server.Features.Get<IServerAddressesFeature>()?.Addresses;
+            var serverAddress = addresses?.FirstOrDefault(a => a.StartsWith("https")) ?? addresses?.FirstOrDefault();
+            return serverAddress;
         }
     }
 }
