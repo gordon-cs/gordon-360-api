@@ -43,10 +43,10 @@ namespace Gordon360.Services.RecIM
                         .Select(pt => new ParticipantViewModel
                         {
                             Username = _context.ACCOUNT
-                                .FirstOrDefault(a => a.account_id == pt.ParticipantID)
+                                .FirstOrDefault(a => Int32.Parse(a.gordon_id) == pt.ParticipantID)
                                 .AD_Username,
                             Email = _context.ACCOUNT
-                                .FirstOrDefault(a => a.account_id == pt.ParticipantID)
+                                .FirstOrDefault(a => Int32.Parse(a.gordon_id) == pt.ParticipantID)
                                  .email,
                             Role = _context.RoleType
                                 .FirstOrDefault(rt => rt.ID == pt.RoleType)
