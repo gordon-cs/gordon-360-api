@@ -4,7 +4,6 @@ namespace Gordon360.Models.ViewModels.RecIM
 {
     public class TeamPatchViewModel
     {
-        public int ID { get; set; }
         public string Name { get; set; }
         public int? StatusID { get; set; }
         public bool Private { get; set; }
