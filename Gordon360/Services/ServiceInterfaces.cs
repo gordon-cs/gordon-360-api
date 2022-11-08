@@ -334,7 +334,7 @@ namespace Gordon360.Services
             Task<int> PostTeamAsync(TeamUploadViewModel newTeam, string username);
             Task AddUserToTeamAsync(int teamID, string username);
             Task UpdateParticipantRoleAsync(int teamID, int participantID, int participantRoleID);
-            Task<int> UpdateTeamAsync(TeamPatchViewModel updatedTeam);
+            Task<int> UpdateTeamAsync(int teamID, TeamPatchViewModel updatedTeam);
             bool IsTeamCaptain(int teamID, string username);
         }
 

@@ -134,15 +134,17 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateTeamAsync(TeamPatchViewModel update)
+        public async Task<int> UpdateTeamAsync(int teamID, TeamPatchViewModel update)
         {
-            var t = await _context.Team.FindAsync(update.ID);
+            var t = await _context.Team.FindAsync(teamID);
             t.Name = update.Name ?? t.Name;
             t.StatusID = update.StatusID ?? t.StatusID;
-            t.Private = update.Private;
+            t.Private = (bool)update.Private;
             t.Logo = update.Logo ?? t.Logo;
 
             await _context.SaveChangesAsync();
+
+            return teamID;
         }
         public async Task AddUserToTeamAsync(int teamID, string username)
         {
