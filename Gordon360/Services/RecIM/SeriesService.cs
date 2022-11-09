@@ -236,8 +236,54 @@ namespace Gordon360.Services.RecIM
             //schedule first round
             int teamsInWinners = await ScheduleElimRound(teams, null);
             int teamsInLosers = teams.Count() - teamsInWinners;
-            throw new NotImplementedException();
 
+            //create matches for losers bracket
+            int numBuys = 0;
+            int teamCount = (int)teamsInLosers; //casting to avoid reference value
+            while (!(((teamsInLosers + numBuys) != 0) && (((teamsInLosers + numBuys) & ((teamsInLosers + numBuys) - 1)) == 0))) //while not power of 2
+            {
+                await _matchService.PostMatchAsync(new MatchUploadViewModel
+                {
+                    StartTime = series.StartDate, //temporary before autoscheduling
+                    SeriesID = series.ID,
+                    SurfaceID = 1, //temporary before 25live integration
+                    TeamIDs = new List<int>().AsEnumerable() //no teams
+                });
+                teamCount--;
+                numBuys++;
+            }
+            //teams in losers has weird logic where each team actually represents a match that needs to be made
+            //since each team will be paired with a team from the upper bracket
+            teamsInLosers = teamCount + numBuys;
+            while (teamsInLosers > 1)
+            {
+                for (int i = 0; i < teamsInLosers; i++)
+                {
+                    await _matchService.PostMatchAsync(new MatchUploadViewModel
+                    {
+                        StartTime = series.StartDate, //temporary before autoscheduling
+                        SeriesID = series.ID,
+                        SurfaceID = 1, //temporary before 25live integration
+                        TeamIDs = new List<int>().AsEnumerable() //no teams
+                    });
+                }
+                teamsInLosers /= 2;
+            }
+            //create matches for winners bracket
+            while (teamsInWinners > 0)
+            {
+                for (int i = 0; i < teamsInWinners / 2; i++)
+                {
+                    await _matchService.PostMatchAsync(new MatchUploadViewModel
+                    {
+                        StartTime = series.StartDate, //temporary before autoscheduling
+                        SeriesID = series.ID,
+                        SurfaceID = 1, //temporary before 25live integration
+                        TeamIDs = new List<int>().AsEnumerable() //no teams
+                    });
+                }
+                teamsInWinners /= 2;
+            }
         }
         private async Task ScheduleSingleElimination(int seriesID)
         {
