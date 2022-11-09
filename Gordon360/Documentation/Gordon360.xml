@@ -820,12 +820,13 @@
             <param name="newTeam"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.TeamsController.AddUserToTeam(System.String,System.Int32)">
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.AddUserToTeam(System.String,System.Int32,System.Int32)">
             <summary>
             Add a participant to a team
             </summary>
             <param name="participantUsername"></param>
             <param name="teamID"></param>
+            <param name="roleType"></param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.TeamsController.UpdateTeamInfo(System.Int32,Gordon360.Models.ViewModels.RecIM.TeamPatchViewModel)">
