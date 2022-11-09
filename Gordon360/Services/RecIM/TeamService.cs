@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Gordon360.Authorization;
+using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Services.RecIM
 {
@@ -16,11 +17,13 @@ namespace Gordon360.Services.RecIM
     {
         private readonly CCTContext _context;
         private readonly IMatchService _matchService;
+        private readonly IAccountService _accountService;
 
-        public TeamService(CCTContext context, IMatchService matchService)
+        public TeamService(CCTContext context, IMatchService matchService, IAccountService accountService)
         {
             _context = context;
             _matchService = matchService;
+            _accountService = accountService;
         }
 
         public TeamViewModel GetTeamByID(int teamID)
@@ -43,10 +46,10 @@ namespace Gordon360.Services.RecIM
                         .Select(pt => new ParticipantViewModel
                         {
                             Username = _context.ACCOUNT
-                                .FirstOrDefault(a => Int32.Parse(a.gordon_id) == pt.ParticipantID)
+                                .FirstOrDefault(a => a.gordon_id == pt.ParticipantID.ToString())
                                 .AD_Username,
                             Email = _context.ACCOUNT
-                                .FirstOrDefault(a => Int32.Parse(a.gordon_id) == pt.ParticipantID)
+                                .FirstOrDefault(a => a.gordon_id == pt.ParticipantID.ToString())
                                  .email,
                             Role = _context.RoleType
                                 .FirstOrDefault(rt => rt.ID == pt.RoleType)
@@ -103,11 +106,9 @@ namespace Gordon360.Services.RecIM
             return team;
         }
 
-        public async Task<int> PostTeamAsync(TeamUploadViewModel t, string username)
+        public async Task<Team> PostTeamAsync(TeamUploadViewModel t, string username)
         {
-            var participantID = _context.ACCOUNT
-                                .FirstOrDefault(a => a.AD_Username == username)
-                                .account_id;
+            var participantID = int.Parse(_accountService.GetAccountByUsername(username).GordonID);
 
             var team = new Team
             {
@@ -123,34 +124,34 @@ namespace Gordon360.Services.RecIM
             await AddUserToTeamAsync(team.ID, username);
             await UpdateParticipantRoleAsync(team.ID, participantID, 5);
 
-            return team.ID;
+            return team;
         }
 
-        public async Task UpdateParticipantRoleAsync(int teamID, int participantID, int participantRoleID)
+        public async Task<ParticipantTeam> UpdateParticipantRoleAsync(int teamID, int participantID, int participantRoleID)
         {
             var participantTeam = _context.ParticipantTeam.FirstOrDefault(pt => pt.ParticipantID == participantID && pt.TeamID == teamID);
             participantTeam.RoleType = participantRoleID;
 
             await _context.SaveChangesAsync();
+
+            return participantTeam;
         }
 
-        public async Task<int> UpdateTeamAsync(int teamID, TeamPatchViewModel update)
+        public async Task<Team> UpdateTeamAsync(int teamID, TeamPatchViewModel update)
         {
             var t = await _context.Team.FindAsync(teamID);
             t.Name = update.Name ?? t.Name;
             t.StatusID = update.StatusID ?? t.StatusID;
-            t.Private = (bool)update.Private;
+            t.Private = update.Private ?? t.Private;
             t.Logo = update.Logo ?? t.Logo;
 
             await _context.SaveChangesAsync();
 
-            return teamID;
+            return t;
         }
-        public async Task AddUserToTeamAsync(int teamID, string username, int roleTypeID = 3)
+        public async Task<ParticipantTeam> AddUserToTeamAsync(int teamID, string username, int roleTypeID = 3)
         {
-            var participantID = _context.ACCOUNT
-                                .FirstOrDefault(a => a.AD_Username == username)
-                                .account_id;
+            var participantID = int.Parse(_accountService.GetAccountByUsername(username).GordonID);
 
             var participantTeam = new ParticipantTeam
             {
@@ -160,16 +161,19 @@ namespace Gordon360.Services.RecIM
                 RoleType = roleTypeID, //default: 3 -> member
             };
             await _context.ParticipantTeam.AddAsync(participantTeam);
-
             await _context.SaveChangesAsync();
+
+            return participantTeam;
         }
 
         public bool IsTeamCaptain(int teamID, string username)
         {
-            var participantID = Int32.Parse(_context.ACCOUNT
-                                .FirstOrDefault(a => a.AD_Username == username)
-                                .gordon_id);
-            return _context.ParticipantTeam.FirstOrDefault(t => t.TeamID == teamID && t.ParticipantID == participantID).RoleType == 5;
+            var participantID = int.Parse(_accountService.GetAccountByUsername(username).GordonID);
+            return _context.ParticipantTeam.Any(t =>
+                        t.TeamID == teamID
+                        && t.ParticipantID == participantID
+                        && t.RoleType == 5
+            );
         }
     }
 }

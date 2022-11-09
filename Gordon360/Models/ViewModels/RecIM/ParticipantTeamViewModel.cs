@@ -13,16 +13,14 @@ namespace Gordon360.Models.ViewModels.RecIM
 
         public static implicit operator ParticipantTeamViewModel(ParticipantTeam pt)
         {
-            ParticipantTeamViewModel vm = new ParticipantTeamViewModel
+            return new ParticipantTeamViewModel
             {
                 ID = pt.ID,
                 TeamID = pt.TeamID,
                 ParticipantID = pt.ParticipantID,
-                SignDate = pt.SignDate,
+                SignDate = pt.SignDate ?? null,
                 RoleTypeID = pt.RoleType,
             };
-
-            return vm;
         }
     }
 }

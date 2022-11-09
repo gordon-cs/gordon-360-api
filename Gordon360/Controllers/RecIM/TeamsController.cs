@@ -53,9 +53,9 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult> CreateTeam(TeamUploadViewModel newTeam)
         {
             var username = AuthUtils.GetUsername(User);
-            var teamID = await _teamService.PostTeamAsync(newTeam, username);
+            var team = await _teamService.PostTeamAsync(newTeam, username);
 
-            return Ok(teamID);
+            return Ok(team);
         }
 
         /// <summary>
@@ -66,11 +66,11 @@ namespace Gordon360.Controllers.RecIM
         /// <param name="roleType"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("")]
+        [Route("users")]
         public async Task<ActionResult> AddUserToTeam(string participantUsername, int teamID, int roleType = 3)
         {
-            await _teamService.AddUserToTeamAsync(teamID, participantUsername, roleType);
-            return Ok();
+            var participantTeam = await _teamService.AddUserToTeamAsync(teamID, participantUsername, roleType);
+            return Ok(participantTeam);
         }
 
         /// <summary>
@@ -83,8 +83,8 @@ namespace Gordon360.Controllers.RecIM
         [Route("{teamID}")]
         public async Task<ActionResult> UpdateTeamInfo(int teamID, TeamPatchViewModel team)
         {
-            var id = await _teamService.UpdateTeamAsync(teamID, team);
-            return Ok(id);
+            var Team = await _teamService.UpdateTeamAsync(teamID, team);
+            return Ok(Team);
         }
     }
 }
