@@ -55,31 +55,7 @@ namespace Gordon360.Services.RecIM
                                 .FirstOrDefault(rt => rt.ID == pt.RoleType)
                                 .Description,
                         }),
-                    MatchHistory = (from mt in _context.MatchTeam
-                                    join opmt in _context.MatchTeam
-                                    on mt.MatchID equals opmt.MatchID
-                                    where mt.TeamID == teamID && mt.TeamID != opmt.TeamID
-                                    select new TeamMatchHistoryViewModel
-                                    {
-                                        Opponent = _context.Team
-                                             .Where(opt => opt.ID == opmt.TeamID)
-                                             .Select(opt => new TeamViewModel
-                                             {
-                                                 ID = opt.ID,
-                                                 Name = opt.Name,
-                                                 Logo = opt.Logo,
-                                             }).FirstOrDefault(),
-                                        OwnScore = mt.Score,
-                                        OpposingScore = opmt.Score,
-                                        Status = mt.Score > opmt.Score
-                                                 ? "Win"
-                                                 : mt.Score < opmt.Score
-                                                     ? "Loss"
-                                                     : "Tie",
-                                        Time = _context.Match
-                                             .FirstOrDefault(m => m.ID == mt.MatchID)
-                                             .Time,
-                                    }).OrderByDescending(history => history.Time).AsEnumerable(),
+                    MatchHistory = _matchService.GetMatchHistoryByTeamID(teamID),
                     TeamRecord = t.SeriesTeam
                         .Select(st => new TeamRecordViewModel
                         {
