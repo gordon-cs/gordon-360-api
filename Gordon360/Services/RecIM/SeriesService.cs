@@ -234,8 +234,8 @@ namespace Gordon360.Services.RecIM
                .Where(st => st.ID == seriesID);
 
             //schedule first round
-            int teamsInWinners = await ScheduleEliminationRound(teams, null);
-
+            int teamsInWinners = await ScheduleElimRound(teams, null);
+            int teamsInLosers = teams.Count() - teamsInWinners;
             throw new NotImplementedException();
 
         }
@@ -247,7 +247,7 @@ namespace Gordon360.Services.RecIM
                .Where(st => st.ID == seriesID);
 
             //schedule first round
-            int teamsInNextRound = await ScheduleEliminationRound(teams, null);
+            int teamsInNextRound = await ScheduleElimRound(teams, null);
 
             //create matches for remaining rounds (possible implementation of including round number optional field)
             while (teamsInNextRound > 1)
@@ -265,24 +265,14 @@ namespace Gordon360.Services.RecIM
                 teamsInNextRound /= 2;
             }
         }
-        public async Task<int> ScheduleEliminationRound(IEnumerable<SeriesTeam> originalTeams, IEnumerable<Match>? matches)
+        public async Task<int> ScheduleElimRound(IEnumerable<SeriesTeam> involvedTeams, IEnumerable<Match>? matches)
         {
-            int numTeams = originalTeams.Count();
-            int remainingTeamCount = originalTeams.Count();
-            int numBuys = 0; //num matches for next round
-            var series = _context.Series.FirstOrDefault(s => s.ID == originalTeams.First().SeriesID);
+            int numTeams = involvedTeams.Count();
+            int remainingTeamCount = involvedTeams.Count();
+            int numBuys = 0;
+            var series = _context.Series.FirstOrDefault(s => s.ID == involvedTeams.First().SeriesID);
 
-            var teams = originalTeams.Reverse();
-            if (remainingTeamCount % 2 != 0) 
-            {
-                await UpdateSeriesTeamStats(new SeriesTeamPatchViewModel
-                {
-                    ID = teams.Last().ID,
-                    Win = 1 //Buy round
-                });
-                teams = teams.Take(--remainingTeamCount);
-                numBuys++;
-            }
+            var teams = involvedTeams.Reverse();
           
             while (!(((numTeams + numBuys) != 0) && (((numTeams + numBuys) & ((numTeams + numBuys) - 1)) == 0))) //while not power of 2
             {
@@ -295,7 +285,8 @@ namespace Gordon360.Services.RecIM
                 numBuys++;
             }
 
-            var teamPairings = EliminationRoundPairs(teams);
+            var teamPairings = EliminationRoundTeamPairs(teams);
+            //if not updating existing matches
             if (matches is null)
             {
                 foreach(var teamPair in teamPairings)
@@ -311,7 +302,7 @@ namespace Gordon360.Services.RecIM
             }
             return teamPairings.Count() + numBuys;
         }
-        private IEnumerable<IEnumerable<int>> EliminationRoundPairs(IEnumerable<SeriesTeam> teams)
+        private IEnumerable<IEnumerable<int>> EliminationRoundTeamPairs(IEnumerable<SeriesTeam> teams)
         {
             var res = new List<IEnumerable<int>>();
             var teamsArr = teams.ToArray();

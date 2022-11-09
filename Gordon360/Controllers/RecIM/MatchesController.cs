@@ -50,6 +50,14 @@ namespace Gordon360.Controllers.RecIM
             return Ok(match);
         }
 
+        [HttpGet]
+        [Route("team/{teamID}")]
+        public ActionResult<MatchViewModel> GetMatchHistoryByTeamID(int teamID)
+        {
+            var match = _matchService.GetMatchHistoryByTeamID(teamID);
+            return Ok(match);
+        }
+
         /// <summary>
         /// Updates Match Scores, Sportsmanship Ratings, and Team Status
         /// </summary>
