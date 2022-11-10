@@ -191,6 +191,7 @@ namespace Gordon360.Services
         void TogglePrivacy(int membershipID, bool isPrivate);
         MEMBERSHIP Delete(int membershipID);
         bool IsGroupAdmin(int gordonID);
+        Task<IEnumerable<EmailViewModel>> MembershipEmailsAsync(string activityCode, string sessionCode, ParticipationType? participationCode);
     }
 
     public interface IJobsService
