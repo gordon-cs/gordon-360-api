@@ -330,11 +330,12 @@ namespace Gordon360.Services
 
         public interface ITeamService
         {
-            IEnumerable<Team> GetTeamByID(int teamID);
-            Task PostTeam(Team team);
-            Task AddUserToTeam(int teamID, int participantID);
-            Task UpdateParticipantRole(int teamID, int participantID, RoleType participantRole);
-            Task UpdateTeam(Team updatedTeam);
+            TeamViewModel GetTeamByID(int teamID);
+            Task<Team> PostTeamAsync(TeamUploadViewModel newTeam, string username);
+            Task<ParticipantTeam> AddUserToTeamAsync(int teamID, string username, int roleTypeID);
+            Task<ParticipantTeam> UpdateParticipantRoleAsync(int teamID, int participantID, int participantRoleID);
+            Task<Team> UpdateTeamAsync(int teamID, TeamPatchViewModel updatedTeam);
+            bool IsTeamCaptain(int teamID, string username);
         }
 
         public interface IParticipantService
