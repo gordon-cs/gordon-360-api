@@ -39,7 +39,7 @@ namespace Gordon360.Services
 
             var membershipService = new MembershipService(_context);
 
-            var result = membershipService.MembershipEmails(activityCode, sessionCode, participationType);
+            var result = await membershipService.MembershipEmailsAsync(activityCode, sessionCode, participationType);
 
             if (result == null)
             {

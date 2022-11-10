@@ -132,6 +132,8 @@ namespace Gordon360.Services
                 memberships = memberships.Where(m => m.SessionCode.Trim() == sessionCode);
             }
 
+            memberships = memberships.Where(m => m.AccountPrivate == 0);
+
             return memberships.OrderByDescending(x => x.StartDate).Select(m => new MembershipViewModel
             {
                 MembershipID = m.MembershipID,
@@ -410,23 +412,23 @@ namespace Gordon360.Services
             return _context.MEMBERSHIP.Any(membership => membership.ID_NUM == gordonID && membership.GRP_ADMIN == true);
         }
 
-        public IEnumerable<EmailViewModel> MembershipEmails(string activityCode, string sessionCode, ParticipationType? participationCode = null)
+        public async Task<IEnumerable<EmailViewModel>> MembershipEmailsAsync(string activityCode, string sessionCode, ParticipationType? participationCode = null)
         {
-            var memberships = _context.MEMBERSHIP.Where(m => m.ACT_CDE == activityCode && m.SESS_CDE == sessionCode);
+            var memberships = await GetMembershipsForActivityAsync(activityCode);
 
             if (participationCode != null)
             {
                 if (participationCode == ParticipationType.GroupAdmin)
                 {
-                    memberships = memberships.Where(m => m.GRP_ADMIN == true);
+                    memberships = memberships.Where(m => m.GroupAdmin == true);
                 }
                 else
                 {
-                    memberships = memberships.Where(m => m.PART_CDE == participationCode.Value);
+                    memberships = memberships.Where(m => m.Participation == participationCode.Value);
                 }
             }
 
-            return memberships.Join(_context.ACCOUNT, m => m.ID_NUM.ToString(), a => a.gordon_id, (m, a) => new EmailViewModel { Email = a.email, FirstName = a.firstname, LastName = a.lastname, Description = m.COMMENT_TXT });
+            return memberships.Join(_context.ACCOUNT, m => m.IDNumber.ToString(), a => a.gordon_id, (m, a) => new EmailViewModel { Email = a.email, FirstName = a.firstname, LastName = a.lastname, Description = m.ParticipationDescription });
         }
 
         public class ParticipationType
