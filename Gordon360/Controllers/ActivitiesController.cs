@@ -203,15 +203,15 @@ namespace Gordon360.Controllers
 
         /// <summary>
         /// </summary>
-        /// <param name="activity_code">The code of the activity to update</param>
+        /// <param name="involvement_code">The code of the activity to update</param>
         /// <param name="involvement">The updated involvement details</param>
         /// <returns></returns>
         [HttpPut]
-        [Route("{activity_code}")]
+        [Route("{involvement_code}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
-        public ActionResult<ActivityInfoViewModel> Put(string activity_code, InvolvementUpdateViewModel involvement)
+        public ActionResult<ActivityInfoViewModel> Put(string involvement_code, InvolvementUpdateViewModel involvement)
         {
-            var result = _activityService.Update(activity_code, involvement);
+            var result = _activityService.Update(involvement_code, involvement);
 
             if (result == null)
             {
@@ -266,14 +266,14 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Reset the activity Image
         /// </summary>
-        /// <param name="id">The activity code</param>
+        /// <param name="involvement_code">The activity code</param>
         /// <returns></returns>
         [HttpPost]
-        [Route("{id}/image/reset")]
+        [Route("{involvement_code}/image/reset")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
-        public ActionResult ResetImage(string id)
+        public ActionResult ResetImage(string involvement_code)
         {
-            _activityService.ResetActivityImage(id);
+            _activityService.ResetActivityImage(involvement_code);
 
             return Ok();
         }
