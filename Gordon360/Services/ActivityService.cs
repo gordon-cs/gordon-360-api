@@ -25,12 +25,14 @@ namespace Gordon360.Services
         private readonly CCTContext _context;
         private readonly IConfiguration _config;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly ServerUtils _serverUtils;
 
-        public ActivityService(CCTContext context, IConfiguration config, IWebHostEnvironment webHostEnvironment)
+        public ActivityService(CCTContext context, IConfiguration config, IWebHostEnvironment webHostEnvironment, ServerUtils serverUtils)
         {
             _context = context;
             _config = config;
             _webHostEnvironment = webHostEnvironment;
+            _serverUtils = serverUtils;
         }
         /// <summary>
         /// Fetches a single activity record whose id matches the id provided as an argument
@@ -307,7 +309,13 @@ namespace Gordon360.Services
         {
             // Put current DateTime in filename so the browser knows it's a new file and refreshes cache
             var filename = $"canvasImage_{DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}.png";
-            var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", involvement.ACT_CDE.Trim(), filename);
+            var involvement_code = involvement.ACT_CDE.Trim();
+            var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", involvement_code, filename);
+
+            var serverAddress = _serverUtils.GetAddress();
+            if (serverAddress is not string) throw new Exception("Could not upload Involvement Image: Server Address is null");
+
+            var url = $"{serverAddress}/browseable/uploads/{involvement_code}/{filename}";
 
             //delete old image file if it exists.
             if (Path.GetDirectoryName(imagePath) is string directory && Directory.Exists(directory))
@@ -320,7 +328,7 @@ namespace Gordon360.Services
 
             ImageUtils.UploadImageAsync(imagePath, image);
 
-            involvement.ACT_IMG_PATH = imagePath;
+            involvement.ACT_IMG_PATH = url;
             await _context.SaveChangesAsync();
 
             return involvement;
