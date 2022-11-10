@@ -843,6 +843,37 @@
             <param name="newSport"></param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.GetTeamByID(System.Int32)">
+            <summary>
+            Get a Team object by ID number
+            </summary>
+             <param name="teamID"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.CreateTeam(Gordon360.Models.ViewModels.RecIM.TeamUploadViewModel)">
+            <summary>
+            Create a new team with the requesting user set to team captain
+            </summary>
+            <param name="newTeam"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.AddUserToTeam(System.String,System.Int32,System.Int32)">
+            <summary>
+            Add a participant to a team
+            </summary>
+            <param name="participantUsername"></param>
+            <param name="teamID"></param>
+            <param name="roleType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.UpdateTeamInfo(System.Int32,Gordon360.Models.ViewModels.RecIM.TeamPatchViewModel)">
+            <summary>
+            Update a team info
+            </summary>
+            <param name="team"></param>
+            <param name="teamID"></param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.RequestsController.GetAsync">
             <summary>
             Gets all Membership Request Objects

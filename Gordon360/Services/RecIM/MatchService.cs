@@ -64,9 +64,9 @@ namespace Gordon360.Services.RecIM
                                 MatchHistory = _context.Match
                                     .Where(mh => mh.StatusID == 6)
                                         .Join(_context.MatchTeam
-                                            .Where(mt => mt.TeamID == mt.TeamID)
+                                            .Where(matchteam => matchteam.TeamID == mt.TeamID)
                                             .Join(
-                                                _context.MatchTeam,
+                                                _context.MatchTeam.Where(matchteam => matchteam.TeamID != mt.TeamID),
                                                 mt0 => mt0.MatchID,
                                                 mt1 => mt1.MatchID,
                                                 (mt0, mt1) => new
@@ -120,7 +120,7 @@ namespace Gordon360.Services.RecIM
                                 .Where(mt => mt.TeamID == teamID)
 
                                     .Join(
-                                        _context.MatchTeam,
+                                        _context.MatchTeam.Where(mt => mt.TeamID != teamID),
                                         mt0 => mt0.MatchID,
                                         mt1 => mt1.MatchID,
                                         (mt0, mt1) => new
