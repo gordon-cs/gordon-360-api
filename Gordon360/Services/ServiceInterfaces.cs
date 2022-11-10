@@ -1,4 +1,5 @@
-﻿using Gordon360.Models.CCT;
+﻿using Gordon360.Authorization;
+using Gordon360.Models.CCT;
 using Gordon360.Models.MyGordon;
 using Gordon360.Models.ViewModels;
 using Microsoft.AspNetCore.Http;
@@ -39,7 +40,7 @@ namespace Gordon360.Services
     public interface IAddressesService
     {
         IEnumerable<States> GetAllStates();
-        IEnumerable<Countries> GetAllCountries();
+        IEnumerable<CountryViewModel> GetAllCountries();
     }
 
     public interface IEventService
@@ -61,18 +62,20 @@ namespace Gordon360.Services
         IEnumerable<AccountViewModel> GetAll();
         AccountViewModel GetAccountByEmail(string email);
         AccountViewModel GetAccountByUsername(string username);
-        IEnumerable<AdvancedSearchViewModel> AdvancedSearch(List<string> accountTypes,
-                                                            string? firstname,
-                                                            string? lastname,
-                                                            string? major,
-                                                            string? minor,
-                                                            string? hall,
-                                                            string? classType,
-                                                            string? homeCity,
-                                                            string? state,
-                                                            string? country,
-                                                            string? department,
-                                                            string? building);
+        IEnumerable<AdvancedSearchViewModel> GetAccountsToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string? homeCity);
+        IEnumerable<AdvancedSearchViewModel> AdvancedSearch(
+            IEnumerable<AdvancedSearchViewModel> accounts,
+            string? firstname,
+            string? lastname,
+            string? major,
+            string? minor,
+            string? hall,
+            string? classType,
+            string? homeCity,
+            string? state,
+            string? country,
+            string? department,
+            string? building);
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoAsync();
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoExceptAlumniAsync();
     }
@@ -260,7 +263,6 @@ namespace Gordon360.Services
 
     public interface IContentManagementService
     {
-        IEnumerable<SliderViewModel> DEPRECATED_GetSliderContent();
         IEnumerable<Slider_Images> GetBannerSlides();
         Slider_Images AddBannerSlide(BannerSlidePostViewModel slide, string serverURL, string contentRootPath);
         Slider_Images DeleteBannerSlide(int slideID);

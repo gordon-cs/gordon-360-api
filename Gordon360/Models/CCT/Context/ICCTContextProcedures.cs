@@ -19,8 +19,6 @@ namespace Gordon360.Models.CCT.Context
         Task<List<ALL_BASIC_INFO_NOT_ALUMNIResult>> ALL_BASIC_INFO_NOT_ALUMNIAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<ALL_MEMBERSHIPSResult>> ALL_MEMBERSHIPSAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<ALL_REQUESTSResult>> ALL_REQUESTSAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<List<ALL_SUPERVISORSResult>> ALL_SUPERVISORSAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<int> CAN_READ_STUDENT_SCHEDULESAsync(string username, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> CANCEL_RIDEAsync(int? STUDENT_ID, string RIDE_ID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> CHECK_IDAsync(string _id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<COURSES_FOR_PROFESSORResult>> COURSES_FOR_PROFESSORAsync(int? professor_id, string sess_cde, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
@@ -103,9 +101,6 @@ namespace Gordon360.Models.CCT.Context
         Task<List<RIDERS_BY_RIDE_IDResult>> RIDERS_BY_RIDE_IDAsync(string RIDE_ID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDEResult>> STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDEAsync(int? id_num, string sess_cde, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<STUDENT_JOBS_PER_ID_NUMResult>> STUDENT_JOBS_PER_ID_NUMAsync(int? ID_NUM, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<List<SUPERVISOR_PER_SUP_IDResult>> SUPERVISOR_PER_SUP_IDAsync(int? SUP_ID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<List<SUPERVISORS_PER_ACT_CDEResult>> SUPERVISORS_PER_ACT_CDEAsync(string ACT_CDE, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<List<SUPERVISORS_PER_ID_NUMResult>> SUPERVISORS_PER_ID_NUMAsync(int? ID_NUM, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> TRUNCATE_AA_ALL_APPLICATION_TABLESAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<UPCOMING_RIDESResult>> UPCOMING_RIDESAsync(int? STUDENT_ID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<UPCOMING_RIDES_BY_STUDENT_IDResult>> UPCOMING_RIDES_BY_STUDENT_IDAsync(int? STUDENT_ID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
