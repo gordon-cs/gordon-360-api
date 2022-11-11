@@ -520,24 +520,19 @@ namespace Gordon360.Controllers
                 return Ok(result);
             else
             {
-                List<MembershipView> visibleMemberships = new List<MembershipView>();
-                foreach (var thisMembership in result)
-                {
-                    var act = _activityService.Get(thisMembership.ActivityCode);
-                    if (!(act.Privacy == true || thisMembership.Privacy == true))
+                var visibleMemberships = result.Where(m => {
+                    var act = _activityService.Get(m.ActivityCode);
+                    var isPublic = !(act.Privacy == true || m.Privacy == true);
+                    if (isPublic)
                     {
-                        visibleMemberships.Add(thisMembership);
-                    }
-                    else
-                    {
+                        return true;
+                    } else {
                         // If the current authenticated user is an admin of this group, then include the membership
-                        var admins = _membershipService.GetGroupAdminMembershipsForActivity(thisMembership.ActivityCode, thisMembership.SessionCode);
-                        if (admins.Any(a => a.Username == authenticatedUserUsername))
-                        {
-                            visibleMemberships.Add(thisMembership);
-                        }
+                        var admins = _membershipService.GetGroupAdminMembershipsForActivity(m.ActivityCode, m.SessionCode);
+
+                        return admins.Any(a => a.Username == authenticatedUserUsername);
                     }
-                }
+                });
                 return Ok(visibleMemberships);
             }
         }
