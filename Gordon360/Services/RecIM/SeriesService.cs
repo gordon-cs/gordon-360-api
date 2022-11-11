@@ -133,7 +133,6 @@ namespace Gordon360.Services.RecIM
             s.Name = update.Name ?? s.Name;
             s.StartDate = update.StartDate ?? s.StartDate;
             s.EndDate = update.EndDate ?? s.EndDate;
-            s.Description = update.Description ?? s.Description;
             s.StatusID = update.StatusID ?? s.StatusID;
 
             await _context.SaveChangesAsync();
