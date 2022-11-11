@@ -2,6 +2,7 @@
 using Gordon360.Models.MyGordon.Context;
 using Gordon360.Models.StudentTimesheets.Context;
 using Gordon360.Services;
+using Gordon360.Utilities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
@@ -50,6 +51,7 @@ builder.Services.AddScoped<IMembershipRequestService, MembershipRequestService>(
 builder.Services.AddScoped<IAdministratorService, AdministratorService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<INewsService, NewsService>();
+builder.Services.AddScoped<ServerUtils, ServerUtils>();
 
 builder.Services.AddMemoryCache();
 

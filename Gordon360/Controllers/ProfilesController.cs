@@ -152,7 +152,6 @@ namespace Gordon360.Controllers
         /// <returns>New privacy value</returns>
         [HttpGet]
         [Route("clifton/privacy")]
-        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE)]
         public async Task<ActionResult<bool>> ToggleCliftonStrengthsPrivacyAsync()
         {
             var username = AuthUtils.GetUsername(User);
