@@ -65,7 +65,7 @@ namespace Gordon360.Controllers.RecIM
         }
 
         [HttpPost]
-        [Route("notifications/{username}")]
+        [Route("{username}/notifications")]
         public async Task<IActionResult> SendParticipantNotification(string username, ParticipantNotificationUploadViewModel notificationVM)
         {
             var res = await _participantService.SendParticipantNotification(username, notificationVM);
@@ -83,7 +83,7 @@ namespace Gordon360.Controllers.RecIM
         }
 
         [HttpPatch]
-        [Route("Status/{username}")]
+        [Route("{username}/status")]
         public async Task<ActionResult> UpdateParticipantStatus(string username, ParticipantStatusPatchViewModel updatedParticipant)
         {
             await _participantService.UpdateParticipantStatus(updatedParticipant);
