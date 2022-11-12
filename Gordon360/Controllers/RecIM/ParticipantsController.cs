@@ -48,7 +48,6 @@ namespace Gordon360.Controllers.RecIM
             return Ok(res);
         }
 
-        //this will be handled eventually by team routes
         [HttpGet]
         [Route("{username}/teams")]
         public ActionResult<IEnumerable<TeamViewModel>> GetParticipantTeams(string username)
@@ -64,6 +63,15 @@ namespace Gordon360.Controllers.RecIM
             await _participantService.PostParticipant(participantID);
             return (Ok(participantID));
         }
+
+        [HttpPost]
+        [Route("notifications/{username}")]
+        public async Task<IActionResult> SendParticipantNotification(string username, ParticipantNotificationUploadViewModel notificationVM)
+        {
+            var res = await _participantService.SendParticipantNotification(username, notificationVM);
+            return CreatedAtAction("SendParticipantNotification", new { id = res.ID },res);
+        }
+
 
         [HttpPatch]
         [Route("{username}")]
