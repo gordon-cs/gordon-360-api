@@ -28,16 +28,9 @@ namespace Gordon360.Services.RecIM
             return _context.ACCOUNT
                         .FirstOrDefault(a => a.gordon_id == $"{ID}");
         }
-        private int GetParticipantIdByUsername(string username)
-        {
-            return Int32.Parse(_context.ACCOUNT
-                        .FirstOrDefault(a => a.AD_Username == username)
-                        .gordon_id);
-        }
-
         public ParticipantViewModel GetParticipantByUsername(string username)
         {
-            int participantID = GetParticipantIdByUsername(username);
+            int participantID = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID);
             var participant = _context.Participant
                                 .Where(p => p.ID == participantID)
                                 .Select(p => new ParticipantViewModel
@@ -56,19 +49,18 @@ namespace Gordon360.Services.RecIM
                                                         (psh, ps) => ps.Description)
                                                 .FirstOrDefault(),
                                     Notification = _context.ParticipantNotification
-                                                    .Where(pn => pn.ParticipantID == participantID)
+                                                    .Where(pn => pn.ParticipantID == participantID && pn.EndDate > DateTime.Now)
                                                     .OrderByDescending(pn => pn.DispatchDate)
                                                     .Select(pn => (ParticipantNotificationViewModel)pn)
                                                     .AsEnumerable()
                                 })
                                 .FirstOrDefault();
-
             return participant;
         }
 
         public async Task<ParticipantNotification> SendParticipantNotification(string username, ParticipantNotificationUploadViewModel notificationVM)
         {
-            int participantID = GetParticipantIdByUsername(username);
+            int participantID = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID);
             var newNotification = new ParticipantNotification
             {
                 ParticipantID = participantID,
@@ -82,7 +74,7 @@ namespace Gordon360.Services.RecIM
         }
         public IEnumerable<ParticipantStatusViewModel> GetParticipantStatusHistory(string username)
         {
-            int participantID = GetParticipantIdByUsername(username);
+            int participantID = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID);
             var status = _context.ParticipantStatusHistory
                             .Where(psh => psh.ParticipantID == participantID)
                             .OrderByDescending(psh => psh.ID)
@@ -101,7 +93,7 @@ namespace Gordon360.Services.RecIM
         public IEnumerable<TeamViewModel> GetParticipantTeams(string username)
         {
             //to be handled by teamservice
-            int participantID = GetParticipantIdByUsername(username);
+            int participantID = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID);
             var teams = _context.ParticipantTeam
                             .Where(pt => pt.ParticipantID == participantID)
                                 .Join(_context.Team,
@@ -151,7 +143,7 @@ namespace Gordon360.Services.RecIM
         }
         public async Task UpdateParticipant(ParticipantPatchViewModel updatedParticipant)
         {
-            int participantID = GetParticipantIdByUsername(updatedParticipant.Username);
+            int participantID = Int32.Parse(_accountService.GetAccountByUsername(updatedParticipant.Username).GordonID);
             if (updatedParticipant.ActivityID is not null)
             {
                 var participantActivity = _context.ParticipantActivity
@@ -180,7 +172,7 @@ namespace Gordon360.Services.RecIM
         {
             var status = new ParticipantStatusHistory
             {
-                ParticipantID = GetParticipantIdByUsername(participantStatus.Username),
+                ParticipantID = Int32.Parse(_accountService.GetAccountByUsername(participantStatus.Username).GordonID),
                 StatusID = _context.ParticipantStatus
                                 .FirstOrDefault(ps => ps.Description == participantStatus.StatusDescription)
                                 .ID,
