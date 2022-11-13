@@ -16,6 +16,7 @@ namespace Gordon360.Models.ViewModels
         public string AD_Username { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public bool? IsAlumni { get; set; }
         public string Mail_Location { get; set; }
         public string Participation { get; set; }
         public string ParticipationDescription { get; set; }

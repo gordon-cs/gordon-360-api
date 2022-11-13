@@ -144,6 +144,7 @@ namespace Gordon360.Services
                 AD_Username = m.AD_Username,
                 FirstName = m.FirstName.Trim(),
                 LastName = m.LastName.Trim(),
+                IsAlumni = _context.Alumni.Any(a => a.AD_Username == m.AD_Username),
                 Mail_Location = m.Mail_Location,
                 Participation = m.Participation.Trim(),
                 ParticipationDescription = m.ParticipationDescription.Trim(),
@@ -426,7 +427,14 @@ namespace Gordon360.Services
                 }
             }
 
-            return memberships.Join(_context.ACCOUNT, m => m.ID_NUM.ToString(), a => a.gordon_id, (m, a) => new EmailViewModel { Email = a.email, FirstName = a.firstname, LastName = a.lastname, Description = m.COMMENT_TXT });
+            return memberships.Join(_context.ACCOUNT, m => m.ID_NUM.ToString(), a => a.gordon_id, (m, a) => new EmailViewModel
+                {
+                    Email = a.email,
+                    FirstName = a.firstname,
+                    LastName = a.lastname,
+                    Description = m.COMMENT_TXT
+                }
+            );
         }
 
         public class ParticipationType
