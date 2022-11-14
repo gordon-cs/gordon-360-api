@@ -19,7 +19,7 @@ namespace Gordon360.Models.ViewModels.RecIM
         //public bool Sat { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-        public int? EstMatchTime { get; set; }
+        public int EstMatchTime { get; set; }
 
         public static implicit operator SeriesScheduleViewModel(SeriesSchedule s)
         {
@@ -29,17 +29,17 @@ namespace Gordon360.Models.ViewModels.RecIM
                 ID = s.ID,
                 AvailableDays = new Dictionary<string, bool>()
                     {
-                        { "Sun",s.Sun },
-                        { "Mon",s.Mon },
-                        { "Tue",s.Tue },
-                        { "Wed",s.Wed },
-                        { "Thu",s.Thu },
-                        { "Fri",s.Fri },
-                        { "Sat",s.Sat },
+                        { "Sunday",s.Sun },
+                        { "Monday",s.Mon },
+                        { "Tuesday",s.Tue },
+                        { "Wednesday",s.Wed },
+                        { "Thursday",s.Thu },
+                        { "Friday",s.Fri },
+                        { "Saturday",s.Sat },
                     },
                 StartTime = s.StartTime,
                 EndTime = s.EndTime,
-                EstMatchTime = s.EstMatchTime
+                EstMatchTime = s.EstMatchTime ?? 30 //customer suggestion default 30 minutes
             };
             //return new SeriesScheduleViewModel
             //{
