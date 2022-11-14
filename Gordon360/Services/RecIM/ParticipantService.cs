@@ -15,10 +15,11 @@ namespace Gordon360.Services.RecIM
     public class ParticipantService : IParticipantService
     {
         private readonly CCTContext _context;
+        private readonly IAccountService _accountService;
 
-        public ParticipantService(CCTContext context)
+        public ParticipantService(CCTContext context, IAccountService accountService)
         {
-
+            _accountService = accountService;
             _context = context;
         }
 
@@ -27,16 +28,9 @@ namespace Gordon360.Services.RecIM
             return _context.ACCOUNT
                         .FirstOrDefault(a => a.gordon_id == $"{ID}");
         }
-        private int GetParticipantID(string username)
-        {
-            return Int32.Parse(_context.ACCOUNT
-                        .FirstOrDefault(a => a.AD_Username == username)
-                        .gordon_id);
-        }
-
         public ParticipantViewModel GetParticipantByUsername(string username)
         {
-            int participantID = GetParticipantID(username);
+            int participantID = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID);
             var participant = _context.Participant
                                 .Where(p => p.ID == participantID)
                                 .Select(p => new ParticipantViewModel
@@ -53,15 +47,34 @@ namespace Gordon360.Services.RecIM
                                                         psh => psh.StatusID,
                                                         ps => ps.ID,
                                                         (psh, ps) => ps.Description)
-                                                .FirstOrDefault()
+                                                .FirstOrDefault(),
+                                    Notification = _context.ParticipantNotification
+                                                    .Where(pn => pn.ParticipantID == participantID && pn.EndDate > DateTime.Now)
+                                                    .OrderByDescending(pn => pn.DispatchDate)
+                                                    .Select(pn => (ParticipantNotificationViewModel)pn)
+                                                    .AsEnumerable()
                                 })
                                 .FirstOrDefault();
-
             return participant;
+        }
+
+        public async Task<ParticipantNotification> SendParticipantNotification(string username, ParticipantNotificationUploadViewModel notificationVM)
+        {
+            int participantID = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID);
+            var newNotification = new ParticipantNotification
+            {
+                ParticipantID = participantID,
+                Message = notificationVM.Message,
+                EndDate = notificationVM.EndDate,
+                DispatchDate = DateTime.Now
+            };
+            await _context.ParticipantNotification.AddAsync(newNotification);
+            await _context.SaveChangesAsync();
+            return newNotification;
         }
         public IEnumerable<ParticipantStatusViewModel> GetParticipantStatusHistory(string username)
         {
-            int participantID = GetParticipantID(username);
+            int participantID = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID);
             var status = _context.ParticipantStatusHistory
                             .Where(psh => psh.ParticipantID == participantID)
                             .OrderByDescending(psh => psh.ID)
@@ -80,7 +93,7 @@ namespace Gordon360.Services.RecIM
         public IEnumerable<TeamViewModel> GetParticipantTeams(string username)
         {
             //to be handled by teamservice
-            int participantID = GetParticipantID(username);
+            int participantID = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID);
             var teams = _context.ParticipantTeam
                             .Where(pt => pt.ParticipantID == participantID)
                                 .Join(_context.Team,
@@ -131,7 +144,8 @@ namespace Gordon360.Services.RecIM
         }
         public async Task<string> UpdateParticipantAsync(string username,ParticipantPatchViewModel updatedParticipant)
         {
-            int participantID = GetParticipantID(username);
+            int participantID = Int32.Parse(_accountService.GetAccountByUsername(updatedParticipant.Username).GordonID);
+
             if (updatedParticipant.ActivityID is not null)
             {
                 var participantActivity = _context.ParticipantActivity
@@ -161,7 +175,7 @@ namespace Gordon360.Services.RecIM
         {
             var status = new ParticipantStatusHistory
             {
-                ParticipantID = GetParticipantID(username),
+                ParticipantID = Int32.Parse(_accountService.GetAccountByUsername(participantStatus.Username).GordonID),
                 StatusID = _context.ParticipantStatus
                                 .FirstOrDefault(ps => ps.Description == participantStatus.StatusDescription)
                                 .ID,
