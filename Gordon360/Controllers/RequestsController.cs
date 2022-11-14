@@ -7,6 +7,7 @@ using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Gordon360.Exceptions;
 
 namespace Gordon360.Controllers
 {
@@ -141,22 +142,13 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP_REQUEST)]
         public async Task<ActionResult<RequestView>> UpdateStatusAsync(int membershipRequestID, [FromBody] string status)
         {
-            RequestView? updated = null;
-
-            switch (status)
+            RequestView? updated = status switch
             {
-                case Request_Status.APPROVED:
-                    updated = await _membershipRequestService.ApproveAsync(membershipRequestID);
-                    break;
-                case Request_Status.DENIED:
-                    updated = await _membershipRequestService.DenyAsync(membershipRequestID);
-                    break;
-                case Request_Status.PENDING:
-                    updated = await _membershipRequestService.SetPendingAsync(membershipRequestID);
-                    break;
-                default:
-                    return BadRequest($"Status must be one of '{Request_Status.APPROVED}', '{Request_Status.DENIED}', or '{Request_Status.PENDING}'");
-            }
+                Request_Status.APPROVED => await _membershipRequestService.ApproveAsync(membershipRequestID),
+                Request_Status.DENIED => await _membershipRequestService.DenyAsync(membershipRequestID),
+                Request_Status.PENDING => await _membershipRequestService.SetPendingAsync(membershipRequestID),
+                _ => throw new BadInputException() { ExceptionMessage = $"Status must be one of '{Request_Status.APPROVED}', '{Request_Status.DENIED}', or '{Request_Status.PENDING}'" };
+            };
 
             if (updated == null)
             {
