@@ -97,24 +97,30 @@ namespace Gordon360.Services
         {
             var allMemberships = await _context.Procedures.ALL_MEMBERSHIPSAsync();
 
-            return allMemberships.OrderByDescending(m => m.StartDate).Select(m => new MembershipViewModel
+            return allMemberships.OrderByDescending(m => m.StartDate).Select(m =>
             {
-                MembershipID = m.MembershipID,
-                ActivityCode = m.ActivityCode.Trim(),
-                ActivityDescription = m.ActivityDescription.Trim(),
-                ActivityImagePath = m.ActivityImagePath,
-                SessionCode = m.SessionCode.Trim(),
-                SessionDescription = m.SessionDescription.Trim(),
-                IDNumber = m.IDNumber,
-                FirstName = m.FirstName.Trim(),
-                LastName = m.LastName.Trim(),
-                Participation = m.Participation.Trim(),
-                ParticipationDescription = m.ParticipationDescription.Trim(),
-                StartDate = m.StartDate,
-                EndDate = m.EndDate,
-                Description = m.Description,
-                GroupAdmin = m.GroupAdmin,
-                Privacy = m.Privacy
+                var username = _context.ACCOUNT.FirstOrDefault(a => a.gordon_id == m.IDNumber.ToString())?.AD_Username;
+                var groups = AuthUtils.GetGroups(username);
+                return new MembershipViewModel
+                {
+                    MembershipID = m.MembershipID,
+                    ActivityCode = m.ActivityCode.Trim(),
+                    ActivityDescription = m.ActivityDescription.Trim(),
+                    ActivityImagePath = m.ActivityImagePath,
+                    SessionCode = m.SessionCode.Trim(),
+                    SessionDescription = m.SessionDescription.Trim(),
+                    IDNumber = m.IDNumber,
+                    FirstName = m.FirstName.Trim(),
+                    LastName = m.LastName.Trim(),
+                    IsAlumni = groups.Contains(AuthGroup.Alumni) && !groups.Contains(AuthGroup.Student) && !groups.Contains(AuthGroup.FacStaff),
+                    Participation = m.Participation.Trim(),
+                    ParticipationDescription = m.ParticipationDescription.Trim(),
+                    StartDate = m.StartDate,
+                    EndDate = m.EndDate,
+                    Description = m.Description,
+                    GroupAdmin = m.GroupAdmin,
+                    Privacy = m.Privacy
+                };
             });
         }
 
@@ -212,26 +218,31 @@ namespace Gordon360.Services
 
             var memberships = await _context.Procedures.MEMBERSHIPS_PER_STUDENT_IDAsync(int.Parse(account.gordon_id));
 
-            return memberships.OrderByDescending(x => x.StartDate).Select(m => new MembershipViewModel
+            return memberships.OrderByDescending(x => x.StartDate).Select(m =>
             {
-                MembershipID = m.MembershipID,
-                ActivityCode = m.ActivityCode.Trim(),
-                ActivityDescription = m.ActivityDescription.Trim(),
-                ActivityImagePath = m.ActivityImagePath,
-                SessionCode = m.SessionCode.Trim(),
-                SessionDescription = m.SessionDescription.Trim(),
-                IDNumber = m.IDNumber,
-                FirstName = m.FirstName.Trim(),
-                LastName = m.LastName.Trim(),
-                Participation = m.Participation.Trim(),
-                ParticipationDescription = m.ParticipationDescription.Trim(),
-                StartDate = m.StartDate,
-                EndDate = m.EndDate,
-                Description = m.Description,
-                ActivityType = m.ActivityType.Trim(),
-                ActivityTypeDescription = m.ActivityTypeDescription.Trim(),
-                GroupAdmin = m.GroupAdmin,
-                Privacy = m.Privacy,
+                var groups = AuthUtils.GetGroups(username);
+                return new MembershipViewModel
+                {
+                    MembershipID = m.MembershipID,
+                    ActivityCode = m.ActivityCode.Trim(),
+                    ActivityDescription = m.ActivityDescription.Trim(),
+                    ActivityImagePath = m.ActivityImagePath,
+                    SessionCode = m.SessionCode.Trim(),
+                    SessionDescription = m.SessionDescription.Trim(),
+                    IDNumber = m.IDNumber,
+                    FirstName = m.FirstName.Trim(),
+                    LastName = m.LastName.Trim(),
+                    IsAlumni = groups.Contains(AuthGroup.Alumni) && !groups.Contains(AuthGroup.Student) && !groups.Contains(AuthGroup.FacStaff),
+                    Participation = m.Participation.Trim(),
+                    ParticipationDescription = m.ParticipationDescription.Trim(),
+                    StartDate = m.StartDate,
+                    EndDate = m.EndDate,
+                    Description = m.Description,
+                    ActivityType = m.ActivityType.Trim(),
+                    ActivityTypeDescription = m.ActivityTypeDescription.Trim(),
+                    GroupAdmin = m.GroupAdmin,
+                    Privacy = m.Privacy,
+                };
             });
         }
 
