@@ -17,10 +17,12 @@ namespace Gordon360.Services
     public class EmailService : IEmailService
     {
         private readonly CCTContext _context;
+        private readonly IMembershipService _membershipService;
 
-        public EmailService(CCTContext context)
+        public EmailService(CCTContext context, IMembershipService membershipService)
         {
             _context = context;
+            _membershipService = membershipService;
         }
 
         /// <summary>
@@ -32,14 +34,9 @@ namespace Gordon360.Services
         /// <returns>A list of emails (along with first and last name) associated with that activity</returns>
         public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAsync(string activityCode, string? sessionCode = null, ParticipationType? participationType = null)
         {
-            if (sessionCode == null)
-            {
-                sessionCode = Helpers.GetCurrentSession(_context);
-            }
+            sessionCode ??= Helpers.GetCurrentSession(_context);
 
-            var membershipService = new MembershipService(_context);
-
-            var result = membershipService.MembershipEmails(activityCode, sessionCode, participationType);
+            var result = _membershipService.MembershipEmails(activityCode, sessionCode, participationType);
 
             if (result == null)
             {
