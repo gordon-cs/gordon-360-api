@@ -10,7 +10,9 @@ namespace Gordon360.Models.ViewModels.RecIM
         public string Username { get; set; }
         public string Email { get; set; }
         public string? Role { get; set; }
-        public string? Status { get; set; }
+        public string Status { get; set; }
+        public IEnumerable<ParticipantNotificationViewModel> Notification { get; set; } 
+            = new List<ParticipantNotificationViewModel>();
 
         public static implicit operator ParticipantViewModel(ACCOUNT a)
         {

@@ -347,6 +347,7 @@ namespace Gordon360.Services
             IEnumerable<TeamViewModel> GetParticipantTeams(string username);
 
             Task PostParticipant(int participantID);
+            Task<ParticipantNotification> SendParticipantNotification(string username, ParticipantNotificationUploadViewModel notificationVM);
             Task UpdateParticipant(ParticipantPatchViewModel updatedParticipant);
             Task UpdateParticipantStatus(ParticipantStatusPatchViewModel participantStatus);
         }
