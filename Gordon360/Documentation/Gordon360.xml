@@ -123,7 +123,7 @@
         <member name="M:Gordon360.Controllers.ActivitiesController.Put(System.String,Gordon360.Models.ViewModels.InvolvementUpdateViewModel)">
             <summary>
             </summary>
-            <param name="activity_code">The code of the activity to update</param>
+            <param name="involvement_code">The code of the activity to update</param>
             <param name="involvement">The updated involvement details</param>
             <returns></returns>
         </member>
@@ -139,7 +139,7 @@
             <summary>
             Reset the activity Image
             </summary>
-            <param name="id">The activity code</param>
+            <param name="involvement_code">The activity code</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.ActivitiesController.TogglePrivacy(System.String,System.Boolean)">
