@@ -82,7 +82,7 @@ namespace Gordon360.Models.CCT
         [StringLength(1)]
         [Unicode(false)]
         public string KeepPrivate { get; set; }
-        [StringLength(75)]
+        [StringLength(100)]
         [Unicode(false)]
         public string JobTitle { get; set; }
         [StringLength(20)]
@@ -100,6 +100,7 @@ namespace Gordon360.Models.CCT
         [StringLength(50)]
         [Unicode(false)]
         public string Email { get; set; }
+        public bool? ActiveAccount { get; set; }
         [StringLength(7)]
         [Unicode(false)]
         public string Type { get; set; }
@@ -114,7 +115,7 @@ namespace Gordon360.Models.CCT
         [StringLength(45)]
         [Unicode(false)]
         public string BuildingDescription { get; set; }
-        [StringLength(60)]
+        [StringLength(63)]
         [Unicode(false)]
         public string Country { get; set; }
         [StringLength(20)]

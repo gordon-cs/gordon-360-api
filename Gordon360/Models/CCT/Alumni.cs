@@ -116,7 +116,7 @@ namespace Gordon360.Models.CCT
         public string AD_Username { get; set; }
         public int? show_pic { get; set; }
         public int? preferred_photo { get; set; }
-        [StringLength(60)]
+        [StringLength(63)]
         [Unicode(false)]
         public string Country { get; set; }
         [StringLength(50)]

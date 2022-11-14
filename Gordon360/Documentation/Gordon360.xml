@@ -40,40 +40,18 @@
         </member>
         <member name="M:Gordon360.Controllers.AccountsController.SearchAsync(System.String)">
             <summary>
-            Return a list of accounts matching some or all of the search parameter
+            Return a list of accounts matching some or all of <c>searchString</c>.
             </summary>
-            
-            
-            Full Explanation:
-            
-            Returns a list of accounts ordered by key of a combination of users first/last/user name in the following order
-                1.first or last name begins with search query,
-                2.first or last name in Username that begins with search query
-                3.first or last name that contains the search query
-                
-            If Full Names of any two accounts are the same the follow happens to the dictionary key to solve this problem
-                1. If there is a number attached to their account this is appened to the end of their key
-                2. Otherwise an '1' is appended to the end
-                
-            Note:
-            A '1' is added inbetween a key's first and last name or first and last username in order to preserve the presedence set by shorter names
-            as both first and last are used as a part of the key in order to order matching first/last names with the remaining part of their name
-            but this resulted in the presedence set by shorter names to be lost
-            
-            Note:
-            "z" s are added in order to keep each case split into each own group in the dictionary
-            
-            <param name="searchString"> The input to search for </param>
-            <returns> All accounts meeting some or all of the parameter</returns>
+            <param name="searchString">The input to search for</param>
+            <returns>All accounts meeting some or all of the parameter, sorted according to how well the account matched the search.</returns>
         </member>
         <member name="M:Gordon360.Controllers.AccountsController.SearchWithSpaceAsync(System.String,System.String)">
             <summary>
-            Return a list of accounts matching some or all of the search parameter
-            We are searching through a concatonated string, containing several pieces of info about each user.
+            Return a list of accounts matching some or all of the search parameter.
             </summary>
-            <param name="firstnameSearch"> The firstname portion of the search</param>
-            <param name="lastnameSearch"> The lastname portion of the search</param>
-            <returns> All accounts matching some or all of both the firstname and lastname parameters</returns>
+            <param name="firstnameSearch">The firstname portion of the search</param>
+            <param name="lastnameSearch">The lastname portion of the search</param>
+            <returns> All accounts matching some or all of both the firstname and lastname parameters, sorted by how well the account matched the search.</returns>
         </member>
         <member name="M:Gordon360.Controllers.AccountsController.AdvancedPeopleSearchAsync(System.Collections.Generic.List{System.String},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
             <summary>
@@ -93,33 +71,6 @@
             <param name="department"></param>   
             <param name="building"></param>     
             <returns> All accounts meeting some or all of the parameter</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.AccountsController.GenerateKey(System.String,System.Int32)">
-             <Summary>
-               This function generates a key for each account
-               The key is of the form "z...keyBase" where z is repeated precedence times.
-             </Summary>
-             <remarks>
-               The leading precedence number of z's are used to put keep the highest precedence matches first.
-               The keyBase is used to sort within the precedence level.
-             </remarks>
-            
-             <param name="keyBase">The base value to use for the key - i.e. the user's highest precedence info that matches the search string</param>
-             <param name="precedence">Set where in the dictionary this key group will be ordered</param>
-        </member>
-        <member name="M:Gordon360.Controllers.AccountsController.GenerateKey(System.String,System.String,System.Int32)">
-             <Summary>
-               This function generates a key for each account
-               The key is of the form "z...firstname1lastname" where z is repeated precedence times.
-             </Summary>
-             <remarks>
-               The leading precedence number of z's are used to put keep the highest precedence matches first.
-               The keyBase is used to sort within the precedence level.
-             </remarks>
-            
-             <param name="firstnameKey">The firstname value to use for the key - i.e. the user's highest precedence firstname info that matches the search string</param>
-             <param name="lastnameKey">The lastname value to use for the key - i.e. the user's highest precedence lastname info that matches the search string</param>
-             <param name="precedence">Set where in the dictionary this key group will be ordered</param>
         </member>
         <member name="M:Gordon360.Controllers.ActivitiesController.GetActivitiesForSessionAsync(System.String)">
             <summary>Gets the activities taking place during a given session</summary>
@@ -260,16 +211,20 @@
             </summary>
             <returns> All minors</returns>
         </member>
-        <member name="M:Gordon360.Controllers.AdvancedSearchController.GetStates">
+        <member name="M:Gordon360.Controllers.AdvancedSearchController.DEPRECATED_GetStates">
             <summary>
             Return a list states.
             </summary>
+            
+            <remarks>DEPRECATED: Use AddressController instead</remarks>
             <returns> All states</returns>
         </member>
-        <member name="M:Gordon360.Controllers.AdvancedSearchController.GetCountries">
+        <member name="M:Gordon360.Controllers.AdvancedSearchController.DEPREACTED_GetCountries">
             <summary>
             Return a list countries.
             </summary>
+            
+            <remarks>DEPRECATED: Use AddressController instead</remarks>
             <returns> All countries</returns>
         </member>
         <member name="M:Gordon360.Controllers.AdvancedSearchController.GetDepartments">
@@ -283,11 +238,6 @@
             Return a list buildings.
             </summary>
             <returns> All buildings</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.ContentManagementController.GetSliderContent">
-            <summary>Get all the slider content for the dashboard slider</summary>
-            <returns>A list of all the slides for the slider</returns>
-            <remarks>Queries the database for all entries in slider table</remarks>
         </member>
         <member name="M:Gordon360.Controllers.ContentManagementController.GetBannerSlides">
             <summary>Get all the banner slides for the dashboard banner</summary>
@@ -1007,6 +957,73 @@
             a job&apos;s unique id number
             </summary>
         </member>
+        <member name="M:Gordon360.Models.ViewModels.BasicInfoViewModel.MatchSearch(System.String)">
+            <summary>
+            Matches basic info fields against <c>search</c>, returning a match key representing the value and precedence of the first match, or <c>null</c>.
+            </summary>
+            
+            <remarks>
+            The match key is leading 'z's equal to the precedence of the match, followed by the matched field.
+            This key, when used to sort aplhabetically, will sort matched accounts by the precedence of the matched field and alphabetically within precedence level.
+            The precedence of a match is determined by the following, in order:
+            <list type="number">
+            <item><description>How the search matches the field</description>
+                <list type="number">
+                    <item><description>Equals</description></item>
+                    <item><description>Starts With</description></item>
+                    <item><description>Contains</description></item>
+                </list>
+            </item>
+            <item><description>Which field the search matches</description>
+                <list type="number">
+                    <item><description>FirstName</description></item>
+                    <item><description>NickName</description></item>
+                    <item><description>LastName</description></item>
+                    <item><description>MaidenName</description></item>
+                    <item><description>UserName</description></item>
+                </list>
+            </item>
+            </list>
+            
+            </remarks>
+            
+            <param name="search">The search input to match against</param>
+            <returns>The match key if <c>search</c> matched a field, or <c>null</c></returns>
+        </member>
+        <member name="M:Gordon360.Models.ViewModels.BasicInfoViewModel.MatchSearch(System.String,System.String)">
+            <summary>
+            Matches basic info fields against the first and last names of a search, returning a match key representing the value and precedence of the first match, or <c>null</c>.
+            </summary>
+            
+            <remarks>
+            The match key is leading 'z's equal to the precedence of both matches, followed by the matched fields (first then last), separated by a '1' to sort short first names above longer first names.
+            This key, when used to sort aplhabetically, will sort matched accounts by the precedence of the matched field and alphabetically within precedence level.
+            The precedence of a match is determined by the following, in order:
+            <list type="number">
+            <item><description>How the search matches the field</description>
+                <list type="number">
+                    <item><description>Equals</description></item>
+                    <item><description>Starts With</description></item>
+                    <item><description>Contains</description></item>
+                </list>
+            </item>
+            <item><description>Which field the search matches</description>
+                <list type="number">
+                    <item><description>FirstName</description></item>
+                    <item><description>NickName</description></item>
+                    <item><description>LastName</description></item>
+                    <item><description>MaidenName</description></item>
+                    <item><description>UserName</description></item>
+                </list>
+            </item>
+            </list>
+            
+            </remarks>
+            
+            <param name="firstnameSearch">The first name of the search input to match against</param>
+            <param name="lastnameSearch">The last name of the search input to match against</param>
+            <returns>The match key if first and last name both matched a field, or <c>null</c></returns>
+        </member>
         <member name="T:Gordon360.Services.AcademicCheckInService">
             <summary>
             Service Class that facilitates data transactions between the AcademicCheckInController and the CheckIn database model.
@@ -1089,6 +1106,33 @@
             </summary>
             <param name="username">The AD username associated with the account.</param>
             <returns>the student account information</returns>
+        </member>
+        <member name="M:Gordon360.Services.AccountService.AdvancedSearch(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.AdvancedSearchViewModel},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Given a list of accounts, and search params, return all the accounts that match those search params.
+            </summary>
+            <param name="accounts">The accounts that should be searched, converted to an AdvancedSearchViewModel</param>
+            <param name="firstname">The firstname search param</param>
+            <param name="lastname">The lastname search param</param>
+            <param name="major">The major search param</param>
+            <param name="minor">The minor search param</param>
+            <param name="hall">The hall search param</param>
+            <param name="classType">The class type search param, e.g. 'Sophomore', 'Senior', 'Undergraduate Conferred'</param>
+            <param name="homeCity">The home city search param</param>
+            <param name="state">The state search param</param>
+            <param name="country">The country search param</param>
+            <param name="department">The department search param</param>
+            <param name="building">The building search param</param>
+            <returns>The accounts from the provided list that match the given search params</returns>
+        </member>
+        <member name="M:Gordon360.Services.AccountService.GetAccountsToSearch(System.Collections.Generic.List{System.String},System.Collections.Generic.IEnumerable{Gordon360.Authorization.AuthGroup},System.String)">
+            <summary>
+            Get the list of accounts a user can search, based on the types of accounts they want to search, their authorization, and whether they're searching sensitive info.
+            </summary>
+            <param name="accountTypes">A list of account types that will be searched: 'student', 'alumni', and/or 'facstaff'</param>
+            <param name="authGroups">The authorization groups of the searching user, to decide what accounts they are permitted to search</param>
+            <param name="homeCity">The home city search param, since it is considered sensitive info</param>
+            <returns>The list of accounts that may be searched, converted to AdvancedSearchViewModels.</returns>
         </member>
         <member name="M:Gordon360.Services.AccountService.GetAllBasicInfoAsync">
             <summary>
@@ -1271,13 +1315,6 @@
             <summary>
             Service class that facilitates data (specifically, site content) passing between the ContentManagementController and the database model.
             </summary>
-        </member>
-        <member name="M:Gordon360.Services.ContentManagementService.DEPRECATED_GetSliderContent">
-            <summary>
-            Fetches the dashboard slider content from the database.
-            </summary>
-            <returns>If found, returns a set of SliderViewModel's, based on each slide entry in the db. 
-            If not returns an empty IEnumerable.</returns>
         </member>
         <member name="M:Gordon360.Services.ContentManagementService.GetBannerSlides">
             <summary>

@@ -471,7 +471,7 @@ namespace Gordon360.Services
                 }
             }
 
-            return memberships.Join(_context.ACCOUNT, m => m.ID_NUM.ToString(), a => a.gordon_id, (m, a) => new EmailViewModel { Email = a.email, FirstName = a.firstname, LastName = a.lastname });
+            return memberships.Join(_context.ACCOUNT, m => m.ID_NUM.ToString(), a => a.gordon_id, (m, a) => new EmailViewModel { Email = a.email, FirstName = a.firstname, LastName = a.lastname, Description = m.COMMENT_TXT });
         }
 
         public class ParticipationType

@@ -41,7 +41,6 @@ namespace Gordon360.Models.CCT.Context
             modelBuilder.Entity<ALL_BASIC_INFO_NOT_ALUMNIResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<ALL_MEMBERSHIPSResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<ALL_REQUESTSResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<ALL_SUPERVISORSResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<COURSES_FOR_PROFESSORResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<CREATE_MESSAGE_ROOMResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<CURRENT_SESSIONResult>().HasNoKey().ToView(null);
@@ -95,9 +94,6 @@ namespace Gordon360.Models.CCT.Context
             modelBuilder.Entity<RIDERS_BY_RIDE_IDResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDEResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<STUDENT_JOBS_PER_ID_NUMResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<SUPERVISOR_PER_SUP_IDResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<SUPERVISORS_PER_ACT_CDEResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<SUPERVISORS_PER_ID_NUMResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<UPCOMING_RIDESResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<UPCOMING_RIDES_BY_STUDENT_IDResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<UPDATE_CELL_PHONEResult>().HasNoKey().ToView(null);
@@ -276,53 +272,6 @@ namespace Gordon360.Models.CCT.Context
                 parameterreturnValue,
             };
             var _ = await _context.SqlQueryAsync<ALL_REQUESTSResult>("EXEC @returnValue = [dbo].[ALL_REQUESTS]", sqlParameters, cancellationToken);
-
-            returnValue?.SetValue(parameterreturnValue.Value);
-
-            return _;
-        }
-
-        public virtual async Task<List<ALL_SUPERVISORSResult>> ALL_SUPERVISORSAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
-        {
-            var parameterreturnValue = new SqlParameter
-            {
-                ParameterName = "returnValue",
-                Direction = System.Data.ParameterDirection.Output,
-                SqlDbType = System.Data.SqlDbType.Int,
-            };
-
-            var sqlParameters = new []
-            {
-                parameterreturnValue,
-            };
-            var _ = await _context.SqlQueryAsync<ALL_SUPERVISORSResult>("EXEC @returnValue = [dbo].[ALL_SUPERVISORS]", sqlParameters, cancellationToken);
-
-            returnValue?.SetValue(parameterreturnValue.Value);
-
-            return _;
-        }
-
-        public virtual async Task<int> CAN_READ_STUDENT_SCHEDULESAsync(string username, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
-        {
-            var parameterreturnValue = new SqlParameter
-            {
-                ParameterName = "returnValue",
-                Direction = System.Data.ParameterDirection.Output,
-                SqlDbType = System.Data.SqlDbType.Int,
-            };
-
-            var sqlParameters = new []
-            {
-                new SqlParameter
-                {
-                    ParameterName = "username",
-                    Size = 64,
-                    Value = username ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.VarChar,
-                },
-                parameterreturnValue,
-            };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[CAN_READ_STUDENT_SCHEDULES] @username", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2970,85 +2919,6 @@ namespace Gordon360.Models.CCT.Context
                 parameterreturnValue,
             };
             var _ = await _context.SqlQueryAsync<STUDENT_JOBS_PER_ID_NUMResult>("EXEC @returnValue = [dbo].[STUDENT_JOBS_PER_ID_NUM] @ID_NUM", sqlParameters, cancellationToken);
-
-            returnValue?.SetValue(parameterreturnValue.Value);
-
-            return _;
-        }
-
-        public virtual async Task<List<SUPERVISOR_PER_SUP_IDResult>> SUPERVISOR_PER_SUP_IDAsync(int? SUP_ID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
-        {
-            var parameterreturnValue = new SqlParameter
-            {
-                ParameterName = "returnValue",
-                Direction = System.Data.ParameterDirection.Output,
-                SqlDbType = System.Data.SqlDbType.Int,
-            };
-
-            var sqlParameters = new []
-            {
-                new SqlParameter
-                {
-                    ParameterName = "SUP_ID",
-                    Value = SUP_ID ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.Int,
-                },
-                parameterreturnValue,
-            };
-            var _ = await _context.SqlQueryAsync<SUPERVISOR_PER_SUP_IDResult>("EXEC @returnValue = [dbo].[SUPERVISOR_PER_SUP_ID] @SUP_ID", sqlParameters, cancellationToken);
-
-            returnValue?.SetValue(parameterreturnValue.Value);
-
-            return _;
-        }
-
-        public virtual async Task<List<SUPERVISORS_PER_ACT_CDEResult>> SUPERVISORS_PER_ACT_CDEAsync(string ACT_CDE, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
-        {
-            var parameterreturnValue = new SqlParameter
-            {
-                ParameterName = "returnValue",
-                Direction = System.Data.ParameterDirection.Output,
-                SqlDbType = System.Data.SqlDbType.Int,
-            };
-
-            var sqlParameters = new []
-            {
-                new SqlParameter
-                {
-                    ParameterName = "ACT_CDE",
-                    Size = 8,
-                    Value = ACT_CDE ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.Char,
-                },
-                parameterreturnValue,
-            };
-            var _ = await _context.SqlQueryAsync<SUPERVISORS_PER_ACT_CDEResult>("EXEC @returnValue = [dbo].[SUPERVISORS_PER_ACT_CDE] @ACT_CDE", sqlParameters, cancellationToken);
-
-            returnValue?.SetValue(parameterreturnValue.Value);
-
-            return _;
-        }
-
-        public virtual async Task<List<SUPERVISORS_PER_ID_NUMResult>> SUPERVISORS_PER_ID_NUMAsync(int? ID_NUM, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
-        {
-            var parameterreturnValue = new SqlParameter
-            {
-                ParameterName = "returnValue",
-                Direction = System.Data.ParameterDirection.Output,
-                SqlDbType = System.Data.SqlDbType.Int,
-            };
-
-            var sqlParameters = new []
-            {
-                new SqlParameter
-                {
-                    ParameterName = "ID_NUM",
-                    Value = ID_NUM ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.Int,
-                },
-                parameterreturnValue,
-            };
-            var _ = await _context.SqlQueryAsync<SUPERVISORS_PER_ID_NUMResult>("EXEC @returnValue = [dbo].[SUPERVISORS_PER_ID_NUM] @ID_NUM", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
