@@ -484,9 +484,9 @@ namespace Gordon360.Authorization
 
                 case Resource.MEMBERSHIP_REQUEST:
                     {
-                        // Once a request is sent, no one should be able to edit its contents.
-                        // If a mistake is made in creating the original request, the user can always delete it and make a new one.
-                        if (context.ActionArguments["status"] is string && context.ActionArguments["membershipRequestID"] is int mrID)
+                        // Once a request is sent, no one is able to edit its contents.
+                        // If a mistake is made in creating the original request, the user can delete it and make a new one.
+                        if (context.ActionArguments["membershipRequestID"] is int mrID)
                         {
                             // Get the view model from the repository
                             var activityCode = _membershipRequestService.Get(mrID).ActivityCode;
