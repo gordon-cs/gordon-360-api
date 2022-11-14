@@ -31,7 +31,7 @@ namespace Gordon360.Services.RecIM
 
         public TeamViewModel GetTeamByID(int teamID)
         {
-            var teams = _context.Team
+            var team = _context.Team
                             .Where(t => t.ID == teamID)
                             .Select(t => new TeamViewModel
                             {
@@ -122,58 +122,7 @@ namespace Gordon360.Services.RecIM
 
 
                             }).FirstOrDefault();
-
-            //var team = _context.Team
-            //    .Where(t => t.ID == teamID)
-            //    .Select(t => new TeamViewModel
-            //    {
-            //        ID = teamID,
-            //        Name = t.Name,
-            //        Status = _context.TeamStatus
-            //                .FirstOrDefault(s => s.ID == t.StatusID)
-            //                .Description,
-            //        Private = t.Private,
-            //        Logo = t.Logo,
-            //        Match = t.MatchTeam
-            //            .Select(mt => _matchService.GetMatchByID(mt.MatchID)),
-            //        Participant = t.ParticipantTeam
-            //            .Select(pt => new ParticipantViewModel
-            //            {
-            //                Username = _context.ACCOUNT
-            //                    .FirstOrDefault(a => a.gordon_id == pt.ParticipantID.ToString())
-            //                    .AD_Username,
-            //                Email = _context.ACCOUNT
-            //                    .FirstOrDefault(a => a.gordon_id == pt.ParticipantID.ToString())
-            //                     .email,
-            //                Role = _context.RoleType
-            //                    .FirstOrDefault(rt => rt.ID == pt.RoleType)
-            //                    .Description,
-            //            }),
-            //        MatchHistory = _matchService.GetMatchHistoryByTeamID(teamID),
-            //        TeamRecord = t.SeriesTeam
-            //            .Select(st => new TeamRecordViewModel
-            //            {
-            //                ID = st.ID,
-            //                Name = t.Name,
-            //                Win = st.Win,
-            //                // for now Loss is calculated with query, just for no dummy data added to database
-            //                Loss = t.MatchTeam
-            //                    .Where(mt => mt.Match.StatusID == 6
-            //                    && mt.Score < _context.MatchTeam
-            //                    .FirstOrDefault(opmt => opmt.MatchID == mt.MatchID
-            //                    && opmt.TeamID != teamID)
-            //                    .Score)
-            //                    .Count(),
-            //                Tie = t.MatchTeam
-            //                    .Where(mt => mt.Match.StatusID == 6
-            //                    && mt.Score == _context.MatchTeam
-            //                    .FirstOrDefault(opmt => opmt.MatchID == mt.MatchID
-            //                    && opmt.TeamID != teamID)
-            //                    .Score)
-            //                    .Count(),
-            //            }).AsEnumerable(),
-            //    }).FirstOrDefault();
-            return teams;
+            return team;
         }
 
         public async Task<Team> PostTeamAsync(TeamUploadViewModel t, string username)
