@@ -68,7 +68,7 @@ namespace Gordon360.Controllers.RecIM
         [Route("{username}/notifications")]
         public async Task<IActionResult> SendParticipantNotification(string username, ParticipantNotificationUploadViewModel notificationVM)
         {
-            var res = await _participantService.SendParticipantNotification(username, notificationVM);
+            var res = await _participantService.SendParticipantNotificationAsync(username, notificationVM);
             return CreatedAtAction("SendParticipantNotification", new { id = res.ID },res);
         }
 
