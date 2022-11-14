@@ -147,7 +147,7 @@ namespace Gordon360.Controllers
                 Request_Status.APPROVED => await _membershipRequestService.ApproveAsync(membershipRequestID),
                 Request_Status.DENIED => await _membershipRequestService.DenyAsync(membershipRequestID),
                 Request_Status.PENDING => await _membershipRequestService.SetPendingAsync(membershipRequestID),
-                _ => throw new BadInputException() { ExceptionMessage = $"Status must be one of '{Request_Status.APPROVED}', '{Request_Status.DENIED}', or '{Request_Status.PENDING}'" };
+                _ => throw new BadInputException() { ExceptionMessage = $"Status must be one of '{Request_Status.APPROVED}', '{Request_Status.DENIED}', or '{Request_Status.PENDING}'" }
             };
 
             if (updated == null)
