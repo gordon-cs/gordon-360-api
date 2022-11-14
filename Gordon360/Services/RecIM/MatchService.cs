@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using Match = Gordon360.Models.CCT.Match;
 using Azure.Identity;
+using Microsoft.AspNetCore.Http;
 
 namespace Gordon360.Services.RecIM
 {
@@ -58,7 +59,7 @@ namespace Gordon360.Services.RecIM
                                                 Username = _participantService.GetAccountByParticipantID(pt.ParticipantID).AD_Username,
                                                 Email = _participantService.GetAccountByParticipantID(pt.ParticipantID).email,
                                                 Role = _context.RoleType
-                                                .FirstOrDefault(rt => rt.ID ==pt.RoleType)
+                                                .FirstOrDefault(rt => rt.ID == pt.RoleType)
                                                 .Description
                                             }),
                                 MatchHistory = _context.Match
@@ -204,6 +205,16 @@ namespace Gordon360.Services.RecIM
                 await AddTeamToMatchAsync(teamID, match.ID);
             }
             await _context.SaveChangesAsync();
+            return match.ID;
+        }
+        public async Task<int> UpdateMatchAsync(MatchPatchViewModel m)
+        {
+            var match = _context.Match.FirstOrDefault(match => match.ID == m.ID);
+            match.StatusID = m.StatusID ?? match.StatusID;
+            match.SurfaceID = m.SurfaceID ?? match.SurfaceID;
+            match.Time = m.Time ?? match.Time;
+            await _context.SaveChangesAsync();
+
             return match.ID;
         }
 

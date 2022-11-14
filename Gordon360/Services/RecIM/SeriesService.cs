@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Graph;
 
 namespace Gordon360.Services.RecIM
 {
@@ -240,6 +241,7 @@ namespace Gordon360.Services.RecIM
                         SurfaceID = availableSurfaces[surfaceIndex].SurfaceID, 
                         TeamIDs = new List<int>() { teams[i].TeamID, teams[j].TeamID }.AsEnumerable()
                     });
+                    surfaceIndex++;
                 }
             }
         }
@@ -326,25 +328,84 @@ namespace Gordon360.Services.RecIM
             var teams = _context.SeriesTeam
                .Where(st => st.ID == seriesID);
 
+            SeriesScheduleViewModel schedule = _context.SeriesSchedule
+                            .FirstOrDefault(ss => ss.ID ==
+                                _context.Series
+                                    .FirstOrDefault(s => s.ID == seriesID)
+                                    .ScheduleID);
+            var availableSurfaces = _context.SeriesSurface
+                                        .Where(ss => ss.SeriesID == seriesID)
+                                        .ToArray();
+            var day = series.StartDate;
+            day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second);
+            string dayOfWeek = day.DayOfWeek.ToString();
+            int surfaceIndex = 0;
+
             //schedule first round
             int teamsInNextRound = await ScheduleElimRound(teams, null);
-
+            var idSet = _context.MatchTeam.Select(mt => mt.MatchID).ToHashSet();
+            var firstRoundMatches = _context.Match
+                                .Where(m => m.SeriesID == seriesID
+                                    && !idSet.Contains(m.ID));
+            foreach (var match in firstRoundMatches)
+            {
+                if (surfaceIndex == availableSurfaces.Length)
+                {
+                    surfaceIndex = 0;
+                    day.AddMinutes(schedule.EstMatchTime + 15);
+                }
+                while (!schedule.AvailableDays[dayOfWeek] ||
+                    day.AddMinutes(schedule.EstMatchTime + 15).TimeOfDay > schedule.EndTime.TimeOfDay
+                    )
+                {
+                    day = day.AddDays(1);
+                    day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second);
+                    dayOfWeek = day.DayOfWeek.ToString();
+                    surfaceIndex = 0;
+                }
+                await _matchService.UpdateMatchAsync(
+                    new MatchPatchViewModel
+                    {
+                        ID = match.ID,
+                        Time = day,
+                        SurfaceID = availableSurfaces[surfaceIndex].SurfaceID
+                    });
+                surfaceIndex++;
+            }
             //create matches for remaining rounds (possible implementation of including round number optional field)
             while (teamsInNextRound > 1)
             {
                 for (int i = 0; i < teamsInNextRound/2; i++)
                 {
+                    if (surfaceIndex == availableSurfaces.Length)
+                    {
+                        surfaceIndex = 0;
+                        day.AddMinutes(schedule.EstMatchTime + 15);
+                    }
+                    while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15).TimeOfDay > schedule.EndTime.TimeOfDay)
+                    {
+                        day = day.AddDays(1);
+                        day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second);
+                        dayOfWeek = day.DayOfWeek.ToString();
+                        surfaceIndex = 0;
+                    }
                     await _matchService.PostMatchAsync(new MatchUploadViewModel
                     {
-                        StartTime = series.StartDate, //temporary before autoscheduling
+                        StartTime = day,
                         SeriesID = series.ID,
-                        SurfaceID = 1, //temporary before 25live integration
+                        SurfaceID = availableSurfaces[surfaceIndex].SurfaceID, //temporary before 25live integration
                         TeamIDs = new List<int>().AsEnumerable() //no teams
                     });
                 }
                 teamsInNextRound /= 2;
+                //reset between rounds
+                day = day.AddDays(1);
+                day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second);
+                dayOfWeek = day.DayOfWeek.ToString();
+                surfaceIndex = 0;
             }
         }
+
         public async Task<int> ScheduleElimRound(IEnumerable<SeriesTeam> involvedTeams, IEnumerable<Match>? matches)
         {
             int numTeams = involvedTeams.Count();

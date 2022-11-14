@@ -366,6 +366,7 @@ namespace Gordon360.Services
             MatchViewModel GetMatchByID(int matchID);
             IEnumerable<MatchViewModel> GetMatchBySeriesID(int seriesID);
             Task<int> PostMatchAsync(MatchUploadViewModel match);
+            Task<int> UpdateMatchAsync(MatchPatchViewModel m);
             Task UpdateTeamStatsAsync(MatchTeamPatchViewModel match);
             Task AddTeamToMatchAsync(int teamID, int matchID);
             Task AddParticipantAttendanceAsync(int participantID, int matchID);
