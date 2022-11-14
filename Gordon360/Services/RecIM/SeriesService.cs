@@ -163,7 +163,7 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
         }
 
-        public async Task ScheduleMatches(int seriesID)
+        public async Task ScheduleMatchesAsync(int seriesID)
         {
             var typeCode = _context.SeriesType
                 .FirstOrDefault(st =>
@@ -189,20 +189,55 @@ namespace Gordon360.Services.RecIM
             }
         }
         private async Task ScheduleRoundRobin(int seriesID)
-        {
+        {            
+            var series = _context.Series.FirstOrDefault(s => s.ID == seriesID);
             var teams = _context.SeriesTeam
                 .Where(st => st.ID == seriesID)
                 .ToArray();
-            var series = _context.Series.FirstOrDefault(s => s.ID == seriesID); 
+            SeriesScheduleViewModel schedule = _context.SeriesSchedule
+                            .FirstOrDefault(ss => ss.ID ==
+                                _context.Series
+                                    .FirstOrDefault(s => s.ID == seriesID)
+                                    .ScheduleID);
+            var availableSurfaces = _context.SeriesSurface
+                                        .Where(ss => ss.SeriesID == seriesID)
+                                        .ToArray();
+
+            var day = series.StartDate;
+            day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second);
+            string dayOfWeek = day.DayOfWeek.ToString();
+            int surfaceIndex = 0;
+
             for (int i = 0; i < teams.Length-1; i++)
             {
                 for (int j = i + 1; j < teams.Length; j++)
                 {
+                    // autoscheduling currently will not work due to the algorithm requiring match pairs to be
+                    // made in order, will fix in next commit
+
+                    if (surfaceIndex == availableSurfaces.Length)
+                    {
+                        surfaceIndex = 0;
+                        day.AddMinutes(schedule.EstMatchTime + 15);
+                    }
+
+                    //ensure matchtime is in an available day
+                    //will be a bug if the match goes beyond 12AM
+                    while (!schedule.AvailableDays[dayOfWeek] || 
+                        day.AddMinutes(schedule.EstMatchTime + 15).TimeOfDay > schedule.EndTime.TimeOfDay
+                        )
+                    {
+                        day = day.AddDays(1);
+                        day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second);
+                        dayOfWeek = day.DayOfWeek.ToString();
+                        surfaceIndex = 0;
+                    }
+
                     await _matchService.PostMatchAsync(new MatchUploadViewModel
                     {
-                        StartTime = series.StartDate,//temporary default
+                        StartTime = day,
                         SeriesID = seriesID,
-                        SurfaceID = 0,
+                        SurfaceID = availableSurfaces[surfaceIndex].SurfaceID, 
                         TeamIDs = new List<int>() { teams[i].TeamID, teams[j].TeamID }.AsEnumerable()
                     });
                 }
