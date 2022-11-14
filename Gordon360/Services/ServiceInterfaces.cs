@@ -159,8 +159,8 @@ namespace Gordon360.Services
     public interface ISessionService
     {
         SessionViewModel Get(string sessionCode);
-        public SessionViewModel GetCurrentSession();
-        public double[] GetDaysLeft();
+        SessionViewModel GetCurrentSession();
+        double[] GetDaysLeft();
         IEnumerable<SessionViewModel> GetAll();
     }
 
@@ -169,7 +169,7 @@ namespace Gordon360.Services
         IEnumerable<MembershipView> GetLeaderMembershipsForActivity(string activityCode);
         IEnumerable<MembershipView> GetAdvisorMembershipsForActivity(string activityCode);
         IEnumerable<MembershipView> GetGroupAdminMembershipsForActivity(string activityCode, string? sessionCode = null);
-        public IEnumerable<MembershipView> GetMembershipsForActivity(
+        IEnumerable<MembershipView> GetMembershipsForActivity(
             string activityCode,
             string? sessionCode = null,
             bool? groupAdmin = null,
@@ -185,10 +185,10 @@ namespace Gordon360.Services
         Task<MembershipView> SetPrivacyAsync(int membershipID, bool isPrivate);
         MembershipView Delete(int membershipID);
         bool IsGroupAdmin(string username);
-        public IEnumerable<EmailViewModel> MembershipEmails(string activityCode, string sessionCode, ParticipationType? participationCode = null);
-        public MembershipView GetMembershipViewById(int membershipId);
+        IEnumerable<EmailViewModel> MembershipEmails(string activityCode, string sessionCode, ParticipationType? participationCode = null);
+        MembershipView GetMembershipViewById(int membershipId);
         bool ValidateMembership(MembershipUploadViewModel membership);
-        public bool IsPersonAlreadyInActivity(MembershipUploadViewModel membershipRequest);
+        bool IsPersonAlreadyInActivity(MembershipUploadViewModel membershipRequest);
     }
 
     public interface IJobsService
