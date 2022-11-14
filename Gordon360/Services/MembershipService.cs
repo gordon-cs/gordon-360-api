@@ -1,4 +1,5 @@
-﻿using Gordon360.Models.CCT.Context;
+﻿using Gordon360.Authorization;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
@@ -132,27 +133,31 @@ namespace Gordon360.Services
                 memberships = memberships.Where(m => m.SessionCode.Trim() == sessionCode);
             }
 
-            return memberships.OrderByDescending(x => x.StartDate).Select(m => new MembershipViewModel
+            return memberships.OrderByDescending(x => x.StartDate).Select(m =>
             {
-                MembershipID = m.MembershipID,
-                ActivityCode = m.ActivityCode.Trim(),
-                ActivityDescription = m.ActivityDescription.Trim(),
-                ActivityImagePath = m.ActivityImagePath,
-                SessionCode = m.SessionCode.Trim(),
-                SessionDescription = m.SessionDescription.Trim(),
-                IDNumber = m.IDNumber,
-                AD_Username = m.AD_Username,
-                FirstName = m.FirstName.Trim(),
-                LastName = m.LastName.Trim(),
-                IsAlumni = _context.Alumni.Any(a => a.AD_Username == m.AD_Username),
-                Mail_Location = m.Mail_Location,
-                Participation = m.Participation.Trim(),
-                ParticipationDescription = m.ParticipationDescription.Trim(),
-                StartDate = m.StartDate,
-                EndDate = m.EndDate,
-                Description = m.Description,
-                GroupAdmin = m.GroupAdmin,
-                AccountPrivate = m.AccountPrivate
+                var groups = AuthUtils.GetGroups(m.AD_Username);
+                return new MembershipViewModel
+                {
+                    MembershipID = m.MembershipID,
+                    ActivityCode = m.ActivityCode.Trim(),
+                    ActivityDescription = m.ActivityDescription.Trim(),
+                    ActivityImagePath = m.ActivityImagePath,
+                    SessionCode = m.SessionCode.Trim(),
+                    SessionDescription = m.SessionDescription.Trim(),
+                    IDNumber = m.IDNumber,
+                    AD_Username = m.AD_Username,
+                    FirstName = m.FirstName.Trim(),
+                    LastName = m.LastName.Trim(),
+                    IsAlumni = groups.Contains(AuthGroup.Alumni) && !groups.Contains(AuthGroup.Student) && !groups.Contains(AuthGroup.FacStaff),
+                    Mail_Location = m.Mail_Location,
+                    Participation = m.Participation.Trim(),
+                    ParticipationDescription = m.ParticipationDescription.Trim(),
+                    StartDate = m.StartDate,
+                    EndDate = m.EndDate,
+                    Description = m.Description,
+                    GroupAdmin = m.GroupAdmin,
+                    AccountPrivate = m.AccountPrivate
+                };
             });
         }
 
