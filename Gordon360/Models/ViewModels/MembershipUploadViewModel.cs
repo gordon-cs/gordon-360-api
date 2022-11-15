@@ -1,6 +1,7 @@
 ﻿using System;
+﻿using Gordon360.Models.CCT;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.ViewModels
 {
     public partial class MembershipUploadViewModel
     {
