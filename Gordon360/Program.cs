@@ -34,7 +34,7 @@ builder.Services.AddCors(p => p.AddPolicy(name: corsPolicy, corsBuilder =>
 }));
 
 builder.Services.AddDbContext<CCTContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("CCT"))
+    options.UseSqlServer(builder.Configuration.GetConnectionString("CCT")), ServiceLifetime.Transient, ServiceLifetime.Scoped
 ).AddDbContext<MyGordonContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MyGordon"))
 ).AddDbContext<StudentTimesheetsContext>(options =>

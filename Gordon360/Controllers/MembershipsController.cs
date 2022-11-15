@@ -1,10 +1,12 @@
 ﻿using Gordon360.Authorization;
+using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -125,8 +127,6 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.MEMBERSHIP)]
         public async Task<ActionResult<MembershipView>> PostAsync([FromBody] MembershipUploadViewModel membershipUpload)
         {
-            var idNum = _accountService.GetAccountByUsername(membershipUpload.Username).GordonID;
-
             var result = await _membershipService.AddAsync(membershipUpload);
 
             if (result == null)
@@ -135,6 +135,47 @@ namespace Gordon360.Controllers
             }
 
             return Created("memberships", result);
+
+        }
+
+        /// <summary>Create multiple new membership items to be added to database</summary>
+        /// <param name="membershipUploads">The membership items containing all required and relevant information</param>
+        /// <returns>The newly created memberships as a MembershipUploadResultViewModel object</returns>
+        /// <remarks>Posts new memberships to the server to be added into the database</remarks>
+        [HttpPost]
+        [Route("bulk", Name = "Memberships Bulk")]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.MEMBERSHIP)]
+        public async Task<ActionResult<MembershipView>> PostBulkAsync([FromBody] IEnumerable<MembershipUploadViewModel> membershipUploads)
+        {
+            Task<MembershipUploadResultViewModel>[] tasks = membershipUploads.Select(async membershipUpload =>
+                {
+                    string? creationError = null;
+                    MembershipView? m = null;
+                    try
+                    {
+                        m = await _membershipService.AddAsync(membershipUpload);
+                    }
+                    catch (ResourceCreationException rce)
+                    {
+                        creationError = rce.ExceptionMessage;
+                    }
+                    catch (Exception e)
+                    {
+                        creationError = e.Message;
+                    }
+                    return new MembershipUploadResultViewModel()
+                    {
+                        Membership = membershipUpload,
+                        Success = (creationError == null && m != null),
+                        TextResult = creationError
+                    };
+                }).ToArray();
+
+            await Task.WhenAll(tasks);
+
+            IEnumerable<MembershipUploadResultViewModel> uploadResults = tasks.Select(t => t.Result);
+
+            return Ok(uploadResults);
 
         }
 
