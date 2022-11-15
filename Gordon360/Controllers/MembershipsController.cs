@@ -135,8 +135,8 @@ namespace Gordon360.Controllers
             }
 
             return Created("memberships", result);
-        }
 
+        }
 
         /// <summary>Update an existing membership item</summary>
         /// <param name="membershipID">The membership id of whichever one is to be changed</param>
