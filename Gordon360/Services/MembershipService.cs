@@ -50,9 +50,10 @@ namespace Gordon360.Services
             {
                 throw new ResourceCreationException() { ExceptionMessage = "There was an error creating the membership. Verify that a similar membership doesn't already exist." };
             }
+
             await _context.SaveChangesAsync();
 
-            return membership;
+            return GetMembershipViewById(payload.Entity.MEMBERSHIP_ID);
 
         }
 
