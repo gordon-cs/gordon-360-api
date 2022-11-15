@@ -315,7 +315,7 @@ namespace Gordon360.Services
             var serverAddress = _serverUtils.GetAddress();
             if (serverAddress is not string) throw new Exception("Could not upload Involvement Image: Server Address is null");
 
-            var url = $"{serverAddress}/browseable/uploads/{involvement_code}/{filename}";
+            var url = $"{serverAddress}browseable/uploads/{involvement_code}/{filename}";
 
             //delete old image file if it exists.
             if (Path.GetDirectoryName(imagePath) is string directory && Directory.Exists(directory))
