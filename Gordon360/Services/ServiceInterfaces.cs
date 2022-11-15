@@ -166,23 +166,29 @@ namespace Gordon360.Services
 
     public interface IMembershipService
     {
-        Task<IEnumerable<MembershipViewModel>> GetLeaderMembershipsForActivityAsync(string activityCode);
-        Task<IEnumerable<MembershipViewModel>> GetAdvisorMembershipsForActivityAsync(string activityCode);
-        Task<IEnumerable<MembershipViewModel>> GetGroupAdminMembershipsForActivityAsync(string activityCode);
-        Task<IEnumerable<MembershipViewModel>> GetMembershipsForActivityAsync(string activityCode, string? sessionCode);
-        Task<IEnumerable<MembershipViewModel>> GetMembershipsForStudentAsync(string username);
-        Task<int> GetActivityFollowersCountForSessionAsync(string activityCode, string sessionCode);
-        Task<int> GetActivityMembersCountForSessionAsync(string activityCode, string sessionCode);
-        Task<IEnumerable<MembershipViewModel>> GetAllAsync();
-        MEMBERSHIP GetSpecificMembership(int membershipID);
-        Task<int> GetActivityFollowersCountAsync(string idactivityCode);
-        Task<int> GetActivityMembersCountAsync(string activityCode);
-        Task<MEMBERSHIP> AddAsync(MEMBERSHIP membership);
-        Task<MEMBERSHIP> UpdateAsync(int membershipID, MEMBERSHIP membership);
-        Task<MEMBERSHIP> ToggleGroupAdminAsync(int membershipID, MEMBERSHIP membership);
-        void TogglePrivacy(int membershipID, bool isPrivate);
-        MEMBERSHIP Delete(int membershipID);
-        bool IsGroupAdmin(int gordonID);
+        IEnumerable<MembershipView> GetLeaderMembershipsForActivity(string activityCode);
+        IEnumerable<MembershipView> GetAdvisorMembershipsForActivity(string activityCode);
+        IEnumerable<MembershipView> GetGroupAdminMembershipsForActivity(string activityCode, string? sessionCode = null);
+        IEnumerable<MembershipView> GetMembershipsForActivity(
+            string activityCode,
+            string? sessionCode = null,
+            bool? groupAdmin = null,
+            string[]? participationTypes = null
+        );
+        IEnumerable<MembershipView> GetMembershipsByUser(string username);
+        int GetActivitySubscribersCountForSession(string activityCode, string? sessionCode);
+        int GetActivityMembersCountForSession(string activityCode, string? sessionCode);
+        MembershipView GetSpecificMembership(int membershipID);
+        Task<MembershipView> AddAsync(MembershipUploadViewModel membership);
+        Task<MembershipView> UpdateAsync(int membershipID, MembershipUploadViewModel membership);
+        Task<MembershipView> SetGroupAdminAsync(int membershipID, bool isGroupAdmin);
+        Task<MembershipView> SetPrivacyAsync(int membershipID, bool isPrivate);
+        MembershipView Delete(int membershipID);
+        bool IsGroupAdmin(string username);
+        IEnumerable<EmailViewModel> MembershipEmails(string activityCode, string sessionCode, ParticipationType? participationCode = null);
+        MembershipView GetMembershipViewById(int membershipId);
+        bool ValidateMembership(MembershipUploadViewModel membership);
+        bool IsPersonAlreadyInActivity(MembershipUploadViewModel membershipRequest);
     }
 
     public interface IJobsService
