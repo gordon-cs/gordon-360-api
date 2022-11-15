@@ -1,4 +1,5 @@
-﻿using Gordon360.Models.CCT.Context;
+﻿using Gordon360.Authorization;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
@@ -96,24 +97,30 @@ namespace Gordon360.Services
         {
             var allMemberships = await _context.Procedures.ALL_MEMBERSHIPSAsync();
 
-            return allMemberships.OrderByDescending(m => m.StartDate).Select(m => new MembershipViewModel
+            return allMemberships.OrderByDescending(m => m.StartDate).Select(m =>
             {
-                MembershipID = m.MembershipID,
-                ActivityCode = m.ActivityCode.Trim(),
-                ActivityDescription = m.ActivityDescription.Trim(),
-                ActivityImagePath = m.ActivityImagePath,
-                SessionCode = m.SessionCode.Trim(),
-                SessionDescription = m.SessionDescription.Trim(),
-                IDNumber = m.IDNumber,
-                FirstName = m.FirstName.Trim(),
-                LastName = m.LastName.Trim(),
-                Participation = m.Participation.Trim(),
-                ParticipationDescription = m.ParticipationDescription.Trim(),
-                StartDate = m.StartDate,
-                EndDate = m.EndDate,
-                Description = m.Description,
-                GroupAdmin = m.GroupAdmin,
-                Privacy = m.Privacy
+                var username = _context.ACCOUNT.FirstOrDefault(a => a.gordon_id == m.IDNumber.ToString())?.AD_Username;
+                var groups = AuthUtils.GetGroups(username);
+                return new MembershipViewModel
+                {
+                    MembershipID = m.MembershipID,
+                    ActivityCode = m.ActivityCode.Trim(),
+                    ActivityDescription = m.ActivityDescription.Trim(),
+                    ActivityImagePath = m.ActivityImagePath,
+                    SessionCode = m.SessionCode.Trim(),
+                    SessionDescription = m.SessionDescription.Trim(),
+                    IDNumber = m.IDNumber,
+                    FirstName = m.FirstName.Trim(),
+                    LastName = m.LastName.Trim(),
+                    IsAlumni = groups.Contains(AuthGroup.Alumni) && !groups.Contains(AuthGroup.Student) && !groups.Contains(AuthGroup.FacStaff),
+                    Participation = m.Participation.Trim(),
+                    ParticipationDescription = m.ParticipationDescription.Trim(),
+                    StartDate = m.StartDate,
+                    EndDate = m.EndDate,
+                    Description = m.Description,
+                    GroupAdmin = m.GroupAdmin,
+                    Privacy = m.Privacy
+                };
             });
         }
 
@@ -132,26 +139,31 @@ namespace Gordon360.Services
                 memberships = memberships.Where(m => m.SessionCode.Trim() == sessionCode);
             }
 
-            return memberships.OrderByDescending(x => x.StartDate).Select(m => new MembershipViewModel
+            return memberships.OrderByDescending(x => x.StartDate).Select(m =>
             {
-                MembershipID = m.MembershipID,
-                ActivityCode = m.ActivityCode.Trim(),
-                ActivityDescription = m.ActivityDescription.Trim(),
-                ActivityImagePath = m.ActivityImagePath,
-                SessionCode = m.SessionCode.Trim(),
-                SessionDescription = m.SessionDescription.Trim(),
-                IDNumber = m.IDNumber,
-                AD_Username = m.AD_Username,
-                FirstName = m.FirstName.Trim(),
-                LastName = m.LastName.Trim(),
-                Mail_Location = m.Mail_Location,
-                Participation = m.Participation.Trim(),
-                ParticipationDescription = m.ParticipationDescription.Trim(),
-                StartDate = m.StartDate,
-                EndDate = m.EndDate,
-                Description = m.Description,
-                GroupAdmin = m.GroupAdmin,
-                AccountPrivate = m.AccountPrivate
+                var groups = AuthUtils.GetGroups(m.AD_Username);
+                return new MembershipViewModel
+                {
+                    MembershipID = m.MembershipID,
+                    ActivityCode = m.ActivityCode.Trim(),
+                    ActivityDescription = m.ActivityDescription.Trim(),
+                    ActivityImagePath = m.ActivityImagePath,
+                    SessionCode = m.SessionCode.Trim(),
+                    SessionDescription = m.SessionDescription.Trim(),
+                    IDNumber = m.IDNumber,
+                    AD_Username = m.AD_Username,
+                    FirstName = m.FirstName.Trim(),
+                    LastName = m.LastName.Trim(),
+                    IsAlumni = groups.Contains(AuthGroup.Alumni) && !groups.Contains(AuthGroup.Student) && !groups.Contains(AuthGroup.FacStaff),
+                    Mail_Location = m.Mail_Location,
+                    Participation = m.Participation.Trim(),
+                    ParticipationDescription = m.ParticipationDescription.Trim(),
+                    StartDate = m.StartDate,
+                    EndDate = m.EndDate,
+                    Description = m.Description,
+                    GroupAdmin = m.GroupAdmin,
+                    AccountPrivate = m.AccountPrivate
+                };
             });
         }
 
@@ -206,26 +218,31 @@ namespace Gordon360.Services
 
             var memberships = await _context.Procedures.MEMBERSHIPS_PER_STUDENT_IDAsync(int.Parse(account.gordon_id));
 
-            return memberships.OrderByDescending(x => x.StartDate).Select(m => new MembershipViewModel
+            return memberships.OrderByDescending(x => x.StartDate).Select(m =>
             {
-                MembershipID = m.MembershipID,
-                ActivityCode = m.ActivityCode.Trim(),
-                ActivityDescription = m.ActivityDescription.Trim(),
-                ActivityImagePath = m.ActivityImagePath,
-                SessionCode = m.SessionCode.Trim(),
-                SessionDescription = m.SessionDescription.Trim(),
-                IDNumber = m.IDNumber,
-                FirstName = m.FirstName.Trim(),
-                LastName = m.LastName.Trim(),
-                Participation = m.Participation.Trim(),
-                ParticipationDescription = m.ParticipationDescription.Trim(),
-                StartDate = m.StartDate,
-                EndDate = m.EndDate,
-                Description = m.Description,
-                ActivityType = m.ActivityType.Trim(),
-                ActivityTypeDescription = m.ActivityTypeDescription.Trim(),
-                GroupAdmin = m.GroupAdmin,
-                Privacy = m.Privacy,
+                var groups = AuthUtils.GetGroups(username);
+                return new MembershipViewModel
+                {
+                    MembershipID = m.MembershipID,
+                    ActivityCode = m.ActivityCode.Trim(),
+                    ActivityDescription = m.ActivityDescription.Trim(),
+                    ActivityImagePath = m.ActivityImagePath,
+                    SessionCode = m.SessionCode.Trim(),
+                    SessionDescription = m.SessionDescription.Trim(),
+                    IDNumber = m.IDNumber,
+                    FirstName = m.FirstName.Trim(),
+                    LastName = m.LastName.Trim(),
+                    IsAlumni = groups.Contains(AuthGroup.Alumni) && !groups.Contains(AuthGroup.Student) && !groups.Contains(AuthGroup.FacStaff),
+                    Participation = m.Participation.Trim(),
+                    ParticipationDescription = m.ParticipationDescription.Trim(),
+                    StartDate = m.StartDate,
+                    EndDate = m.EndDate,
+                    Description = m.Description,
+                    ActivityType = m.ActivityType.Trim(),
+                    ActivityTypeDescription = m.ActivityTypeDescription.Trim(),
+                    GroupAdmin = m.GroupAdmin,
+                    Privacy = m.Privacy,
+                };
             });
         }
 
@@ -426,7 +443,14 @@ namespace Gordon360.Services
                 }
             }
 
-            return memberships.Join(_context.ACCOUNT, m => m.ID_NUM.ToString(), a => a.gordon_id, (m, a) => new EmailViewModel { Email = a.email, FirstName = a.firstname, LastName = a.lastname, Description = m.COMMENT_TXT });
+            return memberships.Join(_context.ACCOUNT, m => m.ID_NUM.ToString(), a => a.gordon_id, (m, a) => new EmailViewModel
+                {
+                    Email = a.email,
+                    FirstName = a.firstname,
+                    LastName = a.lastname,
+                    Description = m.COMMENT_TXT
+                }
+            );
         }
 
         public class ParticipationType
