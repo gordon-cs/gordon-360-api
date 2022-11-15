@@ -134,27 +134,6 @@ namespace Gordon360.Controllers
                 return BadRequest();
             }
 
-        /// <summary>
-        /// Fetch memberships that a specific student has been a part of
-        /// @TODO: Move security checks to state your business? Or consider changing implementation here
-        /// </summary>
-        /// <param name="username">The Student Username</param>
-        /// <returns>The membership information that the student is a part of</returns>
-        [Route("student/{username}")]
-        [HttpGet]
-        public async Task<ActionResult<List<MembershipViewModel>>> GetMembershipsForStudentByUsenameAsync(string username)
-        {
-            var result = await _membershipService.GetMembershipsForStudentAsync(username);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-            // privacy control of membership view model
-            var authenticatedUserUsername = AuthUtils.GetUsername(User);
-            var viewerGroups = AuthUtils.GetGroups(User);
-
-        }
 
         /// <summary>Update an existing membership item</summary>
         /// <param name="membershipID">The membership id of whichever one is to be changed</param>
