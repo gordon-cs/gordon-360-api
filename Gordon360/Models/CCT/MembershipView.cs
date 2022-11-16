@@ -12,7 +12,6 @@ namespace Gordon360.Models.CCT
     public partial class MembershipView
     {
         public int MembershipID { get; set; }
-        [Required]
         [StringLength(8)]
         [Unicode(false)]
         public string ActivityCode { get; set; }
@@ -22,7 +21,6 @@ namespace Gordon360.Models.CCT
         public string ActivityDescription { get; set; }
         [Unicode(false)]
         public string ActivityImagePath { get; set; }
-        [Required]
         [StringLength(8)]
         [Unicode(false)]
         public string SessionCode { get; set; }
@@ -38,7 +36,6 @@ namespace Gordon360.Models.CCT
         [StringLength(50)]
         [Unicode(false)]
         public string LastName { get; set; }
-        [Required]
         [StringLength(5)]
         [Unicode(false)]
         public string Participation { get; set; }
@@ -55,5 +52,6 @@ namespace Gordon360.Models.CCT
         public string Description { get; set; }
         public bool? GroupAdmin { get; set; }
         public bool? Privacy { get; set; }
+        public int IsAlumni { get; set; }
     }
 }
