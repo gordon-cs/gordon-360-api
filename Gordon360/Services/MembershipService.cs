@@ -1,4 +1,5 @@
-﻿using Gordon360.Models.CCT.Context;
+﻿using Gordon360.Authorization;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
@@ -121,7 +122,6 @@ namespace Gordon360.Services
             {
                 memberships = memberships.Where(m => m.GroupAdmin == groupAdmin);
             }
-
             if (participationTypes?.Length > 0)
             {
                 memberships = memberships.Where(m => participationTypes.Contains(m.Participation));
@@ -357,7 +357,8 @@ namespace Gordon360.Services
                 {
                     Email = account.Email,
                     FirstName = account.FirstName,
-                    LastName = account.LastName
+                    LastName = account.LastName,
+                    Description = m.Description
                 };
             });
         }
