@@ -22,12 +22,16 @@ namespace Gordon360.Controllers
     {
         private readonly IProfileService _profileService;
         private readonly IAccountService _accountService;
+        private readonly IMembershipService _membershipService;
+        private readonly IActivityService _activityService;
         private readonly IConfiguration _config;
 
-        public ProfilesController(IProfileService profileService, IAccountService accountService, IConfiguration config)
+        public ProfilesController(IProfileService profileService, IAccountService accountService, IMembershipService membershipService, IActivityService activityService, IConfiguration config)
         {
             _profileService = profileService;
             _accountService = accountService;
+            _membershipService = membershipService;
+            _activityService = activityService;
             _config = config;
         }
 
@@ -488,6 +492,48 @@ namespace Gordon360.Controllers
             {
                 // The 360 default profile image path is a URL, so we have to download it over an HTTP connection
                 return await ImageUtils.DownloadImageFromURL(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
+            }
+        }
+
+
+        /// <summary>
+        /// Fetch memberships that a specific student has been a part of
+        /// @TODO: Move security checks to state your business? Or consider changing implementation here
+        /// </summary>
+        /// <param name="username">The Student Username</param>
+        /// <returns>The membership information that the student is a part of</returns>
+        [Route("{username}/memberships")]
+        [HttpGet]
+        public ActionResult<List<MembershipView>> GetMembershipsByUser(string username)
+        {
+            var result = _membershipService.GetMembershipsByUser(username);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+            // privacy control of membership view model
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+            var viewerGroups = AuthUtils.GetGroups(User);
+
+            if (username == authenticatedUserUsername || viewerGroups.Contains(AuthGroup.SiteAdmin) || viewerGroups.Contains(AuthGroup.Police))              //super admin and gordon police reads all
+                return Ok(result);
+            else
+            {
+                var visibleMemberships = result.Where(m => {
+                    var act = _activityService.Get(m.ActivityCode);
+                    var isPublic = !(act.Privacy == true || m.Privacy == true);
+                    if (isPublic)
+                    {
+                        return true;
+                    } else {
+                        // If the current authenticated user is an admin of this group, then include the membership
+                        var admins = _membershipService.GetGroupAdminMembershipsForActivity(m.ActivityCode, m.SessionCode);
+
+                        return admins.Any(a => a.Username == authenticatedUserUsername);
+                    }
+                });
+                return Ok(visibleMemberships);
             }
         }
     }

@@ -13,11 +13,11 @@ namespace Gordon360.Controllers
     [Route("api/[controller]")]
     public class EmailsController : GordonControllerBase
     {
-        private readonly EmailService _emailService;
+        private readonly IEmailService _emailService;
 
-        public EmailsController(CCTContext context)
+        public EmailsController(CCTContext context, IEmailService emailService)
         {
-            _emailService = new EmailService(context);
+            _emailService = emailService;
         }
 
         [HttpGet]
@@ -53,19 +53,6 @@ namespace Gordon360.Controllers
             _emailService.SendEmails(to_emails, email.FromAddress, email.Subject, email.Content, email.Password);
             return Ok();
         }
-
-        /*
-        [HttpPut]
-        [Route("activity/{id}/leaders/session/{session}")]
-        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_LEADERS)]
-        public IHttpActionResult SendEmailsToleaders(string id, string session, [FromBody] EmailContentViewModel email)
-        {
-            var emails = _emailService.GetEmailsForActivityLeaders(id, session);
-            var toAddress = emails.Select(x => x.Email).ToArray();
-            _emailService.SendEmails(toAddress, email.FromAddress, email.Subject, email.Content, email.Password);
-            return Ok();
-        }
-        */
 
         [HttpPut]
         [Route("activity/{id}/session/{session}")]

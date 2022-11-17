@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data.Common;
 using System.Linq;
 using System.Threading;
@@ -32,7 +31,6 @@ namespace Gordon360.Models.CCT.Context
                 return default;
             }
         }
-
         public static async Task<int> GetNextValueForSequence(this DbContext _context, Sequence sequence)
         {
             SqlParameter result = new SqlParameter("@result", System.Data.SqlDbType.Int) { Direction = System.Data.ParameterDirection.Output };
