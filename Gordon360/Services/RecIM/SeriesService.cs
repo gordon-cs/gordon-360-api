@@ -270,7 +270,8 @@ namespace Gordon360.Services.RecIM
                .Where(st => st.ID == seriesID);
 
             //schedule first round
-            var teamsInWinners = await ScheduleElimRound(teams).Result.TeamsInNextRound;
+            var elimScheduler = await ScheduleElimRound(teams);
+            int teamsInWinners = elimScheduler.TeamsInNextRound;
             int teamsInLosers = teams.Count() - teamsInWinners;
 
             //create matches for losers bracket
@@ -342,15 +343,9 @@ namespace Gordon360.Services.RecIM
             int surfaceIndex = 0;
 
             //schedule first round
-            int teamsInNextRound = await ScheduleElimRound(teams);
-            // this may not be the most reliable but the goal is to find the first round matches. 
-            // may consider adding an object to the return of ScheduleElimRound that can contain the remaining
-            // matches as well as the matches it has created
-            var idSet = _context.MatchTeam.Select(mt => mt.MatchID).ToHashSet();
-            var firstRoundMatches = _context.Match
-                                .Where(m => m.SeriesID == seriesID
-                                    && !idSet.Contains(m.ID));
-            foreach (var match in firstRoundMatches)
+            var elimScheduler = await ScheduleElimRound(teams);
+            int teamsInNextRound = elimScheduler.TeamsInNextRound;
+            foreach (var matchID in elimScheduler.MatchID)
             {
                 if (surfaceIndex == availableSurfaces.Length)
                 {
@@ -369,7 +364,7 @@ namespace Gordon360.Services.RecIM
                 await _matchService.UpdateMatchAsync(
                     new MatchPatchViewModel
                     {
-                        ID = match.ID,
+                        ID = matchID,
                         Time = day,
                         SurfaceID = availableSurfaces[surfaceIndex].SurfaceID
                     });
