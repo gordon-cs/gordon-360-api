@@ -326,7 +326,9 @@ namespace Gordon360.Services
             Task<int> PostSeriesAsync(SeriesUploadViewModel newSeries, int? referenceSeriesID);
             Task<int> UpdateSeriesAsync(int seriesID, SeriesPatchViewModel series);
             Task ScheduleMatchesAsync(int seriesID);
-            Task<int> ScheduleElimRound(IEnumerable<SeriesTeam> teams, IEnumerable<Match>? matches);
+            Task<EliminationRound> ScheduleElimRound(IEnumerable<SeriesTeam> teams);
+            Task<EliminationRound> ScheduleElimRound(IEnumerable<Match>? matches);
+
         }
 
         public interface ITeamService

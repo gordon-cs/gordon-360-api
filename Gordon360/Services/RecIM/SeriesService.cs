@@ -270,7 +270,7 @@ namespace Gordon360.Services.RecIM
                .Where(st => st.ID == seriesID);
 
             //schedule first round
-            int teamsInWinners = await ScheduleElimRound(teams, null);
+            var teamsInWinners = await ScheduleElimRound(teams).Result.TeamsInNextRound;
             int teamsInLosers = teams.Count() - teamsInWinners;
 
             //create matches for losers bracket
@@ -342,7 +342,10 @@ namespace Gordon360.Services.RecIM
             int surfaceIndex = 0;
 
             //schedule first round
-            int teamsInNextRound = await ScheduleElimRound(teams, null);
+            int teamsInNextRound = await ScheduleElimRound(teams);
+            // this may not be the most reliable but the goal is to find the first round matches. 
+            // may consider adding an object to the return of ScheduleElimRound that can contain the remaining
+            // matches as well as the matches it has created
             var idSet = _context.MatchTeam.Select(mt => mt.MatchID).ToHashSet();
             var firstRoundMatches = _context.Match
                                 .Where(m => m.SeriesID == seriesID
@@ -406,7 +409,15 @@ namespace Gordon360.Services.RecIM
             }
         }
 
-        public async Task<int> ScheduleElimRound(IEnumerable<SeriesTeam> involvedTeams, IEnumerable<Match>? matches)
+        /// <summary>
+        /// Goal of this function is to be able to either create and initialize the elimination bracket
+        /// if none exists already, and will overload with a matches enumerable to update existing matches
+        /// to produce a next round
+        /// 
+        /// These functions may need to be modified later as there may be more efficient ways to handle scheduling
+        /// with the context that surfaces need to be booked ahead of time on 25Live
+        /// </summary>
+        public async Task<EliminationRound> ScheduleElimRound(IEnumerable<SeriesTeam> involvedTeams)
         {
             int numTeams = involvedTeams.Count();
             int remainingTeamCount = involvedTeams.Count();
@@ -427,22 +438,32 @@ namespace Gordon360.Services.RecIM
             }
 
             var teamPairings = EliminationRoundTeamPairs(teams);
-            //if not updating existing matches
-            if (matches is null)
+            var matchIDs = new List<int>();
+
+            foreach(var teamPair in teamPairings)
             {
-                foreach(var teamPair in teamPairings)
-                {
+                matchIDs.Add(
                     await _matchService.PostMatchAsync(new MatchUploadViewModel
                     {
                         StartTime = series.StartDate, //temporary before autoscheduling
                         SeriesID = series.ID,
                         SurfaceID = 1, //temporary before 25live integration
                         TeamIDs = teamPair
-                    });
-                }
+                    })
+                );
             }
-            return teamPairings.Count() + numBuys;
+            return new EliminationRound
+            {
+                TeamsInNextRound = teamPairings.Count() + numBuys,
+                MatchID = matchIDs
+            };
         }
+        public async Task<EliminationRound> ScheduleElimRound(IEnumerable<Match>? matches)
+        {
+            throw new NotImplementedException();
+        }
+
+
         private IEnumerable<IEnumerable<int>> EliminationRoundTeamPairs(IEnumerable<SeriesTeam> teams)
         {
             var res = new List<IEnumerable<int>>();
