@@ -69,6 +69,10 @@ namespace Gordon360.Services.RecIM
                 return GetActivities().Where(a => a.RegistrationEnd > time);
             }
         }
+        public IEnumerable<ActivityViewModel> GetOpenActivities()
+        {
+            return GetActivities().Where(a => a.RegistrationOpen);
+        }
         public ActivityViewModel? GetActivityByID(int activityID)
         {
             var activity = _context.Activity.Where(a => a.ID == activityID)

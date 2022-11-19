@@ -314,6 +314,8 @@ namespace Gordon360.Services
             IEnumerable<Models.ViewModels.RecIM.ActivityViewModel> GetActivities();
             Models.ViewModels.RecIM.ActivityViewModel? GetActivityByID(int ActivityID);
             IEnumerable<Models.ViewModels.RecIM.ActivityViewModel> GetActivitiesByTime(DateTime? time);
+            IEnumerable<Models.ViewModels.RecIM.ActivityViewModel> GetOpenActivities();
+
             Task UpdateActivity(ActivityPatchViewModel updatedActivity);
             Task<int> PostActivity(ActivityUploadViewModel newActivity);
 

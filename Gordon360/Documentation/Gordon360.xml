@@ -718,10 +718,11 @@
             <param name="imagePath">Path to the profile image to load</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetActivities(System.Nullable{System.DateTime},System.Boolean)">
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetActivities(System.Nullable{System.DateTime},System.Boolean,System.Boolean)">
             <summary>Gets a list of all Activities by parameter </summary>
             <param name="active"> Optional active parameter </param>
             <param name="time"> Optional time parameter </param>
+            <param name="registrationOpen"> Optional registration availability parameter </param>
              <returns>
              All Existing Activities 
              </returns>

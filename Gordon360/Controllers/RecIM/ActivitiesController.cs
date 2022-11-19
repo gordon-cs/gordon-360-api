@@ -26,18 +26,23 @@ namespace Gordon360.Controllers.RecIM
         ///<summary>Gets a list of all Activities by parameter </summary>
         ///<param name="active"> Optional active parameter </param>
         ///<param name="time"> Optional time parameter </param>
+        ///<param name="registrationOpen"> Optional registration availability parameter </param>
         /// <returns>
         /// All Existing Activities 
         /// </returns>
         [HttpGet]
         [Route("")]
-        public ActionResult<IEnumerable<ActivityViewModel>> GetActivities([FromQuery] DateTime? time, bool active)
-        {   
+        public ActionResult<IEnumerable<ActivityViewModel>> GetActivities([FromQuery] DateTime? time, bool active, bool registrationOpen)
+        {
+            if (registrationOpen)
+            {
+                return Ok(_activityService.GetOpenActivities());
+            }
             if (time is null && active)
             {
                 var activeResults = _activityService.GetActivities();
                 return Ok(activeResults);
-                
+
             }
             var result = _activityService.GetActivitiesByTime(time);
             return Ok(result);
