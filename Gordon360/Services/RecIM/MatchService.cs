@@ -153,7 +153,7 @@ namespace Gordon360.Services.RecIM
                                     Status = matchTeamJoin.Status,
                                     MatchStatusID = match.StatusID ?? 1,
                                     Time = match.Time
-                                });
+                                }).AsEnumerable();
             return vm;
         }
         public IEnumerable<MatchViewModel> GetMatchBySeriesID(int seriesID)
