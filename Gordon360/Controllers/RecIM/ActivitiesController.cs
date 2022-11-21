@@ -81,7 +81,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult> UpdateActivity(int activityID, ActivityPatchViewModel updatedActivity)
         {
             await _activityService.UpdateActivity(activityID, updatedActivity);
-            return Ok(updatedActivity.ID);
+            return Ok(activityID);
         }
     }
 }

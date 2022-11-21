@@ -78,7 +78,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult> UpdateParticipant(string username, ParticipantPatchViewModel updatedParticipant)
         {
 
-            await _participantService.UpdateParticipant(updatedParticipant);
+            await _participantService.UpdateParticipant(username, updatedParticipant);
             return Ok(username);
         }
 
@@ -86,7 +86,7 @@ namespace Gordon360.Controllers.RecIM
         [Route("{username}/status")]
         public async Task<ActionResult> UpdateParticipantStatus(string username, ParticipantStatusPatchViewModel updatedParticipant)
         {
-            await _participantService.UpdateParticipantStatus(updatedParticipant);
+            await _participantService.UpdateParticipantStatus(username, updatedParticipant);
             return Ok(username);
         }
 

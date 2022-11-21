@@ -141,9 +141,9 @@ namespace Gordon360.Services.RecIM
             });
             await _context.SaveChangesAsync();
         }
-        public async Task UpdateParticipant(ParticipantPatchViewModel updatedParticipant)
+        public async Task UpdateParticipant(string username, ParticipantPatchViewModel updatedParticipant)
         {
-            int participantID = Int32.Parse(_accountService.GetAccountByUsername(updatedParticipant.Username).GordonID);
+            int participantID = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID);
             if (updatedParticipant.ActivityID is not null)
             {
                 var participantActivity = _context.ParticipantActivity
@@ -168,11 +168,11 @@ namespace Gordon360.Services.RecIM
             }
             await _context.SaveChangesAsync();
         }
-        public async Task UpdateParticipantStatus(ParticipantStatusPatchViewModel participantStatus)
+        public async Task UpdateParticipantStatus(string username, ParticipantStatusPatchViewModel participantStatus)
         {
             var status = new ParticipantStatusHistory
             {
-                ParticipantID = Int32.Parse(_accountService.GetAccountByUsername(participantStatus.Username).GordonID),
+                ParticipantID = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID),
                 StatusID = _context.ParticipantStatus
                                 .FirstOrDefault(ps => ps.Description == participantStatus.StatusDescription)
                                 .ID,
