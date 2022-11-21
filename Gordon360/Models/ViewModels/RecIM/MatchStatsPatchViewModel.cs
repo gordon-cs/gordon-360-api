@@ -3,10 +3,9 @@ using System;
 
 namespace Gordon360.Models.ViewModels.RecIM
 {
-    public class MatchTeamPatchViewModel
+    public class MatchStatsPatchViewModel
     {
         public int TeamID { get; set; }
-        public int MatchID { get; set; }
         public string? Status { get; set; }
         public int? Score { get; set; }
         public int? Sportsmanship { get; set; }

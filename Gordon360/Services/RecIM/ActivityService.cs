@@ -105,9 +105,9 @@ namespace Gordon360.Services.RecIM
                             .FirstOrDefault();
             return activity;
         }
-        public async Task UpdateActivity(ActivityPatchViewModel updatedActivity)
+        public async Task UpdateActivity(int activityID, ActivityPatchViewModel updatedActivity)
         {
-            var activity = await _context.Activity.FindAsync(updatedActivity.ID);
+            var activity = await _context.Activity.FindAsync(activityID);
             activity.Name = updatedActivity.Name ?? activity.Name;
             activity.Logo = updatedActivity.Logo ?? activity.Logo;
             activity.RegistrationStart = updatedActivity.RegistrationStart ?? activity.RegistrationStart;

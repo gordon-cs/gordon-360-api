@@ -162,7 +162,6 @@ namespace Gordon360.Services.RecIM
             var t = await _context.Team.FindAsync(teamID);
             t.Name = update.Name ?? t.Name;
             t.StatusID = update.StatusID ?? t.StatusID;
-            t.Private = update.Private ?? t.Private;
             t.Logo = update.Logo ?? t.Logo;
 
             await _context.SaveChangesAsync();

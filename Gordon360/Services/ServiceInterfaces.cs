@@ -312,9 +312,9 @@ namespace Gordon360.Services
         public interface IActivityService
         {
             IEnumerable<Models.ViewModels.RecIM.ActivityViewModel> GetActivities();
-            Models.ViewModels.RecIM.ActivityViewModel? GetActivityByID(int ActivityID);
+            Models.ViewModels.RecIM.ActivityViewModel? GetActivityByID(int activityID);
             IEnumerable<Models.ViewModels.RecIM.ActivityViewModel> GetActivitiesByTime(DateTime? time);
-            Task UpdateActivity(ActivityPatchViewModel updatedActivity);
+            Task UpdateActivity(int activytID, ActivityPatchViewModel updatedActivity);
             Task<int> PostActivity(ActivityUploadViewModel newActivity);
 
         }
@@ -365,7 +365,8 @@ namespace Gordon360.Services
             MatchViewModel GetMatchByID(int matchID);
             IEnumerable<MatchViewModel> GetMatchBySeriesID(int seriesID);
             Task PostMatch(MatchUploadViewModel match);
-            Task UpdateTeamStats(MatchTeamPatchViewModel match);
+            Task UpdateTeamStats(int matchID, MatchStatsPatchViewModel match);
+            Task UpdateMatch(int matchID, MatchPatchViewModel match);
             Task AddParticipantAttendance(int participantID, int matchID);
             IEnumerable<TeamMatchHistoryViewModel> GetMatchHistoryByTeamID(int teamID);
         }

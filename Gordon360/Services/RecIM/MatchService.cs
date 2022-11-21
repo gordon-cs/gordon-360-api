@@ -228,9 +228,9 @@ namespace Gordon360.Services.RecIM
             await _context.MatchParticipant.AddAsync(matchParticipant);
             await _context.SaveChangesAsync();
         }
-        public async Task UpdateTeamStats(MatchTeamPatchViewModel vm)
+        public async Task UpdateTeamStats(int matchID, MatchStatsPatchViewModel vm)
         {
-            var teamstats = _context.MatchTeam.FirstOrDefault(mt => mt.MatchID == vm.MatchID && mt.TeamID == vm.TeamID);
+            var teamstats = _context.MatchTeam.FirstOrDefault(mt => mt.MatchID == matchID && mt.TeamID == vm.TeamID);
             teamstats.Score = vm.Score ?? teamstats.Score;
             teamstats.Sportsmanship = vm.Sportsmanship ?? teamstats.Sportsmanship;
 
@@ -240,6 +240,14 @@ namespace Gordon360.Services.RecIM
                     .FirstOrDefault(mts => mts.Description == vm.Status)
                     .ID;
             }
+            await _context.SaveChangesAsync();
+        }
+        public async Task UpdateMatch(int matchID, MatchPatchViewModel vm)
+        {
+            var match = _context.Match.FirstOrDefault(m => m.ID == matchID);
+            match.Time = vm.Time ?? match.Time;
+            match.StatusID = vm.StatusID ?? match.StatusID;
+            match.SurfaceID = vm.SurfaceID ?? match.SurfaceID;
             await _context.SaveChangesAsync();
         }
     }

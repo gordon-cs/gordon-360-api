@@ -73,13 +73,14 @@ namespace Gordon360.Controllers.RecIM
         /// <summary>
         /// Updates Activity based on input
         /// </summary>
+        /// <param name="activityID"> Activity ID</param>
         /// <param name="updatedActivity"> Updated Activity Object </param>
         /// <returns></returns>
         [HttpPatch]
-        [Route("")]
-        public async Task<ActionResult> UpdateActivity(ActivityPatchViewModel updatedActivity)
+        [Route("{activityID}")]
+        public async Task<ActionResult> UpdateActivity(int activityID, ActivityPatchViewModel updatedActivity)
         {
-            await _activityService.UpdateActivity(updatedActivity);
+            await _activityService.UpdateActivity(activityID, updatedActivity);
             return Ok(updatedActivity.ID);
         }
     }

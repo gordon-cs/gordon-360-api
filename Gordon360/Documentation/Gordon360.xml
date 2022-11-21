@@ -740,10 +740,11 @@
             <param name="newActivity">CreateActivityViewModel object with appropriate values</param>
             <returns>Posted Activity ID</returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.UpdateActivity(Gordon360.Models.ViewModels.RecIM.ActivityPatchViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.UpdateActivity(System.Int32,Gordon360.Models.ViewModels.RecIM.ActivityPatchViewModel)">
             <summary>
             Updates Activity based on input
             </summary>
+            <param name="activityID"> Activity ID</param>
             <param name="updatedActivity"> Updated Activity Object </param>
             <returns></returns>
         </member>
@@ -763,10 +764,19 @@
             <param name="matchID"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.MatchesController.UpdateStats(Gordon360.Models.ViewModels.RecIM.MatchTeamPatchViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.UpdateStats(System.Int32,Gordon360.Models.ViewModels.RecIM.MatchStatsPatchViewModel)">
             <summary>
             Updates Match Scores, Sportsmanship Ratings, and Team Status
             </summary>
+            <param name="matchID"></param>
+            <param name="updatedMatch"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.UpdateMatch(System.Int32,Gordon360.Models.ViewModels.RecIM.MatchPatchViewModel)">
+            <summary>
+            Updates Match STimes and Surfaces
+            </summary>
+            <param name="matchID"></param>
             <param name="updatedMatch"></param>
             <returns></returns>
         </member>
