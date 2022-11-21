@@ -128,9 +128,9 @@ namespace Gordon360.Services.RecIM
             await CreateSeriesTeamMapping(teams, series.ID);
             return series.ID;
         }
-        public async Task UpdateSeries(SeriesPatchViewModel update)
+        public async Task UpdateSeries(int seriesID, SeriesPatchViewModel update)
         {
-            var s = await _context.Series.FindAsync(update.ID);
+            var s = await _context.Series.FindAsync(seriesID);
             s.Name = update.Name ?? s.Name;
             s.StartDate = update.StartDate ?? s.StartDate;
             s.EndDate = update.EndDate ?? s.EndDate;
