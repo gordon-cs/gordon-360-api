@@ -791,7 +791,7 @@
             <param name="seriesID"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.SeriesController.UpdateSeries(Gordon360.Models.ViewModels.RecIM.SeriesPatchViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.UpdateSeries(System.Int32,Gordon360.Models.ViewModels.RecIM.SeriesPatchViewModel)">
             <summary>
             
             </summary>
@@ -813,7 +813,7 @@
              <param name="teamID"></param>
              <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.TeamsController.CreateTeam(Gordon360.Models.ViewModels.RecIM.TeamUploadViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.CreateTeam(System.String,Gordon360.Models.ViewModels.RecIM.TeamUploadViewModel)">
             <summary>
             Create a new team with the requesting user set to team captain
             </summary>

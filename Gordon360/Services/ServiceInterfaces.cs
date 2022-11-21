@@ -324,7 +324,7 @@ namespace Gordon360.Services
             IEnumerable<SeriesViewModel> GetSeriesByActivityID(int activityID);
             SeriesViewModel GetSeriesByID(int seriesID);
             Task<int> PostSeries(SeriesUploadViewModel newSeries, int? referenceSeriesID);
-            Task UpdateSeries(SeriesPatchViewModel series);
+            Task UpdateSeries(int seriesID, SeriesPatchViewModel series);
             Task ScheduleMatches(int seriesID);
         }
 

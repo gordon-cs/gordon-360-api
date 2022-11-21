@@ -50,11 +50,15 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult> CreateTeam(TeamUploadViewModel newTeam)
+        public async Task<ActionResult> CreateTeam([FromQuery] string captain, TeamUploadViewModel newTeam)
         {
-            var username = AuthUtils.GetUsername(User);
-            var team = await _teamService.PostTeamAsync(newTeam, username);
-
+            var team = await _teamService.PostTeamAsync(newTeam, captain);
+            // future error handling
+            // (cannot implement at the moment as we only have 4 developer accs)
+            if (team is null)
+            {
+                return StatusCode(401, $"{captain} already is a part of a team in this activity");
+            }
             return Ok(team);
         }
 
@@ -66,7 +70,7 @@ namespace Gordon360.Controllers.RecIM
         /// <param name="roleType"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("users")]
+        [Route("participants")]
         public async Task<ActionResult> AddUserToTeam(string participantUsername, int teamID, int roleType = 3)
         {
             var participantTeam = await _teamService.AddUserToTeamAsync(teamID, participantUsername, roleType);
