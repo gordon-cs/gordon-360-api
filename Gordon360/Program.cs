@@ -54,6 +54,12 @@ builder.Services.AddScoped<RecIM.ITeamService, RecIM.TeamService>();
 builder.Services.AddScoped<RecIM.IParticipantService, RecIM.ParticipantService>();
 builder.Services.AddScoped<RecIM.ISportService, RecIM.SportService>();
 
+//Used to handle returning models created by HTTP Post methods containing FK constraints
+builder.Services.AddMvc().AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling
+        = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
+
 builder.Services.AddMemoryCache();
 
 var app = builder.Build();

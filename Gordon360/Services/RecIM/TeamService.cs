@@ -127,14 +127,15 @@ namespace Gordon360.Services.RecIM
 
         public async Task<Team> PostTeamAsync(TeamUploadViewModel t, string username)
         {
-            var participantID = int.Parse(_accountService.GetAccountByUsername(username).GordonID);
-
+            var participantID = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID);
+            // return null if ParticipantActivity contains an instance of both t.ActivityID & participantID
+            // ^handle this in the future (unable to implement right now as this would lock our accounts out)
             var team = new Team
             {
                 Name = t.Name,
-                StatusID = t.StatusID,
+                StatusID = 1,
                 ActivityID = t.ActivityID,
-                Private = t.Private,
+                Private = false, //will be depricated next update
                 Logo = t.Logo,
             };
             await _context.Team.AddAsync(team);
