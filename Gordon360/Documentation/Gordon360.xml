@@ -787,6 +787,14 @@
             <param name="newMatch"></param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.AddAttendance(System.Int32,System.String)">
+            <summary>
+            Creates Match Attendee
+            </summary>
+            <param name="username"></param>
+            <param name="matchID"></param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetSeries(System.Boolean)">
             <summary>
             Queries all Series with an optional active tag

@@ -363,10 +363,10 @@ namespace Gordon360.Services
         {
             MatchViewModel GetMatchByID(int matchID);
             IEnumerable<MatchViewModel> GetMatchBySeriesID(int seriesID);
-            Task PostMatch(MatchUploadViewModel match);
-            Task UpdateTeamStats(int matchID, MatchStatsPatchViewModel match);
-            Task UpdateMatch(int matchID, MatchPatchViewModel match);
-            Task AddParticipantAttendance(int participantID, int matchID);
+            Task<MatchCreatedViewModel> PostMatch(MatchUploadViewModel match);
+            Task<MatchTeamViewModel> UpdateTeamStats(int matchID, MatchStatsPatchViewModel match);
+            Task<MatchCreatedViewModel> UpdateMatch(int matchID, MatchPatchViewModel match);
+            Task<MatchParticipantViewModel> AddParticipantAttendance(string username, int matchID);
             IEnumerable<TeamMatchHistoryViewModel> GetMatchHistoryByTeamID(int teamID);
         }
     }

@@ -18,12 +18,14 @@ namespace Gordon360.Services.RecIM
     {
         private readonly CCTContext _context;
         private readonly IParticipantService _participantService;
+        private readonly IAccountService _accountService;
 
 
-        public MatchService(CCTContext context, IParticipantService participantService)
+        public MatchService(CCTContext context, IParticipantService participantService, IAccountService accountService)
         {
             _context = context;
             _participantService = participantService;
+            _accountService = accountService;
         }
         public MatchViewModel GetMatchByID(int matchID)
         {
@@ -187,7 +189,7 @@ namespace Gordon360.Services.RecIM
                         });
             return match;
         }
-        public async Task PostMatch(MatchUploadViewModel m)
+        public async Task<MatchCreatedViewModel> PostMatch(MatchUploadViewModel m)
         {
             var match = new Match
             {
@@ -204,6 +206,7 @@ namespace Gordon360.Services.RecIM
                 await CreateMatchTeamMapping(teamID, match.ID);
             }
             await _context.SaveChangesAsync();
+            return match;
         }
 
         private async Task CreateMatchTeamMapping(int teamID, int matchID)
@@ -218,8 +221,9 @@ namespace Gordon360.Services.RecIM
             };
             await _context.MatchTeam.AddAsync(matchTeam);
         }
-        public async Task AddParticipantAttendance(int participantID, int matchID)
+        public async Task<MatchParticipantViewModel> AddParticipantAttendance(string username, int matchID)
         {
+            var participantID = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID);
             var matchParticipant = new MatchParticipant
             {
                 ParticipantID = participantID,
@@ -227,8 +231,9 @@ namespace Gordon360.Services.RecIM
             };
             await _context.MatchParticipant.AddAsync(matchParticipant);
             await _context.SaveChangesAsync();
+            return matchParticipant;
         }
-        public async Task UpdateTeamStats(int matchID, MatchStatsPatchViewModel vm)
+        public async Task<MatchTeamViewModel> UpdateTeamStats(int matchID, MatchStatsPatchViewModel vm)
         {
             var teamstats = _context.MatchTeam.FirstOrDefault(mt => mt.MatchID == matchID && mt.TeamID == vm.TeamID);
             teamstats.Score = vm.Score ?? teamstats.Score;
@@ -241,14 +246,17 @@ namespace Gordon360.Services.RecIM
                     .ID;
             }
             await _context.SaveChangesAsync();
+            return teamstats;
+
         }
-        public async Task UpdateMatch(int matchID, MatchPatchViewModel vm)
+        public async Task<MatchCreatedViewModel> UpdateMatch(int matchID, MatchPatchViewModel vm)
         {
             var match = _context.Match.FirstOrDefault(m => m.ID == matchID);
             match.Time = vm.Time ?? match.Time;
             match.StatusID = vm.StatusID ?? match.StatusID;
             match.SurfaceID = vm.SurfaceID ?? match.SurfaceID;
             await _context.SaveChangesAsync();
+            return match;
         }
     }
 
