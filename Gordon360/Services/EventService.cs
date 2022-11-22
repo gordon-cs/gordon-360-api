@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Gordon360.Models.CCT;
 
 // <summary>
 // We use this service to pull data from 25Live as well as parsing it
@@ -87,7 +88,9 @@ namespace Gordon360.Services
         {
             var account = _accountService.GetAccountByUsername(username);
 
-            var result = _context.ChapelEvent.Where(c => c.CHBarcode == account.Barcode && c.CHTermCD == term);
+            var result = _context.ChapelEvent
+                                 .Where(c => c.CHBarcode == account.Barcode && c.CHTermCD == term)
+                                 .Select<ChapelEvent, ChapelEventViewModel>(c => c);
 
             if (result is not IEnumerable<ChapelEventViewModel> chapelEvents)
             {
