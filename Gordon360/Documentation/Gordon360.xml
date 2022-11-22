@@ -806,7 +806,7 @@
             
             </summary>
             <param name="updatedSeries"></param>
-            <returns></returns>
+            <returns>modified series</returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.SeriesController.CreateSeries(Gordon360.Models.ViewModels.RecIM.SeriesUploadViewModel,System.Nullable{System.Int32})">
             <summary>
@@ -814,7 +814,7 @@
             </summary>
             <param name="newSeries">CreateSeriesViewModel</param>
             <param name="referenceSeriesID">ID of Series, used to select specific Teams </param>
-            <returns></returns>
+            <returns>created series</returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.TeamsController.GetTeamByID(System.Int32)">
             <summary>

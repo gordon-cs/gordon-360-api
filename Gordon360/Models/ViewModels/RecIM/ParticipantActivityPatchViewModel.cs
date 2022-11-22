@@ -3,7 +3,7 @@ using System;
 
 namespace Gordon360.Models.ViewModels.RecIM
 {
-    public class ParticipantPatchViewModel
+    public class ParticipantActivityPatchViewModel
     {
         public int? ActivityID { get; set; }
         public string? ActivityPrivType { get; set; }

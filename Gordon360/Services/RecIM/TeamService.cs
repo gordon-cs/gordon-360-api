@@ -145,7 +145,7 @@ namespace Gordon360.Services.RecIM
             return team;
         }
 
-        public async Task<ParticipantTeam> UpdateParticipantRoleAsync(int teamID, int participantID, int participantRoleID)
+        public async Task<ParticipantTeamViewModel> UpdateParticipantRoleAsync(int teamID, int participantID, int participantRoleID)
         {
             var participantTeam = _context.ParticipantTeam.FirstOrDefault(pt => pt.ParticipantID == participantID && pt.TeamID == teamID);
             participantTeam.RoleType = participantRoleID;
@@ -166,7 +166,7 @@ namespace Gordon360.Services.RecIM
 
             return t;
         }
-        public async Task<ParticipantTeam> AddUserToTeamAsync(int teamID, string username, int roleTypeID = 3)
+        public async Task<ParticipantTeamViewModel> AddUserToTeamAsync(int teamID, string username, int roleTypeID = 3)
         {
             var participantID = int.Parse(_accountService.GetAccountByUsername(username).GordonID);
 

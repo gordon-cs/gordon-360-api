@@ -100,7 +100,7 @@ namespace Gordon360.Services.RecIM
         {
             return GetSeries().FirstOrDefault(s => s.ID == seriesID);
         }
-        public async Task<int> PostSeries(SeriesUploadViewModel newSeries, int? referenceSeriesID)
+        public async Task<SeriesCreatedViewModel> PostSeries(SeriesUploadViewModel newSeries, int? referenceSeriesID)
         {
             var series = new Series
             {
@@ -126,9 +126,9 @@ namespace Gordon360.Services.RecIM
             }
            
             await CreateSeriesTeamMapping(teams, series.ID);
-            return series.ID;
+            return series;
         }
-        public async Task UpdateSeries(int seriesID, SeriesPatchViewModel update)
+        public async Task<SeriesCreatedViewModel> UpdateSeries(int seriesID, SeriesPatchViewModel update)
         {
             var s = await _context.Series.FindAsync(seriesID);
             s.Name = update.Name ?? s.Name;
@@ -137,6 +137,7 @@ namespace Gordon360.Services.RecIM
             s.StatusID = update.StatusID ?? s.StatusID;
 
             await _context.SaveChangesAsync();
+            return s;
         }
 
         private async Task CreateSeriesTeamMapping(IEnumerable<int> teams, int seriesID)

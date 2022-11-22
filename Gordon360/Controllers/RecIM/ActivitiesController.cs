@@ -66,7 +66,6 @@ namespace Gordon360.Controllers.RecIM
         [Route("")]
         public async Task<ActionResult> CreateActivity(ActivityUploadViewModel newActivity)
         {
-            
             var activityID = await _activityService.PostActivity(newActivity);
             return Ok(activityID);
         }

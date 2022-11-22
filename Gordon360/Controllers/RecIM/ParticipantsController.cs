@@ -75,7 +75,7 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpPatch]
         [Route("{username}")]
-        public async Task<ActionResult> UpdateParticipant(string username, ParticipantPatchViewModel updatedParticipant)
+        public async Task<ActionResult> UpdateParticipant(string username, ParticipantActivityPatchViewModel updatedParticipant)
         {
 
             await _participantService.UpdateParticipant(username, updatedParticipant);

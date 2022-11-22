@@ -141,7 +141,7 @@ namespace Gordon360.Services.RecIM
             });
             await _context.SaveChangesAsync();
         }
-        public async Task UpdateParticipant(string username, ParticipantPatchViewModel updatedParticipant)
+        public async Task UpdateParticipant(string username, ParticipantActivityPatchViewModel updatedParticipant)
         {
             int participantID = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID);
             if (updatedParticipant.ActivityID is not null)

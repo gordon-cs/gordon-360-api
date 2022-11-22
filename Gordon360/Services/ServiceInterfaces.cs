@@ -323,8 +323,8 @@ namespace Gordon360.Services
             IEnumerable<SeriesViewModel> GetSeries(bool active);
             IEnumerable<SeriesViewModel> GetSeriesByActivityID(int activityID);
             SeriesViewModel GetSeriesByID(int seriesID);
-            Task<int> PostSeries(SeriesUploadViewModel newSeries, int? referenceSeriesID);
-            Task UpdateSeries(int seriesID, SeriesPatchViewModel series);
+            Task<SeriesCreatedViewModel> PostSeries(SeriesUploadViewModel newSeries, int? referenceSeriesID);
+            Task<SeriesCreatedViewModel> UpdateSeries(int seriesID, SeriesPatchViewModel series);
             Task ScheduleMatches(int seriesID);
         }
 
@@ -332,8 +332,8 @@ namespace Gordon360.Services
         {
             TeamViewModel GetTeamByID(int teamID);
             Task<Team> PostTeamAsync(TeamUploadViewModel newTeam, string username);
-            Task<ParticipantTeam> AddUserToTeamAsync(int teamID, string username, int roleTypeID);
-            Task<ParticipantTeam> UpdateParticipantRoleAsync(int teamID, int participantID, int participantRoleID);
+            Task<ParticipantTeamViewModel> AddUserToTeamAsync(int teamID, string username, int roleTypeID);
+            Task<ParticipantTeamViewModel> UpdateParticipantRoleAsync(int teamID, int participantID, int participantRoleID);
             Task<Team> UpdateTeamAsync(int teamID, TeamPatchViewModel updatedTeam);
             bool IsTeamCaptain(int teamID, string username);
         }
@@ -347,7 +347,7 @@ namespace Gordon360.Services
             IEnumerable<TeamViewModel> GetParticipantTeams(string username);
             Task PostParticipant(int participantID);
             Task<ParticipantNotification> SendParticipantNotification(string username, ParticipantNotificationUploadViewModel notificationVM);
-            Task UpdateParticipant(string username, ParticipantPatchViewModel updatedParticipant);
+            Task UpdateParticipant(string username, ParticipantActivityPatchViewModel updatedParticipant);
             Task UpdateParticipantStatus(string username, ParticipantStatusPatchViewModel participantStatus);
         }
 
