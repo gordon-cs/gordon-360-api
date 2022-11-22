@@ -144,34 +144,24 @@ namespace Gordon360.Services.RecIM
             var participant = GetParticipantByUsername(username);
             return participant;
         }
-        public async Task<ParticipantViewModel> UpdateParticipant(string username, ParticipantActivityPatchViewModel updatedParticipant)
+        public async Task<ParticipantActivityCreatedViewModel> UpdateParticipantActivity(string username, ParticipantActivityPatchViewModel updatedParticipant)
         {
             int participantID = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID);
-            if (updatedParticipant.ActivityID is not null)
-            {
-                var participantActivity = _context.ParticipantActivity
-                                            .FirstOrDefault(pa => pa.ParticipantID == participantID 
-                                                && pa.ActivityID == updatedParticipant.ActivityID);
-                var priv = _context.PrivType
-                                .FirstOrDefault(pt => pt.Description == updatedParticipant.ActivityPrivType);
+           
+            var participantActivity = _context.ParticipantActivity
+                                        .FirstOrDefault(pa => pa.ParticipantID == participantID 
+                                            && pa.ActivityID == updatedParticipant.ActivityID);
+            var priv = _context.PrivType
+                            .FirstOrDefault(pt => pt.Description == updatedParticipant.ActivityPrivType);
 
-                participantActivity.PrivTypeID = priv is null 
-                                                ? participantActivity.PrivTypeID
-                                                : priv.ID;
-                participantActivity.isFreeAgent = updatedParticipant.isFreeAgent ?? participantActivity.isFreeAgent;
+            participantActivity.PrivTypeID = priv is null 
+                                            ? participantActivity.PrivTypeID
+                                            : priv.ID;
+            participantActivity.isFreeAgent = updatedParticipant.isFreeAgent ?? participantActivity.isFreeAgent;
                                                 
-            }
-            if (updatedParticipant.TeamID is not null)
-            {
-                var participantTeam = _context.ParticipantTeam
-                                        .FirstOrDefault(pt => pt.TeamID == updatedParticipant.TeamID
-                                            && pt.ParticipantID == participantID);
-                var role = _context.RoleType
-                            .FirstOrDefault(pt => pt.Description == updatedParticipant.TeamRole);
-            }
+        
             await _context.SaveChangesAsync();
-            var participant = GetParticipantByUsername(username);
-            return participant;
+            return participantActivity;
         }
         public async Task<ParticipantStatusCreatedViewModel> UpdateParticipantStatus(string username, ParticipantStatusPatchViewModel participantStatus)
         {

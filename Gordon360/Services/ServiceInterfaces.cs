@@ -334,7 +334,8 @@ namespace Gordon360.Services
             Task<Team> PostTeamAsync(TeamUploadViewModel newTeam, string username);
             Task<ParticipantTeamViewModel> AddUserToTeamAsync(int teamID, string username, int roleTypeID);
             Task<ParticipantTeamViewModel> UpdateParticipantRoleAsync(int teamID, int participantID, int participantRoleID);
-            Task<Team> UpdateTeamAsync(int teamID, TeamPatchViewModel updatedTeam);
+            Task<TeamCreatedViewModel> UpdateTeamAsync(int teamID, TeamPatchViewModel updatedTeam);
+            Task<ParticipantTeamViewModel> UpdateParticipantRoleAsync(int teamID, string username, int participantRoleID);
             bool IsTeamCaptain(int teamID, string username);
         }
 
@@ -347,7 +348,7 @@ namespace Gordon360.Services
             IEnumerable<TeamViewModel> GetParticipantTeams(string username);
             Task<ParticipantViewModel> PostParticipant(int participantID);
             Task<ParticipantNotificationCreatedViewModel> SendParticipantNotification(string username, ParticipantNotificationUploadViewModel notificationVM);
-            Task<ParticipantViewModel> UpdateParticipant(string username, ParticipantActivityPatchViewModel updatedParticipant);
+            Task<ParticipantViewModel> UpdateParticipantActivity(string username, ParticipantActivityPatchViewModel updatedParticipant);
             Task<ParticipantStatusCreatedViewModel> UpdateParticipantStatus(string username, ParticipantStatusPatchViewModel participantStatus);
         }
 
