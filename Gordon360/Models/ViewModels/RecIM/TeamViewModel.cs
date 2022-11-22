@@ -9,8 +9,6 @@ namespace Gordon360.Models.ViewModels.RecIM
         public int ID { get; set; }
         public string? Name { get; set; }
         public string? Status { get; set; }
-        //private may be removed if deemed unecessary by customer
-        public bool Private { get; set; }
         public string? Logo { get; set; }
         public virtual IEnumerable<MatchViewModel>? Match { get; set; }
         public virtual IEnumerable<ParticipantViewModel>? Participant { get; set; }
