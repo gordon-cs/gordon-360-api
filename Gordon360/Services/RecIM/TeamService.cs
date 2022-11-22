@@ -40,7 +40,6 @@ namespace Gordon360.Services.RecIM
                                 Status = _context.TeamStatus
                                             .FirstOrDefault(ts => ts.ID == t.StatusID)
                                             .Description,
-                                Private = t.Private,
                                 Logo = t.Logo,
                                 Match = t.MatchTeam
                                             .Select(mt => _matchService.GetMatchByID(mt.MatchID)),
@@ -135,7 +134,6 @@ namespace Gordon360.Services.RecIM
                 Name = t.Name,
                 StatusID = 1,
                 ActivityID = t.ActivityID,
-                Private = false, //will be depricated next update
                 Logo = t.Logo,
             };
             await _context.Team.AddAsync(team);

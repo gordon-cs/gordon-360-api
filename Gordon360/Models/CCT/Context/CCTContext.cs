@@ -87,7 +87,9 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<Save_Rides> Save_Rides { get; set; }
         public virtual DbSet<Schedule_Control> Schedule_Control { get; set; }
         public virtual DbSet<Series> Series { get; set; }
+        public virtual DbSet<SeriesSchedule> SeriesSchedule { get; set; }
         public virtual DbSet<SeriesStatus> SeriesStatus { get; set; }
+        public virtual DbSet<SeriesSurface> SeriesSurface { get; set; }
         public virtual DbSet<SeriesTeam> SeriesTeam { get; set; }
         public virtual DbSet<SeriesType> SeriesType { get; set; }
         public virtual DbSet<Slider_Images> Slider_Images { get; set; }
@@ -634,6 +636,8 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<Series>(entity =>
             {
+                entity.Property(e => e.ScheduleID).HasDefaultValueSql("((30))");
+
                 entity.Property(e => e.StatusID).HasDefaultValueSql("((1))");
 
                 entity.Property(e => e.TypeID).HasDefaultValueSql("((1))");
@@ -643,6 +647,11 @@ namespace Gordon360.Models.CCT.Context
                     .HasForeignKey(d => d.ActivityID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Series_Activity");
+
+                entity.HasOne(d => d.Schedule)
+                    .WithMany(p => p.Series)
+                    .HasForeignKey(d => d.ScheduleID)
+                    .HasConstraintName("FK_Series_SeriesSchedule");
 
                 entity.HasOne(d => d.Status)
                     .WithMany(p => p.Series)
@@ -655,6 +664,21 @@ namespace Gordon360.Models.CCT.Context
                     .HasForeignKey(d => d.TypeID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Series_SeriesType");
+            });
+
+            modelBuilder.Entity<SeriesSurface>(entity =>
+            {
+                entity.HasOne(d => d.Series)
+                    .WithMany(p => p.SeriesSurface)
+                    .HasForeignKey(d => d.SeriesID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_SeriesSurface_Series");
+
+                entity.HasOne(d => d.Surface)
+                    .WithMany(p => p.SeriesSurface)
+                    .HasForeignKey(d => d.SurfaceID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_SeriesSurface_Surface");
             });
 
             modelBuilder.Entity<SeriesTeam>(entity =>

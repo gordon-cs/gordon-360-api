@@ -14,6 +14,7 @@ namespace Gordon360.Models.CCT
         public Surface()
         {
             Match = new HashSet<Match>();
+            SeriesSurface = new HashSet<SeriesSurface>();
         }
 
         [Key]
@@ -28,5 +29,7 @@ namespace Gordon360.Models.CCT
 
         [InverseProperty("Surface")]
         public virtual ICollection<Match> Match { get; set; }
+        [InverseProperty("Surface")]
+        public virtual ICollection<SeriesSurface> SeriesSurface { get; set; }
     }
 }
