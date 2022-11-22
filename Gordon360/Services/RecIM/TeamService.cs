@@ -124,7 +124,7 @@ namespace Gordon360.Services.RecIM
             return team;
         }
 
-        public async Task<Team> PostTeamAsync(TeamUploadViewModel t, string username)
+        public async Task<TeamCreatedViewModel> PostTeamAsync(TeamUploadViewModel t, string username)
         {
             var participantID = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID);
             // return null if ParticipantActivity contains an instance of both t.ActivityID & participantID
@@ -140,13 +140,14 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
 
             await AddUserToTeamAsync(team.ID, username);
-            await UpdateParticipantRoleAsync(team.ID, participantID, 5);
+            await UpdateParticipantRoleAsync(team.ID, username, 5);
 
             return team;
         }
 
-        public async Task<ParticipantTeamViewModel> UpdateParticipantRoleAsync(int teamID, int participantID, int participantRoleID)
+        public async Task<ParticipantTeamViewModel> UpdateParticipantRoleAsync(int teamID, string username, int participantRoleID)
         {
+            var participantID = int.Parse(_accountService.GetAccountByUsername(username).GordonID);
             var participantTeam = _context.ParticipantTeam.FirstOrDefault(pt => pt.ParticipantID == participantID && pt.TeamID == teamID);
             participantTeam.RoleType = participantRoleID;
 
@@ -155,7 +156,7 @@ namespace Gordon360.Services.RecIM
             return participantTeam;
         }
 
-        public async Task<Team> UpdateTeamAsync(int teamID, TeamPatchViewModel update)
+        public async Task<TeamCreatedViewModel> UpdateTeamAsync(int teamID, TeamPatchViewModel update)
         {
             var t = await _context.Team.FindAsync(teamID);
             t.Name = update.Name ?? t.Name;

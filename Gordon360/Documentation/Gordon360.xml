@@ -827,14 +827,24 @@
             <summary>
             Create a new team with the requesting user set to team captain
             </summary>
+            <param name="username">creator's username</param>
             <param name="newTeam"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.TeamsController.AddUserToTeam(System.String,System.Int32,System.Int32)">
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.AddParticipantToTeam(System.String,System.Int32,System.Int32)">
             <summary>
             Add a participant to a team
             </summary>
-            <param name="participantUsername"></param>
+            <param name="username"></param>
+            <param name="teamID"></param>
+            <param name="roleType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.UpdateTeamParticipant(System.String,System.Int32,System.Int32)">
+            <summary>
+            Updates Participant role in a team
+            </summary>
+            <param name="username"></param>
             <param name="teamID"></param>
             <param name="roleType"></param>
             <returns></returns>

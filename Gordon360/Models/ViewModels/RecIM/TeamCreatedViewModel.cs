@@ -19,7 +19,7 @@ namespace Gordon360.Models.ViewModels.RecIM
                 Name = t.Name, 
                 StatusID = t.StatusID,  
                 ActivityID = t.ActivityID,
-                Logo = t.Logos
+                Logo = t.Logo
             };
         }
     }
