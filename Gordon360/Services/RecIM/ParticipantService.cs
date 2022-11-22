@@ -84,7 +84,7 @@ namespace Gordon360.Services.RecIM
                                     (psh, ps) => new ParticipantStatusViewModel
                                     {
                                         Username = username,
-                                        StatusDescription = ps.Description,
+                                        Status = ps.Description,
                                         StartDate = psh.StartDate,
                                         EndDate = psh.EndDate
                                     }).AsEnumerable();
