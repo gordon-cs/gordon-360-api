@@ -43,16 +43,16 @@ namespace Gordon360.Controllers.RecIM
         [Route("{sportID}")]
         public async Task<ActionResult> UpdateSport(int sportID, SportViewModel updatedSport)
         {
-            await _sportService.UpdateSport(updatedSport);
-            return Ok(sportID);
+            var sport = await _sportService.UpdateSport(updatedSport);
+            return Ok(sport);
         }
 
         [HttpPost]
         [Route("")]
         public async Task<ActionResult> CreateSport(SportUploadViewModel newSport)
         {
-            int sportID = await _sportService.PostSport(newSport);
-            return Ok(sportID);
+            var sport = await _sportService.PostSport(newSport);
+            return Ok(sport);
         }
 
     }

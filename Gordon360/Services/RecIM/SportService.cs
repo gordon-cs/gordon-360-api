@@ -32,7 +32,7 @@ namespace Gordon360.Services.RecIM
             return _context.Sport.Select(s => (SportViewModel)s).AsEnumerable();
         }
 
-        public async Task<int> PostSport(SportUploadViewModel newSport)
+        public async Task<SportViewModel> PostSport(SportUploadViewModel newSport)
         {
             var sport = new Sport
             {
@@ -43,10 +43,10 @@ namespace Gordon360.Services.RecIM
             };
             await _context.Sport.AddAsync(sport);
             await _context.SaveChangesAsync();
-            return sport.ID;
+            return sport;
         }
 
-        public async Task UpdateSport(SportViewModel updatedSport)
+        public async Task<SportViewModel> UpdateSport(SportViewModel updatedSport)
         {
             var sport = _context.Sport.FirstOrDefault(s => s.ID == updatedSport.ID);
             sport.Name = updatedSport.Name ?? sport.Name;
@@ -54,6 +54,8 @@ namespace Gordon360.Services.RecIM
             sport.Rules = updatedSport.Rules ?? sport.Rules;
             sport.Logo = updatedSport.Logo ?? sport.Logo;
             await _context.SaveChangesAsync();
+
+            return sport;
 
         }
     }
