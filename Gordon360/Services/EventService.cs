@@ -97,13 +97,13 @@ namespace Gordon360.Services
                 return Enumerable.Empty<AttendedEventViewModel>();
             }
 
-            return chapelEvents
-                .Join(
-                    Events,
-                    c => c.LiveID,
-                    e => e.Event_ID,
-                    (c, e) => new AttendedEventViewModel(e, c)
-                );
+            // Left join to 25Live Events for extra event data when matching 25Live event is found
+            var attendedEvents = from chapelEvent in chapelEvents
+                           join event25Live in Events on chapelEvent.LiveID equals event25Live.Event_ID?.Split('_')?.FirstOrDefault() into liveEvents
+                           from liveEvent in liveEvents.DefaultIfEmpty()
+                           select new AttendedEventViewModel(liveEvent, chapelEvent);
+
+            return attendedEvents;
         }
 
 
