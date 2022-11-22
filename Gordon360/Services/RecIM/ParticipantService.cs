@@ -58,7 +58,7 @@ namespace Gordon360.Services.RecIM
             return participant;
         }
 
-        public async Task<ParticipantNotification> SendParticipantNotification(string username, ParticipantNotificationUploadViewModel notificationVM)
+        public async Task<ParticipantNotificationCreatedViewModel> SendParticipantNotification(string username, ParticipantNotificationUploadViewModel notificationVM)
         {
             int participantID = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID);
             var newNotification = new ParticipantNotification
@@ -126,7 +126,7 @@ namespace Gordon360.Services.RecIM
             return res;
         }
 
-        public async Task PostParticipant(int participantID)
+        public async Task<ParticipantViewModel> PostParticipant(int participantID)
         {
             await _context.Participant.AddAsync(new Participant
             {
@@ -140,8 +140,11 @@ namespace Gordon360.Services.RecIM
                 //No defined end date for creation
             });
             await _context.SaveChangesAsync();
+            var username = GetAccountByParticipantID(participantID).AD_Username;
+            var participant = GetParticipantByUsername(username);
+            return participant;
         }
-        public async Task UpdateParticipant(string username, ParticipantActivityPatchViewModel updatedParticipant)
+        public async Task<ParticipantViewModel> UpdateParticipant(string username, ParticipantActivityPatchViewModel updatedParticipant)
         {
             int participantID = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID);
             if (updatedParticipant.ActivityID is not null)
@@ -167,8 +170,10 @@ namespace Gordon360.Services.RecIM
                             .FirstOrDefault(pt => pt.Description == updatedParticipant.TeamRole);
             }
             await _context.SaveChangesAsync();
+            var participant = GetParticipantByUsername(username);
+            return participant;
         }
-        public async Task UpdateParticipantStatus(string username, ParticipantStatusPatchViewModel participantStatus)
+        public async Task<ParticipantStatusCreatedViewModel> UpdateParticipantStatus(string username, ParticipantStatusPatchViewModel participantStatus)
         {
             var status = new ParticipantStatusHistory
             {
@@ -188,6 +193,7 @@ namespace Gordon360.Services.RecIM
             prevStatus.EndDate = DateTime.Now;
 
             await _context.SaveChangesAsync();
+            return status;
         }
     }
 

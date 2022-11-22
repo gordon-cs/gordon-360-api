@@ -345,10 +345,10 @@ namespace Gordon360.Services
             IEnumerable<ParticipantStatusViewModel> GetParticipantStatusHistory(string username);
             ParticipantViewModel GetParticipantByUsername(string username);
             IEnumerable<TeamViewModel> GetParticipantTeams(string username);
-            Task PostParticipant(int participantID);
-            Task<ParticipantNotification> SendParticipantNotification(string username, ParticipantNotificationUploadViewModel notificationVM);
-            Task UpdateParticipant(string username, ParticipantActivityPatchViewModel updatedParticipant);
-            Task UpdateParticipantStatus(string username, ParticipantStatusPatchViewModel participantStatus);
+            Task<ParticipantViewModel> PostParticipant(int participantID);
+            Task<ParticipantNotificationCreatedViewModel> SendParticipantNotification(string username, ParticipantNotificationUploadViewModel notificationVM);
+            Task<ParticipantViewModel> UpdateParticipant(string username, ParticipantActivityPatchViewModel updatedParticipant);
+            Task<ParticipantStatusCreatedViewModel> UpdateParticipantStatus(string username, ParticipantStatusPatchViewModel participantStatus);
         }
 
         public interface ISportService

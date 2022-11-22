@@ -60,16 +60,16 @@ namespace Gordon360.Controllers.RecIM
         [Route("{participantID}")]
         public async Task<ActionResult> AddParticipant(int participantID)
         {
-            await _participantService.PostParticipant(participantID);
-            return (Ok(participantID));
+            var participant = await _participantService.PostParticipant(participantID);
+            return CreatedAtAction("AddParticipant", participant);
         }
 
         [HttpPost]
         [Route("{username}/notifications")]
         public async Task<IActionResult> SendParticipantNotification(string username, ParticipantNotificationUploadViewModel notificationVM)
         {
-            var res = await _participantService.SendParticipantNotification(username, notificationVM);
-            return CreatedAtAction("SendParticipantNotification", new { id = res.ID },res);
+            var notification = await _participantService.SendParticipantNotification(username, notificationVM);
+            return CreatedAtAction("SendParticipantNotification", notification);
         }
 
 
@@ -78,16 +78,16 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult> UpdateParticipant(string username, ParticipantActivityPatchViewModel updatedParticipant)
         {
 
-            await _participantService.UpdateParticipant(username, updatedParticipant);
-            return Ok(username);
+            var participant = await _participantService.UpdateParticipant(username, updatedParticipant);
+            return CreatedAtAction("UpdateParticipant", participant);
         }
 
         [HttpPatch]
         [Route("{username}/status")]
         public async Task<ActionResult> UpdateParticipantStatus(string username, ParticipantStatusPatchViewModel updatedParticipant)
         {
-            await _participantService.UpdateParticipantStatus(username, updatedParticipant);
-            return Ok(username);
+            var status = await _participantService.UpdateParticipantStatus(username, updatedParticipant);
+            return CreatedAtAction("UpdateParticipantStatus",status);
         }
 
     }

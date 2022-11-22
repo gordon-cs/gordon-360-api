@@ -44,7 +44,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult> UpdateSport(int sportID, SportViewModel updatedSport)
         {
             var sport = await _sportService.UpdateSport(updatedSport);
-            return Ok(sport);
+            return CreatedAtAction("UpdateSport", sport);
         }
 
         [HttpPost]
@@ -52,7 +52,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult> CreateSport(SportUploadViewModel newSport)
         {
             var sport = await _sportService.PostSport(newSport);
-            return Ok(sport);
+            return CreatedAtAction("UpdateSport", sport);
         }
 
     }
