@@ -738,7 +738,7 @@
             Posts Activity into CCT.RecIM.Activity
             </summary>
             <param name="newActivity">CreateActivityViewModel object with appropriate values</param>
-            <returns>Posted Activity ID</returns>
+            <returns>Posted Activity</returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.UpdateActivity(System.Int32,Gordon360.Models.ViewModels.RecIM.ActivityPatchViewModel)">
             <summary>
