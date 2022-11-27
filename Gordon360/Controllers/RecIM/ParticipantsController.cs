@@ -56,7 +56,7 @@ namespace Gordon360.Controllers.RecIM
             return Ok(res);
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("{participantID}")]
         public async Task<ActionResult> AddParticipant(int participantID)
         {

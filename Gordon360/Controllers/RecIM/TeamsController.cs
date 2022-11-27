@@ -68,13 +68,13 @@ namespace Gordon360.Controllers.RecIM
         /// </summary>
         /// <param name="username"></param>
         /// <param name="teamID"></param>
-        /// <param name="roleType">Default value 3 (Member)</param>
+        /// <param name="roleID">Default value 3 (Member)</param>
         /// <returns></returns>
         [HttpPost]
-        [Route("participants")]
-        public async Task<ActionResult> AddParticipantToTeam(string username, int teamID, int roleType = 3)
+        [Route("{teamID}/participants")]
+        public async Task<ActionResult> AddParticipantToTeam(int teamID, string username, int roleID = 3)
         {
-            var participantTeam = await _teamService.AddUserToTeamAsync(teamID, username, roleType);
+            var participantTeam = await _teamService.AddUserToTeamAsync(teamID, username, roleID);
             return CreatedAtAction("AddParticipantToTeam",participantTeam);
         }
 
@@ -83,13 +83,13 @@ namespace Gordon360.Controllers.RecIM
         /// </summary>
         /// <param name="username"></param>
         /// <param name="teamID"></param>
-        /// <param name="roleType"></param>
+        /// <param name="roleID"></param>
         /// <returns></returns>
         [HttpPatch]
-        [Route("participants")]
-        public async Task<ActionResult> UpdateTeamParticipant(string username, int teamID, int roleType = 3)
+        [Route("{teamID}/participants")]
+        public async Task<ActionResult> UpdateTeamParticipant(int teamID, string username, int roleID = 3)
         {
-            var participantTeam = await _teamService.UpdateParticipantRoleAsync(teamID, username, roleType);
+            var participantTeam = await _teamService.UpdateParticipantRoleAsync(teamID, username, roleID);
             return CreatedAtAction("UpdateTeamParticipant",participantTeam);
         }
 

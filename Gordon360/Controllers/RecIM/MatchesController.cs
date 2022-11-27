@@ -98,8 +98,8 @@ namespace Gordon360.Controllers.RecIM
         /// <param name="matchID"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("attendance")]
-        public async Task<ActionResult> AddAttendance([FromQuery] int matchID, string username)
+        [Route("{matchID}/attendance")]
+        public async Task<ActionResult> AddAttendance(int matchID, [FromBody] string username)
         {
             var attendance = await _matchService.AddParticipantAttendance(username,matchID);
             return CreatedAtAction("AddAttendance", attendance);
