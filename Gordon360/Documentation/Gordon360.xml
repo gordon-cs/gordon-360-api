@@ -845,7 +845,7 @@
             </summary>
             <param name="username"></param>
             <param name="teamID"></param>
-            <param name="roleType"></param>
+            <param name="roleType">Default value 3 (Member)</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.TeamsController.UpdateTeamParticipant(System.String,System.Int32,System.Int32)">

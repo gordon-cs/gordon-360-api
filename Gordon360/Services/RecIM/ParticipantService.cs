@@ -154,9 +154,7 @@ namespace Gordon360.Services.RecIM
             var priv = _context.PrivType
                             .FirstOrDefault(pt => pt.Description == updatedParticipant.ActivityPrivType);
 
-            participantActivity.PrivTypeID = priv is null 
-                                            ? participantActivity.PrivTypeID
-                                            : priv.ID;
+            participantActivity.PrivTypeID = priv?.ID ?? participantActivity.PrivTypeID;
             participantActivity.isFreeAgent = updatedParticipant.isFreeAgent ?? participantActivity.isFreeAgent;
                                                 
         

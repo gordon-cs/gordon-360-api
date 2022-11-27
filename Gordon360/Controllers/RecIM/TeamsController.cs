@@ -58,7 +58,7 @@ namespace Gordon360.Controllers.RecIM
             // (cannot implement at the moment as we only have 4 developer accs)
             if (team is null)
             {
-                return StatusCode(401, $"{username} already is a part of a team in this activity");
+                return BadRequest($"{username} already is a part of a team in this activity");
             }
             return CreatedAtAction("CreateTeam",team);
         }
@@ -68,7 +68,7 @@ namespace Gordon360.Controllers.RecIM
         /// </summary>
         /// <param name="username"></param>
         /// <param name="teamID"></param>
-        /// <param name="roleType"></param>
+        /// <param name="roleType">Default value 3 (Member)</param>
         /// <returns></returns>
         [HttpPost]
         [Route("participants")]
@@ -103,8 +103,8 @@ namespace Gordon360.Controllers.RecIM
         [Route("{teamID}")]
         public async Task<ActionResult> UpdateTeamInfo(int teamID, TeamPatchViewModel team)
         {
-            var Team = await _teamService.UpdateTeamAsync(teamID, team);
-            return CreatedAtAction("UpdateTeamInfo",Team);
+            var updatedTeam = await _teamService.UpdateTeamAsync(teamID, team);
+            return CreatedAtAction("UpdateTeamInfo",updatedTeam);
         }
     }
 }
