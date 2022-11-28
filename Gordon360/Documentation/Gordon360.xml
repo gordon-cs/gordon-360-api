@@ -839,22 +839,20 @@
             <param name="newTeam"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.TeamsController.AddParticipantToTeam(System.Int32,System.String,System.Int32)">
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.AddParticipantToTeam(System.Int32,Gordon360.Models.ViewModels.RecIM.ParticipantTeamUploadViewModel)">
             <summary>
             Add a participant to a team
             </summary>
-            <param name="username"></param>
             <param name="teamID"></param>
-            <param name="roleID">Default value 3 (Member)</param>
+            <param name="participant">Default Role Value value 3 (Member)</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.TeamsController.UpdateTeamParticipant(System.Int32,System.String,System.Int32)">
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.UpdateTeamParticipant(System.Int32,Gordon360.Models.ViewModels.RecIM.ParticipantTeamUploadViewModel)">
             <summary>
             Updates Participant role in a team
             </summary>
-            <param name="username"></param>
             <param name="teamID"></param>
-            <param name="roleID"></param>
+            <param name="participant">Default Role Value value 3 (Member)</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.TeamsController.UpdateTeamInfo(System.Int32,Gordon360.Models.ViewModels.RecIM.TeamPatchViewModel)">

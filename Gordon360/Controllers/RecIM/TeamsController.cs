@@ -66,30 +66,30 @@ namespace Gordon360.Controllers.RecIM
         /// <summary>
         /// Add a participant to a team
         /// </summary>
-        /// <param name="username"></param>
         /// <param name="teamID"></param>
-        /// <param name="roleID">Default value 3 (Member)</param>
+        /// <param name="participant">Default Role Value value 3 (Member)</param>
         /// <returns></returns>
         [HttpPost]
         [Route("{teamID}/participants")]
-        public async Task<ActionResult> AddParticipantToTeam(int teamID, string username, int roleID = 3)
+        public async Task<ActionResult> AddParticipantToTeam(int teamID, ParticipantTeamUploadViewModel participant)
         {
-            var participantTeam = await _teamService.AddUserToTeamAsync(teamID, username, roleID);
+            participant.RoleTypeID = participant.RoleTypeID ?? 3;
+            var participantTeam = await _teamService.AddUserToTeamAsync(teamID, participant);
             return CreatedAtAction("AddParticipantToTeam",participantTeam);
         }
 
         /// <summary>
         /// Updates Participant role in a team
         /// </summary>
-        /// <param name="username"></param>
         /// <param name="teamID"></param>
-        /// <param name="roleID"></param>
+        /// <param name="participant">Default Role Value value 3 (Member)</param>
         /// <returns></returns>
         [HttpPatch]
         [Route("{teamID}/participants")]
-        public async Task<ActionResult> UpdateTeamParticipant(int teamID, string username, int roleID = 3)
+        public async Task<ActionResult> UpdateTeamParticipant(int teamID, ParticipantTeamUploadViewModel participant)
         {
-            var participantTeam = await _teamService.UpdateParticipantRoleAsync(teamID, username, roleID);
+            participant.RoleTypeID = participant.RoleTypeID ?? 3;
+            var participantTeam = await _teamService.UpdateParticipantRoleAsync(teamID, participant);
             return CreatedAtAction("UpdateTeamParticipant",participantTeam);
         }
 

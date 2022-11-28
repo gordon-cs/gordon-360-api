@@ -139,17 +139,21 @@ namespace Gordon360.Services.RecIM
             await _context.Team.AddAsync(team);
             await _context.SaveChangesAsync();
 
-            await AddUserToTeamAsync(team.ID, username);
-            await UpdateParticipantRoleAsync(team.ID, username, 5);
+            var captain = new ParticipantTeamUploadViewModel
+            {
+                Username = username,
+                RoleTypeID = 5
+            };
+            await AddUserToTeamAsync(team.ID, captain);
 
             return team;
         }
 
-        public async Task<ParticipantTeamViewModel> UpdateParticipantRoleAsync(int teamID, string username, int participantRoleID)
+        public async Task<ParticipantTeamViewModel> UpdateParticipantRoleAsync(int teamID, ParticipantTeamUploadViewModel participant)
         {
-            var participantID = int.Parse(_accountService.GetAccountByUsername(username).GordonID);
+            var participantID = int.Parse(_accountService.GetAccountByUsername(participant.Username).GordonID);
             var participantTeam = _context.ParticipantTeam.FirstOrDefault(pt => pt.ParticipantID == participantID && pt.TeamID == teamID);
-            participantTeam.RoleType = participantRoleID;
+            participantTeam.RoleType = participant.RoleTypeID ?? 3;
 
             await _context.SaveChangesAsync();
 
@@ -167,16 +171,16 @@ namespace Gordon360.Services.RecIM
 
             return t;
         }
-        public async Task<ParticipantTeamViewModel> AddUserToTeamAsync(int teamID, string username, int roleTypeID = 3)
+        public async Task<ParticipantTeamViewModel> AddUserToTeamAsync(int teamID, ParticipantTeamUploadViewModel participant)
         {
-            var participantID = int.Parse(_accountService.GetAccountByUsername(username).GordonID);
+            var participantID = int.Parse(_accountService.GetAccountByUsername(participant.Username).GordonID);
 
             var participantTeam = new ParticipantTeam
             {
                 TeamID = teamID,
                 ParticipantID = participantID,
                 SignDate = DateTime.Now,
-                RoleType = roleTypeID, //default: 3 -> member
+                RoleType = participant.RoleTypeID ?? 3, //default: 3 -> member
             };
             await _context.ParticipantTeam.AddAsync(participantTeam);
             await _context.SaveChangesAsync();
