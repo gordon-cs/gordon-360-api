@@ -56,6 +56,21 @@ namespace Gordon360.Controllers.RecIM
             return Ok(res);
         }
 
+        [HttpGet]
+        [Route("lookup")]
+        public ActionResult<IEnumerable<LookupViewModel>> GetTypes(string type)
+        {
+            if ( type == "status" )
+            {
+
+            }
+            if ( type == "activitypriv")
+            {
+
+            }
+            throw new NotImplementedException();
+        }
+
         [HttpPut]
         [Route("{participantID}")]
         public async Task<ActionResult> AddParticipant(int participantID)
@@ -63,6 +78,7 @@ namespace Gordon360.Controllers.RecIM
             var participant = await _participantService.PostParticipant(participantID);
             return CreatedAtAction("AddParticipant", participant);
         }
+
 
         [HttpPost]
         [Route("{username}/notifications")]

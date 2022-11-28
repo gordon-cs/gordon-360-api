@@ -50,6 +50,25 @@ namespace Gordon360.Controllers.RecIM
             return Ok(match);
         }
 
+        [HttpGet]
+        [Route("lookup")]
+        public ActionResult<IEnumerable<LookupViewModel>> GetMatchTypes(string type)
+        {
+            if ( type == "status" )
+            {
+
+            }
+            if ( type == "teamstatus" )
+            {
+
+            }
+            if ( type == "surface")
+            {
+
+            }
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Updates Match Scores, Sportsmanship Ratings, and Team Status
         /// </summary>

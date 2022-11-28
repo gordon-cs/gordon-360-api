@@ -43,6 +43,22 @@ namespace Gordon360.Controllers.RecIM
             return Ok(team);
         }
 
+        [HttpGet]
+        [Route("lookup")]
+        public ActionResult<IEnumerable<LookupViewModel>> GetTeamTypes(string type)
+        {
+            if ( type == "status" )
+            {
+
+            }
+            if ( type == "role")
+            {
+
+            }
+            throw new NotImplementedException();
+        }
+
+
         /// <summary>
         /// Create a new team with the requesting user set to team captain
         /// </summary>
