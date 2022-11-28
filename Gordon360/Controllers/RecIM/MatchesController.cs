@@ -84,7 +84,7 @@ namespace Gordon360.Controllers.RecIM
         }
 
         /// <summary>
-        /// Updates Match STimes and Surfaces
+        /// Updates Match Start Times and Surfaces
         /// </summary>
         /// <param name="matchID"></param>
         /// <param name="updatedMatch"></param>
