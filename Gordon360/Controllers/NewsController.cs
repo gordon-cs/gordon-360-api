@@ -11,6 +11,10 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using System.IO;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Linq;
 
 namespace Gordon360.Controllers
 {
@@ -127,24 +131,25 @@ namespace Gordon360.Controllers
             }
             return Ok(result);
         }
-
+      
         /** Create a new news item to be added to the database
          * @TODO: Remove redundant username/id from this and service
          * @TODO: fix documentation comments
          */
         [HttpPost]
         [Route("")]
-        public ActionResult<StudentNews> Post(string subject, int categoryID, string body, string? image)
+        public ActionResult<StudentNews> Post(string subject, int categoryID, string body, [FromBody] string image)
         {
             // Get authenticated username/id
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
+
             var newsItem = new StudentNews
             {
                 ADUN = authenticatedUserUsername,
                 Subject = subject,
                 categoryID = categoryID,
                 Body = body,
-                Image = image
+                Image = image,
             };
 
             // Call appropriate service

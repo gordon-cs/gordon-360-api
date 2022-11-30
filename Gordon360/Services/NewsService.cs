@@ -156,7 +156,7 @@ namespace Gordon360.Services
             };
 
             _context.StudentNews.Add(itemToSubmit);
-            if (itemToSubmit.Image != null)
+            if (itemToSubmit.Image != "")
             {
                 string fileName = itemToSubmit.SNID + ".jpg";
                 string imagePath = NewsUploadsPath + fileName;
