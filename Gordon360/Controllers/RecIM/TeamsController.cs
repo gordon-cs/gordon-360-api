@@ -43,38 +43,70 @@ namespace Gordon360.Controllers.RecIM
             return Ok(team);
         }
 
+        [HttpGet]
+        [Route("lookup")]
+        public ActionResult<IEnumerable<LookupViewModel>> GetTeamTypes(string type)
+        {
+            if ( type == "status" )
+            {
+
+            }
+            if ( type == "role")
+            {
+
+            }
+            throw new NotImplementedException();
+        }
+
+
         /// <summary>
         /// Create a new team with the requesting user set to team captain
         /// </summary>
+        /// <param name="username">creator's username</param>
         /// <param name="newTeam"></param>
         /// <returns></returns>
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult> CreateTeam([FromQuery] string captain, TeamUploadViewModel newTeam)
+        public async Task<ActionResult> CreateTeam([FromQuery] string username, TeamUploadViewModel newTeam)
         {
-            var team = await _teamService.PostTeamAsync(newTeam, captain);
+            var team = await _teamService.PostTeamAsync(newTeam, username);
             // future error handling
             // (cannot implement at the moment as we only have 4 developer accs)
             if (team is null)
             {
-                return StatusCode(401, $"{captain} already is a part of a team in this activity");
+                return BadRequest($"{username} already is a part of a team in this activity");
             }
-            return Ok(team);
+            return CreatedAtAction("CreateTeam",team);
         }
 
         /// <summary>
         /// Add a participant to a team
         /// </summary>
-        /// <param name="participantUsername"></param>
         /// <param name="teamID"></param>
-        /// <param name="roleType"></param>
+        /// <param name="participant">Default Role Value value 3 (Member)</param>
         /// <returns></returns>
         [HttpPost]
-        [Route("participants")]
-        public async Task<ActionResult> AddUserToTeam(string participantUsername, int teamID, int roleType = 3)
+        [Route("{teamID}/participants")]
+        public async Task<ActionResult> AddParticipantToTeam(int teamID, ParticipantTeamUploadViewModel participant)
         {
-            var participantTeam = await _teamService.AddUserToTeamAsync(teamID, participantUsername, roleType);
-            return Ok(participantTeam);
+            participant.RoleTypeID = participant.RoleTypeID ?? 3;
+            var participantTeam = await _teamService.AddUserToTeamAsync(teamID, participant);
+            return CreatedAtAction("AddParticipantToTeam",participantTeam);
+        }
+
+        /// <summary>
+        /// Updates Participant role in a team
+        /// </summary>
+        /// <param name="teamID"></param>
+        /// <param name="participant">Default Role Value value 3 (Member)</param>
+        /// <returns></returns>
+        [HttpPatch]
+        [Route("{teamID}/participants")]
+        public async Task<ActionResult> UpdateTeamParticipant(int teamID, ParticipantTeamUploadViewModel participant)
+        {
+            participant.RoleTypeID = participant.RoleTypeID ?? 3;
+            var participantTeam = await _teamService.UpdateParticipantRoleAsync(teamID, participant);
+            return CreatedAtAction("UpdateTeamParticipant",participantTeam);
         }
 
         /// <summary>
@@ -87,8 +119,8 @@ namespace Gordon360.Controllers.RecIM
         [Route("{teamID}")]
         public async Task<ActionResult> UpdateTeamInfo(int teamID, TeamPatchViewModel team)
         {
-            var Team = await _teamService.UpdateTeamAsync(teamID, team);
-            return Ok(Team);
+            var updatedTeam = await _teamService.UpdateTeamAsync(teamID, team);
+            return CreatedAtAction("UpdateTeamInfo",updatedTeam);
         }
     }
 }

@@ -40,7 +40,6 @@ namespace Gordon360.Services.RecIM
                                 Status = _context.TeamStatus
                                             .FirstOrDefault(ts => ts.ID == t.StatusID)
                                             .Description,
-                                Private = t.Private,
                                 Logo = t.Logo,
                                 Match = t.MatchTeam
                                             .Select(mt => _matchService.GetMatchByID(mt.MatchID)),
@@ -125,7 +124,7 @@ namespace Gordon360.Services.RecIM
             return team;
         }
 
-        public async Task<Team> PostTeamAsync(TeamUploadViewModel t, string username)
+        public async Task<TeamCreatedViewModel> PostTeamAsync(TeamUploadViewModel t, string username)
         {
             var participantID = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID);
             // return null if ParticipantActivity contains an instance of both t.ActivityID & participantID
@@ -135,50 +134,53 @@ namespace Gordon360.Services.RecIM
                 Name = t.Name,
                 StatusID = 1,
                 ActivityID = t.ActivityID,
-                Private = false, //will be depricated next update
                 Logo = t.Logo,
             };
             await _context.Team.AddAsync(team);
             await _context.SaveChangesAsync();
 
-            await AddUserToTeamAsync(team.ID, username);
-            await UpdateParticipantRoleAsync(team.ID, participantID, 5);
+            var captain = new ParticipantTeamUploadViewModel
+            {
+                Username = username,
+                RoleTypeID = 5
+            };
+            await AddUserToTeamAsync(team.ID, captain);
 
             return team;
         }
 
-        public async Task<ParticipantTeam> UpdateParticipantRoleAsync(int teamID, int participantID, int participantRoleID)
+        public async Task<ParticipantTeamViewModel> UpdateParticipantRoleAsync(int teamID, ParticipantTeamUploadViewModel participant)
         {
+            var participantID = int.Parse(_accountService.GetAccountByUsername(participant.Username).GordonID);
             var participantTeam = _context.ParticipantTeam.FirstOrDefault(pt => pt.ParticipantID == participantID && pt.TeamID == teamID);
-            participantTeam.RoleType = participantRoleID;
+            participantTeam.RoleType = participant.RoleTypeID ?? 3;
 
             await _context.SaveChangesAsync();
 
             return participantTeam;
         }
 
-        public async Task<Team> UpdateTeamAsync(int teamID, TeamPatchViewModel update)
+        public async Task<TeamCreatedViewModel> UpdateTeamAsync(int teamID, TeamPatchViewModel update)
         {
             var t = await _context.Team.FindAsync(teamID);
             t.Name = update.Name ?? t.Name;
             t.StatusID = update.StatusID ?? t.StatusID;
-            t.Private = update.Private ?? t.Private;
             t.Logo = update.Logo ?? t.Logo;
 
             await _context.SaveChangesAsync();
 
             return t;
         }
-        public async Task<ParticipantTeam> AddUserToTeamAsync(int teamID, string username, int roleTypeID = 3)
+        public async Task<ParticipantTeamViewModel> AddUserToTeamAsync(int teamID, ParticipantTeamUploadViewModel participant)
         {
-            var participantID = int.Parse(_accountService.GetAccountByUsername(username).GordonID);
+            var participantID = int.Parse(_accountService.GetAccountByUsername(participant.Username).GordonID);
 
             var participantTeam = new ParticipantTeam
             {
                 TeamID = teamID,
                 ParticipantID = participantID,
                 SignDate = DateTime.Now,
-                RoleType = roleTypeID, //default: 3 -> member
+                RoleType = participant.RoleTypeID ?? 3, //default: 3 -> member
             };
             await _context.ParticipantTeam.AddAsync(participantTeam);
             await _context.SaveChangesAsync();

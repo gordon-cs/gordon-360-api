@@ -203,7 +203,15 @@
          "ObjectType": 0
       },
       {
+         "Name": "[RecIM].[SeriesSchedule]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[RecIM].[SeriesStatus]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[SeriesSurface]",
          "ObjectType": 0
       },
       {

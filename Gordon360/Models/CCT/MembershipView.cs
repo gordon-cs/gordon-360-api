@@ -52,5 +52,6 @@ namespace Gordon360.Models.CCT
         public string Description { get; set; }
         public bool? GroupAdmin { get; set; }
         public bool? Privacy { get; set; }
+        public int IsAlumni { get; set; }
     }
 }

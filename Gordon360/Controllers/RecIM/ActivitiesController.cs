@@ -56,31 +56,41 @@ namespace Gordon360.Controllers.RecIM
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("lookup")]
+        public ActionResult<IEnumerable<LookupViewModel>> GetActivityTypes(string type)
+        {
+            if ( type == "status")
+            {
+
+            }
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Posts Activity into CCT.RecIM.Activity
         /// </summary>
         /// <param name="newActivity">CreateActivityViewModel object with appropriate values</param>
-        /// <returns>Posted Activity ID</returns>
+        /// <returns>Posted Activity</returns>
         [HttpPost]
         [Route("")]
         public async Task<ActionResult> CreateActivity(ActivityUploadViewModel newActivity)
         {
-            
-            var activityID = await _activityService.PostActivity(newActivity);
-            return Ok(activityID);
+            var activity = await _activityService.PostActivity(newActivity);
+            return CreatedAtAction("CreateActivity",activity);
         }
         /// <summary>
         /// Updates Activity based on input
         /// </summary>
+        /// <param name="activityID"> Activity ID</param>
         /// <param name="updatedActivity"> Updated Activity Object </param>
         /// <returns></returns>
         [HttpPatch]
-        [Route("")]
-        public async Task<ActionResult> UpdateActivity(ActivityPatchViewModel updatedActivity)
+        [Route("{activityID}")]
+        public async Task<ActionResult> UpdateActivity(int activityID, ActivityPatchViewModel updatedActivity)
         {
-            await _activityService.UpdateActivity(updatedActivity);
-            return Ok(updatedActivity.ID);
+            var activity = await _activityService.UpdateActivity(activityID, updatedActivity);
+            return CreatedAtAction("UpdateActivity", activity);
         }
     }
 }

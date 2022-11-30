@@ -14,6 +14,7 @@ namespace Gordon360.Models.CCT
         public Series()
         {
             Match = new HashSet<Match>();
+            SeriesSurface = new HashSet<SeriesSurface>();
             SeriesTeam = new HashSet<SeriesTeam>();
         }
 
@@ -27,16 +28,17 @@ namespace Gordon360.Models.CCT
         public DateTime StartDate { get; set; }
         [Column(TypeName = "date")]
         public DateTime? EndDate { get; set; }
-        [StringLength(256)]
-        [Unicode(false)]
-        public string Description { get; set; }
         public int ActivityID { get; set; }
         public int TypeID { get; set; }
         public int StatusID { get; set; }
+        public int? ScheduleID { get; set; }
 
         [ForeignKey("ActivityID")]
         [InverseProperty("Series")]
         public virtual Activity Activity { get; set; }
+        [ForeignKey("ScheduleID")]
+        [InverseProperty("Series")]
+        public virtual SeriesSchedule Schedule { get; set; }
         [ForeignKey("StatusID")]
         [InverseProperty("Series")]
         public virtual SeriesStatus Status { get; set; }
@@ -45,6 +47,8 @@ namespace Gordon360.Models.CCT
         public virtual SeriesType Type { get; set; }
         [InverseProperty("Series")]
         public virtual ICollection<Match> Match { get; set; }
+        [InverseProperty("Series")]
+        public virtual ICollection<SeriesSurface> SeriesSurface { get; set; }
         [InverseProperty("Series")]
         public virtual ICollection<SeriesTeam> SeriesTeam { get; set; }
     }

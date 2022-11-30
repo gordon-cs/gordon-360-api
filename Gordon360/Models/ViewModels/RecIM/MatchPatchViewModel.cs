@@ -4,12 +4,10 @@ using System.Collections.Generic;
 
 namespace Gordon360.Models.ViewModels.RecIM
 {
-    public class SeriesPatchViewModel
+    public class MatchPatchViewModel
     {
-        public string? Name { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
+        public DateTime? Time { get; set; }
+        public int? SurfaceID { get; set; }
         public int? StatusID { get; set; }
-
     }
 }
