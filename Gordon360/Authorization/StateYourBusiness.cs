@@ -112,15 +112,11 @@ namespace Gordon360.Authorization
                 case Resource.PROFILE:
                     return true;
                 case Resource.EMERGENCY_CONTACT:
-                    if (user_groups.Contains(AuthGroup.Police))
-                        return true;
-                    else
                     {
-                        if (context.ActionArguments["username"] is string username)
-                        {
-                            return username.EqualsIgnoreCase(user_name);
-                        }
-                        return false;
+                        if (user_groups.Contains(AuthGroup.Police))
+                            return true;
+                       
+                        return context.ActionArguments["username"] is string username && username.EqualsIgnoreCase(user_name);
                     }
                 case Resource.MEMBERSHIP:
                     return true;
