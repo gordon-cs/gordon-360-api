@@ -50,7 +50,8 @@ namespace Gordon360.Services.RecIM
                                                     .Where(pn => pn.ParticipantUsername == username && pn.EndDate > DateTime.Now)
                                                     .OrderByDescending(pn => pn.DispatchDate)
                                                     .Select(pn => (ParticipantNotificationViewModel)pn)
-                                                    .AsEnumerable()
+                                                    .AsEnumerable(),
+                                    IsAdmin = p.IsAdmin
                                 })
                                 .FirstOrDefault();
             return participant;
@@ -136,6 +137,14 @@ namespace Gordon360.Services.RecIM
             });
             await _context.SaveChangesAsync();
             var participant = GetParticipantByUsername(username);
+            return participant;
+        }
+
+        public async Task<ParticipantViewModel> UpdateParticipant(string username, bool isAdmin)
+        {
+            var participant = GetParticipantByUsername(username);
+            participant.IsAdmin = isAdmin;
+            await _context.SaveChangesAsync();
             return participant;
         }
         public async Task<ParticipantActivityCreatedViewModel> UpdateParticipantActivity(string username, ParticipantActivityPatchViewModel updatedParticipant)

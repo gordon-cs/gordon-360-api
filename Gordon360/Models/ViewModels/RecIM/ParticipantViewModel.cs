@@ -14,6 +14,8 @@ namespace Gordon360.Models.ViewModels.RecIM
         public IEnumerable<ParticipantNotificationViewModel> Notification { get; set; } 
             = new List<ParticipantNotificationViewModel>();
 
+        public bool IsAdmin { get; set; }
+
         public static implicit operator ParticipantViewModel(ACCOUNT a)
         {
             ParticipantViewModel vm = new ParticipantViewModel
