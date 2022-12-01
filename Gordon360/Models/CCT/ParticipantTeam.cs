@@ -19,17 +19,20 @@ namespace Gordon360.Models.CCT
         [Key]
         public int ID { get; set; }
         public int TeamID { get; set; }
-        public int ParticipantID { get; set; }
+        [Required]
+        [StringLength(50)]
+        [Unicode(false)]
+        public string ParticipantUsername { get; set; }
         [Column(TypeName = "date")]
-        public DateTime? SignDate { get; set; }
-        public int RoleType { get; set; }
+        public DateTime SignFate { get; set; }
+        public int RoleTypeID { get; set; }
 
-        [ForeignKey("ParticipantID")]
+        [ForeignKey("ParticipantUsername")]
         [InverseProperty("ParticipantTeam")]
-        public virtual Participant Participant { get; set; }
-        [ForeignKey("RoleType")]
+        public virtual Participant ParticipantUsernameNavigation { get; set; }
+        [ForeignKey("RoleTypeID")]
         [InverseProperty("ParticipantTeam")]
-        public virtual RoleType RoleTypeNavigation { get; set; }
+        public virtual RoleType RoleType { get; set; }
         [ForeignKey("TeamID")]
         [InverseProperty("ParticipantTeam")]
         public virtual Team Team { get; set; }

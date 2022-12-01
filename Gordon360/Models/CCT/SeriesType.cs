@@ -22,6 +22,7 @@ namespace Gordon360.Models.CCT
         [StringLength(256)]
         [Unicode(false)]
         public string Description { get; set; }
+        [Required]
         [StringLength(4)]
         [Unicode(false)]
         public string TypeCode { get; set; }

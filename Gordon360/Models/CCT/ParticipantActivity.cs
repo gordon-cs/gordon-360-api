@@ -14,16 +14,19 @@ namespace Gordon360.Models.CCT
         [Key]
         public int ID { get; set; }
         public int ActivityID { get; set; }
-        public int ParticipantID { get; set; }
+        [Required]
+        [StringLength(50)]
+        [Unicode(false)]
+        public string ParticipantUsername { get; set; }
         public int PrivTypeID { get; set; }
-        public bool isFreeAgent { get; set; }
+        public bool IsFreeAgent { get; set; }
 
         [ForeignKey("ActivityID")]
         [InverseProperty("ParticipantActivity")]
         public virtual Activity Activity { get; set; }
-        [ForeignKey("ParticipantID")]
+        [ForeignKey("ParticipantUsername")]
         [InverseProperty("ParticipantActivity")]
-        public virtual Participant Participant { get; set; }
+        public virtual Participant ParticipantUsernameNavigation { get; set; }
         [ForeignKey("PrivTypeID")]
         [InverseProperty("ParticipantActivity")]
         public virtual PrivType PrivType { get; set; }

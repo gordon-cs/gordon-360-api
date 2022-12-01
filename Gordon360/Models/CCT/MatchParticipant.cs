@@ -14,13 +14,16 @@ namespace Gordon360.Models.CCT
         [Key]
         public int ID { get; set; }
         public int MatchID { get; set; }
-        public int ParticipantID { get; set; }
+        [Required]
+        [StringLength(50)]
+        [Unicode(false)]
+        public string ParticipantUsername { get; set; }
 
         [ForeignKey("MatchID")]
         [InverseProperty("MatchParticipant")]
         public virtual Match Match { get; set; }
-        [ForeignKey("ParticipantID")]
+        [ForeignKey("ParticipantUsername")]
         [InverseProperty("MatchParticipant")]
-        public virtual Participant Participant { get; set; }
+        public virtual Participant ParticipantUsernameNavigation { get; set; }
     }
 }

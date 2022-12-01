@@ -13,7 +13,10 @@ namespace Gordon360.Models.CCT
     {
         [Key]
         public int ID { get; set; }
-        public int ParticipantID { get; set; }
+        [Required]
+        [StringLength(50)]
+        [Unicode(false)]
+        public string ParticipantUsername { get; set; }
         [Required]
         [StringLength(256)]
         [Unicode(false)]
@@ -23,8 +26,8 @@ namespace Gordon360.Models.CCT
         [Column(TypeName = "date")]
         public DateTime DispatchDate { get; set; }
 
-        [ForeignKey("ParticipantID")]
+        [ForeignKey("ParticipantUsername")]
         [InverseProperty("ParticipantNotification")]
-        public virtual Participant Participant { get; set; }
+        public virtual Participant ParticipantUsernameNavigation { get; set; }
     }
 }

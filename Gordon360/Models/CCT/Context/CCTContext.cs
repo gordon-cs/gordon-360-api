@@ -25,7 +25,6 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<AccountPhotoURL> AccountPhotoURL { get; set; }
         public virtual DbSet<Activity> Activity { get; set; }
         public virtual DbSet<ActivityStatus> ActivityStatus { get; set; }
-        public virtual DbSet<ActivityType> ActivityType { get; set; }
         public virtual DbSet<Alumni> Alumni { get; set; }
         public virtual DbSet<Birthdays> Birthdays { get; set; }
         public virtual DbSet<Buildings> Buildings { get; set; }
@@ -140,8 +139,6 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<Activity>(entity =>
             {
-                entity.Property(e => e.StatusID).HasDefaultValueSql("((1))");
-
                 entity.HasOne(d => d.Sport)
                     .WithMany(p => p.Activity)
                     .HasForeignKey(d => d.SportID)
@@ -151,6 +148,7 @@ namespace Gordon360.Models.CCT.Context
                 entity.HasOne(d => d.Status)
                     .WithMany(p => p.Activity)
                     .HasForeignKey(d => d.StatusID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Activity_ActivityStatus");
             });
 
@@ -417,8 +415,6 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<Match>(entity =>
             {
-                entity.Property(e => e.StatusID).HasDefaultValueSql("((1))");
-
                 entity.HasOne(d => d.Series)
                     .WithMany(p => p.Match)
                     .HasForeignKey(d => d.SeriesID)
@@ -428,6 +424,7 @@ namespace Gordon360.Models.CCT.Context
                 entity.HasOne(d => d.Status)
                     .WithMany(p => p.Match)
                     .HasForeignKey(d => d.StatusID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Match_MatchStatus");
 
                 entity.HasOne(d => d.Surface)
@@ -445,19 +442,15 @@ namespace Gordon360.Models.CCT.Context
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_MatchParticipant_Match");
 
-                entity.HasOne(d => d.Participant)
+                entity.HasOne(d => d.ParticipantUsernameNavigation)
                     .WithMany(p => p.MatchParticipant)
-                    .HasForeignKey(d => d.ParticipantID)
+                    .HasForeignKey(d => d.ParticipantUsername)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_MatchParticipant_Participant");
             });
 
             modelBuilder.Entity<MatchTeam>(entity =>
             {
-                entity.Property(e => e.Sportsmanship).HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.StatusID).HasDefaultValueSql("((1))");
-
                 entity.HasOne(d => d.Match)
                     .WithMany(p => p.MatchTeam)
                     .HasForeignKey(d => d.MatchID)
@@ -508,22 +501,23 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<Participant>(entity =>
             {
-                entity.Property(e => e.ID).ValueGeneratedNever();
+                entity.HasKey(e => e.Username)
+                    .HasName("PK__Particip__536C85E53B50E910");
+
+                entity.Property(e => e.ID).ValueGeneratedOnAdd();
             });
 
             modelBuilder.Entity<ParticipantActivity>(entity =>
             {
-                entity.Property(e => e.PrivTypeID).HasDefaultValueSql("((1))");
-
                 entity.HasOne(d => d.Activity)
                     .WithMany(p => p.ParticipantActivity)
                     .HasForeignKey(d => d.ActivityID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ParticipantActivity_Activity");
 
-                entity.HasOne(d => d.Participant)
+                entity.HasOne(d => d.ParticipantUsernameNavigation)
                     .WithMany(p => p.ParticipantActivity)
-                    .HasForeignKey(d => d.ParticipantID)
+                    .HasForeignKey(d => d.ParticipantUsername)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ParticipantActivity_Participant");
 
@@ -531,27 +525,23 @@ namespace Gordon360.Models.CCT.Context
                     .WithMany(p => p.ParticipantActivity)
                     .HasForeignKey(d => d.PrivTypeID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ParticipantActivity_PrivType");
+                    .HasConstraintName("FK_PrivType_ParticipantActivity");
             });
 
             modelBuilder.Entity<ParticipantNotification>(entity =>
             {
-                entity.Property(e => e.DispatchDate).HasDefaultValueSql("(getdate())");
-
-                entity.HasOne(d => d.Participant)
+                entity.HasOne(d => d.ParticipantUsernameNavigation)
                     .WithMany(p => p.ParticipantNotification)
-                    .HasForeignKey(d => d.ParticipantID)
+                    .HasForeignKey(d => d.ParticipantUsername)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ParticipantNotification_Participant");
+                    .HasConstraintName("FK_PartipantNotification_Participant");
             });
 
             modelBuilder.Entity<ParticipantStatusHistory>(entity =>
             {
-                entity.Property(e => e.StatusID).HasDefaultValueSql("((1))");
-
-                entity.HasOne(d => d.Participant)
+                entity.HasOne(d => d.ParticipantUsernameNavigation)
                     .WithMany(p => p.ParticipantStatusHistory)
-                    .HasForeignKey(d => d.ParticipantID)
+                    .HasForeignKey(d => d.ParticipantUsername)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ParticipantStatusHistory_Participant");
 
@@ -564,19 +554,17 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<ParticipantTeam>(entity =>
             {
-                entity.Property(e => e.RoleType).HasDefaultValueSql("((1))");
-
-                entity.HasOne(d => d.Participant)
+                entity.HasOne(d => d.ParticipantUsernameNavigation)
                     .WithMany(p => p.ParticipantTeam)
-                    .HasForeignKey(d => d.ParticipantID)
+                    .HasForeignKey(d => d.ParticipantUsername)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ParticipantTeam_Participant");
 
-                entity.HasOne(d => d.RoleTypeNavigation)
+                entity.HasOne(d => d.RoleType)
                     .WithMany(p => p.ParticipantTeam)
-                    .HasForeignKey(d => d.RoleType)
+                    .HasForeignKey(d => d.RoleTypeID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ParticipantTeam_RoleType");
+                    .HasConstraintName("FK_RoleType_ParticipantTeam");
 
                 entity.HasOne(d => d.Team)
                     .WithMany(p => p.ParticipantTeam)
@@ -636,12 +624,6 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<Series>(entity =>
             {
-                entity.Property(e => e.ScheduleID).HasDefaultValueSql("((30))");
-
-                entity.Property(e => e.StatusID).HasDefaultValueSql("((1))");
-
-                entity.Property(e => e.TypeID).HasDefaultValueSql("((1))");
-
                 entity.HasOne(d => d.Activity)
                     .WithMany(p => p.Series)
                     .HasForeignKey(d => d.ActivityID)
@@ -651,13 +633,14 @@ namespace Gordon360.Models.CCT.Context
                 entity.HasOne(d => d.Schedule)
                     .WithMany(p => p.Series)
                     .HasForeignKey(d => d.ScheduleID)
-                    .HasConstraintName("FK_Series_SeriesSchedule");
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_SeriesSchedule_Series");
 
                 entity.HasOne(d => d.Status)
                     .WithMany(p => p.Series)
                     .HasForeignKey(d => d.StatusID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Series_SeriesStatus");
+                    .HasConstraintName("FK_SeriesStatus_Series");
 
                 entity.HasOne(d => d.Type)
                     .WithMany(p => p.Series)
@@ -683,8 +666,6 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<SeriesTeam>(entity =>
             {
-                entity.Property(e => e.Loss).HasDefaultValueSql("((0))");
-
                 entity.HasOne(d => d.Series)
                     .WithMany(p => p.SeriesTeam)
                     .HasForeignKey(d => d.SeriesID)
@@ -705,8 +686,6 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<Statistic>(entity =>
             {
-                entity.Property(e => e.TimesRated).HasDefaultValueSql("((0))");
-
                 entity.HasOne(d => d.ParticipantTeam)
                     .WithMany(p => p.Statistic)
                     .HasForeignKey(d => d.ParticipantTeamID)
@@ -735,13 +714,13 @@ namespace Gordon360.Models.CCT.Context
                     .WithMany(p => p.Team)
                     .HasForeignKey(d => d.ActivityID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Team__ActivityID");
+                    .HasConstraintName("FK_Team_Activity");
 
                 entity.HasOne(d => d.Status)
                     .WithMany(p => p.Team)
                     .HasForeignKey(d => d.StatusID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Team__Status");
+                    .HasConstraintName("FK_Team_TeamStatus");
             });
 
             modelBuilder.HasSequence("Information_Change_Request_Seq", "dbo");

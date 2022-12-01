@@ -774,7 +774,7 @@
         </member>
         <member name="M:Gordon360.Controllers.RecIM.MatchesController.UpdateMatch(System.Int32,Gordon360.Models.ViewModels.RecIM.MatchPatchViewModel)">
             <summary>
-            Updates Match STimes and Surfaces
+            Updates Match Start Times and Surfaces
             </summary>
             <param name="matchID"></param>
             <param name="updatedMatch"></param>

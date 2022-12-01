@@ -21,17 +21,21 @@ namespace Gordon360.Models.CCT
         }
 
         [Key]
+        [StringLength(50)]
+        [Unicode(false)]
+        public string Username { get; set; }
+        public bool IsAdmin { get; set; }
         public int ID { get; set; }
 
-        [InverseProperty("Participant")]
+        [InverseProperty("ParticipantUsernameNavigation")]
         public virtual ICollection<MatchParticipant> MatchParticipant { get; set; }
-        [InverseProperty("Participant")]
+        [InverseProperty("ParticipantUsernameNavigation")]
         public virtual ICollection<ParticipantActivity> ParticipantActivity { get; set; }
-        [InverseProperty("Participant")]
+        [InverseProperty("ParticipantUsernameNavigation")]
         public virtual ICollection<ParticipantNotification> ParticipantNotification { get; set; }
-        [InverseProperty("Participant")]
+        [InverseProperty("ParticipantUsernameNavigation")]
         public virtual ICollection<ParticipantStatusHistory> ParticipantStatusHistory { get; set; }
-        [InverseProperty("Participant")]
+        [InverseProperty("ParticipantUsernameNavigation")]
         public virtual ICollection<ParticipantTeam> ParticipantTeam { get; set; }
     }
 }
