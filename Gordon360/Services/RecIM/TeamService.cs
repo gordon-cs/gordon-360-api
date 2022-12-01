@@ -46,14 +46,10 @@ namespace Gordon360.Services.RecIM
                                 Participant = t.ParticipantTeam
                                                 .Select(pt => new ParticipantViewModel
                                                 {
-                                                    Username = _context.ACCOUNT
-                                                                        .FirstOrDefault(a => a.gordon_id == pt.ParticipantID.ToString())
-                                                                        .AD_Username,
-                                                    Email = _context.ACCOUNT
-                                                                        .FirstOrDefault(a => a.gordon_id == pt.ParticipantID.ToString())
-                                                                         .email,
+                                                    Username = pt.ParticipantUsername,
+                                                    Email = _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
                                                     Role = _context.RoleType
-                                                                        .FirstOrDefault(rt => rt.ID == pt.RoleType)
+                                                                        .FirstOrDefault(rt => rt.ID == pt.RoleTypeID)
                                                                         .Description,
                                                 }),
                                 MatchHistory = _context.Match
@@ -92,7 +88,7 @@ namespace Gordon360.Services.RecIM
                                     OwnScore = matchTeamJoin.OwnScore,
                                     OpposingScore = matchTeamJoin.OpposingScore,
                                     Status = matchTeamJoin.Status,
-                                    MatchStatusID = match.StatusID ?? 1,
+                                    MatchStatusID = match.StatusID,
                                     Time = match.Time
                                 }).AsEnumerable(),
                                 TeamRecord = t.SeriesTeam
@@ -151,9 +147,8 @@ namespace Gordon360.Services.RecIM
 
         public async Task<ParticipantTeamViewModel> UpdateParticipantRoleAsync(int teamID, ParticipantTeamUploadViewModel participant)
         {
-            var participantID = int.Parse(_accountService.GetAccountByUsername(participant.Username).GordonID);
-            var participantTeam = _context.ParticipantTeam.FirstOrDefault(pt => pt.ParticipantID == participantID && pt.TeamID == teamID);
-            participantTeam.RoleType = participant.RoleTypeID ?? 3;
+            var participantTeam = _context.ParticipantTeam.FirstOrDefault(pt => pt.ParticipantUsername == participant.Username && pt.TeamID == teamID);
+            participantTeam.RoleTypeID = participant.RoleTypeID ?? 3;
 
             await _context.SaveChangesAsync();
 
@@ -173,14 +168,12 @@ namespace Gordon360.Services.RecIM
         }
         public async Task<ParticipantTeamViewModel> AddUserToTeamAsync(int teamID, ParticipantTeamUploadViewModel participant)
         {
-            var participantID = int.Parse(_accountService.GetAccountByUsername(participant.Username).GordonID);
-
             var participantTeam = new ParticipantTeam
             {
                 TeamID = teamID,
-                ParticipantID = participantID,
+                ParticipantUsername = participant.Username,
                 SignDate = DateTime.Now,
-                RoleType = participant.RoleTypeID ?? 3, //default: 3 -> member
+                RoleTypeID = participant.RoleTypeID ?? 3, //default: 3 -> member
             };
             await _context.ParticipantTeam.AddAsync(participantTeam);
             await _context.SaveChangesAsync();
@@ -190,11 +183,10 @@ namespace Gordon360.Services.RecIM
 
         public bool IsTeamCaptain(int teamID, string username)
         {
-            var participantID = int.Parse(_accountService.GetAccountByUsername(username).GordonID);
             return _context.ParticipantTeam.Any(t =>
                         t.TeamID == teamID
-                        && t.ParticipantID == participantID
-                        && t.RoleType == 5
+                        && t.ParticipantUsername == username
+                        && t.RoleTypeID == 5
             );
         }
     }

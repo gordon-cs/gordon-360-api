@@ -49,10 +49,10 @@ namespace Gordon360.Services.RecIM
                                             .FirstOrDefault(t => t.ID == st.TeamID)
                                             .Name,
                                     Win = st.Win,
-                                    Loss = st.Loss ?? 0,
+                                    Loss = st.Loss,
                                     Tie = _context.SeriesTeam
                                             .Where(total => total.TeamID == st.TeamID && total.SeriesID == s.ID)
-                                            .Count() - st.Win - (st.Loss ?? 0)
+                                            .Count() - st.Win - st.Loss
                                 }).OrderByDescending(st => st.Win).AsEnumerable()
                             });
             if (active) {
@@ -88,7 +88,7 @@ namespace Gordon360.Services.RecIM
                                 .FirstOrDefault(t => t.ID == st.TeamID)
                                 .Name,
                         Win = st.Win,
-                        Loss = st.Loss ?? 0,
+                        Loss = st.Loss,
                         //Tie = _context.SeriesTeam
                         //        .Where(total => total.TeamID == st.TeamID && total.SeriesID == s.ID)
                         //        .Count() - st.Win - (st.Loss ?? 0)

@@ -6,7 +6,7 @@ namespace Gordon360.Models.ViewModels.RecIM
     public class ParticipantStatusCreatedViewModel
     {
         public int ID { get; set; }
-        public int ParticipantID { get; set; }
+        public string ParticipantUsername { get; set; }
         public int StatusID { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
@@ -16,7 +16,7 @@ namespace Gordon360.Models.ViewModels.RecIM
             return new ParticipantStatusCreatedViewModel
             {
                 ID = s.ID,
-                ParticipantID = s.ParticipantID,
+                ParticipantUsername = s.ParticipantUsername,
                 StatusID = s.StatusID,
                 StartDate = s.StartDate,
                 EndDate = s.EndDate

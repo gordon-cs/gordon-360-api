@@ -45,7 +45,7 @@ namespace Gordon360.Services.RecIM
                                         .Where(mp => mp.MatchID == matchID)
                                         .Select(mp => new ParticipantViewModel
                                         {
-                                            Username = _participantService.GetAccountByParticipantID(mp.ParticipantID).AD_Username
+                                            Username = mp.ParticipantUsername
                                         }).AsEnumerable(),
                             // Team will eventually be handled by TeamService 
                             Team = m.MatchTeam.Select(mt => new TeamViewModel
@@ -57,10 +57,10 @@ namespace Gordon360.Services.RecIM
                                 Participant = mt.Team.ParticipantTeam
                                     .Select(pt => new ParticipantViewModel
                                             {
-                                                Username = _participantService.GetAccountByParticipantID(pt.ParticipantID).AD_Username,
-                                                Email = _participantService.GetAccountByParticipantID(pt.ParticipantID).email,
+                                                Username = pt.ParticipantUsername,
+                                                Email = _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
                                                 Role = _context.RoleType
-                                                .FirstOrDefault(rt => rt.ID ==pt.RoleType)
+                                                .FirstOrDefault(rt => rt.ID == pt.RoleTypeID)
                                                 .Description
                                             }),
                                 MatchHistory = _context.Match
@@ -98,7 +98,7 @@ namespace Gordon360.Services.RecIM
                                             OwnScore = matchTeamJoin.OwnScore,
                                             OpposingScore = matchTeamJoin.OpposingScore,
                                             Status = matchTeamJoin.Status,
-                                            MatchStatusID = match.StatusID ?? 1,
+                                            MatchStatusID = match.StatusID,
                                             Time = match.Time
                                         })
                                     .OrderByDescending(mh => mh.Time)
@@ -108,7 +108,7 @@ namespace Gordon360.Services.RecIM
                                            .Select(st => new TeamRecordViewModel
                                            {
                                                Win = st.Win,
-                                               Loss = st.Loss ?? 0,
+                                               Loss = st.Loss,
                                            })
                             })
                         }).FirstOrDefault();
@@ -153,7 +153,7 @@ namespace Gordon360.Services.RecIM
                                     OwnScore = matchTeamJoin.OwnScore,
                                     OpposingScore = matchTeamJoin.OpposingScore,
                                     Status = matchTeamJoin.Status,
-                                    MatchStatusID = match.StatusID ?? 1,
+                                    MatchStatusID = match.StatusID,
                                     Time = match.Time
                                 }).AsEnumerable();
             return vm;
@@ -183,7 +183,7 @@ namespace Gordon360.Services.RecIM
                                            .Select(st => new TeamRecordViewModel
                                            {
                                                Win = st.Win,
-                                               Loss = st.Loss ?? 0,
+                                               Loss = st.Loss,
                                            })
                             })
                         });
@@ -223,10 +223,9 @@ namespace Gordon360.Services.RecIM
         }
         public async Task<MatchParticipantViewModel> AddParticipantAttendance(string username, int matchID)
         {
-            var participantID = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID);
             var matchParticipant = new MatchParticipant
             {
-                ParticipantID = participantID,
+                ParticipantUsername = username,
                 MatchID = matchID
             };
             await _context.MatchParticipant.AddAsync(matchParticipant);

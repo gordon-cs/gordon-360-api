@@ -8,7 +8,7 @@ namespace Gordon360.Models.ViewModels.RecIM
     public class ParticipantNotificationCreatedViewModel
     {
         public int ID { get; set; }
-        public int ParticipantID { get; set; }
+        public string ParticipantUsername { get; set; }
         public string Message { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime DispatchDate { get; set; }
@@ -17,7 +17,7 @@ namespace Gordon360.Models.ViewModels.RecIM
             return new ParticipantNotificationCreatedViewModel
             {
                 ID = p.ID,
-                ParticipantID = p.ParticipantID,
+                ParticipantUsername = p.ParticipantUsername,
                 Message = p.Message,
                 EndDate = p.EndDate,
                 DispatchDate = p.DispatchDate
