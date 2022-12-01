@@ -35,7 +35,7 @@ namespace Gordon360.Models.CCT
         public int StatusID { get; set; }
         public int MinCapacity { get; set; }
         public int MaxCapacity { get; set; }
-        public bool SoleRegistration { get; set; }
+        public bool SoloRegistration { get; set; }
         public bool Completed { get; set; }
 
         [ForeignKey("SportID")]

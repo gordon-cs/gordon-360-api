@@ -18,7 +18,7 @@ namespace Gordon360.Models.ViewModels.RecIM
                 ID = m.ID,
                 Time = m.Time,
                 SurfaceID = m.SurfaceID,
-                StatusID = m.StatusID ?? 1,
+                StatusID = m.StatusID,
                 SeriesID = m.SeriesID
             };
         }

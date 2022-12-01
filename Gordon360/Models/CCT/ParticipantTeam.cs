@@ -24,7 +24,7 @@ namespace Gordon360.Models.CCT
         [Unicode(false)]
         public string ParticipantUsername { get; set; }
         [Column(TypeName = "date")]
-        public DateTime SignFate { get; set; }
+        public DateTime SignDate { get; set; }
         public int RoleTypeID { get; set; }
 
         [ForeignKey("ParticipantUsername")]
