@@ -7,7 +7,7 @@ namespace Gordon360.Models.ViewModels.RecIM
     {
         public int ID { get; set; }
         public int TeamID { get; set; }
-        public int ParticipantID { get; set; }
+        public string ParticipantUsername { get; set; }
         public DateTime? SignDate { get; set; }
         public int RoleTypeID { get; set; }
 
@@ -17,9 +17,9 @@ namespace Gordon360.Models.ViewModels.RecIM
             {
                 ID = pt.ID,
                 TeamID = pt.TeamID,
-                ParticipantID = pt.ParticipantID,
-                SignDate = pt.SignDate ?? null,
-                RoleTypeID = pt.RoleType,
+                ParticipantUsername = pt.ParticipantUsername,
+                SignDate = pt.SignDate,
+                RoleTypeID = pt.RoleTypeID,
             };
         }
     }

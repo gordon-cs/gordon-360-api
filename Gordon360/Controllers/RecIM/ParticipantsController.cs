@@ -72,10 +72,18 @@ namespace Gordon360.Controllers.RecIM
         }
 
         [HttpPut]
-        [Route("{participantID}")]
-        public async Task<ActionResult> AddParticipant(int participantID)
+        [Route("{username}")]
+        public async Task<ActionResult> AddParticipant(string username)
         {
-            var participant = await _participantService.PostParticipant(participantID);
+            var participant = await _participantService.PostParticipant(username);
+            return CreatedAtAction("AddParticipant", participant);
+        }
+
+        [HttpPatch]
+        [Route("{username}")]
+        public async Task<ActionResult> UpdateParticipant(string username, [FromBody] bool isAdmin)
+        {
+            var participant = await _participantService.UpdateParticipant(username,isAdmin);
             return CreatedAtAction("AddParticipant", participant);
         }
 
@@ -90,7 +98,7 @@ namespace Gordon360.Controllers.RecIM
 
 
         [HttpPatch]
-        [Route("{username}")]
+        [Route("{username}/activities")]
         public async Task<ActionResult> UpdateParticipantActivity(string username, ParticipantActivityPatchViewModel updatedParticipantActivity)
         {
 

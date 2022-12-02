@@ -7,7 +7,7 @@ namespace Gordon360.Models.ViewModels.RecIM
     {
         public int? ActivityID { get; set; }
         public int? ActivityPrivID { get; set; }
-        public bool? isFreeAgent { get; set; }
+        public bool? IsFreeAgent { get; set; }
         public int? TeamID { get; set; }
         public string? TeamRole { get; set; }
 

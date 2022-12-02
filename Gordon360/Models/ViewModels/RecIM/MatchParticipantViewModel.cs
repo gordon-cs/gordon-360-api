@@ -8,14 +8,14 @@ namespace Gordon360.Models.ViewModels.RecIM
     {
         public int ID { get; set; }
         public int MatchID { get; set; }
-        public int ParticipantID { get; set; }
+        public string ParticipantUsername { get; set; }
         public static implicit operator MatchParticipantViewModel(MatchParticipant m)
         {
             return new MatchParticipantViewModel
             {
                 ID = m.ID,
                 MatchID = m.MatchID,
-                ParticipantID = m.ParticipantID
+                ParticipantUsername = m.ParticipantUsername
             };
         }
     }

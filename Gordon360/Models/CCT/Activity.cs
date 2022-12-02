@@ -21,21 +21,21 @@ namespace Gordon360.Models.CCT
         [Key]
         public int ID { get; set; }
         [Required]
-        [StringLength(64)]
+        [StringLength(128)]
         [Unicode(false)]
         public string Name { get; set; }
+        [StringLength(128)]
+        [Unicode(false)]
+        public string Logo { get; set; }
         [Column(TypeName = "date")]
         public DateTime RegistrationStart { get; set; }
         [Column(TypeName = "date")]
         public DateTime RegistrationEnd { get; set; }
         public int SportID { get; set; }
-        public int? StatusID { get; set; }
-        public int? MinCapacity { get; set; }
-        public int? MaxCapacity { get; set; }
+        public int StatusID { get; set; }
+        public int MinCapacity { get; set; }
+        public int MaxCapacity { get; set; }
         public bool SoloRegistration { get; set; }
-        [StringLength(128)]
-        [Unicode(false)]
-        public string Logo { get; set; }
         public bool Completed { get; set; }
 
         [ForeignKey("SportID")]

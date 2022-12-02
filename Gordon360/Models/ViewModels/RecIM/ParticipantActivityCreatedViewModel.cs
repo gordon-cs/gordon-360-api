@@ -7,9 +7,9 @@ namespace Gordon360.Models.ViewModels.RecIM
     {
         public int ID { get; set; }
         public int ActivityID { get; set; }
-        public int ParticipantID { get; set; }
+        public string ParticipantUsername { get; set; }
         public int PrivTypeID { get; set; }
-        public bool isFreeAgent { get; set; }
+        public bool IsFreeAgent { get; set; }
 
         public static implicit operator ParticipantActivityCreatedViewModel(ParticipantActivity p)
         {
@@ -17,9 +17,9 @@ namespace Gordon360.Models.ViewModels.RecIM
             {
                 ID = p.ID,
                 ActivityID = p.ActivityID,
-                ParticipantID = p.ParticipantID,
+                ParticipantUsername = p.ParticipantUsername,
                 PrivTypeID = p.PrivTypeID,
-                isFreeAgent = p.isFreeAgent
+                IsFreeAgent = p.IsFreeAgent
             };
         }
     }
