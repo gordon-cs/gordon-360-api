@@ -18,12 +18,16 @@ namespace Gordon360.Controllers.RecIM
     public class MatchesController : GordonControllerBase
     {
         private readonly IMatchService _matchService;
-        private readonly IActivityService _activityService;
         private readonly ISeriesService _seriesService;
+        private readonly IActivityService _activityService;
+        private readonly IParticipantService _participantService;
 
-        public MatchesController(IMatchService matchService)
+        public MatchesController(IMatchService matchService, ISeriesService seriesService, IActivityService activityService, IParticipantService participantService)
         {
             _matchService = matchService;
+            _seriesService = seriesService;
+            _activityService = activityService;
+            _participantService = participantService;
         }
 
         /// <summary>
@@ -85,8 +89,9 @@ namespace Gordon360.Controllers.RecIM
             var username = AuthUtils.GetUsername(User);
             var match = _matchService.GetMatchByID(matchID);
             var series = _seriesService.GetSeriesByID(match.SeriesID);
-            var isActivityAdmin = _activityService.IsActivityAdmin(username, series.ActivityID);
-            if (isActivityAdmin)
+            var activity = _activityService.GetActivityByID(series.ActivityID);
+            var isReferee = _activityService.IsReferee(username, activity.ID);
+            if (isReferee)
             {
                 var stats = await _matchService.UpdateTeamStats(matchID, updatedMatch);
                 return CreatedAtAction("UpdateStats", stats);
@@ -107,8 +112,9 @@ namespace Gordon360.Controllers.RecIM
             var username = AuthUtils.GetUsername(User);
             var updatingMatch = _matchService.GetMatchByID(matchID);
             var series = _seriesService.GetSeriesByID(updatingMatch.SeriesID);
-            var isActivityAdmin = _activityService.IsActivityAdmin(username, series.ActivityID);
-            if (isActivityAdmin)
+            var activity = _activityService.GetActivityByID(series.ActivityID);
+            var isReferee = _activityService.IsReferee(username, activity.ID);
+            if (isReferee)
             {
                 var match = await _matchService.UpdateMatch(matchID, updatedMatch);
                 return CreatedAtAction("UpdateMatch", match);
@@ -126,9 +132,8 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult> CreateMatch(MatchUploadViewModel newMatch)
         {
             var username = AuthUtils.GetUsername(User);
-            var series = _seriesService.GetSeriesByID(newMatch.SeriesID);
-            var isActivityAdmin = _activityService.IsActivityAdmin(username, series.ActivityID);
-            if (isActivityAdmin)
+            var isAdmin = _participantService.IsAdmin(username);
+            if (isAdmin)
             {
                 var match = await _matchService.PostMatch(newMatch);
                 return CreatedAtAction("CreateMatch", match);
@@ -153,8 +158,9 @@ namespace Gordon360.Controllers.RecIM
 
             var match = _matchService.GetMatchByID(matchID);
             var series = _seriesService.GetSeriesByID(match.SeriesID);
-            var isActivityAdmin = _activityService.IsActivityAdmin(username, series.ActivityID);
-            if (isActivityAdmin)
+            var activity = _activityService.GetActivityByID(series.ActivityID);
+            var isReferee = _activityService.IsReferee(username, activity.ID);
+            if (isReferee)
             {
                 var attendance = await _matchService.AddParticipantAttendance(username, matchID);
                 return CreatedAtAction("AddAttendance", attendance);

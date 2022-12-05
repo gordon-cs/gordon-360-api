@@ -18,11 +18,12 @@ namespace Gordon360.Controllers.RecIM
     public class SeriesController : GordonControllerBase
     {
         private readonly ISeriesService _seriesService;
-        private readonly IActivityService _activityService;
+        private readonly IParticipantService _participantService;
 
-        public SeriesController(ISeriesService seriesService)
+        public SeriesController(ISeriesService seriesService, IParticipantService participantService)
         {
             _seriesService = seriesService;
+            _participantService = participantService;
         }
 
         /// <summary>
@@ -77,9 +78,8 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult> UpdateSeries(int seriesID, SeriesPatchViewModel updatedSeries)
         {
             var username = AuthUtils.GetUsername(User);
-            var updatingSeries = _seriesService.GetSeriesByID(seriesID);
-            var isActivityAdmin = _activityService.IsActivityAdmin(username, updatingSeries.ActivityID);
-            if (isActivityAdmin)
+            var isAdmin = _participantService.IsAdmin(username);
+            if (isAdmin)
             {
                 var series = await _seriesService.UpdateSeries(seriesID, updatedSeries);
                 return CreatedAtAction("UpdateSeries", series);
@@ -98,8 +98,8 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult> CreateSeries(SeriesUploadViewModel newSeries, [FromQuery]int? referenceSeriesID)
         {
             var username = AuthUtils.GetUsername(User);
-            var isActivityAdmin = _activityService.IsActivityAdmin(username, newSeries.ActivityID);
-            if (isActivityAdmin)
+            var isAdmin = _participantService.IsAdmin(username);
+            if (isAdmin)
             {
                 var series = await _seriesService.PostSeries(newSeries, referenceSeriesID);
                 return CreatedAtAction("CreateSeries", series);

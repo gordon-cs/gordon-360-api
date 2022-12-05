@@ -1,4 +1,5 @@
-﻿using Gordon360.Models.CCT;
+﻿using Gordon360.Authorization;
+using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
 using Microsoft.AspNetCore.Authorization;
@@ -17,10 +18,12 @@ namespace Gordon360.Controllers.RecIM
     public class SportsController : GordonControllerBase
     {
         private readonly ISportService _sportService;
+        private readonly IParticipantService _participantService;
 
-        public SportsController(ISportService sportService)
+        public SportsController(ISportService sportService, IParticipantService participantService)
         {
             _sportService = sportService;
+            _participantService = participantService;
         }
 
         [HttpGet]
@@ -43,16 +46,28 @@ namespace Gordon360.Controllers.RecIM
         [Route("{sportID}")]
         public async Task<ActionResult> UpdateSport(int sportID, SportViewModel updatedSport)
         {
-            var sport = await _sportService.UpdateSport(updatedSport);
-            return CreatedAtAction("UpdateSport", sport);
+            var username = AuthUtils.GetUsername(User);
+            var isAdmin = _participantService.IsAdmin(username);
+            if (isAdmin)
+            {
+                var sport = await _sportService.UpdateSport(updatedSport);
+                return CreatedAtAction("UpdateSport", sport);
+            }
+            return Unauthorized();
         }
 
         [HttpPost]
         [Route("")]
         public async Task<ActionResult> CreateSport(SportUploadViewModel newSport)
         {
-            var sport = await _sportService.PostSport(newSport);
-            return CreatedAtAction("UpdateSport", sport);
+            var username = AuthUtils.GetUsername(User);
+            var isAdmin = _participantService.IsAdmin(username);
+            if (isAdmin)
+            {
+                var sport = await _sportService.PostSport(newSport);
+                return CreatedAtAction("UpdateSport", sport);
+            }
+            return Unauthorized();
         }
 
     }

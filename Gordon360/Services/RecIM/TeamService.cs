@@ -186,7 +186,10 @@ namespace Gordon360.Services.RecIM
             return _context.ParticipantTeam.Any(t =>
                         t.TeamID == teamID
                         && t.ParticipantUsername == username
-                        && t.RoleTypeID == 5
+                        && (
+                            t.RoleTypeID == 5       // RoleType: 5 => captain
+                            || t.RoleTypeID == 4    // RoleType: 4 => co-captain
+                        )
             );
         }
     }

@@ -18,10 +18,12 @@ namespace Gordon360.Controllers.RecIM
     public class ActivitiesController : GordonControllerBase
     {
         private readonly IActivityService _activityService;
+        private readonly IParticipantService _participantService;
 
-        public ActivitiesController(IActivityService activityService)
+        public ActivitiesController(IActivityService activityService, IParticipantService participantService)
         {
             _activityService = activityService;
+            _participantService = participantService;
         }
 
         ///<summary>Gets a list of all Activities by parameter </summary>
@@ -78,8 +80,13 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult> CreateActivity(ActivityUploadViewModel newActivity)
         {
             var username = AuthUtils.GetUsername(User);
-            var activity = await _activityService.PostActivity(username, newActivity);
-            return CreatedAtAction("CreateActivity",activity);
+            var isAdmin = _participantService.IsAdmin(username);
+            if (isAdmin)
+            {
+                var activity = await _activityService.PostActivity(username, newActivity);
+                return CreatedAtAction("CreateActivity", activity);
+            }
+            return Unauthorized();
         }
 
         /// <summary>
@@ -93,8 +100,8 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult> UpdateActivity(int activityID, ActivityPatchViewModel updatedActivity)
         {
             var username = AuthUtils.GetUsername(User);
-            var isActivityAdmin = _activityService.IsActivityAdmin(username, activityID);
-            if (isActivityAdmin)
+            var isAdmin = _participantService.IsAdmin(username);
+            if (isAdmin)
             {
                 var activity = await _activityService.UpdateActivity(activityID, updatedActivity);
                 return CreatedAtAction("UpdateActivity", activity);

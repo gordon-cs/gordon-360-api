@@ -105,7 +105,7 @@ namespace Gordon360.Services.RecIM
                             .FirstOrDefault();
             return activity;
         }
-        public async Task<ActivityCreatedViewModel> UpdateActivity(int activityID, ActivityPatchViewModel updatedActivity)
+        public async Task<ActivityCreatedViewModel> UpdateActivityAsync(int activityID, ActivityPatchViewModel updatedActivity)
         {
             var activity = await _context.Activity.FindAsync(activityID);
             activity.Name = updatedActivity.Name ?? activity.Name;
@@ -123,7 +123,7 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
             return activity;
         }
-        public async Task<ActivityCreatedViewModel> PostActivity(string username, ActivityUploadViewModel a)
+        public async Task<ActivityCreatedViewModel> PostActivityAsync(string username, ActivityUploadViewModel a)
         {
             var activity = new Activity
             {
@@ -141,13 +141,10 @@ namespace Gordon360.Services.RecIM
             await _context.Activity.AddAsync(activity);
             await _context.SaveChangesAsync();
 
-            // set the privRole of the current user to "admin" in ParticipantActivity
-            await PostParticipantActivity(username, activity.ID, 3, false); // privTypeID: 3 => admin
-
             return activity;
         }
 
-        public async Task<ParticipantActivityCreatedViewModel> PostParticipantActivity(string username, int activityID, int privTypeID, bool isFreeAgent)
+        public async Task<ParticipantActivityCreatedViewModel> PostParticipantActivityAsync(string username, int activityID, int privTypeID, bool isFreeAgent)
         {
             var participantActivity = new ParticipantActivity
             {
@@ -162,15 +159,10 @@ namespace Gordon360.Services.RecIM
             return participantActivity;
         }
 
-        public bool IsActivityAdmin(string username, int activityID)
+        public bool IsReferee(string username, int activityID)
         {
-            return _context.ParticipantActivity.Any(pa => 
-                pa.ParticipantUsername == username 
-                && pa.ActivityID == activityID 
-                && pa.PrivTypeID == 3
-            );
+            return _context.ParticipantActivity.Any(pa => pa.ParticipantUsername == username && pa.ActivityID == activityID);
         }
     }
-
 }
 
