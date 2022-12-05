@@ -83,7 +83,7 @@ namespace Gordon360.Controllers.RecIM
             var isAdmin = _participantService.IsAdmin(username);
             if (isAdmin)
             {
-                var activity = await _activityService.PostActivity(username, newActivity);
+                var activity = await _activityService.PostActivityAsync(username, newActivity);
                 return CreatedAtAction("CreateActivity", activity);
             }
             return Unauthorized();
@@ -103,7 +103,7 @@ namespace Gordon360.Controllers.RecIM
             var isAdmin = _participantService.IsAdmin(username);
             if (isAdmin)
             {
-                var activity = await _activityService.UpdateActivity(activityID, updatedActivity);
+                var activity = await _activityService.UpdateActivityAsync(activityID, updatedActivity);
                 return CreatedAtAction("UpdateActivity", activity);
             }
             return Unauthorized();

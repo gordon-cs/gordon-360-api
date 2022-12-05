@@ -50,7 +50,7 @@ namespace Gordon360.Controllers.RecIM
             var isAdmin = _participantService.IsAdmin(username);
             if (isAdmin)
             {
-                var sport = await _sportService.UpdateSport(updatedSport);
+                var sport = await _sportService.UpdateSportAsync(updatedSport);
                 return CreatedAtAction("UpdateSport", sport);
             }
             return Unauthorized();
@@ -64,7 +64,7 @@ namespace Gordon360.Controllers.RecIM
             var isAdmin = _participantService.IsAdmin(username);
             if (isAdmin)
             {
-                var sport = await _sportService.PostSport(newSport);
+                var sport = await _sportService.PostSportAsync(newSport);
                 return CreatedAtAction("UpdateSport", sport);
             }
             return Unauthorized();

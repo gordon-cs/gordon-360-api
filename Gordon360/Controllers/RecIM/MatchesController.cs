@@ -93,7 +93,7 @@ namespace Gordon360.Controllers.RecIM
             var isReferee = _activityService.IsReferee(username, activity.ID);
             if (isReferee)
             {
-                var stats = await _matchService.UpdateTeamStats(matchID, updatedMatch);
+                var stats = await _matchService.UpdateTeamStatsAsync(matchID, updatedMatch);
                 return CreatedAtAction("UpdateStats", stats);
             }
             return Unauthorized();
@@ -116,7 +116,7 @@ namespace Gordon360.Controllers.RecIM
             var isReferee = _activityService.IsReferee(username, activity.ID);
             if (isReferee)
             {
-                var match = await _matchService.UpdateMatch(matchID, updatedMatch);
+                var match = await _matchService.UpdateMatchAsync(matchID, updatedMatch);
                 return CreatedAtAction("UpdateMatch", match);
             }
             return Unauthorized();
@@ -135,7 +135,7 @@ namespace Gordon360.Controllers.RecIM
             var isAdmin = _participantService.IsAdmin(username);
             if (isAdmin)
             {
-                var match = await _matchService.PostMatch(newMatch);
+                var match = await _matchService.PostMatchAsync(newMatch);
                 return CreatedAtAction("CreateMatch", match);
             }
             return Unauthorized();
@@ -162,7 +162,7 @@ namespace Gordon360.Controllers.RecIM
             var isReferee = _activityService.IsReferee(username, activity.ID);
             if (isReferee)
             {
-                var attendance = await _matchService.AddParticipantAttendance(username, matchID);
+                var attendance = await _matchService.AddParticipantAttendanceAsync(username, matchID);
                 return CreatedAtAction("AddAttendance", attendance);
             }
             return Unauthorized();
