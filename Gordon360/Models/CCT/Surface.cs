@@ -23,6 +23,7 @@ namespace Gordon360.Models.CCT
         [StringLength(64)]
         [Unicode(false)]
         public string Name { get; set; }
+        [Required]
         [StringLength(256)]
         [Unicode(false)]
         public string Description { get; set; }

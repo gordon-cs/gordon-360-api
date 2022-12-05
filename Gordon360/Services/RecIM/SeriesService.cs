@@ -49,13 +49,14 @@ namespace Gordon360.Services.RecIM
                                             .FirstOrDefault(t => t.ID == st.TeamID)
                                             .Name,
                                     Win = st.Win,
-                                    Loss = st.Loss ?? 0,
+                                    Loss = st.Loss,
                                     Tie = _context.SeriesTeam
                                             .Where(total => total.TeamID == st.TeamID && total.SeriesID == s.ID)
-                                            .Count() - st.Win - (st.Loss ?? 0)
+                                            .Count() - st.Win - st.Loss
                                 }).OrderByDescending(st => st.Win).AsEnumerable()
                             });
-            if (active) {
+            if (active)
+            {
                 series = series.Where(s => s.StartDate < DateTime.Now
                                         && s.EndDate > DateTime.Now);
             }
@@ -88,7 +89,7 @@ namespace Gordon360.Services.RecIM
                                 .FirstOrDefault(t => t.ID == st.TeamID)
                                 .Name,
                         Win = st.Win,
-                        Loss = st.Loss ?? 0,
+                        Loss = st.Loss,
                         //Tie = _context.SeriesTeam
                         //        .Where(total => total.TeamID == st.TeamID && total.SeriesID == s.ID)
                         //        .Count() - st.Win - (st.Loss ?? 0)
@@ -100,7 +101,7 @@ namespace Gordon360.Services.RecIM
         {
             return GetSeries().FirstOrDefault(s => s.ID == seriesID);
         }
-        public async Task<int> PostSeriesAsync(SeriesUploadViewModel newSeries, int? referenceSeriesID)
+        public async Task<SeriesCreatedViewModel> PostSeries(SeriesUploadViewModel newSeries, int? referenceSeriesID)
         {
             var series = new Series
             {
@@ -124,11 +125,11 @@ namespace Gordon360.Services.RecIM
             {
                 teams = teams.Take(newSeries.NumberOfTeamsAdmitted ?? 0);//will never be null but 0 is to silence error
             }
-           
+
             await CreateSeriesTeamMapping(teams, series.ID);
-            return series.ID;
+            return series;
         }
-        public async Task<int> UpdateSeriesAsync(int seriesID, SeriesPatchViewModel update)
+        public async Task<SeriesCreatedViewModel> UpdateSeries(int seriesID, SeriesPatchViewModel update)
         {
             var s = await _context.Series.FindAsync(seriesID);
             s.Name = update.Name ?? s.Name;
@@ -137,7 +138,7 @@ namespace Gordon360.Services.RecIM
             s.StatusID = update.StatusID ?? s.StatusID;
 
             await _context.SaveChangesAsync();
-            return s.ID;
+            return s;
         }
         public async Task UpdateSeriesTeamStats(SeriesTeamPatchViewModel update)
         {
@@ -190,7 +191,7 @@ namespace Gordon360.Services.RecIM
             }
         }
         private async Task ScheduleRoundRobin(int seriesID)
-        {            
+        {
             var series = _context.Series.FirstOrDefault(s => s.ID == seriesID);
             var teams = _context.SeriesTeam
                 .Where(st => st.ID == seriesID)
@@ -209,7 +210,7 @@ namespace Gordon360.Services.RecIM
             string dayOfWeek = day.DayOfWeek.ToString();
             int surfaceIndex = 0;
 
-            for (int i = 0; i < teams.Length-1; i++)
+            for (int i = 0; i < teams.Length - 1; i++)
             {
                 for (int j = i + 1; j < teams.Length; j++)
                 {
@@ -224,7 +225,7 @@ namespace Gordon360.Services.RecIM
 
                     //ensure matchtime is in an available day
                     //will be a bug if the match goes beyond 12AM
-                    while (!schedule.AvailableDays[dayOfWeek] || 
+                    while (!schedule.AvailableDays[dayOfWeek] ||
                         day.AddMinutes(schedule.EstMatchTime + 15).TimeOfDay > schedule.EndTime.TimeOfDay
                         )
                     {
@@ -238,7 +239,7 @@ namespace Gordon360.Services.RecIM
                     {
                         StartTime = day,
                         SeriesID = seriesID,
-                        SurfaceID = availableSurfaces[surfaceIndex].SurfaceID, 
+                        SurfaceID = availableSurfaces[surfaceIndex].SurfaceID,
                         TeamIDs = new List<int>() { teams[i].TeamID, teams[j].TeamID }.AsEnumerable()
                     });
                     surfaceIndex++;
@@ -373,7 +374,7 @@ namespace Gordon360.Services.RecIM
             //create matches for remaining rounds (possible implementation of including round number optional field)
             while (teamsInNextRound > 1)
             {
-                for (int i = 0; i < teamsInNextRound/2; i++)
+                for (int i = 0; i < teamsInNextRound / 2; i++)
                 {
                     if (surfaceIndex == availableSurfaces.Length)
                     {
@@ -420,7 +421,7 @@ namespace Gordon360.Services.RecIM
             var series = _context.Series.FirstOrDefault(s => s.ID == involvedTeams.First().SeriesID);
 
             var teams = involvedTeams.Reverse();
-          
+
             while (!(((numTeams + numBuys) != 0) && (((numTeams + numBuys) & ((numTeams + numBuys) - 1)) == 0))) //while not power of 2
             {
                 await UpdateSeriesTeamStats(new SeriesTeamPatchViewModel
@@ -435,7 +436,7 @@ namespace Gordon360.Services.RecIM
             var teamPairings = EliminationRoundTeamPairs(teams);
             var matchIDs = new List<int>();
 
-            foreach(var teamPair in teamPairings)
+            foreach (var teamPair in teamPairings)
             {
                 matchIDs.Add(
                     await _matchService.PostMatchAsync(new MatchUploadViewModel
@@ -464,7 +465,7 @@ namespace Gordon360.Services.RecIM
             var res = new List<IEnumerable<int>>();
             var teamsArr = teams.ToArray();
 
-            for (int i = 0; i < teamsArr.Length/2; i++)
+            for (int i = 0; i < teamsArr.Length / 2; i++)
             {
                 int j = (teamsArr.Length / 2 - 1) - i;
                 res.Add(new List<int>

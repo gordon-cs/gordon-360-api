@@ -18,7 +18,7 @@ namespace Gordon360.Services.RecIM
         private readonly ISeriesService _seriesService;
 
         public ActivityService(CCTContext context, ISeriesService seriesService)
-        { 
+        {
             _context = context;
             _seriesService = seriesService;
         }
@@ -97,15 +97,15 @@ namespace Gordon360.Services.RecIM
                                     Status = _context.TeamStatus
                                                 .FirstOrDefault(ts => ts.ID == t.StatusID)
                                                 .Description,
-                                                
+
                                     Logo = t.Logo
                                 })
-                            
+
                             })
                             .FirstOrDefault();
             return activity;
         }
-        public async Task<int> UpdateActivityAsync(int activityID, ActivityPatchViewModel updatedActivity)
+        public async Task<ActivityCreatedViewModel> UpdateActivity(int activityID, ActivityPatchViewModel updatedActivity)
         {
             var activity = await _context.Activity.FindAsync(activityID);
             activity.Name = updatedActivity.Name ?? activity.Name;
@@ -121,9 +121,9 @@ namespace Gordon360.Services.RecIM
             activity.Completed = updatedActivity.Completed ?? activity.Completed;
 
             await _context.SaveChangesAsync();
-            return activity.ID;
+            return activity;
         }
-        public async Task<int> PostActivityAsync(ActivityUploadViewModel a)
+        public async Task<ActivityCreatedViewModel> PostActivity(ActivityUploadViewModel a)
         {
             var activity = new Activity
             {
@@ -140,7 +140,7 @@ namespace Gordon360.Services.RecIM
             };
             await _context.Activity.AddAsync(activity);
             await _context.SaveChangesAsync();
-            return activity.ID;
+            return activity;
         }
 
     }

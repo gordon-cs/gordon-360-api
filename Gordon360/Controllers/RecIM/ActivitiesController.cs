@@ -32,12 +32,12 @@ namespace Gordon360.Controllers.RecIM
         [HttpGet]
         [Route("")]
         public ActionResult<IEnumerable<ActivityViewModel>> GetActivities([FromQuery] DateTime? time, bool active)
-        {   
+        {
             if (time is null && active)
             {
                 var activeResults = _activityService.GetActivities();
                 return Ok(activeResults);
-                
+
             }
             var result = _activityService.GetActivitiesByTime(time);
             return Ok(result);
@@ -56,31 +56,41 @@ namespace Gordon360.Controllers.RecIM
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("lookup")]
+        public ActionResult<IEnumerable<LookupViewModel>> GetActivityTypes(string type)
+        {
+            if (type == "status")
+            {
+
+            }
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Posts Activity into CCT.RecIM.Activity
         /// </summary>
         /// <param name="newActivity">CreateActivityViewModel object with appropriate values</param>
-        /// <returns>Posted Activity ID</returns>
+        /// <returns>Posted Activity</returns>
         [HttpPost]
         [Route("")]
         public async Task<ActionResult> CreateActivity(ActivityUploadViewModel newActivity)
         {
-            
-            var activityID = await _activityService.PostActivityAsync(newActivity);
-            return Ok(activityID);
+            var activity = await _activityService.PostActivity(newActivity);
+            return CreatedAtAction("CreateActivity", activity);
         }
         /// <summary>
         /// Updates Activity based on input
         /// </summary>
+        /// <param name="activityID"> Activity ID</param>
         /// <param name="updatedActivity"> Updated Activity Object </param>
         /// <returns></returns>
         [HttpPatch]
         [Route("{activityID}")]
         public async Task<ActionResult> UpdateActivity(int activityID, ActivityPatchViewModel updatedActivity)
         {
-            var id = await _activityService.UpdateActivityAsync(activityID, updatedActivity);
-            return Ok(id);
+            var activity = await _activityService.UpdateActivity(activityID, updatedActivity);
+            return CreatedAtAction("UpdateActivity", activity);
         }
     }
 }

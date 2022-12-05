@@ -27,11 +27,11 @@ namespace Gordon360.Models.CCT
         [Column(TypeName = "date")]
         public DateTime StartDate { get; set; }
         [Column(TypeName = "date")]
-        public DateTime? EndDate { get; set; }
+        public DateTime EndDate { get; set; }
         public int ActivityID { get; set; }
         public int TypeID { get; set; }
         public int StatusID { get; set; }
-        public int? ScheduleID { get; set; }
+        public int ScheduleID { get; set; }
 
         [ForeignKey("ActivityID")]
         [InverseProperty("Series")]

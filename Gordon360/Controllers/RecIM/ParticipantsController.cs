@@ -56,38 +56,62 @@ namespace Gordon360.Controllers.RecIM
             return Ok(res);
         }
 
-        [HttpPost]
-        [Route("{participantID}")]
-        public async Task<ActionResult> AddParticipant(int participantID)
+        [HttpGet]
+        [Route("lookup")]
+        public ActionResult<IEnumerable<LookupViewModel>> GetTypes(string type)
         {
-            var id = await _participantService.PostParticipantAsync(participantID);
-            return Ok(id);
+            if (type == "status")
+            {
+
+            }
+            if (type == "activitypriv")
+            {
+
+            }
+            throw new NotImplementedException();
         }
+
+        [HttpPut]
+        [Route("{username}")]
+        public async Task<ActionResult> AddParticipant(string username)
+        {
+            var participant = await _participantService.PostParticipant(username);
+            return CreatedAtAction("AddParticipant", participant);
+        }
+
+        [HttpPatch]
+        [Route("{username}")]
+        public async Task<ActionResult> UpdateParticipant(string username, [FromBody] bool isAdmin)
+        {
+            var participant = await _participantService.UpdateParticipant(username, isAdmin);
+            return CreatedAtAction("AddParticipant", participant);
+        }
+
 
         [HttpPost]
         [Route("{username}/notifications")]
         public async Task<IActionResult> SendParticipantNotification(string username, ParticipantNotificationUploadViewModel notificationVM)
         {
-            var res = await _participantService.SendParticipantNotificationAsync(username, notificationVM);
-            return CreatedAtAction("SendParticipantNotification", new { id = res.ID },res);
+            var notification = await _participantService.SendParticipantNotification(username, notificationVM);
+            return CreatedAtAction("SendParticipantNotification", notification);
         }
 
 
         [HttpPatch]
-        [Route("{username}")]
-        public async Task<ActionResult> UpdateParticipant(string username, ParticipantPatchViewModel updatedParticipant)
+        [Route("{username}/activities")]
+        public async Task<ActionResult> UpdateParticipantActivity(string username, ParticipantActivityPatchViewModel updatedParticipantActivity)
         {
 
-            var participantUsername = await _participantService.UpdateParticipantAsync(username,updatedParticipant);
-            return Ok(participantUsername);
+            var participant = await _participantService.UpdateParticipantActivity(username, updatedParticipantActivity);
+            return CreatedAtAction("UpdateParticipantActivity", participant);
         }
 
         [HttpPatch]
         [Route("{username}/status")]
         public async Task<ActionResult> UpdateParticipantStatus(string username, ParticipantStatusPatchViewModel updatedParticipant)
         {
-            var participantUsername = await _participantService.UpdateParticipantStatusAsync(username,updatedParticipant);
-            return Ok(participantUsername);
+            var status = await _participantService.UpdateParticipantStatus(username, updatedParticipant);
+            return CreatedAtAction("UpdateParticipantStatus", status);
         }
 
     }

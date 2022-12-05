@@ -30,17 +30,15 @@ namespace Gordon360.Services.RecIM
         }
         public ParticipantViewModel GetParticipantByUsername(string username)
         {
-            int participantID = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID);
+            var account = _accountService.GetAccountByUsername(username);
             var participant = _context.Participant
-                                .Where(p => p.ID == participantID)
+                                .Where(p => p.Username == username)
                                 .Select(p => new ParticipantViewModel
                                 {
                                     Username = username,
-                                    Email = _context.ACCOUNT
-                                                .FirstOrDefault(a => a.AD_Username == username)
-                                                .email,
+                                    Email = account.Email,
                                     Status = _context.ParticipantStatusHistory
-                                                .Where(psh => psh.ParticipantID == p.ID)
+                                                .Where(psh => psh.ParticipantUsername == username)
                                                 .OrderByDescending(psh => psh.ID)
                                                 .Take(1)
                                                     .Join(_context.ParticipantStatus,
@@ -49,21 +47,21 @@ namespace Gordon360.Services.RecIM
                                                         (psh, ps) => ps.Description)
                                                 .FirstOrDefault(),
                                     Notification = _context.ParticipantNotification
-                                                    .Where(pn => pn.ParticipantID == participantID && pn.EndDate > DateTime.Now)
+                                                    .Where(pn => pn.ParticipantUsername == username && pn.EndDate > DateTime.Now)
                                                     .OrderByDescending(pn => pn.DispatchDate)
                                                     .Select(pn => (ParticipantNotificationViewModel)pn)
-                                                    .AsEnumerable()
+                                                    .AsEnumerable(),
+                                    IsAdmin = p.IsAdmin
                                 })
                                 .FirstOrDefault();
             return participant;
         }
 
-        public async Task<ParticipantNotification> SendParticipantNotificationAsync(string username, ParticipantNotificationUploadViewModel notificationVM)
+        public async Task<ParticipantNotificationCreatedViewModel> SendParticipantNotification(string username, ParticipantNotificationUploadViewModel notificationVM)
         {
-            int participantID = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID);
             var newNotification = new ParticipantNotification
             {
-                ParticipantID = participantID,
+                ParticipantUsername = username,
                 Message = notificationVM.Message,
                 EndDate = notificationVM.EndDate,
                 DispatchDate = DateTime.Now
@@ -74,9 +72,8 @@ namespace Gordon360.Services.RecIM
         }
         public IEnumerable<ParticipantStatusViewModel> GetParticipantStatusHistory(string username)
         {
-            int participantID = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID);
             var status = _context.ParticipantStatusHistory
-                            .Where(psh => psh.ParticipantID == participantID)
+                            .Where(psh => psh.ParticipantUsername == username)
                             .OrderByDescending(psh => psh.ID)
                                 .Join(_context.ParticipantStatus,
                                     psh => psh.StatusID,
@@ -84,7 +81,7 @@ namespace Gordon360.Services.RecIM
                                     (psh, ps) => new ParticipantStatusViewModel
                                     {
                                         Username = username,
-                                        StatusDescription = ps.Description,
+                                        Status = ps.Description,
                                         StartDate = psh.StartDate,
                                         EndDate = psh.EndDate
                                     }).AsEnumerable();
@@ -93,9 +90,8 @@ namespace Gordon360.Services.RecIM
         public IEnumerable<TeamViewModel> GetParticipantTeams(string username)
         {
             //to be handled by teamservice
-            int participantID = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID);
             var teams = _context.ParticipantTeam
-                            .Where(pt => pt.ParticipantID == participantID)
+                            .Where(pt => pt.ParticipantUsername == username)
                                 .Join(_context.Team,
                                     pt => pt.TeamID,
                                     t => t.ID,
@@ -122,76 +118,68 @@ namespace Gordon360.Services.RecIM
                 var account = (ParticipantViewModel)_context.ACCOUNT
                     .FirstOrDefault(a => a.gordon_id == stringID);
                 res.Add(account);
-            }        
+            }
             return res;
         }
 
-        public async Task<int> PostParticipantAsync(int participantID)
+        public async Task<ParticipantViewModel> PostParticipant(string username)
         {
             await _context.Participant.AddAsync(new Participant
             {
-                ID = participantID
+                Username = username
             });
             await _context.ParticipantStatusHistory.AddAsync(new ParticipantStatusHistory
             {
-                ParticipantID = participantID,
+                ParticipantUsername = username,
                 StatusID = 4, //default to cleared
                 StartDate = DateTime.Now,
                 //No defined end date for creation
             });
             await _context.SaveChangesAsync();
-            return participantID;
+            var participant = GetParticipantByUsername(username);
+            return participant;
         }
-        public async Task<string> UpdateParticipantAsync(string username,ParticipantPatchViewModel updatedParticipant)
+
+        public async Task<ParticipantViewModel> UpdateParticipant(string username, bool isAdmin)
         {
-            int participantID = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID);
+            var participant = GetParticipantByUsername(username);
+            participant.IsAdmin = isAdmin;
+            await _context.SaveChangesAsync();
+            return participant;
+        }
+        public async Task<ParticipantActivityCreatedViewModel> UpdateParticipantActivity(string username, ParticipantActivityPatchViewModel updatedParticipant)
+        {
+            var participantActivity = _context.ParticipantActivity
+                                        .FirstOrDefault(pa => pa.ParticipantUsername == username
+                                            && pa.ActivityID == updatedParticipant.ActivityID);
 
-            if (updatedParticipant.ActivityID is not null)
-            {
-                var participantActivity = _context.ParticipantActivity
-                                            .FirstOrDefault(pa => pa.ParticipantID == participantID 
-                                                && pa.ActivityID == updatedParticipant.ActivityID);
-                var priv = _context.PrivType
-                                .FirstOrDefault(pt => pt.Description == updatedParticipant.ActivityPrivType);
+            participantActivity.PrivTypeID = updatedParticipant.ActivityPrivID ?? participantActivity.PrivTypeID;
+            participantActivity.IsFreeAgent = updatedParticipant.IsFreeAgent ?? participantActivity.IsFreeAgent;
 
-                participantActivity.PrivTypeID = priv is null 
-                                                ? participantActivity.PrivTypeID
-                                                : priv.ID;
-                participantActivity.isFreeAgent = updatedParticipant.isFreeAgent ?? participantActivity.isFreeAgent;
-                                                
-            }
-            if (updatedParticipant.TeamID is not null)
-            {
-                var participantTeam = _context.ParticipantTeam
-                                        .FirstOrDefault(pt => pt.TeamID == updatedParticipant.TeamID
-                                            && pt.ParticipantID == participantID);
-                var role = _context.RoleType
-                            .FirstOrDefault(pt => pt.Description == updatedParticipant.TeamRole);
-            }
+
             await _context.SaveChangesAsync();
             return username;
+            return participantActivity;
         }
-        public async Task<string> UpdateParticipantStatusAsync(string username, ParticipantStatusPatchViewModel participantStatus)
+        public async Task<ParticipantStatusCreatedViewModel> UpdateParticipantStatus(string username, ParticipantStatusPatchViewModel participantStatus)
         {
+            // End previous status
+            var prevStatus = _context.ParticipantStatusHistory
+                               .Where(psh => psh.ParticipantUsername == username)
+                               .OrderByDescending(psh => psh.ID)
+                               .FirstOrDefault();
+            prevStatus.EndDate = DateTime.Now;
+
             var status = new ParticipantStatusHistory
             {
-                ParticipantID = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID),
-                StatusID = _context.ParticipantStatus
-                                .FirstOrDefault(ps => ps.Description == participantStatus.StatusDescription)
-                                .ID,
+                ParticipantUsername = username,
+                StatusID = participantStatus.StatusID,
                 StartDate = DateTime.Now,
                 EndDate = participantStatus.EndDate
             };
             await _context.ParticipantStatusHistory.AddAsync(status);
-
-            var prevStatus = _context.ParticipantStatusHistory
-                                .Where(psh => psh.ParticipantID == status.ParticipantID)
-                                .OrderByDescending(psh => psh.ID)
-                                .FirstOrDefault();
-            prevStatus.EndDate = DateTime.Now;
-
             await _context.SaveChangesAsync();
-            return username;
+            return status;
         }
     }
 

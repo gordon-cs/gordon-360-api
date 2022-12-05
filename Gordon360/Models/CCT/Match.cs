@@ -23,7 +23,7 @@ namespace Gordon360.Models.CCT
         [Column(TypeName = "datetime")]
         public DateTime Time { get; set; }
         public int SurfaceID { get; set; }
-        public int? StatusID { get; set; }
+        public int StatusID { get; set; }
 
         [ForeignKey("SeriesID")]
         [InverseProperty("Match")]

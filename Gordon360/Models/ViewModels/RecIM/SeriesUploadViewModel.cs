@@ -8,7 +8,7 @@ namespace Gordon360.Models.ViewModels.RecIM
     {
         public string Name { get; set; }
         public DateTime StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
+        public DateTime EndDate { get; set; }
         public int ActivityID { get; set; }
         public int TypeID { get; set; }
         public int? NumberOfTeamsAdmitted { get; set; }

@@ -16,8 +16,8 @@ namespace Gordon360.Models.CCT
         public int ParticipantTeamID { get; set; }
         public int Win { get; set; }
         public int Loss { get; set; }
-        public double Sportmanship { get; set; }
-        public int? TimesRated { get; set; }
+        public double Sportsmanship { get; set; }
+        public int TimesRated { get; set; }
 
         [ForeignKey("ParticipantTeamID")]
         [InverseProperty("Statistic")]

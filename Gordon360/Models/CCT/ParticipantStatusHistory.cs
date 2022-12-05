@@ -13,16 +13,19 @@ namespace Gordon360.Models.CCT
     {
         [Key]
         public int ID { get; set; }
-        public int ParticipantID { get; set; }
+        [Required]
+        [StringLength(50)]
+        [Unicode(false)]
+        public string ParticipantUsername { get; set; }
         public int StatusID { get; set; }
-        [Column(TypeName = "datetime")]
+        [Column(TypeName = "date")]
         public DateTime StartDate { get; set; }
-        [Column(TypeName = "datetime")]
+        [Column(TypeName = "date")]
         public DateTime? EndDate { get; set; }
 
-        [ForeignKey("ParticipantID")]
+        [ForeignKey("ParticipantUsername")]
         [InverseProperty("ParticipantStatusHistory")]
-        public virtual Participant Participant { get; set; }
+        public virtual Participant ParticipantUsernameNavigation { get; set; }
         [ForeignKey("StatusID")]
         [InverseProperty("ParticipantStatusHistory")]
         public virtual ParticipantStatus Status { get; set; }

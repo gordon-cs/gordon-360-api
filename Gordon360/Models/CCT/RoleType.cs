@@ -23,7 +23,7 @@ namespace Gordon360.Models.CCT
         [Unicode(false)]
         public string Description { get; set; }
 
-        [InverseProperty("RoleTypeNavigation")]
+        [InverseProperty("RoleType")]
         public virtual ICollection<ParticipantTeam> ParticipantTeam { get; set; }
     }
 }

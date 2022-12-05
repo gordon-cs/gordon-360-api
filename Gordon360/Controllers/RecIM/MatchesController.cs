@@ -51,38 +51,52 @@ namespace Gordon360.Controllers.RecIM
         }
 
         [HttpGet]
-        [Route("team/{teamID}")]
-        public ActionResult<MatchViewModel> GetMatchHistoryByTeamID(int teamID)
+        [Route("lookup")]
+        public ActionResult<IEnumerable<LookupViewModel>> GetMatchTypes(string type)
         {
-            var match = _matchService.GetMatchHistoryByTeamID(teamID);
-            return Ok(match);
+            if (type == "status")
+            {
+
+            }
+            if (type == "teamstatus")
+            {
+
+            }
+            if (type == "surface")
+            {
+
+            }
+            throw new NotImplementedException();
         }
 
         /// <summary>
         /// Updates Match Scores, Sportsmanship Ratings, and Team Status
         /// </summary>
+        /// <param name="matchID"></param>
         /// <param name="updatedMatch"></param>
         /// <returns></returns>
         [HttpPatch]
-        [Route("")]
-        public async Task<ActionResult> UpdateStats(MatchTeamPatchViewModel updatedMatch)
+        [Route("{matchID}/stats")]
+        public async Task<ActionResult> UpdateStats(int matchID, MatchStatsPatchViewModel updatedMatch)
         {
-            await _matchService.UpdateTeamStatsAsync(updatedMatch);
-            return Ok();
+            var stats = await _matchService.UpdateTeamStats(matchID, updatedMatch);
+            return CreatedAtAction("UpdateStats", stats);
         }
+
         /// <summary>
-        /// Add Team to Match
+        /// Updates Match Start Times and Surfaces
         /// </summary>
-        /// <param name="teamID"></param>
         /// <param name="matchID"></param>
+        /// <param name="updatedMatch"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPatch]
         [Route("{matchID}")]
-        public async Task<ActionResult> AddTeamToMatch(int teamID, int matchID)
+        public async Task<ActionResult> UpdateMatch(int matchID, MatchPatchViewModel updatedMatch)
         {
-            await _matchService.AddTeamToMatchAsync(teamID, matchID);
-            return Ok();
+            var match = await _matchService.UpdateMatch(matchID, updatedMatch);
+            return CreatedAtAction("UpdateMatch", match);
         }
+
         /// <summary>
         /// Creates Match
         /// </summary>
@@ -92,8 +106,22 @@ namespace Gordon360.Controllers.RecIM
         [Route("")]
         public async Task<ActionResult> CreateMatch(MatchUploadViewModel newMatch)
         {
-            var matchID = await _matchService.PostMatchAsync(newMatch);
-            return Ok(matchID);
+            var match = await _matchService.PostMatch(newMatch);
+            return CreatedAtAction("CreateMatch", match);
+        }
+
+        /// <summary>
+        /// Creates Match Attendee
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="matchID"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("{matchID}/attendance")]
+        public async Task<ActionResult> AddAttendance(int matchID, [FromBody] string username)
+        {
+            var attendance = await _matchService.AddParticipantAttendance(username, matchID);
+            return CreatedAtAction("AddAttendance", attendance);
         }
 
     }
