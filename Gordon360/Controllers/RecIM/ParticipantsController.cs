@@ -73,7 +73,7 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpPut]
         [Route("{username}")]
-        public async Task<ActionResult> AddParticipant(string username)
+        public async Task<ActionResult<ParticipantViewModel>> AddParticipant(string username)
         {
             var participant = await _participantService.PostParticipant(username);
             return CreatedAtAction("AddParticipant", participant);
@@ -81,7 +81,7 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpPatch]
         [Route("{username}")]
-        public async Task<ActionResult> UpdateParticipant(string username, [FromBody] bool isAdmin)
+        public async Task<ActionResult<ParticipantViewModel>> UpdateParticipant(string username, [FromBody] bool isAdmin)
         {
             var participant = await _participantService.UpdateParticipant(username,isAdmin);
             return CreatedAtAction("AddParticipant", participant);
@@ -90,7 +90,7 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpPost]
         [Route("{username}/notifications")]
-        public async Task<IActionResult> SendParticipantNotification(string username, ParticipantNotificationUploadViewModel notificationVM)
+        public async Task<ActionResult<ParticipantNotificationCreatedViewModel>> SendParticipantNotification(string username, ParticipantNotificationUploadViewModel notificationVM)
         {
             var notification = await _participantService.SendParticipantNotification(username, notificationVM);
             return CreatedAtAction("SendParticipantNotification", notification);
@@ -108,7 +108,7 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpPatch]
         [Route("{username}/status")]
-        public async Task<ActionResult> UpdateParticipantStatus(string username, ParticipantStatusPatchViewModel updatedParticipant)
+        public async Task<ActionResult<ParticipantStatusCreatedViewModel>> UpdateParticipantStatus(string username, ParticipantStatusPatchViewModel updatedParticipant)
         {
             var status = await _participantService.UpdateParticipantStatus(username, updatedParticipant);
             return CreatedAtAction("UpdateParticipantStatus",status);

@@ -70,7 +70,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns>modified series</returns>
         [HttpPatch]
         [Route("{seriesID}")]
-        public async Task<ActionResult> UpdateSeries(int seriesID, SeriesPatchViewModel updatedSeries)
+        public async Task<ActionResult<SeriesCreatedViewModel>> UpdateSeries(int seriesID, SeriesPatchViewModel updatedSeries)
         {
             var series = await _seriesService.UpdateSeries(seriesID, updatedSeries);
             return CreatedAtAction("UpdateSeries", series);
@@ -84,7 +84,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns>created series</returns>
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult> CreateSeries(SeriesUploadViewModel newSeries, [FromQuery]int? referenceSeriesID)
+        public async Task<ActionResult<SeriesCreatedViewModel>> CreateSeries(SeriesUploadViewModel newSeries, [FromQuery]int? referenceSeriesID)
         {
             var series = await _seriesService.PostSeries(newSeries, referenceSeriesID);
             return CreatedAtAction("CreateSeries",series);

@@ -77,7 +77,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPatch]
         [Route("{matchID}/stats")]
-        public async Task<ActionResult> UpdateStats(int matchID, MatchStatsPatchViewModel updatedMatch)
+        public async Task<ActionResult<MatchTeamViewModel>> UpdateStats(int matchID, MatchStatsPatchViewModel updatedMatch)
         {
             var stats = await _matchService.UpdateTeamStats(matchID,  updatedMatch);
             return CreatedAtAction("UpdateStats", stats);
@@ -91,7 +91,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPatch]
         [Route("{matchID}")]
-        public async Task<ActionResult> UpdateMatch(int matchID, MatchPatchViewModel updatedMatch)
+        public async Task<ActionResult<MatchCreatedViewModel>> UpdateMatch(int matchID, MatchPatchViewModel updatedMatch)
         {
             var match = await _matchService.UpdateMatch(matchID, updatedMatch);
             return CreatedAtAction("UpdateMatch", match);
@@ -104,7 +104,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult> CreateMatch(MatchUploadViewModel newMatch)
+        public async Task<ActionResult<MatchCreatedViewModel>> CreateMatch(MatchUploadViewModel newMatch)
         {
             var match = await _matchService.PostMatch(newMatch);
             return CreatedAtAction("CreateMatch", match);
@@ -118,7 +118,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPost]
         [Route("{matchID}/attendance")]
-        public async Task<ActionResult> AddAttendance(int matchID, [FromBody] string username)
+        public async Task<ActionResult<MatchParticipantViewModel>> AddAttendance(int matchID, [FromBody] string username)
         {
             var attendance = await _matchService.AddParticipantAttendance(username,matchID);
             return CreatedAtAction("AddAttendance", attendance);
