@@ -147,7 +147,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult> AddAttendance(int matchID, [FromBody] string username)
         {
             // We don't have to send username through requests, Microsoft.AspNetCore is able
-            // to get/set the user who of this request.
+            // to get/set the user of this request.
             // We'll refactor the routes in the future PRs
             // var username = AuthUtils.GetUsername(User);
 
