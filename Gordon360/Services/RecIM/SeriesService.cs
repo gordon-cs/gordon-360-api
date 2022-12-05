@@ -225,7 +225,7 @@ namespace Gordon360.Services.RecIM
                 SurfaceID = 1,
                 TeamIDs = teams
             };
-            await _matchService.PostMatch(match); 
+            await _matchService.PostMatchAsync(match); 
         }
     }
 

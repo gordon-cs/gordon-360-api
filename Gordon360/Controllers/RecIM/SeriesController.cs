@@ -75,13 +75,13 @@ namespace Gordon360.Controllers.RecIM
         /// <returns>modified series</returns>
         [HttpPatch]
         [Route("{seriesID}")]
-        public async Task<ActionResult> UpdateSeries(int seriesID, SeriesPatchViewModel updatedSeries)
+        public async Task<ActionResult> UpdateSeriesAsync(int seriesID, SeriesPatchViewModel updatedSeries)
         {
             var username = AuthUtils.GetUsername(User);
             var isAdmin = _participantService.IsAdmin(username);
             if (isAdmin)
             {
-                var series = await _seriesService.UpdateSeries(seriesID, updatedSeries);
+                var series = await _seriesService.UpdateSeriesAsync(seriesID, updatedSeries);
                 return CreatedAtAction("UpdateSeries", series);
             }
             return Unauthorized();
@@ -101,7 +101,7 @@ namespace Gordon360.Controllers.RecIM
             var isAdmin = _participantService.IsAdmin(username);
             if (isAdmin)
             {
-                var series = await _seriesService.PostSeries(newSeries, referenceSeriesID);
+                var series = await _seriesService.PostSeriesAsync(newSeries, referenceSeriesID);
                 return CreatedAtAction("CreateSeries", series);
             }
             return Unauthorized();
