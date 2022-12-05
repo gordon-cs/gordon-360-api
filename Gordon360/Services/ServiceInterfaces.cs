@@ -315,8 +315,9 @@ namespace Gordon360.Services
             Models.ViewModels.RecIM.ActivityViewModel? GetActivityByID(int activityID);
             IEnumerable<Models.ViewModels.RecIM.ActivityViewModel> GetActivitiesByTime(DateTime? time);
             Task<ActivityCreatedViewModel> UpdateActivity(int activytID, ActivityPatchViewModel updatedActivity);
-            Task<ActivityCreatedViewModel> PostActivity(ActivityUploadViewModel newActivity);
-
+            Task<ActivityCreatedViewModel> PostActivity(string username, ActivityUploadViewModel newActivity);
+            Task<ParticipantActivityCreatedViewModel> PostParticipantActivity(string username, int activityID, int privTypeID, bool isFreeAgent);
+            bool IsActivityAdmin(string username, int activityID);
         }
         public interface ISeriesService
         {
@@ -335,7 +336,7 @@ namespace Gordon360.Services
             Task<ParticipantTeamViewModel> AddUserToTeamAsync(int teamID, ParticipantTeamUploadViewModel participant);
             Task<TeamCreatedViewModel> UpdateTeamAsync(int teamID, TeamPatchViewModel updatedTeam);
             Task<ParticipantTeamViewModel> UpdateParticipantRoleAsync(int teamID, ParticipantTeamUploadViewModel participant);
-            bool IsTeamCaptain(int teamID, string username);
+            bool IsTeamCaptain(string username, int teamID);
         }
 
         public interface IParticipantService

@@ -1,6 +1,7 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
+using Gordon360.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +18,8 @@ namespace Gordon360.Controllers.RecIM
     public class MatchesController : GordonControllerBase
     {
         private readonly IMatchService _matchService;
+        private readonly IActivityService _activityService;
+        private readonly ISeriesService _seriesService;
 
         public MatchesController(IMatchService matchService)
         {
@@ -79,8 +82,16 @@ namespace Gordon360.Controllers.RecIM
         [Route("{matchID}/stats")]
         public async Task<ActionResult> UpdateStats(int matchID, MatchStatsPatchViewModel updatedMatch)
         {
-            var stats = await _matchService.UpdateTeamStats(matchID,  updatedMatch);
-            return CreatedAtAction("UpdateStats", stats);
+            var username = AuthUtils.GetUsername(User);
+            var match = _matchService.GetMatchByID(matchID);
+            var series = _seriesService.GetSeriesByID(match.SeriesID);
+            var isActivityAdmin = _activityService.IsActivityAdmin(username, series.ActivityID);
+            if (isActivityAdmin)
+            {
+                var stats = await _matchService.UpdateTeamStats(matchID, updatedMatch);
+                return CreatedAtAction("UpdateStats", stats);
+            }
+            return Unauthorized();
         }
 
         /// <summary>
@@ -93,8 +104,16 @@ namespace Gordon360.Controllers.RecIM
         [Route("{matchID}")]
         public async Task<ActionResult> UpdateMatch(int matchID, MatchPatchViewModel updatedMatch)
         {
-            var match = await _matchService.UpdateMatch(matchID, updatedMatch);
-            return CreatedAtAction("UpdateMatch", match);
+            var username = AuthUtils.GetUsername(User);
+            var updatingMatch = _matchService.GetMatchByID(matchID);
+            var series = _seriesService.GetSeriesByID(updatingMatch.SeriesID);
+            var isActivityAdmin = _activityService.IsActivityAdmin(username, series.ActivityID);
+            if (isActivityAdmin)
+            {
+                var match = await _matchService.UpdateMatch(matchID, updatedMatch);
+                return CreatedAtAction("UpdateMatch", match);
+            }
+            return Unauthorized();
         }
 
         /// <summary>
@@ -106,8 +125,15 @@ namespace Gordon360.Controllers.RecIM
         [Route("")]
         public async Task<ActionResult> CreateMatch(MatchUploadViewModel newMatch)
         {
-            var match = await _matchService.PostMatch(newMatch);
-            return CreatedAtAction("CreateMatch", match);
+            var username = AuthUtils.GetUsername(User);
+            var series = _seriesService.GetSeriesByID(newMatch.SeriesID);
+            var isActivityAdmin = _activityService.IsActivityAdmin(username, series.ActivityID);
+            if (isActivityAdmin)
+            {
+                var match = await _matchService.PostMatch(newMatch);
+                return CreatedAtAction("CreateMatch", match);
+            }
+            return Unauthorized();
         }
 
         /// <summary>
@@ -120,8 +146,20 @@ namespace Gordon360.Controllers.RecIM
         [Route("{matchID}/attendance")]
         public async Task<ActionResult> AddAttendance(int matchID, [FromBody] string username)
         {
-            var attendance = await _matchService.AddParticipantAttendance(username,matchID);
-            return CreatedAtAction("AddAttendance", attendance);
+            // We don't have to send username through requests, Microsoft.AspNetCore is able
+            // to get/set the user who of this request.
+            // We'll refactor the routes in the future PRs
+            // var username = AuthUtils.GetUsername(User);
+
+            var match = _matchService.GetMatchByID(matchID);
+            var series = _seriesService.GetSeriesByID(match.SeriesID);
+            var isActivityAdmin = _activityService.IsActivityAdmin(username, series.ActivityID);
+            if (isActivityAdmin)
+            {
+                var attendance = await _matchService.AddParticipantAttendance(username, matchID);
+                return CreatedAtAction("AddAttendance", attendance);
+            }
+            return Unauthorized();
         }
 
     }

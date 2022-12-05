@@ -1,6 +1,7 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
+using Gordon360.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -76,9 +77,11 @@ namespace Gordon360.Controllers.RecIM
         [Route("")]
         public async Task<ActionResult> CreateActivity(ActivityUploadViewModel newActivity)
         {
-            var activity = await _activityService.PostActivity(newActivity);
+            var username = AuthUtils.GetUsername(User);
+            var activity = await _activityService.PostActivity(username, newActivity);
             return CreatedAtAction("CreateActivity",activity);
         }
+
         /// <summary>
         /// Updates Activity based on input
         /// </summary>
@@ -89,8 +92,14 @@ namespace Gordon360.Controllers.RecIM
         [Route("{activityID}")]
         public async Task<ActionResult> UpdateActivity(int activityID, ActivityPatchViewModel updatedActivity)
         {
-            var activity = await _activityService.UpdateActivity(activityID, updatedActivity);
-            return CreatedAtAction("UpdateActivity", activity);
+            var username = AuthUtils.GetUsername(User);
+            var isActivityAdmin = _activityService.IsActivityAdmin(username, activityID);
+            if (isActivityAdmin)
+            {
+                var activity = await _activityService.UpdateActivity(activityID, updatedActivity);
+                return CreatedAtAction("UpdateActivity", activity);
+            }
+            return Unauthorized();
         }
     }
 }

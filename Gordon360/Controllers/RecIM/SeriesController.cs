@@ -1,6 +1,7 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
+using Gordon360.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +18,7 @@ namespace Gordon360.Controllers.RecIM
     public class SeriesController : GordonControllerBase
     {
         private readonly ISeriesService _seriesService;
+        private readonly IActivityService _activityService;
 
         public SeriesController(ISeriesService seriesService)
         {
@@ -63,17 +65,26 @@ namespace Gordon360.Controllers.RecIM
             }
             throw new NotImplementedException();
         }
+
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="seriesID"></param>
         /// <param name="updatedSeries"></param>
         /// <returns>modified series</returns>
         [HttpPatch]
         [Route("{seriesID}")]
         public async Task<ActionResult> UpdateSeries(int seriesID, SeriesPatchViewModel updatedSeries)
         {
-            var series = await _seriesService.UpdateSeries(seriesID, updatedSeries);
-            return CreatedAtAction("UpdateSeries", series);
+            var username = AuthUtils.GetUsername(User);
+            var updatingSeries = _seriesService.GetSeriesByID(seriesID);
+            var isActivityAdmin = _activityService.IsActivityAdmin(username, updatingSeries.ActivityID);
+            if (isActivityAdmin)
+            {
+                var series = await _seriesService.UpdateSeries(seriesID, updatedSeries);
+                return CreatedAtAction("UpdateSeries", series);
+            }
+            return Unauthorized();
         }
 
         /// <summary>
@@ -86,8 +97,14 @@ namespace Gordon360.Controllers.RecIM
         [Route("")]
         public async Task<ActionResult> CreateSeries(SeriesUploadViewModel newSeries, [FromQuery]int? referenceSeriesID)
         {
-            var series = await _seriesService.PostSeries(newSeries, referenceSeriesID);
-            return CreatedAtAction("CreateSeries",series);
+            var username = AuthUtils.GetUsername(User);
+            var isActivityAdmin = _activityService.IsActivityAdmin(username, newSeries.ActivityID);
+            if (isActivityAdmin)
+            {
+                var series = await _seriesService.PostSeries(newSeries, referenceSeriesID);
+                return CreatedAtAction("CreateSeries", series);
+            }
+            return Unauthorized();
         }
 
     }

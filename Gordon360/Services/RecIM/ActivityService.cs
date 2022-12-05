@@ -123,7 +123,7 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
             return activity;
         }
-        public async Task<ActivityCreatedViewModel> PostActivity(ActivityUploadViewModel a)
+        public async Task<ActivityCreatedViewModel> PostActivity(string username, ActivityUploadViewModel a)
         {
             var activity = new Activity
             {
@@ -140,9 +140,36 @@ namespace Gordon360.Services.RecIM
             };
             await _context.Activity.AddAsync(activity);
             await _context.SaveChangesAsync();
+
+            // set the privRole of the current user to "admin" in ParticipantActivity
+            await PostParticipantActivity(username, activity.ID, 3, false); // privTypeID: 3 => admin
+
             return activity;
         }
 
+        public async Task<ParticipantActivityCreatedViewModel> PostParticipantActivity(string username, int activityID, int privTypeID, bool isFreeAgent)
+        {
+            var participantActivity = new ParticipantActivity
+            {
+                ActivityID = activityID,
+                ParticipantUsername = username,
+                PrivTypeID = privTypeID,
+                IsFreeAgent = isFreeAgent,
+            };
+            await _context.ParticipantActivity.AddAsync(participantActivity);
+            await _context.SaveChangesAsync();
+
+            return participantActivity;
+        }
+
+        public bool IsActivityAdmin(string username, int activityID)
+        {
+            return _context.ParticipantActivity.Any(pa => 
+                pa.ParticipantUsername == username 
+                && pa.ActivityID == activityID 
+                && pa.PrivTypeID == 3
+            );
+        }
     }
 
 }

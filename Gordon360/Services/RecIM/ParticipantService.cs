@@ -147,6 +147,7 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
             return participant;
         }
+
         public async Task<ParticipantActivityCreatedViewModel> UpdateParticipantActivity(string username, ParticipantActivityPatchViewModel updatedParticipant)
         {           
             var participantActivity = _context.ParticipantActivity
@@ -160,6 +161,7 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
             return participantActivity;
         }
+
         public async Task<ParticipantStatusCreatedViewModel> UpdateParticipantStatus(string username, ParticipantStatusPatchViewModel participantStatus)
         {
             // End previous status
