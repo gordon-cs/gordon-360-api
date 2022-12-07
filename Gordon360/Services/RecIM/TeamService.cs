@@ -36,6 +36,7 @@ namespace Gordon360.Services.RecIM
                             .Select(t => new TeamViewModel
                             {
                                 ID = teamID,
+                                ActivityID = t.ActivityID,
                                 Name = t.Name,
                                 Status = _context.TeamStatus
                                             .FirstOrDefault(ts => ts.ID == t.StatusID)

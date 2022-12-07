@@ -67,7 +67,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult> CreateTeam([FromQuery] string username, TeamUploadViewModel newTeam)
+        public async Task<ActionResult<TeamCreatedViewModel>> CreateTeam([FromQuery] string username, TeamUploadViewModel newTeam)
         {
             var team = await _teamService.PostTeamAsync(newTeam, username);
             // future error handling
@@ -87,7 +87,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPost]
         [Route("{teamID}/participants")]
-        public async Task<ActionResult> AddParticipantToTeam(int teamID, ParticipantTeamUploadViewModel participant)
+        public async Task<ActionResult<ParticipantTeamViewModel>> AddParticipantToTeam(int teamID, ParticipantTeamUploadViewModel participant)
         {
             participant.RoleTypeID = participant.RoleTypeID ?? 3;
             var participantTeam = await _teamService.AddUserToTeamAsync(teamID, participant);
@@ -102,7 +102,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPatch]
         [Route("{teamID}/participants")]
-        public async Task<ActionResult> UpdateTeamParticipant(int teamID, ParticipantTeamUploadViewModel participant)
+        public async Task<ActionResult<ParticipantTeamViewModel>> UpdateTeamParticipant(int teamID, ParticipantTeamUploadViewModel participant)
         {
             participant.RoleTypeID = participant.RoleTypeID ?? 3;
             var participantTeam = await _teamService.UpdateParticipantRoleAsync(teamID, participant);
@@ -117,7 +117,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPatch]
         [Route("{teamID}")]
-        public async Task<ActionResult> UpdateTeamInfo(int teamID, TeamPatchViewModel team)
+        public async Task<ActionResult<TeamCreatedViewModel>> UpdateTeamInfo(int teamID, TeamPatchViewModel team)
         {
             var updatedTeam = await _teamService.UpdateTeamAsync(teamID, team);
             return CreatedAtAction("UpdateTeamInfo",updatedTeam);
