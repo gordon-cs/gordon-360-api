@@ -116,7 +116,7 @@ namespace Gordon360.Services.RecIM
                 Username = p.Username,
                 Email = _accountService.GetAccountByUsername(p.Username).Email,
                 Status = _context.ParticipantStatusHistory
-                                                .Where(psh => psh.ParticipantUsername == username)
+                                                .Where(psh => psh.ParticipantUsername == p.Username)
                                                 .OrderByDescending(psh => psh.ID)
                                                 .Take(1)
                                                     .Join(_context.ParticipantStatus,
@@ -126,15 +126,7 @@ namespace Gordon360.Services.RecIM
                                                 .FirstOrDefault(),
                 IsAdmin = p.IsAdmin
             });
-            var res = new List<ParticipantViewModel>();
-            foreach (var user in p)
-            {
-                var stringID = $"{user.ID}";
-                var account = (ParticipantViewModel)_context.ACCOUNT
-                    .FirstOrDefault(a => a.gordon_id == stringID);
-                res.Add(account);
-            }        
-            return res;
+            return participants;
         }
 
         public async Task<ParticipantViewModel> PostParticipant(string username)
