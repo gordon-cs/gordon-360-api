@@ -29,6 +29,8 @@ namespace Gordon360.Services.RecIM
         }
         public MatchViewModel GetMatchByID(int matchID)
         {
+            var seriesID = _context.Match.FirstOrDefault(m => m.ID == matchID).SeriesID;
+            var activityID = _context.Series.FirstOrDefault(s => s.ID == seriesID).ActivityID;
             var match = _context.Match
                         .Where(m => m.ID == matchID)
                         .Select(m => new MatchViewModel
@@ -47,6 +49,14 @@ namespace Gordon360.Services.RecIM
                                         {
                                             Username = mp.ParticipantUsername
                                         }).AsEnumerable(),
+                            Activity = _context.Activity
+                                        .Where(a => a.ID == activityID)
+                                        .Select(a => new ActivityViewModel
+                                        {
+                                            ID = a.ID,
+                                            Name = a.Name
+                                        })
+                                        .FirstOrDefault(),
                             // Team will eventually be handled by TeamService 
                             Team = m.MatchTeam.Select(mt => new TeamViewModel
                             {
