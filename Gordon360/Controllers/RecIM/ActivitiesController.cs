@@ -86,7 +86,7 @@ namespace Gordon360.Controllers.RecIM
                 var activity = await _activityService.PostActivityAsync(username, newActivity);
                 return CreatedAtAction("CreateActivity", activity);
             }
-            return Unauthorized();
+            return Forbid();
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace Gordon360.Controllers.RecIM
                 var activity = await _activityService.UpdateActivityAsync(activityID, updatedActivity);
                 return CreatedAtAction("UpdateActivity", activity);
             }
-            return Unauthorized();
+            return Forbid();
         }
     }
 }

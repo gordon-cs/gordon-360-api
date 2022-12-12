@@ -53,7 +53,7 @@ namespace Gordon360.Controllers.RecIM
                 var sport = await _sportService.UpdateSportAsync(updatedSport);
                 return CreatedAtAction("UpdateSport", sport);
             }
-            return Unauthorized();
+            return Forbid();
         }
 
         [HttpPost]
@@ -67,7 +67,7 @@ namespace Gordon360.Controllers.RecIM
                 var sport = await _sportService.PostSportAsync(newSport);
                 return CreatedAtAction("UpdateSport", sport);
             }
-            return Unauthorized();
+            return Forbid();
         }
 
     }

@@ -96,7 +96,7 @@ namespace Gordon360.Controllers.RecIM
                 var stats = await _matchService.UpdateTeamStatsAsync(matchID, updatedMatch);
                 return CreatedAtAction("UpdateStats", stats);
             }
-            return Unauthorized();
+            return Forbid();
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace Gordon360.Controllers.RecIM
                 var match = await _matchService.UpdateMatchAsync(matchID, updatedMatch);
                 return CreatedAtAction("UpdateMatch", match);
             }
-            return Unauthorized();
+            return Forbid();
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace Gordon360.Controllers.RecIM
                 var match = await _matchService.PostMatchAsync(newMatch);
                 return CreatedAtAction("CreateMatch", match);
             }
-            return Unauthorized();
+            return Forbid();
         }
 
         /// <summary>
@@ -165,7 +165,7 @@ namespace Gordon360.Controllers.RecIM
                 var attendance = await _matchService.AddParticipantAttendanceAsync(username, matchID);
                 return CreatedAtAction("AddAttendance", attendance);
             }
-            return Unauthorized();
+            return Forbid();
         }
 
     }

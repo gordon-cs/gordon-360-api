@@ -97,7 +97,7 @@ namespace Gordon360.Controllers.RecIM
                 var participantTeam = await _teamService.AddUserToTeamAsync(teamID, participant);
                 return CreatedAtAction("AddParticipantToTeam", participantTeam);
             }
-            return Unauthorized();
+            return Forbid();
         }
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace Gordon360.Controllers.RecIM
                 var participantTeam = await _teamService.UpdateParticipantRoleAsync(teamID, participant);
                 return CreatedAtAction("UpdateTeamParticipant", participantTeam);
             }
-            return Unauthorized();
+            return Forbid();
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace Gordon360.Controllers.RecIM
                 var updatedTeam = await _teamService.UpdateTeamAsync(teamID, team);
                 return CreatedAtAction("UpdateTeamInfo", updatedTeam);
             }
-            return Unauthorized();
+            return Forbid();
 ;        }
     }
 }

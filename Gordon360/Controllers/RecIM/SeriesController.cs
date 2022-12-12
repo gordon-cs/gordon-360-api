@@ -84,7 +84,7 @@ namespace Gordon360.Controllers.RecIM
                 var series = await _seriesService.UpdateSeriesAsync(seriesID, updatedSeries);
                 return CreatedAtAction("UpdateSeries", series);
             }
-            return Unauthorized();
+            return Forbid();
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace Gordon360.Controllers.RecIM
                 var series = await _seriesService.PostSeriesAsync(newSeries, referenceSeriesID);
                 return CreatedAtAction("CreateSeries", series);
             }
-            return Unauthorized();
+            return Forbid();
         }
 
     }
