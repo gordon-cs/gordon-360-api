@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using Match = Gordon360.Models.CCT.Match;
 using Azure.Identity;
+using Microsoft.AspNetCore.Server.IIS;
 
 namespace Gordon360.Services.RecIM
 {
@@ -27,8 +28,6 @@ namespace Gordon360.Services.RecIM
         }
         public MatchViewModel GetMatchByID(int matchID)
         {
-            var seriesID = _context.Match.FirstOrDefault(m => m.ID == matchID).SeriesID;
-            var activityID = _context.Series.FirstOrDefault(s => s.ID == seriesID).ActivityID;
             var match = _context.Match
                         .Where(m => m.ID == matchID)
                         .Select(m => new MatchViewModel
@@ -40,7 +39,7 @@ namespace Gordon360.Services.RecIM
                                         {
                                             OwnID = mt.TeamID,
                                             OwnScore = mt.Score
-                                        }),
+                                        }).AsEnumerable(),
                             Time = m.Time,
                             Surface = _context.Surface
                                         .FirstOrDefault(s => s.ID == m.SurfaceID)
@@ -55,7 +54,11 @@ namespace Gordon360.Services.RecIM
                                             Username = mp.ParticipantUsername
                                         }).AsEnumerable(),
                             Activity = _context.Activity
-                                        .Where(a => a.ID == activityID)
+                                        .Where(a => a.ID == _context.Series
+                                                        .FirstOrDefault(s => s.ID == _context.Match
+                                                                                    .FirstOrDefault(m => m.ID == matchID)
+                                                        .SeriesID)
+                                        .ActivityID)
                                         .Select(a => new ActivityViewModel
                                         {
                                             ID = a.ID,
