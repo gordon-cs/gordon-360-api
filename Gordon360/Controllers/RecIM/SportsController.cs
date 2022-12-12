@@ -55,7 +55,7 @@ namespace Gordon360.Controllers.RecIM
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SPORT)]
         public async Task<ActionResult<SportViewModel>> CreateSport(SportUploadViewModel newSport)
         {
-            var sport = await _sportService.PostSport(newSport);
+            var sport = await _sportService.PostSportAsync(newSport);
             return CreatedAtAction("CreateSport", sport);
         }
 

@@ -44,6 +44,8 @@ namespace Gordon360.Authorization
         private CCTContext _CCTContext;
         private MyGordonContext _MyGordonContext;
 
+        private AccountService _accountService;
+
         // User position at the college and their id.
         private IEnumerable<AuthGroup> user_groups { get; set; }
         private string user_id { get; set; }
@@ -57,6 +59,7 @@ namespace Gordon360.Authorization
             var authenticatedUser = actionContext.HttpContext.User;
             _CCTContext = context.HttpContext.RequestServices.GetService<CCTContext>();
             _MyGordonContext = context.HttpContext.RequestServices.GetService<MyGordonContext>();
+            _accountService = context.HttpContext.RequestServices.GetService<AccountService>();
 
             user_name = AuthUtils.GetUsername(authenticatedUser);
             user_groups = AuthUtils.GetGroups(authenticatedUser);
@@ -478,7 +481,7 @@ namespace Gordon360.Authorization
                 case Resource.RECIM_MATCH:
                 case Resource.RECIM_SPORT:
                     {
-                        var participantService = new ParticipantService(context,accountService);
+                        var participantService = new ParticipantService(_CCTContext, _accountService);
                         return participantService.IsAdmin(user_name);
                     }
                 default: return false;
@@ -637,7 +640,7 @@ namespace Gordon360.Authorization
                         var isGroupAdmin = (await membershipService.GetGroupAdminMembershipsForActivityAsync(activityCode)).Any(x => x.IDNumber.ToString() == user_id);
                         if (isGroupAdmin)
                         {
-                            var activityService = context.HttpContext.RequestServices.GetRequiredService<IActivityService>();
+                            var activityService = context.HttpContext.RequestServices.GetRequiredService<Gordon360.Services.IActivityService>();
                             // If an activity is currently open, then a group admin has the ability to close it
                             if (activityService.IsOpen(activityCode, sessionCode))
                             {
@@ -679,25 +682,25 @@ namespace Gordon360.Authorization
                 case Resource.RECIM_SERIES:
                 case Resource.RECIM_SPORT:
                     {
-                        var participantService = new ParticipantService(context, accountService);
+                        var participantService = new ParticipantService(_CCTContext, _accountService);
                         return participantService.IsAdmin(user_name);
                     }
 
                 case Resource.RECIM_TEAM:
                     {
-                        var participantService = new ParticipantService(context, accountService);
-                        var matchService = new MatchService(context, participantService, accountService);
-                        var teamService = new TeamService(context, matchService, participantService, accountService);
+                        var participantService = new ParticipantService(_CCTContext, _accountService);
+                        var matchService = new MatchService(_CCTContext, _accountService);
+                        var teamService = new TeamService(_CCTContext, matchService, participantService, _accountService);
                         // return teamService.IsTeamCaptain(user_name, integer);
                         return true;
                     }
 
                 case Resource.RECIM_MATCH:
                     {
-                        var participantService = new ParticipantService(context, accountService);
-                        var matchService = new MatchService(context, participantService, accountService);
-                        var seriesService = new SeriesService(context, matchService);
-                        var activityService = new ActivityService(context, seriesService);
+                        var participantService = new ParticipantService(_CCTContext, _accountService);
+                        var matchService = new MatchService(_CCTContext, _accountService);
+                        var seriesService = new SeriesService(_CCTContext, matchService);
+                        var activityService = new Gordon360.Services.RecIM.ActivityService(_CCTContext, seriesService);
                         // var match = matchService.GetMatchByID(integer);
                         // var series = seriesService.GetSeriesByID(match.SeriesID);
                         // return activityService.IsReferee(user_name, series.ActivityID);

@@ -123,7 +123,7 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
             return activity;
         }
-        public async Task<ActivityCreatedViewModel> PostActivityAsync(string username, ActivityUploadViewModel a)
+        public async Task<ActivityCreatedViewModel> PostActivityAsync(ActivityUploadViewModel a)
         {
             var activity = new Activity
             {

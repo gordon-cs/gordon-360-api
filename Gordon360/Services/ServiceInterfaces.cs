@@ -315,7 +315,7 @@ namespace Gordon360.Services
             Models.ViewModels.RecIM.ActivityViewModel? GetActivityByID(int activityID);
             IEnumerable<Models.ViewModels.RecIM.ActivityViewModel> GetActivitiesByTime(DateTime? time);
             Task<ActivityCreatedViewModel> UpdateActivityAsync(int activytID, ActivityPatchViewModel updatedActivity);
-            Task<ActivityCreatedViewModel> PostActivityAsync(string username, ActivityUploadViewModel newActivity);
+            Task<ActivityCreatedViewModel> PostActivityAsync(ActivityUploadViewModel newActivity);
             Task<ParticipantActivityCreatedViewModel> PostParticipantActivityAsync(string username, int activityID, int privTypeID, bool isFreeAgent);
             bool IsReferee(string username, int activityID);
         }

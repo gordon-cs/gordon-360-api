@@ -79,7 +79,7 @@ namespace Gordon360.Controllers.RecIM
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_ACTIVITY)]
         public async Task<ActionResult<ActivityCreatedViewModel>> CreateActivity(ActivityUploadViewModel newActivity)
         {
-            var activity = await _activityService.PostActivityAsync(username, newActivity);
+            var activity = await _activityService.PostActivityAsync(newActivity);
             return CreatedAtAction("CreateActivity", activity);
         }
 
