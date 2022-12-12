@@ -17,14 +17,12 @@ namespace Gordon360.Services.RecIM
     public class MatchService : IMatchService
     {
         private readonly CCTContext _context;
-        private readonly IParticipantService _participantService;
         private readonly IAccountService _accountService;
 
 
-        public MatchService(CCTContext context, IParticipantService participantService, IAccountService accountService)
+        public MatchService(CCTContext context,  IAccountService accountService)
         {
             _context = context;
-            _participantService = participantService;
             _accountService = accountService;
         }
         public MatchViewModel GetMatchByID(int matchID)
@@ -36,6 +34,13 @@ namespace Gordon360.Services.RecIM
                         .Select(m => new MatchViewModel
                         {
                             ID = matchID,
+                            Scores = _context.MatchTeam
+                                        .Where(mt => mt.MatchID == matchID)
+                                        .Select(mt => new TeamMatchHistoryViewModel
+                                        {
+                                            OwnID = mt.TeamID,
+                                            OwnScore = mt.Score
+                                        }),
                             Time = m.Time,
                             Surface = _context.Surface
                                         .FirstOrDefault(s => s.ID == m.SurfaceID)
@@ -83,6 +88,7 @@ namespace Gordon360.Services.RecIM
                                                 mt1 => mt1.MatchID,
                                                 (mt0, mt1) => new
                                                 {
+                                                    OwnID = mt0.TeamID,
                                                     MatchID = mt0.MatchID,
                                                     OwnScore = mt0.Score,
                                                     OpposingID = mt1.TeamID,
@@ -97,6 +103,7 @@ namespace Gordon360.Services.RecIM
                                         matchTeamJoin => matchTeamJoin.MatchID,
                                         (match, matchTeamJoin) => new TeamMatchHistoryViewModel
                                         {
+                                            OwnID = matchTeamJoin.OwnID,
                                             MatchID = match.ID,
                                             Opponent = _context.Team.Where(t => t.ID == matchTeamJoin.OpposingID)
                                                 .Select(o => new TeamViewModel
@@ -119,7 +126,7 @@ namespace Gordon360.Services.RecIM
                                            {
                                                Win = st.Win,
                                                Loss = st.Loss,
-                                           })
+                                           }),
                             })
                         }).FirstOrDefault();
             return match; 
@@ -137,6 +144,7 @@ namespace Gordon360.Services.RecIM
                                         mt1 => mt1.MatchID,
                                         (mt0, mt1) => new
                                         {
+                                            OwnID = mt0.TeamID,
                                             MatchID = mt0.MatchID,
                                             OwnScore = mt0.Score,
                                             OpposingID = mt1.TeamID,
@@ -148,10 +156,12 @@ namespace Gordon360.Services.RecIM
                                                         : "Tie"
                                         }),
 
+
                                 match => match.ID,
                                 matchTeamJoin => matchTeamJoin.MatchID,
                                 (match, matchTeamJoin) => new TeamMatchHistoryViewModel
                                 {
+                                    OwnID = matchTeamJoin.OwnID,
                                     MatchID = match.ID,
                                     Opponent = _context.Team.Where(t => t.ID == matchTeamJoin.OpposingID)
                                         .Select(o => new TeamViewModel
