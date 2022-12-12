@@ -330,6 +330,7 @@ namespace Gordon360.Services
 
         public interface ITeamService
         {
+            double GetTeamSportsmanshipScore(int teamID);
             TeamViewModel GetTeamByID(int teamID);
             Task<TeamCreatedViewModel> PostTeamAsync(TeamUploadViewModel newTeam, string username);
             Task<ParticipantTeamViewModel> AddUserToTeamAsync(int teamID, ParticipantTeamUploadViewModel participant);

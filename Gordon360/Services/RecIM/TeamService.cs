@@ -29,6 +29,23 @@ namespace Gordon360.Services.RecIM
             _accountService = accountService;
         }
 
+        public double GetTeamSportsmanshipScore(int teamID)
+        {
+            var sportsmanshipScores = _context.Match
+                                    .Where(m => m.StatusID == 6)
+                                        .Join(_context.MatchTeam
+                                            .Where(mt => mt.TeamID == teamID),
+                                            m => m.ID,
+                                            mt => mt.MatchID,
+                                            (m, mt) => new { score = mt.Sportsmanship }
+                                        );
+            if (sportsmanshipScores.Count() == 0)
+            {
+                return 5;
+            }
+            return sportsmanshipScores.Average(ss => ss.score);
+        }
+
         public TeamViewModel GetTeamByID(int teamID)
         {
             var team = _context.Team
@@ -63,6 +80,7 @@ namespace Gordon360.Services.RecIM
                                         mt1 => mt1.MatchID,
                                         (mt0, mt1) => new
                                         {
+                                            OwnID = mt0.TeamID,
                                             MatchID = mt0.MatchID,
                                             OwnScore = mt0.Score,
                                             OpposingID = mt1.TeamID,
@@ -78,6 +96,7 @@ namespace Gordon360.Services.RecIM
                                 matchTeamJoin => matchTeamJoin.MatchID,
                                 (match, matchTeamJoin) => new TeamMatchHistoryViewModel
                                 {
+                                    OwnID = matchTeamJoin.OwnID,
                                     MatchID = match.ID,
                                     Opponent = _context.Team.Where(t => t.ID == matchTeamJoin.OpposingID)
                                         .Select(o => new TeamViewModel
@@ -114,6 +133,7 @@ namespace Gordon360.Services.RecIM
                                                     .Score)
                                                     .Count(),
                                             }).AsEnumerable(),
+                                Sportsmanship = GetTeamSportsmanshipScore(teamID)
 
 
 
