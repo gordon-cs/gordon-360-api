@@ -98,6 +98,7 @@ namespace Gordon360.Services.RecIM
                                     (pt, t) => new TeamViewModel
                                     {
                                         ID = t.ID,
+                                        ActivityID = t.ActivityID,
                                         Name = t.Name,
                                         Status = _context.TeamStatus
                                                     .FirstOrDefault(ts => ts.ID == t.StatusID)
@@ -110,16 +111,22 @@ namespace Gordon360.Services.RecIM
         public IEnumerable<ParticipantViewModel> GetParticipants()
         {
             //temporary, slow and will be adjusted after we implement views in the DB
-            var p = _context.Participant.AsEnumerable();
-            var res = new List<ParticipantViewModel>();
-            foreach (var user in p)
+            var participants = _context.Participant.Select(p => new ParticipantViewModel
             {
-                var stringID = $"{user.ID}";
-                var account = (ParticipantViewModel)_context.ACCOUNT
-                    .FirstOrDefault(a => a.gordon_id == stringID);
-                res.Add(account);
-            }        
-            return res;
+                Username = p.Username,
+                Email = _accountService.GetAccountByUsername(p.Username).Email,
+                Status = _context.ParticipantStatusHistory
+                                                .Where(psh => psh.ParticipantUsername == p.Username)
+                                                .OrderByDescending(psh => psh.ID)
+                                                .Take(1)
+                                                    .Join(_context.ParticipantStatus,
+                                                        psh => psh.StatusID,
+                                                        ps => ps.ID,
+                                                        (psh, ps) => ps.Description)
+                                                .FirstOrDefault(),
+                IsAdmin = p.IsAdmin
+            });
+            return participants;
         }
 
         public async Task<ParticipantViewModel> PostParticipantAsync(string username)

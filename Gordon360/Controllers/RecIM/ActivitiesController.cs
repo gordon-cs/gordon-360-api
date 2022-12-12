@@ -77,7 +77,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPost]
         [Route("")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_ACTIVITY)]
-        public async Task<ActionResult> CreateActivity(ActivityUploadViewModel newActivity)
+        public async Task<ActionResult<ActivityCreatedViewModel>> CreateActivity(ActivityUploadViewModel newActivity)
         {
             var activity = await _activityService.PostActivityAsync(username, newActivity);
             return CreatedAtAction("CreateActivity", activity);
@@ -92,7 +92,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPatch]
         [Route("{activityID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_ACTIVITY)]
-        public async Task<ActionResult> UpdateActivity(int activityID, ActivityPatchViewModel updatedActivity)
+        public async Task<ActionResult<ActivityCreatedViewModel>> UpdateActivity(int activityID, ActivityPatchViewModel updatedActivity)
         {
             var activity = await _activityService.UpdateActivityAsync(activityID, updatedActivity);
             return CreatedAtAction("UpdateActivity", activity);

@@ -97,7 +97,7 @@ namespace Gordon360.Services.RecIM
                                     Status = _context.TeamStatus
                                                 .FirstOrDefault(ts => ts.ID == t.StatusID)
                                                 .Description,
-                                                
+                                    ActivityID = t.ActivityID,
                                     Logo = t.Logo
                                 })
                             

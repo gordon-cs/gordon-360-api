@@ -80,7 +80,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPatch]
         [Route("{matchID}/stats")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_MATCH, integer = [FromQueryAttribute] matchID)]
-        public async Task<ActionResult> UpdateStats(int matchID, MatchStatsPatchViewModel updatedMatch)
+        public async Task<ActionResult<MatchTeamViewModel>> UpdateStats(int matchID, MatchStatsPatchViewModel updatedMatch)
         {
             var stats = await _matchService.UpdateTeamStatsAsync(matchID, updatedMatch);
             return CreatedAtAction("UpdateStats", stats);
@@ -95,7 +95,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPatch]
         [Route("{matchID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_MATCH, integer = [FromQueryAttribute] matchID)]
-        public async Task<ActionResult> UpdateMatch(int matchID, MatchPatchViewModel updatedMatch)
+        public async Task<ActionResult<MatchCreatedViewModel>> UpdateMatch(int matchID, MatchPatchViewModel updatedMatch)
         {
             var match = await _matchService.UpdateMatchAsync(matchID, updatedMatch);
             return CreatedAtAction("UpdateMatch", match);
@@ -109,7 +109,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPost]
         [Route("")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_MATCH)]
-        public async Task<ActionResult> CreateMatch(MatchUploadViewModel newMatch)
+        public async Task<ActionResult<MatchCreatedViewModel>> CreateMatch(MatchUploadViewModel newMatch)
         {
             var match = await _matchService.PostMatchAsync(newMatch);
             return CreatedAtAction("CreateMatch", match);
@@ -124,7 +124,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPost]
         [Route("{matchID}/attendance")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_MATCH, integer = [FromQueryAttribute] matchID)]
-        public async Task<ActionResult> AddAttendance(int matchID, [FromBody] string username)
+        public async Task<ActionResult<MatchParticipantViewModel>> AddAttendance(int matchID, [FromBody] string username)
         {
             var attendance = await _matchService.AddParticipantAttendanceAsync(username, matchID);
             return CreatedAtAction("AddAttendance", attendance);

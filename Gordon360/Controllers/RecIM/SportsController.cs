@@ -44,7 +44,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPatch]
         [Route("{sportID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_SPORT)]
-        public async Task<ActionResult> UpdateSport(int sportID, SportViewModel updatedSport)
+        public async Task<ActionResult<SportViewModel>> UpdateSport(int sportID, SportViewModel updatedSport)
         {
             var sport = await _sportService.UpdateSportAsync(updatedSport);
             return CreatedAtAction("UpdateSport", sport);
@@ -53,10 +53,10 @@ namespace Gordon360.Controllers.RecIM
         [HttpPost]
         [Route("")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SPORT)]
-        public async Task<ActionResult> CreateSport(SportUploadViewModel newSport)
+        public async Task<ActionResult<SportViewModel>> CreateSport(SportUploadViewModel newSport)
         {
-            var sport = await _sportService.PostSportAsync(newSport);
-            return CreatedAtAction("UpdateSport", sport);
+            var sport = await _sportService.PostSport(newSport);
+            return CreatedAtAction("CreateSport", sport);
         }
 
     }
