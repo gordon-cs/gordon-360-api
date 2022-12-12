@@ -7,6 +7,7 @@ namespace Gordon360.Models.ViewModels.RecIM
     public class MatchViewModel
     {
         public int ID { get; set; }
+        public IEnumerable<TeamMatchHistoryViewModel> Scores { get; set; }
         public DateTime Time { get; set; }
         public string Surface { get; set; }
         public string Status { get; set; }
