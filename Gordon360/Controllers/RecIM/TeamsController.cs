@@ -2,6 +2,7 @@ using Gordon360.Authorization;
 using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
+using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -87,17 +88,12 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPost]
         [Route("{teamID}/participants")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_TEAM)]
         public async Task<ActionResult> AddParticipantToTeam(int teamID, ParticipantTeamUploadViewModel participant)
         {
-            var username = AuthUtils.GetUsername(User);
-            var isTeamCaptain = _teamService.IsTeamCaptain(username, teamID);
-            if (isTeamCaptain)
-            {
-                participant.RoleTypeID = participant.RoleTypeID ?? 3;
-                var participantTeam = await _teamService.AddUserToTeamAsync(teamID, participant);
-                return CreatedAtAction("AddParticipantToTeam", participantTeam);
-            }
-            return Forbid();
+            participant.RoleTypeID = participant.RoleTypeID ?? 3;
+            var participantTeam = await _teamService.AddUserToTeamAsync(teamID, participant);
+            return CreatedAtAction("AddParticipantToTeam", participantTeam);
         }
 
         /// <summary>
@@ -108,17 +104,12 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPatch]
         [Route("{teamID}/participants")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_TEAM)]
         public async Task<ActionResult> UpdateTeamParticipant(int teamID, ParticipantTeamUploadViewModel participant)
         {
-            var username = AuthUtils.GetUsername(User);
-            var isTeamCaptain = _teamService.IsTeamCaptain(username, teamID);
-            if (isTeamCaptain)
-            {
-                participant.RoleTypeID = participant.RoleTypeID ?? 3;
-                var participantTeam = await _teamService.UpdateParticipantRoleAsync(teamID, participant);
-                return CreatedAtAction("UpdateTeamParticipant", participantTeam);
-            }
-            return Forbid();
+            participant.RoleTypeID = participant.RoleTypeID ?? 3;
+            var participantTeam = await _teamService.UpdateParticipantRoleAsync(teamID, participant);
+            return CreatedAtAction("UpdateTeamParticipant", participantTeam);
         }
 
         /// <summary>
@@ -129,16 +120,11 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPatch]
         [Route("{teamID}")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_TEAM)]
         public async Task<ActionResult> UpdateTeamInfo(int teamID, TeamPatchViewModel team)
         {
-            var username = AuthUtils.GetUsername(User);
-            var isTeamCaptain = _teamService.IsTeamCaptain(username, teamID);
-            if (isTeamCaptain)
-            {
-                var updatedTeam = await _teamService.UpdateTeamAsync(teamID, team);
-                return CreatedAtAction("UpdateTeamInfo", updatedTeam);
-            }
-            return Forbid();
+            var updatedTeam = await _teamService.UpdateTeamAsync(teamID, team);
+            return CreatedAtAction("UpdateTeamInfo", updatedTeam);
 ;        }
     }
 }

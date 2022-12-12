@@ -2,6 +2,7 @@
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
 using Gordon360.Authorization;
+using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,16 +19,10 @@ namespace Gordon360.Controllers.RecIM
     public class MatchesController : GordonControllerBase
     {
         private readonly IMatchService _matchService;
-        private readonly ISeriesService _seriesService;
-        private readonly IActivityService _activityService;
-        private readonly IParticipantService _participantService;
 
-        public MatchesController(IMatchService matchService, ISeriesService seriesService, IActivityService activityService, IParticipantService participantService)
+        public MatchesController(IMatchService matchServicece)
         {
             _matchService = matchService;
-            _seriesService = seriesService;
-            _activityService = activityService;
-            _participantService = participantService;
         }
 
         /// <summary>
@@ -84,19 +79,11 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPatch]
         [Route("{matchID}/stats")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_MATCH, integer = [FromQueryAttribute] matchID)]
         public async Task<ActionResult> UpdateStats(int matchID, MatchStatsPatchViewModel updatedMatch)
         {
-            var username = AuthUtils.GetUsername(User);
-            var match = _matchService.GetMatchByID(matchID);
-            var series = _seriesService.GetSeriesByID(match.SeriesID);
-            var activity = _activityService.GetActivityByID(series.ActivityID);
-            var isReferee = _activityService.IsReferee(username, activity.ID);
-            if (isReferee)
-            {
-                var stats = await _matchService.UpdateTeamStatsAsync(matchID, updatedMatch);
-                return CreatedAtAction("UpdateStats", stats);
-            }
-            return Forbid();
+            var stats = await _matchService.UpdateTeamStatsAsync(matchID, updatedMatch);
+            return CreatedAtAction("UpdateStats", stats);
         }
 
         /// <summary>
@@ -107,19 +94,11 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPatch]
         [Route("{matchID}")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_MATCH, integer = [FromQueryAttribute] matchID)]
         public async Task<ActionResult> UpdateMatch(int matchID, MatchPatchViewModel updatedMatch)
         {
-            var username = AuthUtils.GetUsername(User);
-            var updatingMatch = _matchService.GetMatchByID(matchID);
-            var series = _seriesService.GetSeriesByID(updatingMatch.SeriesID);
-            var activity = _activityService.GetActivityByID(series.ActivityID);
-            var isReferee = _activityService.IsReferee(username, activity.ID);
-            if (isReferee)
-            {
-                var match = await _matchService.UpdateMatchAsync(matchID, updatedMatch);
-                return CreatedAtAction("UpdateMatch", match);
-            }
-            return Forbid();
+            var match = await _matchService.UpdateMatchAsync(matchID, updatedMatch);
+            return CreatedAtAction("UpdateMatch", match);
         }
 
         /// <summary>
@@ -129,16 +108,11 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPost]
         [Route("")]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_MATCH)]
         public async Task<ActionResult> CreateMatch(MatchUploadViewModel newMatch)
         {
-            var username = AuthUtils.GetUsername(User);
-            var isAdmin = _participantService.IsAdmin(username);
-            if (isAdmin)
-            {
-                var match = await _matchService.PostMatchAsync(newMatch);
-                return CreatedAtAction("CreateMatch", match);
-            }
-            return Forbid();
+            var match = await _matchService.PostMatchAsync(newMatch);
+            return CreatedAtAction("CreateMatch", match);
         }
 
         /// <summary>
@@ -149,23 +123,11 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPost]
         [Route("{matchID}/attendance")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_MATCH, integer = [FromQueryAttribute] matchID)]
         public async Task<ActionResult> AddAttendance(int matchID, [FromBody] string username)
         {
-            // We don't have to send username through requests, Microsoft.AspNetCore is able
-            // to get/set the user of this request.
-            // We'll refactor the routes in the future PRs
-            // var username = AuthUtils.GetUsername(User);
-
-            var match = _matchService.GetMatchByID(matchID);
-            var series = _seriesService.GetSeriesByID(match.SeriesID);
-            var activity = _activityService.GetActivityByID(series.ActivityID);
-            var isReferee = _activityService.IsReferee(username, activity.ID);
-            if (isReferee)
-            {
-                var attendance = await _matchService.AddParticipantAttendanceAsync(username, matchID);
-                return CreatedAtAction("AddAttendance", attendance);
-            }
-            return Forbid();
+            var attendance = await _matchService.AddParticipantAttendanceAsync(username, matchID);
+            return CreatedAtAction("AddAttendance", attendance);
         }
 
     }

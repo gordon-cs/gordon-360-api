@@ -2,6 +2,7 @@
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
 using Gordon360.Authorization;
+using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,12 +19,10 @@ namespace Gordon360.Controllers.RecIM
     public class ActivitiesController : GordonControllerBase
     {
         private readonly IActivityService _activityService;
-        private readonly IParticipantService _participantService;
 
-        public ActivitiesController(IActivityService activityService, IParticipantService participantService)
+        public ActivitiesController(IActivityService activityService)
         {
             _activityService = activityService;
-            _participantService = participantService;
         }
 
         ///<summary>Gets a list of all Activities by parameter </summary>
@@ -77,16 +76,11 @@ namespace Gordon360.Controllers.RecIM
         /// <returns>Posted Activity</returns>
         [HttpPost]
         [Route("")]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_ACTIVITY)]
         public async Task<ActionResult> CreateActivity(ActivityUploadViewModel newActivity)
         {
-            var username = AuthUtils.GetUsername(User);
-            var isAdmin = _participantService.IsAdmin(username);
-            if (isAdmin)
-            {
-                var activity = await _activityService.PostActivityAsync(username, newActivity);
-                return CreatedAtAction("CreateActivity", activity);
-            }
-            return Forbid();
+            var activity = await _activityService.PostActivityAsync(username, newActivity);
+            return CreatedAtAction("CreateActivity", activity);
         }
 
         /// <summary>
@@ -97,16 +91,11 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPatch]
         [Route("{activityID}")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_ACTIVITY)]
         public async Task<ActionResult> UpdateActivity(int activityID, ActivityPatchViewModel updatedActivity)
         {
-            var username = AuthUtils.GetUsername(User);
-            var isAdmin = _participantService.IsAdmin(username);
-            if (isAdmin)
-            {
-                var activity = await _activityService.UpdateActivityAsync(activityID, updatedActivity);
-                return CreatedAtAction("UpdateActivity", activity);
-            }
-            return Forbid();
+            var activity = await _activityService.UpdateActivityAsync(activityID, updatedActivity);
+            return CreatedAtAction("UpdateActivity", activity);
         }
     }
 }

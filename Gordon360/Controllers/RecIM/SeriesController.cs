@@ -2,6 +2,7 @@
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
 using Gordon360.Authorization;
+using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,12 +19,10 @@ namespace Gordon360.Controllers.RecIM
     public class SeriesController : GordonControllerBase
     {
         private readonly ISeriesService _seriesService;
-        private readonly IParticipantService _participantService;
 
-        public SeriesController(ISeriesService seriesService, IParticipantService participantService)
+        public SeriesController(ISeriesService seriesService)
         {
             _seriesService = seriesService;
-            _participantService = participantService;
         }
 
         /// <summary>
@@ -75,16 +74,11 @@ namespace Gordon360.Controllers.RecIM
         /// <returns>modified series</returns>
         [HttpPatch]
         [Route("{seriesID}")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_SERIES)]
         public async Task<ActionResult> UpdateSeriesAsync(int seriesID, SeriesPatchViewModel updatedSeries)
         {
-            var username = AuthUtils.GetUsername(User);
-            var isAdmin = _participantService.IsAdmin(username);
-            if (isAdmin)
-            {
-                var series = await _seriesService.UpdateSeriesAsync(seriesID, updatedSeries);
-                return CreatedAtAction("UpdateSeries", series);
-            }
-            return Forbid();
+            var series = await _seriesService.UpdateSeriesAsync(seriesID, updatedSeries);
+            return CreatedAtAction("UpdateSeries", series);
         }
 
         /// <summary>
@@ -95,16 +89,11 @@ namespace Gordon360.Controllers.RecIM
         /// <returns>created series</returns>
         [HttpPost]
         [Route("")]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SERIES)]
         public async Task<ActionResult> CreateSeries(SeriesUploadViewModel newSeries, [FromQuery]int? referenceSeriesID)
         {
-            var username = AuthUtils.GetUsername(User);
-            var isAdmin = _participantService.IsAdmin(username);
-            if (isAdmin)
-            {
-                var series = await _seriesService.PostSeriesAsync(newSeries, referenceSeriesID);
-                return CreatedAtAction("CreateSeries", series);
-            }
-            return Forbid();
+            var series = await _seriesService.PostSeriesAsync(newSeries, referenceSeriesID);
+            return CreatedAtAction("CreateSeries", series);
         }
 
     }

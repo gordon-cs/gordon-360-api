@@ -2,6 +2,7 @@
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.MyGordon.Context;
 using Gordon360.Services;
+using Gordon360.Services.RecIM;
 using Gordon360.Static.Methods;
 using Gordon360.Static.Names;
 using Gordon360.Utilities;
@@ -35,6 +36,8 @@ namespace Gordon360.Authorization
         public string resource { get; set; }
         // Operation to be performed: Will get as parameters to the attribute
         public string operation { get; set; }
+        // Int Variable to be parsed: Will get as parameters to the attribute
+        public int integer { get; set; }
 
         private ActionExecutingContext context;
         private IWebHostEnvironment _webHostEnvironment;
@@ -65,7 +68,7 @@ namespace Gordon360.Authorization
                 return;
             }
 
-            bool isAuthorized = await CanPerformOperationAsync(resource, operation);
+            bool isAuthorized = await CanPerformOperationAsync(resource, operation, integer);
             if (!isAuthorized)
             {
                 throw new UnauthorizedAccessException("Authorization has been denied for this request.");
@@ -75,7 +78,7 @@ namespace Gordon360.Authorization
         }
 
 
-        private async Task<bool> CanPerformOperationAsync(string resource, string operation)
+        private async Task<bool> CanPerformOperationAsync(string resource, string operation, int? integer)
             => operation switch
             {
                 Operation.READ_ONE => await CanReadOneAsync(resource),
@@ -83,7 +86,7 @@ namespace Gordon360.Authorization
                 Operation.READ_PARTIAL => await CanReadPartialAsync(resource),
                 Operation.ADD => await CanAddAsync(resource),
                 Operation.DENY_ALLOW => await CanDenyAllowAsync(resource),
-                Operation.UPDATE => await CanUpdateAsync(resource),
+                Operation.UPDATE => await CanUpdateAsync(resource, integer),
                 Operation.DELETE => await CanDeleteAsync(resource),
                 Operation.READ_PUBLIC => CanReadPublic(resource),
                 _ => false,
@@ -470,10 +473,18 @@ namespace Gordon360.Authorization
                     return true;
                 case Resource.NEWS:
                     return true;
+                case Resource.RECIM_ACTIVITY:
+                case Resource.RECIM_SERIES:
+                case Resource.RECIM_MATCH:
+                case Resource.RECIM_SPORT:
+                    {
+                        var participantService = new ParticipantService(context,accountService);
+                        return participantService.IsAdmin(user_name);
+                    }
                 default: return false;
             }
         }
-        private async Task<bool> CanUpdateAsync(string resource)
+        private async Task<bool> CanUpdateAsync(string resource, int? integer)
         {
             switch (resource)
             {
@@ -646,21 +657,50 @@ namespace Gordon360.Authorization
                     }
 
                 case Resource.NEWS:
-                    var newsID = context.ActionArguments["newsID"];
-                    var newsService = new NewsService(_MyGordonContext, _CCTContext, _webHostEnvironment);
-                    var newsItem = newsService.Get((int)newsID);
-                    // only unapproved posts may be updated
-                    var approved = newsItem.Accepted;
-                    if (approved == null || approved == true)
+                    {
+                        var newsID = context.ActionArguments["newsID"];
+                        var newsService = new NewsService(_MyGordonContext, _CCTContext, _webHostEnvironment);
+                        var newsItem = newsService.Get((int)newsID);
+                        // only unapproved posts may be updated
+                        var approved = newsItem.Accepted;
+                        if (approved == null || approved == true)
+                            return false;
+                        // can update if user is admin
+                        if (user_groups.Contains(AuthGroup.SiteAdmin))
+                            return true;
+                        // can update if user is news item author
+                        string newsAuthor = newsItem.ADUN;
+                        if (user_name == newsAuthor)
+                            return true;
                         return false;
-                    // can update if user is admin
-                    if (user_groups.Contains(AuthGroup.SiteAdmin))
-                        return true;
-                    // can update if user is news item author
-                    string newsAuthor = newsItem.ADUN;
-                    if (user_name == newsAuthor)
-                        return true;
-                    return false;
+                    }
+                    
+                case Resource.RECIM_ACTIVITY:
+                case Resource.RECIM_SERIES:
+                case Resource.RECIM_SPORT:
+                    {
+                        var participantService = new ParticipantService(context, accountService);
+                        return participantService.IsAdmin(user_name);
+                    }
+
+                case Resource.RECIM_TEAM:
+                    {
+                        var participantService = new ParticipantService(context, accountService);
+                        var matchService = new MatchService(context, participantService, accountService);
+                        var teamService = new TeamService(context, matchService, participantService, accountService);
+                        return teamService.IsTeamCaptain(user_name, integer);
+                    }
+
+                case Resource.RECIM_MATCH:
+                    {
+                        var participantService = new ParticipantService(context, accountService);
+                        var matchService = new MatchService(context, participantService, accountService);
+                        var seriesService = new SeriesService(context, matchService);
+                        var activityService = new ActivityService(context, seriesService);
+                        var match = matchService.GetMatchByID(integer);
+                        var series = seriesService.GetSeriesByID(match.SeriesID);
+                        return activityService.IsReferee(user_name, series.ActivityID);
+                    }
                 default: return false;
             }
         }
