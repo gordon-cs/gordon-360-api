@@ -688,23 +688,23 @@ namespace Gordon360.Authorization
 
                 case Resource.RECIM_TEAM:
                     {
+                        var teamID = (int)context.ActionArguments["teamID"];
                         var participantService = new ParticipantService(_CCTContext, _accountService);
                         var matchService = new MatchService(_CCTContext, _accountService);
                         var teamService = new TeamService(_CCTContext, matchService, participantService, _accountService);
-                        // return teamService.IsTeamCaptain(user_name, integer);
-                        return true;
+                        return teamService.IsTeamCaptain(user_name, teamID);
                     }
 
                 case Resource.RECIM_MATCH:
                     {
+                        var matchID = (int)context.ActionArguments["matchID"];
                         var participantService = new ParticipantService(_CCTContext, _accountService);
                         var matchService = new MatchService(_CCTContext, _accountService);
                         var seriesService = new SeriesService(_CCTContext, matchService);
                         var activityService = new Gordon360.Services.RecIM.ActivityService(_CCTContext, seriesService);
-                        // var match = matchService.GetMatchByID(integer);
-                        // var series = seriesService.GetSeriesByID(match.SeriesID);
-                        // return activityService.IsReferee(user_name, series.ActivityID);
-                        return true;
+                        var match = matchService.GetMatchByID(matchID);
+                        var series = seriesService.GetSeriesByID(match.SeriesID);
+                        return activityService.IsReferee(user_name, series.ActivityID);
                     }
                 default: return false;
             }
