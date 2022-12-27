@@ -36,8 +36,6 @@ namespace Gordon360.Authorization
         public string resource { get; set; }
         // Operation to be performed: Will get as parameters to the attribute
         public string operation { get; set; }
-        // Int Variable to be parsed: Will get as parameters to the attribute
-        // public int integer { get; set; }
 
         private ActionExecutingContext context;
         private IWebHostEnvironment _webHostEnvironment;
@@ -692,7 +690,7 @@ namespace Gordon360.Authorization
                         var participantService = new ParticipantService(_CCTContext, _accountService);
                         var matchService = new MatchService(_CCTContext, _accountService);
                         var teamService = new TeamService(_CCTContext, matchService, participantService, _accountService);
-                        return teamService.IsTeamCaptain(user_name, teamID);
+                        return teamService.IsTeamCaptain(user_name, teamID) || participantService.IsAdmin(user_name);
                     }
 
                 case Resource.RECIM_MATCH:
@@ -704,7 +702,7 @@ namespace Gordon360.Authorization
                         var activityService = new Gordon360.Services.RecIM.ActivityService(_CCTContext, seriesService);
                         var match = matchService.GetMatchByID(matchID);
                         var series = seriesService.GetSeriesByID(match.SeriesID);
-                        return activityService.IsReferee(user_name, series.ActivityID);
+                        return activityService.IsReferee(user_name, series.ActivityID) || participantService.IsAdmin(user_name);
                     }
                 default: return false;
             }
