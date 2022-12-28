@@ -7,7 +7,7 @@ namespace Gordon360.Models.ViewModels.RecIM
     public class TeamViewModel
     {
         public int ID { get; set; }
-        public int ActivityID { get; set; }
+        public ActivityViewModel Activity { get; set; }
         public string? Name { get; set; }
         public string? Status { get; set; }
         public string? Logo { get; set; }
