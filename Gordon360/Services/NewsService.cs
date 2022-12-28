@@ -19,14 +19,16 @@ namespace Gordon360.Services
         private readonly MyGordonContext _context;
         private readonly CCTContext _contextCCT;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly ServerUtils _serverUtils;
 
         private string NewsUploadsPath => Path.Combine(_webHostEnvironment.ContentRootPath, "browseable/uploads/news");
 
-        public NewsService(MyGordonContext context, CCTContext contextCCT, IWebHostEnvironment webHostEnvironment)
+        public NewsService(MyGordonContext context, CCTContext contextCCT, IWebHostEnvironment webHostEnvironment, ServerUtils serverUtils)
         {
             _context = context;
             _contextCCT = contextCCT;
             _webHostEnvironment = webHostEnvironment;
+            _serverUtils = serverUtils;
         }
 
         /// <summary>
@@ -158,11 +160,28 @@ namespace Gordon360.Services
             _context.StudentNews.Add(itemToSubmit);
             if (itemToSubmit.Image != "")
             {
-                string fileName = itemToSubmit.SNID + ".jpg";
-                string imagePath = NewsUploadsPath + fileName;
+                // Put current DateTime in filename so the browser knows it's a new file and refreshes cache
+                var filename = $"canvasImage_{DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}.png";
+                var newsId = itemToSubmit.SNID;
+                var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", newsId.ToString(), filename);
+
+                var serverAddress = _serverUtils.GetAddress();
+                if (serverAddress is not string) throw new Exception("Could not upload Involvement Image: Server Address is null");
+
+                var url = $"{serverAddress}browseable/uploads/{newsId}/{filename}";
+
+                //delete old image file if it exists.
+                if (Path.GetDirectoryName(imagePath) is string directory && Directory.Exists(directory))
+                {
+                    foreach (FileInfo file in new DirectoryInfo(directory).GetFiles())
+                    {
+                        file.Delete();
+                    }
+                }
+
                 ImageUtils.UploadImage(imagePath, itemToSubmit.Image);
 
-                itemToSubmit.Image = imagePath;
+                itemToSubmit.Image = url;
             }
 
             _context.SaveChanges();

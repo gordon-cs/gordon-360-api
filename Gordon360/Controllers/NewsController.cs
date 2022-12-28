@@ -23,9 +23,9 @@ namespace Gordon360.Controllers
     {
         private readonly INewsService _newsService;
 
-        public NewsController(CCTContext context, MyGordonContext myGordonContext, IWebHostEnvironment webHostEnvironment)
+        public NewsController(CCTContext context, MyGordonContext myGordonContext, IWebHostEnvironment webHostEnvironment, ServerUtils serverUtils)
         {
-            _newsService = new NewsService(myGordonContext, context, webHostEnvironment);
+            _newsService = new NewsService(myGordonContext, context, webHostEnvironment, serverUtils);
         }
 
         /// <summary>Gets a news item by id from the database</summary>
