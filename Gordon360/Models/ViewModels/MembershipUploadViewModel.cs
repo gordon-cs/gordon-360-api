@@ -20,21 +20,23 @@ namespace Gordon360.Models.ViewModels
                 ACT_CDE = this.Activity,
                 SESS_CDE = this.Session,
                 ID_NUM = gordonId,
-                BEGIN_DTE = beginDate,
                 PART_CDE = this.Participation,
+                BEGIN_DTE = beginDate,
                 COMMENT_TXT = this.CommentText,
                 GRP_ADMIN = this.GroupAdmin,
                 PRIVACY = this.Privacy,
-                USER_NAME = Environment.UserName
+                USER_NAME = Environment.UserName,
+                JOB_NAME = "360"
             };
         }
 
-        public static implicit operator MembershipUploadViewModel(REQUEST request)
+        public static MembershipUploadViewModel FromRequest(REQUEST request, String username)
         {
             return new MembershipUploadViewModel
             {
                 Activity = request.ACT_CDE,
                 Session = request.SESS_CDE,
+                Username = username,
                 Participation = request.PART_CDE,
                 CommentText = request.COMMENT_TXT,
                 GroupAdmin = false,
