@@ -48,11 +48,17 @@ namespace Gordon360.Services
             DateTime sessionBegin = currentSession.SessionBeginDate.Value;
             DateTime startTime = DateTime.Today;
 
+            int daysLeft = (sessionEnd - startTime).TotalDays;
+            // Account for possible negative value in between sessions
+            daysLeft = daysLeft < 0 ? 0 : daysLeft;
+
+            int daysInSemester = (sessionEnd - sessionBegin).TotalDays;
+
             return new double[2] {
             // Days left in semester
-            (sessionEnd - startTime).TotalDays,
+            daysLeft,
             // Total days in the semester
-            (sessionEnd - sessionBegin).TotalDays
+            daysInSemester
             };
         }
 
