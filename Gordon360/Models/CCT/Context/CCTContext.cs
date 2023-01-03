@@ -51,17 +51,20 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<Housing_Halls> Housing_Halls { get; set; }
         public virtual DbSet<Information_Change_Request> Information_Change_Request { get; set; }
         public virtual DbSet<Internships_as_Involvements> Internships_as_Involvements { get; set; }
+        public virtual DbSet<InvolvementOffering> InvolvementOffering { get; set; }
         public virtual DbSet<JENZ_ACT_CLUB_DEF> JENZ_ACT_CLUB_DEF { get; set; }
         public virtual DbSet<JNZB_ACTIVITIES> JNZB_ACTIVITIES { get; set; }
         public virtual DbSet<MEMBERSHIP> MEMBERSHIP { get; set; }
         public virtual DbSet<MYSCHEDULE> MYSCHEDULE { get; set; }
         public virtual DbSet<Mailboxes> Mailboxes { get; set; }
         public virtual DbSet<Majors> Majors { get; set; }
+        public virtual DbSet<MembershipView> MembershipView { get; set; }
         public virtual DbSet<Message_Rooms> Message_Rooms { get; set; }
         public virtual DbSet<Messages> Messages { get; set; }
         public virtual DbSet<PART_DEF> PART_DEF { get; set; }
         public virtual DbSet<Police> Police { get; set; }
         public virtual DbSet<REQUEST> REQUEST { get; set; }
+        public virtual DbSet<RequestView> RequestView { get; set; }
         public virtual DbSet<RoomAssign> RoomAssign { get; set; }
         public virtual DbSet<Rooms> Rooms { get; set; }
         public virtual DbSet<Save_Bookings> Save_Bookings { get; set; }
@@ -147,6 +150,8 @@ namespace Gordon360.Models.CCT.Context
             modelBuilder.Entity<Countries>(entity =>
             {
                 entity.ToView("Countries");
+
+                entity.Property(e => e.CTY).IsFixedLength();
             });
 
             modelBuilder.Entity<DiningInfo>(entity =>
@@ -284,6 +289,21 @@ namespace Gordon360.Models.CCT.Context
                 entity.Property(e => e.YR_CDE).IsFixedLength();
             });
 
+            modelBuilder.Entity<InvolvementOffering>(entity =>
+            {
+                entity.ToView("InvolvementOffering");
+
+                entity.Property(e => e.ActivityCode).IsFixedLength();
+
+                entity.Property(e => e.ActivityDescription).IsFixedLength();
+
+                entity.Property(e => e.ActivityType).IsFixedLength();
+
+                entity.Property(e => e.ActivityTypeDescription).IsFixedLength();
+
+                entity.Property(e => e.SessionCode).IsFixedLength();
+            });
+
             modelBuilder.Entity<JENZ_ACT_CLUB_DEF>(entity =>
             {
                 entity.ToView("JENZ_ACT_CLUB_DEF");
@@ -347,6 +367,21 @@ namespace Gordon360.Models.CCT.Context
                 entity.ToView("Majors");
             });
 
+            modelBuilder.Entity<MembershipView>(entity =>
+            {
+                entity.ToView("MembershipView");
+
+                entity.Property(e => e.ActivityCode).IsFixedLength();
+
+                entity.Property(e => e.ActivityDescription).IsFixedLength();
+
+                entity.Property(e => e.Participation).IsFixedLength();
+
+                entity.Property(e => e.ParticipationDescription).IsFixedLength();
+
+                entity.Property(e => e.SessionCode).IsFixedLength();
+            });
+
             modelBuilder.Entity<Message_Rooms>(entity =>
             {
                 entity.HasKey(e => e.room_id)
@@ -377,6 +412,21 @@ namespace Gordon360.Models.CCT.Context
                 entity.Property(e => e.PART_CDE).IsFixedLength();
 
                 entity.Property(e => e.SESS_CDE).IsFixedLength();
+            });
+
+            modelBuilder.Entity<RequestView>(entity =>
+            {
+                entity.ToView("RequestView");
+
+                entity.Property(e => e.ActivityCode).IsFixedLength();
+
+                entity.Property(e => e.ActivityDescription).IsFixedLength();
+
+                entity.Property(e => e.Participation).IsFixedLength();
+
+                entity.Property(e => e.ParticipationDescription).IsFixedLength();
+
+                entity.Property(e => e.SessionCode).IsFixedLength();
             });
 
             modelBuilder.Entity<RoomAssign>(entity =>

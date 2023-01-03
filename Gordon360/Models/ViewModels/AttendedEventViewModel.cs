@@ -18,36 +18,21 @@ namespace Gordon360.Models.ViewModels
 
         // We're gonna take an eventviewmodel (info from 25Live) and a Chapeleventviewmodel (info form our database) 
         // then mash 'em together
-        public AttendedEventViewModel(EventViewModel a, ChapelEventViewModel b)
+        public AttendedEventViewModel(EventViewModel? a, ChapelEventViewModel b)
         {
             // First the EventViewModel
             LiveID = b.LiveID;
-            CHDate = b.CHDate.Value.Add(b.CHTime.Value.TimeOfDay);
+            CHDate = b.CHDate is not null && b.CHTime is not null ? b.CHDate.Value.Add(b.CHTime.Value.TimeOfDay) : null;
             CHTermCD = b.CHTermCD.Trim();
             Required = b.Required;
-            // Then the CHapelEventViewModel
-            if (a != null)
-            {
-                Event_Name = a.Event_Name ?? "";
-                Event_Title = a.Event_Title ?? "";
-                Description = a.Description ?? "";
-                Organization = a.Organization ?? "";
-                StartDate = a.StartDate ?? "";
-                EndDate = a.EndDate ?? "";
-                Location = a.Location ?? "";
 
-            }
-            // If it's null, fill it with empty strings so we don't crash
-            else
-            {
-                Event_Name = "";
-                Event_Title = "";
-                Description = "";
-                Organization = "";
-                StartDate = "";
-                EndDate = "";
-                Location = "";
-            }
+            Event_Name = a?.Event_Name ?? "";
+            Event_Title = a?.Event_Title ?? "";
+            Description = a?.Description ?? "";
+            Organization = a?.Organization ?? "";
+            StartDate = a?.StartDate ?? "";
+            EndDate = a?.EndDate ?? "";
+            Location = a?.Location ?? "";
 
         }
     }

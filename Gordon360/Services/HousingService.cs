@@ -21,9 +21,9 @@ namespace Gordon360.Services
         /// Calls a stored procedure that returns a row in the staff whitelist which has the given user id,
         /// if it is in the whitelist
         /// </summary>
-        /// <param name="gordonID"> The id of the person using the page </param>
+        /// <param name="username"> The id of the person using the page </param>
         /// <returns> Whether or not the user is on the staff whitelist </returns>
-        public bool CheckIfHousingAdmin(string gordonID)
+        public bool CheckIfHousingAdmin(string username)
         {
             return false;
         }
@@ -43,7 +43,7 @@ namespace Gordon360.Services
             }
             catch
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be found and removed." };
+                throw new ResourceNotFoundException() { ExceptionMessage = "The housing application could not be found." };
             }
         }
 

@@ -7,6 +7,7 @@ using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Gordon360.Exceptions;
 
 namespace Gordon360.Controllers
 {
@@ -15,9 +16,9 @@ namespace Gordon360.Controllers
     {
         public IMembershipRequestService _membershipRequestService;
 
-        public RequestsController(CCTContext context)
+        public RequestsController(IMembershipRequestService membershipRequestService)
         {
-            _membershipRequestService = new MembershipRequestService(context);
+            _membershipRequestService = membershipRequestService;
         }
 
         /// <summary>
@@ -27,23 +28,22 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("")]
         [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.MEMBERSHIP_REQUEST)]
-        public async Task<ActionResult<IEnumerable<MembershipViewModel>>> GetAsync()
+        public ActionResult<IEnumerable<RequestView>> Get()
         {
-            var all = await _membershipRequestService.GetAllAsync();
-            return Ok(all);
+            return Ok(_membershipRequestService.GetAll());
         }
 
         /// <summary>
         ///  Gets a specific Membership Request Object
         /// </summary>
         /// <param name="id">The ID of the membership request</param>
-        /// <returns>A memberships request with the specified id</returns>
+        /// <returns>A RequestView that matches the specified id</returns>
         [HttpGet]
         [Route("{id}")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP_REQUEST)]
-        public async Task<ActionResult<MembershipViewModel>> GetAsync(int id)
+        public ActionResult<RequestView> Get(int id)
         {
-            var result = await _membershipRequestService.GetAsync(id);
+            var result = _membershipRequestService.Get(id);
 
             if (result == null)
             {
@@ -57,19 +57,16 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Gets the memberships requests for the specified activity
         /// </summary>
-        /// <param name="id">The activity code</param>
+        /// <param name="activityCode">The activity code</param>
+        /// <param name="sessionCode">The session code</param>
+        /// <param name="requestStatus">The optional status of the requests to search</param>
         /// <returns>All membership requests associated with the activity</returns>
         [HttpGet]
-        [Route("activity/{id}")]
+        [Route("activity/{activityCode}/session/{sessionCode}")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_REQUEST_BY_ACTIVITY)]
-        public async Task<ActionResult<IEnumerable<MembershipViewModel>>> GetMembershipsRequestsForActivityAsync(string id)
+        public ActionResult<IEnumerable<RequestView>> GetMembershipRequestsByActivity(string activityCode, string sessionCode, string? requestStatus = null)
         {
-            var result = await _membershipRequestService.GetMembershipRequestsForActivityAsync(id);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
+            IEnumerable<RequestView> result = _membershipRequestService.GetMembershipRequests(activityCode, sessionCode, requestStatus);
 
             return Ok(result);
         }
@@ -77,14 +74,13 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Gets the memberships requests for the person making the request
         /// </summary>
-        /// <returns>All membership requests associated with the student</returns>
+        /// <returns>All membership requests associated with the current user</returns>
         [HttpGet]
-        [Route("student")]
-        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_REQUEST_BY_STUDENT)]
-        public async Task<ActionResult<IEnumerable<MembershipViewModel>>> GetMembershipsRequestsForStudentAsync()
+        [Route("users/current")]
+        public ActionResult<IEnumerable<RequestView>> GetMembershipsRequestsForCurrentUser()
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
-            var result = await _membershipRequestService.GetMembershipRequestsForStudentAsync(authenticatedUserUsername);
+            var result = _membershipRequestService.GetMembershipRequestsByUsername(authenticatedUserUsername);
 
             if (result == null)
             {
@@ -102,9 +98,9 @@ namespace Gordon360.Controllers
         [HttpPost]
         [Route("", Name = "membershipRequest")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.MEMBERSHIP_REQUEST)]
-        public ActionResult<REQUEST> Post([FromBody] REQUEST membershipRequest)
+        public async Task<ActionResult<RequestView>> PostAsync([FromBody] RequestUploadViewModel membershipRequest)
         {
-            var result = _membershipRequestService.Add(membershipRequest);
+            var result = await _membershipRequestService.AddAsync(membershipRequest);
 
             if (result == null)
             {
@@ -117,15 +113,15 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Updates a membership request
         /// </summary>
-        /// <param name="id">The membership request id</param>
+        /// <param name="membershipRequestID">The membership request id</param>
         /// <param name="membershipRequest">The updated membership request object</param>
         /// <returns>The updated request if successful. HTTP error message if not.</returns>
         [HttpPut]
-        [Route("{id}")]
+        [Route("{membershipRequestID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP_REQUEST)]
-        public ActionResult<REQUEST> Put(int id, REQUEST membershipRequest)
+        public async Task<ActionResult<RequestView?>> PutAsync(int membershipRequestID, RequestUploadViewModel membershipRequest)
         {
-            var result = _membershipRequestService.Update(id, membershipRequest);
+            var result = await _membershipRequestService.UpdateAsync(membershipRequestID, membershipRequest);
 
             if (result == null)
             {
@@ -134,56 +130,45 @@ namespace Gordon360.Controllers
             return Ok(membershipRequest);
         }
 
+
         /// <summary>
         /// Sets a membership request to Approved
         /// </summary>
-        /// <param name="id">The id of the membership request in question.</param>
-        /// <returns>If successful: THe updated membership request wrapped in an OK Http status code.</returns>
+        /// <param name="membershipRequestID">The id of the membership request in question.</param>
+        /// <param name="status">The status that the membership requst will be changed to.</param>
+        /// <returns>The updated request</returns>
         [HttpPost]
-        [Route("{id}/approve")]
-        [StateYourBusiness(operation = Operation.DENY_ALLOW, resource = Resource.MEMBERSHIP_REQUEST)]
-        public ActionResult<MEMBERSHIP> ApproveRequest(int id)
+        [Route("{membershipRequestID}/status")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP_REQUEST)]
+        public async Task<ActionResult<RequestView>> UpdateStatusAsync(int membershipRequestID, [FromBody] string status)
         {
-            var result = _membershipRequestService.ApproveRequest(id);
+            RequestView? updated = status switch
+            {
+                Request_Status.APPROVED => await _membershipRequestService.ApproveAsync(membershipRequestID),
+                Request_Status.DENIED => await _membershipRequestService.DenyAsync(membershipRequestID),
+                Request_Status.PENDING => await _membershipRequestService.SetPendingAsync(membershipRequestID),
+                _ => throw new BadInputException() { ExceptionMessage = $"Status must be one of '{Request_Status.APPROVED}', '{Request_Status.DENIED}', or '{Request_Status.PENDING}'" }
+            };
 
-            if (result == null)
+            if (updated == null)
             {
                 return NotFound();
             }
 
-            return Ok(result);
+            return Ok(updated);
         }
 
-        /// <summary>
-        /// Sets the membership request to Denied
-        /// </summary>
-        /// <param name="id">The id of the membership request in question.</param>
-        /// <returns>If successful: The updated membership request wrapped in an OK Http status code.</returns>
-        [HttpPost]
-        [Route("{id}/deny")]
-        [StateYourBusiness(operation = Operation.DENY_ALLOW, resource = Resource.MEMBERSHIP_REQUEST)]
-        public ActionResult<REQUEST> DenyRequest(int id)
-        {
-            var result = _membershipRequestService.DenyRequest(id);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(result);
-        }
         /// <summary>
         /// Deletes a membership request
         /// </summary>
-        /// <param name="id">The id of the membership request to delete</param>
-        /// <returns>The deleted object</returns>
+        /// <param name="membershipRequestID">The id of the membership request to delete</param>
+        /// <returns>The deleted request as a RequestView</returns>
         [HttpDelete]
-        [Route("{id}")]
+        [Route("{membershipRequestID}")]
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.MEMBERSHIP_REQUEST)]
-        public ActionResult<REQUEST> Delete(int id)
+        public async Task<ActionResult<RequestView>> Delete(int membershipRequestID)
         {
-            var result = _membershipRequestService.Delete(id);
+            var result = await _membershipRequestService.DeleteAsync(membershipRequestID);
 
             if (result == null)
             {

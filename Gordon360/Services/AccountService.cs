@@ -56,7 +56,7 @@ namespace Gordon360.Services
         /// Fetches the account record with the specified email.
         /// </summary>
         /// <param name="email">The email address associated with the account.</param>
-        /// <returns>the student account information</returns>
+        /// <returns>the first account object which matches the email</returns>
         public AccountViewModel GetAccountByEmail(string email)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.email == email);

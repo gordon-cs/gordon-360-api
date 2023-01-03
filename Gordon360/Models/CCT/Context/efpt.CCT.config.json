@@ -138,10 +138,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[360_SLIDER]",
-         "ObjectType": 3
-      },
-      {
          "Name": "[dbo].[ACCOUNT]",
          "ObjectType": 3
       },
@@ -210,6 +206,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "[dbo].[InvolvementOffering]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[dbo].[JENZ_ACT_CLUB_DEF]",
          "ObjectType": 3
       },
@@ -222,11 +222,19 @@
          "ObjectType": 3
       },
       {
+         "Name": "[dbo].[MembershipView]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[dbo].[PART_DEF]",
          "ObjectType": 3
       },
       {
          "Name": "[dbo].[Police]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[RequestView]",
          "ObjectType": 3
       },
       {
@@ -267,14 +275,6 @@
       },
       {
          "Name": "[dbo].[ALL_REQUESTS]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[ALL_SUPERVISORS]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[CAN_READ_STUDENT_SCHEDULES]",
          "ObjectType": 1
       },
       {
@@ -606,18 +606,6 @@
          "ObjectType": 1
       },
       {
-         "Name": "[dbo].[SUPERVISOR_PER_SUP_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[SUPERVISORS_PER_ACT_CDE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[SUPERVISORS_PER_ID_NUM]",
-         "ObjectType": 1
-      },
-      {
          "Name": "[dbo].[TRUNCATE_AA_ALL_APPLICATION_TABLES]",
          "ObjectType": 1
       },
@@ -727,5 +715,6 @@
    "UseNodaTime": false,
    "UseNullableReferences": false,
    "UseSchemaFolders": false,
-   "UseSpatial": false
+   "UseSpatial": false,
+   "UseT4": false
 }
