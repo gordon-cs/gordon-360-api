@@ -161,7 +161,10 @@ namespace Gordon360.Services.RecIM
 
         public bool IsReferee(string username, int activityID)
         {
-            return _context.ParticipantActivity.Any(pa => pa.ParticipantUsername == username && pa.ActivityID == activityID);
+            return _context.ParticipantActivity.Any(pa =>
+                pa.ParticipantUsername == username 
+                && pa.ActivityID == activityID 
+                && pa.PrivTypeID == 2); // PrivType: 2 => Referee
         }
     }
 }
