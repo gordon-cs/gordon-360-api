@@ -106,8 +106,7 @@ namespace Gordon360.Services
             return attendedEvents;
         }
 
-
-        private static async Task<IEnumerable<EventViewModel>> FetchEventsAsync()
+        public static async Task<IEnumerable<EventViewModel>> FetchEventsAsync()
         {
             using var client = new HttpClient();
             client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
@@ -136,7 +135,7 @@ namespace Gordon360.Services
         ///  Helper function to determine the current academic year
         /// </summary>
         /// <returns></returns>
-        public static string GetFirstEventDate()
+        private static string GetFirstEventDate()
         {
             //Beginning date of fall semester (MM/DD)
             var fallDate = "0815";
