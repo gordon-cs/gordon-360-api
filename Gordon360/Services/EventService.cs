@@ -37,7 +37,7 @@ namespace Gordon360.Services
         private static readonly string AllEventsURL = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=14+57&state=2&end_after=" + GetFirstEventDate() + "&scope=extended";
         private IEnumerable<EventViewModel> Events => _cache.GetOrCreate(CacheKeys.Events, (entry) =>
         {
-            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
             var task = Task.Run(FetchEventsAsync);
 
             return task.GetAwaiter().GetResult();
