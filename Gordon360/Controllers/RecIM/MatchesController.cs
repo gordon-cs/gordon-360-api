@@ -1,6 +1,8 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
+using Gordon360.Authorization;
+using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -77,9 +79,10 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPatch]
         [Route("{matchID}/stats")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_MATCH)]
         public async Task<ActionResult<MatchTeamViewModel>> UpdateStats(int matchID, MatchStatsPatchViewModel updatedMatch)
         {
-            var stats = await _matchService.UpdateTeamStats(matchID,  updatedMatch);
+            var stats = await _matchService.UpdateTeamStatsAsync(matchID, updatedMatch);
             return CreatedAtAction("UpdateStats", stats);
         }
 
@@ -91,9 +94,10 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPatch]
         [Route("{matchID}")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_MATCH)]
         public async Task<ActionResult<MatchCreatedViewModel>> UpdateMatch(int matchID, MatchPatchViewModel updatedMatch)
         {
-            var match = await _matchService.UpdateMatch(matchID, updatedMatch);
+            var match = await _matchService.UpdateMatchAsync(matchID, updatedMatch);
             return CreatedAtAction("UpdateMatch", match);
         }
 
@@ -104,9 +108,10 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPost]
         [Route("")]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_MATCH)]
         public async Task<ActionResult<MatchCreatedViewModel>> CreateMatch(MatchUploadViewModel newMatch)
         {
-            var match = await _matchService.PostMatch(newMatch);
+            var match = await _matchService.PostMatchAsync(newMatch);
             return CreatedAtAction("CreateMatch", match);
         }
 
@@ -118,9 +123,10 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPost]
         [Route("{matchID}/attendance")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_MATCH)]
         public async Task<ActionResult<MatchParticipantViewModel>> AddAttendance(int matchID, [FromBody] string username)
         {
-            var attendance = await _matchService.AddParticipantAttendance(username,matchID);
+            var attendance = await _matchService.AddParticipantAttendanceAsync(username, matchID);
             return CreatedAtAction("AddAttendance", attendance);
         }
 

@@ -1,6 +1,8 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
+using Gordon360.Authorization;
+using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -63,16 +65,19 @@ namespace Gordon360.Controllers.RecIM
             }
             throw new NotImplementedException();
         }
+
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="seriesID"></param>
         /// <param name="updatedSeries"></param>
         /// <returns>modified series</returns>
         [HttpPatch]
         [Route("{seriesID}")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_SERIES)]
         public async Task<ActionResult<SeriesCreatedViewModel>> UpdateSeries(int seriesID, SeriesPatchViewModel updatedSeries)
         {
-            var series = await _seriesService.UpdateSeries(seriesID, updatedSeries);
+            var series = await _seriesService.UpdateSeriesAsync(seriesID, updatedSeries);
             return CreatedAtAction("UpdateSeries", series);
         }
 
@@ -84,10 +89,11 @@ namespace Gordon360.Controllers.RecIM
         /// <returns>created series</returns>
         [HttpPost]
         [Route("")]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SERIES)]
         public async Task<ActionResult<SeriesCreatedViewModel>> CreateSeries(SeriesUploadViewModel newSeries, [FromQuery]int? referenceSeriesID)
         {
-            var series = await _seriesService.PostSeries(newSeries, referenceSeriesID);
-            return CreatedAtAction("CreateSeries",series);
+            var series = await _seriesService.PostSeriesAsync(newSeries, referenceSeriesID);
+            return CreatedAtAction("CreateSeries", series);
         }
 
     }

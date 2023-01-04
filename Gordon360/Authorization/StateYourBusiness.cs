@@ -2,6 +2,7 @@
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.MyGordon.Context;
 using Gordon360.Services;
+using Gordon360.Services.RecIM;
 using Gordon360.Static.Methods;
 using Gordon360.Static.Names;
 using Gordon360.Utilities;
@@ -41,6 +42,8 @@ namespace Gordon360.Authorization
         private CCTContext _CCTContext;
         private MyGordonContext _MyGordonContext;
 
+        private AccountService _accountService;
+
         // User position at the college and their id.
         private IEnumerable<AuthGroup> user_groups { get; set; }
         private string user_id { get; set; }
@@ -54,6 +57,7 @@ namespace Gordon360.Authorization
             var authenticatedUser = actionContext.HttpContext.User;
             _CCTContext = context.HttpContext.RequestServices.GetService<CCTContext>();
             _MyGordonContext = context.HttpContext.RequestServices.GetService<MyGordonContext>();
+            _accountService = context.HttpContext.RequestServices.GetService<AccountService>();
 
             user_name = AuthUtils.GetUsername(authenticatedUser);
             user_groups = AuthUtils.GetGroups(authenticatedUser);
@@ -470,6 +474,14 @@ namespace Gordon360.Authorization
                     return true;
                 case Resource.NEWS:
                     return true;
+                case Resource.RECIM_ACTIVITY:
+                case Resource.RECIM_SERIES:
+                case Resource.RECIM_MATCH:
+                case Resource.RECIM_SPORT:
+                    {
+                        var participantService = new ParticipantService(_CCTContext, _accountService);
+                        return participantService.IsAdmin(user_name);
+                    }
                 default: return false;
             }
         }
@@ -626,7 +638,7 @@ namespace Gordon360.Authorization
                         var isGroupAdmin = (await membershipService.GetGroupAdminMembershipsForActivityAsync(activityCode)).Any(x => x.IDNumber.ToString() == user_id);
                         if (isGroupAdmin)
                         {
-                            var activityService = context.HttpContext.RequestServices.GetRequiredService<IActivityService>();
+                            var activityService = context.HttpContext.RequestServices.GetRequiredService<Gordon360.Services.IActivityService>();
                             // If an activity is currently open, then a group admin has the ability to close it
                             if (activityService.IsOpen(activityCode, sessionCode))
                             {
@@ -646,21 +658,52 @@ namespace Gordon360.Authorization
                     }
 
                 case Resource.NEWS:
-                    var newsID = context.ActionArguments["newsID"];
-                    var newsService = new NewsService(_MyGordonContext, _CCTContext, _webHostEnvironment);
-                    var newsItem = newsService.Get((int)newsID);
-                    // only unapproved posts may be updated
-                    var approved = newsItem.Accepted;
-                    if (approved == null || approved == true)
+                    {
+                        var newsID = context.ActionArguments["newsID"];
+                        var newsService = new NewsService(_MyGordonContext, _CCTContext, _webHostEnvironment);
+                        var newsItem = newsService.Get((int)newsID);
+                        // only unapproved posts may be updated
+                        var approved = newsItem.Accepted;
+                        if (approved == null || approved == true)
+                            return false;
+                        // can update if user is admin
+                        if (user_groups.Contains(AuthGroup.SiteAdmin))
+                            return true;
+                        // can update if user is news item author
+                        string newsAuthor = newsItem.ADUN;
+                        if (user_name == newsAuthor)
+                            return true;
                         return false;
-                    // can update if user is admin
-                    if (user_groups.Contains(AuthGroup.SiteAdmin))
-                        return true;
-                    // can update if user is news item author
-                    string newsAuthor = newsItem.ADUN;
-                    if (user_name == newsAuthor)
-                        return true;
-                    return false;
+                    }
+                    
+                case Resource.RECIM_ACTIVITY:
+                case Resource.RECIM_SERIES:
+                case Resource.RECIM_SPORT:
+                    {
+                        var participantService = new ParticipantService(_CCTContext, _accountService);
+                        return participantService.IsAdmin(user_name);
+                    }
+
+                case Resource.RECIM_TEAM:
+                    {
+                        var teamID = (int)context.ActionArguments["teamID"];
+                        var participantService = new ParticipantService(_CCTContext, _accountService);
+                        var matchService = new MatchService(_CCTContext, _accountService);
+                        var teamService = new TeamService(_CCTContext, matchService, participantService, _accountService);
+                        return teamService.IsTeamCaptain(user_name, teamID) || participantService.IsAdmin(user_name);
+                    }
+
+                case Resource.RECIM_MATCH:
+                    {
+                        var matchID = (int)context.ActionArguments["matchID"];
+                        var participantService = new ParticipantService(_CCTContext, _accountService);
+                        var matchService = new MatchService(_CCTContext, _accountService);
+                        var seriesService = new SeriesService(_CCTContext, matchService);
+                        var activityService = new Gordon360.Services.RecIM.ActivityService(_CCTContext, seriesService);
+                        var match = matchService.GetMatchByID(matchID);
+                        var series = seriesService.GetSeriesByID(match.SeriesID);
+                        return activityService.IsReferee(user_name, series.ActivityID) || participantService.IsAdmin(user_name);
+                    }
                 default: return false;
             }
         }

@@ -2,12 +2,12 @@ using Gordon360.Authorization;
 using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
+using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Graph;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -87,11 +87,12 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPost]
         [Route("{teamID}/participants")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_TEAM)]
         public async Task<ActionResult<ParticipantTeamViewModel>> AddParticipantToTeam(int teamID, ParticipantTeamUploadViewModel participant)
         {
             participant.RoleTypeID = participant.RoleTypeID ?? 3;
             var participantTeam = await _teamService.AddUserToTeamAsync(teamID, participant);
-            return CreatedAtAction("AddParticipantToTeam",participantTeam);
+            return CreatedAtAction("AddParticipantToTeam", participantTeam);
         }
 
         /// <summary>
@@ -102,11 +103,12 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPatch]
         [Route("{teamID}/participants")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_TEAM)]
         public async Task<ActionResult<ParticipantTeamViewModel>> UpdateTeamParticipant(int teamID, ParticipantTeamUploadViewModel participant)
         {
             participant.RoleTypeID = participant.RoleTypeID ?? 3;
             var participantTeam = await _teamService.UpdateParticipantRoleAsync(teamID, participant);
-            return CreatedAtAction("UpdateTeamParticipant",participantTeam);
+            return CreatedAtAction("UpdateTeamParticipant", participantTeam);
         }
 
         /// <summary>
@@ -117,10 +119,11 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPatch]
         [Route("{teamID}")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_TEAM)]
         public async Task<ActionResult<TeamCreatedViewModel>> UpdateTeamInfo(int teamID, TeamPatchViewModel team)
         {
             var updatedTeam = await _teamService.UpdateTeamAsync(teamID, team);
-            return CreatedAtAction("UpdateTeamInfo",updatedTeam);
-        }
+            return CreatedAtAction("UpdateTeamInfo", updatedTeam);
+;        }
     }
 }

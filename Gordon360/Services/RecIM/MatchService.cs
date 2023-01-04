@@ -212,7 +212,7 @@ namespace Gordon360.Services.RecIM
                         });
             return match;
         }
-        public async Task<MatchCreatedViewModel> PostMatch(MatchUploadViewModel m)
+        public async Task<MatchCreatedViewModel> PostMatchAsync(MatchUploadViewModel m)
         {
             var match = new Match
             {
@@ -226,13 +226,13 @@ namespace Gordon360.Services.RecIM
 
             foreach(var teamID in m.TeamIDs)
             {
-                await CreateMatchTeamMapping(teamID, match.ID);
+                await CreateMatchTeamMappingAsync(teamID, match.ID);
             }
             await _context.SaveChangesAsync();
             return match;
         }
 
-        private async Task CreateMatchTeamMapping(int teamID, int matchID)
+        private async Task CreateMatchTeamMappingAsync(int teamID, int matchID)
         {
             var matchTeam = new MatchTeam
             {
@@ -244,7 +244,7 @@ namespace Gordon360.Services.RecIM
             };
             await _context.MatchTeam.AddAsync(matchTeam);
         }
-        public async Task<MatchParticipantViewModel> AddParticipantAttendance(string username, int matchID)
+        public async Task<MatchParticipantViewModel> AddParticipantAttendanceAsync(string username, int matchID)
         {
             var matchParticipant = new MatchParticipant
             {
@@ -255,7 +255,7 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
             return matchParticipant;
         }
-        public async Task<MatchTeamViewModel> UpdateTeamStats(int matchID, MatchStatsPatchViewModel vm)
+        public async Task<MatchTeamViewModel> UpdateTeamStatsAsync(int matchID, MatchStatsPatchViewModel vm)
         {
             var teamstats = _context.MatchTeam.FirstOrDefault(mt => mt.MatchID == matchID && mt.TeamID == vm.TeamID);
             teamstats.Score = vm.Score ?? teamstats.Score;
@@ -271,7 +271,7 @@ namespace Gordon360.Services.RecIM
             return teamstats;
 
         }
-        public async Task<MatchCreatedViewModel> UpdateMatch(int matchID, MatchPatchViewModel vm)
+        public async Task<MatchCreatedViewModel> UpdateMatchAsync(int matchID, MatchPatchViewModel vm)
         {
             var match = _context.Match.FirstOrDefault(m => m.ID == matchID);
             match.Time = vm.Time ?? match.Time;

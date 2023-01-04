@@ -1,6 +1,8 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
+using Gordon360.Authorization;
+using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -74,11 +76,13 @@ namespace Gordon360.Controllers.RecIM
         /// <returns>Posted Activity</returns>
         [HttpPost]
         [Route("")]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_ACTIVITY)]
         public async Task<ActionResult<ActivityCreatedViewModel>> CreateActivity(ActivityUploadViewModel newActivity)
         {
-            var activity = await _activityService.PostActivity(newActivity);
-            return CreatedAtAction("CreateActivity",activity);
+            var activity = await _activityService.PostActivityAsync(newActivity);
+            return CreatedAtAction("CreateActivity", activity);
         }
+
         /// <summary>
         /// Updates Activity based on input
         /// </summary>
@@ -87,9 +91,10 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPatch]
         [Route("{activityID}")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_ACTIVITY)]
         public async Task<ActionResult<ActivityCreatedViewModel>> UpdateActivity(int activityID, ActivityPatchViewModel updatedActivity)
         {
-            var activity = await _activityService.UpdateActivity(activityID, updatedActivity);
+            var activity = await _activityService.UpdateActivityAsync(activityID, updatedActivity);
             return CreatedAtAction("UpdateActivity", activity);
         }
     }

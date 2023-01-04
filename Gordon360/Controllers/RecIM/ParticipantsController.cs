@@ -75,7 +75,7 @@ namespace Gordon360.Controllers.RecIM
         [Route("{username}")]
         public async Task<ActionResult<ParticipantViewModel>> AddParticipant(string username)
         {
-            var participant = await _participantService.PostParticipant(username);
+            var participant = await _participantService.PostParticipantAsync(username);
             return CreatedAtAction("AddParticipant", participant);
         }
 
@@ -83,7 +83,7 @@ namespace Gordon360.Controllers.RecIM
         [Route("{username}")]
         public async Task<ActionResult<ParticipantViewModel>> UpdateParticipant(string username, [FromBody] bool isAdmin)
         {
-            var participant = await _participantService.UpdateParticipant(username,isAdmin);
+            var participant = await _participantService.UpdateParticipantAsync(username,isAdmin);
             return CreatedAtAction("AddParticipant", participant);
         }
 
@@ -92,7 +92,7 @@ namespace Gordon360.Controllers.RecIM
         [Route("{username}/notifications")]
         public async Task<ActionResult<ParticipantNotificationCreatedViewModel>> SendParticipantNotification(string username, ParticipantNotificationUploadViewModel notificationVM)
         {
-            var notification = await _participantService.SendParticipantNotification(username, notificationVM);
+            var notification = await _participantService.SendParticipantNotificationAsync(username, notificationVM);
             return CreatedAtAction("SendParticipantNotification", notification);
         }
 
@@ -102,7 +102,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult> UpdateParticipantActivity(string username, ParticipantActivityPatchViewModel updatedParticipantActivity)
         {
 
-            var participant = await _participantService.UpdateParticipantActivity(username, updatedParticipantActivity);
+            var participant = await _participantService.UpdateParticipantActivityAsync(username, updatedParticipantActivity);
             return CreatedAtAction("UpdateParticipantActivity", participant);
         }
 
@@ -110,7 +110,7 @@ namespace Gordon360.Controllers.RecIM
         [Route("{username}/status")]
         public async Task<ActionResult<ParticipantStatusCreatedViewModel>> UpdateParticipantStatus(string username, ParticipantStatusPatchViewModel updatedParticipant)
         {
-            var status = await _participantService.UpdateParticipantStatus(username, updatedParticipant);
+            var status = await _participantService.UpdateParticipantStatusAsync(username, updatedParticipant);
             return CreatedAtAction("UpdateParticipantStatus",status);
         }
 

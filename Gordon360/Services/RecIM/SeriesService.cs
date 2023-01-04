@@ -100,7 +100,7 @@ namespace Gordon360.Services.RecIM
         {
             return GetSeries().FirstOrDefault(s => s.ID == seriesID);
         }
-        public async Task<SeriesCreatedViewModel> PostSeries(SeriesUploadViewModel newSeries, int? referenceSeriesID)
+        public async Task<SeriesCreatedViewModel> PostSeriesAsync(SeriesUploadViewModel newSeries, int? referenceSeriesID)
         {
             var series = new Series
             {
@@ -125,10 +125,10 @@ namespace Gordon360.Services.RecIM
                 teams = teams.Take(newSeries.NumberOfTeamsAdmitted ?? 0);//will never be null but 0 is to silence error
             }
            
-            await CreateSeriesTeamMapping(teams, series.ID);
+            await CreateSeriesTeamMappingAsync(teams, series.ID);
             return series;
         }
-        public async Task<SeriesCreatedViewModel> UpdateSeries(int seriesID, SeriesPatchViewModel update)
+        public async Task<SeriesCreatedViewModel> UpdateSeriesAsync(int seriesID, SeriesPatchViewModel update)
         {
             var s = await _context.Series.FindAsync(seriesID);
             s.Name = update.Name ?? s.Name;
@@ -140,7 +140,7 @@ namespace Gordon360.Services.RecIM
             return s;
         }
 
-        private async Task CreateSeriesTeamMapping(IEnumerable<int> teams, int seriesID)
+        private async Task CreateSeriesTeamMappingAsync(IEnumerable<int> teams, int seriesID)
         {
             foreach (var teamID in teams)
             {
@@ -156,7 +156,7 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
         }
 
-        public async Task ScheduleMatches(int seriesID)
+        public async Task ScheduleMatchesAsync(int seriesID)
         {
             var typeCode = _context.SeriesType
                 .FirstOrDefault(st =>
@@ -178,7 +178,7 @@ namespace Gordon360.Services.RecIM
             }
             if (typeCode == "l")
             {
-                await ScheduleLadder(seriesID);
+                await ScheduleLadderAsync(seriesID);
             }
         }
         private Task ScheduleRoundRobin(int seriesID)
@@ -210,7 +210,7 @@ namespace Gordon360.Services.RecIM
                 .AsEnumerable();
             throw new NotImplementedException();
         }
-        private async Task ScheduleLadder(int seriesID)
+        private async Task ScheduleLadderAsync(int seriesID)
         {
             var teams = _context.SeriesTeam
                 .Where(st => st.ID == seriesID)
@@ -225,7 +225,7 @@ namespace Gordon360.Services.RecIM
                 SurfaceID = 1,
                 TeamIDs = teams
             };
-            await _matchService.PostMatch(match); 
+            await _matchService.PostMatchAsync(match); 
         }
     }
 
