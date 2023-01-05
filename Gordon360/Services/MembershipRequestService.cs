@@ -81,8 +81,8 @@ namespace Gordon360.Services
                 throw new BadInputException() { ExceptionMessage = "The request has already been approved."};
             }
 
-            MembershipUploadViewModel newMembership = MembershipUploadViewModel.FromRequest(request, _accountService.GetAccountByID(request.ID_NUM.ToString()).ADUserName);
-            newMembership.Username = _accountService.GetAccountByID(request.ID_NUM.ToString()).ADUserName;
+            var username = _accountService.GetAccountByID(request.ID_NUM.ToString()).ADUserName;
+            MembershipUploadViewModel newMembership = MembershipUploadViewModel.FromRequest(request, username);
 
             var createdMembership = await _membershipService.AddAsync(newMembership);
 
