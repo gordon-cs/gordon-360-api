@@ -138,7 +138,7 @@ namespace Gordon360.Controllers
          */
         [HttpPost]
         [Route("")]
-        public ActionResult<StudentNews> Post(string subject, int categoryID, string body, [FromBody] string image)
+        public ActionResult<StudentNews> Post([FromBody] StudentNewsUploadViewModel studentNewsUpload)
         {
             // Get authenticated username/id
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
@@ -146,10 +146,10 @@ namespace Gordon360.Controllers
             var newsItem = new StudentNews
             {
                 ADUN = authenticatedUserUsername,
-                Subject = subject,
-                categoryID = categoryID,
-                Body = body,
-                Image = image,
+                Subject = studentNewsUpload.Subject,
+                categoryID = studentNewsUpload.categoryID,
+                Body = studentNewsUpload.Body,
+                Image = studentNewsUpload.Image,
             };
 
             // Call appropriate service

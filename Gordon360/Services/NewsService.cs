@@ -158,17 +158,16 @@ namespace Gordon360.Services
             };
 
             _context.StudentNews.Add(itemToSubmit);
-            if (itemToSubmit.Image != "")
+            if (itemToSubmit.Image != null)
             {
                 // Put current DateTime in filename so the browser knows it's a new file and refreshes cache
                 var filename = $"canvasImage_{DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}.png";
-                var newsId = itemToSubmit.SNID;
-                var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", newsId.ToString(), filename);
+                var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", filename);
 
                 var serverAddress = _serverUtils.GetAddress();
-                if (serverAddress is not string) throw new Exception("Could not upload Involvement Image: Server Address is null");
+                if (serverAddress is not string) throw new Exception("Could not upload Student News Image: Server Address is null");
 
-                var url = $"{serverAddress}browseable/uploads/{newsId}/{filename}";
+                var url = $"{serverAddress}/browseable/uploads/{filename}";
 
                 //delete old image file if it exists.
                 if (Path.GetDirectoryName(imagePath) is string directory && Directory.Exists(directory))
