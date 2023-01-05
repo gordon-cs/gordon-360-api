@@ -21,7 +21,7 @@ namespace Gordon360.Services
         public Task StartAsync(CancellationToken stoppingToken)
         {
             _timer = new Timer(UpdateEventsCacheAsync, null, TimeSpan.Zero,
-                TimeSpan.FromMinutes(5));
+                TimeSpan.FromMinutes(10));
 
             return Task.CompletedTask;
         }
