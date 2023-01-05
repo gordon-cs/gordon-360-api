@@ -161,7 +161,7 @@ namespace Gordon360.Services
             if (itemToSubmit.Image != null)
             {
                 // Put current DateTime in filename so the browser knows it's a new file and refreshes cache
-                var filename = $"canvasImage_{DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}.png";
+                var filename = Guid.NewGuid().ToString("N") + ".png";
                 var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", filename);
 
                 var serverAddress = _serverUtils.GetAddress();
