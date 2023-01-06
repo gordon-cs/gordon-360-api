@@ -172,15 +172,6 @@ namespace Gordon360.Services
 
                 var url = $"{serverAddress}/browseable/uploads/{filename}";
 
-                //delete old image file if it exists.
-                if (Path.GetDirectoryName(imagePath) is string directory && Directory.Exists(directory))
-                {
-                    foreach (FileInfo file in new DirectoryInfo(directory).GetFiles())
-                    {
-                        file.Delete();
-                    }
-                }
-
                 ImageUtils.UploadImage(imagePath, itemToSubmit.Image);
 
                 itemToSubmit.Image = url;
