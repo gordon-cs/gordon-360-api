@@ -164,6 +164,7 @@ namespace Gordon360.Services
                 // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
                 var (extension, format, data) = ImageUtils.GetImageFormat(itemToSubmit.Image);
                 
+                // Use a unique alphanumeric GUID string as the file name
                 var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
                 var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", filename);
 
