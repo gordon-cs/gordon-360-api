@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text;
 
 namespace Gordon360.Services
 {
@@ -160,37 +161,30 @@ namespace Gordon360.Services
             _context.StudentNews.Add(itemToSubmit);
             if (itemToSubmit.Image != null)
             {
-                String[] validImageType = { "jpg", "jpeg", "png" };
 
-                // Put current DateTime in filename so the browser knows it's a new file and refreshes cache
-                var imageType = itemToSubmit.Image.Split('.').Last();
+                // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
+                var (extension, format, data) = ImageUtils.GetImageFormat(itemToSubmit.Image);
+                
+                var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
+                var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", filename);
 
-                // Check if the image file type is valid
-                if (validImageType.Contains(imageType))
+                var serverAddress = _serverUtils.GetAddress();
+                if (serverAddress is not string) throw new Exception("Could not upload Student News Image: Server Address is null");
+
+                var url = $"{serverAddress}/browseable/uploads/{filename}";
+
+                //delete old image file if it exists.
+                if (Path.GetDirectoryName(imagePath) is string directory && Directory.Exists(directory))
                 {
-                    var filename = Guid.NewGuid().ToString("N");
-                    var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", filename);
-
-                    var serverAddress = _serverUtils.GetAddress();
-                    if (serverAddress is not string) throw new Exception("Could not upload Student News Image: Server Address is null");
-
-                    var url = $"{serverAddress}/browseable/uploads/{filename}";
-
-                    //delete old image file if it exists.
-                    if (Path.GetDirectoryName(imagePath) is string directory && Directory.Exists(directory))
+                    foreach (FileInfo file in new DirectoryInfo(directory).GetFiles())
                     {
-                        foreach (FileInfo file in new DirectoryInfo(directory).GetFiles())
-                        {
-                            file.Delete();
-                        }
+                        file.Delete();
                     }
-
-                    ImageUtils.UploadImage(imagePath, itemToSubmit.Image);
-
-                    itemToSubmit.Image = url;
                 }
-                else
-                    throw new Exception("Only PNG, JPG and JPEG images are accepted.");
+
+                ImageUtils.UploadImage(imagePath, itemToSubmit.Image);
+
+                itemToSubmit.Image = url;
             }
 
             _context.SaveChanges();
