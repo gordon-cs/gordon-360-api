@@ -19,14 +19,16 @@ namespace Gordon360.Services
         private readonly MyGordonContext _context;
         private readonly CCTContext _contextCCT;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly ServerUtils _serverUtils;
 
         private string NewsUploadsPath => Path.Combine(_webHostEnvironment.ContentRootPath, "browseable/uploads/news");
 
-        public NewsService(MyGordonContext context, CCTContext contextCCT, IWebHostEnvironment webHostEnvironment)
+        public NewsService(MyGordonContext context, CCTContext contextCCT, IWebHostEnvironment webHostEnvironment, ServerUtils serverUtils)
         {
             _context = context;
             _contextCCT = contextCCT;
             _webHostEnvironment = webHostEnvironment;
+            _serverUtils = serverUtils;
         }
 
         /// <summary>
@@ -158,11 +160,22 @@ namespace Gordon360.Services
             _context.StudentNews.Add(itemToSubmit);
             if (itemToSubmit.Image != null)
             {
-                string fileName = itemToSubmit.SNID + ".jpg";
-                string imagePath = NewsUploadsPath + fileName;
+
+                // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
+                var (extension, format, data) = ImageUtils.GetImageFormat(itemToSubmit.Image);
+                
+                // Use a unique alphanumeric GUID string as the file name
+                var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
+                var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", filename);
+
+                var serverAddress = _serverUtils.GetAddress();
+                if (serverAddress is not string) throw new Exception("Could not upload Student News Image: Server Address is null");
+
+                var url = $"{serverAddress}/browseable/uploads/{filename}";
+
                 ImageUtils.UploadImage(imagePath, itemToSubmit.Image);
 
-                itemToSubmit.Image = imagePath;
+                itemToSubmit.Image = url;
             }
 
             _context.SaveChanges();
