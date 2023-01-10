@@ -311,6 +311,7 @@ namespace Gordon360.Services
     {
         public interface IActivityService
         {
+            IEnumerable<LookupViewModel> GetActivityLookup(string type);
             IEnumerable<Models.ViewModels.RecIM.ActivityViewModel> GetActivities();
             Models.ViewModels.RecIM.ActivityViewModel? GetActivityByID(int activityID);
             IEnumerable<Models.ViewModels.RecIM.ActivityViewModel> GetActivitiesByTime(DateTime? time);

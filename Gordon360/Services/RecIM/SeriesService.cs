@@ -62,7 +62,7 @@ namespace Gordon360.Services.RecIM
             return series;
         }
         public IEnumerable<SeriesViewModel> GetSeriesByActivityID(int activityID)
-        {
+        { 
             var series = _context.Series
                 .Where(s => s.ActivityID == activityID)
                 .Select(s => new SeriesViewModel

@@ -62,11 +62,8 @@ namespace Gordon360.Controllers.RecIM
         [Route("lookup")]
         public ActionResult<IEnumerable<LookupViewModel>> GetActivityTypes(string type)
         {
-            if ( type == "status")
-            {
-
-            }
-            throw new NotImplementedException();
+            var result = _activityService.GetActivityLookup(type);
+            return Ok(result);
         }
 
         /// <summary>
