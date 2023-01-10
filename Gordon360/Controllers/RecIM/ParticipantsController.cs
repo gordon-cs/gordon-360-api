@@ -58,17 +58,10 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpGet]
         [Route("lookup")]
-        public ActionResult<IEnumerable<LookupViewModel>> GetTypes(string type)
+        public ActionResult<IEnumerable<LookupViewModel>> GetParticipantTypes(string type)
         {
-            if ( type == "status" )
-            {
-
-            }
-            if ( type == "activitypriv")
-            {
-
-            }
-            throw new NotImplementedException();
+            var res = _participantService.GetParticipantLookup(type);
+            return Ok(res);
         }
 
         [HttpPut]
