@@ -26,6 +26,44 @@ namespace Gordon360.Services.RecIM
             _context = context;
             _accountService = accountService;
         }
+
+        public IEnumerable<LookupViewModel> GetMatchLookup(string type)
+        {
+            if (type == "status")
+            {
+                var res = _context.MatchStatus
+                    .Select(s => new LookupViewModel
+                    {
+                        ID = s.ID,
+                        Description = s.Description
+                    })
+                    .AsEnumerable();
+                return res;
+            }
+            if (type == "teamstatus")
+            {
+                var res = _context.MatchTeamStatus
+                    .Select(s => new LookupViewModel
+                    {
+                        ID = s.ID,
+                        Description = s.Description
+                    })
+                    .AsEnumerable();
+                return res;
+            }
+            if (type == "surface")
+            {
+                var res = _context.Surface
+                    .Select(s => new LookupViewModel
+                    {
+                        ID = s.ID,
+                        Description = s.Description
+                    })
+                    .AsEnumerable();
+                return res;
+            }
+            throw new NotImplementedException();
+        }
         public MatchViewModel GetMatchByID(int matchID)
         {
             var match = _context.Match

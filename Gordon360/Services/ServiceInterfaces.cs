@@ -366,6 +366,7 @@ namespace Gordon360.Services
 
         public interface IMatchService
         {
+            IEnumerable<LookupViewModel> GetMatchLookup(string type);
             MatchViewModel GetMatchByID(int matchID);
             IEnumerable<MatchViewModel> GetMatchBySeriesID(int seriesID);
             Task<MatchCreatedViewModel> PostMatchAsync(MatchUploadViewModel match);
