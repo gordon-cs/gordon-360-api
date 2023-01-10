@@ -333,6 +333,7 @@ namespace Gordon360.Services
 
         public interface ITeamService
         {
+            IEnumerable<LookupViewModel> GetTeamLookup(string type);
             double GetTeamSportsmanshipScore(int teamID);
             TeamViewModel GetTeamByID(int teamID);
             Task<TeamCreatedViewModel> PostTeamAsync(TeamUploadViewModel newTeam, string username);
