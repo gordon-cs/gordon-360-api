@@ -311,6 +311,7 @@ namespace Gordon360.Services
     {
         public interface IActivityService
         {
+            IEnumerable<LookupViewModel> GetActivityLookup(string type);
             IEnumerable<Models.ViewModels.RecIM.ActivityViewModel> GetActivities();
             Models.ViewModels.RecIM.ActivityViewModel? GetActivityByID(int activityID);
             IEnumerable<Models.ViewModels.RecIM.ActivityViewModel> GetActivitiesByTime(DateTime? time);
@@ -321,6 +322,7 @@ namespace Gordon360.Services
         }
         public interface ISeriesService
         {
+            IEnumerable<LookupViewModel> GetSeriesLookup(string type);
             IEnumerable<SeriesViewModel> GetSeries(bool active);
             IEnumerable<SeriesViewModel> GetSeriesByActivityID(int activityID);
             SeriesViewModel GetSeriesByID(int seriesID);
@@ -331,6 +333,7 @@ namespace Gordon360.Services
 
         public interface ITeamService
         {
+            IEnumerable<LookupViewModel> GetTeamLookup(string type);
             double GetTeamSportsmanshipScore(int teamID);
             TeamViewModel GetTeamByID(int teamID);
             Task<TeamCreatedViewModel> PostTeamAsync(TeamUploadViewModel newTeam, string username);
@@ -342,6 +345,7 @@ namespace Gordon360.Services
 
         public interface IParticipantService
         {
+            IEnumerable<LookupViewModel> GetParticipantLookup(string type);
             ACCOUNT GetAccountByParticipantID(int ID);
             IEnumerable<ParticipantViewModel> GetParticipants();
             IEnumerable<ParticipantStatusViewModel> GetParticipantStatusHistory(string username);
@@ -365,6 +369,7 @@ namespace Gordon360.Services
 
         public interface IMatchService
         {
+            IEnumerable<LookupViewModel> GetMatchLookup(string type);
             MatchViewModel GetMatchByID(int matchID);
             IEnumerable<MatchViewModel> GetMatchBySeriesID(int seriesID);
             Task<MatchCreatedViewModel> PostMatchAsync(MatchUploadViewModel match);

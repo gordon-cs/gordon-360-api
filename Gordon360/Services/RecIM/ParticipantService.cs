@@ -22,7 +22,32 @@ namespace Gordon360.Services.RecIM
             _accountService = accountService;
             _context = context;
         }
-
+        public IEnumerable<LookupViewModel> GetParticipantLookup(string type)
+        {
+            if (type == "status")
+            {
+                var res = _context.ParticipantStatus
+                            .Select(s => new LookupViewModel
+                            {
+                                ID = s.ID,
+                                Description = s.Description
+                            })
+                            .AsEnumerable();
+                return res;
+            }
+            if (type == "activitypriv")
+            {
+                var res = _context.PrivType
+                            .Select(s => new LookupViewModel
+                            {
+                                ID = s.ID,
+                                Description = s.Description
+                            })
+                            .AsEnumerable();
+                return res;
+            }
+            return null;
+        }
         public ACCOUNT GetAccountByParticipantID(int ID)
         {
             return _context.ACCOUNT

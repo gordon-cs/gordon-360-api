@@ -56,19 +56,12 @@ namespace Gordon360.Controllers.RecIM
         [Route("lookup")]
         public ActionResult<IEnumerable<LookupViewModel>> GetMatchTypes(string type)
         {
-            if ( type == "status" )
+            var res = _matchService.GetMatchLookup(type);
+            if (res is not null)
             {
-
+                return Ok(res);
             }
-            if ( type == "teamstatus" )
-            {
-
-            }
-            if ( type == "surface")
-            {
-
-            }
-            throw new NotImplementedException();
+            return BadRequest();
         }
 
         /// <summary>

@@ -28,7 +28,32 @@ namespace Gordon360.Services.RecIM
             _participantService = participantService;
             _accountService = accountService;
         }
-
+        public IEnumerable<LookupViewModel> GetTeamLookup(string type)
+        {
+            if (type == "status")
+            {
+                var res = _context.TeamStatus
+                    .Select(s => new LookupViewModel
+                    {
+                        ID = s.ID,
+                        Description = s.Description
+                    })
+                    .AsEnumerable();
+                return res;
+            }
+            if (type == "role")
+            {
+                var res = _context.RoleType
+                    .Select(s => new LookupViewModel
+                    {
+                        ID = s.ID,
+                        Description = s.Description
+                    })
+                    .AsEnumerable();
+                return res;
+            }
+            return null;
+        }
         public double GetTeamSportsmanshipScore(int teamID)
         {
             var sportsmanshipScores = _context.Match

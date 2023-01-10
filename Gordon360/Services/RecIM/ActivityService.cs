@@ -23,7 +23,21 @@ namespace Gordon360.Services.RecIM
             _seriesService = seriesService;
         }
 
-
+        public IEnumerable<LookupViewModel> GetActivityLookup(string type)
+        {
+            if (type == "status")
+            {
+                var res = _context.ActivityStatus
+                            .Select(s => new LookupViewModel
+                            {
+                                ID = s.ID,
+                                Description = s.Description
+                            })
+                            .AsEnumerable();
+                return res;
+            }
+            return null;
+        }
         public IEnumerable<ActivityViewModel> GetActivities()
         {
             var activities = _context.Activity

@@ -813,6 +813,7 @@
             <summary>
             
             </summary>
+            <param name="seriesID"></param>
             <param name="updatedSeries"></param>
             <returns>modified series</returns>
         </member>
