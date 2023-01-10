@@ -322,6 +322,7 @@ namespace Gordon360.Services
         }
         public interface ISeriesService
         {
+            IEnumerable<LookupViewModel> GetSeriesLookup(string type);
             IEnumerable<SeriesViewModel> GetSeries(bool active);
             IEnumerable<SeriesViewModel> GetSeriesByActivityID(int activityID);
             SeriesViewModel GetSeriesByID(int seriesID);

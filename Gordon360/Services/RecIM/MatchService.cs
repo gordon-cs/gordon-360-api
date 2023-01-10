@@ -62,7 +62,7 @@ namespace Gordon360.Services.RecIM
                     .AsEnumerable();
                 return res;
             }
-            throw new NotImplementedException();
+            return null;
         }
         public MatchViewModel GetMatchByID(int matchID)
         {

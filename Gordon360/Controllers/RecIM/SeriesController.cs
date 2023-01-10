@@ -55,15 +55,12 @@ namespace Gordon360.Controllers.RecIM
         [Route("lookup")]
         public ActionResult<IEnumerable<LookupViewModel>> GetSeriesTypes(string type)
         {
-            if ( type == "series" )
+            var res = _seriesService.GetSeriesLookup(type);
+            if (res is not null)
             {
-
+                return Ok(res);
             }
-            if ( type == "status" )
-            {
-
-            }
-            throw new NotImplementedException();
+            return BadRequest();
         }
 
         /// <summary>

@@ -22,8 +22,33 @@ namespace Gordon360.Services.RecIM
             _context = context;
             _matchService = matchService;
         }
-
-        public IEnumerable<SeriesViewModel> GetSeries(bool active = false)
+        public IEnumerable<LookupViewModel> GetSeriesLookup(string type)
+        {
+            if (type == "status")
+            {
+                var res = _context.SeriesStatus
+                    .Select(s => new LookupViewModel
+                    {
+                        ID = s.ID,
+                        Description = s.Description
+                    })
+                    .AsEnumerable();
+                return res;
+            }
+            if (type == "series")
+            {
+                var res = _context.SeriesType
+                    .Select(s => new LookupViewModel
+                    {
+                        ID = s.ID,
+                        Description = s.Description
+                    })
+                    .AsEnumerable();
+                return res;
+            }
+            return null;
+        }
+            public IEnumerable<SeriesViewModel> GetSeries(bool active = false)
         {
             var series = _context.Series
                             .Select(s => new SeriesViewModel

@@ -36,10 +36,7 @@ namespace Gordon360.Services.RecIM
                             .AsEnumerable();
                 return res;
             }
-            else
-            {
-                throw new NotImplementedException();
-            }
+            return null;
         }
         public IEnumerable<ActivityViewModel> GetActivities()
         {

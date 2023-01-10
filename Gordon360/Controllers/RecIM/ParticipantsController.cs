@@ -61,7 +61,11 @@ namespace Gordon360.Controllers.RecIM
         public ActionResult<IEnumerable<LookupViewModel>> GetParticipantTypes(string type)
         {
             var res = _participantService.GetParticipantLookup(type);
-            return Ok(res);
+            if (res is not null)
+            {
+                return Ok(res);
+            }
+            return BadRequest();
         }
 
         [HttpPut]
