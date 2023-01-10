@@ -32,7 +32,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpGet]
         [Route("{teamID}")]
-        public ActionResult<TeamViewModel> GetTeamByID(int teamID)
+        public ActionResult<TeamExtendedViewModel> GetTeamByID(int teamID)
         {
             var team = _teamService.GetTeamByID(teamID);
 
@@ -63,7 +63,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult<TeamCreatedViewModel>> CreateTeam([FromQuery] string username, TeamUploadViewModel newTeam)
+        public async Task<ActionResult<TeamViewModel>> CreateTeam([FromQuery] string username, TeamUploadViewModel newTeam)
         {
             var team = await _teamService.PostTeamAsync(newTeam, username);
             // future error handling
@@ -116,7 +116,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPatch]
         [Route("{teamID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_TEAM)]
-        public async Task<ActionResult<TeamCreatedViewModel>> UpdateTeamInfo(int teamID, TeamPatchViewModel team)
+        public async Task<ActionResult<TeamViewModel>> UpdateTeamInfo(int teamID, TeamPatchViewModel team)
         {
             var updatedTeam = await _teamService.UpdateTeamAsync(teamID, team);
             return CreatedAtAction("UpdateTeamInfo", updatedTeam);

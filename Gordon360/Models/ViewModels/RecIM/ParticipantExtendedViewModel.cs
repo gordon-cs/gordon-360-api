@@ -5,20 +5,20 @@ using System.Collections.Generic;
 
 namespace Gordon360.Models.ViewModels.RecIM
 {
-    public class ParticipantViewModel
+    public class ParticipantExtendedViewModel
     {
         public string Username { get; set; }
         public string Email { get; set; }
         public string? Role { get; set; }
         public string Status { get; set; }
-        public IEnumerable<ParticipantNotificationViewModel> Notification { get; set; } 
-            = new List<ParticipantNotificationViewModel>();
+        public IEnumerable<ParticipantNotificationExtendedViewModel> Notification { get; set; } 
+            = new List<ParticipantNotificationExtendedViewModel>();
 
         public bool IsAdmin { get; set; }
 
-        public static implicit operator ParticipantViewModel(ACCOUNT a)
+        public static implicit operator ParticipantExtendedViewModel(ACCOUNT a)
         {
-            ParticipantViewModel vm = new ParticipantViewModel
+            ParticipantExtendedViewModel vm = new ParticipantExtendedViewModel
             {
                 Username = a.AD_Username.Trim() ?? "",
                 Email = a.email ?? "", 

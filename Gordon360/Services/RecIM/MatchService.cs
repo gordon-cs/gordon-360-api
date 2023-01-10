@@ -64,11 +64,11 @@ namespace Gordon360.Services.RecIM
             }
             return null;
         }
-        public MatchViewModel GetMatchByID(int matchID)
+        public MatchExtendedViewModel GetMatchByID(int matchID)
         {
             var match = _context.Match
                         .Where(m => m.ID == matchID)
-                        .Select(m => new MatchViewModel
+                        .Select(m => new MatchExtendedViewModel
                         {
                             ID = matchID,
                             Scores = _context.MatchTeam
@@ -87,7 +87,7 @@ namespace Gordon360.Services.RecIM
                                         .Description,
                             Attendance = _context.MatchParticipant
                                         .Where(mp => mp.MatchID == matchID)
-                                        .Select(mp => new ParticipantViewModel
+                                        .Select(mp => new ParticipantExtendedViewModel
                                         {
                                             Username = mp.ParticipantUsername
                                         }).AsEnumerable(),
@@ -97,21 +97,21 @@ namespace Gordon360.Services.RecIM
                                                                                     .FirstOrDefault(m => m.ID == matchID)
                                                         .SeriesID)
                                         .ActivityID)
-                                        .Select(a => new ActivityViewModel
+                                        .Select(a => new ActivityExtendedViewModel
                                         {
                                             ID = a.ID,
                                             Name = a.Name
                                         })
                                         .FirstOrDefault(),
                             // Team will eventually be handled by TeamService 
-                            Team = m.MatchTeam.Select(mt => new TeamViewModel
+                            Team = m.MatchTeam.Select(mt => new TeamExtendedViewModel
                             {
                                 ID = mt.TeamID,
                                 Name = _context.Team
                                    .FirstOrDefault(t => t.ID == mt.TeamID)
                                    .Name,
                                 Participant = mt.Team.ParticipantTeam
-                                    .Select(pt => new ParticipantViewModel
+                                    .Select(pt => new ParticipantExtendedViewModel
                                             {
                                                 Username = pt.ParticipantUsername,
                                                 Email = _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
@@ -147,7 +147,7 @@ namespace Gordon360.Services.RecIM
                                             OwnID = matchTeamJoin.OwnID,
                                             MatchID = match.ID,
                                             Opponent = _context.Team.Where(t => t.ID == matchTeamJoin.OpposingID)
-                                                .Select(o => new TeamViewModel
+                                                .Select(o => new TeamExtendedViewModel
                                                 {
                                                     ID = o.ID,
                                                     Name = o.Name,
@@ -205,7 +205,7 @@ namespace Gordon360.Services.RecIM
                                     OwnID = matchTeamJoin.OwnID,
                                     MatchID = match.ID,
                                     Opponent = _context.Team.Where(t => t.ID == matchTeamJoin.OpposingID)
-                                        .Select(o => new TeamViewModel
+                                        .Select(o => new TeamExtendedViewModel
                                         {
                                             ID = o.ID,
                                             Name = o.Name,
@@ -219,11 +219,11 @@ namespace Gordon360.Services.RecIM
                                 }).AsEnumerable();
             return vm;
         }
-        public IEnumerable<MatchViewModel> GetMatchBySeriesID(int seriesID)
+        public IEnumerable<MatchExtendedViewModel> GetMatchBySeriesID(int seriesID)
         {
             var match = _context.Match
                         .Where(m => m.SeriesID == seriesID)
-                        .Select(m => new MatchViewModel
+                        .Select(m => new MatchExtendedViewModel
                         {
                             ID = m.ID,
                             Time = m.Time,
@@ -233,7 +233,7 @@ namespace Gordon360.Services.RecIM
                             Status = _context.MatchStatus
                                         .FirstOrDefault(ms => ms.ID == m.StatusID)
                                         .Description,
-                            Team = m.MatchTeam.Select(mt => new TeamViewModel
+                            Team = m.MatchTeam.Select(mt => new TeamExtendedViewModel
                             {
                                 ID = mt.TeamID,
                                 Name = _context.Team
@@ -250,7 +250,7 @@ namespace Gordon360.Services.RecIM
                         });
             return match;
         }
-        public async Task<MatchCreatedViewModel> PostMatchAsync(MatchUploadViewModel m)
+        public async Task<MatchViewModel> PostMatchAsync(MatchUploadViewModel m)
         {
             var match = new Match
             {
@@ -309,7 +309,7 @@ namespace Gordon360.Services.RecIM
             return teamstats;
 
         }
-        public async Task<MatchCreatedViewModel> UpdateMatchAsync(int matchID, MatchPatchViewModel vm)
+        public async Task<MatchViewModel> UpdateMatchAsync(int matchID, MatchPatchViewModel vm)
         {
             var match = _context.Match.FirstOrDefault(m => m.ID == matchID);
             match.Time = vm.Time ?? match.Time;

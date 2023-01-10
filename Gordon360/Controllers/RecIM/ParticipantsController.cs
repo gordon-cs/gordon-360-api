@@ -26,7 +26,7 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpGet]
         [Route("")]
-        public ActionResult<IEnumerable<ParticipantViewModel>> GetParticipants()
+        public ActionResult<IEnumerable<ParticipantExtendedViewModel>> GetParticipants()
         {
             var res = _participantService.GetParticipants();
             return Ok(res);
@@ -34,7 +34,7 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpGet]
         [Route("{username}/StatusHistory")]
-        public ActionResult<IEnumerable<ParticipantStatusViewModel>> GetParticipantStatushistory(string username)
+        public ActionResult<IEnumerable<ParticipantStatusExtendedViewModel>> GetParticipantStatushistory(string username)
         {
             var res = _participantService.GetParticipantStatusHistory(username);
             return Ok(res);
@@ -42,7 +42,7 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpGet]
         [Route("{username}")]
-        public ActionResult<ParticipantViewModel> GetParticipantByUsername(string username)
+        public ActionResult<ParticipantExtendedViewModel> GetParticipantByUsername(string username)
         {
             var res = _participantService.GetParticipantByUsername(username);
             return Ok(res);
@@ -50,7 +50,7 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpGet]
         [Route("{username}/teams")]
-        public ActionResult<IEnumerable<TeamViewModel>> GetParticipantTeams(string username)
+        public ActionResult<IEnumerable<TeamExtendedViewModel>> GetParticipantTeams(string username)
         {
             var res = _participantService.GetParticipantTeams(username);
             return Ok(res);
@@ -70,7 +70,7 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpPut]
         [Route("{username}")]
-        public async Task<ActionResult<ParticipantViewModel>> AddParticipant(string username)
+        public async Task<ActionResult<ParticipantExtendedViewModel>> AddParticipant(string username)
         {
             var participant = await _participantService.PostParticipantAsync(username);
             return CreatedAtAction("AddParticipant", participant);
@@ -78,7 +78,7 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpPatch]
         [Route("{username}")]
-        public async Task<ActionResult<ParticipantViewModel>> UpdateParticipant(string username, [FromBody] bool isAdmin)
+        public async Task<ActionResult<ParticipantExtendedViewModel>> UpdateParticipant(string username, [FromBody] bool isAdmin)
         {
             var participant = await _participantService.UpdateParticipantAsync(username,isAdmin);
             return CreatedAtAction("AddParticipant", participant);
@@ -87,7 +87,7 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpPost]
         [Route("{username}/notifications")]
-        public async Task<ActionResult<ParticipantNotificationCreatedViewModel>> SendParticipantNotification(string username, ParticipantNotificationUploadViewModel notificationVM)
+        public async Task<ActionResult<ParticipantNotificationViewModel>> SendParticipantNotification(string username, ParticipantNotificationUploadViewModel notificationVM)
         {
             var notification = await _participantService.SendParticipantNotificationAsync(username, notificationVM);
             return CreatedAtAction("SendParticipantNotification", notification);
@@ -105,7 +105,7 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpPatch]
         [Route("{username}/status")]
-        public async Task<ActionResult<ParticipantStatusCreatedViewModel>> UpdateParticipantStatus(string username, ParticipantStatusPatchViewModel updatedParticipant)
+        public async Task<ActionResult<ParticipantStatusViewModel>> UpdateParticipantStatus(string username, ParticipantStatusPatchViewModel updatedParticipant)
         {
             var status = await _participantService.UpdateParticipantStatusAsync(username, updatedParticipant);
             return CreatedAtAction("UpdateParticipantStatus",status);

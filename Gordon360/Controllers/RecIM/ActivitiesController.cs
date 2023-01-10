@@ -33,7 +33,7 @@ namespace Gordon360.Controllers.RecIM
         /// </returns>
         [HttpGet]
         [Route("")]
-        public ActionResult<IEnumerable<ActivityViewModel>> GetActivities([FromQuery] DateTime? time, bool active)
+        public ActionResult<IEnumerable<ActivityExtendedViewModel>> GetActivities([FromQuery] DateTime? time, bool active)
         {   
             if (time is null && active)
             {
@@ -52,7 +52,7 @@ namespace Gordon360.Controllers.RecIM
         /// </returns>
         [HttpGet]
         [Route("{activityID}")]
-        public ActionResult<ActivityViewModel> GetActivityByID(int activityID)
+        public ActionResult<ActivityExtendedViewModel> GetActivityByID(int activityID)
         {
             var result = _activityService.GetActivityByID(activityID);
             return Ok(result);
@@ -78,7 +78,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPost]
         [Route("")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_ACTIVITY)]
-        public async Task<ActionResult<ActivityCreatedViewModel>> CreateActivity(ActivityUploadViewModel newActivity)
+        public async Task<ActionResult<ActivityViewModel>> CreateActivity(ActivityUploadViewModel newActivity)
         {
             var activity = await _activityService.PostActivityAsync(newActivity);
             return CreatedAtAction("CreateActivity", activity);
@@ -93,7 +93,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPatch]
         [Route("{activityID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_ACTIVITY)]
-        public async Task<ActionResult<ActivityCreatedViewModel>> UpdateActivity(int activityID, ActivityPatchViewModel updatedActivity)
+        public async Task<ActionResult<ActivityViewModel>> UpdateActivity(int activityID, ActivityPatchViewModel updatedActivity)
         {
             var activity = await _activityService.UpdateActivityAsync(activityID, updatedActivity);
             return CreatedAtAction("UpdateActivity", activity);

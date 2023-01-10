@@ -11,9 +11,23 @@ namespace Gordon360.Models.ViewModels.RecIM
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public int ActivityID { get; set; }
-        public string Type { get; set; }
-        public string Status { get; set; }
-        public IEnumerable<MatchViewModel> Match { get; set; }
-        public IEnumerable<TeamRecordViewModel> TeamStanding { get; set; }
+        public int TypeID { get; set; }
+        public int StatusID { get; set; }
+
+        public static implicit operator SeriesViewModel(Series s)
+        {
+            return new SeriesViewModel
+            {
+                ID = s.ID,
+                Name = s.Name,
+                StartDate = s.StartDate,
+                EndDate = s.EndDate,
+                ActivityID = s.ActivityID,
+                TypeID = s.TypeID,
+                StatusID = s.StatusID
+            };
+        }
     }
+
+    
 }
