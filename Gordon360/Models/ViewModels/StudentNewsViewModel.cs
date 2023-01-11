@@ -42,8 +42,8 @@ namespace Gordon360.Models.ViewModels
                 Sent = n.Sent,
                 thisPastMailing = n.thisPastMailing,
                 Entered = n.Entered,
-                categoryName = n.category.categoryName,
-                SortOrder = n.category.SortOrder,
+                categoryName = n.category?.categoryName ?? "",
+                SortOrder = n.category?.SortOrder ?? null,
                 ManualExpirationDate = n.ManualExpirationDate,
             };
 
