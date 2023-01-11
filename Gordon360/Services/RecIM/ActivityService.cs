@@ -38,10 +38,10 @@ namespace Gordon360.Services.RecIM
             }
             return null;
         }
-        public IEnumerable<ActivityViewModel> GetActivities()
+        public IEnumerable<ActivityExtendedViewModel> GetActivities()
         {
             var activities = _context.Activity
-                            .Select(a => new ActivityViewModel
+                            .Select(a => new ActivityExtendedViewModel
                             {
                                 ID = a.ID,
                                 Name = a.Name,
@@ -59,7 +59,7 @@ namespace Gordon360.Services.RecIM
                                 Logo = a.Logo,
                                 Completed = a.Completed,
                                 Series = a.Series
-                                        .Select(s => new SeriesViewModel
+                                        .Select(s => new SeriesExtendedViewModel
                                         {
                                             ID = s.ID,
                                             Name = s.Name,
@@ -72,7 +72,7 @@ namespace Gordon360.Services.RecIM
                             });
             return activities;
         }
-        public IEnumerable<ActivityViewModel> GetActivitiesByTime(DateTime? time)
+        public IEnumerable<ActivityExtendedViewModel> GetActivitiesByTime(DateTime? time)
         {
             if (time is null)
             {
@@ -83,10 +83,10 @@ namespace Gordon360.Services.RecIM
                 return GetActivities().Where(a => a.RegistrationEnd > time);
             }
         }
-        public ActivityViewModel? GetActivityByID(int activityID)
+        public ActivityExtendedViewModel? GetActivityByID(int activityID)
         {
             var activity = _context.Activity.Where(a => a.ID == activityID)
-                            .Select(a => new ActivityViewModel
+                            .Select(a => new ActivityExtendedViewModel
                             {
                                 ID = a.ID,
                                 Name = a.Name,
@@ -104,7 +104,7 @@ namespace Gordon360.Services.RecIM
                                 Logo = a.Logo,
                                 Completed = a.Completed,
                                 Series = _seriesService.GetSeriesByActivityID(a.ID),
-                                Team = a.Team.Select(t => new TeamViewModel
+                                Team = a.Team.Select(t => new TeamExtendedViewModel
                                 {
                                     ID = t.ID,
                                     Name = t.Name,
@@ -119,7 +119,7 @@ namespace Gordon360.Services.RecIM
                             .FirstOrDefault();
             return activity;
         }
-        public async Task<ActivityCreatedViewModel> UpdateActivityAsync(int activityID, ActivityPatchViewModel updatedActivity)
+        public async Task<ActivityViewModel> UpdateActivityAsync(int activityID, ActivityPatchViewModel updatedActivity)
         {
             var activity = await _context.Activity.FindAsync(activityID);
             activity.Name = updatedActivity.Name ?? activity.Name;
@@ -137,7 +137,7 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
             return activity;
         }
-        public async Task<ActivityCreatedViewModel> PostActivityAsync(ActivityUploadViewModel a)
+        public async Task<ActivityViewModel> PostActivityAsync(ActivityUploadViewModel a)
         {
             var activity = new Activity
             {
@@ -158,7 +158,7 @@ namespace Gordon360.Services.RecIM
             return activity;
         }
 
-        public async Task<ParticipantActivityCreatedViewModel> PostParticipantActivityAsync(string username, int activityID, int privTypeID, bool isFreeAgent)
+        public async Task<ParticipantActivityViewModel> PostParticipantActivityAsync(string username, int activityID, int privTypeID, bool isFreeAgent)
         {
             var participantActivity = new ParticipantActivity
             {

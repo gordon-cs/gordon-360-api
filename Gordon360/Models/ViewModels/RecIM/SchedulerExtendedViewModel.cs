@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Gordon360.Models.ViewModels.RecIM
 {
-    public class SchedulerViewModel
+    public class SchedulerExtendedViewModel
     {
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }

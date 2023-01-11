@@ -34,7 +34,7 @@ namespace Gordon360.Controllers.RecIM
         /// <exception cref="NotImplementedException"></exception>
         [HttpGet]
         [Route("")]
-        public ActionResult<IEnumerable<MatchViewModel>> GetMatches([FromQuery] DateTime? day, bool active)
+        public ActionResult<IEnumerable<MatchExtendedViewModel>> GetMatches([FromQuery] DateTime? day, bool active)
         {
             throw new NotImplementedException();
         }
@@ -46,7 +46,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpGet]
         [Route("{matchID}")]
-        public ActionResult<MatchViewModel> GetMatchByID(int matchID)
+        public ActionResult<MatchExtendedViewModel> GetMatchByID(int matchID)
         {
             var match = _matchService.GetMatchByID(matchID);
             return Ok(match);
@@ -88,7 +88,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPatch]
         [Route("{matchID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_MATCH)]
-        public async Task<ActionResult<MatchCreatedViewModel>> UpdateMatch(int matchID, MatchPatchViewModel updatedMatch)
+        public async Task<ActionResult<MatchViewModel>> UpdateMatch(int matchID, MatchPatchViewModel updatedMatch)
         {
             var match = await _matchService.UpdateMatchAsync(matchID, updatedMatch);
             return CreatedAtAction("UpdateMatch", match);
@@ -102,7 +102,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPost]
         [Route("")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_MATCH)]
-        public async Task<ActionResult<MatchCreatedViewModel>> CreateMatch(MatchUploadViewModel newMatch)
+        public async Task<ActionResult<MatchViewModel>> CreateMatch(MatchUploadViewModel newMatch)
         {
             var match = await _matchService.PostMatchAsync(newMatch);
             return CreatedAtAction("CreateMatch", match);

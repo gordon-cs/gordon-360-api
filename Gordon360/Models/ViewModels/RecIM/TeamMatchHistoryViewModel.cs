@@ -8,7 +8,7 @@ namespace Gordon360.Models.ViewModels.RecIM
     {
         public int OwnID { get; set; }
         public int MatchID { get; set; }
-        public TeamViewModel Opponent { get; set; }
+        public TeamExtendedViewModel Opponent { get; set; }
         public int OwnScore { get; set; }
         public int OpposingScore { get; set; }
         public string Status { get; set; }

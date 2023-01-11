@@ -32,7 +32,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns>Enumerable Set of Series</returns>
         [HttpGet]
         [Route("")]
-        public ActionResult<IEnumerable<SeriesViewModel>> GetSeries([FromQuery] bool active)
+        public ActionResult<IEnumerable<SeriesExtendedViewModel>> GetSeries([FromQuery] bool active)
         {
             var result = _seriesService.GetSeries(active);
             return Ok(result);
@@ -45,7 +45,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpGet]
         [Route("{seriesID}")]
-        public ActionResult<SeriesViewModel> GetSeriesByID(int seriesID)
+        public ActionResult<SeriesExtendedViewModel> GetSeriesByID(int seriesID)
         {
             var result = _seriesService.GetSeriesByID(seriesID);
             return Ok(result);
@@ -72,7 +72,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPatch]
         [Route("{seriesID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_SERIES)]
-        public async Task<ActionResult<SeriesCreatedViewModel>> UpdateSeries(int seriesID, SeriesPatchViewModel updatedSeries)
+        public async Task<ActionResult<SeriesViewModel>> UpdateSeries(int seriesID, SeriesPatchViewModel updatedSeries)
         {
             var series = await _seriesService.UpdateSeriesAsync(seriesID, updatedSeries);
             return CreatedAtAction("UpdateSeries", series);
@@ -87,7 +87,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPost]
         [Route("")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SERIES)]
-        public async Task<ActionResult<SeriesCreatedViewModel>> CreateSeries(SeriesUploadViewModel newSeries, [FromQuery]int? referenceSeriesID)
+        public async Task<ActionResult<SeriesViewModel>> CreateSeries(SeriesUploadViewModel newSeries, [FromQuery]int? referenceSeriesID)
         {
             var series = await _seriesService.PostSeriesAsync(newSeries, referenceSeriesID);
             return CreatedAtAction("CreateSeries", series);

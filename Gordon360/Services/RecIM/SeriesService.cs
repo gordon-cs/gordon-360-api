@@ -48,10 +48,10 @@ namespace Gordon360.Services.RecIM
             }
             return null;
         }
-            public IEnumerable<SeriesViewModel> GetSeries(bool active = false)
+            public IEnumerable<SeriesExtendedViewModel> GetSeries(bool active = false)
         {
             var series = _context.Series
-                            .Select(s => new SeriesViewModel
+                            .Select(s => new SeriesExtendedViewModel
                             {
                                 ID = s.ID,
                                 Name = s.Name,
@@ -86,11 +86,11 @@ namespace Gordon360.Services.RecIM
             }
             return series;
         }
-        public IEnumerable<SeriesViewModel> GetSeriesByActivityID(int activityID)
+        public IEnumerable<SeriesExtendedViewModel> GetSeriesByActivityID(int activityID)
         { 
             var series = _context.Series
                 .Where(s => s.ActivityID == activityID)
-                .Select(s => new SeriesViewModel
+                .Select(s => new SeriesExtendedViewModel
                 {
                     ID = s.ID,
                     Name = s.Name,
@@ -121,11 +121,11 @@ namespace Gordon360.Services.RecIM
                 });
             return series;
         }
-        public SeriesViewModel GetSeriesByID(int seriesID)
+        public SeriesExtendedViewModel GetSeriesByID(int seriesID)
         {
             return GetSeries().FirstOrDefault(s => s.ID == seriesID);
         }
-        public async Task<SeriesCreatedViewModel> PostSeriesAsync(SeriesUploadViewModel newSeries, int? referenceSeriesID)
+        public async Task<SeriesViewModel> PostSeriesAsync(SeriesUploadViewModel newSeries, int? referenceSeriesID)
         {
             var series = new Series
             {
@@ -153,7 +153,7 @@ namespace Gordon360.Services.RecIM
             await CreateSeriesTeamMappingAsync(teams, series.ID);
             return series;
         }
-        public async Task<SeriesCreatedViewModel> UpdateSeriesAsync(int seriesID, SeriesPatchViewModel update)
+        public async Task<SeriesViewModel> UpdateSeriesAsync(int seriesID, SeriesPatchViewModel update)
         {
             var s = await _context.Series.FindAsync(seriesID);
             s.Name = update.Name ?? s.Name;
