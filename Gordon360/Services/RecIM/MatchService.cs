@@ -29,40 +29,44 @@ namespace Gordon360.Services.RecIM
 
         public IEnumerable<LookupViewModel> GetMatchLookup(string type)
         {
-            if (type == "status")
+            switch (type)
             {
-                var res = _context.MatchStatus
-                    .Select(s => new LookupViewModel
-                    {
-                        ID = s.ID,
-                        Description = s.Description
-                    })
-                    .AsEnumerable();
-                return res;
+                case "status":
+                {
+                    var res = _context.MatchStatus
+                        .Select(s => new LookupViewModel
+                        {
+                            ID = s.ID,
+                            Description = s.Description
+                        })
+                        .AsEnumerable();
+                    return res;
+                }
+                case "teamstatus":
+                {
+                    var res = _context.MatchTeamStatus
+                        .Select(s => new LookupViewModel
+                        {
+                            ID = s.ID,
+                            Description = s.Description
+                        })
+                        .AsEnumerable();
+                    return res;
+                }
+                case "surface":
+                {
+                    var res = _context.Surface
+                        .Select(s => new LookupViewModel
+                        {
+                            ID = s.ID,
+                            Description = s.Description
+                        })
+                        .AsEnumerable();
+                    return res;
+                }
+                default:
+                    return null;
             }
-            if (type == "teamstatus")
-            {
-                var res = _context.MatchTeamStatus
-                    .Select(s => new LookupViewModel
-                    {
-                        ID = s.ID,
-                        Description = s.Description
-                    })
-                    .AsEnumerable();
-                return res;
-            }
-            if (type == "surface")
-            {
-                var res = _context.Surface
-                    .Select(s => new LookupViewModel
-                    {
-                        ID = s.ID,
-                        Description = s.Description
-                    })
-                    .AsEnumerable();
-                return res;
-            }
-            return null;
         }
         public MatchExtendedViewModel GetMatchByID(int matchID)
         {
