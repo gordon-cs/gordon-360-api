@@ -18,6 +18,7 @@ namespace Gordon360.Models.ViewModels.RecIM
         public bool SoloRegistration { get; set; }
         public string Logo { get; set; }
         public bool Completed { get; set; }
+        public int TypeID { get; set; }
 
         public IEnumerable<SeriesExtendedViewModel> Series { get; set; }
         public IEnumerable<TeamExtendedViewModel> Team { get; set; }
