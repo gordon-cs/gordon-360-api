@@ -25,6 +25,7 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<AccountPhotoURL> AccountPhotoURL { get; set; }
         public virtual DbSet<Activity> Activity { get; set; }
         public virtual DbSet<ActivityStatus> ActivityStatus { get; set; }
+        public virtual DbSet<ActivityType> ActivityType { get; set; }
         public virtual DbSet<Alumni> Alumni { get; set; }
         public virtual DbSet<Birthdays> Birthdays { get; set; }
         public virtual DbSet<Buildings> Buildings { get; set; }
@@ -150,6 +151,12 @@ namespace Gordon360.Models.CCT.Context
                     .HasForeignKey(d => d.StatusID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Activity_ActivityStatus");
+
+                entity.HasOne(d => d.Type)
+                    .WithMany(p => p.Activity)
+                    .HasForeignKey(d => d.TypeID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Activity_ActivityType");
             });
 
             modelBuilder.Entity<Alumni>(entity =>
@@ -475,8 +482,6 @@ namespace Gordon360.Models.CCT.Context
                 entity.ToView("MembershipView", "dbo");
 
                 entity.Property(e => e.ActivityDescription).IsFixedLength();
-
-                entity.Property(e => e.ParticipationDescription).IsFixedLength();
             });
 
             modelBuilder.Entity<Message_Rooms>(entity =>
