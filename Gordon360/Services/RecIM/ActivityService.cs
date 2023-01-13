@@ -25,18 +25,28 @@ namespace Gordon360.Services.RecIM
 
         public IEnumerable<LookupViewModel> GetActivityLookup(string type)
         {
-            if (type == "status")
+            switch (type)
             {
-                var res = _context.ActivityStatus
-                            .Select(s => new LookupViewModel
-                            {
-                                ID = s.ID,
-                                Description = s.Description
-                            })
-                            .AsEnumerable();
-                return res;
+                case "status":
+                    return _context.ActivityStatus
+                                .Select(s => new LookupViewModel
+                                {
+                                    ID = s.ID,
+                                    Description = s.Description
+                                })
+                                .AsEnumerable();
+                case "activity":
+                    return _context.ActivityType
+                                .Select(a => new LookupViewModel
+                                {
+                                    ID = a.ID,
+                                    Description = a.Description
+                                })
+                                .AsEnumerable();
+                default:
+                    return null;
+
             }
-            return null;
         }
         public IEnumerable<ActivityExtendedViewModel> GetActivities()
         {
@@ -68,7 +78,8 @@ namespace Gordon360.Services.RecIM
                                             Type = _context.SeriesType
                                                     .FirstOrDefault(st => st.ID == s.TypeID)
                                                     .Description
-                                        }).ToList()
+                                        }).ToList(),
+                                TypeID = a.TypeID,
                             });
             return activities;
         }
@@ -103,6 +114,7 @@ namespace Gordon360.Services.RecIM
                                 SoloRegistration = a.SoloRegistration,
                                 Logo = a.Logo,
                                 Completed = a.Completed,
+                                TypeID = a.TypeID,
                                 Series = _seriesService.GetSeriesByActivityID(a.ID),
                                 Team = a.Team.Select(t => new TeamExtendedViewModel
                                 {
@@ -133,6 +145,7 @@ namespace Gordon360.Services.RecIM
             activity.MaxCapacity = updatedActivity.MaxCapacity ?? activity.MaxCapacity;
             activity.SoloRegistration = updatedActivity.SoloRegistration ?? activity.SoloRegistration;
             activity.Completed = updatedActivity.Completed ?? activity.Completed;
+            activity.TypeID = updatedActivity.TypeID ?? activity.TypeID;
 
             await _context.SaveChangesAsync();
             return activity;
@@ -150,7 +163,8 @@ namespace Gordon360.Services.RecIM
                 MinCapacity = a.MinCapacity ?? 0,
                 MaxCapacity = a.MaxCapacity,
                 SoloRegistration = a.SoloRegistration,
-                Completed = false //default not completed
+                Completed = false, //default not completed
+                TypeID = a.TypeID,
             };
             await _context.Activity.AddAsync(activity);
             await _context.SaveChangesAsync();

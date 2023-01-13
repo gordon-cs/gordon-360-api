@@ -134,17 +134,27 @@ namespace Gordon360.Services.RecIM
                 EndDate = newSeries.EndDate,
                 ActivityID = newSeries.ActivityID,
                 TypeID = newSeries.TypeID,
-                StatusID = 1 //default unconfirmed series
+                StatusID = 1, //default unconfirmed series
+                ScheduleID = 2 //temporary while autoscheduling is not completed
             };
             await _context.Series.AddAsync(series);
             await _context.SaveChangesAsync();
 
-            int seriesID = referenceSeriesID ?? series.ID;
-            IEnumerable<int> teams = _context.SeriesTeam
-                                .Where(st => st.SeriesID == seriesID)
+            IEnumerable<int> teams = new List<int>();
+            if (referenceSeriesID is not null)
+            {
+                teams = _context.Team
+                        .Where(t => t.ActivityID == series.ActivityID)
+                        .Select(t => t.ID)
+                        .AsEnumerable();
+            }
+            else
+            {
+                teams = _context.SeriesTeam
+                                .Where(st => st.SeriesID == referenceSeriesID)
                                 .OrderByDescending(st => st.Win)
                                 .Select(st => st.TeamID);
-
+            }
             if (newSeries.NumberOfTeamsAdmitted is not null)
             {
                 teams = teams.Take(newSeries.NumberOfTeamsAdmitted ?? 0);//will never be null but 0 is to silence error

@@ -13,6 +13,7 @@ namespace Gordon360.Models.ViewModels.RecIM
         public int MaxCapacity { get; set; }
         public bool SoloRegistration { get; set; }
         public string? Logo { get; set; }
+        public int TypeID { get; set; }
 
     }
 }
