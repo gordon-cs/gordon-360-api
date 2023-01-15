@@ -4,6 +4,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -20,7 +21,11 @@ namespace Gordon360.Utilities
         {
             try
             {
-                File.Delete(imagePath);
+                // remove server address from imagePath, otherwise Student News image not found
+                string splitSubstring = "browseable";
+                string realImagePath = splitSubstring + imagePath.Split(splitSubstring).Last();
+
+                File.Delete(realImagePath);
             }
             catch (Exception e)
             {
@@ -37,7 +42,7 @@ namespace Gordon360.Utilities
         /// </summary>
         /// <param name="imagePath">The path to the image</param>
         /// <returns>The base64 data of the image</returns>
-        public static string RetrieveImageFromPath(string imagePath)
+        public static string? RetrieveImageFromPath(string imagePath)
         {
             string? imageData = null;
 
@@ -46,7 +51,7 @@ namespace Gordon360.Utilities
                 imageData = GetBase64ImageDataFromPath(imagePath);
             }
 
-            return imageData ?? "";
+            return imageData;
         }
 
         /// <summary>
@@ -68,7 +73,7 @@ namespace Gordon360.Utilities
                 Directory.CreateDirectory(path);
             }
 
-            byte[] imageDataArray = Convert.FromBase64String(imageData);
+            byte[] imageDataArray = Convert.FromBase64String(imageData.Split(",").Last());
 
             try
             {
@@ -181,7 +186,11 @@ namespace Gordon360.Utilities
         /// <returns>The base64 content of the image</returns>
         private static string GetBase64ImageDataFromPath(string imagePath)
         {
-            using Image image = Image.FromFile(imagePath);
+            // remove server address from imagePath, otherwise Student News image not found
+            string splitSubstring = "browseable";
+            string realImagePath = splitSubstring + imagePath.Split(splitSubstring).Last();
+
+            using Image image = Image.FromFile(realImagePath);
             using MemoryStream data = new MemoryStream();
             image.Save(data, image.RawFormat);
             byte[] imageBytes = data.ToArray();

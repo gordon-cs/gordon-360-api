@@ -201,9 +201,7 @@ namespace Gordon360.Services
 
             if (newsItem.Image != null)
             {
-                string fileName = newsItem.SNID + ".jpg";
-                string imagePath = NewsUploadsPath + fileName;
-                ImageUtils.DeleteImage(imagePath);
+                ImageUtils.DeleteImage(newsItem.Image);
             }
             _context.StudentNews.Remove(newsItem);
             _context.SaveChanges();
@@ -217,7 +215,7 @@ namespace Gordon360.Services
         /// <param name="newData">The news object that contains updated values</param>
         /// <returns>The updated news item's view model</returns>
         /// <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
-        public StudentNewsViewModel EditPosting(int newsID, StudentNews newData)
+        public StudentNewsViewModel EditPosting(int newsID, StudentNewsUploadViewModel newData)
         {
             // Service method 'Get' throws its own exceptions
             var newsItem = Get(newsID);
@@ -240,21 +238,43 @@ namespace Gordon360.Services
 
             if (newData.Image != null)
             {
-                string fileName = newsItem.SNID + ".jpg";
-                string imagePath = NewsUploadsPath + fileName;
-                ImageUtils.UploadImage(imagePath, newData.Image);
-                newsItem.Image = imagePath;
+                // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
+                var (extension, format, data) = ImageUtils.GetImageFormat(newData.Image);
+
+                // If there's already an image attached to the news post, simply overwrite the old image
+                // data when uploading a new one
+                if (newsItem.Image != null)
+                {
+                    var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", Path.GetFileName(newsItem.Image));
+                    ImageUtils.UploadImage(imagePath, newData.Image);
+                }
+
+                // If there isn't an image attached to the news post, do the same procedure to save
+                // image in Submit method
+                else
+                {
+                    // Use a unique alphanumeric GUID string as the file name
+                    var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
+                    var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", filename);
+
+                    var serverAddress = _serverUtils.GetAddress();
+                    if (serverAddress is not string) throw new Exception("Could not upload Student News Image: Server Address is null");
+
+                    var url = $"{serverAddress}/browseable/uploads/{filename}";
+
+                    ImageUtils.UploadImage(imagePath, newData.Image);
+
+                    newsItem.Image = url;
+                }
             }
 
             //If the image property is null, it means that either the user
             //chose to remove the previous image or that there was no previous
             //image (DeleteImage is designed to handle this).
-            else
+            else if (newsItem.Image != null)
             {
-                string fileName = newsItem.SNID + ".jpg";
-                string imagePath = NewsUploadsPath + fileName;
-                ImageUtils.DeleteImage(imagePath);
-                newsItem.Image = newData.Image;//null
+                ImageUtils.DeleteImage(newsItem.Image);
+                newsItem.Image = newData.Image; //null
             }
             _context.SaveChanges();
 

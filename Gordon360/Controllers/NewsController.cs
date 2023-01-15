@@ -187,17 +187,17 @@ namespace Gordon360.Controllers
         /// (Controller) Edits a news item in the database
         /// </summary>
         /// <param name="newsID">The id of the news item to edit</param>
-        /// <param name="newData">The news object that contains updated values</param>
+        /// <param name="studentNewsEditting">The news object that contains updated values</param>
         /// <returns>The updated news item</returns>
         /// <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
         [HttpPut]
         [Route("{newsID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.NEWS)]
         // Private route to authenticated users - authors of posting or admins
-        public ActionResult<StudentNewsViewModel> EditPosting(int newsID, [FromBody] StudentNews newData)
+        public ActionResult<StudentNewsViewModel> EditPosting(int newsID, [FromBody] StudentNewsUploadViewModel studentNewsEditting)
         {
             // StateYourBusiness verifies that user is authenticated
-            var result = _newsService.EditPosting(newsID, newData);
+            var result = _newsService.EditPosting(newsID, studentNewsEditting);
             return Ok(result);
         }
     }
