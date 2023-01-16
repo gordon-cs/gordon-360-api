@@ -173,7 +173,7 @@ namespace Gordon360.Services
 
                 var url = $"{serverAddress}/browseable/uploads/{filename}";
 
-                ImageUtils.UploadImage(imagePath, itemToSubmit.Image);
+                ImageUtils.UploadImage(imagePath, itemToSubmit.Image.Split(",").Last());
 
                 itemToSubmit.Image = url;
             }
@@ -248,7 +248,7 @@ namespace Gordon360.Services
                 if (newsItem.Image != null)
                 {
                     var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", Path.GetFileName(newsItem.Image));
-                    ImageUtils.UploadImage(imagePath, newData.Image);
+                    ImageUtils.UploadImage(imagePath, newData.Image.Split(",").Last());
                 }
 
                 // If there isn't an image attached to the news post, do the same procedure to save
@@ -264,7 +264,7 @@ namespace Gordon360.Services
 
                     var url = $"{serverAddress}/browseable/uploads/{filename}";
 
-                    ImageUtils.UploadImage(imagePath, newData.Image);
+                    ImageUtils.UploadImage(imagePath, newData.Image.Split(",").Last());
 
                     newsItem.Image = url;
                 }

@@ -38,7 +38,7 @@ namespace Gordon360.Utilities
         /// </summary>
         /// <param name="imagePath">The path to the image</param>
         /// <returns>The base64 data of the image</returns>
-        public static string? RetrieveImageFromPath(string imagePath)
+        public static string RetrieveImageFromPath(string imagePath)
         {
             string? imageData = null;
 
@@ -47,7 +47,7 @@ namespace Gordon360.Utilities
                 imageData = GetBase64ImageDataFromPath(imagePath);
             }
 
-            return imageData;
+            return imageData ?? "";
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace Gordon360.Utilities
                 Directory.CreateDirectory(path);
             }
 
-            byte[] imageDataArray = Convert.FromBase64String(imageData.Split(",").Last());
+            byte[] imageDataArray = Convert.FromBase64String(imageData);
 
             try
             {
