@@ -22,10 +22,12 @@ namespace Gordon360.Controllers
     public class NewsController : GordonControllerBase
     {
         private readonly INewsService _newsService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
         public NewsController(CCTContext context, MyGordonContext myGordonContext, IWebHostEnvironment webHostEnvironment, ServerUtils serverUtils)
         {
             _newsService = new NewsService(myGordonContext, context, webHostEnvironment, serverUtils);
+            _webHostEnvironment = webHostEnvironment;
         }
 
         /// <summary>Gets a news item by id from the database</summary>
@@ -44,7 +46,12 @@ namespace Gordon360.Controllers
                 return NotFound();
             }
 
-            result.Image = ImageUtils.RetrieveImageFromPath(result.Image);
+            if (result.Image != null)
+            {
+                var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", Path.GetFileName(result.Image));
+
+                result.Image = ImageUtils.RetrieveImageFromPath(imagePath);
+            }
 
             return Ok(result);
         }
@@ -64,7 +71,9 @@ namespace Gordon360.Controllers
                 return NotFound();
             }
 
-            return Ok(ImageUtils.RetrieveImageFromPath(result.Image));
+            var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", Path.GetFileName(result.Image));
+
+            return Ok(ImageUtils.RetrieveImageFromPath(imagePath));
         }
 
         /** Call the service that gets all approved student news entries not yet expired, filtering
@@ -187,17 +196,17 @@ namespace Gordon360.Controllers
         /// (Controller) Edits a news item in the database
         /// </summary>
         /// <param name="newsID">The id of the news item to edit</param>
-        /// <param name="studentNewsEditting">The news object that contains updated values</param>
+        /// <param name="studentNewsEdit">The news object that contains updated values</param>
         /// <returns>The updated news item</returns>
         /// <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
         [HttpPut]
         [Route("{newsID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.NEWS)]
         // Private route to authenticated users - authors of posting or admins
-        public ActionResult<StudentNewsViewModel> EditPosting(int newsID, [FromBody] StudentNewsUploadViewModel studentNewsEditting)
+        public ActionResult<StudentNewsViewModel> EditPosting(int newsID, [FromBody] StudentNewsUploadViewModel studentNewsEdit)
         {
             // StateYourBusiness verifies that user is authenticated
-            var result = _newsService.EditPosting(newsID, studentNewsEditting);
+            var result = _newsService.EditPosting(newsID, studentNewsEdit);
             return Ok(result);
         }
     }

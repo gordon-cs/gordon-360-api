@@ -21,11 +21,7 @@ namespace Gordon360.Utilities
         {
             try
             {
-                // remove server address from imagePath, otherwise Student News image not found
-                string splitSubstring = "browseable";
-                string realImagePath = splitSubstring + imagePath.Split(splitSubstring).Last();
-
-                File.Delete(realImagePath);
+                File.Delete(imagePath);
             }
             catch (Exception e)
             {
@@ -186,11 +182,7 @@ namespace Gordon360.Utilities
         /// <returns>The base64 content of the image</returns>
         private static string GetBase64ImageDataFromPath(string imagePath)
         {
-            // remove server address from imagePath, otherwise Student News image not found
-            string splitSubstring = "browseable";
-            string realImagePath = splitSubstring + imagePath.Split(splitSubstring).Last();
-
-            using Image image = Image.FromFile(realImagePath);
+            using Image image = Image.FromFile(imagePath);
             using MemoryStream data = new MemoryStream();
             image.Save(data, image.RawFormat);
             byte[] imageBytes = data.ToArray();

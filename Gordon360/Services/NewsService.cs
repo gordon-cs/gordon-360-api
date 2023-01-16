@@ -201,7 +201,9 @@ namespace Gordon360.Services
 
             if (newsItem.Image != null)
             {
-                ImageUtils.DeleteImage(newsItem.Image);
+                var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", Path.GetFileName(newsItem.Image));
+
+                ImageUtils.DeleteImage(imagePath);
             }
             _context.StudentNews.Remove(newsItem);
             _context.SaveChanges();
@@ -273,7 +275,9 @@ namespace Gordon360.Services
             //image (DeleteImage is designed to handle this).
             else if (newsItem.Image != null)
             {
-                ImageUtils.DeleteImage(newsItem.Image);
+                var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", Path.GetFileName(newsItem.Image));
+
+                ImageUtils.DeleteImage(imagePath);
                 newsItem.Image = newData.Image; //null
             }
             _context.SaveChanges();
