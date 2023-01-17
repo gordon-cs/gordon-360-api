@@ -41,7 +41,7 @@ When the API receives an HTTP Request, it is routed to the Controller method wit
 
 ### Preliminary setup
 
-- It is easiest to use the development virtual machinea to of work on this project. Follow [these instructions](RemoteDesktopToVM.md#How-to-connect-to-a-CS-RDSH-virtual-machine) to set up and connect to the virtual machine using your Gordon account.
+- It is easiest to use the development virtual machinea to of work on this project. Follow [these instructions](docs/RemoteDesktopToVM.md##How-to-connect-to-a-CPS-Server-virtual-machine) to set up and connect to the virtual machine using your Gordon account.
 
 - Open the project in Visual Studio
 
