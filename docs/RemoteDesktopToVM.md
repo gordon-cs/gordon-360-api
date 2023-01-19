@@ -15,7 +15,6 @@ Follow [these instructions](https://cts.gordon.edu/knowledge/change-mfa/#to-chan
 
 If you are trying to connect from off-campus, follow [these](https://cts.gordon.edu/knowledge/gordon-vpn/) instructions to setup the VPN along with Microsoft Azure Multifactor Authentication. After everything is set up with the VPN, you will be able to follow the instructions in the rest of this document without problems.
 
-
 ## Connect to the VM
 
 Go to [desktops.gordon.edu](https://desktops.gordon.edu/) and sign-in with your Gordon account. Select either CPS Server 1 or CPS Server 2 to download the remote desktop profile to connect to that server. The servers are the same, but they have separate resources, so choose the one that fewer people are currently using.
