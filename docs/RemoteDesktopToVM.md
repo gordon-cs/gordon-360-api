@@ -30,4 +30,4 @@ Install the [Microsoft Remote Desktop](https://apps.apple.com/us/app/microsoft-r
 
 ### Linux
 
-Install an appropriate remote desktop client. For Ubuntu, we recommend Remmina Remote Desktop Client.
+Install an appropriate remote desktop client. For Ubuntu, Remmina Remote Desktop Client should already be installed.
