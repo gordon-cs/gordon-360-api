@@ -260,6 +260,5 @@ It's sometimes useful to look at the database directly, to see the schema or che
 - Open SQL Server Management Studio (SSMS)
 - Connect to "ADMINTRAINSQL" database server (or "ADMINPRODSQL")
 - Expand "Databases" then "CCT" (primary database), "MyGordon", "StudentTimesheets", or "TmsEPrd" then "Views" or "Tables"
-
 - To see schemas, expand "dbo." entries and their "columns"
 - To see data, right-click a view and select "Select top 1000 rows"
