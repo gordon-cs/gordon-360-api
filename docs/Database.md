@@ -255,7 +255,8 @@ Every time a record is inserted into the ACT_CLUB_DEF table, this trigger runs t
 
 It's sometimes useful to look at the database directly, to see the schema or check data. Here is how.
 
-- Use remote desktop to get to the Windows server VM
+- [Use remote desktop to get to the Windows server VM](RemoteDesktopToVM.md)
+
 - If SQL Server Management Studio is not pinned to the task bar, pin it by starting it and right clicking on it in the task bar to pin it)
 - Shift-right-click SSMS (SQL Server Management Studio) and select "Run as ..."
 - Run as "cct.service"
