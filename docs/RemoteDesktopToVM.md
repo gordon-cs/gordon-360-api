@@ -10,7 +10,10 @@
 
 Follow [these instructions](https://cts.gordon.edu/knowledge/change-mfa/#to-change-your-default-security-verification-method) to update your default security verification method to "Notify me through app". This is necessary for you to be able to login to the VMs.
 
-Follow [these](https://cts.gordon.edu/knowledge/gordon-vpn/) instructions to setup the VPN along with Windows Multifactor Authentication. After everything is set up with the VPN, you will be able to follow the instructions in the rest of this document without problems.
+## Connect to the Gordon VPN from Off-Campus
+
+If you are trying to connect from off-campus, follow [these](https://cts.gordon.edu/knowledge/gordon-vpn/) instructions to setup the VPN along with Microsoft Azure Multifactor Authentication. After everything is set up with the VPN, you will be able to follow the instructions in the rest of this document without problems.
+
 
 ## Connect to the VM
 
