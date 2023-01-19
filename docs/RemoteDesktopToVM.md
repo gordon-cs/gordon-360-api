@@ -1,7 +1,8 @@
 # How to connect to a CPS Server virtual machine
 
 ## Table of Contents
-- [Connect from Off Campus](#connect-from-off-campus)
+- [Setup Multifactor Authentication](#setup-multifactor-authentication)
+- [Connecting from Off Campus](#connecting-from-off-campus)
 - [Connect from Ubuntu Linux](#connect-from-ubuntu-linux)
 - [Connect from Windows](#connect-from-windows)
 - [Connect from MacOS](#connect-from-macos)
@@ -10,7 +11,7 @@
 
 Follow [these instructions](https://cts.gordon.edu/knowledge/change-mfa/#to-change-your-default-security-verification-method) to update your default security verification method to "Notify me through app". This is necessary for you to be able to login to the VMs.
 
-## Connect to the Gordon VPN from Off-Campus
+## Connecting from Off-Campus
 
 If you are trying to connect from off-campus, follow [these](https://cts.gordon.edu/knowledge/gordon-vpn/) instructions to setup the VPN along with Microsoft Azure Multifactor Authentication. After everything is set up with the VPN, you will be able to follow the instructions in the rest of this document without problems.
 
