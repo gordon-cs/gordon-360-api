@@ -258,7 +258,6 @@ It's sometimes useful to look at the database directly, to see the schema or che
 - [Use remote desktop to get to the Windows server VM](RemoteDesktopToVM.md)
 
 - Open SQL Server Management Studio (SSMS)
-
 - Connect to "ADMINTRAINSQL" database server (or "ADMINPRODSQL")
 - Expand "Databases" then "CCT" (primary database), "MyGordon", "StudentTimesheets", or "TmsEPrd" then "Views" or "Tables"
 
