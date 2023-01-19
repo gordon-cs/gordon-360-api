@@ -257,9 +257,8 @@ It's sometimes useful to look at the database directly, to see the schema or che
 
 - [Use remote desktop to get to the Windows server VM](RemoteDesktopToVM.md)
 
-- If SQL Server Management Studio is not pinned to the task bar, pin it by starting it and right clicking on it in the task bar to pin it)
-- Shift-right-click SSMS (SQL Server Management Studio) and select "Run as ..."
-- Run as "cct.service"
+- Open SQL Server Management Studio (SSMS)
+
 - Connect to "ADMINTRAINSQL" database server (or "ADMINPRODSQL")
 - Expand "Databases" then "CCT" or "MyGordon" (the two currently used databases) then "Views"
 - To see schemas, expand "dbo." entries and their "columns"
