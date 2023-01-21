@@ -23,5 +23,22 @@ namespace Gordon360.Models.ViewModels.RecIM
         public IEnumerable<SeriesExtendedViewModel> Series { get; set; }
         public IEnumerable<TeamExtendedViewModel> Team { get; set; }
 
+        public static implicit operator ActivityExtendedViewModel(Activity a)
+        {
+            return new ActivityExtendedViewModel
+            {
+                ID = a.ID,
+                Name = a.Name,
+                RegistrationStart = a.RegistrationStart,
+                RegistrationEnd = a.RegistrationEnd,
+                RegistrationOpen = DateTime.Now > a.RegistrationStart && DateTime.Now < a.RegistrationEnd,
+                MinCapacity = a.MinCapacity,
+                MaxCapacity = a.MaxCapacity,
+                SoloRegistration = a.SoloRegistration,
+                Logo = a.Logo,
+                Completed = a.Completed,
+                TypeID = a.TypeID,
+            };
+        }
     }
 }
